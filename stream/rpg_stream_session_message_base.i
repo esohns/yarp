@@ -166,7 +166,7 @@ RPG_Stream_SessionMessageBase<ConfigType>::dump_state() const
 
   std::string type_string;
   RPG_Stream_SessionMessage::SessionMessageType2String(myMessageType,
-                                                   type_string);
+                                                       type_string);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("session (ID: %u) message type: \"%s\"\n"),
@@ -210,8 +210,7 @@ RPG_Stream_SessionMessageBase<ConfigType>::duplicate(void) const
   // *WARNING*:we tell the allocator to return a RPG_Stream_SessionMessageBase<ConfigType>
   // by passing a 0 as argument to malloc()...
   ACE_NEW_MALLOC_RETURN(nb,
-                        ACE_static_cast(RPG_Stream_SessionMessageBase<ConfigType>*,
-                                        message_block_allocator_->malloc(0)),
+                        static_cast<RPG_Stream_SessionMessageBase<ConfigType>*>(message_block_allocator_->malloc(0)),
                         RPG_Stream_SessionMessageBase<ConfigType>(*this),
                         NULL);
 

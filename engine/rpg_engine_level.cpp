@@ -185,5 +185,5 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
 
   // *WARNING*: set iterators are CONST for a good reason !
   // --> (but we know what we're doing)...
-  ACE_const_cast(RPG_Map_Door_t&, *iterator).is_open = open_in;
+  const_cast<RPG_Map_Door_t&> (*iterator).is_open = open_in;
 }

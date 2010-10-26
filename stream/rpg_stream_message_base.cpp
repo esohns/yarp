@@ -150,8 +150,7 @@ RPG_Stream_MessageBase::duplicate(void) const
     // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
     // a "shallow" copy which just references our data block...
     ACE_NEW_MALLOC_RETURN(nb,
-                          ACE_static_cast(RPG_Stream_MessageBase*,
-                                          message_block_allocator_->malloc(capacity())),
+                          static_cast<RPG_Stream_MessageBase*> (message_block_allocator_->malloc(capacity())),
                           RPG_Stream_MessageBase(*this),
                           NULL);
   } // end ELSE

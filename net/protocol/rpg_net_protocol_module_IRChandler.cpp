@@ -690,8 +690,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
     case RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK:
     {
       std::ostringstream converter;
-      converter << ACE_static_cast(unsigned long,
-                                   loginOptions_in.user.hostname.mode);
+      converter << static_cast<unsigned long> (loginOptions_in.user.hostname.mode);
       user_struct->params.push_back(std::string(converter.str()));
 
       break;
@@ -1248,8 +1247,7 @@ RPG_Net_Protocol_Module_IRCHandler::allocateMessage(const unsigned long& request
 
   try
   {
-    message_out = ACE_static_cast(RPG_Net_Protocol_Message*,
-                                  myAllocator->malloc(requestedSize_in));
+    message_out = static_cast<RPG_Net_Protocol_Message*> (myAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {

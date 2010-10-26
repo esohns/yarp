@@ -179,8 +179,7 @@ do_work(const bool& buildCorridors_in,
   {
     // *WARNING*: set iterators are CONST for a good reason !
     // --> (but we know what we're doing)...
-    ACE_const_cast(RPG_Map_Door_t&,
-                   *iterator).outside = RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
+    const_cast<RPG_Map_Door_t&> (*iterator).outside = RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
                                                                                  floorPlan);
 
     door_positions.insert((*iterator).position);

@@ -39,9 +39,9 @@ PNG_read_callback(png_structp png_ptr_in,
   RPG_TRACE(ACE_TEXT("::PNG_read_callback"));
 
   ACE_OS::memcpy(target_inout,
-                 ACE_static_cast(void*, png_ptr_in->io_ptr),
+                 static_cast<void*> (png_ptr_in->io_ptr),
                  size_in);
-  png_ptr_in->io_ptr = (ACE_static_cast(unsigned char*, png_ptr_in->io_ptr) + size_in);
+  png_ptr_in->io_ptr = (static_cast<unsigned char*> (png_ptr_in->io_ptr) + size_in);
 }
 
 RPG_Graphics_Surface::RPG_Graphics_Surface()
@@ -64,7 +64,7 @@ RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_Surface& surface_i
 
   // "steal" ownership
   if (myOwnSurface)
-    ACE_const_cast(RPG_Graphics_Surface&, surface_in).myOwnSurface = false;
+    const_cast<RPG_Graphics_Surface&> (surface_in).myOwnSurface = false;
 }
 
 RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion& type_in,
@@ -255,7 +255,7 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
 //     {
 //       ACE_DEBUG((LM_ERROR,
 //                   ACE_TEXT("failed to SDL_SetAlpha(%u): %s, aborting\n"),
-//                   ACE_static_cast(unsigned long, alpha_in),
+//                   static_cast<unsigned long> (alpha_in),
 //                   SDL_GetError()));
     //
 //       // clean up
@@ -356,7 +356,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((&surface_in)))
-    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, surface_in)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&> (surface_in)))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
@@ -366,15 +366,15 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     } // end IF
 
   // (if neccessary,) strip out alpha bytes and reorder the image bytes to RGB
-  Uint32* pixels = ACE_static_cast(Uint32*, surface_in.pixels);
+  Uint32* pixels = static_cast<Uint32*> (surface_in.pixels);
   for (unsigned long j = 0;
-       j < ACE_static_cast(unsigned long, surface_in.h);
+       j < static_cast<unsigned long> (surface_in.h);
        j++)
   {
     image[j] = output;
 
     for (unsigned long i = 0;
-         i < ACE_static_cast(unsigned long, surface_in.w);
+         i < static_cast<unsigned long> (surface_in.w);
          i++)
     {
       *output++ = (((*pixels) & surface_in.format->Rmask) >> surface_in.format->Rshift);   /* red   */
@@ -388,7 +388,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   } // end FOR
 
   if (SDL_MUSTLOCK((&surface_in)))
-    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, surface_in));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&> (surface_in));
 
   // open the file
   FILE* fp = NULL;
@@ -530,8 +530,8 @@ RPG_Graphics_Surface::create(const unsigned long& width_in,
                                  SDL_ASYNCBLIT |
                                  SDL_SRCCOLORKEY |
                                  SDL_SRCALPHA),
-                                ACE_static_cast(int, width_in),
-                                ACE_static_cast(int, height_in),
+                                static_cast<int> (width_in),
+                                static_cast<int> (height_in),
 //                                 (bit_depth * 8),
                                 32,
                                 ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
@@ -564,10 +564,10 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::get"));
 
   // sanity check(s)
-  ACE_ASSERT(width_in <= ACE_static_cast(unsigned long, source_in.w));
-//   ACE_ASSERT((offsetX_in + width_in) <= (ACE_static_cast(unsigned long, image_in.w) - 1));
-  ACE_ASSERT(height_in <= ACE_static_cast(unsigned long, source_in.h));
-//   ACE_ASSERT((offsetY_in + height_in) <= (ACE_static_cast(unsigned long, image_in.h) - 1));
+  ACE_ASSERT(width_in <= static_cast<unsigned long> (source_in.w));
+//   ACE_ASSERT((offsetX_in + width_in) <= (static_cast<unsigned long> (image_in.w) - 1));
+  ACE_ASSERT(height_in <= static_cast<unsigned long> (source_in.h));
+//   ACE_ASSERT((offsetY_in + height_in) <= (static_cast<unsigned long> (image_in.h) - 1));
   // clip where necessary...
   unsigned long clipped_width, clipped_height;
   clipped_width = (source_in.w - offsetX_in); // available width
@@ -601,7 +601,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((&source_in)))
-    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, source_in)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&> (source_in)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
@@ -616,12 +616,12 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   for (unsigned long i = 0;
        i < clipped_height;
        i++)
-  ::memcpy((ACE_static_cast(unsigned char*, result->pixels) + (result->pitch * i)),
-           (ACE_static_cast(unsigned char*, source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
+  ::memcpy((static_cast<unsigned char*> (result->pixels) + (result->pitch * i)),
+           (static_cast<unsigned char*> (source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
            (clipped_width * result->format->BytesPerPixel)); // RGBA --> 4 bytes
 
   if (SDL_MUSTLOCK((&source_in)))
-    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, source_in));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&> (source_in));
 
 //   // bounding box
 //   SDL_Rect toRect;
@@ -629,7 +629,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
 //   toRect.y = topLeftY_in;
 //   toRect.w = (bottomRightX_in - topLeftX_in) + 1;
 //   toRect.h = (bottomRightY_in - topLeftY_in) + 1;
-//   if (SDL_BlitSurface(ACE_const_cast(SDL_Surface*, image_in), // source
+//   if (SDL_BlitSurface(const_cast<SDL_Surface*> (image_in), // source
 //                       &toRect,                                // aspect
 //                       subImage_out,                           // target
 //                       NULL))                                  // aspect (--> everything)
@@ -660,9 +660,9 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   // clip where necessary...
   unsigned long clipped_width, clipped_height;
   clipped_width = (source_in.w - offsetX_in); // available width
-  clipped_width = ((clipped_width > ACE_static_cast(unsigned long, target_inout.w)) ? target_inout.w : clipped_width);
+  clipped_width = ((clipped_width > static_cast<unsigned long> (target_inout.w)) ? target_inout.w : clipped_width);
   clipped_height = (source_in.h - offsetY_in); // available height
-  clipped_height = ((clipped_height > ACE_static_cast(unsigned long, target_inout.h)) ? target_inout.h : clipped_height);
+  clipped_height = ((clipped_height > static_cast<unsigned long> (target_inout.h)) ? target_inout.h : clipped_height);
 
   // *NOTE*: blitting does not preserve the alpha channel...
   if (blit_in)
@@ -673,7 +673,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
     clipRect.y = offsetY_in;
     clipRect.w = clipped_width;
     clipRect.h = clipped_height;
-    if (SDL_BlitSurface(ACE_const_cast(SDL_Surface*, &source_in), // source
+    if (SDL_BlitSurface(const_cast<SDL_Surface*> (&source_in), // source
                         &clipRect,                                // aspect
                         &target_inout,                            // target
                         NULL))                                    // aspect (--> everything)
@@ -690,7 +690,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
 
   // lock surfaces during pixel access
   if (SDL_MUSTLOCK((&source_in)))
-    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, source_in)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&> (source_in)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
@@ -699,7 +699,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
     return;
   } // end IF
   if (SDL_MUSTLOCK((&target_inout)))
-    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, target_inout)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&> (target_inout)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
@@ -707,7 +707,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
 
     // clean up
     if (SDL_MUSTLOCK((&source_in)))
-      SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, source_in));
+      SDL_UnlockSurface(&const_cast<SDL_Surface&> (source_in));
 
     return;
   } // end IF
@@ -715,14 +715,14 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   for (unsigned long i = 0;
        i < clipped_height;
        i++)
-    ::memcpy((ACE_static_cast(unsigned char*, target_inout.pixels) + (target_inout.pitch * i)),
-             (ACE_static_cast(unsigned char*, source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
+    ::memcpy((static_cast<unsigned char*> (target_inout.pixels) + (target_inout.pitch * i)),
+             (static_cast<unsigned char*> (source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
              (clipped_width * target_inout.format->BytesPerPixel)); // RGBA --> 4 bytes
 
   if (SDL_MUSTLOCK((&source_in)))
-    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, source_in));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&> (source_in));
   if (SDL_MUSTLOCK((&target_inout)))
-    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, target_inout));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&> (target_inout));
 }
 
 void
@@ -743,7 +743,7 @@ RPG_Graphics_Surface::put(const unsigned long& offsetX_in,
   toRect.w = image_in.w;
   toRect.h = image_in.h;
 
-  if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, image_in), // source
+  if (SDL_BlitSurface(&const_cast<SDL_Surface&> (image_in), // source
                       NULL,                                    // aspect (--> everything)
                       targetSurface_in,                        // target
                       &toRect))                                // aspect
@@ -840,7 +840,7 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
     return;
   } // end IF
 
-  Uint32* pixels = ACE_static_cast(Uint32*, targetSurface_in->pixels);
+  Uint32* pixels = static_cast<Uint32*> (targetSurface_in->pixels);
   for (int y = rectangle_in.y;
        y < (rectangle_in.y + rectangle_in.h);
        y++)
@@ -918,20 +918,20 @@ RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
       return NULL;
     } // end IF
 
-  Uint32* pixels = ACE_static_cast(Uint32*, result->pixels);
+  Uint32* pixels = static_cast<Uint32*> (result->pixels);
   for (unsigned long j = 0;
-       j < ACE_static_cast(unsigned long, result->h);
+       j < static_cast<unsigned long> (result->h);
        j++)
     for (unsigned long i = 0;
-         i < ACE_static_cast(unsigned long, result->w);
+         i < static_cast<unsigned long> (result->w);
          i++)
   {
       // ignore transparent pixels
     if (((pixels[(result->w * j) + i] & result->format->Amask) >> result->format->Ashift) == SDL_ALPHA_TRANSPARENT)
       continue;
 
-    pixels[(result->w * j) + i] &= ~ACE_static_cast(Uint32, (SDL_ALPHA_OPAQUE << result->format->Ashift));
-    pixels[(result->w * j) + i] |= (ACE_static_cast(Uint32, opacity_in) << result->format->Ashift);
+    pixels[(result->w * j) + i] &= ~static_cast<Uint32> ((SDL_ALPHA_OPAQUE << result->format->Ashift));
+    pixels[(result->w * j) + i] |= (static_cast<Uint32> (opacity_in) << result->format->Ashift);
   } // end FOR
 
   if (SDL_MUSTLOCK(result))
@@ -989,7 +989,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
 
   // *NOTE*: blitting does not preserve the alpha channel...
   // --> do it manually
-//   if (SDL_BlitSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in),
+//   if (SDL_BlitSurface(&const_cast<SDL_Surface&> (sourceImage_in),
 //                       NULL,
 //                       result,
 //                       NULL))
@@ -1006,7 +1006,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((&sourceImage_in)))
-    if (SDL_LockSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&> (sourceImage_in)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
@@ -1019,14 +1019,14 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
   } // end IF
 
   for (unsigned long i = 0;
-       i < ACE_static_cast(unsigned long, sourceImage_in.h);
+       i < static_cast<unsigned long> (sourceImage_in.h);
        i++)
-    ::memcpy((ACE_static_cast(unsigned char*, result->pixels) + (result->pitch * i)),
-             (ACE_static_cast(unsigned char*, sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
+    ::memcpy((static_cast<unsigned char*> (result->pixels) + (result->pitch * i)),
+             (static_cast<unsigned char*> (sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
              (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
 
   if (SDL_MUSTLOCK((&sourceImage_in)))
-    SDL_UnlockSurface(&ACE_const_cast(SDL_Surface&, sourceImage_in));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&> (sourceImage_in));
 
   return result;
 }
@@ -1069,7 +1069,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
 
   // sanity check
   //--> buffer must contain a PNG file
-  if (png_sig_cmp(ACE_const_cast(unsigned char*, buffer_in), // buffer
+  if (png_sig_cmp(const_cast<unsigned char*> (buffer_in), // buffer
                   0,                                         // start at the beginning
                   RPG_GRAPHICS_PNG_SIGNATURE_BYTES))         // #signature bytes to check
   {
@@ -1133,7 +1133,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   // set up data input callback
   // *TODO*: use png_init_io() instead (load directly from the file...)
   png_set_read_fn(png_ptr,
-                  ACE_const_cast(unsigned char*, buffer_in),
+                  const_cast<unsigned char*> (buffer_in),
                   PNG_read_callback);
 
   // read PNG header info
@@ -1163,7 +1163,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
              width,
              height,
              bit_depth,
-             ACE_static_cast(unsigned long, png_get_channels(png_ptr, info_ptr)),
+             static_cast<unsigned long> (png_get_channels(png_ptr, info_ptr)),
              color_type,
              interlace,
              compression,
@@ -1288,9 +1288,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   for (unsigned long row = 0;
        row < height;
        row++)
-    row_pointers[row] = ACE_static_cast(png_bytep,
-                                        ACE_static_cast(Uint8*,
-                                                        result->pixels) + (row * result->pitch));
+    row_pointers[row] = static_cast<png_bytep> (static_cast<Uint8*> (result->pixels) + (row * result->pitch));
 
   // read the image from the memory buffer onto the surface buffer
   // --> read the whole image into memory at once

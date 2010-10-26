@@ -61,8 +61,7 @@ void RPG_Item_Dictionary::initItemDictionary(const std::string& filename_in)
     return;
   } // end IF
 
-  if (fileStream->open(ACE_const_cast(char*,
-                                      filename_in.c_str())))
+  if (fileStream->open(const_cast<char*> (filename_in.c_str())))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to open XML file: \"%s\", returning\n"),

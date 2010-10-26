@@ -51,7 +51,7 @@ RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Item_List_t& items_in
     ACE_ASSERT(item);
 
     // retrieve instance handle
-    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    instance = dynamic_cast<RPG_Item_Instance_Base*> (item);
     ACE_ASSERT(instance);
     instance->increase();
   } // end FOR
@@ -82,7 +82,7 @@ RPG_Character_Inventory::RPG_Character_Inventory(const RPG_Character_Inventory& 
     ACE_ASSERT(item);
 
     // retrieve instance handle
-    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    instance = dynamic_cast<RPG_Item_Instance_Base*> (item);
     ACE_ASSERT(instance);
     instance->increase();
   } // end FOR
@@ -112,7 +112,7 @@ RPG_Character_Inventory::~RPG_Character_Inventory()
     ACE_ASSERT(item);
 
     // retrieve instance handle
-    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    instance = dynamic_cast<RPG_Item_Instance_Base*> (item);
     ACE_ASSERT(instance);
     instance->decrease();
   } // end FOR
@@ -143,7 +143,7 @@ RPG_Character_Inventory::operator=(const RPG_Character_Inventory& inventory_in)
     ACE_ASSERT(item);
 
     // retrieve instance handle
-    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    instance = dynamic_cast<RPG_Item_Instance_Base*> (item);
     ACE_ASSERT(instance);
     instance->decrease();
   } // end FOR
@@ -168,7 +168,7 @@ RPG_Character_Inventory::operator=(const RPG_Character_Inventory& inventory_in)
     ACE_ASSERT(item);
 
     // retrieve instance handle
-    instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+    instance = dynamic_cast<RPG_Item_Instance_Base*> (item);
     ACE_ASSERT(instance);
     instance->increase();
   } // end FOR
@@ -196,7 +196,7 @@ RPG_Character_Inventory::pickUp(const RPG_Item_ID_t& itemID_in)
   } // end IF
   ACE_ASSERT(item);
   // retrieve instance handle
-  instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+  instance = dynamic_cast<RPG_Item_Instance_Base*> (item);
   ACE_ASSERT(instance);
   instance->increase();
 
@@ -233,7 +233,7 @@ RPG_Character_Inventory::drop(const RPG_Item_ID_t& itemID_in)
   } // end IF
   ACE_ASSERT(item);
   // retrieve instance handle
-  instance = ACE_dynamic_cast(RPG_Item_Instance_Base*, item);
+  instance = dynamic_cast<RPG_Item_Instance_Base*> (item);
   ACE_ASSERT(instance);
   instance->decrease();
 

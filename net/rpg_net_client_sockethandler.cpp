@@ -119,7 +119,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
   // step1: read data
   size_t bytes_received = 0;
   // *TODO*: do blocking IO until further notice...
-  if (peer().recv_n(ACE_static_cast(void*, &data),            // buffer
+  if (peer().recv_n(static_cast<void*> (&data),            // buffer
                     sizeof(RPG_Net_Remote_Comm::PingMessage), // length
                     NULL,                                     // timeout --> block
                     &bytes_received) == -1)                   // number of recieved bytes
@@ -191,8 +191,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
       reply.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
 
         // step2: send it over the net...
-      size_t bytes_sent = peer().send_n(ACE_static_cast(const void*,
-                                        &reply),                                  // buffer
+      size_t bytes_sent = peer().send_n(static_cast<const void*> (&reply),                                  // buffer
                                         sizeof(RPG_Net_Remote_Comm::PongMessage), // length
                                         NULL,                                     // timeout --> block
                                         &bytes_sent);                             // number of sent bytes

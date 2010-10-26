@@ -50,8 +50,7 @@ connect_clicked_cb(GtkWidget* button_in,
   //              ACE_TEXT("connect_clicked_cb...\n")));
 
   GtkButton* button = GTK_BUTTON(button_in);
-  main_cb_data_t* data = ACE_static_cast(main_cb_data_t*,
-                                         userData_in);
+  main_cb_data_t* data = static_cast<main_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(button);
@@ -170,12 +169,11 @@ connect_clicked_cb(GtkWidget* button_in,
   } // end IF
 
   RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
-  IRChandler_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler*,
-                                     module->writer());
+  IRChandler_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*> (module->writer());
   if (!IRChandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler) failed, aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler) failed> (aborting\n")));
 
     // clean up
     delete module;
@@ -342,8 +340,7 @@ send_entry_kb_focused_cb(GtkWidget* widget_in,
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
-  main_cb_data_t* data = ACE_static_cast(main_cb_data_t*,
-                                         userData_in);
+  main_cb_data_t* data = static_cast<main_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -369,8 +366,7 @@ send_clicked_cb(GtkWidget* button_in,
   //              ACE_TEXT("send_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  main_cb_data_t* data = ACE_static_cast(main_cb_data_t*,
-                                         userData_in);
+  main_cb_data_t* data = static_cast<main_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -511,8 +507,7 @@ disconnect_clicked_cb(GtkWidget* button_in,
   //              ACE_TEXT("disconnect_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -543,8 +538,7 @@ nick_entry_kb_focused_cb(GtkWidget* widget_in,
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -570,8 +564,7 @@ change_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("change_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -637,8 +630,7 @@ usersbox_changed_cb(GtkWidget* combobox_in,
 //              ACE_TEXT("usersbox_changed_cb...\n")));
 
   ACE_UNUSED_ARG(combobox_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(combobox_in);
@@ -708,8 +700,7 @@ refresh_users_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("refresh_users_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -753,8 +744,7 @@ channel_entry_kb_focused_cb(GtkWidget* widget_in,
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(event_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -780,8 +770,7 @@ join_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("join_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -853,8 +842,7 @@ channelbox_changed_cb(GtkWidget* combobox_in,
 //              ACE_TEXT("channelbox_changed_cb...\n")));
 
   ACE_UNUSED_ARG(combobox_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(combobox_in);
@@ -937,8 +925,7 @@ refresh_channels_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("refresh_channels_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -965,8 +952,7 @@ user_mode_toggled_cb(GtkToggleButton* toggleButton_in,
   //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("user_mode_toggled_cb...\n")));
 
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(toggleButton_in);
@@ -1076,8 +1062,7 @@ switch_channel_cb(GtkNotebook* notebook_in,
 
   ACE_UNUSED_ARG(notebook_in);
   ACE_UNUSED_ARG(page_in);
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -1106,8 +1091,7 @@ action_away_cb(GtkAction* action_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("action_away_cb...\n")));
 
-  connection_cb_data_t* data = ACE_static_cast(connection_cb_data_t*,
-                                               userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -1198,8 +1182,7 @@ channel_mode_toggled_cb(GtkToggleButton* toggleButton_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("channel_mode_toggled_cb...\n")));
 
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(toggleButton_in);
@@ -1407,8 +1390,7 @@ topic_clicked_cb(GtkWidget* eventBox_in,
   ACE_UNUSED_ARG(event_in);
 
   // sanity check(s)
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
   ACE_ASSERT(data);
   ACE_ASSERT(!data->id.empty());
   ACE_ASSERT(RPG_Net_Protocol_Tools::isValidIRCChannelName(data->id));
@@ -1480,8 +1462,7 @@ part_clicked_cb(GtkWidget* button_in,
   //              ACE_TEXT("part_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -1525,8 +1506,7 @@ members_clicked_cb(GtkWidget* widget_in,
   if (event_in->button != 3)
     return FALSE; // --> propagate event
 
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(GTK_TREE_VIEW(widget_in));
@@ -1580,7 +1560,7 @@ members_clicked_cb(GtkWidget* widget_in,
        iterator != NULL;
        iterator = g_list_next(iterator))
   {
-    current_path = ACE_static_cast(GtkTreePath*, iterator->data);
+    current_path = static_cast<GtkTreePath*> (iterator->data);
     ACE_ASSERT(current_path);
 
     // path --> iter
@@ -1738,8 +1718,7 @@ action_msg_cb(GtkAction* action_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("action_msg_cb...\n")));
 
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -1766,8 +1745,7 @@ action_invite_cb(GtkAction* action_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("action_invite_cb...\n")));
 
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -1811,8 +1789,7 @@ action_info_cb(GtkAction* action_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("action_info_cb...\n")));
 
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -1839,8 +1816,7 @@ action_kick_cb(GtkAction* action_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("action_kick_cb...\n")));
 
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -1875,8 +1851,7 @@ action_ban_cb(GtkAction* action_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("action_ban_cb...\n")));
 
-  handler_cb_data_t* data = ACE_static_cast(handler_cb_data_t*,
-                                            userData_in);
+  handler_cb_data_t* data = static_cast<handler_cb_data_t*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);

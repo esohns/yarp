@@ -536,7 +536,7 @@ namespace yy {
 
   case 11:
 
-    { driver.myCurrentMessage->command.numeric = ACE_static_cast(RPG_Net_Protocol_IRCNumeric_t, (yysemantic_stack_[(1) - (1)].ival));
+    { driver.myCurrentMessage->command.numeric = static_cast<RPG_Net_Protocol_IRCNumeric_t> ((yysemantic_stack_[(1) - (1)].ival));
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                            ACE_TEXT("set command (numeric): %d\n"),

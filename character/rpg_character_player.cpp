@@ -328,8 +328,7 @@ RPG_Character_Player::save(const std::string& filename_in) const
          index++, race_index++)
     {
       if (myRace.test(index))
-        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
-                                                                                                           race_index)));
+        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)));
     } // end IF
     for (RPG_Magic_SpellsIterator_t iterator = myKnownSpells.begin();
          iterator != myKnownSpells.end();
@@ -465,7 +464,7 @@ RPG_Character_Player::defaultEquip()
     {
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, handle);
+        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*> (handle);
         ACE_ASSERT(armor);
 //         RPG_Item_ArmorProperties armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
         // shield or (body) armor ?
@@ -482,7 +481,7 @@ RPG_Character_Player::defaultEquip()
       }
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*, handle);
+        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*> (handle);
         ACE_ASSERT(weapon);
 //         RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
         // - by default, equip melee weapons only

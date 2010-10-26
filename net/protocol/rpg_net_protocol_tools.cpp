@@ -102,7 +102,7 @@ RPG_Net_Protocol_Tools::dump(const RPG_Net_Protocol_UserModes_t& userModes_in)
        i < USERMODE_MAX;
        i++)
     if (userModes_in.test(i))
-      result += RPG_Net_Protocol_Tools::IRCUserMode2Char(ACE_static_cast(RPG_Net_Protocol_UserMode, i));
+      result += RPG_Net_Protocol_Tools::IRCUserMode2Char(static_cast<RPG_Net_Protocol_UserMode> (i));
 
   return result;
 }
@@ -119,7 +119,7 @@ RPG_Net_Protocol_Tools::dump(const RPG_Net_Protocol_ChannelModes_t& channelModes
        i < CHANNELMODE_MAX;
        i++)
     if (channelModes_in.test(i))
-      result += RPG_Net_Protocol_Tools::IRCChannelMode2Char(ACE_static_cast(RPG_Net_Protocol_ChannelMode, i));
+      result += RPG_Net_Protocol_Tools::IRCChannelMode2Char(static_cast<RPG_Net_Protocol_ChannelMode> (i));
 
   return result;
 }
@@ -1538,7 +1538,7 @@ RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params
 
   // sanity check(s)
   if (params_in.empty() ||
-      (index_in > ACE_static_cast(int, (params_in.size() - 1))))
+      (index_in > static_cast<int> ((params_in.size() - 1))))
     return result;
 
   if (index_in == -1)
@@ -1553,7 +1553,7 @@ RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params
     result += *iterator;
     result += ACE_TEXT_ALWAYS_CHAR(" ");
   } // end FOR
-  if (index_in < ACE_static_cast(int, (params_in.size() - 1)))
+  if (index_in < static_cast<int> ((params_in.size() - 1)))
     result.erase(--result.end());
 
   return result;

@@ -51,7 +51,7 @@ RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler()
 //   // *NOTE*: asynchronous writing to a closed socket triggers the
 //   // SIGPIPE signal (default action: abort).
 //   // --> as this doesn't use select(), guard against this (ignore the signal)
-//   ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+//   ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
 //   ACE_Sig_Action original_action;
 //   no_sigpipe.register_action(SIGPIPE, &original_action);
 //
@@ -131,7 +131,7 @@ RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler()
 // //                    bytes_sent));
 //
 //         // finished with this buffer ?
-//         if (ACE_static_cast(size_t, bytes_sent) == myCurrentWriteBuffer->length())
+//         if (static_cast<size_t> (bytes_sent) == myCurrentWriteBuffer->length())
 //         {
 //           // get the next one...
 //           myCurrentWriteBuffer->release();

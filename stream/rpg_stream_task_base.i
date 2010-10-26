@@ -291,11 +291,9 @@ RPG_Stream_TaskBase<SessionMessageType,
     {
       ProtocolMessageType* message = NULL;
       // downcast message
-      message = ACE_dynamic_cast(ProtocolMessageType*,
-                                 mb_in);
+      message = dynamic_cast<ProtocolMessageType*> (mb_in);
 //       // *OPTIMIZATION*: not as safe, but (arguably) a lot faster !...
-//       message = ACE_static_cast(RPG_Stream_MessageBase*,
-//                                 mb_in);
+//       message = static_cast<RPG_Stream_MessageBase*> (//                                 mb_in);
       if (!message)
       {
         std::string type;
@@ -305,14 +303,14 @@ RPG_Stream_TaskBase<SessionMessageType,
         if (module())
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("module \"%s\": ACE_dynamic_cast(RPG_Stream_MessageBase), type: \"%s\" failed, aborting\n"),
+                     ACE_TEXT("module \"%s\": dynamic_cast<RPG_Stream_MessageBase)> (type: \"%s\" failed, aborting\n"),
                      ACE_TEXT_ALWAYS_CHAR(module()->name()),
                      type.c_str()));
         } // end IF
         else
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("ACE_dynamic_cast(RPG_Stream_MessageBase), type: \"%s\" failed, aborting\n"),
+                     ACE_TEXT("dynamic_cast<RPG_Stream_MessageBase)> (type: \"%s\" failed, aborting\n"),
                      type.c_str()));
         } // end ELSE
 
@@ -434,22 +432,21 @@ RPG_Stream_TaskBase<SessionMessageType,
     {
       SessionMessageType* sessionMessage = NULL;
       // downcast message
-      sessionMessage = ACE_dynamic_cast(SessionMessageType*,
-                                        controlMessage_in);
+      sessionMessage = dynamic_cast<SessionMessageType*> (controlMessage_in);
       if (!sessionMessage)
       {
         // debug info
         if (module())
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("module \"%s\": ACE_dynamic_cast (type: %d) failed, aborting\n"),
+                     ACE_TEXT("module \"%s\": dynamic_cast<type: %d) failed> (aborting\n"),
                      ACE_TEXT_ALWAYS_CHAR(name()),
                      controlMessage_in->msg_type()));
         } // end IF
         else
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("ACE_dynamic_cast (type: %d) failed, aborting\n"),
+                     ACE_TEXT("dynamic_cast<type: %d) failed> (aborting\n"),
                      controlMessage_in->msg_type()));
         } // end ELSE
 

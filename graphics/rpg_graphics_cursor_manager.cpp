@@ -191,8 +191,8 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
   // sanity check(s)
   ACE_ASSERT(myCurrentGraphic);
   ACE_ASSERT(targetSurface_in);
-//   ACE_ASSERT(offsetX_in < ACE_static_cast(unsigned long, targetSurface_in->w));
-//   ACE_ASSERT(offsetY_in < ACE_static_cast(unsigned long, targetSurface_in->h));
+//   ACE_ASSERT(offsetX_in < static_cast<unsigned long> (targetSurface_in->w));
+//   ACE_ASSERT(offsetY_in < static_cast<unsigned long> (targetSurface_in->h));
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out,

@@ -4335,7 +4335,7 @@ void IRCScannerfree (void * ptr , yyscan_t yyscanner)
 // {
 //   ACE_TRACE(ACE_TEXT("::IRCScannerwrap"));
 //
-//   struct yyguts_t* yyg = ACE_static_cast(struct yyguts_t*, yyscanner);
+//   struct yyguts_t* yyg = static_cast<struct yyguts_t*> (yyscanner);
 //
 //   RPG_Net_Protocol_IRCParserDriver* driver = IRCScannerget_extra(yyscanner);
 //   // sanity check

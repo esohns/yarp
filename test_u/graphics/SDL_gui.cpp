@@ -150,7 +150,7 @@ event_timer_SDL_cb(Uint32 interval_in,
 {
   RPG_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
 
-  unsigned long* current_hovertime_p = ACE_static_cast(unsigned long*, argument_in);
+  unsigned long* current_hovertime_p = static_cast<unsigned long*> (argument_in);
   ACE_ASSERT(current_hovertime_p);
 
   // synch access
@@ -163,7 +163,7 @@ event_timer_SDL_cb(Uint32 interval_in,
       // mouse is hovering --> trigger an event
       SDL_Event event;
       event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
-      event.user.code = ACE_static_cast(int, *current_hovertime_p);
+      event.user.code = static_cast<int> (*current_hovertime_p);
 
       if (SDL_PushEvent(&event))
       {
@@ -498,7 +498,7 @@ do_work(const mode_t& mode_in,
           RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CATEGORY_MAX,
                                           1,
                                           result);
-          graphic.category = ACE_static_cast(RPG_Graphics_Category, (result.front() - 1));
+          graphic.category = static_cast<RPG_Graphics_Category> ((result.front() - 1));
         } while (graphic.category == CATEGORY_FONT); // cannot display fonts at the moment
 
         // choose type within category
@@ -510,7 +510,7 @@ do_work(const mode_t& mode_in,
             RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CURSOR_MAX,
                                             1,
                                             result);
-            type.cursor = ACE_static_cast(RPG_Graphics_Cursor, (result.front() - 1));
+            type.cursor = static_cast<RPG_Graphics_Cursor> ((result.front() - 1));
             type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
 
             break;
@@ -521,7 +521,7 @@ do_work(const mode_t& mode_in,
             RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_IMAGE_MAX,
                                             1,
                                             result);
-            type.image = ACE_static_cast(RPG_Graphics_Image, (result.front() - 1));
+            type.image = static_cast<RPG_Graphics_Image> ((result.front() - 1));
             type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
 
             break;
@@ -531,7 +531,7 @@ do_work(const mode_t& mode_in,
             RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILEGRAPHIC_MAX,
                                             1,
                                             result);
-            type.tilegraphic = ACE_static_cast(RPG_Graphics_TileGraphic, (result.front() - 1));
+            type.tilegraphic = static_cast<RPG_Graphics_TileGraphic> ((result.front() - 1));
             type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
 
             break;
@@ -541,7 +541,7 @@ do_work(const mode_t& mode_in,
             RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILESETGRAPHIC_MAX,
                                             1,
                                             result);
-            type.tilesetgraphic = ACE_static_cast(RPG_Graphics_TileSetGraphic, (result.front() - 1));
+            type.tilesetgraphic = static_cast<RPG_Graphics_TileSetGraphic> ((result.front() - 1));
             type.discriminator = RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC;
 
             break;
@@ -888,9 +888,9 @@ do_work(const mode_t& mode_in,
             {
               case SDLK_f:
               {
-                mapStyle.floor_style = ACE_static_cast(RPG_Graphics_FloorStyle, mapStyle.floor_style + 1);
+                mapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle> (mapStyle.floor_style + 1);
                 if (mapStyle.floor_style == RPG_GRAPHICS_FLOORSTYLE_MAX)
-                  mapStyle.floor_style = ACE_static_cast(RPG_Graphics_FloorStyle, 0);
+                  mapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle> (0);
                 RPG_Graphics_StyleUnion style;
                 style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
                 style.floorstyle = mapStyle.floor_style;
@@ -941,9 +941,9 @@ do_work(const mode_t& mode_in,
               }
               case SDLK_w:
               {
-                mapStyle.wall_style = ACE_static_cast(RPG_Graphics_WallStyle, mapStyle.wall_style + 1);;
+                mapStyle.wall_style = static_cast<RPG_Graphics_WallStyle> (mapStyle.wall_style + 1);;
                 if (mapStyle.wall_style == RPG_GRAPHICS_WALLSTYLE_MAX)
-                  mapStyle.wall_style = ACE_static_cast(RPG_Graphics_WallStyle, 0);
+                  mapStyle.wall_style = static_cast<RPG_Graphics_WallStyle> (0);
                 RPG_Graphics_StyleUnion style;
                 style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
                 style.wallstyle = mapStyle.wall_style;

@@ -127,7 +127,7 @@ RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damage& damage_in)
       result += ACE_TEXT_ALWAYS_CHAR(" / ");
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-      converter << ACE_static_cast(int, (*iterator2).modifier);
+      converter << static_cast<int> ((*iterator2).modifier);
       result += converter.str();
     } // end FOR
     if ((*iterator).attribute != RPG_COMMON_ATTRIBUTE_INVALID)
@@ -220,7 +220,7 @@ RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damage& damage_in)
 
           converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << ACE_static_cast(int, (*iterator2).check.difficultyClass);
+          converter << static_cast<int> ((*iterator2).check.difficultyClass);
           result += converter.str();
 
           break;

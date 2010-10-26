@@ -165,13 +165,13 @@ RPG_Client_WindowLevel::setView(const int& offsetX_in,
 
   // handle over-/underruns
   if ((offsetX_in < 0) &&
-      (ACE_static_cast(unsigned long, -offsetX_in) > myView.first))
+      (static_cast<unsigned long> (-offsetX_in) > myView.first))
     myView.first = 0;
   else
     myView.first += offsetX_in;
 
   if ((offsetY_in < 0) &&
-      (ACE_static_cast(unsigned long, -offsetY_in) > myView.second))
+      (static_cast<unsigned long> (-offsetY_in) > myView.second))
     myView.second = 0;
   else
     myView.second += offsetY_in;
@@ -253,8 +253,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(myCurrentOffMapTile);
 //   ACE_ASSERT(myCurrentCeilingTile);
   ACE_ASSERT(targetSurface);
-  ACE_ASSERT(ACE_static_cast(int, offsetX_in) <= targetSurface->w);
-  ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface->h);
+  ACE_ASSERT(static_cast<int> (offsetX_in) <= targetSurface->w);
+  ACE_ASSERT(static_cast<int> (offsetY_in) <= targetSurface->h);
 
   // init clipping
   clip(targetSurface,
@@ -321,7 +321,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
   // pass 1
   for (i = -top_right.second;
-       i <= ACE_static_cast(int, top_right.second);
+       i <= static_cast<int> (top_right.second);
        i++)
   {
     current_map_position.second = myView.second + i;
@@ -339,9 +339,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
       // off-map ?
       if ((current_map_position.second < 0) ||
-          (current_map_position.second >= ACE_static_cast(int, myLevelState.getDimensions().second)) ||
+          (current_map_position.second >= static_cast<int> (myLevelState.getDimensions().second)) ||
           (current_map_position.first < 0) ||
-          (current_map_position.first >= ACE_static_cast(int, myLevelState.getDimensions().first)))
+          (current_map_position.first >= static_cast<int> (myLevelState.getDimensions().first)))
         continue;
 
       // floor tile rotation
@@ -433,13 +433,13 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
   for (i = -top_right.second;
-       i <= ACE_static_cast(int, top_right.second);
+       i <= static_cast<int> (top_right.second);
        i++)
   {
     current_map_position.second = myView.second + i;
     // off the map ? --> continue
     if ((current_map_position.second < 0) ||
-        (current_map_position.second >= ACE_static_cast(int, myLevelState.getDimensions().second)))
+        (current_map_position.second >= static_cast<int> (myLevelState.getDimensions().second)))
       continue;
 
     for (j = diff + i;
@@ -449,7 +449,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
       // off the map ? --> continue
       if ((current_map_position.first < 0) ||
-          (current_map_position.first >= ACE_static_cast(int, myLevelState.getDimensions().first)))
+          (current_map_position.first >= static_cast<int> (myLevelState.getDimensions().first)))
         continue;
 
       // transform map coordinates into screen coordinates
@@ -700,8 +700,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                                                             mySize,
                                                             myView);
         // sanity check for underruns
-        if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
-            (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
+        if ((tile_position.first < static_cast<unsigned long> (myScreen->w)) &&
+            (tile_position.second < static_cast<unsigned long> (myScreen->h)))
         {
           clip();
           RPG_Graphics_Surface::get(tile_position.first,
@@ -759,8 +759,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] pressed\n"),
-//                  ACE_static_cast(unsigned long, event_in.button.which),
-//                  ACE_static_cast(unsigned long, event_in.button.button)));
+//                  static_cast<unsigned long> (event_in.button.which),
+//                  static_cast<unsigned long> (event_in.button.button)));
 
       if (event_in.button.button == 1) // left-click
       {
@@ -1092,12 +1092,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       // set wall opacity
       SDL_Surface* shaded_wall = NULL;
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.east.surface,
-                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -1118,12 +1118,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.east.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.west.surface,
-                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -1144,12 +1144,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.west.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.south.surface,
-                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -1170,12 +1170,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.south.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.north.surface,
-                                                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -1283,12 +1283,12 @@ RPG_Client_WindowLevel::initCeiling()
 
   SDL_Surface* shaded_ceiling = NULL;
   shaded_ceiling = RPG_Graphics_Surface::shade(*myCurrentCeilingTile,
-                                               ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                               static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-               ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+               static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
     // clean up
     SDL_FreeSurface(myCurrentCeilingTile);
@@ -1342,12 +1342,12 @@ RPG_Client_WindowLevel::initWallBlend()
 
 //   SDL_Surface* shaded_blend = NULL;
 //   shaded_blend = RPG_Graphics_Surface::shade(*myWallBlend,
-//                                              ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+//                                              static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
 //   if (!shaded_blend)
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-//                ACE_static_cast(Uint8, (RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+//                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 //
 //     // clean up
 //     SDL_FreeSurface(myWallBlend);
@@ -1374,8 +1374,8 @@ RPG_Client_WindowLevel::restoreBG()
                                                         mySize,
                                                         myView);
     // sanity check for underruns
-    if ((tile_position.first < ACE_static_cast(unsigned long, myScreen->w)) &&
-        (tile_position.second < ACE_static_cast(unsigned long, myScreen->h)))
+    if ((tile_position.first < static_cast<unsigned long> (myScreen->w)) &&
+        (tile_position.second < static_cast<unsigned long> (myScreen->h)))
     {
       clip();
       RPG_Graphics_Surface::put(tile_position.first,

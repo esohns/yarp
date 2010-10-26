@@ -106,23 +106,20 @@ update_character_profile(const RPG_Character_Player& player_in,
     {
       if (player_race.test(index))
       {
-        switch (ACE_static_cast(RPG_Character_Race,
-                                race_index))
+        switch (static_cast<RPG_Character_Race> (race_index))
         {
           case RPG_CHARACTER_RACE_MAX:
           case RPG_CHARACTER_RACE_INVALID:
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid race (was: \"%s\"), aborting\n"),
-                       RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
-                                                                                            race_index)).c_str()));
+                       RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)).c_str()));
 
             break;
           }
           default:
           {
-            text = RPG_Common_Tools::enumToString(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
-                                                                                                                race_index)));
+            text = RPG_Common_Tools::enumToString(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)));
             break;
           }
         } // end SWITCH
@@ -312,11 +309,11 @@ update_character_profile(const RPG_Character_Player& player_in,
   signed char armor_class_flatfooted = player_in.getArmorClass(DEFENSE_FLATFOOTED);
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-  converter << ACE_static_cast(int, armor_class_normal);
+  converter << static_cast<int> (armor_class_normal);
   converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-  converter << ACE_static_cast(int, armor_class_touch);
+  converter << static_cast<int> (armor_class_touch);
   converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-  converter << ACE_static_cast(int, armor_class_flatfooted);
+  converter << static_cast<int> (armor_class_flatfooted);
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("armorclass")));
   ACE_ASSERT(current);
@@ -341,7 +338,7 @@ update_character_profile(const RPG_Character_Player& player_in,
   converter.clear();
   if (player_class.subClasses.empty())
   {
-    converter << ACE_static_cast(unsigned int, level);
+    converter << static_cast<unsigned int> (level);
   } // end IF
   else
   {
@@ -350,7 +347,7 @@ update_character_profile(const RPG_Character_Player& player_in,
          iterator++)
     {
       level = player_in.getLevel(*iterator);
-      converter << ACE_static_cast(unsigned int, level);
+      converter << static_cast<unsigned int> (level);
       converter << ACE_TEXT_ALWAYS_CHAR(" / ");
     } // end FOR
   } // end ELSE
@@ -546,7 +543,7 @@ update_character_profile(const RPG_Character_Player& player_in,
 
     converter.str(ACE_TEXT(""));
     converter.clear();
-    converter << ACE_static_cast(int, (*iterator).second);
+    converter << static_cast<int> ((*iterator).second);
     text = converter.str();
     label = NULL;
     label = gtk_label_new(text.c_str());
@@ -663,7 +660,7 @@ update_character_profile(const RPG_Character_Player& player_in,
     {
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*, item);
+        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*> (item);
         ACE_ASSERT(weapon);
 
         // *TODO*: pretty-print this string
@@ -673,7 +670,7 @@ update_character_profile(const RPG_Character_Player& player_in,
       }
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, item);
+        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*> (item);
         ACE_ASSERT(armor);
 
         text = RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
@@ -776,7 +773,7 @@ load_character_profiles(const std::string& repository_in,
   std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
   GtkTreeIter iter;
   for (unsigned int i = 0;
-       i < ACE_static_cast(unsigned int, entries.length());
+       i < static_cast<unsigned int> (entries.length());
        i++)
   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -851,7 +848,7 @@ about_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::about_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -897,7 +894,7 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(userData_in);
-  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
   ACE_ASSERT(data);
 
 //   // leave GTK
@@ -938,7 +935,7 @@ load_character_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -974,7 +971,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -1038,7 +1035,7 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
 {
   RPG_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
 
-  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -1100,7 +1097,7 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::characters_refresh_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -1144,7 +1141,7 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
 // {
 //   RPG_TRACE(ACE_TEXT("::do_SDLEventLoop_GTK_cb"));
 //
-//   GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+//   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
 //   ACE_ASSERT(data);
 //
 //   SDL_Event event;
@@ -1372,7 +1369,7 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
 // {
 //   RPG_TRACE(ACE_TEXT("::gtk_quit_handler_cb"));
 //
-//   GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, userData_in);
+//   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
 //   ACE_ASSERT(data);
 //
 //   // synch access

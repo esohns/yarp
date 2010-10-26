@@ -95,7 +95,12 @@ RPG_Net_SocketHandlerBase<ConfigType,
     } // end IF
   } // end IF
 
-  reactor()->remove_handler(this, ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL);
+  // *NOTE*: should remove 'this' from the reactor as well...
+  if (reactor()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
+               this));
+//   reactor()->remove_handler(this, ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL);
 }
 
 template <typename ConfigType,
@@ -340,8 +345,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
   return get_handle();
 #else
   // *TODO*: clean this up !
-  return ACE_reinterpret_cast(unsigned long,
-                              get_handle());
+  return reinterpret_cast<unsigned long> (get_handle());
 #endif
 }
 

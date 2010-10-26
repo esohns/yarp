@@ -46,7 +46,7 @@ void RPG_Stream_MessageQueue::waitForIdleState() const
 
   do
   {
-    if (ACE_const_cast(RPG_Stream_MessageQueue*, this)->message_count() > 0)
+    if (const_cast<RPG_Stream_MessageQueue*> (this)->message_count() > 0)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("waiting...\n")));

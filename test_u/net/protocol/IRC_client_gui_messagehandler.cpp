@@ -40,8 +40,7 @@ update_display_cb(gpointer userData_in)
 
   // sanity check(s)
   ACE_ASSERT(userData_in);
-  IRC_Client_GUI_MessageHandler* messageHandler = ACE_static_cast(IRC_Client_GUI_MessageHandler*,
-                                                                  userData_in);
+  IRC_Client_GUI_MessageHandler* messageHandler = static_cast<IRC_Client_GUI_MessageHandler*> (userData_in);
   ACE_ASSERT(messageHandler);
 
   // *WARNING*: callbacks scheduled via g_idle_add need to be protected by

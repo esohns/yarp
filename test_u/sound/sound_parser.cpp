@@ -153,8 +153,8 @@ do_initAudio(const SDL_audio_config_t& config_in)
              ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %u\nchannels: %u\nCD [id, status]: \"%s\" [%d, %d]\n"),
              driver,
              obtained.frequency,
-             ACE_static_cast(unsigned long, obtained.format),
-             ACE_static_cast(unsigned long, obtained.channels),
+             static_cast<unsigned long> (obtained.format),
+             static_cast<unsigned long> (obtained.channels),
              SDL_CDName(0),
              (cdrom ? cdrom->id : -1),
              (cdrom ? cdrom->status : -1)));
@@ -385,7 +385,7 @@ do_work(const std::string& dictionary_in,
     RPG_Dice::generateRandomNumbers(RPG_SOUND_EVENT_MAX,
                                     1,
                                     result);
-    event = ACE_static_cast(RPG_Sound_Event, (result.front() - 1));
+    event = static_cast<RPG_Sound_Event> ((result.front() - 1));
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("playing event sound \"%s\"...\n"),
                RPG_Sound_EventHelper::RPG_Sound_EventToString(event).c_str()));

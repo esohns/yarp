@@ -52,5 +52,5 @@ RPG_Stream_MessageQueueBase::dump_state() const
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("# currently queued objects: %d\n"),
-             ACE_const_cast(RPG_Stream_MessageQueueBase*, this)->message_count()));
+             const_cast<RPG_Stream_MessageQueueBase*> (this)->message_count()));
 }

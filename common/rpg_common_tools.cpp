@@ -150,7 +150,7 @@ RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("DC: ");
   std::stringstream converter;
-  converter << ACE_static_cast(unsigned int, save_in.difficultyClass);
+  converter << static_cast<unsigned int> (save_in.difficultyClass);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("reduction: ");
@@ -372,7 +372,7 @@ RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
              RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str(),
-             ACE_static_cast(int, ((size_in > SIZE_MEDIUM) ? -result : result))));
+             static_cast<int> (((size_in > SIZE_MEDIUM) ? -result : result))));
 
   return ((size_in > SIZE_MEDIUM) ? -result : result);
 }
@@ -442,7 +442,7 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
   std::transform(first,
                  result.end(),
                  first,
-                 ACE_static_cast(int(*)(int), std::tolower));
+                 static_cast<int(*)(int)> (std::tolower));
 
   return result;
 }

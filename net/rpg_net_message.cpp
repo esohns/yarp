@@ -88,8 +88,7 @@ RPG_Net_Message::getCommand() const
   // sanity check(s)
   ACE_ASSERT(length() >= sizeof(RPG_Net_MessageHeader));
 
-  RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
-                                                               rd_ptr());
+  RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*> (rd_ptr());
 
   return message_header->messageType;
 }
@@ -152,8 +151,7 @@ RPG_Net_Message::dump_state() const
 // //       }
 //       case RPG_Net_Protocol_Layer::TCP:
 //       {
-//         struct tcphdr* header = ACE_reinterpret_cast(struct tcphdr*,
-//                                                      (rd_ptr() + iter->second));
+//         struct tcphdr* header = reinterpret_cast<struct tcphdr*> (//                                                      (rd_ptr() + iter->second));
 //
 //         // remember size
 //         // *NOTE*: TCP header field "Data Offset" gives the size of the
@@ -187,8 +185,7 @@ RPG_Net_Message::dump_state() const
 //       }
 //       case RPG_Net_Protocol_Layer::UDP:
 //       {
-//         struct udphdr* header = ACE_reinterpret_cast(struct udphdr*,
-//                                                      (rd_ptr() + iter->second));
+//         struct udphdr* header = reinterpret_cast<struct udphdr*> (//                                                      (rd_ptr() + iter->second));
 //
 //         // remember size
 //         // *NOTE*: UDP headers are 8 bytes long...
@@ -210,8 +207,7 @@ RPG_Net_Message::dump_state() const
 //       }
 //       case RPG_Net_Protocol_Layer::IPv4:
 //       {
-//         struct iphdr* header = ACE_reinterpret_cast(struct iphdr*,
-//                                                     (rd_ptr() + iter->second));
+//         struct iphdr* header = reinterpret_cast<struct iphdr*> (//                                                     (rd_ptr() + iter->second));
 //
 //         // remember size
 //         // *NOTE*: IPv4 header field "Header Length" gives the size of the
@@ -246,8 +242,7 @@ RPG_Net_Message::dump_state() const
 //       }
 //       case RPG_Net_Protocol_Layer::FDDI_LLC_SNAP:
 //       {
-//         struct fddihdr* header = ACE_reinterpret_cast(struct fddihdr*,
-//                                                       (rd_ptr() + iter->second));
+//         struct fddihdr* header = reinterpret_cast<struct fddihdr*> (//                                                       (rd_ptr() + iter->second));
 //
 //         // remember size
 //         // *NOTE*: for the time being, we only support LLC SNAP...
@@ -271,8 +266,7 @@ RPG_Net_Message::dump_state() const
 //       }
 //       case RPG_Net_Protocol_Layer::ETHERNET:
 //       {
-//         struct ether_header* header = ACE_reinterpret_cast(struct ether_header*,
-//                                                            (rd_ptr() + iter->second));
+//         struct ether_header* header = reinterpret_cast<struct ether_header*> (//                                                            (rd_ptr() + iter->second));
 //
 //         // remember size
 //         // *NOTE*: Ethernet headers are 14 bytes long...
@@ -386,8 +380,7 @@ RPG_Net_Message::duplicate(void) const
     // *TODO*: (depending on the allocator) we senselessly allocate a datablock
     // anyway, only to immediately release it again...
     ACE_NEW_MALLOC_RETURN(nb,
-                          ACE_static_cast(RPG_Net_Message*,
-                                          message_block_allocator_->malloc(capacity())),
+                          static_cast<RPG_Net_Message*> (message_block_allocator_->malloc(capacity())),
                           RPG_Net_Message(*this),
                           NULL);
   } // end ELSE
@@ -468,8 +461,7 @@ RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 //       // *NOTE*: IPv4 header field "Header Length" gives the size of the
 //       // IP header in 32 bit words...
 //       // *NOTE*: use our current offset...
-//       dataOffset = (ACE_reinterpret_cast(iphdr*,
-//                                          rd_ptr())->ihl * 4);
+//       dataOffset = (reinterpret_cast<iphdr*> (//                                          rd_ptr())->ihl * 4);
 //
 //       break;
 //     }
@@ -478,8 +470,7 @@ RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 //       // *NOTE*: TCP header field "Data Offset" gives the size of the
 //       // TCP header in 32 bit words...
 //       // *NOTE*: use our current offset...
-//       dataOffset = (ACE_reinterpret_cast(tcphdr*,
-//                                          rd_ptr())->doff * 4);
+//       dataOffset = (reinterpret_cast<tcphdr*> (//                                          rd_ptr())->doff * 4);
 //
 //       break;
 //     }

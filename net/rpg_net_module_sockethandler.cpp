@@ -288,8 +288,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
       return false;
     } // end IF
 
-    RPG_Net_Remote_Comm::MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_Remote_Comm::MessageHeader*,
-                                                                              myCurrentMessage->rd_ptr());
+    RPG_Net_Remote_Comm::MessageHeader* message_header = reinterpret_cast<RPG_Net_Remote_Comm::MessageHeader*> (myCurrentMessage->rd_ptr());
     // *TODO*: *PORTABILITY*: handle endianness && type issues !
     myCurrentMessageLength = message_header->messageLength + sizeof(unsigned long);
   } // end IF
@@ -359,8 +358,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //     } // end IF
 
     // [instead], use copy ctor and just reference the same data block...
-    RPG_Net_Message* new_head = ACE_dynamic_cast(RPG_Net_Message*,
-                                                 myCurrentBuffer->duplicate());
+    RPG_Net_Message* new_head = dynamic_cast<RPG_Net_Message*> (myCurrentBuffer->duplicate());
 
     // adjust wr_ptr to make length() work...
     myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + offset);
@@ -397,8 +395,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //
 //   try
 //   {
-//     message_out = ACE_static_cast(RPG_Net_Message*,
-//                                   inherited::myAllocator->malloc(requestedSize_in));
+//     message_out = static_cast<RPG_Net_Message*> (//                                   inherited::myAllocator->malloc(requestedSize_in));
 //   }
 //   catch (...)
 //   {

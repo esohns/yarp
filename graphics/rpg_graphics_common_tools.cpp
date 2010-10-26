@@ -710,8 +710,8 @@ RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Font& font_in,
     } // end IF
   } // end lock scope
 
-  return std::make_pair(ACE_static_cast(unsigned long, width),
-                        ACE_static_cast(unsigned long, height));
+  return std::make_pair(static_cast<unsigned long> (width),
+                        static_cast<unsigned long> (height));
 }
 
 void
@@ -1928,8 +1928,8 @@ RPG_Graphics_Common_Tools::initFonts()
 //     } // end IF
 //
 //     cur_clock = SDL_GetTicks();
-//     percentage = (ACE_static_cast(float, (cur_clock - start_clock)) /
-//                   ACE_static_cast(float, (end_clock - start_clock)));
+//     percentage = (static_cast<float> ((cur_clock - start_clock)) /
+//                   static_cast<float> ((end_clock - start_clock)));
 //     alpha = ((SDL_ALPHA_OPAQUE - SDL_ALPHA_TRANSPARENT) * percentage);
 //   } // end WHILE
 //

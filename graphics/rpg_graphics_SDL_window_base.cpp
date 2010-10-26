@@ -67,7 +67,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
     myBackGround(backGround_in),
     myOffset(offset_in),
     myLastAbsolutePosition(std::make_pair(0, 0)),
-    myParent(&ACE_const_cast(RPG_Graphics_SDLWindowBase&, parent_in)),
+    myParent(&const_cast<RPG_Graphics_SDLWindowBase&> (parent_in)),
     myType(type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
@@ -434,7 +434,7 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown event (was: %u)...\n"),
-                 ACE_static_cast(unsigned long, event_in.type)));
+                 static_cast<unsigned long> (event_in.type)));
 
       break;
     }

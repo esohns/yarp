@@ -161,7 +161,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
         if ((*iterator).second < (*position).second)
         {
           // *TODO*: can this be done without a cast ?
-          ACE_const_cast(unsigned long&, (*position).second) = (*iterator).second;
+          const_cast<unsigned long&> ((*position).second) = (*iterator).second;
         } // end IF
       } // end IF
       else

@@ -1257,7 +1257,7 @@ YY_RULE_SETUP
                          ACE_DEBUG((LM_ERROR,
                                     ACE_TEXT("ignoring invalid character: \"%c\" (%d)\n"),
                                     yytext[0],
-                                    ACE_static_cast(int, yytext[0])));
+                                    static_cast<int> (yytext[0])));
                        }
 	YY_BREAK
 // end <INITIAL>

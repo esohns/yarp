@@ -93,7 +93,7 @@ event_timer_SDL_cb(Uint32 interval_in,
 {
   RPG_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
 
-  GTK_cb_data_t* data = ACE_static_cast(GTK_cb_data_t*, argument_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (argument_in);
   ACE_ASSERT(data);
 
   SDL_Event event;
@@ -108,7 +108,7 @@ event_timer_SDL_cb(Uint32 interval_in,
     {
       // mouse is hovering --> trigger an event
       event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
-      event.user.code = ACE_static_cast(int, data->hover_time);
+      event.user.code = static_cast<int> (data->hover_time);
 
       if (SDL_PushEvent(&event))
         ACE_DEBUG((LM_ERROR,
@@ -521,7 +521,7 @@ tp_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -553,7 +553,7 @@ reactor_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -652,8 +652,8 @@ do_initAudio(const SDL_audio_config_t& audioConfig_in)
              ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %u\nchannels: %u\nCD [id, status]: \"%s\" [%d, %d]\n"),
              driver,
              obtained.frequency,
-             ACE_static_cast(unsigned long, obtained.format),
-             ACE_static_cast(unsigned long, obtained.channels),
+             static_cast<unsigned long> (obtained.format),
+             static_cast<unsigned long> (obtained.channels),
              SDL_CDName(0),
              cdrom->id,
              cdrom->status));
@@ -790,7 +790,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
                                                                                                            : FALSE));
 
   // step4a: connect default signals
-  gpointer userData_p = ACE_const_cast(GTK_cb_data_t*, &userData_in);
+  gpointer userData_p = const_cast<GTK_cb_data_t*> (&userData_in);
   g_signal_connect(main_dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(quit_activated_GTK_cb),
@@ -932,8 +932,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //   // step6: use correct screen
 //   if (parentWidget_in)
 //     gtk_window_set_screen(GTK_WINDOW(dialog),
-//                           gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
-//                                                                parentWidget_in)));
+//                           gtk_widget_get_screen(const_cast<GtkWidget*> (//                                                                parentWidget_in)));
 
   // step6: draw it
   gtk_widget_show_all(main_dialog);

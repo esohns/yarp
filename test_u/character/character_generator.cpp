@@ -225,7 +225,7 @@ print_skills_table(RPG_Character_Skills_t& skills_in)
       std::cout << ACE_TEXT("[") << std::setw(2) << std::right << index << ACE_TEXT("]: ") << std::setw(20) << std::left << iterator->second.c_str() << ACE_TEXT(": ");
       if (skills_iterator != skills_in.end())
       {
-        std::cout << std::setw(3) << std::right << ACE_static_cast(unsigned int, skills_iterator->second) << ACE_TEXT(" ");
+        std::cout << std::setw(3) << std::right << static_cast<unsigned int> (skills_iterator->second) << ACE_TEXT(" ");
       } // end IF
       else
       {
@@ -271,7 +271,7 @@ print_skills_table(RPG_Character_Skills_t& skills_in)
   } // end IF
   else
   {
-    skills_in.insert(std::make_pair(iterator->first, ACE_static_cast(unsigned char, 1)));
+    skills_in.insert(std::make_pair(iterator->first, static_cast<unsigned char> (1)));
   } // end ELSE
 
   return true;
@@ -850,12 +850,12 @@ generate_player_character()
     } // end FOR
 
     std::cout << ACE_TEXT("base attributes: ") << std::endl;
-    std::cout << ACE_TEXT("strength: ") << ACE_static_cast(int, attributes.strength) << std::endl;
-    std::cout << ACE_TEXT("dexterity: ") << ACE_static_cast(int, attributes.dexterity) << std::endl;
-    std::cout << ACE_TEXT("constitution: ") << ACE_static_cast(int, attributes.constitution) << std::endl;
-    std::cout << ACE_TEXT("intelligence: ") << ACE_static_cast(int, attributes.intelligence) << std::endl;
-    std::cout << ACE_TEXT("wisdom: ") << ACE_static_cast(int, attributes.wisdom) << std::endl;
-    std::cout << ACE_TEXT("charisma: ") << ACE_static_cast(int, attributes.charisma) << std::endl;
+    std::cout << ACE_TEXT("strength: ") << static_cast<int> (attributes.strength) << std::endl;
+    std::cout << ACE_TEXT("dexterity: ") << static_cast<int> (attributes.dexterity) << std::endl;
+    std::cout << ACE_TEXT("constitution: ") << static_cast<int> (attributes.constitution) << std::endl;
+    std::cout << ACE_TEXT("intelligence: ") << static_cast<int> (attributes.intelligence) << std::endl;
+    std::cout << ACE_TEXT("wisdom: ") << static_cast<int> (attributes.wisdom) << std::endl;
+    std::cout << ACE_TEXT("charisma: ") << static_cast<int> (attributes.charisma) << std::endl;
     std::cout << ACE_TEXT("[sum: ") << sum << ACE_TEXT("] --> OK ? (y/n): ");
     std::cin >> c;
   } while (c == 'n');

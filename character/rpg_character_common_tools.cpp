@@ -115,7 +115,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   std::ostringstream converter;
   result = RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_STRENGTH);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
-  converter << ACE_static_cast(unsigned int, attributes_in.strength);
+  converter << static_cast<unsigned int> (attributes_in.strength);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -123,7 +123,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << ACE_static_cast(unsigned int, attributes_in.dexterity);
+  converter << static_cast<unsigned int> (attributes_in.dexterity);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -131,7 +131,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << ACE_static_cast(unsigned int, attributes_in.constitution);
+  converter << static_cast<unsigned int> (attributes_in.constitution);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -139,7 +139,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << ACE_static_cast(unsigned int, attributes_in.intelligence);
+  converter << static_cast<unsigned int> (attributes_in.intelligence);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -147,7 +147,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << ACE_static_cast(unsigned int, attributes_in.wisdom);
+  converter << static_cast<unsigned int> (attributes_in.wisdom);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -155,7 +155,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << ACE_static_cast(unsigned int, attributes_in.charisma);
+  converter << static_cast<unsigned int> (attributes_in.charisma);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -186,8 +186,7 @@ RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& race_in)
   {
     if (race_in.test(index))
     {
-      result += RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
-                                                                                     race_index));
+      result += RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index));
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end IF
   } // end FOR
@@ -509,7 +508,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     else
       lowercase = true;
 
-    name += ACE_static_cast(char, (lowercase ? 96 : 64) + result[i]); // 97 == 'a', 65 == 'A'
+    name += static_cast<char> ((lowercase ? 96 : 64) + result[i]); // 97 == 'a', 65 == 'A'
   } // end FOR
 
 //   ACE_DEBUG((LM_DEBUG,
@@ -522,7 +521,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Dice::generateRandomNumbers((RPG_CHARACTER_GENDER_MAX - 2),
                                   1,
                                   result);
-  gender = ACE_static_cast(RPG_Character_Gender, result.front());
+  gender = static_cast<RPG_Character_Gender> (result.front());
 
   // step3: race
   RPG_Character_Race_t player_race(0);
@@ -532,7 +531,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
                                   1,
                                   result);
-  race = ACE_static_cast(RPG_Character_Race, result.front());
+  race = static_cast<RPG_Character_Race> (result.front());
   player_race.flip(race - 1);
 
   // step4: class
@@ -543,7 +542,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Dice::generateRandomNumbers((RPG_COMMON_SUBCLASS_MAX - 1),
                                   1,
                                   result);
-  player_subclass = ACE_static_cast(RPG_Common_SubClass, result.front());
+  player_subclass = static_cast<RPG_Common_SubClass> (result.front());
   player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
   player_class.subClasses.insert(player_subclass);
 //   player_class.subClasses.push_back(player_subclass);
@@ -556,8 +555,8 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Dice::generateRandomNumbers((RPG_CHARACTER_ALIGNMENTCIVIC_MAX - 2),
                                   2,
                                   result);
-  alignment.civic = ACE_static_cast(RPG_Character_AlignmentCivic, result.front());
-  alignment.ethic = ACE_static_cast(RPG_Character_AlignmentEthic, result.back());
+  alignment.civic = static_cast<RPG_Character_AlignmentCivic> (result.front());
+  alignment.ethic = static_cast<RPG_Character_AlignmentEthic> (result.back());
 
   // step6: attributes
   RPG_Character_Attributes attributes;
@@ -608,7 +607,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     RPG_Dice::generateRandomNumbers(RPG_COMMON_SKILL_MAX,
                                     1,
                                     result);
-    skill = ACE_static_cast(RPG_Common_Skill, (result.front() - 1));
+    skill = static_cast<RPG_Common_Skill> ((result.front() - 1));
     iterator = skills.find(skill);
     if (iterator != skills.end())
     {
@@ -617,7 +616,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     else
     {
       skills.insert(std::make_pair(skill,
-                                   ACE_static_cast(char, 1)));
+                                   static_cast<char> (1)));
     } // end ELSE
   } // end FOR
 
@@ -639,7 +638,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     RPG_Dice::generateRandomNumbers(RPG_CHARACTER_FEAT_MAX,
                                     1,
                                     result);
-    feat = ACE_static_cast(RPG_Character_Feat, (result.front() - 1));
+    feat = static_cast<RPG_Character_Feat> ((result.front() - 1));
 
     // check prerequisites
     if (!RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(feat,

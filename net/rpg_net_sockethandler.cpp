@@ -120,7 +120,7 @@ RPG_Net_SocketHandler::svc(void)
 //                   bytes_sent));
 
         // finished with this buffer ?
-        if (ACE_static_cast(size_t, bytes_sent) == myCurrentWriteBuffer->length())
+        if (static_cast<size_t> (bytes_sent) == myCurrentWriteBuffer->length())
         {
           // get the next one...
           myCurrentWriteBuffer->release();

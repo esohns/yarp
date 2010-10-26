@@ -295,7 +295,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
 //     } // end IF
   } // end IF
 
-  RPG_Character_Player* player = ACE_dynamic_cast(RPG_Character_Player*, entity_in.character);
+  RPG_Character_Player* player = dynamic_cast<RPG_Character_Player*> (entity_in.character);
   ACE_ASSERT(player);
 
   std::ofstream ofs;
@@ -371,8 +371,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
          index++, race_index++)
     {
       if (player_race.test(index))
-        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(ACE_static_cast(RPG_Character_Race,
-                                                                                                           race_index)));
+        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)));
     } // end IF
     RPG_Magic_Spells_t player_known_spells = player->getKnownSpells();
     for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
@@ -488,8 +487,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& party
        iterator != party_in.end();
        iterator++)
   {
-    listOfCombatants.push_back(ACE_const_cast(RPG_Character_Player*,
-                                              &(*iterator)));
+    listOfCombatants.push_back(const_cast<RPG_Character_Player*> (&(*iterator)));
   } // end FOR
   for (RPG_Monster_GroupsIterator_t iterator = monsters_in.begin();
        iterator != monsters_in.end();
@@ -499,7 +497,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& party
          iterator2 != (*iterator).end();
          iterator2++)
     {
-      listOfCombatants.push_back(ACE_const_cast(RPG_Monster*, &(*iterator2)));
+      listOfCombatants.push_back(const_cast<RPG_Monster*> (&(*iterator2)));
     } // end FOR
   } // end FOR
 
@@ -515,7 +513,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& party
   bool num_slots_too_small = (listOfCombatants.size() > D_100);
   if (!num_slots_too_small)
   {
-    while (ACE_static_cast(unsigned int, checkDie) < listOfCombatants.size())
+    while (static_cast<unsigned int> (checkDie) < listOfCombatants.size())
       checkDie++;
   } // end IF
   else
@@ -702,7 +700,7 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
 
     // *TODO*: for now, we ignore range and movement
     attackFoe((*iterator).handle,
-              ACE_const_cast(RPG_Character_Base*, (*foeFinder).handle),
+              const_cast<RPG_Character_Base*> ((*foeFinder).handle),
               attackSituation_in,
               defenseSituation_in,
               true,
@@ -913,8 +911,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
     // attack roll: D_20 + attack bonus + other modifiers
     // step1: compute attack bonus(ses) --> number of attacks
     // *TODO*: consider multi-weapon/offhand attacks...
-    const RPG_Character_Player_Base* player_base = ACE_dynamic_cast(const RPG_Character_Player_Base*,
-                                                                    attacker_in);
+    const RPG_Character_Player_Base* player_base = dynamic_cast<const RPG_Character_Player_Base*> (attacker_in);
     ACE_ASSERT(player_base);
     // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
     // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE may use its DEX modifier for melee attacks...
@@ -937,7 +934,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
 //                  ACE_TEXT("player: \"%s\" attack #%d: base attack bonus: %d\n"),
 //                  player_base->getName().c_str(),
 //                  index,
-//                  ACE_static_cast(int, *iterator)));
+//                  static_cast<int> (*iterator)));
 //     } // end FOR
 
     // --> check primary weapon
@@ -949,7 +946,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
       for (RPG_Character_BaseAttackBonusIterator_t iterator = attackBonus.begin();
            iterator != attackBonus.end();
            iterator++)
-        *iterator += (ACE_static_cast(int, (distance_in / weapon_properties.rangeIncrement)) * -2);
+        *iterator += (static_cast<int> ((distance_in / weapon_properties.rangeIncrement)) * -2);
     } // end IF
     // *TODO*: consider other modifiers...
     // *TODO*: consider multi-weapon/offhand attacks...
@@ -957,7 +954,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
     // step2: compute target AC
     // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size modifier [+ other modifiers]
     RPG_Monster* monster = NULL;
-    monster = ACE_dynamic_cast(RPG_Monster*, target_inout);
+    monster = dynamic_cast<RPG_Monster*> (target_inout);
     ACE_ASSERT(monster);
     targetArmorClass = monster->getArmorClass(defenseSituation_in);
     // *TODO*: consider other modifiers:
@@ -1085,7 +1082,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
         damage_element.amount.modifier += ::lround(RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor);
       // *TODO*: extra damage over and above a weapon’s normal damage is not multiplied
       if (is_critical_hit) // *IMPORTANT NOTE*: this applies for physical/natural damage only !
-        damage_element.amount *= ACE_static_cast(int, weapon_properties.criticalHit.damageModifier);
+        damage_element.amount *= static_cast<int> (weapon_properties.criticalHit.damageModifier);
       damage_element.secondary.numDice = 0;
       damage_element.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
       damage_element.secondary.modifier = 0;
@@ -1143,14 +1140,14 @@ is_player_miss:
   {
     // if the attacker is a "regular" monster, we have a specific description of its weapons/abilities
     // step1a: get monster properties
-    const RPG_Monster* monster = ACE_dynamic_cast(const RPG_Monster*, attacker_in);
+    const RPG_Monster* monster = dynamic_cast<const RPG_Monster*> (attacker_in);
     ACE_ASSERT(monster);
     RPG_Monster_Properties monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(monster->getName());
 
     // step1b: compute target AC
     // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+ other modifiers]
     RPG_Character_Player_Base* player_base = NULL;
-    player_base = ACE_dynamic_cast(RPG_Character_Player_Base*, target_inout);
+    player_base = dynamic_cast<RPG_Character_Player_Base*> (target_inout);
     ACE_ASSERT(player_base);
     targetArmorClass = player_base->getArmorClass(defenseSituation_in);
     // *TODO*: consider other modifiers:
@@ -1386,7 +1383,7 @@ monster_perform_single_action:
 
       // consider range penalty...
       if (current_action->ranged.increment)
-        currentAttackBonus += (ACE_static_cast(int, (distance_in / current_action->ranged.increment)) * -2);
+        currentAttackBonus += (static_cast<int> ((distance_in / current_action->ranged.increment)) * -2);
       // *TODO*: consider other modifiers...
 
       // hit or miss ?

@@ -116,7 +116,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 //   ACE_ASSERT(args_in);
 
   // step0: init user data
-  myUserData = *ACE_static_cast(DataType*, args_in);
+  myUserData = *static_cast<DataType*> (args_in);
 
   // step1: (re-)activate() our queue
   // *NOTE*: the first time around, our queue will have been open()ed
@@ -784,8 +784,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   {
     try
     {
-      message = ACE_static_cast(SessionMessageType*,
-                                allocator_in->malloc(0)); // we want a session message !
+      message = static_cast<SessionMessageType*> (allocator_in->malloc(0)); // we want a session message !
     }
     catch (...)
     {
@@ -827,7 +826,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   } // end IF
 
   // pass message downstream...
-  if (ACE_const_cast(own_type*, this)->put_next(message, NULL) == -1)
+  if (const_cast<own_type*> (this)->put_next(message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to put_next(): \"%s\", aborting\n"),

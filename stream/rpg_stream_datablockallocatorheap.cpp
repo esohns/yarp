@@ -62,8 +62,7 @@ RPG_Stream_DataBlockAllocatorHeap::malloc(size_t bytes_in)
     // - perform a placement new by invoking a ctor on the allocated space
     // --> perform necessary initialization...
     ACE_NEW_MALLOC_NORETURN(data_block,
-                            ACE_static_cast(ACE_Data_Block*,
-                                            inherited::malloc(sizeof(ACE_Data_Block))),
+                            static_cast<ACE_Data_Block*> (inherited::malloc(sizeof(ACE_Data_Block))),
                             ACE_Data_Block(bytes_in,                                 // size of data chunk
                                            // *TODO*: make this configurable ?
                                            (bytes_in ? ACE_Message_Block::MB_DATA    // message type
@@ -121,8 +120,7 @@ RPG_Stream_DataBlockAllocatorHeap::free(void* handle_in)
 
   // *NOTE*: handle_in SHOULD really be a ACE_Data_Block*...
 //   ACE_Data_Block* data_block = NULL;
-//   data_block = ACE_static_cast(ACE_Data_Block*,
-//                                handle_in);
+//   data_block = static_cast<ACE_Data_Block*> (//                                handle_in);
 //   ACE_ASSERT(data_block);
 //
 //   // update allocation counter

@@ -214,7 +214,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
   // add message to statistic...
   // --> increment corresponding counter
-  myMessageTypeStatistics[ACE_static_cast(ProtocolCommandType, message_inout->getCommand())]++;
+  myMessageTypeStatistics[static_cast<ProtocolCommandType> (message_inout->getCommand())]++;
 }
 
 template <typename SessionMessageType,
@@ -426,8 +426,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                    ACE_TEXT("\"%s\": %u --> %.2f %%\n"),
                    ProtocolMessageType::commandType2String(iter->first).c_str(),
                    iter->second,
-                   ACE_static_cast(double,
-                                   ((iter->second * 100.0) / (myNumInboundMessages - myNumSessionMessages)))));
+                   static_cast<double> (((iter->second * 100.0) / (myNumInboundMessages - myNumSessionMessages)))));
       } // end FOR
     } // end IF
 

@@ -96,7 +96,7 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
              videoInfo->vfmt->Rshift, videoInfo->vfmt->Gshift, videoInfo->vfmt->Bshift, videoInfo->vfmt->Ashift,
              videoInfo->vfmt->Rloss, videoInfo->vfmt->Gloss, videoInfo->vfmt->Bloss, videoInfo->vfmt->Aloss,
              videoInfo->vfmt->colorkey,
-             ACE_static_cast(int, videoInfo->vfmt->alpha)));
+             static_cast<int> (videoInfo->vfmt->alpha)));
 
   // set surface flags
   Uint32 surface_flags = ((videoInfo->hw_available ? (SDL_HWSURFACE |
@@ -122,7 +122,7 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
 
     return NULL;
   } // end IF
-  else if (modes == ACE_reinterpret_cast(SDL_Rect**, -1))
+  else if (modes == reinterpret_cast<SDL_Rect**> (-1))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("ALL resolutions available (flags: %x)...\n"),

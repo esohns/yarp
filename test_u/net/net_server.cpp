@@ -499,7 +499,7 @@ tp_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -669,7 +669,7 @@ do_work(const unsigned long& clientPingInterval_in,
     // *NOTE*: asynchronous writing to a closed socket triggers the
     // SIGPIPE signal (default action: abort).
     // --> as this doesn't use select(), guard against this (ignore the signal)
-    ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+    ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
     ACE_Sig_Action original_action;
     no_sigpipe.register_action(SIGPIPE, &original_action);
 

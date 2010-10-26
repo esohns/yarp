@@ -128,8 +128,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
   // retrieve type of message and other details...
-  RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
-                                                               message_inout->rd_ptr());
+  RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*> (message_inout->rd_ptr());
   switch (message_header->messageType)
   {
     case RPG_Net_Remote_Comm::RPG_NET_PING:
@@ -151,8 +150,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
           return;
         } // end IF
         // step1: init reply
-        RPG_Net_Remote_Comm::PongMessage* reply_struct = ACE_reinterpret_cast(RPG_Net_Remote_Comm::PongMessage*,
-                                                                              reply_message->wr_ptr());
+        RPG_Net_Remote_Comm::PongMessage* reply_struct = reinterpret_cast<RPG_Net_Remote_Comm::PongMessage*> (reply_message->wr_ptr());
         ACE_OS::memset(reply_struct,
                        0,
                        sizeof(RPG_Net_Remote_Comm::PongMessage));
@@ -253,8 +251,7 @@ RPG_Net_Module_ProtocolHandler::handleTimeout(const void* arg_in)
 
   // step1: init ping data
   // *TODO*: clean this up and handle endianness consistently !
-  RPG_Net_Remote_Comm::PingMessage* ping_struct = ACE_reinterpret_cast(RPG_Net_Remote_Comm::PingMessage*,
-                                                                       ping_message->wr_ptr());
+  RPG_Net_Remote_Comm::PingMessage* ping_struct = reinterpret_cast<RPG_Net_Remote_Comm::PingMessage*> (ping_message->wr_ptr());
   ACE_OS::memset(ping_struct,
                  0,
                  sizeof(RPG_Net_Remote_Comm::PingMessage));
@@ -302,8 +299,7 @@ RPG_Net_Module_ProtocolHandler::allocateMessage(const unsigned long& requestedSi
 
   try
   {
-    message_out = ACE_static_cast(RPG_Net_Message*,
-                                  myAllocator->malloc(requestedSize_in));
+    message_out = static_cast<RPG_Net_Message*> (myAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {

@@ -81,12 +81,11 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
   // - push them onto the stream (tail-first) !
   // ******************* Runtime Statistics ************************
   RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl = ACE_dynamic_cast(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*,
-                                           myRuntimeStatistic.writer());
+  runtimeStatistic_impl = dynamic_cast<RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*> (myRuntimeStatistic.writer());
   if (!runtimeStatistic_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Module_RuntimeStatistic) failed, aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic) failed> (aborting\n")));
 
     return false;
   } // end IF
@@ -112,12 +111,11 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
 //   // ******************* IRC Handler ************************
 //   RPG_Net_Protocol_Module_IRCHandler* IRCHandler_impl = NULL;
-//   IRCHandler_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler*,
-//                                      myIRCHandler.writer());
+//   IRCHandler_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*> (//                                      myIRCHandler.writer());
 //   if (!IRCHandler_impl)
 //   {
 //     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler) failed, aborting\n")));
+//                ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler) failed> (aborting\n")));
 //
 //     return false;
 //   } // end IF
@@ -145,12 +143,11 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
   // ******************* IRC Parser ************************
   RPG_Net_Protocol_Module_IRCParser* IRCParser_impl = NULL;
-  IRCParser_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCParser*,
-                                    myIRCParser.writer());
+  IRCParser_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCParser*> (myIRCParser.writer());
   if (!IRCParser_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCParser) failed, aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCParser) failed> (aborting\n")));
 
     return false;
   } // end IF
@@ -178,12 +175,11 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
   // ******************* IRC Marshal ************************
   RPG_Net_Protocol_Module_IRCSplitter* IRCSplitter_impl = NULL;
-  IRCSplitter_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCSplitter*,
-                                      myIRCMarshal.writer());
+  IRCSplitter_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCSplitter*> (myIRCMarshal.writer());
   if (!IRCSplitter_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCSplitter) failed, aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCSplitter) failed> (aborting\n")));
 
     return false;
   } // end IF
@@ -202,7 +198,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
   // enqueue the module...
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
-  myIRCMarshal.arg(&ACE_const_cast(RPG_Net_Protocol_ConfigPOD&, config_in));
+  myIRCMarshal.arg(&const_cast<RPG_Net_Protocol_ConfigPOD&> (config_in));
   if (push(&myIRCMarshal))
   {
     ACE_DEBUG((LM_ERROR,
@@ -232,13 +228,11 @@ RPG_Net_Protocol_Stream::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) co
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::collect"));
 
   RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl = ACE_dynamic_cast(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*,
-                                           ACE_const_cast(RPG_Net_Protocol_Module_RuntimeStatistic_Module&,
-                                                          myRuntimeStatistic).writer());
+  runtimeStatistic_impl = dynamic_cast<RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*> (const_cast<RPG_Net_Protocol_Module_RuntimeStatistic_Module&> (myRuntimeStatistic).writer());
   if (!runtimeStatistic_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Module_RuntimeStatistic) failed, aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic) failed> (aborting\n")));
 
     return false;
   } // end IF
@@ -253,12 +247,11 @@ RPG_Net_Protocol_Stream::report() const
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::report"));
 
 //   RPG_Net_Module_RuntimeStatistic* runtimeStatistic_impl = NULL;
-//   runtimeStatistic_impl = ACE_dynamic_cast(RPG_Net_Module_RuntimeStatistic*,
-//                                            myRuntimeStatistic.writer());
+//   runtimeStatistic_impl = dynamic_cast<RPG_Net_Module_RuntimeStatistic*> (//                                            myRuntimeStatistic.writer());
 //   if (!runtimeStatistic_impl)
 //   {
 //     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("ACE_dynamic_cast(RPG_Net_Module_RuntimeStatistic) failed, aborting\n")));
+//                ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic) failed> (aborting\n")));
 //
 //     return;
 //   } // end IF

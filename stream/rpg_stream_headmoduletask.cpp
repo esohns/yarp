@@ -661,8 +661,7 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
   {
     try
     {
-      message = ACE_static_cast(RPG_Stream_SessionMessage*,
-                                allocator_in->malloc(0)); // we want a session message !
+      message = static_cast<RPG_Stream_SessionMessage*> (allocator_in->malloc(0)); // we want a session message !
     }
     catch (...)
     {
@@ -704,7 +703,7 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
   } // end IF
 
   // pass message downstream...
-  if (ACE_const_cast(RPG_Stream_HeadModuleTask*, this)->put_next(message, NULL) == -1)
+  if (const_cast<RPG_Stream_HeadModuleTask*> (this)->put_next(message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to put_next(): \"%s\", aborting\n"),

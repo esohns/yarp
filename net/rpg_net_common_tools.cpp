@@ -165,8 +165,8 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
       index = number + 1;
 
     // if the number is bigger than the max AND we have more than enough logs --> delete it !
-    if ((ACE_static_cast(unsigned long, number) >= (RPG_Net_Common_Tools::myMaxNumberOfLogFiles - 1)) &&
-        (ACE_static_cast(unsigned long, entries.length()) >= RPG_Net_Common_Tools::myMaxNumberOfLogFiles))
+    if ((static_cast<unsigned long> (number) >= (RPG_Net_Common_Tools::myMaxNumberOfLogFiles - 1)) &&
+        (static_cast<unsigned long> (entries.length()) >= RPG_Net_Common_Tools::myMaxNumberOfLogFiles))
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("removing surplus logfile \"%s\"...\n"),
@@ -504,7 +504,7 @@ RPG_Net_Common_Tools::MACAddress2String(const char* const addressDataPtr_in)
   ACE_OS::memset(&address,
                  0,
                  sizeof(address));
-  if (::ether_ntoa_r(ACE_reinterpret_cast(const ether_addr*, addressDataPtr_in),
+  if (::ether_ntoa_r(reinterpret_cast<const ether_addr*> (addressDataPtr_in),
                      address) != address)
   {
     ACE_DEBUG((LM_ERROR,
@@ -1143,8 +1143,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
 //                ACE_TEXT("found host address: \"%s\"...\n"),
 //                ip));
 
-//     addr_handle = ACE_static_cast(sockaddr_in*,
-//                                   addr_array[i].get_addr());
+//     addr_handle = static_cast<sockaddr_in*> (//                                   addr_array[i].get_addr());
 
     IPaddress_out = ip;
   } // end FOR
@@ -1212,7 +1211,7 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   if (ACE_OS::setsockopt(handle_in,
                          SOL_SOCKET,
                          option_in,
-                         ACE_reinterpret_cast(const char*, &size),
+                         reinterpret_cast<const char*> (&size),
                          sizeof(int)))
   {
     ACE_DEBUG((LM_ERROR,
@@ -1230,7 +1229,7 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   if (ACE_OS::getsockopt(handle_in,
                          SOL_SOCKET,
                          option_in,
-                         ACE_reinterpret_cast(char*, &size),
+                         reinterpret_cast<char*> (&size),
                          &retsize))
   {
     ACE_DEBUG((LM_ERROR,
@@ -1279,7 +1278,7 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
   if (ACE_OS::setsockopt(handle_in,
                          IPPROTO_TCP,
                          TCP_NODELAY,
-                         ACE_reinterpret_cast(const char*, &value),
+                         reinterpret_cast<const char*> (&value),
                          sizeof(int)))
   {
     ACE_DEBUG((LM_ERROR,
@@ -1296,7 +1295,7 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
   if (ACE_OS::getsockopt(handle_in,
                          IPPROTO_TCP,
                          TCP_NODELAY,
-                         ACE_reinterpret_cast(char*, &value),
+                         reinterpret_cast<char*> (&value),
                          &retsize) ||
       (retsize != sizeof(int)))
   {

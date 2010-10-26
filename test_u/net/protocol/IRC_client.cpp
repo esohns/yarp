@@ -356,7 +356,7 @@ tp_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -840,12 +840,11 @@ ACE_TMAIN(int argc,
   RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule(std::string("IRCHandler"),
                                                              NULL);
   RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
-  IRChandler_impl = ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler*,
-                                     IRChandlerModule.writer());
+  IRChandler_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*> (IRChandlerModule.writer());
   if (!IRChandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_dynamic_cast(RPG_Net_Protocol_Module_IRCHandler) failed, aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler) failed> (aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF

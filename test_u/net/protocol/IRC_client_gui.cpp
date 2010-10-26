@@ -292,7 +292,7 @@ tp_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -324,7 +324,7 @@ reactor_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -453,28 +453,28 @@ do_main_window(const std::string& UIFileDirectory_in,
 
   // step3: connect signals/slots
 //   gtk_builder_connect_signals(builder,
-//                               &ACE_const_cast(main_cb_data&, userData_in));
+//                               &const_cast<main_cb_data&> (userData_in));
   GtkEntry* entry = GTK_ENTRY(gtk_builder_get_object(userData_in.builder,
                                                      ACE_TEXT_ALWAYS_CHAR("main_send_entry")));
   ACE_ASSERT(entry);
   g_signal_connect(entry,
                    ACE_TEXT_ALWAYS_CHAR("focus-in-event"),
                    G_CALLBACK(send_entry_kb_focused_cb),
-                   &ACE_const_cast(main_cb_data_t&, userData_in));
+                   &const_cast<main_cb_data_t&> (userData_in));
   GtkButton* button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
                                                         ACE_TEXT_ALWAYS_CHAR("main_send_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(send_clicked_cb),
-                   &ACE_const_cast(main_cb_data_t&, userData_in));
+                   &const_cast<main_cb_data_t&> (userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
                                              ACE_TEXT_ALWAYS_CHAR("main_connect_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(connect_clicked_cb),
-                   &ACE_const_cast(main_cb_data_t&, userData_in));
+                   &const_cast<main_cb_data_t&> (userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
                                              ACE_TEXT_ALWAYS_CHAR("main_quit_buton")));
   ACE_ASSERT(button);
@@ -511,8 +511,7 @@ do_main_window(const std::string& UIFileDirectory_in,
   // use correct screen
   if (parentWidget_in)
     gtk_window_set_screen(window,
-                          gtk_widget_get_screen(ACE_const_cast(GtkWidget*,
-                                                               parentWidget_in)));
+                          gtk_widget_get_screen(const_cast<GtkWidget*> (parentWidget_in)));
 
   // step5: draw it
   gtk_widget_show_all(GTK_WIDGET(window));
@@ -1143,7 +1142,7 @@ do_parseConfigFile(const std::string& configFilename_in,
       converter.clear();
       converter << val_string_value.c_str();
       converter >> port_range.first;
-//       port_range.first = ACE_static_cast(unsigned short, port);
+//       port_range.first = static_cast<unsigned short> (port);
       port_range.second = port_range.first;
       entry.listeningPorts.push_back(port_range);
 

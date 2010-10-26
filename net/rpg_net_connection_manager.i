@@ -354,8 +354,7 @@ RPG_Net_Connection_Manager<ConfigType,
   // aggregate statistical data
   // *WARNING*: this assumes we're holding our lock !
   CONNECTION_TYPE* connection = NULL;
-  for (CONNECTIONLIST_ITERATOR_TYPE iterator(ACE_const_cast(ACE_DLList<CONNECTION_TYPE>&,
-                                                            myConnections));
+  for (CONNECTIONLIST_ITERATOR_TYPE iterator(const_cast<ACE_DLList<CONNECTION_TYPE>&> (myConnections));
        iterator.next(connection);
        iterator.advance())
 //   for (CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
@@ -443,8 +442,7 @@ RPG_Net_Connection_Manager<ConfigType,
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   CONNECTION_TYPE* connection = NULL;
-  for (CONNECTIONLIST_ITERATOR_TYPE iterator(ACE_const_cast(ACE_DLList<CONNECTION_TYPE>&,
-                                                            myConnections));
+  for (CONNECTIONLIST_ITERATOR_TYPE iterator(const_cast<ACE_DLList<CONNECTION_TYPE>&> (myConnections));
        iterator.next(connection);
        iterator.advance())
 //   for (CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();

@@ -41,7 +41,7 @@
 #include "rpg_dice_XML_tree.h"
 
 // RPG_Dice_DieType_XMLTree_Type
-// 
+//
 
 RPG_Dice_DieType_XMLTree_Type::
 RPG_Dice_DieType_XMLTree_Type (value v)
@@ -78,15 +78,14 @@ RPG_Dice_DieType_XMLTree_Type (const RPG_Dice_DieType_XMLTree_Type& v,
 RPG_Dice_DieType_XMLTree_Type& RPG_Dice_DieType_XMLTree_Type::
 operator= (value v)
 {
-  static_cast< ::xml_schema::string& > (*this) = 
-  ::xml_schema::string (_xsd_RPG_Dice_DieType_XMLTree_Type_literals_[v]);
+  static_cast< ::xml_schema::string& >(*this) = ::xml_schema::string (_xsd_RPG_Dice_DieType_XMLTree_Type_literals_[v]);
 
   return *this;
 }
 
 
 // RPG_Dice_Roll_XMLTree_Type
-// 
+//
 
 const RPG_Dice_Roll_XMLTree_Type::numDice_type& RPG_Dice_Roll_XMLTree_Type::
 numDice () const
@@ -150,7 +149,7 @@ modifier (const modifier_type& x)
 
 
 // RPG_Dice_ValueRange_XMLTree_Type
-// 
+//
 
 const RPG_Dice_ValueRange_XMLTree_Type::begin_type& RPG_Dice_ValueRange_XMLTree_Type::
 begin () const
@@ -637,7 +636,7 @@ operator<< (::std::ostream& o, RPG_Dice_DieType_XMLTree_Type::value i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Dice_DieType_XMLTree_Type& i)
 {
-  return o << static_cast< const ::xml_schema::string& > (i);
+  return o << static_cast< const ::xml_schema::string& >(i);
 }
 
 static
@@ -696,13 +695,13 @@ namespace _xsd
 void
 operator<< (::xercesc::DOMElement& e, const RPG_Dice_DieType_XMLTree_Type& i)
 {
-  e << static_cast< const ::xml_schema::string& > (i);
+  e << static_cast< const ::xml_schema::string& >(i);
 }
 
 void
 operator<< (::xercesc::DOMAttr& a, const RPG_Dice_DieType_XMLTree_Type& i)
 {
-  a << static_cast< const ::xml_schema::string& > (i);
+  a << static_cast< const ::xml_schema::string& >(i);
 }
 
 void

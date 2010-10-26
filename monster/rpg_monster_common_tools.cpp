@@ -108,7 +108,7 @@ RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& a
   {
     converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << ACE_static_cast(int, *iterator);
+    converter << static_cast<int> (*iterator);
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("/");
   } // end FOR
@@ -125,7 +125,7 @@ RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& a
   result += ACE_TEXT_ALWAYS_CHAR("numAttacksPerRound: ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << ACE_static_cast(int, attackAction_in.numAttacksPerRound);
+  converter << static_cast<int> (attackAction_in.numAttacksPerRound);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -141,13 +141,13 @@ RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
   std::ostringstream converter;
 
   result += ACE_TEXT_ALWAYS_CHAR("baseAttackBonus: ");
-  converter << ACE_static_cast(int, attack_in.baseAttackBonus);
+  converter << static_cast<int> (attack_in.baseAttackBonus);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("grappleBonus: ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << ACE_static_cast(int, attack_in.grappleBonus);
+  converter << static_cast<int> (attack_in.grappleBonus);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("Standard Attack Action(s):\n-----------------------\n");

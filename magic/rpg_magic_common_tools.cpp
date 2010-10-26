@@ -1104,7 +1104,7 @@ RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_SpellLevelList_t& le
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << ACE_static_cast(unsigned int, (*iterator).level);
+    converter << static_cast<unsigned int> ((*iterator).level);
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
@@ -1203,7 +1203,7 @@ RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Spell_TargetProperti
         result += ACE_TEXT_ALWAYS_CHAR(" + ");
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << ACE_static_cast(unsigned int, target_in.levelIncrement);
+        converter << static_cast<unsigned int> (target_in.levelIncrement);
         result += converter.str();
         result += ACE_TEXT_ALWAYS_CHAR(" / [casterLevel]");
       } // end IF
@@ -1233,7 +1233,7 @@ RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Spell_TargetProperti
     result += ACE_TEXT_ALWAYS_CHAR("radius: ");
     converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << ACE_static_cast(unsigned int, target_in.radius);
+    converter << static_cast<unsigned int> (target_in.radius);
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
     if (target_in.height)
@@ -1241,7 +1241,7 @@ RPG_Magic_Common_Tools::spellTargetToString(const RPG_Magic_Spell_TargetProperti
       result += ACE_TEXT_ALWAYS_CHAR("height: ");
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-      converter << ACE_static_cast(unsigned int, target_in.height);
+      converter << static_cast<unsigned int> (target_in.height);
       result += converter.str();
       result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
     } // end IF
@@ -1292,7 +1292,7 @@ RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_Spell_DurationProp
             result += ACE_TEXT_ALWAYS_CHAR("/");
             converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-            converter << ACE_static_cast(unsigned int, duration_in.levelIncrement);
+            converter << static_cast<unsigned int> (duration_in.levelIncrement);
             result += converter.str();
           } // end IF
         } // end IF
@@ -1302,7 +1302,7 @@ RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_Spell_DurationProp
           result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
           converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << ACE_static_cast(unsigned int, duration_in.levelIncrementMax);
+          converter << static_cast<unsigned int> (duration_in.levelIncrementMax);
           result += converter.str();
           result += ACE_TEXT_ALWAYS_CHAR("th)");
         }
@@ -1380,7 +1380,7 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
             result += ACE_TEXT_ALWAYS_CHAR("/");
             converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-            converter << ACE_static_cast(unsigned int, (*iterator).levelIncrement);
+            converter << static_cast<unsigned int> ((*iterator).levelIncrement);
             result += converter.str();
           } // end IF
           result += ACE_TEXT_ALWAYS_CHAR("]");
@@ -1390,7 +1390,7 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
             result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
             converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-            converter << ACE_static_cast(unsigned int, (*iterator).levelIncrementMax);
+            converter << static_cast<unsigned int> ((*iterator).levelIncrementMax);
             result += converter.str();
             result += ACE_TEXT_ALWAYS_CHAR("th)");
           } // end IF
@@ -1450,7 +1450,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_EffectList_t& effe
           result += ACE_TEXT_ALWAYS_CHAR("+");
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << ACE_static_cast(int, (*iterator).base.value);
+        converter << static_cast<int> ((*iterator).base.value);
         result += converter.str();
       } // end IF
       else
@@ -1465,7 +1465,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_EffectList_t& effe
         {
           converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << ACE_static_cast(int, (*iterator).levelIncrement.value);
+          converter << static_cast<int> ((*iterator).levelIncrement.value);
           result += converter.str();
         } // end IF
         else
@@ -1478,7 +1478,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_EffectList_t& effe
           result += ACE_TEXT_ALWAYS_CHAR(" / casterLevel (max: ");
           converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << ACE_static_cast(unsigned int, (*iterator).levelIncrementMax);
+          converter << static_cast<unsigned int> ((*iterator).levelIncrementMax);
           result += converter.str();
           result += ACE_TEXT_ALWAYS_CHAR("th)]");
         } // end IF
@@ -1492,7 +1492,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_EffectList_t& effe
       result += ACE_TEXT_ALWAYS_CHAR("range: ");
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-      converter << ACE_static_cast(unsigned int, (*iterator).maxRange);
+      converter << static_cast<unsigned int> ((*iterator).maxRange);
       result += converter.str();
       result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
     } // end IF
@@ -1565,7 +1565,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_EffectList_t& effe
             result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
             converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-            converter << ACE_static_cast(unsigned int, (*iterator2).check.difficultyClass);
+            converter << static_cast<unsigned int> ((*iterator2).check.difficultyClass);
             result += converter.str();
             result += ACE_TEXT_ALWAYS_CHAR(")");
           } // end IF
@@ -1685,7 +1685,7 @@ RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMea
           result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
           converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << ACE_static_cast(unsigned int, (*iterator).check.difficultyClass);
+          converter << static_cast<unsigned int> ((*iterator).check.difficultyClass);
           result += converter.str();
           result += ACE_TEXT_ALWAYS_CHAR(")");
         } // end IF
@@ -1881,8 +1881,8 @@ RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& subClass
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("spells table: invalid combination (class \"%s\", level %d, spell %d), aborting\n"),
 //                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-//                ACE_static_cast(unsigned int, classLevel_in),
-//                ACE_static_cast(unsigned int, spellLevel_in)));
+//                static_cast<unsigned int> (classLevel_in),
+//                static_cast<unsigned int> (spellLevel_in)));
 
     return;
   } // end IF
@@ -1894,8 +1894,8 @@ RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& subClass
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("known spells table: invalid combination (class \"%s\", level %d, spell %d), aborting\n"),
 //                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-//                ACE_static_cast(unsigned int, classLevel_in),
-//                ACE_static_cast(unsigned int, spellLevel_in)));
+//                static_cast<unsigned int> (classLevel_in),
+//                static_cast<unsigned int> (spellLevel_in)));
 
     return;
   } // end IF

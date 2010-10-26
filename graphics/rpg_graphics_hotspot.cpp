@@ -143,7 +143,7 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 //     {
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("received unknown event (was: %u)...\n"),
-//                  ACE_static_cast(unsigned long, event_in.type)));
+//                  static_cast<unsigned long> (event_in.type)));
 //
 //       break;
 //     }
@@ -159,8 +159,8 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
-  ACE_ASSERT(ACE_static_cast(int, offsetX_in) <= targetSurface_in->w);
-  ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface_in->h);
+  ACE_ASSERT(static_cast<int> (offsetX_in) <= targetSurface_in->w);
+  ACE_ASSERT(static_cast<int> (offsetY_in) <= targetSurface_in->h);
 
 //   // init clipping
 //   SDL_Rect clipRect;

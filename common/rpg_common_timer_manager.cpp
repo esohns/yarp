@@ -87,7 +87,7 @@ RPG_Common_Timer_Manager::scheduleTimer(const ACE_Event_Handler& handler_in,
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     // schedule a new timer
-    timerID_out = myTimerQueue.schedule(&ACE_const_cast(ACE_Event_Handler&, handler_in),     // handler
+    timerID_out = myTimerQueue.schedule(&const_cast<ACE_Event_Handler&> (handler_in),     // handler
                                         NULL,                                                // argument
                                         ACE_OS::gettimeofday () + wakeup_in,                 // wakeup time
                                         (!isOneShot_in ? wakeup_in : ACE_Time_Value::zero)); // interval ?

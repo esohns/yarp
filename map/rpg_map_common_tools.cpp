@@ -185,7 +185,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
       }
       default:
       {
-        if (ACE_static_cast(size_t, sent_bytes) != row.size())
+        if (static_cast<size_t> (sent_bytes) != row.size())
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to ACE_FILE_IO::send(%u) (result was: %d), aborting\n"),
@@ -255,7 +255,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("wrote TXT file \"%s\" (%u byte(s))...\n"),
                filename_in.c_str(),
-               ACE_static_cast(unsigned long, info.size_)));
+               static_cast<unsigned long> (info.size_)));
   } // end ELSE
 
   return true;
@@ -1175,9 +1175,9 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
       index = 0;
       RPG_Map_SquareListConstIterator_t squares_iter = maxSquares.begin();
       for (zones_iter = (cropAreas_in ? rooms_out.begin()
-                                      : ACE_const_cast(RPG_Map_Partition_t&, partition_in).begin());
+                                      : const_cast<RPG_Map_Partition_t&> (partition_in).begin());
            zones_iter != (cropAreas_in ? rooms_out.end()
-                                       : ACE_const_cast(RPG_Map_Partition_t&, partition_in).end());
+                                       : const_cast<RPG_Map_Partition_t&> (partition_in).end());
            zones_iter++, squares_iter++, index++)
       {
         current_zone.clear();

@@ -230,8 +230,7 @@ RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,
 
   // dump message
   RPG_Net_Protocol_Message* message = NULL;
-  message = ACE_dynamic_cast(RPG_Net_Protocol_Message*,
-                             myCurrentFragment);
+  message = dynamic_cast<RPG_Net_Protocol_Message*> (myCurrentFragment);
   ACE_ASSERT(message);
   try
   {

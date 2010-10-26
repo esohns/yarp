@@ -2133,7 +2133,7 @@ RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& 
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << ACE_static_cast(int, iterator->second);
+    converter << static_cast<int> (iterator->second);
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR

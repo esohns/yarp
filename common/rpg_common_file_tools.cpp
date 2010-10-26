@@ -175,8 +175,7 @@ RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
   ACE_FILE_IO file;
   if (connector.connect(file,
                         address,
-                        ACE_const_cast(ACE_Time_Value*,
-                                       &ACE_Time_Value::zero),
+                        const_cast<ACE_Time_Value*> (&ACE_Time_Value::zero),
                         ACE_Addr::sap_any,
                         0,
                         (O_WRONLY | O_BINARY | O_EXCL),
@@ -272,7 +271,7 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
     return false;
   } // end IF
   // read data
-  if (ACE_OS::fread(ACE_static_cast(void*, file_out), // target buffer
+  if (ACE_OS::fread(static_cast<void*> (file_out), // target buffer
                     fsize,                            // read everything
                     1,                                // ... all at once
                     fp) != 1)                         // handle

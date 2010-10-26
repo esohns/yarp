@@ -87,8 +87,7 @@ RPG_Net_Module_HeaderParser::handleDataMessage(RPG_Net_Message*& message_inout,
   } // end IF
 
 //   // OK: retrieve type of message and other details...
-//   RPG_Net_MessageHeader* message_header = ACE_reinterpret_cast(RPG_Net_MessageHeader*,
-//                                                                message_inout->rd_ptr());
+//   RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*> (//                                                                message_inout->rd_ptr());
 
 //   // debug info
 //   ACE_DEBUG((LM_DEBUG,

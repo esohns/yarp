@@ -203,8 +203,7 @@ RPG_Stream_DataMessageBase<DataType>::duplicate(void) const
   } // end IF
 
   ACE_NEW_MALLOC_RETURN(nb,
-                        ACE_static_cast(RPG_Stream_DataMessageBase<DataType>*,
-                                        message_block_allocator_->malloc(RPG_STREAM_DEF_BUFFER_SIZE)),
+                        static_cast<RPG_Stream_DataMessageBase<DataType>*> (message_block_allocator_->malloc(RPG_STREAM_DEF_BUFFER_SIZE)),
                         RPG_Stream_DataMessageBase<DataType>(*this), // invoke copy ctor
                         NULL);
 

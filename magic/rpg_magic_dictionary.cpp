@@ -437,7 +437,7 @@ RPG_Magic_Dictionary::dump() const
     {
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-      converter << ACE_static_cast(unsigned int, (iterator->second).time.rounds);
+      converter << static_cast<unsigned int> ((iterator->second).time.rounds);
       castingTime += converter.str();
       castingTime += ACE_TEXT_ALWAYS_CHAR(" rd(s)");
     } // end IF

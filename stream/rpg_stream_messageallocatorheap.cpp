@@ -65,8 +65,7 @@ RPG_Stream_MessageAllocatorHeap::malloc(size_t bytes_in)
   try
   {
     ACE_ALLOCATOR_NORETURN(data_block,
-                           ACE_static_cast(ACE_Data_Block*,
-                                           myDataBlockAllocator.malloc(bytes_in)));
+                           static_cast<ACE_Data_Block*> (myDataBlockAllocator.malloc(bytes_in)));
   }
   catch (...)
   {
@@ -97,14 +96,12 @@ RPG_Stream_MessageAllocatorHeap::malloc(size_t bytes_in)
     // on the allocated space
     if (bytes_in)
       ACE_NEW_MALLOC_NORETURN(message,
-                              ACE_static_cast(RPG_Stream_MessageBase*,
-                                              inherited::malloc(sizeof(RPG_Stream_MessageBase))),
+                              static_cast<RPG_Stream_MessageBase*> (inherited::malloc(sizeof(RPG_Stream_MessageBase))),
                               RPG_Stream_MessageBase(data_block, // use the data block we just allocated
                                                  this));     // remember us upon destruction...
     else
       ACE_NEW_MALLOC_NORETURN(message,
-                              ACE_static_cast(RPG_Stream_SessionMessage*,
-                                              inherited::malloc(sizeof(RPG_Stream_SessionMessage))),
+                              static_cast<RPG_Stream_SessionMessage*> (inherited::malloc(sizeof(RPG_Stream_SessionMessage))),
                               RPG_Stream_SessionMessage(data_block, // use the data block we just allocated
                                                     this));     // remember us upon destruction...
   }

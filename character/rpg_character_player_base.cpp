@@ -201,8 +201,7 @@ RPG_Character_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) cons
 
   unsigned char result = 0;
 
-  result = ACE_static_cast(unsigned int,
-                           ACE_OS::floor((1.0 + ::sqrt((myExperience / 125) + 1)) / 2.0));
+  result = static_cast<unsigned int> (ACE_OS::floor((1.0 + ::sqrt((myExperience / 125) + 1)) / 2.0));
 
   return result;
 }
@@ -292,8 +291,8 @@ RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defe
     DEX_modifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(ATTRIBUTE_DEXTERITY));
     if (type != ARMOR_NONE)
     {
-      DEX_modifier = std::min(ACE_static_cast(int, properties.maxDexterityBonus),
-                              ACE_static_cast(int, DEX_modifier));
+      DEX_modifier = std::min(static_cast<int> (properties.maxDexterityBonus),
+                              static_cast<int> (DEX_modifier));
     } // end IF
   } // end IF
   result += DEX_modifier;
@@ -328,7 +327,7 @@ RPG_Character_Player_Base::gainExperience(const unsigned int& XP_in)
                ACE_TEXT("player: \"%s\" (XP: %d) has gained a level (%d)...\n"),
                getName().c_str(),
                myExperience,
-               ACE_static_cast(int, getLevel(*myClass.subClasses.begin()))));
+               static_cast<int> (getLevel(*myClass.subClasses.begin()))));
   } // end IF
 }
 
@@ -387,7 +386,7 @@ RPG_Character_Player_Base::status() const
              ACE_TEXT("name: \"%s\" (XP: %d (%d))\n"),
              getName().c_str(),
              myExperience,
-             ACE_static_cast(int, getLevel())));
+             static_cast<int> (getLevel())));
 
   inherited::status();
 }

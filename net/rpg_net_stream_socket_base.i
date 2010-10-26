@@ -342,7 +342,7 @@ RPG_Net_StreamSocketBase<ConfigType,
 //                 bytes_sent));
 
       // finished with this buffer ?
-      if (ACE_static_cast(size_t, bytes_sent) == myCurrentWriteBuffer->length())
+      if (static_cast<size_t> (bytes_sent) == myCurrentWriteBuffer->length())
       {
         // clean up
         myCurrentWriteBuffer->release();
@@ -458,8 +458,7 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   try
   {
-    message_out = ACE_static_cast(ACE_Message_Block*,
-                                  myAllocator->malloc(requestedSize_in));
+    message_out = static_cast<ACE_Message_Block*> (myAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {

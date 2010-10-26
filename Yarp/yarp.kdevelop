@@ -14,12 +14,12 @@
     <projectname>Yarp</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>test_u/map/map_generator</activetarget>
+      <activetarget>test_u/net/protocol/IRC_client_gui</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
@@ -33,6 +33,18 @@
       <autoinstall>true</autoinstall>
       <autokdesu>true</autokdesu>
       <envvars/>
+      <runarguments>
+        <IRC_client_gui>-t</IRC_client_gui>
+        <chance_dice/>
+      </runarguments>
+      <debugarguments>
+        <IRC_client_gui>-t</IRC_client_gui>
+        <chance_dice/>
+      </debugarguments>
+      <cwd>
+        <IRC_client_gui>/home/unfv/Projects/RPG/Yarp/debug/./test_u/net/protocol</IRC_client_gui>
+        <chance_dice>/home/unfv/Projects/RPG/Yarp/debug/./test_u/net/protocol</chance_dice>
+      </cwd>
     </run>
     <configurations>
       <optimized>
@@ -218,7 +230,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -240,11 +252,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath></gdbpath>
-      <dbgshell></dbgshell>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <dbgshell/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

@@ -87,8 +87,7 @@ RPG_Net_SessionMessage::duplicate(void) const
   // *WARNING*:we tell the allocator to return a RPG_Net_SessionMessage
   // by passing a 0 as argument to malloc()...
   ACE_NEW_MALLOC_RETURN(nb,
-                        ACE_static_cast(RPG_Net_SessionMessage*,
-                                        message_block_allocator_->malloc(0)),
+                        static_cast<RPG_Net_SessionMessage*> (message_block_allocator_->malloc(0)),
                         RPG_Net_SessionMessage(*this),
                         NULL);
 

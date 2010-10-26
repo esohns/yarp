@@ -139,8 +139,7 @@ RPG_Character_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_i
     return RPG_ITEM_WEAPONTYPE_INVALID;
   } // end IF
 
-  RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*,
-                                             handle);
+  RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*> (handle);
   ACE_ASSERT(weapon);
 
   return weapon->getWeaponType();
@@ -183,7 +182,7 @@ RPG_Character_Equipment::getBodyArmor() const
     return ARMOR_NONE;
   } // end IF
 
-  RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, handle);
+  RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*> (handle);
   ACE_ASSERT(armor);
 
   return armor->getArmorType();
@@ -224,7 +223,7 @@ RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) cons
     return ARMOR_NONE;
   } // end IF
 
-  RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, handle);
+  RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*> (handle);
   ACE_ASSERT(armor);
 
   // sanity check
@@ -282,7 +281,7 @@ RPG_Character_Equipment::dump() const
     {
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon* weapon = ACE_dynamic_cast(RPG_Item_Weapon*, handle);
+        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*> (handle);
         ACE_ASSERT(weapon);
 
         ACE_DEBUG((LM_DEBUG,
@@ -295,7 +294,7 @@ RPG_Character_Equipment::dump() const
       }
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = ACE_dynamic_cast(RPG_Item_Armor*, handle);
+        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*> (handle);
         ACE_ASSERT(armor);
 
         ACE_DEBUG((LM_DEBUG,

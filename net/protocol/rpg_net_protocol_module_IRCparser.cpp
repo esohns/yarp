@@ -176,7 +176,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 //              message_inout->length(),
 //              std::string(message_inout->rd_ptr(), message_inout->length()).c_str()));
 
-  myDriver.init(ACE_const_cast(RPG_Net_Protocol_IRCMessage&, *message_inout->getData()),
+  myDriver.init(const_cast<RPG_Net_Protocol_IRCMessage&> (*message_inout->getData()),
                 myDebugScanner,
                 myDebugParser);
   if (!myDriver.parse(message,           // data block
@@ -211,8 +211,7 @@ RPG_Net_Protocol_Module_IRCParser::allocateMessage(const unsigned long& requeste
 
   try
   {
-    message_out = ACE_static_cast(RPG_Net_Protocol_Message*,
-                                  myAllocator->malloc(requestedSize_in));
+    message_out = static_cast<RPG_Net_Protocol_Message*> (myAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {

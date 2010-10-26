@@ -75,7 +75,7 @@ const std::string RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item
   {
     if (weaponDamageType_in.test(i))
     {
-      result += RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(ACE_static_cast(RPG_Common_PhysicalDamageType, damageType));
+      result += RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(static_cast<RPG_Common_PhysicalDamageType> (damageType));
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end IF
   } // end FOR
@@ -116,7 +116,7 @@ const RPG_Common_PhysicalDamageList_t RPG_Item_Common_Tools::weaponDamageTypeToP
   {
     if (weaponDamageType_in.test(i))
     {
-      result.insert(ACE_static_cast(RPG_Common_PhysicalDamageType, damageType));
+      result.insert(static_cast<RPG_Common_PhysicalDamageType> (damageType));
     } // end IF
   } // end FOR
 

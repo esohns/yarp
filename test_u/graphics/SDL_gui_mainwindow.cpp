@@ -79,8 +79,8 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
-  ACE_ASSERT(ACE_static_cast(int, offsetX_in) <= targetSurface->w);
-  ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface->h);
+  ACE_ASSERT(static_cast<int> (offsetX_in) <= targetSurface->w);
+  ACE_ASSERT(static_cast<int> (offsetY_in) <= targetSurface->h);
 
   // step1: draw borders
   drawBorder(targetSurface,
@@ -351,8 +351,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] pressed\n"),
-//                  ACE_static_cast(unsigned long, event_in.button.which),
-//                  ACE_static_cast(unsigned long, event_in.button.button)));
+//                  static_cast<unsigned long> (event_in.button.which),
+//                  static_cast<unsigned long> (event_in.button.button)));
 
       // (left-)clicking on a hotspot (edge) area triggers a scroll of the viewport
       if ((window_in->getType() == WINDOWTYPE_HOTSPOT) &&
@@ -360,7 +360,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       {
         // retrieve hotspot window handle
         RPG_Graphics_HotSpot* hotspot = NULL;
-        hotspot = ACE_dynamic_cast(RPG_Graphics_HotSpot*, window_in);
+        hotspot = dynamic_cast<RPG_Graphics_HotSpot*> (window_in);
         if (!hotspot)
         {
           ACE_DEBUG((LM_ERROR,
@@ -380,7 +380,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         } // end FOR
         ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
         SDL_GUI_LevelWindow* levelWindow = NULL;
-        levelWindow = ACE_dynamic_cast(SDL_GUI_LevelWindow*, *iterator);
+        levelWindow = dynamic_cast<SDL_GUI_LevelWindow*> (*iterator);
         if (!levelWindow)
         {
           ACE_DEBUG((LM_ERROR,
@@ -482,8 +482,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("mouse button [%u,%u] released...\n"),
-                 ACE_static_cast(unsigned long, event_in.button.which),
-                 ACE_static_cast(unsigned long, event_in.button.button)));
+                 static_cast<unsigned long> (event_in.button.which),
+                 static_cast<unsigned long> (event_in.button.button)));
 
       break;
     }
@@ -546,7 +546,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;
-      hotspot = ACE_dynamic_cast(RPG_Graphics_HotSpot*, window_in);
+      hotspot = dynamic_cast<RPG_Graphics_HotSpot*> (window_in);
       if (!hotspot)
       {
         ACE_DEBUG((LM_ERROR,
@@ -566,7 +566,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       } // end FOR
       ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
       SDL_GUI_LevelWindow* levelWindow = NULL;
-      levelWindow = ACE_dynamic_cast(SDL_GUI_LevelWindow*, *iterator);
+      levelWindow = dynamic_cast<SDL_GUI_LevelWindow*> (*iterator);
       if (!levelWindow)
       {
         ACE_DEBUG((LM_ERROR,
@@ -689,7 +689,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown event (was: %u)...\n"),
-                 ACE_static_cast(unsigned long, event_in.type)));
+                 static_cast<unsigned long> (event_in.type)));
 
       break;
     }
@@ -775,8 +775,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
-  ACE_ASSERT(ACE_static_cast(int, offsetX_in) <= targetSurface->w);
-  ACE_ASSERT(ACE_static_cast(int, offsetY_in) <= targetSurface->h);
+  ACE_ASSERT(static_cast<int> (offsetX_in) <= targetSurface->w);
+  ACE_ASSERT(static_cast<int> (offsetY_in) <= targetSurface->h);
 
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
   SDL_Rect prev_clipRect, clipRect;
@@ -801,7 +801,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = offsetX_in + myBorderLeft;
-       i < (ACE_static_cast(unsigned long, targetSurface->w) - myBorderRight);
+       i < (static_cast<unsigned long> (targetSurface->w) - myBorderRight);
        i += (*iterator).second->w)
     RPG_Graphics_Surface::put(i,
                               offsetY_in,
@@ -824,7 +824,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + myBorderTop);
-       i < (ACE_static_cast(unsigned long, targetSurface->h) - myBorderBottom);
+       i < (static_cast<unsigned long> (targetSurface->h) - myBorderBottom);
        i += (*iterator).second->h)
     RPG_Graphics_Surface::put(offsetX_in,
                               i,
@@ -847,7 +847,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + myBorderTop);
-       i < (ACE_static_cast(unsigned long, targetSurface->h) - myBorderBottom);
+       i < (static_cast<unsigned long> (targetSurface->h) - myBorderBottom);
        i += (*iterator).second->h)
     RPG_Graphics_Surface::put((targetSurface->w - myBorderRight),
                                i,

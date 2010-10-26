@@ -51,7 +51,7 @@ RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
   {
     case ITEM_ARMOR:
     {
-      RPG_Item_ArmorType armorType = ACE_static_cast(RPG_Item_ArmorType, itemSubType_in);
+      RPG_Item_ArmorType armorType = static_cast<RPG_Item_ArmorType> (itemSubType_in);
 
       try
       {
@@ -73,7 +73,7 @@ RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
     }
     case ITEM_WEAPON:
     {
-      RPG_Item_WeaponType weaponType = ACE_static_cast(RPG_Item_WeaponType, itemSubType_in);
+      RPG_Item_WeaponType weaponType = static_cast<RPG_Item_WeaponType> (itemSubType_in);
 
       try
       {
@@ -165,7 +165,7 @@ RPG_Item_Instance_Manager::deregisterItem(RPG_Item_Base* handle_in)
   } while (iterator != myInstanceTable.end());
 
   // debug info
-  RPG_Item_Instance_Base* instance_handle = ACE_dynamic_cast(RPG_Item_Instance_Base*, handle_in);
+  RPG_Item_Instance_Base* instance_handle = dynamic_cast<RPG_Item_Instance_Base*> (handle_in);
   ACE_ASSERT(instance_handle);
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("item (ID: %u) not found, returning\n"),
