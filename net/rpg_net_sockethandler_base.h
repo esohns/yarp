@@ -28,6 +28,7 @@
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
 #include <ace/Synch.h>
+#include <ace/Reactor_Notification_Strategy.h>
 
 // forward declaration(s)
 template <typename ConfigType,
@@ -36,7 +37,7 @@ template <typename ConfigType,
 template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_SocketHandlerBase
- : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>,
+ : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH>,
    public RPG_Net_IConnection<ConfigType,
                               StatisticsContainerType>//,
 //    public RPG_Common_IDumpState
@@ -51,10 +52,10 @@ class RPG_Net_SocketHandlerBase
 
   //check if registration with the connection manager was OK...
   virtual int open(void* = NULL); // args
-    // *WARNING*: the default ACE_Svc_Handler implementation calls
+  // *WARNING*: the default ACE_Svc_Handler implementation calls
   // handle_close(), which we DON'T want in the case where we have our own
   // worker (registered with the reactor, we would get "handle_closed" twice,
-  // leading to some serious mayhem)
+  // leading to serious mayhem)
   // *WARNING*: the current algorithm works only for 1 worker !!!
   virtual int close(ulong = 0); // args
 //   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
@@ -73,11 +74,12 @@ class RPG_Net_SocketHandlerBase
   // meant to be sub-classed
   RPG_Net_SocketHandlerBase(MANAGER_t*); // manager handle
 
-  ConfigType    myUserData;
-  bool          myIsInitialized;
+  ConfigType                        myUserData;
+  bool                              myIsInitialized;
+  ACE_Reactor_Notification_Strategy myNotificationStrategy;
 
  private:
-  typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> inherited;
+  typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase());
@@ -86,9 +88,9 @@ class RPG_Net_SocketHandlerBase
 
   // *NOTE*: we save this so we can de-register even when our "handle"
   // (getID()) has gone stale...
-  unsigned long myID;
-  bool          myIsRegistered;
-  MANAGER_t*    myManager;
+  unsigned long                     myID;
+  bool                              myIsRegistered;
+  MANAGER_t*                        myManager;
 };
 
 // include template implementation

@@ -326,7 +326,6 @@ init_signalHandling(const std::vector<int>& signals_inout,
   } // end FOR
 
   // actually, there is only a single handler for ALL signals in the set...
-  // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("handling %d signal(s)...\n"),
 //              signals_inout.size()));
@@ -354,13 +353,26 @@ tp_worker_func(void* args_in)
 
   ACE_UNUSED_ARG(args_in);
 
+  // *NOTE*: asynchronous writing to a closed socket triggers the
+  // SIGPIPE signal (default action: abort).
+  // --> as this doesn't use select(), guard against this (ignore the signal)
+  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action original_action;
+  no_sigpipe.register_action(SIGPIPE, &original_action);
+
   while (!ACE_Reactor::event_loop_done())
   {
     // block and wait for an event...
     if (ACE_Reactor::instance()->handle_events(NULL) == -1)
-      ACE_ERROR((LM_ERROR,
+      ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("(%t) error handling events: \"%m\"\n")));
   } // end WHILE
+
+  // clean up
+  no_sigpipe.restore_action(SIGPIPE, original_action);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("(%t) worker leaving...\n")));
 
   return 0;
 }

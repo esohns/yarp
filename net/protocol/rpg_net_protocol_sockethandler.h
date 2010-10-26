@@ -41,7 +41,7 @@ class RPG_Net_Protocol_SocketHandler
   virtual ~RPG_Net_Protocol_SocketHandler();
 
   // override some task-based members
-  virtual int svc(void);
+//   virtual int svc(void);
   virtual int open(void* = NULL); // args
   // *NOTE*: this is called when:
   // - handle_xxx() returns -1

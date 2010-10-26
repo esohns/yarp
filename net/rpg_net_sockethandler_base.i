@@ -34,9 +34,12 @@ RPG_Net_SocketHandlerBase<ConfigType,
                                                                                                          StatisticsContainerType>* manager_in)
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
-             ACE_Reactor::instance()), // default reactor
+             ACE_Reactor::instance()), // reactor
 //    myUserData(),
    myIsInitialized(false),
+   myNotificationStrategy(ACE_Reactor::instance(),        // reactor
+                          this,                           // event handler
+                          ACE_Event_Handler::WRITE_MASK), // handle output only
    myID(0),
    myIsRegistered(false),
    myManager(manager_in)
@@ -64,6 +67,9 @@ RPG_Net_SocketHandlerBase<ConfigType,
                  ACE_TEXT("caught exception in RPG_Net_IConnectionManager::registerConnection(), continuing\n")));
     }
   } // end IF
+
+  // register notification strategy
+  msg_queue()->notification_strategy(&myNotificationStrategy);
 }
 
 template <typename ConfigType,
@@ -88,6 +94,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
       }
     } // end IF
   } // end IF
+
+  reactor()->remove_handler(this, ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL);
 }
 
 template <typename ConfigType,

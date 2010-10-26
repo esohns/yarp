@@ -28,8 +28,6 @@
 #include "rpg_graphics_tilesetgraphic.h"
 #include "rpg_graphics_graphictypeunion.h"
 
-#include <rpg_common_referencecounter.h>
-
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
@@ -40,7 +38,6 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_Surface
- : public RPG_Common_ReferenceCounter
 {
  public:
   RPG_Graphics_Surface();
@@ -50,8 +47,9 @@ class RPG_Graphics_Surface
                        const bool&);                         // assume ownership ?
   RPG_Graphics_Surface(SDL_Surface*, // SDL surface
                        const bool&); // assume ownership ?
+  virtual ~RPG_Graphics_Surface();
 
-    // *NOTE*: if ownership is rejected, the surface will be cached...
+  // *NOTE*: if ownership is rejected, the surface will be cached...
   void init(const RPG_Graphics_GraphicTypeUnion&, // type
             const bool&);                         // assume ownership ?
   void init(SDL_Surface*, // SDL surface
@@ -112,12 +110,6 @@ class RPG_Graphics_Surface
                      SDL_Surface*);   // target surface (e.g. screen)
 
  private:
-  typedef RPG_Common_ReferenceCounter inherited;
-
-  // safety measures
-  virtual ~RPG_Graphics_Surface();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Surface& operator=(const RPG_Graphics_Surface&));
-
   // helper methods
   static SDL_Surface* loadPNG(const std::string&,    // filename
                               const unsigned char*); // source buffer

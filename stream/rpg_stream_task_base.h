@@ -38,7 +38,7 @@ class RPG_Stream_TaskBase
    // *TODO*: minimize locking: synchronous children should be able to use ACE_NULL_SYNCH
  : public ACE_Task<ACE_MT_SYNCH>,
    public RPG_Stream_ITaskBase<SessionMessageType,
-                           ProtocolMessageType>,
+                               ProtocolMessageType>,
    public RPG_Stream_IDumpState
 {
  public:

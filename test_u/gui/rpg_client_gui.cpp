@@ -518,15 +518,25 @@ tp_worker_func(void* args_in)
 
   ACE_UNUSED_ARG(args_in);
 
+  // *NOTE*: asynchronous writing to a closed socket triggers the
+  // SIGPIPE signal (default action: abort).
+  // --> as this doesn't use select(), guard against this (ignore the signal)
+  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action original_action;
+  no_sigpipe.register_action(SIGPIPE, &original_action);
+
   while (!ACE_Reactor::event_loop_done())
   {
     // block and wait for an event...
     if (ACE_Reactor::instance()->handle_events(NULL) == -1)
-      ACE_ERROR((LM_ERROR,
+      ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("(%t) error handling events: \"%m\"\n")));
   } // end WHILE
 
-  ACE_ERROR((LM_DEBUG,
+  // clean up
+  no_sigpipe.restore_action(SIGPIPE, original_action);
+
+  ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
 
   return 0;
@@ -540,6 +550,13 @@ reactor_worker_func(void* args_in)
 
   ACE_UNUSED_ARG(args_in);
 
+  // *NOTE*: asynchronous writing to a closed socket triggers the
+  // SIGPIPE signal (default action: abort).
+  // --> as this doesn't use select(), guard against this (ignore the signal)
+  ACE_Sig_Action no_sigpipe(ACE_static_cast(ACE_SignalHandler, SIG_IGN));
+  ACE_Sig_Action original_action;
+  no_sigpipe.register_action(SIGPIPE, &original_action);
+
   // assume ownership over the reactor...
   ACE_Reactor::instance()->owner(ACE_OS::thr_self(),
                                  NULL);
@@ -550,7 +567,10 @@ reactor_worker_func(void* args_in)
                ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%m\", aborting\n")));
   } // end IF
 
-  ACE_ERROR((LM_DEBUG,
+  // clean up
+  no_sigpipe.restore_action(SIGPIPE, original_action);
+
+  ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
 
   return 0;
