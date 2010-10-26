@@ -572,10 +572,10 @@ change_clicked_cb(GtkWidget* button_in,
 
   // step1: retrieve available data
   // retrieve buffer handle
-  GtkEntry* server_tab_nick_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
-                                                                     ACE_TEXT_ALWAYS_CHAR("server_tab_nick_entry")));
-  ACE_ASSERT(server_tab_nick_entry);
-  GtkEntryBuffer* buffer = gtk_entry_get_buffer(server_tab_nick_entry);
+  GtkEntry* server_tab_users_nick_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
+                                                                           ACE_TEXT_ALWAYS_CHAR("server_tab_users_nick_entry")));
+  ACE_ASSERT(server_tab_users_nick_entry);
+  GtkEntryBuffer* buffer = gtk_entry_get_buffer(server_tab_users_nick_entry);
   ACE_ASSERT(buffer);
 
   // sanity check
