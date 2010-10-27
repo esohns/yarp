@@ -701,6 +701,26 @@ update_character_profile(const RPG_Character_Player& player_in,
   gtk_widget_show_all(current);
 }
 
+void
+update_entity_profile(const RPG_Engine_Entity& entity_in,
+                      GladeXML* xml_in)
+{
+  RPG_TRACE(ACE_TEXT("::update_entity_profile"));
+
+  // sanity checks
+  ACE_ASSERT(entity_in.character);
+  ACE_ASSERT(entity_in.character->isPlayerCharacter());
+  RPG_Character_Player* player = dynamic_cast<RPG_Character_Player*>(entity_in.character);
+  ACE_ASSERT(player);
+  ACE_ASSERT(xml_in);
+
+  // step1: update character profile
+  ::update_character_profile(*player, xml_in);
+
+  // step2: update sprite
+
+}
+
 // callbacks used by ::scandir...
 int
 dirent_selector(const dirent* entry_in)
@@ -734,11 +754,11 @@ dirent_comparator(const dirent** entry1_in,
 }
 
 void
-load_character_profiles(const std::string& repository_in,
-                        GtkListStore* listStore_in)
+load_profiles(const std::string& repository_in,
+              GtkListStore* listStore_in)
 //                         GtkComboBox* comboBox_in)
 {
-  RPG_TRACE(ACE_TEXT("::load_character_profiles"));
+  RPG_TRACE(ACE_TEXT("::load_profiles"));
 
   // sanity check(s)
   ACE_ASSERT(listStore_in);
@@ -791,7 +811,7 @@ load_character_profiles(const std::string& repository_in,
     gtk_list_store_append(listStore_in, &iter);
     gtk_list_store_set(listStore_in, &iter,
                        0, entry.c_str(), // column 0
-                                      -1);
+                       -1);
   } // end FOR
 
   // clean up
@@ -810,7 +830,7 @@ load_character_profiles(const std::string& repository_in,
                              0, &value);
     text = g_value_get_string(&value);
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("character profile[0]: %s\n"),
+               ACE_TEXT("profile[0]: %s\n"),
                std::string(text).c_str()));
 
     g_value_unset(&value);
@@ -829,7 +849,7 @@ load_character_profiles(const std::string& repository_in,
                              0, &value);
     text = g_value_get_string(&value);
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("character profile[%u]: %s\n"),
+               ACE_TEXT("profile[%u]: %s\n"),
                i,
                std::string(text).c_str()));
 

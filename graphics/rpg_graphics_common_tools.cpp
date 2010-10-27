@@ -621,6 +621,15 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
 
       break;
     }
+    case CATEGORY_SPRITE:
+    {
+      // assemble path
+      file_out += RPG_GRAPHICS_TILE_DEF_CREATURES_SUB;
+      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += graphic_in.file;
+
+      break;
+    }
     case CATEGORY_TILE:
     {
       // follow references

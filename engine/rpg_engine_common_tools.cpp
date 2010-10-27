@@ -135,7 +135,8 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   RPG_Engine_Entity result;
   result.character = NULL;
   result.position = std::make_pair(0, 0);
-//   result.graphic;
+  result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  result.graphic = NULL;
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(filename_in))
@@ -261,14 +262,14 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   }
   ACE_ASSERT(result.character);
 
+  result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(player_p->sprite());
   // step2: load player sprite
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  type.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(player_p->sprite());
-  result.graphic.init(RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
-                                                             false), // don't cache
-                      true);                                         // assume ownership
-  ACE_ASSERT(result.graphic.surface());
+  type.sprite = result.sprite;
+  result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                          false); // don't cache
+  ACE_ASSERT(result.graphic);
 
   return result;
 }
@@ -362,7 +363,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
                                                 RPG_Character_GenderHelper::RPG_Character_GenderToString(player->getGender()),
                                                 classXML,
                                                 RPG_Character_OffHandHelper::RPG_Character_OffHandToString(player->getOffHand()),
-                                                RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.graphic.type().sprite));
+                                                RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite));
     // *NOTE*: add race, known spells, condition, prepared spells sequences "manually"
     RPG_Character_Race_t player_race = player->getRace();
     unsigned int race_index = 1;

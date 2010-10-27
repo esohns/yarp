@@ -4,7 +4,11 @@
  <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevdebugger>
-   <breakpointList/>
+   <breakpointList>
+    <breakpoint0 location="/home/unfv/Projects/RPG/net/rpg_net_stream_socket_base.i:279" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint0>
+   </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>
   <kdevastyle>

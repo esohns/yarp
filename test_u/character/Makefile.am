@@ -2,14 +2,27 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
-bin_PROGRAMS = character_generator character_parser
+bin_PROGRAMS = character_generator character_generator_gui character_parser
 
 character_generator_SOURCES = character_generator.cpp
-character_generator_CPPFLAGS = -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
-character_generator_LDADD = -lACE -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
+character_generator_CPPFLAGS = $(pkg_libs_CFLAGS) -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
+character_generator_LDFLAGS = $(pkg_libs_LIBS)
+character_generator_LDADD = -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
 	-lRPG_Common -lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Combat -lRPG_Monster
 
 character_parser_SOURCES = character_parser.cpp
-character_parser_CPPFLAGS = -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
-character_parser_LDADD = -lACE -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
+character_parser_CPPFLAGS = $(pkg_libs_CFLAGS) -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
+character_parser_LDFLAGS = $(pkg_libs_LIBS)
+character_parser_LDADD = -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
 	-lRPG_Common -lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Combat -lRPG_Monster
+
+character_generator_gui_SOURCES = character_generator_gui.cpp
+character_generator_gui_CPPFLAGS = $(pkg_libs_CFLAGS) -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
+character_generator_gui_LDFLAGS = $(pkg_libs_LIBS)
+character_generator_gui_LDADD = -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
+	-lRPG_Common -lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Graphics
+
+configdir = $(datadir)/@META_PACKAGE@/config
+config_DATA = character_generator_gui.glade
+
+EXTRA_DIST = $(config_DATA)

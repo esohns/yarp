@@ -20,11 +20,13 @@
 #ifndef RPG_ENGINE_COMMON_H
 #define RPG_ENGINE_COMMON_H
 
-#include <rpg_graphics_surface.h>
+#include <rpg_graphics_sprite.h>
 
 #include <rpg_map_common.h>
 
 #include <rpg_character_base.h>
+
+#include <SDL/SDL.h>
 
 #include <ace/Log_Msg.h>
 
@@ -33,9 +35,10 @@
 
 struct RPG_Engine_Entity
 {
-  RPG_Character_Base*  character;
-  RPG_Map_Position_t   position;
-  RPG_Graphics_Surface graphic;
+  RPG_Character_Base* character;
+  RPG_Map_Position_t  position;
+  RPG_Graphics_Sprite sprite;
+  SDL_Surface*        graphic;
 };
 typedef std::vector<RPG_Engine_Entity> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;

@@ -88,6 +88,7 @@ AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile
                  data/Makefile
+                 data/creatures/Makefile
                  data/cursors/Makefile
                  data/doors/Makefile
                  data/floors/Makefile
