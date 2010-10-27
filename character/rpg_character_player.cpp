@@ -226,6 +226,18 @@ RPG_Character_Player::load(const std::string& filename_in,
                filename_in.c_str(),
                text.c_str()));
   }
+  catch (const ::xml_schema::exception& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::load(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               text.c_str()));
+
+    return result;
+  }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,

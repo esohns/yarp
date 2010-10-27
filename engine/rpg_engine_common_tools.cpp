@@ -163,10 +163,10 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
 //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
   ::xml_schema::properties props;
-  std::string path;
+  std::string base_path;
   // *NOTE*: use the working directory as a fallback...
   if (schemaRepository_in.empty())
-    path = RPG_Common_File_Tools::getWorkingDirectory();
+    base_path = RPG_Common_File_Tools::getWorkingDirectory();
   else
   {
     // sanity check(s)
@@ -179,35 +179,37 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
       return result;
     } // end IF
 
-    path = schemaRepository_in;
+    base_path = schemaRepository_in;
   } // end ELSE
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_CHARACTER_PLAYER_SCHEMA_FILE;
+  std::string schemaFile = base_path;
+  schemaFile += ACE_DIRECTORY_SEPARATOR_STR;
+  schemaFile += RPG_ENGINE_SCHEMA_FILE;
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(path))
+  if (!RPG_Common_File_Tools::isReadable(schemaFile))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               path.c_str()));
+               schemaFile.c_str()));
 
     return result;
   } // end IF
 
   props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
-                        path);
+                        schemaFile);
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
 
-  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > player_p;
+  ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > character_player_p;
+  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > engine_player_p;
   try
   {
     ifs.open(filename_in.c_str(),
              std::ios_base::in);
 
-    player_p = engine_player(ifs,
-                             RPG_XSDErrorHandler,
-                             flags,
-                             props);
+    engine_player_p = engine_player(ifs,
+                                    RPG_XSDErrorHandler,
+                                    flags,
+                                    props);
 
     ifs.close();
   }
@@ -231,6 +233,67 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
 
     return result;
   }
+  catch (const ::xml_schema::exception& exception)
+  {
+    // *NOTE*: maybe this was a CHARACTER profile (expected ENTITY profile)
+    // --> try parsing that instead...
+    schemaFile = base_path;
+    schemaFile += ACE_DIRECTORY_SEPARATOR_STR;
+    schemaFile += RPG_CHARACTER_PLAYER_SCHEMA_FILE;
+    // sanity check(s)
+    if (!RPG_Common_File_Tools::isReadable(schemaFile))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+                 schemaFile.c_str()));
+
+      return result;
+    } // end IF
+    props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
+                          schemaFile);
+    try
+    {
+      character_player_p = character_player(ifs,
+                                            RPG_XSDErrorHandler,
+                                            flags,
+                                            props);
+    }
+    catch (const std::ifstream::failure&)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): unable to open or read error, aborting\n"),
+                 filename_in.c_str()));
+
+      return result;
+    }
+    catch (const ::xml_schema::parsing& exception)
+    {
+      std::ostringstream converter;
+      converter << exception;
+      std::string text = converter.str();
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
+                 filename_in.c_str(),
+                 text.c_str()));
+
+      return result;
+    }
+    catch (const ::xml_schema::exception& exception)
+    {
+      std::ostringstream converter;
+      converter << exception;
+      std::string text = converter.str();
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
+                 filename_in.c_str(),
+                 text.c_str()));
+
+      return result;
+    }
+
+    // OK ! --> proceed
+    ifs.close();
+  }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
@@ -239,7 +302,9 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
 
     return result;
   }
-  ACE_ASSERT(player_p.get());
+  ACE_ASSERT(character_player_p.get() || engine_player_p.get());
+  RPG_Character_PlayerXML_XMLTree_Type* player_p = (engine_player_p.get() ? engine_player_p.get() : character_player_p.get());
+  ACE_ASSERT(player_p);
 
   // init result
   RPG_Character_Alignment alignment;
@@ -294,14 +359,19 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   }
   ACE_ASSERT(result.character);
 
-  result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(player_p->sprite());
+  if (engine_player_p.get())
+    result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
+
   // step2: load player sprite
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  type.sprite = result.sprite;
-  result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
-                                                          false); // don't cache
-  ACE_ASSERT(result.graphic);
+  if (result.sprite != RPG_GRAPHICS_SPRITE_INVALID)
+  {
+    RPG_Graphics_GraphicTypeUnion type;
+    type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+    type.sprite = result.sprite;
+    result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                            false); // don't cache
+    ACE_ASSERT(result.graphic);
+  } // end IF
 
   return result;
 }
