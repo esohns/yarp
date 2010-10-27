@@ -1,32 +1,44 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
+ <DocsAndViews NumberOfDocuments="6" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_generator_gui.cpp" >
-   <View0 Encoding="UTF-8" line="689" Type="Source" />
+   <View0 Encoding="UTF-8" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/Makefile.am" >
-   <View0 Encoding="" line="23" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_generator.cpp" >
+   <View0 Encoding="" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/gui/rpg_client_gui.cpp" >
-   <View0 Encoding="" line="2018" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_generator_gui_common.h" >
+   <View0 Encoding="" Type="Source" />
   </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/engine/rpg_engine_common_tools.cpp" >
+   <View0 Encoding="" Type="Source" />
+  </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/gui/rpg_client_gui.cpp" >
+   <View0 Encoding="" Type="Source" />
+  </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:///usr/include/SDL/SDL_cdrom.h" >
+   <View0 Encoding="" line="95" Type="Source" />
+  </Doc5>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList>
-    <breakpoint0 location="/home/unfv/Projects/RPG/net/rpg_net_sockethandler_base.i:72" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint0 location="/home/unfv/Projects/RPG/engine/rpg_engine_common_tools.cpp:295" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint0>
-    <breakpoint1 location="/home/unfv/Projects/RPG/net/rpg_net_sockethandler_base.i:99" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint1 location="/home/unfv/Projects/RPG/engine/rpg_engine_common_tools.cpp:283" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint1>
-    <breakpoint2 location="/home/unfv/Projects/RPG/net/rpg_net_stream_socket_base.i:275" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint2 location="/home/unfv/Projects/RPG/engine/rpg_engine_common_tools.cpp:271" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint2>
-    <breakpoint3 location="/home/unfv/Projects/RPG/net/rpg_net_stream_socket_base.i:136" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint3 location="/home/unfv/Projects/RPG/engine/rpg_engine_common_tools.cpp:254" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint3>
+    <breakpoint4 location="/home/unfv/Projects/RPG/engine/rpg_engine_common_tools.cpp:226" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint4>
    </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>

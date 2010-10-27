@@ -235,8 +235,6 @@ RPG_Character_Player::load(const std::string& filename_in,
                ACE_TEXT("RPG_Character_Player::load(\"%s\"): exception occurred: \"%s\", aborting\n"),
                filename_in.c_str(),
                text.c_str()));
-
-    return result;
   }
   catch (...)
   {
