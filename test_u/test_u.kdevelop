@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>character/character_generator_gui</activetarget>
+      <activetarget>character/character_generator</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -35,7 +35,7 @@
       <autokdesu>true</autokdesu>
       <envvars/>
       <runarguments>
-        <character_generator>-n 6 -r -t</character_generator>
+        <character_generator>-e -r -t</character_generator>
         <combat_simulator>-b 0 -f 1 -n 1 -p 6 -t -x</combat_simulator>
         <monster_parser>-d -t</monster_parser>
         <item_parser>-d -t</item_parser>
@@ -53,10 +53,10 @@
         <character_parser>-f /var/tmp/Xerxes.xml -t</character_parser>
         <path_finder>-b -m /var/tmp/test_map.txt -t</path_finder>
         <client_gui>-f /var/tmp/current_map.txt -t</client_gui>
-        <character_generator_gui></character_generator_gui>
+        <character_generator_gui>-t</character_generator_gui>
       </runarguments>
       <debugarguments>
-        <character_generator>-n 6 -r -t</character_generator>
+        <character_generator>-e -r -t</character_generator>
         <combat_simulator>-b 0 -f 1 -n 1 -p 6 -t -x</combat_simulator>
         <monster_parser>-d -t</monster_parser>
         <item_parser>-d -t</item_parser>
@@ -74,7 +74,7 @@
         <character_parser>-f /var/tmp/Xerxes.xml -t</character_parser>
         <path_finder>-b -m /var/tmp/test_map.txt -t</path_finder>
         <client_gui>-f /var/tmp/current_map.txt -t</client_gui>
-        <character_generator_gui></character_generator_gui>
+        <character_generator_gui>-t</character_generator_gui>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -163,7 +163,7 @@
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
     </make>
   </kdevautoproject>
@@ -314,7 +314,7 @@
       <runShellScript></runShellScript>
       <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
-      <separatetty>false</separatetty>
+      <separatetty>true</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <raiseGDBOnStart>false</raiseGDBOnStart>
     </general>

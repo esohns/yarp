@@ -65,7 +65,8 @@ bool                         RPG_Graphics_Common_Tools::myInitialized = false;
 
 void
 RPG_Graphics_Common_Tools::init(const std::string& directory_in,
-                                const unsigned long& cacheSize_in)
+                                const unsigned long& cacheSize_in,
+                                const bool& initSDL_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::init"));
 
@@ -91,17 +92,19 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
   else
   {
     // init colors
-    RPG_Graphics_SDL_Tools::initColors();
+    if (initSDL_in)
+      RPG_Graphics_SDL_Tools::initColors();
   } // end ELSE
 
   // init fonts
-  if (!initFonts())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initFonts(), aborting\n")));
+  if (initSDL_in)
+    if (!initFonts())
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to initFonts(), aborting\n")));
 
-    return;
-  } // end IF
+      return;
+    } // end IF
 
   myInitialized = true;
 }
@@ -1570,6 +1573,7 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_GraphicTypeUnion& type
   if ((graphic.category != CATEGORY_CURSOR) &&
       (graphic.category != CATEGORY_INTERFACE) &&
       (graphic.category != CATEGORY_IMAGE) &&
+      (graphic.category != CATEGORY_SPRITE) &&
       (graphic.category != CATEGORY_TILE))
   {
     ACE_DEBUG((LM_ERROR,

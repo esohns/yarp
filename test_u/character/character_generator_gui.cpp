@@ -729,7 +729,8 @@ ACE_TMAIN(int argc_in,
   if (!RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
       !RPG_Common_File_Tools::isReadable(itemDictionary) ||
       !RPG_Common_File_Tools::isReadable(magicDictionary) ||
-      !RPG_Common_File_Tools::isReadable(UIfile))
+      !RPG_Common_File_Tools::isReadable(UIfile) ||
+      !RPG_Common_File_Tools::isDirectory(graphicsDirectory))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));

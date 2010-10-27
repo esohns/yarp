@@ -39,8 +39,10 @@ class RPG_Graphics_Common_Tools
   // init string conversion facilities
   static void initStringConversionTables();
   // *WARNING*: needs to be called AFTER SDL_SetVideoMode !
-  static void init(const std::string&,      // graphics directory
-                   const unsigned long&);   // cache size
+  // *NOTE*: not using SDL at all ? --> provide 'false' as last parameter...
+  static void init(const std::string&,   // graphics directory
+                   const unsigned long&, // cache size
+                   const bool& = true);  // init SDL ?
   static void fini();
   static const std::string typeToString(const RPG_Graphics_GraphicTypeUnion&);
   static const std::string styleToString(const RPG_Graphics_StyleUnion&);

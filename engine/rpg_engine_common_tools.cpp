@@ -399,11 +399,11 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
       player_model.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
     // *TODO*: add item sequence
 
-    character_player(ofs,
-                     player_model,
-                     map,
-                     character_set,
-                     flags);
+    engine_player(ofs,
+                  player_model,
+                  map,
+                  character_set,
+                  flags);
   }
   catch (const std::ofstream::failure&)
   {

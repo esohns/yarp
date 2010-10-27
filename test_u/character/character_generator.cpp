@@ -23,6 +23,8 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_client_defines.h>
+
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
@@ -1143,12 +1145,14 @@ generate_entity(const RPG_Character_Player& player_in,
   result.character = &const_cast<RPG_Character_Player&>(player_in);
   result.position = std::make_pair(0, 0);
   result.sprite = sprite_in;
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  type.sprite = sprite_in;
-  result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // type
-                                                          false); // don't cache
-  ACE_ASSERT(result.graphic);
+  result.graphic = NULL;
+//   // *NOTE*: cannot load surface, as SDL hasn't been initialized...
+//   RPG_Graphics_GraphicTypeUnion type;
+//   type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+//   type.sprite = sprite_in;
+//   result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // type
+//                                                           false); // don't cache
+//   ACE_ASSERT(result.graphic);
 
   return result;
 }
@@ -1158,6 +1162,8 @@ do_work(const bool& generateEntity_in,
         const std::string magicDictionaryFilename_in,
         const std::string itemDictionaryFilename_in,
         const std::string& graphicsDictionary_in,
+        const std::string& graphicsDirectory_in,
+        const unsigned long& graphicsCacheSize_in,
         const unsigned int& numPartyMembers_in,
         const bool& random_in)
 {
@@ -1171,6 +1177,10 @@ do_work(const bool& generateEntity_in,
                                 itemDictionaryFilename_in,
                                 std::string());
   RPG_Graphics_Common_Tools::initStringConversionTables();
+
+  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+                                  graphicsCacheSize_in,
+                                  false); // DON'T init SDL bits...
 
   // init graphics dictionary
   try
@@ -1442,6 +1452,14 @@ int ACE_TMAIN(int argc,
   graphicsDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
   graphicsDictionaryFilename += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
 
+  std::string graphicsDirectory = base_data_path;
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDirectory += ACE_TEXT(".."); // go back one...
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDirectory += RPG_COMMON_DEF_DATA_SUB;
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDirectory += RPG_GRAPHICS_DEF_DATA_SUB;
+
   unsigned int numPartyMembers = 0;
   bool random                  = false;
   bool traceInformation        = false;
@@ -1468,11 +1486,9 @@ int ACE_TMAIN(int argc,
   // step1b: validate arguments
   if (!RPG_Common_File_Tools::isReadable(itemDictionaryFilename) ||
       !RPG_Common_File_Tools::isReadable(magicDictionaryFilename) ||
-      !RPG_Common_File_Tools::isReadable(graphicsDictionaryFilename))
+      !RPG_Common_File_Tools::isReadable(graphicsDictionaryFilename) ||
+      !RPG_Common_File_Tools::isDirectory(graphicsDirectory))
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("missing/invalid (XML) filename, aborting\n")));
-
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
 
@@ -1521,6 +1537,8 @@ int ACE_TMAIN(int argc,
           magicDictionaryFilename,
           itemDictionaryFilename,
           graphicsDictionaryFilename,
+          graphicsDirectory,
+          RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
           numPartyMembers,
           random);
 
