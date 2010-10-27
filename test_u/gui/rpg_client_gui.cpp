@@ -93,7 +93,7 @@ event_timer_SDL_cb(Uint32 interval_in,
 {
   RPG_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
 
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (argument_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (argument_in);
   ACE_ASSERT(data);
 
   SDL_Event event;
@@ -577,7 +577,7 @@ reactor_worker_func(void* args_in)
 }
 
 const bool
-do_initAudio(const SDL_audio_config_t& audioConfig_in)
+do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
 {
   RPG_TRACE(ACE_TEXT("::do_initAudio"));
 
@@ -611,7 +611,7 @@ do_initAudio(const SDL_audio_config_t& audioConfig_in)
     return false;
   } // end IF
 //   Mix_AllocateChannels(4);
-  SDL_audio_config_t obtained;
+  RPG_Client_SDL_AudioConfig_t obtained;
   obtained.frequency = 0;
   obtained.format = 0;
   obtained.channels = 0;
@@ -664,8 +664,8 @@ do_initAudio(const SDL_audio_config_t& audioConfig_in)
 const bool
 do_initGUI(const std::string& graphicsDirectory_in,
            const std::string& UIfile_in,
-           GTK_cb_data_t& userData_in,
-           const SDL_video_config_t& videoConfig_in)
+           RPG_Client_GTK_CBData_t& userData_in,
+           const RPG_Client_SDL_VideoConfig_t& videoConfig_in)
 {
   RPG_TRACE(ACE_TEXT("::do_initGUI"));
 
@@ -790,7 +790,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
                                                                                                            : FALSE));
 
   // step4a: connect default signals
-  gpointer userData_p = const_cast<GTK_cb_data_t*> (&userData_in);
+  gpointer userData_p = const_cast<RPG_Client_GTK_CBData_t*> (&userData_in);
   g_signal_connect(main_dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(quit_activated_GTK_cb),
@@ -1102,7 +1102,7 @@ do_work(const RPG_Client_Config& config_in,
     return;
   }
 
-  GTK_cb_data_t userData;
+  RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
   userData.hover_time            = 0;
   userData.gtk_time              = 0;
@@ -1791,7 +1791,6 @@ do_parseIniFile(const std::string& iniFilename_in,
 //     ++val_index;
 //   } // end WHILE
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("imported \"%s\"...\n"),
 //              configFilename_in.c_str()));

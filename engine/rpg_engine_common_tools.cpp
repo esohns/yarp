@@ -208,19 +208,54 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
                              flags,
                              props);
 
-    // init result
-    RPG_Character_Alignment alignment;
-    alignment.civic = RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic(player_p->alignment().civic());
-    alignment.ethic = RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic(player_p->alignment().ethic());
-    RPG_Character_Attributes attributes;
-    attributes.strength = player_p->attributes().strength();
-    attributes.dexterity = player_p->attributes().dexterity();
-    attributes.constitution = player_p->attributes().constitution();
-    attributes.intelligence = player_p->attributes().intelligence();
-    attributes.wisdom = player_p->attributes().wisdom();
-    attributes.charisma = player_p->attributes().charisma();
-    // *TODO*: serialize/parse items
-    RPG_Item_List_t items;
+    ifs.close();
+  }
+  catch (const std::ifstream::failure&)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): unable to open or read error, aborting\n"),
+               filename_in.c_str()));
+
+    return result;
+  }
+  catch (const ::xml_schema::parsing& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               text.c_str()));
+
+    return result;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred, aborting\n"),
+               filename_in.c_str()));
+
+    return result;
+  }
+  ACE_ASSERT(player_p.get());
+
+  // init result
+  RPG_Character_Alignment alignment;
+  alignment.civic = RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic(player_p->alignment().civic());
+  alignment.ethic = RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic(player_p->alignment().ethic());
+  RPG_Character_Attributes attributes;
+  attributes.strength = player_p->attributes().strength();
+  attributes.dexterity = player_p->attributes().dexterity();
+  attributes.constitution = player_p->attributes().constitution();
+  attributes.intelligence = player_p->attributes().intelligence();
+  attributes.wisdom = player_p->attributes().wisdom();
+  attributes.charisma = player_p->attributes().charisma();
+  // *TODO*: serialize/parse items
+  RPG_Item_List_t items;
+
+  try
+  {
     result.character = new RPG_Character_Player(player_p->name(),
                                                 RPG_Character_GenderHelper::stringToRPG_Character_Gender(player_p->gender()),
                                                 RPG_Character_Race_Common_Tools::raceXMLTreeToRace(player_p->race()),
@@ -240,33 +275,21 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
                                                 RPG_Character_Player_Common_Tools::spellXMLTreeToSpells(player_p->spell()),
                                                 items);
   }
-  catch (const std::ifstream::failure&)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): unable to open or read error, aborting\n"),
-               filename_in.c_str()));
-  }
-  catch (const ::xml_schema::parsing& exception)
-  {
-    std::ostringstream converter;
-    converter << exception;
-    std::string text = converter.str();
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               filename_in.c_str(),
-               text.c_str()));
-  }
   catch (const std::bad_alloc& exception)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
                exception.what()));
+
+    return result;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred, aborting\n"),
                filename_in.c_str()));
+
+    return result;
   }
   ACE_ASSERT(result.character);
 
@@ -404,12 +427,14 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
                   map,
                   character_set,
                   flags);
+
+    ofs.close();
   }
   catch (const std::ofstream::failure&)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("\"%s\": unable to open or write error, aborting\n"),
-                        filename_in.c_str()));
+               filename_in.c_str()));
 
     return false;
   }
@@ -420,8 +445,8 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Character_Player::save(\"%s\"): exception occurred: \"%s\", aborting\n"),
-                        filename_in.c_str(),
-                                          text.c_str()));
+               filename_in.c_str(),
+               text.c_str()));
 
     throw exception;
   }
@@ -429,13 +454,13 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Character_Player::save(\"%s\"): exception occurred, aborting\n"),
-                        filename_in.c_str()));
+               filename_in.c_str()));
 
     throw;
   }
 
 //   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+//              ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
 //              getName().c_str(),
 //              filename_in.c_str()));
 

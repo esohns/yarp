@@ -60,7 +60,8 @@ RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
       catch (const std::bad_alloc& exception)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught std::bad_alloc, aborting\n")));
+                   ACE_TEXT("caught exception: \"%s\", aborting\n"),
+                   exception.what()));
       }
       if (!handle)
       {

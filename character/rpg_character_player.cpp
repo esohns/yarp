@@ -104,14 +104,6 @@ RPG_Character_Player::~RPG_Character_Player()
 
 }
 
-// RPG_Character_Player&
-// RPG_Character_Player::operator=(const RPG_Character_Player& player_in)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Character_Player::operator="));
-//
-//   return *this;
-// }
-
 RPG_Character_Player
 RPG_Character_Player::load(const std::string& filename_in,
                            const std::string& schemaRepository_in)
@@ -176,6 +168,8 @@ RPG_Character_Player::load(const std::string& filename_in,
                                                                                           RPG_XSDErrorHandler,
                                                                                           flags,
                                                                                           props);
+
+    ifs.close();
 
     // init result
     RPG_Character_Alignment alignment;
@@ -349,6 +343,8 @@ RPG_Character_Player::save(const std::string& filename_in) const
                      map,
                      character_set,
                      flags);
+
+    ofs.close();
   }
   catch (const std::ofstream::failure&)
   {

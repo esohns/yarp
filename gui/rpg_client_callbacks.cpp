@@ -747,7 +747,7 @@ dirent_selector(const dirent* entry_in)
 
   // *NOTE*: select *.xml files
   std::string filename(entry_in->d_name);
-  std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
+  std::string extension(RPG_CHARACTER_PROFILE_EXT);
   if (filename.rfind(extension,
       std::string::npos) != (filename.size() - extension.size()))
   {
@@ -808,7 +808,7 @@ load_profiles(const std::string& repository_in,
 
   // iterate over entries
   std::string entry;
-  std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
+  std::string extension(RPG_CHARACTER_PROFILE_EXT);
   GtkTreeIter iter;
   for (unsigned int i = 0;
        i < static_cast<unsigned int> (entries.length());
@@ -886,7 +886,7 @@ about_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::about_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -932,7 +932,7 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(userData_in);
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
   ACE_ASSERT(data);
 
 //   // leave GTK
@@ -973,7 +973,7 @@ load_character_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -1009,7 +1009,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -1073,7 +1073,7 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
 {
   RPG_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
 
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -1109,7 +1109,7 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   std::string filename = RPG_CLIENT_DEF_CHARACTER_REPOSITORY;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += active_item;
-  filename += RPG_CHARACTER_PLAYER_PROFILE_EXT;
+  filename += RPG_CHARACTER_PROFILE_EXT;
 
   // load player profile
   data->player = RPG_Character_Player::load(filename,
@@ -1135,7 +1135,7 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::characters_refresh_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -1179,7 +1179,7 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
 // {
 //   RPG_TRACE(ACE_TEXT("::do_SDLEventLoop_GTK_cb"));
 //
-//   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+//   RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
 //   ACE_ASSERT(data);
 //
 //   SDL_Event event;
@@ -1407,7 +1407,7 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
 // {
 //   RPG_TRACE(ACE_TEXT("::gtk_quit_handler_cb"));
 //
-//   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+//   RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
 //   ACE_ASSERT(data);
 //
 //   // synch access

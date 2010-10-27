@@ -186,7 +186,7 @@ RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& race_in)
   {
     if (race_in.test(index))
     {
-      result += RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index));
+      result += RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race>(race_index));
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end IF
   } // end FOR
@@ -531,7 +531,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
                                   1,
                                   result);
-  race = static_cast<RPG_Character_Race> (result.front());
+  race = static_cast<RPG_Character_Race>(result.front());
   player_race.flip(race - 1);
 
   // step4: class

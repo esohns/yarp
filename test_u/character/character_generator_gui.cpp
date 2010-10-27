@@ -17,11 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
 #include <rpg_config.h>
 #endif
+
+#include "character_generator_gui_common.h"
+#include "character_generator_gui_callbacks.h"
 
 #include <rpg_client_defines.h>
 #include <rpg_client_callbacks.h>
@@ -45,6 +47,7 @@
 
 #include <gnome.h>
 #include <gtk/gtk.h>
+#include <glade/glade.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Get_Opt.h>
@@ -58,13 +61,6 @@
 
 #define RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_FILE        ACE_TEXT("character_generator_gui.glade")
 #define RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_APPLICATION_ID ACE_TEXT_ALWAYS_CHAR("character generator")
-
-struct GTK_cb_data_t
-{
-  GladeXML*         xml;
-  std::string       schemaRepository;
-  RPG_Engine_Entity entity;
-};
 
 // init statics
 static GtkWidget* main_dialog = NULL;

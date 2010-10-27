@@ -38,9 +38,9 @@
 
 #include <string>
 
-struct GTK_cb_data_t
+struct RPG_Client_GTK_CBData_t
 {
- inline GTK_cb_data_t()
+ inline RPG_Client_GTK_CBData_t()
   : lock(NULL, NULL),
     player(RPG_Character_Player::dummy()) {};
 
@@ -61,7 +61,7 @@ struct GTK_cb_data_t
 };
 
 // *NOTE* types as used by SDL
-struct SDL_audio_config_t
+struct RPG_Client_SDL_AudioConfig_t
 {
   int    frequency;
   Uint16 format;
@@ -71,7 +71,7 @@ struct SDL_audio_config_t
 };
 
 // *NOTE* types as used by SDL
-struct SDL_video_config_t
+struct RPG_Client_SDL_VideoConfig_t
 {
   int    screen_width;
   int    screen_height;
@@ -81,7 +81,7 @@ struct SDL_video_config_t
   bool   doubleBuffer;
 };
 
-struct map_config_t
+struct RPG_Client_MapConfig_t
 {
   unsigned long min_room_size; // 0: don't care
   bool          doors;
@@ -97,29 +97,29 @@ struct map_config_t
 struct RPG_Client_Config
 {
   // *** reactor ***
-  unsigned long      num_threadpool_threads; // 0: don't use threadpool
+  unsigned long                num_threadpool_threads; // 0: don't use threadpool
   // *** UI ***
-  std::string        glade_file;
+  std::string                  glade_file;
 //   GTK_cb_data_t      gtk_cb_data;
   // *** sound ***
-  SDL_audio_config_t audio_config;
-  std::string        sound_directory;
-  unsigned long      sound_cache_size;
-  std::string        sound_dictionary;
+  RPG_Client_SDL_AudioConfig_t audio_config;
+  std::string                  sound_directory;
+  unsigned long                sound_cache_size;
+  std::string                  sound_dictionary;
   // *** graphics ***
-  SDL_video_config_t video_config;
-  std::string        graphics_directory;
-  unsigned long      graphics_cache_size;
-  std::string        graphics_dictionary;
+  RPG_Client_SDL_VideoConfig_t video_config;
+  std::string                  graphics_directory;
+  unsigned long                graphics_cache_size;
+  std::string                  graphics_dictionary;
   // *** magic ***
-  std::string        magic_dictionary;
+  std::string                  magic_dictionary;
   // *** item ***
-  std::string        item_dictionary;
+  std::string                  item_dictionary;
   // *** monster ***
-  std::string        monster_dictionary;
+  std::string                  monster_dictionary;
   // *** map ***
-  map_config_t       map_config;
-  std::string        map_file;
+  RPG_Client_MapConfig_t       map_config;
+  std::string                  map_file;
 };
 
 #endif

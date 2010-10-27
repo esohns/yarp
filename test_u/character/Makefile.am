@@ -16,8 +16,9 @@ character_parser_LDFLAGS = $(pkg_libs_LIBS)
 character_parser_LDADD = -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
 	-lRPG_Common -lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Combat -lRPG_Monster
 
-character_generator_gui_SOURCES = character_generator_gui.cpp
-character_generator_gui_CPPFLAGS = $(pkg_libs_CFLAGS) -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
+character_generator_gui_SOURCES = character_generator_gui.cpp \
+	character_generator_gui_callbacks.cpp character_generator_gui_callbacks.h character_generator_gui_common.h
+character_generator_gui_CPPFLAGS = $(pkg_libs_CFLAGS) -DDATADIR="\"$(datadir)/@META_PACKAGE@\""
 character_generator_gui_LDFLAGS = $(pkg_libs_LIBS)
 character_generator_gui_LDADD = -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
 	-lRPG_Common -lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Combat -lRPG_Monster -lRPG_Map -lRPG_Graphics -lRPG_Engine	-lRPG_Client_GUI
