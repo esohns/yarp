@@ -1,13 +1,32 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="0" />
+ <DocsAndViews NumberOfDocuments="3" >
+  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/character_generator_gui.cpp" >
+   <View0 Encoding="UTF-8" line="689" Type="Source" />
+  </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/character/Makefile.am" >
+   <View0 Encoding="" line="23" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/test_u/gui/rpg_client_gui.cpp" >
+   <View0 Encoding="" line="2018" Type="Source" />
+  </Doc2>
+ </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList>
-    <breakpoint0 location="/home/unfv/Projects/RPG/map/rpg_map_common_tools.cpp:2706" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+    <breakpoint0 location="/home/unfv/Projects/RPG/net/rpg_net_sockethandler_base.i:72" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
      <tracedExpressions/>
     </breakpoint0>
+    <breakpoint1 location="/home/unfv/Projects/RPG/net/rpg_net_sockethandler_base.i:99" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint1>
+    <breakpoint2 location="/home/unfv/Projects/RPG/net/rpg_net_stream_socket_base.i:275" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint2>
+    <breakpoint3 location="/home/unfv/Projects/RPG/net/rpg_net_stream_socket_base.i:136" type="1" tracingFormatString="" traceFormatStringEnabled="0" condition="" tracingEnabled="0" enabled="1" >
+     <tracedExpressions/>
+    </breakpoint3>
    </breakpointList>
    <showInternalCommands value="0" />
   </kdevdebugger>

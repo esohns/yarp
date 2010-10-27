@@ -20,6 +20,8 @@
 #ifndef RPG_CLIENT_CALLBACKS_H
 #define RPG_CLIENT_CALLBACKS_H
 
+#include <rpg_engine_common.h>
+
 #include <rpg_character_player.h>
 
 #include <glade/glade.h>

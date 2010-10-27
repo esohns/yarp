@@ -23,6 +23,7 @@
 #include "rpg_graphics_common_tools.h"
 
 #include <rpg_common_macros.h>
+#include <rpg_common_xsderrorhandler.h>
 
 #include <ace/Log_Msg.h>
 
@@ -108,7 +109,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
   try
   {
     doc_p.parse(filename_in,
-                myXSDErrorHandler,
+                RPG_XSDErrorHandler,
                 flags);
   }
   catch (const ::xml_schema::parsing& exception)
@@ -132,7 +133,6 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 
   dictionary_p.post_RPG_Graphics_Dictionary_Type();
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("finished parsing graphics dictionary file \"%s\"...\n"),
 //              filename_in.c_str()));
@@ -169,6 +169,14 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
     {
       RPG_Graphics_ImageDictionaryIterator_t iterator = myDictionary.images.find(type_in.image);
       if (iterator != myDictionary.images.end())
+        return (*iterator).second;
+
+      break;
+    }
+    case RPG_Graphics_GraphicTypeUnion::SPRITE:
+    {
+      RPG_Graphics_SpriteDictionaryIterator_t iterator = myDictionary.creatures.find(type_in.sprite);
+      if (iterator != myDictionary.creatures.end())
         return (*iterator).second;
 
       break;
@@ -231,75 +239,6 @@ RPG_Graphics_Dictionary::getFonts() const
   } // end FOR
 
   return result;
-}
-
-bool
-RPG_Graphics_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
-                                                   unsigned long line_in,
-                                                   unsigned long column_in,
-                                                   ::xml_schema::error_handler::severity severity_in,
-                                                   const std::string& message_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::XSD_Error_Handler::handle"));
-
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
-//              id_in.c_str(),
-//              line_in,
-//              column_in,
-//              message_in.c_str()));
-
-  switch (severity_in)
-  {
-    case ::xml_schema::error_handler::severity::warning:
-    {
-      ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    case ::xml_schema::error_handler::severity::error:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    case ::xml_schema::error_handler::severity::fatal:
-    {
-      ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-  } // end SWITCH
-
-  // try to continue anyway...
-  return true;
 }
 
 void

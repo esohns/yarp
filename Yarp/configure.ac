@@ -97,6 +97,7 @@ AC_CONFIG_FILES([Makefile
                  map/scripts/Makefile
                  graphics/Makefile
                  graphics/data/Makefile
+                 graphics/data/creatures/Makefile
                  graphics/data/cursors/Makefile
                  graphics/data/doors/Makefile
                  graphics/data/floors/Makefile

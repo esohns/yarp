@@ -27,26 +27,44 @@
 #include <rpg_client_callbacks.h>
 
 #include <rpg_engine_defines.h>
+#include <rpg_engine_common_tools.h>
 
 #include <rpg_graphics_defines.h>
+#include <rpg_graphics_sprite.h>
+#include <rpg_graphics_dictionary.h>
+#include <rpg_graphics_common_tools.h>
 
-#include <rpg_items_defines.h>
+#include <rpg_item_defines.h>
 
 #include <rpg_magic_defines.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
+#include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
+#include <gnome.h>
 #include <gtk/gtk.h>
 
-#include <ace/<Global_Macros.h>
+#include <ace/Global_Macros.h>
+#include <ace/Get_Opt.h>
+#include <ace/High_Res_Timer.h>
 #include <ace/Log_Msg.h>
 #include <ace/Version.h>
 
 #include <string>
+#include <iostream>
+#include <sstream>
 
-#define RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_FILE ACE_TEXT("character_generator_gui.glade")
+#define RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_FILE        ACE_TEXT("character_generator_gui.glade")
+#define RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_APPLICATION_ID ACE_TEXT_ALWAYS_CHAR("character generator")
+
+struct GTK_cb_data_t
+{
+  GladeXML*         xml;
+  std::string       schemaRepository;
+  RPG_Engine_Entity entity;
+};
 
 // init statics
 static GtkWidget* main_dialog = NULL;
@@ -157,7 +175,6 @@ process_arguments(const int argc_in,
                              0);                        // don't use long options
 
   int option = 0;
-  std::stringstream converter;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
@@ -245,8 +262,7 @@ process_arguments(const int argc_in,
 const bool
 do_initGUI(const std::string& graphicsDirectory_in,
            const std::string& UIfile_in,
-           GTK_cb_data_t& userData_in,
-           const SDL_video_config_t& videoConfig_in)
+           GTK_cb_data_t& userData_in)
 {
   RPG_TRACE(ACE_TEXT("::do_initGUI"));
 
@@ -289,6 +305,21 @@ do_initGUI(const std::string& graphicsDirectory_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
                ACE_TEXT_ALWAYS_CHAR("main_dialog")));
+
+    // clean up
+    g_object_unref(G_OBJECT(userData_in.xml));
+    userData_in.xml = NULL;
+
+    return false;
+  } // end IF
+
+  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
+                                                            ACE_TEXT_ALWAYS_CHAR("about_dialog")));
+  if (!about_dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT_ALWAYS_CHAR("about_dialog")));
 
     // clean up
     g_object_unref(G_OBJECT(userData_in.xml));
@@ -346,8 +377,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  ::load_character_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
-                            list);
+  ::load_profiles(RPG_CLIENT_DEF_ENTITY_REPOSITORY,
+                  list);
   gtk_combo_box_set_model(available_characters,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
@@ -356,7 +387,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
                                                                                                            : FALSE));
 
   // step4a: connect default signals
-  gpointer userData_p = const_cast<GTK_cb_data_t*> (&userData_in);
+  gpointer userData_p = const_cast<GTK_cb_data_t*>(&userData_in);
   g_signal_connect(main_dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(quit_activated_GTK_cb),
@@ -507,158 +538,31 @@ do_initGUI(const std::string& graphicsDirectory_in,
   if (gtk_widget_is_sensitive(GTK_WIDGET(available_characters)))
     gtk_combo_box_set_active(available_characters, 0);
 
-  // init SDL UI handling
-
-  // ***** keyboard setup *****
-  // enable Unicode translation
-  SDL_EnableUNICODE(1);
-  // enable key repeat
-  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
-                      SDL_DEFAULT_REPEAT_INTERVAL);
-//   // ignore keyboard events
-//   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
-//   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
-
-  // SDL event filter (filter mouse motion events and the like)
-//   SDL_SetEventFilter(event_filter_SDL_cb);
-
-  // ***** window/screen setup *****
-  // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING)); // icon caption
-  // set window icon
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
-  type.image = IMAGE_WM_ICON;
-  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
-  std::string path = graphicsDirectory_in;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_GRAPHICS_TILE_DEF_IMAGES_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += icon_graphic.file;
-  SDL_Surface* icon_image = NULL;
-  icon_image = RPG_Graphics_Surface::load(path,   // graphics file
-                                          false); // don't convert to display format (no screen yet !)
-  if (!icon_image)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
-               path.c_str()));
-
-    return false;
-  } // end IF
-  SDL_WM_SetIcon(icon_image, // surface
-                 NULL);      // mask (--> everything)
-//   // don't show (double) cursor
-//   SDL_ShowCursor(SDL_DISABLE);
-
-  userData_in.screen = RPG_Graphics_SDL_Tools::initScreen(videoConfig_in.screen_width,
-                                                          videoConfig_in.screen_height,
-                                                          videoConfig_in.screen_colordepth,
-                                                          videoConfig_in.doubleBuffer,
-                                                          videoConfig_in.fullScreen);
-
-  return (userData_in.screen != NULL);
-}
-
-const bool
-do_runIntro(SDL_Surface* screen_in)
-{
-  RPG_TRACE(ACE_TEXT("::do_runIntro"));
-
-  // step1: play intro music
-  RPG_Sound_Common_Tools::play(EVENT_MAIN_TITLE);
-
-  // step2: show start logo
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
-  type.image = IMAGE_INTRO_MAIN;
-  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(type);
-  if (!logo)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
-
-    return false;
-  } // end IF
-  // *TODO* stretch this image fullscreen
-  // center logo image
-  RPG_Graphics_Surface::put((screen_in->w - logo->w) / 2, // location x
-                            (screen_in->h - logo->h) / 2, // location y
-                            *logo,
-                            screen_in);
-//   SDL_FreeSurface(logo);
-  RPG_Graphics_Common_Tools::fade(true,                                // fade in
-                                  5.0,                                 // interval
-                                  RPG_Graphics_SDL_Tools::CLR32_BLACK, // fade from black
-                                  screen_in);                          // screen
-  SDL_Event event;
-  do_SDL_waitForInput(10,     // wait 10 seconds max
-                      event);
-//   do_handleSDLEvent(event);
-  RPG_Graphics_Common_Tools::fade(false,                               // fade out
-                                  3.0,                                 // interval
-                                  RPG_Graphics_SDL_Tools::CLR32_BLACK, // fade to black
-                                  screen_in);                          // screen
-
   return true;
 }
 
 void
-do_work(const RPG_Client_Config& config_in,
-        const std::string& schemaRepository_in)
+do_work(const std::string& magicDictionary_in,
+        const std::string& itemDictionary_in,
+        const std::string& graphicsDictionary_in,
+        const std::string& schemaRepository_in,
+        const std::string& graphicsDirectory_in,
+        const std::string& UIFile_in,
+        const unsigned long& graphicsCacheSize_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0a: init RPG engine
-  RPG_Engine_Common_Tools::init(config_in.magic_dictionary,
-                                config_in.item_dictionary,
-                                config_in.monster_dictionary);
-  RPG_Sound_Common_Tools::initStringConversionTables();
+  RPG_Engine_Common_Tools::init(magicDictionary_in,
+                                itemDictionary_in,
+                                std::string());
   RPG_Graphics_Common_Tools::initStringConversionTables();
 
-  // step0b: (if necessary) init the TP_Reactor
-  if (config_in.num_threadpool_threads)
-  {
-    if (!init_threadPool())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to init_threadPool(), aborting\n")));
-
-      return;
-    } // end IF
-  } // end IF
-
-  // step1: init audio
-  RPG_Sound_Common_Tools::init(config_in.sound_directory,
-                               config_in.sound_cache_size);
-  //  init sound dictionary
-  try
-  {
-    RPG_SOUND_DICTIONARY_SINGLETON::instance()->init(config_in.sound_dictionary);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Sound_Dictionary::init, returning\n")));
-
-    return;
-  }
-  if (!do_initAudio(config_in.audio_config))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize audio, aborting\n")));
-
-    return;
-  } // end IF
-
-  // step2: init UI
+  // step1: init UI
   // init graphics dictionary
   try
   {
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(config_in.graphics_dictionary);
+    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in);
   }
   catch (...)
   {
@@ -669,33 +573,20 @@ do_work(const RPG_Client_Config& config_in,
   }
 
   GTK_cb_data_t userData;
-//   userData.lock;
-  userData.hover_time            = 0;
-  userData.gtk_time              = 0;
-  userData.gtk_main_quit_invoked = false;
-  userData.xml                   = NULL;
-  userData.screen                = NULL;
-  userData.event_timer           = 0;
-  userData.previous_window       = NULL;
-  userData.main_window           = NULL;
-  userData.map_window            = NULL;
-  userData.plan.size_x           = 0;
-  userData.plan.size_y           = 0;
-//   userData.plan.unmapped;
-//   userData.plan.walls;
-//   userData.plan.doors;
-//   userData.seed_points;
-  userData.schemaRepository      = schemaRepository_in;
-//   userData.player;
+  userData.xml              = NULL;
+  userData.schemaRepository = schemaRepository_in;
+  userData.entity.character = NULL;
+  userData.entity.position  = std::make_pair(0, 0);
+  userData.entity.sprite    = RPG_GRAPHICS_SPRITE_INVALID;
+  userData.entity.graphic   = NULL;
 
   GDK_THREADS_ENTER();
-  if (!do_initGUI(config_in.graphics_directory, // graphics directory
-                  config_in.glade_file,         // glade file
-                  userData,                     // GTK cb data
-                  config_in.video_config))      // SDL video config
+  if (!do_initGUI(graphicsDirectory_in, // graphics directory
+                  UIFile_in,            // glade file
+                  userData))            // GTK cb data
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize video, aborting\n")));
+               ACE_TEXT("failed to initialize UI, aborting\n")));
 
     GDK_THREADS_LEAVE();
 
@@ -703,664 +594,17 @@ do_work(const RPG_Client_Config& config_in,
   } // end IF
   GDK_THREADS_LEAVE();
   ACE_ASSERT(main_dialog);
-  ACE_ASSERT(userData.screen);
 
-  // ***** mouse setup *****
-  SDL_WarpMouse((userData.screen->w / 2),
-                (userData.screen->h / 2));
+  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+                                  graphicsCacheSize_in);
 
-  RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
-                                  config_in.graphics_cache_size);
-
-//   // step3: run intro
-//   if (!do_runIntro())
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to run intro, aborting\n")));
-//
-//     return;
-//   } // end IF
-
-  // step4: setup main "window"
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
-  type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
-  std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
-  RPG_Client_WindowMain mainWindow(RPG_Graphics_WindowSize_t(userData.screen->w,
-                                                             userData.screen->h), // size
-                                   type,                                          // interface elements
-                                   title,                                         // title (== caption)
-                                   FONT_MAIN_LARGE);                              // title font
-  mainWindow.setScreen(userData.screen);
-  mainWindow.init();
-  mainWindow.draw();
-  mainWindow.refresh();
-
-  // step4b: set default cursor
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
-
-  // step5: setup level "window"
-  RPG_Client_WindowLevel mapWindow(mainWindow); // parent
-  mapWindow.setScreen(userData.screen);
-
-  // step5a: setup style
-  RPG_Graphics_MapStyle_t mapStyle;
-  mapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  mapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-  mapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-
-  // step5b: setup map
-  userData.plan.size_x = 0;
-  userData.plan.size_y = 0;
-  userData.plan.unmapped.clear();
-  userData.plan.walls.clear();
-  userData.plan.doors.clear();
-  userData.seed_points.clear();
-  if (config_in.map_file.empty())
-    RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
-                                          config_in.map_config.map_size_y,
-                                          config_in.map_config.num_areas,
-                                          config_in.map_config.square_rooms,
-                                          config_in.map_config.maximize_rooms,
-                                          config_in.map_config.min_room_size,
-                                          config_in.map_config.doors,
-                                          config_in.map_config.corridors,
-                                          true, // *NOTE*: currently, doors fill one position
-                                          config_in.map_config.max_num_doors_per_room,
-                                          userData.seed_points,
-                                          userData.plan);
-  else
-  {
-    if (!RPG_Map_Common_Tools::load(config_in.map_file,
-                                    userData.seed_points,
-                                    userData.plan))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
-                 config_in.map_file.c_str()));
-
-      return;
-    } // end IF
-  } // end ELSE
-
-//   RPG_Map_Common_Tools::displayFloorPlan(userData.seedPoints,
-//                                          userData.plan);
-
-  mapWindow.init(mapStyle,
-                 userData.plan);
-  // refresh screen
-  try
-  {
-    mapWindow.draw();
-    mapWindow.refresh();
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
-  }
-
-  // start timer (triggers hover- and processes GTK events)
-  userData.event_timer = NULL;
-  userData.event_timer = SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
-                                      event_timer_SDL_cb,           // event timer callback
-                                      &userData);                   // callback argument
-  if (!userData.event_timer)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
-               RPG_CLIENT_SDL_EVENT_TIMEOUT,
-               SDL_GetError()));
-
-    return;
-  } // end IF
-
-  // step6: setup event loops
-  // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
-  // - UI events --> GTK main loop [--> SDL event handler]
-
-//   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
-//   ACE_Reactor::instance()->restart(1);
-
-//   // setup dispatch of SDL events from the GTK (== "main") thread
-//   userData.previous_window = NULL;
-//   userData.main_window = &mainWindow;
-//   userData.map_window = &mapWindow;
-//   GDK_THREADS_ENTER();
-//   guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop_GTK_cb,
-//                                          &userData);
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("installed SDL event handler (ID: %u)...\n"),
-//              SDLEventHandlerID));
-//   // setup dispatch of a hook when gkt_main_quit() is invoked
-//   guint quitHandlerID = gtk_quit_add(0,                   // main level: 0 (current)
-//                                      gtk_quit_handler_cb, // handler
-//                                      &userData);          // user data
-//   GDK_THREADS_LEAVE();
-//   if (quitHandlerID == 0)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to gtk_quit_add(), aborting\n")));
-//
-//     return;
-//   } // end IF
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("installed GTK quit handler (ID: %u)...\n"),
-//              quitHandlerID));
-
-  // setup dispatch of network events
-  // *NOTE*: if we use a thread pool, we invoke a different function...
-  // *CONSIDER*: potential source for races here
-  // --> network connection events arrive before dispatch of events begins
-  int grp_id = -1;
-  if (config_in.num_threadpool_threads)
-  {
-    // start a (group of) worker(s)...
-    grp_id = ACE_Thread_Manager::instance()->spawn_n(config_in.num_threadpool_threads, // # threads
-                                                     ::tp_worker_func,            // function
-                                                     NULL,                        // argument
-                                                     (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                     ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                                     -1,                          // group id --> create new
-                                                     NULL,                        // task
-                                                     NULL,                        // handle(s)
-                                                     NULL,                        // stack(s)
-                                                     NULL,                        // stack size(s)
-                                                     NULL);                       // name(s)
-  } // end IF
-  else
-  {
-    // start a worker...
-    grp_id = ACE_Thread_Manager::instance()->spawn_n(1,                           // # threads
-                                                     ::reactor_worker_func,       // function
-                                                     NULL,                        // argument
-                                                     (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                     ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                                     -1,                          // group id --> create new
-                                                     NULL,                        // task
-                                                     NULL,                        // handle(s)
-                                                     NULL,                        // stack(s)
-                                                     NULL,                        // stack size(s)
-                                                     NULL);                       // name(s)
-  } // end ELSE
-  if (grp_id == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
-               (config_in.num_threadpool_threads ? config_in.num_threadpool_threads : 1)));
-
-    GDK_THREADS_LEAVE();
-
-    return;
-  } // end IF
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("started group (ID: %u) of %u worker thread(s)...\n"),
-             grp_id,
-             (config_in.num_threadpool_threads ? config_in.num_threadpool_threads : 1)));
-
-  // step7: dispatch SDL (and GTK) events
-//   gtk_main();
-  SDL_Event event;
-  bool done = false;
-  RPG_Graphics_IWindow* window = NULL;
-  RPG_Graphics_IWindow* previous_window = NULL;
-  bool need_redraw = false;
-  RPG_Graphics_Position_t mouse_position;
-  do
-  {
-    window = NULL;
-    need_redraw = false;
-    mouse_position = std::make_pair(0, 0);
-
-    // step1: get pending event
-    if (SDL_WaitEvent(&event) != 1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                 SDL_GetError()));
-
-      return;
-    } // end IF
-
-    // if necessary, reset hover_time
-    if ((event.type != RPG_GRAPHICS_SDL_HOVEREVENT) &&
-        (event.type != RPG_CLIENT_SDL_GTKEVENT))
-    {
-      // synch access
-      ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
-
-      userData.hover_time = 0;
-    } // end IF
-
-    switch (event.type)
-    {
-      case SDL_KEYDOWN:
-      {
-        switch (event.key.keysym.sym)
-        {
-          case SDLK_m:
-          {
-            std::string dump_path = RPG_MAP_DUMP_DIR;
-            dump_path += ACE_DIRECTORY_SEPARATOR_STR;
-            dump_path += ACE_TEXT("map.txt");
-            if (!RPG_Map_Common_Tools::save(dump_path,            // file
-                                            userData.seed_points, // seed points
-                                            userData.plan))       // plan
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
-                         dump_path.c_str()));
-
-              return;
-            } // end IF
-
-            break;
-          }
-          case SDLK_q:
-          {
-            // finished event processing
-            done = true;
-
-            break;
-          }
-          default:
-          {
-            break;
-          }
-        } // end SWITCH
-
-        if (done)
-          break; // leave
-        // *WARNING*: falls through !
-      }
-      case SDL_ACTIVEEVENT:
-      case SDL_MOUSEMOTION:
-      case SDL_MOUSEBUTTONDOWN:
-      case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
-      {
-        // find window
-        switch (event.type)
-        {
-          case SDL_MOUSEMOTION:
-            mouse_position = std::make_pair(event.motion.x,
-                                            event.motion.y); break;
-          case SDL_MOUSEBUTTONDOWN:
-            mouse_position = std::make_pair(event.button.x,
-                                            event.button.y); break;
-          default:
-          {
-            int x,y;
-            SDL_GetMouseState(&x, &y);
-            mouse_position = std::make_pair(x, y);
-
-            break;
-          }
-        } // end SWITCH
-        window = mainWindow.getWindow(mouse_position);
-        ACE_ASSERT(window);
-
-        // notify previously "active" window upon losing "focus"
-        if (event.type == SDL_MOUSEMOTION)
-        {
-          if (previous_window &&
-//               (previous_window != mainWindow)
-              (previous_window != window))
-          {
-            event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
-            try
-            {
-              previous_window->handleEvent(event,
-                                           previous_window,
-                                           need_redraw);
-            }
-            catch (...)
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-            }
-            event.type = SDL_MOUSEMOTION;
-          } // end IF
-        } // end IF
-        // remember last "active" window
-        previous_window = window;
-
-        // notify "active" window
-        try
-        {
-          window->handleEvent(event,
-                              window,
-                              need_redraw);
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-        }
-
-        break;
-      }
-      case SDL_QUIT:
-      {
-        // finished event processing
-        done = true;
-
-        break;
-      }
-      case RPG_CLIENT_SDL_GTKEVENT:
-      {
-        // (at least one) GTK event has arrived --> process pending events
-        GDK_THREADS_ENTER();
-        while (gtk_events_pending())
-          if (gtk_main_iteration_do(FALSE)) // NEVER block !
-          {
-            // gtk_main_quit() has been invoked --> finished event processing
-
-            // *NOTE*: as gtk_main() is never invoked, gtk_main_iteration_do ALWAYS
-            // returns true... provide a workaround by using the gtk_quit_add hook
-            // --> check if that has been called...
-            // synch access
-            {
-              ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
-
-              if (userData.gtk_main_quit_invoked)
-              {
-                done = true;
-
-                break; // ignore any remaining GTK events
-              }
-            } // end lock scope
-          } // end IF
-        GDK_THREADS_LEAVE();
-
-        break;
-      }
-      case SDL_KEYUP:
-      case SDL_MOUSEBUTTONUP:
-      case SDL_JOYAXISMOTION:
-      case SDL_JOYBALLMOTION:
-      case SDL_JOYHATMOTION:
-      case SDL_JOYBUTTONDOWN:
-      case SDL_JOYBUTTONUP:
-      case SDL_SYSWMEVENT:
-      case SDL_VIDEORESIZE:
-      case SDL_VIDEOEXPOSE:
-      case RPG_CLIENT_SDL_TIMEREVENT:
-      default:
-      {
-
-        break;
-      }
-    } // end SWITCH
-
-    // redraw map ?
-    if (need_redraw)
-    {
-      try
-      {
-        mapWindow.draw();
-        mapWindow.refresh();
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
-      }
-    } // end IF
-
-    // redraw cursor ?
-    switch (event.type)
-    {
-      case SDL_KEYDOWN:
-      case SDL_MOUSEBUTTONDOWN:
-      {
-        // map hasn't changed --> no need to redraw
-        if (!need_redraw)
-          break;
-
-        // *WARNING*: falls through !
-      }
-      case SDL_MOUSEMOTION:
-      case RPG_GRAPHICS_SDL_HOVEREVENT:
-      {
-        // map has changed, cursor MAY have been drawn over...
-        // --> redraw cursor
-        SDL_Rect dirtyRegion;
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
-                                                               mouse_position.second,
-                                                               userData.screen,
-                                                               dirtyRegion);
-        RPG_Graphics_Surface::update(dirtyRegion,
-                                     userData.screen);
-
-        break;
-      }
-      default:
-      {
-        break;
-      }
-    } // end SWITCH
-  } while (!done);
-
-  // step8: clean up
-  if (!SDL_RemoveTimer(userData.event_timer))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-               SDL_GetError()));
-  } // end IF
+  // step2: setup event loops
+  // - UI events --> GTK main loop
+  gtk_main();
 
   // done handling UI events
-
-  // stop reactor
-  if (ACE_Reactor::instance()->end_event_loop() == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
-
-  // ... wait for the reactor worker(s) to join
-  ACE_Thread_Manager::instance()->wait_grp(grp_id);
-
-  // no more data will arrive from here on...
-
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
-}
-
-void
-do_parseIniFile(const std::string& iniFilename_in,
-                RPG_Client_Config& config_out)
-{
-  RPG_TRACE(ACE_TEXT("::do_parseIniFile"));
-
-  // init return value(s)
-  config_out.audio_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  config_out.audio_config.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  config_out.audio_config.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  config_out.audio_config.samples = RPG_CLIENT_DEF_AUDIO_SAMPLES;
-
-  config_out.video_config.screen_width = RPG_CLIENT_DEF_VIDEO_W;
-  config_out.video_config.screen_height = RPG_CLIENT_DEF_VIDEO_H;
-  config_out.video_config.screen_colordepth = RPG_CLIENT_DEF_VIDEO_BPP;
-  config_out.video_config.fullScreen = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
-  config_out.video_config.doubleBuffer = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
-
-  ACE_Configuration_Heap config_heap;
-  if (config_heap.open())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_Configuration_Heap::open failed, returning\n")));
-
-    return;
-  } // end IF
-
-  ACE_Ini_ImpExp import(config_heap);
-  if (import.import_config(iniFilename_in.c_str()))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_Ini_ImpExp::import_config(\"%s\") failed, returning\n"),
-               iniFilename_in.c_str()));
-
-    return;
-  } // end IF
-
-  // find/open "client" section...
-  ACE_Configuration_Section_Key section_key;
-  if (config_heap.open_section(config_heap.root_section(),
-                               RPG_CLIENT_CNF_CLIENT_SECTION_HEADER,
-                               0, // MUST exist !
-                               section_key) != 0)
-  {
-    ACE_ERROR((LM_ERROR,
-               ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-               RPG_CLIENT_CNF_CLIENT_SECTION_HEADER));
-
-    return;
-  } // end IF
-
-  // import values...
-  int val_index = 0;
-  ACE_TString val_name, val_value;
-  ACE_Configuration::VALUETYPE val_type;
-  while (config_heap.enumerate_values(section_key,
-                                      val_index,
-                                      val_name,
-                                      val_type) == 0)
-  {
-    if (config_heap.get_string_value(section_key,
-                                     val_name.c_str(),
-                                     val_value))
-    {
-      ACE_ERROR((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
-                 val_name.c_str()));
-
-      return;
-    } // end IF
-
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("enumerated %s, type %d\n"),
-//                val_name.c_str(),
-//                val_type));
-
-    // *TODO*: move these strings...
-    if (val_name == ACE_TEXT("audio_frequency"))
-    {
-      config_out.audio_config.frequency = ::atoi(val_value.c_str());
-    }
-//     else if (val_name == ACE_TEXT("audio_format"))
-//     {
-//       audioConfig_out.format = ::atoi(val_value.c_str());
-//     }
-    else if (val_name == ACE_TEXT("audio_channels"))
-    {
-      config_out.audio_config.channels = ::atoi(val_value.c_str());
-    }
-    else if (val_name == ACE_TEXT("audio_samples"))
-    {
-      config_out.audio_config.samples = ::atoi(val_value.c_str());
-    }
-    else if (val_name == ACE_TEXT("screen_width"))
-    {
-      config_out.video_config.screen_width = ::atoi(val_value.c_str());
-    }
-    else if (val_name == ACE_TEXT("screen_height"))
-    {
-      config_out.video_config.screen_height = ::atoi(val_value.c_str());
-    }
-    else if (val_name == ACE_TEXT("screen_colordepth"))
-    {
-      config_out.video_config.screen_colordepth = ::atoi(val_value.c_str());
-    }
-    else
-    {
-      ACE_ERROR((LM_ERROR,
-                 ACE_TEXT("unexpected key \"%s\", continuing\n"),
-                 val_name.c_str()));
-    } // end ELSE
-
-    ++val_index;
-  } // end WHILE
-
-//   // find/open "connection" section...
-//   if (config_heap.open_section(config_heap.root_section(),
-//                                RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER,
-//                                0, // MUST exist !
-//                                section_key) != 0)
-//   {
-//     ACE_ERROR((LM_ERROR,
-//                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-//                RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER));
-//
-//     return;
-//   } // end IF
-//
-//   // import values...
-//   val_index = 0;
-//   while (config_heap.enumerate_values(section_key,
-//                                       val_index,
-//                                       val_name,
-//                                       val_type) == 0)
-//   {
-//     if (config_heap.get_string_value(section_key,
-//                                      val_name.c_str(),
-//                                      val_value))
-//     {
-//       ACE_ERROR((LM_ERROR,
-//                  ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
-//                  val_name.c_str()));
-//
-//       return;
-//     } // end IF
-//
-// //     ACE_DEBUG((LM_DEBUG,
-// //                ACE_TEXT("enumerated %s, type %d\n"),
-// //                val_name.c_str(),
-// //                val_type));
-//
-//     // *TODO*: move these strings...
-//     if (val_name == ACE_TEXT("server"))
-//     {
-//       serverHostname_out = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("port"))
-//     {
-//       serverPortNumber_out = ::atoi(val_value.c_str());
-//     }
-//     else if (val_name == ACE_TEXT("password"))
-//     {
-//       loginOptions_out.password = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("nick"))
-//     {
-//       loginOptions_out.nick = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("user"))
-//     {
-//       loginOptions_out.user.username = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("realname"))
-//     {
-//       loginOptions_out.user.realname = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("channel"))
-//     {
-//       loginOptions_out.channel = val_value.c_str();
-//     }
-//     else
-//     {
-//       ACE_ERROR((LM_ERROR,
-//                  ACE_TEXT("unexpected key \"%s\", continuing\n"),
-//                  val_name.c_str()));
-//     } // end ELSE
-//
-//     ++val_index;
-//   } // end WHILE
-
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("imported \"%s\"...\n"),
-//              configFilename_in.c_str()));
 }
 
 void
@@ -1408,11 +652,6 @@ ACE_TMAIN(int argc_in,
   } // end IF
 #endif
 
-  // *PROCESS PROFILE*
-  ACE_Profile_Timer process_profile;
-  // start profile timer...
-  process_profile.start();
-
   // step1 init/validate configuration
   std::string base_data_path;
 #ifdef DATADIR
@@ -1422,18 +661,6 @@ ACE_TMAIN(int argc_in,
 #endif // #ifdef DATADIR
 
   // step1a: process commandline arguments
-  std::string iniFile = base_data_path;
-  iniFile += ACE_DIRECTORY_SEPARATOR_STR;
-  iniFile += RPG_COMMON_DEF_CONFIG_SUB;
-  iniFile += ACE_DIRECTORY_SEPARATOR_STR;
-  iniFile += RPG_CLIENT_DEF_INI_FILE;
-
-  std::string monsterDictionary = base_data_path;
-  monsterDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  monsterDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionary += RPG_MONSTER_DEF_DICTIONARY_FILE;
-
   std::string graphicsDictionary = base_data_path;
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
   graphicsDictionary += RPG_COMMON_DEF_CONFIG_SUB;
@@ -1452,12 +679,6 @@ ACE_TMAIN(int argc_in,
   magicDictionary += ACE_DIRECTORY_SEPARATOR_STR;
   magicDictionary += RPG_MAGIC_DEF_DICTIONARY_FILE;
 
-  std::string soundDictionary = base_data_path;
-  soundDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  soundDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  soundDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  soundDictionary += RPG_SOUND_DEF_DICTIONARY_FILE;
-
   std::string UIfile = base_data_path;
   UIfile += ACE_DIRECTORY_SEPARATOR_STR;
   UIfile += RPG_COMMON_DEF_CONFIG_SUB;
@@ -1467,6 +688,12 @@ ACE_TMAIN(int argc_in,
   std::string schemaRepository = base_data_path;
   schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
   schemaRepository += RPG_COMMON_DEF_CONFIG_SUB;
+
+  std::string graphicsDirectory = base_data_path;
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDirectory += RPG_COMMON_DEF_DATA_SUB;
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDirectory += RPG_GRAPHICS_DEF_DATA_SUB;
 
   // sanity check
   if (!RPG_Common_File_Tools::isDirectory(schemaRepository))
@@ -1479,25 +706,18 @@ ACE_TMAIN(int argc_in,
     schemaRepository.clear();
   } // end IF
 
-  std::string floorPlan;
   bool logToFile                     = false;
   bool traceInformation              = false;
   bool printVersionAndExit           = false;
-  unsigned long numThreadPoolThreads = (RPG_CLIENT_DEF_ACE_USES_TP ? RPG_CLIENT_DEF_ACE_NUM_TP_THREADS : 0);
   if (!(process_arguments(argc_in,
                           argv_in,
-                          iniFile,
-                          monsterDictionary,
-                          floorPlan,
                           graphicsDictionary,
                           itemDictionary,
                           logToFile,
                           magicDictionary,
-                          soundDictionary,
                           traceInformation,
                           UIfile,
-                          printVersionAndExit,
-                          numThreadPoolThreads)))
+                          printVersionAndExit)))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
@@ -1506,14 +726,10 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // validate argument(s)
-  if (!RPG_Common_File_Tools::isReadable(iniFile) ||
-      !RPG_Common_File_Tools::isReadable(monsterDictionary) ||
-      !RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
+  if (!RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
       !RPG_Common_File_Tools::isReadable(itemDictionary) ||
       !RPG_Common_File_Tools::isReadable(magicDictionary) ||
-      !RPG_Common_File_Tools::isReadable(soundDictionary) ||
-      !RPG_Common_File_Tools::isReadable(UIfile) ||
-      !RPG_Common_File_Tools::isReadable(floorPlan))
+      !RPG_Common_File_Tools::isReadable(UIfile))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
@@ -1553,106 +769,6 @@ ACE_TMAIN(int argc_in,
   ACE_LOG_MSG->priority_mask(process_priority_mask,
                              ACE_Log_Msg::PROCESS);
 
-  // step1db: init configuration object
-  RPG_Client_Config config;
-
-  // *** reactor ***
-  config.num_threadpool_threads            = numThreadPoolThreads;
-
-  // *** UI ***
-  config.glade_file                        = UIfile;
-//   config.gtk_cb_data                       = userData;
-
-  // *** sound ***
-  config.audio_config.frequency            = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  config.audio_config.format               = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  config.audio_config.channels             = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  config.audio_config.samples              = RPG_CLIENT_DEF_AUDIO_SAMPLES;
-  config.sound_directory                   = base_data_path;
-  config.sound_directory                   += ACE_DIRECTORY_SEPARATOR_STR;
-  config.sound_directory                   += RPG_COMMON_DEF_DATA_SUB;
-  config.sound_directory                   += ACE_DIRECTORY_SEPARATOR_STR;
-  config.sound_directory                   += RPG_SOUND_DEF_DATA_SUB;
-  config.sound_cache_size                  = RPG_CLIENT_DEF_SOUND_CACHESIZE;
-  config.sound_dictionary                  = soundDictionary;
-
-  // *** graphics ***
-  config.video_config.screen_width         = RPG_CLIENT_DEF_VIDEO_W;
-  config.video_config.screen_height        = RPG_CLIENT_DEF_VIDEO_H;
-  config.video_config.screen_colordepth    = RPG_CLIENT_DEF_VIDEO_BPP;
-  config.video_config.fullScreen           = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
-  config.video_config.doubleBuffer         = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
-  config.graphics_directory                = base_data_path;
-  config.graphics_directory                += ACE_DIRECTORY_SEPARATOR_STR;
-  config.graphics_directory                += RPG_COMMON_DEF_DATA_SUB;
-  config.graphics_directory                += ACE_DIRECTORY_SEPARATOR_STR;
-  config.graphics_directory                += RPG_GRAPHICS_DEF_DATA_SUB;
-  config.graphics_cache_size               = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
-  config.graphics_dictionary               = graphicsDictionary;
-
-  // *** magic ***
-  config.magic_dictionary                  = magicDictionary;
-
-  // *** item ***
-  config.item_dictionary                  = itemDictionary;
-
-  // *** monster ***
-  config.monster_dictionary               = monsterDictionary;
-
-  // *** map ***
-  config.map_config.min_room_size          = RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;
-  config.map_config.doors                  = RPG_CLIENT_DEF_MAP_DOORS;
-  config.map_config.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
-  config.map_config.max_num_doors_per_room = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;
-  config.map_config.maximize_rooms         = RPG_CLIENT_DEF_MAP_MAXIMIZE_ROOMS;
-  config.map_config.num_areas              = RPG_CLIENT_DEF_MAP_NUM_AREAS;
-  config.map_config.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
-  config.map_config.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
-  config.map_config.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
-  config.map_file                          = floorPlan;
-
-//   // step1dc: populate config object with default/collected data
-//   // ************ connection config data ************
-//   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
-//   config.messageAllocator = &messageAllocator;
-//   config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
-//   // ************ protocol config data **************
-//   config.clientPingInterval = 0; // servers do this...
-// //   config.loginOptions = userData.loginOptions;
-//   // ************ stream config data ****************
-//   config.debugParser = debugParser;
-//   config.module = &IRChandlerModule;
-//   // *WARNING*: set at runtime, by the appropriate connection handler
-//   config.sessionID = 0; // (== socket handle !)
-//   config.statisticsReportingInterval = 0; // == off
-
-  // step1de: parse .ini file (if any)
-  if (!iniFile.empty())
-    do_parseIniFile(iniFile,
-                    config);
-
-  // step2a: init SDL
-  if (SDL_Init(SDL_INIT_TIMER | // timers
-               SDL_INIT_AUDIO |
-               SDL_INIT_VIDEO |
-               SDL_INIT_CDROM | // audioCD playback
-               SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
-               SDL_GetError()));
-
-    return EXIT_FAILURE;
-  } // end IF
-  if (TTF_Init() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
-               SDL_GetError()));
-
-    return EXIT_FAILURE;
-  } // end IF
-
   // step2b: init GLIB / G(D|T)K[+] / GNOME
   g_thread_init(NULL);
   gdk_threads_init();
@@ -1663,7 +779,7 @@ ACE_TMAIN(int argc_in,
 //   ACE_ASSERT(gnomeSession);
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
   GnomeProgram* gnomeProgram = NULL;
-  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID,  // app ID
+  gnomeProgram = gnome_program_init(RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_APPLICATION_ID, // app ID
 //                                     ACE_TEXT_ALWAYS_CHAR(VERSION),     // version
                                     ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),    // version
                                     LIBGNOMEUI_MODULE,                    // module info
@@ -1675,8 +791,13 @@ ACE_TMAIN(int argc_in,
   ACE_High_Res_Timer timer;
   timer.start();
   // step3: do actual work
-  do_work(config,
-          schemaRepository);
+  do_work(magicDictionary,
+          itemDictionary,
+          graphicsDictionary,
+          schemaRepository,
+          graphicsDirectory,
+          UIfile,
+          RPG_CLIENT_DEF_GRAPHICS_CACHESIZE);
   timer.stop();
   // debug info
   std::string working_time_string;
@@ -1688,60 +809,6 @@ ACE_TMAIN(int argc_in,
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              working_time_string.c_str()));
-
-  // step4: clean up
-  TTF_Quit();
-  SDL_Quit();
-
-  // stop profile timer...
-  process_profile.stop();
-
-  // only process profile left to do...
-  ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
-  elapsed_time.real_time = 0.0;
-  elapsed_time.user_time = 0.0;
-  elapsed_time.system_time = 0.0;
-  if (process_profile.elapsed_time(elapsed_time) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-  ACE_Profile_Timer::Rusage elapsed_rusage;
-  ACE_OS::memset(&elapsed_rusage,
-                 0,
-                 sizeof(ACE_Profile_Timer::Rusage));
-  process_profile.elapsed_rusage(elapsed_rusage);
-  ACE_Time_Value user_time(elapsed_rusage.ru_utime);
-  ACE_Time_Value system_time(elapsed_rusage.ru_stime);
-  std::string user_time_string;
-  std::string system_time_string;
-  RPG_Common_Tools::period2String(user_time,
-                                  user_time_string);
-  RPG_Common_Tools::period2String(system_time,
-                                  system_time_string);
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-             elapsed_time.real_time,
-             elapsed_time.user_time,
-             elapsed_time.system_time,
-             user_time_string.c_str(),
-             system_time_string.c_str(),
-             elapsed_rusage.ru_maxrss,
-             elapsed_rusage.ru_ixrss,
-             elapsed_rusage.ru_idrss,
-             elapsed_rusage.ru_isrss,
-             elapsed_rusage.ru_minflt,
-             elapsed_rusage.ru_majflt,
-             elapsed_rusage.ru_nswap,
-             elapsed_rusage.ru_inblock,
-             elapsed_rusage.ru_oublock,
-             elapsed_rusage.ru_msgsnd,
-             elapsed_rusage.ru_msgrcv,
-             elapsed_rusage.ru_nsignals,
-             elapsed_rusage.ru_nvcsw,
-             elapsed_rusage.ru_nivcsw));
 
   // *PORTABILITY*: on Windows, we must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)

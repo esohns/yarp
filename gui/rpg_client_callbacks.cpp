@@ -23,9 +23,13 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 
+#include <rpg_engine_common.h>
+
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_cursor.h>
+#include <rpg_graphics_dictionary.h>
+#include <rpg_graphics_common_tools.h>
 
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
@@ -717,8 +721,22 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
   // step1: update character profile
   ::update_character_profile(*player, xml_in);
 
-  // step2: update sprite
-
+  // step2: update image
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  type.sprite = entity_in.sprite;
+  RPG_Graphics_t graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
+             (graphic.type.sprite == type.sprite));
+  // assemble path
+  std::string filename;
+  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+  ACE_ASSERT(!filename.empty());
+  // retrieve image widget
+  GtkImage* image = GTK_IMAGE(glade_xml_get_widget(xml_in,
+                                                   ACE_TEXT_ALWAYS_CHAR("sprite_image")));
+  ACE_ASSERT(image);
+  gtk_image_set_from_file(image, filename.c_str());
 }
 
 // callbacks used by ::scandir...
@@ -1131,8 +1149,8 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load profile data
-  ::load_character_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
-                            GTK_LIST_STORE(model));
+  ::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
+                  GTK_LIST_STORE(model));
 
   // set sensitive as appropriate
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,

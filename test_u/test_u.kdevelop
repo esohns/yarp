@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>net/protocol/IRC_client_gui</activetarget>
+      <activetarget>character/character_generator_gui</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -53,6 +53,7 @@
         <character_parser>-f /var/tmp/Xerxes.xml -t</character_parser>
         <path_finder>-b -m /var/tmp/test_map.txt -t</path_finder>
         <client_gui>-f /var/tmp/current_map.txt -t</client_gui>
+        <character_generator_gui></character_generator_gui>
       </runarguments>
       <debugarguments>
         <character_generator>-n 6 -r -t</character_generator>
@@ -73,6 +74,7 @@
         <character_parser>-f /var/tmp/Xerxes.xml -t</character_parser>
         <path_finder>-b -m /var/tmp/test_map.txt -t</path_finder>
         <client_gui>-f /var/tmp/current_map.txt -t</client_gui>
+        <character_generator_gui></character_generator_gui>
       </debugarguments>
       <cwd>
         <character_generator>/home/unfv/Projects/RPG/test_u/debug/./</character_generator>
@@ -93,6 +95,7 @@
         <character_parser>/home/unfv/Projects/RPG/test_u/debug/./</character_parser>
         <path_finder>/home/unfv/Projects/RPG/test_u/debug/./map</path_finder>
         <client_gui>/home/unfv/Projects/RPG/test_u/debug/./gui</client_gui>
+        <character_generator_gui>/home/unfv/Projects/RPG/test_u/debug/./character</character_generator_gui>
       </cwd>
     </run>
     <configurations>
@@ -120,7 +123,9 @@
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
         <cxxflags/>
-        <envvars/>
+        <envvars>
+          <envvar value="/usr/local/lib/pkgconfig" name="PKG_CONFIG_PATH" />
+        </envvars>
         <topsourcedir/>
         <cppflags/>
         <ldflags/>

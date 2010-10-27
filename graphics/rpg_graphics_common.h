@@ -43,6 +43,8 @@ enum RPG_Graphics_WindowType
 };
 
 typedef RPG_Graphics_Graphic RPG_Graphics_t;
+typedef std::map<RPG_Graphics_Sprite, RPG_Graphics_t> RPG_Graphics_SpriteDictionary_t;
+typedef RPG_Graphics_SpriteDictionary_t::const_iterator RPG_Graphics_SpriteDictionaryIterator_t;
 typedef std::map<RPG_Graphics_Cursor, RPG_Graphics_t> RPG_Graphics_CursorDictionary_t;
 typedef RPG_Graphics_CursorDictionary_t::const_iterator RPG_Graphics_CursorDictionaryIterator_t;
 typedef std::map<RPG_Graphics_Font, RPG_Graphics_t> RPG_Graphics_FontDictionary_t;
@@ -55,6 +57,7 @@ typedef std::map<RPG_Graphics_TileSetGraphic, RPG_Graphics_t> RPG_Graphics_TileS
 typedef RPG_Graphics_TileSetDictionary_t::const_iterator RPG_Graphics_TileSetDictionaryIterator_t;
 struct RPG_Graphics_Dictionary_t
 {
+  RPG_Graphics_SpriteDictionary_t creatures;
   RPG_Graphics_CursorDictionary_t cursors;
   RPG_Graphics_FontDictionary_t fonts;
   RPG_Graphics_ImageDictionary_t images;

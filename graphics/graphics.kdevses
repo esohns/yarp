@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="4" >
+ <DocsAndViews NumberOfDocuments="3" >
   <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.xml" >
    <View0 Encoding="" Type="Source" />
   </Doc0>
@@ -11,9 +11,6 @@
   <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.xsd" >
    <View0 Encoding="" line="99" Type="Source" />
   </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics_common_tools.h" >
-   <View0 Encoding="" line="52" Type="Source" />
-  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

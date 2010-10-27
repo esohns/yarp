@@ -85,45 +85,53 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   RPG_Monster_Common_Tools::initStringConversionTables();
 
   // step1c: init dictionaries
-
   // step1ca: init magic dictionary
-  try
+  if (!magicDictionaryFile_in.empty())
   {
-    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFile_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
+    try
+    {
+      RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFile_in);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
 
-    return;
-  }
+      return;
+    }
+  } // end IF
 
   // step1cb: init item dictionary
-  try
+  if (!itemDictionaryFile_in.empty())
   {
-    RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFile_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
+    try
+    {
+      RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFile_in);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
 
-    return;
-  }
+      return;
+    }
+  } // end IF
 
   // step1cc: init monster dictionary
-  try
+  if (!monsterDictionaryFile_in.empty())
   {
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Monster_Dictionary::init, returning\n")));
+    try
+    {
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Monster_Dictionary::init, returning\n")));
 
-    return;
-  }
+      return;
+    }
+  } // end IF
 }
 
 RPG_Engine_Entity
