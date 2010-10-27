@@ -275,7 +275,7 @@ RPG_Net_StreamSocketBase<ConfigType,
   if (myCurrentWriteBuffer == NULL)
   {
     // get next data chunk from the stream...
-    // *NOTE*: this should NEVER block (barring context switches...)
+    // *NOTE*: should NEVER block (barring context switches...)
     if (inherited::getq(myCurrentWriteBuffer, NULL) == -1)
     {
       ACE_DEBUG((LM_ERROR,

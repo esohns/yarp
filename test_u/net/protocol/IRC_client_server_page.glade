@@ -252,6 +252,7 @@
                       <object class="GtkToggleButton" id="mode_localoperator_togglebutton">
                         <property name="label" translatable="yes">local operator</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="relief">none</property>
@@ -266,6 +267,7 @@
                       <object class="GtkToggleButton" id="mode_operator_togglebutton">
                         <property name="label" translatable="yes">operator</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="relief">none</property>
@@ -493,9 +495,6 @@
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkTextBuffer" id="server_tab_log_textbuffer">
-    <property name="tag_table">server_tab_log_texttagtable</property>
-  </object>
   <object class="GtkAction" id="action_away">
     <property name="label">Away</property>
     <property name="short_label">Away</property>
@@ -537,7 +536,6 @@
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="related_action">action_accept</property>
                 <property name="use_action_appearance">True</property>
                 <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
@@ -553,7 +551,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="related_action">action_cancel</property>
                 <property name="use_action_appearance">True</property>
                 <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
@@ -607,5 +604,8 @@
       <!-- column-name realName -->
       <column type="gchararray"/>
     </columns>
+  </object>
+  <object class="GtkTextBuffer" id="server_tab_log_textbuffer">
+    <property name="tag_table">server_tab_log_texttagtable</property>
   </object>
 </interface>
