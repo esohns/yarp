@@ -21,4 +21,7 @@
 #ifndef RPG_ENGINE_DEFINES_H
 #define RPG_ENGINE_DEFINES_H
 
+// XML-specific
+#define RPG_ENGINE_SCHEMA_FILE  ACE_TEXT("rpg_engine.xsd")
+
 #endif

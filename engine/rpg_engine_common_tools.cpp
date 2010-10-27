@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "rpg_engine_common_tools.h"
 
+#include "rpg_engine_defines.h"
 #include "rpg_engine_XML_tree.h"
 
 #include <rpg_graphics_defines.h>
@@ -334,7 +335,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
   ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
   ::xml_schema::namespace_infomap map;
   map[""].name = RPG_COMMON_XML_TARGET_NAMESPACE;
-  map[""].schema = RPG_CHARACTER_PLAYER_SCHEMA_FILE;
+  map[""].schema = RPG_ENGINE_SCHEMA_FILE;
   std::string character_set(RPG_COMMON_XML_SCHEMA_CHARSET);
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
