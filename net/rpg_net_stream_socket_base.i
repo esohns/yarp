@@ -275,8 +275,8 @@ RPG_Net_StreamSocketBase<ConfigType,
   if (myCurrentWriteBuffer == NULL)
   {
     // get next data chunk from the stream...
-    // *NOTE*: this should NEVER block
-    if (inherited::getq(myCurrentWriteBuffer, NULL))
+    // *NOTE*: this should NEVER block (barring context switches...)
+    if (inherited::getq(myCurrentWriteBuffer, &const_cast<ACE_Time_Value&>(ACE_Time_Value::zero)))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Task::getq(): \"%m\", returning\n")));
