@@ -340,7 +340,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::getID"));
 
-  // *NOTE*: this isn't entirely portable...
+  // *PORTABILITY*: this isn't entirely portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   return get_handle();
 #else

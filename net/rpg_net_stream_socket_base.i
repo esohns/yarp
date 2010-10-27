@@ -276,13 +276,13 @@ RPG_Net_StreamSocketBase<ConfigType,
   {
     // get next data chunk from the stream...
     // *NOTE*: this should NEVER block (barring context switches...)
-    if (inherited::getq(myCurrentWriteBuffer, &const_cast<ACE_Time_Value&>(ACE_Time_Value::zero)))
+    if (inherited::getq(myCurrentWriteBuffer, NULL) == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Task::getq(): \"%m\", returning\n")));
+                 ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")));
 
-      // *TODO*: maybe there was no data ?
-      return 0;
+      // reactor will invoke handle_close()
+      return -1;
     } // end IF
   } // end IF
 
@@ -311,7 +311,7 @@ RPG_Net_StreamSocketBase<ConfigType,
       if ((ACE_OS::last_error() != ECONNRESET) &&
           (ACE_OS::last_error() != EPIPE))
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", returning\n")));
+                   ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", aborting\n")));
 
       // clean up
       myCurrentWriteBuffer->release();
