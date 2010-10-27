@@ -1,5 +1,5 @@
 pkgdatadir = $(datadir)/@META_PACKAGE@
 graphicdir = $(pkgdatadir)/data/graphic/creatures
-graphic_DATA = goblin.png priest.png
+graphic_DATA = goblin.png human.png priest.png
 
 EXTRA_DIST = $(graphic_DATA)

@@ -692,6 +692,12 @@ void RPG_Graphics_Dictionary_Type::graphic(const RPG_Graphics_Graphic& graphic_i
 
       break;
     }
+    case RPG_Graphics_GraphicTypeUnion::SPRITE:
+    {
+      myDictionary->sprites.insert(std::make_pair(graphic.type.sprite, graphic));
+
+      break;
+    }
     case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
     {
       myDictionary->tiles.insert(std::make_pair(graphic.type.tilegraphic, graphic));

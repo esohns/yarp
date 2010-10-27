@@ -181,6 +181,8 @@ RPG_Graphics_Common_Tools::typeToString(const RPG_Graphics_GraphicTypeUnion& typ
       return RPG_Graphics_FontHelper::RPG_Graphics_FontToString(type_in.font);
     case RPG_Graphics_GraphicTypeUnion::IMAGE:
       return RPG_Graphics_ImageHelper::RPG_Graphics_ImageToString(type_in.image);
+    case RPG_Graphics_GraphicTypeUnion::SPRITE:
+      return RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(type_in.sprite);
     case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
       return RPG_Graphics_TileGraphicHelper::RPG_Graphics_TileGraphicToString(type_in.tilegraphic);
     case RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC:
@@ -217,6 +219,8 @@ RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
       result += RPG_Graphics_FontHelper::RPG_Graphics_FontToString(tile_in.reference.font); break;
     case RPG_Graphics_GraphicTypeUnion::IMAGE:
       result += RPG_Graphics_ImageHelper::RPG_Graphics_ImageToString(tile_in.reference.image); break;
+    case RPG_Graphics_GraphicTypeUnion::SPRITE:
+      result += RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(tile_in.reference.sprite); break;
     case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
       result += RPG_Graphics_TileGraphicHelper::RPG_Graphics_TileGraphicToString(tile_in.reference.tilegraphic); break;
     case RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC:

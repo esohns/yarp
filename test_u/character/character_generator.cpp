@@ -23,6 +23,14 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_engine_common.h>
+#include <rpg_engine_common_tools.h>
+
+#include <rpg_graphics_defines.h>
+#include <rpg_graphics_incl.h>
+#include <rpg_graphics_dictionary.h>
+#include <rpg_graphics_common_tools.h>
+
 #include <rpg_character_defines.h>
 #include <rpg_character_alignmentcivic.h>
 #include <rpg_character_alignmentethic.h>
@@ -65,6 +73,8 @@
 #include <algorithm>
 #include <numeric>
 
+#define CHARACTER_GENERATOR_DEF_SPRITE SPRITE_HUMAN
+
 void
 print_usage(const std::string& programName_in)
 {
@@ -82,6 +92,11 @@ print_usage(const std::string& programName_in)
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_ITEM_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-e        : generate entity") << std::endl;
+  path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-g [FILE] : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
@@ -96,8 +111,10 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
+                  bool& generateEntity_out,
                   std::string& itemDictionaryFilename_out,
                   std::string& magicDictionaryFilename_out,
+                  std::string& graphicsDictionaryFilename_out,
                   unsigned int& generateParty_out,
                   bool& random_out,
                   bool& traceInformation_out,
@@ -113,12 +130,17 @@ process_arguments(const int argc_in,
 #endif // #ifdef DATADIR
 
   // init results
+  generateEntity_out = false;
+
   itemDictionaryFilename_out = base_data_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
   itemDictionaryFilename_out += RPG_ITEM_DEF_DICTIONARY_FILE;
   magicDictionaryFilename_out = base_data_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
   magicDictionaryFilename_out += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  graphicsDictionaryFilename_out = base_data_path;
+  graphicsDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDictionaryFilename_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
   generateParty_out = 0;
   random_out = false;
   traceInformation_out = false;
@@ -126,7 +148,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:m:n:rtv"));
+                             ACE_TEXT("eg:i:m:n:rtv"));
 
   int option = 0;
   std::stringstream converter;
@@ -134,6 +156,18 @@ process_arguments(const int argc_in,
   {
     switch (option)
     {
+      case 'e':
+      {
+        generateEntity_out = true;
+
+        break;
+      }
+      case 'g':
+      {
+        graphicsDictionaryFilename_out = argumentParser.opt_arg();
+
+        break;
+      }
       case 'i':
       {
         itemDictionaryFilename_out = argumentParser.opt_arg();
@@ -1099,9 +1133,31 @@ generate_random_player_character()
   return RPG_Character_Common_Tools::generatePlayerCharacter();
 }
 
+RPG_Engine_Entity
+generate_entity(const RPG_Character_Player& player_in,
+                const RPG_Graphics_Sprite& sprite_in)
+{
+  RPG_TRACE(ACE_TEXT("::generate_entity"));
+
+  RPG_Engine_Entity result;
+  result.character = &const_cast<RPG_Character_Player&>(player_in);
+  result.position = std::make_pair(0, 0);
+  result.sprite = sprite_in;
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  type.sprite = sprite_in;
+  result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // type
+                                                          false); // don't cache
+  ACE_ASSERT(result.graphic);
+
+  return result;
+}
+
 void
-do_work(const std::string magicDictionaryFilename_in,
+do_work(const bool& generateEntity_in,
+        const std::string magicDictionaryFilename_in,
         const std::string itemDictionaryFilename_in,
+        const std::string& graphicsDictionary_in,
         const unsigned int& numPartyMembers_in,
         const bool& random_in)
 {
@@ -1111,35 +1167,20 @@ do_work(const std::string magicDictionaryFilename_in,
   RPG_Dice::init();
 
   // step1b: init string conversion facilities
-  RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Common_Tools::initStringConversionTables();
-  RPG_Magic_Common_Tools::init();
-  RPG_Item_Common_Tools::initStringConversionTables();
-  RPG_Character_Common_Tools::init();
-//   RPG_Monster_Common_Tools::initStringConversionTables();
+  RPG_Engine_Common_Tools::init(magicDictionaryFilename_in,
+                                itemDictionaryFilename_in,
+                                std::string());
+  RPG_Graphics_Common_Tools::initStringConversionTables();
 
-  // step1c: init magic dictionary
+  // init graphics dictionary
   try
   {
-    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFilename_in);
+    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
-
-    return;
-  }
-
-  // step1d: init item dictionary
-  try
-  {
-    RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFilename_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
+               ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init, returning\n")));
 
     return;
   }
@@ -1149,6 +1190,7 @@ do_work(const std::string magicDictionaryFilename_in,
   bool done = false;
   char c = ' ';
   unsigned int numPlayers = 0;
+  RPG_Engine_Entity entity;
   do
   {
     // step1: generate new player character
@@ -1170,10 +1212,10 @@ do_work(const std::string magicDictionaryFilename_in,
             break;
           case 's':
           {
-            std::string path = RPG_CHARACTER_DUMP_DIR;
+            std::string path = RPG_COMMON_DUMP_DIR;
             path += ACE_DIRECTORY_SEPARATOR_STR;
             path += player.getName();
-            path += ACE_TEXT_ALWAYS_CHAR(".xml");
+            path += RPG_CHARACTER_PROFILE_EXT;
 
             // sanity check
             if (RPG_Common_File_Tools::isReadable(path))
@@ -1209,15 +1251,41 @@ do_work(const std::string magicDictionaryFilename_in,
                 break;
             } // end IF
 
-            if (!player.save(path))
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
-                         path.c_str()));
+            if (generateEntity_in)
+            {
+              // clean up
+              if (entity.graphic)
+              {
+                SDL_FreeSurface(entity.graphic);
+                entity.graphic = NULL;
+              } // end IF
+
+              entity = generate_entity(player,
+                                       CHARACTER_GENERATOR_DEF_SPRITE);
+              if (!RPG_Engine_Common_Tools::saveEntity(entity,
+                                                       path))
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
+                           path.c_str()));
+              else
+                ACE_DEBUG((LM_DEBUG,
+                           ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
+                           player.getName().c_str(),
+                           path.c_str()));
+            } // end IF
             else
-              ACE_DEBUG((LM_DEBUG,
-                         ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-                         player.getName().c_str(),
-                         path.c_str()));
+            {
+              if (!player.save(path))
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
+                           path.c_str()));
+              else
+                ACE_DEBUG((LM_DEBUG,
+                           ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+                           player.getName().c_str(),
+                           path.c_str()));
+            } // end ELSE
+
 
             break;
           }
@@ -1241,19 +1309,43 @@ do_work(const std::string magicDictionaryFilename_in,
     else
     {
       // save player
-      std::string path = RPG_CHARACTER_DUMP_DIR;
+      std::string path = RPG_COMMON_DUMP_DIR;
       path += ACE_DIRECTORY_SEPARATOR_STR;
       path += player.getName();
-      path += ACE_TEXT_ALWAYS_CHAR(".xml");
-      if (!player.save(path))
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
-                   path.c_str()));
+      path += RPG_CHARACTER_PROFILE_EXT;
+      if (generateEntity_in)
+      {
+        // clean up
+        if (entity.graphic)
+        {
+          SDL_FreeSurface(entity.graphic);
+          entity.graphic = NULL;
+        } // end IF
+
+        entity = generate_entity(player,
+                                 CHARACTER_GENERATOR_DEF_SPRITE);
+        if (!RPG_Engine_Common_Tools::saveEntity(entity, path))
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
+                     path.c_str()));
+        else
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
+                     player.getName().c_str(),
+                     path.c_str()));
+      } // end IF
       else
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-                   player.getName().c_str(),
-                   path.c_str()));
+      {
+        if (!player.save(path))
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
+                     path.c_str()));
+        else
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+                     player.getName().c_str(),
+                     path.c_str()));
+      } // end ELSE
 
       numPlayers++;
       if (numPlayers == numPartyMembers_in)
@@ -1338,13 +1430,18 @@ int ACE_TMAIN(int argc,
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
 
-  // init results
+  // init configuration
+  bool generateEntity          = false;
   std::string itemDictionaryFilename = base_data_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
   itemDictionaryFilename += RPG_ITEM_DEF_DICTIONARY_FILE;
   std::string magicDictionaryFilename = base_data_path;
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
   magicDictionaryFilename += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  std::string graphicsDictionaryFilename = base_data_path;
+  graphicsDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDictionaryFilename += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+
   unsigned int numPartyMembers = 0;
   bool random                  = false;
   bool traceInformation        = false;
@@ -1353,8 +1450,10 @@ int ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          generateEntity,
                           itemDictionaryFilename,
                           magicDictionaryFilename,
+                          graphicsDictionaryFilename,
                           numPartyMembers,
                           random,
                           traceInformation,
@@ -1368,7 +1467,8 @@ int ACE_TMAIN(int argc,
 
   // step1b: validate arguments
   if (!RPG_Common_File_Tools::isReadable(itemDictionaryFilename) ||
-      !RPG_Common_File_Tools::isReadable(magicDictionaryFilename))
+      !RPG_Common_File_Tools::isReadable(magicDictionaryFilename) ||
+      !RPG_Common_File_Tools::isReadable(graphicsDictionaryFilename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("missing/invalid (XML) filename, aborting\n")));
@@ -1417,8 +1517,10 @@ int ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work(magicDictionaryFilename,
+  do_work(generateEntity,
+          magicDictionaryFilename,
           itemDictionaryFilename,
+          graphicsDictionaryFilename,
           numPartyMembers,
           random);
 

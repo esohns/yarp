@@ -19,7 +19,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>test_u/net/protocol/IRC_client_gui</activetarget>
+      <activetarget>net/libRPG_Net.la</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>

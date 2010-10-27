@@ -21,8 +21,4 @@
 #ifndef RPG_ENGINE_DEFINES_H
 #define RPG_ENGINE_DEFINES_H
 
-#define RPG_ENGINE_DUMP_DIR              ACE_TEXT("/var/tmp")
-
-#define RPG_ENGINE_ENTITY_PROFILE_EXT    ACE_TEXT(".xml")
-
 #endif

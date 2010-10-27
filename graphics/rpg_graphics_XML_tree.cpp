@@ -2473,11 +2473,11 @@ _xsd_RPG_Graphics_Sprite_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_Sprite_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_ + 2,
+                    _xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_ + 3,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_ + 2 || _xsd_RPG_Graphics_Sprite_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_ + 3 || _xsd_RPG_Graphics_Sprite_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2486,16 +2486,18 @@ _xsd_RPG_Graphics_Sprite_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_Sprite_XMLTree_Type::
-_xsd_RPG_Graphics_Sprite_XMLTree_Type_literals_[2] =
+_xsd_RPG_Graphics_Sprite_XMLTree_Type_literals_[3] =
 {
   "SPRITE_GOBLIN",
+  "SPRITE_HUMAN",
   "SPRITE_PRIEST"
 };
 
 const RPG_Graphics_Sprite_XMLTree_Type::value RPG_Graphics_Sprite_XMLTree_Type::
-_xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_[2] =
+_xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_[3] =
 {
   ::RPG_Graphics_Sprite_XMLTree_Type::SPRITE_GOBLIN,
+  ::RPG_Graphics_Sprite_XMLTree_Type::SPRITE_HUMAN,
   ::RPG_Graphics_Sprite_XMLTree_Type::SPRITE_PRIEST
 };
 

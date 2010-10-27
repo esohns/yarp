@@ -172,6 +172,11 @@
   </graphic>
   <graphic>
     <category>CATEGORY_SPRITE</category>
+    <type>SPRITE_HUMAN</type>
+    <file>human.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_SPRITE</category>
     <type>SPRITE_PRIEST</type>
     <file>priest.png</file>
   </graphic>

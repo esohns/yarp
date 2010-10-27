@@ -29,6 +29,7 @@
 enum RPG_Graphics_Sprite
 {
   SPRITE_GOBLIN = 0,
+  SPRITE_HUMAN,
   SPRITE_PRIEST,
   //
   RPG_GRAPHICS_SPRITE_MAX,
@@ -50,6 +51,7 @@ class RPG_Graphics_SpriteHelper
   {
     myRPG_Graphics_SpriteToStringTable.clear();
     myRPG_Graphics_SpriteToStringTable.insert(std::make_pair(SPRITE_GOBLIN, ACE_TEXT_ALWAYS_CHAR("SPRITE_GOBLIN")));
+    myRPG_Graphics_SpriteToStringTable.insert(std::make_pair(SPRITE_HUMAN, ACE_TEXT_ALWAYS_CHAR("SPRITE_HUMAN")));
     myRPG_Graphics_SpriteToStringTable.insert(std::make_pair(SPRITE_PRIEST, ACE_TEXT_ALWAYS_CHAR("SPRITE_PRIEST")));
   };
 

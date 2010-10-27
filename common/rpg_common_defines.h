@@ -32,7 +32,9 @@
 #define RPG_COMMON_XML_TARGET_NAMESPACE        ACE_TEXT("urn:rpg")
 
 // DATADIR-specific
-#define RPG_COMMON_DEF_DATA_SUB               ACE_TEXT("data")
-#define RPG_COMMON_DEF_CONFIG_SUB             ACE_TEXT("config")
+#define RPG_COMMON_DEF_DATA_SUB                ACE_TEXT("data")
+#define RPG_COMMON_DEF_CONFIG_SUB              ACE_TEXT("config")
+
+#define RPG_COMMON_DUMP_DIR                    ACE_TEXT("/var/tmp")
 
 #endif

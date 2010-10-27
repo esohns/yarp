@@ -175,8 +175,8 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
     }
     case RPG_Graphics_GraphicTypeUnion::SPRITE:
     {
-      RPG_Graphics_SpriteDictionaryIterator_t iterator = myDictionary.creatures.find(type_in.sprite);
-      if (iterator != myDictionary.creatures.end())
+      RPG_Graphics_SpriteDictionaryIterator_t iterator = myDictionary.sprites.find(type_in.sprite);
+      if (iterator != myDictionary.sprites.end())
         return (*iterator).second;
 
       break;

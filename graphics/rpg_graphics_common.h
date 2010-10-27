@@ -57,7 +57,7 @@ typedef std::map<RPG_Graphics_TileSetGraphic, RPG_Graphics_t> RPG_Graphics_TileS
 typedef RPG_Graphics_TileSetDictionary_t::const_iterator RPG_Graphics_TileSetDictionaryIterator_t;
 struct RPG_Graphics_Dictionary_t
 {
-  RPG_Graphics_SpriteDictionary_t creatures;
+  RPG_Graphics_SpriteDictionary_t sprites;
   RPG_Graphics_CursorDictionary_t cursors;
   RPG_Graphics_FontDictionary_t fonts;
   RPG_Graphics_ImageDictionary_t images;
@@ -83,6 +83,8 @@ struct RPG_Graphics_GraphicsCacheNode_t
           return (type.font == rhs_in.type.font);
       case RPG_Graphics_GraphicTypeUnion::IMAGE:
         return (type.image == rhs_in.type.image);
+      case RPG_Graphics_GraphicTypeUnion::SPRITE:
+        return (type.sprite == rhs_in.type.sprite);
       case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
         return (type.tilegraphic == rhs_in.type.tilegraphic);
       case RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC:

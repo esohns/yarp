@@ -846,6 +846,7 @@ class RPG_Graphics_Sprite_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     SPRITE_GOBLIN,
+    SPRITE_HUMAN,
     SPRITE_PRIEST
   };
 
@@ -896,8 +897,8 @@ class RPG_Graphics_Sprite_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Graphics_Sprite_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Graphics_Sprite_XMLTree_Type_literals_[2];
-  static const value _xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_[2];
+  static const char* const _xsd_RPG_Graphics_Sprite_XMLTree_Type_literals_[3];
+  static const value _xsd_RPG_Graphics_Sprite_XMLTree_Type_indexes_[3];
 };
 
 class RPG_Graphics_TileGraphic_XMLTree_Type: public ::xml_schema::string

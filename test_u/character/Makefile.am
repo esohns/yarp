@@ -8,7 +8,7 @@ character_generator_SOURCES = character_generator.cpp
 character_generator_CPPFLAGS = $(pkg_libs_CFLAGS) -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
 character_generator_LDFLAGS = $(pkg_libs_LIBS)
 character_generator_LDADD = -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
-	-lRPG_Common -lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Combat -lRPG_Monster
+	-lRPG_Common -lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Combat -lRPG_Monster -lRPG_Map -lRPG_Graphics -lRPG_Engine
 
 character_parser_SOURCES = character_parser.cpp
 character_parser_CPPFLAGS = $(pkg_libs_CFLAGS) -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
