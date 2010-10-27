@@ -780,8 +780,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  ::load_character_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
-                            list);
+  ::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
+                  list);
   gtk_combo_box_set_model(available_characters,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));

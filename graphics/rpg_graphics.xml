@@ -166,6 +166,16 @@
     <file>image_icon.png</file>
   </graphic>
   <graphic>
+    <category>CATEGORY_SPRITE</category>
+    <type>SPRITE_GOBLIN</type>
+    <file>goblin.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_SPRITE</category>
+    <type>SPRITE_PRIEST</type>
+    <file>priest.png</file>
+  </graphic>
+  <graphic>
     <category>CATEGORY_TILESET</category>
     <type>TILESET_FLOOR_AIR</type>
     <tileset>

@@ -23,6 +23,6 @@ character_generator_gui_LDADD = -lpthread -lxerces-c -lRPG_Dice -lRPG_Chance \
 	-lRPG_Common -lRPG_Magic -lRPG_Item -lRPG_Character -lRPG_Combat -lRPG_Monster -lRPG_Map -lRPG_Graphics -lRPG_Engine	-lRPG_Client_GUI
 
 configdir = $(datadir)/@META_PACKAGE@/config
-config_DATA = character_gui.glade
+config_DATA = character_generator_gui.glade
 
 EXTRA_DIST = $(config_DATA)
