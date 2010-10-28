@@ -111,7 +111,6 @@
                     <child>
                       <widget class="GtkAlignment" id="available_characters_alignment">
                         <property name="visible">True</property>
-                        <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkHBox" id="available_characters_hbox">
                             <property name="visible">True</property>
@@ -177,7 +176,6 @@
                 <child>
                   <widget class="GtkAlignment" id="character_alignment">
                     <property name="visible">True</property>
-                    <property name="left_padding">12</property>
                     <child>
                       <widget class="GtkHBox" id="character_hbox">
                         <property name="visible">True</property>
@@ -323,7 +321,6 @@
                                 <child>
                                   <widget class="GtkAlignment" id="status_alignment">
                                     <property name="visible">True</property>
-                                    <property name="left_padding">12</property>
                                     <child>
                                       <widget class="GtkVBox" id="status_vbox">
                                         <property name="visible">True</property>
@@ -512,7 +509,6 @@
                                 <child>
                                   <widget class="GtkAlignment" id="attribute_alignment">
                                     <property name="visible">True</property>
-                                    <property name="left_padding">12</property>
                                     <child>
                                       <widget class="GtkVBox" id="attribute_vbox">
                                         <property name="visible">True</property>
@@ -701,7 +697,6 @@
                                 <child>
                                   <widget class="GtkAlignment" id="feats_alignment">
                                     <property name="visible">True</property>
-                                    <property name="left_padding">12</property>
                                     <child>
                                       <widget class="GtkVBox" id="feats_vbox">
                                         <property name="visible">True</property>
@@ -737,7 +732,6 @@
                                 <child>
                                   <widget class="GtkAlignment" id="abilities_alignment">
                                     <property name="visible">True</property>
-                                    <property name="left_padding">12</property>
                                     <child>
                                       <widget class="GtkVBox" id="abilities_vbox">
                                         <property name="visible">True</property>
@@ -778,7 +772,6 @@
                             <child>
                               <widget class="GtkAlignment" id="skills_alignment">
                                 <property name="visible">True</property>
-                                <property name="left_padding">12</property>
                                 <child>
                                   <widget class="GtkVBox" id="skills_vbox">
                                     <property name="visible">True</property>
@@ -818,7 +811,6 @@
                                 <child>
                                   <widget class="GtkAlignment" id="spells_alignment">
                                     <property name="visible">True</property>
-                                    <property name="left_padding">12</property>
                                     <child>
                                       <widget class="GtkVBox" id="spells_vbox">
                                         <property name="visible">True</property>
@@ -854,7 +846,6 @@
                                 <child>
                                   <widget class="GtkAlignment" id="inventory_alignment">
                                     <property name="visible">True</property>
-                                    <property name="left_padding">12</property>
                                     <child>
                                       <widget class="GtkVBox" id="inventory_items_vbox">
                                         <property name="visible">True</property>
