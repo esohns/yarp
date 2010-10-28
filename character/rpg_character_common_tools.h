@@ -53,7 +53,6 @@ class RPG_Character_Common_Tools
   static const RPG_Dice_DieType getHitDie(const RPG_Common_SubClass&); // subclass
   static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Common_SubClass&, // subClass
                                                                   const unsigned char&);      // class level
-  static const bool isCasterClass(const RPG_Common_SubClass&); // subClass
 
   static RPG_Character_Player generatePlayerCharacter(); // return value: (random) player
   static const unsigned int restParty(RPG_Character_Party_t&); // party of players

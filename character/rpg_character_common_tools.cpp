@@ -453,32 +453,6 @@ RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subCla
   return result;
 }
 
-const bool
-RPG_Character_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::isCasterClass"));
-
-  switch (subClass_in)
-  {
-    case SUBCLASS_BARD:
-    case SUBCLASS_CLERIC:
-    case SUBCLASS_DRUID:
-    case SUBCLASS_PALADIN:
-    case SUBCLASS_RANGER:
-    case SUBCLASS_SORCERER:
-    case SUBCLASS_WIZARD:
-    {
-      return true;
-    }
-    default:
-    {
-      break;
-    }
-  } // end SWITCH
-
-  return false;
-}
-
 RPG_Character_Player
 RPG_Character_Common_Tools::generatePlayerCharacter()
 {
@@ -722,9 +696,8 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
                                                                         i);
 
       // only Bards and Sorcerers have a limited set of "known" spells to choose from
-      if (isCasterClass(*iterator) &&
-          ((*iterator == SUBCLASS_BARD) ||
-           (*iterator == SUBCLASS_SORCERER)))
+      if ((*iterator == SUBCLASS_BARD) ||
+          (*iterator == SUBCLASS_SORCERER))
       {
         // make sure we have enough variety...
         ACE_ASSERT(numKnownSpells <= available.size());
@@ -753,7 +726,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
 
       // ... other magic-users get to prepare/memorize a number of (available) spells
       // ... again, apart from the Bard/Sorcerer, who don't need to prepare any spells ahead of time
-      if (isCasterClass(*iterator) &&
+      if (RPG_Character_Class_Common_Tools::isCasterClass(player_class) &&
           (*iterator != SUBCLASS_BARD) &&
           (*iterator != SUBCLASS_SORCERER))
       {

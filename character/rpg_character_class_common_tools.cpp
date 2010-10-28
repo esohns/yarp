@@ -23,6 +23,21 @@
 
 #include <ace/Log_Msg.h>
 
+const bool
+RPG_Character_Class_Common_Tools::hasSubClass(const RPG_Character_Class& class_in,
+                                              const RPG_Common_SubClass& subClass_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::hasSubClass"));
+
+  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
+       iterator != class_in.subClasses.end();
+       iterator++)
+    if ((*iterator) == subClass_in)
+      return true;
+
+  return false;
+}
+
 const RPG_Character_MetaClass
 RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass& subClass_in)
 {
@@ -67,6 +82,46 @@ RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass&
   } // end SWITCH
 
   return RPG_CHARACTER_METACLASS_INVALID;
+}
+
+const bool
+RPG_Character_Class_Common_Tools::isCasterClass(const RPG_Character_Class& class_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::isCasterClass"));
+
+  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
+       iterator != class_in.subClasses.end();
+       iterator++)
+    if (isCasterClass(*iterator))
+      return true;
+
+  return false;
+}
+
+const bool
+RPG_Character_Class_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::isCasterClass"));
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_BARD:
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_DRUID:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_RANGER:
+    case SUBCLASS_SORCERER:
+    case SUBCLASS_WIZARD:
+    {
+      return true;
+    }
+    default:
+    {
+      break;
+    }
+  } // end SWITCH
+
+  return false;
 }
 
 RPG_Character_Class

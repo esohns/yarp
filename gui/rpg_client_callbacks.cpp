@@ -35,6 +35,7 @@
 #include <rpg_map_common_tools.h>
 
 #include <rpg_character_defines.h>
+#include <rpg_character_class_common_tools.h>
 
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_weapon.h>
@@ -585,40 +586,42 @@ update_character_profile(const RPG_Character_Player& player_in,
   } // end IF
   RPG_Magic_Spells_t player_known_spells = player_in.getKnownSpells();
   RPG_Magic_SpellList_t player_spells = player_in.getSpells();
-  unsigned int number = 0;
-  for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
-       iterator != player_known_spells.end();
-       iterator++)
-  {
-    // *NOTE*: these spells are KNOWN
-    // --> for each spells, check whether (and how often) it has been prepared/memorized
-    // i.e. Wizard/Cleric and other classes
-    number = 0;
-    for (RPG_Magic_SpellListIterator_t iterator2 = player_spells.begin();
-         iterator2 != player_spells.end();
-         iterator2++)
-      if (*iterator2 == *iterator)
-        number++;
-
-    text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
-    if (number)
+  // *NOTE*: only Bards and Sorcerers have a limited set of "known" spells to choose from
+  if (RPG_Character_Class_Common_Tools::hasSubClass(player_class,
+                                                    SUBCLASS_BARD) ||
+      RPG_Character_Class_Common_Tools::hasSubClass(player_class,
+                                                    SUBCLASS_SORCERER))
+    for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
+         iterator != player_known_spells.end();
+         iterator++)
     {
-      text += ACE_TEXT_ALWAYS_CHAR(" : ");
-      converter.str(ACE_TEXT(""));
-      converter.clear();
-      converter << number;
-      text += converter.str();
-    } // end IF
+      text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
 
-    label = NULL;
-    label = gtk_label_new(text.c_str());
-    ACE_ASSERT(label);
+      label = NULL;
+      label = gtk_label_new(text.c_str());
+      ACE_ASSERT(label);
 //     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start(GTK_BOX(current), label,
-                       TRUE, // expand
-                       TRUE, // fill
-                       0);   // padding
-  } // end FOR
+      gtk_box_pack_start(GTK_BOX(current), label,
+                         TRUE, // expand
+                         TRUE, // fill
+                         0);   // padding
+    } // end FOR
+  else
+    for (RPG_Magic_SpellListIterator_t iterator = player_spells.begin();
+         iterator != player_spells.end();
+         iterator++)
+    {
+      text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+
+      label = NULL;
+      label = gtk_label_new(text.c_str());
+      ACE_ASSERT(label);
+  //     gtk_container_add(GTK_CONTAINER(current), label);
+      gtk_box_pack_start(GTK_BOX(current), label,
+                        TRUE, // expand
+                        TRUE, // fill
+                        0);   // padding
+    } // end FOR
   gtk_widget_show_all(current);
 
   // step17: inventory

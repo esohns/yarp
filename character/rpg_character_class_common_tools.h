@@ -29,7 +29,12 @@
 class RPG_Character_Class_Common_Tools
 {
  public:
+  static const bool hasSubClass(const RPG_Character_Class&,  // class(es)
+                                const RPG_Common_SubClass&); // subclass
   static const RPG_Character_MetaClass subClassToMetaClass(const RPG_Common_SubClass&); // subclass
+
+  static const bool isCasterClass(const RPG_Character_Class&); // class(es)
+
   static RPG_Character_Class classXMLTreeToClass(const RPG_Character_ClassXML_XMLTree_Type&); // class (XML format)
 
  private:
@@ -38,6 +43,8 @@ class RPG_Character_Class_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Class_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Class_Common_Tools(const RPG_Character_Class_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Class_Common_Tools& operator=(const RPG_Character_Class_Common_Tools&));
+
+  static const bool isCasterClass(const RPG_Common_SubClass&); // subClass
 };
 
 #endif

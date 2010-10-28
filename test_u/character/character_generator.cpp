@@ -1016,9 +1016,8 @@ generate_player_character()
                                                                         i);
 
       // only Bards and Sorcerers have a limited set of "known" spells to choose from
-      if (RPG_Character_Common_Tools::isCasterClass(*iterator) &&
-          ((*iterator == SUBCLASS_BARD) ||
-          (*iterator == SUBCLASS_SORCERER)))
+      if ((*iterator == SUBCLASS_BARD) ||
+          (*iterator == SUBCLASS_SORCERER))
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),
@@ -1046,9 +1045,9 @@ generate_player_character()
 
       // ... other magic-users get to prepare/memorize a number of (available) spells
       // ... again, apart from the Bard/Sorcerer, who don't need to prepare any spells ahead of time
-      if (RPG_Character_Common_Tools::isCasterClass(*iterator) &&
-          ((*iterator != SUBCLASS_BARD) &&
-          (*iterator != SUBCLASS_SORCERER)))
+      if (RPG_Character_Class_Common_Tools::isCasterClass(playerClass) &&
+          (*iterator != SUBCLASS_BARD) &&
+          (*iterator != SUBCLASS_SORCERER))
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
