@@ -24,8 +24,7 @@
 
 /**
 player character
-
-  @author Erik Sohns <erik.sohns@web.de>
+@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Character_Player
  : public RPG_Character_Player_Base

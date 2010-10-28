@@ -956,7 +956,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   // step14: instantiate player character
   RPG_Character_Player player(name,
                               gender,
-                              race,
+                              player_race,
                               player_class,
                               alignment,
                               attributes,
