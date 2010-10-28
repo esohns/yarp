@@ -52,7 +52,8 @@ class RPG_Engine_Common_Tools
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
   static RPG_Engine_Entity loadEntity(const std::string&,  // FQ filename
-                                      const std::string&); // schema repository (directory)
+                                      const std::string&,  // schema repository (directory)
+                                      const bool& = true); // load SDL surface ?
   static const bool saveEntity(const RPG_Engine_Entity&, // entity
                                const std::string&);      // FQ filename
 

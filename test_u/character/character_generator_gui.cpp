@@ -158,7 +158,7 @@ process_arguments(const int argc_in,
   UIfile_out += ACE_DIRECTORY_SEPARATOR_STR;
   UIfile_out += RPG_COMMON_DEF_CONFIG_SUB;
   UIfile_out += ACE_DIRECTORY_SEPARATOR_STR;
-  UIfile_out += RPG_CLIENT_DEF_GNOME_UI_FILE;
+  UIfile_out += RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_FILE;
 
   printVersionAndExit_out  = false;
 
@@ -446,18 +446,6 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                                 G_CALLBACK(save_character_activated_GTK_cb),
 //                                 userData_p);
 
-  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
-                                           ACE_TEXT_ALWAYS_CHAR("join")));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(join_game_activated_GTK_cb),
-                   userData_p);
-//   glade_xml_signal_connect_data(xml,
-//                                 ACE_TEXT_ALWAYS_CHAR("join_game_activated_GTK_cb"),
-//                                 G_CALLBACK(join_game_activated_GTK_cb),
-//                                 userData_p);
-
   GtkComboBox* combobox = NULL;
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
                                                 RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
@@ -505,18 +493,6 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //   glade_xml_signal_connect_data(xml,
 //                                 ACE_TEXT_ALWAYS_CHAR("about_activated_GTK_cb"),
 //                                 G_CALLBACK(about_activated_GTK_cb),
-//                                 userData_p);
-
-  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
-                                           ACE_TEXT_ALWAYS_CHAR("properties")));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(properties_activated_GTK_cb),
-                   userData_p);
-//   glade_xml_signal_connect_data(xml,
-//                                 ACE_TEXT_ALWAYS_CHAR("properties_activated_GTK_cb"),
-//                                 G_CALLBACK(properties_activated_GTK_cb),
 //                                 userData_p);
 
   // step5: auto-connect signals/slots
@@ -592,7 +568,8 @@ do_work(const std::string& magicDictionary_in,
   ACE_ASSERT(main_dialog);
 
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  graphicsCacheSize_in);
+                                  graphicsCacheSize_in,
+                                  false); // don't init SDL
 
   // step2: setup event loops
   // - UI events --> GTK main loop
@@ -679,7 +656,7 @@ ACE_TMAIN(int argc_in,
   UIfile += ACE_DIRECTORY_SEPARATOR_STR;
   UIfile += RPG_COMMON_DEF_CONFIG_SUB;
   UIfile += ACE_DIRECTORY_SEPARATOR_STR;
-  UIfile += RPG_CLIENT_DEF_GNOME_UI_FILE;
+  UIfile += RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_FILE;
 
   std::string schemaRepository = base_data_path;
   schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;

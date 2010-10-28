@@ -137,7 +137,8 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
 
 RPG_Engine_Entity
 RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
-                                    const std::string& schemaRepository_in)
+                                    const std::string& schemaRepository_in,
+                                    const bool& loadImage_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::loadEntity"));
 
@@ -213,30 +214,31 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
 
     ifs.close();
   }
-  catch (const std::ifstream::failure&)
+  catch (std::ifstream::failure const& exception)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): unable to open or read error, aborting\n"),
-               filename_in.c_str()));
-
-    return result;
-  }
-  catch (const ::xml_schema::parsing& exception)
-  {
-    std::ostringstream converter;
-    converter << exception;
-    std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
                filename_in.c_str(),
-               text.c_str()));
+               exception.what()));
 
     return result;
   }
-  catch (const ::xml_schema::exception& exception)
+  catch (::xml_schema::parsing const& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               converter.str().c_str()));
+
+    return result;
+  }
+  catch (::xml_schema::exception const& exception)
   {
     // *NOTE*: maybe this was a CHARACTER profile (expected ENTITY profile)
     // --> try parsing that instead...
+    ::xml_schema::properties props_alt;
     schemaFile = base_path;
     schemaFile += ACE_DIRECTORY_SEPARATOR_STR;
     schemaFile += RPG_CHARACTER_PLAYER_SCHEMA_FILE;
@@ -249,44 +251,47 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
 
       return result;
     } // end IF
-    props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
-                          schemaFile);
+    props_alt.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
+                              schemaFile);
     try
     {
+      // reset read pointer
+      ifs.clear();
+      ifs.seekg(0, std::ios::beg);
+
       character_player_p = character_player(ifs,
                                             RPG_XSDErrorHandler,
                                             flags,
-                                            props);
+                                            props_alt);
     }
-    catch (const std::ifstream::failure&)
+    catch (std::ifstream::failure const& exception)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): unable to open or read error, aborting\n"),
-                 filename_in.c_str()));
-
-      return result;
-    }
-    catch (const ::xml_schema::parsing& exception)
-    {
-      std::ostringstream converter;
-      converter << exception;
-      std::string text = converter.str();
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
                  filename_in.c_str(),
-                 text.c_str()));
+                 exception.what()));
 
       return result;
     }
-    catch (const ::xml_schema::exception& exception)
+    catch (::xml_schema::parsing const& exception)
     {
       std::ostringstream converter;
       converter << exception;
-      std::string text = converter.str();
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
                  filename_in.c_str(),
-                 text.c_str()));
+                 converter.str().c_str()));
+
+      return result;
+    }
+    catch (::xml_schema::exception const& exception)
+    {
+      std::ostringstream converter;
+      converter << exception;
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
+                 filename_in.c_str(),
+                 converter.str().c_str()));
 
       return result;
     }
@@ -362,8 +367,9 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   if (engine_player_p.get())
     result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
 
-  // step2: load player sprite
-  if (result.sprite != RPG_GRAPHICS_SPRITE_INVALID)
+  // step2: load player sprite ?
+  if (loadImage_in &&
+      (result.sprite != RPG_GRAPHICS_SPRITE_INVALID))
   {
     RPG_Graphics_GraphicTypeUnion type;
     type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;

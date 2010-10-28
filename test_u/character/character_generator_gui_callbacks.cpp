@@ -89,18 +89,6 @@ about_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-properties_activated_GTK_cb(GtkWidget* widget_in,
-                            gpointer userData_in)
-{
-  RPG_TRACE(ACE_TEXT("::properties_activated_GTK_cb"));
-
-  ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(userData_in);
-
-  return FALSE;
-}
-
-G_MODULE_EXPORT gint
 quit_activated_GTK_cb(GtkWidget* widget_in,
                       gpointer userData_in)
 {
@@ -307,7 +295,8 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
     data->entity.graphic = NULL;
   } // end IF
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schemaRepository);
+                                                     data->schemaRepository,
+                                                     false); // don't load SDL surface !
 
   // update entity profile widgets
   ::update_entity_profile(data->entity,

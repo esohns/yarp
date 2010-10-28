@@ -28,13 +28,11 @@ extern "C"
 #endif /* __cplusplus */
   // main
   gint about_activated_GTK_cb(GtkWidget*, gpointer);
-  gint properties_activated_GTK_cb(GtkWidget*, gpointer);
   gint quit_activated_GTK_cb(GtkWidget*, gpointer);
   gint create_character_activated_GTK_cb(GtkWidget*, gpointer);
   gint load_character_activated_GTK_cb(GtkWidget*, gpointer);
   gint character_file_activated_GTK_cb(GtkWidget*, gpointer);
   gint save_character_activated_GTK_cb(GtkWidget*, gpointer);
-  gint join_game_activated_GTK_cb(GtkWidget*, gpointer);
   gint characters_activated_GTK_cb(GtkWidget*, gpointer);
   gint characters_refresh_activated_GTK_cb(GtkWidget*, gpointer);
 #ifdef __cplusplus

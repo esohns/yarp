@@ -123,7 +123,7 @@ update_character_profile(const RPG_Character_Player& player_in,
           }
           default:
           {
-            text = RPG_Common_Tools::enumToString(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)));
+            text += RPG_Common_Tools::enumToString(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)));
             break;
           }
         } // end SWITCH
@@ -721,22 +721,27 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
   // step1: update character profile
   ::update_character_profile(*player, xml_in);
 
-  // step2: update image
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  type.sprite = entity_in.sprite;
-  RPG_Graphics_t graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
-             (graphic.type.sprite == type.sprite));
-  // assemble path
+  // step2: update image (if available)
   std::string filename;
-  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
-  ACE_ASSERT(!filename.empty());
   // retrieve image widget
   GtkImage* image = GTK_IMAGE(glade_xml_get_widget(xml_in,
                                                    ACE_TEXT_ALWAYS_CHAR("sprite_image")));
   ACE_ASSERT(image);
-  gtk_image_set_from_file(image, filename.c_str());
+  if (entity_in.sprite != RPG_GRAPHICS_SPRITE_INVALID)
+  {
+    RPG_Graphics_GraphicTypeUnion type;
+    type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+    type.sprite = entity_in.sprite;
+    RPG_Graphics_t graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+    ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
+              (graphic.type.sprite == type.sprite));
+    // assemble path
+    RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+  } // end IF
+  if (!filename.empty())
+    gtk_image_set_from_file(image, filename.c_str());
+  else
+    gtk_image_clear(image);
 }
 
 // callbacks used by ::scandir...
