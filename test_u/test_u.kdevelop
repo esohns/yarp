@@ -21,7 +21,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>debug</useconfiguration>
-      <activetarget>gui/client_gui</activetarget>
+      <activetarget>character/character_generator_gui</activetarget>
     </general>
     <run>
       <mainprogram>/home/unfv/Projects/RPG/test_u/debug/monster/monster_parser</mainprogram>
@@ -35,7 +35,7 @@
       <autokdesu>true</autokdesu>
       <envvars/>
       <runarguments>
-        <character_generator>-e -r -t</character_generator>
+        <character_generator>-e -n 100 -r -t</character_generator>
         <combat_simulator>-b 0 -f 1 -n 1 -p 6 -t -x</combat_simulator>
         <monster_parser>-d -t</monster_parser>
         <item_parser>-d -t</item_parser>
@@ -56,7 +56,7 @@
         <character_generator_gui>-t</character_generator_gui>
       </runarguments>
       <debugarguments>
-        <character_generator>-e -r -t</character_generator>
+        <character_generator>-e -n 100 -r -t</character_generator>
         <combat_simulator>-b 0 -f 1 -n 1 -p 6 -t -x</combat_simulator>
         <monster_parser>-d -t</monster_parser>
         <item_parser>-d -t</item_parser>
