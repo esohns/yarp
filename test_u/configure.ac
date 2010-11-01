@@ -100,6 +100,6 @@ AC_CONFIG_FILES([Makefile
                  net/protocol/Makefile
                  sound/Makefile
                  graphics/Makefile
-                 gui/Makefile])
+                 client/Makefile])
 
 AC_OUTPUT

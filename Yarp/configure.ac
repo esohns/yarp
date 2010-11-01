@@ -113,13 +113,13 @@ AC_CONFIG_FILES([Makefile
                  net/Makefile
                  net/protocol/Makefile
                  net/protocol/scripts/Makefile
-                 gui/Makefile
+                 client/Makefile
                  test_u/Makefile
                  test_u/chance/Makefile
                  test_u/character/Makefile
                  test_u/combat/Makefile
                  test_u/graphics/Makefile
-                 test_u/gui/Makefile
+                 test_u/client/Makefile
                  test_u/item/Makefile
                  test_u/magic/Makefile
                  test_u/map/Makefile

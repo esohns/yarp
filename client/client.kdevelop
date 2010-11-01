@@ -158,6 +158,8 @@
     <groups>
       <group pattern="*.h" name="Header files" />
       <group pattern="*.cpp" name="Source files" />
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
@@ -196,7 +198,6 @@
       <designerpluginpaths/>
     </qt>
     <references>
-      <pcs>automatic_%2Fhome%2Funfv%2FProjects%2FRPG%2Fsound</pcs>
       <pcs>RPG_Common</pcs>
     </references>
     <codecompletion>
