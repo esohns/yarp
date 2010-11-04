@@ -728,7 +728,7 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
   std::string filename;
   // retrieve image widget
   GtkImage* image = GTK_IMAGE(glade_xml_get_widget(xml_in,
-                                                   ACE_TEXT_ALWAYS_CHAR("sprite_image")));
+                                                   ACE_TEXT_ALWAYS_CHAR("image_sprite")));
   ACE_ASSERT(image);
   if (entity_in.sprite != RPG_GRAPHICS_SPRITE_INVALID)
   {

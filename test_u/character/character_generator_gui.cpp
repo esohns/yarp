@@ -472,6 +472,30 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                                 userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                           ACE_TEXT_ALWAYS_CHAR("image_button_prev")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(prev_image_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("prev_image_activated_GTK_cb"),
+//                                 G_CALLBACK(prev_image_activated_GTK_cb),
+//                                 userData_p);
+
+  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                           ACE_TEXT_ALWAYS_CHAR("image_button_next")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(next_image_activated_GTK_cb),
+                   userData_p);
+//   glade_xml_signal_connect_data(xml,
+//                                 ACE_TEXT_ALWAYS_CHAR("next_image_activated_GTK_cb"),
+//                                 G_CALLBACK(next_image_activated_GTK_cb),
+//                                 userData_p);
+
+  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
                                            ACE_TEXT_ALWAYS_CHAR("quit")));
   ACE_ASSERT(button);
   g_signal_connect(button,
@@ -530,6 +554,10 @@ do_work(const std::string& magicDictionary_in,
                                 std::string());
   RPG_Graphics_Common_Tools::initStringConversionTables();
 
+  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+                                  graphicsCacheSize_in,
+                                  false); // don't init SDL
+
   // step1: init UI
   // init graphics dictionary
   try
@@ -551,6 +579,11 @@ do_work(const std::string& magicDictionary_in,
   userData.entity.position  = std::make_pair(0, 0);
   userData.entity.sprite    = RPG_GRAPHICS_SPRITE_INVALID;
   userData.entity.graphic   = NULL;
+  // init sprite gallery
+  userData.sprite_gallery.push_back(SPRITE_GOBLIN);
+  userData.sprite_gallery.push_back(SPRITE_HUMAN);
+  userData.sprite_gallery.push_back(SPRITE_PRIEST);
+  userData.current_sprite   = userData.sprite_gallery.begin();
 
   GDK_THREADS_ENTER();
   if (!do_initGUI(graphicsDirectory_in, // graphics directory
@@ -566,10 +599,6 @@ do_work(const std::string& magicDictionary_in,
   } // end IF
   GDK_THREADS_LEAVE();
   ACE_ASSERT(main_dialog);
-
-  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  graphicsCacheSize_in,
-                                  false); // don't init SDL
 
   // step2: setup event loops
   // - UI events --> GTK main loop

@@ -23,15 +23,23 @@
 
 #include <rpg_engine_common.h>
 
+#include <rpg_graphics_sprite.h>
+
 #include <glade/glade.h>
 
 #include <string>
+#include <vector>
+
+typedef std::vector<RPG_Graphics_Sprite> Character_Generator_GUI_SpriteGallery_t;
+typedef Character_Generator_GUI_SpriteGallery_t::const_iterator Character_Generator_GUI_SpriteGalleryIterator_t;
 
 struct GTK_cb_data_t
 {
-  GladeXML*         xml;
-  std::string       schemaRepository;
-  RPG_Engine_Entity entity;
+  GladeXML*                                       xml;
+  std::string                                     schemaRepository;
+  RPG_Engine_Entity                               entity;
+  Character_Generator_GUI_SpriteGalleryIterator_t current_sprite;
+  Character_Generator_GUI_SpriteGallery_t         sprite_gallery;
 };
 
 #endif

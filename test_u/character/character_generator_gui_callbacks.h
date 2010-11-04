@@ -20,7 +20,11 @@
 #ifndef CHARACTER_GENERATOR_GUI_CALLBACKS_H
 #define CHARACTER_GENERATOR_GUI_CALLBACKS_H
 
+#include "character_generator_gui_common.h"
+
 #include <gtk/gtk.h>
+
+void update_sprite_gallery(GTK_cb_data_t&);
 
 #ifdef __cplusplus
 extern "C"
@@ -35,6 +39,8 @@ extern "C"
   gint save_character_activated_GTK_cb(GtkWidget*, gpointer);
   gint characters_activated_GTK_cb(GtkWidget*, gpointer);
   gint characters_refresh_activated_GTK_cb(GtkWidget*, gpointer);
+  gint prev_image_activated_GTK_cb(GtkWidget*, gpointer);
+  gint next_image_activated_GTK_cb(GtkWidget*, gpointer);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

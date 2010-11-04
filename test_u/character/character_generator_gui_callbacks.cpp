@@ -31,17 +31,20 @@
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_cursor.h>
 #include <rpg_graphics_dictionary.h>
+#include <rpg_graphics_common_tools.h>
 
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
 
 #include <rpg_character_defines.h>
+#include <rpg_character_common_tools.h>
 
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
@@ -50,6 +53,25 @@
 #include <ace/Log_Msg.h>
 
 #include <sstream>
+
+void
+update_sprite_gallery(GTK_cb_data_t& CBData_in)
+{
+  RPG_TRACE(ACE_TEXT("::update_sprite_gallery"));
+
+  for (CBData_in.current_sprite = CBData_in.sprite_gallery.begin();
+       CBData_in.current_sprite != CBData_in.sprite_gallery.end();
+       CBData_in.current_sprite++)
+    if ((*CBData_in.current_sprite) == CBData_in.entity.sprite)
+      break;
+
+  // sanity check
+  if ((*CBData_in.current_sprite) != CBData_in.entity.sprite)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("sprite (was: \"%s\") not in gallery (%u entrie(s)), aborting\n"),
+               RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(CBData_in.entity.sprite).c_str(),
+               CBData_in.sprite_gallery.size()));
+}
 
 #ifdef __cplusplus
 extern "C"
@@ -115,7 +137,51 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::create_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  ACE_ASSERT(data);
+
+  // erase current entity profile
+  if (data->entity.character)
+  {
+    try
+    {
+      delete data->entity.character;
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception, aborting\n")));
+
+      return FALSE;
+    }
+    data->entity.character = NULL;
+  } // end IF
+  data->entity.position = std::make_pair(0, 0);
+  data->entity.sprite = *(data->current_sprite);
+  if (data->entity.graphic)
+  {
+    SDL_FreeSurface(data->entity.graphic);
+    data->entity.graphic = NULL;
+  } // end IF
+
+  // generate (random) player
+  RPG_Character_Player player = RPG_Character_Common_Tools::generatePlayerCharacter();
+  try
+  {
+    data->entity.character = new RPG_Character_Player(player);
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception: \"%s\", aborting\n"),
+               exception.what()));
+
+    return FALSE;
+  }
+
+  // update entity profile widgets
+  ::update_entity_profile(data->entity,
+                          data->xml);
 
   return FALSE;
 }
@@ -207,6 +273,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   // update entity profile widgets
   ::update_entity_profile(data->entity,
                           data->xml);
+  ::update_sprite_gallery(*data);
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
@@ -224,7 +291,26 @@ save_character_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->entity.character);
+
+  // set current selected sprite
+  data->entity.sprite = *(data->current_sprite);
+
+  // assemble target filename
+  std::string filename = RPG_COMMON_DUMP_DIR;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += data->entity.character->getName();
+  filename += RPG_CHARACTER_PROFILE_EXT;
+
+  if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
+                                           filename))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
+               filename.c_str()));
 
   return FALSE;
 }
@@ -301,6 +387,7 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   // update entity profile widgets
   ::update_entity_profile(data->entity,
                           data->xml);
+  ::update_sprite_gallery(*data);
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
@@ -353,6 +440,100 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
   // ... activate first entry as appropriate
   if (gtk_widget_is_sensitive(GTK_WIDGET(available_characters)))
     gtk_combo_box_set_active(available_characters, 0);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+prev_image_activated_GTK_cb(GtkWidget* widget_in,
+                            gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::prev_image_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->xml);
+  ACE_ASSERT(!data->sprite_gallery.empty());
+
+  // update image
+  if (data->current_sprite == data->sprite_gallery.begin())
+    data->current_sprite = data->sprite_gallery.end();
+  data->current_sprite--;
+
+  // retrieve image widget
+  GtkImage* image = GTK_IMAGE(glade_xml_get_widget(data->xml,
+                                                   ACE_TEXT_ALWAYS_CHAR("image_sprite")));
+  ACE_ASSERT(image);
+
+  // retrieve graphic
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  type.sprite = *(data->current_sprite);
+  RPG_Graphics_t graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
+             (graphic.type.sprite == type.sprite));
+  // assemble path
+  std::string filename;
+  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+
+  if (!filename.empty())
+    gtk_image_set_from_file(image, filename.c_str());
+  else
+    gtk_image_clear(image);
+
+  // make character save button sensitive (if it's not already)
+  GtkButton* save = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                    ACE_TEXT_ALWAYS_CHAR("save")));
+  ACE_ASSERT(save);
+  gtk_widget_set_sensitive(GTK_WIDGET(save), TRUE);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+next_image_activated_GTK_cb(GtkWidget* widget_in,
+                            gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::next_image_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->xml);
+  ACE_ASSERT(!data->sprite_gallery.empty());
+
+  // update image
+  data->current_sprite++;
+  if (data->current_sprite == data->sprite_gallery.end())
+    data->current_sprite = data->sprite_gallery.begin();
+
+  // retrieve image widget
+  GtkImage* image = GTK_IMAGE(glade_xml_get_widget(data->xml,
+                                                   ACE_TEXT_ALWAYS_CHAR("image_sprite")));
+  ACE_ASSERT(image);
+
+  // retrieve graphic
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  type.sprite = *(data->current_sprite);
+  RPG_Graphics_t graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
+             (graphic.type.sprite == type.sprite));
+  // assemble path
+  std::string filename;
+  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+
+  if (!filename.empty())
+    gtk_image_set_from_file(image, filename.c_str());
+  else
+    gtk_image_clear(image);
+
+  // make character save button sensitive (if it's not already)
+  GtkButton* save = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                    ACE_TEXT_ALWAYS_CHAR("save")));
+  ACE_ASSERT(save);
+  gtk_widget_set_sensitive(GTK_WIDGET(save), TRUE);
 
   return FALSE;
 }
