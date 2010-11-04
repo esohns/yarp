@@ -536,10 +536,10 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
     throw;
   }
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
-//              getName().c_str(),
-//              filename_in.c_str()));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
+             entity_in.character->getName().c_str(),
+             filename_in.c_str()));
 
   return true;
 }

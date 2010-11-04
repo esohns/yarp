@@ -385,10 +385,10 @@ RPG_Character_Player::save(const std::string& filename_in) const
     throw;
   }
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-//              getName().c_str(),
-//              filename_in.c_str()));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+             getName().c_str(),
+             filename_in.c_str()));
 
   return true;
 }
