@@ -2,14 +2,14 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="3" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.xml" >
+  <Doc0 NumberOfViews="1" URL="file:///mnt/win_c/Projects/RPG/graphics/rpg_graphics.xml" >
    <View0 Encoding="" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.map" >
+  <Doc1 NumberOfViews="1" URL="file:///mnt/win_c/Projects/RPG/graphics/rpg_graphics.map" >
    <View0 Encoding="" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/graphics/rpg_graphics.xsd" >
-   <View0 Encoding="" line="155" Type="Source" />
+  <Doc2 NumberOfViews="1" URL="file:///mnt/win_c/Projects/RPG/graphics/rpg_graphics.xsd" >
+   <View0 Encoding="" line="160" Type="Source" />
   </Doc2>
  </DocsAndViews>
  <pluginList>

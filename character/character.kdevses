@@ -2,10 +2,10 @@
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
  <DocsAndViews NumberOfDocuments="2" >
-  <Doc0 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.xsd" >
+  <Doc0 NumberOfViews="1" URL="file:///mnt/win_c/Projects/RPG/character/rpg_character.xsd" >
    <View0 Encoding="" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/unfv/Projects/RPG/character/rpg_character.map" >
+  <Doc1 NumberOfViews="1" URL="file:///mnt/win_c/Projects/RPG/character/rpg_character.map" >
    <View0 Encoding="" line="5" Type="Source" />
   </Doc1>
  </DocsAndViews>
