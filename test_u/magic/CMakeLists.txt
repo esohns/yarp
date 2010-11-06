@@ -1,0 +1,23 @@
+########### next target ###############
+set(magic_parser_SRCS magic_parser.cpp)
+
+add_executable(magic_parser ${magic_parser_SRCS})
+
+target_link_libraries(magic_parser pthread ACE xerces-c RPG_Dice RPG_Common RPG_Magic)
+
+install(TARGETS magic_parser RUNTIME DESTINATION bin)
+
+########### install files ###############
+
+#original Makefile.am contents follow:
+
+#METASOURCES = AUTO
+#
+#ACLOCAL_AMFLAGS = -I m4
+#
+#bin_PROGRAMS = magic_parser
+#
+#magic_parser_SOURCES = magic_parser.cpp
+#magic_parser_CPPFLAGS = -DDATADIR="\"$(datadir)/@META_PACKAGE@/config\""
+#magic_parser_LDADD = -lpthread -lACE -lxerces-c -lRPG_Dice -lRPG_Common \
+#	-lRPG_Magic
