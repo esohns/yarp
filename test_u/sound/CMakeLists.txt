@@ -13,6 +13,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${sound_parser_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
 
+set_source_files_properties(${sound_parser_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG")
+
 add_executable(sound_parser ${sound_parser_SRCS})
 
 target_link_libraries(sound_parser ${PKG_CONFIG_MODULE_XERCES_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES})

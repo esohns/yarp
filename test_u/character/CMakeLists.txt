@@ -36,6 +36,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${character_generator_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
 
+set_source_files_properties(${character_generator_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG")
+
 add_executable(character_generator_gui ${character_generator_gui_SRCS})
 
 target_link_libraries(character_generator_gui ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES} ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES} ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES})
@@ -50,6 +52,10 @@ set(character_parser_SRCS character_parser.cpp)
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${character_parser_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
+
+set_source_files_properties(${character_parser_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
+
+# add_definitions(-DDATADIR="/usr/local/share/RPG/config")
 
 add_executable(character_parser ${character_parser_SRCS})
 

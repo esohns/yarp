@@ -13,6 +13,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${combat_simulator_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
 
+set_source_files_properties(${combat_simulator_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
+
 add_executable(combat_simulator ${combat_simulator_SRCS})
 
 target_link_libraries(combat_simulator ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})

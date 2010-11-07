@@ -15,6 +15,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
 
+set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG")
+
 add_executable(client_gui ${client_gui_SRCS})
 
 target_link_libraries(client_gui ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES} ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES} ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES})

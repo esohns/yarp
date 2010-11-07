@@ -19,6 +19,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${IRC_client_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
 
+set_source_files_properties(${IRC_client_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
+
 add_executable(IRC_client ${IRC_client_SRCS})
 
 target_link_libraries(IRC_client ${PKG_CONFIG_MODULE_GTK_LIBRARIES} ${PKG_CONFIG_MODULE_GMODULE_LIBRARIES})
@@ -46,6 +48,8 @@ set(IRC_client_gui_SRCS
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${IRC_client_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
+
+set_source_files_properties(${IRC_client_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
 
 add_executable(IRC_client_gui ${IRC_client_gui_SRCS})
 
