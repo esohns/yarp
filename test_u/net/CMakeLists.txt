@@ -11,7 +11,7 @@ set(net_client_SRCS
 
 add_executable(net_client ${net_client_SRCS})
 
-target_link_libraries(net_client pthread ACE RPG_Dice RPG_Common RPG_Stream RPG_Net)
+target_link_libraries(net_client pthread ACE xerces-c RPG_Dice RPG_Common RPG_Stream RPG_Net)
 
 install(TARGETS net_client RUNTIME DESTINATION bin)
 
@@ -20,7 +20,7 @@ set(net_server_SRCS net_server.cpp)
 
 add_executable(net_server ${net_server_SRCS})
 
-target_link_libraries(net_server pthread ACE RPG_Dice RPG_Common RPG_Stream RPG_Net)
+target_link_libraries(net_server pthread ACE xerces-c RPG_Dice RPG_Common RPG_Stream RPG_Net)
 
 install(TARGETS net_server RUNTIME DESTINATION bin)
 

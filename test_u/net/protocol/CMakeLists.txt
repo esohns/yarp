@@ -1,3 +1,10 @@
+
+include(FindPkgConfig)
+pkg_check_modules(PKG_CONFIG_MODULE_GTK REQUIRED gtk+-2.0)
+pkg_check_modules(PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
+
+include_directories(${PKG_CONFIG_MODULE_GTK_INCLUDE_DIRS} ${PKG_CONFIG_MODULE_GMODULE_INCLUDE_DIRS})
+
 ########### next target ###############
 set(IRC_client_SRCS
     IRC_client.cpp
@@ -8,9 +15,15 @@ set(IRC_client_SRCS
     IRC_client_tools.h
     IRC_common.h)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${IRC_client_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
 add_executable(IRC_client ${IRC_client_SRCS})
 
-target_link_libraries(IRC_client pthread ACE RPG_Dice RPG_Common RPG_Stream RPG_Net RPG_Net_Protocol)
+target_link_libraries(IRC_client ${PKG_CONFIG_MODULE_GTK_LIBRARIES} ${PKG_CONFIG_MODULE_GMODULE_LIBRARIES})
+
+target_link_libraries(IRC_client pthread ACE xerces-c RPG_Dice RPG_Common RPG_Stream RPG_Net RPG_Net_Protocol)
 
 install(TARGETS IRC_client RUNTIME DESTINATION bin)
 
@@ -30,9 +43,15 @@ set(IRC_client_gui_SRCS
     IRC_client_tools.h
     IRC_common.h)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${IRC_client_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
 add_executable(IRC_client_gui ${IRC_client_gui_SRCS})
 
-target_link_libraries(IRC_client_gui pthread ACE RPG_Dice RPG_Common RPG_Stream RPG_Net RPG_Net_Protocol)
+target_link_libraries(IRC_client_gui ${PKG_CONFIG_MODULE_GTK_LIBRARIES})
+
+target_link_libraries(IRC_client_gui pthread ACE xerces-c RPG_Dice RPG_Common RPG_Stream RPG_Net RPG_Net_Protocol)
 
 install(TARGETS IRC_client_gui RUNTIME DESTINATION bin)
 
