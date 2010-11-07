@@ -24,6 +24,7 @@
 #include "rpg_client_common.h"
 
 #include <rpg_engine_common.h>
+#include <rpg_engine_common_tools.h>
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
@@ -1035,11 +1036,16 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
 
   // load player profile
-  data->player = RPG_Character_Player::load(filename,
-                                            data->schemaRepository);
+  data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
+                                                     data->schemaRepository,
+                                                     true);
+  ACE_ASSERT(data->entity.character);
+
+  RPG_Character_Player* player = dynamic_cast<RPG_Character_Player*>(data->entity.character);
+  ACE_ASSERT(player);
 
   // update character profile widgets
-  ::update_character_profile(data->player,
+  ::update_character_profile(*player,
                              data->xml);
 
   // make character display frame sensitive (if it's not already)
@@ -1120,11 +1126,16 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   filename += RPG_CHARACTER_PROFILE_EXT;
 
   // load player profile
-  data->player = RPG_Character_Player::load(filename,
-                                            data->schemaRepository);
+  data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
+                                                     data->schemaRepository,
+                                                     true);
+  ACE_ASSERT(data->entity.character);
+
+  RPG_Character_Player* player = dynamic_cast<RPG_Character_Player*>(data->entity.character);
+  ACE_ASSERT(player);
 
   // update character profile widgets
-  ::update_character_profile(data->player,
+  ::update_character_profile(*player,
                              data->xml);
 
   // make character display frame sensitive (if it's not already)

@@ -24,12 +24,12 @@
 #include "rpg_client_window_main.h"
 #include "rpg_client_window_level.h"
 
+#include <rpg_engine_common.h>
+
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_iwindow.h>
 
 #include <rpg_map_common.h>
-
-#include <rpg_character_player.h>
 
 #include <glade/glade.h>
 #include <SDL/SDL.h>
@@ -42,7 +42,13 @@ struct RPG_Client_GTK_CBData_t
 {
  inline RPG_Client_GTK_CBData_t()
   : lock(NULL, NULL),
-    player(RPG_Character_Player::dummy()) {};
+    entity()
+ {
+   entity.character = NULL;
+   entity.position = std::make_pair(0, 0);
+   entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+   entity.graphic = NULL;
+ };
 
   ACE_Thread_Mutex        lock;
   unsigned long           hover_time;
@@ -57,7 +63,7 @@ struct RPG_Client_GTK_CBData_t
   RPG_Map_FloorPlan_t     plan;
   RPG_Map_Positions_t     seed_points;
   std::string             schemaRepository;
-  RPG_Character_Player    player;
+  RPG_Engine_Entity       entity;
 };
 
 // *NOTE* types as used by SDL
