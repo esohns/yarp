@@ -46,7 +46,13 @@ set(RPG_Magic_LIB_SRCS
     rpg_magic_spelltype.h
     rpg_magic_subschool.h)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${RPG_Magic_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
 add_library(RPG_Magic SHARED ${RPG_Magic_LIB_SRCS})
+
+add_dependencies(RPG_Magic RPG_Common)
 
 set_target_properties(RPG_Magic PROPERTIES VERSION 1.0.0 SOVERSION 1)
 

@@ -81,7 +81,9 @@ RPG_Net_SocketHandler::svc(void)
     // put some data into the socket...
     bytes_sent = peer_.send(myCurrentWriteBuffer->rd_ptr(),
                             myCurrentWriteBuffer->length(),
-                            NULL); // default behavior
+                            0, // default behavior
+//                             MSG_DONTWAIT, // don't block
+                            NULL); // block if necessary...
     switch (bytes_sent)
     {
       case -1:

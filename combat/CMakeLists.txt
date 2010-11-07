@@ -26,7 +26,13 @@ set(RPG_Combat_LIB_SRCS
     rpg_combat_rangedattackproperties.h
     rpg_combat_rangedeffectunion.h)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${RPG_Combat_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
 add_library(RPG_Combat SHARED ${RPG_Combat_LIB_SRCS})
+
+add_dependencies(RPG_Combat RPG_Character RPG_Item RPG_Magic RPG_Common RPG_Dice)
 
 set_target_properties(RPG_Combat PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS RPG_Combat LIBRARY DESTINATION lib)

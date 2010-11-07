@@ -20,7 +20,13 @@ set(RPG_Sound_LIB_SRCS
     rpg_sound_event.h
     rpg_sound_incl.h)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${RPG_Sound_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
 add_library(RPG_Sound SHARED ${RPG_Sound_LIB_SRCS})
+
+add_dependencies(RPG_Sound RPG_Common RPG_Dice)
 
 set_target_properties(RPG_Sound PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS RPG_Sound LIBRARY DESTINATION lib)

@@ -36,32 +36,3 @@ namespace urn:rpg
 
 #  RPG_Item_Dictionary_Type              RPG_Item_Dictionary;
 }
-
-#namespace urn:rpg_chance_dice
-#{
-#  include <rpg_chance_dice_common.h>;
-
-#  RPG_Chance_DiceRoll_Type          RPG_Item_Damage;
-#}
-
-#namespace urn:rpg_item
-#{
-#  include "rpg_item_common.h";
-
-#  RPG_Item_WeaponCategory_Type      RPG_Item_WeaponCategory;
-#  RPG_Item_WeaponClass_Type         RPG_Item_WeaponClass;
-#  RPG_Item_WeaponType_Type          RPG_Item_WeaponType;
-#  RPG_Item_StorePrice_Type          RPG_Item_StorePrice;
-#  RPG_Item_CriticalHitModifier_Type RPG_Item_CriticalHitModifier;
-#  RPG_Item_WeaponDamageType_Type    RPG_Item_WeaponDamageType;
-#  RPG_Item_WeaponProperties_Type    RPG_Item_WeaponProperties_XML;
-
-#  RPG_Item_ArmorCategory_Type       RPG_Item_ArmorCategory;
-#  RPG_Item_ArmorType_Type           RPG_Item_ArmorType;
-#  RPG_Item_ArmorProperties_Type     RPG_Item_ArmorProperties_XML;
-
-#  RPG_Item_WeaponDictionary_Type    RPG_Item_WeaponDictionary_t*;
-#  RPG_Item_ArmorDictionary_Type     RPG_Item_ArmorDictionary_t*;
-
-#  RPG_Item_Dictionary_Type          RPG_Item_Dictionary;
-#}

@@ -1,5 +1,14 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+include(FindPkgConfig)
+pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
+pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
+pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
+pkg_check_modules(PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
+
+include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS} ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS} ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
+
 ########### next target ###############
 set(RPG_Client_GUI_LIB_SRCS
     rpg_client_callbacks.cpp
@@ -10,6 +19,10 @@ set(RPG_Client_GUI_LIB_SRCS
     rpg_client_window_level.h
     rpg_client_window_main.cpp
     rpg_client_window_main.h)
+
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${RPG_Client_GUI_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
 
 add_library(RPG_Client_GUI SHARED ${RPG_Client_GUI_LIB_SRCS})
 

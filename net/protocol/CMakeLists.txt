@@ -41,7 +41,13 @@ set(RPG_Net_Protocol_LIB_SRCS
     rpg_net_protocol_tools.h
     stack.hh)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${RPG_Net_Protocol_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
 add_library(RPG_Net_Protocol SHARED ${RPG_Net_Protocol_LIB_SRCS})
+
+add_dependencies(RPG_Net_Protocol RPG_Net RPG_Stream)
 
 set_target_properties(RPG_Net_Protocol PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS RPG_Net_Protocol LIBRARY DESTINATION lib)

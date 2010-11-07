@@ -59,7 +59,13 @@ set(RPG_Character_LIB_SRCS
     rpg_character_skills_common_tools.h
     rpg_character_skillvalue.h)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${RPG_Character_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
 add_library(RPG_Character SHARED ${RPG_Character_LIB_SRCS})
+
+add_dependencies(RPG_Character RPG_Item RPG_Magic RPG_Common RPG_Dice)
 
 set_target_properties(RPG_Character PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS RPG_Character LIBRARY DESTINATION lib)

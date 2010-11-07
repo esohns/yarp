@@ -9,6 +9,10 @@ add_subdirectory(dice)
 
 set(RPG_Chance_LIB_SRCS rpg_chance_common_tools.cpp rpg_chance_common_tools.h)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${RPG_Chance_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
 add_library(RPG_Chance SHARED ${RPG_Chance_LIB_SRCS})
 
 set_target_properties(RPG_Chance PROPERTIES VERSION 1.0.0 SOVERSION 1)

@@ -1078,8 +1078,8 @@ RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_SpellLevelList_t& le
       // issue --> we provide a (temporary) workaround here...
       // *TODO*: clean this up...
 #define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-      /* Test for GCC <= 4.4.4 */
-#if GCC_VERSION <= 40404
+      /* Test for GCC <= 4.5.1 */
+#if GCC_VERSION <= 40501
 #pragma message "applying gcc quirk code for this compiler version..."
       case RPG_Magic_CasterClassUnion::__GCC_QUIRK__DOMAIN:
 #else
