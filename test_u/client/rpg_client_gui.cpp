@@ -663,6 +663,7 @@ do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
 
 const bool
 do_initGUI(const std::string& graphicsDirectory_in,
+           const unsigned long& graphicsCacheSize_in,
            const std::string& UIfile_in,
            RPG_Client_GTK_CBData_t& userData_in,
            const RPG_Client_SDL_VideoConfig_t& videoConfig_in)
@@ -686,9 +687,74 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  ACE_ASSERT(userData_in.xml == NULL);
+
+  // init SDL UI handling
+
+  // ***** keyboard setup *****
+  // enable Unicode translation
+  SDL_EnableUNICODE(1);
+  // enable key repeat
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
+                      SDL_DEFAULT_REPEAT_INTERVAL);
+//   // ignore keyboard events
+//   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
+//   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
+
+  // SDL event filter (filter mouse motion events and the like)
+//   SDL_SetEventFilter(event_filter_SDL_cb);
+
+  // ***** window/screen setup *****
+  // set window caption
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING),  // window caption
+                    ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING)); // icon caption
+  // set window icon
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+  type.image = IMAGE_WM_ICON;
+  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
+  std::string path = graphicsDirectory_in;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += RPG_GRAPHICS_TILE_DEF_IMAGES_SUB;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += icon_graphic.file;
+  SDL_Surface* icon_image = NULL;
+  icon_image = RPG_Graphics_Surface::load(path,   // graphics file
+                                          false); // don't convert to display format (no screen yet !)
+  if (!icon_image)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+               path.c_str()));
+
+    return false;
+  } // end IF
+  SDL_WM_SetIcon(icon_image, // surface
+                 NULL);      // mask (--> everything)
+//   // don't show (double) cursor
+//   SDL_ShowCursor(SDL_DISABLE);
+
+  userData_in.screen = RPG_Graphics_SDL_Tools::initScreen(videoConfig_in.screen_width,
+                                                          videoConfig_in.screen_height,
+                                                          videoConfig_in.screen_colordepth,
+                                                          videoConfig_in.doubleBuffer,
+                                                          videoConfig_in.fullScreen);
+  if (!userData_in.screen)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_SDL_Tools::initScreen(%d,%d,%d), aborting\n"),
+               videoConfig_in.screen_width,
+               videoConfig_in.screen_height,
+               videoConfig_in.screen_colordepth));
+
+    return false;
+  } // end IF
+
+  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+                                  graphicsCacheSize_in);
 
   // step1: load widget tree
+    ACE_ASSERT(userData_in.xml == NULL);
   userData_in.xml = glade_xml_new(UIfile_in.c_str(), // definition file
                                   NULL,              // root widget --> construct all
                                   NULL);             // domain
@@ -941,59 +1007,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   if (gtk_widget_is_sensitive(GTK_WIDGET(available_characters)))
     gtk_combo_box_set_active(available_characters, 0);
 
-  // init SDL UI handling
-
-  // ***** keyboard setup *****
-  // enable Unicode translation
-  SDL_EnableUNICODE(1);
-  // enable key repeat
-  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
-                      SDL_DEFAULT_REPEAT_INTERVAL);
-//   // ignore keyboard events
-//   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
-//   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
-
-  // SDL event filter (filter mouse motion events and the like)
-//   SDL_SetEventFilter(event_filter_SDL_cb);
-
-  // ***** window/screen setup *****
-  // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING)); // icon caption
-  // set window icon
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
-  type.image = IMAGE_WM_ICON;
-  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
-  std::string path = graphicsDirectory_in;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_GRAPHICS_TILE_DEF_IMAGES_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += icon_graphic.file;
-  SDL_Surface* icon_image = NULL;
-  icon_image = RPG_Graphics_Surface::load(path,   // graphics file
-                                          false); // don't convert to display format (no screen yet !)
-  if (!icon_image)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
-               path.c_str()));
-
-    return false;
-  } // end IF
-  SDL_WM_SetIcon(icon_image, // surface
-                 NULL);      // mask (--> everything)
-//   // don't show (double) cursor
-//   SDL_ShowCursor(SDL_DISABLE);
-
-  userData_in.screen = RPG_Graphics_SDL_Tools::initScreen(videoConfig_in.screen_width,
-                                                          videoConfig_in.screen_height,
-                                                          videoConfig_in.screen_colordepth,
-                                                          videoConfig_in.doubleBuffer,
-                                                          videoConfig_in.fullScreen);
-
-  return (userData_in.screen != NULL);
+  return true;
 }
 
 const bool
@@ -1123,10 +1137,11 @@ do_work(const RPG_Client_Config& config_in,
 //   userData.player;
 
   GDK_THREADS_ENTER();
-  if (!do_initGUI(config_in.graphics_directory, // graphics directory
-                  config_in.glade_file,         // glade file
-                  userData,                     // GTK cb data
-                  config_in.video_config))      // SDL video config
+  if (!do_initGUI(config_in.graphics_directory,  // graphics directory
+                  config_in.graphics_cache_size, // graphics cache size
+                  config_in.glade_file,          // glade file
+                  userData,                      // GTK cb data
+                  config_in.video_config))       // SDL video config
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize video, aborting\n")));
@@ -1142,9 +1157,6 @@ do_work(const RPG_Client_Config& config_in,
   // ***** mouse setup *****
   SDL_WarpMouse((userData.screen->w / 2),
                 (userData.screen->h / 2));
-
-  RPG_Graphics_Common_Tools::init(config_in.graphics_directory,
-                                  config_in.graphics_cache_size);
 
 //   // step3: run intro
 //   if (!do_runIntro())
