@@ -4,8 +4,8 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = Yarp
-PROJECT_NUMBER         = 0.1.539
+PROJECT_NAME           = ${CPACK_PACKAGE_NAME}
+PROJECT_NUMBER         = ${VERSION}
 OUTPUT_DIRECTORY       = api-doc
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -95,7 +95,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /mnt/win_c/Projects/RPG/Yarp
+INPUT                  = ${CMAKE_CURRENT_SOURCE_DIR}
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
