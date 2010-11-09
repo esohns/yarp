@@ -738,7 +738,7 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
     type.sprite = entity_in.sprite;
     RPG_Graphics_t graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
     ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
-              (graphic.type.sprite == type.sprite));
+               (graphic.type.sprite == type.sprite));
     // assemble path
     RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
   } // end IF
@@ -1041,12 +1041,9 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
                                                      true);
   ACE_ASSERT(data->entity.character);
 
-  RPG_Character_Player* player = dynamic_cast<RPG_Character_Player*>(data->entity.character);
-  ACE_ASSERT(player);
-
-  // update character profile widgets
-  ::update_character_profile(*player,
-                             data->xml);
+  // update entity profile widgets
+  ::update_entity_profile(data->entity,
+                          data->xml);
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
@@ -1131,18 +1128,15 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
                                                      true);
   ACE_ASSERT(data->entity.character);
 
-  RPG_Character_Player* player = dynamic_cast<RPG_Character_Player*>(data->entity.character);
-  ACE_ASSERT(player);
-
-  // update character profile widgets
-  ::update_character_profile(*player,
-                             data->xml);
+  // update entity profile widgets
+  ::update_entity_profile(data->entity,
+                          data->xml);
 
   // make character display frame sensitive (if it's not already)
-  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             ACE_TEXT_ALWAYS_CHAR("character")));
-  ACE_ASSERT(character_frame);
-  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+  GtkFrame* player_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                          ACE_TEXT_ALWAYS_CHAR("player_frame")));
+  ACE_ASSERT(player_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(player_frame), TRUE);
 
   return FALSE;
 }

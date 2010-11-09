@@ -1,18 +1,94 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+  <!-- interface-requires gtk+ 2.20 -->
   <!-- interface-naming-policy project-wide -->
+  <widget class="GtkFileChooserDialog" id="filechooser_dialog">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Choose a file...</property>
+    <property name="modal">True</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">normal</property>
+    <property name="deletable">False</property>
+    <property name="create_folders">False</property>
+    <property name="preview_widget_active">False</property>
+    <signal name="file_activated" handler="character_file_activated_GTK_cb" swapped="no"/>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="filechooser_vbox">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="filechooser_actions">
+            <property name="visible">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkAboutDialog" id="about_dialog">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">About</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">normal</property>
+    <property name="deletable">False</property>
+    <property name="program_name">character generator</property>
+    <property name="version">0.1</property>
+    <property name="authors">Erik Sohns</property>
+    <property name="wrap_license">True</property>
+    <signal name="response" handler="gtk_widget_hide" swapped="no"/>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="about_vbox">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="about_actions">
+            <property name="visible">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
+            <property name="layout_style">end</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
   <widget class="GtkDialog" id="main_dialog">
     <property name="visible">True</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">character generator</property>
     <property name="resizable">False</property>
     <property name="type_hint">normal</property>
-    <signal name="delete_event" handler="quit_activated_GTK_cb"/>
+    <signal name="delete_event" handler="quit_activated_GTK_cb" swapped="no"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <widget class="GtkHBox" id="hbox">
@@ -20,7 +96,6 @@
             <child>
               <widget class="GtkVBox" id="vbox">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="character_actions_frame">
                     <property name="visible">True</property>
@@ -32,7 +107,6 @@
                         <property name="can_default">True</property>
                         <property name="has_default">True</property>
                         <property name="receives_default">True</property>
-                        <property name="orientation">vertical</property>
                         <property name="homogeneous">True</property>
                         <property name="layout_style">spread</property>
                         <child>
@@ -43,7 +117,7 @@
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="create_character_actived_GTK_cb"/>
+                            <signal name="clicked" handler="create_character_actived_GTK_cb" swapped="no"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -61,7 +135,7 @@
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="load_character_actived_GTK_cb"/>
+                            <signal name="clicked" handler="load_character_actived_GTK_cb" swapped="no"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -78,7 +152,7 @@
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="save_character_actived_GTK_cb"/>
+                            <signal name="clicked" handler="save_character_actived_GTK_cb" swapped="no"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -122,7 +196,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="has_frame">False</property>
                                 <property name="focus_on_click">False</property>
-                                <signal name="changed" handler="characters_activated_GTK_cb"/>
+                                <signal name="changed" handler="characters_activated_GTK_cb" swapped="no"/>
                               </widget>
                               <packing>
                                 <property name="position">0</property>
@@ -136,7 +210,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_stock">True</property>
-                                <signal name="clicked" handler="characters_refresh_activated_GTK_cb"/>
+                                <signal name="clicked" handler="characters_refresh_activated_GTK_cb" swapped="no"/>
                               </widget>
                               <packing>
                                 <property name="position">1</property>
@@ -182,7 +256,6 @@
                         <child>
                           <widget class="GtkVBox" id="statistics_vbox">
                             <property name="visible">True</property>
-                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkHBox" id="name_hbox">
                                 <property name="visible">True</property>
@@ -324,7 +397,6 @@
                                     <child>
                                       <widget class="GtkVBox" id="status_vbox">
                                         <property name="visible">True</property>
-                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <widget class="GtkHBox" id="condition_hbox">
@@ -512,7 +584,6 @@
                                     <child>
                                       <widget class="GtkVBox" id="attribute_vbox">
                                         <property name="visible">True</property>
-                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <widget class="GtkHBox" id="strength_hbox">
@@ -700,7 +771,6 @@
                                     <child>
                                       <widget class="GtkVBox" id="feats_vbox">
                                         <property name="visible">True</property>
-                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
@@ -735,7 +805,6 @@
                                     <child>
                                       <widget class="GtkVBox" id="abilities_vbox">
                                         <property name="visible">True</property>
-                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
@@ -775,7 +844,6 @@
                                 <child>
                                   <widget class="GtkVBox" id="skills_vbox">
                                     <property name="visible">True</property>
-                                    <property name="orientation">vertical</property>
                                     <property name="homogeneous">True</property>
                                     <child>
                                       <placeholder/>
@@ -802,7 +870,6 @@
                         <child>
                           <widget class="GtkVBox" id="inventory_vbox">
                             <property name="visible">True</property>
-                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkFrame" id="spells_frame">
                                 <property name="visible">True</property>
@@ -814,7 +881,6 @@
                                     <child>
                                       <widget class="GtkVBox" id="spells_vbox">
                                         <property name="visible">True</property>
-                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
@@ -849,7 +915,6 @@
                                     <child>
                                       <widget class="GtkVBox" id="inventory_items_vbox">
                                         <property name="visible">True</property>
-                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
@@ -889,7 +954,6 @@
                                 <child>
                                   <widget class="GtkVBox" id="image_vbox">
                                     <property name="visible">True</property>
-                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkImage" id="image_sprite">
                                         <property name="visible">True</property>
@@ -1016,7 +1080,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="about_activated_GTK_cb"/>
+                <signal name="clicked" handler="about_activated_GTK_cb" swapped="no"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -1031,7 +1095,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="quit_activated_GTK_cb"/>
+                <signal name="clicked" handler="quit_activated_GTK_cb" swapped="no"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -1044,85 +1108,6 @@
             <property name="expand">False</property>
             <property name="pack_type">end</property>
             <property name="position">3</property>
-          </packing>
-        </child>
-      </widget>
-    </child>
-  </widget>
-  <widget class="GtkAboutDialog" id="about_dialog">
-    <property name="border_width">5</property>
-    <property name="title" translatable="yes">About</property>
-    <property name="resizable">False</property>
-    <property name="modal">True</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="type_hint">normal</property>
-    <property name="deletable">False</property>
-    <property name="program_name">character generator</property>
-    <property name="version">0.1</property>
-    <property name="authors">Erik Sohns</property>
-    <property name="wrap_license">True</property>
-    <signal name="response" handler="gtk_widget_hide"/>
-    <child internal-child="vbox">
-      <widget class="GtkVBox" id="about_vbox">
-        <property name="visible">True</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="about_actions">
-            <property name="visible">True</property>
-            <property name="can_default">True</property>
-            <property name="has_default">True</property>
-            <property name="receives_default">True</property>
-            <property name="layout_style">end</property>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </widget>
-    </child>
-  </widget>
-  <widget class="GtkFileChooserDialog" id="filechooser_dialog">
-    <property name="border_width">5</property>
-    <property name="title" translatable="yes">Choose a file...</property>
-    <property name="modal">True</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="type_hint">normal</property>
-    <property name="deletable">False</property>
-    <property name="create_folders">False</property>
-    <property name="preview_widget_active">False</property>
-    <signal name="file_activated" handler="character_file_activated_GTK_cb"/>
-    <child internal-child="vbox">
-      <widget class="GtkVBox" id="filechooser_vbox">
-        <property name="visible">True</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="filechooser_actions">
-            <property name="visible">True</property>
-            <property name="can_default">True</property>
-            <property name="has_default">True</property>
-            <property name="receives_default">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
           </packing>
         </child>
       </widget>
