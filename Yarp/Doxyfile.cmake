@@ -200,7 +200,7 @@ GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
 DOCSET_BUNDLE_ID       = org.doxygen.Project
 GENERATE_HTMLHELP      = YES
-CHM_FILE               =
+CHM_FILE               = ${CPACK_PACKAGE_NAME}.chm
 HHC_LOCATION           =
 GENERATE_CHI           = NO
 CHM_INDEX_ENCODING     =
@@ -214,6 +214,7 @@ QHP_VIRTUAL_FOLDER     = doc
 QHP_CUST_FILTER_ATTRS  =
 QHP_SECT_FILTER_ATTRS  =
 QHG_LOCATION           =
+GENERATE_ECLIPSEHELP   = NO
 DISABLE_INDEX          = NO
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = YES
@@ -285,7 +286,7 @@ SKIP_FUNCTION_MACROS   = YES
 # Configuration::additions related to external references
 #---------------------------------------------------------------------------
 TAGFILES               =
-GENERATE_TAGFILE       = Yarp.tag
+GENERATE_TAGFILE       = ${CPACK_PACKAGE_NAME}.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
 PERL_PATH              = /usr/bin/perl

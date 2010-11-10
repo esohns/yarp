@@ -64,10 +64,15 @@ set(DOC_PATH "share/doc/${CPACK_PACKAGE_NAME}")
 install(FILES ${DOC_FILES}
         DESTINATION ${DOC_PATH})
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
-        DESTINATION ${DOC_PATH})
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
-        DESTINATION share/man/man3)
+option(INSTALL_DOCUMENTATION "install generated documentation")
+if (INSTALL_DOCUMENTATION)
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
+          DESTINATION ${DOC_PATH})
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
+          DESTINATION share/man/man3)
+else(INSTALL_DOCUMENTATION)
+  message(WARNING "documentation will NOT be installed...")
+endif(INSTALL_DOCUMENTATION)
 
 ########### install files ###############
 

@@ -517,7 +517,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         RPG_Graphics_Surface::put((screen_position.first +
                                    ((RPG_GRAPHICS_TILE_FLOOR_WIDTH - myPlayerEntity->graphic->w) / 2)),
                                   (screen_position.second +
-                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
+                                   myPlayerEntity->graphic->h),
                                   *(myPlayerEntity->graphic),
                                   targetSurface);
       } // end IF
