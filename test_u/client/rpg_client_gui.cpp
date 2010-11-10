@@ -1233,7 +1233,8 @@ do_work(const RPG_Client_Config& config_in,
 //   RPG_Map_Common_Tools::displayFloorPlan(userData.seedPoints,
 //                                          userData.plan);
 
-  mapWindow.init(mapStyle,
+  mapWindow.init(&userData.entity,
+                 mapStyle,
                  userData.plan);
   // refresh screen
   try

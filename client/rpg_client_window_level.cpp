@@ -44,6 +44,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
              std::string(),        // title
              NULL),                // background
 //    myLevelState(floorPlan_in),
+   myPlayerEntity(NULL),
 //    myCurrentMapStyle(mapStyle_in),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
@@ -193,7 +194,8 @@ RPG_Client_WindowLevel::centerView()
 }
 
 void
-RPG_Client_WindowLevel::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
+RPG_Client_WindowLevel::init(RPG_Engine_Entity* entity_in,
+                             const RPG_Graphics_MapStyle_t& mapStyle_in,
                              const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::init"));
@@ -202,6 +204,7 @@ RPG_Client_WindowLevel::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   myWallTiles.clear();
 
   myLevelState.init(floorPlan_in);
+  myPlayerEntity = entity_in;
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -241,8 +244,8 @@ RPG_Client_WindowLevel::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
 
 void
 RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
-                          const unsigned long& offsetX_in,
-                          const unsigned long& offsetY_in)
+                             const unsigned long& offsetX_in,
+                             const unsigned long& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::draw"));
 
@@ -296,7 +299,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   //   2. furniture
   //   3. traps
   //   4. objects
-  //   5. monsters
+  //   5. creatures
   //   6. effects
   //   7. south & east walls
   //   8. ceiling
@@ -461,6 +464,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
       wall_iterator = myWallTiles.find(current_map_position);
       door_iterator = myDoorTiles.find(current_map_position);
+
       // step1: walls (west & north)
       if (wall_iterator != myWallTiles.end())
       {
@@ -484,7 +488,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       // step2: doors
       if (door_iterator != myDoorTiles.end())
       {
-        // *NOTE*: door are drawn in the "middle" of the floor tile
+        // *NOTE*: doors are drawn in the "middle" of the floor tile
         RPG_Graphics_Surface::put((screen_position.first +
                                    (*door_iterator).second.offset_x +
                                    (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 4)),
@@ -497,7 +501,30 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                   targetSurface);
       } // end IF
 
-      // step3: walls (south & east)
+      // step3: furniture & traps
+
+      // step4: objects
+
+      // step5: creatures
+      if (myPlayerEntity &&
+          (static_cast<int>(myPlayerEntity->position.first) == current_map_position.first) &&
+          (static_cast<int>(myPlayerEntity->position.second) == current_map_position.second))
+      {
+        // sanity check
+        ACE_ASSERT(myPlayerEntity->graphic);
+
+        // *NOTE*: creatures are drawn in the "middle" of the floor tile
+        RPG_Graphics_Surface::put((screen_position.first +
+                                   ((RPG_GRAPHICS_TILE_FLOOR_WIDTH - myPlayerEntity->graphic->w) / 2)),
+                                  (screen_position.second +
+                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                  *(myPlayerEntity->graphic),
+                                  targetSurface);
+      } // end IF
+
+      // step6: effects
+
+      // step7: walls (south & east)
       if (wall_iterator != myWallTiles.end())
       {
         if ((*wall_iterator).second.south.surface)
@@ -517,7 +544,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                     targetSurface);
       } // end IF
 
-      // step4: ceiling
+      // step8: ceiling
       if (RPG_Engine_Common_Tools::hasCeiling(current_map_position,
                                               myLevelState))
       {

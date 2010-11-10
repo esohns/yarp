@@ -1,3 +1,7 @@
+#cmake_minimum_required(VERSION 2.8)
+
+#project(test_u CXX)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/rpg_config.h)
 
 add_definitions(-DHAVE_CONFIG_H)

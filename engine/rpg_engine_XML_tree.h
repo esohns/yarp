@@ -78,11 +78,30 @@ class RPG_Engine_Player_XMLTree_Type;
 
 #include "rpg_character_player_XML_tree.h"
 
+#include "rpg_map_XML_tree.h"
+
 #include "rpg_graphics_XML_tree.h"
 
 class RPG_Engine_Player_XMLTree_Type: public ::RPG_Character_PlayerXML_XMLTree_Type
 {
   public:
+  // position
+  // 
+  typedef ::RPG_Map_Position_XMLTree_Type position_type;
+  typedef ::xsd::cxx::tree::traits< position_type, char > position_traits;
+
+  const position_type&
+  position () const;
+
+  position_type&
+  position ();
+
+  void
+  position (const position_type& x);
+
+  void
+  position (::std::auto_ptr< position_type > p);
+
   // sprite
   // 
   typedef ::RPG_Graphics_Sprite_XMLTree_Type sprite_type;
@@ -116,6 +135,7 @@ class RPG_Engine_Player_XMLTree_Type: public ::RPG_Character_PlayerXML_XMLTree_T
                                   const gender_type&,
                                   const classXML_type&,
                                   const offhand_type&,
+                                  const position_type&,
                                   const sprite_type&);
 
   RPG_Engine_Player_XMLTree_Type (const name_type&,
@@ -132,6 +152,7 @@ class RPG_Engine_Player_XMLTree_Type: public ::RPG_Character_PlayerXML_XMLTree_T
                                   const gender_type&,
                                   ::std::auto_ptr< classXML_type >&,
                                   const offhand_type&,
+                                  ::std::auto_ptr< position_type >&,
                                   const sprite_type&);
 
   RPG_Engine_Player_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
@@ -165,6 +186,7 @@ class RPG_Engine_Player_XMLTree_Type: public ::RPG_Character_PlayerXML_XMLTree_T
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
+  ::xsd::cxx::tree::one< position_type > position_;
   ::xsd::cxx::tree::one< sprite_type > sprite_;
 };
 

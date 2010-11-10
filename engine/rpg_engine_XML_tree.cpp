@@ -43,6 +43,30 @@
 // RPG_Engine_Player_XMLTree_Type
 // 
 
+const RPG_Engine_Player_XMLTree_Type::position_type& RPG_Engine_Player_XMLTree_Type::
+position () const
+{
+  return this->position_.get ();
+}
+
+RPG_Engine_Player_XMLTree_Type::position_type& RPG_Engine_Player_XMLTree_Type::
+position ()
+{
+  return this->position_.get ();
+}
+
+void RPG_Engine_Player_XMLTree_Type::
+position (const position_type& x)
+{
+  this->position_.set (x);
+}
+
+void RPG_Engine_Player_XMLTree_Type::
+position (::std::auto_ptr< position_type > x)
+{
+  this->position_.set (x);
+}
+
 const RPG_Engine_Player_XMLTree_Type::sprite_type& RPG_Engine_Player_XMLTree_Type::
 sprite () const
 {
@@ -88,6 +112,7 @@ RPG_Engine_Player_XMLTree_Type (const name_type& name,
                                 const gender_type& gender,
                                 const classXML_type& classXML,
                                 const offhand_type& offhand,
+                                const position_type& position,
                                 const sprite_type& sprite)
 : ::RPG_Character_PlayerXML_XMLTree_Type (name,
                                           alignment,
@@ -103,6 +128,7 @@ RPG_Engine_Player_XMLTree_Type (const name_type& name,
                                           gender,
                                           classXML,
                                           offhand),
+  position_ (position, ::xml_schema::flags (), this),
   sprite_ (sprite, ::xml_schema::flags (), this)
 {
 }
@@ -122,6 +148,7 @@ RPG_Engine_Player_XMLTree_Type (const name_type& name,
                                 const gender_type& gender,
                                 ::std::auto_ptr< classXML_type >& classXML,
                                 const offhand_type& offhand,
+                                ::std::auto_ptr< position_type >& position,
                                 const sprite_type& sprite)
 : ::RPG_Character_PlayerXML_XMLTree_Type (name,
                                           alignment,
@@ -137,6 +164,7 @@ RPG_Engine_Player_XMLTree_Type (const name_type& name,
                                           gender,
                                           classXML,
                                           offhand),
+  position_ (position, ::xml_schema::flags (), this),
   sprite_ (sprite, ::xml_schema::flags (), this)
 {
 }
@@ -146,6 +174,7 @@ RPG_Engine_Player_XMLTree_Type (const RPG_Engine_Player_XMLTree_Type& x,
                                 ::xml_schema::flags f,
                                 ::xml_schema::container* c)
 : ::RPG_Character_PlayerXML_XMLTree_Type (x, f, c),
+  position_ (x.position_, f, this),
   sprite_ (x.sprite_, f, this)
 {
 }
@@ -155,6 +184,7 @@ RPG_Engine_Player_XMLTree_Type (const ::xercesc::DOMElement& e,
                                 ::xml_schema::flags f,
                                 ::xml_schema::container* c)
 : ::RPG_Character_PlayerXML_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
+  position_ (f, this),
   sprite_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -176,6 +206,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
+    // position
+    //
+    if (n.name () == "position" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< position_type > r (
+        position_traits::create (i, f, this));
+
+      if (!position_.present ())
+      {
+        this->position_.set (r);
+        continue;
+      }
+    }
+
     // sprite
     //
     if (n.name () == "sprite" && n.namespace_ () == "urn:rpg")
@@ -191,6 +235,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     }
 
     break;
+  }
+
+  if (!position_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "position",
+      "urn:rpg");
   }
 
   if (!sprite_.present ())
@@ -220,6 +271,9 @@ operator== (const RPG_Engine_Player_XMLTree_Type& x, const RPG_Engine_Player_XML
         static_cast< const ::RPG_Character_PlayerXML_XMLTree_Type& > (y)))
     return false;
 
+  if (!(x.position () == y.position ()))
+    return false;
+
   if (!(x.sprite () == y.sprite ()))
     return false;
 
@@ -239,6 +293,7 @@ operator<< (::std::ostream& o, const RPG_Engine_Player_XMLTree_Type& i)
 {
   o << static_cast< const ::RPG_Character_PlayerXML_XMLTree_Type& > (i);
 
+  o << ::std::endl << "position: " << i.position ();
   o << ::std::endl << "sprite: " << i.sprite ();
   return o;
 }
@@ -536,6 +591,18 @@ operator<< (::xercesc::DOMElement& e, const RPG_Engine_Player_XMLTree_Type& i)
 {
   e << static_cast< const ::RPG_Character_PlayerXML_XMLTree_Type& > (i);
 
+  // position
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "position",
+        "urn:rpg",
+        e));
+
+    s << i.position ();
+  }
+
   // sprite
   //
   {
@@ -702,6 +769,7 @@ RPG_Engine_Player_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                 ::xml_schema::flags f,
                                 ::xml_schema::container* c)
 : ::RPG_Character_PlayerXML_XMLTree_Type (s, f, c),
+  position_ (f, this),
   sprite_ (f, this)
 {
   this->parse (s, f);
@@ -711,6 +779,11 @@ void RPG_Engine_Player_XMLTree_Type::
 parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
+  {
+    ::std::auto_ptr< position_type > r (new position_type (s, f, this));
+    this->position_.set (r);
+  }
+
   {
     ::std::auto_ptr< sprite_type > r (new sprite_type (s, f, this));
     this->sprite_.set (r);
@@ -722,6 +795,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Engine_Player_XMLTree_Type& x)
 {
   s << static_cast< const ::RPG_Character_PlayerXML_XMLTree_Type& > (x);
+  s << x.position ();
   s << x.sprite ();
   return s;
 }

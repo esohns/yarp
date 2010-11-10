@@ -20,6 +20,7 @@
 #ifndef RPG_CLIENT_WINDOW_LEVEL_H
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
+#include <rpg_engine_common.h>
 #include <rpg_engine_level.h>
 
 #include <rpg_graphics_common.h>
@@ -51,7 +52,8 @@ class RPG_Client_WindowLevel
   void centerView();
 
   // set level properties
-  void init(const RPG_Graphics_MapStyle_t&, // map style
+  void init(RPG_Engine_Entity*,             // player entity
+            const RPG_Graphics_MapStyle_t&, // map style
             const RPG_Map_FloorPlan_t&);    // map
 
   // implement (part of) RPG_Graphics_IWindow
@@ -82,6 +84,7 @@ class RPG_Client_WindowLevel
   void initWallBlend();
 
   RPG_Engine_Level            myLevelState;
+  RPG_Engine_Entity*          myPlayerEntity;
 
   RPG_Graphics_MapStyle_t     myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;

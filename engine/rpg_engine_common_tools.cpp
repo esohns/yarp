@@ -364,10 +364,15 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   }
   ACE_ASSERT(result.character);
 
+  // step2: load player position ?
+  if (engine_player_p.get())
+   result.position = std::make_pair(engine_player_p->position().x(),
+                                    engine_player_p->position().y());
+
   if (engine_player_p.get())
     result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
 
-  // step2: load player sprite ?
+  // step3: load player sprite ?
   if (loadImage_in &&
       (result.sprite != RPG_GRAPHICS_SPRITE_INVALID))
   {
@@ -457,6 +462,8 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
          iterator != player_class.subClasses.end();
          iterator++)
       classXML.subClass().push_back(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator));
+    RPG_Map_Position_XMLTree_Type position(entity_in.position.first,
+                                           entity_in.position.second);
     RPG_Engine_Player_XMLTree_Type player_model(player->getName(),
                                                 alignment,
                                                 attributes,
@@ -471,6 +478,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
                                                 RPG_Character_GenderHelper::RPG_Character_GenderToString(player->getGender()),
                                                 classXML,
                                                 RPG_Character_OffHandHelper::RPG_Character_OffHandToString(player->getOffHand()),
+                                                position,
                                                 RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite));
     // *NOTE*: add race, known spells, condition, prepared spells sequences "manually"
     RPG_Character_Race_t player_race = player->getRace();

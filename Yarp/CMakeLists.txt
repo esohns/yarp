@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Yarp)
+project(Yarp CXX)
 
 find_package(Subversion)
 if(Subversion_FOUND)

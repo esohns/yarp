@@ -26,6 +26,8 @@ endif()
 
 add_library(RPG_Client_GUI SHARED ${RPG_Client_GUI_LIB_SRCS})
 
+add_dependencies(RPG_Client_GUI RPG_Graphics RPG_Engine)
+
 set_target_properties(RPG_Client_GUI PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS RPG_Client_GUI LIBRARY DESTINATION lib)
 

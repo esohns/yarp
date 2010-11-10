@@ -10,6 +10,10 @@ set(RPG_Map_LIB_SRCS
     rpg_map_common.h
     rpg_map_common_tools.cpp
     rpg_map_common_tools.h
+    rpg_map_XML_tree.h
+    rpg_map_XML_tree.cpp
+    rpg_map_position.h
+    rpg_map_incl.h
     rpg_map_defines.h
     rpg_map_level.cpp
     rpg_map_level.h
@@ -36,7 +40,9 @@ install(TARGETS RPG_Map LIBRARY DESTINATION lib)
 
 ########### install files ###############
 
-install(FILES  rpg_map_common.h rpg_map_common_tools.h rpg_map_defines.h  	rpg_map_level.h rpg_map_parser.h rpg_map_parser_driver.h rpg_map_pathfinding_tools.h  	rpg_map_scanner.h location.hh position.hh stack.hh DESTINATION include)
+install(FILES  rpg_map.xsd DESTINATION share/RPG/config)
+
+install(FILES  rpg_map_common.h rpg_map_common_tools.h rpg_map_defines.h  	rpg_map_level.h rpg_map_parser.h rpg_map_parser_driver.h rpg_map_pathfinding_tools.h  	rpg_map_scanner.h location.hh position.hh stack.hh rpg_map_XML_tree.h rpg_map_position.h rpg_map_incl.h DESTINATION include)
 
 #original Makefile.am contents follow:
 
