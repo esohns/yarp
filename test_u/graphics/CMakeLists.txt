@@ -40,6 +40,8 @@ set_source_files_properties(${SDL_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS DATAD
 
 add_executable(SDL_gui ${SDL_gui_SRCS})
 
+add_dependencies(SDL_gui RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+
 target_link_libraries(SDL_gui ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
 
 target_link_libraries(SDL_gui pthread ACE xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Engine)

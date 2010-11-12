@@ -28,13 +28,15 @@
 '#': wall
 '=': door
 '@': (room) seed
+'X': starting position
 */
 UNMAPPED       [ ]
 FLOOR          [.]
 WALL           [#]
 DOOR           [=]
 SEED           [@]
-GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}
+START          [X]
+GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 
 %s             row
 %s             last_row

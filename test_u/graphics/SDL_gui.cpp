@@ -745,8 +745,9 @@ do_work(const mode_t& mode_in,
       bool force_redraw = false;
 
       // step3a: setup level
-      RPG_Map_FloorPlan_t plan;
+      RPG_Map_Position_t  startingPosition;
       RPG_Map_Positions_t seedPoints;
+      RPG_Map_FloorPlan_t plan;
       if (map_in.empty())
         RPG_Map_Common_Tools::createFloorPlan(mapConfig_in.map_size_x,
                                               mapConfig_in.map_size_y,
@@ -763,6 +764,7 @@ do_work(const mode_t& mode_in,
       else
       {
         if (!RPG_Map_Common_Tools::load(map_in,
+                                        startingPosition,
                                         seedPoints,
                                         plan,
                                         false,
@@ -919,9 +921,10 @@ do_work(const mode_t& mode_in,
                 std::string dump_path = RPG_MAP_DUMP_DIR;
                 dump_path += ACE_DIRECTORY_SEPARATOR_STR;
                 dump_path += ACE_TEXT("map.txt");
-                if (!RPG_Map_Common_Tools::save(dump_path,  // file
-                                                seedPoints, // seed points
-                                                plan))      // plan
+                if (!RPG_Map_Common_Tools::save(dump_path,
+                                                startingPosition,
+                                                seedPoints,
+                                                plan))
                 {
                   ACE_DEBUG((LM_ERROR,
                              ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),

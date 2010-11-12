@@ -1197,12 +1197,13 @@ do_work(const RPG_Client_Config& config_in,
   mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
   // step5b: setup map
+  userData.start_position = std::make_pair(0, 0);
+  userData.seed_points.clear();
   userData.plan.size_x = 0;
   userData.plan.size_y = 0;
   userData.plan.unmapped.clear();
   userData.plan.walls.clear();
   userData.plan.doors.clear();
-  userData.seed_points.clear();
   if (config_in.map_file.empty())
     RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
                                           config_in.map_config.map_size_y,
@@ -1219,6 +1220,7 @@ do_work(const RPG_Client_Config& config_in,
   else
   {
     if (!RPG_Map_Common_Tools::load(config_in.map_file,
+                                    userData.start_position,
                                     userData.seed_points,
                                     userData.plan))
     {
@@ -1232,6 +1234,11 @@ do_work(const RPG_Client_Config& config_in,
 
 //   RPG_Map_Common_Tools::displayFloorPlan(userData.seedPoints,
 //                                          userData.plan);
+
+  // (if necessary) update entity position
+  if ((userData.entity.position.first == 0) &&
+      (userData.entity.position.second == 0))
+    userData.entity.position = userData.start_position;
 
   mapWindow.init(&userData.entity,
                  mapStyle,
@@ -1392,9 +1399,10 @@ do_work(const RPG_Client_Config& config_in,
             std::string dump_path = RPG_MAP_DUMP_DIR;
             dump_path += ACE_DIRECTORY_SEPARATOR_STR;
             dump_path += ACE_TEXT("map.txt");
-            if (!RPG_Map_Common_Tools::save(dump_path,            // file
-                                            userData.seed_points, // seed points
-                                            userData.plan))       // plan
+            if (!RPG_Map_Common_Tools::save(dump_path,
+                                            userData.start_position,
+                                            userData.seed_points,
+                                            userData.plan))
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),

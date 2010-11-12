@@ -97,6 +97,12 @@ chars:                         /* empty */
                                      driver.myCurrentPosition.first++;
                                      break;
                                    }
+                                   case 'X':
+                                   {
+                                     *(driver.myCurrentStartPosition) = driver.myCurrentPosition;
+                                     driver.myCurrentPosition.first++;
+                                     break;
+                                   }
                                    default:
                                    {
                                      ACE_DEBUG((LM_ERROR,

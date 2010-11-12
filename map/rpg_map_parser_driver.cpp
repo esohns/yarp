@@ -42,6 +42,7 @@ RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
    myCurrentPosition(std::make_pair(0, 0)),
    myCurrentPlan(NULL),
    myCurrentSeedPoints(NULL),
+   myCurrentStartPosition(NULL),
    myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::RPG_Map_ParserDriver"));
@@ -68,6 +69,7 @@ RPG_Map_ParserDriver::~RPG_Map_ParserDriver ()
 void
 RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
                            RPG_Map_Positions_t* seedPoints_in,
+                           RPG_Map_Position_t* startPosition_in,
                            const bool& traceScanning_in,
                            const bool& traceParsing_in)
 {
@@ -88,13 +90,15 @@ RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
   // set parse target data
   myCurrentPlan = plan_in;
   myCurrentSeedPoints = seedPoints_in;
+  myCurrentStartPosition = startPosition_in;
   // init target structures
+  *myCurrentStartPosition = std::make_pair(0, 0);
+  myCurrentSeedPoints->clear();
   myCurrentPlan->size_x = 0;
   myCurrentPlan->size_y = 0;
   myCurrentPlan->unmapped.clear();
   myCurrentPlan->walls.clear();
   myCurrentPlan->doors.clear();
-  myCurrentSeedPoints->clear();
 
   // trace ?
   myTraceScanning = traceScanning_in;

@@ -39,6 +39,7 @@
 
 const bool
 RPG_Map_Common_Tools::load(const std::string& filename_in,
+                           RPG_Map_Position_t& startingPoint_out,
                            RPG_Map_Positions_t& seedPoints_out,
                            RPG_Map_FloorPlan_t& floorPlan_out,
                            const bool& traceScanning_in,
@@ -59,10 +60,11 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
   // (try to) parse file
   RPG_Map_ParserDriver parser_driver(traceScanning_in,
                                      traceParsing_in);
-  parser_driver.init(&floorPlan_out,   // floor plan
-                     &seedPoints_out,  // seed points
-                     traceScanning_in, // trace scanning ?
-                     traceParsing_in); // trace parsing ?
+  parser_driver.init(&floorPlan_out,     // floor plan
+                     &seedPoints_out,    // seed points
+                     &startingPoint_out, // starting point
+                     traceScanning_in,   // trace scanning ?
+                     traceParsing_in);   // trace parsing ?
   if (!parser_driver.parse(filename_in))
   {
     ACE_DEBUG((LM_ERROR,
@@ -77,6 +79,7 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
 
 const bool
 RPG_Map_Common_Tools::save(const std::string& filename_in,
+                           const RPG_Map_Position_t& startingPosition_in,
                            const RPG_Map_Positions_t& seedPoints_in,
                            const RPG_Map_FloorPlan_t& level_in)
 {
@@ -131,6 +134,16 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
     {
       current_position = std::make_pair(x, y);
       current_position_door.position = current_position;
+
+      // starting position ?
+      if (!((startingPosition_in.first == 0) &&
+            (startingPosition_in.second == 0)) &&
+          (current_position == startingPosition_in))
+      {
+        row += 'X'; // starting position
+
+        continue;
+      } // end IF
 
       // seed point ?
       if (seedPoints_in.find(current_position) != seedPoints_in.end())
@@ -381,8 +394,9 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
-                                       const RPG_Map_FloorPlan_t& level_in)
+RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Position_t& startingPosition_in,
+                                       const RPG_Map_Positions_t& seedPoints_in,
+                                       const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayFloorPlan"));
 
@@ -409,39 +423,43 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Positions_t& seedPoints_in,
              ACE_TEXT("]\n")));
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("level ([%ux%u] - %u unmapped, %u walls, %u doors)...\n"),
-             level_in.size_x,
-             level_in.size_y,
-             level_in.unmapped.size(),
-             level_in.walls.size(),
-             level_in.doors.size()));
+             ACE_TEXT("map ([%ux%u] - %u unmapped, %u walls, %u doors)...\n"),
+             floorPlan_in.size_x,
+             floorPlan_in.size_y,
+             floorPlan_in.unmapped.size(),
+             floorPlan_in.walls.size(),
+             floorPlan_in.doors.size()));
 
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
+  bool is_starting_position = false;
   bool is_seed = false;
   for (unsigned long y = 0;
-       y < level_in.size_y;
+       y < floorPlan_in.size_y;
        y++)
   {
     for (unsigned long x = 0;
-         x < level_in.size_x;
+         x < floorPlan_in.size_x;
          x++)
     {
       current_position = std::make_pair(x, y);
       current_position_door.position = current_position;
+      is_starting_position = (current_position == startingPosition_in);
       is_seed = seedPoints_in.find(current_position) != seedPoints_in.end();
 
       // unmapped, floor, wall, or door ?
       // *TODO*: cannot draw seed points that are not "unmapped"/"floor" without
       // losing essential information...
-      if (level_in.unmapped.find(current_position) != level_in.unmapped.end())
+      if (floorPlan_in.unmapped.find(current_position) != floorPlan_in.unmapped.end())
         std::clog << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
-      else if (level_in.walls.find(current_position) != level_in.walls.end())
+      else if (floorPlan_in.walls.find(current_position) != floorPlan_in.walls.end())
         std::clog << ACE_TEXT("#"); // wall
-      else if (level_in.doors.find(current_position_door) != level_in.doors.end())
+      else if (floorPlan_in.doors.find(current_position_door) != floorPlan_in.doors.end())
         std::clog << ACE_TEXT("="); // door
       else
-        std::clog << (is_seed ? ACE_TEXT("@") : ACE_TEXT(".")); // floor
+        std::clog << (is_starting_position ? ACE_TEXT("X")
+                                           : (is_seed ? ACE_TEXT("@")
+                                                      : ACE_TEXT("."))); // floor
     } // end FOR
     std::clog << std::endl;
   } // end FOR

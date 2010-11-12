@@ -36,11 +36,13 @@ class RPG_Map_Common_Tools
 {
  public:
   static const bool load(const std::string&,                       // FQ filename
+                         RPG_Map_Position_t&,                      // return value: starting position
                          RPG_Map_Positions_t&,                     // return value: seed points (areas)
                          RPG_Map_FloorPlan_t&,                     // return value
                          const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
                          const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
   static const bool save(const std::string&,          // FQ filename
+                         const RPG_Map_Position_t&,   // starting position
                          const RPG_Map_Positions_t&,  // seed points (areas)
                          const RPG_Map_FloorPlan_t&);
 
@@ -58,8 +60,9 @@ class RPG_Map_Common_Tools
                               const unsigned long&,  // max. #doors/room
                               RPG_Map_Positions_t&,  // return value: seed points (areas)
                               RPG_Map_FloorPlan_t&); // return value
-  static void displayFloorPlan(const RPG_Map_Positions_t&,  // seed points (areas)
-                               const RPG_Map_FloorPlan_t&);
+  static void displayFloorPlan(const RPG_Map_Position_t&,   // starting position
+                               const RPG_Map_Positions_t&,  // seed points (areas)
+                               const RPG_Map_FloorPlan_t&); // floor plan
 
   static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
                                             const RPG_Map_Position_t&); // position 2

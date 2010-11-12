@@ -641,17 +641,45 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 //               mapWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
 //                                  0); break;
             case SDLK_UP:
-              setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+            {
+              if (event_in.key.keysym.mod & KMOD_SHIFT)
+                setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              else
+                movePlayer(DIRECTION_UP);
+
+              break;
+            }
             case SDLK_DOWN:
-              setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+            {
+              if (event_in.key.keysym.mod & KMOD_SHIFT)
+                setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              else
+                movePlayer(DIRECTION_DOWN);
+
+              break;
+            }
             case SDLK_LEFT:
-              setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+            {
+              if (event_in.key.keysym.mod & KMOD_SHIFT)
+                setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              else
+                movePlayer(DIRECTION_LEFT);
+
+              break;
+            }
             case SDLK_RIGHT:
-              setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+            {
+              if (event_in.key.keysym.mod & KMOD_SHIFT)
+                setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              else
+                movePlayer(DIRECTION_RIGHT);
+
+              break;
+            }
             default:
               break;
           } // end SWITCH
@@ -1386,6 +1414,40 @@ RPG_Client_WindowLevel::initWallBlend()
 //
 //   SDL_FreeSurface(myWallBlend);
 //   myWallBlend = shaded_blend;
+}
+
+void
+RPG_Client_WindowLevel::movePlayer(const RPG_Map_Direction& direction_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::movePlayer"));
+
+  // compute target position
+  RPG_Map_Position_t targetPosition = myPlayerEntity->position;
+  switch (direction_in)
+  {
+    case DIRECTION_UP:
+      targetPosition.second--; targetPosition.first--; break;
+    case DIRECTION_DOWN:
+      targetPosition.second++; targetPosition.first++; break;
+    case DIRECTION_LEFT:
+      targetPosition.first--; targetPosition.second++; break;
+    case DIRECTION_RIGHT:
+      targetPosition.first++; targetPosition.second--; break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
+                 RPG_Map_Common_Tools::direction2String(direction_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  // position valid ?
+  RPG_Map_Element element = myLevelState.getElement(targetPosition);
+  if ((element == MAPELEMENT_FLOOR) ||
+      (element == MAPELEMENT_DOOR))
+    myPlayerEntity->position = targetPosition;
 }
 
 void

@@ -1,10 +1,9 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -52,12 +51,10 @@ typedef void* yyscan_t;
 #include "stack.hh"
 
 
-
 namespace yy {
 
   class position;
   class location;
-
 
 } // yy
 
@@ -100,7 +97,6 @@ do {							\
     }							\
 } while (false)
 #endif
-
 
 
 namespace yy {
@@ -305,7 +301,6 @@ namespace yy {
     unsigned long& line_count;
     yyscan_t& context;
   };
-
 
 } // yy
 

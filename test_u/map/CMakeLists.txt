@@ -20,6 +20,8 @@ endif()
 
 add_executable(path_finder ${path_finder_SRCS})
 
+add_dependencies(path_finder RPG_Dice RPG_Common RPG_Map)
+
 target_link_libraries(path_finder pthread ACE xerces-c RPG_Dice RPG_Common RPG_Map)
 
 install(TARGETS path_finder RUNTIME DESTINATION bin)

@@ -82,6 +82,7 @@ class RPG_Client_WindowLevel
 
   void initCeiling();
   void initWallBlend();
+  void movePlayer(const RPG_Map_Direction&); // direction
 
   RPG_Engine_Level            myLevelState;
   RPG_Engine_Entity*          myPlayerEntity;

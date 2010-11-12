@@ -56,6 +56,7 @@ class RPG_Map_ParserDriver
   // target data, needs to be set PRIOR to invoking parse() !
   void init(RPG_Map_FloorPlan_t*, // target data: floor plan
             RPG_Map_Positions_t*, // target data: seed points
+            RPG_Map_Position_t*,  // target data: start position
             const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
             const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
   // *WARNING*: the argument needs to have been prepared for usage by flex:
@@ -101,6 +102,7 @@ class RPG_Map_ParserDriver
   // target data
   RPG_Map_FloorPlan_t* myCurrentPlan;
   RPG_Map_Positions_t* myCurrentSeedPoints;
+  RPG_Map_Position_t*  myCurrentStartPosition;
 
   bool                 myIsInitialized;
 };

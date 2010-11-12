@@ -1,10 +1,9 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -59,7 +58,7 @@
 
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -117,7 +116,6 @@ do {					\
 #define YYABORT		goto yyabortlab
 #define YYERROR		goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
-
 
 
 namespace yy {
@@ -305,7 +303,7 @@ namespace yy {
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location_type yyerror_range[2];
+    location_type yyerror_range[3];
 
     /// $$.
     semantic_type yyval;
@@ -482,6 +480,12 @@ namespace yy {
                                      driver.myCurrentPosition.first++;
                                      break;
                                    }
+                                   case 'X':
+                                   {
+                                     *(driver.myCurrentStartPosition) = driver.myCurrentPosition;
+                                     driver.myCurrentPosition.first++;
+                                     break;
+                                   }
                                    default:
                                    {
                                      ACE_DEBUG((LM_ERROR,
@@ -541,7 +545,7 @@ namespace yy {
 	error (yylloc, yysyntax_error_ (yystate, yytoken));
       }
 
-    yyerror_range[0] = yylloc;
+    yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
 	/* If just tried and failed to reuse lookahead token after an
@@ -576,7 +580,7 @@ namespace yy {
     if (false)
       goto yyerrorlab;
 
-    yyerror_range[0] = yylocation_stack_[yylen - 1];
+    yyerror_range[1] = yylocation_stack_[yylen - 1];
     /* Do not reclaim the symbols of the rule which action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -608,7 +612,7 @@ namespace yy {
 	if (yystate_stack_.height () == 1)
 	YYABORT;
 
-	yyerror_range[0] = yylocation_stack_[0];
+	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
 		     yystos_[yystate],
 		     &yysemantic_stack_[0], &yylocation_stack_[0]);
@@ -617,10 +621,10 @@ namespace yy {
 	YY_STACK_PRINT ();
       }
 
-    yyerror_range[1] = yylloc;
+    yyerror_range[2] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
     // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
+    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
@@ -823,7 +827,7 @@ namespace yy {
   const unsigned char
   RPG_Map_Parser::yyrline_[] =
   {
-         0,    60,    60,    61,    62,   113
+         0,    60,    60,    61,    62,   119
   };
 
   // Print the state stack on the debug stream.
@@ -907,7 +911,6 @@ namespace yy {
 
   const unsigned int RPG_Map_Parser::yyuser_token_number_max_ = 259;
   const RPG_Map_Parser::token_number_type RPG_Map_Parser::yyundef_token_ = 2;
-
 
 
 } // yy

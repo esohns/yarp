@@ -60,8 +60,9 @@ struct RPG_Client_GTK_CBData_t
   RPG_Graphics_IWindow*   previous_window;
   RPG_Client_WindowMain*  main_window;
   RPG_Client_WindowLevel* map_window;
-  RPG_Map_FloorPlan_t     plan;
+  RPG_Map_Position_t      start_position;
   RPG_Map_Positions_t     seed_points;
+  RPG_Map_FloorPlan_t     plan;
   std::string             schemaRepository;
   RPG_Engine_Entity       entity;
 };

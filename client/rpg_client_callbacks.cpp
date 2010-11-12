@@ -43,6 +43,7 @@
 #include <rpg_item_armor.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
@@ -1045,6 +1046,11 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   ::update_entity_profile(data->entity,
                           data->xml);
 
+  // (if necessary) update entity position
+  if ((data->entity.position.first == 0) &&
+      (data->entity.position.second == 0))
+    data->entity.position = data->start_position;
+
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
                                                              ACE_TEXT_ALWAYS_CHAR("character")));
@@ -1061,7 +1067,23 @@ save_character_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->entity.character);
+
+  // assemble target filename
+  std::string filename = RPG_COMMON_DUMP_DIR;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += data->entity.character->getName();
+  filename += RPG_CHARACTER_PROFILE_EXT;
+
+  if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
+                                           filename))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
+               filename.c_str()));
 
   return FALSE;
 }
@@ -1131,6 +1153,11 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   // update entity profile widgets
   ::update_entity_profile(data->entity,
                           data->xml);
+
+  // (if necessary) update entity position
+  if ((data->entity.position.first == 0) &&
+      (data->entity.position.second == 0))
+    data->entity.position = data->start_position;
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* player_frame = GTK_FRAME(glade_xml_get_widget(data->xml,

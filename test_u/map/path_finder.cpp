@@ -156,20 +156,21 @@ do_work(const bool& buildCorridors_in,
   RPG_Common_Tools::initStringConversionTables();
 
   // step1: load floor plan
+  RPG_Map_Position_t  startingPosition;
   RPG_Map_Positions_t seedPoints;
   RPG_Map_FloorPlan_t floorPlan;
   RPG_Map_Common_Tools::load(filename_in,
+                             startingPosition,
                              seedPoints,
                              floorPlan,
                              false,
                              debugParser_in);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded map (\"%s\": size [%u,%u], %u seed point(s))...\n"),
+             ACE_TEXT("loaded map (\"%s\": size [%u,%u]...\n"),
              filename_in.c_str(),
              floorPlan.size_x,
-             floorPlan.size_y,
-             seedPoints.size()));
+             floorPlan.size_y));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
