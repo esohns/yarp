@@ -2,11 +2,26 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Yarp CXX)
 
+#extract package version from VCS
 find_package(Subversion)
-if(Subversion_FOUND)
-  Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} ER)
-  set(SUBVERSION_REVISION ${ER_WC_REVISION})
-endif(Subversion_FOUND)
+if(SUBVERSION_FOUND)
+#   Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} ER)
+#   if(${Subversion_svn_info_result} EQUAL 0)
+#     set(SUBVERSION_REVISION ${ER_WC_REVISION})
+#   endif()
+endif()
+find_package(Git)
+if(GIT_FOUND)
+  set(GIT_REVISION "539")
+endif()
+
+if(${SUBVERSION_REVISION})
+  message(STATUS "found subversion revision ${SUBVERSION_REVISION}...")
+  set(PACKAGE_REVISION ${SUBVERSION_REVISION})
+elseif(${GIT_REVISION})
+  message(STATUS "found git revision ${GIT_REVISION}...")
+  set(PACKAGE_REVISION ${GIT_REVISION})
+endif()
 
 set(CPACK_PACKAGE_DESCRIPTION "(yet another) role-playing game system framework")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A RPG system framework")
@@ -17,9 +32,11 @@ set(CPACK_PACKAGE_CONTACT "Erik Sohns <erik.sohns@web.de>")
 #set(CPACK_PACKAGE_VENDOR "Erik Sohns")
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "${SUBVERSION_REVISION}")
+set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_REVISION})
 # set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+
+message(STATUS "configuring ${CPACK_PACKAGE_NAME} version ${VERSION}...")
 
 set(CPACK_GENERATOR "DEB;RPM;")
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}-${CMAKE_SYSTEM_PROCESSOR}")
@@ -64,14 +81,14 @@ set(DOC_PATH "share/doc/${CPACK_PACKAGE_NAME}")
 install(FILES ${DOC_FILES}
         DESTINATION ${DOC_PATH})
 
-option(INSTALL_DOCUMENTATION "install generated documentation")
-if (INSTALL_DOCUMENTATION)
+option(INSTALL_DOCUMENTATION "install generated documentation" OFF)
+if(INSTALL_DOCUMENTATION)
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
           DESTINATION ${DOC_PATH})
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
           DESTINATION share/man/man3)
 else(INSTALL_DOCUMENTATION)
-  message(WARNING "documentation will NOT be installed...")
+  message(STATUS "documentation will NOT be installed...")
 endif(INSTALL_DOCUMENTATION)
 
 ########### install files ###############
