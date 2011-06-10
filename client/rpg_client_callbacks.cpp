@@ -1052,10 +1052,10 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
     data->entity.position = data->start_position;
 
   // make character display frame sensitive (if it's not already)
-  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             ACE_TEXT_ALWAYS_CHAR("character")));
-  ACE_ASSERT(character_frame);
-  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+  GtkFrame* character_actions = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                               RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+  ACE_ASSERT(character_actions);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_actions), TRUE);
 
   return FALSE;
 }

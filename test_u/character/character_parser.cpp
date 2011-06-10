@@ -23,6 +23,9 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_engine_common.h>
+#include <rpg_engine_common_tools.h>
+
 #include <rpg_character_defines.h>
 #include <rpg_character_alignmentcivic.h>
 #include <rpg_character_alignmentethic.h>
@@ -186,7 +189,7 @@ process_arguments(const int argc_in,
 void
 do_work(const std::string& magicDictionaryFilename_in,
         const std::string& itemDictionaryFilename_in,
-        const std::string& playerFilename_in,
+        const std::string& profileFilename_in,
         const std::string& schemaRepository_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
@@ -229,9 +232,11 @@ do_work(const std::string& magicDictionaryFilename_in,
   }
 
   // load file
-  RPG_Character_Player player = RPG_Character_Player::load(playerFilename_in,
-                                                           schemaRepository_in);
-  player.dump();
+//   RPG_Character_Player player = RPG_Character_Player::load(playerFilename_in,
+//                                                            schemaRepository_in);
+  RPG_Engine_Entity entity = RPG_Engine_Common_Tools::loadEntity(profileFilename_in,
+                                                                 schemaRepository_in);
+  entity.character->dump();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

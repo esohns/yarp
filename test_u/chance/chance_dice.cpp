@@ -198,8 +198,8 @@ void do_work(const RPG_Dice_Roll& rollSpecs_in,
   try
   {
     RPG_Dice::generateRandomNumbers(rollSpecs_in.typeDice, // see enum
-                                           numRolls_in,
-                                           result);
+                                    numRolls_in,
+                                    result);
   }
   catch(...)
   {
@@ -209,46 +209,46 @@ void do_work(const RPG_Dice_Roll& rollSpecs_in,
     return;
   }
 
-  // debug info
-  // header line
-  std::cout << ACE_TEXT("random numbers: ") << std::endl;
-  std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
-
-  std::ostringstream converter;
-  for (RPG_Dice_RollResultIterator_t iter = result.begin();
-       iter != result.end();
-       iter++)
-  {
-    converter << *iter;
-    std::cout << converter.str() << ACE_TEXT(" ");
-    converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
-  } // end FOR
-  std::cout << std::endl;
-
-  // dump sorted result too ?
-  if (includeSortedResult_in)
-  {
-    // header line
-    std::cout << ACE_TEXT("random numbers (sorted): ") << std::endl;
-    std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
-
-    // sort array
-    std::sort(result.begin(),
-              result.end());
-
-//     converter.str(std::string()); // "reset" it...
-    for (RPG_Dice_RollResultIterator_t iter = result.begin();
-         iter != result.end();
-         iter++)
-    {
-      converter << *iter;
-      std::cout << converter.str() << ACE_TEXT(" ");
-      converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
-    } // end FOR
-    std::cout << std::endl;
-  } // end IF
-
-  std::cout << std::endl;
+//   // debug info
+//   // header line
+//   std::cout << ACE_TEXT("random numbers: ") << std::endl;
+//   std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+//
+//   std::ostringstream converter;
+//   for (RPG_Dice_RollResultIterator_t iter = result.begin();
+//        iter != result.end();
+//        iter++)
+//   {
+//     converter << *iter;
+//     std::cout << converter.str() << ACE_TEXT(" ");
+//     converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
+//   } // end FOR
+//   std::cout << std::endl;
+//
+//   // dump sorted result too ?
+//   if (includeSortedResult_in)
+//   {
+//     // header line
+//     std::cout << ACE_TEXT("random numbers (sorted): ") << std::endl;
+//     std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+//
+//     // sort array
+//     std::sort(result.begin(),
+//               result.end());
+//
+// //     converter.str(std::string()); // "reset" it...
+//     for (RPG_Dice_RollResultIterator_t iter = result.begin();
+//          iter != result.end();
+//          iter++)
+//     {
+//       converter << *iter;
+//       std::cout << converter.str() << ACE_TEXT(" ");
+//       converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
+//     } // end FOR
+//     std::cout << std::endl;
+//   } // end IF
+//
+//   std::cout << std::endl;
 
   // step2b: generate some random dice rolls...
   result.clear();
@@ -267,9 +267,9 @@ void do_work(const RPG_Dice_Roll& rollSpecs_in,
   }
 
   // debug info
-  // header line
-  std::cout << ACE_TEXT("dice rolls: ") << std::endl;
-  std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+//   // header line
+//   std::cout << ACE_TEXT("dice rolls: ") << std::endl;
+//   std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
 //   std::ostringstream converter;
   for (RPG_Dice_RollResultIterator_t iter = result.begin();

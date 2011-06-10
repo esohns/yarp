@@ -29,6 +29,7 @@
 #define RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME        ACE_TEXT_ALWAYS_CHAR("main_dialog")
 #define RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME       ACE_TEXT_ALWAYS_CHAR("about_dialog")
 #define RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME ACE_TEXT_ALWAYS_CHAR("filechooser_dialog")
+#define RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME         ACE_TEXT_ALWAYS_CHAR("character_actions")
 #define RPG_CLIENT_DEF_GNOME_CHARBOX_NAME           ACE_TEXT_ALWAYS_CHAR("available_characters")
 
 #define RPG_CLIENT_DEF_INI_FILE                     ACE_TEXT("rpg_client.ini")
