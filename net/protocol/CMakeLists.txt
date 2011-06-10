@@ -1,4 +1,4 @@
-add_subdirectory(scripts)
+#add_subdirectory(scripts)
 
 ########### next target ###############
 set(RPG_Net_Protocol_LIB_SRCS

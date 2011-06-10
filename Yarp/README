@@ -10,31 +10,31 @@ Currently, development is (unit-) test-driven and so evolution will happen likew
 * upgrading a feature and extending/updating any existing test code accordingly
 * start a concept prototype/design discussion (on a branch/in this wiki ?) about what a missing feature could look like
 
-All existing funcionality has been grouped into modules (directories) reflecting what is believed to be a sane project structure. In alphabetical order, these are:
+Existing funcionality has been grouped into modules (directories) reflecting the intermediate project structure. In alphabetical order, these are:
 
 * *chance*: anything to do with simulating dice and randomness
 * *character*: low-level characteristics of player- (and non-player-) entities
 * *client*: prototype of a (GNOME/SDL) client UI
 * *combat*: anything to do with (round-based) melee simulation (includes concepts for damage, different forms of attack, ...)
 * *common*: common concepts that have not been grouped yet (includes schemas for terrain, environment, climate and tools, ...)
-* *engine*: some logic to define/handle the non-player entitites in an area - the home for any future work in AI
+* *engine*: some logic to define/handle the non-player entities in an area - the home for any future work in AI
 * *graphics*: glue code (uses SDL) realizing surfaces, tiles, windows, cursors and other UI elements. Contains any artwork as well
-* *item*: characteristics of material objects that may be manipulated by entities (i.e. things like weapons and armor)
+* *item*: characteristics of material objects that may be manipulated by entities (e.g. tools, weapons and armor)
 * *magic*: characteristics of non-material objects and attributes that may be manipulated by entities (i.e. things like spells and special abilities)
-* *map*: structures and algorithms related to the generation and manipulation of area maps. Contains path-finding logic as well
+* *map*: structures and algorithms related to the generation and manipulation of area maps (currently 2D only). Contains path-finding logic as well
 * *monster*: higher-level characteristics of potential adversaries
 * *net*: base logic implementing client/server architecture and protocol design for networking
 * *sound*: glue code (uses SDL) realizing audio playback. Contains any soundwork as well
-* *stream*: lowlevel implementation of the pipes-and-filters pattern. Currently used by the *net* module to implement streamed messages
+* *stream*: lower-level implementation of the pipes-and-filters pattern, built ontop of the ACE framwork. Currently used by the *net* module to implement streamed messages (and should therefore really be a sub-module thereof)
 * *test_u*: home to the unit- testcases and related code
-* *Yarp*: meta-module combining all other modules facilitating higher-level work
+* *Yarp*: meta-module combining all other modules, thereby facilitating higher level project work
 
 **Overview of existing functionality**
 
 The implemented unit test program names are self-describing:
 
 * chance_dice: simulate rolling dice
-* chance_rangeToRoll: convert a required range of values (e.g. 2-12) to an approximate dice roll (e.g. 2d6)
+* chance_rangeToRoll: convert a requested range of values (e.g. 2-12) to an (approximated) appropriate dice roll (e.g. 2d6)
 * character_generator: generate a player character (text-based / UI)
 * character_parser: load/store a player character to/from a file
 * rpg_client_gui: client GUI (GNOME/SDL)
@@ -51,12 +51,13 @@ The implemented unit test program names are self-describing:
 * IRC_client_gui: IRC client UI
 * sound_parser: load sound library
 
-The current client UI can load/display an area map using tiles in an isometric projection using a defined style for walls, floor and doors.
+The current client UI can load/display an area map using tiles in an isometric ("2.5D") projection using a defined style for walls, floor and doors.
 The screen can be scrolled with the mouse or the cursor keys. Using the cursor keys, a player character can be moved around the map. Doors can be opened by clicking on them.
 
 **Some (early) design decisions**
 
 * the (incomplete) ruleset is based on the d20 system reference (see [[http://www.d20srd.org/index.htm]])
+* adapted some concepts and ripped some art/soundwork from the *vulture* nethack GUI (see [[http://www.darkarts.co.za/vulture]])
 * support networked (client/server ?) multi-user functionality with protocols
 
 **Some implementation decisions**

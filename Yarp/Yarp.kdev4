@@ -1,4 +1,3 @@
 [Project]
-Name=Yarp
 Manager=KDevCMakeManager
-VersionControl=
+Name=Yarp
