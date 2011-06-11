@@ -155,11 +155,75 @@ void do_work(const RPG_Dice_ValueRange& valueRange_in,
   // step0: init framework
   RPG_Dice_Common_Tools::initStringConversionTables();
 
-  // we use a (rather simplistic) greedy algorithm to compute this
   // step1a: make sure begin <= end
   ACE_ASSERT(valueRange_in.begin <= valueRange_in.end);
-  // step1b: find SMALLEST type of die LARGER than range.end to start with
-  RPG_Dice_DieType current_dieType = D_100;
+
+  // step1b: basic case ?
+  RPG_Dice_Roll result;
+  result.numDice = 0;
+  result.typeDice = D_0;
+  result.modifier = 0;
+  if (valueRange_in.begin == valueRange_in.end)
+  {
+    result.modifier = valueRange_in.begin;
+    rolls_out.push_back(result);
+
+    return;
+  } // end IF
+
+  // basic algorithm
+  RPG_Dice_DieType current_dieType = D_0;
+  RPG_Dice_ValueRange current_range;
+  do
+  {
+    current_dieType++;
+    if (current_dieType == D_0)
+      break;
+
+//     // debug info
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("current die type: \"%s\"\n"),
+//                RPG_Chance_Dice_Common_Tools::diceTypeToString(current_dieType).c_str()));
+
+    result.numDice = 0;
+    result.typeDice = current_dieType;
+    result.modifier = 0;
+    current_range.begin = 0;
+    current_range.end = 0;
+    for (unsigned int i = 1;
+         i <= 100; // *TODO*: incomplete algorithm
+         i++)
+    {
+      result.numDice = i;
+      current_range.begin += 1;
+      current_range.end += current_dieType;
+
+      if ((valueRange_in.begin - current_range.begin) ==
+          (valueRange_in.end - current_range.end))
+      {
+        // found a match
+        result.modifier = (valueRange_in.begin - current_range.begin);
+        rolls_out.push_back(result);
+
+        break;
+      } // end IF
+
+      if ((current_range.begin > valueRange_in.begin) &&
+          (current_range.end > valueRange_in.end))
+        break;
+    } // end FOR
+  } while (true);
+
+  if (!rolls_out.empty())
+    return;
+
+  // fallback: try a (rather simplistic) alternate greedy algorithm
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("trying fallback algorithm...\n")));
+
+  // step1c: find SMALLEST type of die LARGER than range.end to start with
+  current_dieType = D_100;
   if (valueRange_in.end < D_100)
   {
     while (current_dieType > valueRange_in.end)
@@ -169,7 +233,7 @@ void do_work(const RPG_Dice_ValueRange& valueRange_in,
     current_dieType++;
   } // end IF
 
-  // step2: find best results for all valid types of dice, starting at this root
+  // find best results for all valid types of dice, starting at this root
   do
   {
 //     // debug info
@@ -177,38 +241,37 @@ void do_work(const RPG_Dice_ValueRange& valueRange_in,
 //                ACE_TEXT("current die type: \"%s\"\n"),
 //                RPG_Chance_Dice_Common_Tools::diceTypeToString(current_dieType).c_str()));
 
-    RPG_Dice_Roll result;
     result.numDice = 0;
     result.typeDice = current_dieType;
     result.modifier = 0;
-    RPG_Dice_ValueRange range = valueRange_in;
+    current_range = valueRange_in;
     do
     {
       if ((current_dieType == D_0) ||
-          ((range.begin == 0) && (range.end == 0))) // handle special (corner) case gracefully...
+          ((current_range.begin == 0) && (current_range.end == 0))) // handle special (corner) case gracefully...
       {
         // we're (already) at D_0 --> compute (static) modifier
         break;
       } // end IF
 
       result.numDice++;
-      range.begin -= 1;
-      range.end -= current_dieType;
-    } while ((range.end >= current_dieType) &&
-             (range.begin != range.end)); // <-- this means we're finished !
+      current_range.begin -= 1;
+      current_range.end -= current_dieType;
+    } while ((current_range.end >= current_dieType) &&
+             (current_range.begin != current_range.end)); // <-- this means we're finished !
 
     // compute the modifier (*IMPORTANT NOTE*: this MAY be negative !)...
-    if (range.begin == range.end) // perfect match !
+    if (current_range.begin == current_range.end) // perfect match !
     {
-      result.modifier = range.begin;
+      result.modifier = current_range.begin;
     } // end IF
     else
     {
       // cannot match the requested range --> approximate
-      result.modifier = (std::max(::abs(range.begin),
-                                  ::abs(range.end)) -
-                         std::min(::abs(range.begin),
-                                  ::abs(range.end))) / 2;
+      result.modifier = (std::max(::abs(current_range.begin),
+                                  ::abs(current_range.end)) -
+                         std::min(::abs(current_range.begin),
+                                  ::abs(current_range.end))) / 2;
 
       if (current_dieType == D_0)
       {
@@ -247,9 +310,9 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-      << ACE_TEXT(" : ")
-      << RPG_VERSION
-      << std::endl;
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+            << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -262,8 +325,7 @@ do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -278,8 +340,7 @@ do_printVersion(const std::string& programName_in)
     else
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
       return;
     } // end ELSE
@@ -287,8 +348,7 @@ do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -402,9 +462,7 @@ int ACE_TMAIN(int argc,
       // not a perfect match...
       perfect_match = false;
       if (!printAllResults)
-      {
         continue;
-      } // end IF
     } // end IF
 
     std::cout << ACE_TEXT("[") << index << (perfect_match ? ACE_TEXT("*]") : ACE_TEXT("]")) << RPG_Dice_Common_Tools::rollToString(*iterator) << ACE_TEXT(" : ") << RPG_Dice_Common_Tools::rangeToString(range) << std::endl;

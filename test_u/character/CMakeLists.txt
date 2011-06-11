@@ -61,7 +61,9 @@ set_source_files_properties(${character_parser_SRCS} PROPERTIES COMPILE_DEFINITI
 
 add_executable(character_parser ${character_parser_SRCS})
 
-target_link_libraries(character_parser ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Combat RPG_Monster RPG_Engine)
+target_link_libraries(character_parser ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
+
+target_link_libraries(character_parser ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Combat RPG_Monster RPG_Map RPG_Graphics RPG_Engine)
 
 install(TARGETS character_parser RUNTIME DESTINATION bin)
 

@@ -32,8 +32,8 @@ enum RPG_Dice_DieType
   // --> will be clobbered by subsequent updates of the schema
   // (refer to rpg_dice_common.h for a template)
   D_0   = 0,
-  D_2   = 2,
-  D_3   = 3,
+//   D_2   = 2,
+//   D_3   = 3,
   D_4   = 4,
   D_6   = 6,
   D_8   = 8,
@@ -61,8 +61,8 @@ class RPG_Dice_DieTypeHelper
   {
     myRPG_Dice_DieTypeToStringTable.clear();
     myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_0, ACE_TEXT_ALWAYS_CHAR("D_0")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_2, ACE_TEXT_ALWAYS_CHAR("D_2")));
-    myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_3, ACE_TEXT_ALWAYS_CHAR("D_3")));
+//     myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_2, ACE_TEXT_ALWAYS_CHAR("D_2")));
+//     myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_3, ACE_TEXT_ALWAYS_CHAR("D_3")));
     myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_4, ACE_TEXT_ALWAYS_CHAR("D_4")));
     myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_6, ACE_TEXT_ALWAYS_CHAR("D_6")));
     myRPG_Dice_DieTypeToStringTable.insert(std::make_pair(D_8, ACE_TEXT_ALWAYS_CHAR("D_8")));

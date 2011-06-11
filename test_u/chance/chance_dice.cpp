@@ -45,7 +45,8 @@ void print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-d [VALUE]: type of dice (# sides: 0, 2, 3, 4, 6, 8, 10, 12, 20 or 100); default: 6") << std::endl;
+//   std::cout << ACE_TEXT("-d [VALUE]: type of dice (# sides: 0, 2, 3, 4, 6, 8, 10, 12, 20 or 100); default: 6") << std::endl;
+  std::cout << ACE_TEXT("-d [VALUE]: type of dice (# sides: 4, 6, 8, 10, 12, 20 or 100); default: 6") << std::endl;
   std::cout << ACE_TEXT("-m [VALUE]: modifier (e.g. +/-1, as in a roll of e.g. 2d4+1); default: 0") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: number of dice (e.g. as in a roll of 3d4); default: 1") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]: number of such rolls; default: 1") << std::endl;
@@ -89,8 +90,8 @@ const bool process_arguments(const int argc_in,
         switch (temp)
         {
           case D_0:
-          case D_2:
-          case D_3:
+//           case D_2:
+//           case D_3:
           case D_4:
           case D_6:
           case D_8:
@@ -271,7 +272,7 @@ void do_work(const RPG_Dice_Roll& rollSpecs_in,
 //   std::cout << ACE_TEXT("dice rolls: ") << std::endl;
 //   std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
-//   std::ostringstream converter;
+  std::ostringstream converter;
   for (RPG_Dice_RollResultIterator_t iter = result.begin();
        iter != result.end();
        iter++)
