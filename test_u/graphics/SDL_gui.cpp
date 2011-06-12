@@ -59,10 +59,13 @@
 #include <sstream>
 #include <string>
 
+#define SDL_GUI_DEF_FLOOR_PLAN   ACE_TEXT("/var/tmp/floor_plan.txt")
+#define SDL_GUI_DEF_VALIDATE_XML true
+
 enum userMode_t
 {
   MODE_RANDOM_IMAGES = 0,
-  MODE_LEVEL_MAP,
+  MODE_FLOOR_PLAN,
   //
   MODE_INVALID,
   MODE_MAX
@@ -259,6 +262,9 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
+  // enable verbatim boolean output
+  std::cout.setf(ios::boolalpha);
+
   std::string base_data_path;
 #ifdef DATADIR
   base_data_path = DATADIR;
@@ -280,11 +286,11 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE]: level map (*.txt)") << std::endl;
-  std::cout << ACE_TEXT("-s       : slideshow mode (show random graphics)") << std::endl;
+  std::cout << ACE_TEXT("-p ([FILE]): floor plan (*.txt)") << ACE_TEXT(" [") << SDL_GUI_DEF_FLOOR_PLAN << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s       : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES) << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
+  std::cout << ACE_TEXT("-x       : do NOT validate XML") << ACE_TEXT(" [") << SDL_GUI_DEF_VALIDATE_XML << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -318,15 +324,15 @@ process_arguments(const int argc_in,
   dictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
   dictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
   dictionary_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
-  filename_out.clear();
+  filename_out = SDL_GUI_DEF_FLOOR_PLAN;
   slideShowMode_out = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   traceInformation_out = false;
   printVersionAndExit_out = false;
-  validateXML_out = true;
+  validateXML_out = SDL_GUI_DEF_VALIDATE_XML;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("d:g:m:stvx"));
+                             ACE_TEXT("d:g:p::stvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -345,9 +351,12 @@ process_arguments(const int argc_in,
 
         break;
       }
-      case 'm':
+      case 'p':
       {
-        filename_out = argumentParser.opt_arg();
+        if (argumentParser.opt_arg())
+          filename_out = argumentParser.opt_arg();
+        else
+          filename_out.clear();
 
         break;
       }
@@ -740,7 +749,7 @@ do_work(const mode_t& mode_in,
 
       break;
     }
-    case MODE_LEVEL_MAP:
+    case MODE_FLOOR_PLAN:
     {
       bool force_redraw = false;
 
@@ -749,6 +758,10 @@ do_work(const mode_t& mode_in,
       RPG_Map_Positions_t seedPoints;
       RPG_Map_FloorPlan_t plan;
       if (map_in.empty())
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("generating floor plan...\n")));
+
         RPG_Map_Common_Tools::createFloorPlan(mapConfig_in.map_size_x,
                                               mapConfig_in.map_size_y,
                                               mapConfig_in.num_areas,
@@ -761,6 +774,7 @@ do_work(const mode_t& mode_in,
                                               mapConfig_in.max_num_doors_per_room,
                                               seedPoints,
                                               plan);
+      } // end IF
       else
       {
         if (!RPG_Map_Common_Tools::load(map_in,
@@ -1221,12 +1235,12 @@ ACE_TMAIN(int argc,
   dictionary += RPG_COMMON_DEF_CONFIG_SUB;
   dictionary += ACE_DIRECTORY_SEPARATOR_STR;
   dictionary += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
-  mode_t mode                    = SDL_GUI_DEF_MODE;
-  std::string mapFilename;
-  bool slideShowMode             = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
-  bool traceInformation          = false;
-  bool printVersionAndExit       = false;
-  bool validateXML               = true;
+  mode_t mode = SDL_GUI_DEF_MODE;
+  std::string mapFilename = SDL_GUI_DEF_FLOOR_PLAN;
+  bool slideShowMode = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
+  bool traceInformation = false;
+  bool printVersionAndExit = false;
+  bool validateXML = SDL_GUI_DEF_VALIDATE_XML;
 
   // *** map ***
   map_config_t map_config;
@@ -1276,29 +1290,10 @@ ACE_TMAIN(int argc,
   // step1b: validate arguments
   if (!RPG_Common_File_Tools::isDirectory(graphicsDirectory) ||
       !RPG_Common_File_Tools::isReadable(dictionary) ||
-      !RPG_Common_File_Tools::isReadable(mapFilename))
+      (!mapFilename.empty() && !RPG_Common_File_Tools::isReadable(mapFilename)))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid argument, aborting\n")));
-
-    // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
-
-    // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
-
-    return EXIT_FAILURE;
-  } // end IF
-  if (!mapFilename.empty() &&
-      !RPG_Common_File_Tools::isReadable(mapFilename))
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid map filename \"%s\", aborting\n"),
-               mapFilename.c_str()));
 
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));

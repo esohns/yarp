@@ -99,8 +99,17 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+
   // init results
-  configFile_out           = IRC_CLIENT_CNF_DEF_INI_FILE;
+  configFile_out           = base_data_path;
+  configFile_out           += ACE_DIRECTORY_SEPARATOR_STR;;
+  configFile_out           += IRC_CLIENT_CNF_DEF_INI_FILE;
   debugParser_out          = false;
   logToFile_out            = false;
   traceInformation_out     = false;
@@ -886,11 +895,16 @@ ACE_TMAIN(int argc,
 //   config.loginOptions.user.realname = ;
   config.loginOptions.channel = IRC_CLIENT_DEF_IRC_CHANNEL;
   // ************ stream config data ****************
-  config.debugParser = debugParser;
   config.module = &IRChandlerModule;
+  config.crunchMessageBuffers = false;
+  config.debugScanner = debugParser;
+  config.debugParser = debugParser;
   // *WARNING*: set at runtime, by the appropriate connection handler
   config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // == off
+  config.currentStatistics.numBytes = 0;
+  config.currentStatistics.numDataMessages = 0;
+  config.lastCollectionTimestamp = ACE_Time_Value::zero;
 
   // populate user/realname
   if (!RPG_Common_Tools::getUserName(config.loginOptions.user.username,

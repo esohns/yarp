@@ -44,7 +44,7 @@
 
 #define PATH_FINDER_DEF_CORRIDORS    false
 #define PATH_FINDER_DEF_DEBUG_PARSER false
-#define PATH_FINDER_DEF_FLOORPLAN    ACE_TEXT_ALWAYS_CHAR("/var/tmp/test_map.txt")
+#define PATH_FINDER_DEF_FLOOR_PLAN   ACE_TEXT_ALWAYS_CHAR("/var/tmp/test_plan.txt")
 
 void
 print_usage(const std::string& programName_in)
@@ -56,9 +56,9 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-c        : build corridors") << ACE_TEXT(" [") << PATH_FINDER_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-b        : build corridors") << ACE_TEXT(" [") << PATH_FINDER_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-d        : debug parser") << ACE_TEXT(" [") << PATH_FINDER_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << PATH_FINDER_DEF_FLOORPLAN << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << PATH_FINDER_DEF_FLOOR_PLAN << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
@@ -77,13 +77,13 @@ process_arguments(const int argc_in,
   // init results
   buildCorridors_out      = PATH_FINDER_DEF_CORRIDORS;
   debugParser_out         = PATH_FINDER_DEF_DEBUG_PARSER;
-  floorPlan_out           = PATH_FINDER_DEF_FLOORPLAN;
+  floorPlan_out           = PATH_FINDER_DEF_FLOOR_PLAN;
   traceInformation_out    = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("bdm:tv"));
+                             ACE_TEXT("bdp:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -102,7 +102,7 @@ process_arguments(const int argc_in,
 
         break;
       }
-      case 'm':
+      case 'p':
       {
         floorPlan_out = argumentParser.opt_arg();
 
@@ -167,7 +167,7 @@ do_work(const bool& buildCorridors_in,
                              debugParser_in);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded map (\"%s\": size [%u,%u]...\n"),
+             ACE_TEXT("loaded floor plan (\"%s\": size [%u,%u]...\n"),
              filename_in.c_str(),
              floorPlan.size_x,
              floorPlan.size_y));
@@ -320,9 +320,9 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-      << ACE_TEXT(" : ")
-      << RPG_VERSION
-      << std::endl;
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+            << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -377,7 +377,7 @@ ACE_TMAIN(int argc,
   // step1a set defaults
   bool buildCorridors      = PATH_FINDER_DEF_CORRIDORS;
   bool debugParser         = PATH_FINDER_DEF_DEBUG_PARSER;
-  std::string floorPlan    = PATH_FINDER_DEF_FLOORPLAN;
+  std::string floorPlan    = PATH_FINDER_DEF_FLOOR_PLAN;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
 

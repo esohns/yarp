@@ -63,10 +63,19 @@
 #include <sstream>
 #include <string>
 
+#define COMBAT_SIMULATOR_DEF_NUM_BATTLES   1
+#define COMBAT_SIMULATOR_DEF_NUM_FOES      0 // random
+#define COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES 1
+#define COMBAT_SIMULATOR_DEF_NUM_PLAYERS   1
+#define COMBAT_SIMULATOR_DEF_STRESS_TEST   false
+
 void
 print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
+
+  // enable verbatim boolean output
+  std::cout.setf(ios::boolalpha);
 
   std::string base_data_path;
 #ifdef DATADIR
@@ -77,8 +86,8 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-b [VALUE]: number of battles (0: endless)") << std::endl;
-  std::cout << ACE_TEXT("-f [VALUE]: total number of foes (0: random)") << std::endl;
+  std::cout << ACE_TEXT("-b [VALUE]: number of battles")  << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_BATTLES << ACE_TEXT("]") << ACE_TEXT(" (0: endless)") << std::endl;
+  std::cout << ACE_TEXT("-f [VALUE]: total number of foes")  << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_FOES << ACE_TEXT("]") << ACE_TEXT(" (0: random)") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_ITEM_DEF_DICTIONARY_FILE;
@@ -87,15 +96,15 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]: number of players") << std::endl;
+  std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]: number of players") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_PLAYERS << ACE_TEXT("]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_MAGIC_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-s [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x        : endless loop (testing purposes)") << std::endl;
+  std::cout << ACE_TEXT("-x        : stress-test") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_STRESS_TEST << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -110,7 +119,7 @@ process_arguments(const int argc_in,
                   unsigned int& numPlayers_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
-                  bool& endlessLoop_out)
+                  bool& stressTest_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -123,8 +132,8 @@ process_arguments(const int argc_in,
 #endif // #ifdef DATADIR
 
   // init results
-  numBattles_out = 0;
-  numFoes_out = 0;
+  numBattles_out = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
+  numFoes_out = COMBAT_SIMULATOR_DEF_NUM_FOES;
   magicDictionaryFilename_out = base_data_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
   magicDictionaryFilename_out += RPG_MAGIC_DEF_DICTIONARY_FILE;
@@ -134,11 +143,11 @@ process_arguments(const int argc_in,
   monsterDictionaryFilename_out = base_data_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
   monsterDictionaryFilename_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
-  numMonsterTypes_out = 1;
-  numPlayers_out = 1;
+  numMonsterTypes_out = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
+  numPlayers_out = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
   traceInformation_out = false;
   printVersionAndExit_out = false;
-  endlessLoop_out = false;
+  stressTest_out = COMBAT_SIMULATOR_DEF_STRESS_TEST;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -213,7 +222,7 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        endlessLoop_out = true;
+        stressTest_out = true;
 
         break;
       }
@@ -312,7 +321,7 @@ do_battle(RPG_Character_Party_t& party_in,
   unsigned int numRound = 1;
   do
   {
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("----------------round #%d----------------\n"),
                numRound));
 
@@ -339,14 +348,14 @@ do_battle(RPG_Character_Party_t& party_in,
 
   if (!RPG_Engine_Common_Tools::isPartyHelpless(party_in))
   {
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("party has WON !\n")));
 
     // *TODO*: award treasure and experience...
   } // end IF
   else
   {
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("monsters have WON !\n")));
   } // end ELSE
 
@@ -361,7 +370,7 @@ do_work(const std::string& magicDictionaryFilename_in,
         const unsigned int& numFoes_in,
         const unsigned int& numPlayers_in,
         const unsigned int& numBattles_in,
-        bool& endlessLoop_in)
+        const bool& stressTest_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -429,14 +438,14 @@ do_work(const std::string& magicDictionaryFilename_in,
       party.push_back(player);
     } // end FOR
 
-    ACE_DEBUG((LM_DEBUG,
-              ACE_TEXT("generated (random) party of %d player(s)...\n"),
-              numPlayers_in));
+    ACE_DEBUG((LM_INFO,
+               ACE_TEXT("generated (random) party of %d player(s)...\n"),
+               numPlayers_in));
 
     unsigned int numBattle = 1;
     do
     {
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT("================battle #%d================\n"),
                  numBattle));
 
@@ -472,9 +481,9 @@ do_work(const std::string& magicDictionaryFilename_in,
 
       numBattle++;
     } while (true);
-  } while (endlessLoop_in);
+  } while (stressTest_in);
 
-  ACE_DEBUG((LM_DEBUG,
+  ACE_DEBUG((LM_INFO,
              ACE_TEXT("finished working (game time: %d second(s))...\n"),
              gameTime));
 } // end do_work
@@ -558,13 +567,13 @@ ACE_TMAIN(int argc,
   std::string monsterDictionaryFilename = base_data_path;
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
   monsterDictionaryFilename += RPG_MONSTER_DEF_DICTIONARY_FILE;
-  unsigned int numFoes = 0;
-  unsigned int numMonsterTypes = 1;
-  unsigned int numPlayers = 1;
-  unsigned int numBattles = 1;
-  bool traceInformation        = false;
-  bool printVersionAndExit     = false;
-  bool endlessLoop             = false;
+  unsigned int numFoes = COMBAT_SIMULATOR_DEF_NUM_FOES;
+  unsigned int numMonsterTypes = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
+  unsigned int numPlayers = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
+  unsigned int numBattles = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
+  bool traceInformation = false;
+  bool printVersionAndExit = false;
+  bool stressTest = COMBAT_SIMULATOR_DEF_STRESS_TEST;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -578,7 +587,7 @@ ACE_TMAIN(int argc,
                           numPlayers,
                           traceInformation,
                           printVersionAndExit,
-                          endlessLoop)))
+                          stressTest)))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -645,7 +654,7 @@ ACE_TMAIN(int argc,
           numFoes,
           numPlayers,
           numBattles,
-          endlessLoop);
+          stressTest);
 
   timer.stop();
 

@@ -79,7 +79,6 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  // init results
   std::string base_data_path;
 #ifdef DATADIR
   base_data_path = DATADIR;
@@ -159,9 +158,9 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const std::string& dictionary_in,
-        const bool& validateXML_in,
-        const bool& dumpDictionary_in)
+do_work(const bool& dumpDictionary_in,
+        const std::string& dictionary_in,
+        const bool& validateXML_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -186,9 +185,7 @@ do_work(const std::string& dictionary_in,
 
   // step2: dump graphics descriptions
   if (dumpDictionary_in)
-  {
     RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->dump();
-  } // end IF
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -361,9 +358,9 @@ ACE_TMAIN(int argc,
   // step2: do actual work
   ACE_High_Res_Timer timer;
   timer.start();
-  do_work(filename,
-          validateXML,
-          dumpDictionary);
+  do_work(dumpDictionary,
+          filename,
+          validateXML);
   timer.stop();
   // debug info
   std::string working_time_string;

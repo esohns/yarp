@@ -1101,7 +1101,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
     if ((distance_in < minReach) || (distance_in > maxReach))
     {
       // debug info
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT("player \"%s\": primary weapon (min/max. reach: %d/%d) is not within range %d of \"%s\", returning\n"),
                  player_base->getName().c_str(),
                  minReach,
@@ -1217,7 +1217,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
       damage.elements.push_back(damage_element);
 
       // debug info
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
                  player_base->getName().c_str(),
                  monster->getName().c_str(),
@@ -1242,7 +1242,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
 
 is_player_miss:
       // debug info
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and misses: %d...\n"),
                  player_base->getName().c_str(),
                  monster->getName().c_str(),
@@ -1402,9 +1402,8 @@ init_monster_special_attack:
     } // end FOR
     if (numberOfPossibleAttackActions == 0)
     {
-      // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("found no suitable attack for monster \"%s\"...\n"),
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("found no suitable attack for monster \"%s\", returning\n"),
                  monster->getName().c_str()));
 
       // what else can we do ?
@@ -1577,7 +1576,7 @@ monster_perform_single_action:
         } // end FOR
       } // end IF
 
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
                  monster->getName().c_str(),
                  player_base->getName().c_str(),
@@ -1601,7 +1600,7 @@ monster_perform_single_action:
       continue;
 
 is_monster_miss:
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and misses: %d...\n"),
                  monster->getName().c_str(),
                  player_base->getName().c_str(),

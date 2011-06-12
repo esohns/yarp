@@ -409,7 +409,7 @@ RPG_Character_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
       myCondition.insert(CONDITION_UNCONSCIOUS);
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
+  ACE_DEBUG((LM_INFO,
              ACE_TEXT("character \"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
              getName().c_str(),
              myNumHitPoints,

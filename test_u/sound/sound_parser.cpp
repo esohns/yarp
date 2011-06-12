@@ -47,14 +47,15 @@
 #include <sstream>
 #include <string>
 
-#define SOUNDPARSER_DEF_SOUND_CACHESIZE  50
+#define SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS false
+#define SOUNDPARSER_DEF_SOUND_CACHESIZE    50
 
-#define SOUNDPARSER_DEF_AUDIO_FREQUENCY  44100
-#define SOUNDPARSER_DEF_AUDIO_FORMAT     AUDIO_S16SYS
-#define SOUNDPARSER_DEF_AUDIO_CHANNELS   2
-#define SOUNDPARSER_DEF_AUDIO_SAMPLES    4096
+#define SOUNDPARSER_DEF_AUDIO_FREQUENCY    44100
+#define SOUNDPARSER_DEF_AUDIO_FORMAT       AUDIO_S16SYS
+#define SOUNDPARSER_DEF_AUDIO_CHANNELS     2
+#define SOUNDPARSER_DEF_AUDIO_SAMPLES      4096
 
-#define SDL_TIMEREVENT                   SDL_USEREVENT
+#define SDL_TIMEREVENT                     SDL_USEREVENT
 
 // *NOTE* types as used by SDL
 struct SDL_audio_config_t
@@ -230,6 +231,9 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
+  // enable verbatim boolean output
+  std::cout.setf(ios::boolalpha);
+
   std::string base_data_path;
 #ifdef DATADIR
   base_data_path = DATADIR;
@@ -239,12 +243,14 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_DATA_SUB;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_SOUND_DEF_DATA_SUB;
-  std::cout << ACE_TEXT("-d [DIR] : sound directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-f [DIR] : data directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-r       : play random sounds") << ACE_TEXT(" [") << SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS << ACE_TEXT("]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_CONFIG_SUB;
@@ -253,15 +259,19 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-s [FILE]: sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
 } // end print_usage
 
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
+                  bool& dumpDictionary_out,
                   std::string& directory_out,
+                  bool& playRandomSounds_out,
                   std::string& filename_out,
                   bool& traceInformation_out,
-                  bool& printVersionAndExit_out)
+                  bool& printVersionAndExit_out,
+                  bool& validateXML_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -273,11 +283,13 @@ process_arguments(const int argc_in,
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
 
+  dumpDictionary_out = false;
   directory_out = base_data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_STR;
   directory_out += RPG_COMMON_DEF_DATA_SUB;
   directory_out += ACE_DIRECTORY_SEPARATOR_STR;
   directory_out += RPG_SOUND_DEF_DATA_SUB;
+  playRandomSounds_out = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
   filename_out = base_data_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_STR;
   filename_out += RPG_COMMON_DEF_CONFIG_SUB;
@@ -285,10 +297,11 @@ process_arguments(const int argc_in,
   filename_out += RPG_SOUND_DEF_DICTIONARY_FILE;
   traceInformation_out = false;
   printVersionAndExit_out = false;
+  validateXML_out = true;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("d:s:tv"));
+                             ACE_TEXT("df:rs:tvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -297,7 +310,19 @@ process_arguments(const int argc_in,
     {
       case 'd':
       {
+        dumpDictionary_out = true;
+
+        break;
+      }
+      case 'f':
+      {
         directory_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'r':
+      {
+        playRandomSounds_out = true;
 
         break;
       }
@@ -316,6 +341,12 @@ process_arguments(const int argc_in,
       case 'v':
       {
         printVersionAndExit_out = true;
+
+        break;
+      }
+      case 'x':
+      {
+        validateXML_out = false;
 
         break;
       }
@@ -343,8 +374,11 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const std::string& dictionary_in,
+do_work(const bool& dumpDictionary_in,
         const std::string& path_in,
+        const bool& playRandomSounds_in,
+        const std::string& dictionary_in,
+        const bool& validateXML_in,
         const unsigned long& cacheSize_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
@@ -362,7 +396,7 @@ do_work(const std::string& dictionary_in,
   try
   {
     RPG_SOUND_DICTIONARY_SINGLETON::instance()->init(dictionary_in,
-                                                     true);
+                                                     validateXML_in);
   }
   catch (...)
   {
@@ -373,7 +407,11 @@ do_work(const std::string& dictionary_in,
   }
 
   // step3: dump sound descriptions
-  RPG_SOUND_DICTIONARY_SINGLETON::instance()->dump();
+  if (dumpDictionary_in)
+    RPG_SOUND_DICTIONARY_SINGLETON::instance()->dump();
+
+  if (!playRandomSounds_in)
+    return;
 
   // step4: play (random) sounds...
   RPG_Sound_Event event = RPG_SOUND_EVENT_INVALID;
@@ -419,9 +457,9 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-      << ACE_TEXT(" : ")
-      << RPG_VERSION
-      << std::endl;
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+            << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -494,18 +532,21 @@ ACE_TMAIN(int argc,
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
 
+  bool dumpDictionary = false;
   std::string soundDirectory = base_data_path;
   soundDirectory += ACE_DIRECTORY_SEPARATOR_STR;
   soundDirectory += RPG_COMMON_DEF_DATA_SUB;
   soundDirectory += ACE_DIRECTORY_SEPARATOR_STR;
   soundDirectory += RPG_SOUND_DEF_DATA_SUB;
+  bool playRandomSounds = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
   std::string filename = base_data_path;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += RPG_COMMON_DEF_CONFIG_SUB;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += RPG_SOUND_DEF_DICTIONARY_FILE;
-  bool traceInformation      = false;
-  bool printVersionAndExit   = false;
+  bool traceInformation = false;
+  bool printVersionAndExit = false;
+  bool validateXML = true;
 
   unsigned long cacheSize    = SOUNDPARSER_DEF_SOUND_CACHESIZE;
   SDL_audio_config_t audio_config;
@@ -517,10 +558,13 @@ ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
+                          dumpDictionary,
                           soundDirectory,
+                          playRandomSounds,
                           filename,
                           traceInformation,
-                          printVersionAndExit)))
+                          printVersionAndExit,
+                          validateXML)))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -536,7 +580,7 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1b: validate arguments
-  if (!RPG_Common_File_Tools::isDirectory(soundDirectory) ||
+  if ((playRandomSounds && !RPG_Common_File_Tools::isDirectory(soundDirectory)) ||
       !RPG_Common_File_Tools::isReadable(filename))
   {
     ACE_DEBUG((LM_DEBUG,
@@ -622,7 +666,7 @@ ACE_TMAIN(int argc,
 //   SDL_SetEventFilter(event_filter_SDL_cb);
 
   // step2b: init Audio
-  if (!do_initAudio(audio_config))
+  if (playRandomSounds && !do_initAudio(audio_config))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize audio, aborting\n")));
@@ -641,8 +685,11 @@ ACE_TMAIN(int argc,
   // step3: do actual work
   ACE_High_Res_Timer timer;
   timer.start();
-  do_work(filename,
+  do_work(dumpDictionary,
           soundDirectory,
+          playRandomSounds,
+          filename,
+          validateXML,
           cacheSize);
   timer.stop();
   // debug info
