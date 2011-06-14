@@ -58,8 +58,9 @@ class RPG_Map_Common_Tools
                               const bool&,           // want corridors (between rooms) ?
                               const bool&,           // doors to fill positions ?
                               const unsigned long&,  // max. #doors/room
+                              RPG_Map_Position_t&,   // return value: start position
                               RPG_Map_Positions_t&,  // return value: seed points (areas)
-                              RPG_Map_FloorPlan_t&); // return value
+                              RPG_Map_FloorPlan_t&); // return value: floor plan
   static void displayFloorPlan(const RPG_Map_Position_t&,   // starting position
                                const RPG_Map_Positions_t&,  // seed points (areas)
                                const RPG_Map_FloorPlan_t&); // floor plan

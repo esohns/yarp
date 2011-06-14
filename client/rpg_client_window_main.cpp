@@ -204,8 +204,8 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
 
 void
 RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
-                                RPG_Graphics_IWindow* window_in,
-                                bool& redraw_out)
+                                   RPG_Graphics_IWindow* window_in,
+                                   bool& redraw_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::handleEvent"));
 

@@ -51,7 +51,7 @@ void RPG_Item_Common_Tools::initStringConversionTables()
   RPG_Item_ArmorCategoryHelper::init();
   RPG_Item_ArmorTypeHelper::init();
 
-    // debug info
+  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Item_Common_Tools: initialized string conversion tables...\n")));
 }

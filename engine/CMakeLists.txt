@@ -7,6 +7,8 @@ set(RPG_Engine_LIB_SRCS
     rpg_engine_XML_tree.cpp
     rpg_engine_XML_tree.h
     rpg_engine_common.h
+    rpg_engine_incl.h
+    rpg_engine_command.h
     rpg_engine_common_tools.cpp
     rpg_engine_common_tools.h
     rpg_engine_defines.h
@@ -28,7 +30,7 @@ install(TARGETS RPG_Engine LIBRARY DESTINATION lib)
 
 install(FILES  rpg_engine.xsd DESTINATION share/RPG/config)
 
-install(FILES  rpg_engine_XML_tree.h rpg_engine_common.h  	rpg_engine_common_tools.h rpg_engine_defines.h rpg_engine_level.h DESTINATION include)
+install(FILES  rpg_engine_XML_tree.h rpg_engine_common.h rpg_engine_incl.h rpg_engine_command.h rpg_engine_common_tools.h rpg_engine_defines.h rpg_engine_level.h DESTINATION include)
 
 #original Makefile.am contents follow:
 

@@ -8,6 +8,9 @@
 #// 20/02/06 | soh | Creation.
 #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
+# C++ "glue code"
+/usr/local/bin/XML2CppCode -e -f ./../rpg_engine.xsd -i -o ./.. -p ./../templates/h -s -u
+
 # generate "XMLSchema" namespace include file (tree)
 /usr/bin/xsdcxx cxx-tree --char-type char --output-dir ./.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema_XML_tree.xsd
 

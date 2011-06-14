@@ -285,18 +285,20 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
                                       const bool& wantCorridors_in,
                                       const bool& doorFillsPosition_in,
                                       const unsigned long& maxDoorsPerRoom_in,
+                                      RPG_Map_Position_t& startPosition_out,
                                       RPG_Map_Positions_t& seedPoints_out,
-                                      RPG_Map_FloorPlan_t& level_out)
+                                      RPG_Map_FloorPlan_t& floorPlan_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createFloorPlan"));
 
   // init return value(s)
+  startPosition_out = std::make_pair(0, 0);
   seedPoints_out.clear();
-  level_out.size_x = dimensionX_in;
-  level_out.size_y = dimensionY_in;
-  level_out.unmapped.clear();
-  level_out.walls.clear();
-  level_out.doors.clear();
+  floorPlan_out.size_x = dimensionX_in;
+  floorPlan_out.size_y = dimensionY_in;
+  floorPlan_out.unmapped.clear();
+  floorPlan_out.walls.clear();
+  floorPlan_out.doors.clear();
 
   RPG_Map_Partition_t partition;
   RPG_Map_Positions_t conflicts;
@@ -382,15 +384,34 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
                  boundaries,
                  doors,
                  rooms,
-                 level_out);
+                 floorPlan_out);
   } // end IF
   else
   {
     // *NOTE*: in this case, conflict areas represent walls...
     // *TODO*: what if some areas are not reachable ?
     // --> create some doors ?
-    level_out.walls = conflicts;
+    floorPlan_out.walls = conflicts;
   } // end ELSE
+
+  // step4: generate suitable starting position
+  RPG_Dice_RollResult_t result_x, result_y;
+  do
+  {
+    result_x.clear();
+    result_y.clear();
+    RPG_Dice::generateRandomNumbers(dimensionX_in,
+                                    1,
+                                    result_x);
+    RPG_Dice::generateRandomNumbers(dimensionY_in,
+                                    1,
+                                    result_y);
+    startPosition_out = std::make_pair(result_x.front(),
+                                       result_y.front());
+    if (RPG_Map_Common_Tools::isFloor(startPosition_out,
+                                      floorPlan_out))
+      break;
+  } while (true); // try again
 }
 
 void

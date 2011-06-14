@@ -550,7 +550,7 @@ update_character_profile(const RPG_Character_Player& player_in,
 
     converter.str(ACE_TEXT(""));
     converter.clear();
-    converter << static_cast<int> ((*iterator).second);
+    converter << static_cast<int>((*iterator).second);
     text = converter.str();
     label = NULL;
     label = gtk_label_new(text.c_str());
@@ -1037,25 +1037,31 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
 
   // load player profile
-  data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schemaRepository,
-                                                     true);
-  ACE_ASSERT(data->entity.character);
+  data->current_entity = RPG_Engine_Common_Tools::loadEntity(filename,
+                                                             data->schemaRepository,
+                                                             true);
+  ACE_ASSERT(data->current_entity.character);
 
   // update entity profile widgets
-  ::update_entity_profile(data->entity,
+  ::update_entity_profile(data->current_entity,
                           data->xml);
 
-  // (if necessary) update entity position
-  if ((data->entity.position.first == 0) &&
-      (data->entity.position.second == 0))
-    data->entity.position = data->start_position;
+  // if necessary, update starting position
+  if ((data->current_entity.position.first == 0) &&
+      (data->current_entity.position.second == 0))
+    data->current_entity.position = data->map.getStartPosition();
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_actions = GTK_FRAME(glade_xml_get_widget(data->xml,
                                                                RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
   ACE_ASSERT(character_actions);
   gtk_widget_set_sensitive(GTK_WIDGET(character_actions), TRUE);
+
+  // make join button sensitive (if it's not already)
+  GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                         ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(join_game);
+  gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
 
   return FALSE;
 }
@@ -1067,19 +1073,19 @@ save_character_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
-  ACE_ASSERT(data->entity.character);
+  ACE_ASSERT(data->current_entity.character);
 
   // assemble target filename
   std::string filename = RPG_COMMON_DUMP_DIR;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
-  filename += data->entity.character->getName();
+  filename += data->current_entity.character->getName();
   filename += RPG_CHARACTER_PROFILE_EXT;
 
-  if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
+  if (!RPG_Engine_Common_Tools::saveEntity(data->current_entity,
                                            filename))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
@@ -1094,8 +1100,58 @@ join_game_activated_GTK_cb(GtkWidget* widget_in,
 {
   RPG_TRACE(ACE_TEXT("::join_game_activated_GTK_cb"));
 
-  ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(userData_in);
+  ACE_ASSERT(widget_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->map_window);
+  ACE_ASSERT(data->current_entity.character);
+  ACE_ASSERT(data->engine);
+
+  // activate the current character
+  RPG_Engine_EntityID_t id = data->engine->add(data->current_entity);
+  data->map_window->setPlayer(id);
+
+  // make join button INsensitive
+  gtk_widget_set_sensitive(widget_in, FALSE);
+
+  // make part button sensitive
+  GtkButton* part_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                         ACE_TEXT_ALWAYS_CHAR("part")));
+  ACE_ASSERT(part_game);
+  gtk_widget_set_sensitive(GTK_WIDGET(part_game), TRUE);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+part_game_activated_GTK_cb(GtkWidget* widget_in,
+                           gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::part_game_activated_GTK_cb"));
+
+  ACE_ASSERT(widget_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->map_window);
+  ACE_ASSERT(data->engine);
+
+  // activate the current character
+  RPG_Engine_EntityID_t id = data->map_window->getPlayer();
+  data->engine->remove(id);
+  data->map_window->setPlayer(0);
+
+  // make join button INsensitive
+  gtk_widget_set_sensitive(widget_in, FALSE);
+
+  // make join button sensitive
+  GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                         ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(join_game);
+  gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
 
   return FALSE;
 }
@@ -1145,25 +1201,31 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   filename += RPG_CHARACTER_PROFILE_EXT;
 
   // load player profile
-  data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schemaRepository,
-                                                     true);
-  ACE_ASSERT(data->entity.character);
+  data->current_entity = RPG_Engine_Common_Tools::loadEntity(filename,
+                                                             data->schemaRepository,
+                                                             true);
+  ACE_ASSERT(data->current_entity.character);
 
   // update entity profile widgets
-  ::update_entity_profile(data->entity,
+  ::update_entity_profile(data->current_entity,
                           data->xml);
 
   // (if necessary) update entity position
-  if ((data->entity.position.first == 0) &&
-      (data->entity.position.second == 0))
-    data->entity.position = data->start_position;
+  if ((data->current_entity.position.first == 0) &&
+      (data->current_entity.position.second == 0))
+    data->current_entity.position = data->map.getStartPosition();
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* player_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
                                                           ACE_TEXT_ALWAYS_CHAR("player_frame")));
   ACE_ASSERT(player_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(player_frame), TRUE);
+
+  // make join button sensitive (if it's not already)
+  GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                         ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(join_game);
+  gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
 
   return FALSE;
 }
@@ -1175,7 +1237,7 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::characters_refresh_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)

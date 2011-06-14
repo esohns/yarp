@@ -21,7 +21,6 @@
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
 #include <rpg_engine_common.h>
-#include <rpg_engine_level.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
@@ -33,6 +32,9 @@
 #include <ace/Global_Macros.h>
 
 #include <string>
+
+// forward declarations
+class RPG_Engine_Level;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -46,15 +48,18 @@ class RPG_Client_WindowLevel
   virtual ~RPG_Client_WindowLevel();
 
   // adjust viewport
-  void setView(const RPG_Graphics_Position_t&); // view (map coordinates)
+  void setView(const RPG_Map_Position_t&); // view (map coordinates)
   void setView(const int&,
                const int&); // view (relative map coordinates)
-  void centerView();
 
-  // set level properties
-  void init(RPG_Engine_Entity*,             // player entity
-            const RPG_Graphics_MapStyle_t&, // map style
-            const RPG_Map_FloorPlan_t&);    // map
+  // set/get active player
+  void setPlayer(const RPG_Engine_EntityID_t&); // player ID
+  const RPG_Engine_EntityID_t getPlayer() const;
+
+  // init level properties
+  void init(RPG_Engine_Level*,               // state handle
+            const RPG_Map_FloorPlan_t&,      // floor plan
+            const RPG_Graphics_MapStyle_t&); // map style
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -82,10 +87,9 @@ class RPG_Client_WindowLevel
 
   void initCeiling();
   void initWallBlend();
-  void movePlayer(const RPG_Map_Direction&); // direction
 
-  RPG_Engine_Level            myLevelState;
-  RPG_Engine_Entity*          myPlayerEntity;
+  RPG_Engine_Level*           myLevelState;
+  RPG_Engine_EntityID_t       myPlayerID;
 
   RPG_Graphics_MapStyle_t     myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;
@@ -102,11 +106,11 @@ class RPG_Client_WindowLevel
   // door tiles / position
   RPG_Graphics_DoorTileMap_t  myDoorTiles;
 
-  // center of displayed map area (map coordinates)
-  RPG_Graphics_Position_t     myView;
+  // center of displayed area
+  RPG_Map_Position_t          myView;
 
   // cursor highlight
-  RPG_Graphics_Position_t     myHighlightBGPosition; // map coordinates
+  RPG_Map_Position_t          myHighlightBGPosition;
   SDL_Surface*                myHighlightBG;
   SDL_Surface*                myHighlightTile;
 };

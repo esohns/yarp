@@ -46,6 +46,7 @@ extern "C"
   gint character_file_activated_GTK_cb(GtkWidget*, gpointer);
   gint save_character_activated_GTK_cb(GtkWidget*, gpointer);
   gint join_game_activated_GTK_cb(GtkWidget*, gpointer);
+  gint part_game_activated_GTK_cb(GtkWidget*, gpointer);
   gint characters_activated_GTK_cb(GtkWidget*, gpointer);
   gint characters_refresh_activated_GTK_cb(GtkWidget*, gpointer);
 //   gint do_SDLEventLoop_GTK_cb(gpointer);

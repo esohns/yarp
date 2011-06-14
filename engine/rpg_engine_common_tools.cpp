@@ -20,6 +20,7 @@
 #include "rpg_engine_common_tools.h"
 
 #include "rpg_engine_defines.h"
+#include "rpg_engine_incl.h"
 #include "rpg_engine_XML_tree.h"
 
 #include <rpg_graphics_defines.h>
@@ -65,6 +66,9 @@
 #include <sstream>
 #include <fstream>
 
+// init statics
+RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
+
 void
 RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
                               const std::string& itemDictionaryFile_in,
@@ -78,12 +82,13 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   // step1b: init other static data
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
-
   RPG_Magic_Common_Tools::init();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::init();
   RPG_Combat_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();
+
+  RPG_Engine_CommandHelper::init();
 
   // step1c: init dictionaries
   // step1ca: init magic dictionary
@@ -145,6 +150,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   RPG_Engine_Entity result;
   result.character = NULL;
   result.position = std::make_pair(0, 0);
+  result.actions.clear();
   result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   result.graphic = NULL;
 

@@ -28,7 +28,16 @@
     </xsd:documentation>
   </xsd:annotation>
 
-  <xsd:complexType name="RPG_Engine_Player_Type">
+ <xsd:simpleType name="RPG_Engine_Command_Type">
+   <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="COMMAND_ATTACK"/>
+     <xsd:enumeration value="COMMAND_STEP"/>
+     <xsd:enumeration value="COMMAND_STOP"/>
+     <xsd:enumeration value="COMMAND_TRAVEL"/>
+   </xsd:restriction>
+ </xsd:simpleType>
+
+ <xsd:complexType name="RPG_Engine_Player_Type" id="skip0">
     <xsd:complexContent>
       <xsd:extension base="RPG_Character_PlayerXML_Type">
         <xsd:sequence>

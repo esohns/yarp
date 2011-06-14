@@ -42,6 +42,10 @@ class RPG_Map_Pathfinding_Tools
                              const RPG_Map_Position_t&,  // end position
                              RPG_Map_Path_t&);           // return value: path
 
+  static const RPG_Map_Direction getDirection(const RPG_Map_Position_t&,  // start position
+                                              const RPG_Map_Position_t&); // end position
+
+  // *NOTE*: these must be public (required by operator==, see below)
   struct RPG_Map_AStar_Position_t
   {
     RPG_Map_Position_t position;
@@ -49,12 +53,12 @@ class RPG_Map_Pathfinding_Tools
 
     inline RPG_Map_AStar_Position_t& operator=(const RPG_Map_AStar_Position_t& rhs_in)
     { this->position = rhs_in.position;
-      this->last_position = rhs_in.last_position;
-      return *this; }
+    this->last_position = rhs_in.last_position;
+    return *this; }
     inline bool operator==(const RPG_Map_AStar_Position_t& rhs_in) const
     { return (this->position == rhs_in.position); }
   };
-  typedef std::pair<RPG_Map_AStar_Position_t, unsigned long> RPG_Map_AStar_Node_t;
+  typedef std::pair<RPG_Map_AStar_Position_t, unsigned int> RPG_Map_AStar_Node_t;
 
  private:
   // safety measures

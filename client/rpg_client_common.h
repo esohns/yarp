@@ -25,11 +25,13 @@
 #include "rpg_client_window_level.h"
 
 #include <rpg_engine_common.h>
+#include <rpg_engine_level.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_iwindow.h>
 
 #include <rpg_map_common.h>
+#include <rpg_map_level.h>
 
 #include <glade/glade.h>
 #include <SDL/SDL.h>
@@ -42,12 +44,24 @@ struct RPG_Client_GTK_CBData_t
 {
  inline RPG_Client_GTK_CBData_t()
   : lock(NULL, NULL),
-    entity()
+    hover_time(0),
+    gtk_time(0),
+    gtk_main_quit_invoked(false),
+    xml(NULL),
+    screen(NULL),
+    event_timer(NULL),
+    previous_window(NULL),
+//     main_window(NULL),
+    map_window(NULL),
+//     map(),
+//     current_entity(),
+    engine(NULL)
  {
-   entity.character = NULL;
-   entity.position = std::make_pair(0, 0);
-   entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-   entity.graphic = NULL;
+//    entity.character = NULL;
+//    entity.position = std::make_pair(0, 0);
+// //    entity.actions;
+//    entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+//    entity.graphic = NULL;
  };
 
   ACE_Thread_Mutex        lock;
@@ -58,13 +72,12 @@ struct RPG_Client_GTK_CBData_t
   SDL_Surface*            screen;
   SDL_TimerID             event_timer;
   RPG_Graphics_IWindow*   previous_window;
-  RPG_Client_WindowMain*  main_window;
+//   RPG_Client_WindowMain*  main_window;
   RPG_Client_WindowLevel* map_window;
-  RPG_Map_Position_t      start_position;
-  RPG_Map_Positions_t     seed_points;
-  RPG_Map_FloorPlan_t     plan;
   std::string             schemaRepository;
-  RPG_Engine_Entity       entity;
+  RPG_Map_Level           map;
+  RPG_Engine_Entity       current_entity;
+  RPG_Engine_Level*       engine;
 };
 
 // *NOTE* types as used by SDL

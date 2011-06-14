@@ -39,6 +39,10 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
   // init return value(s)
   path_out.clear();
 
+  // sanity check
+  if (start_in == end_in)
+    return true;
+
   RPG_Map_AStar_ClosedPath_t closedPath;
   RPG_Map_AStar_OpenPath_t openPath;
   RPG_Map_AStar_NodesIterator_t position;
@@ -57,6 +61,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
     // *NOTE*: use front (--> "cheapest") node first
     // add current position to the closed path
     closedPath.push_back(*openPath.begin());
+
     // finished ?
     if (closedPath.back().first.position == end_in)
       break;
@@ -161,7 +166,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
         if ((*iterator).second < (*position).second)
         {
           // *TODO*: can this be done without a cast ?
-          const_cast<unsigned long&> ((*position).second) = (*iterator).second;
+          const_cast<unsigned int&>((*position).second) = (*iterator).second;
         } // end IF
       } // end IF
       else
@@ -211,17 +216,21 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
 //     } // end FOR
   } // end WHILE
 
-  // found a solution ?
-  if (closedPath.back().first.position != end_in)
-    return false;
+  // compute (partial) trail
+  if (closedPath.size() == 1)
+  {
+    ACE_ASSERT(closedPath.front().first.position == start_in);
 
-  // compute trail
+    // must be locked in by obstacles --> no trail
+    return false;
+  } // end IF
+
   unsigned long index = 0;
   RPG_Map_Direction direction = DIRECTION_INVALID;
   // start at the end
   RPG_Map_AStar_NodeListConstIterator_t current_node = closedPath.end();
   current_node--;
-  ACE_ASSERT((*current_node).first.position == end_in);
+
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("step[#%u]: (%u,%u - @%u)\n"),
 //              index,
@@ -268,5 +277,41 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
   } // end FOR
   path_out.push_front(std::make_pair((*current_node).first.position, direction));
 
-  return true;
+  return (closedPath.back().first.position == end_in);
+}
+
+const RPG_Map_Direction
+RPG_Map_Pathfinding_Tools::getDirection(const RPG_Map_Position_t& startPosition_in,
+                                        const RPG_Map_Position_t& endPosition_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::getDirection"));
+
+  // sanity check
+  if (startPosition_in == endPosition_in)
+    return DIRECTION_INVALID;
+
+  int distance_x = std::abs(static_cast<int>(startPosition_in.first - endPosition_in.first));
+  int distance_y = std::abs(static_cast<int>(startPosition_in.second - endPosition_in.second));
+
+  if (startPosition_in.first > endPosition_in.first)
+  {
+    if (startPosition_in.second > endPosition_in.second)
+      return (distance_x >= distance_y ? DIRECTION_LEFT : DIRECTION_UP);
+
+    if (startPosition_in.second == endPosition_in.second)
+      return DIRECTION_LEFT;
+
+    return (distance_x >= distance_y ? DIRECTION_LEFT : DIRECTION_DOWN);
+  } // end IF
+
+  if (startPosition_in.first == endPosition_in.first)
+    return (startPosition_in.second > endPosition_in.second ? DIRECTION_UP : DIRECTION_DOWN);
+
+  if (startPosition_in.second > endPosition_in.second)
+    return (distance_x >= distance_y ? DIRECTION_RIGHT : DIRECTION_UP);
+
+  if (startPosition_in.second == endPosition_in.second)
+    return DIRECTION_RIGHT;
+
+  return (distance_x >= distance_y ? DIRECTION_RIGHT : DIRECTION_DOWN);
 }

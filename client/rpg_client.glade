@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <glade-interface>
   <!-- interface-requires gtk+ 2.20 -->
   <!-- interface-naming-policy project-wide -->
@@ -11,7 +11,7 @@
     <property name="deletable">False</property>
     <property name="create_folders">False</property>
     <property name="preview_widget_active">False</property>
-    <signal name="file_activated" handler="character_file_activated_GTK_cb" swapped="no"/>
+    <signal name="file_activated" handler="character_file_activated_GTK_cb"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="filechooser_vbox">
         <property name="visible">True</property>
@@ -54,7 +54,7 @@
     <property name="version">0.1</property>
     <property name="authors">Erik Sohns</property>
     <property name="wrap_license">True</property>
-    <signal name="response" handler="gtk_widget_hide" swapped="no"/>
+    <signal name="response" handler="gtk_widget_hide"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="about_vbox">
         <property name="visible">True</property>
@@ -85,10 +85,11 @@
     <property name="title" translatable="yes">Project RPG</property>
     <property name="resizable">False</property>
     <property name="type_hint">normal</property>
-    <signal name="delete_event" handler="quit_activated_GTK_cb" swapped="no"/>
+    <signal name="delete_event" handler="quit_activated_GTK_cb"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <widget class="GtkHBox" id="hbox">
@@ -96,6 +97,7 @@
             <child>
               <widget class="GtkVBox" id="vbox">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="character_actions">
                     <property name="visible">True</property>
@@ -107,6 +109,7 @@
                         <property name="can_default">True</property>
                         <property name="has_default">True</property>
                         <property name="receives_default">True</property>
+                        <property name="orientation">vertical</property>
                         <property name="layout_style">spread</property>
                         <child>
                           <widget class="GtkButton" id="create">
@@ -114,10 +117,9 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="create_character_actived_GTK_cb" swapped="no"/>
+                            <signal name="clicked" handler="create_character_actived_GTK_cb"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -133,10 +135,9 @@
                             <property name="can_default">True</property>
                             <property name="has_default">True</property>
                             <property name="receives_default">True</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="load_character_actived_GTK_cb" swapped="no"/>
+                            <signal name="clicked" handler="load_character_actived_GTK_cb"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -148,12 +149,12 @@
                           <widget class="GtkButton" id="save">
                             <property name="label" translatable="yes">_Save</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="save_character_actived_GTK_cb" swapped="no"/>
+                            <signal name="clicked" handler="save_character_actived_GTK_cb"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -189,16 +190,18 @@
                         <property name="can_default">True</property>
                         <property name="has_default">True</property>
                         <property name="receives_default">True</property>
+                        <property name="orientation">vertical</property>
                         <property name="layout_style">spread</property>
                         <child>
                           <widget class="GtkButton" id="join">
                             <property name="label" translatable="yes">_Join</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
+                            <signal name="clicked" handler="join_game_actived_GTK_cb"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -207,7 +210,20 @@
                           </packing>
                         </child>
                         <child>
-                          <placeholder/>
+                          <widget class="GtkButton" id="part">
+                            <property name="label" translatable="yes">_Part</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
+                            <signal name="clicked" handler="part_game_actived_GTK_cb"/>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
                         </child>
                       </widget>
                     </child>
@@ -245,7 +261,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="has_frame">False</property>
                                 <property name="focus_on_click">False</property>
-                                <signal name="changed" handler="characters_activated_GTK_cb" swapped="no"/>
+                                <signal name="changed" handler="characters_activated_GTK_cb"/>
                               </widget>
                               <packing>
                                 <property name="position">0</property>
@@ -259,7 +275,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_stock">True</property>
-                                <signal name="clicked" handler="characters_refresh_activated_GTK_cb" swapped="no"/>
+                                <signal name="clicked" handler="characters_refresh_activated_GTK_cb"/>
                               </widget>
                               <packing>
                                 <property name="position">1</property>
@@ -305,6 +321,7 @@
                         <child>
                           <widget class="GtkVBox" id="statistics_vbox">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkHBox" id="name_hbox">
                                 <property name="visible">True</property>
@@ -446,6 +463,7 @@
                                     <child>
                                       <widget class="GtkVBox" id="status_vbox">
                                         <property name="visible">True</property>
+                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <widget class="GtkHBox" id="condition_hbox">
@@ -633,6 +651,7 @@
                                     <child>
                                       <widget class="GtkVBox" id="attribute_vbox">
                                         <property name="visible">True</property>
+                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <widget class="GtkHBox" id="strength_hbox">
@@ -1085,7 +1104,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="about_activated_GTK_cb" swapped="no"/>
+                <signal name="clicked" handler="about_activated_GTK_cb"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -1101,7 +1120,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="properties_activated_GTK_cb" swapped="no"/>
+                <signal name="clicked" handler="properties_activated_GTK_cb"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -1116,7 +1135,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="quit_activated_GTK_cb" swapped="no"/>
+                <signal name="clicked" handler="quit_activated_GTK_cb"/>
               </widget>
               <packing>
                 <property name="expand">False</property>

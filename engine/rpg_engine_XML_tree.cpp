@@ -40,6 +40,51 @@
 
 #include "rpg_engine_XML_tree.h"
 
+// RPG_Engine_Command_XMLTree_Type
+// 
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Engine_Command_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (const RPG_Engine_Command_XMLTree_Type& v,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Engine_Command_XMLTree_Type& RPG_Engine_Command_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Engine_Command_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
 // RPG_Engine_Player_XMLTree_Type
 // 
 
@@ -93,6 +138,80 @@ sprite (::std::auto_ptr< sprite_type > x)
 
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
+
+// RPG_Engine_Command_XMLTree_Type
+//
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Engine_Command_XMLTree_Type_convert ();
+}
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Engine_Command_XMLTree_Type_convert ();
+}
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (const ::std::string& s,
+                                 const ::xercesc::DOMElement* e,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Engine_Command_XMLTree_Type_convert ();
+}
+
+RPG_Engine_Command_XMLTree_Type* RPG_Engine_Command_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Engine_Command_XMLTree_Type (*this, f, c);
+}
+
+RPG_Engine_Command_XMLTree_Type::value RPG_Engine_Command_XMLTree_Type::
+_xsd_RPG_Engine_Command_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_Command_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_,
+                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 4,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 4 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Engine_Command_XMLTree_Type::
+_xsd_RPG_Engine_Command_XMLTree_Type_literals_[4] =
+{
+  "COMMAND_ATTACK",
+  "COMMAND_STEP",
+  "COMMAND_STOP",
+  "COMMAND_TRAVEL"
+};
+
+const RPG_Engine_Command_XMLTree_Type::value RPG_Engine_Command_XMLTree_Type::
+_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[4] =
+{
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_STEP,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_STOP,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_TRAVEL
+};
 
 // RPG_Engine_Player_XMLTree_Type
 //
@@ -287,6 +406,18 @@ operator!= (const RPG_Engine_Player_XMLTree_Type& x, const RPG_Engine_Player_XML
 }
 
 #include <ostream>
+
+::std::ostream&
+operator<< (::std::ostream& o, RPG_Engine_Command_XMLTree_Type::value i)
+{
+  return o << RPG_Engine_Command_XMLTree_Type::_xsd_RPG_Engine_Command_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Engine_Command_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
 
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Engine_Player_XMLTree_Type& i)
@@ -587,6 +718,25 @@ engine_player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
 
 void
+operator<< (::xercesc::DOMElement& e, const RPG_Engine_Command_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Engine_Command_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Engine_Command_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
 operator<< (::xercesc::DOMElement& e, const RPG_Engine_Player_XMLTree_Type& i)
 {
   e << static_cast< const ::RPG_Character_PlayerXML_XMLTree_Type& > (i);
@@ -764,6 +914,15 @@ engine_player (const ::RPG_Engine_Player_XMLTree_Type& s,
   return d;
 }
 
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Engine_Command_XMLTree_Type_convert ();
+}
+
 RPG_Engine_Player_XMLTree_Type::
 RPG_Engine_Player_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                 ::xml_schema::flags f,
@@ -788,6 +947,13 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     ::std::auto_ptr< sprite_type > r (new sprite_type (s, f, this));
     this->sprite_.set (r);
   }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Engine_Command_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
 }
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&

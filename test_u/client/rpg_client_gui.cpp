@@ -931,6 +931,18 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                                 G_CALLBACK(join_game_activated_GTK_cb),
 //                                 userData_p);
 
+  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                           ACE_TEXT_ALWAYS_CHAR("part")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(part_game_activated_GTK_cb),
+                   userData_p);
+  //   glade_xml_signal_connect_data(xml,
+  //                                 ACE_TEXT_ALWAYS_CHAR("join_game_activated_GTK_cb"),
+  //                                 G_CALLBACK(join_game_activated_GTK_cb),
+  //                                 userData_p);
+
   GtkComboBox* combobox = NULL;
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
                                                 RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
@@ -1116,6 +1128,7 @@ do_work(const RPG_Client_Config& config_in,
     return;
   }
 
+  RPG_Engine_Level engine;
   RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
   userData.hover_time            = 0;
@@ -1123,18 +1136,18 @@ do_work(const RPG_Client_Config& config_in,
   userData.gtk_main_quit_invoked = false;
   userData.xml                   = NULL;
   userData.screen                = NULL;
-  userData.event_timer           = 0;
+  userData.event_timer           = NULL;
   userData.previous_window       = NULL;
-  userData.main_window           = NULL;
+//   userData.main_window           = NULL;
   userData.map_window            = NULL;
-  userData.plan.size_x           = 0;
-  userData.plan.size_y           = 0;
-//   userData.plan.unmapped;
-//   userData.plan.walls;
-//   userData.plan.doors;
-//   userData.seed_points;
   userData.schemaRepository      = schemaRepository_in;
-//   userData.player;
+//   userData.map();
+  userData.current_entity.character = NULL;
+  userData.current_entity.position = std::make_pair(0, 0);
+//   userData.current_entity.actions();
+  userData.current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  userData.current_entity.graphic = NULL;
+  userData.engine = &engine;
 
   GDK_THREADS_ENTER();
   if (!do_initGUI(config_in.graphics_directory,  // graphics directory
@@ -1197,14 +1210,16 @@ do_work(const RPG_Client_Config& config_in,
   mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
   // step5b: setup map
-  userData.start_position = std::make_pair(0, 0);
-  userData.seed_points.clear();
-  userData.plan.size_x = 0;
-  userData.plan.size_y = 0;
-  userData.plan.unmapped.clear();
-  userData.plan.walls.clear();
-  userData.plan.doors.clear();
+  RPG_Map_Position_t start_position = std::make_pair(0, 0);
+  RPG_Map_Positions_t seed_points;
+  RPG_Map_FloorPlan_t floor_plan;
+  floor_plan.size_x = 0;
+  floor_plan.size_y = 0;
   if (config_in.map_file.empty())
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generating floor plan...\n")));
+
     RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
                                           config_in.map_config.map_size_y,
                                           config_in.map_config.num_areas,
@@ -1215,14 +1230,16 @@ do_work(const RPG_Client_Config& config_in,
                                           config_in.map_config.corridors,
                                           true, // *NOTE*: currently, doors fill one position
                                           config_in.map_config.max_num_doors_per_room,
-                                          userData.seed_points,
-                                          userData.plan);
+                                          start_position,
+                                          seed_points,
+                                          floor_plan);
+  } // end IF
   else
   {
     if (!RPG_Map_Common_Tools::load(config_in.map_file,
-                                    userData.start_position,
-                                    userData.seed_points,
-                                    userData.plan))
+                                    start_position,
+                                    seed_points,
+                                    floor_plan))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
@@ -1231,18 +1248,19 @@ do_work(const RPG_Client_Config& config_in,
       return;
     } // end IF
   } // end ELSE
+  userData.map_window = &mapWindow;
+  userData.map.init(start_position,
+                    seed_points,
+                    floor_plan);
+  engine.init(floor_plan);
 
-//   RPG_Map_Common_Tools::displayFloorPlan(userData.seedPoints,
-//                                          userData.plan);
+//   RPG_Map_Common_Tools::displayFloorPlan(start_position,
+//                                          seed_points,
+//                                          floor_plan);
 
-  // (if necessary) update entity position
-  if ((userData.entity.position.first == 0) &&
-      (userData.entity.position.second == 0))
-    userData.entity.position = userData.start_position;
-
-  mapWindow.init(&userData.entity,
-                 mapStyle,
-                 userData.plan);
+  mapWindow.init(&engine,
+                 floor_plan,
+                 mapStyle);
   // refresh screen
   try
   {
@@ -1400,9 +1418,9 @@ do_work(const RPG_Client_Config& config_in,
             dump_path += ACE_DIRECTORY_SEPARATOR_STR;
             dump_path += ACE_TEXT("map.txt");
             if (!RPG_Map_Common_Tools::save(dump_path,
-                                            userData.start_position,
-                                            userData.seed_points,
-                                            userData.plan))
+                                            userData.map.getStartPosition(),
+                                            userData.map.getSeedPoints(),
+                                            userData.map.getFloorPlan()))
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
@@ -1446,7 +1464,7 @@ do_work(const RPG_Client_Config& config_in,
                                             event.button.y); break;
           default:
           {
-            int x,y;
+            int x, y;
             SDL_GetMouseState(&x, &y);
             mouse_position = std::make_pair(x, y);
 

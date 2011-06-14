@@ -20,6 +20,8 @@
 #ifndef RPG_ENGINE_COMMON_H
 #define RPG_ENGINE_COMMON_H
 
+#include "rpg_engine_command.h"
+
 #include <rpg_graphics_sprite.h>
 
 #include <rpg_map_common.h>
@@ -31,18 +33,32 @@
 #include <ace/Log_Msg.h>
 
 #include <set>
-#include <vector>
+#include <map>
+#include <deque>
+
+struct RPG_Engine_Action
+{
+  RPG_Engine_Command command;
+  RPG_Map_Position_t position;
+  RPG_Map_Direction  direction;
+};
+typedef std::deque<RPG_Engine_Action> RPG_Engine_Actions_t;
 
 struct RPG_Engine_Entity
 {
-  RPG_Character_Base* character;
-  RPG_Map_Position_t  position;
-  RPG_Graphics_Sprite sprite;
-  SDL_Surface*        graphic;
+  RPG_Character_Base*  character;
+  RPG_Map_Position_t   position;
+  RPG_Engine_Actions_t actions;
+  RPG_Graphics_Sprite  sprite;
+  SDL_Surface*         graphic;
 };
-typedef std::vector<RPG_Engine_Entity> RPG_Engine_Entities_t;
+typedef unsigned int RPG_Engine_EntityID_t;
+typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
 typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t;
+
+typedef std::map<RPG_Map_Position_t, SDL_Surface*> RPG_Engine_EntityGraphics_t;
+typedef RPG_Engine_EntityGraphics_t::const_iterator RPG_Engine_EntityGraphicsConstIterator_t;
 
 struct RPG_Engine_CombatantSequenceElement
 {
