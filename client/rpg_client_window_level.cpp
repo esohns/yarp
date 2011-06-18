@@ -156,7 +156,7 @@ RPG_Client_WindowLevel::redraw()
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::redraw"));
 
   draw();
-  refresh();
+//   refresh();
 }
 
 void

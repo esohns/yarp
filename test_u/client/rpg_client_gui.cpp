@@ -1439,7 +1439,8 @@ do_work(const RPG_Client_Config& config_in,
 
     // if necessary, reset hover_time
     if ((event.type != RPG_GRAPHICS_SDL_HOVEREVENT) &&
-        (event.type != RPG_CLIENT_SDL_GTKEVENT))
+        (event.type != RPG_CLIENT_SDL_GTKEVENT) &&
+        (event.type != RPG_CLIENT_SDL_TIMEREVENT))
     {
       // synch access
       ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);

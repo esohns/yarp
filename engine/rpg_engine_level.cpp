@@ -206,20 +206,20 @@ RPG_Engine_Level::svc(void)
     // process (one round of) entity actions
     handleEntities(redrawUI);
 
-//     // redraw UI ?
-//     if (redrawUI)
-//     {
-//       try
-//       {
-//         myWindow->redraw();
-//       }
-//       catch (...)
-//       {
-//         ACE_DEBUG((LM_ERROR,
-//                    ACE_TEXT("[%@] caught exception in RPG_Engine_IWindow::redraw(), continuing\n"),
-//                    myWindow));
-//       }
-//     } // end IF
+    // redraw UI ?
+    if (redrawUI)
+    {
+      try
+      {
+        myWindow->redraw();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("[%@] caught exception in RPG_Engine_IWindow::redraw(), continuing\n"),
+                   myWindow));
+      }
+    } // end IF
   } // end WHILE
 
   // SHOULD NEVER-EVER GET HERE !
@@ -701,7 +701,7 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
           {
             RPG_Map_Door_t door = getDoor(targetPosition);
             if (!door.is_open)
-              return;
+              break;
           } // end IF
 
           (*iterator).second->position = targetPosition;
@@ -713,9 +713,15 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
       }
       case COMMAND_TRAVEL:
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("[%u] travelling...\n"),
-                   (*iterator).first));
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("[%u] travelling...\n"),
+//                    (*iterator).first));
+
+        // sanity check
+        if ((*iterator).second->position == (*iterator).second->actions.front().position)
+          break; // nothing to do...
+
+        action_complete = false;
 
         // compute path
         RPG_Map_Path_t path;
@@ -745,14 +751,26 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
 
         if (!path.empty())
         {
-          (*iterator).second->position = path.front().first;
+          // position valid ?
+          RPG_Map_Element element = getElement(path.front().first);
+          if ((element == MAPELEMENT_FLOOR) ||
+              (element == MAPELEMENT_DOOR))
+          {
+            if (element == MAPELEMENT_DOOR)
+            {
+              RPG_Map_Door_t door = getDoor(path.front().first);
+              if (!door.is_open)
+                break;
+            } // end IF
 
-          redrawUI_out = true;
+            (*iterator).second->position = path.front().first;
 
-          // reached destination ?
-          if ((*iterator).second->position != (*iterator).second->actions.front().position)
-            action_complete = false;
+            redrawUI_out = true;
+          } // end IF
         } // end IF
+
+        // reached destination ?
+        action_complete = ((*iterator).second->position == (*iterator).second->actions.front().position);
 
         break;
       }
