@@ -206,20 +206,20 @@ RPG_Engine_Level::svc(void)
     // process (one round of) entity actions
     handleEntities(redrawUI);
 
-    // redraw UI ?
-    if (redrawUI)
-    {
-      try
-      {
-        myWindow->redraw();
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("[%@] caught exception in RPG_Engine_IWindow::redraw(), continuing\n"),
-                   myWindow));
-      }
-    } // end IF
+//     // redraw UI ?
+//     if (redrawUI)
+//     {
+//       try
+//       {
+//         myWindow->redraw();
+//       }
+//       catch (...)
+//       {
+//         ACE_DEBUG((LM_ERROR,
+//                    ACE_TEXT("[%@] caught exception in RPG_Engine_IWindow::redraw(), continuing\n"),
+//                    myWindow));
+//       }
+//     } // end IF
   } // end WHILE
 
   // SHOULD NEVER-EVER GET HERE !
@@ -272,6 +272,10 @@ RPG_Engine_Level::stop()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::stop"));
 
+  // sanity check
+  if (!isRunning())
+    return;
+
   // drop control message into the queue...
   ACE_Message_Block* stop_mb = NULL;
   try
@@ -321,10 +325,13 @@ RPG_Engine_Level::stop()
   if (inherited::wait() == -1)
   {
     ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to ACE_Task::wait(): \"%m\", returning\n")));
+               ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", returning\n")));
 
     return;
   } // end IF
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("worker thread has joined...\n")));
 }
 
 const bool
@@ -333,6 +340,17 @@ RPG_Engine_Level::isRunning()
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::isRunning"));
 
   return (inherited::thr_count() > 0);
+}
+
+void
+RPG_Engine_Level::wait_all()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::wait_all"));
+
+  // ... wait for ALL worker(s) to join
+  if (ACE_Thread_Manager::instance()->wait_grp(RPG_ENGINE_DEF_TASK_GROUP_ID) == -1)
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(): \"%m\", returning\n")));
 }
 
 void
@@ -352,13 +370,13 @@ RPG_Engine_Level::dump_state() const
   {
     try
     {
-      (*iterator).second.character->dump();
+      (*iterator).second->character->dump();
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("[%@] caught exception in RPG_Character_Base::dump(), continuing\n"),
-                 (*iterator).second.character));
+                 (*iterator).second->character));
     }
   } // end FOR
 }
@@ -385,7 +403,7 @@ RPG_Engine_Level::add(RPG_Engine_Entity& entity_in)
 
   RPG_Engine_EntityID_t id = myCurrentID++;
 
-  myEntities.insert(std::make_pair(id, entity_in));
+  myEntities.insert(std::make_pair(id, &entity_in));
 
   return id;
 }
@@ -432,13 +450,13 @@ RPG_Engine_Level::action(const RPG_Engine_EntityID_t& id_in,
   {
     case COMMAND_STOP:
     {
-      (*iterator).second.actions.clear();
+      (*iterator).second->actions.clear();
 
       return;
     }
     default:
     {
-      (*iterator).second.actions.push_back(action_in);
+      (*iterator).second->actions.push_back(action_in);
 
       break;
     }
@@ -491,7 +509,7 @@ RPG_Engine_Level::getGraphics() const
   for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
        iterator != myEntities.end();
        iterator++)
-    graphics.insert(std::make_pair((*iterator).second.position, (*iterator).second.graphic));
+    graphics.insert(std::make_pair((*iterator).second->position, (*iterator).second->graphic));
 
   return graphics;
 }
@@ -513,7 +531,7 @@ RPG_Engine_Level::getPosition(const RPG_Engine_EntityID_t& id_in) const
     return std::make_pair(0, 0);
   } // end IF
 
-  return (*iterator).second.position;
+  return (*iterator).second->position;
 }
 
 const RPG_Map_Door_t
@@ -634,11 +652,11 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
        iterator != myEntities.end();
        iterator++)
   {
-    if ((*iterator).second.actions.empty())
+    if ((*iterator).second->actions.empty())
       continue;
 
     action_complete = true;
-    switch ((*iterator).second.actions.front().command)
+    switch ((*iterator).second->actions.front().command)
     {
       case COMMAND_ATTACK:
       {
@@ -653,8 +671,8 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
       case COMMAND_STEP:
       {
         // compute target position
-        RPG_Map_Position_t targetPosition = (*iterator).second.position;
-        switch ((*iterator).second.actions.front().direction)
+        RPG_Map_Position_t targetPosition = (*iterator).second->position;
+        switch ((*iterator).second->actions.front().direction)
         {
           case DIRECTION_UP:
             targetPosition.second--; break;
@@ -668,7 +686,7 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
-                       RPG_Map_Common_Tools::direction2String((*iterator).second.actions.front().direction).c_str()));
+                       RPG_Map_Common_Tools::direction2String((*iterator).second->actions.front().direction).c_str()));
 
             break;
           }
@@ -686,7 +704,7 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
               return;
           } // end IF
 
-          (*iterator).second.position = targetPosition;
+          (*iterator).second->position = targetPosition;
 
           redrawUI_out = true;
         } // end IF
@@ -704,35 +722,35 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
         if (!RPG_Map_Pathfinding_Tools::findPath(myFloorPlan.size_x,
                                                  myFloorPlan.size_y,
                                                  myFloorPlan.walls,
-                                                 (*iterator).second.position,
-                                                 RPG_Map_Pathfinding_Tools::getDirection((*iterator).second.position,
-                                                                                         (*iterator).second.actions.front().position),
-                                                 (*iterator).second.actions.front().position,
+                                                 (*iterator).second->position,
+                                                 RPG_Map_Pathfinding_Tools::getDirection((*iterator).second->position,
+                                                                                         (*iterator).second->actions.front().position),
+                                                 (*iterator).second->actions.front().position,
                                                  path))
         {
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
-                     (*iterator).second.position.first,
-                     (*iterator).second.position.second,
-                     (*iterator).second.actions.front().position.first,
-                     (*iterator).second.actions.front().position.second));
+                     (*iterator).second->position.first,
+                     (*iterator).second->position.second,
+                     (*iterator).second->actions.front().position.first,
+                     (*iterator).second->actions.front().position.second));
         } // end IF
 
         if (path.empty())
           break;
 
         // sanity check
-        ACE_ASSERT(path.front().first == (*iterator).second.position);
+        ACE_ASSERT(path.front().first == (*iterator).second->position);
         path.pop_front();
 
         if (!path.empty())
         {
-          (*iterator).second.position = path.front().first;
+          (*iterator).second->position = path.front().first;
 
           redrawUI_out = true;
 
           // reached destination ?
-          if ((*iterator).second.position != (*iterator).second.actions.front().position)
+          if ((*iterator).second->position != (*iterator).second->actions.front().position)
             action_complete = false;
         } // end IF
 
@@ -743,13 +761,13 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid action (ID: %u, was: \"%s\"), continuing\n"),
                    (*iterator).first,
-                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).second.actions.front().command).c_str()));
+                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).second->actions.front().command).c_str()));
 
         break;
       }
     } // end SWITCH
 
     if (action_complete)
-      (*iterator).second.actions.pop_front();
+      (*iterator).second->actions.pop_front();
   } // end FOR
 }

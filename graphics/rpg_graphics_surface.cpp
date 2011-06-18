@@ -743,10 +743,10 @@ RPG_Graphics_Surface::put(const unsigned long& offsetX_in,
   toRect.w = image_in.w;
   toRect.h = image_in.h;
 
-  if (SDL_BlitSurface(&const_cast<SDL_Surface&> (image_in), // source
-                      NULL,                                    // aspect (--> everything)
-                      targetSurface_in,                        // target
-                      &toRect))                                // aspect
+  if (SDL_BlitSurface(&const_cast<SDL_Surface&>(image_in), // source
+                      NULL,                                // aspect (--> everything)
+                      targetSurface_in,                    // target
+                      &toRect))                            // aspect
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),

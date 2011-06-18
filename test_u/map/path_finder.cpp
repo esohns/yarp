@@ -228,6 +228,17 @@ do_work(const bool& buildCorridors_in,
       continue;
     } // end IF
 
+    // print path
+    for (RPG_Map_PathConstIterator_t path_iterator = current_path.begin();
+         path_iterator != current_path.end();
+         path_iterator++)
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("[%u,%u] "),
+                 (*path_iterator).first.first,
+                 (*path_iterator).first.second));
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("\n")));
+
     // remember connected positions
     used_positions.insert((*iterator).position);
     used_positions.insert((*target_door).position);

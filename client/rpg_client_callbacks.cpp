@@ -1091,6 +1091,9 @@ save_character_activated_GTK_cb(GtkWidget* widget_in,
                ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
                filename.c_str()));
 
+  // make save button INsensitive
+  gtk_widget_set_sensitive(widget_in, FALSE);
+
   return FALSE;
 }
 
@@ -1109,6 +1112,11 @@ join_game_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->current_entity.character);
   ACE_ASSERT(data->engine);
 
+  // set start position, if necessary
+  if ((data->current_entity.position.first == 0) &&
+      (data->current_entity.position.second == 0))
+    data->current_entity.position = data->map.getStartPosition();
+
   // activate the current character
   RPG_Engine_EntityID_t id = data->engine->add(data->current_entity);
   data->map_window->setPlayer(id);
@@ -1121,6 +1129,11 @@ join_game_activated_GTK_cb(GtkWidget* widget_in,
                                                          ACE_TEXT_ALWAYS_CHAR("part")));
   ACE_ASSERT(part_game);
   gtk_widget_set_sensitive(GTK_WIDGET(part_game), TRUE);
+
+  // minimize dialog window
+  GdkWindow* toplevel = gtk_widget_get_parent_window(widget_in);
+  ACE_ASSERT(toplevel);
+  gdk_window_iconify(toplevel);
 
   return FALSE;
 }
@@ -1152,6 +1165,12 @@ part_game_activated_GTK_cb(GtkWidget* widget_in,
                                                          ACE_TEXT_ALWAYS_CHAR("join")));
   ACE_ASSERT(join_game);
   gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
+
+  // make save button sensitive
+  GtkButton* save = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                    ACE_TEXT_ALWAYS_CHAR("save")));
+  ACE_ASSERT(save);
+  gtk_widget_set_sensitive(GTK_WIDGET(save), TRUE);
 
   return FALSE;
 }

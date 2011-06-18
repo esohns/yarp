@@ -275,7 +275,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
 
     current_node = previous_node;
   } // end FOR
-  path_out.push_front(std::make_pair((*current_node).first.position, direction));
+//   path_out.push_front(std::make_pair((*current_node).first.position, direction));
 
   return (closedPath.back().first.position == end_in);
 }

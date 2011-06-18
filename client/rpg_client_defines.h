@@ -58,6 +58,7 @@
 #define RPG_CLIENT_DEF_VIDEO_BPP                    32
 #define RPG_CLIENT_DEF_VIDEO_FULLSCREEN             false
 #define RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER           false
+// #define RPG_CLIENT_DEF_VIDEO_FRAMERATE              30
 
 #define RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE            0 // 0: don't care
 #define RPG_CLIENT_DEF_MAP_DOORS                    true

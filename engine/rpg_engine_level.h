@@ -54,6 +54,8 @@ class RPG_Engine_Level
   virtual void stop();
   virtual const bool isRunning();
 
+  static void wait_all();
+
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 

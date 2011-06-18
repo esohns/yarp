@@ -200,7 +200,9 @@ RPG_Client_WindowLevel::setPlayer(const RPG_Engine_EntityID_t& playerID_in)
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setPlayer"));
 
   // sanity check
-  ACE_ASSERT(playerID_in);
+  if (playerID_in == 0)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("reset player...\n")));
 
   myPlayerID = playerID_in;
 }
@@ -646,7 +648,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         case SDLK_c:
         {
           RPG_Map_Position_t position;
-          if (event_in.key.keysym.mod & KMOD_SHIFT)
+          if ((event_in.key.keysym.mod & KMOD_SHIFT) ||
+              (myPlayerID == 0))
           {
             // center view
             RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
@@ -734,16 +737,19 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
               break;
           } // end SWITCH
 
-          if (!(event_in.key.keysym.mod & KMOD_SHIFT))
+          if (!(event_in.key.keysym.mod & KMOD_SHIFT) &&
+              myPlayerID)
             myLevelState->action(myPlayerID, action);
+          else
+          {
+            // *NOTE*: fiddling with the view invalidates the cursor BG !
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+            // clear highlight BG
+            RPG_Graphics_Surface::clear(myHighlightBG);
 
-          // *NOTE*: fiddling with the view invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          // need a redraw
-          redraw_out = true;
+            // need a redraw
+            redraw_out = true;
+          } // end ELSE
 
           // done with this event
           return;
@@ -930,7 +936,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           break;
         } // end IF
 
-        if (myLevelState->getElement(map_position) == MAPELEMENT_FLOOR)
+        if ((myLevelState->getElement(map_position) == MAPELEMENT_FLOOR) &&
+            myPlayerID)
         {
           // (try to) travel to this position
           RPG_Engine_Action action;

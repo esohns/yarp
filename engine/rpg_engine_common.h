@@ -53,7 +53,7 @@ struct RPG_Engine_Entity
   SDL_Surface*         graphic;
 };
 typedef unsigned int RPG_Engine_EntityID_t;
-typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity> RPG_Engine_Entities_t;
+typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
 typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t;
 

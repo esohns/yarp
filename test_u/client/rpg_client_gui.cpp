@@ -66,6 +66,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
+#include <SDL/SDL_framerate.h>
 
 #include <ace/ACE.h>
 #include <ace/Version.h>
@@ -93,11 +94,12 @@ event_timer_SDL_cb(Uint32 interval_in,
 {
   RPG_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
 
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (argument_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(argument_in);
   ACE_ASSERT(data);
 
   SDL_Event event;
   event.type = SDL_NOEVENT;
+
   // synch access
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(data->lock);
@@ -108,7 +110,7 @@ event_timer_SDL_cb(Uint32 interval_in,
     {
       // mouse is hovering --> trigger an event
       event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
-      event.user.code = static_cast<int> (data->hover_time);
+      event.user.code = static_cast<int>(data->hover_time);
 
       if (SDL_PushEvent(&event))
         ACE_DEBUG((LM_ERROR,
@@ -136,6 +138,14 @@ event_timer_SDL_cb(Uint32 interval_in,
                  SDL_GetError()));
   } // end IF
   GDK_THREADS_LEAVE();
+
+  // trigger regular screen refreshes !
+  event.type = RPG_CLIENT_SDL_TIMEREVENT;
+
+  if (SDL_PushEvent(&event))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+               SDL_GetError()));
 
   // re-schedule
   return interval_in;
@@ -1254,6 +1264,14 @@ do_work(const RPG_Client_Config& config_in,
                     floor_plan);
   engine.init(&mapWindow,
               floor_plan);
+  engine.start();
+  if (!engine.isRunning())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to start engine, aborting\n")));
+
+    return;
+  } // end IF
 
 //   RPG_Map_Common_Tools::displayFloorPlan(start_position,
 //                                          seed_points,
@@ -1274,7 +1292,7 @@ do_work(const RPG_Client_Config& config_in,
                ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
   }
 
-  // start timer (triggers hover- and processes GTK events)
+  // start timer (triggers hover- and GTK events)
   userData.event_timer = NULL;
   userData.event_timer = SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
                                       event_timer_SDL_cb,           // event timer callback
@@ -1290,6 +1308,19 @@ do_work(const RPG_Client_Config& config_in,
   } // end IF
 
   // step6: setup event loops
+//   FPSmanager fps_manager;
+//   SDL_initFramerate(&fps_manager);
+// //   if (SDL_setFramerate(&fps_manager, RPG_CLIENT_DEF_VIDEO_FRAMERATE) == -1)
+//   if (SDL_setFramerate(&fps_manager, 10) == -1)
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to SDL_setFramerate(%u): \"%s\", aborting\n"),
+//                RPG_CLIENT_DEF_VIDEO_FRAMERATE,
+//                SDL_GetError()));
+//
+//     return;
+//   } // end IF
+
   // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
   // - UI events --> GTK main loop [--> SDL event handler]
 
@@ -1363,8 +1394,6 @@ do_work(const RPG_Client_Config& config_in,
                ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
                (config_in.num_threadpool_threads ? config_in.num_threadpool_threads : 1)));
 
-    GDK_THREADS_LEAVE();
-
     return;
   } // end IF
 
@@ -1381,13 +1410,24 @@ do_work(const RPG_Client_Config& config_in,
   RPG_Graphics_IWindow* previous_window = NULL;
   bool need_redraw = false;
   RPG_Graphics_Position_t mouse_position;
+  bool refresh_screen = false;
   do
   {
+    event.type = SDL_NOEVENT;
     window = NULL;
     need_redraw = false;
     mouse_position = std::make_pair(0, 0);
+    refresh_screen = false;
 
-    // step1: get pending event
+    // step1: get next pending event
+//     if (SDL_PollEvent(&event) == -1)
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to SDL_PollEvent(): \"%s\", aborting\n"),
+//                  SDL_GetError()));
+//
+//       return;
+//     } // end IF
     if (SDL_WaitEvent(&event) != 1)
     {
       ACE_DEBUG((LM_ERROR,
@@ -1550,6 +1590,13 @@ do_work(const RPG_Client_Config& config_in,
 
         break;
       }
+      case RPG_CLIENT_SDL_TIMEREVENT:
+      {
+        // refresh screen regularly
+        refresh_screen = true;
+
+        break;
+      }
       case SDL_KEYUP:
       case SDL_MOUSEBUTTONUP:
       case SDL_JOYAXISMOTION:
@@ -1560,7 +1607,6 @@ do_work(const RPG_Client_Config& config_in,
       case SDL_SYSWMEVENT:
       case SDL_VIDEORESIZE:
       case SDL_VIDEOEXPOSE:
-      case RPG_CLIENT_SDL_TIMEREVENT:
       default:
       {
 
@@ -1574,13 +1620,14 @@ do_work(const RPG_Client_Config& config_in,
       try
       {
         mapWindow.draw();
-        mapWindow.refresh();
       }
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
       }
+
+      refresh_screen = true;
     } // end IF
 
     // redraw cursor ?
@@ -1615,9 +1662,26 @@ do_work(const RPG_Client_Config& config_in,
         break;
       }
     } // end SWITCH
+
+//     // enforce fixed FPS
+//     SDL_framerateDelay(&fps_manager);
+    if (refresh_screen)
+    {
+      try
+      {
+        mapWindow.refresh(NULL);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::refresh(), continuing\n")));
+      }
+    } // end IF
   } while (!done);
 
   // step8: clean up
+  engine.stop();
+
   if (!SDL_RemoveTimer(userData.event_timer))
   {
     ACE_DEBUG((LM_ERROR,
