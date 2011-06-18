@@ -21,6 +21,8 @@
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
 #include <rpg_engine_common.h>
+#include <rpg_engine_iwindow.h>
+#include <rpg_engine_level.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
@@ -33,19 +35,20 @@
 
 #include <string>
 
-// forward declarations
-class RPG_Engine_Level;
-
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Client_WindowLevel
- : public RPG_Graphics_SDLWindowBase
+ : public RPG_Engine_IWindow,
+   public RPG_Graphics_SDLWindowBase
 {
  public:
   RPG_Client_WindowLevel(// *** SDL window ***
                          const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_WindowLevel();
+
+  // implement RPG_Engine_IWindow
+  virtual void redraw();
 
   // adjust viewport
   void setView(const RPG_Map_Position_t&); // view (map coordinates)

@@ -1252,7 +1252,8 @@ do_work(const RPG_Client_Config& config_in,
   userData.map.init(start_position,
                     seed_points,
                     floor_plan);
-  engine.init(floor_plan);
+  engine.init(&mapWindow,
+              floor_plan);
 
 //   RPG_Map_Common_Tools::displayFloorPlan(start_position,
 //                                          seed_points,

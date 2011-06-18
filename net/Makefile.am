@@ -2,7 +2,7 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = protocol
+SUBDIRS = stream protocol
 
 include_HEADERS = rpg_net_client_sockethandler.h rpg_net_common.h \
 	rpg_net_common_tools.h rpg_net_connection_manager.h rpg_net_connection_manager.i \

@@ -406,8 +406,8 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
     RPG_Dice::generateRandomNumbers(dimensionY_in,
                                     1,
                                     result_y);
-    startPosition_out = std::make_pair(result_x.front(),
-                                       result_y.front());
+    startPosition_out = std::make_pair(result_x.front() - 1,
+                                       result_y.front() - 1);
     if (RPG_Map_Common_Tools::isFloor(startPosition_out,
                                       floorPlan_out))
       break;

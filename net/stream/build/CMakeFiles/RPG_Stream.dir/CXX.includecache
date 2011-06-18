@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/win_c/Projects/RPG/stream/rpg_stream_imessagequeue.h
+
+/mnt/win_c/Projects/RPG/stream/rpg_stream_messagequeue.cpp
+rpg_stream_messagequeue.h
+/mnt/win_c/Projects/RPG/stream/rpg_stream_messagequeue.h
+rpg_common_macros.h
+-
+ace/Time_Value.h
+-
+
+/mnt/win_c/Projects/RPG/stream/rpg_stream_messagequeue.h
+rpg_stream_messagequeue_base.h
+/mnt/win_c/Projects/RPG/stream/rpg_stream_messagequeue_base.h
+ace/Global_Macros.h
+-
+
+/mnt/win_c/Projects/RPG/stream/rpg_stream_messagequeue_base.cpp
+rpg_stream_messagequeue_base.h
+/mnt/win_c/Projects/RPG/stream/rpg_stream_messagequeue_base.h
+rpg_common_macros.h
+-
+
+/mnt/win_c/Projects/RPG/stream/rpg_stream_messagequeue_base.h
+rpg_stream_imessagequeue.h
+/mnt/win_c/Projects/RPG/stream/rpg_stream_imessagequeue.h
+rpg_common_idumpstate.h
+-
+ace/Global_Macros.h
+-
+ace/Message_Queue.h
+-
+ace/Synch.h
+-
+

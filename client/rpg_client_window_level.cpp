@@ -151,6 +151,15 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
 }
 
 void
+RPG_Client_WindowLevel::redraw()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::redraw"));
+
+  draw();
+  refresh();
+}
+
+void
 RPG_Client_WindowLevel::setView(const RPG_Map_Position_t& view_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setView"));

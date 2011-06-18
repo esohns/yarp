@@ -21,10 +21,16 @@
 #define RPG_ENGINE_LEVEL_H
 
 #include "rpg_engine_common.h"
+#include "rpg_engine_iwindow.h"
+#include "rpg_engine_messagequeue.h"
 
 #include <rpg_map_common.h>
 
+#include <rpg_common_icontrol.h>
+#include <rpg_common_idumpstate.h>
+
 #include <ace/Global_Macros.h>
+#include <ace/Task.h>
 #include <ace/Atomic_Op_T.h>
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
@@ -33,13 +39,26 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Engine_Level
+ : public ACE_Task<ACE_MT_SYNCH>,
+   public RPG_Common_IControl,
+   public RPG_Common_IDumpState
 {
  public:
   RPG_Engine_Level();
-  RPG_Engine_Level(const RPG_Map_FloorPlan_t&);
+  RPG_Engine_Level(RPG_Engine_IWindow*,         // UI handle
+                   const RPG_Map_FloorPlan_t&); // floor plan
   virtual ~RPG_Engine_Level();
 
-  void init(const RPG_Map_FloorPlan_t&); // map level
+  // implement RPG_Common_IControl
+  virtual void start();
+  virtual void stop();
+  virtual const bool isRunning();
+
+  // implement RPG_Common_IDumpState
+  virtual void dump_state() const;
+
+  void init(RPG_Engine_IWindow*,         // UI handle
+            const RPG_Map_FloorPlan_t&); // floor plan
   // *WARNING*: fire&forget API, added entities are controlled by the engine !
   const RPG_Engine_EntityID_t add(RPG_Engine_Entity&); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
@@ -56,16 +75,26 @@ class RPG_Engine_Level
                   const bool&);              // open ? : close
   const RPG_Map_Positions_t getWalls() const;
 
-  // perform (one round of) actions
-  void handleEntities();
-
  private:
+  typedef ACE_Task<ACE_MT_SYNCH> inherited;
+
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level(const RPG_Engine_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level& operator=(const RPG_Engine_Level&));
 
+  // override task-based members
+  virtual int open(void* = NULL);
+  virtual int close(u_long = 0);
+  virtual int svc(void);
+
+  // perform (one round of) actions
+  void handleEntities(bool&); // return value: redraw UI ?
+
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> myCurrentID;
+
+  // *IMPORTANT NOTE*: need this ONLY to handle control messages...
+  RPG_Engine_MessageQueue                   myQueue;
 
   // make our API re-entrant
   mutable ACE_Recursive_Thread_Mutex        myLock;
@@ -73,6 +102,8 @@ class RPG_Engine_Level
   ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 
   RPG_Engine_Entities_t                     myEntities;
+
+  RPG_Engine_IWindow*                       myWindow;
   RPG_Map_FloorPlan_t                       myFloorPlan;
 };
 

@@ -772,6 +772,7 @@ do_work(const mode_t& mode_in,
                                               mapConfig_in.corridors,
                                               true, // *NOTE*: currently, doors fill one position
                                               mapConfig_in.max_num_doors_per_room,
+                                              startingPosition,
                                               seedPoints,
                                               plan);
       } // end IF

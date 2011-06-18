@@ -1,0 +1,19 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+
+[CMake]
+BuildDirs=/mnt/win_c/Projects/RPG/stream/build
+CMakeDir=/usr/share/cmake/Modules
+Current CMake Binary=file:///usr/bin/cmake
+CurrentBuildDir=file:///mnt/win_c/Projects/RPG/stream/build
+CurrentBuildType=Debug
+CurrentInstallDir=
+Extra Arguments=
+ProjectRootRelative=./
+
+[MakeBuilder]
+Install As Root=true
+Number Of Jobs=1
+
+[Project]
+VersionControlSupport=kdevgit

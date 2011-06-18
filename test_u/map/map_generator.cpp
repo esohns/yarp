@@ -45,7 +45,6 @@
 #define MAP_GENERATOR_DEF_CORRIDORS             true
 #define MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM 3
 #define MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE     true
-#define MAP_GENERATOR_DEF_RANDOM_START_POSITION true
 #define MAP_GENERATOR_DEF_NUM_AREAS             5
 #define MAP_GENERATOR_DEF_SQUARE_ROOMS          true
 #define MAP_GENERATOR_DEF_DIMENSION_X           80
@@ -71,7 +70,6 @@ print_usage(const std::string& programName_in)
     std::cout << ACE_TEXT(":") << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   std::cout << ACE_TEXT("; 0:off]") << std::endl;
   std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-p          : (random) start position") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_RANDOM_START_POSITION << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]  : #areas") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_NUM_AREAS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s          : square room(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_SQUARE_ROOMS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
@@ -87,7 +85,6 @@ process_arguments(const int argc_in,
                   bool& corridors_out,
                   unsigned long& maxNumDoorsPerRoom_out,
                   bool& maximizeRoomSize_out,
-                  bool& randomStartPosition_out,
                   unsigned long& numAreas_out,
                   bool& squareRooms_out,
                   bool& traceInformation_out,
@@ -102,7 +99,6 @@ process_arguments(const int argc_in,
   corridors_out = MAP_GENERATOR_DEF_CORRIDORS;
   maxNumDoorsPerRoom_out = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   maximizeRoomSize_out = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
-  randomStartPosition_out = MAP_GENERATOR_DEF_RANDOM_START_POSITION;
   numAreas_out = MAP_GENERATOR_DEF_NUM_AREAS;
   squareRooms_out = MAP_GENERATOR_DEF_SQUARE_ROOMS;
   traceInformation_out = false;
@@ -112,7 +108,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("a::cd::mpr:stvx:y:"));
+                             ACE_TEXT("a::cd::mr:stvx:y:"));
 
   int option = 0;
   std::stringstream converter;
@@ -150,12 +146,6 @@ process_arguments(const int argc_in,
       case 'm':
       {
         maximizeRoomSize_out = true;
-
-        break;
-      }
-      case 'p':
-      {
-        randomStartPosition_out = true;
 
         break;
       }
@@ -233,7 +223,6 @@ do_work(const unsigned long& minRoomSize_in,
         const bool& corridors_in,
         const unsigned long& maxDoorsPerRoom_in,
         const bool& maximizeArea_in,
-        const bool& randomStartPosition_in,
         const unsigned long& numAreas_in,
         const bool& wantSquareRooms_in,
         const unsigned long& dimensionX_in,
@@ -246,6 +235,7 @@ do_work(const unsigned long& minRoomSize_in,
   RPG_Dice_Common_Tools::initStringConversionTables();
 
   // step2: generate random dungeon map
+  RPG_Map_Position_t startingPosition = std::make_pair(0, 0);
   RPG_Map_Positions_t seedPoints;
   RPG_Map_FloorPlan_t floorPlan;
   RPG_Map_Common_Tools::createFloorPlan(dimensionX_in,
@@ -258,33 +248,11 @@ do_work(const unsigned long& minRoomSize_in,
                                         corridors_in,
                                         true, // doors fill a position
                                         maxDoorsPerRoom_in,
+                                        startingPosition,
                                         seedPoints,
                                         floorPlan);
 
-  // step3: generate (pseudo-random) start position ?
-  RPG_Map_Position_t startingPosition = std::make_pair(0, 0);
-  if (randomStartPosition_in)
-  {
-    RPG_Dice_RollResult_t result_x, result_y;
-    do
-    {
-      result_x.clear(); result_y.clear();
-      RPG_Dice::generateRandomNumbers(dimensionX_in,
-                                      1,
-                                      result_x);
-      RPG_Dice::generateRandomNumbers(dimensionY_in,
-                                      1,
-                                      result_y);
-      startingPosition = std::make_pair(result_x[0] - 1,
-                                        result_y[0] - 1);
-
-      // sanity check: is a "floor" square ?
-      if (RPG_Map_Common_Tools::isFloor(startingPosition, floorPlan))
-        break;
-    } while (true); // try again
-  } // end IF
-
-  // step4: display the result
+  // step3: display the result
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
   bool is_starting_position = false;
@@ -389,7 +357,6 @@ ACE_TMAIN(int argc,
   bool corridors                   = MAP_GENERATOR_DEF_CORRIDORS;
   unsigned long maxNumDoorsPerRoom = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   bool maximizeRoomSize            = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
-  bool randomStartPosition         = MAP_GENERATOR_DEF_RANDOM_START_POSITION;
   unsigned long numAreas           = MAP_GENERATOR_DEF_NUM_AREAS;
   bool squareRooms                 = MAP_GENERATOR_DEF_SQUARE_ROOMS;
   bool traceInformation            = false;
@@ -404,7 +371,6 @@ ACE_TMAIN(int argc,
                           corridors,
                           maxNumDoorsPerRoom,
                           maximizeRoomSize,
-                          randomStartPosition,
                           numAreas,
                           squareRooms,
                           traceInformation,
@@ -477,7 +443,6 @@ ACE_TMAIN(int argc,
           corridors,
           maxNumDoorsPerRoom,
           maximizeRoomSize,
-          randomStartPosition,
           numAreas,
           squareRooms,
           dimension_X,

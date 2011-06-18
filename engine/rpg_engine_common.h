@@ -169,4 +169,7 @@ typedef RPG_Engine_CombatantSequence_t::iterator RPG_Engine_CombatantSequenceIte
 typedef RPG_Engine_CombatantSequence_t::const_iterator RPG_Engine_CombatantSequenceConstIterator_t;
 // typedef RPG_Engine_CombatantSequence_t::const_reverse_iterator RPG_Engine_CombatantSequenceRIterator_t;
 
+#define RPG_ENGINE_DEF_TASK_GROUP_ID       1
+#define RPG_ENGINE_MAX_QUEUE_SLOTS         100
+
 #endif
