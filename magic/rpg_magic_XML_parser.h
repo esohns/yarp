@@ -187,6 +187,15 @@ class RPG_Magic_Spell_Target_Type
     virtual RPG_Magic_Spell_Target post_RPG_Magic_Spell_Target_Type();
 };
 
+class RPG_Magic_Spell_AreaOfEffect_Type
+: public RPG_Magic_Spell_AreaOfEffect_Type_pskel,
+public ::xml_schema::string_pimpl
+{
+public:
+  //   virtual void pre();
+  virtual RPG_Magic_Spell_AreaOfEffect post_RPG_Magic_Spell_AreaOfEffect_Type();
+};
+
 class RPG_Magic_Spell_TargetProperties_Type
   : public RPG_Magic_Spell_TargetProperties_Type_pskel
 {
@@ -198,7 +207,8 @@ class RPG_Magic_Spell_TargetProperties_Type
     virtual void value(unsigned int);
     virtual void range(const RPG_Dice_Roll&);
     virtual void levelIncrement(unsigned char);
-    virtual void area(const RPG_Common_AreaOfEffect&);
+    virtual void effect(const RPG_Magic_Spell_AreaOfEffect&);
+    virtual void shape(const RPG_Common_AreaOfEffect&);
     virtual void radius(unsigned char);
     virtual void height(unsigned char);
     virtual void rangeIsInHD(bool);
@@ -257,6 +267,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type
     virtual void value(long long);
     virtual void levelIncrement(unsigned char);
     virtual void levelIncrementMax(unsigned char);
+    virtual void ethic(const RPG_Character_AlignmentEthic&);
     virtual void attribute(const RPG_Common_Attribute&);
     virtual void condition(const RPG_Common_Condition&);
     virtual void creature(const RPG_Common_CreatureType&);
@@ -300,6 +311,8 @@ class RPG_Magic_Check_Type
 //   virtual void pre();
     virtual void type(const RPG_Magic_CheckTypeUnion&);
     virtual void difficultyClass(unsigned char);
+    virtual void modifier(signed char);
+    virtual void baseIsCasterLevel(bool);
     virtual RPG_Magic_Check post_RPG_Magic_Check_Type();
 
   private:
@@ -331,11 +344,13 @@ class RPG_Magic_Spell_EffectProperties_Type
 
 //     virtual void pre();
     virtual void type(const RPG_Magic_Spell_Effect&);
+    virtual void damage(const RPG_Common_PhysicalDamageType&);
     virtual void base(const RPG_Common_Amount&);
     virtual void increment(unsigned int);
     virtual void levelIncrement(const RPG_Common_Amount&);
     virtual void levelIncrementMax(unsigned char);
     virtual void attribute(const RPG_Common_Attribute&);
+    virtual void duration(const RPG_Common_Amount&);
     virtual void maxRange(unsigned char);
     virtual void counterMeasure(const RPG_Magic_CounterMeasure&);
     virtual void includeAdjacent(bool);

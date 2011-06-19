@@ -2279,11 +2279,11 @@ _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_ + 6,
+                    _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_ + 7,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_ + 7 || _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2292,23 +2292,25 @@ _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_AreaOfEffect_XMLTree_Type::
-_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[6] =
+_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[7] =
 {
   "AREA_CONE",
   "AREA_CUBE",
   "AREA_CYLINDER",
   "AREA_LINE",
+  "AREA_RING",
   "AREA_SPHERE",
   "AREA_WALL"
 };
 
 const RPG_Common_AreaOfEffect_XMLTree_Type::value RPG_Common_AreaOfEffect_XMLTree_Type::
-_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[6] =
+_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[7] =
 {
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_CONE,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_CUBE,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_CYLINDER,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_LINE,
+  ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_RING,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_SPHERE,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_WALL
 };
@@ -2501,11 +2503,11 @@ _xsd_RPG_Common_CheckType_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_CheckType_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_CheckType_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_CheckType_XMLTree_Type_indexes_ + 2,
+                    _xsd_RPG_Common_CheckType_XMLTree_Type_indexes_ + 3,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_CheckType_XMLTree_Type_indexes_ + 2 || _xsd_RPG_Common_CheckType_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_CheckType_XMLTree_Type_indexes_ + 3 || _xsd_RPG_Common_CheckType_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2514,17 +2516,19 @@ _xsd_RPG_Common_CheckType_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_CheckType_XMLTree_Type::
-_xsd_RPG_Common_CheckType_XMLTree_Type_literals_[2] =
+_xsd_RPG_Common_CheckType_XMLTree_Type_literals_[3] =
 {
   "CHECK_CASTER_LEVEL",
-  "CHECK_GRAPPLE"
+  "CHECK_GRAPPLE",
+  "CHECK_HIT_DICE"
 };
 
 const RPG_Common_CheckType_XMLTree_Type::value RPG_Common_CheckType_XMLTree_Type::
-_xsd_RPG_Common_CheckType_XMLTree_Type_indexes_[2] =
+_xsd_RPG_Common_CheckType_XMLTree_Type_indexes_[3] =
 {
   ::RPG_Common_CheckType_XMLTree_Type::CHECK_CASTER_LEVEL,
-  ::RPG_Common_CheckType_XMLTree_Type::CHECK_GRAPPLE
+  ::RPG_Common_CheckType_XMLTree_Type::CHECK_GRAPPLE,
+  ::RPG_Common_CheckType_XMLTree_Type::CHECK_HIT_DICE
 };
 
 // RPG_Common_SavingThrow_XMLTree_Type
@@ -2647,11 +2651,11 @@ _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_ + 7,
+                    _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_ + 8,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_ + 7 || _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_ + 8 || _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2660,10 +2664,11 @@ _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_BaseCheckTypeUnion_XMLTree_Type::
-_xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_literals_[7] =
+_xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_literals_[8] =
 {
   "CHECK_CASTER_LEVEL",
   "CHECK_GRAPPLE",
+  "CHECK_HIT_DICE",
   "SAVE_NONE",
   "SAVE_FORTITUDE",
   "SAVE_MAGIC",
@@ -2672,10 +2677,11 @@ _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_literals_[7] =
 };
 
 const RPG_Common_BaseCheckTypeUnion_XMLTree_Type::value RPG_Common_BaseCheckTypeUnion_XMLTree_Type::
-_xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_[7] =
+_xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_[8] =
 {
   ::RPG_Common_BaseCheckTypeUnion_XMLTree_Type::CHECK_CASTER_LEVEL,
   ::RPG_Common_BaseCheckTypeUnion_XMLTree_Type::CHECK_GRAPPLE,
+  ::RPG_Common_BaseCheckTypeUnion_XMLTree_Type::CHECK_HIT_DICE,
   ::RPG_Common_BaseCheckTypeUnion_XMLTree_Type::SAVE_FORTITUDE,
   ::RPG_Common_BaseCheckTypeUnion_XMLTree_Type::SAVE_MAGIC,
   ::RPG_Common_BaseCheckTypeUnion_XMLTree_Type::SAVE_NONE,

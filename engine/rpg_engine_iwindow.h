@@ -19,6 +19,8 @@
 #ifndef RPG_ENGINE_IWINDOW_H
 #define RPG_ENGINE_IWINDOW_H
 
+#include <rpg_map_common.h>
+
 class RPG_Engine_IWindow
 {
  public:
@@ -27,6 +29,7 @@ class RPG_Engine_IWindow
 
   // exposed interface
   virtual void redraw() = 0;
+  virtual void toggleDoor(const RPG_Map_Position_t&) = 0;
 };
 
 #endif // RPG_ENGINE_IWINDOW_H

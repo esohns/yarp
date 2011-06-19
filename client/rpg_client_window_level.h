@@ -49,6 +49,7 @@ class RPG_Client_WindowLevel
 
   // implement RPG_Engine_IWindow
   virtual void redraw();
+  virtual void toggleDoor(const RPG_Map_Position_t&);
 
   // adjust viewport
   void setView(const RPG_Map_Position_t&); // view (map coordinates)

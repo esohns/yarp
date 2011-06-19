@@ -1019,11 +1019,12 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
   ACE_ASSERT(data->xml);
+  ACE_ASSERT(data->engine);
 
   // retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->xml,
@@ -1049,7 +1050,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   // if necessary, update starting position
   if ((data->current_entity.position.first == 0) &&
       (data->current_entity.position.second == 0))
-    data->current_entity.position = data->map.getStartPosition();
+    data->current_entity.position = data->engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_actions = GTK_FRAME(glade_xml_get_widget(data->xml,
@@ -1115,10 +1116,10 @@ join_game_activated_GTK_cb(GtkWidget* widget_in,
   // set start position, if necessary
   if ((data->current_entity.position.first == 0) &&
       (data->current_entity.position.second == 0))
-    data->current_entity.position = data->map.getStartPosition();
+    data->current_entity.position = data->engine->getStartPosition();
 
   // activate the current character
-  RPG_Engine_EntityID_t id = data->engine->add(data->current_entity);
+  RPG_Engine_EntityID_t id = data->engine->add(&(data->current_entity));
   data->map_window->setPlayer(id);
 
   // make join button INsensitive
@@ -1181,12 +1182,13 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
 {
   RPG_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
 
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
   ACE_ASSERT(widget_in);
   ACE_ASSERT(data->xml);
+  ACE_ASSERT(data->engine);
 
   // retrieve active item
   std::string active_item;
@@ -1232,7 +1234,7 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   // (if necessary) update entity position
   if ((data->current_entity.position.first == 0) &&
       (data->current_entity.position.second == 0))
-    data->current_entity.position = data->map.getStartPosition();
+    data->current_entity.position = data->engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* player_frame = GTK_FRAME(glade_xml_get_widget(data->xml,

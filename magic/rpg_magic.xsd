@@ -11,7 +11,7 @@
   <!-- include common schema -->
   <xsd:include schemaLocation="rpg_common.xsd"/>
 <!-- include character schema -->
-<!--  <xsd:include schemaLocation="rpg_character.xsd"/>-->
+  <xsd:include schemaLocation="rpg_character.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
 <!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
@@ -305,13 +305,22 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+ <xsd:simpleType name="RPG_Magic_Spell_AreaOfEffect_Type">
+   <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="EFFECT_BURST"/>
+     <xsd:enumeration value="EFFECT_EMANATION"/>
+     <xsd:enumeration value="EFFECT_SPREAD"/>
+   </xsd:restriction>
+ </xsd:simpleType>
+
   <xsd:complexType name="RPG_Magic_Spell_TargetProperties_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Magic_Spell_Target_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="value" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="range" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="area" type="RPG_Common_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="effect" type="RPG_Magic_Spell_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="shape" type="RPG_Common_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="radius" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="height" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
@@ -342,6 +351,7 @@
 
   <xsd:simpleType name="RPG_Magic_Spell_Precondition_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PRECONDITION_ALIGNMENT_ETHIC"/>
       <xsd:enumeration value="PRECONDITION_ATTRIBUTE_MAX"/>
       <xsd:enumeration value="PRECONDITION_CONDITION"/>
       <xsd:enumeration value="PRECONDITION_HD_MAX"/>
@@ -361,6 +371,7 @@
       <xsd:element name="value" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="ethic" type="RPG_Character_AlignmentEthic_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="condition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="creature" type="RPG_Common_CreatureType_Type" minOccurs="0" maxOccurs="unbounded"/>
@@ -385,12 +396,14 @@
       <xsd:enumeration value="SPELLEFFECT_BARRIER_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_BARRIER_MAGIC"/>
       <xsd:enumeration value="SPELLEFFECT_DAMAGE"/>
+      <xsd:enumeration value="SPELLEFFECT_DAZE"/>
       <xsd:enumeration value="SPELLEFFECT_DETECT_MAGIC"/>
       <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>
       <xsd:enumeration value="SPELLEFFECT_FASCINATE"/>
       <xsd:enumeration value="SPELLEFFECT_GROW"/>
       <xsd:enumeration value="SPELLEFFECT_HOLD_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_IDENTIFY"/>
+      <xsd:enumeration value="SPELLEFFECT_KILL"/>
       <xsd:enumeration value="SPELLEFFECT_LEVITATE"/>
       <xsd:enumeration value="SPELLEFFECT_LOCK"/>
       <xsd:enumeration value="SPELLEFFECT_MARK"/>
@@ -402,8 +415,9 @@
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_CHECK_SKILL_ALL"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_HP"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_MORALE"/>
-      <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE_ALL"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE_FEAR"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE_REFLEX"/>
       <xsd:enumeration value="SPELLEFFECT_PARALYSIS"/>
       <xsd:enumeration value="SPELLEFFECT_POLYMORPH"/>
       <xsd:enumeration value="SPELLEFFECT_RAISE_DEAD"/>
@@ -421,7 +435,9 @@
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Magic_CheckTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="modifier" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
+    <xsd:attribute name="baseIsCasterLevel" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Magic_CounterMeasure_Type">
@@ -436,11 +452,13 @@
   <xsd:complexType name="RPG_Magic_Spell_EffectProperties_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Magic_Spell_Effect_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="damage" type="RPG_Common_PhysicalDamageType_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="base" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="increment" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrement" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="duration" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="maxRange" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="counterMeasure" type="RPG_Magic_CounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
@@ -456,7 +474,7 @@
       <xsd:element name="cost" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="time" type="RPG_Magic_Spell_CastingTime_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="range" type="RPG_Magic_Spell_RangeProperties_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="target" type="RPG_Magic_Spell_TargetProperties_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="target" type="RPG_Magic_Spell_TargetProperties_Type" minOccurs="1" maxOccurs="unbounded"/>
       <xsd:element name="duration" type="RPG_Magic_Spell_DurationProperties_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="precondition" type="RPG_Magic_Spell_PreconditionProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="effect" type="RPG_Magic_Spell_EffectProperties_Type" minOccurs="1" maxOccurs="unbounded"/>

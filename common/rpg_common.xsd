@@ -263,6 +263,7 @@
       <xsd:enumeration value="AREA_CUBE"/>
       <xsd:enumeration value="AREA_CYLINDER"/>
       <xsd:enumeration value="AREA_LINE"/>
+      <xsd:enumeration value="AREA_RING"/>
       <xsd:enumeration value="AREA_SPHERE"/>
       <xsd:enumeration value="AREA_WALL"/>
     </xsd:restriction>
@@ -289,6 +290,7 @@
 <!--       <xsd:enumeration value="CHECK_ATTRIBUTE"/> -->
       <xsd:enumeration value="CHECK_CASTER_LEVEL"/>
       <xsd:enumeration value="CHECK_GRAPPLE"/>
+      <xsd:enumeration value="CHECK_HIT_DICE"/>
 <!--       <xsd:enumeration value="CHECK_SKILL"/> -->
     </xsd:restriction>
   </xsd:simpleType>

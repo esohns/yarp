@@ -31,6 +31,8 @@
  <xsd:simpleType name="RPG_Engine_Command_Type">
    <xsd:restriction base="xsd:string">
      <xsd:enumeration value="COMMAND_ATTACK"/>
+     <xsd:enumeration value="COMMAND_DOOR_CLOSE"/>
+     <xsd:enumeration value="COMMAND_DOOR_OPEN"/>
      <xsd:enumeration value="COMMAND_STEP"/>
      <xsd:enumeration value="COMMAND_STOP"/>
      <xsd:enumeration value="COMMAND_TRAVEL"/>

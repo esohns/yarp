@@ -893,6 +893,7 @@ class RPG_Common_AreaOfEffect_XMLTree_Type: public ::xml_schema::string
     AREA_CUBE,
     AREA_CYLINDER,
     AREA_LINE,
+    AREA_RING,
     AREA_SPHERE,
     AREA_WALL
   };
@@ -944,8 +945,8 @@ class RPG_Common_AreaOfEffect_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[6];
-  static const value _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[6];
+  static const char* const _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[7];
+  static const value _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[7];
 };
 
 class RPG_Common_EffectType_XMLTree_Type: public ::xml_schema::string
@@ -1076,7 +1077,8 @@ class RPG_Common_CheckType_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     CHECK_CASTER_LEVEL,
-    CHECK_GRAPPLE
+    CHECK_GRAPPLE,
+    CHECK_HIT_DICE
   };
 
   RPG_Common_CheckType_XMLTree_Type (value v);
@@ -1126,8 +1128,8 @@ class RPG_Common_CheckType_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Common_CheckType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_CheckType_XMLTree_Type_literals_[2];
-  static const value _xsd_RPG_Common_CheckType_XMLTree_Type_indexes_[2];
+  static const char* const _xsd_RPG_Common_CheckType_XMLTree_Type_literals_[3];
+  static const value _xsd_RPG_Common_CheckType_XMLTree_Type_indexes_[3];
 };
 
 class RPG_Common_SavingThrow_XMLTree_Type: public ::xml_schema::string
@@ -1200,6 +1202,7 @@ class RPG_Common_BaseCheckTypeUnion_XMLTree_Type: public ::xml_schema::string
   {
     CHECK_CASTER_LEVEL,
     CHECK_GRAPPLE,
+    CHECK_HIT_DICE,
     SAVE_NONE,
     SAVE_FORTITUDE,
     SAVE_MAGIC,
@@ -1254,8 +1257,8 @@ class RPG_Common_BaseCheckTypeUnion_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_literals_[7];
-  static const value _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_[7];
+  static const char* const _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_literals_[8];
+  static const value _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_[8];
 };
 
 class RPG_Common_SaveReductionType_XMLTree_Type: public ::xml_schema::string

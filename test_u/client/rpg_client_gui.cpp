@@ -1259,10 +1259,9 @@ do_work(const RPG_Client_Config& config_in,
     } // end IF
   } // end ELSE
   userData.map_window = &mapWindow;
-  userData.map.init(start_position,
-                    seed_points,
-                    floor_plan);
   engine.init(&mapWindow,
+              start_position,
+              seed_points,
               floor_plan);
   engine.start();
   if (!engine.isRunning())
@@ -1460,9 +1459,9 @@ do_work(const RPG_Client_Config& config_in,
             dump_path += ACE_DIRECTORY_SEPARATOR_STR;
             dump_path += ACE_TEXT("map.txt");
             if (!RPG_Map_Common_Tools::save(dump_path,
-                                            userData.map.getStartPosition(),
-                                            userData.map.getSeedPoints(),
-                                            userData.map.getFloorPlan()))
+                                            userData.engine->getStartPosition(),
+                                            userData.engine->getSeedPoints(),
+                                            userData.engine->getFloorPlan()))
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),

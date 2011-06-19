@@ -27,7 +27,7 @@
       <type>TARGET_FIX</type>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <base>1</base>
       <duration>1</duration>
       <levelIncrement>3</levelIncrement>
@@ -71,11 +71,11 @@
     </range>
     <target>
       <type>TARGET_AREA</type>
-      <area>AREA_SPHERE</area>
+      <shape>AREA_SPHERE</shape>
       <radius>20</radius>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>1</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -154,7 +154,7 @@
       <type>TARGET_FIX</type>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -218,7 +218,7 @@
       <type>TARGET_FIX</type>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>100</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -256,11 +256,11 @@
     </range>
     <target>
       <type>TARGET_AREA</type>
-      <area>AREA_SPHERE</area>
+      <shape>AREA_SPHERE</shape>
       <radius>20</radius>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>1200</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -288,7 +288,7 @@
       <type>TARGET_FIX</type>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -323,7 +323,7 @@
       <type>TARGET_SELF</type>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>100</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -360,7 +360,7 @@
       <levelIncrement>1</levelIncrement>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>1</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -398,7 +398,7 @@
       <levelIncrement>2</levelIncrement>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -442,7 +442,7 @@
       <type>TARGET_FIX</type>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>14400</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -482,7 +482,7 @@
       <levelIncrement>1</levelIncrement>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>600</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -620,7 +620,7 @@
       <levelIncrement>1</levelIncrement>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>1</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -659,7 +659,7 @@
       <levelIncrement>1</levelIncrement>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>1</duration>
 <!--       <duration>600</duration> -->
       <levelIncrement>1</levelIncrement>
@@ -705,7 +705,7 @@
       <type>TARGET_FIX</type>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>1</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -760,7 +760,7 @@
       <radius>10</radius>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>100</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -805,7 +805,7 @@
       <radius>10</radius>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>100</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -847,11 +847,11 @@
     <target>
       <type>TARGET_AREA</type>
       <levelIncrement>1</levelIncrement>
-      <area>AREA_CUBE</area>
+      <shape>AREA_CUBE</shape>
       <radius>10</radius>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>1200</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -889,7 +889,7 @@
       <radius>10</radius>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>100</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -924,7 +924,7 @@
       <type>TARGET_LOCATION</type>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -1004,7 +1004,7 @@
       <type>TARGET_SELF</type>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -1033,7 +1033,7 @@
       <type>TARGET_SELF</type>
     </target>
     <duration dismissible="true">
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -1244,11 +1244,11 @@
     </range>
     <target>
       <type>TARGET_AREA</type>
-      <area>AREA_SPHERE</area>
+      <shape>AREA_SPHERE</shape>
       <radius>50</radius>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -1328,7 +1328,7 @@
       <type>TARGET_FIX</type>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>100</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -1380,7 +1380,7 @@
       <type>TARGET_FIX</type>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -1421,7 +1421,7 @@
       <levelIncrement>1</levelIncrement>
     </target>
     <duration>
-      <type>DURATION_INSTANTANEOUS</type>
+      <type>DURATION_TIMED</type>
       <duration>10</duration>
       <levelIncrement>1</levelIncrement>
     </duration>
@@ -1473,7 +1473,7 @@
       </base>
     </effect>
     <effect includeAdjacent="true">
-      <type>SPELLEFFECT_MODIFIER_SAVE</type>
+      <type>SPELLEFFECT_MODIFIER_SAVE_ALL</type>
       <base>
         <value>-4</value>
       </base>
@@ -1504,6 +1504,483 @@
       <spell>SPELL_REMOVE_CURSE</spell>
       <spell>SPELL_WISH</spell>
     </counterMeasure>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Binding</name>
+    <type>
+      <type>SPELL_BINDING</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_HOLD_CREATURE</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Black Tentacles</name>
+    <type>
+      <type>SPELL_BLACK_TENTACLES</type>
+      <school>SCHOOL_CONJURATION</school>
+      <subSchool>SUBSCHOOL_CREATION</subSchool>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>4</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>4</level>
+    </level>
+    <range effect="RANGEEFFECT_MEDIUM">
+    </range>
+    <target>
+      <type>TARGET_AREA</type>
+      <effect>EFFECT_SPREAD</effect>
+      <radius>20</radius>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_TIMED</type>
+      <duration>1</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect effectsAreInclusive="false">
+      <type>SPELLEFFECT_ENTANGLE</type>
+      <base>
+        <value>50</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_DAMAGE</type>
+      <damage>PHYSICALDAMAGE_BLUDGEONING</damage>
+      <base>
+        <range>
+          <numDice>1</numDice>
+          <typeDice>D_6</typeDice>
+          <modifier>4</modifier>
+        </range>
+      </base>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check baseIsCasterLevel="true">
+          <type>CHECK_GRAPPLE</type>
+          <modifier>8</modifier>
+        </check>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_REFLEX" resistible="true">
+    <name>Blade Barrier</name>
+    <type>
+      <type>SPELL_BLADE_BARRIER</type>
+      <school>SCHOOL_EVOCATION</school>
+      <descriptor>DESCRIPTOR_FORCE</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_GOOD</casterClass>
+      <level>6</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_WAR</casterClass>
+      <level>6</level>
+    </level>
+    <range effect="RANGEEFFECT_MEDIUM">
+    </range>
+    <target>
+      <type>TARGET_AREA</type>
+      <shape>AREA_WALL</shape>
+      <levelIncrement>20</levelIncrement>
+      <height>20</height>
+    </target>
+    <target>
+      <type>TARGET_AREA</type>
+      <shape>AREA_RING</shape>
+      <levelIncrement>3</levelIncrement>
+      <height>20</height>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_TIMED</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_ARMOR_CLASS</type>
+      <base>
+        <value>4</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_SAVE_REFLEX</type>
+      <base>
+        <value>2</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_DAMAGE</type>
+      <damage>PHYSICALDAMAGE_SLASHING</damage>
+      <levelIncrement>
+        <range>
+          <numDice>1</numDice>
+          <typeDice>D_6</typeDice>
+        </range>
+      </levelIncrement>
+      <levelIncrementMax>15</levelIncrementMax>
+      <counterMeasure reduction="SAVEREDUCTION_HALF">
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>SAVE_REFLEX</type>
+        </check>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Blasphemy</name>
+    <type>
+      <type>SPELL_BLASPHEMY</type>
+      <school>SCHOOL_EVOCATION</school>
+      <descriptor>DESCRIPTOR_EVIL</descriptor>
+      <descriptor>DESCRIPTOR_SONIC</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>7</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_EVIL</casterClass>
+      <level>7</level>
+    </level>
+    <range effect="RANGEEFFECT_RANGED">
+      <max>40</max>
+    </range>
+    <target>
+      <type>TARGET_AREA</type>
+      <effect>EFFECT_SPREAD</effect>
+      <radius>40</radius>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_ALIGNMENT_ETHIC</type>
+      <ethic>ALIGNMENTETHIC_EVIL</ethic>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_DAZE</type>
+      <duration>
+        <value>1</value>
+      </duration>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check baseIsCasterLevel="true">
+          <type>CHECK_HIT_DICE</type>
+        </check>
+      </counterMeasure>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_ATTRIBUTE</type>
+      <base>
+        <range>
+          <numDice>2</numDice>
+          <typeDice>D_6</typeDice>
+        </range>
+      </base>
+      <attribute>ATTRIBUTE_STRENGTH</attribute>
+      <duration>
+        <range>
+          <numDice>2</numDice>
+          <typeDice>D_4</typeDice>
+        </range>
+      </duration>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check baseIsCasterLevel="true">
+          <type>CHECK_HIT_DICE</type>
+          <modifier>-1</modifier>
+        </check>
+      </counterMeasure>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_PARALYSIS</type>
+      <base>
+        <range>
+          <numDice>1</numDice>
+          <typeDice>D_10</typeDice>
+        </range>
+      </base>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check baseIsCasterLevel="true">
+          <type>CHECK_HIT_DICE</type>
+          <modifier>-5</modifier>
+        </check>
+      </counterMeasure>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_KILL</type>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check baseIsCasterLevel="true">
+          <type>CHECK_HIT_DICE</type>
+          <modifier>-10</modifier>
+        </check>
+      </counterMeasure>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_BANISH_CREATURE</type>
+      <duration>
+        <value>14400</value>
+      </duration>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check baseIsCasterLevel="true">
+          <type>CHECK_HIT_DICE</type>
+        </check>
+      </counterMeasure>
+      <counterMeasure>
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>SAVE_WILL</type>
+          <modifier>-4</modifier>
+        </check>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Binding</name>
+    <type>
+      <type>SPELL_BINDING</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_HOLD_CREATURE</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Binding</name>
+    <type>
+      <type>SPELL_BINDING</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_HOLD_CREATURE</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Binding</name>
+    <type>
+      <type>SPELL_BINDING</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_HOLD_CREATURE</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Binding</name>
+    <type>
+      <type>SPELL_BINDING</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_HOLD_CREATURE</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Binding</name>
+    <type>
+      <type>SPELL_BINDING</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_HOLD_CREATURE</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Binding</name>
+    <type>
+      <type>SPELL_BINDING</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>10</rounds>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target>
+      <type>TARGET_FIX</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_PERMANENT</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DEAD</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_HOLD_CREATURE</type>
+    </effect>
   </spell>
   <spell saveable="SAVE_WILL" resistible="true">
     <name>Binding</name>

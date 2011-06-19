@@ -41,10 +41,12 @@ class RPG_Map_Level
   const RPG_Map_Positions_t getSeedPoints() const;
   const RPG_Map_FloorPlan_t getFloorPlan() const;
 
+ protected:
+  RPG_Map_FloorPlan_t myFloorPlan;
+
  private:
   RPG_Map_Position_t  myStartPosition;
   RPG_Map_Positions_t mySeedPoints;
-  RPG_Map_FloorPlan_t myFloorPlan;
 };
 
 #endif

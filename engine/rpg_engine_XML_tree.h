@@ -89,6 +89,8 @@ class RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     COMMAND_ATTACK,
+    COMMAND_DOOR_CLOSE,
+    COMMAND_DOOR_OPEN,
     COMMAND_STEP,
     COMMAND_STOP,
     COMMAND_TRAVEL
@@ -141,8 +143,8 @@ class RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Engine_Command_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[4];
-  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[4];
+  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[6];
+  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[6];
 };
 
 class RPG_Engine_Player_XMLTree_Type: public ::RPG_Character_PlayerXML_XMLTree_Type

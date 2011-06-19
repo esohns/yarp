@@ -38,6 +38,7 @@
 #include <ace/Log_Msg.h>
 
 #include <sstream>
+#include "../engine/rpg_engine_command.h"
 
 RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase& parent_in)
  : inherited(WINDOWTYPE_MAP,       // type
@@ -157,6 +158,37 @@ RPG_Client_WindowLevel::redraw()
 
   draw();
 //   refresh();
+}
+
+void
+RPG_Client_WindowLevel::toggleDoor(const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::toggleDoor"));
+
+  RPG_Map_Door_t door = myLevelState->getDoor(position_in);
+  ACE_ASSERT(door.position == position_in);
+
+  // change tile accordingly
+  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+  orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
+                                                            position_in);
+  switch (orientation)
+  {
+    case ORIENTATION_HORIZONTAL:
+      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.horizontal_open
+                                               : myCurrentDoorSet.horizontal_closed); break;
+    case ORIENTATION_VERTICAL:
+      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.vertical_open
+                                               : myCurrentDoorSet.vertical_closed); break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
+                 RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+
+      return;
+    }
+  } // end SWITCH
 }
 
 void
@@ -632,6 +664,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
   // init return value(s)
   redraw_out = false;
 
+  RPG_Engine_Action player_action;
+  bool do_action = false;
+  bool delegate_to_parent = false;
   switch (event_in.type)
   {
     // *** keyboard ***
@@ -669,16 +704,13 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           // need a redraw
           redraw_out = true;
 
-          // done with this event
-          return;
+          break;
         }
         case SDLK_UP:
         case SDLK_DOWN:
         case SDLK_LEFT:
         case SDLK_RIGHT:
         {
-          RPG_Engine_Action action;
-          action.command = COMMAND_STEP;
           switch (event_in.key.keysym.sym)
           {
 //             case SDLK_UP:
@@ -699,7 +731,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                 setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                         -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               else
-                action.direction = DIRECTION_UP;
+                player_action.direction = DIRECTION_UP;
 
               break;
             }
@@ -709,7 +741,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                 setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                         RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               else
-                action.direction = DIRECTION_DOWN;
+                player_action.direction = DIRECTION_DOWN;
 
               break;
             }
@@ -719,7 +751,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                 setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                         RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               else
-                action.direction = DIRECTION_LEFT;
+                player_action.direction = DIRECTION_LEFT;
 
               break;
             }
@@ -729,7 +761,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                 setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                         -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               else
-                action.direction = DIRECTION_RIGHT;
+                player_action.direction = DIRECTION_RIGHT;
 
               break;
             }
@@ -739,7 +771,10 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
           if (!(event_in.key.keysym.mod & KMOD_SHIFT) &&
               myPlayerID)
-            myLevelState->action(myPlayerID, action);
+          {
+            player_action.command = COMMAND_STEP;
+            do_action = true;
+          } // end IF
           else
           {
             // *NOTE*: fiddling with the view invalidates the cursor BG !
@@ -751,20 +786,18 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             redraw_out = true;
           } // end ELSE
 
-          // done with this event
-          return;
+          break;
         }
         default:
         {
+          // delegate all other keypresses to the parent...
+          delegate_to_parent = true;
 
           break;
         }
       } // end SWITCH
 
-      // delegate all other keypresses to the parent...
-      return getParent()->handleEvent(event_in,
-                                      window_in,
-                                      redraw_out);
+      break;
     }
     // *** mouse ***
     case SDL_MOUSEMOTION:
@@ -892,59 +925,39 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                    map_position.first,
                    map_position.second));
 
-        if (myLevelState->getElement(map_position) == MAPELEMENT_DOOR)
-        {
-          // door ? --> (try to) open/close it
-          RPG_Map_Door_t door = myLevelState->getDoor(map_position);
-
-          myLevelState->handleDoor(map_position,
-                                  !door.is_open); // open ? open : close
-
-          // change tile accordingly
-          door = myLevelState->getDoor(map_position);
-          RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-          orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
-                                                                    map_position);
-          switch (orientation)
-          {
-            case ORIENTATION_HORIZONTAL:
-              myDoorTiles[map_position] = (door.is_open ? myCurrentDoorSet.horizontal_open
-                                                        : myCurrentDoorSet.horizontal_closed); break;
-            case ORIENTATION_VERTICAL:
-              myDoorTiles[map_position] = (door.is_open ? myCurrentDoorSet.vertical_open
-                                                        : myCurrentDoorSet.vertical_closed); break;
-            default:
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
-                         RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
-
-                return;
-            }
-          } // end SWITCH
-
-          // invalidate cursor BG
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          // need a redraw
-          redraw_out = true;
-
-          // done
-          // *TODO*: cannot travel to door positions like this...
+        if (myPlayerID == 0)
           break;
-        } // end IF
 
-        if ((myLevelState->getElement(map_position) == MAPELEMENT_FLOOR) &&
-            myPlayerID)
+        // player standing next to door ?
+        switch (myLevelState->getElement(map_position))
         {
-          // (try to) travel to this position
-          RPG_Engine_Action action;
-          action.command = COMMAND_TRAVEL;
-          action.position = map_position;
-          myLevelState->action(myPlayerID, action);
-        } // end IF
+          case MAPELEMENT_DOOR:
+          {
+            // --> (try to) open/close it
+            if ((RPG_Map_Common_Tools::dist2Positions(myLevelState->getPosition(myPlayerID),
+                                                      map_position) == 1))
+            {
+              RPG_Map_Door_t door = myLevelState->getDoor(map_position);
+
+              player_action.command = (door.is_open ? COMMAND_DOOR_CLOSE : COMMAND_DOOR_OPEN);
+
+              break;
+            } // end IF
+
+            // *WARNING*: falls through !
+          }
+          case MAPELEMENT_FLOOR:
+          {
+            // (try to) travel to this position
+            player_action.command = COMMAND_TRAVEL;
+            player_action.position = map_position;
+            do_action = true;
+
+            break;
+          }
+          default:
+            break;
+        } // end SWITCH
       } // end IF
 
       break;
@@ -982,13 +995,19 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
     default:
     {
       // delegate these to the parent...
-      return getParent()->handleEvent(event_in,
-                                      window_in,
-                                      redraw_out);
+      delegate_to_parent = true;
 
       break;
     }
   } // end SWITCH
+
+  if (do_action)
+    myLevelState->action(myPlayerID, player_action);
+
+  if (delegate_to_parent)
+    getParent()->handleEvent(event_in,
+                             window_in,
+                             redraw_out);
 }
 
 void

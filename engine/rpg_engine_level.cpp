@@ -49,11 +49,15 @@ RPG_Engine_Level::RPG_Engine_Level()
 }
 
 RPG_Engine_Level::RPG_Engine_Level(RPG_Engine_IWindow* window_in,
+                                   const RPG_Map_Position_t& startPosition_in,
+                                   const RPG_Map_Positions_t& seedPoints_in,
                                    const RPG_Map_FloorPlan_t& floorPlan_in)
- : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
+ : inherited(startPosition_in,
+             seedPoints_in,
+             floorPlan_in),
+   myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
    myCondition(myLock),
-   myWindow(window_in),
-   myFloorPlan(floorPlan_in)
+   myWindow(window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Engine_Level"));
 
@@ -61,10 +65,10 @@ RPG_Engine_Level::RPG_Engine_Level(RPG_Engine_IWindow* window_in,
   ACE_ASSERT(window_in);
 
   // tell the task to use our message queue...
-  inherited::msg_queue(&myQueue);
+  inherited2::msg_queue(&myQueue);
 
   // set group ID for worker thread(s)
-  inherited::grp_id(RPG_ENGINE_DEF_TASK_GROUP_ID);
+  inherited2::grp_id(RPG_ENGINE_DEF_TASK_GROUP_ID);
 }
 
 RPG_Engine_Level::~RPG_Engine_Level()
@@ -171,7 +175,7 @@ RPG_Engine_Level::svc(void)
 
     // *IMPORTANT NOTE*: NEVER block here...
     now = ACE_OS::gettimeofday();
-    if (inherited::getq(ace_mb, &now) != -1)
+    if (inherited2::getq(ace_mb, &now) != -1)
     {
       switch (ace_mb->msg_type())
       {
@@ -245,25 +249,25 @@ RPG_Engine_Level::start()
 
   // *IMPORTANT NOTE*: MUST be THR_JOINABLE !!!
   int ret = 0;
-  ret = inherited::activate((THR_NEW_LWP |
-                             THR_JOINABLE |
-                             THR_INHERIT_SCHED),         // flags
-                            1,                           // number of threads
-                            0,                           // force spawning
-                            ACE_DEFAULT_THREAD_PRIORITY, // priority
-                            inherited::grp_id(),         // group id --> has been set (see above)
-                            NULL,                        // corresp. task --> use 'this'
-                            thread_handles,              // thread handle(s)
-                            NULL,                        // thread stack(s)
-                            NULL,                        // thread stack size(s)
-                            thread_ids);                 // thread id(s)
+  ret = inherited2::activate((THR_NEW_LWP |
+                              THR_JOINABLE |
+                              THR_INHERIT_SCHED),         // flags
+                             1,                           // number of threads
+                             0,                           // force spawning
+                             ACE_DEFAULT_THREAD_PRIORITY, // priority
+                             inherited2::grp_id(),        // group id --> has been set (see above)
+                             NULL,                        // corresp. task --> use 'this'
+                             thread_handles,              // thread handle(s)
+                             NULL,                        // thread stack(s)
+                             NULL,                        // thread stack size(s)
+                             thread_ids);                 // thread id(s)
   if (ret == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
   else
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("started worker thread (group: %d, id: %u)...\n"),
-               inherited::grp_id(),
+               inherited2::grp_id(),
                thread_ids[0]));
 }
 
@@ -310,7 +314,7 @@ RPG_Engine_Level::stop()
   } // end IF
 
   // block, if necessary
-  if (inherited::putq(stop_mb, NULL) == -1)
+  if (inherited2::putq(stop_mb, NULL) == -1)
   {
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to ACE_Task::putq(): \"%m\", returning\n")));
@@ -322,7 +326,7 @@ RPG_Engine_Level::stop()
   } // end IF
 
   // ... and wait for the worker thread to join
-  if (inherited::wait() == -1)
+  if (inherited2::wait() == -1)
   {
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", returning\n")));
@@ -339,7 +343,7 @@ RPG_Engine_Level::isRunning()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::isRunning"));
 
-  return (inherited::thr_count() > 0);
+  return (inherited2::thr_count() > 0);
 }
 
 void
@@ -383,6 +387,8 @@ RPG_Engine_Level::dump_state() const
 
 void
 RPG_Engine_Level::init(RPG_Engine_IWindow* window_in,
+                       const RPG_Map_Position_t& startPosition_in,
+                       const RPG_Map_Positions_t& seedPoints_in,
                        const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::init"));
@@ -390,12 +396,14 @@ RPG_Engine_Level::init(RPG_Engine_IWindow* window_in,
   // sanity check
   ACE_ASSERT(window_in);
 
+  inherited::init(startPosition_in,
+                  seedPoints_in,
+                  floorPlan_in);
   myWindow = window_in;
-  myFloorPlan = floorPlan_in;
 }
 
 const RPG_Engine_EntityID_t
-RPG_Engine_Level::add(RPG_Engine_Entity& entity_in)
+RPG_Engine_Level::add(RPG_Engine_Entity* entity_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::add"));
 
@@ -403,7 +411,7 @@ RPG_Engine_Level::add(RPG_Engine_Entity& entity_in)
 
   RPG_Engine_EntityID_t id = myCurrentID++;
 
-  myEntities.insert(std::make_pair(id, &entity_in));
+  myEntities.insert(std::make_pair(id, entity_in));
 
   return id;
 }
@@ -571,6 +579,9 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::handleDoor"));
 
+  // sanity check
+  ACE_ASSERT(myWindow);
+
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
 
@@ -626,15 +637,27 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
   // *WARNING*: set iterators are CONST for a good reason !
   // --> (but we know what we're doing)...
   (const_cast<RPG_Map_Door_t&>(*iterator)).is_open = open_in;
+
+  try
+  {
+    myWindow->toggleDoor(position_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Engine_IWindow::toggleDoor([%u,%u]), continuing\n"),
+               position_in.first,
+               position_in.second));
+  }
 }
 
-const RPG_Map_Positions_t
-RPG_Engine_Level::getWalls() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getWalls"));
-
-  return myFloorPlan.walls;
-}
+// const RPG_Map_Positions_t
+// RPG_Engine_Level::getWalls() const
+// {
+//   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getWalls"));
+//
+//   return myFloorPlan.walls;
+// }
 
 void
 RPG_Engine_Level::handleEntities(bool& redrawUI_out)
@@ -665,6 +688,20 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
                    (*iterator).first));
 
         action_complete = false;
+
+        break;
+      }
+      case COMMAND_DOOR_CLOSE:
+      {
+        handleDoor((*iterator).second->actions.front().position,
+                   false);
+
+        break;
+      }
+      case COMMAND_DOOR_OPEN:
+      {
+        handleDoor((*iterator).second->actions.front().position,
+                   true);
 
         break;
       }
@@ -724,10 +761,16 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
         action_complete = false;
 
         // compute path
+        RPG_Map_Positions_t obstacles = myFloorPlan.walls;
+        for (RPG_Map_DoorsConstIterator_t door_iterator = myFloorPlan.doors.begin();
+             door_iterator != myFloorPlan.doors.end();
+             door_iterator++)
+          if (!(*door_iterator).is_open)
+            obstacles.insert((*door_iterator).position);
         RPG_Map_Path_t path;
         if (!RPG_Map_Pathfinding_Tools::findPath(myFloorPlan.size_x,
                                                  myFloorPlan.size_y,
-                                                 myFloorPlan.walls,
+                                                 obstacles,
                                                  (*iterator).second->position,
                                                  RPG_Map_Pathfinding_Tools::getDirection((*iterator).second->position,
                                                                                          (*iterator).second->actions.front().position),

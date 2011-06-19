@@ -4,6 +4,7 @@ namespace urn:rpg
 
   include <rpg_dice_incl.h>;
   include <rpg_common_incl.h>;
+  include <rpg_character_incl.h>;
 
   RPG_Dice_Roll_Type                          RPG_Dice_Roll;
 
@@ -13,6 +14,7 @@ namespace urn:rpg
   RPG_Common_Attribute_Type                   RPG_Common_Attribute;
   RPG_Common_Condition_Type                   RPG_Common_Condition;
   RPG_Common_Size_Type                        RPG_Common_Size;
+  RPG_Common_PhysicalDamageType_Type          RPG_Common_PhysicalDamageType;
   RPG_Common_Skill_Type                       RPG_Common_Skill;
   RPG_Common_AreaOfEffect_Type                RPG_Common_AreaOfEffect;
   RPG_Common_CounterMeasure_Type              RPG_Common_CounterMeasure;
@@ -22,6 +24,8 @@ namespace urn:rpg
   RPG_Common_SaveReductionType_Type           RPG_Common_SaveReductionType;
 #  RPG_Common_SavingThrowCheck_Type            RPG_Common_SavingThrowCheck;
   RPG_Common_Duration_Type                    RPG_Common_Duration;
+
+  RPG_Character_AlignmentEthic_Type           RPG_Character_AlignmentEthic;
 
   RPG_Magic_School_Type                       RPG_Magic_School;
   RPG_Magic_SubSchool_Type                    RPG_Magic_SubSchool;
@@ -37,6 +41,7 @@ namespace urn:rpg
   RPG_Magic_Spell_RangeEffect_Type            RPG_Magic_Spell_RangeEffect;
   RPG_Magic_Spell_RangeProperties_Type        RPG_Magic_Spell_RangeProperties;
   RPG_Magic_Spell_Target_Type                 RPG_Magic_Spell_Target;
+  RPG_Magic_Spell_AreaOfEffect_Type           RPG_Magic_Spell_AreaOfEffect;
   RPG_Magic_Spell_TargetProperties_Type       RPG_Magic_Spell_TargetProperties;
   RPG_Magic_Spell_Duration_Type               RPG_Magic_Spell_Duration;
   RPG_Magic_Spell_DurationProperties_Type     RPG_Magic_Spell_DurationProperties;

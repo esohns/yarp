@@ -31,7 +31,6 @@
 #include <rpg_graphics_iwindow.h>
 
 #include <rpg_map_common.h>
-#include <rpg_map_level.h>
 
 #include <glade/glade.h>
 #include <SDL/SDL.h>
@@ -53,7 +52,6 @@ struct RPG_Client_GTK_CBData_t
     previous_window(NULL),
 //     main_window(NULL),
     map_window(NULL),
-//     map(),
 //     current_entity(),
     engine(NULL)
  {
@@ -75,7 +73,6 @@ struct RPG_Client_GTK_CBData_t
 //   RPG_Client_WindowMain*  main_window;
   RPG_Client_WindowLevel* map_window;
   std::string             schemaRepository;
-  RPG_Map_Level           map;
   RPG_Engine_Entity       current_entity;
   RPG_Engine_Level*       engine;
 };

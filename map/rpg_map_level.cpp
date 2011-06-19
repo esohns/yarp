@@ -25,21 +25,21 @@ RPG_Map_Level::RPG_Map_Level()
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
-  myStartPosition = std::make_pair(0, 0);
-  mySeedPoints.clear();
   myFloorPlan.size_x = 0;
   myFloorPlan.size_y = 0;
   myFloorPlan.unmapped.clear();
   myFloorPlan.walls.clear();
   myFloorPlan.doors.clear();
+  myStartPosition = std::make_pair(0, 0);
+  mySeedPoints.clear();
 }
 
 RPG_Map_Level::RPG_Map_Level(const RPG_Map_Position_t& startingPosition_in,
                              const RPG_Map_Positions_t& seedPoints_in,
                              const RPG_Map_FloorPlan_t& floorPlan_in)
- : myStartPosition(startingPosition_in),
-   mySeedPoints(seedPoints_in),
-   myFloorPlan(floorPlan_in)
+ : myFloorPlan(floorPlan_in),
+   myStartPosition(startingPosition_in),
+   mySeedPoints(seedPoints_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
@@ -58,9 +58,9 @@ RPG_Map_Level::init(const RPG_Map_Position_t& startingPosition_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::init"));
 
+  myFloorPlan = floorPlan_in;
   myStartPosition = startingPosition_in;
   mySeedPoints = seedPoints_in;
-  myFloorPlan = floorPlan_in;
 }
 
 const RPG_Map_Position_t

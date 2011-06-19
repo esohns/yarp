@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ENGINE_LEVEL_H
 #define RPG_ENGINE_LEVEL_H
 
@@ -25,6 +26,7 @@
 #include "rpg_engine_messagequeue.h"
 
 #include <rpg_map_common.h>
+#include <rpg_map_level.h>
 
 #include <rpg_common_icontrol.h>
 #include <rpg_common_idumpstate.h>
@@ -39,13 +41,16 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Engine_Level
- : public ACE_Task<ACE_MT_SYNCH>,
+ : public RPG_Map_Level,
+   public ACE_Task<ACE_MT_SYNCH>,
    public RPG_Common_IControl,
    public RPG_Common_IDumpState
 {
  public:
   RPG_Engine_Level();
   RPG_Engine_Level(RPG_Engine_IWindow*,         // UI handle
+                   const RPG_Map_Position_t&,   // starting position
+                   const RPG_Map_Positions_t&,  // seed points
                    const RPG_Map_FloorPlan_t&); // floor plan
   virtual ~RPG_Engine_Level();
 
@@ -60,9 +65,11 @@ class RPG_Engine_Level
   virtual void dump_state() const;
 
   void init(RPG_Engine_IWindow*,         // UI handle
+            const RPG_Map_Position_t&,   // starting position
+            const RPG_Map_Positions_t&,  // seed points
             const RPG_Map_FloorPlan_t&); // floor plan
   // *WARNING*: fire&forget API, added entities are controlled by the engine !
-  const RPG_Engine_EntityID_t add(RPG_Engine_Entity&); // entity
+  const RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
   void action(const RPG_Engine_EntityID_t&, // id
               const RPG_Engine_Action&);    // action
@@ -71,14 +78,15 @@ class RPG_Engine_Level
   const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
   const RPG_Engine_EntityGraphics_t getGraphics() const;
   const RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
-
   const RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
-  void handleDoor(const RPG_Map_Position_t&,
-                  const bool&);              // open ? : close
-  const RPG_Map_Positions_t getWalls() const;
+
+  using RPG_Map_Level::getStartPosition;
+  using RPG_Map_Level::getSeedPoints;
+  using RPG_Map_Level::getFloorPlan;
 
  private:
-  typedef ACE_Task<ACE_MT_SYNCH> inherited;
+  typedef RPG_Map_Level inherited;
+  typedef ACE_Task<ACE_MT_SYNCH> inherited2;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level(const RPG_Engine_Level&));
@@ -88,6 +96,9 @@ class RPG_Engine_Level
   virtual int open(void* = NULL);
   virtual int close(u_long = 0);
   virtual int svc(void);
+
+  void handleDoor(const RPG_Map_Position_t&, // position
+                  const bool&);              // open ? : close
 
   // perform (one round of) actions
   void handleEntities(bool&); // return value: redraw UI ?
@@ -106,7 +117,6 @@ class RPG_Engine_Level
   RPG_Engine_Entities_t                     myEntities;
 
   RPG_Engine_IWindow*                       myWindow;
-  RPG_Map_FloorPlan_t                       myFloorPlan;
 };
 
 #endif

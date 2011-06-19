@@ -9,7 +9,7 @@ set_source_files_properties(${magic_parser_SRCS} PROPERTIES COMPILE_DEFINITIONS 
 
 add_executable(magic_parser ${magic_parser_SRCS})
 
-target_link_libraries(magic_parser pthread ACE xerces-c RPG_Dice RPG_Common RPG_Magic)
+target_link_libraries(magic_parser pthread ACE xerces-c RPG_Dice RPG_Common RPG_Item RPG_Character RPG_Magic)
 
 install(TARGETS magic_parser RUNTIME DESTINATION bin)
 
