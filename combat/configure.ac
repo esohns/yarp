@@ -3,8 +3,8 @@
 
 AC_INIT([RPG_Combat], [0.1], [erik.sohns@web.de], [RPG_Combat], [http://www.rpg.org])
 AC_PREREQ([2.63])
-AC_CONFIG_SRCDIR([rpg_combat_common.h])
-AC_CONFIG_AUX_DIR([.])
+AC_CONFIG_SRCDIR([config.h.in])
+AC_CONFIG_AUX_DIR([aux_config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
