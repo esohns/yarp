@@ -204,8 +204,7 @@ class RPG_Magic_Spell_TargetProperties_Type
 
 //     virtual void pre();
     virtual void type(const RPG_Magic_Spell_Target&);
-    virtual void value(unsigned int);
-    virtual void range(const RPG_Dice_Roll&);
+    virtual void base(const RPG_Common_Amount&);
     virtual void levelIncrement(unsigned char);
     virtual void effect(const RPG_Magic_Spell_AreaOfEffect&);
     virtual void shape(const RPG_Common_AreaOfEffect&);

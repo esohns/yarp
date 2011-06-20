@@ -329,10 +329,10 @@ RPG_Magic_Spell_TargetProperties_Type::RPG_Magic_Spell_TargetProperties_Type()
   RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_TargetProperties_Type::RPG_Magic_Spell_TargetProperties_Type"));
 
   myCurrentProperties.type = RPG_MAGIC_SPELL_TARGET_INVALID;
-  myCurrentProperties.value = 1;
-  myCurrentProperties.range.numDice = 0;
-  myCurrentProperties.range.typeDice = RPG_DICE_DIETYPE_INVALID;
-  myCurrentProperties.range.modifier = 0;
+  myCurrentProperties.base.value = 0;
+  myCurrentProperties.base.range.numDice = 0;
+  myCurrentProperties.base.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.base.range.modifier = 0;
   myCurrentProperties.levelIncrement = 0;
   myCurrentProperties.effect = RPG_MAGIC_SPELL_AREAOFEFFECT_INVALID;
   myCurrentProperties.shape = RPG_COMMON_AREAOFEFFECT_INVALID;
@@ -348,18 +348,11 @@ void RPG_Magic_Spell_TargetProperties_Type::type(const RPG_Magic_Spell_Target& t
   myCurrentProperties.type = type_in;
 }
 
-void RPG_Magic_Spell_TargetProperties_Type::value(unsigned int value_in)
+void RPG_Magic_Spell_TargetProperties_Type::base(const RPG_Common_Amount& amount_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_TargetProperties_Type::value"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_TargetProperties_Type::base"));
 
-  myCurrentProperties.value = value_in;
-}
-
-void RPG_Magic_Spell_TargetProperties_Type::range(const RPG_Dice_Roll& range_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_TargetProperties_Type::range"));
-
-  myCurrentProperties.range = range_in;
+  myCurrentProperties.base = amount_in;
 }
 
 void RPG_Magic_Spell_TargetProperties_Type::levelIncrement(unsigned char levelIncrement_in)
@@ -412,10 +405,10 @@ RPG_Magic_Spell_TargetProperties RPG_Magic_Spell_TargetProperties_Type::post_RPG
 
   // clear structure
   myCurrentProperties.type = RPG_MAGIC_SPELL_TARGET_INVALID;
-  myCurrentProperties.value = 1;
-  myCurrentProperties.range.numDice = 0;
-  myCurrentProperties.range.typeDice = RPG_DICE_DIETYPE_INVALID;
-  myCurrentProperties.range.modifier = 0;
+  myCurrentProperties.base.value = 0;
+  myCurrentProperties.base.range.numDice = 0;
+  myCurrentProperties.base.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.base.range.modifier = 0;
   myCurrentProperties.levelIncrement = 0;
   myCurrentProperties.effect = RPG_MAGIC_SPELL_AREAOFEFFECT_INVALID;
   myCurrentProperties.shape = RPG_COMMON_AREAOFEFFECT_INVALID;

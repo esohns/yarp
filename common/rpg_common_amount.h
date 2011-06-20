@@ -9,7 +9,7 @@
 
 struct RPG_Common_Amount
 {
-  char value;
+  short int value;
   RPG_Dice_Roll range;
 };
 

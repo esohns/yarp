@@ -204,15 +204,9 @@ type_parser (::RPG_Magic_Spell_Target_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-value_parser (::xml_schema::unsigned_int_pskel& p)
+base_parser (::RPG_Common_Amount_Type_pskel& p)
 {
-  this->value_parser_ = &p;
-}
-
-void RPG_Magic_Spell_TargetProperties_Type_pskel::
-range_parser (::RPG_Dice_Roll_Type_pskel& p)
-{
-  this->range_parser_ = &p;
+  this->base_parser_ = &p;
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
@@ -253,8 +247,7 @@ rangeIsInHD_parser (::xml_schema::boolean_pskel& p)
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
 parsers (::RPG_Magic_Spell_Target_Type_pskel& type,
-         ::xml_schema::unsigned_int_pskel& value,
-         ::RPG_Dice_Roll_Type_pskel& range,
+         ::RPG_Common_Amount_Type_pskel& base,
          ::xml_schema::unsigned_byte_pskel& levelIncrement,
          ::RPG_Magic_Spell_AreaOfEffect_Type_pskel& effect,
          ::RPG_Common_AreaOfEffect_Type_pskel& shape,
@@ -263,8 +256,7 @@ parsers (::RPG_Magic_Spell_Target_Type_pskel& type,
          ::xml_schema::boolean_pskel& rangeIsInHD)
 {
   this->type_parser_ = &type;
-  this->value_parser_ = &value;
-  this->range_parser_ = &range;
+  this->base_parser_ = &base;
   this->levelIncrement_parser_ = &levelIncrement;
   this->effect_parser_ = &effect;
   this->shape_parser_ = &shape;
@@ -276,8 +268,7 @@ parsers (::RPG_Magic_Spell_Target_Type_pskel& type,
 RPG_Magic_Spell_TargetProperties_Type_pskel::
 RPG_Magic_Spell_TargetProperties_Type_pskel ()
 : type_parser_ (0),
-  value_parser_ (0),
-  range_parser_ (0),
+  base_parser_ (0),
   levelIncrement_parser_ (0),
   effect_parser_ (0),
   shape_parser_ (0),
@@ -1288,12 +1279,7 @@ type (const RPG_Magic_Spell_Target&)
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-value (unsigned int)
-{
-}
-
-void RPG_Magic_Spell_TargetProperties_Type_pskel::
-range (const RPG_Dice_Roll&)
+base (const RPG_Common_Amount&)
 {
 }
 
@@ -1347,22 +1333,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "value" && ns == "urn:rpg")
+  if (n == "base" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->value_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->base_parser_;
 
-    if (this->value_parser_)
-      this->value_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "range" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->range_parser_;
-
-    if (this->range_parser_)
-      this->range_parser_->pre ();
+    if (this->base_parser_)
+      this->base_parser_->pre ();
 
     return true;
   }
@@ -1435,18 +1411,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "value" && ns == "urn:rpg")
+  if (n == "base" && ns == "urn:rpg")
   {
-    if (this->value_parser_)
-      this->value (this->value_parser_->post_unsigned_int ());
-
-    return true;
-  }
-
-  if (n == "range" && ns == "urn:rpg")
-  {
-    if (this->range_parser_)
-      this->range (this->range_parser_->post_RPG_Dice_Roll_Type ());
+    if (this->base_parser_)
+      this->base (this->base_parser_->post_RPG_Common_Amount_Type ());
 
     return true;
   }

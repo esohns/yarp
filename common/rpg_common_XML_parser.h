@@ -216,7 +216,7 @@ class RPG_Common_Amount_Type
     RPG_Common_Amount_Type();
 
 //   virtual void pre();
-    virtual void value(signed char);
+    virtual void value(short);
     virtual void range(const RPG_Dice_Roll&);
     virtual RPG_Common_Amount post_RPG_Common_Amount_Type();
 

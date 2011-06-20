@@ -1187,21 +1187,21 @@ RPG_Magic_Common_Tools::spellTargetsToString(const RPG_Magic_Spell_Targets_t& ta
     switch ((*iterator).type)
     {
       case TARGET_SELF:
+      case TARGET_SINGLE:
       case TARGET_LOCATION:
       {
         break;
       }
-      case TARGET_FIX:
-      case TARGET_VARIABLE:
+      case TARGET_SEVERAL:
       {
         result += ACE_TEXT_ALWAYS_CHAR("#: ");
-        if ((*iterator).range.typeDice == RPG_DICE_DIETYPE_INVALID)
+        if ((*iterator).base.range.typeDice == RPG_DICE_DIETYPE_INVALID)
         {
-          converter << (*iterator).value;
+          converter << (*iterator).base.value;
           result += converter.str();
         } // end IF
         else
-          result += RPG_Dice_Common_Tools::rollToString((*iterator).range).c_str();
+          result += RPG_Dice_Common_Tools::rollToString((*iterator).base.range).c_str();
         if ((*iterator).rangeIsInHD)
           result += ACE_TEXT_ALWAYS_CHAR(" HD");
         if ((*iterator).levelIncrement)

@@ -412,7 +412,7 @@ class RPG_Common_Amount_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  value (signed char);
+  value (short);
 
   virtual void
   range (const RPG_Dice_Roll&);
@@ -423,13 +423,13 @@ class RPG_Common_Amount_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  value_parser (::xml_schema::byte_pskel&);
+  value_parser (::xml_schema::short_pskel&);
 
   void
   range_parser (::RPG_Dice_Roll_Type_pskel&);
 
   void
-  parsers (::xml_schema::byte_pskel& /* value */,
+  parsers (::xml_schema::short_pskel& /* value */,
            ::RPG_Dice_Roll_Type_pskel& /* range */);
 
   // Constructor.
@@ -449,7 +449,7 @@ class RPG_Common_Amount_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::byte_pskel* value_parser_;
+  ::xml_schema::short_pskel* value_parser_;
   ::RPG_Dice_Roll_Type_pskel* range_parser_;
 };
 

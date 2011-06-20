@@ -61,7 +61,7 @@ RPG_Character_Player::RPG_Character_Player(// base attributes
                                            const unsigned short int& hitpoints_in,
                                            const unsigned int& experience_in,
                                            const unsigned int& wealth_in,
-                                           const RPG_Magic_SpellList_t& spells_in,
+                                           const RPG_Magic_SpellTypes_t& spells_in,
                                            const RPG_Item_List_t& inventory_in)
  : inherited(// base attributes
              name_in,
@@ -342,7 +342,7 @@ RPG_Character_Player::save(const std::string& filename_in) const
          iterator != myCondition.end();
          iterator++)
       player_model.condition().push_back(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
-    for (RPG_Magic_SpellListIterator_t iterator = mySpells.begin();
+    for (RPG_Magic_SpellTypesIterator_t iterator = mySpells.begin();
          iterator != mySpells.end();
          iterator++)
       player_model.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
@@ -418,7 +418,7 @@ RPG_Character_Player::dummy()
   RPG_Magic_Spells_t knownSpells;
   RPG_Character_Conditions_t condition;
   condition.insert(CONDITION_NORMAL);
-  RPG_Magic_SpellList_t preparedSpells;
+  RPG_Magic_SpellTypes_t preparedSpells;
   RPG_Item_List_t items;
   RPG_Character_Player player(// base attributes
                               name,

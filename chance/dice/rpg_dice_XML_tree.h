@@ -152,16 +152,20 @@ class RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
   // numDice
   // 
   typedef ::xml_schema::unsigned_int numDice_type;
+  typedef ::xsd::cxx::tree::optional< numDice_type > numDice_optional;
   typedef ::xsd::cxx::tree::traits< numDice_type, char > numDice_traits;
 
-  const numDice_type&
+  const numDice_optional&
   numDice () const;
 
-  numDice_type&
+  numDice_optional&
   numDice ();
 
   void
   numDice (const numDice_type& x);
+
+  void
+  numDice (const numDice_optional& x);
 
   // typeDice
   // 
@@ -183,22 +187,24 @@ class RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
   // modifier
   // 
   typedef ::xml_schema::integer modifier_type;
+  typedef ::xsd::cxx::tree::optional< modifier_type > modifier_optional;
   typedef ::xsd::cxx::tree::traits< modifier_type, char > modifier_traits;
 
-  const modifier_type&
+  const modifier_optional&
   modifier () const;
 
-  modifier_type&
+  modifier_optional&
   modifier ();
 
   void
   modifier (const modifier_type& x);
 
+  void
+  modifier (const modifier_optional& x);
+
   // Constructors.
   //
-  RPG_Dice_Roll_XMLTree_Type (const numDice_type&,
-                              const typeDice_type&,
-                              const modifier_type&);
+  RPG_Dice_Roll_XMLTree_Type (const typeDice_type&);
 
   RPG_Dice_Roll_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                               ::xml_schema::flags f = 0,
@@ -231,9 +237,9 @@ class RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
-  ::xsd::cxx::tree::one< numDice_type > numDice_;
+  numDice_optional numDice_;
   ::xsd::cxx::tree::one< typeDice_type > typeDice_;
-  ::xsd::cxx::tree::one< modifier_type > modifier_;
+  modifier_optional modifier_;
 };
 
 bool

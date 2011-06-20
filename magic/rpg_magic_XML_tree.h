@@ -449,10 +449,16 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
     SPELL_BEARS_ENDURANCE_MASS,
     SPELL_BESTOW_CURSE,
     SPELL_BINDING,
+    SPELL_BLACK_TENTACLES,
     SPELL_BLADE_BARRIER,
     SPELL_BLASPHEMY,
     SPELL_BLESS,
+    SPELL_BLESS_WATER,
+    SPELL_BLESS_WEAPON,
+    SPELL_BLIGHT,
+    SPELL_BLINDNESS_DEAFNESS,
     SPELL_BLINK,
+    SPELL_BLUR,
     SPELL_BREAK_ENCHANTMENT,
     SPELL_CALL_LIGHTNING,
     SPELL_CANTRIP,
@@ -570,8 +576,8 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_SpellType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[111];
-  static const value _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[111];
+  static const char* const _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[117];
+  static const value _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[117];
 };
 
 class RPG_Magic_AbilityClass_XMLTree_Type: public ::xml_schema::string
@@ -1287,8 +1293,8 @@ class RPG_Magic_Spell_Target_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     TARGET_SELF,
-    TARGET_FIX,
-    TARGET_VARIABLE,
+    TARGET_SINGLE,
+    TARGET_SEVERAL,
     TARGET_LOCATION,
     TARGET_AREA
   };
@@ -1425,44 +1431,26 @@ class RPG_Magic_Spell_TargetProperties_XMLTree_Type: public ::xml_schema::type
   void
   type (::std::auto_ptr< type_type > p);
 
-  // value
+  // base
   // 
-  typedef ::xml_schema::unsigned_int value_type;
-  typedef ::xsd::cxx::tree::optional< value_type > value_optional;
-  typedef ::xsd::cxx::tree::traits< value_type, char > value_traits;
+  typedef ::RPG_Common_Amount_XMLTree_Type base_type;
+  typedef ::xsd::cxx::tree::optional< base_type > base_optional;
+  typedef ::xsd::cxx::tree::traits< base_type, char > base_traits;
 
-  const value_optional&
-  value () const;
+  const base_optional&
+  base () const;
 
-  value_optional&
-  value ();
-
-  void
-  value (const value_type& x);
+  base_optional&
+  base ();
 
   void
-  value (const value_optional& x);
-
-  // range
-  // 
-  typedef ::RPG_Dice_Roll_XMLTree_Type range_type;
-  typedef ::xsd::cxx::tree::optional< range_type > range_optional;
-  typedef ::xsd::cxx::tree::traits< range_type, char > range_traits;
-
-  const range_optional&
-  range () const;
-
-  range_optional&
-  range ();
+  base (const base_type& x);
 
   void
-  range (const range_type& x);
+  base (const base_optional& x);
 
   void
-  range (const range_optional& x);
-
-  void
-  range (::std::auto_ptr< range_type > p);
+  base (::std::auto_ptr< base_type > p);
 
   // levelIncrement
   // 
@@ -1613,8 +1601,7 @@ class RPG_Magic_Spell_TargetProperties_XMLTree_Type: public ::xml_schema::type
          ::xml_schema::flags);
 
   ::xsd::cxx::tree::one< type_type > type_;
-  value_optional value_;
-  range_optional range_;
+  base_optional base_;
   levelIncrement_optional levelIncrement_;
   effect_optional effect_;
   shape_optional shape_;
@@ -1879,6 +1866,7 @@ class RPG_Magic_Spell_Precondition_XMLTree_Type: public ::xml_schema::string
   public:
   enum value
   {
+    PRECONDITION_ALLY,
     PRECONDITION_ALIGNMENT_ETHIC,
     PRECONDITION_ATTRIBUTE_MAX,
     PRECONDITION_CONDITION,
@@ -1886,6 +1874,7 @@ class RPG_Magic_Spell_Precondition_XMLTree_Type: public ::xml_schema::string
     PRECONDITION_MANUFACTURED,
     PRECONDITION_NONMAGICAL,
     PRECONDITION_OBJECT,
+    PRECONDITION_PLANT,
     PRECONDITION_RANGED_TOUCH_ATTACK,
     PRECONDITION_SIZE_MAX,
     PRECONDITION_SIZE_RELATIVE,
@@ -1939,8 +1928,8 @@ class RPG_Magic_Spell_Precondition_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[11];
-  static const value _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_[11];
+  static const char* const _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[13];
+  static const value _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_[13];
 };
 
 class RPG_Magic_Spell_PreconditionProperties_XMLTree_Type: public ::xml_schema::type
@@ -2199,27 +2188,33 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_ABILITIY_LOSS_MAGICAL_SPELLLIKE,
     SPELLEFFECT_ABILITIY_LOSS_MAGICAL_SUPERNATURAL,
     SPELLEFFECT_ALIGN_WEAPON,
-    SPELLEFFECT_ANIMATE_ANIMAL,
     SPELLEFFECT_ANIMATE_DEAD,
-    SPELLEFFECT_ANIMATE_PLANT,
+    SPELLEFFECT_ANIMATE_OBJECT,
     SPELLEFFECT_ATONEMENT,
     SPELLEFFECT_AUGURY,
     SPELLEFFECT_BANISH_CREATURE,
     SPELLEFFECT_BARRIER_CREATURE,
     SPELLEFFECT_BARRIER_MAGIC,
+    SPELLEFFECT_BLESS_WATER,
+    SPELLEFFECT_BLESS_WEAPON,
+    SPELLEFFECT_BLIND,
     SPELLEFFECT_DAMAGE,
     SPELLEFFECT_DAZE,
+    SPELLEFFECT_DEAFEN,
     SPELLEFFECT_DETECT_MAGIC,
     SPELLEFFECT_ENTANGLE,
+    SPELLEFFECT_ETHEREAL,
     SPELLEFFECT_FASCINATE,
     SPELLEFFECT_GROW,
     SPELLEFFECT_HOLD_CREATURE,
     SPELLEFFECT_IDENTIFY,
+    SPELLEFFECT_INVISIBLE,
     SPELLEFFECT_KILL,
     SPELLEFFECT_LEVITATE,
     SPELLEFFECT_LOCK,
     SPELLEFFECT_MARK,
     SPELLEFFECT_MESSENGER,
+    SPELLEFFECT_MISS,
     SPELLEFFECT_MODIFIER_ARMOR_CLASS,
     SPELLEFFECT_MODIFIER_ATTACK_ROLL,
     SPELLEFFECT_MODIFIER_ATTRIBUTE,
@@ -2285,8 +2280,8 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[42];
-  static const value _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[42];
+  static const char* const _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[48];
+  static const value _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[48];
 };
 
 class RPG_Magic_CheckTypeUnion_XMLTree_Type: public ::xml_schema::string

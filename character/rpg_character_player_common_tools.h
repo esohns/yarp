@@ -36,7 +36,7 @@ class RPG_Character_Player_Common_Tools
 
   static RPG_Magic_Spells_t knownSpellXMLTreeToSpells(const RPG_Character_PlayerXML_XMLTree_Type::spell_sequence&); // spells (XML format)
   static RPG_Character_Conditions_t conditionXMLTreeToCondition(const RPG_Character_PlayerXML_XMLTree_Type::condition_sequence&); // condition (XML format)
-  static RPG_Magic_SpellList_t spellXMLTreeToSpells(const RPG_Character_PlayerXML_XMLTree_Type::spell_sequence&); // spells (XML format)
+  static RPG_Magic_SpellTypes_t spellXMLTreeToSpells(const RPG_Character_PlayerXML_XMLTree_Type::spell_sequence&); // spells (XML format)
 
  private:
   // safety measures

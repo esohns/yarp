@@ -10,8 +10,7 @@
 struct RPG_Magic_Spell_TargetProperties
 {
   RPG_Magic_Spell_Target type;
-  unsigned int value;
-  RPG_Dice_Roll range;
+  RPG_Common_Amount base;
   unsigned char levelIncrement;
   RPG_Magic_Spell_AreaOfEffect effect;
   RPG_Common_AreaOfEffect shape;

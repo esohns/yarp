@@ -10,8 +10,8 @@
 enum RPG_Magic_Spell_Target
 {
   TARGET_SELF = 0,
-  TARGET_FIX,
-  TARGET_VARIABLE,
+  TARGET_SINGLE,
+  TARGET_SEVERAL,
   TARGET_LOCATION,
   TARGET_AREA,
   //
@@ -34,8 +34,8 @@ class RPG_Magic_Spell_TargetHelper
   {
     myRPG_Magic_Spell_TargetToStringTable.clear();
     myRPG_Magic_Spell_TargetToStringTable.insert(std::make_pair(TARGET_SELF, ACE_TEXT_ALWAYS_CHAR("TARGET_SELF")));
-    myRPG_Magic_Spell_TargetToStringTable.insert(std::make_pair(TARGET_FIX, ACE_TEXT_ALWAYS_CHAR("TARGET_FIX")));
-    myRPG_Magic_Spell_TargetToStringTable.insert(std::make_pair(TARGET_VARIABLE, ACE_TEXT_ALWAYS_CHAR("TARGET_VARIABLE")));
+    myRPG_Magic_Spell_TargetToStringTable.insert(std::make_pair(TARGET_SINGLE, ACE_TEXT_ALWAYS_CHAR("TARGET_SINGLE")));
+    myRPG_Magic_Spell_TargetToStringTable.insert(std::make_pair(TARGET_SEVERAL, ACE_TEXT_ALWAYS_CHAR("TARGET_SEVERAL")));
     myRPG_Magic_Spell_TargetToStringTable.insert(std::make_pair(TARGET_LOCATION, ACE_TEXT_ALWAYS_CHAR("TARGET_LOCATION")));
     myRPG_Magic_Spell_TargetToStringTable.insert(std::make_pair(TARGET_AREA, ACE_TEXT_ALWAYS_CHAR("TARGET_AREA")));
   };

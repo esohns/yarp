@@ -101,7 +101,7 @@ class RPG_Character_Player_Base
                             const unsigned short int&,         // HP
                             const unsigned int&,               // XP
                             const unsigned int&,               // wealth (GP)
-                            const RPG_Magic_SpellList_t&,      // set of prepared spells (if any)
+                            const RPG_Magic_SpellTypes_t&,     // set of prepared spells (if any)
                             const RPG_Item_List_t&);           // list of (carried) items
   RPG_Character_Player_Base(const RPG_Character_Player_Base&);
 
@@ -124,7 +124,7 @@ class RPG_Character_Player_Base
             const unsigned short int&,         // HP
             const unsigned int&,               // XP
             const unsigned int&,               // wealth (GP)
-            const RPG_Magic_SpellList_t&,      // set of prepared spells (if any)
+            const RPG_Magic_SpellTypes_t&,     // set of prepared spells (if any)
             const RPG_Item_List_t&);           // list of (carried) items
 
   virtual const signed char getShieldBonus() const;

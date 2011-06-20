@@ -31,9 +31,9 @@
 
   <xsd:complexType name="RPG_Dice_Roll_Type">
     <xsd:sequence>
-      <xsd:element name="numDice" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="numDice" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="typeDice" type="RPG_Dice_DieType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="modifier" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="modifier" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 

@@ -667,7 +667,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   unsigned char numKnownSpells = 0;
   unsigned char numSpells = 0;
   RPG_Magic_Spells_t knownSpells;
-  RPG_Magic_SpellList_t spells;
+  RPG_Magic_SpellTypes_t spells;
   int numChosen = 0;
   RPG_Magic_Spells_t available;
   RPG_Magic_SpellsIterator_t available_iterator;

@@ -88,22 +88,28 @@ operator= (value v)
 // RPG_Dice_Roll_XMLTree_Type
 // 
 
-const RPG_Dice_Roll_XMLTree_Type::numDice_type& RPG_Dice_Roll_XMLTree_Type::
+const RPG_Dice_Roll_XMLTree_Type::numDice_optional& RPG_Dice_Roll_XMLTree_Type::
 numDice () const
 {
-  return this->numDice_.get ();
+  return this->numDice_;
 }
 
-RPG_Dice_Roll_XMLTree_Type::numDice_type& RPG_Dice_Roll_XMLTree_Type::
+RPG_Dice_Roll_XMLTree_Type::numDice_optional& RPG_Dice_Roll_XMLTree_Type::
 numDice ()
 {
-  return this->numDice_.get ();
+  return this->numDice_;
 }
 
 void RPG_Dice_Roll_XMLTree_Type::
 numDice (const numDice_type& x)
 {
   this->numDice_.set (x);
+}
+
+void RPG_Dice_Roll_XMLTree_Type::
+numDice (const numDice_optional& x)
+{
+  this->numDice_ = x;
 }
 
 const RPG_Dice_Roll_XMLTree_Type::typeDice_type& RPG_Dice_Roll_XMLTree_Type::
@@ -130,22 +136,28 @@ typeDice (::std::auto_ptr< typeDice_type > x)
   this->typeDice_.set (x);
 }
 
-const RPG_Dice_Roll_XMLTree_Type::modifier_type& RPG_Dice_Roll_XMLTree_Type::
+const RPG_Dice_Roll_XMLTree_Type::modifier_optional& RPG_Dice_Roll_XMLTree_Type::
 modifier () const
 {
-  return this->modifier_.get ();
+  return this->modifier_;
 }
 
-RPG_Dice_Roll_XMLTree_Type::modifier_type& RPG_Dice_Roll_XMLTree_Type::
+RPG_Dice_Roll_XMLTree_Type::modifier_optional& RPG_Dice_Roll_XMLTree_Type::
 modifier ()
 {
-  return this->modifier_.get ();
+  return this->modifier_;
 }
 
 void RPG_Dice_Roll_XMLTree_Type::
 modifier (const modifier_type& x)
 {
   this->modifier_.set (x);
+}
+
+void RPG_Dice_Roll_XMLTree_Type::
+modifier (const modifier_optional& x)
+{
+  this->modifier_ = x;
 }
 
 
@@ -296,13 +308,11 @@ _xsd_RPG_Dice_DieType_XMLTree_Type_indexes_[10] =
 //
 
 RPG_Dice_Roll_XMLTree_Type::
-RPG_Dice_Roll_XMLTree_Type (const numDice_type& numDice,
-                            const typeDice_type& typeDice,
-                            const modifier_type& modifier)
+RPG_Dice_Roll_XMLTree_Type (const typeDice_type& typeDice)
 : ::xml_schema::type (),
-  numDice_ (numDice, ::xml_schema::flags (), this),
+  numDice_ (::xml_schema::flags (), this),
   typeDice_ (typeDice, ::xml_schema::flags (), this),
-  modifier_ (modifier, ::xml_schema::flags (), this)
+  modifier_ (::xml_schema::flags (), this)
 {
 }
 
@@ -347,7 +357,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "numDice" && n.namespace_ () == "urn:rpg")
     {
-      if (!numDice_.present ())
+      if (!this->numDice_)
       {
         this->numDice_.set (numDice_traits::create (i, f, this));
         continue;
@@ -372,7 +382,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "modifier" && n.namespace_ () == "urn:rpg")
     {
-      if (!modifier_.present ())
+      if (!this->modifier_)
       {
         this->modifier_.set (modifier_traits::create (i, f, this));
         continue;
@@ -382,24 +392,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
-  if (!numDice_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "numDice",
-      "urn:rpg");
-  }
-
   if (!typeDice_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "typeDice",
-      "urn:rpg");
-  }
-
-  if (!modifier_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "modifier",
       "urn:rpg");
   }
 }
@@ -580,9 +576,17 @@ operator<< (::std::ostream& o, const RPG_Dice_DieType_XMLTree_Type& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Dice_Roll_XMLTree_Type& i)
 {
-  o << ::std::endl << "numDice: " << i.numDice ();
+  if (i.numDice ())
+  {
+    o << ::std::endl << "numDice: " << *i.numDice ();
+  }
+
   o << ::std::endl << "typeDice: " << i.typeDice ();
-  o << ::std::endl << "modifier: " << i.modifier ();
+  if (i.modifier ())
+  {
+    o << ::std::endl << "modifier: " << *i.modifier ();
+  }
+
   return o;
 }
 
@@ -637,6 +641,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Dice_Roll_XMLTree_Type& i)
 
   // numDice
   //
+  if (i.numDice ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -644,7 +649,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Dice_Roll_XMLTree_Type& i)
         "urn:rpg",
         e));
 
-    s << i.numDice ();
+    s << *i.numDice ();
   }
 
   // typeDice
@@ -661,6 +666,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Dice_Roll_XMLTree_Type& i)
 
   // modifier
   //
+  if (i.modifier ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -668,7 +674,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Dice_Roll_XMLTree_Type& i)
         "urn:rpg",
         e));
 
-    s << i.modifier ();
+    s << *i.modifier ();
   }
 }
 
@@ -737,9 +743,14 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
   {
-    numDice_type r;
-    s >> r;
-    this->numDice_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numDice_type r;
+      s >> r;
+      this->numDice_.set (r);
+    }
   }
 
   {
@@ -748,9 +759,14 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    modifier_type r;
-    s >> r;
-    this->modifier_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      modifier_type r;
+      s >> r;
+      this->modifier_.set (r);
+    }
   }
 }
 
@@ -802,9 +818,21 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Dice_Roll_XMLTree_Type& x)
 {
-  s << x.numDice ();
+  {
+    bool p (x.numDice ());
+    s << p;
+    if (p)
+      s << *x.numDice ();
+  }
+
   s << x.typeDice ();
-  s << x.modifier ();
+  {
+    bool p (x.modifier ());
+    s << p;
+    if (p)
+      s << *x.modifier ();
+  }
+
   return s;
 }
 

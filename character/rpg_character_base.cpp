@@ -51,7 +51,7 @@ RPG_Character_Base::RPG_Character_Base(// base attributes
                                        const RPG_Character_Conditions_t& condition_in,
                                        const unsigned short int& hitpoints_in,
                                        const unsigned int& wealth_in,
-                                       const RPG_Magic_SpellList_t& spells_in,
+                                       const RPG_Magic_SpellTypes_t& spells_in,
                                        const RPG_Item_List_t& inventory_in)
  : myWealth(wealth_in),
    mySize(defaultSize_in),
@@ -134,7 +134,7 @@ RPG_Character_Base::init(// base attributes
                          const RPG_Character_Conditions_t& condition_in,
                          const unsigned short int& hitpoints_in,
                          const unsigned int& wealth_in,
-                         const RPG_Magic_SpellList_t& spells_in,
+                         const RPG_Magic_SpellTypes_t& spells_in,
                          const RPG_Item_List_t& inventory_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Base::init"));
@@ -302,7 +302,7 @@ RPG_Character_Base::getKnownSpells() const
   return myKnownSpells;
 }
 
-const RPG_Magic_SpellList_t
+const RPG_Magic_SpellTypes_t
 RPG_Character_Base::getSpells() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Base::getSpells"));

@@ -332,7 +332,7 @@
 
   <xsd:complexType name="RPG_Common_Amount_Type">
     <xsd:sequence>
-      <xsd:element name="value" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="value" type="xsd:short" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="range" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

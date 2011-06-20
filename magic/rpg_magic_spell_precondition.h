@@ -9,13 +9,15 @@
 
 enum RPG_Magic_Spell_Precondition
 {
-  PRECONDITION_ALIGNMENT_ETHIC = 0,
+  PRECONDITION_ALLY = 0,
+  PRECONDITION_ALIGNMENT_ETHIC,
   PRECONDITION_ATTRIBUTE_MAX,
   PRECONDITION_CONDITION,
   PRECONDITION_HD_MAX,
   PRECONDITION_MANUFACTURED,
   PRECONDITION_NONMAGICAL,
   PRECONDITION_OBJECT,
+  PRECONDITION_PLANT,
   PRECONDITION_RANGED_TOUCH_ATTACK,
   PRECONDITION_SIZE_MAX,
   PRECONDITION_SIZE_RELATIVE,
@@ -39,6 +41,7 @@ class RPG_Magic_Spell_PreconditionHelper
   inline static void init()
   {
     myRPG_Magic_Spell_PreconditionToStringTable.clear();
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ALLY, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ALLY")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ALIGNMENT_ETHIC, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ALIGNMENT_ETHIC")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ATTRIBUTE_MAX, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ATTRIBUTE_MAX")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_CONDITION, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_CONDITION")));
@@ -46,6 +49,7 @@ class RPG_Magic_Spell_PreconditionHelper
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_MANUFACTURED, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_MANUFACTURED")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_NONMAGICAL, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_NONMAGICAL")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_OBJECT, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_OBJECT")));
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_PLANT, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_PLANT")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_RANGED_TOUCH_ATTACK, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_RANGED_TOUCH_ATTACK")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_SIZE_MAX, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_SIZE_MAX")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_SIZE_RELATIVE, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_SIZE_RELATIVE")));

@@ -268,7 +268,7 @@ RPG_Common_Amount_Type::RPG_Common_Amount_Type()
   myCurrentAmount.range.modifier = 0;
 }
 
-void RPG_Common_Amount_Type::value(signed char value_in)
+void RPG_Common_Amount_Type::value(short value_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Amount_Type::value"));
 

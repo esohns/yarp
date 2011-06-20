@@ -51,7 +51,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(// base attributes
                                                      const unsigned short int& hitpoints_in,
                                                      const unsigned int& experience_in,
                                                      const unsigned int& wealth_in,
-                                                     const RPG_Magic_SpellList_t& spells_in,
+                                                     const RPG_Magic_SpellTypes_t& spells_in,
                                                      const RPG_Item_List_t& inventory_in)
  : inherited(name_in,
              alignment_in,
@@ -129,7 +129,7 @@ RPG_Character_Player_Base::init(// base attributes
                                 const unsigned short int& hitpoints_in,
                                 const unsigned int& experience_in,
                                 const unsigned int& wealth_in,
-                                const RPG_Magic_SpellList_t& spells_in,
+                                const RPG_Magic_SpellTypes_t& spells_in,
                                 const RPG_Item_List_t& inventory_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::init"));

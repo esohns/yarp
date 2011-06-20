@@ -24,7 +24,7 @@
     <range effect="RANGEEFFECT_LONG">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_TIMED</type>
@@ -109,7 +109,7 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
@@ -151,7 +151,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_TIMED</type>
@@ -215,7 +215,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_TIMED</type>
@@ -285,7 +285,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_TIMED</type>
@@ -356,7 +356,7 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
-      <type>TARGET_VARIABLE</type>
+      <type>TARGET_SEVERAL</type>
       <levelIncrement>1</levelIncrement>
     </target>
     <duration dismissible="true">
@@ -393,8 +393,7 @@
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
     <target>
-      <type>TARGET_VARIABLE</type>
-      <value>0</value>
+      <type>TARGET_SEVERAL</type>
       <levelIncrement>2</levelIncrement>
     </target>
     <duration>
@@ -439,7 +438,7 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_TIMED</type>
@@ -477,8 +476,7 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
-      <type>TARGET_FIX</type>
-      <value>0</value>
+      <type>TARGET_SEVERAL</type>
       <levelIncrement>1</levelIncrement>
     </target>
     <duration dismissible="true">
@@ -521,12 +519,14 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target rangeIsInHD="true">
-      <type>TARGET_VARIABLE</type>
-      <range>
-        <numDice>2</numDice>
-        <typeDice>D_6</typeDice>
-        <modifier>0</modifier>
-      </range>
+      <type>TARGET_SEVERAL</type>
+      <base>
+        <range>
+          <numDice>2</numDice>
+          <typeDice>D_6</typeDice>
+          <modifier>0</modifier>
+        </range>
+      </base>
     </target>
     <duration>
       <type>DURATION_CONCENTRATION</type>
@@ -575,8 +575,10 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target rangeIsInHD="true">
-      <type>TARGET_VARIABLE</type>
-      <value>2</value>
+      <type>TARGET_SEVERAL</type>
+      <base>
+        <value>4</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </target>
     <duration>
@@ -616,7 +618,7 @@
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SEVERAL</type>
       <levelIncrement>1</levelIncrement>
     </target>
     <duration>
@@ -655,7 +657,7 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SEVERAL</type>
       <levelIncrement>1</levelIncrement>
     </target>
     <duration>
@@ -675,7 +677,7 @@
       <size>SIZE_LARGE</size>
     </precondition>
     <effect>
-      <type>SPELLEFFECT_ANIMATE_DEAD</type>
+      <type>SPELLEFFECT_ANIMATE_OBJECT</type>
     </effect>
 <!--    <effect>
       <type>SPELLEFFECT_ENTANGLE</type>
@@ -702,7 +704,7 @@
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_TIMED</type>
@@ -949,7 +951,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_PERMANENT</type>
@@ -975,7 +977,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_PERMANENT</type>
@@ -1069,7 +1071,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SEVERAL</type>
       <levelIncrement>2</levelIncrement>
     </target>
     <duration dismissible="true">
@@ -1100,7 +1102,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
@@ -1155,7 +1157,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_INSTANTANEOUS</type>
@@ -1170,10 +1172,7 @@
       </creature>
     </precondition>
     <effect>
-      <type>SPELLEFFECT_ANIMATE_ANIMAL</type>
-    </effect>
-    <effect>
-      <type>SPELLEFFECT_ANIMATE_PLANT</type>
+      <type>SPELLEFFECT_ANIMATE_OBJECT</type>
     </effect>
   </spell>
   <spell saveable="SAVE_FORTITUDE" resistible="true">
@@ -1197,7 +1196,7 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_PERMANENT</type>
@@ -1286,8 +1285,10 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target rangeIsInHD="true">
-      <type>TARGET_VARIABLE</type>
-      <value>2</value>
+      <type>TARGET_SEVERAL</type>
+      <base>
+        <value>2</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </target>
     <duration>
@@ -1325,7 +1326,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_TIMED</type>
@@ -1377,7 +1378,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_TIMED</type>
@@ -1417,7 +1418,7 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SEVERAL</type>
       <levelIncrement>1</levelIncrement>
     </target>
     <duration>
@@ -1454,7 +1455,7 @@
     <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration>
       <type>DURATION_PERMANENT</type>
@@ -1527,7 +1528,7 @@
     <range effect="RANGEEFFECT_CLOSE">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration dismissible="true">
       <type>DURATION_PERMANENT</type>
@@ -1615,14 +1616,14 @@
     </range>
     <target>
       <type>TARGET_AREA</type>
-      <shape>AREA_WALL</shape>
       <levelIncrement>20</levelIncrement>
+      <shape>AREA_WALL</shape>
       <height>20</height>
     </target>
     <target>
       <type>TARGET_AREA</type>
-      <shape>AREA_RING</shape>
       <levelIncrement>3</levelIncrement>
+      <shape>AREA_RING</shape>
       <height>20</height>
     </target>
     <duration dismissible="true">
@@ -1660,7 +1661,7 @@
       </counterMeasure>
     </effect>
   </spell>
-  <spell saveable="SAVE_WILL" resistible="true">
+  <spell resistible="true">
     <name>Blasphemy</name>
     <type>
       <type>SPELL_BLASPHEMY</type>
@@ -1772,249 +1773,266 @@
       </counterMeasure>
     </effect>
   </spell>
-  <spell saveable="SAVE_WILL" resistible="true">
-    <name>Binding</name>
-    <type>
-      <type>SPELL_BINDING</type>
+  <spell resistible="true">
+    <name>Bless</name>
+    <type counterSpell="SPELL_BANE">
+      <type>SPELL_BLESS</type>
       <school>SCHOOL_ENCHANTMENT</school>
       <subSchool>SUBSCHOOL_COMPULSION</subSchool>
       <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
     </type>
     <level>
-      <casterClass>SUBCLASS_SORCERER</casterClass>
-      <level>8</level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>1</level>
     </level>
     <level>
-      <casterClass>SUBCLASS_WIZARD</casterClass>
-      <level>8</level>
+      <casterClass>SUBCLASS_PALADIN</casterClass>
+      <level>1</level>
     </level>
-    <time action="ACTION_TIME">
-      <rounds>10</rounds>
-    </time>
-    <range effect="RANGEEFFECT_CLOSE">
+    <range effect="RANGEEFFECT_RANGED">
+      <max>50</max>
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_AREA</type>
+      <effect>EFFECT_BURST</effect>
+      <radius>50</radius>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
+    <duration>
+      <type>DURATION_TIMED</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
     </duration>
-    <precondition reverse="true">
-      <type>PRECONDITION_CONDITION</type>
-      <condition>CONDITION_DEAD</condition>
+    <precondition>
+      <type>PRECONDITION_ALLY</type>
     </precondition>
     <effect>
-      <type>SPELLEFFECT_HOLD_CREATURE</type>
+      <type>SPELLEFFECT_MODIFIER_MORALE</type>
+      <base>
+        <value>1</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_SAVE_FEAR</type>
+      <base>
+        <value>1</value>
+      </base>
     </effect>
   </spell>
   <spell saveable="SAVE_WILL" resistible="true">
-    <name>Binding</name>
+    <name>Bless Water</name>
     <type>
-      <type>SPELL_BINDING</type>
-      <school>SCHOOL_ENCHANTMENT</school>
-      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
-      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+      <type>SPELL_BLESS_WATER</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+      <descriptor>DESCRIPTOR_GOOD</descriptor>
     </type>
     <level>
-      <casterClass>SUBCLASS_SORCERER</casterClass>
-      <level>8</level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>1</level>
     </level>
     <level>
-      <casterClass>SUBCLASS_WIZARD</casterClass>
-      <level>8</level>
+      <casterClass>SUBCLASS_PALADIN</casterClass>
+      <level>1</level>
     </level>
     <time action="ACTION_TIME">
       <rounds>10</rounds>
     </time>
-    <range effect="RANGEEFFECT_CLOSE">
+    <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_BLESS_WATER</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Bless Weapon</name>
+    <type>
+      <type>SPELL_BLESS_WEAPON</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_PALADIN</casterClass>
+      <level>1</level>
+    </level>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_SINGLE</type>
+    </target>
+    <duration>
+      <type>DURATION_TIMED</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_MANUFACTURED</type>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_BLESS_WEAPON</type>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_ALIGN_WEAPON</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_FORTITUDE" resistible="true">
+    <name>Blight</name>
+    <type>
+      <type>SPELL_BLIGHT</type>
+      <school>SCHOOL_NECROMANCY</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>4</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>5</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>5</level>
+    </level>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target>
+      <type>TARGET_SINGLE</type>
+    </target>
+    <duration>
+      <type>DURATION_INSTANTANEOUS</type>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_PLANT</type>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_DAMAGE</type>
+      <levelIncrement>
+        <range>
+          <numDice>1</numDice>
+          <typeDice>D_6</typeDice>
+        </range>
+      </levelIncrement>
+      <levelIncrementMax>15</levelIncrementMax>
+      <counterMeasure reduction="SAVEREDUCTION_HALF">
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>SAVE_FORTITUDE</type>
+        </check>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_FORTITUDE" resistible="true">
+    <name>Blindness/Deafness</name>
+    <type>
+      <type>SPELL_BLINDNESS_DEAFNESS</type>
+      <school>SCHOOL_NECROMANCY</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>2</level>
+    </level>
+    <range effect="RANGEEFFECT_MEDIUM">
+    </range>
+    <target>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration dismissible="true">
       <type>DURATION_PERMANENT</type>
     </duration>
-    <precondition reverse="true">
-      <type>PRECONDITION_CONDITION</type>
-      <condition>CONDITION_DEAD</condition>
-    </precondition>
+    <effect effectsAreInclusive="false">
+      <type>SPELLEFFECT_BLIND</type>
+    </effect>
     <effect>
-      <type>SPELLEFFECT_HOLD_CREATURE</type>
+      <type>SPELLEFFECT_DEAFEN</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Blink</name>
+    <type>
+      <type>SPELL_BLINK</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>3</level>
+    </level>
+    <range effect="RANGEEFFECT_PERSONAL">
+    </range>
+    <target>
+      <type>TARGET_SELF</type>
+    </target>
+    <duration dismissible="true">
+      <type>DURATION_TIMED</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_ETHEREAL</type>
+      <base>
+        <value>50</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_INVISIBLE</type>
     </effect>
   </spell>
   <spell saveable="SAVE_WILL" resistible="true">
-    <name>Binding</name>
-    <type>
-      <type>SPELL_BINDING</type>
-      <school>SCHOOL_ENCHANTMENT</school>
-      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
-      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    <name>Blur</name>
+    <type counterSpell="SPELL_TRUE_SEEING">
+      <type>SPELL_BLUR</type>
+      <school>SCHOOL_ILLUSION</school>
+      <subSchool>SUBSCHOOL_GLAMER</subSchool>
     </type>
     <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
       <casterClass>SUBCLASS_SORCERER</casterClass>
-      <level>8</level>
+      <level>2</level>
     </level>
     <level>
       <casterClass>SUBCLASS_WIZARD</casterClass>
-      <level>8</level>
+      <level>2</level>
     </level>
-    <time action="ACTION_TIME">
-      <rounds>10</rounds>
-    </time>
-    <range effect="RANGEEFFECT_CLOSE">
+    <range effect="RANGEEFFECT_TOUCH">
     </range>
     <target>
-      <type>TARGET_FIX</type>
+      <type>TARGET_SINGLE</type>
     </target>
     <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
+      <type>DURATION_TIMED</type>
+      <duration>10</duration>
+      <levelIncrement>1</levelIncrement>
     </duration>
-    <precondition reverse="true">
-      <type>PRECONDITION_CONDITION</type>
-      <condition>CONDITION_DEAD</condition>
-    </precondition>
     <effect>
-      <type>SPELLEFFECT_HOLD_CREATURE</type>
-    </effect>
-  </spell>
-  <spell saveable="SAVE_WILL" resistible="true">
-    <name>Binding</name>
-    <type>
-      <type>SPELL_BINDING</type>
-      <school>SCHOOL_ENCHANTMENT</school>
-      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
-      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
-    </type>
-    <level>
-      <casterClass>SUBCLASS_SORCERER</casterClass>
-      <level>8</level>
-    </level>
-    <level>
-      <casterClass>SUBCLASS_WIZARD</casterClass>
-      <level>8</level>
-    </level>
-    <time action="ACTION_TIME">
-      <rounds>10</rounds>
-    </time>
-    <range effect="RANGEEFFECT_CLOSE">
-    </range>
-    <target>
-      <type>TARGET_FIX</type>
-    </target>
-    <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
-    </duration>
-    <precondition reverse="true">
-      <type>PRECONDITION_CONDITION</type>
-      <condition>CONDITION_DEAD</condition>
-    </precondition>
-    <effect>
-      <type>SPELLEFFECT_HOLD_CREATURE</type>
-    </effect>
-  </spell>
-  <spell saveable="SAVE_WILL" resistible="true">
-    <name>Binding</name>
-    <type>
-      <type>SPELL_BINDING</type>
-      <school>SCHOOL_ENCHANTMENT</school>
-      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
-      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
-    </type>
-    <level>
-      <casterClass>SUBCLASS_SORCERER</casterClass>
-      <level>8</level>
-    </level>
-    <level>
-      <casterClass>SUBCLASS_WIZARD</casterClass>
-      <level>8</level>
-    </level>
-    <time action="ACTION_TIME">
-      <rounds>10</rounds>
-    </time>
-    <range effect="RANGEEFFECT_CLOSE">
-    </range>
-    <target>
-      <type>TARGET_FIX</type>
-    </target>
-    <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
-    </duration>
-    <precondition reverse="true">
-      <type>PRECONDITION_CONDITION</type>
-      <condition>CONDITION_DEAD</condition>
-    </precondition>
-    <effect>
-      <type>SPELLEFFECT_HOLD_CREATURE</type>
-    </effect>
-  </spell>
-  <spell saveable="SAVE_WILL" resistible="true">
-    <name>Binding</name>
-    <type>
-      <type>SPELL_BINDING</type>
-      <school>SCHOOL_ENCHANTMENT</school>
-      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
-      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
-    </type>
-    <level>
-      <casterClass>SUBCLASS_SORCERER</casterClass>
-      <level>8</level>
-    </level>
-    <level>
-      <casterClass>SUBCLASS_WIZARD</casterClass>
-      <level>8</level>
-    </level>
-    <time action="ACTION_TIME">
-      <rounds>10</rounds>
-    </time>
-    <range effect="RANGEEFFECT_CLOSE">
-    </range>
-    <target>
-      <type>TARGET_FIX</type>
-    </target>
-    <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
-    </duration>
-    <precondition reverse="true">
-      <type>PRECONDITION_CONDITION</type>
-      <condition>CONDITION_DEAD</condition>
-    </precondition>
-    <effect>
-      <type>SPELLEFFECT_HOLD_CREATURE</type>
-    </effect>
-  </spell>
-  <spell saveable="SAVE_WILL" resistible="true">
-    <name>Binding</name>
-    <type>
-      <type>SPELL_BINDING</type>
-      <school>SCHOOL_ENCHANTMENT</school>
-      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
-      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
-    </type>
-    <level>
-      <casterClass>SUBCLASS_SORCERER</casterClass>
-      <level>8</level>
-    </level>
-    <level>
-      <casterClass>SUBCLASS_WIZARD</casterClass>
-      <level>8</level>
-    </level>
-    <time action="ACTION_TIME">
-      <rounds>10</rounds>
-    </time>
-    <range effect="RANGEEFFECT_CLOSE">
-    </range>
-    <target>
-      <type>TARGET_FIX</type>
-    </target>
-    <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
-    </duration>
-    <precondition reverse="true">
-      <type>PRECONDITION_CONDITION</type>
-      <condition>CONDITION_DEAD</condition>
-    </precondition>
-    <effect>
-      <type>SPELLEFFECT_HOLD_CREATURE</type>
+      <type>SPELLEFFECT_MISS</type>
+      <base>
+        <value>20</value>
+      </base>
     </effect>
   </spell>
 </spellDictionary>

@@ -27,11 +27,13 @@
 #include <rpg_magic_common_tools.h>
 #include <rpg_magic_dictionary.h>
 
-#include <rpg_dice_common_tools.h>
+#include <rpg_character_common_tools.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
+
+#include <rpg_dice_common_tools.h>
 
 #include <ace/ACE.h>
 #include <ace/Get_Opt.h>
@@ -155,6 +157,7 @@ do_work(const bool& dumpDictionary_in,
   // step1: init string conversion tables
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
+  RPG_Character_Common_Tools::init();
   RPG_Magic_Common_Tools::init();
 
   // step2: init spell dictionary

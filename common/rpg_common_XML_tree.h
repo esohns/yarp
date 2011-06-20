@@ -1452,7 +1452,7 @@ class RPG_Common_Amount_XMLTree_Type: public ::xml_schema::type
   public:
   // value
   // 
-  typedef ::xml_schema::byte value_type;
+  typedef ::xml_schema::short_ value_type;
   typedef ::xsd::cxx::tree::optional< value_type > value_optional;
   typedef ::xsd::cxx::tree::traits< value_type, char > value_traits;
 

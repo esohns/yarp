@@ -120,7 +120,7 @@ RPG_Common_SavingThrowCheck_Type_pskel ()
 //
 
 void RPG_Common_Amount_Type_pskel::
-value_parser (::xml_schema::byte_pskel& p)
+value_parser (::xml_schema::short_pskel& p)
 {
   this->value_parser_ = &p;
 }
@@ -132,7 +132,7 @@ range_parser (::RPG_Dice_Roll_Type_pskel& p)
 }
 
 void RPG_Common_Amount_Type_pskel::
-parsers (::xml_schema::byte_pskel& value,
+parsers (::xml_schema::short_pskel& value,
          ::RPG_Dice_Roll_Type_pskel& range)
 {
   this->value_parser_ = &value;
@@ -425,7 +425,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Common_Amount_Type_pskel::
-value (signed char)
+value (short)
 {
 }
 
@@ -477,7 +477,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "value" && ns == "urn:rpg")
   {
     if (this->value_parser_)
-      this->value (this->value_parser_->post_byte ());
+      this->value (this->value_parser_->post_short ());
 
     return true;
   }
