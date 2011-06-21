@@ -398,6 +398,65 @@ RPG_Common_Duration RPG_Common_Duration_Type::post_RPG_Common_Duration_Type()
   return result;
 }
 
+RPG_Common_EffectDuration_Type::RPG_Common_EffectDuration_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::RPG_Common_EffectDuration_Type"));
+
+  myCurrentProperties.base.value = 0;
+  myCurrentProperties.base.range.numDice = 0;
+  myCurrentProperties.base.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.base.range.modifier = 0;
+  myCurrentProperties.levelIncrement = 0;
+  myCurrentProperties.levelIncrementMax = 0;
+  myCurrentProperties.reciprocalIncrement = 0;
+}
+
+void RPG_Common_EffectDuration_Type::base(const RPG_Common_Amount& amount_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::base"));
+
+  myCurrentProperties.base = amount_in;
+}
+
+void RPG_Common_EffectDuration_Type::levelIncrement(signed char levelIncrement_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::levelIncrement"));
+
+  myCurrentProperties.levelIncrement = levelIncrement_in;
+}
+
+void RPG_Common_EffectDuration_Type::levelIncrementMax(unsigned char levelIncrementMax_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::levelIncrementMax"));
+
+  myCurrentProperties.levelIncrementMax = levelIncrementMax_in;
+}
+
+void RPG_Common_EffectDuration_Type::reciprocalIncrement(unsigned char increment_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::reciprocalIncrement"));
+
+  myCurrentProperties.reciprocalIncrement = increment_in;
+}
+
+RPG_Common_EffectDuration RPG_Common_EffectDuration_Type::post_RPG_Common_EffectDuration_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::post_RPG_Common_EffectDuration_Type"));
+
+  RPG_Common_EffectDuration result = myCurrentProperties;
+
+  // clear structure
+  myCurrentProperties.base.value = 0;
+  myCurrentProperties.base.range.numDice = 0;
+  myCurrentProperties.base.range.typeDice = RPG_DICE_DIETYPE_INVALID;
+  myCurrentProperties.base.range.modifier = 0;
+  myCurrentProperties.levelIncrement = 0;
+  myCurrentProperties.levelIncrementMax = 0;
+  myCurrentProperties.reciprocalIncrement = 0;
+
+  return result;
+}
+
 RPG_Common_Camp RPG_Common_Camp_Type::post_RPG_Common_Camp_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Camp_Type::post_RPG_Common_Camp_Type"));

@@ -21,30 +21,31 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_LONG">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <base>1</base>
-      <duration>1</duration>
-      <levelIncrement>3</levelIncrement>
-      <levelIncrementMax>18</levelIncrementMax>
-    </duration>
+    <duration></duration>
     <precondition>
       <type>PRECONDITION_RANGED_TOUCH_ATTACK</type>
     </precondition>
     <effect>
       <type>SPELLEFFECT_DAMAGE</type>
+      <damage>DESCRIPTOR_ACID</damage>
       <base>
         <range>
           <numDice>2</numDice>
           <typeDice>D_4</typeDice>
-          <modifier>0</modifier>
         </range>
       </base>
+      <duration reciprocalIncrement="3">
+        <base>
+          <value>1</value>
+        </base>
+        <levelIncrement>1</levelIncrement>
+        <levelIncrementMax>18</levelIncrementMax>
+      </duration>
     </effect>
   </spell>
   <spell>
@@ -67,25 +68,27 @@
       <casterClass>DOMAIN_WATER</casterClass>
       <level>7</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
-    <target>
-      <type>TARGET_AREA</type>
-      <shape>AREA_SPHERE</shape>
+    <target target="TARGET_AREA">
+      <shape>AREA_CUBE</shape>
       <radius>20</radius>
+      <height>20</height>
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>1</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>1</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
       <type>SPELLEFFECT_DAMAGE</type>
+      <damage>DESCRIPTOR_ACID</damage>
       <base>
         <range>
           <numDice>2</numDice>
           <typeDice>D_6</typeDice>
-          <modifier>0</modifier>
         </range>
       </base>
     </effect>
@@ -106,24 +109,22 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>0</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <duration></duration>
     <precondition>
       <type>PRECONDITION_RANGED_TOUCH_ATTACK</type>
     </precondition>
     <effect>
       <type>SPELLEFFECT_DAMAGE</type>
+      <damage>DESCRIPTOR_ACID</damage>
       <base>
         <range>
           <numDice>1</numDice>
           <typeDice>D_3</typeDice>
-          <modifier>0</modifier>
         </range>
       </base>
     </effect>
@@ -148,14 +149,15 @@
       <casterClass>DOMAIN_LUCK</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition reverse="true">
@@ -212,14 +214,15 @@
       <casterClass>DOMAIN_AIR</casterClass>
       <level>4</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>100</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>100</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -252,16 +255,17 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>1</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_AREA</type>
+    <target target="TARGET_AREA">
       <shape>AREA_SPHERE</shape>
       <radius>20</radius>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>1200</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>1200</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -282,14 +286,15 @@
       <casterClass>SUBCLASS_CLERIC</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -317,14 +322,13 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>2</level>
     </level>
-    <range effect="RANGEEFFECT_PERSONAL">
-    </range>
-    <target>
-      <type>TARGET_SELF</type>
-    </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>100</duration>
+    <time></time>
+    <range></range>
+    <target></target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -353,15 +357,16 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>6</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL">
       <levelIncrement>1</levelIncrement>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>1</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>1</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -390,15 +395,16 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>5</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
-    <target>
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL">
       <levelIncrement>2</levelIncrement>
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -435,14 +441,15 @@
       <casterClass>SUBCLASS_RANGER</casterClass>
       <level>1</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>14400</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>14400</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -473,15 +480,16 @@
       <casterClass>SUBCLASS_DRUID</casterClass>
       <level>8</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL">
       <levelIncrement>1</levelIncrement>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>600</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>600</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -516,10 +524,10 @@
       <casterClass>SUBCLASS_DRUID</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target rangeIsInHD="true">
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL" rangeIsInHD="true">
       <base>
         <range>
           <numDice>2</numDice>
@@ -528,8 +536,7 @@
         </range>
       </base>
     </target>
-    <duration>
-      <type>DURATION_CONCENTRATION</type>
+    <duration duration="DURATION_CONCENTRATION">
     </duration>
     <precondition>
       <type>PRECONDITION_TYPE</type>
@@ -572,18 +579,16 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>4</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target rangeIsInHD="true">
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL" rangeIsInHD="true">
       <base>
         <value>4</value>
       </base>
       <levelIncrement>1</levelIncrement>
     </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <duration></duration>
     <precondition>
       <type>PRECONDITION_CONDITION</type>
       <condition>CONDITION_DEAD</condition>
@@ -615,15 +620,16 @@
       <casterClass>SUBCLASS_CLERIC</casterClass>
       <level>6</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
-    <target>
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL">
       <levelIncrement>1</levelIncrement>
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>1</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>1</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -654,16 +660,17 @@
       <casterClass>DOMAIN_PLANT</casterClass>
       <level>7</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL">
       <levelIncrement>1</levelIncrement>
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>1</duration>
-<!--       <duration>600</duration> -->
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>1</value>
+<!--       <value>600</value> -->
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -701,14 +708,15 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>1</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>1</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>1</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -755,15 +763,14 @@
     </level>
     <time action="ACTION_FULLROUND">
     </time>
-    <range effect="RANGEEFFECT_PERSONAL">
-    </range>
+    <range></range>
     <target>
-      <type>TARGET_SELF</type>
       <radius>10</radius>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>100</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition reverse="true">
@@ -800,15 +807,15 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>6</level>
     </level>
-    <range effect="RANGEEFFECT_PERSONAL">
-    </range>
+    <time></time>
+    <range></range>
     <target>
-      <type>TARGET_SELF</type>
       <radius>10</radius>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>100</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -846,15 +853,15 @@
     </time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_AREA</type>
+    <target target="TARGET_AREA">
       <levelIncrement>1</levelIncrement>
       <shape>AREA_CUBE</shape>
       <radius>10</radius>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>1200</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>1200</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -884,15 +891,15 @@
       <casterClass>SUBCLASS_DRUID</casterClass>
       <level>4</level>
     </level>
-    <range effect="RANGEEFFECT_PERSONAL">
-    </range>
+    <time></time>
+    <range></range>
     <target>
-      <type>TARGET_SELF</type>
       <radius>10</radius>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>100</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -920,14 +927,15 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>4</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_UNLIMITED">
     </range>
-    <target>
-      <type>TARGET_LOCATION</type>
+    <target target="TARGET_LOCATION">
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -948,13 +956,12 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_PERMANENT</type>
+    <duration duration="DURATION_PERMANENT">
     </duration>
     <effect>
       <type>SPELLEFFECT_LOCK</type>
@@ -974,13 +981,12 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>0</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_PERMANENT</type>
+    <duration duration="DURATION_PERMANENT">
     </duration>
     <effect>
       <type>SPELLEFFECT_MARK</type>
@@ -1000,14 +1006,13 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>3</level>
     </level>
-    <range effect="RANGEEFFECT_PERSONAL">
-    </range>
-    <target>
-      <type>TARGET_SELF</type>
-    </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <time></time>
+    <range></range>
+    <target></target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -1029,14 +1034,13 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>7</level>
     </level>
-    <range effect="RANGEEFFECT_PERSONAL">
-    </range>
-    <target>
-      <type>TARGET_SELF</type>
-    </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <time></time>
+    <range></range>
+    <target></target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -1070,12 +1074,10 @@
     </time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL">
       <levelIncrement>2</levelIncrement>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
+    <duration duration="DURATION_PERMANENT" dismissible="true">
     </duration>
     <effect>
       <type>SPELLEFFECT_TELEPORT_INTERPLANAR</type>
@@ -1101,12 +1103,9 @@
     </time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <duration></duration>
     <precondition reverse="true">
       <type>PRECONDITION_CONDITION</type>
       <condition>CONDITION_DEAD</condition>
@@ -1128,14 +1127,9 @@
     <time action="ACTION_TIME">
       <rounds>10</rounds>
     </time>
-    <range effect="RANGEEFFECT_PERSONAL">
-    </range>
-    <target>
-      <type>TARGET_SELF</type>
-    </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <range></range>
+    <target></target>
+    <duration></duration>
     <effect>
       <type>SPELLEFFECT_AUGURY</type>
     </effect>
@@ -1156,12 +1150,9 @@
     </time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <duration></duration>
     <precondition>
       <type>PRECONDITION_TYPE</type>
       <creature>
@@ -1193,13 +1184,12 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>5</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_PERMANENT</type>
+    <duration duration="DURATION_PERMANENT">
     </duration>
     <precondition reverse="true">
       <type>PRECONDITION_TYPE</type>
@@ -1238,17 +1228,18 @@
       <casterClass>SUBCLASS_CLERIC</casterClass>
       <level>1</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_RANGED">
       <max>50</max>
     </range>
-    <target>
-      <type>TARGET_AREA</type>
+    <target target="TARGET_AREA">
       <shape>AREA_SPHERE</shape>
       <radius>50</radius>
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -1282,18 +1273,16 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>7</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target rangeIsInHD="true">
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL" rangeIsInHD="true">
       <base>
         <value>2</value>
       </base>
       <levelIncrement>1</levelIncrement>
     </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <duration></duration>
     <precondition>
       <type>PRECONDITION_TYPE</type>
       <creature>
@@ -1323,14 +1312,15 @@
       <casterClass>DOMAIN_PLANT</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>100</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>100</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition reverse="true">
@@ -1375,14 +1365,15 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -1415,15 +1406,16 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>6</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_SEVERAL</type>
+    <target target="TARGET_SEVERAL">
       <levelIncrement>1</levelIncrement>
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -1452,13 +1444,12 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>4</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_PERMANENT</type>
+    <duration duration="DURATION_PERMANENT">
     </duration>
     <effect effectsAreInclusive="false">
       <type>SPELLEFFECT_MODIFIER_ATTRIBUTE</type>
@@ -1527,11 +1518,9 @@
     </time>
     <range effect="RANGEEFFECT_CLOSE">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
+    <duration duration="DURATION_PERMANENT" dismissible="true">
     </duration>
     <precondition reverse="true">
       <type>PRECONDITION_CONDITION</type>
@@ -1556,16 +1545,17 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>4</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
-    <target>
-      <type>TARGET_AREA</type>
+    <target target="TARGET_AREA">
       <effect>EFFECT_SPREAD</effect>
       <radius>20</radius>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>1</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>1</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect effectsAreInclusive="false">
@@ -1612,23 +1602,23 @@
       <casterClass>DOMAIN_WAR</casterClass>
       <level>6</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
-    <target>
-      <type>TARGET_AREA</type>
+    <target target="TARGET_AREA">
       <levelIncrement>20</levelIncrement>
       <shape>AREA_WALL</shape>
       <height>20</height>
     </target>
-    <target>
-      <type>TARGET_AREA</type>
+    <target target="TARGET_AREA">
       <levelIncrement>3</levelIncrement>
       <shape>AREA_RING</shape>
       <height>20</height>
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -1677,17 +1667,15 @@
       <casterClass>DOMAIN_EVIL</casterClass>
       <level>7</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_RANGED">
       <max>40</max>
     </range>
-    <target>
-      <type>TARGET_AREA</type>
+    <target target="TARGET_AREA">
       <effect>EFFECT_SPREAD</effect>
       <radius>40</radius>
     </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <duration></duration>
     <precondition reverse="true">
       <type>PRECONDITION_ALIGNMENT_ETHIC</type>
       <ethic>ALIGNMENTETHIC_EVIL</ethic>
@@ -1695,7 +1683,9 @@
     <effect>
       <type>SPELLEFFECT_DAZE</type>
       <duration>
-        <value>1</value>
+        <base>
+          <value>1</value>
+        </base>
       </duration>
       <counterMeasure>
         <type>COUNTERMEASURE_CHECK</type>
@@ -1714,10 +1704,12 @@
       </base>
       <attribute>ATTRIBUTE_STRENGTH</attribute>
       <duration>
-        <range>
-          <numDice>2</numDice>
-          <typeDice>D_4</typeDice>
-        </range>
+        <base>
+          <range>
+            <numDice>2</numDice>
+            <typeDice>D_4</typeDice>
+          </range>
+        </base>
       </duration>
       <counterMeasure>
         <type>COUNTERMEASURE_CHECK</type>
@@ -1756,7 +1748,9 @@
     <effect>
       <type>SPELLEFFECT_BANISH_CREATURE</type>
       <duration>
-        <value>14400</value>
+        <base>
+          <value>14400</value>
+        </base>
       </duration>
       <counterMeasure>
         <type>COUNTERMEASURE_CHECK</type>
@@ -1789,17 +1783,18 @@
       <casterClass>SUBCLASS_PALADIN</casterClass>
       <level>1</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_RANGED">
       <max>50</max>
     </range>
-    <target>
-      <type>TARGET_AREA</type>
+    <target target="TARGET_AREA">
       <effect>EFFECT_BURST</effect>
       <radius>50</radius>
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -1838,12 +1833,9 @@
     </time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <duration></duration>
     <effect>
       <type>SPELLEFFECT_BLESS_WATER</type>
     </effect>
@@ -1858,14 +1850,15 @@
       <casterClass>SUBCLASS_PALADIN</casterClass>
       <level>1</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <precondition>
@@ -1896,19 +1889,18 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>5</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration>
-      <type>DURATION_INSTANTANEOUS</type>
-    </duration>
+    <duration></duration>
     <precondition reverse="true">
       <type>PRECONDITION_PLANT</type>
     </precondition>
     <effect>
       <type>SPELLEFFECT_DAMAGE</type>
+      <damage>PHYSICALDAMAGE_WITHER</damage>
       <levelIncrement>
         <range>
           <numDice>1</numDice>
@@ -1946,13 +1938,12 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_MEDIUM">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration dismissible="true">
-      <type>DURATION_PERMANENT</type>
+    <duration duration="DURATION_PERMANENT" dismissible="true">
     </duration>
     <effect effectsAreInclusive="false">
       <type>SPELLEFFECT_BLIND</type>
@@ -1979,14 +1970,13 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>3</level>
     </level>
-    <range effect="RANGEEFFECT_PERSONAL">
-    </range>
-    <target>
-      <type>TARGET_SELF</type>
-    </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <time></time>
+    <range></range>
+    <target></target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -2018,14 +2008,15 @@
       <casterClass>SUBCLASS_WIZARD</casterClass>
       <level>2</level>
     </level>
+    <time></time>
     <range effect="RANGEEFFECT_TOUCH">
     </range>
-    <target>
-      <type>TARGET_SINGLE</type>
+    <target target="TARGET_SINGLE">
     </target>
-    <duration dismissible="true">
-      <type>DURATION_TIMED</type>
-      <duration>10</duration>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>10</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>

@@ -257,6 +257,23 @@ class RPG_Common_Duration_Type
   RPG_Common_Duration myCurrentDuration;
 };
 
+class RPG_Common_EffectDuration_Type
+: public RPG_Common_EffectDuration_Type_pskel
+{
+ public:
+  RPG_Common_EffectDuration_Type();
+
+  //     virtual void pre();
+  virtual void base(const RPG_Common_Amount&);
+  virtual void levelIncrement(signed char);
+  virtual void levelIncrementMax(unsigned char);
+  virtual void reciprocalIncrement(unsigned char);
+  virtual RPG_Common_EffectDuration post_RPG_Common_EffectDuration_Type();
+
+ private:
+  RPG_Common_EffectDuration myCurrentProperties;
+};
+
 class RPG_Common_Camp_Type
   : public RPG_Common_Camp_Type_pskel,
     public ::xml_schema::string_pimpl

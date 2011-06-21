@@ -63,7 +63,7 @@ void RPG_Dice_Roll_Type::typeDice(const RPG_Dice_DieType& type_in)
   myCurrentRoll.typeDice = type_in;
 }
 
-void RPG_Dice_Roll_Type::modifier(long long modifier_in)
+void RPG_Dice_Roll_Type::modifier(int modifier_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice_Roll_Type::modifier"));
 
@@ -98,14 +98,14 @@ RPG_Dice_ValueRange_Type::RPG_Dice_ValueRange_Type()
   myCurrentValueRange.end = 0;
 }
 
-void RPG_Dice_ValueRange_Type::begin(long long begin_in)
+void RPG_Dice_ValueRange_Type::begin(int begin_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice_ValueRange_Type::begin"));
 
   myCurrentValueRange.begin = begin_in;
 }
 
-void RPG_Dice_ValueRange_Type::end(long long end_in)
+void RPG_Dice_ValueRange_Type::end(int end_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice_ValueRange_Type::end"));
 

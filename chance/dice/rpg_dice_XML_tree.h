@@ -186,7 +186,7 @@ class RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
 
   // modifier
   // 
-  typedef ::xml_schema::integer modifier_type;
+  typedef ::xml_schema::int_ modifier_type;
   typedef ::xsd::cxx::tree::optional< modifier_type > modifier_optional;
   typedef ::xsd::cxx::tree::traits< modifier_type, char > modifier_traits;
 
@@ -254,7 +254,7 @@ class RPG_Dice_ValueRange_XMLTree_Type: public ::xml_schema::type
   public:
   // begin
   // 
-  typedef ::xml_schema::integer begin_type;
+  typedef ::xml_schema::int_ begin_type;
   typedef ::xsd::cxx::tree::traits< begin_type, char > begin_traits;
 
   const begin_type&
@@ -268,7 +268,7 @@ class RPG_Dice_ValueRange_XMLTree_Type: public ::xml_schema::type
 
   // end
   // 
-  typedef ::xml_schema::integer end_type;
+  typedef ::xml_schema::int_ end_type;
   typedef ::xsd::cxx::tree::traits< end_type, char > end_traits;
 
   const end_type&

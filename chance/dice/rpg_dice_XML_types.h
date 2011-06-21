@@ -92,7 +92,7 @@ class RPG_Dice_Roll_Type_pskel: public ::xml_schema::complex_content
   typeDice (const RPG_Dice_DieType&);
 
   virtual void
-  modifier (long long);
+  modifier (int);
 
   virtual RPG_Dice_Roll
   post_RPG_Dice_Roll_Type () = 0;
@@ -106,12 +106,12 @@ class RPG_Dice_Roll_Type_pskel: public ::xml_schema::complex_content
   typeDice_parser (::RPG_Dice_DieType_Type_pskel&);
 
   void
-  modifier_parser (::xml_schema::integer_pskel&);
+  modifier_parser (::xml_schema::int_pskel&);
 
   void
   parsers (::xml_schema::unsigned_int_pskel& /* numDice */,
            ::RPG_Dice_DieType_Type_pskel& /* typeDice */,
-           ::xml_schema::integer_pskel& /* modifier */);
+           ::xml_schema::int_pskel& /* modifier */);
 
   // Constructor.
   //
@@ -132,7 +132,7 @@ class RPG_Dice_Roll_Type_pskel: public ::xml_schema::complex_content
   protected:
   ::xml_schema::unsigned_int_pskel* numDice_parser_;
   ::RPG_Dice_DieType_Type_pskel* typeDice_parser_;
-  ::xml_schema::integer_pskel* modifier_parser_;
+  ::xml_schema::int_pskel* modifier_parser_;
 };
 
 class RPG_Dice_ValueRange_Type_pskel: public ::xml_schema::complex_content
@@ -144,10 +144,10 @@ class RPG_Dice_ValueRange_Type_pskel: public ::xml_schema::complex_content
   // pre ();
 
   virtual void
-  begin (long long);
+  begin (int);
 
   virtual void
-  end (long long);
+  end (int);
 
   virtual RPG_Dice_ValueRange
   post_RPG_Dice_ValueRange_Type () = 0;
@@ -155,14 +155,14 @@ class RPG_Dice_ValueRange_Type_pskel: public ::xml_schema::complex_content
   // Parser construction API.
   //
   void
-  begin_parser (::xml_schema::integer_pskel&);
+  begin_parser (::xml_schema::int_pskel&);
 
   void
-  end_parser (::xml_schema::integer_pskel&);
+  end_parser (::xml_schema::int_pskel&);
 
   void
-  parsers (::xml_schema::integer_pskel& /* begin */,
-           ::xml_schema::integer_pskel& /* end */);
+  parsers (::xml_schema::int_pskel& /* begin */,
+           ::xml_schema::int_pskel& /* end */);
 
   // Constructor.
   //
@@ -181,8 +181,8 @@ class RPG_Dice_ValueRange_Type_pskel: public ::xml_schema::complex_content
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::integer_pskel* begin_parser_;
-  ::xml_schema::integer_pskel* end_parser_;
+  ::xml_schema::int_pskel* begin_parser_;
+  ::xml_schema::int_pskel* end_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

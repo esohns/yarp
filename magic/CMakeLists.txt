@@ -29,6 +29,7 @@ set(RPG_Magic_LIB_SRCS
     rpg_magic_incl.h
     rpg_magic_school.h
     rpg_magic_spell_castingtime.h
+    rpg_magic_spell_damagetypeunion.h
     rpg_magic_spell_duration.h
     rpg_magic_spell_durationproperties.h
     rpg_magic_spell_effect.h
@@ -85,6 +86,7 @@ install(FILES
 	rpg_magic_incl.h
 	rpg_magic_school.h
   	rpg_magic_spell_castingtime.h
+	rpg_magic_spell_damagetypeunion.h
 	rpg_magic_spell_duration.h
 	rpg_magic_spell_durationproperties.h
   	rpg_magic_spell_effect.h

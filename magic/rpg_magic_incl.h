@@ -29,6 +29,7 @@
 #include "rpg_magic_spell_precondition.h"
 #include "rpg_magic_spell_preconditionproperties.h"
 #include "rpg_magic_spell_effect.h"
+#include "rpg_magic_spell_damagetypeunion.h"
 #include "rpg_magic_checktypeunion.h"
 #include "rpg_magic_check.h"
 #include "rpg_magic_countermeasure.h"

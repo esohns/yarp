@@ -854,30 +854,6 @@ operator= (value v)
 // RPG_Magic_Spell_TargetProperties_XMLTree_Type
 // 
 
-const RPG_Magic_Spell_TargetProperties_XMLTree_Type::type_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
-type () const
-{
-  return this->type_.get ();
-}
-
-RPG_Magic_Spell_TargetProperties_XMLTree_Type::type_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
-type ()
-{
-  return this->type_.get ();
-}
-
-void RPG_Magic_Spell_TargetProperties_XMLTree_Type::
-type (const type_type& x)
-{
-  this->type_.set (x);
-}
-
-void RPG_Magic_Spell_TargetProperties_XMLTree_Type::
-type (::std::auto_ptr< type_type > x)
-{
-  this->type_.set (x);
-}
-
 const RPG_Magic_Spell_TargetProperties_XMLTree_Type::base_optional& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
 base () const
 {
@@ -1040,6 +1016,36 @@ height (const height_optional& x)
   this->height_ = x;
 }
 
+const RPG_Magic_Spell_TargetProperties_XMLTree_Type::target_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+target () const
+{
+  return this->target_.get ();
+}
+
+RPG_Magic_Spell_TargetProperties_XMLTree_Type::target_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+target ()
+{
+  return this->target_.get ();
+}
+
+void RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+target (const target_type& x)
+{
+  this->target_.set (x);
+}
+
+void RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+target (::std::auto_ptr< target_type > x)
+{
+  this->target_.set (x);
+}
+
+const RPG_Magic_Spell_TargetProperties_XMLTree_Type::target_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+target_default_value ()
+{
+  return target_default_value_;
+}
+
 const RPG_Magic_Spell_TargetProperties_XMLTree_Type::rangeIsInHD_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
 rangeIsInHD () const
 {
@@ -1113,64 +1119,16 @@ operator= (value v)
 // RPG_Magic_Spell_DurationProperties_XMLTree_Type
 // 
 
-const RPG_Magic_Spell_DurationProperties_XMLTree_Type::type_type& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-type () const
-{
-  return this->type_.get ();
-}
-
-RPG_Magic_Spell_DurationProperties_XMLTree_Type::type_type& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-type ()
-{
-  return this->type_.get ();
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-type (const type_type& x)
-{
-  this->type_.set (x);
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-type (::std::auto_ptr< type_type > x)
-{
-  this->type_.set (x);
-}
-
-const RPG_Magic_Spell_DurationProperties_XMLTree_Type::base_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-base () const
-{
-  return this->base_;
-}
-
-RPG_Magic_Spell_DurationProperties_XMLTree_Type::base_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-base ()
-{
-  return this->base_;
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-base (const base_type& x)
-{
-  this->base_.set (x);
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-base (const base_optional& x)
-{
-  this->base_ = x;
-}
-
-const RPG_Magic_Spell_DurationProperties_XMLTree_Type::duration_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
+const RPG_Magic_Spell_DurationProperties_XMLTree_Type::duration_type& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
 duration () const
 {
-  return this->duration_;
+  return this->duration_.get ();
 }
 
-RPG_Magic_Spell_DurationProperties_XMLTree_Type::duration_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
+RPG_Magic_Spell_DurationProperties_XMLTree_Type::duration_type& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
 duration ()
 {
-  return this->duration_;
+  return this->duration_.get ();
 }
 
 void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
@@ -1180,87 +1138,15 @@ duration (const duration_type& x)
 }
 
 void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-duration (const duration_optional& x)
+duration (::std::auto_ptr< duration_type > x)
 {
-  this->duration_ = x;
+  this->duration_.set (x);
 }
 
-const RPG_Magic_Spell_DurationProperties_XMLTree_Type::levelIncrement_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-levelIncrement () const
+const RPG_Magic_Spell_DurationProperties_XMLTree_Type::duration_type& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
+duration_default_value ()
 {
-  return this->levelIncrement_;
-}
-
-RPG_Magic_Spell_DurationProperties_XMLTree_Type::levelIncrement_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-levelIncrement ()
-{
-  return this->levelIncrement_;
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-levelIncrement (const levelIncrement_type& x)
-{
-  this->levelIncrement_.set (x);
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-levelIncrement (const levelIncrement_optional& x)
-{
-  this->levelIncrement_ = x;
-}
-
-const RPG_Magic_Spell_DurationProperties_XMLTree_Type::levelIncrementMax_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-levelIncrementMax () const
-{
-  return this->levelIncrementMax_;
-}
-
-RPG_Magic_Spell_DurationProperties_XMLTree_Type::levelIncrementMax_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-levelIncrementMax ()
-{
-  return this->levelIncrementMax_;
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-levelIncrementMax (const levelIncrementMax_type& x)
-{
-  this->levelIncrementMax_.set (x);
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-levelIncrementMax (const levelIncrementMax_optional& x)
-{
-  this->levelIncrementMax_ = x;
-}
-
-const RPG_Magic_Spell_DurationProperties_XMLTree_Type::period_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-period () const
-{
-  return this->period_;
-}
-
-RPG_Magic_Spell_DurationProperties_XMLTree_Type::period_optional& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-period ()
-{
-  return this->period_;
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-period (const period_type& x)
-{
-  this->period_.set (x);
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-period (const period_optional& x)
-{
-  this->period_ = x;
-}
-
-void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-period (::std::auto_ptr< period_type > x)
-{
-  this->period_.set (x);
+  return duration_default_value_;
 }
 
 const RPG_Magic_Spell_DurationProperties_XMLTree_Type::dismissible_type& RPG_Magic_Spell_DurationProperties_XMLTree_Type::
@@ -1635,6 +1521,51 @@ operator= (value v)
 {
   static_cast< ::xml_schema::string& > (*this) = 
   ::xml_schema::string (_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
+// RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type
+// 
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type& v,
+                                              ::xml_schema::flags f,
+                                              ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type& RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_literals_[v]);
 
   return *this;
 }
@@ -2300,28 +2231,22 @@ cost (const cost_optional& x)
   this->cost_ = x;
 }
 
-const RPG_Magic_Spell_PropertiesXML_XMLTree_Type::time_optional& RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
+const RPG_Magic_Spell_PropertiesXML_XMLTree_Type::time_type& RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
 time () const
 {
-  return this->time_;
+  return this->time_.get ();
 }
 
-RPG_Magic_Spell_PropertiesXML_XMLTree_Type::time_optional& RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
+RPG_Magic_Spell_PropertiesXML_XMLTree_Type::time_type& RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
 time ()
 {
-  return this->time_;
+  return this->time_.get ();
 }
 
 void RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
 time (const time_type& x)
 {
   this->time_.set (x);
-}
-
-void RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
-time (const time_optional& x)
-{
-  this->time_ = x;
 }
 
 void RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
@@ -4405,16 +4330,19 @@ _xsd_RPG_Magic_Spell_AreaOfEffect_XMLTree_Type_indexes_[3] =
 // RPG_Magic_Spell_TargetProperties_XMLTree_Type
 //
 
+const RPG_Magic_Spell_TargetProperties_XMLTree_Type::target_type RPG_Magic_Spell_TargetProperties_XMLTree_Type::target_default_value_ (
+  "TARGET_SELF");
+
 RPG_Magic_Spell_TargetProperties_XMLTree_Type::
-RPG_Magic_Spell_TargetProperties_XMLTree_Type (const type_type& type)
+RPG_Magic_Spell_TargetProperties_XMLTree_Type ()
 : ::xml_schema::type (),
-  type_ (type, ::xml_schema::flags (), this),
   base_ (::xml_schema::flags (), this),
   levelIncrement_ (::xml_schema::flags (), this),
   effect_ (::xml_schema::flags (), this),
   shape_ (::xml_schema::flags (), this),
   radius_ (::xml_schema::flags (), this),
   height_ (::xml_schema::flags (), this),
+  target_ (target_default_value (), ::xml_schema::flags (), this),
   rangeIsInHD_ (rangeIsInHD_default_value (), ::xml_schema::flags (), this)
 {
 }
@@ -4424,13 +4352,13 @@ RPG_Magic_Spell_TargetProperties_XMLTree_Type (const RPG_Magic_Spell_TargetPrope
                                                ::xml_schema::flags f,
                                                ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  type_ (x.type_, f, this),
   base_ (x.base_, f, this),
   levelIncrement_ (x.levelIncrement_, f, this),
   effect_ (x.effect_, f, this),
   shape_ (x.shape_, f, this),
   radius_ (x.radius_, f, this),
   height_ (x.height_, f, this),
+  target_ (x.target_, f, this),
   rangeIsInHD_ (x.rangeIsInHD_, f, this)
 {
 }
@@ -4440,13 +4368,13 @@ RPG_Magic_Spell_TargetProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                ::xml_schema::flags f,
                                                ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  type_ (f, this),
   base_ (f, this),
   levelIncrement_ (f, this),
   effect_ (f, this),
   shape_ (f, this),
   radius_ (f, this),
   height_ (f, this),
+  target_ (f, this),
   rangeIsInHD_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -4465,20 +4393,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xercesc::DOMElement& i (p.cur_element ());
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
-
-    // type
-    //
-    if (n.name () == "type" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< type_type > r (
-        type_traits::create (i, f, this));
-
-      if (!type_.present ())
-      {
-        this->type_.set (r);
-        continue;
-      }
-    }
 
     // base
     //
@@ -4558,24 +4472,31 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
-  if (!type_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "type",
-      "urn:rpg");
-  }
-
   while (p.more_attributes ())
   {
     const ::xercesc::DOMAttr& i (p.next_attribute ());
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
+    if (n.name () == "target" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< target_type > r (
+        target_traits::create (i, f, this));
+
+      this->target_.set (r);
+      continue;
+    }
+
     if (n.name () == "rangeIsInHD" && n.namespace_ ().empty ())
     {
       this->rangeIsInHD_.set (rangeIsInHD_traits::create (i, f, this));
       continue;
     }
+  }
+
+  if (!target_.present ())
+  {
+    this->target_.set (target_default_value ());
   }
 
   if (!rangeIsInHD_.present ())
@@ -4599,9 +4520,6 @@ RPG_Magic_Spell_TargetProperties_XMLTree_Type::
 bool
 operator== (const RPG_Magic_Spell_TargetProperties_XMLTree_Type& x, const RPG_Magic_Spell_TargetProperties_XMLTree_Type& y)
 {
-  if (!(x.type () == y.type ()))
-    return false;
-
   if (!(x.base () == y.base ()))
     return false;
 
@@ -4618,6 +4536,9 @@ operator== (const RPG_Magic_Spell_TargetProperties_XMLTree_Type& x, const RPG_Ma
     return false;
 
   if (!(x.height () == y.height ()))
+    return false;
+
+  if (!(x.target () == y.target ()))
     return false;
 
   if (!(x.rangeIsInHD () == y.rangeIsInHD ()))
@@ -4691,11 +4612,11 @@ _xsd_RPG_Magic_Spell_Duration_XMLTree_Type_convert () const
 const char* const RPG_Magic_Spell_Duration_XMLTree_Type::
 _xsd_RPG_Magic_Spell_Duration_XMLTree_Type_literals_[5] =
 {
-  "DURATION_TIMED",
+  "DURATION_CONCENTRATION",
+  "DURATION_DISCHARGE",
   "DURATION_INSTANTANEOUS",
   "DURATION_PERMANENT",
-  "DURATION_CONCENTRATION",
-  "DURATION_DISCHARGE"
+  "DURATION_TIMED"
 };
 
 const RPG_Magic_Spell_Duration_XMLTree_Type::value RPG_Magic_Spell_Duration_XMLTree_Type::
@@ -4711,15 +4632,13 @@ _xsd_RPG_Magic_Spell_Duration_XMLTree_Type_indexes_[5] =
 // RPG_Magic_Spell_DurationProperties_XMLTree_Type
 //
 
+const RPG_Magic_Spell_DurationProperties_XMLTree_Type::duration_type RPG_Magic_Spell_DurationProperties_XMLTree_Type::duration_default_value_ (
+  "DURATION_INSTANTANEOUS");
+
 RPG_Magic_Spell_DurationProperties_XMLTree_Type::
-RPG_Magic_Spell_DurationProperties_XMLTree_Type (const type_type& type)
-: ::xml_schema::type (),
-  type_ (type, ::xml_schema::flags (), this),
-  base_ (::xml_schema::flags (), this),
-  duration_ (::xml_schema::flags (), this),
-  levelIncrement_ (::xml_schema::flags (), this),
-  levelIncrementMax_ (::xml_schema::flags (), this),
-  period_ (::xml_schema::flags (), this),
+RPG_Magic_Spell_DurationProperties_XMLTree_Type ()
+: ::RPG_Common_EffectDuration_XMLTree_Type (),
+  duration_ (duration_default_value (), ::xml_schema::flags (), this),
   dismissible_ (dismissible_default_value (), ::xml_schema::flags (), this)
 {
 }
@@ -4728,13 +4647,8 @@ RPG_Magic_Spell_DurationProperties_XMLTree_Type::
 RPG_Magic_Spell_DurationProperties_XMLTree_Type (const RPG_Magic_Spell_DurationProperties_XMLTree_Type& x,
                                                  ::xml_schema::flags f,
                                                  ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  type_ (x.type_, f, this),
-  base_ (x.base_, f, this),
+: ::RPG_Common_EffectDuration_XMLTree_Type (x, f, c),
   duration_ (x.duration_, f, this),
-  levelIncrement_ (x.levelIncrement_, f, this),
-  levelIncrementMax_ (x.levelIncrementMax_, f, this),
-  period_ (x.period_, f, this),
   dismissible_ (x.dismissible_, f, this)
 {
 }
@@ -4743,13 +4657,8 @@ RPG_Magic_Spell_DurationProperties_XMLTree_Type::
 RPG_Magic_Spell_DurationProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                  ::xml_schema::flags f,
                                                  ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  type_ (f, this),
-  base_ (f, this),
+: ::RPG_Common_EffectDuration_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
   duration_ (f, this),
-  levelIncrement_ (f, this),
-  levelIncrementMax_ (f, this),
-  period_ (f, this),
   dismissible_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -4763,93 +4672,9 @@ void RPG_Magic_Spell_DurationProperties_XMLTree_Type::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
-  for (; p.more_elements (); p.next_element ())
-  {
-    const ::xercesc::DOMElement& i (p.cur_element ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
+  this->::RPG_Common_EffectDuration_XMLTree_Type::parse (p, f);
 
-    // type
-    //
-    if (n.name () == "type" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< type_type > r (
-        type_traits::create (i, f, this));
-
-      if (!type_.present ())
-      {
-        this->type_.set (r);
-        continue;
-      }
-    }
-
-    // base
-    //
-    if (n.name () == "base" && n.namespace_ () == "urn:rpg")
-    {
-      if (!this->base_)
-      {
-        this->base_.set (base_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // duration
-    //
-    if (n.name () == "duration" && n.namespace_ () == "urn:rpg")
-    {
-      if (!this->duration_)
-      {
-        this->duration_.set (duration_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // levelIncrement
-    //
-    if (n.name () == "levelIncrement" && n.namespace_ () == "urn:rpg")
-    {
-      if (!this->levelIncrement_)
-      {
-        this->levelIncrement_.set (levelIncrement_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // levelIncrementMax
-    //
-    if (n.name () == "levelIncrementMax" && n.namespace_ () == "urn:rpg")
-    {
-      if (!this->levelIncrementMax_)
-      {
-        this->levelIncrementMax_.set (levelIncrementMax_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // period
-    //
-    if (n.name () == "period" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< period_type > r (
-        period_traits::create (i, f, this));
-
-      if (!this->period_)
-      {
-        this->period_.set (r);
-        continue;
-      }
-    }
-
-    break;
-  }
-
-  if (!type_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "type",
-      "urn:rpg");
-  }
+  p.reset_attributes ();
 
   while (p.more_attributes ())
   {
@@ -4857,11 +4682,25 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
+    if (n.name () == "duration" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< duration_type > r (
+        duration_traits::create (i, f, this));
+
+      this->duration_.set (r);
+      continue;
+    }
+
     if (n.name () == "dismissible" && n.namespace_ ().empty ())
     {
       this->dismissible_.set (dismissible_traits::create (i, f, this));
       continue;
     }
+  }
+
+  if (!duration_.present ())
+  {
+    this->duration_.set (duration_default_value ());
   }
 
   if (!dismissible_.present ())
@@ -4885,22 +4724,11 @@ RPG_Magic_Spell_DurationProperties_XMLTree_Type::
 bool
 operator== (const RPG_Magic_Spell_DurationProperties_XMLTree_Type& x, const RPG_Magic_Spell_DurationProperties_XMLTree_Type& y)
 {
-  if (!(x.type () == y.type ()))
-    return false;
-
-  if (!(x.base () == y.base ()))
+  if (!(static_cast< const ::RPG_Common_EffectDuration_XMLTree_Type& > (x) ==
+        static_cast< const ::RPG_Common_EffectDuration_XMLTree_Type& > (y)))
     return false;
 
   if (!(x.duration () == y.duration ()))
-    return false;
-
-  if (!(x.levelIncrement () == y.levelIncrement ()))
-    return false;
-
-  if (!(x.levelIncrementMax () == y.levelIncrementMax ()))
-    return false;
-
-  if (!(x.period () == y.period ()))
     return false;
 
   if (!(x.dismissible () == y.dismissible ()))
@@ -5434,6 +5262,122 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[48] =
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_SENSOR_VISUAL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_TELEPORT_INTERPLANAR,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_TRIGGER_ALARM
+};
+
+// RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type
+//
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                              ::xml_schema::flags f,
+                                              ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                              ::xml_schema::flags f,
+                                              ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const ::std::string& s,
+                                              const ::xercesc::DOMElement* e,
+                                              ::xml_schema::flags f,
+                                              ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type* RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (*this, f, c);
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::value RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+_xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_indexes_,
+                    _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_indexes_ + 25,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_indexes_ + 25 || _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+_xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_literals_[25] =
+{
+  "PHYSICALDAMAGE_NONE",
+  "PHYSICALDAMAGE_BLUDGEONING",
+  "PHYSICALDAMAGE_PIERCING",
+  "PHYSICALDAMAGE_SLASHING",
+  "PHYSICALDAMAGE_CONSTRICT",
+  "PHYSICALDAMAGE_WITHER",
+  "DESCRIPTOR_ACID",
+  "DESCRIPTOR_AIR",
+  "DESCRIPTOR_CHAOTIC",
+  "DESCRIPTOR_COLD",
+  "DESCRIPTOR_DARKNESS",
+  "DESCRIPTOR_DEATH",
+  "DESCRIPTOR_EARTH",
+  "DESCRIPTOR_ELECTRICITY",
+  "DESCRIPTOR_EVIL",
+  "DESCRIPTOR_FEAR",
+  "DESCRIPTOR_FIRE",
+  "DESCRIPTOR_FORCE",
+  "DESCRIPTOR_GOOD",
+  "DESCRIPTOR_LANGUAGE_DEPENDENT",
+  "DESCRIPTOR_LAWFUL",
+  "DESCRIPTOR_LIGHT",
+  "DESCRIPTOR_MIND_AFFECTING",
+  "DESCRIPTOR_SONIC",
+  "DESCRIPTOR_WATER"
+};
+
+const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::value RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+_xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_indexes_[25] =
+{
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_ACID,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_AIR,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_CHAOTIC,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_COLD,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_DARKNESS,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_DEATH,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_EARTH,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_ELECTRICITY,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_EVIL,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_FEAR,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_FIRE,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_FORCE,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_GOOD,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_LANGUAGE_DEPENDENT,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_LAWFUL,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_LIGHT,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_MIND_AFFECTING,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_SONIC,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::DESCRIPTOR_WATER,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_BLUDGEONING,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_CONSTRICT,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_NONE,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_PIERCING,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_SLASHING,
+  ::RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_WITHER
 };
 
 // RPG_Magic_CheckTypeUnion_XMLTree_Type
@@ -6272,6 +6216,7 @@ const RPG_Magic_Spell_PropertiesXML_XMLTree_Type::saveable_type RPG_Magic_Spell_
 RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
 RPG_Magic_Spell_PropertiesXML_XMLTree_Type (const name_type& name,
                                             const type_type& type,
+                                            const time_type& time,
                                             const range_type& range,
                                             const duration_type& duration)
 : ::xml_schema::type (),
@@ -6279,7 +6224,7 @@ RPG_Magic_Spell_PropertiesXML_XMLTree_Type (const name_type& name,
   type_ (type, ::xml_schema::flags (), this),
   level_ (::xml_schema::flags (), this),
   cost_ (::xml_schema::flags (), this),
-  time_ (::xml_schema::flags (), this),
+  time_ (time, ::xml_schema::flags (), this),
   range_ (range, ::xml_schema::flags (), this),
   target_ (::xml_schema::flags (), this),
   duration_ (duration, ::xml_schema::flags (), this),
@@ -6294,6 +6239,7 @@ RPG_Magic_Spell_PropertiesXML_XMLTree_Type (const name_type& name,
 RPG_Magic_Spell_PropertiesXML_XMLTree_Type::
 RPG_Magic_Spell_PropertiesXML_XMLTree_Type (const name_type& name,
                                             ::std::auto_ptr< type_type >& type,
+                                            ::std::auto_ptr< time_type >& time,
                                             ::std::auto_ptr< range_type >& range,
                                             ::std::auto_ptr< duration_type >& duration)
 : ::xml_schema::type (),
@@ -6301,7 +6247,7 @@ RPG_Magic_Spell_PropertiesXML_XMLTree_Type (const name_type& name,
   type_ (type, ::xml_schema::flags (), this),
   level_ (::xml_schema::flags (), this),
   cost_ (::xml_schema::flags (), this),
-  time_ (::xml_schema::flags (), this),
+  time_ (time, ::xml_schema::flags (), this),
   range_ (range, ::xml_schema::flags (), this),
   target_ (::xml_schema::flags (), this),
   duration_ (duration, ::xml_schema::flags (), this),
@@ -6427,7 +6373,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< time_type > r (
         time_traits::create (i, f, this));
 
-      if (!this->time_)
+      if (!time_.present ())
       {
         this->time_.set (r);
         continue;
@@ -6520,6 +6466,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "type",
+      "urn:rpg");
+  }
+
+  if (!time_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "time",
       "urn:rpg");
   }
 
@@ -7073,7 +7026,6 @@ operator<< (::std::ostream& o, const RPG_Magic_Spell_AreaOfEffect_XMLTree_Type& 
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Magic_Spell_TargetProperties_XMLTree_Type& i)
 {
-  o << ::std::endl << "type: " << i.type ();
   if (i.base ())
   {
     o << ::std::endl << "base: " << *i.base ();
@@ -7104,6 +7056,7 @@ operator<< (::std::ostream& o, const RPG_Magic_Spell_TargetProperties_XMLTree_Ty
     o << ::std::endl << "height: " << *i.height ();
   }
 
+  o << ::std::endl << "target: " << i.target ();
   o << ::std::endl << "rangeIsInHD: " << i.rangeIsInHD ();
   return o;
 }
@@ -7123,32 +7076,9 @@ operator<< (::std::ostream& o, const RPG_Magic_Spell_Duration_XMLTree_Type& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Magic_Spell_DurationProperties_XMLTree_Type& i)
 {
-  o << ::std::endl << "type: " << i.type ();
-  if (i.base ())
-  {
-    o << ::std::endl << "base: " << *i.base ();
-  }
+  o << static_cast< const ::RPG_Common_EffectDuration_XMLTree_Type& > (i);
 
-  if (i.duration ())
-  {
-    o << ::std::endl << "duration: " << *i.duration ();
-  }
-
-  if (i.levelIncrement ())
-  {
-    o << ::std::endl << "levelIncrement: " << *i.levelIncrement ();
-  }
-
-  if (i.levelIncrementMax ())
-  {
-    o << ::std::endl << "levelIncrementMax: " << *i.levelIncrementMax ();
-  }
-
-  if (i.period ())
-  {
-    o << ::std::endl << "period: " << *i.period ();
-  }
-
+  o << ::std::endl << "duration: " << i.duration ();
   o << ::std::endl << "dismissible: " << i.dismissible ();
   return o;
 }
@@ -7223,6 +7153,18 @@ operator<< (::std::ostream& o, RPG_Magic_Spell_Effect_XMLTree_Type::value i)
 
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Magic_Spell_Effect_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::value i)
+{
+  return o << RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::_xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type& i)
 {
   return o << static_cast< const ::xml_schema::string& > (i);
 }
@@ -7350,11 +7292,7 @@ operator<< (::std::ostream& o, const RPG_Magic_Spell_PropertiesXML_XMLTree_Type&
     o << ::std::endl << "cost: " << *i.cost ();
   }
 
-  if (i.time ())
-  {
-    o << ::std::endl << "time: " << *i.time ();
-  }
-
+  o << ::std::endl << "time: " << i.time ();
   o << ::std::endl << "range: " << i.range ();
   for (RPG_Magic_Spell_PropertiesXML_XMLTree_Type::target_const_iterator
        b (i.target ().begin ()), e (i.target ().end ());
@@ -8095,18 +8033,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_TargetProperties_XML
 {
   e << static_cast< const ::xml_schema::type& > (i);
 
-  // type
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "type",
-        "urn:rpg",
-        e));
-
-    s << i.type ();
-  }
-
   // base
   //
   if (i.base ())
@@ -8185,6 +8111,17 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_TargetProperties_XML
     s << *i.height ();
   }
 
+  // target
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "target",
+        e));
+
+    a << i.target ();
+  }
+
   // rangeIsInHD
   //
   {
@@ -8219,83 +8156,17 @@ operator<< (::xml_schema::list_stream& l,
 void
 operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_DurationProperties_XMLTree_Type& i)
 {
-  e << static_cast< const ::xml_schema::type& > (i);
-
-  // type
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "type",
-        "urn:rpg",
-        e));
-
-    s << i.type ();
-  }
-
-  // base
-  //
-  if (i.base ())
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "base",
-        "urn:rpg",
-        e));
-
-    s << *i.base ();
-  }
+  e << static_cast< const ::RPG_Common_EffectDuration_XMLTree_Type& > (i);
 
   // duration
   //
-  if (i.duration ())
   {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
         "duration",
-        "urn:rpg",
         e));
 
-    s << *i.duration ();
-  }
-
-  // levelIncrement
-  //
-  if (i.levelIncrement ())
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "levelIncrement",
-        "urn:rpg",
-        e));
-
-    s << *i.levelIncrement ();
-  }
-
-  // levelIncrementMax
-  //
-  if (i.levelIncrementMax ())
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "levelIncrementMax",
-        "urn:rpg",
-        e));
-
-    s << *i.levelIncrementMax ();
-  }
-
-  // period
-  //
-  if (i.period ())
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "period",
-        "urn:rpg",
-        e));
-
-    s << *i.period ();
+    a << i.duration ();
   }
 
   // dismissible
@@ -8479,6 +8350,25 @@ operator<< (::xercesc::DOMAttr& a, const RPG_Magic_Spell_Effect_XMLTree_Type& i)
 void
 operator<< (::xml_schema::list_stream& l,
             const RPG_Magic_Spell_Effect_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type& i)
 {
   l << static_cast< const ::xml_schema::string& > (i);
 }
@@ -8832,7 +8722,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_PropertiesXML_XMLTre
 
   // time
   //
-  if (i.time ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -8840,7 +8729,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_PropertiesXML_XMLTre
         "urn:rpg",
         e));
 
-    s << *i.time ();
+    s << i.time ();
   }
 
   // range
@@ -9442,13 +9331,13 @@ RPG_Magic_Spell_TargetProperties_XMLTree_Type (::xml_schema::istream< ACE_InputC
                                                ::xml_schema::flags f,
                                                ::xml_schema::container* c)
 : ::xml_schema::type (s, f, c),
-  type_ (f, this),
   base_ (f, this),
   levelIncrement_ (f, this),
   effect_ (f, this),
   shape_ (f, this),
   radius_ (f, this),
   height_ (f, this),
+  target_ (f, this),
   rangeIsInHD_ (f, this)
 {
   this->parse (s, f);
@@ -9458,11 +9347,6 @@ void RPG_Magic_Spell_TargetProperties_XMLTree_Type::
 parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
-  {
-    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
-    this->type_.set (r);
-  }
-
   {
     bool p;
     s >> p;
@@ -9527,6 +9411,11 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
+    ::std::auto_ptr< target_type > r (new target_type (s, f, this));
+    this->target_.set (r);
+  }
+
+  {
     rangeIsInHD_type r;
     s >> r;
     this->rangeIsInHD_.set (r);
@@ -9546,13 +9435,8 @@ RPG_Magic_Spell_DurationProperties_XMLTree_Type::
 RPG_Magic_Spell_DurationProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                                  ::xml_schema::flags f,
                                                  ::xml_schema::container* c)
-: ::xml_schema::type (s, f, c),
-  type_ (f, this),
-  base_ (f, this),
+: ::RPG_Common_EffectDuration_XMLTree_Type (s, f, c),
   duration_ (f, this),
-  levelIncrement_ (f, this),
-  levelIncrementMax_ (f, this),
-  period_ (f, this),
   dismissible_ (f, this)
 {
   this->parse (s, f);
@@ -9563,62 +9447,8 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
   {
-    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
-    this->type_.set (r);
-  }
-
-  {
-    bool p;
-    s >> p;
-    if (p)
-    {
-      base_type r;
-      s >> r;
-      this->base_.set (r);
-    }
-  }
-
-  {
-    bool p;
-    s >> p;
-    if (p)
-    {
-      duration_type r;
-      s >> r;
-      this->duration_.set (r);
-    }
-  }
-
-  {
-    bool p;
-    s >> p;
-    if (p)
-    {
-      levelIncrement_type r;
-      s >> r;
-      this->levelIncrement_.set (r);
-    }
-  }
-
-  {
-    bool p;
-    s >> p;
-    if (p)
-    {
-      levelIncrementMax_type r;
-      s >> r;
-      this->levelIncrementMax_.set (r);
-    }
-  }
-
-  {
-    bool p;
-    s >> p;
-    if (p)
-    {
-      ::std::auto_ptr< period_type > r (new period_type (s, f, this));
-      this->period_.set (r);
-    }
+    ::std::auto_ptr< duration_type > r (new duration_type (s, f, this));
+    this->duration_.set (r);
   }
 
   {
@@ -9768,6 +9598,15 @@ RPG_Magic_Spell_Effect_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
 : ::xml_schema::string (s, f, c)
 {
   _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert ();
+}
+
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type::
+RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                              ::xml_schema::flags f,
+                                              ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_convert ();
 }
 
 RPG_Magic_CheckTypeUnion_XMLTree_Type::
@@ -10090,13 +9929,8 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    bool p;
-    s >> p;
-    if (p)
-    {
-      ::std::auto_ptr< time_type > r (new time_type (s, f, this));
-      this->time_.set (r);
-    }
+    ::std::auto_ptr< time_type > r (new time_type (s, f, this));
+    this->time_.set (r);
   }
 
   {
@@ -10420,7 +10254,6 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Magic_Spell_TargetProperties_XMLTree_Type& x)
 {
-  s << x.type ();
   {
     bool p (x.base ());
     s << p;
@@ -10463,6 +10296,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
       s << *x.height ();
   }
 
+  s << x.target ();
   s << x.rangeIsInHD ();
   return s;
 }
@@ -10478,42 +10312,8 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Magic_Spell_DurationProperties_XMLTree_Type& x)
 {
-  s << x.type ();
-  {
-    bool p (x.base ());
-    s << p;
-    if (p)
-      s << *x.base ();
-  }
-
-  {
-    bool p (x.duration ());
-    s << p;
-    if (p)
-      s << *x.duration ();
-  }
-
-  {
-    bool p (x.levelIncrement ());
-    s << p;
-    if (p)
-      s << *x.levelIncrement ();
-  }
-
-  {
-    bool p (x.levelIncrementMax ());
-    s << p;
-    if (p)
-      s << *x.levelIncrementMax ();
-  }
-
-  {
-    bool p (x.period ());
-    s << p;
-    if (p)
-      s << *x.period ();
-  }
-
+  s << static_cast< const ::RPG_Common_EffectDuration_XMLTree_Type& > (x);
+  s << x.duration ();
   s << x.dismissible ();
   return s;
 }
@@ -10597,6 +10397,13 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Magic_Spell_Effect_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type& x)
 {
   return s << static_cast< const ::xml_schema::string& > (x);
 }
@@ -10759,13 +10566,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
       s << *x.cost ();
   }
 
-  {
-    bool p (x.time ());
-    s << p;
-    if (p)
-      s << *x.time ();
-  }
-
+  s << x.time ();
   s << x.range ();
   {
     const RPG_Magic_Spell_PropertiesXML_XMLTree_Type::target_sequence& c (x.target ());

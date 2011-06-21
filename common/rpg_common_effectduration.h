@@ -4,14 +4,15 @@
 // -------------------------------- * * * -------------------------------- //
 
 #pragma once
-#ifndef RPG_MAGIC_SPELL_DURATIONPROPERTIES_H
-#define RPG_MAGIC_SPELL_DURATIONPROPERTIES_H
+#ifndef RPG_COMMON_EFFECTDURATION_H
+#define RPG_COMMON_EFFECTDURATION_H
 
-struct RPG_Magic_Spell_DurationProperties
- : public RPG_Common_EffectDuration
+struct RPG_Common_EffectDuration
 {
-  RPG_Magic_Spell_Duration duration;
-  bool dismissible;
+  RPG_Common_Amount base;
+  char levelIncrement;
+  unsigned char levelIncrementMax;
+  unsigned char reciprocalIncrement;
 };
 
 #endif

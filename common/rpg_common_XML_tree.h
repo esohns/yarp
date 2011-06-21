@@ -80,6 +80,7 @@ class RPG_Common_SavingThrowCheck_XMLTree_Type;
 class RPG_Common_Amount_XMLTree_Type;
 class RPG_Common_Usage_XMLTree_Type;
 class RPG_Common_Duration_XMLTree_Type;
+class RPG_Common_EffectDuration_XMLTree_Type;
 class RPG_Common_Camp_XMLTree_Type;
 
 #include <memory>    // std::auto_ptr
@@ -765,7 +766,8 @@ class RPG_Common_PhysicalDamageType_XMLTree_Type: public ::xml_schema::string
     PHYSICALDAMAGE_BLUDGEONING,
     PHYSICALDAMAGE_PIERCING,
     PHYSICALDAMAGE_SLASHING,
-    PHYSICALDAMAGE_CONSTRICT
+    PHYSICALDAMAGE_CONSTRICT,
+    PHYSICALDAMAGE_WITHER
   };
 
   RPG_Common_PhysicalDamageType_XMLTree_Type (value v);
@@ -815,8 +817,8 @@ class RPG_Common_PhysicalDamageType_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[5];
-  static const value _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[5];
+  static const char* const _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[6];
+  static const value _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[6];
 };
 
 class RPG_Common_ActionType_XMLTree_Type: public ::xml_schema::string
@@ -1742,6 +1744,131 @@ bool
 operator!= (const RPG_Common_Duration_XMLTree_Type&, const RPG_Common_Duration_XMLTree_Type&);
 
 
+class RPG_Common_EffectDuration_XMLTree_Type: public ::xml_schema::type
+{
+  public:
+  // base
+  // 
+  typedef ::RPG_Common_Amount_XMLTree_Type base_type;
+  typedef ::xsd::cxx::tree::optional< base_type > base_optional;
+  typedef ::xsd::cxx::tree::traits< base_type, char > base_traits;
+
+  const base_optional&
+  base () const;
+
+  base_optional&
+  base ();
+
+  void
+  base (const base_type& x);
+
+  void
+  base (const base_optional& x);
+
+  void
+  base (::std::auto_ptr< base_type > p);
+
+  // levelIncrement
+  // 
+  typedef ::xml_schema::byte levelIncrement_type;
+  typedef ::xsd::cxx::tree::optional< levelIncrement_type > levelIncrement_optional;
+  typedef ::xsd::cxx::tree::traits< levelIncrement_type, char > levelIncrement_traits;
+
+  const levelIncrement_optional&
+  levelIncrement () const;
+
+  levelIncrement_optional&
+  levelIncrement ();
+
+  void
+  levelIncrement (const levelIncrement_type& x);
+
+  void
+  levelIncrement (const levelIncrement_optional& x);
+
+  // levelIncrementMax
+  // 
+  typedef ::xml_schema::unsigned_byte levelIncrementMax_type;
+  typedef ::xsd::cxx::tree::optional< levelIncrementMax_type > levelIncrementMax_optional;
+  typedef ::xsd::cxx::tree::traits< levelIncrementMax_type, char > levelIncrementMax_traits;
+
+  const levelIncrementMax_optional&
+  levelIncrementMax () const;
+
+  levelIncrementMax_optional&
+  levelIncrementMax ();
+
+  void
+  levelIncrementMax (const levelIncrementMax_type& x);
+
+  void
+  levelIncrementMax (const levelIncrementMax_optional& x);
+
+  // reciprocalIncrement
+  // 
+  typedef ::xml_schema::unsigned_byte reciprocalIncrement_type;
+  typedef ::xsd::cxx::tree::traits< reciprocalIncrement_type, char > reciprocalIncrement_traits;
+
+  const reciprocalIncrement_type&
+  reciprocalIncrement () const;
+
+  reciprocalIncrement_type&
+  reciprocalIncrement ();
+
+  void
+  reciprocalIncrement (const reciprocalIncrement_type& x);
+
+  static reciprocalIncrement_type
+  reciprocalIncrement_default_value ();
+
+  // Constructors.
+  //
+  RPG_Common_EffectDuration_XMLTree_Type ();
+
+  RPG_Common_EffectDuration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
+  RPG_Common_EffectDuration_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
+  RPG_Common_EffectDuration_XMLTree_Type (const RPG_Common_EffectDuration_XMLTree_Type& x,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
+  virtual RPG_Common_EffectDuration_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  virtual 
+  ~RPG_Common_EffectDuration_XMLTree_Type ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
+  base_optional base_;
+  levelIncrement_optional levelIncrement_;
+  levelIncrementMax_optional levelIncrementMax_;
+  ::xsd::cxx::tree::one< reciprocalIncrement_type > reciprocalIncrement_;
+};
+
+bool
+operator== (const RPG_Common_EffectDuration_XMLTree_Type&, const RPG_Common_EffectDuration_XMLTree_Type&);
+
+bool
+operator!= (const RPG_Common_EffectDuration_XMLTree_Type&, const RPG_Common_EffectDuration_XMLTree_Type&);
+
+
 class RPG_Common_Camp_XMLTree_Type: public ::xml_schema::string
 {
   public:
@@ -1914,6 +2041,9 @@ operator<< (::std::ostream&, const RPG_Common_Usage_XMLTree_Type&);
 
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Duration_XMLTree_Type&);
+
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Common_EffectDuration_XMLTree_Type&);
 
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Camp_XMLTree_Type::value);
@@ -2111,6 +2241,9 @@ void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Duration_XMLTree_Type&);
 
 void
+operator<< (::xercesc::DOMElement&, const RPG_Common_EffectDuration_XMLTree_Type&);
+
+void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Camp_XMLTree_Type&);
 
 void
@@ -2203,6 +2336,10 @@ operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Duration_XMLTree_Type&);
+
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Common_EffectDuration_XMLTree_Type&);
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,

@@ -91,33 +91,36 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
 
   RPG_Magic_Spell_Target_Type                 target_p;
   RPG_Common_Amount_Type                      amount_p;
+  ::xml_schema::short_pimpl                   short_p;
+  RPG_Dice_DieType_Type                       dieType_p;
+  ::xml_schema::int_pimpl                     int_p;
+  RPG_Dice_Roll_Type                          roll_p;
+  roll_p.parsers(unsigned_int_p,
+                 dieType_p,
+                 int_p);
+  amount_p.parsers(short_p,
+                   roll_p);
   ::xml_schema::boolean_pimpl                 bool_p;
   RPG_Magic_Spell_AreaOfEffect_Type           area_of_effect_p;
   RPG_Common_AreaOfEffect_Type                shape_p;
   RPG_Magic_Spell_TargetProperties_Type       targetProperties_p;
-  targetProperties_p.parsers(target_p,
-                             amount_p,
+  targetProperties_p.parsers(amount_p,
                              unsigned_byte_p,
                              area_of_effect_p,
                              shape_p,
                              unsigned_byte_p,
                              unsigned_byte_p,
+                             target_p,
                              bool_p);
 
+  ::xml_schema::byte_pimpl                    byte_p;
   RPG_Magic_Spell_Duration_Type               durationType_p;
-  RPG_Dice_DieType_Type                       dieType_p;
-  ::xml_schema::integer_pimpl                 int_p;
-  RPG_Dice_Roll_Type                          roll_p;
-  roll_p.parsers(unsigned_int_p,
-                  dieType_p,
-                  int_p);
   RPG_Magic_Spell_DurationProperties_Type     duration_p;
-  duration_p.parsers(durationType_p,
-                     unsigned_int_p,
-                     unsigned_int_p,
+  duration_p.parsers(amount_p,
+                     byte_p,
                      unsigned_byte_p,
                      unsigned_byte_p,
-                     roll_p,
+                     durationType_p,
                      bool_p);
 
   RPG_Magic_Spell_Precondition_Type           precondition_p;
@@ -143,13 +146,10 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                                    bool_p);
 
   RPG_Magic_Spell_Effect_Type                 effect_p;
-  RPG_Common_PhysicalDamageType_Type          damageType_p;
-  ::xml_schema::short_pimpl                   short_p;
-  amount_p.parsers(short_p,
-                   roll_p);
+  RPG_Magic_Spell_DamageTypeUnion_Type        damageType_p;
+  RPG_Common_EffectDuration_Type              effectDuration_p;
   RPG_Common_CounterMeasure_Type              counterType_p;
   RPG_Magic_CheckTypeUnion_Type               checkType_p;
-  ::xml_schema::byte_pimpl                    byte_p;
   RPG_Magic_Check_Type                        check_p;
   check_p.parsers(checkType_p,
                   unsigned_byte_p,
@@ -169,7 +169,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                              amount_p,
                              unsigned_byte_p,
                              attribute_p,
-                             amount_p,
+                             effectDuration_p,
                              unsigned_byte_p,
                              counterMeasure_p,
                              bool_p,
@@ -447,7 +447,7 @@ RPG_Magic_Dictionary::dump() const
     {
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-      converter << static_cast<unsigned int> ((iterator->second).time.rounds);
+      converter << static_cast<unsigned int>((iterator->second).time.rounds);
       castingTime += converter.str();
       castingTime += ACE_TEXT_ALWAYS_CHAR(" rd(s)");
     } // end IF

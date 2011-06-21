@@ -10,13 +10,13 @@
 struct RPG_Magic_Spell_EffectProperties
 {
   RPG_Magic_Spell_Effect type;
-  RPG_Common_PhysicalDamageType damage;
+  RPG_Magic_Spell_DamageTypeUnion damage;
   RPG_Common_Amount base;
   unsigned int increment;
   RPG_Common_Amount levelIncrement;
   unsigned char levelIncrementMax;
   RPG_Common_Attribute attribute;
-  RPG_Common_Amount duration;
+  RPG_Common_EffectDuration duration;
   unsigned char maxRange;
   std::vector<RPG_Magic_CounterMeasure> counterMeasures;
   bool includeAdjacent;

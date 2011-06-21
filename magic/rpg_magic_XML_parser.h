@@ -203,13 +203,13 @@ class RPG_Magic_Spell_TargetProperties_Type
     RPG_Magic_Spell_TargetProperties_Type();
 
 //     virtual void pre();
-    virtual void type(const RPG_Magic_Spell_Target&);
     virtual void base(const RPG_Common_Amount&);
     virtual void levelIncrement(unsigned char);
     virtual void effect(const RPG_Magic_Spell_AreaOfEffect&);
     virtual void shape(const RPG_Common_AreaOfEffect&);
     virtual void radius(unsigned char);
     virtual void height(unsigned char);
+    virtual void target(const RPG_Magic_Spell_Target&);
     virtual void rangeIsInHD(bool);
     virtual RPG_Magic_Spell_TargetProperties post_RPG_Magic_Spell_TargetProperties_Type();
 
@@ -233,12 +233,13 @@ class RPG_Magic_Spell_DurationProperties_Type
     RPG_Magic_Spell_DurationProperties_Type();
 
 //     virtual void pre();
-    virtual void type(const RPG_Magic_Spell_Duration&);
-    virtual void base(unsigned int);
-    virtual void duration(unsigned int);
-    virtual void levelIncrement(unsigned char);
+    virtual void base(const RPG_Common_Amount&);
+    virtual void levelIncrement(signed char);
     virtual void levelIncrementMax(unsigned char);
-    virtual void period(const RPG_Dice_Roll&);
+    virtual void reciprocalIncrement(unsigned char);
+    virtual RPG_Common_EffectDuration post_RPG_Common_EffectDuration_Type();
+// ---------------------------------------------------------------
+    virtual void duration(const RPG_Magic_Spell_Duration&);
     virtual void dismissible(bool);
     virtual RPG_Magic_Spell_DurationProperties post_RPG_Magic_Spell_DurationProperties_Type();
 
@@ -285,6 +286,20 @@ class RPG_Magic_Spell_Effect_Type
   public:
 //   virtual void pre();
     virtual RPG_Magic_Spell_Effect post_RPG_Magic_Spell_Effect_Type();
+};
+
+class RPG_Magic_Spell_DamageTypeUnion_Type
+: public RPG_Magic_Spell_DamageTypeUnion_Type_pskel
+{
+public:
+  RPG_Magic_Spell_DamageTypeUnion_Type();
+
+  //   virtual void pre();
+  virtual void _characters(const ::xml_schema::ro_string&);
+  virtual RPG_Magic_Spell_DamageTypeUnion post_RPG_Magic_Spell_DamageTypeUnion_Type();
+
+private:
+  RPG_Magic_Spell_DamageTypeUnion myCurrentDamageTypeUnion;
 };
 
 class RPG_Magic_CheckTypeUnion_Type
@@ -343,13 +358,13 @@ class RPG_Magic_Spell_EffectProperties_Type
 
 //     virtual void pre();
     virtual void type(const RPG_Magic_Spell_Effect&);
-    virtual void damage(const RPG_Common_PhysicalDamageType&);
+    virtual void damage(const RPG_Magic_Spell_DamageTypeUnion&);
     virtual void base(const RPG_Common_Amount&);
     virtual void increment(unsigned int);
     virtual void levelIncrement(const RPG_Common_Amount&);
     virtual void levelIncrementMax(unsigned char);
     virtual void attribute(const RPG_Common_Attribute&);
-    virtual void duration(const RPG_Common_Amount&);
+    virtual void duration(const RPG_Common_EffectDuration&);
     virtual void maxRange(unsigned char);
     virtual void counterMeasure(const RPG_Magic_CounterMeasure&);
     virtual void includeAdjacent(bool);

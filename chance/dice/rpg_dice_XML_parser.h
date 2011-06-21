@@ -43,7 +43,7 @@ class RPG_Dice_Roll_Type
 //   virtual void pre();
   virtual void numDice(unsigned int);
   virtual void typeDice(const RPG_Dice_DieType&);
-  virtual void modifier(long long);
+  virtual void modifier(int);
   virtual RPG_Dice_Roll post_RPG_Dice_Roll_Type();
 
  private:
@@ -57,8 +57,8 @@ class RPG_Dice_ValueRange_Type
   RPG_Dice_ValueRange_Type();
 
 //   virtual void pre();
-  virtual void begin(long long);
-  virtual void end(long long);
+  virtual void begin(int);
+  virtual void end(int);
   virtual RPG_Dice_ValueRange post_RPG_Dice_ValueRange_Type();
 
  private:

@@ -27,6 +27,7 @@ namespace urn:rpg
   RPG_Common_Amount_Type             RPG_Common_Amount;
   RPG_Common_Usage_Type              RPG_Common_Usage;
   RPG_Common_Duration_Type           RPG_Common_Duration;
+  RPG_Common_EffectDuration_Type     RPG_Common_EffectDuration;
   RPG_Common_Camp_Type               RPG_Common_Camp;
 
 # environment types

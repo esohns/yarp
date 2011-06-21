@@ -9,13 +9,13 @@
 
 struct RPG_Magic_Spell_TargetProperties
 {
-  RPG_Magic_Spell_Target type;
   RPG_Common_Amount base;
   unsigned char levelIncrement;
   RPG_Magic_Spell_AreaOfEffect effect;
   RPG_Common_AreaOfEffect shape;
   unsigned char radius;
   unsigned char height;
+  RPG_Magic_Spell_Target target;
   bool rangeIsInHD;
 };
 

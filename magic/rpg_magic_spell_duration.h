@@ -9,11 +9,11 @@
 
 enum RPG_Magic_Spell_Duration
 {
-  DURATION_TIMED = 0,
+  DURATION_CONCENTRATION = 0,
+  DURATION_DISCHARGE,
   DURATION_INSTANTANEOUS,
   DURATION_PERMANENT,
-  DURATION_CONCENTRATION,
-  DURATION_DISCHARGE,
+  DURATION_TIMED,
   //
   RPG_MAGIC_SPELL_DURATION_MAX,
   RPG_MAGIC_SPELL_DURATION_INVALID
@@ -33,11 +33,11 @@ class RPG_Magic_Spell_DurationHelper
   inline static void init()
   {
     myRPG_Magic_Spell_DurationToStringTable.clear();
-    myRPG_Magic_Spell_DurationToStringTable.insert(std::make_pair(DURATION_TIMED, ACE_TEXT_ALWAYS_CHAR("DURATION_TIMED")));
-    myRPG_Magic_Spell_DurationToStringTable.insert(std::make_pair(DURATION_INSTANTANEOUS, ACE_TEXT_ALWAYS_CHAR("DURATION_INSTANTANEOUS")));
-    myRPG_Magic_Spell_DurationToStringTable.insert(std::make_pair(DURATION_PERMANENT, ACE_TEXT_ALWAYS_CHAR("DURATION_PERMANENT")));
     myRPG_Magic_Spell_DurationToStringTable.insert(std::make_pair(DURATION_CONCENTRATION, ACE_TEXT_ALWAYS_CHAR("DURATION_CONCENTRATION")));
     myRPG_Magic_Spell_DurationToStringTable.insert(std::make_pair(DURATION_DISCHARGE, ACE_TEXT_ALWAYS_CHAR("DURATION_DISCHARGE")));
+    myRPG_Magic_Spell_DurationToStringTable.insert(std::make_pair(DURATION_INSTANTANEOUS, ACE_TEXT_ALWAYS_CHAR("DURATION_INSTANTANEOUS")));
+    myRPG_Magic_Spell_DurationToStringTable.insert(std::make_pair(DURATION_PERMANENT, ACE_TEXT_ALWAYS_CHAR("DURATION_PERMANENT")));
+    myRPG_Magic_Spell_DurationToStringTable.insert(std::make_pair(DURATION_TIMED, ACE_TEXT_ALWAYS_CHAR("DURATION_TIMED")));
   };
 
   inline static std::string RPG_Magic_Spell_DurationToString(const RPG_Magic_Spell_Duration& element_in)

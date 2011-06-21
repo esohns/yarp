@@ -70,6 +70,7 @@ class RPG_Common_SavingThrowCheck_Type_pskel;
 class RPG_Common_Amount_Type_pskel;
 class RPG_Common_Usage_Type_pskel;
 class RPG_Common_Duration_Type_pskel;
+class RPG_Common_EffectDuration_Type_pskel;
 class RPG_Common_Camp_Type_pskel;
 
 #ifndef XSD_USE_CHAR
@@ -567,6 +568,77 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* activation_parser_;
   ::xml_schema::unsigned_int_pskel* interval_parser_;
   ::xml_schema::unsigned_int_pskel* total_parser_;
+};
+
+class RPG_Common_EffectDuration_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  base (const RPG_Common_Amount&);
+
+  virtual void
+  levelIncrement (signed char);
+
+  virtual void
+  levelIncrementMax (unsigned char);
+
+  virtual void
+  reciprocalIncrement (unsigned char);
+
+  virtual RPG_Common_EffectDuration
+  post_RPG_Common_EffectDuration_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  base_parser (::RPG_Common_Amount_Type_pskel&);
+
+  void
+  levelIncrement_parser (::xml_schema::byte_pskel&);
+
+  void
+  levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  reciprocalIncrement_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  parsers (::RPG_Common_Amount_Type_pskel& /* base */,
+           ::xml_schema::byte_pskel& /* levelIncrement */,
+           ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
+           ::xml_schema::unsigned_byte_pskel& /* reciprocalIncrement */);
+
+  // Constructor.
+  //
+  RPG_Common_EffectDuration_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Common_Amount_Type_pskel* base_parser_;
+  ::xml_schema::byte_pskel* levelIncrement_parser_;
+  ::xml_schema::unsigned_byte_pskel* levelIncrementMax_parser_;
+  ::xml_schema::unsigned_byte_pskel* reciprocalIncrement_parser_;
 };
 
 class RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel

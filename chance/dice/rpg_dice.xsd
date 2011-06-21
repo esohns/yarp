@@ -33,14 +33,14 @@
     <xsd:sequence>
       <xsd:element name="numDice" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="typeDice" type="RPG_Dice_DieType_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="modifier" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="modifier" type="xsd:int" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Dice_ValueRange_Type">
     <xsd:sequence>
-      <xsd:element name="begin" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="end" type="xsd:integer" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="begin" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="end" type="xsd:int" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 

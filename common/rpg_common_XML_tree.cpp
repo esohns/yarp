@@ -1122,6 +1122,112 @@ total (const total_optional& x)
 }
 
 
+// RPG_Common_EffectDuration_XMLTree_Type
+// 
+
+const RPG_Common_EffectDuration_XMLTree_Type::base_optional& RPG_Common_EffectDuration_XMLTree_Type::
+base () const
+{
+  return this->base_;
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::base_optional& RPG_Common_EffectDuration_XMLTree_Type::
+base ()
+{
+  return this->base_;
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+base (const base_type& x)
+{
+  this->base_.set (x);
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+base (const base_optional& x)
+{
+  this->base_ = x;
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+base (::std::auto_ptr< base_type > x)
+{
+  this->base_.set (x);
+}
+
+const RPG_Common_EffectDuration_XMLTree_Type::levelIncrement_optional& RPG_Common_EffectDuration_XMLTree_Type::
+levelIncrement () const
+{
+  return this->levelIncrement_;
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::levelIncrement_optional& RPG_Common_EffectDuration_XMLTree_Type::
+levelIncrement ()
+{
+  return this->levelIncrement_;
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+levelIncrement (const levelIncrement_type& x)
+{
+  this->levelIncrement_.set (x);
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+levelIncrement (const levelIncrement_optional& x)
+{
+  this->levelIncrement_ = x;
+}
+
+const RPG_Common_EffectDuration_XMLTree_Type::levelIncrementMax_optional& RPG_Common_EffectDuration_XMLTree_Type::
+levelIncrementMax () const
+{
+  return this->levelIncrementMax_;
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::levelIncrementMax_optional& RPG_Common_EffectDuration_XMLTree_Type::
+levelIncrementMax ()
+{
+  return this->levelIncrementMax_;
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+levelIncrementMax (const levelIncrementMax_type& x)
+{
+  this->levelIncrementMax_.set (x);
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+levelIncrementMax (const levelIncrementMax_optional& x)
+{
+  this->levelIncrementMax_ = x;
+}
+
+const RPG_Common_EffectDuration_XMLTree_Type::reciprocalIncrement_type& RPG_Common_EffectDuration_XMLTree_Type::
+reciprocalIncrement () const
+{
+  return this->reciprocalIncrement_.get ();
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::reciprocalIncrement_type& RPG_Common_EffectDuration_XMLTree_Type::
+reciprocalIncrement ()
+{
+  return this->reciprocalIncrement_.get ();
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+reciprocalIncrement (const reciprocalIncrement_type& x)
+{
+  this->reciprocalIncrement_.set (x);
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::reciprocalIncrement_type RPG_Common_EffectDuration_XMLTree_Type::
+reciprocalIncrement_default_value ()
+{
+  return reciprocalIncrement_type (0);
+}
+
+
 // RPG_Common_Camp_XMLTree_Type
 // 
 
@@ -2123,11 +2229,11 @@ _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_ + 5,
+                    _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_ + 6,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_ + 5 || _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2136,23 +2242,25 @@ _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_PhysicalDamageType_XMLTree_Type::
-_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[5] =
+_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[6] =
 {
   "PHYSICALDAMAGE_NONE",
   "PHYSICALDAMAGE_BLUDGEONING",
   "PHYSICALDAMAGE_PIERCING",
   "PHYSICALDAMAGE_SLASHING",
-  "PHYSICALDAMAGE_CONSTRICT"
+  "PHYSICALDAMAGE_CONSTRICT",
+  "PHYSICALDAMAGE_WITHER"
 };
 
 const RPG_Common_PhysicalDamageType_XMLTree_Type::value RPG_Common_PhysicalDamageType_XMLTree_Type::
-_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[5] =
+_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[6] =
 {
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_BLUDGEONING,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_CONSTRICT,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_NONE,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_PIERCING,
-  ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_SLASHING
+  ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_SLASHING,
+  ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_WITHER
 };
 
 // RPG_Common_ActionType_XMLTree_Type
@@ -3284,6 +3392,152 @@ operator!= (const RPG_Common_Duration_XMLTree_Type& x, const RPG_Common_Duration
   return !(x == y);
 }
 
+// RPG_Common_EffectDuration_XMLTree_Type
+//
+
+RPG_Common_EffectDuration_XMLTree_Type::
+RPG_Common_EffectDuration_XMLTree_Type ()
+: ::xml_schema::type (),
+  base_ (::xml_schema::flags (), this),
+  levelIncrement_ (::xml_schema::flags (), this),
+  levelIncrementMax_ (::xml_schema::flags (), this),
+  reciprocalIncrement_ (reciprocalIncrement_default_value (), ::xml_schema::flags (), this)
+{
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::
+RPG_Common_EffectDuration_XMLTree_Type (const RPG_Common_EffectDuration_XMLTree_Type& x,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  base_ (x.base_, f, this),
+  levelIncrement_ (x.levelIncrement_, f, this),
+  levelIncrementMax_ (x.levelIncrementMax_, f, this),
+  reciprocalIncrement_ (x.reciprocalIncrement_, f, this)
+{
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::
+RPG_Common_EffectDuration_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  base_ (f, this),
+  levelIncrement_ (f, this),
+  levelIncrementMax_ (f, this),
+  reciprocalIncrement_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // base
+    //
+    if (n.name () == "base" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< base_type > r (
+        base_traits::create (i, f, this));
+
+      if (!this->base_)
+      {
+        this->base_.set (r);
+        continue;
+      }
+    }
+
+    // levelIncrement
+    //
+    if (n.name () == "levelIncrement" && n.namespace_ () == "urn:rpg")
+    {
+      if (!this->levelIncrement_)
+      {
+        this->levelIncrement_.set (levelIncrement_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // levelIncrementMax
+    //
+    if (n.name () == "levelIncrementMax" && n.namespace_ () == "urn:rpg")
+    {
+      if (!this->levelIncrementMax_)
+      {
+        this->levelIncrementMax_.set (levelIncrementMax_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  while (p.more_attributes ())
+  {
+    const ::xercesc::DOMAttr& i (p.next_attribute ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    if (n.name () == "reciprocalIncrement" && n.namespace_ ().empty ())
+    {
+      this->reciprocalIncrement_.set (reciprocalIncrement_traits::create (i, f, this));
+      continue;
+    }
+  }
+
+  if (!reciprocalIncrement_.present ())
+  {
+    this->reciprocalIncrement_.set (reciprocalIncrement_default_value ());
+  }
+}
+
+RPG_Common_EffectDuration_XMLTree_Type* RPG_Common_EffectDuration_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Common_EffectDuration_XMLTree_Type (*this, f, c);
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::
+~RPG_Common_EffectDuration_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Common_EffectDuration_XMLTree_Type& x, const RPG_Common_EffectDuration_XMLTree_Type& y)
+{
+  if (!(x.base () == y.base ()))
+    return false;
+
+  if (!(x.levelIncrement () == y.levelIncrement ()))
+    return false;
+
+  if (!(x.levelIncrementMax () == y.levelIncrementMax ()))
+    return false;
+
+  if (!(x.reciprocalIncrement () == y.reciprocalIncrement ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Common_EffectDuration_XMLTree_Type& x, const RPG_Common_EffectDuration_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
 // RPG_Common_Camp_XMLTree_Type
 //
 
@@ -3627,6 +3881,28 @@ operator<< (::std::ostream& o, const RPG_Common_Duration_XMLTree_Type& i)
     o << ::std::endl << "total: " << *i.total ();
   }
 
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Common_EffectDuration_XMLTree_Type& i)
+{
+  if (i.base ())
+  {
+    o << ::std::endl << "base: " << *i.base ();
+  }
+
+  if (i.levelIncrement ())
+  {
+    o << ::std::endl << "levelIncrement: " << *i.levelIncrement ();
+  }
+
+  if (i.levelIncrementMax ())
+  {
+    o << ::std::endl << "levelIncrementMax: " << *i.levelIncrementMax ();
+  }
+
+  o << ::std::endl << "reciprocalIncrement: " << i.reciprocalIncrement ();
   return o;
 }
 
@@ -4163,6 +4439,62 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_Duration_XMLTree_Type& i)
 }
 
 void
+operator<< (::xercesc::DOMElement& e, const RPG_Common_EffectDuration_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // base
+  //
+  if (i.base ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "base",
+        "urn:rpg",
+        e));
+
+    s << *i.base ();
+  }
+
+  // levelIncrement
+  //
+  if (i.levelIncrement ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "levelIncrement",
+        "urn:rpg",
+        e));
+
+    s << *i.levelIncrement ();
+  }
+
+  // levelIncrementMax
+  //
+  if (i.levelIncrementMax ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "levelIncrementMax",
+        "urn:rpg",
+        e));
+
+    s << *i.levelIncrementMax ();
+  }
+
+  // reciprocalIncrement
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "reciprocalIncrement",
+        e));
+
+    a << i.reciprocalIncrement ();
+  }
+}
+
+void
 operator<< (::xercesc::DOMElement& e, const RPG_Common_Camp_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::string& > (i);
@@ -4537,6 +4869,62 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 }
 
+RPG_Common_EffectDuration_XMLTree_Type::
+RPG_Common_EffectDuration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  base_ (f, this),
+  levelIncrement_ (f, this),
+  levelIncrementMax_ (f, this),
+  reciprocalIncrement_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< base_type > r (new base_type (s, f, this));
+      this->base_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      levelIncrement_type r;
+      s >> r;
+      this->levelIncrement_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      levelIncrementMax_type r;
+      s >> r;
+      this->levelIncrementMax_.set (r);
+    }
+  }
+
+  {
+    reciprocalIncrement_type r;
+    s >> r;
+    this->reciprocalIncrement_.set (r);
+  }
+}
+
 RPG_Common_Camp_XMLTree_Type::
 RPG_Common_Camp_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                               ::xml_schema::flags f,
@@ -4762,6 +5150,35 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
       s << *x.total ();
   }
 
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_EffectDuration_XMLTree_Type& x)
+{
+  {
+    bool p (x.base ());
+    s << p;
+    if (p)
+      s << *x.base ();
+  }
+
+  {
+    bool p (x.levelIncrement ());
+    s << p;
+    if (p)
+      s << *x.levelIncrement ();
+  }
+
+  {
+    bool p (x.levelIncrementMax ());
+    s << p;
+    if (p)
+      s << *x.levelIncrementMax ();
+  }
+
+  s << x.reciprocalIncrement ();
   return s;
 }
 

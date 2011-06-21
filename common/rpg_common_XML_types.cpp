@@ -224,6 +224,54 @@ RPG_Common_Duration_Type_pskel ()
 {
 }
 
+// RPG_Common_EffectDuration_Type_pskel
+//
+
+void RPG_Common_EffectDuration_Type_pskel::
+base_parser (::RPG_Common_Amount_Type_pskel& p)
+{
+  this->base_parser_ = &p;
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+levelIncrement_parser (::xml_schema::byte_pskel& p)
+{
+  this->levelIncrement_parser_ = &p;
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->levelIncrementMax_parser_ = &p;
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+reciprocalIncrement_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->reciprocalIncrement_parser_ = &p;
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+parsers (::RPG_Common_Amount_Type_pskel& base,
+         ::xml_schema::byte_pskel& levelIncrement,
+         ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
+         ::xml_schema::unsigned_byte_pskel& reciprocalIncrement)
+{
+  this->base_parser_ = &base;
+  this->levelIncrement_parser_ = &levelIncrement;
+  this->levelIncrementMax_parser_ = &levelIncrementMax;
+  this->reciprocalIncrement_parser_ = &reciprocalIncrement;
+}
+
+RPG_Common_EffectDuration_Type_pskel::
+RPG_Common_EffectDuration_Type_pskel ()
+: base_parser_ (0),
+  levelIncrement_parser_ (0),
+  levelIncrementMax_parser_ (0),
+  reciprocalIncrement_parser_ (0)
+{
+}
+
 // RPG_Common_CreatureType_Type_pskel
 //
 
@@ -676,6 +724,131 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->total_parser_)
       this->total (this->total_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Common_EffectDuration_Type_pskel
+//
+
+void RPG_Common_EffectDuration_Type_pskel::
+base (const RPG_Common_Amount&)
+{
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+levelIncrement (signed char)
+{
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+levelIncrementMax (unsigned char)
+{
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+reciprocalIncrement (unsigned char)
+{
+}
+
+bool RPG_Common_EffectDuration_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "base" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->base_parser_;
+
+    if (this->base_parser_)
+      this->base_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "levelIncrement" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->levelIncrement_parser_;
+
+    if (this->levelIncrement_parser_)
+      this->levelIncrement_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "levelIncrementMax" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->levelIncrementMax_parser_;
+
+    if (this->levelIncrementMax_parser_)
+      this->levelIncrementMax_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Common_EffectDuration_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "base" && ns == "urn:rpg")
+  {
+    if (this->base_parser_)
+      this->base (this->base_parser_->post_RPG_Common_Amount_Type ());
+
+    return true;
+  }
+
+  if (n == "levelIncrement" && ns == "urn:rpg")
+  {
+    if (this->levelIncrement_parser_)
+      this->levelIncrement (this->levelIncrement_parser_->post_byte ());
+
+    return true;
+  }
+
+  if (n == "levelIncrementMax" && ns == "urn:rpg")
+  {
+    if (this->levelIncrementMax_parser_)
+      this->levelIncrementMax (this->levelIncrementMax_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Common_EffectDuration_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "reciprocalIncrement" && ns.empty ())
+  {
+    if (this->reciprocalIncrement_parser_)
+    {
+      this->reciprocalIncrement_parser_->pre ();
+      this->reciprocalIncrement_parser_->_pre_impl ();
+      this->reciprocalIncrement_parser_->_characters (v);
+      this->reciprocalIncrement_parser_->_post_impl ();
+      this->reciprocalIncrement (this->reciprocalIncrement_parser_->post_unsigned_byte ());
+    }
 
     return true;
   }

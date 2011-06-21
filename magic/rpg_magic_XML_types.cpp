@@ -198,12 +198,6 @@ RPG_Magic_Spell_RangeProperties_Type_pskel ()
 //
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-type_parser (::RPG_Magic_Spell_Target_Type_pskel& p)
-{
-  this->type_parser_ = &p;
-}
-
-void RPG_Magic_Spell_TargetProperties_Type_pskel::
 base_parser (::RPG_Common_Amount_Type_pskel& p)
 {
   this->base_parser_ = &p;
@@ -240,40 +234,46 @@ height_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
+target_parser (::RPG_Magic_Spell_Target_Type_pskel& p)
+{
+  this->target_parser_ = &p;
+}
+
+void RPG_Magic_Spell_TargetProperties_Type_pskel::
 rangeIsInHD_parser (::xml_schema::boolean_pskel& p)
 {
   this->rangeIsInHD_parser_ = &p;
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-parsers (::RPG_Magic_Spell_Target_Type_pskel& type,
-         ::RPG_Common_Amount_Type_pskel& base,
+parsers (::RPG_Common_Amount_Type_pskel& base,
          ::xml_schema::unsigned_byte_pskel& levelIncrement,
          ::RPG_Magic_Spell_AreaOfEffect_Type_pskel& effect,
          ::RPG_Common_AreaOfEffect_Type_pskel& shape,
          ::xml_schema::unsigned_byte_pskel& radius,
          ::xml_schema::unsigned_byte_pskel& height,
+         ::RPG_Magic_Spell_Target_Type_pskel& target,
          ::xml_schema::boolean_pskel& rangeIsInHD)
 {
-  this->type_parser_ = &type;
   this->base_parser_ = &base;
   this->levelIncrement_parser_ = &levelIncrement;
   this->effect_parser_ = &effect;
   this->shape_parser_ = &shape;
   this->radius_parser_ = &radius;
   this->height_parser_ = &height;
+  this->target_parser_ = &target;
   this->rangeIsInHD_parser_ = &rangeIsInHD;
 }
 
 RPG_Magic_Spell_TargetProperties_Type_pskel::
 RPG_Magic_Spell_TargetProperties_Type_pskel ()
-: type_parser_ (0),
-  base_parser_ (0),
+: base_parser_ (0),
   levelIncrement_parser_ (0),
   effect_parser_ (0),
   shape_parser_ (0),
   radius_parser_ (0),
   height_parser_ (0),
+  target_parser_ (0),
   rangeIsInHD_parser_ (0)
 {
 }
@@ -282,39 +282,9 @@ RPG_Magic_Spell_TargetProperties_Type_pskel ()
 //
 
 void RPG_Magic_Spell_DurationProperties_Type_pskel::
-type_parser (::RPG_Magic_Spell_Duration_Type_pskel& p)
-{
-  this->type_parser_ = &p;
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-base_parser (::xml_schema::unsigned_int_pskel& p)
-{
-  this->base_parser_ = &p;
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-duration_parser (::xml_schema::unsigned_int_pskel& p)
+duration_parser (::RPG_Magic_Spell_Duration_Type_pskel& p)
 {
   this->duration_parser_ = &p;
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-levelIncrement_parser (::xml_schema::unsigned_byte_pskel& p)
-{
-  this->levelIncrement_parser_ = &p;
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel& p)
-{
-  this->levelIncrementMax_parser_ = &p;
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-period_parser (::RPG_Dice_Roll_Type_pskel& p)
-{
-  this->period_parser_ = &p;
 }
 
 void RPG_Magic_Spell_DurationProperties_Type_pskel::
@@ -324,31 +294,24 @@ dismissible_parser (::xml_schema::boolean_pskel& p)
 }
 
 void RPG_Magic_Spell_DurationProperties_Type_pskel::
-parsers (::RPG_Magic_Spell_Duration_Type_pskel& type,
-         ::xml_schema::unsigned_int_pskel& base,
-         ::xml_schema::unsigned_int_pskel& duration,
-         ::xml_schema::unsigned_byte_pskel& levelIncrement,
+parsers (::RPG_Common_Amount_Type_pskel& base,
+         ::xml_schema::byte_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
-         ::RPG_Dice_Roll_Type_pskel& period,
+         ::xml_schema::unsigned_byte_pskel& reciprocalIncrement,
+         ::RPG_Magic_Spell_Duration_Type_pskel& duration,
          ::xml_schema::boolean_pskel& dismissible)
 {
-  this->type_parser_ = &type;
   this->base_parser_ = &base;
-  this->duration_parser_ = &duration;
   this->levelIncrement_parser_ = &levelIncrement;
   this->levelIncrementMax_parser_ = &levelIncrementMax;
-  this->period_parser_ = &period;
+  this->reciprocalIncrement_parser_ = &reciprocalIncrement;
+  this->duration_parser_ = &duration;
   this->dismissible_parser_ = &dismissible;
 }
 
 RPG_Magic_Spell_DurationProperties_Type_pskel::
 RPG_Magic_Spell_DurationProperties_Type_pskel ()
-: type_parser_ (0),
-  base_parser_ (0),
-  duration_parser_ (0),
-  levelIncrement_parser_ (0),
-  levelIncrementMax_parser_ (0),
-  period_parser_ (0),
+: duration_parser_ (0),
   dismissible_parser_ (0)
 {
 }
@@ -363,7 +326,7 @@ type_parser (::RPG_Magic_Spell_Precondition_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
-value_parser (::xml_schema::integer_pskel& p)
+value_parser (::xml_schema::int_pskel& p)
 {
   this->value_parser_ = &p;
 }
@@ -418,7 +381,7 @@ reverse_parser (::xml_schema::boolean_pskel& p)
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
-         ::xml_schema::integer_pskel& value,
+         ::xml_schema::int_pskel& value,
          ::xml_schema::unsigned_byte_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Character_AlignmentEthic_Type_pskel& ethic,
@@ -561,7 +524,7 @@ type_parser (::RPG_Magic_Spell_Effect_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
-damage_parser (::RPG_Common_PhysicalDamageType_Type_pskel& p)
+damage_parser (::RPG_Magic_Spell_DamageTypeUnion_Type_pskel& p)
 {
   this->damage_parser_ = &p;
 }
@@ -597,7 +560,7 @@ attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
-duration_parser (::RPG_Common_Amount_Type_pskel& p)
+duration_parser (::RPG_Common_EffectDuration_Type_pskel& p)
 {
   this->duration_parser_ = &p;
 }
@@ -628,13 +591,13 @@ effectsAreInclusive_parser (::xml_schema::boolean_pskel& p)
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
 parsers (::RPG_Magic_Spell_Effect_Type_pskel& type,
-         ::RPG_Common_PhysicalDamageType_Type_pskel& damage,
+         ::RPG_Magic_Spell_DamageTypeUnion_Type_pskel& damage,
          ::RPG_Common_Amount_Type_pskel& base,
          ::xml_schema::unsigned_int_pskel& increment,
          ::RPG_Common_Amount_Type_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Common_Attribute_Type_pskel& attribute,
-         ::RPG_Common_Amount_Type_pskel& duration,
+         ::RPG_Common_EffectDuration_Type_pskel& duration,
          ::xml_schema::unsigned_byte_pskel& maxRange,
          ::RPG_Magic_CounterMeasure_Type_pskel& counterMeasure,
          ::xml_schema::boolean_pskel& includeAdjacent,
@@ -1274,11 +1237,6 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-type (const RPG_Magic_Spell_Target&)
-{
-}
-
-void RPG_Magic_Spell_TargetProperties_Type_pskel::
 base (const RPG_Common_Amount&)
 {
 }
@@ -1309,6 +1267,11 @@ height (unsigned char)
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
+target (const RPG_Magic_Spell_Target&)
+{
+}
+
+void RPG_Magic_Spell_TargetProperties_Type_pskel::
 rangeIsInHD (bool)
 {
 }
@@ -1322,16 +1285,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
-
-    if (this->type_parser_)
-      this->type_parser_->pre ();
-
-    return true;
-  }
 
   if (n == "base" && ns == "urn:rpg")
   {
@@ -1403,14 +1356,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "type" && ns == "urn:rpg")
-  {
-    if (this->type_parser_)
-      this->type (this->type_parser_->post_RPG_Magic_Spell_Target_Type ());
-
-    return true;
-  }
-
   if (n == "base" && ns == "urn:rpg")
   {
     if (this->base_parser_)
@@ -1470,6 +1415,20 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
     return true;
 
+  if (n == "target" && ns.empty ())
+  {
+    if (this->target_parser_)
+    {
+      this->target_parser_->pre ();
+      this->target_parser_->_pre_impl ();
+      this->target_parser_->_characters (v);
+      this->target_parser_->_post_impl ();
+      this->target (this->target_parser_->post_RPG_Magic_Spell_Target_Type ());
+    }
+
+    return true;
+  }
+
   if (n == "rangeIsInHD" && ns.empty ())
   {
     if (this->rangeIsInHD_parser_)
@@ -1491,32 +1450,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Magic_Spell_DurationProperties_Type_pskel::
-type (const RPG_Magic_Spell_Duration&)
-{
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-base (unsigned int)
-{
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-duration (unsigned int)
-{
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-levelIncrement (unsigned char)
-{
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-levelIncrementMax (unsigned char)
-{
-}
-
-void RPG_Magic_Spell_DurationProperties_Type_pskel::
-period (const RPG_Dice_Roll&)
+duration (const RPG_Magic_Spell_Duration&)
 {
 }
 
@@ -1526,143 +1460,26 @@ dismissible (bool)
 }
 
 bool RPG_Magic_Spell_DurationProperties_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-    return true;
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
-
-    if (this->type_parser_)
-      this->type_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "base" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->base_parser_;
-
-    if (this->base_parser_)
-      this->base_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "duration" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->duration_parser_;
-
-    if (this->duration_parser_)
-      this->duration_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "levelIncrement" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->levelIncrement_parser_;
-
-    if (this->levelIncrement_parser_)
-      this->levelIncrement_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "levelIncrementMax" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->levelIncrementMax_parser_;
-
-    if (this->levelIncrementMax_parser_)
-      this->levelIncrementMax_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "period" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->period_parser_;
-
-    if (this->period_parser_)
-      this->period_parser_->pre ();
-
-    return true;
-  }
-
-  return false;
-}
-
-bool RPG_Magic_Spell_DurationProperties_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
-    return true;
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    if (this->type_parser_)
-      this->type (this->type_parser_->post_RPG_Magic_Spell_Duration_Type ());
-
-    return true;
-  }
-
-  if (n == "base" && ns == "urn:rpg")
-  {
-    if (this->base_parser_)
-      this->base (this->base_parser_->post_unsigned_int ());
-
-    return true;
-  }
-
-  if (n == "duration" && ns == "urn:rpg")
-  {
-    if (this->duration_parser_)
-      this->duration (this->duration_parser_->post_unsigned_int ());
-
-    return true;
-  }
-
-  if (n == "levelIncrement" && ns == "urn:rpg")
-  {
-    if (this->levelIncrement_parser_)
-      this->levelIncrement (this->levelIncrement_parser_->post_unsigned_byte ());
-
-    return true;
-  }
-
-  if (n == "levelIncrementMax" && ns == "urn:rpg")
-  {
-    if (this->levelIncrementMax_parser_)
-      this->levelIncrementMax (this->levelIncrementMax_parser_->post_unsigned_byte ());
-
-    return true;
-  }
-
-  if (n == "period" && ns == "urn:rpg")
-  {
-    if (this->period_parser_)
-      this->period (this->period_parser_->post_RPG_Dice_Roll_Type ());
-
-    return true;
-  }
-
-  return false;
-}
-
-bool RPG_Magic_Spell_DurationProperties_Type_pskel::
 _attribute_impl (const ::xml_schema::ro_string& ns,
                  const ::xml_schema::ro_string& n,
                  const ::xml_schema::ro_string& v)
 {
-  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+  if (this->::RPG_Common_EffectDuration_Type_pskel::_attribute_impl (ns, n, v))
     return true;
+
+  if (n == "duration" && ns.empty ())
+  {
+    if (this->duration_parser_)
+    {
+      this->duration_parser_->pre ();
+      this->duration_parser_->_pre_impl ();
+      this->duration_parser_->_characters (v);
+      this->duration_parser_->_post_impl ();
+      this->duration (this->duration_parser_->post_RPG_Magic_Spell_Duration_Type ());
+    }
+
+    return true;
+  }
 
   if (n == "dismissible" && ns.empty ())
   {
@@ -1690,7 +1507,7 @@ type (const RPG_Magic_Spell_Precondition&)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
-value (long long)
+value (int)
 {
 }
 
@@ -1855,7 +1672,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "value" && ns == "urn:rpg")
   {
     if (this->value_parser_)
-      this->value (this->value_parser_->post_integer ());
+      this->value (this->value_parser_->post_int ());
 
     return true;
   }
@@ -2203,7 +2020,7 @@ type (const RPG_Magic_Spell_Effect&)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
-damage (const RPG_Common_PhysicalDamageType&)
+damage (const RPG_Magic_Spell_DamageTypeUnion&)
 {
 }
 
@@ -2233,7 +2050,7 @@ attribute (const RPG_Common_Attribute&)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
-duration (const RPG_Common_Amount&)
+duration (const RPG_Common_EffectDuration&)
 {
 }
 
@@ -2388,7 +2205,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "damage" && ns == "urn:rpg")
   {
     if (this->damage_parser_)
-      this->damage (this->damage_parser_->post_RPG_Common_PhysicalDamageType_Type ());
+      this->damage (this->damage_parser_->post_RPG_Magic_Spell_DamageTypeUnion_Type ());
 
     return true;
   }
@@ -2436,7 +2253,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "duration" && ns == "urn:rpg")
   {
     if (this->duration_parser_)
-      this->duration (this->duration_parser_->post_RPG_Common_Amount_Type ());
+      this->duration (this->duration_parser_->post_RPG_Common_EffectDuration_Type ());
 
     return true;
   }
