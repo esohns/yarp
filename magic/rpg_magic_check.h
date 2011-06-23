@@ -12,6 +12,7 @@ struct RPG_Magic_Check
   RPG_Magic_CheckTypeUnion type;
   unsigned char difficultyClass;
   char modifier;
+  unsigned char levelIncrementMax;
   bool baseIsCasterLevel;
 };
 

@@ -143,6 +143,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                                    condition_p,
                                    creatureType_p,
                                    size_p,
+                                   bool_p,
                                    bool_p);
 
   RPG_Magic_Spell_Effect_Type                 effect_p;
@@ -154,6 +155,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
   check_p.parsers(checkType_p,
                   unsigned_byte_p,
                   byte_p,
+                  unsigned_byte_p,
                   bool_p);
   RPG_Common_SaveReductionType_Type           reduction_p;
   RPG_Magic_CounterMeasure_Type               counterMeasure_p;

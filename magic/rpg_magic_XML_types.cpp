@@ -380,6 +380,12 @@ reverse_parser (::xml_schema::boolean_pskel& p)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+baseIsCasterLevel_parser (::xml_schema::boolean_pskel& p)
+{
+  this->baseIsCasterLevel_parser_ = &p;
+}
+
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
          ::xml_schema::int_pskel& value,
          ::xml_schema::unsigned_byte_pskel& levelIncrement,
@@ -389,7 +395,8 @@ parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
          ::RPG_Common_Condition_Type_pskel& condition,
          ::RPG_Common_CreatureType_Type_pskel& creature,
          ::RPG_Common_Size_Type_pskel& size,
-         ::xml_schema::boolean_pskel& reverse)
+         ::xml_schema::boolean_pskel& reverse,
+         ::xml_schema::boolean_pskel& baseIsCasterLevel)
 {
   this->type_parser_ = &type;
   this->value_parser_ = &value;
@@ -401,6 +408,7 @@ parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
   this->creature_parser_ = &creature;
   this->size_parser_ = &size;
   this->reverse_parser_ = &reverse;
+  this->baseIsCasterLevel_parser_ = &baseIsCasterLevel;
 }
 
 RPG_Magic_Spell_PreconditionProperties_Type_pskel::
@@ -414,7 +422,8 @@ RPG_Magic_Spell_PreconditionProperties_Type_pskel ()
   condition_parser_ (0),
   creature_parser_ (0),
   size_parser_ (0),
-  reverse_parser_ (0)
+  reverse_parser_ (0),
+  baseIsCasterLevel_parser_ (0)
 {
 }
 
@@ -440,6 +449,12 @@ modifier_parser (::xml_schema::byte_pskel& p)
 }
 
 void RPG_Magic_Check_Type_pskel::
+levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->levelIncrementMax_parser_ = &p;
+}
+
+void RPG_Magic_Check_Type_pskel::
 baseIsCasterLevel_parser (::xml_schema::boolean_pskel& p)
 {
   this->baseIsCasterLevel_parser_ = &p;
@@ -449,11 +464,13 @@ void RPG_Magic_Check_Type_pskel::
 parsers (::RPG_Magic_CheckTypeUnion_Type_pskel& type,
          ::xml_schema::unsigned_byte_pskel& difficultyClass,
          ::xml_schema::byte_pskel& modifier,
+         ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::xml_schema::boolean_pskel& baseIsCasterLevel)
 {
   this->type_parser_ = &type;
   this->difficultyClass_parser_ = &difficultyClass;
   this->modifier_parser_ = &modifier;
+  this->levelIncrementMax_parser_ = &levelIncrementMax;
   this->baseIsCasterLevel_parser_ = &baseIsCasterLevel;
 }
 
@@ -462,6 +479,7 @@ RPG_Magic_Check_Type_pskel ()
 : type_parser_ (0),
   difficultyClass_parser_ (0),
   modifier_parser_ (0),
+  levelIncrementMax_parser_ (0),
   baseIsCasterLevel_parser_ (0)
 {
 }
@@ -1551,6 +1569,11 @@ reverse (bool)
 {
 }
 
+void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
+baseIsCasterLevel (bool)
+{
+}
+
 bool RPG_Magic_Spell_PreconditionProperties_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -1758,6 +1781,20 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "baseIsCasterLevel" && ns.empty ())
+  {
+    if (this->baseIsCasterLevel_parser_)
+    {
+      this->baseIsCasterLevel_parser_->pre ();
+      this->baseIsCasterLevel_parser_->_pre_impl ();
+      this->baseIsCasterLevel_parser_->_characters (v);
+      this->baseIsCasterLevel_parser_->_post_impl ();
+      this->baseIsCasterLevel (this->baseIsCasterLevel_parser_->post_boolean ());
+    }
+
+    return true;
+  }
+
   return false;
 }
 
@@ -1776,6 +1813,11 @@ difficultyClass (unsigned char)
 
 void RPG_Magic_Check_Type_pskel::
 modifier (signed char)
+{
+}
+
+void RPG_Magic_Check_Type_pskel::
+levelIncrementMax (unsigned char)
 {
 }
 
@@ -1824,6 +1866,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "levelIncrementMax" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->levelIncrementMax_parser_;
+
+    if (this->levelIncrementMax_parser_)
+      this->levelIncrementMax_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -1854,6 +1906,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->modifier_parser_)
       this->modifier (this->modifier_parser_->post_byte ());
+
+    return true;
+  }
+
+  if (n == "levelIncrementMax" && ns == "urn:rpg")
+  {
+    if (this->levelIncrementMax_parser_)
+      this->levelIncrementMax (this->levelIncrementMax_parser_->post_unsigned_byte ());
 
     return true;
   }

@@ -273,6 +273,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type
     virtual void creature(const RPG_Common_CreatureType&);
     virtual void size(const RPG_Common_Size&);
     virtual void reverse(bool);
+    virtual void baseIsCasterLevel(bool);
     virtual RPG_Magic_Spell_PreconditionProperties post_RPG_Magic_Spell_PreconditionProperties_Type();
 
   private:
@@ -326,6 +327,7 @@ class RPG_Magic_Check_Type
     virtual void type(const RPG_Magic_CheckTypeUnion&);
     virtual void difficultyClass(unsigned char);
     virtual void modifier(signed char);
+    virtual void levelIncrementMax(unsigned char);
     virtual void baseIsCasterLevel(bool);
     virtual RPG_Magic_Check post_RPG_Magic_Check_Type();
 

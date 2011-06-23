@@ -28,6 +28,7 @@ enum RPG_Magic_Spell_Effect
   SPELLEFFECT_DAZE,
   SPELLEFFECT_DEAFEN,
   SPELLEFFECT_DETECT_MAGIC,
+  SPELLEFFECT_DISPEL_MAGIC,
   SPELLEFFECT_ENTANGLE,
   SPELLEFFECT_ETHEREAL,
   SPELLEFFECT_FASCINATE,
@@ -95,6 +96,7 @@ class RPG_Magic_Spell_EffectHelper
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_DAZE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_DAZE")));
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_DEAFEN, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_DEAFEN")));
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_DETECT_MAGIC, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_DETECT_MAGIC")));
+    myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_DISPEL_MAGIC, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_DISPEL_MAGIC")));
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_ENTANGLE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_ENTANGLE")));
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_ETHEREAL, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_ETHEREAL")));
     myRPG_Magic_Spell_EffectToStringTable.insert(std::make_pair(SPELLEFFECT_FASCINATE, ACE_TEXT_ALWAYS_CHAR("SPELLEFFECT_FASCINATE")));

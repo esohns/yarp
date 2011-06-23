@@ -697,6 +697,9 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   virtual void
   reverse (bool);
 
+  virtual void
+  baseIsCasterLevel (bool);
+
   virtual RPG_Magic_Spell_PreconditionProperties
   post_RPG_Magic_Spell_PreconditionProperties_Type () = 0;
 
@@ -733,6 +736,9 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   reverse_parser (::xml_schema::boolean_pskel&);
 
   void
+  baseIsCasterLevel_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::RPG_Magic_Spell_Precondition_Type_pskel& /* type */,
            ::xml_schema::int_pskel& /* value */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrement */,
@@ -742,7 +748,8 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
            ::RPG_Common_Condition_Type_pskel& /* condition */,
            ::RPG_Common_CreatureType_Type_pskel& /* creature */,
            ::RPG_Common_Size_Type_pskel& /* size */,
-           ::xml_schema::boolean_pskel& /* reverse */);
+           ::xml_schema::boolean_pskel& /* reverse */,
+           ::xml_schema::boolean_pskel& /* baseIsCasterLevel */);
 
   // Constructor.
   //
@@ -776,6 +783,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   ::RPG_Common_CreatureType_Type_pskel* creature_parser_;
   ::RPG_Common_Size_Type_pskel* size_parser_;
   ::xml_schema::boolean_pskel* reverse_parser_;
+  ::xml_schema::boolean_pskel* baseIsCasterLevel_parser_;
 };
 
 class RPG_Magic_Spell_Effect_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -838,6 +846,9 @@ class RPG_Magic_Check_Type_pskel: public ::xml_schema::complex_content
   modifier (signed char);
 
   virtual void
+  levelIncrementMax (unsigned char);
+
+  virtual void
   baseIsCasterLevel (bool);
 
   virtual RPG_Magic_Check
@@ -855,12 +866,16 @@ class RPG_Magic_Check_Type_pskel: public ::xml_schema::complex_content
   modifier_parser (::xml_schema::byte_pskel&);
 
   void
+  levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
   baseIsCasterLevel_parser (::xml_schema::boolean_pskel&);
 
   void
   parsers (::RPG_Magic_CheckTypeUnion_Type_pskel& /* type */,
            ::xml_schema::unsigned_byte_pskel& /* difficultyClass */,
            ::xml_schema::byte_pskel& /* modifier */,
+           ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
            ::xml_schema::boolean_pskel& /* baseIsCasterLevel */);
 
   // Constructor.
@@ -888,6 +903,7 @@ class RPG_Magic_Check_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Magic_CheckTypeUnion_Type_pskel* type_parser_;
   ::xml_schema::unsigned_byte_pskel* difficultyClass_parser_;
   ::xml_schema::byte_pskel* modifier_parser_;
+  ::xml_schema::unsigned_byte_pskel* levelIncrementMax_parser_;
   ::xml_schema::boolean_pskel* baseIsCasterLevel_parser_;
 };
 

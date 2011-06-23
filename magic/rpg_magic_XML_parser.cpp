@@ -533,6 +533,7 @@ RPG_Magic_Spell_PreconditionProperties_Type::RPG_Magic_Spell_PreconditionPropert
   myCurrentProperties.creatures.clear();
   myCurrentProperties.size = RPG_COMMON_SIZE_INVALID;
   myCurrentProperties.reverse = false;
+  myCurrentProperties.baseIsCasterLevel = false;
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type::type(const RPG_Magic_Spell_Precondition& type_in)
@@ -605,6 +606,13 @@ void RPG_Magic_Spell_PreconditionProperties_Type::reverse(bool reverse_in)
   myCurrentProperties.reverse = reverse_in;
 }
 
+void RPG_Magic_Spell_PreconditionProperties_Type::baseIsCasterLevel(bool baseIsCasterLevel_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::baseIsCasterLevel"));
+
+  myCurrentProperties.baseIsCasterLevel = baseIsCasterLevel_in;
+}
+
 RPG_Magic_Spell_PreconditionProperties RPG_Magic_Spell_PreconditionProperties_Type::post_RPG_Magic_Spell_PreconditionProperties_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::post_RPG_Magic_Spell_PreconditionProperties_Type"));
@@ -622,6 +630,7 @@ RPG_Magic_Spell_PreconditionProperties RPG_Magic_Spell_PreconditionProperties_Ty
   myCurrentProperties.creatures.clear();
   myCurrentProperties.size = RPG_COMMON_SIZE_INVALID;
   myCurrentProperties.reverse = false;
+  myCurrentProperties.baseIsCasterLevel = false;
 
   return result;
 }
@@ -740,6 +749,7 @@ RPG_Magic_Check_Type::RPG_Magic_Check_Type()
   myCurrentCheck.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheck.difficultyClass = 0;
   myCurrentCheck.modifier = 0;
+  myCurrentCheck.levelIncrementMax = 0;
   myCurrentCheck.baseIsCasterLevel = false;
 }
 
@@ -764,6 +774,13 @@ void RPG_Magic_Check_Type::modifier(signed char modifier_in)
   myCurrentCheck.modifier = modifier_in;
 }
 
+void RPG_Magic_Check_Type::levelIncrementMax(unsigned char incrementMax_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Check_Type::levelIncrementMax"));
+
+  myCurrentCheck.levelIncrementMax = incrementMax_in;
+}
+
 void RPG_Magic_Check_Type::baseIsCasterLevel(bool isCasterLevel_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Check_Type::baseIsCasterLevel"));
@@ -782,6 +799,7 @@ RPG_Magic_Check RPG_Magic_Check_Type::post_RPG_Magic_Check_Type()
   myCurrentCheck.type.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentCheck.difficultyClass = 0;
   myCurrentCheck.modifier = 0;
+  myCurrentCheck.levelIncrementMax = 0;
   myCurrentCheck.baseIsCasterLevel = false;
 
   return result;

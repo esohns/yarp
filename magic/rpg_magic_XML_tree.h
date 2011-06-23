@@ -461,6 +461,9 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
     SPELL_BLINK,
     SPELL_BLUR,
     SPELL_BREAK_ENCHANTMENT,
+    SPELL_BULLS_STRENGTH,
+    SPELL_BULLS_STRENGTH_MASS,
+    SPELL_BURNING_HANDS,
     SPELL_CALL_LIGHTNING,
     SPELL_CANTRIP,
     SPELL_CHAOS_HAMMER,
@@ -577,8 +580,8 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_SpellType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[117];
-  static const value _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[117];
+  static const char* const _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[120];
+  static const value _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[120];
 };
 
 class RPG_Magic_AbilityClass_XMLTree_Type: public ::xml_schema::string
@@ -1782,6 +1785,7 @@ class RPG_Magic_Spell_Precondition_XMLTree_Type: public ::xml_schema::string
     PRECONDITION_ATTRIBUTE_MAX,
     PRECONDITION_CONDITION,
     PRECONDITION_HD_MAX,
+    PRECONDITION_SPELLLEVEL_MAX,
     PRECONDITION_MANUFACTURED,
     PRECONDITION_NONMAGICAL,
     PRECONDITION_OBJECT,
@@ -1839,8 +1843,8 @@ class RPG_Magic_Spell_Precondition_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[13];
-  static const value _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_[13];
+  static const char* const _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[14];
+  static const value _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_[14];
 };
 
 class RPG_Magic_Spell_PreconditionProperties_XMLTree_Type: public ::xml_schema::type
@@ -2035,6 +2039,23 @@ class RPG_Magic_Spell_PreconditionProperties_XMLTree_Type: public ::xml_schema::
   static reverse_type
   reverse_default_value ();
 
+  // baseIsCasterLevel
+  // 
+  typedef ::xml_schema::boolean baseIsCasterLevel_type;
+  typedef ::xsd::cxx::tree::traits< baseIsCasterLevel_type, char > baseIsCasterLevel_traits;
+
+  const baseIsCasterLevel_type&
+  baseIsCasterLevel () const;
+
+  baseIsCasterLevel_type&
+  baseIsCasterLevel ();
+
+  void
+  baseIsCasterLevel (const baseIsCasterLevel_type& x);
+
+  static baseIsCasterLevel_type
+  baseIsCasterLevel_default_value ();
+
   // Constructors.
   //
   RPG_Magic_Spell_PreconditionProperties_XMLTree_Type (const type_type&);
@@ -2080,6 +2101,7 @@ class RPG_Magic_Spell_PreconditionProperties_XMLTree_Type: public ::xml_schema::
   creature_sequence creature_;
   size_optional size_;
   ::xsd::cxx::tree::one< reverse_type > reverse_;
+  ::xsd::cxx::tree::one< baseIsCasterLevel_type > baseIsCasterLevel_;
 };
 
 bool
@@ -2113,6 +2135,7 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_DAZE,
     SPELLEFFECT_DEAFEN,
     SPELLEFFECT_DETECT_MAGIC,
+    SPELLEFFECT_DISPEL_MAGIC,
     SPELLEFFECT_ENTANGLE,
     SPELLEFFECT_ETHEREAL,
     SPELLEFFECT_FASCINATE,
@@ -2191,8 +2214,8 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[48];
-  static const value _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[48];
+  static const char* const _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[49];
+  static const value _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[49];
 };
 
 class RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type: public ::xml_schema::string
@@ -2463,6 +2486,24 @@ class RPG_Magic_Check_XMLTree_Type: public ::xml_schema::type
   void
   modifier (const modifier_optional& x);
 
+  // levelIncrementMax
+  // 
+  typedef ::xml_schema::unsigned_byte levelIncrementMax_type;
+  typedef ::xsd::cxx::tree::optional< levelIncrementMax_type > levelIncrementMax_optional;
+  typedef ::xsd::cxx::tree::traits< levelIncrementMax_type, char > levelIncrementMax_traits;
+
+  const levelIncrementMax_optional&
+  levelIncrementMax () const;
+
+  levelIncrementMax_optional&
+  levelIncrementMax ();
+
+  void
+  levelIncrementMax (const levelIncrementMax_type& x);
+
+  void
+  levelIncrementMax (const levelIncrementMax_optional& x);
+
   // baseIsCasterLevel
   // 
   typedef ::xml_schema::boolean baseIsCasterLevel_type;
@@ -2518,6 +2559,7 @@ class RPG_Magic_Check_XMLTree_Type: public ::xml_schema::type
   ::xsd::cxx::tree::one< type_type > type_;
   difficultyClass_optional difficultyClass_;
   modifier_optional modifier_;
+  levelIncrementMax_optional levelIncrementMax_;
   ::xsd::cxx::tree::one< baseIsCasterLevel_type > baseIsCasterLevel_;
 };
 

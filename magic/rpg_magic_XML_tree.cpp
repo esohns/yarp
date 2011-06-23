@@ -1480,6 +1480,30 @@ reverse_default_value ()
   return reverse_type (false);
 }
 
+const RPG_Magic_Spell_PreconditionProperties_XMLTree_Type::baseIsCasterLevel_type& RPG_Magic_Spell_PreconditionProperties_XMLTree_Type::
+baseIsCasterLevel () const
+{
+  return this->baseIsCasterLevel_.get ();
+}
+
+RPG_Magic_Spell_PreconditionProperties_XMLTree_Type::baseIsCasterLevel_type& RPG_Magic_Spell_PreconditionProperties_XMLTree_Type::
+baseIsCasterLevel ()
+{
+  return this->baseIsCasterLevel_.get ();
+}
+
+void RPG_Magic_Spell_PreconditionProperties_XMLTree_Type::
+baseIsCasterLevel (const baseIsCasterLevel_type& x)
+{
+  this->baseIsCasterLevel_.set (x);
+}
+
+RPG_Magic_Spell_PreconditionProperties_XMLTree_Type::baseIsCasterLevel_type RPG_Magic_Spell_PreconditionProperties_XMLTree_Type::
+baseIsCasterLevel_default_value ()
+{
+  return baseIsCasterLevel_type (false);
+}
+
 
 // RPG_Magic_Spell_Effect_XMLTree_Type
 // 
@@ -1689,6 +1713,30 @@ void RPG_Magic_Check_XMLTree_Type::
 modifier (const modifier_optional& x)
 {
   this->modifier_ = x;
+}
+
+const RPG_Magic_Check_XMLTree_Type::levelIncrementMax_optional& RPG_Magic_Check_XMLTree_Type::
+levelIncrementMax () const
+{
+  return this->levelIncrementMax_;
+}
+
+RPG_Magic_Check_XMLTree_Type::levelIncrementMax_optional& RPG_Magic_Check_XMLTree_Type::
+levelIncrementMax ()
+{
+  return this->levelIncrementMax_;
+}
+
+void RPG_Magic_Check_XMLTree_Type::
+levelIncrementMax (const levelIncrementMax_type& x)
+{
+  this->levelIncrementMax_.set (x);
+}
+
+void RPG_Magic_Check_XMLTree_Type::
+levelIncrementMax (const levelIncrementMax_optional& x)
+{
+  this->levelIncrementMax_ = x;
 }
 
 const RPG_Magic_Check_XMLTree_Type::baseIsCasterLevel_type& RPG_Magic_Check_XMLTree_Type::
@@ -2996,11 +3044,11 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Magic_SpellType_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_,
-                    _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_ + 117,
+                    _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_ + 120,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_ + 117 || _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_ + 120 || _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -3009,7 +3057,7 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Magic_SpellType_XMLTree_Type::
-_xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[117] =
+_xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[120] =
 {
   "SPELL_NONE",
   "SPELL_ACID_ARROW",
@@ -3061,6 +3109,9 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[117] =
   "SPELL_BLINK",
   "SPELL_BLUR",
   "SPELL_BREAK_ENCHANTMENT",
+  "SPELL_BULLS_STRENGTH",
+  "SPELL_BULLS_STRENGTH_MASS",
+  "SPELL_BURNING_HANDS",
   "SPELL_CALL_LIGHTNING",
   "SPELL_CANTRIP",
   "SPELL_CHAOS_HAMMER",
@@ -3131,7 +3182,7 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[117] =
 };
 
 const RPG_Magic_SpellType_XMLTree_Type::value RPG_Magic_SpellType_XMLTree_Type::
-_xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[117] =
+_xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[120] =
 {
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_ACID_ARROW,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_ACID_FOG,
@@ -3182,6 +3233,9 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[117] =
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_BLINK,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_BLUR,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_BREAK_ENCHANTMENT,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_BULLS_STRENGTH,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_BULLS_STRENGTH_MASS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_BURNING_HANDS,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CALL_LIGHTNING,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CANTRIP,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CHAOS_HAMMER,
@@ -4787,11 +4841,11 @@ _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_,
-                    _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_ + 13,
+                    _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_ + 14,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_ + 13 || _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_ + 14 || _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -4800,13 +4854,14 @@ _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Magic_Spell_Precondition_XMLTree_Type::
-_xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[13] =
+_xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[14] =
 {
   "PRECONDITION_ALLY",
   "PRECONDITION_ALIGNMENT_ETHIC",
   "PRECONDITION_ATTRIBUTE_MAX",
   "PRECONDITION_CONDITION",
   "PRECONDITION_HD_MAX",
+  "PRECONDITION_SPELLLEVEL_MAX",
   "PRECONDITION_MANUFACTURED",
   "PRECONDITION_NONMAGICAL",
   "PRECONDITION_OBJECT",
@@ -4818,7 +4873,7 @@ _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_literals_[13] =
 };
 
 const RPG_Magic_Spell_Precondition_XMLTree_Type::value RPG_Magic_Spell_Precondition_XMLTree_Type::
-_xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_[13] =
+_xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_[14] =
 {
   ::RPG_Magic_Spell_Precondition_XMLTree_Type::PRECONDITION_ALIGNMENT_ETHIC,
   ::RPG_Magic_Spell_Precondition_XMLTree_Type::PRECONDITION_ALLY,
@@ -4832,6 +4887,7 @@ _xsd_RPG_Magic_Spell_Precondition_XMLTree_Type_indexes_[13] =
   ::RPG_Magic_Spell_Precondition_XMLTree_Type::PRECONDITION_RANGED_TOUCH_ATTACK,
   ::RPG_Magic_Spell_Precondition_XMLTree_Type::PRECONDITION_SIZE_MAX,
   ::RPG_Magic_Spell_Precondition_XMLTree_Type::PRECONDITION_SIZE_RELATIVE,
+  ::RPG_Magic_Spell_Precondition_XMLTree_Type::PRECONDITION_SPELLLEVEL_MAX,
   ::RPG_Magic_Spell_Precondition_XMLTree_Type::PRECONDITION_TYPE
 };
 
@@ -4850,7 +4906,8 @@ RPG_Magic_Spell_PreconditionProperties_XMLTree_Type (const type_type& type)
   condition_ (::xml_schema::flags (), this),
   creature_ (::xml_schema::flags (), this),
   size_ (::xml_schema::flags (), this),
-  reverse_ (reverse_default_value (), ::xml_schema::flags (), this)
+  reverse_ (reverse_default_value (), ::xml_schema::flags (), this),
+  baseIsCasterLevel_ (baseIsCasterLevel_default_value (), ::xml_schema::flags (), this)
 {
 }
 
@@ -4868,7 +4925,8 @@ RPG_Magic_Spell_PreconditionProperties_XMLTree_Type (const RPG_Magic_Spell_Preco
   condition_ (x.condition_, f, this),
   creature_ (x.creature_, f, this),
   size_ (x.size_, f, this),
-  reverse_ (x.reverse_, f, this)
+  reverse_ (x.reverse_, f, this),
+  baseIsCasterLevel_ (x.baseIsCasterLevel_, f, this)
 {
 }
 
@@ -4886,7 +4944,8 @@ RPG_Magic_Spell_PreconditionProperties_XMLTree_Type (const ::xercesc::DOMElement
   condition_ (f, this),
   creature_ (f, this),
   size_ (f, this),
-  reverse_ (f, this)
+  reverse_ (f, this),
+  baseIsCasterLevel_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -5040,11 +5099,22 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       this->reverse_.set (reverse_traits::create (i, f, this));
       continue;
     }
+
+    if (n.name () == "baseIsCasterLevel" && n.namespace_ ().empty ())
+    {
+      this->baseIsCasterLevel_.set (baseIsCasterLevel_traits::create (i, f, this));
+      continue;
+    }
   }
 
   if (!reverse_.present ())
   {
     this->reverse_.set (reverse_default_value ());
+  }
+
+  if (!baseIsCasterLevel_.present ())
+  {
+    this->baseIsCasterLevel_.set (baseIsCasterLevel_default_value ());
   }
 }
 
@@ -5091,6 +5161,9 @@ operator== (const RPG_Magic_Spell_PreconditionProperties_XMLTree_Type& x, const 
     return false;
 
   if (!(x.reverse () == y.reverse ()))
+    return false;
+
+  if (!(x.baseIsCasterLevel () == y.baseIsCasterLevel ()))
     return false;
 
   return true;
@@ -5146,11 +5219,11 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_,
-                    _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_ + 48,
+                    _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_ + 49,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_ + 48 || _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_ + 49 || _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -5159,7 +5232,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Magic_Spell_Effect_XMLTree_Type::
-_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[48] =
+_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[49] =
 {
   "SPELLEFFECT_ABILITIY_LOSS_MAGICAL_ALL",
   "SPELLEFFECT_ABILITIY_LOSS_MAGICAL_EXTRAORDINARY",
@@ -5180,6 +5253,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[48] =
   "SPELLEFFECT_DAZE",
   "SPELLEFFECT_DEAFEN",
   "SPELLEFFECT_DETECT_MAGIC",
+  "SPELLEFFECT_DISPEL_MAGIC",
   "SPELLEFFECT_ENTANGLE",
   "SPELLEFFECT_ETHEREAL",
   "SPELLEFFECT_FASCINATE",
@@ -5212,7 +5286,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[48] =
 };
 
 const RPG_Magic_Spell_Effect_XMLTree_Type::value RPG_Magic_Spell_Effect_XMLTree_Type::
-_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[48] =
+_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[49] =
 {
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_ABILITIY_LOSS_MAGICAL_ALL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_ABILITIY_LOSS_MAGICAL_EXTRAORDINARY,
@@ -5233,6 +5307,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[48] =
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DAZE,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DEAFEN,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DETECT_MAGIC,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DISPEL_MAGIC,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_ENTANGLE,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_ETHEREAL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_FASCINATE,
@@ -5597,6 +5672,7 @@ RPG_Magic_Check_XMLTree_Type (const type_type& type)
   type_ (type, ::xml_schema::flags (), this),
   difficultyClass_ (::xml_schema::flags (), this),
   modifier_ (::xml_schema::flags (), this),
+  levelIncrementMax_ (::xml_schema::flags (), this),
   baseIsCasterLevel_ (baseIsCasterLevel_default_value (), ::xml_schema::flags (), this)
 {
 }
@@ -5609,6 +5685,7 @@ RPG_Magic_Check_XMLTree_Type (const RPG_Magic_Check_XMLTree_Type& x,
   type_ (x.type_, f, this),
   difficultyClass_ (x.difficultyClass_, f, this),
   modifier_ (x.modifier_, f, this),
+  levelIncrementMax_ (x.levelIncrementMax_, f, this),
   baseIsCasterLevel_ (x.baseIsCasterLevel_, f, this)
 {
 }
@@ -5621,6 +5698,7 @@ RPG_Magic_Check_XMLTree_Type (const ::xercesc::DOMElement& e,
   type_ (f, this),
   difficultyClass_ (f, this),
   modifier_ (f, this),
+  levelIncrementMax_ (f, this),
   baseIsCasterLevel_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -5676,6 +5754,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // levelIncrementMax
+    //
+    if (n.name () == "levelIncrementMax" && n.namespace_ () == "urn:rpg")
+    {
+      if (!this->levelIncrementMax_)
+      {
+        this->levelIncrementMax_.set (levelIncrementMax_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -5727,6 +5816,9 @@ operator== (const RPG_Magic_Check_XMLTree_Type& x, const RPG_Magic_Check_XMLTree
     return false;
 
   if (!(x.modifier () == y.modifier ()))
+    return false;
+
+  if (!(x.levelIncrementMax () == y.levelIncrementMax ()))
     return false;
 
   if (!(x.baseIsCasterLevel () == y.baseIsCasterLevel ()))
@@ -7142,6 +7234,7 @@ operator<< (::std::ostream& o, const RPG_Magic_Spell_PreconditionProperties_XMLT
   }
 
   o << ::std::endl << "reverse: " << i.reverse ();
+  o << ::std::endl << "baseIsCasterLevel: " << i.baseIsCasterLevel ();
   return o;
 }
 
@@ -7193,6 +7286,11 @@ operator<< (::std::ostream& o, const RPG_Magic_Check_XMLTree_Type& i)
   if (i.modifier ())
   {
     o << ::std::endl << "modifier: " << *i.modifier ();
+  }
+
+  if (i.levelIncrementMax ())
+  {
+    o << ::std::endl << "levelIncrementMax: " << *i.levelIncrementMax ();
   }
 
   o << ::std::endl << "baseIsCasterLevel: " << i.baseIsCasterLevel ();
@@ -8333,6 +8431,17 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_PreconditionProperti
 
     a << i.reverse ();
   }
+
+  // baseIsCasterLevel
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "baseIsCasterLevel",
+        e));
+
+    a << i.baseIsCasterLevel ();
+  }
 }
 
 void
@@ -8433,6 +8542,19 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Check_XMLTree_Type& i)
         e));
 
     s << *i.modifier ();
+  }
+
+  // levelIncrementMax
+  //
+  if (i.levelIncrementMax ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "levelIncrementMax",
+        "urn:rpg",
+        e));
+
+    s << *i.levelIncrementMax ();
   }
 
   // baseIsCasterLevel
@@ -9481,7 +9603,8 @@ RPG_Magic_Spell_PreconditionProperties_XMLTree_Type (::xml_schema::istream< ACE_
   condition_ (f, this),
   creature_ (f, this),
   size_ (f, this),
-  reverse_ (f, this)
+  reverse_ (f, this),
+  baseIsCasterLevel_ (f, this)
 {
   this->parse (s, f);
 }
@@ -9589,6 +9712,12 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     s >> r;
     this->reverse_.set (r);
   }
+
+  {
+    baseIsCasterLevel_type r;
+    s >> r;
+    this->baseIsCasterLevel_.set (r);
+  }
 }
 
 RPG_Magic_Spell_Effect_XMLTree_Type::
@@ -9626,6 +9755,7 @@ RPG_Magic_Check_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   type_ (f, this),
   difficultyClass_ (f, this),
   modifier_ (f, this),
+  levelIncrementMax_ (f, this),
   baseIsCasterLevel_ (f, this)
 {
   this->parse (s, f);
@@ -9659,6 +9789,17 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
       modifier_type r;
       s >> r;
       this->modifier_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      levelIncrementMax_type r;
+      s >> r;
+      this->levelIncrementMax_.set (r);
     }
   }
 
@@ -10391,6 +10532,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
   }
 
   s << x.reverse ();
+  s << x.baseIsCasterLevel ();
   return s;
 }
 
@@ -10432,6 +10574,13 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
     s << p;
     if (p)
       s << *x.modifier ();
+  }
+
+  {
+    bool p (x.levelIncrementMax ());
+    s << p;
+    if (p)
+      s << *x.levelIncrementMax ();
   }
 
   s << x.baseIsCasterLevel ();

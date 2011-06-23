@@ -59,6 +59,9 @@ enum RPG_Magic_SpellType
   SPELL_BLINK,
   SPELL_BLUR,
   SPELL_BREAK_ENCHANTMENT,
+  SPELL_BULLS_STRENGTH,
+  SPELL_BULLS_STRENGTH_MASS,
+  SPELL_BURNING_HANDS,
   SPELL_CALL_LIGHTNING,
   SPELL_CANTRIP,
   SPELL_CHAOS_HAMMER,
@@ -195,6 +198,9 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLINK, ACE_TEXT_ALWAYS_CHAR("SPELL_BLINK")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BLUR, ACE_TEXT_ALWAYS_CHAR("SPELL_BLUR")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BREAK_ENCHANTMENT, ACE_TEXT_ALWAYS_CHAR("SPELL_BREAK_ENCHANTMENT")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BULLS_STRENGTH, ACE_TEXT_ALWAYS_CHAR("SPELL_BULLS_STRENGTH")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BULLS_STRENGTH_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_BULLS_STRENGTH_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BURNING_HANDS, ACE_TEXT_ALWAYS_CHAR("SPELL_BURNING_HANDS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CALL_LIGHTNING, ACE_TEXT_ALWAYS_CHAR("SPELL_CALL_LIGHTNING")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CANTRIP, ACE_TEXT_ALWAYS_CHAR("SPELL_CANTRIP")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHAOS_HAMMER, ACE_TEXT_ALWAYS_CHAR("SPELL_CHAOS_HAMMER")));

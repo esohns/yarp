@@ -167,6 +167,9 @@
       <xsd:enumeration value="SPELL_BLINK"/>
       <xsd:enumeration value="SPELL_BLUR"/>
       <xsd:enumeration value="SPELL_BREAK_ENCHANTMENT"/>
+      <xsd:enumeration value="SPELL_BULLS_STRENGTH"/>
+      <xsd:enumeration value="SPELL_BULLS_STRENGTH_MASS"/>
+      <xsd:enumeration value="SPELL_BURNING_HANDS"/>
       <xsd:enumeration value="SPELL_CALL_LIGHTNING"/>
       <xsd:enumeration value="SPELL_CANTRIP"/>
       <xsd:enumeration value="SPELL_CHAOS_HAMMER"/>
@@ -358,6 +361,7 @@
       <xsd:enumeration value="PRECONDITION_ATTRIBUTE_MAX"/>
       <xsd:enumeration value="PRECONDITION_CONDITION"/>
       <xsd:enumeration value="PRECONDITION_HD_MAX"/>
+      <xsd:enumeration value="PRECONDITION_SPELLLEVEL_MAX"/>
       <xsd:enumeration value="PRECONDITION_MANUFACTURED"/>
       <xsd:enumeration value="PRECONDITION_NONMAGICAL"/>
       <xsd:enumeration value="PRECONDITION_OBJECT"/>
@@ -382,6 +386,7 @@
       <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="reverse" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="baseIsCasterLevel" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Magic_Spell_Effect_Type">
@@ -405,6 +410,7 @@
       <xsd:enumeration value="SPELLEFFECT_DAZE"/>
       <xsd:enumeration value="SPELLEFFECT_DEAFEN"/>
       <xsd:enumeration value="SPELLEFFECT_DETECT_MAGIC"/>
+      <xsd:enumeration value="SPELLEFFECT_DISPEL_MAGIC"/>
       <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>
       <xsd:enumeration value="SPELLEFFECT_ETHEREAL"/>
       <xsd:enumeration value="SPELLEFFECT_FASCINATE"/>
@@ -450,6 +456,7 @@
       <xsd:element name="type" type="RPG_Magic_CheckTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="modifier" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="baseIsCasterLevel" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>

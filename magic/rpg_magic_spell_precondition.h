@@ -14,6 +14,7 @@ enum RPG_Magic_Spell_Precondition
   PRECONDITION_ATTRIBUTE_MAX,
   PRECONDITION_CONDITION,
   PRECONDITION_HD_MAX,
+  PRECONDITION_SPELLLEVEL_MAX,
   PRECONDITION_MANUFACTURED,
   PRECONDITION_NONMAGICAL,
   PRECONDITION_OBJECT,
@@ -46,6 +47,7 @@ class RPG_Magic_Spell_PreconditionHelper
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ATTRIBUTE_MAX, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ATTRIBUTE_MAX")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_CONDITION, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_CONDITION")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_HD_MAX, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_HD_MAX")));
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_SPELLLEVEL_MAX, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_SPELLLEVEL_MAX")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_MANUFACTURED, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_MANUFACTURED")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_NONMAGICAL, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_NONMAGICAL")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_OBJECT, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_OBJECT")));

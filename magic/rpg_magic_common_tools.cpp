@@ -1739,7 +1739,33 @@ RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMea
           result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
           converter.clear();
           converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-          converter << static_cast<unsigned int> ((*iterator).check.difficultyClass);
+          converter << static_cast<unsigned int>((*iterator).check.difficultyClass);
+          result += converter.str();
+          result += ACE_TEXT_ALWAYS_CHAR(")");
+        } // end IF
+        else if ((*iterator).check.modifier)
+        {
+          if ((*iterator).check.baseIsCasterLevel)
+          {
+            result += ACE_TEXT_ALWAYS_CHAR(" (casterLevel ");
+            converter.setf(ios::showpos);
+          } // end IF
+          else
+            result += ACE_TEXT_ALWAYS_CHAR(" (modifier: ");
+          converter.clear();
+          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+          converter << static_cast<int>((*iterator).check.modifier);
+          result += converter.str();
+          result += ACE_TEXT_ALWAYS_CHAR(")");
+          if ((*iterator).check.baseIsCasterLevel)
+            converter.unsetf(ios::showpos);
+        } // end ELSE
+        if ((*iterator).check.levelIncrementMax)
+        {
+          result += ACE_TEXT_ALWAYS_CHAR(" (maxLevel: ");
+          converter.clear();
+          converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+          converter << static_cast<unsigned int>((*iterator).check.levelIncrementMax);
           result += converter.str();
           result += ACE_TEXT_ALWAYS_CHAR(")");
         } // end IF
@@ -1748,7 +1774,7 @@ RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMea
       }
       case COUNTERMEASURE_SPELL:
       {
-        for (std::vector<RPG_Magic_SpellType>::const_iterator iterator2 = (*iterator).spells.begin();
+        for (RPG_Magic_SpellTypesIterator_t iterator2 = (*iterator).spells.begin();
              iterator2 != (*iterator).spells.end();
              iterator2++)
         {
@@ -1765,7 +1791,7 @@ RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMea
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid counterMeasure \"%s\" --> check implementation !, continuing\n"),
+                   ACE_TEXT("invalid counterMeasure \"%s\", continuing\n"),
                    RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString((*iterator).type).c_str()));
 
         break;
