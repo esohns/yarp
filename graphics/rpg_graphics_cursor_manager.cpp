@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_graphics_cursor_manager.h"
 
 #include "rpg_graphics_surface.h"
@@ -349,4 +350,20 @@ RPG_Graphics_Cursor_Manager::invalidateBG()
   ACE_ASSERT(myBG);
 
   RPG_Graphics_Surface::clear(myBG);
+}
+
+const ACE_TCHAR*
+RPG_Graphics_Cursor_Manager::name(void)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::name"));
+
+  return ACE_TEXT("RPG_Graphics_Cursor_Manager");
+}
+
+const ACE_TCHAR*
+RPG_Graphics_Cursor_Manager::dll_name(void)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::dll_name"));
+
+  return ACE_TEXT("RPG_Graphics_Cursor_Manager");
 }

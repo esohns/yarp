@@ -71,7 +71,7 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
   RPG_Item_WeaponCategory_Type            weaponCategory_p;
   RPG_Item_WeaponClass_Type               weaponClass_p;
   RPG_Dice_DieType_Type                   dieType_p;
-  ::xml_schema::integer_pimpl             int_p;
+  ::xml_schema::int_pimpl                 int_p;
   RPG_Dice_Roll_Type                      roll_p;
   roll_p.parsers(unsigned_int_p,
                  dieType_p,

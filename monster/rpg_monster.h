@@ -52,7 +52,7 @@ class RPG_Monster
               const RPG_Character_Conditions_t&, // condition
               const unsigned short int&,         // HP
               const unsigned int&,               // wealth (GP)
-              const RPG_Magic_SpellList_t&,      // set of memorized/prepared spells (if any)
+              const RPG_Magic_SpellTypes_t&,     // set of memorized/prepared spells (if any)
               const RPG_Item_List_t&,            // list of (carried) items
               const bool& = false);              // summoned ?
   RPG_Monster(const RPG_Monster&);

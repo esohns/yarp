@@ -42,13 +42,13 @@ class RPG_Character_Player
                        const RPG_Character_Abilities_t&,  // base abilities
                        const RPG_Character_OffHand&,      // off-hand
                        const unsigned short int&,         // max HP
-                       const RPG_Magic_Spells_t&,         // set of known spells (if any)
+                       const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
                        // current status
                        const RPG_Character_Conditions_t&, // condition
                        const unsigned short int&,         // HP
                        const unsigned int&,               // XP
                        const unsigned int&,               // wealth (GP)
-                       const RPG_Magic_SpellTypes_t&,     // set of prepared spells (if any)
+                       const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
                        const RPG_Item_List_t&);           // list of (carried) items
   RPG_Character_Player(const RPG_Character_Player&);
   virtual ~RPG_Character_Player();

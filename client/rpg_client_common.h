@@ -21,9 +21,6 @@
 #ifndef RPG_CLIENT_COMMON_H
 #define RPG_CLIENT_COMMON_H
 
-#include "rpg_client_window_main.h"
-#include "rpg_client_window_level.h"
-
 #include <rpg_engine_common.h>
 #include <rpg_engine_level.h>
 
@@ -38,6 +35,10 @@
 #include <ace/Synch.h>
 
 #include <string>
+#include <deque>
+
+// forward declaration(s)
+class RPG_Client_Engine;
 
 struct RPG_Client_GTK_CBData_t
 {
@@ -49,11 +50,11 @@ struct RPG_Client_GTK_CBData_t
     xml(NULL),
     screen(NULL),
     event_timer(NULL),
-    previous_window(NULL),
-//     main_window(NULL),
-    map_window(NULL),
+//     previous_window(NULL),
+//     map_window(NULL),
+    client_engine(NULL),
 //     current_entity(),
-    engine(NULL)
+    level_engine(NULL)
  {
 //    entity.character = NULL;
 //    entity.position = std::make_pair(0, 0);
@@ -69,12 +70,12 @@ struct RPG_Client_GTK_CBData_t
   GladeXML*               xml;
   SDL_Surface*            screen;
   SDL_TimerID             event_timer;
-  RPG_Graphics_IWindow*   previous_window;
-//   RPG_Client_WindowMain*  main_window;
-  RPG_Client_WindowLevel* map_window;
+//   RPG_Graphics_IWindow*   previous_window;
+//   RPG_Client_WindowLevel* map_window;
+  RPG_Client_Engine*      client_engine;
   std::string             schemaRepository;
   RPG_Engine_Entity       current_entity;
-  RPG_Engine_Level*       engine;
+  RPG_Engine_Level*       level_engine;
 };
 
 // *NOTE* types as used by SDL
@@ -138,5 +139,26 @@ struct RPG_Client_Config
   RPG_Client_MapConfig_t       map_config;
   std::string                  map_file;
 };
+
+enum RPG_Client_Command
+{
+  COMMAND_CURSOR_DRAW = 0,
+  COMMAND_CURSOR_RESTORE_BG,
+//   COMMAND_REFRESH,
+  COMMAND_TOGGLE_DOOR,
+  COMMAND_WINDOW_DRAW,
+  //
+  RPG_CLIENT_COMMAND_MAX,
+  RPG_CLIENT_COMMAND_INVALID
+};
+typedef std::pair<int, int> RPG_Client_Position_t;
+
+struct RPG_Client_Action
+{
+  RPG_Client_Command command;
+  RPG_Client_Position_t position;
+  RPG_Graphics_IWindow* window;
+};
+typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
 
 #endif

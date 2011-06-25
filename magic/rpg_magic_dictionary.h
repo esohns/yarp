@@ -47,8 +47,8 @@ class RPG_Magic_Dictionary
   const RPG_Magic_Spell_Properties getSpellProperties(const std::string&) const; // name of spell
   const RPG_Magic_Spell_Properties getSpellProperties(const RPG_Magic_SpellType&, // type of spell
                                                       std::string&) const;        // return value: name
-  const RPG_Magic_Spells_t getSpells(const RPG_Magic_CasterClassUnion&,  // caster class
-                                     const unsigned char& = 0xFF) const; // spell level (default: ALL)
+  const RPG_Magic_SpellTypes_t getSpells(const RPG_Magic_CasterClassUnion&,  // caster class
+                                         const unsigned char& = 0xFF) const; // spell level (default: ALL)
 
   // debug info
   void dump() const;

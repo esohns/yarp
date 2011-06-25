@@ -28,6 +28,8 @@
 #include <rpg_client_callbacks.h>
 #include <rpg_client_window_main.h>
 #include <rpg_client_window_level.h>
+#include <rpg_client_engine.h>
+#include <rpg_client_common_tools.h>
 
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
@@ -1083,11 +1085,11 @@ do_work(const RPG_Client_Config& config_in,
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0a: init RPG engine
+  RPG_Sound_Common_Tools::initStringConversionTables();
+  RPG_Graphics_Common_Tools::initStringConversionTables();
   RPG_Engine_Common_Tools::init(config_in.magic_dictionary,
                                 config_in.item_dictionary,
                                 config_in.monster_dictionary);
-  RPG_Sound_Common_Tools::initStringConversionTables();
-  RPG_Graphics_Common_Tools::initStringConversionTables();
 
   // step0b: (if necessary) init the TP_Reactor
   if (config_in.num_threadpool_threads)
@@ -1138,7 +1140,8 @@ do_work(const RPG_Client_Config& config_in,
     return;
   }
 
-  RPG_Engine_Level engine;
+  RPG_Client_Engine client_engine;
+  RPG_Engine_Level level_engine;
   RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
   userData.hover_time            = 0;
@@ -1147,17 +1150,16 @@ do_work(const RPG_Client_Config& config_in,
   userData.xml                   = NULL;
   userData.screen                = NULL;
   userData.event_timer           = NULL;
-  userData.previous_window       = NULL;
-//   userData.main_window           = NULL;
-  userData.map_window            = NULL;
+//   userData.previous_window       = NULL;
+//   userData.map_window           = NULL;
+  userData.client_engine         = &client_engine;
   userData.schemaRepository      = schemaRepository_in;
-//   userData.map();
   userData.current_entity.character = NULL;
   userData.current_entity.position = std::make_pair(0, 0);
 //   userData.current_entity.actions();
   userData.current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   userData.current_entity.graphic = NULL;
-  userData.engine = &engine;
+  userData.level_engine = &level_engine;
 
   GDK_THREADS_ENTER();
   if (!do_initGUI(config_in.graphics_directory,  // graphics directory
@@ -1201,15 +1203,16 @@ do_work(const RPG_Client_Config& config_in,
                                    title,                                         // title (== caption)
                                    FONT_MAIN_LARGE);                              // title font
   mainWindow.setScreen(userData.screen);
-  mainWindow.init();
+  mainWindow.init(&client_engine);
   mainWindow.draw();
   mainWindow.refresh();
 
   // step4b: set default cursor
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
+  RPG_Client_Common_Tools::init();
 
   // step5: setup level "window"
   RPG_Client_WindowLevel mapWindow(mainWindow); // parent
+//   userData.map_window = &mapWindow;
   mapWindow.setScreen(userData.screen);
 
   // step5a: setup style
@@ -1258,25 +1261,12 @@ do_work(const RPG_Client_Config& config_in,
       return;
     } // end IF
   } // end ELSE
-  userData.map_window = &mapWindow;
-  engine.init(&mapWindow,
-              start_position,
-              seed_points,
-              floor_plan);
-  engine.start();
-  if (!engine.isRunning())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start engine, aborting\n")));
-
-    return;
-  } // end IF
-
 //   RPG_Map_Common_Tools::displayFloorPlan(start_position,
 //                                          seed_points,
 //                                          floor_plan);
 
-  mapWindow.init(&engine,
+  mapWindow.init(&level_engine,
+                 &client_engine,
                  floor_plan,
                  mapStyle);
   // refresh screen
@@ -1291,6 +1281,32 @@ do_work(const RPG_Client_Config& config_in,
                ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
   }
 
+  level_engine.init(&client_engine,
+                    start_position,
+                    seed_points,
+                    floor_plan);
+  level_engine.start();
+  if (!level_engine.isRunning())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to start level engine, aborting\n")));
+
+    return;
+  } // end IF
+
+  client_engine.init(&mapWindow);
+  client_engine.start();
+  if (!client_engine.isRunning())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to start client engine, aborting\n")));
+
+    // clean up
+    level_engine.stop();
+
+    return;
+  } // end IF
+
   // start timer (triggers hover- and GTK events)
   userData.event_timer = NULL;
   userData.event_timer = SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
@@ -1302,6 +1318,10 @@ do_work(const RPG_Client_Config& config_in,
                ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
                RPG_CLIENT_SDL_EVENT_TIMEOUT,
                SDL_GetError()));
+
+    // clean up
+    level_engine.stop();
+    client_engine.stop();
 
     return;
   } // end IF
@@ -1393,6 +1413,10 @@ do_work(const RPG_Client_Config& config_in,
                ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
                (config_in.num_threadpool_threads ? config_in.num_threadpool_threads : 1)));
 
+    // clean up
+    level_engine.stop();
+    client_engine.stop();
+
     return;
   } // end IF
 
@@ -1407,16 +1431,22 @@ do_work(const RPG_Client_Config& config_in,
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
   RPG_Graphics_IWindow* previous_window = NULL;
-  bool need_redraw = false;
+  bool schedule_redraw = false;
+  RPG_Client_Action client_action;
+  client_action.command = RPG_CLIENT_COMMAND_INVALID;
+  client_action.position = std::make_pair(0, 0);
+  bool previous_redraw = false;
   RPG_Graphics_Position_t mouse_position;
-  bool refresh_screen = false;
+//   bool refresh_screen = false;
   do
   {
     event.type = SDL_NOEVENT;
     window = NULL;
-    need_redraw = false;
+    schedule_redraw = false;
+    client_action.command = RPG_CLIENT_COMMAND_INVALID;
+    client_action.position = std::make_pair(0, 0);
     mouse_position = std::make_pair(0, 0);
-    refresh_screen = false;
+//     refresh_screen = false;
 
     // step1: get next pending event
 //     if (SDL_PollEvent(&event) == -1)
@@ -1432,6 +1462,10 @@ do_work(const RPG_Client_Config& config_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
                  SDL_GetError()));
+
+      // clean up
+      level_engine.stop();
+      client_engine.stop();
 
       return;
     } // end IF
@@ -1459,16 +1493,12 @@ do_work(const RPG_Client_Config& config_in,
             dump_path += ACE_DIRECTORY_SEPARATOR_STR;
             dump_path += ACE_TEXT("map.txt");
             if (!RPG_Map_Common_Tools::save(dump_path,
-                                            userData.engine->getStartPosition(),
-                                            userData.engine->getSeedPoints(),
-                                            userData.engine->getFloorPlan()))
-            {
+                                            userData.level_engine->getStartPosition(),
+                                            userData.level_engine->getSeedPoints(),
+                                            userData.level_engine->getFloorPlan()))
               ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
+                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), continuing\n"),
                          dump_path.c_str()));
-
-              return;
-            } // end IF
 
             break;
           }
@@ -1523,17 +1553,33 @@ do_work(const RPG_Client_Config& config_in,
               (previous_window != window))
           {
             event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
+            previous_redraw = false;
             try
             {
               previous_window->handleEvent(event,
                                            previous_window,
-                                           need_redraw);
+                                           previous_redraw);
             }
             catch (...)
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
+            if (previous_redraw)
+            {
+              try
+              {
+                previous_window->draw();
+                previous_window->refresh();
+              }
+              catch (...)
+              {
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("caught exception in [%@] RPG_Graphics_IWindow::draw()/refresh(), continuing\n"),
+                           previous_window));
+              }
+            } // end IF
+
             event.type = SDL_MOUSEMOTION;
           } // end IF
         } // end IF
@@ -1545,7 +1591,7 @@ do_work(const RPG_Client_Config& config_in,
         {
           window->handleEvent(event,
                               window,
-                              need_redraw);
+                              schedule_redraw);
         }
         catch (...)
         {
@@ -1591,12 +1637,6 @@ do_work(const RPG_Client_Config& config_in,
         break;
       }
       case RPG_CLIENT_SDL_TIMEREVENT:
-      {
-        // refresh screen regularly
-        refresh_screen = true;
-
-        break;
-      }
       case SDL_KEYUP:
       case SDL_MOUSEBUTTONUP:
       case SDL_JOYAXISMOTION:
@@ -1615,19 +1655,11 @@ do_work(const RPG_Client_Config& config_in,
     } // end SWITCH
 
     // redraw map ?
-    if (need_redraw)
+    if (schedule_redraw)
     {
-      try
-      {
-        mapWindow.draw();
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
-      }
-
-      refresh_screen = true;
+      client_action.command = COMMAND_WINDOW_DRAW;
+      client_action.window = window;
+      client_engine.action(client_action);
     } // end IF
 
     // redraw cursor ?
@@ -1637,7 +1669,7 @@ do_work(const RPG_Client_Config& config_in,
       case SDL_MOUSEBUTTONDOWN:
       {
         // map hasn't changed --> no need to redraw
-        if (!need_redraw)
+        if (!schedule_redraw)
           break;
 
         // *WARNING*: falls through !
@@ -1647,13 +1679,9 @@ do_work(const RPG_Client_Config& config_in,
       {
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
-        SDL_Rect dirtyRegion;
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
-                                                               mouse_position.second,
-                                                               userData.screen,
-                                                               dirtyRegion);
-        RPG_Graphics_Surface::update(dirtyRegion,
-                                     userData.screen);
+        client_action.command = COMMAND_CURSOR_DRAW;
+        client_action.position = mouse_position;
+        client_engine.action(client_action);
 
         break;
       }
@@ -1665,29 +1693,28 @@ do_work(const RPG_Client_Config& config_in,
 
 //     // enforce fixed FPS
 //     SDL_framerateDelay(&fps_manager);
-    if (refresh_screen)
-    {
-      try
-      {
-        mapWindow.refresh(NULL);
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::refresh(), continuing\n")));
-      }
-    } // end IF
+//     if (refresh_screen)
+//     {
+//       try
+//       {
+//         mapWindow.refresh(NULL);
+//       }
+//       catch (...)
+//       {
+//         ACE_DEBUG((LM_ERROR,
+//                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::refresh(), continuing\n")));
+//       }
+//     } // end IF
   } while (!done);
 
   // step8: clean up
-  engine.stop();
+  level_engine.stop();
+  client_engine.stop();
 
   if (!SDL_RemoveTimer(userData.event_timer))
-  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                SDL_GetError()));
-  } // end IF
 
   // done handling UI events
 
@@ -1935,7 +1962,7 @@ ACE_TMAIN(int argc_in,
 
   // step1: init ACE
   // *PORTABILITY*: on Windows, we need to init ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+// #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init() == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -1943,7 +1970,7 @@ ACE_TMAIN(int argc_in,
 
     return EXIT_FAILURE;
   } // end IF
-#endif
+// #endif
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
@@ -2281,7 +2308,7 @@ ACE_TMAIN(int argc_in,
              elapsed_rusage.ru_nivcsw));
 
   // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+// #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini() == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -2289,7 +2316,7 @@ ACE_TMAIN(int argc_in,
 
     return EXIT_FAILURE;
   } // end IF
-#endif
+// #endif
 
   return EXIT_SUCCESS;
 } // end main

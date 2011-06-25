@@ -2210,6 +2210,16 @@ RPG_Map_Common_Tools::dist2Positions(const RPG_Map_Position_t& position1_in,
           ::abs(position1_in.second - position2_in.second));
 }
 
+const bool
+RPG_Map_Common_Tools::isAdjacent(const RPG_Map_Position_t& position1_in,
+                                 const RPG_Map_Position_t& position2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isAdjacent"));
+
+  return (dist2Positions(position1_in,
+                         position2_in) == 1);
+}
+
 const std::string
 RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
 {

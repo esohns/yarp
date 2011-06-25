@@ -98,25 +98,26 @@ class RPG_Engine_Level
   virtual int svc(void);
 
   void handleDoor(const RPG_Map_Position_t&, // position
-                  const bool&);              // open ? : close
+                  const bool&,               // open ? : close
+                  bool&);                    // return value: schedule a redraw ?
 
   // perform (one round of) actions
-  void handleEntities(bool&); // return value: redraw UI ?
+  void handleEntities(bool&); // return value: schedule a redraw ?
 
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> myCurrentID;
 
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
-  RPG_Engine_MessageQueue                   myQueue;
+  RPG_Engine_MessageQueue         myQueue;
 
   // make our API re-entrant
-  mutable ACE_Recursive_Thread_Mutex        myLock;
+  mutable ACE_Thread_Mutex        myLock;
   // implement blocking wait...
-  ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
+  ACE_Condition<ACE_Thread_Mutex> myCondition;
 
-  RPG_Engine_Entities_t                     myEntities;
+  RPG_Engine_Entities_t           myEntities;
 
-  RPG_Engine_IWindow*                       myWindow;
+  RPG_Engine_IWindow*             myClient;
 };
 
 #endif

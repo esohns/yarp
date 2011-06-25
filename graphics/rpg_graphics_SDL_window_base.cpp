@@ -208,6 +208,14 @@ RPG_Graphics_SDLWindowBase::setScreen(SDL_Surface* screen_in)
   myScreen = screen_in;
 }
 
+SDL_Surface*
+RPG_Graphics_SDLWindowBase::getScreen()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getScreen"));
+
+  return (myScreen ? myScreen : SDL_GetVideoSurface());
+}
+
 void
 RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
 {

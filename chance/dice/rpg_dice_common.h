@@ -112,12 +112,23 @@ inline RPG_Dice_DieType operator--(RPG_Dice_DieType& dieType_inout, int)
   return result;
 };
 
-// // allow multiplier
-// inline RPG_Dice_Roll& RPG_Dice_Roll::operator*=(const int& multiplier_in)
+// allow multiplier
+// struct RPG_Dice_Roll
 // {
-//   numDice *= multiplier_in;
-//   modifier *= multiplier_in;
-//   return (*this);
+//   unsigned int numDice;
+//   RPG_Dice_DieType typeDice;
+//   int modifier;
+//
+//   // *TODO* will be clobbered by subsequent updates of the schema
+//   // (refer to rpg_dice_common.h for a template)
+//   RPG_Dice_Roll& operator*=(int);
 // };
+inline RPG_Dice_Roll& RPG_Dice_Roll::operator*=(int multiplier_in)
+{
+  numDice *= multiplier_in;
+  modifier *= multiplier_in;
+
+  return (*this);
+};
 
 #endif

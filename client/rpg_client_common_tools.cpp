@@ -18,30 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_GRAPHICS_IWINDOW_H
-#define RPG_GRAPHICS_IWINDOW_H
+#include "rpg_client_common_tools.h"
 
-#include "rpg_graphics_common.h"
+#include <rpg_graphics_cursor_manager.h>
 
-#include <SDL/SDL.h>
+#include <rpg_common_macros.h>
 
-class RPG_Graphics_IWindow
+void
+RPG_Client_Common_Tools::init()
 {
- public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::init"));
 
-  // exposed interface
-  virtual void setScreen(SDL_Surface*) = 0;        // (default) screen
-  virtual SDL_Surface* getScreen() = 0;            // (default) screen
-  virtual void draw(SDL_Surface* = NULL,           // target surface (default: screen)
-                    const unsigned long& = 0,      // offset x (top-left = [0,0])
-                    const unsigned long& = 0) = 0; // offset y (top-left = [0,0])
-  virtual void refresh(SDL_Surface* = NULL) = 0; // target surface (default: screen)
-  virtual void handleEvent(const SDL_Event&,      // event
-                           RPG_Graphics_IWindow*, // target window (NULL: this)
-                           bool&) = 0;            // return value: redraw ?
-  virtual const RPG_Graphics_WindowType getType() const = 0;
-};
+  // step1: init cursor manager singleton
+  try
+  {
+    RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Graphics_Cursor_Manager::set, returning\n")));
 
-#endif
+    return;
+  }
+}

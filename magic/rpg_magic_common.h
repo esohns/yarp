@@ -31,10 +31,10 @@
 #include <map>
 
 // some useful types
-typedef std::set<RPG_Magic_SpellType> RPG_Magic_Spells_t;
-typedef RPG_Magic_Spells_t::const_iterator RPG_Magic_SpellsIterator_t;
-typedef std::vector<RPG_Magic_SpellType> RPG_Magic_SpellTypes_t;
+typedef std::set<RPG_Magic_SpellType> RPG_Magic_SpellTypes_t;
 typedef RPG_Magic_SpellTypes_t::const_iterator RPG_Magic_SpellTypesIterator_t;
+typedef std::vector<RPG_Magic_SpellType> RPG_Magic_Spells_t;
+typedef RPG_Magic_Spells_t::const_iterator RPG_Magic_SpellsIterator_t;
 typedef std::vector<RPG_Magic_Spell_Level> RPG_Magic_SpellLevels_t;
 typedef RPG_Magic_SpellLevels_t::const_iterator RPG_Magic_SpellLevelsIterator_t;
 typedef std::vector<RPG_Magic_Spell_TargetProperties> RPG_Magic_Spell_Targets_t;

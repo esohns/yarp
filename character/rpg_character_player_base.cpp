@@ -45,13 +45,13 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(// base attributes
                                                      const RPG_Character_Abilities_t& abilities_in,
                                                      const RPG_Character_OffHand& offHand_in,
                                                      const unsigned short int& maxHitPoints_in,
-                                                     const RPG_Magic_Spells_t& knownSpells_in,
+                                                     const RPG_Magic_SpellTypes_t& knownSpells_in,
                                                      // current status
                                                      const RPG_Character_Conditions_t& condition_in,
                                                      const unsigned short int& hitpoints_in,
                                                      const unsigned int& experience_in,
                                                      const unsigned int& wealth_in,
-                                                     const RPG_Magic_SpellTypes_t& spells_in,
+                                                     const RPG_Magic_Spells_t& spells_in,
                                                      const RPG_Item_List_t& inventory_in)
  : inherited(name_in,
              alignment_in,
@@ -123,13 +123,13 @@ RPG_Character_Player_Base::init(// base attributes
                                 const RPG_Character_Abilities_t& abilities_in,
                                 const RPG_Character_OffHand& offHand_in,
                                 const unsigned short int& maxHitPoints_in,
-                                const RPG_Magic_Spells_t& knownSpells_in,
+                                const RPG_Magic_SpellTypes_t& knownSpells_in,
                                 // current status
                                 const RPG_Character_Conditions_t& condition_in,
                                 const unsigned short int& hitpoints_in,
                                 const unsigned int& experience_in,
                                 const unsigned int& wealth_in,
-                                const RPG_Magic_SpellTypes_t& spells_in,
+                                const RPG_Magic_Spells_t& spells_in,
                                 const RPG_Item_List_t& inventory_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Player_Base::init"));

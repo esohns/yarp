@@ -20,10 +20,6 @@
 #ifndef RPG_CLIENT_WINDOW_LEVEL_H
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
-#include <rpg_engine_common.h>
-#include <rpg_engine_iwindow.h>
-#include <rpg_engine_level.h>
-
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
 
@@ -33,35 +29,31 @@
 
 #include <ace/Global_Macros.h>
 
-#include <string>
+// forward declaration(s)
+class RPG_Engine_Level;
+class RPG_Client_Engine;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Client_WindowLevel
- : public RPG_Engine_IWindow,
-   public RPG_Graphics_SDLWindowBase
+ : public RPG_Graphics_SDLWindowBase
 {
  public:
   RPG_Client_WindowLevel(// *** SDL window ***
                          const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_WindowLevel();
 
-  // implement RPG_Engine_IWindow
-  virtual void redraw();
-  virtual void toggleDoor(const RPG_Map_Position_t&);
-
   // adjust viewport
   void setView(const RPG_Map_Position_t&); // view (map coordinates)
   void setView(const int&,
                const int&); // view (relative map coordinates)
 
-  // set/get active player
-  void setPlayer(const RPG_Engine_EntityID_t&); // player ID
-  const RPG_Engine_EntityID_t getPlayer() const;
+  void toggleDoor(const RPG_Map_Position_t&); // door position
 
   // init level properties
   void init(RPG_Engine_Level*,               // state handle
+            RPG_Client_Engine*,              // engine handle
             const RPG_Map_FloorPlan_t&,      // floor plan
             const RPG_Graphics_MapStyle_t&); // map style
 
@@ -81,9 +73,6 @@ class RPG_Client_WindowLevel
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel(const RPG_Client_WindowLevel&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel& operator=(const RPG_Client_WindowLevel&));
 
-  // helper types
-  typedef std::pair<int, int> RPG_Position_t;
-
   // helper methods
   void clear();
   void setStyle(const RPG_Graphics_StyleUnion&);
@@ -93,7 +82,7 @@ class RPG_Client_WindowLevel
   void initWallBlend();
 
   RPG_Engine_Level*           myLevelState;
-  RPG_Engine_EntityID_t       myPlayerID;
+  RPG_Client_Engine*          myEngine;
 
   RPG_Graphics_MapStyle_t     myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;

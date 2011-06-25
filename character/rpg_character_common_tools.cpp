@@ -666,11 +666,11 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   // step11: (initial) set of spells
   unsigned char numKnownSpells = 0;
   unsigned char numSpells = 0;
-  RPG_Magic_Spells_t knownSpells;
-  RPG_Magic_SpellTypes_t spells;
+  RPG_Magic_SpellTypes_t knownSpells;
+  RPG_Magic_Spells_t spells;
   int numChosen = 0;
-  RPG_Magic_Spells_t available;
-  RPG_Magic_SpellsIterator_t available_iterator;
+  RPG_Magic_SpellTypes_t available;
+  RPG_Magic_SpellTypesIterator_t available_iterator;
   RPG_Magic_CasterClassUnion casterClass;
   casterClass.discriminator = RPG_Magic_CasterClassUnion::SUBCLASS;
   for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();

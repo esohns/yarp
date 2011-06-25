@@ -22,6 +22,7 @@
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
 #include <rpg_item_weapontype.h>
 #include "rpg_combat_incl.h"

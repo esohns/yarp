@@ -290,16 +290,16 @@ RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in
   return dummy;
 }
 
-const RPG_Magic_Spells_t
+const RPG_Magic_SpellTypes_t
 RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
                                 const unsigned char& spellLevel_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpells"));
 
   // sanity check
   ACE_ASSERT(casterClass_in.discriminator != RPG_Magic_CasterClassUnion::INVALID);
 
-  RPG_Magic_Spells_t result;
+  RPG_Magic_SpellTypes_t result;
 
   bool match = false;
   for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
@@ -345,7 +345,7 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid caster class type: %d --> check implementation !, aborting\n"),
+                     ACE_TEXT("invalid caster class type: %d, aborting\n"),
                      (*iterator2).casterClass.discriminator));
 
           break;

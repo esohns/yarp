@@ -18,30 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_GRAPHICS_IWINDOW_H
-#define RPG_GRAPHICS_IWINDOW_H
+#ifndef RPG_CLIENT_COMMON_TOOLS_H
+#define RPG_CLIENT_COMMON_TOOLS_H
 
-#include "rpg_graphics_common.h"
+#include <ace/Global_Macros.h>
 
-#include <SDL/SDL.h>
-
-class RPG_Graphics_IWindow
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class RPG_Client_Common_Tools
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  // *NOTE*: initializes cursor manager singleton
+  static void init();
 
-  // exposed interface
-  virtual void setScreen(SDL_Surface*) = 0;        // (default) screen
-  virtual SDL_Surface* getScreen() = 0;            // (default) screen
-  virtual void draw(SDL_Surface* = NULL,           // target surface (default: screen)
-                    const unsigned long& = 0,      // offset x (top-left = [0,0])
-                    const unsigned long& = 0) = 0; // offset y (top-left = [0,0])
-  virtual void refresh(SDL_Surface* = NULL) = 0; // target surface (default: screen)
-  virtual void handleEvent(const SDL_Event&,      // event
-                           RPG_Graphics_IWindow*, // target window (NULL: this)
-                           bool&) = 0;            // return value: redraw ?
-  virtual const RPG_Graphics_WindowType getType() const = 0;
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Client_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools(const RPG_Client_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools& operator=(const RPG_Client_Common_Tools&));
 };
 
 #endif

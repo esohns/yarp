@@ -75,8 +75,8 @@ class RPG_Character_Base
   const unsigned int getWealth() const;
   const RPG_Common_Size getSize() const;
 
-  const RPG_Magic_Spells_t getKnownSpells() const;
-  const RPG_Magic_SpellTypes_t getSpells() const;
+  const RPG_Magic_SpellTypes_t getKnownSpells() const;
+  const RPG_Magic_Spells_t getSpells() const;
 
   RPG_Character_Inventory getInventory() const;
 //   const RPG_Character_Equipment getEquipment() const;
@@ -106,12 +106,12 @@ class RPG_Character_Base
                      const RPG_Character_Abilities_t&,  // base abilities
                      const RPG_Common_Size&,            // (default) size
                      const unsigned short int&,         // max HP
-                     const RPG_Magic_Spells_t&,         // set of known spells (bard / sorcerer)
+                     const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
                      // current status
                      const RPG_Character_Conditions_t&, // condition
                      const unsigned short int&,         // HP
                      const unsigned int&,               // wealth (GP)
-                     const RPG_Magic_SpellTypes_t&,     // set of memorized/prepared spells (!bard)
+                     const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
                      const RPG_Item_List_t&);           // list of (carried) items
   RPG_Character_Base(const RPG_Character_Base&);
 
@@ -125,12 +125,12 @@ class RPG_Character_Base
             const RPG_Character_Abilities_t&,  // base abilities
             const RPG_Common_Size&,            // (default) size
             const unsigned short int&,         // max HP
-            const RPG_Magic_Spells_t&,         // set of known spells (bard / sorcerer)
+            const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
             // current status
             const RPG_Character_Conditions_t&, // condition
             const unsigned short int&,         // HP
             const unsigned int&,               // wealth (GP)
-            const RPG_Magic_SpellTypes_t&,     // set of memorized/prepared spells (!bard)
+            const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
             const RPG_Item_List_t&);           // list of (carried) items
 
   virtual const signed char getShieldBonus() const = 0;
@@ -138,8 +138,8 @@ class RPG_Character_Base
   unsigned int               myWealth;
   RPG_Common_Size            mySize;
 
-  RPG_Magic_Spells_t         myKnownSpells;
-  RPG_Magic_SpellTypes_t     mySpells;
+  RPG_Magic_SpellTypes_t     myKnownSpells;
+  RPG_Magic_Spells_t         mySpells;
 
   RPG_Character_Inventory    myInventory;
   RPG_Character_Equipment    myEquipment;

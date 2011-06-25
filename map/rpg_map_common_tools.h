@@ -67,6 +67,8 @@ class RPG_Map_Common_Tools
 
   static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
                                             const RPG_Map_Position_t&); // position 2
+  static const bool isAdjacent(const RPG_Map_Position_t&,  // position 1
+                               const RPG_Map_Position_t&); // position 2
   static const std::string direction2String(const RPG_Map_Direction&);
   static const std::string orientation2String(const RPG_Map_Orientation&);
 
@@ -76,7 +78,7 @@ class RPG_Map_Common_Tools
                                                     const RPG_Map_FloorPlan_t&);
   static const bool isFloor(const RPG_Map_Position_t&,
                             const RPG_Map_FloorPlan_t&);
-  // *NOTE*: relies on the correct notion of "outside" set for all doors !
+  // *NOTE*: relies on a consistent notion of "outside" set for all doors !
   static const bool isInsideRoom(const RPG_Map_Position_t&,
                                  const RPG_Map_FloorPlan_t&);
 

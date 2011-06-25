@@ -22,6 +22,7 @@
 
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
+#include "rpg_client_engine.h"
 
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
@@ -586,14 +587,14 @@ update_character_profile(const RPG_Character_Player& player_in,
 
     g_list_free(entries);
   } // end IF
-  RPG_Magic_Spells_t player_known_spells = player_in.getKnownSpells();
-  RPG_Magic_SpellList_t player_spells = player_in.getSpells();
+  RPG_Magic_SpellTypes_t player_known_spells = player_in.getKnownSpells();
+  RPG_Magic_Spells_t player_spells = player_in.getSpells();
   // *NOTE*: only Bards and Sorcerers have a limited set of "known" spells to choose from
   if (RPG_Character_Class_Common_Tools::hasSubClass(player_class,
                                                     SUBCLASS_BARD) ||
       RPG_Character_Class_Common_Tools::hasSubClass(player_class,
                                                     SUBCLASS_SORCERER))
-    for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
+    for (RPG_Magic_SpellTypesIterator_t iterator = player_known_spells.begin();
          iterator != player_known_spells.end();
          iterator++)
     {
@@ -609,7 +610,7 @@ update_character_profile(const RPG_Character_Player& player_in,
                          0);   // padding
     } // end FOR
   else
-    for (RPG_Magic_SpellListIterator_t iterator = player_spells.begin();
+    for (RPG_Magic_SpellsIterator_t iterator = player_spells.begin();
          iterator != player_spells.end();
          iterator++)
     {
@@ -1024,7 +1025,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 
   // sanity check(s)
   ACE_ASSERT(data->xml);
-  ACE_ASSERT(data->engine);
+  ACE_ASSERT(data->level_engine);
 
   // retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->xml,
@@ -1050,7 +1051,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   // if necessary, update starting position
   if ((data->current_entity.position.first == 0) &&
       (data->current_entity.position.second == 0))
-    data->current_entity.position = data->engine->getStartPosition();
+    data->current_entity.position = data->level_engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_actions = GTK_FRAME(glade_xml_get_widget(data->xml,
@@ -1109,18 +1110,18 @@ join_game_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
 
   // sanity check(s)
-  ACE_ASSERT(data->map_window);
+  ACE_ASSERT(data->client_engine);
   ACE_ASSERT(data->current_entity.character);
-  ACE_ASSERT(data->engine);
+  ACE_ASSERT(data->level_engine);
 
   // set start position, if necessary
   if ((data->current_entity.position.first == 0) &&
       (data->current_entity.position.second == 0))
-    data->current_entity.position = data->engine->getStartPosition();
+    data->current_entity.position = data->level_engine->getStartPosition();
 
   // activate the current character
-  RPG_Engine_EntityID_t id = data->engine->add(&(data->current_entity));
-  data->map_window->setPlayer(id);
+  RPG_Engine_EntityID_t id = data->level_engine->add(&(data->current_entity));
+  data->client_engine->setPlayer(id);
 
   // make join button INsensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
@@ -1150,13 +1151,13 @@ part_game_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
 
   // sanity check(s)
-  ACE_ASSERT(data->map_window);
-  ACE_ASSERT(data->engine);
+  ACE_ASSERT(data->client_engine);
+  ACE_ASSERT(data->level_engine);
 
   // activate the current character
-  RPG_Engine_EntityID_t id = data->map_window->getPlayer();
-  data->engine->remove(id);
-  data->map_window->setPlayer(0);
+  RPG_Engine_EntityID_t id = data->client_engine->getPlayer();
+  data->level_engine->remove(id);
+  data->client_engine->setPlayer(0);
 
   // make join button INsensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
@@ -1188,7 +1189,6 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT(widget_in);
   ACE_ASSERT(data->xml);
-  ACE_ASSERT(data->engine);
 
   // retrieve active item
   std::string active_item;
@@ -1230,11 +1230,6 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
   // update entity profile widgets
   ::update_entity_profile(data->current_entity,
                           data->xml);
-
-  // (if necessary) update entity position
-  if ((data->current_entity.position.first == 0) &&
-      (data->current_entity.position.second == 0))
-    data->current_entity.position = data->engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* player_frame = GTK_FRAME(glade_xml_get_widget(data->xml,

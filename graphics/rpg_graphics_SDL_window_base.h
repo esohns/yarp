@@ -40,6 +40,7 @@ class RPG_Graphics_SDLWindowBase
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void setScreen(SDL_Surface*); // (default) screen
+  virtual SDL_Surface* getScreen(); // (default) screen
   virtual void refresh(SDL_Surface* = NULL); // target surface (default: screen)
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)

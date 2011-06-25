@@ -12,6 +12,10 @@ struct RPG_Dice_Roll
   unsigned int numDice;
   RPG_Dice_DieType typeDice;
   int modifier;
+
+  // *TODO* will be clobbered by subsequent updates of the schema
+  // (refer to rpg_dice_common.h for a template)
+  RPG_Dice_Roll& operator*=(int);
 };
 
 #endif

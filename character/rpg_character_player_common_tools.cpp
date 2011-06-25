@@ -71,12 +71,12 @@ RPG_Character_Player_Common_Tools::abilitiesXMLTreeToAbilities(const RPG_Charact
   return result;
 }
 
-RPG_Magic_Spells_t
+RPG_Magic_SpellTypes_t
 RPG_Character_Player_Common_Tools::knownSpellXMLTreeToSpells(const RPG_Character_PlayerXML_XMLTree_Type::spell_sequence& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::knownSpellXMLTreeToSpells"));
 
-  RPG_Magic_Spells_t result;
+  RPG_Magic_SpellTypes_t result;
 
   for (RPG_Character_PlayerXML_XMLTree_Type::spell_const_iterator iterator = spells_in.begin();
        iterator != spells_in.end();
@@ -101,12 +101,12 @@ RPG_Character_Player_Common_Tools::conditionXMLTreeToCondition(const RPG_Charact
   return result;
 }
 
-RPG_Magic_SpellTypes_t
+RPG_Magic_Spells_t
 RPG_Character_Player_Common_Tools::spellXMLTreeToSpells(const RPG_Character_PlayerXML_XMLTree_Type::spell_sequence& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Player_Common_Tools::spellXMLTreeToSpells"));
 
-  RPG_Magic_SpellTypes_t result;
+  RPG_Magic_Spells_t result;
 
   for (RPG_Character_PlayerXML_XMLTree_Type::spell_const_iterator iterator = spells_in.begin();
        iterator != spells_in.end();

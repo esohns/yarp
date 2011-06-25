@@ -19,10 +19,11 @@
  ***************************************************************************/
 #include "rpg_item_common_tools.h"
 
-#include <rpg_magic_incl.h>
-
 #include "rpg_item_incl.h"
 #include "rpg_item_dictionary.h"
+
+#include <rpg_character_incl.h>
+#include <rpg_magic_incl.h>
 
 #include <rpg_common_macros.h>
 

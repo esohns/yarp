@@ -44,7 +44,7 @@ RPG_Monster::RPG_Monster(// base attributes
                          const RPG_Character_Conditions_t& condition_in,
                          const unsigned short int& hitpoints_in,
                          const unsigned int& wealth_in,
-                         const RPG_Magic_SpellList_t& spells_in,
+                         const RPG_Magic_SpellTypes_t& spells_in,
                          const RPG_Item_List_t& inventory_in,
                          const bool& isSummoned_in)
  : inherited(// base attributes

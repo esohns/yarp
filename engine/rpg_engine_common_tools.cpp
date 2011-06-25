@@ -494,10 +494,10 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
          index++, race_index++)
     {
       if (player_race.test(index))
-        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)));
+        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race>(race_index)));
     } // end IF
-    RPG_Magic_Spells_t player_known_spells = player->getKnownSpells();
-    for (RPG_Magic_SpellsIterator_t iterator = player_known_spells.begin();
+    RPG_Magic_SpellTypes_t player_known_spells = player->getKnownSpells();
+    for (RPG_Magic_SpellTypesIterator_t iterator = player_known_spells.begin();
          iterator != player_known_spells.end();
          iterator++)
       player_model.knownSpell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
@@ -506,8 +506,8 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
          iterator != player_condition.end();
          iterator++)
       player_model.condition().push_back(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
-    RPG_Magic_SpellList_t player_spells = player->getSpells();
-    for (RPG_Magic_SpellListIterator_t iterator = player_spells.begin();
+    RPG_Magic_Spells_t player_spells = player->getSpells();
+    for (RPG_Magic_SpellsIterator_t iterator = player_spells.begin();
          iterator != player_spells.end();
          iterator++)
       player_model.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
@@ -1207,7 +1207,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
         damage_element.amount.modifier += ::lround(RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor);
       // *TODO*: extra damage over and above a weapon’s normal damage is not multiplied
       if (is_critical_hit) // *IMPORTANT NOTE*: this applies for physical/natural damage only !
-        damage_element.amount *= static_cast<int> (weapon_properties.criticalHit.damageModifier);
+        damage_element.amount *= static_cast<int>(weapon_properties.criticalHit.damageModifier);
       damage_element.secondary.numDice = 0;
       damage_element.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
       damage_element.secondary.modifier = 0;

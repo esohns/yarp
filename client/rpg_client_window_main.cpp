@@ -21,6 +21,7 @@
 
 #include "rpg_client_defines.h"
 #include "rpg_client_window_level.h"
+#include "rpg_client_engine.h"
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
@@ -43,6 +44,7 @@ RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t& si
              elementType_in, // element type
              title_in,       // title
              NULL),          // background
+   myEngine(NULL),
    myScreenshotIndex(1),
    myLastHoverTime(0),
    myHaveMouseFocus(true), // *NOTE*: enforced with SDL_WarpMouse()
@@ -59,9 +61,14 @@ RPG_Client_WindowMain::~RPG_Client_WindowMain()
 }
 
 void
-RPG_Client_WindowMain::init()
+RPG_Client_WindowMain::init(RPG_Client_Engine* engine_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::init"));
+
+  // sanity checks
+  ACE_ASSERT(engine_in);
+
+  myEngine = engine_in;
 
   // init scroll margins
   initScrollSpots();
@@ -69,8 +76,8 @@ RPG_Client_WindowMain::init()
 
 void
 RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
-                         const unsigned long& offsetX_in,
-                         const unsigned long& offsetY_in)
+                            const unsigned long& offsetX_in,
+                            const unsigned long& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::draw"));
 
@@ -79,8 +86,8 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
-  ACE_ASSERT(static_cast<int> (offsetX_in) <= targetSurface->w);
-  ACE_ASSERT(static_cast<int> (offsetY_in) <= targetSurface->h);
+  ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
+  ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
 
   // step1: draw borders
   drawBorder(targetSurface,
@@ -212,9 +219,9 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
   // init return value(s)
   redraw_out = false;
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("RPG_Client_WindowMain::handleEvent\n")));
-
+  RPG_Client_Action client_action;
+  client_action.window = this;
+  client_action.position = std::make_pair(0, 0);
   switch (event_in.type)
   {
     // *** visibility ***
@@ -226,15 +233,6 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("gained mouse coverage...\n")));
-
-          // --> restore background
-          SDL_Rect dirtyRegion;
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
-                                                                       dirtyRegion);
-          //             invalidate(dirtyRegion);
-          // *NOTE*: updating straight away reduces ugly smears...
-          RPG_Graphics_Surface::update(dirtyRegion,
-                                       myScreen);
 
           // *HACK*: prevents MOST "mouse trails" (NW borders)...
           drawBorder(myScreen,
@@ -248,6 +246,9 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("lost mouse coverage...\n")));
+
+          client_action.command = COMMAND_CURSOR_RESTORE_BG;
+          myEngine->action(client_action);
 
           // *HACK*: prevents MOST "mouse trails" (NW borders)...
           drawBorder(myScreen,
@@ -306,9 +307,9 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
           dump_path += ACE_TEXT("screenshot_");
           dump_path += converter.str();
           dump_path += ACE_TEXT(".png");
-          RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
-                                        dump_path,              // file
-                                        false);                 // no alpha
+          RPG_Graphics_Surface::savePNG(*myScreen, // image
+                                        dump_path, // file
+                                        false);    // no alpha
 
           break;
         }
@@ -323,8 +324,8 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
     }
     case SDL_KEYUP:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("key released...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("key released...\n")));
 
       break;
     }
@@ -333,17 +334,6 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse motion...\n")));
-
-//       // (re-)draw the cursor
-//       SDL_Rect dirtyRegion;
-//       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->put(event_in.motion.x,
-//                                                      event_in.motion.y,
-//                                                      myScreen,
-//                                                      dirtyRegion);
-//       myDirtyRegions.push_back(dirtyRegion);
-//
-//       // show changes
-//       refresh();
 
       break;
     }
@@ -360,34 +350,20 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
       {
         // retrieve hotspot window handle
         RPG_Graphics_HotSpot* hotspot = NULL;
-        hotspot = dynamic_cast<RPG_Graphics_HotSpot*> (window_in);
-        if (!hotspot)
-        {
-          ACE_DEBUG((LM_ERROR,
-                    ACE_TEXT("dynamic downcast failed, aborting\n")));
-
-          break;
-        } // end IF
+        hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
+        ACE_ASSERT(hotspot);
 
         // retrieve map window handle
         RPG_Graphics_WindowsConstIterator_t iterator = myChildren.begin();
         for (;
              iterator != myChildren.end();
              iterator++)
-        {
           if ((*iterator)->getType() == WINDOWTYPE_MAP)
             break;
-        } // end FOR
         ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
         RPG_Client_WindowLevel* levelWindow = NULL;
-        levelWindow = dynamic_cast<RPG_Client_WindowLevel*> (*iterator);
-        if (!levelWindow)
-        {
-          ACE_DEBUG((LM_ERROR,
-                    ACE_TEXT("dynamic downcast failed, aborting\n")));
-
-          break;
-        } // end IF
+        levelWindow = dynamic_cast<RPG_Client_WindowLevel*>(*iterator);
+        ACE_ASSERT(levelWindow);
 
         switch (hotspot->getCursorType())
         {
@@ -465,12 +441,6 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
           }
         } // end SWITCH
 
-//         // *NOTE*: fiddling with the view invalidates the cursor BG !
-//         RPG_GRAPHICS_CURSOR_SINGLETON::instance()->invalidateBG();
-
-        // need a redraw
-        redraw_out = true;
-
   //       ACE_DEBUG((LM_DEBUG,
   //                  ACE_TEXT("scrolled map (%s)...\n"),
   //                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
@@ -480,10 +450,10 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
     }
     case SDL_MOUSEBUTTONUP:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse button [%u,%u] released...\n"),
-                 static_cast<unsigned long> (event_in.button.which),
-                 static_cast<unsigned long> (event_in.button.button)));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("mouse button [%u,%u] released...\n"),
+//                  static_cast<unsigned long> (event_in.button.which),
+//                  static_cast<unsigned long> (event_in.button.button)));
 
       break;
     }
@@ -494,36 +464,36 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
     case SDL_JOYBUTTONDOWN:
     case SDL_JOYBUTTONUP:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("joystick activity...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("joystick activity...\n")));
 
       break;
     }
     case SDL_QUIT:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_QUIT event...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_QUIT event...\n")));
 
       break;
     }
     case SDL_SYSWMEVENT:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_SYSWMEVENT event...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_SYSWMEVENT event...\n")));
 
       break;
     }
     case SDL_VIDEORESIZE:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_VIDEORESIZE event...\n")));
 
       break;
     }
     case SDL_VIDEOEXPOSE:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
 
       break;
     }
@@ -547,33 +517,19 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;
       hotspot = dynamic_cast<RPG_Graphics_HotSpot*> (window_in);
-      if (!hotspot)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("dynamic downcast failed, aborting\n")));
-
-        break;
-      } // end IF
+      ACE_ASSERT(hotspot);
 
       // retrieve map window handle
       RPG_Graphics_WindowsConstIterator_t iterator = myChildren.begin();
       for (;
            iterator != myChildren.end();
            iterator++)
-      {
         if ((*iterator)->getType() == WINDOWTYPE_MAP)
           break;
-      } // end FOR
       ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
       RPG_Client_WindowLevel* levelWindow = NULL;
       levelWindow = dynamic_cast<RPG_Client_WindowLevel*> (*iterator);
-      if (!levelWindow)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("dynamic downcast failed, aborting\n")));
-
-        break;
-      } // end IF
+      ACE_ASSERT(levelWindow);
 
       if (myLastHoverTime)
       {
@@ -659,12 +615,6 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         }
       } // end SWITCH
 
-//       // *NOTE*: fiddling with the view invalidates the cursor BG !
-//       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-
-      // need a redraw
-      redraw_out = true;
-
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("scrolled map (%s)...\n"),
 //                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
@@ -676,12 +626,8 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
 
-//       // --> restore background
-//       SDL_Rect dirtyRegion;
-//       RPG_GRAPHICS_CURSOR_SINGLETON::instance()->restore(myScreen,
-//                                               dirtyRegion);
-// //           RPG_Graphics_Surface::update(dirtyRegion,
-// //                                        myScreen);
+      client_action.command = COMMAND_CURSOR_RESTORE_BG;
+      myEngine->action(client_action);
 
       break;
     }
@@ -765,8 +711,8 @@ RPG_Client_WindowMain::initScrollSpots()
 
 void
 RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
-                               const unsigned long& offsetX_in,
-                               const unsigned long& offsetY_in)
+                                  const unsigned long& offsetX_in,
+                                  const unsigned long& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::drawBorder"));
 
@@ -775,8 +721,8 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
-  ACE_ASSERT(static_cast<int> (offsetX_in) <= targetSurface->w);
-  ACE_ASSERT(static_cast<int> (offsetY_in) <= targetSurface->h);
+  ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
+  ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
 
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
   SDL_Rect prev_clipRect, clipRect;

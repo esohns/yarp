@@ -35,6 +35,9 @@
 
 #include <string>
 
+// forward declaration(s)
+class RPG_Client_Engine;
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
@@ -50,7 +53,7 @@ class RPG_Client_WindowMain
 
   // initialize different hotspots
   // *WARNING*: call this AFTER setScreen() !
-  void init();
+  void init(RPG_Client_Engine*); // engine handle
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -74,12 +77,14 @@ class RPG_Client_WindowMain
                   const unsigned long& = 0,  // offset x (top-left = [0,0])
                   const unsigned long& = 0); // offset y (top-left = [0,0])
 
-  // counter
-  unsigned long     myScreenshotIndex;
+  RPG_Client_Engine* myEngine;
 
-  unsigned long     myLastHoverTime;
-  bool              myHaveMouseFocus;
-  RPG_Graphics_Font myTitleFont;
+  // counter
+  unsigned long      myScreenshotIndex;
+
+  unsigned long      myLastHoverTime;
+  bool               myHaveMouseFocus;
+  RPG_Graphics_Font  myTitleFont;
 };
 
 #endif

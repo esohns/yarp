@@ -1774,7 +1774,7 @@ RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMea
       }
       case COUNTERMEASURE_SPELL:
       {
-        for (RPG_Magic_SpellTypesIterator_t iterator2 = (*iterator).spells.begin();
+        for (RPG_Magic_SpellsIterator_t iterator2 = (*iterator).spells.begin();
              iterator2 != (*iterator).spells.end();
              iterator2++)
         {
@@ -1810,13 +1810,13 @@ RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMea
 }
 
 const std::string
-RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_Spells_t& knownSpells_in)
+RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellTypes_t& knownSpells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
 
   std::string result;
 
-  for (RPG_Magic_SpellsIterator_t iterator = knownSpells_in.begin();
+  for (RPG_Magic_SpellTypesIterator_t iterator = knownSpells_in.begin();
        iterator != knownSpells_in.end();
        iterator++)
   {
@@ -1828,17 +1828,17 @@ RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_Spells_t& knownSpells_in)
 }
 
 const std::string
-RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellTypes_t& spells_in)
+RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_Spells_t& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
 
   std::string result;
 
-  RPG_Magic_Spells_t completed;
+  RPG_Magic_SpellTypes_t completed;
   unsigned int count = 0;
   std::ostringstream converter;
-  RPG_Magic_SpellTypesIterator_t iterator2;
-  for (RPG_Magic_SpellTypesIterator_t iterator = spells_in.begin();
+  RPG_Magic_SpellsIterator_t iterator2;
+  for (RPG_Magic_SpellsIterator_t iterator = spells_in.begin();
        iterator != spells_in.end();
        iterator++)
   {

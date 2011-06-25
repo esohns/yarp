@@ -21,7 +21,12 @@
 #ifndef RPG_ENGINE_DEFINES_H
 #define RPG_ENGINE_DEFINES_H
 
+// task-specific
+#define RPG_ENGINE_DEF_TASK_GROUP_ID   1
+#define RPG_ENGINE_MAX_QUEUE_SLOTS     100
+#define RPG_ENGINE_EVENT_PEEK_INTERVAL 50 // ms
+
 // XML-specific
-#define RPG_ENGINE_SCHEMA_FILE  ACE_TEXT("rpg_engine.xsd")
+#define RPG_ENGINE_SCHEMA_FILE       ACE_TEXT("rpg_engine.xsd")
 
 #endif

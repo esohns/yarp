@@ -20,6 +20,7 @@
 #ifndef RPG_GRAPHICS_CURSOR_MANAGER_H
 #define RPG_GRAPHICS_CURSOR_MANAGER_H
 
+#include "rpg_graphics_export.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
 
@@ -37,7 +38,8 @@
 class RPG_Graphics_Cursor_Manager
 {
   // singleton requires access to the ctor/dtor
-  friend class ACE_Singleton<RPG_Graphics_Cursor_Manager, ACE_Thread_Mutex>;
+  friend class ACE_Singleton<RPG_Graphics_Cursor_Manager,
+                             ACE_Recursive_Thread_Mutex>;
 
  public:
   const RPG_Graphics_Cursor type() const;
@@ -56,6 +58,10 @@ class RPG_Graphics_Cursor_Manager
                  SDL_Rect&);   // return value: "dirty" region
   // clear the BG
   void invalidateBG();
+
+  // *NOTE*: satisfy ACE_DLL_Singleton_T requirements...
+  const ACE_TCHAR* name(void);
+  const ACE_TCHAR *dll_name (void);
 
  private:
   // safety measures
@@ -78,7 +84,10 @@ class RPG_Graphics_Cursor_Manager
   RPG_Graphics_Cursor_Cache_t myCache;
 };
 
+RPG_GRAPHICS_SINGLETON_DECLARE(ACE_Singleton,
+                               RPG_Graphics_Cursor_Manager,
+                               ACE_Recursive_Thread_Mutex)
 typedef ACE_Singleton<RPG_Graphics_Cursor_Manager,
-                      ACE_Thread_Mutex> RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON;
+                      ACE_Recursive_Thread_Mutex> RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON;
 
 #endif
