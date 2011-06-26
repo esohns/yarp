@@ -264,7 +264,14 @@ RPG_Client_WindowLevel::init(RPG_Engine_Level* state_in,
   setView(center_position);
 
   // *NOTE*: fiddling with the view invalidates the cursor BG !
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+  RPG_Client_Action client_action;
+  client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+  client_action.map_position = std::make_pair(0, 0);
+  client_action.graphics_position = std::make_pair(0, 0);
+  client_action.window = this;
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  myEngine->action(client_action);
+
   // clear highlight BG
   RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -355,7 +362,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
   // pass 1
   for (i = -top_right.second;
-       i <= static_cast<int> (top_right.second);
+       i <= static_cast<int>(top_right.second);
        i++)
   {
     current_map_position.second = myView.second + i;
@@ -469,7 +476,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   RPG_Engine_EntityGraphics_t entity_graphics = myLevelState->getGraphics();
   RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
   for (i = -top_right.second;
-       i <= static_cast<int> (top_right.second);
+       i <= static_cast<int>(top_right.second);
        i++)
   {
     current_map_position.second = myView.second + i;
@@ -637,8 +644,20 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
   // init return value(s)
   redraw_out = false;
 
+  // sanity check(s)
+  ACE_ASSERT(myEngine);
+
   RPG_Engine_Action player_action;
-  bool do_action = false;
+  player_action.command = RPG_ENGINE_COMMAND_INVALID;
+  player_action.direction = DIRECTION_INVALID;
+  player_action.position = std::make_pair(0, 0);
+  RPG_Client_Action client_action;
+  client_action.command = RPG_CLIENT_COMMAND_INVALID;
+  client_action.map_position = std::make_pair(0, 0);
+  client_action.graphics_position = std::make_pair(0, 0);
+  client_action.window = this;
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  bool do_player_action = false;
   bool delegate_to_parent = false;
   switch (event_in.type)
   {
@@ -670,7 +689,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           setView(position);
 
           // *NOTE*: fiddling with the view invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+          client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+          myEngine->action(client_action);
+
           // clear highlight BG
           RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -754,12 +775,14 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
               myEngine->getPlayer())
           {
             player_action.command = COMMAND_STEP;
-            do_action = true;
+            do_player_action = true;
           } // end IF
           else
           {
             // *NOTE*: fiddling with the view invalidates the cursor BG !
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+            client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+            myEngine->action(client_action);
+
             // clear highlight BG
             RPG_Graphics_Surface::clear(myHighlightBG);
 
@@ -797,15 +820,14 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 //                  map_position.second));
 
       // (re-)draw "active" tile highlight ?
-      SDL_Rect clipRect, dirtyRegion;
-      RPG_Graphics_Position_t tile_position;
 
       // inside map ?
       if (map_position == std::make_pair(std::numeric_limits<unsigned long>::max(),
                                          std::numeric_limits<unsigned long>::max()))
       {
         // off the map --> remove "active" tile highlight
-        restoreBG();
+        client_action.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+        myEngine->action(client_action);
 
         break;
       } // end IF
@@ -814,55 +836,38 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       if (map_position != myHighlightBGPosition)
       {
         // *NOTE*: restore cursor BG first
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
-                                                                     dirtyRegion);
-//         invalidate(dirtyRegion);
-        // *NOTE*: updating straight away reduces ugly smears...
-        RPG_Graphics_Surface::update(dirtyRegion,
-                                     myScreen);
+        client_action.command = COMMAND_CURSOR_RESTORE_BG;
+        myEngine->action(client_action);
 
-        // step1: restore/clear old background
-        restoreBG();
+        // step1: restore/clear old tile highlight background
+        client_action.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+        myEngine->action(client_action);
 
         // step2: store current background
-        tile_position = RPG_Engine_Common_Tools::map2Screen(map_position,
+        RPG_Graphics_Position_t tile_position = RPG_Engine_Common_Tools::map2Screen(map_position,
                                                             mySize,
                                                             myView);
         // sanity check for underruns
-        if ((tile_position.first < static_cast<unsigned long> (myScreen->w)) &&
-            (tile_position.second < static_cast<unsigned long> (myScreen->h)))
+        if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
+            (tile_position.second < static_cast<unsigned long>(myScreen->h)))
         {
-          clip();
-          RPG_Graphics_Surface::get(tile_position.first,
-                                    tile_position.second,
-                                    true, // use (fast) blitting method
-                                    *myScreen,
-                                    *myHighlightBG);
-          myHighlightBGPosition = map_position;
+          // clip();
+          client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+          client_action.graphics_position = tile_position;
+          client_action.map_position = map_position;
+          myEngine->action(client_action);
 
           // step3: draw highlight
-  //         ACE_DEBUG((LM_DEBUG,
-  //                    ACE_TEXT("highlight @ (%u,%u) --> (%u,%u)\n"),
-  //                    map_position.first,
-  //                    map_position.second,
-  //                    tile_position.first,
-  //                    tile_position.second));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("highlight @ (%u,%u) --> (%u,%u)\n"),
+//                      map_position.first,
+//                      map_position.second,
+//                      tile_position.first,
+//                      tile_position.second));
 
-          RPG_Graphics_Surface::put(tile_position.first,
-                                    tile_position.second,
-                                    *myHighlightTile,
-                                    myScreen);
-
-          dirtyRegion.x = tile_position.first;
-          dirtyRegion.y = tile_position.second;
-          dirtyRegion.w = myHighlightTile->w;
-          dirtyRegion.h = myHighlightTile->h;
-          SDL_GetClipRect(myScreen, &clipRect);
-          unclip();
-//           invalidate(dirtyRegion);
-          // *NOTE*: updating straight away reduces ugly smears...
-          RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
-                                       myScreen);
+          client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+          myEngine->action(client_action);
+//           unclip();
         } // end IF
       } // end IF
 
@@ -871,15 +876,12 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                                                                            *myLevelState);
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
-        // *NOTE*: restore cursor BG first
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
-                                                                     dirtyRegion);
-//         invalidate(dirtyRegion);
-        // *NOTE*: updating straight away reduces ugly smears...
-        RPG_Graphics_Surface::update(dirtyRegion,
-                                     myScreen);
+        client_action.command = COMMAND_CURSOR_RESTORE_BG;
+        myEngine->action(client_action);
 
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_type);
+        client_action.command = COMMAND_CURSOR_SET;
+        client_action.cursor = cursor_type;
+        myEngine->action(client_action);
       } // end IF
 
       break;
@@ -914,13 +916,16 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         {
           case MAPELEMENT_DOOR:
           {
-            // --> (try to) open/close it
-            if ((RPG_Map_Common_Tools::dist2Positions(myLevelState->getPosition(myEngine->getPlayer()),
+            RPG_Map_Door_t door = myLevelState->getDoor(map_position);
+
+            // closed --> (try to) open it
+            if ((!door.is_open) &&
+                (RPG_Map_Common_Tools::dist2Positions(myLevelState->getPosition(myEngine->getPlayer()),
                                                       map_position) == 1))
             {
-              RPG_Map_Door_t door = myLevelState->getDoor(map_position);
-
               player_action.command = (door.is_open ? COMMAND_DOOR_CLOSE : COMMAND_DOOR_OPEN);
+              player_action.position = map_position;
+              do_player_action = true;
 
               break;
             } // end IF
@@ -932,7 +937,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             // (try to) travel to this position
             player_action.command = COMMAND_TRAVEL;
             player_action.position = map_position;
-            do_action = true;
+            do_player_action = true;
 
             break;
           }
@@ -957,7 +962,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
       // restore/clear highlight BG
       // *CONSIDER*: is this really useful/necessary ?
-      restoreBG();
+      client_action.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+      myEngine->action(client_action);
 
       break;
     }
@@ -982,7 +988,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
     }
   } // end SWITCH
 
-  if (do_action)
+  if (do_player_action)
     myLevelState->action(myEngine->getPlayer(), player_action);
 
   if (delegate_to_parent)
@@ -1214,12 +1220,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       // set wall opacity
       SDL_Surface* shaded_wall = NULL;
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.east.surface,
-                                                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -1240,12 +1246,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.east.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.west.surface,
-                                                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -1266,12 +1272,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.west.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.south.surface,
-                                                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -1292,12 +1298,12 @@ RPG_Client_WindowLevel::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.south.surface = shaded_wall;
 
       shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.north.surface,
-                                                static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         // clean up
         if (myCurrentWallSet.east.surface)
@@ -1405,12 +1411,12 @@ RPG_Client_WindowLevel::initCeiling()
 
   SDL_Surface* shaded_ceiling = NULL;
   shaded_ceiling = RPG_Graphics_Surface::shade(*myCurrentCeilingTile,
-                                               static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                               static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-               static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+               static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
     // clean up
     SDL_FreeSurface(myCurrentCeilingTile);
@@ -1483,41 +1489,83 @@ RPG_Client_WindowLevel::initWallBlend()
 }
 
 void
-RPG_Client_WindowLevel::restoreBG()
+RPG_Client_WindowLevel::drawHighlight(const RPG_Graphics_Position_t& graphicsPosition_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::restoreBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::drawHighlight"));
+
+  // sanity check
+  ACE_ASSERT(myHighlightTile);
+  ACE_ASSERT(myScreen);
+
+  RPG_Graphics_Surface::put(graphicsPosition_in.first,
+                            graphicsPosition_in.second,
+                            *myHighlightTile,
+                            myScreen);
 
   SDL_Rect dirtyRegion, clipRect;
-  RPG_Graphics_Position_t tile_position;
+  dirtyRegion.x = graphicsPosition_in.first;
+  dirtyRegion.y = graphicsPosition_in.second;
+  dirtyRegion.w = myHighlightTile->w;
+  dirtyRegion.h = myHighlightTile->h;
+  SDL_GetClipRect(myScreen, &clipRect);
 
-  if (myHighlightBG)
+//   invalidate(dirtyRegion);
+  // *NOTE*: updating straight away reduces ugly smears...
+  RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
+                               myScreen);
+}
+
+void
+RPG_Client_WindowLevel::storeHighlightBG(const RPG_Map_Position_t& mapPosition_in,
+                                         const RPG_Graphics_Position_t& graphicsPosition_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::storeHighlightBG"));
+
+  // sanity check
+  ACE_ASSERT(myScreen);
+  ACE_ASSERT(myHighlightBG);
+
+  RPG_Graphics_Surface::get(graphicsPosition_in.first,
+                            graphicsPosition_in.second,
+                            true, // use (fast) blitting method
+                            *myScreen,
+                            *myHighlightBG);
+  myHighlightBGPosition = mapPosition_in;
+}
+
+void
+RPG_Client_WindowLevel::restoreHighlightBG()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::restoreHighlightBG"));
+
+  // sanity check
+  ACE_ASSERT(myHighlightBG);
+  ACE_ASSERT(myScreen);
+
+  SDL_Rect dirtyRegion, clipRect;
+  RPG_Graphics_Position_t tile_position = RPG_Engine_Common_Tools::map2Screen(myHighlightBGPosition,
+                                                      mySize,
+                                                      myView);
+  // sanity check for underruns
+  if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
+      (tile_position.second < static_cast<unsigned long>(myScreen->h)))
   {
-    tile_position = RPG_Engine_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                        mySize,
-                                                        myView);
-    // sanity check for underruns
-    if ((tile_position.first < static_cast<unsigned long> (myScreen->w)) &&
-        (tile_position.second < static_cast<unsigned long> (myScreen->h)))
-    {
-      clip();
-      RPG_Graphics_Surface::put(tile_position.first,
-                                tile_position.second,
-                                *myHighlightBG,
-                                myScreen);
+    RPG_Graphics_Surface::put(tile_position.first,
+                              tile_position.second,
+                              *myHighlightBG,
+                              myScreen);
 
-      dirtyRegion.x = tile_position.first;
-      dirtyRegion.y = tile_position.second;
-      dirtyRegion.w = myHighlightBG->w;
-      dirtyRegion.h = myHighlightBG->h;
-      SDL_GetClipRect(myScreen, &clipRect);
-      unclip();
-//             invalidate(dirtyRegion);
-      // *NOTE*: updating straight away reduces ugly smears...
-      RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
-                                   myScreen);
-    } // end IF
-
-    // clear highlight BG
-    RPG_Graphics_Surface::clear(myHighlightBG);
+    dirtyRegion.x = tile_position.first;
+    dirtyRegion.y = tile_position.second;
+    dirtyRegion.w = myHighlightBG->w;
+    dirtyRegion.h = myHighlightBG->h;
+    SDL_GetClipRect(myScreen, &clipRect);
+//       invalidate(dirtyRegion);
+    // *NOTE*: updating straight away reduces ugly smears...
+    RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
+                                 myScreen);
   } // end IF
+
+  // clear highlight BG
+  RPG_Graphics_Surface::clear(myHighlightBG);
 }

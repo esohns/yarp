@@ -660,9 +660,9 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   // clip where necessary...
   unsigned long clipped_width, clipped_height;
   clipped_width = (source_in.w - offsetX_in); // available width
-  clipped_width = ((clipped_width > static_cast<unsigned long> (target_inout.w)) ? target_inout.w : clipped_width);
+  clipped_width = ((clipped_width > static_cast<unsigned long>(target_inout.w)) ? target_inout.w : clipped_width);
   clipped_height = (source_in.h - offsetY_in); // available height
-  clipped_height = ((clipped_height > static_cast<unsigned long> (target_inout.h)) ? target_inout.h : clipped_height);
+  clipped_height = ((clipped_height > static_cast<unsigned long>(target_inout.h)) ? target_inout.h : clipped_height);
 
   // *NOTE*: blitting does not preserve the alpha channel...
   if (blit_in)
@@ -673,10 +673,10 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
     clipRect.y = offsetY_in;
     clipRect.w = clipped_width;
     clipRect.h = clipped_height;
-    if (SDL_BlitSurface(const_cast<SDL_Surface*> (&source_in), // source
-                        &clipRect,                                // aspect
-                        &target_inout,                            // target
-                        NULL))                                    // aspect (--> everything)
+    if (SDL_BlitSurface(const_cast<SDL_Surface*>(&source_in), // source
+                        &clipRect,                            // aspect
+                        &target_inout,                        // target
+                        NULL))                                // aspect (--> everything)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
@@ -690,39 +690,39 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
 
   // lock surfaces during pixel access
   if (SDL_MUSTLOCK((&source_in)))
-    if (SDL_LockSurface(&const_cast<SDL_Surface&> (source_in)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-               SDL_GetError()));
+    if (SDL_LockSurface(&const_cast<SDL_Surface&>(source_in)))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+                 SDL_GetError()));
 
-    return;
-  } // end IF
+      return;
+    } // end IF
   if (SDL_MUSTLOCK((&target_inout)))
-    if (SDL_LockSurface(&const_cast<SDL_Surface&> (target_inout)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-               SDL_GetError()));
+    if (SDL_LockSurface(&const_cast<SDL_Surface&>(target_inout)))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+                 SDL_GetError()));
 
-    // clean up
-    if (SDL_MUSTLOCK((&source_in)))
-      SDL_UnlockSurface(&const_cast<SDL_Surface&> (source_in));
+      // clean up
+      if (SDL_MUSTLOCK((&source_in)))
+        SDL_UnlockSurface(&const_cast<SDL_Surface&>(source_in));
 
-    return;
-  } // end IF
+      return;
+    } // end IF
 
   for (unsigned long i = 0;
        i < clipped_height;
        i++)
-    ::memcpy((static_cast<unsigned char*> (target_inout.pixels) + (target_inout.pitch * i)),
-             (static_cast<unsigned char*> (source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
+    ::memcpy((static_cast<unsigned char*>(target_inout.pixels) + (target_inout.pitch * i)),
+             (static_cast<unsigned char*>(source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
              (clipped_width * target_inout.format->BytesPerPixel)); // RGBA --> 4 bytes
 
   if (SDL_MUSTLOCK((&source_in)))
-    SDL_UnlockSurface(&const_cast<SDL_Surface&> (source_in));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&>(source_in));
   if (SDL_MUSTLOCK((&target_inout)))
-    SDL_UnlockSurface(&const_cast<SDL_Surface&> (target_inout));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&>(target_inout));
 }
 
 void
@@ -952,13 +952,9 @@ RPG_Graphics_Surface::clear(SDL_Surface* targetSurface_in)
   if (SDL_FillRect(targetSurface_in,                        // target
                    NULL,                                    // aspect (--> everything)
                    RPG_Graphics_SDL_Tools::CLR32_BLACK_A0)) // "transparency"
-  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+               ACE_TEXT("failed to SDL_FillRect(): %s, continuing\n"),
                SDL_GetError()));
-
-    return;
-  } // end IF
 }
 
 SDL_Surface*

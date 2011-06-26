@@ -26,6 +26,7 @@
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_iwindow.h>
+#include <rpg_graphics_cursor.h>
 
 #include <rpg_map_common.h>
 
@@ -143,10 +144,16 @@ struct RPG_Client_Config
 enum RPG_Client_Command
 {
   COMMAND_CURSOR_DRAW = 0,
+  COMMAND_CURSOR_INVALIDATE_BG,
   COMMAND_CURSOR_RESTORE_BG,
-//   COMMAND_REFRESH,
+  COMMAND_CURSOR_SET,
+  COMMAND_TILE_HIGHLIGHT_DRAW,
+  COMMAND_TILE_HIGHLIGHT_RESTORE_BG,
+  COMMAND_TILE_HIGHLIGHT_STORE_BG,
   COMMAND_TOGGLE_DOOR,
+  COMMAND_WINDOW_BORDER_DRAW,
   COMMAND_WINDOW_DRAW,
+  COMMAND_WINDOW_REFRESH,
   //
   RPG_CLIENT_COMMAND_MAX,
   RPG_CLIENT_COMMAND_INVALID
@@ -156,9 +163,12 @@ typedef std::pair<int, int> RPG_Client_Position_t;
 struct RPG_Client_Action
 {
   RPG_Client_Command command;
-  RPG_Client_Position_t position;
+  RPG_Map_Position_t map_position;
+  RPG_Graphics_Position_t graphics_position;
   RPG_Graphics_IWindow* window;
+  RPG_Graphics_Cursor cursor;
 };
 typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
+typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;
 
 #endif

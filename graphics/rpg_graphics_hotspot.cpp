@@ -17,12 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_graphics_hotspot.h"
 
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_surface.h"
-#include "rpg_graphics_cursor_manager.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
@@ -83,14 +82,10 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
     {
       // reset cursor
       // --> restore background first
-      SDL_Rect dirtyRegion;
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
-                                                                   dirtyRegion);
-      // *NOTE*: updating straight away reduces ugly smears...
-      RPG_Graphics_Surface::update(dirtyRegion,
-                                   myScreen);
+      getParent()->notify(RPG_GRAPHICS_CURSOR_INVALID);
 
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
+      getParent()->notify(CURSOR_NORMAL);
+
       myCursorHasBeenSet = false;
 
       break;
@@ -101,14 +96,10 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       if (!myCursorHasBeenSet)
       {
         // --> restore background first
-        SDL_Rect dirtyRegion;
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
-                                                                     dirtyRegion);
-        // *NOTE*: updating straight away reduces ugly smears...
-        RPG_Graphics_Surface::update(dirtyRegion,
-                                     myScreen);
+        getParent()->notify(RPG_GRAPHICS_CURSOR_INVALID);
 
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(myCursorType);
+        getParent()->notify(myCursorType);
+
         myCursorHasBeenSet = true;
       } // end IF
 
@@ -133,9 +124,9 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
     default:
     {
       // delegate these to the parent...
-      return getParent()->handleEvent(event_in,
-                                      window_in,
-                                      redraw_out);
+      getParent()->handleEvent(event_in,
+                               window_in,
+                               redraw_out);
 
       break;
     }

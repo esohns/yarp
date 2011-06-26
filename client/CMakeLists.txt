@@ -27,6 +27,7 @@ set(RPG_Client_GUI_LIB_SRCS
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Client_GUI_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
+set_source_files_properties(${RPG_Client_GUI_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS "RPG_GRAPHICS_HAS_DLL=1")
 
 add_library(RPG_Client_GUI SHARED ${RPG_Client_GUI_LIB_SRCS})
 

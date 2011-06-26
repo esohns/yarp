@@ -79,4 +79,7 @@
 // *NOTE*: sensible values are multiples of RPG_CLIENT_SDL_EVENT_TIMEOUT, as
 // that is the resolution factor
 #define RPG_CLIENT_SDL_GTKEVENT_RESOLUTION          200 // ms
+
+#define RPG_CLIENT_ENGINE_IDLE_DELAY                10 // ms
+
 #endif

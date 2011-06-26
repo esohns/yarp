@@ -50,6 +50,10 @@ class RPG_Client_WindowLevel
                const int&); // view (relative map coordinates)
 
   void toggleDoor(const RPG_Map_Position_t&); // door position
+  void drawHighlight(const RPG_Graphics_Position_t&); // highlight position
+  void storeHighlightBG(const RPG_Map_Position_t&,       // map position
+                        const RPG_Graphics_Position_t&); // highlight position
+  void restoreHighlightBG();
 
   // init level properties
   void init(RPG_Engine_Level*,               // state handle
@@ -76,7 +80,6 @@ class RPG_Client_WindowLevel
   // helper methods
   void clear();
   void setStyle(const RPG_Graphics_StyleUnion&);
-  void restoreBG();
 
   void initCeiling();
   void initWallBlend();

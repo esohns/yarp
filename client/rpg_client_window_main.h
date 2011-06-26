@@ -51,6 +51,10 @@ class RPG_Client_WindowMain
                         const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
   virtual ~RPG_Client_WindowMain();
 
+  void drawBorder(SDL_Surface* = NULL,       // target surface (default: screen)
+                  const unsigned long& = 0,  // offset x (top-left = [0,0])
+                  const unsigned long& = 0); // offset y (top-left = [0,0])
+
   // initialize different hotspots
   // *WARNING*: call this AFTER setScreen() !
   void init(RPG_Client_Engine*); // engine handle
@@ -62,6 +66,7 @@ class RPG_Client_WindowMain
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
+  virtual void notify(const RPG_Graphics_Cursor&) const;
 
  private:
   typedef RPG_Graphics_TopLevel inherited;
@@ -73,9 +78,6 @@ class RPG_Client_WindowMain
 
   // helper methods
   void initScrollSpots();
-  void drawBorder(SDL_Surface* = NULL,       // target surface (default: screen)
-                  const unsigned long& = 0,  // offset x (top-left = [0,0])
-                  const unsigned long& = 0); // offset y (top-left = [0,0])
 
   RPG_Client_Engine* myEngine;
 

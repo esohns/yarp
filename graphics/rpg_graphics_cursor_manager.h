@@ -59,10 +59,6 @@ class RPG_Graphics_Cursor_Manager
   // clear the BG
   void invalidateBG();
 
-  // *NOTE*: satisfy ACE_DLL_Singleton_T requirements...
-  const ACE_TCHAR* name(void);
-  const ACE_TCHAR *dll_name (void);
-
  private:
   // safety measures
   virtual ~RPG_Graphics_Cursor_Manager();

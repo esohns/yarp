@@ -220,8 +220,11 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
   redraw_out = false;
 
   RPG_Client_Action client_action;
+  client_action.command = RPG_CLIENT_COMMAND_INVALID;
+  client_action.map_position = std::make_pair(0, 0);
+  client_action.graphics_position = std::make_pair(0, 0);
   client_action.window = this;
-  client_action.position = std::make_pair(0, 0);
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   switch (event_in.type)
   {
     // *** visibility ***
@@ -235,10 +238,10 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 //                      ACE_TEXT("gained mouse coverage...\n")));
 
           // *HACK*: prevents MOST "mouse trails" (NW borders)...
-          drawBorder(myScreen,
-                     0,
-                     0);
-          refresh();
+          client_action.command = COMMAND_WINDOW_BORDER_DRAW;
+          myEngine->action(client_action);
+          client_action.command = COMMAND_WINDOW_REFRESH;
+          myEngine->action(client_action);
 
           myHaveMouseFocus = true;
         } // end IF
@@ -247,14 +250,12 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("lost mouse coverage...\n")));
 
-          client_action.command = COMMAND_CURSOR_RESTORE_BG;
-          myEngine->action(client_action);
 
           // *HACK*: prevents MOST "mouse trails" (NW borders)...
-          drawBorder(myScreen,
-                     0,
-                     0);
-          refresh();
+          client_action.command = COMMAND_WINDOW_BORDER_DRAW;
+          myEngine->action(client_action);
+          client_action.command = COMMAND_WINDOW_REFRESH;
+          myEngine->action(client_action);
 
           myHaveMouseFocus = false;
         } // end ELSE
@@ -444,6 +445,20 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
   //       ACE_DEBUG((LM_DEBUG,
   //                  ACE_TEXT("scrolled map (%s)...\n"),
   //                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
+
+        client_action.command = COMMAND_CURSOR_RESTORE_BG;
+        myEngine->action(client_action);
+
+        // *NOTE*: fiddling with the view invalidates the cursor BG !
+//         client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+//         myEngine->action(client_action);
+
+        // schedule redraw & refresh
+        client_action.window = levelWindow;
+        client_action.command = COMMAND_WINDOW_DRAW;
+        myEngine->action(client_action);
+        client_action.command = COMMAND_WINDOW_REFRESH;
+        myEngine->action(client_action);
       } // end IF
 
       break;
@@ -516,7 +531,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;
-      hotspot = dynamic_cast<RPG_Graphics_HotSpot*> (window_in);
+      hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
       ACE_ASSERT(hotspot);
 
       // retrieve map window handle
@@ -528,7 +543,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
           break;
       ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
       RPG_Client_WindowLevel* levelWindow = NULL;
-      levelWindow = dynamic_cast<RPG_Client_WindowLevel*> (*iterator);
+      levelWindow = dynamic_cast<RPG_Client_WindowLevel*>(*iterator);
       ACE_ASSERT(levelWindow);
 
       if (myLastHoverTime)
@@ -619,6 +634,20 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 //                  ACE_TEXT("scrolled map (%s)...\n"),
 //                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
 
+      client_action.command = COMMAND_CURSOR_RESTORE_BG;
+      myEngine->action(client_action);
+
+      // *NOTE*: fiddling with the view invalidates the cursor BG !
+//       client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+//       myEngine->action(client_action);
+
+      // schedule redraw & refresh
+      client_action.window = levelWindow;
+      client_action.command = COMMAND_WINDOW_DRAW;
+      myEngine->action(client_action);
+      client_action.command = COMMAND_WINDOW_REFRESH;
+      myEngine->action(client_action);
+
       break;
     }
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
@@ -635,7 +664,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown event (was: %u)...\n"),
-                 static_cast<unsigned long> (event_in.type)));
+                 static_cast<unsigned long>(event_in.type)));
 
       break;
     }
@@ -644,6 +673,29 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
   // if necessary, reset last hover time
   if (event_in.type != RPG_GRAPHICS_SDL_HOVEREVENT)
     myLastHoverTime = 0;
+}
+
+void
+RPG_Client_WindowMain::notify(const RPG_Graphics_Cursor& cursor_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::notify"));
+
+  RPG_Client_Action client_action;
+  client_action.command = RPG_CLIENT_COMMAND_INVALID;
+  client_action.graphics_position = std::make_pair(0, 0);
+  client_action.map_position = std::make_pair(0, 0);
+  client_action.window = const_cast<RPG_Client_WindowMain*>(this);
+  client_action.cursor = cursor_in;
+  if (cursor_in == RPG_GRAPHICS_CURSOR_INVALID)
+  {
+    client_action.command = COMMAND_CURSOR_RESTORE_BG;
+    myEngine->action(client_action);
+
+    return;
+  } // end IF
+
+  client_action.command = COMMAND_CURSOR_SET;
+  myEngine->action(client_action);
 }
 
 void

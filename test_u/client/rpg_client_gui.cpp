@@ -52,6 +52,7 @@
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_SDL_tools.h>
 #include <rpg_graphics_common_tools.h>
+#include <rpg_graphics_cursor.h>
 
 #include <rpg_sound_defines.h>
 #include <rpg_sound_dictionary.h>
@@ -1204,8 +1205,8 @@ do_work(const RPG_Client_Config& config_in,
                                    FONT_MAIN_LARGE);                              // title font
   mainWindow.setScreen(userData.screen);
   mainWindow.init(&client_engine);
-  mainWindow.draw();
-  mainWindow.refresh();
+//   mainWindow.draw();
+//   mainWindow.refresh();
 
   // step4b: set default cursor
   RPG_Client_Common_Tools::init();
@@ -1269,17 +1270,8 @@ do_work(const RPG_Client_Config& config_in,
                  &client_engine,
                  floor_plan,
                  mapStyle);
-  // refresh screen
-  try
-  {
-    mapWindow.draw();
-    mapWindow.refresh();
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
-  }
+//   mapWindow.draw();
+//   mapWindow.refresh();
 
   level_engine.init(&client_engine,
                     start_position,
@@ -1306,6 +1298,20 @@ do_work(const RPG_Client_Config& config_in,
 
     return;
   } // end IF
+
+  // trigger initial drawing
+  RPG_Client_Action client_action;
+  client_action.command = COMMAND_WINDOW_DRAW;
+  client_action.map_position = std::make_pair(0, 0);
+  client_action.graphics_position = std::make_pair(0, 0);
+  client_action.window = &mainWindow;
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  client_engine.action(client_action);
+  client_action.window = &mapWindow;
+  client_engine.action(client_action);
+  client_action.command = COMMAND_WINDOW_REFRESH;
+  client_action.window = &mainWindow;
+  client_engine.action(client_action);
 
   // start timer (triggers hover- and GTK events)
   userData.event_timer = NULL;
@@ -1432,9 +1438,6 @@ do_work(const RPG_Client_Config& config_in,
   RPG_Graphics_IWindow* window = NULL;
   RPG_Graphics_IWindow* previous_window = NULL;
   bool schedule_redraw = false;
-  RPG_Client_Action client_action;
-  client_action.command = RPG_CLIENT_COMMAND_INVALID;
-  client_action.position = std::make_pair(0, 0);
   bool previous_redraw = false;
   RPG_Graphics_Position_t mouse_position;
 //   bool refresh_screen = false;
@@ -1444,7 +1447,10 @@ do_work(const RPG_Client_Config& config_in,
     window = NULL;
     schedule_redraw = false;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
-    client_action.position = std::make_pair(0, 0);
+    client_action.map_position = std::make_pair(0, 0);
+    client_action.graphics_position = std::make_pair(0, 0);
+    client_action.window = NULL;
+    previous_redraw = false;
     mouse_position = std::make_pair(0, 0);
 //     refresh_screen = false;
 
@@ -1680,7 +1686,8 @@ do_work(const RPG_Client_Config& config_in,
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
         client_action.command = COMMAND_CURSOR_DRAW;
-        client_action.position = mouse_position;
+        client_action.graphics_position = mouse_position;
+        client_action.window = window;
         client_engine.action(client_action);
 
         break;

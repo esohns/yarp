@@ -22,6 +22,7 @@
 #define RPG_GRAPHICS_IWINDOW_H
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_cursor.h"
 
 #include <SDL/SDL.h>
 
@@ -34,14 +35,17 @@ class RPG_Graphics_IWindow
   // exposed interface
   virtual void setScreen(SDL_Surface*) = 0;        // (default) screen
   virtual SDL_Surface* getScreen() = 0;            // (default) screen
+  virtual const RPG_Graphics_WindowType getType() const = 0;
+
   virtual void draw(SDL_Surface* = NULL,           // target surface (default: screen)
                     const unsigned long& = 0,      // offset x (top-left = [0,0])
                     const unsigned long& = 0) = 0; // offset y (top-left = [0,0])
-  virtual void refresh(SDL_Surface* = NULL) = 0; // target surface (default: screen)
-  virtual void handleEvent(const SDL_Event&,      // event
-                           RPG_Graphics_IWindow*, // target window (NULL: this)
-                           bool&) = 0;            // return value: redraw ?
-  virtual const RPG_Graphics_WindowType getType() const = 0;
+  virtual void refresh(SDL_Surface* = NULL) = 0;   // target surface (default: screen)
+
+  virtual void handleEvent(const SDL_Event&,       // event
+                           RPG_Graphics_IWindow*,  // target window (NULL: this)
+                           bool&) = 0;             // return value: redraw ?
+  virtual void notify(const RPG_Graphics_Cursor&) const = 0;
 };
 
 #endif

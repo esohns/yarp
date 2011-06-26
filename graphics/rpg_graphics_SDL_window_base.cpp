@@ -442,13 +442,23 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown event (was: %u)...\n"),
-                 static_cast<unsigned long> (event_in.type)));
+                 static_cast<unsigned long>(event_in.type)));
 
       break;
     }
   } // end SWITCH
 
   // *NOTE*: should never get here...
+  ACE_ASSERT(false);
+}
+
+void
+RPG_Graphics_SDLWindowBase::notify(const RPG_Graphics_Cursor& cursor_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::notify"));
+
+  ACE_UNUSED_ARG(cursor_in);
+
   ACE_ASSERT(false);
 }
 

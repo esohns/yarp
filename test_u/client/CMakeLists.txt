@@ -24,7 +24,7 @@ set(client_gui_SRCS rpg_client_gui.cpp)
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
-set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS "DATADIR=/usr/local/share/RPG;RPG_GRAPHICS_HAS_DLL=1")
+set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS "DATADIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
 
 add_executable(client_gui ${client_gui_SRCS})
 

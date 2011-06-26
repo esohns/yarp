@@ -41,11 +41,12 @@ class RPG_Graphics_SDLWindowBase
   // implement (part of) RPG_Graphics_IWindow
   virtual void setScreen(SDL_Surface*); // (default) screen
   virtual SDL_Surface* getScreen(); // (default) screen
+  virtual const RPG_Graphics_WindowType getType() const;
   virtual void refresh(SDL_Surface* = NULL); // target surface (default: screen)
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
-  virtual const RPG_Graphics_WindowType getType() const;
+  virtual void notify(const RPG_Graphics_Cursor&) const;
 
   const RPG_Graphics_WindowSize_t getSize(const bool& = false) const; // top-level ?
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)

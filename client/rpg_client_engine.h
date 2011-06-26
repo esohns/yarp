@@ -25,7 +25,7 @@
 
 #include <rpg_engine_common.h>
 #include <rpg_engine_iwindow.h>
-#include <rpg_engine_messagequeue.h>
+// #include <rpg_engine_messagequeue.h>
 #include <rpg_engine_level.h>
 
 #include <rpg_graphics_iwindow.h>
@@ -88,12 +88,14 @@ class RPG_Client_Engine
   void handleActions();
 
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
-  RPG_Engine_MessageQueue         myQueue;
+//   RPG_Engine_MessageQueue         myQueue;
 
   // make our API re-entrant
   mutable ACE_Thread_Mutex        myLock;
   // implement blocking wait...
   ACE_Condition<ACE_Thread_Mutex> myCondition;
+
+  bool                            myStop;
 
   RPG_Engine_Level*               myLevelState;
   RPG_Engine_EntityID_t           myPlayerID;

@@ -205,40 +205,14 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
   ACE_OS::memset(&bgRect,
                  0,
                  sizeof(bgRect));
-
-  if ((myBGPosition.first != 0) &&
-      (myBGPosition.second != 0))
+  if (!((myBGPosition.first == 0) &&
+        (myBGPosition.second == 0)))
   {
     // sanity check(s)
     ACE_ASSERT(myBG);
 
-    bgRect.x = myBGPosition.first;
-    bgRect.y = myBGPosition.second;
-    bgRect.w = myBG->w;
-    bgRect.h = myBG->h;
-    // handle clipping
-    if ((bgRect.x + bgRect.w) > targetSurface_in->w)
-      bgRect.w -= ((bgRect.x + bgRect.w) - targetSurface_in->w);
-    if ((bgRect.y + bgRect.h) > targetSurface_in->h)
-      bgRect.h -= ((bgRect.y + bgRect.h) - targetSurface_in->h);
-
-    // restore background
-    if (SDL_BlitSurface(myBG,             // source
-                        NULL,             // aspect (--> everything)
-                        targetSurface_in, // target
-                        &bgRect))         // aspect
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-                 SDL_GetError()));
-
-      return;
-    } // end IF
-
-    // *HACK*: somehow, SDL_BlitSurface zeroes bgRect.w, bgRect.h...
-    // --> reset them
-    bgRect.w = myBG->w;
-    bgRect.h = myBG->h;
+    restoreBG(targetSurface_in,
+              bgRect);
   } // end IF
 
   // step2: get new background
@@ -350,20 +324,4 @@ RPG_Graphics_Cursor_Manager::invalidateBG()
   ACE_ASSERT(myBG);
 
   RPG_Graphics_Surface::clear(myBG);
-}
-
-const ACE_TCHAR*
-RPG_Graphics_Cursor_Manager::name(void)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::name"));
-
-  return ACE_TEXT("RPG_Graphics_Cursor_Manager");
-}
-
-const ACE_TCHAR*
-RPG_Graphics_Cursor_Manager::dll_name(void)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::dll_name"));
-
-  return ACE_TEXT("RPG_Graphics_Cursor_Manager");
 }
