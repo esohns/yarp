@@ -171,4 +171,17 @@ struct RPG_Client_Action
 typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
 typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;
 
+enum RPG_Client_MiniMapTile
+{
+  MINIMAPTILE_NONE = 0,
+  MINIMAPTILE_DOOR,
+  MINIMAPTILE_FLOOR,
+  MINIMAPTILE_MONSTER,
+  MINIMAPTILE_PLAYER,
+  MINIMAPTILE_STAIRS,
+  //
+  RPG_CLIENT_MINIMAPTILE_MAX,
+  RPG_CLIENT_MINIMAPTILE_INVALID
+};
+
 #endif

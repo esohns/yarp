@@ -46,12 +46,12 @@ class RPG_Graphics_TopLevel
                         SDL_Surface* = NULL);                 // background
   virtual ~RPG_Graphics_TopLevel();
 
-  // realize child window
-  void child(const RPG_Graphics_WindowSize_t&, // size
-             const RPG_Graphics_WindowType&,   // type
-             // *NOTE*: offset doesn't include any border(s) !
-             const RPG_Graphics_Offset_t&,     // offset
-             SDL_Surface* = NULL);             // background
+//   // realize child window
+//   void child(const RPG_Graphics_WindowSize_t&, // size
+//              const RPG_Graphics_WindowType&,   // type
+//              // *NOTE*: offset doesn't include any border(s) !
+//              const RPG_Graphics_Offset_t&,     // offset
+//              SDL_Surface* = NULL);             // background
 
  protected:
   // window element graphic(s)

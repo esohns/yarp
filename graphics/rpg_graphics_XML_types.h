@@ -65,6 +65,7 @@ class RPG_Graphics_Sprite_Type_pskel;
 class RPG_Graphics_TileGraphic_Type_pskel;
 class RPG_Graphics_TileSetGraphic_Type_pskel;
 class RPG_Graphics_GraphicTypeUnion_Type_pskel;
+class RPG_Graphics_WindowType_Type_pskel;
 class RPG_Graphics_InterfaceElementType_Type_pskel;
 class RPG_Graphics_HotspotType_Type_pskel;
 class RPG_Graphics_ElementTypeUnion_Type_pskel;
@@ -285,6 +286,18 @@ class RPG_Graphics_GraphicTypeUnion_Type_pskel: public ::xml_schema::simple_cont
   post_RPG_Graphics_GraphicTypeUnion_Type () = 0;
 };
 
+class RPG_Graphics_WindowType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Graphics_WindowType
+  post_RPG_Graphics_WindowType_Type () = 0;
+};
+
 class RPG_Graphics_InterfaceElementType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
@@ -336,6 +349,9 @@ class RPG_Graphics_Element_Type_pskel: public ::xml_schema::complex_content
   type (const RPG_Graphics_ElementTypeUnion&);
 
   virtual void
+  window (const RPG_Graphics_WindowType&);
+
+  virtual void
   offsetX (unsigned int);
 
   virtual void
@@ -356,6 +372,9 @@ class RPG_Graphics_Element_Type_pskel: public ::xml_schema::complex_content
   type_parser (::RPG_Graphics_ElementTypeUnion_Type_pskel&);
 
   void
+  window_parser (::RPG_Graphics_WindowType_Type_pskel&);
+
+  void
   offsetX_parser (::xml_schema::unsigned_int_pskel&);
 
   void
@@ -369,6 +388,7 @@ class RPG_Graphics_Element_Type_pskel: public ::xml_schema::complex_content
 
   void
   parsers (::RPG_Graphics_ElementTypeUnion_Type_pskel& /* type */,
+           ::RPG_Graphics_WindowType_Type_pskel& /* window */,
            ::xml_schema::unsigned_int_pskel& /* offsetX */,
            ::xml_schema::unsigned_int_pskel& /* offsetY */,
            ::xml_schema::unsigned_int_pskel& /* width */,
@@ -392,6 +412,7 @@ class RPG_Graphics_Element_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Graphics_ElementTypeUnion_Type_pskel* type_parser_;
+  ::RPG_Graphics_WindowType_Type_pskel* window_parser_;
   ::xml_schema::unsigned_int_pskel* offsetX_parser_;
   ::xml_schema::unsigned_int_pskel* offsetY_parser_;
   ::xml_schema::unsigned_int_pskel* width_parser_;

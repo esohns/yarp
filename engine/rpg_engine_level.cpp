@@ -573,6 +573,23 @@ RPG_Engine_Level::getDoor(const RPG_Map_Position_t& position_in) const
   return *iterator;
 }
 
+const bool
+RPG_Engine_Level::hasMonster(const RPG_Map_Position_t& position_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::hasMonster"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
+       iterator != myEntities.end();
+       iterator++)
+    if (((*iterator).second->position == position_in) &&
+        (!(*iterator).second->character->isPlayerCharacter()))
+      return true;
+
+  return false;
+}
+
 void
 RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
                              const bool& open_in,

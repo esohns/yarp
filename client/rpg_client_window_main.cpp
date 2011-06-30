@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_client_window_main.h"
 
 #include "rpg_client_defines.h"
@@ -346,7 +347,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 //                  static_cast<unsigned long> (event_in.button.button)));
 
       // (left-)clicking on a hotspot (edge) area triggers a scroll of the viewport
-      if ((window_in->getType() == WINDOWTYPE_HOTSPOT) &&
+      if ((window_in->getType() == WINDOW_HOTSPOT) &&
           (event_in.button.button == 1))
       {
         // retrieve hotspot window handle
@@ -359,9 +360,9 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         for (;
              iterator != myChildren.end();
              iterator++)
-          if ((*iterator)->getType() == WINDOWTYPE_MAP)
+          if ((*iterator)->getType() == WINDOW_MAP)
             break;
-        ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
+        ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
         RPG_Client_WindowLevel* levelWindow = NULL;
         levelWindow = dynamic_cast<RPG_Client_WindowLevel*>(*iterator);
         ACE_ASSERT(levelWindow);
@@ -527,7 +528,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         break; // not a hotspot
 
       // sanity check
-      ACE_ASSERT(window_in->getType() == WINDOWTYPE_HOTSPOT);
+      ACE_ASSERT(window_in->getType() == WINDOW_HOTSPOT);
 
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;
@@ -539,9 +540,9 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
       for (;
            iterator != myChildren.end();
            iterator++)
-        if ((*iterator)->getType() == WINDOWTYPE_MAP)
+        if ((*iterator)->getType() == WINDOW_MAP)
           break;
-      ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
+      ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
       RPG_Client_WindowLevel* levelWindow = NULL;
       levelWindow = dynamic_cast<RPG_Client_WindowLevel*>(*iterator);
       ACE_ASSERT(levelWindow);

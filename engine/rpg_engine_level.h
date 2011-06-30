@@ -79,6 +79,7 @@ class RPG_Engine_Level
   const RPG_Engine_EntityGraphics_t getGraphics() const;
   const RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
   const RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
+  const bool hasMonster(const RPG_Map_Position_t&) const;
 
   using RPG_Map_Level::getStartPosition;
   using RPG_Map_Level::getSeedPoints;

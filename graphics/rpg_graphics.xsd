@@ -148,7 +148,8 @@
 
   <xsd:simpleType name="RPG_Graphics_Image_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="IMAGE_INTERFACE"/>
+      <xsd:enumeration value="IMAGE_INTERFACE_MAIN"/>
+      <xsd:enumeration value="IMAGE_INTERFACE_MINIMAP"/>
       <xsd:enumeration value="IMAGE_INTRO_MAIN"/>
       <xsd:enumeration value="IMAGE_WM_ICON"/>
     </xsd:restriction>
@@ -218,6 +219,16 @@
     <xsd:union memberTypes="RPG_Graphics_Cursor_Type RPG_Graphics_Font_Type RPG_Graphics_Image_Type RPG_Graphics_Sprite_Type RPG_Graphics_TileGraphic_Type RPG_Graphics_TileSetGraphic_Type"/>
   </xsd:simpleType>
 
+ <xsd:simpleType name="RPG_Graphics_WindowType_Type">
+   <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="WINDOW_HOTSPOT"/>
+     <xsd:enumeration value="WINDOW_MAIN"/>
+     <xsd:enumeration value="WINDOW_MAP"/>
+     <xsd:enumeration value="WINDOW_MENU"/>
+     <xsd:enumeration value="WINDOW_MINIMAP"/>
+   </xsd:restriction>
+ </xsd:simpleType>
+
   <xsd:simpleType name="RPG_Graphics_InterfaceElementType_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="INTERFACEELEMENT_BORDER_TOP_LEFT"/>
@@ -247,10 +258,11 @@
   <xsd:complexType name="RPG_Graphics_Element_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Graphics_ElementTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="offsetX" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="offsetY" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="width" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="height" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="window" type="RPG_Graphics_WindowType_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="offsetX" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="offsetY" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="width" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="height" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 

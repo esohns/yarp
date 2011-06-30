@@ -19,6 +19,8 @@ set(RPG_Client_GUI_LIB_SRCS
     rpg_client_window_level.h
     rpg_client_window_main.cpp
     rpg_client_window_main.h
+    rpg_client_window_minimap.h
+    rpg_client_window_minimap.cpp
     rpg_client_engine.h
     rpg_client_engine.cpp
     rpg_client_common_tools.h
@@ -45,6 +47,7 @@ install(FILES
 	rpg_client_defines.h
 	rpg_client_window_level.h
 	rpg_client_window_main.h
+   	rpg_client_window_minimap.h
 	rpg_client_engine.h
 	rpg_client_common_tools.h
 DESTINATION include)

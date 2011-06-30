@@ -43,6 +43,7 @@ set(RPG_Graphics_LIB_SRCS
     rpg_graphics_hotspottype.h
     rpg_graphics_image.h
     rpg_graphics_incl.h
+    rpg_graphics_windowtype.h
     rpg_graphics_interfaceelementtype.h
     rpg_graphics_iwindow.h
     rpg_graphics_orientation.h
@@ -107,6 +108,7 @@ install(FILES
         rpg_graphics_hotspottype.h
         rpg_graphics_image.h
         rpg_graphics_incl.h
+        rpg_graphics_windowtype.h
         rpg_graphics_interfaceelementtype.h
         rpg_graphics_iwindow.h
         rpg_graphics_orientation.h

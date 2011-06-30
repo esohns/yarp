@@ -48,6 +48,12 @@ type_parser (::RPG_Graphics_ElementTypeUnion_Type_pskel& p)
 }
 
 void RPG_Graphics_Element_Type_pskel::
+window_parser (::RPG_Graphics_WindowType_Type_pskel& p)
+{
+  this->window_parser_ = &p;
+}
+
+void RPG_Graphics_Element_Type_pskel::
 offsetX_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->offsetX_parser_ = &p;
@@ -73,12 +79,14 @@ height_parser (::xml_schema::unsigned_int_pskel& p)
 
 void RPG_Graphics_Element_Type_pskel::
 parsers (::RPG_Graphics_ElementTypeUnion_Type_pskel& type,
+         ::RPG_Graphics_WindowType_Type_pskel& window,
          ::xml_schema::unsigned_int_pskel& offsetX,
          ::xml_schema::unsigned_int_pskel& offsetY,
          ::xml_schema::unsigned_int_pskel& width,
          ::xml_schema::unsigned_int_pskel& height)
 {
   this->type_parser_ = &type;
+  this->window_parser_ = &window;
   this->offsetX_parser_ = &offsetX;
   this->offsetY_parser_ = &offsetY;
   this->width_parser_ = &width;
@@ -88,6 +96,7 @@ parsers (::RPG_Graphics_ElementTypeUnion_Type_pskel& type,
 RPG_Graphics_Element_Type_pskel::
 RPG_Graphics_Element_Type_pskel ()
 : type_parser_ (0),
+  window_parser_ (0),
   offsetX_parser_ (0),
   offsetY_parser_ (0),
   width_parser_ (0),
@@ -341,6 +350,11 @@ type (const RPG_Graphics_ElementTypeUnion&)
 }
 
 void RPG_Graphics_Element_Type_pskel::
+window (const RPG_Graphics_WindowType&)
+{
+}
+
+void RPG_Graphics_Element_Type_pskel::
 offsetX (unsigned int)
 {
 }
@@ -376,6 +390,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->type_parser_)
       this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "window" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->window_parser_;
+
+    if (this->window_parser_)
+      this->window_parser_->pre ();
 
     return true;
   }
@@ -434,6 +458,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->type_parser_)
       this->type (this->type_parser_->post_RPG_Graphics_ElementTypeUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "window" && ns == "urn:rpg")
+  {
+    if (this->window_parser_)
+      this->window (this->window_parser_->post_RPG_Graphics_WindowType_Type ());
 
     return true;
   }

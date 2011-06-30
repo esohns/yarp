@@ -32,11 +32,11 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
                                            // *NOTE*: offset doesn't include any border(s) !
                                            const RPG_Graphics_Offset_t& offset_in,
                                            const RPG_Graphics_Cursor& cursor_in)
- : inherited(WINDOWTYPE_HOTSPOT, // type
-             parent_in,          // parent
-             offset_in,          // offset
-             std::string(),      // title
-             NULL),              // background
+ : inherited(WINDOW_HOTSPOT, // type
+             parent_in,      // parent
+             offset_in,      // offset
+             std::string(),  // title
+             NULL),          // background
    myCursorType(cursor_in),
    myCursorHasBeenSet(false)
 {

@@ -257,6 +257,13 @@ RPG_Graphics_GraphicTypeUnion RPG_Graphics_GraphicTypeUnion_Type::post_RPG_Graph
   return result;
 }
 
+RPG_Graphics_WindowType RPG_Graphics_WindowType_Type::post_RPG_Graphics_WindowType_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_WindowType_Type::post_RPG_Graphics_WindowType_Type"));
+
+  return RPG_Graphics_WindowTypeHelper::stringToRPG_Graphics_WindowType(post_string());
+}
+
 RPG_Graphics_InterfaceElementType RPG_Graphics_InterfaceElementType_Type::post_RPG_Graphics_InterfaceElementType_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_InterfaceElementType_Type::post_RPG_Graphics_InterfaceElementType_Type"));
@@ -324,6 +331,7 @@ RPG_Graphics_Element_Type::RPG_Graphics_Element_Type()
 
   myCurrentElement.type.discriminator = RPG_Graphics_ElementTypeUnion::INVALID;
   myCurrentElement.type.interfaceelementtype = RPG_GRAPHICS_INTERFACEELEMENTTYPE_INVALID;
+  myCurrentElement.window = RPG_GRAPHICS_WINDOWTYPE_INVALID;
   myCurrentElement.offsetX = 0;
   myCurrentElement.offsetY = 0;
   myCurrentElement.width = 0;
@@ -335,6 +343,13 @@ void RPG_Graphics_Element_Type::type(const RPG_Graphics_ElementTypeUnion& type_i
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Element_Type::type"));
 
   myCurrentElement.type = type_in;
+}
+
+void RPG_Graphics_Element_Type::window(const RPG_Graphics_WindowType& window_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Element_Type::window"));
+
+  myCurrentElement.window = window_in;
 }
 
 void RPG_Graphics_Element_Type::offsetX(unsigned int offsetX_in)
@@ -374,6 +389,7 @@ RPG_Graphics_Element RPG_Graphics_Element_Type::post_RPG_Graphics_Element_Type()
   // clear structure
   myCurrentElement.type.discriminator = RPG_Graphics_ElementTypeUnion::INVALID;
   myCurrentElement.type.interfaceelementtype = RPG_GRAPHICS_INTERFACEELEMENTTYPE_INVALID;
+  myCurrentElement.window = RPG_GRAPHICS_WINDOWTYPE_INVALID;
   myCurrentElement.offsetX = 0;
   myCurrentElement.offsetY = 0;
   myCurrentElement.width = 0;

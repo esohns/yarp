@@ -75,6 +75,7 @@ class RPG_Graphics_Sprite_XMLTree_Type;
 class RPG_Graphics_TileGraphic_XMLTree_Type;
 class RPG_Graphics_TileSetGraphic_XMLTree_Type;
 class RPG_Graphics_GraphicTypeUnion_XMLTree_Type;
+class RPG_Graphics_WindowType_XMLTree_Type;
 class RPG_Graphics_InterfaceElementType_XMLTree_Type;
 class RPG_Graphics_HotspotType_XMLTree_Type;
 class RPG_Graphics_ElementTypeUnion_XMLTree_Type;
@@ -843,7 +844,8 @@ class RPG_Graphics_Image_XMLTree_Type: public ::xml_schema::string
   public:
   enum value
   {
-    IMAGE_INTERFACE,
+    IMAGE_INTERFACE_MAIN,
+    IMAGE_INTERFACE_MINIMAP,
     IMAGE_INTRO_MAIN,
     IMAGE_WM_ICON
   };
@@ -895,8 +897,8 @@ class RPG_Graphics_Image_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Graphics_Image_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Graphics_Image_XMLTree_Type_literals_[3];
-  static const value _xsd_RPG_Graphics_Image_XMLTree_Type_indexes_[3];
+  static const char* const _xsd_RPG_Graphics_Image_XMLTree_Type_literals_[4];
+  static const value _xsd_RPG_Graphics_Image_XMLTree_Type_indexes_[4];
 };
 
 class RPG_Graphics_Sprite_XMLTree_Type: public ::xml_schema::string
@@ -1138,7 +1140,8 @@ class RPG_Graphics_GraphicTypeUnion_XMLTree_Type: public ::xml_schema::string
     FONT_MAIN_SMALL,
     FONT_MAIN_NORMAL,
     FONT_MAIN_LARGE,
-    IMAGE_INTERFACE,
+    IMAGE_INTERFACE_MAIN,
+    IMAGE_INTERFACE_MINIMAP,
     IMAGE_INTRO_MAIN,
     IMAGE_WM_ICON,
     SPRITE_GOBLIN,
@@ -1235,8 +1238,71 @@ class RPG_Graphics_GraphicTypeUnion_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[63];
-  static const value _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[63];
+  static const char* const _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[64];
+  static const value _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[64];
+};
+
+class RPG_Graphics_WindowType_XMLTree_Type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    WINDOW_HOTSPOT,
+    WINDOW_MAIN,
+    WINDOW_MAP,
+    WINDOW_MENU,
+    WINDOW_MINIMAP
+  };
+
+  RPG_Graphics_WindowType_XMLTree_Type (value v);
+
+  RPG_Graphics_WindowType_XMLTree_Type (const char* v);
+
+  RPG_Graphics_WindowType_XMLTree_Type (const ::std::string& v);
+
+  RPG_Graphics_WindowType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_WindowType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Graphics_WindowType_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Graphics_WindowType_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Graphics_WindowType_XMLTree_Type (const ::std::string& s,
+                                        const ::xercesc::DOMElement* e,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Graphics_WindowType_XMLTree_Type (const RPG_Graphics_WindowType_XMLTree_Type& x,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  virtual RPG_Graphics_WindowType_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  RPG_Graphics_WindowType_XMLTree_Type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert () const;
+
+  public:
+  static const char* const _xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[5];
+  static const value _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_[5];
 };
 
 class RPG_Graphics_InterfaceElementType_XMLTree_Type: public ::xml_schema::string
@@ -1457,69 +1523,102 @@ class RPG_Graphics_Element_XMLTree_Type: public ::xml_schema::type
   void
   type (::std::auto_ptr< type_type > p);
 
+  // window
+  // 
+  typedef ::RPG_Graphics_WindowType_XMLTree_Type window_type;
+  typedef ::xsd::cxx::tree::optional< window_type > window_optional;
+  typedef ::xsd::cxx::tree::traits< window_type, char > window_traits;
+
+  const window_optional&
+  window () const;
+
+  window_optional&
+  window ();
+
+  void
+  window (const window_type& x);
+
+  void
+  window (const window_optional& x);
+
+  void
+  window (::std::auto_ptr< window_type > p);
+
   // offsetX
   // 
   typedef ::xml_schema::unsigned_int offsetX_type;
+  typedef ::xsd::cxx::tree::optional< offsetX_type > offsetX_optional;
   typedef ::xsd::cxx::tree::traits< offsetX_type, char > offsetX_traits;
 
-  const offsetX_type&
+  const offsetX_optional&
   offsetX () const;
 
-  offsetX_type&
+  offsetX_optional&
   offsetX ();
 
   void
   offsetX (const offsetX_type& x);
 
+  void
+  offsetX (const offsetX_optional& x);
+
   // offsetY
   // 
   typedef ::xml_schema::unsigned_int offsetY_type;
+  typedef ::xsd::cxx::tree::optional< offsetY_type > offsetY_optional;
   typedef ::xsd::cxx::tree::traits< offsetY_type, char > offsetY_traits;
 
-  const offsetY_type&
+  const offsetY_optional&
   offsetY () const;
 
-  offsetY_type&
+  offsetY_optional&
   offsetY ();
 
   void
   offsetY (const offsetY_type& x);
 
+  void
+  offsetY (const offsetY_optional& x);
+
   // width
   // 
   typedef ::xml_schema::unsigned_int width_type;
+  typedef ::xsd::cxx::tree::optional< width_type > width_optional;
   typedef ::xsd::cxx::tree::traits< width_type, char > width_traits;
 
-  const width_type&
+  const width_optional&
   width () const;
 
-  width_type&
+  width_optional&
   width ();
 
   void
   width (const width_type& x);
 
+  void
+  width (const width_optional& x);
+
   // height
   // 
   typedef ::xml_schema::unsigned_int height_type;
+  typedef ::xsd::cxx::tree::optional< height_type > height_optional;
   typedef ::xsd::cxx::tree::traits< height_type, char > height_traits;
 
-  const height_type&
+  const height_optional&
   height () const;
 
-  height_type&
+  height_optional&
   height ();
 
   void
   height (const height_type& x);
 
+  void
+  height (const height_optional& x);
+
   // Constructors.
   //
-  RPG_Graphics_Element_XMLTree_Type (const type_type&,
-                                     const offsetX_type&,
-                                     const offsetY_type&,
-                                     const width_type&,
-                                     const height_type&);
+  RPG_Graphics_Element_XMLTree_Type (const type_type&);
 
   RPG_Graphics_Element_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                      ::xml_schema::flags f = 0,
@@ -1553,10 +1652,11 @@ class RPG_Graphics_Element_XMLTree_Type: public ::xml_schema::type
          ::xml_schema::flags);
 
   ::xsd::cxx::tree::one< type_type > type_;
-  ::xsd::cxx::tree::one< offsetX_type > offsetX_;
-  ::xsd::cxx::tree::one< offsetY_type > offsetY_;
-  ::xsd::cxx::tree::one< width_type > width_;
-  ::xsd::cxx::tree::one< height_type > height_;
+  window_optional window_;
+  offsetX_optional offsetX_;
+  offsetY_optional offsetY_;
+  width_optional width_;
+  height_optional height_;
 };
 
 bool
@@ -2326,6 +2426,12 @@ operator<< (::std::ostream&, RPG_Graphics_GraphicTypeUnion_XMLTree_Type::value);
 operator<< (::std::ostream&, const RPG_Graphics_GraphicTypeUnion_XMLTree_Type&);
 
 ::std::ostream&
+operator<< (::std::ostream&, RPG_Graphics_WindowType_XMLTree_Type::value);
+
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Graphics_WindowType_XMLTree_Type&);
+
+::std::ostream&
 operator<< (::std::ostream&, RPG_Graphics_InterfaceElementType_XMLTree_Type::value);
 
 ::std::ostream&
@@ -2632,6 +2738,16 @@ operator<< (::xml_schema::list_stream&,
             const RPG_Graphics_GraphicTypeUnion_XMLTree_Type&);
 
 void
+operator<< (::xercesc::DOMElement&, const RPG_Graphics_WindowType_XMLTree_Type&);
+
+void
+operator<< (::xercesc::DOMAttr&, const RPG_Graphics_WindowType_XMLTree_Type&);
+
+void
+operator<< (::xml_schema::list_stream&,
+            const RPG_Graphics_WindowType_XMLTree_Type&);
+
+void
 operator<< (::xercesc::DOMElement&, const RPG_Graphics_InterfaceElementType_XMLTree_Type&);
 
 void
@@ -2817,6 +2933,10 @@ operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Graphics_GraphicTypeUnion_XMLTree_Type&);
+
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_WindowType_XMLTree_Type&);
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,

@@ -31,17 +31,6 @@
 #include <map>
 #include <vector>
 
-enum RPG_Graphics_WindowType
-{
-  WINDOWTYPE_HOTSPOT = 0,
-  WINDOWTYPE_MAP,
-  WINDOWTYPE_MENU, // sub-window
-  WINDOWTYPE_TOPLEVEL,
-  //
-  RPG_GRAPHICS_WINDOWTYPE_MAX,
-  RPG_GRAPHICS_WINDOWTYPE_INVALID
-};
-
 typedef RPG_Graphics_Graphic RPG_Graphics_t;
 typedef std::map<RPG_Graphics_Sprite, RPG_Graphics_t> RPG_Graphics_SpriteDictionary_t;
 typedef RPG_Graphics_SpriteDictionary_t::const_iterator RPG_Graphics_SpriteDictionaryIterator_t;

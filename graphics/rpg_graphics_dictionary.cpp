@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_graphics_dictionary.h"
 
 #include "rpg_graphics_XML_parser.h"
@@ -77,7 +78,9 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
   RPG_Graphics_ElementTypeUnion_Type          elementType_p;
   ::xml_schema::unsigned_int_pimpl            unsigned_int_p;
   RPG_Graphics_Element_Type                   element_p;
+  RPG_Graphics_WindowType_Type                window_p;
   element_p.parsers(elementType_p,
+                    window_p,
                     unsigned_int_p,
                     unsigned_int_p,
                     unsigned_int_p,

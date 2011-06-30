@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_GRAPHICS_XML_PARSER_H
 #define RPG_GRAPHICS_XML_PARSER_H
 
@@ -182,6 +183,15 @@ class RPG_Graphics_GraphicTypeUnion_Type
     RPG_Graphics_GraphicTypeUnion myCurrentType;
 };
 
+class RPG_Graphics_WindowType_Type
+: public RPG_Graphics_WindowType_Type_pskel,
+public ::xml_schema::string_pimpl
+{
+public:
+  //   virtual void pre();
+  virtual RPG_Graphics_WindowType post_RPG_Graphics_WindowType_Type();
+};
+
 class RPG_Graphics_InterfaceElementType_Type
  : public RPG_Graphics_InterfaceElementType_Type_pskel,
    public ::xml_schema::string_pimpl
@@ -222,6 +232,7 @@ class RPG_Graphics_Element_Type
 
 //     virtual void pre();
   virtual void type(const RPG_Graphics_ElementTypeUnion&);
+  virtual void window(const RPG_Graphics_WindowType&);
   virtual void offsetX(unsigned int);
   virtual void offsetY(unsigned int);
   virtual void width(unsigned int);

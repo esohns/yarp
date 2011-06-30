@@ -30,7 +30,7 @@ RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t& si
                                              const std::string& title_in,
                                              SDL_Surface* backGround_in)
  : inherited(size_in,
-             WINDOWTYPE_TOPLEVEL,
+             WINDOW_MAIN,
              title_in,
              backGround_in),
    myElementGraphicsType(elementType_in)
@@ -64,15 +64,15 @@ RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
     SDL_FreeSurface((*iterator).second);
 }
 
-void
-RPG_Graphics_TopLevel::child(const RPG_Graphics_WindowSize_t& size_in,
-                             const RPG_Graphics_WindowType& type_in,
-                             const RPG_Graphics_Offset_t& offset_in,
-                             SDL_Surface* backGround_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::child"));
-
-}
+// void
+// RPG_Graphics_TopLevel::child(const RPG_Graphics_WindowSize_t& size_in,
+//                              const RPG_Graphics_WindowType& type_in,
+//                              const RPG_Graphics_Offset_t& offset_in,
+//                              SDL_Surface* backGround_in)
+// {
+//   RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::child"));
+//
+// }
 
 const bool
 RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in)
@@ -156,7 +156,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
 
       // store surface handle
       myElementGraphics.insert(std::make_pair((*iterator).type.interfaceelementtype,
-                               element_image));
+                                              element_image));
     } // end IF
   } // end FOR
 

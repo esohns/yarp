@@ -41,7 +41,7 @@
 #include "../engine/rpg_engine_command.h"
 
 RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase& parent_in)
- : inherited(WINDOWTYPE_MAP,       // type
+ : inherited(WINDOW_MAP,           // type
              parent_in,            // parent
              std::make_pair(0, 0), // offset
              std::string(),        // title

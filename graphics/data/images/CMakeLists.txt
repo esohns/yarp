@@ -1,11 +1,8 @@
 ########### install files ###############
 
-install(FILES  image_icon.png image_main_logo.png interface_elements.png DESTINATION share/RPG/data/graphic/images)
-
-#original Makefile.am contents follow:
-
-#pkgdatadir = $(datadir)/@META_PACKAGE@
-#graphicdir = $(pkgdatadir)/data/graphic/images
-#graphic_DATA = image_icon.png image_main_logo.png interface_elements.png
-#
-#EXTRA_DIST = $(graphic_DATA)
+install(FILES
+        image_icon.png
+        image_main_logo.png
+        interface_elements.png
+        interface_minimap_bg.png
+DESTINATION share/RPG/data/graphic/images)

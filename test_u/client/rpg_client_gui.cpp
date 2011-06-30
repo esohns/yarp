@@ -28,6 +28,7 @@
 #include <rpg_client_callbacks.h>
 #include <rpg_client_window_main.h>
 #include <rpg_client_window_level.h>
+#include <rpg_client_window_minimap.h>
 #include <rpg_client_engine.h>
 #include <rpg_client_common_tools.h>
 
@@ -1211,7 +1212,7 @@ do_work(const RPG_Client_Config& config_in,
   // step4b: set default cursor
   RPG_Client_Common_Tools::init();
 
-  // step5: setup level "window"
+  // step5: setup level/minimap "window"s
   RPG_Client_WindowLevel mapWindow(mainWindow); // parent
 //   userData.map_window = &mapWindow;
   mapWindow.setScreen(userData.screen);
@@ -1272,6 +1273,15 @@ do_work(const RPG_Client_Config& config_in,
                  mapStyle);
 //   mapWindow.draw();
 //   mapWindow.refresh();
+
+  // step5c: setup minimap "window"
+  RPG_Graphics_Offset_t offset = std::make_pair(RPG_CLIENT_DEF_MINIMAP_POSITION_X,
+                                                RPG_CLIENT_DEF_MINIMAP_POSITION_Y);
+  RPG_Client_Window_MiniMap miniMapWindow(mainWindow, // parent
+                                          offset,
+                                          &client_engine,
+                                          &level_engine);
+  miniMapWindow.setScreen(userData.screen);
 
   level_engine.init(&client_engine,
                     start_position,

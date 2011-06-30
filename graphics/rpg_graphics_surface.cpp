@@ -840,7 +840,7 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
     return;
   } // end IF
 
-  Uint32* pixels = static_cast<Uint32*> (targetSurface_in->pixels);
+  Uint32* pixels = static_cast<Uint32*>(targetSurface_in->pixels);
   for (int y = rectangle_in.y;
        y < (rectangle_in.y + rectangle_in.h);
        y++)

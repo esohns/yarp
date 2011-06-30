@@ -760,6 +760,51 @@ operator= (value v)
 }
 
 
+// RPG_Graphics_WindowType_XMLTree_Type
+// 
+
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (const RPG_Graphics_WindowType_XMLTree_Type& v,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Graphics_WindowType_XMLTree_Type& RPG_Graphics_WindowType_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
 // RPG_Graphics_InterfaceElementType_XMLTree_Type
 // 
 
@@ -922,16 +967,46 @@ type (::std::auto_ptr< type_type > x)
   this->type_.set (x);
 }
 
-const RPG_Graphics_Element_XMLTree_Type::offsetX_type& RPG_Graphics_Element_XMLTree_Type::
-offsetX () const
+const RPG_Graphics_Element_XMLTree_Type::window_optional& RPG_Graphics_Element_XMLTree_Type::
+window () const
 {
-  return this->offsetX_.get ();
+  return this->window_;
 }
 
-RPG_Graphics_Element_XMLTree_Type::offsetX_type& RPG_Graphics_Element_XMLTree_Type::
+RPG_Graphics_Element_XMLTree_Type::window_optional& RPG_Graphics_Element_XMLTree_Type::
+window ()
+{
+  return this->window_;
+}
+
+void RPG_Graphics_Element_XMLTree_Type::
+window (const window_type& x)
+{
+  this->window_.set (x);
+}
+
+void RPG_Graphics_Element_XMLTree_Type::
+window (const window_optional& x)
+{
+  this->window_ = x;
+}
+
+void RPG_Graphics_Element_XMLTree_Type::
+window (::std::auto_ptr< window_type > x)
+{
+  this->window_.set (x);
+}
+
+const RPG_Graphics_Element_XMLTree_Type::offsetX_optional& RPG_Graphics_Element_XMLTree_Type::
+offsetX () const
+{
+  return this->offsetX_;
+}
+
+RPG_Graphics_Element_XMLTree_Type::offsetX_optional& RPG_Graphics_Element_XMLTree_Type::
 offsetX ()
 {
-  return this->offsetX_.get ();
+  return this->offsetX_;
 }
 
 void RPG_Graphics_Element_XMLTree_Type::
@@ -940,16 +1015,22 @@ offsetX (const offsetX_type& x)
   this->offsetX_.set (x);
 }
 
-const RPG_Graphics_Element_XMLTree_Type::offsetY_type& RPG_Graphics_Element_XMLTree_Type::
-offsetY () const
+void RPG_Graphics_Element_XMLTree_Type::
+offsetX (const offsetX_optional& x)
 {
-  return this->offsetY_.get ();
+  this->offsetX_ = x;
 }
 
-RPG_Graphics_Element_XMLTree_Type::offsetY_type& RPG_Graphics_Element_XMLTree_Type::
+const RPG_Graphics_Element_XMLTree_Type::offsetY_optional& RPG_Graphics_Element_XMLTree_Type::
+offsetY () const
+{
+  return this->offsetY_;
+}
+
+RPG_Graphics_Element_XMLTree_Type::offsetY_optional& RPG_Graphics_Element_XMLTree_Type::
 offsetY ()
 {
-  return this->offsetY_.get ();
+  return this->offsetY_;
 }
 
 void RPG_Graphics_Element_XMLTree_Type::
@@ -958,16 +1039,22 @@ offsetY (const offsetY_type& x)
   this->offsetY_.set (x);
 }
 
-const RPG_Graphics_Element_XMLTree_Type::width_type& RPG_Graphics_Element_XMLTree_Type::
-width () const
+void RPG_Graphics_Element_XMLTree_Type::
+offsetY (const offsetY_optional& x)
 {
-  return this->width_.get ();
+  this->offsetY_ = x;
 }
 
-RPG_Graphics_Element_XMLTree_Type::width_type& RPG_Graphics_Element_XMLTree_Type::
+const RPG_Graphics_Element_XMLTree_Type::width_optional& RPG_Graphics_Element_XMLTree_Type::
+width () const
+{
+  return this->width_;
+}
+
+RPG_Graphics_Element_XMLTree_Type::width_optional& RPG_Graphics_Element_XMLTree_Type::
 width ()
 {
-  return this->width_.get ();
+  return this->width_;
 }
 
 void RPG_Graphics_Element_XMLTree_Type::
@@ -976,22 +1063,34 @@ width (const width_type& x)
   this->width_.set (x);
 }
 
-const RPG_Graphics_Element_XMLTree_Type::height_type& RPG_Graphics_Element_XMLTree_Type::
-height () const
+void RPG_Graphics_Element_XMLTree_Type::
+width (const width_optional& x)
 {
-  return this->height_.get ();
+  this->width_ = x;
 }
 
-RPG_Graphics_Element_XMLTree_Type::height_type& RPG_Graphics_Element_XMLTree_Type::
+const RPG_Graphics_Element_XMLTree_Type::height_optional& RPG_Graphics_Element_XMLTree_Type::
+height () const
+{
+  return this->height_;
+}
+
+RPG_Graphics_Element_XMLTree_Type::height_optional& RPG_Graphics_Element_XMLTree_Type::
 height ()
 {
-  return this->height_.get ();
+  return this->height_;
 }
 
 void RPG_Graphics_Element_XMLTree_Type::
 height (const height_type& x)
 {
   this->height_.set (x);
+}
+
+void RPG_Graphics_Element_XMLTree_Type::
+height (const height_optional& x)
+{
+  this->height_ = x;
 }
 
 
@@ -2562,11 +2661,11 @@ _xsd_RPG_Graphics_Image_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_Image_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_Image_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_Image_XMLTree_Type_indexes_ + 3,
+                    _xsd_RPG_Graphics_Image_XMLTree_Type_indexes_ + 4,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_Image_XMLTree_Type_indexes_ + 3 || _xsd_RPG_Graphics_Image_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_Image_XMLTree_Type_indexes_ + 4 || _xsd_RPG_Graphics_Image_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2575,17 +2674,19 @@ _xsd_RPG_Graphics_Image_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_Image_XMLTree_Type::
-_xsd_RPG_Graphics_Image_XMLTree_Type_literals_[3] =
+_xsd_RPG_Graphics_Image_XMLTree_Type_literals_[4] =
 {
-  "IMAGE_INTERFACE",
+  "IMAGE_INTERFACE_MAIN",
+  "IMAGE_INTERFACE_MINIMAP",
   "IMAGE_INTRO_MAIN",
   "IMAGE_WM_ICON"
 };
 
 const RPG_Graphics_Image_XMLTree_Type::value RPG_Graphics_Image_XMLTree_Type::
-_xsd_RPG_Graphics_Image_XMLTree_Type_indexes_[3] =
+_xsd_RPG_Graphics_Image_XMLTree_Type_indexes_[4] =
 {
-  ::RPG_Graphics_Image_XMLTree_Type::IMAGE_INTERFACE,
+  ::RPG_Graphics_Image_XMLTree_Type::IMAGE_INTERFACE_MAIN,
+  ::RPG_Graphics_Image_XMLTree_Type::IMAGE_INTERFACE_MINIMAP,
   ::RPG_Graphics_Image_XMLTree_Type::IMAGE_INTRO_MAIN,
   ::RPG_Graphics_Image_XMLTree_Type::IMAGE_WM_ICON
 };
@@ -2922,11 +3023,11 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 63,
+                    _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 64,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 63 || _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 64 || _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2935,7 +3036,7 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_GraphicTypeUnion_XMLTree_Type::
-_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[63] =
+_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[64] =
 {
   "CURSOR_DOOR_OPEN",
   "CURSOR_NORMAL",
@@ -2952,7 +3053,8 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[63] =
   "FONT_MAIN_SMALL",
   "FONT_MAIN_NORMAL",
   "FONT_MAIN_LARGE",
-  "IMAGE_INTERFACE",
+  "IMAGE_INTERFACE_MAIN",
+  "IMAGE_INTERFACE_MINIMAP",
   "IMAGE_INTRO_MAIN",
   "IMAGE_WM_ICON",
   "SPRITE_GOBLIN",
@@ -3003,7 +3105,7 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[63] =
 };
 
 const RPG_Graphics_GraphicTypeUnion_XMLTree_Type::value RPG_Graphics_GraphicTypeUnion_XMLTree_Type::
-_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[63] =
+_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[64] =
 {
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_DOOR_OPEN,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_NORMAL,
@@ -3020,7 +3122,8 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[63] =
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::FONT_MAIN_LARGE,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::FONT_MAIN_NORMAL,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::FONT_MAIN_SMALL,
-  ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::IMAGE_INTERFACE,
+  ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::IMAGE_INTERFACE_MAIN,
+  ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::IMAGE_INTERFACE_MINIMAP,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::IMAGE_INTRO_MAIN,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::IMAGE_WM_ICON,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::SPRITE_GOBLIN,
@@ -3068,6 +3171,82 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[63] =
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::TILE_CURSOR_HIGHLIGHT,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::TILE_FLOOR_INVISIBLE,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::TILE_OFF_MAP
+};
+
+// RPG_Graphics_WindowType_XMLTree_Type
+//
+
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert ();
+}
+
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert ();
+}
+
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (const ::std::string& s,
+                                      const ::xercesc::DOMElement* e,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert ();
+}
+
+RPG_Graphics_WindowType_XMLTree_Type* RPG_Graphics_WindowType_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Graphics_WindowType_XMLTree_Type (*this, f, c);
+}
+
+RPG_Graphics_WindowType_XMLTree_Type::value RPG_Graphics_WindowType_XMLTree_Type::
+_xsd_RPG_Graphics_WindowType_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_,
+                    _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_ + 5,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_ + 5 || _xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Graphics_WindowType_XMLTree_Type::
+_xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[5] =
+{
+  "WINDOW_HOTSPOT",
+  "WINDOW_MAIN",
+  "WINDOW_MAP",
+  "WINDOW_MENU",
+  "WINDOW_MINIMAP"
+};
+
+const RPG_Graphics_WindowType_XMLTree_Type::value RPG_Graphics_WindowType_XMLTree_Type::
+_xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_[5] =
+{
+  ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_HOTSPOT,
+  ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MAIN,
+  ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MAP,
+  ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MENU,
+  ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MINIMAP
 };
 
 // RPG_Graphics_InterfaceElementType_XMLTree_Type
@@ -3320,17 +3499,14 @@ _xsd_RPG_Graphics_ElementTypeUnion_XMLTree_Type_indexes_[12] =
 //
 
 RPG_Graphics_Element_XMLTree_Type::
-RPG_Graphics_Element_XMLTree_Type (const type_type& type,
-                                   const offsetX_type& offsetX,
-                                   const offsetY_type& offsetY,
-                                   const width_type& width,
-                                   const height_type& height)
+RPG_Graphics_Element_XMLTree_Type (const type_type& type)
 : ::xml_schema::type (),
   type_ (type, ::xml_schema::flags (), this),
-  offsetX_ (offsetX, ::xml_schema::flags (), this),
-  offsetY_ (offsetY, ::xml_schema::flags (), this),
-  width_ (width, ::xml_schema::flags (), this),
-  height_ (height, ::xml_schema::flags (), this)
+  window_ (::xml_schema::flags (), this),
+  offsetX_ (::xml_schema::flags (), this),
+  offsetY_ (::xml_schema::flags (), this),
+  width_ (::xml_schema::flags (), this),
+  height_ (::xml_schema::flags (), this)
 {
 }
 
@@ -3340,6 +3516,7 @@ RPG_Graphics_Element_XMLTree_Type (const RPG_Graphics_Element_XMLTree_Type& x,
                                    ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   type_ (x.type_, f, this),
+  window_ (x.window_, f, this),
   offsetX_ (x.offsetX_, f, this),
   offsetY_ (x.offsetY_, f, this),
   width_ (x.width_, f, this),
@@ -3353,6 +3530,7 @@ RPG_Graphics_Element_XMLTree_Type (const ::xercesc::DOMElement& e,
                                    ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   type_ (f, this),
+  window_ (f, this),
   offsetX_ (f, this),
   offsetY_ (f, this),
   width_ (f, this),
@@ -3389,11 +3567,25 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // window
+    //
+    if (n.name () == "window" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< window_type > r (
+        window_traits::create (i, f, this));
+
+      if (!this->window_)
+      {
+        this->window_.set (r);
+        continue;
+      }
+    }
+
     // offsetX
     //
     if (n.name () == "offsetX" && n.namespace_ () == "urn:rpg")
     {
-      if (!offsetX_.present ())
+      if (!this->offsetX_)
       {
         this->offsetX_.set (offsetX_traits::create (i, f, this));
         continue;
@@ -3404,7 +3596,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "offsetY" && n.namespace_ () == "urn:rpg")
     {
-      if (!offsetY_.present ())
+      if (!this->offsetY_)
       {
         this->offsetY_.set (offsetY_traits::create (i, f, this));
         continue;
@@ -3415,7 +3607,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "width" && n.namespace_ () == "urn:rpg")
     {
-      if (!width_.present ())
+      if (!this->width_)
       {
         this->width_.set (width_traits::create (i, f, this));
         continue;
@@ -3426,7 +3618,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "height" && n.namespace_ () == "urn:rpg")
     {
-      if (!height_.present ())
+      if (!this->height_)
       {
         this->height_.set (height_traits::create (i, f, this));
         continue;
@@ -3440,34 +3632,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "type",
-      "urn:rpg");
-  }
-
-  if (!offsetX_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "offsetX",
-      "urn:rpg");
-  }
-
-  if (!offsetY_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "offsetY",
-      "urn:rpg");
-  }
-
-  if (!width_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "width",
-      "urn:rpg");
-  }
-
-  if (!height_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "height",
       "urn:rpg");
   }
 }
@@ -3488,6 +3652,9 @@ bool
 operator== (const RPG_Graphics_Element_XMLTree_Type& x, const RPG_Graphics_Element_XMLTree_Type& y)
 {
   if (!(x.type () == y.type ()))
+    return false;
+
+  if (!(x.window () == y.window ()))
     return false;
 
   if (!(x.offsetX () == y.offsetX ()))
@@ -4495,6 +4662,18 @@ operator<< (::std::ostream& o, const RPG_Graphics_GraphicTypeUnion_XMLTree_Type&
 }
 
 ::std::ostream&
+operator<< (::std::ostream& o, RPG_Graphics_WindowType_XMLTree_Type::value i)
+{
+  return o << RPG_Graphics_WindowType_XMLTree_Type::_xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Graphics_WindowType_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
 operator<< (::std::ostream& o, RPG_Graphics_InterfaceElementType_XMLTree_Type::value i)
 {
   return o << RPG_Graphics_InterfaceElementType_XMLTree_Type::_xsd_RPG_Graphics_InterfaceElementType_XMLTree_Type_literals_[i];
@@ -4534,10 +4713,31 @@ operator<< (::std::ostream& o, const RPG_Graphics_ElementTypeUnion_XMLTree_Type&
 operator<< (::std::ostream& o, const RPG_Graphics_Element_XMLTree_Type& i)
 {
   o << ::std::endl << "type: " << i.type ();
-  o << ::std::endl << "offsetX: " << i.offsetX ();
-  o << ::std::endl << "offsetY: " << i.offsetY ();
-  o << ::std::endl << "width: " << i.width ();
-  o << ::std::endl << "height: " << i.height ();
+  if (i.window ())
+  {
+    o << ::std::endl << "window: " << *i.window ();
+  }
+
+  if (i.offsetX ())
+  {
+    o << ::std::endl << "offsetX: " << *i.offsetX ();
+  }
+
+  if (i.offsetY ())
+  {
+    o << ::std::endl << "offsetY: " << *i.offsetY ();
+  }
+
+  if (i.width ())
+  {
+    o << ::std::endl << "width: " << *i.width ();
+  }
+
+  if (i.height ())
+  {
+    o << ::std::endl << "height: " << *i.height ();
+  }
+
   return o;
 }
 
@@ -5241,6 +5441,25 @@ operator<< (::xml_schema::list_stream& l,
 }
 
 void
+operator<< (::xercesc::DOMElement& e, const RPG_Graphics_WindowType_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Graphics_WindowType_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Graphics_WindowType_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
 operator<< (::xercesc::DOMElement& e, const RPG_Graphics_InterfaceElementType_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::string& > (i);
@@ -5314,8 +5533,22 @@ operator<< (::xercesc::DOMElement& e, const RPG_Graphics_Element_XMLTree_Type& i
     s << i.type ();
   }
 
+  // window
+  //
+  if (i.window ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "window",
+        "urn:rpg",
+        e));
+
+    s << *i.window ();
+  }
+
   // offsetX
   //
+  if (i.offsetX ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -5323,11 +5556,12 @@ operator<< (::xercesc::DOMElement& e, const RPG_Graphics_Element_XMLTree_Type& i
         "urn:rpg",
         e));
 
-    s << i.offsetX ();
+    s << *i.offsetX ();
   }
 
   // offsetY
   //
+  if (i.offsetY ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -5335,11 +5569,12 @@ operator<< (::xercesc::DOMElement& e, const RPG_Graphics_Element_XMLTree_Type& i
         "urn:rpg",
         e));
 
-    s << i.offsetY ();
+    s << *i.offsetY ();
   }
 
   // width
   //
+  if (i.width ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -5347,11 +5582,12 @@ operator<< (::xercesc::DOMElement& e, const RPG_Graphics_Element_XMLTree_Type& i
         "urn:rpg",
         e));
 
-    s << i.width ();
+    s << *i.width ();
   }
 
   // height
   //
+  if (i.height ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -5359,7 +5595,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Graphics_Element_XMLTree_Type& i
         "urn:rpg",
         e));
 
-    s << i.height ();
+    s << *i.height ();
   }
 }
 
@@ -5961,6 +6197,15 @@ RPG_Graphics_GraphicTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR 
   _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert ();
 }
 
+RPG_Graphics_WindowType_XMLTree_Type::
+RPG_Graphics_WindowType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert ();
+}
+
 RPG_Graphics_InterfaceElementType_XMLTree_Type::
 RPG_Graphics_InterfaceElementType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                                 ::xml_schema::flags f,
@@ -5994,6 +6239,7 @@ RPG_Graphics_Element_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                    ::xml_schema::container* c)
 : ::xml_schema::type (s, f, c),
   type_ (f, this),
+  window_ (f, this),
   offsetX_ (f, this),
   offsetY_ (f, this),
   width_ (f, this),
@@ -6012,27 +6258,57 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    offsetX_type r;
-    s >> r;
-    this->offsetX_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< window_type > r (new window_type (s, f, this));
+      this->window_.set (r);
+    }
   }
 
   {
-    offsetY_type r;
-    s >> r;
-    this->offsetY_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      offsetX_type r;
+      s >> r;
+      this->offsetX_.set (r);
+    }
   }
 
   {
-    width_type r;
-    s >> r;
-    this->width_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      offsetY_type r;
+      s >> r;
+      this->offsetY_.set (r);
+    }
   }
 
   {
-    height_type r;
-    s >> r;
-    this->height_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      width_type r;
+      s >> r;
+      this->width_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      height_type r;
+      s >> r;
+      this->height_.set (r);
+    }
   }
 }
 
@@ -6420,6 +6696,13 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Graphics_WindowType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Graphics_InterfaceElementType_XMLTree_Type& x)
 {
   return s << static_cast< const ::xml_schema::string& > (x);
@@ -6444,10 +6727,41 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Graphics_Element_XMLTree_Type& x)
 {
   s << x.type ();
-  s << x.offsetX ();
-  s << x.offsetY ();
-  s << x.width ();
-  s << x.height ();
+  {
+    bool p (x.window ());
+    s << p;
+    if (p)
+      s << *x.window ();
+  }
+
+  {
+    bool p (x.offsetX ());
+    s << p;
+    if (p)
+      s << *x.offsetX ();
+  }
+
+  {
+    bool p (x.offsetY ());
+    s << p;
+    if (p)
+      s << *x.offsetY ();
+  }
+
+  {
+    bool p (x.width ());
+    s << p;
+    if (p)
+      s << *x.width ();
+  }
+
+  {
+    bool p (x.height ());
+    s << p;
+    if (p)
+      s << *x.height ();
+  }
+
   return s;
 }
 

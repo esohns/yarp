@@ -25,7 +25,6 @@
 
 #include <rpg_engine_common.h>
 #include <rpg_engine_iwindow.h>
-// #include <rpg_engine_messagequeue.h>
 #include <rpg_engine_level.h>
 
 #include <rpg_graphics_iwindow.h>
@@ -80,7 +79,7 @@ class RPG_Client_Engine
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Engine& operator=(const RPG_Client_Engine&));
 
   // override task-based members
-  virtual int open(void* = NULL);
+//   virtual int open(void* = NULL);
   virtual int close(u_long = 0);
   virtual int svc(void);
 

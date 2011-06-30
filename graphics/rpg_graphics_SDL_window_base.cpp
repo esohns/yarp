@@ -67,7 +67,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
     myBackGround(backGround_in),
     myOffset(offset_in),
     myLastAbsolutePosition(std::make_pair(0, 0)),
-    myParent(&const_cast<RPG_Graphics_SDLWindowBase&> (parent_in)),
+    myParent(&const_cast<RPG_Graphics_SDLWindowBase&>(parent_in)),
     myType(type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
@@ -79,8 +79,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
                        myBorderRight);
 
   RPG_Graphics_WindowSize_t size_parent = myParent->getSize(true); // top-level
-  mySize.first = size_parent.first - (myBorderLeft + myBorderRight);
-  mySize.second = size_parent.second - (myBorderTop + myBorderBottom);
+  mySize.first = size_parent.first - myOffset.first - (myBorderLeft + myBorderRight);
+  mySize.second = size_parent.second - myOffset.second - (myBorderTop + myBorderBottom);
 
   // register with parent
   myParent->addChild(this);
