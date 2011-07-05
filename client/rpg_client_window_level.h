@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CLIENT_WINDOW_LEVEL_H
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
@@ -49,6 +50,7 @@ class RPG_Client_WindowLevel
   void setView(const int&,
                const int&); // view (relative map coordinates)
 
+  void toggleMiniMap();
   void toggleDoor(const RPG_Map_Position_t&); // door position
   void drawHighlight(const RPG_Graphics_Position_t&); // highlight position
   void storeHighlightBG(const RPG_Map_Position_t&,       // map position
@@ -86,6 +88,7 @@ class RPG_Client_WindowLevel
 
   RPG_Engine_Level*           myLevelState;
   RPG_Client_Engine*          myEngine;
+  bool                        myDrawMinimap;
 
   RPG_Graphics_MapStyle_t     myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t myCurrentFloorSet;

@@ -17,10 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "SDL_gui_levelwindow.h"
 
 #include "SDL_gui_defines.h"
 
+#include <rpg_engine_level.h>
 #include <rpg_engine_common_tools.h>
 
 #include <rpg_graphics_defines.h>
@@ -32,6 +34,7 @@
 #include <rpg_map_common_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 
 #include <ace/Log_Msg.h>
 
@@ -39,13 +42,14 @@
 
 SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& parent_in,
                                          const RPG_Graphics_MapStyle_t& mapStyle_in,
-                                         const RPG_Map_FloorPlan_t& floorPlan_in)
- : inherited(WINDOWTYPE_MAP,       // type
+                                         RPG_Engine_Level* engine_in)
+ : inherited(WINDOW_MAP,           // type
              parent_in,            // parent
              std::make_pair(0, 0), // offset
              std::string(),        // title
              NULL),                // background
-//    myLevelState(),
+   myEntityID(0),
+   myLevelState(engine_in),
    myCurrentMapStyle(mapStyle_in),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
@@ -56,17 +60,14 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
 //    myWallTiles(),
    myHideWalls(false),
    myWallBlend(NULL),
-   myView(std::make_pair(floorPlan_in.size_x / 2,
-                         floorPlan_in.size_y / 2)),
-   myHighlightBGPosition(std::make_pair(floorPlan_in.size_x / 2,
-                                        floorPlan_in.size_y / 2)),
+   myView(std::make_pair(myLevelState->getFloorPlan().size_x / 2,
+                         myLevelState->getFloorPlan().size_y / 2)),
+   myHighlightBGPosition(std::make_pair(myLevelState->getFloorPlan().size_x / 2,
+                                        myLevelState->getFloorPlan().size_y / 2)),
    myHighlightBG(NULL),
    myHighlightTile(NULL)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
-
-  // init map state
-  myLevelState.init(floorPlan_in);
 
   ACE_OS::memset(&myCurrentFloorEdgeSet,
                  0,
@@ -110,18 +111,18 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
                RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
   // init floor edge tiles / position
-  RPG_Engine_Common_Tools::initFloorEdges(floorPlan_in,
+  RPG_Engine_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
                                           myCurrentFloorEdgeSet,
                                           myFloorEdgeTiles);
 
   // init wall tiles / position
-  RPG_Engine_Common_Tools::initWalls(floorPlan_in,
+  RPG_Engine_Common_Tools::initWalls(myLevelState->getFloorPlan(),
                                      myCurrentWallSet,
                                      myWallTiles);
 
   // init door tiles / position
-  RPG_Engine_Common_Tools::initDoors(floorPlan_in,
-                                     myLevelState,
+  RPG_Engine_Common_Tools::initDoors(myLevelState->getFloorPlan(),
+                                     *myLevelState,
                                      myCurrentDoorSet,
                                      myDoorTiles);
 
@@ -226,7 +227,7 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
 
-  RPG_Map_Dimensions_t dimensions = myLevelState.getDimensions();
+  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
 
   // handle over-/underruns
   if ((offsetX_in < 0) &&
@@ -252,21 +253,23 @@ SDL_GUI_LevelWindow::centerView()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::centerView"));
 
-  RPG_Map_Dimensions_t dimensions = myLevelState.getDimensions();
+  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
   myView = std::make_pair(dimensions.first / 2,
                           dimensions.second / 2);
 }
 
 void
 SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
-                          const RPG_Map_FloorPlan_t& floorPlan_in)
+                          const RPG_Map_FloorPlan_t& floorPlan_in,
+                          const RPG_Engine_EntityID_t& entityID_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
 
   // clean up
   myWallTiles.clear();
 
-  myLevelState.init(floorPlan_in);
+//   myLevelState->init(floorPlan_in);
+  myEntityID = entityID_in;
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -397,9 +400,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
       // off-map ?
       if ((current_map_position.second < 0) ||
-          (current_map_position.second >= static_cast<int> (myLevelState.getDimensions().second)) ||
+          (current_map_position.second >= static_cast<int> (myLevelState->getDimensions().second)) ||
           (current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int> (myLevelState.getDimensions().first)))
+          (current_map_position.first >= static_cast<int> (myLevelState->getDimensions().first)))
         continue;
 
       // floor tile rotation
@@ -415,9 +418,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                                                             myView);
 
       // step1: unmapped areas
-      if ((myLevelState.getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
+      if ((myLevelState->getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
           // *NOTE*: walls are drawn together with the floor...
-          (myLevelState.getElement(current_map_position) == MAPELEMENT_WALL))
+          (myLevelState->getElement(current_map_position) == MAPELEMENT_WALL))
       {
         RPG_Graphics_Surface::put(screen_position.first,
                                   screen_position.second,
@@ -426,9 +429,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
 //         // off the map ? --> continue
 //         if ((current_map_position.second < 0) ||
-//             (current_map_position.second >= myLevelState.getDimensions().second) ||
+//             (current_map_position.second >= myLevelState->getDimensions().second) ||
 //             (current_map_position.first < 0) ||
-//             (current_map_position.first >= myLevelState.getDimensions().first))
+//             (current_map_position.first >= myLevelState->getDimensions().first))
 
 //         // advance floor iterator
 //         std::advance(floor_iterator, myCurrentFloorSet.rows);
@@ -437,8 +440,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step2: floor
-      if ((myLevelState.getElement(current_map_position) == MAPELEMENT_FLOOR) ||
-          (myLevelState.getElement(current_map_position) == MAPELEMENT_DOOR))
+      if ((myLevelState->getElement(current_map_position) == MAPELEMENT_FLOOR) ||
+          (myLevelState->getElement(current_map_position) == MAPELEMENT_DOOR))
       {
         RPG_Graphics_Surface::put(screen_position.first,
                                   screen_position.second,
@@ -619,7 +622,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
     current_map_position.second = myView.second + i;
     // off the map ? --> continue
     if ((current_map_position.second < 0) ||
-        (current_map_position.second >= static_cast<int> (myLevelState.getDimensions().second)))
+        (current_map_position.second >= static_cast<int> (myLevelState->getDimensions().second)))
       continue;
 
     for (j = diff + i;
@@ -629,7 +632,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
       // off the map ? --> continue
       if ((current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int> (myLevelState.getDimensions().first)))
+          (current_map_position.first >= static_cast<int> (myLevelState->getDimensions().first)))
         continue;
 
       // transform map coordinates into screen coordinates
@@ -700,7 +703,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step4: ceiling
-      if (RPG_Engine_Common_Tools::hasCeiling(current_map_position, myLevelState) &&
+      if (RPG_Engine_Common_Tools::hasCeiling(current_map_position, *myLevelState) &&
           !myHideWalls)
       {
         RPG_Graphics_Surface::put(screen_position.first,
@@ -839,7 +842,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       // find map square
       RPG_Graphics_Position_t map_position = RPG_Engine_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
                                                                                                 event_in.motion.y),
-                                                                                 myLevelState.getDimensions(),
+                                                                                 myLevelState->getDimensions(),
                                                                                  mySize,
                                                                                  myView);
 //       ACE_DEBUG((LM_DEBUG,
@@ -920,7 +923,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // set an appropriate cursor
-      RPG_Graphics_Cursor cursor_type = RPG_Engine_Common_Tools::getCursor(map_position, myLevelState);
+      RPG_Graphics_Cursor cursor_type = RPG_Engine_Common_Tools::getCursor(map_position, *myLevelState);
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         // *NOTE*: restore cursor BG first
@@ -945,7 +948,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       {
         RPG_Graphics_Position_t map_position = RPG_Engine_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
                                                                                                   event_in.button.y),
-                                                                                   myLevelState.getDimensions(),
+                                                                                   myLevelState->getDimensions(),
                                                                                    mySize,
                                                                                    myView);
 
@@ -957,17 +960,19 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                    map_position.second));
 
         // closed door ? --> (try to) open it
-        if (myLevelState.getElement(map_position) == MAPELEMENT_DOOR)
+        if (myLevelState->getElement(map_position) == MAPELEMENT_DOOR)
         {
-          RPG_Map_Door_t door = myLevelState.getDoor(map_position);
+          RPG_Map_Door_t door = myLevelState->getDoor(map_position);
           if (!door.is_open)
           {
-            myLevelState.handleDoor(map_position,
-                             true); // --> open
+            RPG_Engine_Action action;
+            action.command = COMMAND_DOOR_OPEN;
+            action.position = map_position;
+            myLevelState->action(myEntityID, action);
 
             // change tile
             RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-            orientation = RPG_Engine_Common_Tools::getDoorOrientation(myLevelState,
+            orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
                                                                       map_position);
             switch (orientation)
             {
@@ -1383,7 +1388,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.north.surface = shaded_wall;
 
       // debug info
-      std::string dump_path_base = RPG_GRAPHICS_DEF_DUMP_DIR;
+      std::string dump_path_base = RPG_COMMON_DUMP_DIR;
       dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
 
       std::string dump_path = dump_path_base;
@@ -1425,15 +1430,13 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
           (myCurrentDoorSet.horizontal_closed.surface == NULL) ||
           (myCurrentDoorSet.vertical_closed.surface == NULL) ||
           (myCurrentDoorSet.broken.surface == NULL))
-      {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("door-style \"%s\" is incomplete, continuing\n"),
                    RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str()));
-      } // end IF
 
       // update door tiles / position
       RPG_Engine_Common_Tools::updateDoors(myCurrentDoorSet,
-                                           myLevelState,
+                                           *myLevelState,
                                            myDoorTiles);
 
       myCurrentMapStyle.door_style = style_in.doorstyle;

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_MAP_COMMON_H
 #define RPG_MAP_COMMON_H
 
@@ -47,26 +48,7 @@ enum RPG_Map_Element
 typedef std::pair<unsigned long, unsigned long> RPG_Map_Dimensions_t;
 
 typedef std::pair<unsigned long, unsigned long> RPG_Map_Position_t;
-// *NOTE*: std::less<_Key> uses default operator< for std::pair<>, which sorts
-// the cells left-to-right, top-to-bottom (0,0 is top-left)
-// --> (0,0), (0,1), ..., (0,dimy-1), (1,0), ..., (1,dimy-1), ..., (dimx-1,dimy-1)
-// This is not what we want; ensure that coordinates will be sorted
-// top-to-bottom, left-to-right.
-// --> (0,0), (1,0), ..., (dimx-1, 0), (0,1), ..., (dimx-1,1), ..., (dimx-1,dimy-1)
-struct position_compare
- : public std::binary_function<RPG_Map_Position_t,
-                               RPG_Map_Position_t,
-                               bool>
-{
-  inline bool
-  operator()(const RPG_Map_Position_t& __x,
-             const RPG_Map_Position_t& __y) const
-  {
-    return ((__x.second < __y.second) ||
-            (!(__y.second < __x.second) && (__x.first < __y.first)));
-  }
-};
-typedef std::set<RPG_Map_Position_t, position_compare> RPG_Map_Positions_t;
+typedef std::set<RPG_Map_Position_t> RPG_Map_Positions_t;
 typedef RPG_Map_Positions_t::const_iterator RPG_Map_PositionsConstIterator_t;
 typedef RPG_Map_Positions_t::iterator RPG_Map_PositionsIterator_t;
 typedef std::list<RPG_Map_Position_t> RPG_Map_PositionList_t;

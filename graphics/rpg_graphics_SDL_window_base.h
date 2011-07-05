@@ -111,6 +111,7 @@ class RPG_Graphics_SDLWindowBase
   RPG_Graphics_Windows_t           myChildren;
 
   RPG_Graphics_Position_t          myLastAbsolutePosition;
+  SDL_Rect                         myClipRect;
 
  private:
   typedef RPG_Graphics_IWindow inherited;
@@ -133,8 +134,6 @@ class RPG_Graphics_SDLWindowBase
 
   RPG_Graphics_SDLWindowBase*      myParent;
   RPG_Graphics_WindowType          myType;
-
-  SDL_Rect                         myClipRect;
 };
 
 #endif

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
- *   erik.sohns@web.de   *
+ *   Copyright (C) 2009 by Erik Sohns                                      *
+ *   erik.sohns@web.de                                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -1277,7 +1277,7 @@ do_work(const RPG_Client_Config& config_in,
   // step5c: setup minimap "window"
   RPG_Graphics_Offset_t offset = std::make_pair(RPG_CLIENT_DEF_MINIMAP_POSITION_X,
                                                 RPG_CLIENT_DEF_MINIMAP_POSITION_Y);
-  RPG_Client_Window_MiniMap miniMapWindow(mainWindow, // parent
+  RPG_Client_Window_MiniMap miniMapWindow(mapWindow, // parent
                                           offset,
                                           &client_engine,
                                           &level_engine);
@@ -1505,16 +1505,19 @@ do_work(const RPG_Client_Config& config_in,
         {
           case SDLK_m:
           {
-            std::string dump_path = RPG_MAP_DUMP_DIR;
-            dump_path += ACE_DIRECTORY_SEPARATOR_STR;
-            dump_path += ACE_TEXT("map.txt");
-            if (!RPG_Map_Common_Tools::save(dump_path,
-                                            userData.level_engine->getStartPosition(),
-                                            userData.level_engine->getSeedPoints(),
-                                            userData.level_engine->getFloorPlan()))
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), continuing\n"),
-                         dump_path.c_str()));
+            if (event.key.keysym.mod & KMOD_SHIFT)
+            {
+              std::string dump_path = RPG_MAP_DUMP_DIR;
+              dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+              dump_path += ACE_TEXT("map.txt");
+              if (!RPG_Map_Common_Tools::save(dump_path,
+                                              userData.level_engine->getStartPosition(),
+                                              userData.level_engine->getSeedPoints(),
+                                              userData.level_engine->getFloorPlan()))
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), continuing\n"),
+                           dump_path.c_str()));
+            } // end IF
 
             break;
           }

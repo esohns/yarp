@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_map_common_tools.h"
 
 #include "rpg_map_parser_driver.h"
@@ -1803,10 +1804,10 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   } // end FOR
 
   // step2: make corridors
-  RPG_Map_ZoneList_t corridors_bounds;
+  RPG_Map_PositionsList_t corridors_bounds;
   RPG_Map_ZoneListConstIterator_t zonelist_iter2;
   RPG_Map_ZoneConstIterator_t doors_iter, doors_iter2;
-  RPG_Map_Zone_t current_corridor;
+  RPG_Map_Positions_t current_corridor;
   RPG_Map_Positions_t possible_positions, used_positions;
   RPG_Dice_RollResult_t result;
   RPG_Map_PositionsConstIterator_t target_door;
@@ -1940,19 +1941,19 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
     } // end FOR
 
   // step3: throw everything together
-  for (zonelist_iter = corridors_bounds.begin();
-       zonelist_iter != corridors_bounds.end();
-       zonelist_iter++)
-    for (RPG_Map_ZoneConstIterator_t zone_iter = (*zonelist_iter).begin();
-         zone_iter != (*zonelist_iter).end();
-         zone_iter++)
-      level_out.walls.insert(*zone_iter);
+  RPG_Map_PositionsListIterator_t corridors_iter;
+  for (corridors_iter = corridors_bounds.begin();
+       corridors_iter != corridors_bounds.end();
+       corridors_iter++)
+       for (RPG_Map_PositionsConstIterator_t positions_iter = (*corridors_iter).begin();
+            positions_iter != (*corridors_iter).end();
+            positions_iter++)
+        level_out.walls.insert(*positions_iter);
 
   // step4
   // - clear any rubble that may now block some corridors
   // - compute unmapped areas
-  RPG_Map_ZoneList_t corridors = corridors_bounds;
-  RPG_Map_ZoneListIterator_t corridors_iter;
+  RPG_Map_PositionsList_t corridors = corridors_bounds;
   corridors_iter = corridors.begin();
   for (RPG_Map_PathListConstIterator_t paths_iter = paths.begin();
        paths_iter != paths.end();
@@ -2016,10 +2017,10 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
         continue;
 
       // part of a corridor ?
-      for (zonelist_iter = corridors.begin();
-           zonelist_iter != corridors.end();
-           zonelist_iter++)
-        if ((*zonelist_iter).find(current_position) != (*zonelist_iter).end())
+      for (corridors_iter = corridors.begin();
+           corridors_iter != corridors.end();
+           corridors_iter++)
+        if ((*corridors_iter).find(current_position) != (*corridors_iter).end())
         {
           done = true;
           break;

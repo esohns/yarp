@@ -92,7 +92,27 @@ class RPG_Map_Common_Tools
   // helper types/methods
   // *WARNING*: make sure the set of positions forms one (connected) area !
   // (cannot enforce this without a (more complicated) algebraic definition...)
-  typedef RPG_Map_Positions_t RPG_Map_Zone_t;
+
+  // *NOTE*: std::less<_Key> uses default operator< for std::pair<>, which sorts
+  // the cells left-to-right, top-to-bottom (0,0 is top-left)
+  // --> (0,0), (0,1), ..., (0,dimy-1), (1,0), ..., (1,dimy-1), ..., (dimx-1,dimy-1)
+  // This is not what we want; ensure that coordinates will be sorted
+  // top-to-bottom, left-to-right.
+  // --> (0,0), (1,0), ..., (dimx-1, 0), (0,1), ..., (dimx-1,1), ..., (dimx-1,dimy-1)
+  struct position_compare
+   : public std::binary_function<RPG_Map_Position_t,
+                                 RPG_Map_Position_t,
+                                 bool>
+  {
+    inline bool
+    operator()(const RPG_Map_Position_t& __x,
+               const RPG_Map_Position_t& __y) const
+    {
+      return ((__x.second < __y.second) ||
+      (!(__y.second < __x.second) && (__x.first < __y.first)));
+    }
+  };
+  typedef std::set<RPG_Map_Position_t, position_compare> RPG_Map_Zone_t;
   typedef RPG_Map_Zone_t::const_iterator RPG_Map_ZoneConstIterator_t;
   typedef RPG_Map_Zone_t::iterator RPG_Map_ZoneIterator_t;
   static void dump(const RPG_Map_Zone_t&); // zone
@@ -115,6 +135,8 @@ class RPG_Map_Common_Tools
   typedef std::list<RPG_Map_Zone_t> RPG_Map_ZoneList_t;
   typedef RPG_Map_ZoneList_t::const_iterator RPG_Map_ZoneListConstIterator_t;
   typedef RPG_Map_ZoneList_t::iterator RPG_Map_ZoneListIterator_t;
+  typedef std::list<RPG_Map_Positions_t> RPG_Map_PositionsList_t;
+  typedef RPG_Map_PositionsList_t::iterator RPG_Map_PositionsListIterator_t;
   struct RPG_Map_Square_t
   {
     RPG_Map_Position_t ul;

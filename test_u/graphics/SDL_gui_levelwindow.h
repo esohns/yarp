@@ -20,7 +20,7 @@
 #ifndef SDL_GUI_LEVELWINDOW_H
 #define SDL_GUI_LEVELWINDOW_H
 
-#include <rpg_engine_level.h>
+#include <rpg_engine_common.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
@@ -33,6 +33,9 @@
 
 #include <string>
 
+// forward declarations
+class RPG_Engine_Level;
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
@@ -44,7 +47,7 @@ class SDL_GUI_LevelWindow
                       const RPG_Graphics_SDLWindowBase&, // parent
                       // *** level properties ***
                       const RPG_Graphics_MapStyle_t&,    // map style
-                      const RPG_Map_FloorPlan_t&);       // (initial) map
+                      RPG_Engine_Level*);                // engine handle
   virtual ~SDL_GUI_LevelWindow();
 
   // adjust viewport
@@ -55,7 +58,8 @@ class SDL_GUI_LevelWindow
 
   // set level properties
   void init(const RPG_Graphics_MapStyle_t&, // map style
-            const RPG_Map_FloorPlan_t&);    // map
+            const RPG_Map_FloorPlan_t&,     // map
+            const RPG_Engine_EntityID_t&);  // entity ID
   void setStyle(const RPG_Graphics_StyleUnion&);
   void hideWalls(const bool& = true); // hide walls ?
 
@@ -85,7 +89,8 @@ class SDL_GUI_LevelWindow
   void initWallBlend();
   void restoreBG();
 
-  RPG_Engine_Level                myLevelState;
+  RPG_Engine_EntityID_t           myEntityID;
+  RPG_Engine_Level*               myLevelState;
 
   RPG_Graphics_MapStyle_t         myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_client_window_level.h"
 
 #include "rpg_client_defines.h"
@@ -24,6 +25,7 @@
 
 #include <rpg_engine_common_tools.h>
 #include <rpg_engine_level.h>
+#include <rpg_engine_command.h>
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
@@ -38,7 +40,6 @@
 #include <ace/Log_Msg.h>
 
 #include <sstream>
-#include "../engine/rpg_engine_command.h"
 
 RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase& parent_in)
  : inherited(WINDOW_MAP,           // type
@@ -48,6 +49,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
              NULL),                // background
    myLevelState(NULL),
    myEngine(NULL),
+   myDrawMinimap(false),
 //    myCurrentMapStyle(mapStyle_in),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
@@ -187,6 +189,14 @@ RPG_Client_WindowLevel::setView(const int& offsetX_in,
 }
 
 void
+RPG_Client_WindowLevel::toggleMiniMap()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::toggleMiniMap"));
+
+  myDrawMinimap = !myDrawMinimap;
+}
+
+void
 RPG_Client_WindowLevel::toggleDoor(const RPG_Map_Position_t& position_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::toggleDoor"));
@@ -302,6 +312,28 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
        offsetX_in,
        offsetY_in);
 
+  // *NOTE*: mapping tile coordinates to world-, and world- to screen coordinates basically
+  // works as follows (DImetric projection):
+  // 1. the "tile" coordinates are represented by:
+  //    - RPG_GRAPHICS_TILE_HEIGHT_MOD:
+  //      (== sin(a==26.565°)*e == 0.4472*e, e == length of a tile edge)
+  //    - RPG_GRAPHICS_TILE_WIDTH_MOD:
+  //      (== cos(a==26.565°)*e == 0.8944*e)
+  // 2. world (== map-) coordinates of a (checkerboard) set of tiles are represented by:
+  //    - Xworld+1 = Xscreen + cos(a)*e, Yscreen + sin(a)*e
+  //    - Yworld+1 = Xscreen - cos(a)*e, Yscreen + sin(a)*e
+  //    --> Xscreen = (Xworld - Yworld)*cos(a)*e (== (Xworld - Yworld)*RPG_GRAPHICS_TILE_WIDTH_MOD)
+  //    --> Yscreen = (Xworld + Yworld)*sin(a)*e (== (Xworld + Yworld)*RPG_GRAPHICS_TILE_HEIGHT_MOD)
+  // 3. screen coordinates derive from the screen (== target surface T) center
+  //    - Xcenter = (Twidth / 2), Ycenter = (Theight / 2)
+  //    ...and the world (== map) focus (== current tile). Then, the "origin" (== center of a tile
+  //    relative to the tile at [0,0]) derives to something like:
+  //    - Xorigin = (Xfocus - Yfocus)*cos(a)*e
+  //    - Yorigin = (Xworld + Yworld + 1)*sin(a)*e
+  // 4. given these reference points, map-to-screen translation derives to something like:
+  //    - Xscreen = (Xworld - Yworld)*cos(a)*e - Xorigin + Xcenter
+  //    - Yscreen = (Xworld + Yworld)*sin(a)*e - Yorigin + Ycenter
+
   // position of the top right corner
   RPG_Graphics_Position_t top_right = std::make_pair(0, 0);
 //   top_right.first = (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2) + 50)) +
@@ -313,13 +345,13 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 //                        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
 //                       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
   top_right.first = (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2))) +
-      (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2))) +
-      (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-      (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+                      (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2))) +
+                      (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                     (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
   top_right.second = (((RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2))) +
-      (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2))) +
-      (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-      (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+                       (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2))) +
+                       (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                      (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
 
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = top_right.first - top_right.second - 1;
@@ -618,6 +650,28 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                             *myHighlightTile,
                             targetSurface);
 
+  // realize any children
+  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
+       iterator != myChildren.end();
+       iterator++)
+  {
+    if (((*iterator)->getType() == WINDOW_MINIMAP) &&
+        (!myDrawMinimap))
+      continue;
+
+    try
+    {
+      (*iterator)->draw(targetSurface,
+                        offsetX_in,
+                        offsetY_in);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
+    }
+  } // end FOR
+
   // reset clipping area
   unclip(targetSurface);
 
@@ -694,6 +748,15 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
           // clear highlight BG
           RPG_Graphics_Surface::clear(myHighlightBG);
+
+          // need a redraw
+          redraw_out = true;
+
+          break;
+        }
+        case SDLK_m:
+        {
+          toggleMiniMap();
 
           // need a redraw
           redraw_out = true;

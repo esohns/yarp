@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef SDL_GUI_DEFINES_H
 #define SDL_GUI_DEFINES_H
 
@@ -33,9 +34,13 @@
 #define SDL_GUI_DEF_MAP_SIZE_Y                 15
 
 #define SDL_GUI_DEF_GRAPHICS_CACHESIZE         50
-#define SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE  IMAGE_INTERFACE
+#define SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE  IMAGE_INTERFACE_MAIN
 #define SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE  ACE_TEXT_ALWAYS_CHAR("Project RPG")
 // #define SDL_GUI_DEF_GRAPHICS_MAINMENU_TITLE    ACE_TEXT_ALWAYS_CHAR("main menu")
+#define SDL_GUI_DEF_CHARACTER                  ACE_TEXT("/var/tmp/default_player.xml")
+#define SDL_GUI_DEF_FLOOR_PLAN                 ACE_TEXT("/var/tmp/floor_plan.txt")
+#define SDL_GUI_DEF_VALIDATE_XML true
+
 // default style
 #define SDL_GUI_DEF_GRAPHICS_FLOORSTYLE        FLOORSTYLE_STONE_COBBLED
 #define SDL_GUI_DEF_GRAPHICS_EDGESTYLE         EDGESTYLE_FLOOR_STONE_COBBLED

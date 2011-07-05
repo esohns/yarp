@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_graphics_SDL_window_base.h"
 
 #include "rpg_graphics_defines.h"
@@ -458,8 +459,6 @@ RPG_Graphics_SDLWindowBase::notify(const RPG_Graphics_Cursor& cursor_in) const
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::notify"));
 
   ACE_UNUSED_ARG(cursor_in);
-
-  ACE_ASSERT(false);
 }
 
 const RPG_Graphics_WindowType

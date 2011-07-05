@@ -28,6 +28,6 @@
 #define RPG_MAP_DEF_TRACE_SCANNING false
 #define RPG_MAP_DEF_TRACE_PARSING  false
 
-#define RPG_MAP_DUMP_DIR           ACE_TEXT("/var/tmp")
+// #define RPG_MAP_DUMP_DIR           ACE_TEXT("/var/tmp")
 
 #endif

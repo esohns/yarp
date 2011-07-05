@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
- *   erik.sohns@web.de   *
+ *   Copyright (C) 2009 by Erik Sohns                                      *
+ *   erik.sohns@web.de                                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -27,6 +27,9 @@
 #include "SDL_gui_mainwindow.h"
 #include "SDL_gui_levelwindow.h"
 
+#include <rpg_engine_level.h>
+#include <rpg_engine_common_tools.h>
+
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
 
@@ -36,6 +39,8 @@
 #include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
+
+#include <rpg_character_common_tools.h>
 
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
@@ -58,9 +63,6 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-
-#define SDL_GUI_DEF_FLOOR_PLAN   ACE_TEXT("/var/tmp/floor_plan.txt")
-#define SDL_GUI_DEF_VALIDATE_XML true
 
 enum userMode_t
 {
@@ -166,14 +168,12 @@ event_timer_SDL_cb(Uint32 interval_in,
       // mouse is hovering --> trigger an event
       SDL_Event event;
       event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
-      event.user.code = static_cast<int> (*current_hovertime_p);
+      event.user.code = static_cast<int>(*current_hovertime_p);
 
       if (SDL_PushEvent(&event))
-      {
         ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-                  SDL_GetError()));
-      } // end IF
+                   ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                   SDL_GetError()));
     } // end IF
   } // end lock scope
 
@@ -422,6 +422,8 @@ do_work(const mode_t& mode_in,
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Common_Tools::initStringConversionTables();
+  RPG_Character_Common_Tools::init();
   RPG_Graphics_Common_Tools::initStringConversionTables();
 
   // step1a: init graphics dictionary
@@ -507,7 +509,7 @@ do_work(const mode_t& mode_in,
           RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CATEGORY_MAX,
                                           1,
                                           result);
-          graphic.category = static_cast<RPG_Graphics_Category> ((result.front() - 1));
+          graphic.category = static_cast<RPG_Graphics_Category>((result.front() - 1));
         } while (graphic.category == CATEGORY_FONT); // cannot display fonts at the moment
 
         // choose type within category
@@ -519,7 +521,7 @@ do_work(const mode_t& mode_in,
             RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CURSOR_MAX,
                                             1,
                                             result);
-            type.cursor = static_cast<RPG_Graphics_Cursor> ((result.front() - 1));
+            type.cursor = static_cast<RPG_Graphics_Cursor>((result.front() - 1));
             type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
 
             break;
@@ -530,7 +532,7 @@ do_work(const mode_t& mode_in,
             RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_IMAGE_MAX,
                                             1,
                                             result);
-            type.image = static_cast<RPG_Graphics_Image> ((result.front() - 1));
+            type.image = static_cast<RPG_Graphics_Image>((result.front() - 1));
             type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
 
             break;
@@ -540,7 +542,7 @@ do_work(const mode_t& mode_in,
             RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILEGRAPHIC_MAX,
                                             1,
                                             result);
-            type.tilegraphic = static_cast<RPG_Graphics_TileGraphic> ((result.front() - 1));
+            type.tilegraphic = static_cast<RPG_Graphics_TileGraphic>((result.front() - 1));
             type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
 
             break;
@@ -550,7 +552,7 @@ do_work(const mode_t& mode_in,
             RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILESETGRAPHIC_MAX,
                                             1,
                                             result);
-            type.tilesetgraphic = static_cast<RPG_Graphics_TileSetGraphic> ((result.front() - 1));
+            type.tilesetgraphic = static_cast<RPG_Graphics_TileSetGraphic>((result.front() - 1));
             type.discriminator = RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC;
 
             break;
@@ -814,15 +816,38 @@ do_work(const mode_t& mode_in,
       // step4: set default cursor
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
 
-      // step5: setup level "window"
+      // step5a: level engine
+      std::string base_data_path;
+#ifdef DATADIR
+      base_data_path = DATADIR;
+#else
+      base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
+      std::string schemaRepository = base_data_path;
+      schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
+      schemaRepository += RPG_COMMON_DEF_CONFIG_SUB;
+      std::string entity_file = SDL_GUI_DEF_CHARACTER;
+      RPG_Engine_Entity entity = RPG_Engine_Common_Tools::loadEntity(entity_file,
+                                                                     schemaRepository,
+                                                                     true);
+      ACE_ASSERT(entity.character);
+      RPG_Engine_Level level_engine;
+      level_engine.init(NULL,
+                        startingPosition,
+                        seedPoints,
+                        plan);
+      level_engine.start();
+      RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity);
+
+      // step5b: setup level "window"
       // *NOTE*: need to allocate this dynamically so parent window can
       // assume ownership...
       SDL_GUI_LevelWindow* mapWindow = NULL;
       try
       {
-        mapWindow = new SDL_GUI_LevelWindow(mainWindow, // parent
-                                            mapStyle,   // map style
-                                            plan);      // map
+        mapWindow = new SDL_GUI_LevelWindow(mainWindow,     // parent
+                                            mapStyle,       // map style
+                                            &level_engine); // engine
       }
       catch (...)
       {
@@ -840,6 +865,9 @@ do_work(const mode_t& mode_in,
 
         return;
       } // end IF
+      mapWindow->init(mapStyle,
+                      level_engine.getFloorPlan(),
+                      entity_ID);
       mapWindow->setScreen(screen);
 
       // refresh screen
@@ -1123,6 +1151,7 @@ do_work(const mode_t& mode_in,
       } while (!done);
 
       // step8: clean up
+      level_engine.stop();
       if (!SDL_RemoveTimer(timer))
       {
         ACE_DEBUG((LM_ERROR,

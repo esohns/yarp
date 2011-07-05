@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_graphics_common_tools.h"
 
 #include "rpg_graphics_defines.h"
@@ -337,7 +338,7 @@ RPG_Graphics_Common_Tools::elementsToString(const RPG_Graphics_Elements_t& eleme
   std::string result;
 
   std::ostringstream converter;
-  unsigned long index = 0;
+  unsigned long index = 1;
   for (RPG_Graphics_ElementsConstIterator_t iterator = elements_in.begin();
        iterator != elements_in.end();
        iterator++, index++)
@@ -417,7 +418,6 @@ RPG_Graphics_Common_Tools::graphicToString(const RPG_Graphics_t& graphic_in)
   {
     result += ACE_TEXT_ALWAYS_CHAR("\n");
     result += RPG_Graphics_Common_Tools::elementsToString(graphic_in.elements);
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end ELSE
 
   result += ACE_TEXT_ALWAYS_CHAR("file: ");
@@ -427,7 +427,7 @@ RPG_Graphics_Common_Tools::graphicToString(const RPG_Graphics_t& graphic_in)
   {
     result += ACE_TEXT_ALWAYS_CHAR("\"");
     result += graphic_in.file;
-    result += ACE_TEXT_ALWAYS_CHAR("\"");
+    result += ACE_TEXT_ALWAYS_CHAR("\"\n");
   } // end ELSE
 
   result += ACE_TEXT_ALWAYS_CHAR("size: ");

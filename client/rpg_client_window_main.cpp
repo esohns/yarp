@@ -524,11 +524,8 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         break;
 
       // hovering on a hotspot (edge) area triggers a scroll of the viewport
-      if (window_in == this)
+      if (window_in->getType() != WINDOW_HOTSPOT)
         break; // not a hotspot
-
-      // sanity check
-      ACE_ASSERT(window_in->getType() == WINDOW_HOTSPOT);
 
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;

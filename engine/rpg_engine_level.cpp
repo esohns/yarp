@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_engine_level.h"
 
 #include "rpg_engine_defines.h"
@@ -211,7 +212,7 @@ RPG_Engine_Level::svc(void)
     handleEntities(schedule_redraw);
 
     // redraw UI ?
-    if (schedule_redraw)
+    if (schedule_redraw && myClient)
     {
       try
       {
@@ -392,9 +393,6 @@ RPG_Engine_Level::init(RPG_Engine_IWindow* client_in,
                        const RPG_Map_FloorPlan_t& floorPlan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::init"));
-
-  // sanity check
-  ACE_ASSERT(client_in);
 
   inherited::init(startPosition_in,
                   seedPoints_in,
@@ -659,14 +657,6 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
   redrawUI_out = true;
 }
 
-// const RPG_Map_Positions_t
-// RPG_Engine_Level::getWalls() const
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getWalls"));
-//
-//   return myFloorPlan.walls;
-// }
-
 void
 RPG_Engine_Level::handleEntities(bool& redrawUI_out)
 {
@@ -674,9 +664,6 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
 
   // init return value(s)
   redrawUI_out = false;
-
-  // sanity checks
-  ACE_ASSERT(myClient);
 
   bool action_complete = true;
 
@@ -711,7 +698,7 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
                    (current_action.command == COMMAND_DOOR_OPEN),
                    redrawUI_out);
 
-        if (redrawUI_out)
+        if (redrawUI_out && myClient)
         {
           try
           {

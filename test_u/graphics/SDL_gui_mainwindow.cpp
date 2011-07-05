@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "SDL_gui_mainwindow.h"
 
 #include "SDL_gui_defines.h"
@@ -30,6 +31,7 @@
 #include <rpg_graphics_SDL_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 
 #include <ace/Log_Msg.h>
 
@@ -301,7 +303,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
-          std::string dump_path = RPG_GRAPHICS_DEF_DUMP_DIR;
+          std::string dump_path = RPG_COMMON_DUMP_DIR;
           dump_path += ACE_DIRECTORY_SEPARATOR_STR;
           dump_path += ACE_TEXT("screenshot_");
           dump_path += converter.str();
@@ -355,12 +357,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //                  static_cast<unsigned long> (event_in.button.button)));
 
       // (left-)clicking on a hotspot (edge) area triggers a scroll of the viewport
-      if ((window_in->getType() == WINDOWTYPE_HOTSPOT) &&
+      if ((window_in->getType() == WINDOW_HOTSPOT) &&
           (event_in.button.button == 1))
       {
         // retrieve hotspot window handle
         RPG_Graphics_HotSpot* hotspot = NULL;
-        hotspot = dynamic_cast<RPG_Graphics_HotSpot*> (window_in);
+        hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
         if (!hotspot)
         {
           ACE_DEBUG((LM_ERROR,
@@ -375,12 +377,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
              iterator != myChildren.end();
              iterator++)
         {
-          if ((*iterator)->getType() == WINDOWTYPE_MAP)
+          if ((*iterator)->getType() == WINDOW_MAP)
             break;
         } // end FOR
-        ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
+        ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
         SDL_GUI_LevelWindow* levelWindow = NULL;
-        levelWindow = dynamic_cast<SDL_GUI_LevelWindow*> (*iterator);
+        levelWindow = dynamic_cast<SDL_GUI_LevelWindow*>(*iterator);
         if (!levelWindow)
         {
           ACE_DEBUG((LM_ERROR,
@@ -542,11 +544,11 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         break; // not a hotspot
 
       // sanity check
-      ACE_ASSERT(window_in->getType() == WINDOWTYPE_HOTSPOT);
+      ACE_ASSERT(window_in->getType() == WINDOW_HOTSPOT);
 
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;
-      hotspot = dynamic_cast<RPG_Graphics_HotSpot*> (window_in);
+      hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
       if (!hotspot)
       {
         ACE_DEBUG((LM_ERROR,
@@ -561,12 +563,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
            iterator != myChildren.end();
            iterator++)
       {
-        if ((*iterator)->getType() == WINDOWTYPE_MAP)
+        if ((*iterator)->getType() == WINDOW_MAP)
           break;
       } // end FOR
-      ACE_ASSERT((*iterator)->getType() == WINDOWTYPE_MAP);
+      ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
       SDL_GUI_LevelWindow* levelWindow = NULL;
-      levelWindow = dynamic_cast<SDL_GUI_LevelWindow*> (*iterator);
+      levelWindow = dynamic_cast<SDL_GUI_LevelWindow*>(*iterator);
       if (!levelWindow)
       {
         ACE_DEBUG((LM_ERROR,
