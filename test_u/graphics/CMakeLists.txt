@@ -3,8 +3,13 @@ include(FindPkgConfig)
 pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
 pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
 pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
+pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
 
-include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS} ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS} ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
+                    ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
+                    ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}
+                    ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
 
 ########### next target ###############
 set(graphics_parser_SRCS graphics_parser.cpp)
@@ -17,9 +22,17 @@ set_source_files_properties(${graphics_parser_SRCS} PROPERTIES COMPILE_DEFINITIO
 
 add_executable(graphics_parser ${graphics_parser_SRCS})
 
-target_link_libraries(graphics_parser ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-
-target_link_libraries(graphics_parser pthread ACE xerces-c RPG_Dice RPG_Common RPG_Graphics)
+target_link_libraries(graphics_parser
+                      ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
+target_link_libraries(graphics_parser
+                      pthread
+                      ACE
+                      xerces-c
+                      RPG_Dice
+                      RPG_Common
+                      RPG_Graphics)
 
 install(TARGETS graphics_parser RUNTIME DESTINATION bin)
 
@@ -42,10 +55,41 @@ set_source_files_properties(${SDL_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS DATAD
 
 add_executable(SDL_gui ${SDL_gui_SRCS})
 
-add_dependencies(SDL_gui RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+add_dependencies(SDL_gui
+                 RPG_Dice
+                 RPG_Chance
+                 RPG_Common
+                 RPG_Magic
+                 RPG_Item
+                 RPG_Character
+                 RPG_Monster
+                 RPG_Combat
+                 RPG_Map
+                 RPG_Graphics
+                 RPG_Engine
+                 RPG_Client_GUI)
 
-target_link_libraries(SDL_gui ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-
-target_link_libraries(SDL_gui pthread ACE xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+target_link_libraries(SDL_gui
+                      ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES})
+target_link_libraries(SDL_gui
+                      pthread
+                      ACE
+                      xerces-c
+                      RPG_Dice
+                      RPG_Chance
+                      RPG_Common
+                      RPG_Magic
+                      RPG_Item
+                      RPG_Character
+                      RPG_Monster
+                      RPG_Combat
+                      RPG_Map
+                      RPG_Graphics
+                      RPG_Engine
+                      RPG_Client_GUI)
 
 install(TARGETS SDL_gui RUNTIME DESTINATION bin)

@@ -21,6 +21,12 @@
 #ifndef RPG_CLIENT_COMMON_TOOLS_H
 #define RPG_CLIENT_COMMON_TOOLS_H
 
+#include <rpg_engine_level.h>
+
+#include <rpg_graphics_common.h>
+
+#include <rpg_map_common.h>
+
 #include <ace/Global_Macros.h>
 
 /**
@@ -31,6 +37,34 @@ class RPG_Client_Common_Tools
  public:
   // *NOTE*: initializes cursor manager singleton
   static void init();
+
+  static void initFloorEdges(const RPG_Map_FloorPlan_t&,             // floor plan
+                             const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset
+                             RPG_Graphics_FloorEdgeTileMap_t&);      // return value: floor edge tiles / position
+  static void updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset
+                               RPG_Graphics_FloorEdgeTileMap_t&);      // input/output value: floor edge tiles / position
+  static void initWalls(const RPG_Map_FloorPlan_t&,        // floor plan
+                        const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
+                        RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
+  static void updateWalls(const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
+                          RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
+  static void initDoors(const RPG_Map_FloorPlan_t&,        // floor plan
+                        const RPG_Engine_Level&,           // state
+                        const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
+                        RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
+  static void updateDoors(const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
+                          const RPG_Engine_Level&,           // state
+                          RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
+
+  // coordinate transformations
+  static const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,   // position (absolute)
+                                                  const RPG_Map_Dimensions_t&,      // map size
+                                                  const RPG_Graphics_WindowSize_t&, // window size
+                                                  const RPG_Graphics_Position_t&);  // viewport
+  // *NOTE*: translates the center of the map square to screen coordinates
+  static const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&,   // position (map)
+                                                  const RPG_Graphics_WindowSize_t&, // window size
+                                                  const RPG_Graphics_Position_t&);  // viewport
 
  private:
   // safety measures

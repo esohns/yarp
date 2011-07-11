@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RPG_GRAPHICS_MINIMAP_H
-#define RPG_GRAPHICS_MINIMAP_H
+#ifndef SDL_GUI_MINIMAPWINDOW_H
+#define SDL_GUI_MINIMAPWINDOW_H
 
 #include <rpg_graphics_SDL_window_base.h>
 
@@ -29,16 +29,16 @@
 class RPG_Client_Engine;
 class RPG_Engine_Level;
 
-class RPG_Client_Window_MiniMap
+class SDL_GUI_MinimapWindow
  : public RPG_Graphics_SDLWindowBase
 {
  public:
-  RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindowBase&, // parent
-                            // *NOTE*: offset doesn't include any border(s) !
-                            const RPG_Graphics_Offset_t&,      // offset
-                            RPG_Client_Engine*,                // engine handle
-                            RPG_Engine_Level*);                // state handle
-  virtual ~RPG_Client_Window_MiniMap();
+  SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase&, // parent
+                        // *NOTE*: offset doesn't include any border(s) !
+                        const RPG_Graphics_Offset_t&,      // offset
+                        RPG_Client_Engine*,                // engine handle
+                        RPG_Engine_Level*);                // state handle
+  virtual ~SDL_GUI_MinimapWindow();
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -52,9 +52,9 @@ class RPG_Client_Window_MiniMap
   typedef RPG_Graphics_SDLWindowBase inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap(const RPG_Client_Window_MiniMap&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap& operator=(const RPG_Client_Window_MiniMap&));
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow());
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow(const SDL_GUI_MinimapWindow&));
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow& operator=(const SDL_GUI_MinimapWindow&));
 
   RPG_Client_Engine* myEngine;
   RPG_Engine_Level*  myLevelState;

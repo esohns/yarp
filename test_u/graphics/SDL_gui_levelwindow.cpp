@@ -22,6 +22,8 @@
 
 #include "SDL_gui_defines.h"
 
+#include <rpg_client_common_tools.h>
+
 #include <rpg_engine_level.h>
 #include <rpg_engine_common_tools.h>
 
@@ -111,17 +113,17 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
                RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
   // init floor edge tiles / position
-  RPG_Engine_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
+  RPG_Client_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
                                           myCurrentFloorEdgeSet,
                                           myFloorEdgeTiles);
 
   // init wall tiles / position
-  RPG_Engine_Common_Tools::initWalls(myLevelState->getFloorPlan(),
+  RPG_Client_Common_Tools::initWalls(myLevelState->getFloorPlan(),
                                      myCurrentWallSet,
                                      myWallTiles);
 
   // init door tiles / position
-  RPG_Engine_Common_Tools::initDoors(myLevelState->getFloorPlan(),
+  RPG_Client_Common_Tools::initDoors(myLevelState->getFloorPlan(),
                                      *myLevelState,
                                      myCurrentDoorSet,
                                      myDoorTiles);
@@ -413,7 +415,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // map --> screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = RPG_Engine_Common_Tools::map2Screen(current_map_position,
+      screen_position = RPG_Client_Common_Tools::map2Screen(current_map_position,
                                                             mySize,
                                                             myView);
 
@@ -638,7 +640,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // transform map coordinates into screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = RPG_Engine_Common_Tools::map2Screen(current_map_position,
+      screen_position = RPG_Client_Common_Tools::map2Screen(current_map_position,
                                                             mySize,
                                                             myView);
 
@@ -718,7 +720,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   } // end FOR
 
   // refresh cursor highlight
-  screen_position = RPG_Engine_Common_Tools::map2Screen(myHighlightBGPosition,
+  screen_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
                                                         mySize,
                                                         myView);
   // grab BG
@@ -840,7 +842,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
     case SDL_MOUSEMOTION:
     {
       // find map square
-      RPG_Graphics_Position_t map_position = RPG_Engine_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
+      RPG_Graphics_Position_t map_position = RPG_Client_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
                                                                                                 event_in.motion.y),
                                                                                  myLevelState->getDimensions(),
                                                                                  mySize,
@@ -881,12 +883,12 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         restoreBG();
 
         // step2: store current background
-        tile_position = RPG_Engine_Common_Tools::map2Screen(map_position,
+        tile_position = RPG_Client_Common_Tools::map2Screen(map_position,
                                                             mySize,
                                                             myView);
         // sanity check for underruns
-        if ((tile_position.first < static_cast<unsigned long> (myScreen->w)) &&
-            (tile_position.second < static_cast<unsigned long> (myScreen->h)))
+        if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
+            (tile_position.second < static_cast<unsigned long>(myScreen->h)))
         {
           clip();
           RPG_Graphics_Surface::get(tile_position.first,
@@ -946,7 +948,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 
       if (event_in.button.button == 1) // left-click
       {
-        RPG_Graphics_Position_t map_position = RPG_Engine_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
+        RPG_Graphics_Position_t map_position = RPG_Client_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
                                                                                                   event_in.button.y),
                                                                                    myLevelState->getDimensions(),
                                                                                    mySize,
@@ -1130,7 +1132,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentMapStyle.edge_style = style_in.edgestyle;
 
       // update floor edge tiles / position
-      RPG_Engine_Common_Tools::updateFloorEdges(myCurrentFloorEdgeSet,
+      RPG_Client_Common_Tools::updateFloorEdges(myCurrentFloorEdgeSet,
                                                 myFloorEdgeTiles);
 
       break;
@@ -1413,7 +1415,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
                                     true);                          // WITH alpha
 
       // update wall tiles / position
-      RPG_Engine_Common_Tools::updateWalls(myCurrentWallSet,
+      RPG_Client_Common_Tools::updateWalls(myCurrentWallSet,
                                            myWallTiles);
 
       myCurrentMapStyle.wall_style = style_in.wallstyle;
@@ -1435,7 +1437,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str()));
 
       // update door tiles / position
-      RPG_Engine_Common_Tools::updateDoors(myCurrentDoorSet,
+      RPG_Client_Common_Tools::updateDoors(myCurrentDoorSet,
                                            *myLevelState,
                                            myDoorTiles);
 
@@ -1578,12 +1580,12 @@ SDL_GUI_LevelWindow::restoreBG()
 
   if (myHighlightBG)
   {
-    tile_position = RPG_Engine_Common_Tools::map2Screen(myHighlightBGPosition,
+    tile_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
                                                         mySize,
                                                         myView);
     // sanity check for underruns
-    if ((tile_position.first < static_cast<unsigned long> (myScreen->w)) &&
-        (tile_position.second < static_cast<unsigned long> (myScreen->h)))
+    if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
+        (tile_position.second < static_cast<unsigned long>(myScreen->h)))
     {
       clip();
       RPG_Graphics_Surface::put(tile_position.first,

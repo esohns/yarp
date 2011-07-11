@@ -32,6 +32,7 @@
 #include <rpg_graphics_SDL_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 
 #include <ace/Log_Msg.h>
 
@@ -304,7 +305,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
-          std::string dump_path = RPG_GRAPHICS_DEF_DUMP_DIR;
+          std::string dump_path = RPG_COMMON_DUMP_DIR;
           dump_path += ACE_DIRECTORY_SEPARATOR_STR;
           dump_path += ACE_TEXT("screenshot_");
           dump_path += converter.str();

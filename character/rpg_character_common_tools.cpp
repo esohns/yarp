@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_character_common_tools.h"
 
 #include "rpg_character_defines.h"
@@ -482,7 +483,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     else
       lowercase = true;
 
-    name += static_cast<char> ((lowercase ? 96 : 64) + result[i]); // 97 == 'a', 65 == 'A'
+    name += static_cast<char>((lowercase ? 96 : 64) + result[i]); // 97 == 'a', 65 == 'A'
   } // end FOR
 
 //   ACE_DEBUG((LM_DEBUG,
@@ -516,7 +517,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Dice::generateRandomNumbers((RPG_COMMON_SUBCLASS_MAX - 1),
                                   1,
                                   result);
-  player_subclass = static_cast<RPG_Common_SubClass> (result.front());
+  player_subclass = static_cast<RPG_Common_SubClass>(result.front());
   player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
   player_class.subClasses.insert(player_subclass);
 //   player_class.subClasses.push_back(player_subclass);
@@ -529,8 +530,8 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
   RPG_Dice::generateRandomNumbers((RPG_CHARACTER_ALIGNMENTCIVIC_MAX - 2),
                                   2,
                                   result);
-  alignment.civic = static_cast<RPG_Character_AlignmentCivic> (result.front());
-  alignment.ethic = static_cast<RPG_Character_AlignmentEthic> (result.back());
+  alignment.civic = static_cast<RPG_Character_AlignmentCivic>(result.front());
+  alignment.ethic = static_cast<RPG_Character_AlignmentEthic>(result.back());
 
   // step6: attributes
   RPG_Character_Attributes attributes;
@@ -590,7 +591,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     else
     {
       skills.insert(std::make_pair(skill,
-                                   static_cast<char> (1)));
+                                   static_cast<char>(1)));
     } // end ELSE
   } // end FOR
 
@@ -612,7 +613,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
     RPG_Dice::generateRandomNumbers(RPG_CHARACTER_FEAT_MAX,
                                     1,
                                     result);
-    feat = static_cast<RPG_Character_Feat> ((result.front() - 1));
+    feat = static_cast<RPG_Character_Feat>((result.front() - 1));
 
     // check prerequisites
     if (!RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(feat,
@@ -677,6 +678,9 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
        iterator != player_class.subClasses.end();
        iterator++)
   {
+    if (!RPG_Character_Class_Common_Tools::isCasterClass(*iterator))
+      continue;
+
     for (unsigned char i = 0;
          i <= RPG_COMMON_MAX_SPELL_LEVEL;
          i++)
@@ -695,7 +699,9 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
       available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
                                                                         i);
 
-      // only Bards and Sorcerers have a limited set of "known" spells to choose from
+      // Bards and Sorcerers don't need to prepare any spells ahead of time, but
+      // have a limited set of "known" spells to choose from.
+      // Other magic-users get to prepare/memorize a number of (available) spells
       if ((*iterator == SUBCLASS_BARD) ||
           (*iterator == SUBCLASS_SORCERER))
       {
@@ -723,12 +729,7 @@ RPG_Character_Common_Tools::generatePlayerCharacter()
           numChosen++;
         } // end WHILE
       } // end IF
-
-      // ... other magic-users get to prepare/memorize a number of (available) spells
-      // ... again, apart from the Bard/Sorcerer, who don't need to prepare any spells ahead of time
-      if (RPG_Character_Class_Common_Tools::isCasterClass(player_class) &&
-          (*iterator != SUBCLASS_BARD) &&
-          (*iterator != SUBCLASS_SORCERER))
+      else
       {
         // make sure we have enough variety...
         ACE_ASSERT(!available.empty());

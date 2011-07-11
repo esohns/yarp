@@ -16,11 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "rpg_client_window_minimap.h"
+#include "SDL_gui_minimapwindow.h"
 
-#include "rpg_client_common.h"
-#include "rpg_client_defines.h"
-#include "rpg_client_engine.h"
+#include <rpg_client_common.h>
+#include <rpg_client_defines.h>
+#include <rpg_client_engine.h>
 
 #include <rpg_engine_level.h>
 
@@ -35,11 +35,11 @@
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 
-RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindowBase& parent_in,
-                                                     // *NOTE*: offset doesn't include any border(s) !
-                                                     const RPG_Graphics_Offset_t& offset_in,
-                                                     RPG_Client_Engine* engine_in,
-                                                     RPG_Engine_Level* levelState_in)
+SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& parent_in,
+                                             // *NOTE*: offset doesn't include any border(s) !
+                                             const RPG_Graphics_Offset_t& offset_in,
+                                             RPG_Client_Engine* engine_in,
+                                             RPG_Engine_Level* levelState_in)
  : inherited(WINDOW_MINIMAP, // type
              parent_in,      // parent
              offset_in,      // offset
@@ -49,7 +49,7 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
    myLevelState(levelState_in),
    mySurface(NULL)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow"));
 
   // load interface image
   RPG_Graphics_GraphicTypeUnion type;
@@ -69,26 +69,26 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
   inherited::mySize.second = mySurface->h;
 }
 
-RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
+SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow"));
 
   // clean up
   SDL_FreeSurface(mySurface);
 }
 
 void
-RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
+SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
                                        RPG_Graphics_IWindow* window_in,
                                        bool& redraw_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::handleEvent"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::handleEvent"));
 
   // init return value(s)
   redraw_out = false;
 
   //   ACE_DEBUG((LM_DEBUG,
-  //              ACE_TEXT("RPG_Client_Window_MiniMap::handleEvent(%s)\n"),
+  //              ACE_TEXT("SDL_GUI_MinimapWindow::handleEvent(%s)\n"),
   //              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str()));
 
   switch (event_in.type)
@@ -141,11 +141,11 @@ RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
 }
 
 void
-RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
+SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
                                 const unsigned long& offsetX_in,
                                 const unsigned long& offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::draw"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::draw"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);

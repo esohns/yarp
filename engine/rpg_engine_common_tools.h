@@ -17,19 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ENGINE_COMMON_TOOLS_H
 #define RPG_ENGINE_COMMON_TOOLS_H
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_level.h"
 
-#include <rpg_graphics_common.h>
+#include <rpg_graphics_orientation.h>
 #include <rpg_graphics_cursor.h>
+#include <rpg_graphics_sprite.h>
 
 #include <rpg_map_common.h>
 
 #include <rpg_monster_common.h>
 
+#include <rpg_character_class_common.h>
 #include <rpg_character_player_common.h>
 
 #include <ace/Global_Macros.h>
@@ -51,11 +54,14 @@ class RPG_Engine_Common_Tools
   static void init(const std::string&,  // magic dictionary file
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
+  // *NOTE*: entity.character must be deleted() by the caller !
   static RPG_Engine_Entity loadEntity(const std::string&,  // FQ filename
                                       const std::string&,  // schema repository (directory)
                                       const bool& = true); // load SDL surface ?
   static const bool saveEntity(const RPG_Engine_Entity&, // entity
                                const std::string&);      // FQ filename
+  // *NOTE*: entity.character must be deleted() by the caller !
+  static RPG_Engine_Entity generatePlayerEntity(); // return value: (random) player entity
 
   // ***** combat-related *****
   static const bool isPartyHelpless(const RPG_Character_Party_t&); // party
@@ -68,39 +74,15 @@ class RPG_Engine_Common_Tools
                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
 
   // ***** map/graphics-related *****
-  static void initFloorEdges(const RPG_Map_FloorPlan_t&,             // floor plan
-                             const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset
-                             RPG_Graphics_FloorEdgeTileMap_t&);      // return value: floor edge tiles / position
-  static void updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset
-                               RPG_Graphics_FloorEdgeTileMap_t&);      // input/output value: floor edge tiles / position
-  static void initWalls(const RPG_Map_FloorPlan_t&,        // floor plan
-                        const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
-                        RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
-  static void updateWalls(const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
-                          RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
-  static void initDoors(const RPG_Map_FloorPlan_t&,        // floor plan
-                        const RPG_Engine_Level&,              // state
-                        const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
-                        RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
-  static void updateDoors(const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
-                          const RPG_Engine_Level&,              // state
-                          RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
+  static const RPG_Graphics_Sprite class2Sprite(const RPG_Character_Class&);
 
   static const bool hasCeiling(const RPG_Map_Position_t&,
                                const RPG_Engine_Level&);
-  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine_Level&,       // state
+
+  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine_Level&,    // state
                                                            const RPG_Map_Position_t&); // door
   static const RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
-                                             const RPG_Engine_Level&);     // state
-  // coordinate transformations
-  static const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,   // position (absolute)
-                                                  const RPG_Map_Dimensions_t&,      // map size
-                                                  const RPG_Graphics_WindowSize_t&, // window size
-                                                  const RPG_Graphics_Position_t&);  // viewport
-  // *NOTE*: translates the center of the map square to screen coordinates
-  static const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&, // position (map)
-                                                  const RPG_Graphics_WindowSize_t&, // window size
-                                                  const RPG_Graphics_Position_t&);  // viewport
+                                             const RPG_Engine_Level&);  // state
 
  private:
   // safety measures
