@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -40,13 +40,6 @@
 #define SDL_GUI_DEF_CHARACTER                  ACE_TEXT("/var/tmp/default_player.xml")
 #define SDL_GUI_DEF_FLOOR_PLAN                 ACE_TEXT("/var/tmp/floor_plan.txt")
 #define SDL_GUI_DEF_VALIDATE_XML true
-
-// default style
-#define SDL_GUI_DEF_GRAPHICS_FLOORSTYLE        FLOORSTYLE_STONE_COBBLED
-#define SDL_GUI_DEF_GRAPHICS_EDGESTYLE         EDGESTYLE_FLOOR_STONE_COBBLED
-#define SDL_GUI_DEF_GRAPHICS_WALLSTYLE         WALLSTYLE_BRICK
-#define SDL_GUI_DEF_GRAPHICS_WALLSTYLE_HALF    true
-#define SDL_GUI_DEF_GRAPHICS_DOORSTYLE         DOORSTYLE_WOOD
 
 #define SDL_GUI_DEF_VIDEO_W                    1024
 #define SDL_GUI_DEF_VIDEO_H                    786

@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -41,7 +41,9 @@
 #define RPG_CLIENT_DEF_GRAPHICS_CACHESIZE           50
 #define RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE    IMAGE_INTERFACE_MAIN
 #define RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE    ACE_TEXT_ALWAYS_CHAR("Yarp")
+// default style
 #define RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE          FLOORSTYLE_STONE_COBBLED
+#define RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE           EDGESTYLE_FLOOR_STONE_COBBLED
 #define RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE           WALLSTYLE_BRICK
 #define RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF      true
 #define RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE           DOORSTYLE_WOOD

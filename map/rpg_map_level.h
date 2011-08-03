@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_MAP_LEVEL_H
 #define RPG_MAP_LEVEL_H
 
@@ -29,24 +30,19 @@ class RPG_Map_Level
 {
  public:
   RPG_Map_Level();
-  RPG_Map_Level(const RPG_Map_Position_t&,   // starting position
-                const RPG_Map_Positions_t&,  // seed points
-                const RPG_Map_FloorPlan_t&); // floor plan
+  RPG_Map_Level(const RPG_Map_t&); // map
   virtual ~RPG_Map_Level();
 
-  void init(const RPG_Map_Position_t&,   // starting position
-            const RPG_Map_Positions_t&,  // seed points
-            const RPG_Map_FloorPlan_t&); // floor plan
+  void init(const RPG_Map_t&); // map
+
   const RPG_Map_Position_t getStartPosition() const;
   const RPG_Map_Positions_t getSeedPoints() const;
   const RPG_Map_FloorPlan_t getFloorPlan() const;
 
- protected:
-  RPG_Map_FloorPlan_t myFloorPlan;
+  const RPG_Map_Dimensions_t getDimensions() const;
 
- private:
-  RPG_Map_Position_t  myStartPosition;
-  RPG_Map_Positions_t mySeedPoints;
+ protected:
+  RPG_Map_t myMap;
 };
 
 #endif

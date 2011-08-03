@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef SDL_GUI_LEVELWINDOW_H
 #define SDL_GUI_LEVELWINDOW_H
 
@@ -46,7 +47,6 @@ class SDL_GUI_LevelWindow
   SDL_GUI_LevelWindow(// *** SDL window ***
                       const RPG_Graphics_SDLWindowBase&, // parent
                       // *** level properties ***
-                      const RPG_Graphics_MapStyle_t&,    // map style
                       RPG_Engine_Level*);                // engine handle
   virtual ~SDL_GUI_LevelWindow();
 
@@ -58,7 +58,7 @@ class SDL_GUI_LevelWindow
 
   // set level properties
   void init(const RPG_Graphics_MapStyle_t&, // map style
-            const RPG_Map_FloorPlan_t&,     // map
+            const RPG_Map_t&,               // map
             const RPG_Engine_EntityID_t&);  // entity ID
   void setStyle(const RPG_Graphics_StyleUnion&);
   void hideWalls(const bool& = true); // hide walls ?
@@ -86,7 +86,7 @@ class SDL_GUI_LevelWindow
   void clear();
 
   void initCeiling();
-  void initWallBlend();
+  void initWallBlend(const bool&); // half-height walls ?
   void restoreBG();
 
   RPG_Engine_EntityID_t           myEntityID;

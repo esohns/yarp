@@ -45,17 +45,13 @@ RPG_Engine_Level::RPG_Engine_Level()
   // set group ID for worker thread(s)
   inherited2::grp_id(RPG_ENGINE_DEF_TASK_GROUP_ID);
 
-  myFloorPlan.size_x = 0;
-  myFloorPlan.size_y = 0;
+  inherited::myMap.plan.size_x = 0;
+  inherited::myMap.plan.size_y = 0;
 }
 
 RPG_Engine_Level::RPG_Engine_Level(RPG_Engine_IWindow* client_in,
-                                   const RPG_Map_Position_t& startPosition_in,
-                                   const RPG_Map_Positions_t& seedPoints_in,
-                                   const RPG_Map_FloorPlan_t& floorPlan_in)
- : inherited(startPosition_in,
-             seedPoints_in,
-             floorPlan_in),
+                                   const RPG_Map_t& map_in)
+ : inherited(map_in),
    myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
    myCondition(myLock),
    myClient(client_in)
@@ -388,15 +384,11 @@ RPG_Engine_Level::dump_state() const
 
 void
 RPG_Engine_Level::init(RPG_Engine_IWindow* client_in,
-                       const RPG_Map_Position_t& startPosition_in,
-                       const RPG_Map_Positions_t& seedPoints_in,
-                       const RPG_Map_FloorPlan_t& floorPlan_in)
+                       const RPG_Map_t& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::init"));
 
-  inherited::init(startPosition_in,
-                  seedPoints_in,
-                  floorPlan_in);
+  inherited::init(map_in);
   myClient = client_in;
 }
 
@@ -469,35 +461,25 @@ RPG_Engine_Level::action(const RPG_Engine_EntityID_t& id_in,
   } // end SWITCH
 }
 
-const RPG_Map_Dimensions_t
-RPG_Engine_Level::getDimensions() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getDimensions"));
-
-  RPG_Map_Dimensions_t result = std::make_pair(myFloorPlan.size_x, myFloorPlan.size_y);
-
-  return result;
-}
-
 const RPG_Map_Element
 RPG_Engine_Level::getElement(const RPG_Map_Position_t& position_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getElement"));
 
   // sanity check
-  if ((position_in.first > (myFloorPlan.size_x - 1)) ||
-      (position_in.second > (myFloorPlan.size_y - 1)))
+  if ((position_in.first > (myMap.plan.size_x - 1)) ||
+      (position_in.second > (myMap.plan.size_y - 1)))
     return MAPELEMENT_INVALID;
 
-  if (myFloorPlan.unmapped.find(position_in) != myFloorPlan.unmapped.end())
+  if (myMap.plan.unmapped.find(position_in) != myMap.plan.unmapped.end())
     return MAPELEMENT_UNMAPPED;
 
-  if (myFloorPlan.walls.find(position_in) != myFloorPlan.walls.end())
+  if (myMap.plan.walls.find(position_in) != myMap.plan.walls.end())
     return MAPELEMENT_WALL;
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
-  if (myFloorPlan.doors.find(position_door) != myFloorPlan.doors.end())
+  if (myMap.plan.doors.find(position_door) != myMap.plan.doors.end())
     return MAPELEMENT_DOOR;
 
   return MAPELEMENT_FLOOR;
@@ -554,8 +536,8 @@ RPG_Engine_Level::getDoor(const RPG_Map_Position_t& position_in) const
 
   // sanity check
   dummy.position = position_in;
-  RPG_Map_DoorsConstIterator_t iterator = myFloorPlan.doors.find(dummy);
-  if (iterator == myFloorPlan.doors.end())
+  RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.find(dummy);
+  if (iterator == myMap.plan.doors.end())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid door position (was [%u,%u]), aborting\n"),
@@ -601,8 +583,8 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
 
-  RPG_Map_DoorsIterator_t iterator = myFloorPlan.doors.find(position_door);
-  if (iterator == myFloorPlan.doors.end())
+  RPG_Map_DoorsIterator_t iterator = myMap.plan.doors.find(position_door);
+  if (iterator == myMap.plan.doors.end())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid door position (was [%u,%u]), aborting\n"),
@@ -771,15 +753,15 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
         action_complete = false;
 
         // compute path
-        RPG_Map_Positions_t obstacles = myFloorPlan.walls;
-        for (RPG_Map_DoorsConstIterator_t door_iterator = myFloorPlan.doors.begin();
-             door_iterator != myFloorPlan.doors.end();
+        RPG_Map_Positions_t obstacles = myMap.plan.walls;
+        for (RPG_Map_DoorsConstIterator_t door_iterator = myMap.plan.doors.begin();
+             door_iterator != myMap.plan.doors.end();
              door_iterator++)
           if (!(*door_iterator).is_open)
             obstacles.insert((*door_iterator).position);
         RPG_Map_Path_t path;
-        if (!RPG_Map_Pathfinding_Tools::findPath(myFloorPlan.size_x,
-                                                 myFloorPlan.size_y,
+        if (!RPG_Map_Pathfinding_Tools::findPath(myMap.plan.size_x,
+                                                 myMap.plan.size_y,
                                                  obstacles,
                                                  (*iterator).second->position,
                                                  RPG_Map_Pathfinding_Tools::getDirection((*iterator).second->position,

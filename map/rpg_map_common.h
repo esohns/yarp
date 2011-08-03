@@ -107,6 +107,13 @@ struct RPG_Map_FloorPlan_t
   RPG_Map_Doors_t doors;
 };
 
+struct RPG_Map_t
+{
+  RPG_Map_Position_t start;  // starting position
+  RPG_Map_Positions_t seeds; // seed points
+  RPG_Map_FloorPlan_t plan;  // floor plan
+};
+
 typedef std::pair<RPG_Map_Position_t, RPG_Map_Direction> RPG_Map_PathStep_t;
 typedef std::list<RPG_Map_PathStep_t> RPG_Map_Path_t;
 typedef RPG_Map_Path_t::const_iterator RPG_Map_PathConstIterator_t;

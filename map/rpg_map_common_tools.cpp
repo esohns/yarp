@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -40,9 +40,7 @@
 
 const bool
 RPG_Map_Common_Tools::load(const std::string& filename_in,
-                           RPG_Map_Position_t& startingPoint_out,
-                           RPG_Map_Positions_t& seedPoints_out,
-                           RPG_Map_FloorPlan_t& floorPlan_out,
+                           RPG_Map_t& map_out,
                            const bool& traceScanning_in,
                            const bool& traceParsing_in)
 {
@@ -61,11 +59,11 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
   // (try to) parse file
   RPG_Map_ParserDriver parser_driver(traceScanning_in,
                                      traceParsing_in);
-  parser_driver.init(&floorPlan_out,     // floor plan
-                     &seedPoints_out,    // seed points
-                     &startingPoint_out, // starting point
-                     traceScanning_in,   // trace scanning ?
-                     traceParsing_in);   // trace parsing ?
+  parser_driver.init(&map_out.plan,     // floor plan
+                     &map_out.seeds,    // seed points
+                     &map_out.start,    // starting point
+                     traceScanning_in,  // trace scanning ?
+                     traceParsing_in);  // trace parsing ?
   if (!parser_driver.parse(filename_in))
   {
     ACE_DEBUG((LM_ERROR,
@@ -80,9 +78,7 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
 
 const bool
 RPG_Map_Common_Tools::save(const std::string& filename_in,
-                           const RPG_Map_Position_t& startingPosition_in,
-                           const RPG_Map_Positions_t& seedPoints_in,
-                           const RPG_Map_FloorPlan_t& level_in)
+                           const RPG_Map_t& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::save"));
 
@@ -126,20 +122,20 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
   for (unsigned long y = 0;
-       y < level_in.size_y;
+       y < map_in.plan.size_y;
        y++)
   {
     for (unsigned long x = 0;
-         x < level_in.size_x;
+         x < map_in.plan.size_x;
          x++)
     {
       current_position = std::make_pair(x, y);
       current_position_door.position = current_position;
 
       // starting position ?
-      if (!((startingPosition_in.first == 0) &&
-            (startingPosition_in.second == 0)) &&
-          (current_position == startingPosition_in))
+      if (!((map_in.start.first == 0) &&
+            (map_in.start.second == 0)) &&
+          (current_position == map_in.start))
       {
         row += 'X'; // starting position
 
@@ -147,13 +143,13 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
       } // end IF
 
       // seed point ?
-      if (seedPoints_in.find(current_position) != seedPoints_in.end())
+      if (map_in.seeds.find(current_position) != map_in.seeds.end())
       {
         // *TODO*: with the current naive formatting, seed points can only be
         // stored as long as they don't interfere with the integrity of other
         // structures (i.e. walls and doors)
-        if ((level_in.walls.find(current_position) == level_in.walls.end()) &&
-            (level_in.doors.find(current_position_door) == level_in.doors.end()))
+        if ((map_in.plan.walls.find(current_position) == map_in.plan.walls.end()) &&
+            (map_in.plan.doors.find(current_position_door) == map_in.plan.doors.end()))
           row += '@'; // seed
         else
           ACE_DEBUG((LM_ERROR,
@@ -165,11 +161,11 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
       } // end IF
 
       // unmapped, floor, wall, or door ?
-      if (level_in.unmapped.find(current_position) != level_in.unmapped.end())
+      if (map_in.plan.unmapped.find(current_position) != map_in.plan.unmapped.end())
         row += ' '; // unmapped
-      else if (level_in.walls.find(current_position) != level_in.walls.end())
+      else if (map_in.plan.walls.find(current_position) != map_in.plan.walls.end())
         row += '#'; // wall
-      else if (level_in.doors.find(current_position_door) != level_in.doors.end())
+      else if (map_in.plan.doors.find(current_position_door) != map_in.plan.doors.end())
         row += '='; // door
       else
         row += '.'; // floor
@@ -199,7 +195,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
       }
       default:
       {
-        if (static_cast<size_t> (sent_bytes) != row.size())
+        if (static_cast<size_t>(sent_bytes) != row.size())
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to ACE_FILE_IO::send(%u) (result was: %d), aborting\n"),
@@ -269,37 +265,35 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("wrote TXT file \"%s\" (%u byte(s))...\n"),
                filename_in.c_str(),
-               static_cast<unsigned long> (info.size_)));
+               static_cast<unsigned long>(info.size_)));
   } // end ELSE
 
   return true;
 }
 
 void
-RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
-                                      const unsigned long& dimensionY_in,
-                                      const unsigned long& numAreas_in,
-                                      const bool& wantSquareRooms_in,
-                                      const bool& maximizeRooms_in,
-                                      const unsigned long& minRoomArea_in,
-                                      const bool& wantDoors_in,
-                                      const bool& wantCorridors_in,
-                                      const bool& doorFillsPosition_in,
-                                      const unsigned long& maxDoorsPerRoom_in,
-                                      RPG_Map_Position_t& startPosition_out,
-                                      RPG_Map_Positions_t& seedPoints_out,
-                                      RPG_Map_FloorPlan_t& floorPlan_out)
+RPG_Map_Common_Tools::createMap(const unsigned long& dimensionX_in,
+                                const unsigned long& dimensionY_in,
+                                const unsigned long& numAreas_in,
+                                const bool& wantSquareRooms_in,
+                                const bool& maximizeRooms_in,
+                                const unsigned long& minRoomArea_in,
+                                const bool& wantDoors_in,
+                                const bool& wantCorridors_in,
+                                const bool& doorFillsPosition_in,
+                                const unsigned long& maxDoorsPerRoom_in,
+                                RPG_Map_t& map_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createFloorPlan"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createMap"));
 
   // init return value(s)
-  startPosition_out = std::make_pair(0, 0);
-  seedPoints_out.clear();
-  floorPlan_out.size_x = dimensionX_in;
-  floorPlan_out.size_y = dimensionY_in;
-  floorPlan_out.unmapped.clear();
-  floorPlan_out.walls.clear();
-  floorPlan_out.doors.clear();
+  map_out.start = std::make_pair(0, 0);
+  map_out.seeds.clear();
+  map_out.plan.size_x = dimensionX_in;
+  map_out.plan.size_y = dimensionY_in;
+  map_out.plan.unmapped.clear();
+  map_out.plan.walls.clear();
+  map_out.plan.doors.clear();
 
   RPG_Map_Partition_t partition;
   RPG_Map_Positions_t conflicts;
@@ -323,7 +317,7 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
                   numAreas_in,
                   (wantCorridors_in ? true : false), // resolve conflicts !
                   conflicts,
-                  seedPoints_out,
+                  map_out.seeds,
                   partition);
     if (wantDoors_in)
     {
@@ -385,14 +379,14 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
                  boundaries,
                  doors,
                  rooms,
-                 floorPlan_out);
+                 map_out.plan);
   } // end IF
   else
   {
     // *NOTE*: in this case, conflict areas represent walls...
     // *TODO*: what if some areas are not reachable ?
     // --> create some doors ?
-    floorPlan_out.walls = conflicts;
+    map_out.plan.walls = conflicts;
   } // end ELSE
 
   // step4: generate suitable starting position
@@ -407,26 +401,24 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
     RPG_Dice::generateRandomNumbers(dimensionY_in,
                                     1,
                                     result_y);
-    startPosition_out = std::make_pair(result_x.front() - 1,
-                                       result_y.front() - 1);
-    if (RPG_Map_Common_Tools::isFloor(startPosition_out,
-                                      floorPlan_out))
+    map_out.start = std::make_pair(result_x.front() - 1,
+                                   result_y.front() - 1);
+    if (RPG_Map_Common_Tools::isFloor(map_out.start,
+                                      map_out.plan))
       break;
   } while (true); // try again
 }
 
 void
-RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Position_t& startingPosition_in,
-                                       const RPG_Map_Positions_t& seedPoints_in,
-                                       const RPG_Map_FloorPlan_t& floorPlan_in)
+RPG_Map_Common_Tools::print(const RPG_Map_t& map_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayFloorPlan"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::print"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("seed point(s): [")));
-  RPG_Map_PositionsConstIterator_t next = seedPoints_in.begin();
-  for (RPG_Map_PositionsConstIterator_t iterator = seedPoints_in.begin();
-       iterator != seedPoints_in.end();
+  RPG_Map_PositionsConstIterator_t next = map_in.seeds.begin();
+  for (RPG_Map_PositionsConstIterator_t iterator = map_in.seeds.begin();
+       iterator != map_in.seeds.end();
        iterator++)
   {
     ACE_DEBUG((LM_DEBUG,
@@ -435,9 +427,8 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Position_t& startingPositio
                (*iterator).second));
 
     next = iterator;
-    ACE_ASSERT(next != seedPoints_in.end());
     std::advance(next, 1);
-    if (next != seedPoints_in.end())
+    if (next != map_in.seeds.end())
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT(", ")));
   } // end FOR
@@ -446,37 +437,36 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Position_t& startingPositio
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("map ([%ux%u] - %u unmapped, %u walls, %u doors)...\n"),
-             floorPlan_in.size_x,
-             floorPlan_in.size_y,
-             floorPlan_in.unmapped.size(),
-             floorPlan_in.walls.size(),
-             floorPlan_in.doors.size()));
+             map_in.plan.size_x,
+             map_in.plan.size_y,
+             map_in.plan.unmapped.size(),
+             map_in.plan.walls.size(),
+             map_in.plan.doors.size()));
 
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
   bool is_starting_position = false;
   bool is_seed = false;
   for (unsigned long y = 0;
-       y < floorPlan_in.size_y;
+       y < map_in.plan.size_y;
        y++)
-  {
     for (unsigned long x = 0;
-         x < floorPlan_in.size_x;
+         x < map_in.plan.size_x;
          x++)
     {
       current_position = std::make_pair(x, y);
       current_position_door.position = current_position;
-      is_starting_position = (current_position == startingPosition_in);
-      is_seed = seedPoints_in.find(current_position) != seedPoints_in.end();
+      is_starting_position = (current_position == map_in.start);
+      is_seed = map_in.seeds.find(current_position) != map_in.seeds.end();
 
       // unmapped, floor, wall, or door ?
       // *TODO*: cannot draw seed points that are not "unmapped"/"floor" without
       // losing essential information...
-      if (floorPlan_in.unmapped.find(current_position) != floorPlan_in.unmapped.end())
+      if (map_in.plan.unmapped.find(current_position) != map_in.plan.unmapped.end())
         std::clog << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
-      else if (floorPlan_in.walls.find(current_position) != floorPlan_in.walls.end())
+      else if (map_in.plan.walls.find(current_position) != map_in.plan.walls.end())
         std::clog << ACE_TEXT("#"); // wall
-      else if (floorPlan_in.doors.find(current_position_door) != floorPlan_in.doors.end())
+      else if (map_in.plan.doors.find(current_position_door) != map_in.plan.doors.end())
         std::clog << ACE_TEXT("="); // door
       else
         std::clog << (is_starting_position ? ACE_TEXT("X")
@@ -484,7 +474,100 @@ RPG_Map_Common_Tools::displayFloorPlan(const RPG_Map_Position_t& startingPositio
                                                       : ACE_TEXT("."))); // floor
     } // end FOR
     std::clog << std::endl;
+}
+
+std::string
+RPG_Map_Common_Tools::info(const RPG_Map_t& map_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::info"));
+
+  std::string result;
+
+  std::ostringstream converter;
+  result += ACE_TEXT("start position: [");
+  converter << map_in.start.first;
+  result += converter.str();
+  result += ACE_TEXT(",");
+  converter.str(ACE_TEXT(""));
+  converter << map_in.start.second;
+  result += converter.str();
+  result += ACE_TEXT("]\n");
+
+  result += ACE_TEXT("seed point(s)[");
+  converter.str(ACE_TEXT(""));
+  converter << map_in.seeds.size();
+  result += converter.str();
+  result += ACE_TEXT("]: ");
+  RPG_Map_PositionsConstIterator_t next = map_in.seeds.begin();
+  for (RPG_Map_PositionsConstIterator_t iterator = map_in.seeds.begin();
+       iterator != map_in.seeds.end();
+       iterator++)
+  {
+    result += ACE_TEXT("[");
+    converter.str(ACE_TEXT(""));
+    converter << (*iterator).first;
+    result += converter.str();
+    result += ACE_TEXT(",");
+    converter.str(ACE_TEXT(""));
+    converter << (*iterator).second;
+    result += converter.str();
+    result += ACE_TEXT("]");
+
+    next = iterator;
+    std::advance(next, 1);
+    if (next != map_in.seeds.end())
+      result += ACE_TEXT(", ");
   } // end FOR
+  result += ACE_TEXT("]\n");
+
+  result += ACE_TEXT("map size: [");
+  converter.str(ACE_TEXT(""));
+  converter << map_in.plan.size_x;
+  result += converter.str();
+  result += ACE_TEXT(",");
+  converter.str(ACE_TEXT(""));
+  converter << map_in.plan.size_y;
+  result += converter.str();
+  result += ACE_TEXT("]\n");
+
+  result += ACE_TEXT("unmapped: ");
+  converter.str(ACE_TEXT(""));
+  converter << map_in.plan.unmapped.size();
+  result += converter.str();
+  result += ACE_TEXT(" walls: ");
+  converter.str(ACE_TEXT(""));
+  converter << map_in.plan.walls.size();
+  result += converter.str();
+  result += ACE_TEXT("\n");
+
+  result += ACE_TEXT("door(s)[");
+  converter.str(ACE_TEXT(""));
+  converter << map_in.plan.doors.size();
+  result += converter.str();
+  result += ACE_TEXT("]: ");
+  RPG_Map_DoorsConstIterator_t next_door = map_in.plan.doors.begin();
+  for (RPG_Map_DoorsConstIterator_t iterator = map_in.plan.doors.begin();
+       iterator != map_in.plan.doors.end();
+       iterator++)
+  {
+    result += ACE_TEXT("[");
+    converter.str(ACE_TEXT(""));
+    converter << (*iterator).position.first;
+    result += converter.str();
+    result += ACE_TEXT(",");
+    converter.str(ACE_TEXT(""));
+    converter << (*iterator).position.second;
+    result += converter.str();
+    result += ACE_TEXT("]");
+
+    next_door = iterator;
+    std::advance(next_door, 1);
+    if (next_door != map_in.plan.doors.end())
+      result += ACE_TEXT(", ");
+  } // end FOR
+  result += ACE_TEXT("]");
+
+  return result;
 }
 
 void

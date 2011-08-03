@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_MAP_COMMON_TOOLS_H
 #define RPG_MAP_COMMON_TOOLS_H
 
@@ -35,35 +36,28 @@
 class RPG_Map_Common_Tools
 {
  public:
-  static const bool load(const std::string&,                       // FQ filename
-                         RPG_Map_Position_t&,                      // return value: starting position
-                         RPG_Map_Positions_t&,                     // return value: seed points (areas)
-                         RPG_Map_FloorPlan_t&,                     // return value
+  static const bool load(const std::string&, // FQ filename
+                         RPG_Map_t&,         // return value: map
                          const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
                          const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
-  static const bool save(const std::string&,          // FQ filename
-                         const RPG_Map_Position_t&,   // starting position
-                         const RPG_Map_Positions_t&,  // seed points (areas)
-                         const RPG_Map_FloorPlan_t&);
+  static const bool save(const std::string&, // FQ filename
+                         const RPG_Map_t&);  // map
 
   static void buildCorridor(const RPG_Map_Path_t&, // path
                             RPG_Map_Positions_t&); // return value: corridor
-  static void createFloorPlan(const unsigned long&,  // map dimension x
-                              const unsigned long&,  // map dimension y
-                              const unsigned long&,  // #areas (==> "rooms")
-                              const bool&,           // rooms to be square ?
-                              const bool&,           // maximize rooms ?
-                              const unsigned long&,  // min. room area (0: don't care)
-                              const bool&,           // want doors (==> "rooms") ?
-                              const bool&,           // want corridors (between rooms) ?
-                              const bool&,           // doors to fill positions ?
-                              const unsigned long&,  // max. #doors/room
-                              RPG_Map_Position_t&,   // return value: start position
-                              RPG_Map_Positions_t&,  // return value: seed points (areas)
-                              RPG_Map_FloorPlan_t&); // return value: floor plan
-  static void displayFloorPlan(const RPG_Map_Position_t&,   // starting position
-                               const RPG_Map_Positions_t&,  // seed points (areas)
-                               const RPG_Map_FloorPlan_t&); // floor plan
+  static void createMap(const unsigned long&,  // map dimension x
+                        const unsigned long&,  // map dimension y
+                        const unsigned long&,  // #areas (==> "rooms")
+                        const bool&,           // rooms to be square ?
+                        const bool&,           // maximize rooms ?
+                        const unsigned long&,  // min. room area (0: don't care)
+                        const bool&,           // want doors (==> "rooms") ?
+                        const bool&,           // want corridors (between rooms) ?
+                        const bool&,           // doors to fill positions ?
+                        const unsigned long&,  // max. #doors/room
+                        RPG_Map_t&);           // return value: map
+  static void print(const RPG_Map_t&); // map
+  static std::string info(const RPG_Map_t&); // map
 
   static const unsigned long dist2Positions(const RPG_Map_Position_t&,  // position 1
                                             const RPG_Map_Position_t&); // position 2

@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -203,8 +203,8 @@ RPG_Client_Common_Tools::updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t&
 
 void
 RPG_Client_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
-                                    const RPG_Graphics_WallTileSet_t& tileSet_in,
-                                    RPG_Graphics_WallTileMap_t& wallTiles_out)
+                                   const RPG_Graphics_WallTileSet_t& tileSet_in,
+                                   RPG_Graphics_WallTileMap_t& wallTiles_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initWalls"));
 
@@ -215,6 +215,7 @@ RPG_Client_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
   RPG_Map_Position_t east, north, west, south;
   RPG_Graphics_WallTileSet_t current_walls;
   RPG_Map_Door_t position_door;
+  bool has_walls = false;
   for (unsigned long y = 0;
        y < floorPlan_in.size_y;
        y++)
@@ -226,6 +227,7 @@ RPG_Client_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
       ACE_OS::memset(&current_walls,
                      0,
                      sizeof(current_walls));
+      has_walls = false;
 
       position_door.position = current_position;
       // floor or door ? --> compute walls
@@ -243,22 +245,31 @@ RPG_Client_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
         south.second++;
 
         if ((floorPlan_in.walls.find(east) != floorPlan_in.walls.end()) ||
-          (current_position.first == (floorPlan_in.size_x - 1))) // perimeter
-        current_walls.east = tileSet_in.east;
+            (current_position.first == (floorPlan_in.size_x - 1))) // perimeter
+        {
+          current_walls.east = tileSet_in.east;
+          has_walls = true;
+        } // end IF
         if ((floorPlan_in.walls.find(west) != floorPlan_in.walls.end()) ||
-          (current_position.first == 0)) // perimeter
-        current_walls.west = tileSet_in.west;
+            (current_position.first == 0)) // perimeter
+        {
+          current_walls.west = tileSet_in.west;
+          has_walls = true;
+        } // end IF
         if ((floorPlan_in.walls.find(north) != floorPlan_in.walls.end()) ||
-          (current_position.second == 0)) // perimeter
-        current_walls.north = tileSet_in.north;
+            (current_position.second == 0)) // perimeter
+        {
+          current_walls.north = tileSet_in.north;
+          has_walls = true;
+        } // end IF
         if ((floorPlan_in.walls.find(south) != floorPlan_in.walls.end()) ||
-          (current_position.second == (floorPlan_in.size_y - 1))) // perimeter
-        current_walls.south = tileSet_in.south;
+            (current_position.second == (floorPlan_in.size_y - 1))) // perimeter
+        {
+          current_walls.south = tileSet_in.south;
+          has_walls = true;
+        } // end IF
 
-        if (current_walls.east.surface ||
-            current_walls.north.surface ||
-            current_walls.west.surface ||
-            current_walls.south.surface)
+        if (has_walls)
           wallTiles_out.insert(std::make_pair(current_position, current_walls));
       } // end IF
     } // end FOR

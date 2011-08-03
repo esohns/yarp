@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -531,8 +531,8 @@ RPG_Graphics_Surface::create(const unsigned long& width_in,
                                  SDL_ASYNCBLIT |
                                  SDL_SRCCOLORKEY |
                                  SDL_SRCALPHA),
-                                static_cast<int> (width_in),
-                                static_cast<int> (height_in),
+                                static_cast<int>(width_in),
+                                static_cast<int>(height_in),
 //                                 (bit_depth * 8),
                                 32,
                                 ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
@@ -919,20 +919,20 @@ RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
       return NULL;
     } // end IF
 
-  Uint32* pixels = static_cast<Uint32*> (result->pixels);
+  Uint32* pixels = static_cast<Uint32*>(result->pixels);
   for (unsigned long j = 0;
-       j < static_cast<unsigned long> (result->h);
+       j < static_cast<unsigned long>(result->h);
        j++)
     for (unsigned long i = 0;
-         i < static_cast<unsigned long> (result->w);
+         i < static_cast<unsigned long>(result->w);
          i++)
   {
-      // ignore transparent pixels
+    // ignore transparent pixels
     if (((pixels[(result->w * j) + i] & result->format->Amask) >> result->format->Ashift) == SDL_ALPHA_TRANSPARENT)
       continue;
 
-    pixels[(result->w * j) + i] &= ~static_cast<Uint32> ((SDL_ALPHA_OPAQUE << result->format->Ashift));
-    pixels[(result->w * j) + i] |= (static_cast<Uint32> (opacity_in) << result->format->Ashift);
+    pixels[(result->w * j) + i] &= ~static_cast<Uint32>((SDL_ALPHA_OPAQUE << result->format->Ashift));
+    pixels[(result->w * j) + i] |= (static_cast<Uint32>(opacity_in) << result->format->Ashift);
   } // end FOR
 
   if (SDL_MUSTLOCK(result))
@@ -1003,7 +1003,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((&sourceImage_in)))
-    if (SDL_LockSurface(&const_cast<SDL_Surface&> (sourceImage_in)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&>(sourceImage_in)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
@@ -1016,14 +1016,14 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
   } // end IF
 
   for (unsigned long i = 0;
-       i < static_cast<unsigned long> (sourceImage_in.h);
+       i < static_cast<unsigned long>(sourceImage_in.h);
        i++)
-    ::memcpy((static_cast<unsigned char*> (result->pixels) + (result->pitch * i)),
-             (static_cast<unsigned char*> (sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
+    ::memcpy((static_cast<unsigned char*>(result->pixels) + (result->pitch * i)),
+             (static_cast<unsigned char*>(sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
              (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
 
   if (SDL_MUSTLOCK((&sourceImage_in)))
-    SDL_UnlockSurface(&const_cast<SDL_Surface&> (sourceImage_in));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&>(sourceImage_in));
 
   return result;
 }

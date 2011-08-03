@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -55,6 +55,8 @@
 // *TODO*: some are south/east are 56, north/west 57...
 #define RPG_GRAPHICS_TILE_WALL_WIDTH                   57 // pixels
 #define RPG_GRAPHICS_TILE_WALL_HEIGHT                  98 // pixels
+#define RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF             66 // pixels
+
 // *NOTE*: 0.0: transparent --> 1.0: opaque
 #define RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY          0.6
 #define RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY          0.8

@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns                                      *
  *   erik.sohns@web.de                                                     *
  *                                                                         *
@@ -26,6 +26,8 @@
 #include "SDL_gui_defines.h"
 #include "SDL_gui_mainwindow.h"
 #include "SDL_gui_levelwindow.h"
+
+#include <rpg_client_defines.h>
 
 #include <rpg_engine_level.h>
 #include <rpg_engine_common_tools.h>
@@ -841,34 +843,28 @@ do_work(const mode_t& mode_in,
       bool force_redraw = false;
 
       // step3a: setup level
-      RPG_Map_Position_t  startingPosition;
-      RPG_Map_Positions_t seedPoints;
-      RPG_Map_FloorPlan_t plan;
+      RPG_Map_t map;
       if (map_in.empty())
       {
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("generating floor plan...\n")));
+                   ACE_TEXT("generating level map...\n")));
 
-        RPG_Map_Common_Tools::createFloorPlan(mapConfig_in.map_size_x,
-                                              mapConfig_in.map_size_y,
-                                              mapConfig_in.num_areas,
-                                              mapConfig_in.square_rooms,
-                                              mapConfig_in.maximize_rooms,
-                                              mapConfig_in.min_room_size,
-                                              mapConfig_in.doors,
-                                              mapConfig_in.corridors,
-                                              true, // *NOTE*: currently, doors fill one position
-                                              mapConfig_in.max_num_doors_per_room,
-                                              startingPosition,
-                                              seedPoints,
-                                              plan);
+        RPG_Map_Common_Tools::createMap(mapConfig_in.map_size_x,
+                                        mapConfig_in.map_size_y,
+                                        mapConfig_in.num_areas,
+                                        mapConfig_in.square_rooms,
+                                        mapConfig_in.maximize_rooms,
+                                        mapConfig_in.min_room_size,
+                                        mapConfig_in.doors,
+                                        mapConfig_in.corridors,
+                                        true, // *NOTE*: currently, doors fill one position
+                                        mapConfig_in.max_num_doors_per_room,
+                                        map);
       } // end IF
       else
       {
         if (!RPG_Map_Common_Tools::load(map_in,
-                                        startingPosition,
-                                        seedPoints,
-                                        plan,
+                                        map,
                                         false,
                                         false))
         {
@@ -880,11 +876,10 @@ do_work(const mode_t& mode_in,
         } // end IF
 
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("loaded map (\"%s\": size [%u,%u], %u seed point(s))...\n"),
+                   ACE_TEXT("loaded map (\"%s\":\n%s\n"),
                    map_in.c_str(),
-                   plan.size_x,
-                   plan.size_y,
-                   seedPoints.size()));
+                   RPG_Map_Common_Tools::info(map).c_str()));
+//         RPG_Map_Common_Tools::print(map);
       } // end ELSE
 
 //       RPG_Map_Common_Tools::displayFloorPlan(seedPoints,
@@ -892,11 +887,11 @@ do_work(const mode_t& mode_in,
 
       // step3b: setup style
       RPG_Graphics_MapStyle_t mapStyle;
-      mapStyle.floor_style = SDL_GUI_DEF_GRAPHICS_FLOORSTYLE;
-      mapStyle.edge_style = SDL_GUI_DEF_GRAPHICS_EDGESTYLE;
-      mapStyle.wall_style = SDL_GUI_DEF_GRAPHICS_WALLSTYLE;
-      mapStyle.half_height_walls = SDL_GUI_DEF_GRAPHICS_WALLSTYLE_HALF;
-      mapStyle.door_style = SDL_GUI_DEF_GRAPHICS_DOORSTYLE;
+      mapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
+      mapStyle.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
+      mapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
+      mapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
+      mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
       // step4: set default cursor
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
@@ -927,9 +922,7 @@ do_work(const mode_t& mode_in,
 
       RPG_Engine_Level level_engine;
       level_engine.init(NULL,
-                        startingPosition,
-                        seedPoints,
-                        plan);
+                        map);
       level_engine.start();
       RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity);
 
@@ -940,7 +933,6 @@ do_work(const mode_t& mode_in,
       try
       {
         mapWindow = new SDL_GUI_LevelWindow(mainWindow,     // parent
-                                            mapStyle,       // map style
                                             &level_engine); // engine
       }
       catch (...)
@@ -960,7 +952,7 @@ do_work(const mode_t& mode_in,
         return;
       } // end IF
       mapWindow->init(mapStyle,
-                      level_engine.getFloorPlan(),
+                      map,
                       entity_ID);
       mapWindow->setScreen(screen);
 
@@ -1076,9 +1068,7 @@ do_work(const mode_t& mode_in,
                 dump_path += ACE_DIRECTORY_SEPARATOR_STR;
                 dump_path += ACE_TEXT("map.txt");
                 if (!RPG_Map_Common_Tools::save(dump_path,
-                                                startingPosition,
-                                                seedPoints,
-                                                plan))
+                                                map))
                 {
                   ACE_DEBUG((LM_ERROR,
                              ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),

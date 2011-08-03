@@ -48,10 +48,8 @@ class RPG_Engine_Level
 {
  public:
   RPG_Engine_Level();
-  RPG_Engine_Level(RPG_Engine_IWindow*,         // UI handle
-                   const RPG_Map_Position_t&,   // starting position
-                   const RPG_Map_Positions_t&,  // seed points
-                   const RPG_Map_FloorPlan_t&); // floor plan
+  RPG_Engine_Level(RPG_Engine_IWindow*, // UI handle
+                   const RPG_Map_t&);   // map
   virtual ~RPG_Engine_Level();
 
   // implement RPG_Common_IControl
@@ -64,17 +62,14 @@ class RPG_Engine_Level
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
-  void init(RPG_Engine_IWindow*,         // UI handle
-            const RPG_Map_Position_t&,   // starting position
-            const RPG_Map_Positions_t&,  // seed points
-            const RPG_Map_FloorPlan_t&); // floor plan
+  void init(RPG_Engine_IWindow*, // UI handle
+            const RPG_Map_t&);   // map
   // *WARNING*: fire&forget API, added entities are controlled by the engine !
   const RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
   void action(const RPG_Engine_EntityID_t&, // id
               const RPG_Engine_Action&);    // action
 
-  const RPG_Map_Dimensions_t getDimensions() const;
   const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
   const RPG_Engine_EntityGraphics_t getGraphics() const;
   const RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
@@ -84,6 +79,7 @@ class RPG_Engine_Level
   using RPG_Map_Level::getStartPosition;
   using RPG_Map_Level::getSeedPoints;
   using RPG_Map_Level::getFloorPlan;
+  using RPG_Map_Level::getDimensions;
 
  private:
   typedef RPG_Map_Level inherited;

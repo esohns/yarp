@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_map_level.h"
 
 #include <rpg_common_macros.h>
@@ -25,21 +26,17 @@ RPG_Map_Level::RPG_Map_Level()
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
-  myFloorPlan.size_x = 0;
-  myFloorPlan.size_y = 0;
-  myFloorPlan.unmapped.clear();
-  myFloorPlan.walls.clear();
-  myFloorPlan.doors.clear();
-  myStartPosition = std::make_pair(0, 0);
-  mySeedPoints.clear();
+  myMap.plan.size_x = 0;
+  myMap.plan.size_y = 0;
+  myMap.plan.unmapped.clear();
+  myMap.plan.walls.clear();
+  myMap.plan.doors.clear();
+  myMap.start = std::make_pair(0, 0);
+  myMap.seeds.clear();
 }
 
-RPG_Map_Level::RPG_Map_Level(const RPG_Map_Position_t& startingPosition_in,
-                             const RPG_Map_Positions_t& seedPoints_in,
-                             const RPG_Map_FloorPlan_t& floorPlan_in)
- : myFloorPlan(floorPlan_in),
-   myStartPosition(startingPosition_in),
-   mySeedPoints(seedPoints_in)
+RPG_Map_Level::RPG_Map_Level(const RPG_Map_t& map_in)
+ : myMap(map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
 
@@ -52,15 +49,11 @@ RPG_Map_Level::~RPG_Map_Level()
 }
 
 void
-RPG_Map_Level::init(const RPG_Map_Position_t& startingPosition_in,
-                    const RPG_Map_Positions_t& seedPoints_in,
-                    const RPG_Map_FloorPlan_t& floorPlan_in)
+RPG_Map_Level::init(const RPG_Map_t& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::init"));
 
-  myFloorPlan = floorPlan_in;
-  myStartPosition = startingPosition_in;
-  mySeedPoints = seedPoints_in;
+  myMap = map_in;
 }
 
 const RPG_Map_Position_t
@@ -68,7 +61,7 @@ RPG_Map_Level::getStartPosition() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::getStartPosition"));
 
-  return myStartPosition;
+  return myMap.start;
 }
 
 const RPG_Map_Positions_t
@@ -76,7 +69,7 @@ RPG_Map_Level::getSeedPoints() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::getSeedPoints"));
 
-  return mySeedPoints;
+  return myMap.seeds;
 }
 
 const RPG_Map_FloorPlan_t
@@ -84,5 +77,15 @@ RPG_Map_Level::getFloorPlan() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::getFloorPlan"));
 
-  return myFloorPlan;
+  return myMap.plan;
+}
+
+const RPG_Map_Dimensions_t
+RPG_Map_Level::getDimensions() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getDimensions"));
+
+  RPG_Map_Dimensions_t result = std::make_pair(myMap.plan.size_x, myMap.plan.size_y);
+
+  return result;
 }
