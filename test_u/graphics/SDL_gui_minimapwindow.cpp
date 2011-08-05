@@ -211,7 +211,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   for (unsigned int y = 0;
        y < dimensions.second;
        y++)
-    for (unsigned int x = 1;
+    for (unsigned int x = 0;
          x < dimensions.first;
          x++)
     {
@@ -292,14 +292,16 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       // step3a: row 1
       destrect.x = 40 + (2 * x) - (2 * y);
       destrect.y = x + y;
-      pixels = static_cast<Uint32*>(mySurface->pixels) + (mySurface->pitch * (destrect.y + 6))
-                                                       + ((destrect.x + 6) * 4);
+      pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
+                                         (mySurface->pitch * (destrect.y + 6)) +
+                                         ((destrect.x + 6) * 4));
 //       pixels[0] = transparent -> dont write
       pixels[1] = color;
 //       pixels[2] = transparent -> dont write
       // step3b: row 2
-      pixels = static_cast<Uint32*>(mySurface->pixels) + (mySurface->pitch * (destrect.y + 7))
-                                                       + ((destrect.x + 6) * 4);
+      pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
+                                         (mySurface->pitch * (destrect.y + 7)) +
+                                         ((destrect.x + 6) * 4));
       pixels[0] = color;
       pixels[1] = color;
       pixels[2] = color;
