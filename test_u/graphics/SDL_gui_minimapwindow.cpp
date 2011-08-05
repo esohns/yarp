@@ -38,15 +38,15 @@
 SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& parent_in,
                                              // *NOTE*: offset doesn't include any border(s) !
                                              const RPG_Graphics_Offset_t& offset_in,
-                                             RPG_Client_Engine* engine_in,
                                              RPG_Engine_Level* levelState_in)
  : inherited(WINDOW_MINIMAP, // type
              parent_in,      // parent
              offset_in,      // offset
-             std::string(),  // title
-             NULL),          // background
-   myEngine(engine_in),
+             std::string()), // title
+//              NULL),          // background
    myLevelState(levelState_in),
+   myCurrentPlayerEntityID(0),
+   myBG(NULL),
    mySurface(NULL)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow"));
@@ -55,18 +55,22 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTERFACE_MINIMAP;
-  inherited::myBackGround = NULL;
-  inherited::myBackGround = RPG_Graphics_Common_Tools::loadGraphic(type,
-                                                                   false); // don't cache this one
-  // sanity check(s)
-  ACE_ASSERT(inherited::myBackGround);
+  myBG = RPG_Graphics_Common_Tools::loadGraphic(type,
+                                                false); // don't cache this one
+  ACE_ASSERT(myBG);
 
-  mySurface = RPG_Graphics_Surface::copy(*inherited::myBackGround);
+  // adjust size / clip rect
+  inherited::mySize.first = myBG->w;
+  inherited::mySize.second = myBG->h;
+//   inherited::myClipRect.x = (myScreen->w -
+//                              (myBorderLeft + myBorderRight) -
+//                              (myBG->w + myOffset.first));
+//   inherited::myClipRect.y = myBorderTop + myOffset.second;
+//   inherited::myClipRect.w = myBG->w;
+//   inherited::myClipRect.h = myBG->h;
+
+  mySurface = RPG_Graphics_Surface::copy(*myBG);
   ACE_ASSERT(mySurface);
-
-  // adjust size
-  inherited::mySize.first = mySurface->w;
-  inherited::mySize.second = mySurface->h;
 }
 
 SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow()
@@ -74,13 +78,14 @@ SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow()
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow"));
 
   // clean up
+  SDL_FreeSurface(myBG);
   SDL_FreeSurface(mySurface);
 }
 
 void
 SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
-                                       RPG_Graphics_IWindow* window_in,
-                                       bool& redraw_out)
+                                   RPG_Graphics_IWindow* window_in,
+                                   bool& redraw_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::handleEvent"));
 
@@ -142,25 +147,34 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
 
 void
 SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
-                                const unsigned long& offsetX_in,
-                                const unsigned long& offsetY_in)
+                            const unsigned long& offsetX_in,
+                            const unsigned long& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::draw"));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
-  ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface_in->w);
-  ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface_in->h);
-  ACE_ASSERT(myEngine);
+  ACE_UNUSED_ARG(offsetX_in);
+  ACE_UNUSED_ARG(offsetY_in);
   ACE_ASSERT(myLevelState);
+  ACE_ASSERT(mySurface);
+
+  // save BG ?
+  // *CONSIDER*: this doesn't really make sense...
+  if (!inherited::myBGHasBeenSaved)
+    inherited::saveBG(RPG_Graphics_WindowSize_t(0, 0)); // save size of "this"
 
   RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
 
   // init clipping
   SDL_GetClipRect(targetSurface_in, &(inherited::myClipRect));
   SDL_Rect clipRect;
-  clipRect.x = inherited::myOffset.first + offsetX_in;
-  clipRect.y = inherited::myOffset.second + offsetY_in;
+  clipRect.x = (myBorderLeft +
+                (myScreen->w -
+                 (myBorderLeft + myBorderRight) -
+                 (inherited::mySize.first + inherited::myOffset.first)));
+  clipRect.y = (myBorderTop +
+                inherited::myOffset.second);
   clipRect.w = inherited::mySize.first;
   clipRect.h = inherited::mySize.second;
   if (!SDL_SetClipRect(targetSurface_in, &clipRect))
@@ -173,11 +187,9 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // init surface
-  ACE_ASSERT((myBackGround->w == mySurface->w) &&
-             (myBackGround->h == mySurface->h));
   RPG_Graphics_Surface::put(0,
                             0,
-                            *myBackGround,
+                            *myBG,
                             mySurface);
 
   // lock surface during pixel access
@@ -205,9 +217,9 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
     {
       // step1: retrieve appropriate symbol
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      if (myEngine->getPlayer())
+      if (myCurrentPlayerEntityID)
       {
-        map_position = myLevelState->getPosition(myEngine->getPlayer());
+        map_position = myLevelState->getPosition(myCurrentPlayerEntityID);
         if ((x == map_position.first) &&
             (y == map_position.second))
           tile = MINIMAPTILE_PLAYER;
@@ -297,8 +309,12 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
     SDL_UnlockSurface(mySurface);
 
   // step4: paint surface
-  RPG_Graphics_Surface::put(myOffset.first + offsetX_in,
-                            myOffset.second + offsetY_in,
+  RPG_Graphics_Surface::put((myBorderLeft +
+                             (myScreen->w -
+                              (myBorderLeft + myBorderRight) -
+                              (inherited::mySize.first + inherited::myOffset.first))),
+                            (myBorderTop +
+                             inherited::myOffset.second),
                             *mySurface,
                             targetSurface_in);
 
@@ -323,4 +339,12 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   // remember position of last realization
   inherited::myLastAbsolutePosition = std::make_pair(offsetX_in + inherited::myOffset.first,
                                                      offsetY_in + inherited::myOffset.second);
+}
+
+void
+SDL_GUI_MinimapWindow::init(const RPG_Engine_EntityID_t& entityID_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::init"));
+
+  myCurrentPlayerEntityID = entityID_in;
 }

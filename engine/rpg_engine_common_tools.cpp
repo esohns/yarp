@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -560,9 +560,9 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
 }
 
 RPG_Engine_Entity
-RPG_Engine_Common_Tools::generatePlayerEntity()
+RPG_Engine_Common_Tools::createEntity()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::generatePlayerEntity"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 
   RPG_Engine_Entity result;
   result.character = NULL;
@@ -604,6 +604,58 @@ RPG_Engine_Common_Tools::generatePlayerEntity()
                                                             false); // don't cache
     ACE_ASSERT(result.graphic);
   } // end IF
+
+  return result;
+}
+
+std::string
+RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::info"));
+
+  // sanity check(s)
+  ACE_ASSERT(entity_in.character);
+
+  std::string result;
+
+  result += ACE_TEXT("Entity: ");
+  result += entity_in.character->getName();
+  result += ACE_TEXT("\n===============\n");
+
+  result += ACE_TEXT("actions [");
+  std::ostringstream converter;
+  converter << entity_in.actions.size();
+  result += converter.str();
+  result += ACE_TEXT("]:\n");
+  unsigned long index = 0;
+  for (RPG_Engine_ActionsConstIterator_t iterator = entity_in.actions.begin();
+       iterator != entity_in.actions.end();
+       iterator++, index++)
+  {
+    result += ACE_TEXT("[");
+    converter.str(ACE_TEXT(""));
+    converter << index;
+    result += converter.str();
+    result += ACE_TEXT("]: ");
+    result += RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).command);
+    result += ACE_TEXT("\n");
+  } // end FOR
+  result += ACE_TEXT("\\end actions\n");
+
+  result += ACE_TEXT("position: [");
+  converter.str(ACE_TEXT(""));
+  converter << entity_in.position.first;
+  result += converter.str();
+  result += ACE_TEXT(",");
+  converter.str(ACE_TEXT(""));
+  converter << entity_in.position.second;
+  result += converter.str();
+  result += ACE_TEXT("]\n");
+
+  result += ACE_TEXT("sprite: ");
+  result += RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite);
+  result += ACE_TEXT("\n");
+  result += ACE_TEXT("\\end Entity\n");
 
   return result;
 }

@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -44,8 +44,8 @@ RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t& si
                                              const RPG_Graphics_Font& font_in)
  : inherited(size_in,        // size
              elementType_in, // element type
-             title_in,       // title
-             NULL),          // background
+             title_in),      // title
+//              NULL),          // background
    myEngine(NULL),
    myScreenshotIndex(1),
    myLastHoverTime(0),

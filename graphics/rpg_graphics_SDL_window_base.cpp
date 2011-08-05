@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -29,8 +29,8 @@
 
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t& size_in,
                                                        const RPG_Graphics_WindowType& type_in,
-                                                       const std::string& title_in,
-                                                       SDL_Surface* backGround_in)
+                                                       const std::string& title_in)
+//                                                        SDL_Surface* backGround_in)
  : //inherited(),
    myScreen(NULL),
    mySize(size_in),
@@ -39,7 +39,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
    myBorderLeft(0),
    myBorderRight(0),
    myTitle(title_in),
-   myBackGround(backGround_in),
+//    myBackGround(backGround_in),
    myOffset(std::make_pair(0, 0)),
    myLastAbsolutePosition(std::make_pair(0, 0)),
    myParent(NULL),
@@ -55,8 +55,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType& type_in,
                                                        const RPG_Graphics_SDLWindowBase& parent_in,
                                                        const RPG_Graphics_Offset_t& offset_in,
-                                                       const std::string& title_in,
-                                                       SDL_Surface* backGround_in)
+                                                       const std::string& title_in)
+//                                                        SDL_Surface* backGround_in)
   : //inherited(),
     myScreen(parent_in.myScreen),
     mySize(std::make_pair(0, 0)),
@@ -65,7 +65,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
     myBorderLeft(0),
     myBorderRight(0),
     myTitle(title_in),
-    myBackGround(backGround_in),
+//     myBackGround(backGround_in),
     myOffset(offset_in),
     myLastAbsolutePosition(std::make_pair(0, 0)),
     myParent(&const_cast<RPG_Graphics_SDLWindowBase&>(parent_in)),
@@ -74,10 +74,12 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
   // compute parent's borders
+  // *NOTE*: yields absolute values (screen surface coordinates) !
   myParent->getBorders(myBorderTop,
                        myBorderBottom,
                        myBorderLeft,
-                       myBorderRight);
+                       myBorderRight,
+                       false); // DON'T recurse
 
   RPG_Graphics_WindowSize_t size_parent = myParent->getSize(true); // top-level
   mySize.first = size_parent.first - myOffset.first - (myBorderLeft + myBorderRight);
@@ -108,16 +110,17 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
     delete *iterator; // *NOTE*: this will invoke removeChild() on us (see above !)
   ACE_ASSERT(myChildren.empty());
 
-  // free surface
-  if (myBackGround)
-    SDL_FreeSurface(myBackGround);
+//   // free surface
+//   if (myBackGround)
+//     SDL_FreeSurface(myBackGround);
 }
 
 void
 RPG_Graphics_SDLWindowBase::getBorders(unsigned long& borderTop_out,
                                        unsigned long& borderBottom_out,
                                        unsigned long& borderLeft_out,
-                                       unsigned long& borderRight_out) const
+                                       unsigned long& borderRight_out,
+                                       const bool& recursive_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getBorders"));
 
@@ -127,24 +130,27 @@ RPG_Graphics_SDLWindowBase::getBorders(unsigned long& borderTop_out,
   borderLeft_out = myBorderLeft;
   borderRight_out = myBorderRight;
 
-  // iterate over all parent(s)
-  unsigned long borderTop;
-  unsigned long borderBottom;
-  unsigned long borderLeft;
-  unsigned long borderRight;
-  for (const RPG_Graphics_SDLWindowBase* current = myParent;
-       current != NULL;
-       current = current->getParent())
+  // iterate over all parent(s) ?
+  if (recursive_in)
   {
-    current->getBorders(borderTop,
-                        borderBottom,
-                        borderLeft,
-                        borderRight);
-    borderTop_out += borderTop;
-    borderBottom_out += borderBottom;
-    borderLeft_out += borderLeft;
-    borderRight_out += borderRight;
-  } // end FOR
+    unsigned long borderTop;
+    unsigned long borderBottom;
+    unsigned long borderLeft;
+    unsigned long borderRight;
+    for (const RPG_Graphics_SDLWindowBase* current = myParent;
+         current != NULL;
+         current = current->getParent())
+    {
+      current->getBorders(borderTop,
+                          borderBottom,
+                          borderLeft,
+                          borderRight);
+      borderTop_out += borderTop;
+      borderBottom_out += borderBottom;
+      borderLeft_out += borderLeft;
+      borderRight_out += borderRight;
+    } // end FOR
+  } // end IF
 }
 
 RPG_Graphics_SDLWindowBase*
@@ -459,6 +465,8 @@ RPG_Graphics_SDLWindowBase::notify(const RPG_Graphics_Cursor& cursor_in) const
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::notify"));
 
   ACE_UNUSED_ARG(cursor_in);
+
+  ACE_ASSERT(false);
 }
 
 const RPG_Graphics_WindowType
@@ -511,6 +519,24 @@ RPG_Graphics_SDLWindowBase::getWindow(const RPG_Graphics_Position_t& position_in
   } // end FOR
 
   return this;
+}
+
+RPG_Graphics_IWindow*
+RPG_Graphics_SDLWindowBase::getChild(const RPG_Graphics_WindowType& type_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getChild"));
+
+  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
+       iterator != myChildren.end();
+       iterator++)
+  {
+    // *CONSIDER*: also check child's children ?
+    if ((*iterator)->getType() == type_in)
+      return *iterator;
+  } // end FOR
+
+  // not found !
+  return NULL;
 }
 
 void

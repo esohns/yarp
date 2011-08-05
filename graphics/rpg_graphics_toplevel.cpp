@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -27,29 +27,23 @@
 
 RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t& size_in,
                                              const RPG_Graphics_GraphicTypeUnion& elementType_in,
-                                             const std::string& title_in,
-                                             SDL_Surface* backGround_in)
+                                             const std::string& title_in)
+//                                              SDL_Surface* backGround_in)
  : inherited(size_in,
              WINDOW_MAIN,
-             title_in,
-             backGround_in),
+             title_in),
+//              backGround_in),
    myElementGraphicsType(elementType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::RPG_Graphics_TopLevel"));
 
   // (try to) load interface element graphics
-  myInitialized = loadGraphics(myElementGraphicsType);
-
-  if (myInitialized)
+  if (!loadGraphics(myElementGraphicsType))
   {
-    // init background
-    RPG_Graphics_InterfaceElementsConstIterator_t iterator;
-    iterator = myElementGraphics.find(INTERFACEELEMENT_BACKGROUND);
-    ACE_ASSERT(iterator != myElementGraphics.end());
-    // *NOTE*: copy (window assumes responsibility for its background surface)
-    SDL_Surface* backGround = RPG_Graphics_Surface::copy(*(*iterator).second);
-    ACE_ASSERT(backGround);
-    myBackGround = backGround;
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to load interface graphics, aborting\n")));
+
+    return;
   } // end IF
 }
 

@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_GRAPHICS_SDL_WINDOW_SUB_H
 #define RPG_GRAPHICS_SDL_WINDOW_SUB_H
 
@@ -40,8 +41,8 @@ class RPG_Graphics_SDLWindowSub
                             const RPG_Graphics_SDLWindowBase&, // parent
                             // *NOTE*: offset doesn't include any border(s) !
                             const RPG_Graphics_Offset_t&,      // offset
-                            const std::string&,                // title
-                            SDL_Surface* = NULL);              // background
+                            const std::string&);               // title
+//                             SDL_Surface* = NULL);              // background
   virtual ~RPG_Graphics_SDLWindowSub();
 
   // close (& destroy)
@@ -52,7 +53,7 @@ class RPG_Graphics_SDLWindowSub
   // *NOTE*: make sure setScreen has been invoked
   void saveBG(const RPG_Graphics_WindowSize_t&);
 
-  bool         myHasBeenMarkedForClosure;
+  bool         myBGHasBeenSaved;
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;

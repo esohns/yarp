@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ENGINE_COMMON_H
 #define RPG_ENGINE_COMMON_H
 
@@ -43,6 +44,7 @@ struct RPG_Engine_Action
   RPG_Map_Direction  direction;
 };
 typedef std::deque<RPG_Engine_Action> RPG_Engine_Actions_t;
+typedef RPG_Engine_Actions_t::const_iterator RPG_Engine_ActionsConstIterator_t;
 
 struct RPG_Engine_Entity
 {

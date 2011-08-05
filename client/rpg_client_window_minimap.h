@@ -1,4 +1,4 @@
-/*
+﻿/*
     <one line to give the program's name and a brief idea of what it does.>
     Copyright (C) 2011  <copyright holder> <email>
 
@@ -59,6 +59,7 @@ class RPG_Client_Window_MiniMap
   RPG_Client_Engine* myEngine;
   RPG_Engine_Level*  myLevelState;
 
+  SDL_Surface*       myBG;
   SDL_Surface*       mySurface;
 };
 

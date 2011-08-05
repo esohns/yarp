@@ -26,8 +26,6 @@
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
 
-#include <rpg_map_common.h>
-
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
@@ -47,7 +45,7 @@ class SDL_GUI_LevelWindow
   SDL_GUI_LevelWindow(// *** SDL window ***
                       const RPG_Graphics_SDLWindowBase&, // parent
                       // *** level properties ***
-                      RPG_Engine_Level*);                // engine handle
+                      RPG_Engine_Level*);                // level state handle
   virtual ~SDL_GUI_LevelWindow();
 
   // adjust viewport
@@ -58,7 +56,6 @@ class SDL_GUI_LevelWindow
 
   // set level properties
   void init(const RPG_Graphics_MapStyle_t&, // map style
-            const RPG_Map_t&,               // map
             const RPG_Engine_EntityID_t&);  // entity ID
   void setStyle(const RPG_Graphics_StyleUnion&);
   void hideWalls(const bool& = true); // hide walls ?
@@ -87,6 +84,7 @@ class SDL_GUI_LevelWindow
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?
+  void initMiniMap(RPG_Engine_Level*); // level state handle
   void restoreBG();
 
   RPG_Engine_EntityID_t           myEntityID;
@@ -119,6 +117,8 @@ class SDL_GUI_LevelWindow
   RPG_Graphics_Position_t         myHighlightBGPosition; // map coordinates
   SDL_Surface*                    myHighlightBG;
   SDL_Surface*                    myHighlightTile;
+
+  bool                            myMinimapIsOn;
 };
 
 #endif

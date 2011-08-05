@@ -37,9 +37,13 @@
 #define SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE  IMAGE_INTERFACE_MAIN
 #define SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE  ACE_TEXT_ALWAYS_CHAR("Project RPG")
 // #define SDL_GUI_DEF_GRAPHICS_MAINMENU_TITLE    ACE_TEXT_ALWAYS_CHAR("main menu")
+#define SDL_GUI_DEF_GRAPHICS_MINIMAP_ISON      false
+#define SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_X  10 // from the right side
+#define SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_Y  10
+
 #define SDL_GUI_DEF_CHARACTER                  ACE_TEXT("/var/tmp/default_player.xml")
 #define SDL_GUI_DEF_FLOOR_PLAN                 ACE_TEXT("/var/tmp/floor_plan.txt")
-#define SDL_GUI_DEF_VALIDATE_XML true
+#define SDL_GUI_DEF_VALIDATE_XML               true
 
 #define SDL_GUI_DEF_VIDEO_W                    1024
 #define SDL_GUI_DEF_VIDEO_H                    786

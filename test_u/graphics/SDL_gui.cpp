@@ -551,9 +551,6 @@ do_work(const mode_t& mode_in,
                                 title,                                // title (== caption)
                                 FONT_MAIN_LARGE);                     // title font
   mainWindow.setScreen(screen);
-  mainWindow.init();
-  mainWindow.draw();
-  mainWindow.refresh();
 
   // ***** mouse setup *****
   SDL_WarpMouse((screen->w / 2),
@@ -879,11 +876,9 @@ do_work(const mode_t& mode_in,
                    ACE_TEXT("loaded map (\"%s\":\n%s\n"),
                    map_in.c_str(),
                    RPG_Map_Common_Tools::info(map).c_str()));
-//         RPG_Map_Common_Tools::print(map);
       } // end ELSE
 
-//       RPG_Map_Common_Tools::displayFloorPlan(seedPoints,
-//                                              plan);
+//       RPG_Map_Common_Tools::print(map);
 
       // step3b: setup style
       RPG_Graphics_MapStyle_t mapStyle;
@@ -896,7 +891,7 @@ do_work(const mode_t& mode_in,
       // step4: set default cursor
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
 
-      // step5a: level engine
+      // step5a: entity
       std::string base_data_path;
 #ifdef DATADIR
       base_data_path = DATADIR;
@@ -912,55 +907,44 @@ do_work(const mode_t& mode_in,
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating entity...\n")));
 
-        entity = RPG_Engine_Common_Tools::generatePlayerEntity();
+        entity = RPG_Engine_Common_Tools::createEntity();
       } // end IF
       else
+      {
         entity = RPG_Engine_Common_Tools::loadEntity(entity_in,
                                                      schemaRepository,
                                                      true);
-      ACE_ASSERT(entity.character);
+        if (!entity.character)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Engine_Common_Tools::loadEntity(\"%s\"), aborting\n"),
+                     entity_in.c_str()));
 
+          return;
+        } // end IF
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("loaded entity (\"%s\":\n%s\n"),
+                   entity_in.c_str(),
+                   RPG_Engine_Common_Tools::info(entity).c_str()));
+      } // end ELSE
+
+      // step5b: level engine
       RPG_Engine_Level level_engine;
       level_engine.init(NULL,
                         map);
       level_engine.start();
       RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity);
 
-      // step5b: setup level "window"
-      // *NOTE*: need to allocate this dynamically so parent window can
-      // assume ownership...
-      SDL_GUI_LevelWindow* mapWindow = NULL;
-      try
-      {
-        mapWindow = new SDL_GUI_LevelWindow(mainWindow,     // parent
-                                            &level_engine); // engine
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-                   sizeof(SDL_GUI_LevelWindow)));
-
-        return;
-      }
-      if (!mapWindow)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-                   sizeof(SDL_GUI_LevelWindow)));
-
-        return;
-      } // end IF
-      mapWindow->init(mapStyle,
+      // step5c: init sub-windows (level window, hotspots, minimap, ...)
+      mainWindow.init(&level_engine,
+                      mapStyle,
                       map,
                       entity_ID);
-      mapWindow->setScreen(screen);
-
-      // refresh screen
       try
       {
-        mapWindow->draw();
-        mapWindow->refresh();
+        mainWindow.draw();
+        mainWindow.refresh();
       }
       catch (...)
       {
@@ -1042,7 +1026,13 @@ do_work(const mode_t& mode_in,
                 RPG_Graphics_StyleUnion style;
                 style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
                 style.floorstyle = mapStyle.floor_style;
-                mapWindow->setStyle(style);
+
+                SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
+                ACE_ASSERT(map_window);
+                map_window->setStyle(style);
+
+                // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
+                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
 
                 force_redraw = true;
 
@@ -1056,7 +1046,12 @@ do_work(const mode_t& mode_in,
                 else
                   hide_walls = true;
 
-                mapWindow->hideWalls(hide_walls);
+                SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
+                ACE_ASSERT(map_window);
+                map_window->hideWalls(hide_walls);
+
+                // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
+                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
 
                 force_redraw = true;
 
@@ -1094,7 +1089,13 @@ do_work(const mode_t& mode_in,
                 RPG_Graphics_StyleUnion style;
                 style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
                 style.wallstyle = mapStyle.wall_style;
-                mapWindow->setStyle(style);
+
+                SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
+                ACE_ASSERT(map_window);
+                map_window->setStyle(style);
+
+                // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
+                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
 
                 force_redraw = true;
 
@@ -1205,10 +1206,13 @@ do_work(const mode_t& mode_in,
         // redraw map ?
         if (force_redraw || need_redraw)
         {
+          SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
+          ACE_ASSERT(map_window);
+
           try
           {
-            mapWindow->draw();
-            mapWindow->refresh();
+            map_window->draw();
+            map_window->refresh();
           }
           catch (...)
           {

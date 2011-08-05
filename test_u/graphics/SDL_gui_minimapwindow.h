@@ -1,4 +1,4 @@
-/*
+﻿/*
     <one line to give the program's name and a brief idea of what it does.>
     Copyright (C) 2011  <copyright holder> <email>
 
@@ -19,25 +19,25 @@
 #ifndef SDL_GUI_MINIMAPWINDOW_H
 #define SDL_GUI_MINIMAPWINDOW_H
 
-#include <rpg_graphics_SDL_window_base.h>
+#include <rpg_engine_common.h>
+
+#include <rpg_graphics_SDL_window_sub.h>
 
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
 
 // forward declarations
-class RPG_Client_Engine;
 class RPG_Engine_Level;
 
 class SDL_GUI_MinimapWindow
- : public RPG_Graphics_SDLWindowBase
+ : public RPG_Graphics_SDLWindowSub
 {
  public:
   SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase&, // parent
                         // *NOTE*: offset doesn't include any border(s) !
                         const RPG_Graphics_Offset_t&,      // offset
-                        RPG_Client_Engine*,                // engine handle
-                        RPG_Engine_Level*);                // state handle
+                        RPG_Engine_Level*);                // level state handle
   virtual ~SDL_GUI_MinimapWindow();
 
   // implement (part of) RPG_Graphics_IWindow
@@ -48,18 +48,22 @@ class SDL_GUI_MinimapWindow
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
 
+  void init(const RPG_Engine_EntityID_t&); // player entity ID
+
  private:
-  typedef RPG_Graphics_SDLWindowBase inherited;
+  typedef RPG_Graphics_SDLWindowSub inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow());
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow(const SDL_GUI_MinimapWindow&));
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow& operator=(const SDL_GUI_MinimapWindow&));
 
-  RPG_Client_Engine* myEngine;
-  RPG_Engine_Level*  myLevelState;
+  RPG_Engine_Level*     myLevelState;
 
-  SDL_Surface*       mySurface;
+  RPG_Engine_EntityID_t myCurrentPlayerEntityID;
+
+  SDL_Surface*          myBG;
+  SDL_Surface*          mySurface;
 };
 
 #endif // RPG_GRAPHICS_MINIMAP_H

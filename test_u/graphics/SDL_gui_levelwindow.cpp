@@ -21,6 +21,7 @@
 #include "SDL_gui_levelwindow.h"
 
 #include "SDL_gui_defines.h"
+#include "SDL_gui_minimapwindow.h"
 
 #include <rpg_client_defines.h>
 #include <rpg_client_common_tools.h>
@@ -44,14 +45,14 @@
 #include <sstream>
 
 SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& parent_in,
-                                         RPG_Engine_Level* engine_in)
+                                         RPG_Engine_Level* levelState_in)
  : inherited(WINDOW_MAP,           // type
              parent_in,            // parent
              std::make_pair(0, 0), // offset
-             std::string(),        // title
-             NULL),                // background
+             std::string()),       // title
+//              NULL),                // background
    myEntityID(0),
-   myLevelState(engine_in),
+   myLevelState(levelState_in),
 //    myCurrentMapStyle(),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
@@ -67,7 +68,8 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
    myHighlightBGPosition(std::make_pair(myLevelState->getFloorPlan().size_x / 2,
                                         myLevelState->getFloorPlan().size_y / 2)),
    myHighlightBG(NULL),
-   myHighlightTile(NULL)
+   myHighlightTile(NULL),
+   myMinimapIsOn(SDL_GUI_DEF_GRAPHICS_MINIMAP_ISON)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
 
@@ -139,6 +141,9 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
   RPG_Graphics_Common_Tools::loadWallTileSet(myCurrentMapStyle.wall_style,
                                              myCurrentMapStyle.half_height_walls,
                                              myCurrentWallSet);
+
+  // init minimap
+  initMiniMap(myLevelState);
 }
 
 SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
@@ -258,13 +263,10 @@ SDL_GUI_LevelWindow::centerView()
 
 void
 SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
-                          const RPG_Map_t& map_in,
                           const RPG_Engine_EntityID_t& entityID_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
 
-  myLevelState->init(NULL,
-                     map_in);
   myEntityID = entityID_in;
 
   // clean up
@@ -308,8 +310,9 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   RPG_Graphics_Surface::clear(myHighlightBG);
 
   // init cursor highlighting
-  myHighlightBGPosition = std::make_pair(map_in.plan.size_x / 2,
-                                         map_in.plan.size_y / 2);
+  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
+  myHighlightBGPosition = std::make_pair(dimensions.first / 2,
+                                         dimensions.second / 2);
 }
 
 void
@@ -749,6 +752,28 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                             *myHighlightTile,
                             targetSurface);
 
+  // realize any sub-windows
+  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
+       iterator != myChildren.end();
+       iterator++)
+  {
+    // draw minimap ?
+    if (((*iterator)->getType() == WINDOW_MINIMAP) && !myMinimapIsOn)
+      continue;
+
+    try
+    {
+      (*iterator)->draw(targetSurface,
+                        offsetX_in,
+                        offsetY_in);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
+    }
+  } // end FOR
+
   // reset clipping area
   unclip(targetSurface);
 
@@ -830,6 +855,16 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
           // clear highlight BG
           RPG_Graphics_Surface::clear(myHighlightBG);
+
+          // need a redraw
+          redraw_out = true;
+
+          // done with this event
+          return;
+        }
+        case SDLK_m:
+        {
+          myMinimapIsOn = !myMinimapIsOn;
 
           // need a redraw
           redraw_out = true;
@@ -1499,14 +1534,48 @@ SDL_GUI_LevelWindow::initWallBlend(const bool& halfHeightWalls_in)
     return;
   } // end IF
 
-  // debug info
-  std::string dump_path_base = RPG_COMMON_DUMP_DIR;
-  dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  std::string dump_path = dump_path_base;
-  dump_path += ACE_TEXT("wall_blend.png");
-  RPG_Graphics_Surface::savePNG(*myWallBlend, // image
-                                dump_path,    // file
-                                true);        // WITH alpha
+//   // debug info
+//   std::string dump_path_base = RPG_COMMON_DUMP_DIR;
+//   dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
+//   std::string dump_path = dump_path_base;
+//   dump_path += ACE_TEXT("wall_blend.png");
+//   RPG_Graphics_Surface::savePNG(*myWallBlend, // image
+//                                 dump_path,    // file
+//                                 true);        // WITH alpha
+}
+
+void
+SDL_GUI_LevelWindow::initMiniMap(RPG_Engine_Level* levelState_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initMiniMap"));
+
+  RPG_Graphics_Offset_t offset;
+  offset.first = SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_X;
+  offset.second = SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_Y;
+
+  SDL_GUI_MinimapWindow* minimap_window = NULL;
+  try
+  {
+    minimap_window = new SDL_GUI_MinimapWindow(*this,
+                                               offset,
+                                               levelState_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               sizeof(SDL_GUI_MinimapWindow)));
+
+    return;
+  }
+  if (!minimap_window)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               sizeof(SDL_GUI_MinimapWindow)));
+
+    return;
+  } // end IF
 }
 
 void

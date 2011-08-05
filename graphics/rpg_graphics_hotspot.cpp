@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -35,8 +35,8 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
  : inherited(WINDOW_HOTSPOT, // type
              parent_in,      // parent
              offset_in,      // offset
-             std::string(),  // title
-             NULL),          // background
+             std::string()), // title
+//              NULL),          // background
    myCursorType(cursor_in),
    myCursorHasBeenSet(false)
 {
@@ -197,7 +197,7 @@ RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
   }
   catch (...)
   {
-    ACE_DEBUG((LM_ERROR,
+    ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
                sizeof(RPG_Graphics_HotSpot)));
 
@@ -205,7 +205,7 @@ RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
   }
   if (!hotspot)
   {
-    ACE_DEBUG((LM_ERROR,
+    ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
                sizeof(RPG_Graphics_HotSpot)));
 

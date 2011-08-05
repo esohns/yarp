@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -46,8 +46,8 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
  : inherited(WINDOW_MAP,           // type
              parent_in,            // parent
              std::make_pair(0, 0), // offset
-             std::string(),        // title
-             NULL),                // background
+             std::string()),       // title
+//              NULL),                // background
    myLevelState(NULL),
    myEngine(NULL),
    myDrawMinimap(false),

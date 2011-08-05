@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -51,6 +51,7 @@ class RPG_Graphics_SDLWindowBase
 
   const RPG_Graphics_WindowSize_t getSize(const bool& = false) const; // top-level ?
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
+  RPG_Graphics_IWindow* getChild(const RPG_Graphics_WindowType&); // type
 
   void clip(SDL_Surface* = NULL,       // target surface (default: screen)
             const unsigned long& = 0,  // offset x (top-left = [0,0])
@@ -61,16 +62,16 @@ class RPG_Graphics_SDLWindowBase
   // *NOTE*: window assumes responsibility for its background surface
   RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t&, // size
                              const RPG_Graphics_WindowType&,   // type
-                             const std::string&,               // title
-                             SDL_Surface* = NULL);             // background
+                             const std::string&);              // title
+//                              SDL_Surface* = NULL);             // background
   // embedded ("child") window(s)
   // *NOTE*: window assumes responsibility for its background surface
   RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType&,    // type
                              const RPG_Graphics_SDLWindowBase&, // parent
                              // *NOTE*: offset doesn't include any border(s) !
                              const RPG_Graphics_Offset_t&,      // offset
-                             const std::string&,                // title
-                             SDL_Surface* = NULL);              // background
+                             const std::string&);               // title
+//                              SDL_Surface* = NULL);              // background
 
   // default screen
   SDL_Surface*                     myScreen;
@@ -97,15 +98,16 @@ class RPG_Graphics_SDLWindowBase
   typedef RPG_Graphics_Windows_t::const_reverse_iterator RPG_Graphics_WindowsRIterator_t;
 
   // helper methods
-  void getBorders(unsigned long&,        // size (top)
-                  unsigned long&,        // size (bottom)
-                  unsigned long&,        // size (left)
-                  unsigned long&) const; // size (right)
+  void getBorders(unsigned long&,            // return value: size (top)
+                  unsigned long&,            // return value: size (bottom)
+                  unsigned long&,            // return value: size (left)
+                  unsigned long&,            // return value: size (right)
+                  const bool& = true) const; // recursive ?
   RPG_Graphics_SDLWindowBase* getParent() const;
   void invalidate(const SDL_Rect&); // "dirty" area
 
   std::string                      myTitle;
-  SDL_Surface*                     myBackGround;
+//   SDL_Surface*                     myBackGround;
 
   RPG_Graphics_Offset_t            myOffset; // offset to parent
   RPG_Graphics_Windows_t           myChildren;
@@ -126,8 +128,8 @@ class RPG_Graphics_SDLWindowBase
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase& operator=(const RPG_Graphics_SDLWindowBase&));
 
   // helper methods
-  void addChild(RPG_Graphics_SDLWindowBase*);
-  void removeChild(RPG_Graphics_SDLWindowBase*);
+  void addChild(RPG_Graphics_SDLWindowBase*); // window handle
+  void removeChild(RPG_Graphics_SDLWindowBase*); // window handle
 
   // "dirty" region(s)
   RPG_Graphics_InvalidRegions_t    myInvalidRegions;

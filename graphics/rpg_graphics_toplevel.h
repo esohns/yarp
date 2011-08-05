@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_GRAPHICS_TOPLEVEL_H
 #define RPG_GRAPHICS_TOPLEVEL_H
 
@@ -42,8 +43,8 @@ class RPG_Graphics_TopLevel
  public:
   RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t&,     // size
                         const RPG_Graphics_GraphicTypeUnion&, // (element) type
-                        const std::string&,                   // title
-                        SDL_Surface* = NULL);                 // background
+                        const std::string&);                  // title
+//                         SDL_Surface* = NULL);                 // background
   virtual ~RPG_Graphics_TopLevel();
 
 //   // realize child window
@@ -68,8 +69,6 @@ class RPG_Graphics_TopLevel
 
   // helper methods
   const bool loadGraphics(const RPG_Graphics_GraphicTypeUnion&); // (element) type
-
-  bool                             myInitialized;
 };
 
 #endif

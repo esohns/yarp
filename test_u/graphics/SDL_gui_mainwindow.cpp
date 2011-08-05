@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -23,6 +23,8 @@
 #include "SDL_gui_defines.h"
 #include "SDL_gui_levelwindow.h"
 
+#include <rpg_engine_level.h>
+
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_cursor_manager.h>
@@ -43,8 +45,8 @@ SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
                                        const RPG_Graphics_Font& fontType_in)
  : inherited(size_in,        // size
              elementType_in, // element type
-             title_in,       // title
-             NULL),          // background
+             title_in),      // title
+//              NULL),          // background
    myScreenshotIndex(1),
    myLastHoverTime(0),
    myHaveMouseFocus(true), // *NOTE*: enforced with SDL_WarpMouse()
@@ -61,12 +63,21 @@ SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 }
 
 void
-SDL_GUI_MainWindow::init()
+SDL_GUI_MainWindow::init(RPG_Engine_Level* levelState_in,
+                         const RPG_Graphics_MapStyle_t& style_in,
+                         const RPG_Map_t& map_in,
+                         const RPG_Engine_EntityID_t& entityID_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::init"));
 
   // init scroll margins
   initScrollSpots();
+
+  // init map
+  initMap(levelState_in,
+          style_in,
+          map_in,
+          entityID_in);
 }
 
 void
@@ -81,15 +92,20 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
-  ACE_ASSERT(static_cast<int> (offsetX_in) <= targetSurface->w);
-  ACE_ASSERT(static_cast<int> (offsetY_in) <= targetSurface->h);
+  ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
+  ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
 
   // step1: draw borders
   drawBorder(targetSurface,
              offsetX_in,
              offsetY_in);
 
-  // step2: fill central area
+  // step2: draw title
+  drawTitle(myTitleFont,
+            myTitle,
+            myScreen);
+
+  // step3: fill central area
   SDL_Rect clipRect;
   clipRect.x = offsetX_in + myBorderLeft;
   clipRect.y = offsetY_in + myBorderTop;
@@ -124,45 +140,6 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
                SDL_GetError()));
 
     return;
-  } // end IF
-
-  // step3: draw title (if any)
-  if (!myTitle.empty())
-  {
-    clipRect.x = myBorderLeft;
-    clipRect.y = 0;
-    clipRect.w = targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight);
-    clipRect.h = myBorderTop;
-    if (!SDL_SetClipRect(targetSurface, &clipRect))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-                 SDL_GetError()));
-
-      return;
-    } // end IF
-
-    RPG_Graphics_TextSize_t title_size = RPG_Graphics_Common_Tools::textSize(myTitleFont,
-                                                                             myTitle);
-    RPG_Graphics_Surface::putText(myTitleFont,
-                                  myTitle,
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-                                                                          *targetSurface),
-                                  true, // add shade
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                          *targetSurface),
-                                  myBorderLeft, // top left
-                                  ((myBorderTop - title_size.second) / 2), // center of top border
-                                  targetSurface);
-    invalidate(clipRect);
-    if (!SDL_SetClipRect(targetSurface, NULL))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-                 SDL_GetError()));
-
-      return;
-    } // end IF
   } // end IF
 
   // init clipping
@@ -242,6 +219,9 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           drawBorder(myScreen,
                      0,
                      0);
+          drawTitle(myTitleFont,
+                    myTitle,
+                    myScreen);
           refresh();
 
           myHaveMouseFocus = true;
@@ -255,6 +235,9 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           drawBorder(myScreen,
                      0,
                      0);
+          drawTitle(myTitleFont,
+                    myTitle,
+                    myScreen);
           refresh();
 
           myHaveMouseFocus = false;
@@ -315,10 +298,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           break;
         }
         default:
-        {
-
           break;
-        }
       } // end SWITCH
 
       break;
@@ -484,8 +464,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("mouse button [%u,%u] released...\n"),
-                 static_cast<unsigned long> (event_in.button.which),
-                 static_cast<unsigned long> (event_in.button.button)));
+                 static_cast<unsigned long>(event_in.button.which),
+                 static_cast<unsigned long>(event_in.button.button)));
 
       break;
     }
@@ -691,7 +671,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown event (was: %u)...\n"),
-                 static_cast<unsigned long> (event_in.type)));
+                 static_cast<unsigned long>(event_in.type)));
 
       break;
     }
@@ -700,6 +680,27 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
   // if necessary, reset last hover time
   if (event_in.type != RPG_GRAPHICS_SDL_HOVEREVENT)
     myLastHoverTime = 0;
+}
+
+void
+SDL_GUI_MainWindow::notify(const RPG_Graphics_Cursor& cursor_in) const
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::notify"));
+
+  switch (cursor_in)
+  {
+    case RPG_GRAPHICS_CURSOR_INVALID:
+    {
+      SDL_Rect dirtyRegion;
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen, dirtyRegion);
+      // *NOTE*: updating straight away reduces ugly smears...
+      RPG_Graphics_Surface::update(dirtyRegion, myScreen);
+
+      return;
+    }
+    default:
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_in);
+  } // end SWITCH
 }
 
 void
@@ -766,6 +767,43 @@ SDL_GUI_MainWindow::initScrollSpots()
 }
 
 void
+SDL_GUI_MainWindow::initMap(RPG_Engine_Level* levelState_in,
+                            const RPG_Graphics_MapStyle_t& style_in,
+                            const RPG_Map_t& map_in,
+                            const RPG_Engine_EntityID_t& entityID_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initMap"));
+
+  SDL_GUI_LevelWindow* map_window = NULL;
+  try
+  {
+    map_window = new SDL_GUI_LevelWindow(*this,
+                                         levelState_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               sizeof(SDL_GUI_LevelWindow)));
+
+    return;
+  }
+  if (!map_window)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               sizeof(SDL_GUI_LevelWindow)));
+
+    return;
+  } // end IF
+
+  // init window
+  map_window->init(style_in,
+                   entityID_in);
+  map_window->setScreen(myScreen);
+}
+
+void
 SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
                                const unsigned long& offsetX_in,
                                const unsigned long& offsetY_in)
@@ -777,8 +815,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
-  ACE_ASSERT(static_cast<int> (offsetX_in) <= targetSurface->w);
-  ACE_ASSERT(static_cast<int> (offsetY_in) <= targetSurface->h);
+  ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
+  ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
 
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
   SDL_Rect prev_clipRect, clipRect;
@@ -803,7 +841,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = offsetX_in + myBorderLeft;
-       i < (static_cast<unsigned long> (targetSurface->w) - myBorderRight);
+       i < (static_cast<unsigned long>(targetSurface->w) - myBorderRight);
        i += (*iterator).second->w)
     RPG_Graphics_Surface::put(i,
                               offsetY_in,
@@ -826,7 +864,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + myBorderTop);
-       i < (static_cast<unsigned long> (targetSurface->h) - myBorderBottom);
+       i < (static_cast<unsigned long>(targetSurface->h) - myBorderBottom);
        i += (*iterator).second->h)
     RPG_Graphics_Surface::put(offsetX_in,
                               i,
@@ -849,7 +887,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + myBorderTop);
-       i < (static_cast<unsigned long> (targetSurface->h) - myBorderBottom);
+       i < (static_cast<unsigned long>(targetSurface->h) - myBorderBottom);
        i += (*iterator).second->h)
     RPG_Graphics_Surface::put((targetSurface->w - myBorderRight),
                                i,
@@ -968,6 +1006,59 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   // restore previous clipping area
   if (!SDL_SetClipRect(targetSurface, &prev_clipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+}
+
+void
+SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
+                              const std::string& text_in,
+                              SDL_Surface* targetSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::drawTitle"));
+
+  if (text_in.empty())
+    return;
+
+  // sanity check
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
+                                                 : myScreen);
+  ACE_ASSERT(targetSurface);
+
+  RPG_Graphics_TextSize_t title_size = RPG_Graphics_Common_Tools::textSize(font_in,
+                                                                           text_in);
+
+  SDL_Rect clipRect;
+  clipRect.x = myBorderLeft;
+  clipRect.y = ((myBorderTop - title_size.second) / 2);
+  clipRect.w = title_size.first;
+  clipRect.h = title_size.second;
+  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+
+  RPG_Graphics_Surface::putText(font_in,
+                                text_in,
+                                RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                        *targetSurface),
+                                true, // add shade
+                                RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                        *targetSurface),
+                                myBorderLeft, // top left
+                                ((myBorderTop - title_size.second) / 2), // center of top border
+                                targetSurface);
+  invalidate(clipRect);
+  if (!SDL_SetClipRect(targetSurface, NULL))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),

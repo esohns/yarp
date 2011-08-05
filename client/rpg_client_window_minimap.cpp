@@ -1,4 +1,4 @@
-/*
+﻿/*
     <one line to give the program's name and a brief idea of what it does.>
     Copyright (C) 2011  <copyright holder> <email>
 
@@ -43,10 +43,11 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
  : inherited(WINDOW_MINIMAP, // type
              parent_in,      // parent
              offset_in,      // offset
-             std::string(),  // title
-             NULL),          // background
+             std::string()), // title
+//              NULL),          // background
    myEngine(engine_in),
    myLevelState(levelState_in),
+   myBG(NULL),
    mySurface(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap"));
@@ -55,13 +56,11 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTERFACE_MINIMAP;
-  inherited::myBackGround = NULL;
-  inherited::myBackGround = RPG_Graphics_Common_Tools::loadGraphic(type,
-                                                                   false); // don't cache this one
-  // sanity check(s)
-  ACE_ASSERT(inherited::myBackGround);
+  myBG = RPG_Graphics_Common_Tools::loadGraphic(type,
+                                                false); // don't cache this one
+  ACE_ASSERT(myBG);
 
-  mySurface = RPG_Graphics_Surface::copy(*inherited::myBackGround);
+  mySurface = RPG_Graphics_Surface::copy(*myBG);
   ACE_ASSERT(mySurface);
 
   // adjust size
@@ -74,6 +73,7 @@ RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap"));
 
   // clean up
+  SDL_FreeSurface(myBG);
   SDL_FreeSurface(mySurface);
 }
 
@@ -173,11 +173,9 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // init surface
-  ACE_ASSERT((myBackGround->w == mySurface->w) &&
-             (myBackGround->h == mySurface->h));
   RPG_Graphics_Surface::put(0,
                             0,
-                            *myBackGround,
+                            *myBG,
                             mySurface);
 
   // lock surface during pixel access

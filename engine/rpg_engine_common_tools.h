@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -61,7 +61,8 @@ class RPG_Engine_Common_Tools
   static const bool saveEntity(const RPG_Engine_Entity&, // entity
                                const std::string&);      // FQ filename
   // *NOTE*: entity.character must be deleted() by the caller !
-  static RPG_Engine_Entity generatePlayerEntity(); // return value: (random) player entity
+  static RPG_Engine_Entity createEntity(); // return value: (random) player entity
+  static std::string info(const RPG_Engine_Entity&); // entity
 
   // ***** combat-related *****
   static const bool isPartyHelpless(const RPG_Character_Party_t&); // party

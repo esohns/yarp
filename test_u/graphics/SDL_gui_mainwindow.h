@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -21,6 +21,8 @@
 #ifndef SDL_GUI_MAINWINDOW_H
 #define SDL_GUI_MAINWINDOW_H
 
+#include <rpg_engine_common.h>
+
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_cursor.h>
 #include <rpg_graphics_font.h>
@@ -30,11 +32,16 @@
 #include <rpg_graphics_graphictypeunion.h>
 #include <rpg_graphics_toplevel.h>
 
+#include <rpg_map_common.h>
+
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
 
 #include <string>
+
+// forward declarations
+class RPG_Engine_Level;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -49,9 +56,13 @@ class SDL_GUI_MainWindow
                      const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
   virtual ~SDL_GUI_MainWindow();
 
-  // initialize different hotspots
+  // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  void init();
+  // *WARNING*: call AFTER creating level map window !
+  void init(RPG_Engine_Level*,              // level state handle
+            const RPG_Graphics_MapStyle_t&, // map style
+            const RPG_Map_t&,               // map
+            const RPG_Engine_EntityID_t&);  // entity ID
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -60,6 +71,7 @@ class SDL_GUI_MainWindow
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
+  virtual void notify(const RPG_Graphics_Cursor&) const;
 
  private:
   typedef RPG_Graphics_TopLevel inherited;
@@ -71,15 +83,23 @@ class SDL_GUI_MainWindow
 
   // helper methods
   void initScrollSpots();
+  void initMap(RPG_Engine_Level*,              // level state handle
+               const RPG_Graphics_MapStyle_t&, // map style
+               const RPG_Map_t&,               // map
+               const RPG_Engine_EntityID_t&);  // entity ID
   void drawBorder(SDL_Surface* = NULL,       // target surface (default: screen)
                   const unsigned long& = 0,  // offset x (top-left = [0,0])
                   const unsigned long& = 0); // offset y (top-left = [0,0])
+  void drawTitle(const RPG_Graphics_Font&,  // font
+                 const std::string&,        // text
+                 SDL_Surface* = NULL);      // target surface (default: screen)
 
   // counter
   unsigned long     myScreenshotIndex;
 
   unsigned long     myLastHoverTime;
   bool              myHaveMouseFocus;
+
   RPG_Graphics_Font myTitleFont;
 };
 
