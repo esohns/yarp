@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns                                      *
  *   erik.sohns@web.de                                                     *
  *                                                                         *
@@ -27,8 +27,6 @@
 #include <rpg_client_common.h>
 #include <rpg_client_callbacks.h>
 #include <rpg_client_window_main.h>
-#include <rpg_client_window_level.h>
-#include <rpg_client_window_minimap.h>
 #include <rpg_client_engine.h>
 #include <rpg_client_common_tools.h>
 
@@ -1194,7 +1192,70 @@ do_work(const RPG_Client_Config& config_in,
 //     return;
 //   } // end IF
 
-  // step4: setup main "window"
+  // step4a: set default cursor
+  RPG_Client_Common_Tools::init();
+
+  // step5b: setup style
+  RPG_Graphics_MapStyle_t map_style;
+  map_style.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
+  map_style.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
+  map_style.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
+  map_style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
+  map_style.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
+
+  // step5c: setup map
+  RPG_Map_t map;
+  if (config_in.map_file.empty())
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generating floor plan...\n")));
+
+    RPG_Map_Common_Tools::createMap(config_in.map_config.map_size_x,
+                                    config_in.map_config.map_size_y,
+                                    config_in.map_config.num_areas,
+                                    config_in.map_config.square_rooms,
+                                    config_in.map_config.maximize_rooms,
+                                    config_in.map_config.min_room_size,
+                                    config_in.map_config.doors,
+                                    config_in.map_config.corridors,
+                                    true, // *NOTE*: currently, doors fill one position
+                                    config_in.map_config.max_num_doors_per_room,
+                                    map);
+  } // end IF
+  else
+  {
+    if (!RPG_Map_Common_Tools::load(config_in.map_file,
+                                    map,
+                                    false,
+                                    false))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
+                 config_in.map_file.c_str()));
+
+      return;
+    } // end IF
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("loaded map (\"%s\":\n%s\n"),
+               config_in.map_file.c_str(),
+               RPG_Map_Common_Tools::info(map).c_str()));
+  } // end ELSE
+//   RPG_Map_Common_Tools::print(map);
+
+  // step5d: level engine
+  level_engine.init(&client_engine,
+                    map);
+  level_engine.start();
+  if (!level_engine.isRunning())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to start level engine, aborting\n")));
+
+    return;
+  } // end IF
+
+  // step5e: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
@@ -1205,98 +1266,12 @@ do_work(const RPG_Client_Config& config_in,
                                    title,                                         // title (== caption)
                                    FONT_MAIN_LARGE);                              // title font
   mainWindow.setScreen(userData.screen);
-  mainWindow.init(&client_engine);
-//   mainWindow.draw();
-//   mainWindow.refresh();
+  mainWindow.init(&client_engine,
+                  &level_engine,
+                  map_style);
 
-  // step4b: set default cursor
-  RPG_Client_Common_Tools::init();
-
-  // step5: setup level/minimap "window"s
-  RPG_Client_WindowLevel mapWindow(mainWindow); // parent
-//   userData.map_window = &mapWindow;
-  mapWindow.setScreen(userData.screen);
-
-  // step5a: setup style
-  RPG_Graphics_MapStyle_t mapStyle;
-  mapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  mapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-  mapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-
-  // step5b: setup map
-  RPG_Map_Position_t start_position = std::make_pair(0, 0);
-  RPG_Map_Positions_t seed_points;
-  RPG_Map_FloorPlan_t floor_plan;
-  floor_plan.size_x = 0;
-  floor_plan.size_y = 0;
-  if (config_in.map_file.empty())
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("generating floor plan...\n")));
-
-    RPG_Map_Common_Tools::createFloorPlan(config_in.map_config.map_size_x,
-                                          config_in.map_config.map_size_y,
-                                          config_in.map_config.num_areas,
-                                          config_in.map_config.square_rooms,
-                                          config_in.map_config.maximize_rooms,
-                                          config_in.map_config.min_room_size,
-                                          config_in.map_config.doors,
-                                          config_in.map_config.corridors,
-                                          true, // *NOTE*: currently, doors fill one position
-                                          config_in.map_config.max_num_doors_per_room,
-                                          start_position,
-                                          seed_points,
-                                          floor_plan);
-  } // end IF
-  else
-  {
-    if (!RPG_Map_Common_Tools::load(config_in.map_file,
-                                    start_position,
-                                    seed_points,
-                                    floor_plan))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
-                 config_in.map_file.c_str()));
-
-      return;
-    } // end IF
-  } // end ELSE
-//   RPG_Map_Common_Tools::displayFloorPlan(start_position,
-//                                          seed_points,
-//                                          floor_plan);
-
-  mapWindow.init(&level_engine,
-                 &client_engine,
-                 floor_plan,
-                 mapStyle);
-//   mapWindow.draw();
-//   mapWindow.refresh();
-
-  // step5c: setup minimap "window"
-  RPG_Graphics_Offset_t offset = std::make_pair(RPG_CLIENT_DEF_MINIMAP_POSITION_X,
-                                                RPG_CLIENT_DEF_MINIMAP_POSITION_Y);
-  RPG_Client_Window_MiniMap miniMapWindow(mapWindow, // parent
-                                          offset,
-                                          &client_engine,
-                                          &level_engine);
-  miniMapWindow.setScreen(userData.screen);
-
-  level_engine.init(&client_engine,
-                    start_position,
-                    seed_points,
-                    floor_plan);
-  level_engine.start();
-  if (!level_engine.isRunning())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start level engine, aborting\n")));
-
-    return;
-  } // end IF
-
-  client_engine.init(&mapWindow);
+  // step5f: level engine
+  client_engine.init(mainWindow.getChild(WINDOW_MAP));
   client_engine.start();
   if (!client_engine.isRunning())
   {
@@ -1316,8 +1291,6 @@ do_work(const RPG_Client_Config& config_in,
   client_action.graphics_position = std::make_pair(0, 0);
   client_action.window = &mainWindow;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  client_engine.action(client_action);
-  client_action.window = &mapWindow;
   client_engine.action(client_action);
   client_action.command = COMMAND_WINDOW_REFRESH;
   client_action.window = &mainWindow;
@@ -1507,13 +1480,11 @@ do_work(const RPG_Client_Config& config_in,
           {
             if (event.key.keysym.mod & KMOD_SHIFT)
             {
-              std::string dump_path = RPG_MAP_DUMP_DIR;
+              std::string dump_path = RPG_COMMON_DUMP_DIR;
               dump_path += ACE_DIRECTORY_SEPARATOR_STR;
               dump_path += ACE_TEXT("map.txt");
               if (!RPG_Map_Common_Tools::save(dump_path,
-                                              userData.level_engine->getStartPosition(),
-                                              userData.level_engine->getSeedPoints(),
-                                              userData.level_engine->getFloorPlan()))
+                                              map))
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), continuing\n"),
                            dump_path.c_str()));

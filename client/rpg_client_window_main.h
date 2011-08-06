@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -38,6 +38,7 @@
 
 // forward declaration(s)
 class RPG_Client_Engine;
+class RPG_Engine_Level;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -58,7 +59,9 @@ class RPG_Client_WindowMain
 
   // initialize different hotspots
   // *WARNING*: call this AFTER setScreen() !
-  void init(RPG_Client_Engine*); // engine handle
+  void init(RPG_Client_Engine*,              // engine handle
+            RPG_Engine_Level*,               // level state handle
+            const RPG_Graphics_MapStyle_t&); // map style
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -79,6 +82,9 @@ class RPG_Client_WindowMain
 
   // helper methods
   void initScrollSpots();
+  void initMap(RPG_Client_Engine*,              // engine handle
+               RPG_Engine_Level*,               // level state handle
+               const RPG_Graphics_MapStyle_t&); // map style
 
   RPG_Client_Engine* myEngine;
 

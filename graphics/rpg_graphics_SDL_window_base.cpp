@@ -91,8 +91,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
   // init clip rect
   myClipRect.x = myBorderLeft + myOffset.first;
   myClipRect.y = myBorderTop + myOffset.second;
-  myClipRect.w = (myBorderLeft + myBorderRight) - myOffset.first;
-  myClipRect.h = (myBorderTop + myBorderBottom) - myOffset.second;
+  myClipRect.w = size_parent.first - (myBorderLeft + myBorderRight) - myOffset.first;
+  myClipRect.h = size_parent.second - (myBorderTop + myBorderBottom) - myOffset.second;
 }
 
 RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()

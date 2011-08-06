@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -23,8 +23,6 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_window_main.h"
 #include "rpg_client_window_level.h"
-
-// #include <rpg_engine_defines.h>
 
 #include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_surface.h>

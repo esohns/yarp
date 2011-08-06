@@ -41,6 +41,7 @@
 #define RPG_CLIENT_DEF_GRAPHICS_CACHESIZE           50
 #define RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE    IMAGE_INTERFACE_MAIN
 #define RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE    ACE_TEXT_ALWAYS_CHAR("Yarp")
+
 // default style
 #define RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE          FLOORSTYLE_STONE_COBBLED
 #define RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE           EDGESTYLE_FLOOR_STONE_COBBLED
@@ -93,8 +94,9 @@
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_STAIRS          RPG_Graphics_SDL_Tools::CLR32_LIGHTPINK
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_WALL            RPG_Graphics_SDL_Tools::CLR32_BLACK
 
-// (initial) minimap position (*NOTE*: offset from main window !)
-#define RPG_CLIENT_DEF_MINIMAP_POSITION_X           20
-#define RPG_CLIENT_DEF_MINIMAP_POSITION_Y           20
+// (initial) minimap position (*NOTE*: offset_x from right side !)
+#define RPG_CLIENT_DEF_MINIMAP_ISON                 false
+#define RPG_CLIENT_DEF_MINIMAP_OFFSET_X             10
+#define RPG_CLIENT_DEF_MINIMAP_OFFSET_Y             10
 
 #endif

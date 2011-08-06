@@ -877,7 +877,6 @@ do_work(const mode_t& mode_in,
                    map_in.c_str(),
                    RPG_Map_Common_Tools::info(map).c_str()));
       } // end ELSE
-
 //       RPG_Map_Common_Tools::print(map);
 
       // step3b: setup style

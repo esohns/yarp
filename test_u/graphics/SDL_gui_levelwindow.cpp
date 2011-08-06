@@ -735,8 +735,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   // refresh cursor highlight
   screen_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                        mySize,
-                                                        myView);
+                                                        inherited::mySize,
+                                                        inherited::myView);
   // grab BG
   // sanity check for underruns
   if ((screen_position.first < targetSurface->w) &&
@@ -753,8 +753,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                             targetSurface);
 
   // realize any sub-windows
-  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
-       iterator != myChildren.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = inherited::myChildren.begin();
+       iterator != inherited::myChildren.end();
        iterator++)
   {
     // draw minimap ?

@@ -339,8 +339,12 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // remember position of last realization
-  inherited::myLastAbsolutePosition = std::make_pair(offsetX_in + inherited::myOffset.first,
-                                                     offsetY_in + inherited::myOffset.second);
+  inherited::myLastAbsolutePosition = std::make_pair((myBorderLeft +
+                                                      (myScreen->w -
+                                                       (myBorderLeft + myBorderRight) -
+                                                       (inherited::mySize.first + inherited::myOffset.first))),
+                                                     (myBorderTop +
+                                                      inherited::myOffset.second));
 }
 
 void

@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -58,9 +58,8 @@ class RPG_Client_WindowLevel
   void restoreHighlightBG();
 
   // init level properties
-  void init(RPG_Engine_Level*,               // state handle
-            RPG_Client_Engine*,              // engine handle
-            const RPG_Map_FloorPlan_t&,      // floor plan
+  void init(RPG_Client_Engine*,              // engine handle
+            RPG_Engine_Level*,               // level state handle
             const RPG_Graphics_MapStyle_t&); // map style
 
   // implement (part of) RPG_Graphics_IWindow
@@ -84,34 +83,35 @@ class RPG_Client_WindowLevel
   void setStyle(const RPG_Graphics_StyleUnion&);
 
   void initCeiling();
-  void initWallBlend();
+  void initWallBlend(const bool&); // half-height walls ?
+  void initMiniMap();
 
-  RPG_Engine_Level*           myLevelState;
-  RPG_Client_Engine*          myEngine;
-  bool                        myDrawMinimap;
+  RPG_Engine_Level*               myLevelState;
+  RPG_Client_Engine*              myEngine;
+  bool                            myDrawMinimap;
 
-  RPG_Graphics_MapStyle_t     myCurrentMapStyle;
-  RPG_Graphics_FloorTileSet_t myCurrentFloorSet;
-  RPG_Graphics_WallTileSet_t  myCurrentWallSet;
-  SDL_Surface*                myCurrentCeilingTile;
-  RPG_Graphics_DoorTileSet_t  myCurrentDoorSet;
-  SDL_Surface*                myCurrentOffMapTile;
+  RPG_Graphics_MapStyle_t         myCurrentMapStyle;
+  RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
+  RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
+  RPG_Graphics_WallTileSet_t      myCurrentWallSet;
+  SDL_Surface*                    myCurrentCeilingTile;
+  RPG_Graphics_DoorTileSet_t      myCurrentDoorSet;
+  SDL_Surface*                    myCurrentOffMapTile;
 
-  // wall tiles / position
-  RPG_Graphics_WallTileMap_t  myWallTiles;
+  // tiles / position
+  RPG_Graphics_FloorEdgeTileMap_t myFloorEdgeTiles;
+  RPG_Graphics_WallTileMap_t      myWallTiles;
+  RPG_Graphics_DoorTileMap_t      myDoorTiles;
 
-  SDL_Surface*                myWallBlend;
-
-  // door tiles / position
-  RPG_Graphics_DoorTileMap_t  myDoorTiles;
+  SDL_Surface*                    myWallBlend;
 
   // center of displayed area
-  RPG_Map_Position_t          myView;
+  RPG_Map_Position_t              myView;
 
   // cursor highlight
-  RPG_Map_Position_t          myHighlightBGPosition;
-  SDL_Surface*                myHighlightBG;
-  SDL_Surface*                myHighlightTile;
+  RPG_Map_Position_t              myHighlightBGPosition;
+  SDL_Surface*                    myHighlightBG;
+  SDL_Surface*                    myHighlightTile;
 };
 
 #endif

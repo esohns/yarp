@@ -58,7 +58,6 @@ class SDL_GUI_MainWindow
 
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  // *WARNING*: call AFTER creating level map window !
   void init(RPG_Engine_Level*,              // level state handle
             const RPG_Graphics_MapStyle_t&, // map style
             const RPG_Map_t&,               // map

@@ -59,7 +59,6 @@ class SDL_GUI_MinimapWindow
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow& operator=(const SDL_GUI_MinimapWindow&));
 
   RPG_Engine_Level*     myLevelState;
-
   RPG_Engine_EntityID_t myCurrentPlayerEntityID;
 
   SDL_Surface*          myBG;

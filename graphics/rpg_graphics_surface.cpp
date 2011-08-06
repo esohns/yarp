@@ -737,7 +737,7 @@ RPG_Graphics_Surface::put(const unsigned long& offsetX_in,
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
 
-  // compute bounding box
+  // clipping
   SDL_Rect toRect;
   toRect.x = offsetX_in;
   toRect.y = offsetY_in;
@@ -755,6 +755,18 @@ RPG_Graphics_Surface::put(const unsigned long& offsetX_in,
 
     return;
   } // end IF
+
+//   // debug info
+//   if ((static_cast<unsigned long>(toRect.x) != offsetX_in) ||
+//       (static_cast<unsigned long>(toRect.y) != offsetY_in) ||
+//       (toRect.w != image_in.w) ||
+//       (toRect.h != image_in.h))
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("clipped surface to [%u,%u,%u,%u]...\n"),
+//                static_cast<unsigned long>(toRect.x),
+//                static_cast<unsigned long>(toRect.y),
+//                static_cast<unsigned long>(toRect.w),
+//                static_cast<unsigned long>(toRect.h)));
 }
 
 void

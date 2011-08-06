@@ -63,7 +63,9 @@ RPG_Client_WindowMain::~RPG_Client_WindowMain()
 }
 
 void
-RPG_Client_WindowMain::init(RPG_Client_Engine* engine_in)
+RPG_Client_WindowMain::init(RPG_Client_Engine* engine_in,
+                            RPG_Engine_Level* levelState_in,
+                            const RPG_Graphics_MapStyle_t& style_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::init"));
 
@@ -74,6 +76,11 @@ RPG_Client_WindowMain::init(RPG_Client_Engine* engine_in)
 
   // init scroll margins
   initScrollSpots();
+
+  // init map
+  initMap(engine_in,
+          levelState_in,
+          style_in);
 }
 
 void
@@ -90,6 +97,11 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(targetSurface);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
+
+//   // init clipping
+//   clip(targetSurface,
+//        offsetX_in,
+//        offsetY_in);
 
   // step1: draw borders
   drawBorder(targetSurface,
@@ -172,11 +184,6 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
     } // end IF
   } // end IF
 
-  // init clipping
-  clip(targetSurface,
-       offsetX_in,
-       offsetY_in);
-
   // step4: realize hotspots (and any other children)
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
        iterator != myChildren.end();
@@ -195,16 +202,13 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
     }
   } // end FOR
 
-  // restore previous clipping area
-  unclip(targetSurface);
+  // whole window needs a refresh...
+  SDL_Rect dirtyRegion;
+  SDL_GetClipRect(targetSurface, &dirtyRegion);
+  invalidate(dirtyRegion);
 
-//   // whole window needs a refresh...
-//   SDL_Rect dirtyRegion;
-//   dirtyRegion.x = offsetX_in + myBorderLeft + myOffset.first;
-//   dirtyRegion.y = offsetY_in + myBorderTop + myOffset.second;
-//   dirtyRegion.w = (targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
-//   dirtyRegion.h = (targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
-//   invalidate(dirtyRegion);
+//   // restore previous clipping area
+//   unclip(targetSurface);
 
   // remember position of last realization
   myLastAbsolutePosition = std::make_pair(offsetX_in,
@@ -761,6 +765,42 @@ RPG_Client_WindowMain::initScrollSpots()
 }
 
 void
+RPG_Client_WindowMain::initMap(RPG_Client_Engine* engine_in,
+                               RPG_Engine_Level* levelState_in,
+                               const RPG_Graphics_MapStyle_t& style_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::initMap"));
+
+  RPG_Client_WindowLevel* map_window = NULL;
+  try
+  {
+    map_window = new RPG_Client_WindowLevel(*this);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               sizeof(RPG_Client_WindowLevel)));
+
+    return;
+  }
+  if (!map_window)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
+               sizeof(RPG_Client_WindowLevel)));
+
+    return;
+  } // end IF
+
+  // init window
+  map_window->init(engine_in,
+                   levelState_in,
+                   style_in);
+  map_window->setScreen(myScreen);
+}
+
+void
 RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
                                   const unsigned long& offsetX_in,
                                   const unsigned long& offsetY_in)
@@ -798,7 +838,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = offsetX_in + myBorderLeft;
-       i < (static_cast<unsigned long> (targetSurface->w) - myBorderRight);
+       i < (static_cast<unsigned long>(targetSurface->w) - myBorderRight);
        i += (*iterator).second->w)
     RPG_Graphics_Surface::put(i,
                               offsetY_in,

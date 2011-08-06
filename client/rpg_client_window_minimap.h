@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RPG_GRAPHICS_MINIMAP_H
-#define RPG_GRAPHICS_MINIMAP_H
+#ifndef RPG_CLIENT_WINDOW_MINIMAP_H
+#define RPG_CLIENT_WINDOW_MINIMAP_H
 
 #include <rpg_graphics_SDL_window_base.h>
 
@@ -26,8 +26,8 @@
 #include <ace/Global_Macros.h>
 
 // forward declarations
-class RPG_Client_Engine;
 class RPG_Engine_Level;
+class RPG_Client_Engine;
 
 class RPG_Client_Window_MiniMap
  : public RPG_Graphics_SDLWindowBase
@@ -35,9 +35,7 @@ class RPG_Client_Window_MiniMap
  public:
   RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindowBase&, // parent
                             // *NOTE*: offset doesn't include any border(s) !
-                            const RPG_Graphics_Offset_t&,      // offset
-                            RPG_Client_Engine*,                // engine handle
-                            RPG_Engine_Level*);                // state handle
+                            const RPG_Graphics_Offset_t&);     // offset
   virtual ~RPG_Client_Window_MiniMap();
 
   // implement (part of) RPG_Graphics_IWindow
@@ -47,6 +45,9 @@ class RPG_Client_Window_MiniMap
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
+
+  void init(RPG_Client_Engine*, // engine handle
+            RPG_Engine_Level*); // level state handle
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;

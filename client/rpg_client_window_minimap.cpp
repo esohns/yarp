@@ -37,16 +37,14 @@
 
 RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindowBase& parent_in,
                                                      // *NOTE*: offset doesn't include any border(s) !
-                                                     const RPG_Graphics_Offset_t& offset_in,
-                                                     RPG_Client_Engine* engine_in,
-                                                     RPG_Engine_Level* levelState_in)
+                                                     const RPG_Graphics_Offset_t& offset_in)
  : inherited(WINDOW_MINIMAP, // type
              parent_in,      // parent
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
-   myEngine(engine_in),
-   myLevelState(levelState_in),
+   myEngine(NULL),
+   myLevelState(NULL),
    myBG(NULL),
    mySurface(NULL)
 {
@@ -66,6 +64,12 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
   // adjust size
   inherited::mySize.first = mySurface->w;
   inherited::mySize.second = mySurface->h;
+  //   inherited::myClipRect.x = (myScreen->w -
+  //                              (myBorderLeft + myBorderRight) -
+  //                              (myBG->w + myOffset.first));
+  //   inherited::myClipRect.y = myBorderTop + myOffset.second;
+  //   inherited::myClipRect.w = myBG->w;
+  //   inherited::myClipRect.h = myBG->h;
 }
 
 RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
@@ -147,23 +151,30 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::draw"));
 
+  // set target surface
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+
   // sanity check(s)
-  ACE_ASSERT(targetSurface_in);
-  ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface_in->w);
-  ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface_in->h);
-  ACE_ASSERT(myEngine);
+  ACE_ASSERT(targetSurface);
+  ACE_UNUSED_ARG(offsetX_in);
+  ACE_UNUSED_ARG(offsetY_in);
   ACE_ASSERT(myLevelState);
+  ACE_ASSERT(mySurface);
 
   RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
 
   // init clipping
-  SDL_GetClipRect(targetSurface_in, &(inherited::myClipRect));
+  SDL_GetClipRect(targetSurface, &(inherited::myClipRect));
   SDL_Rect clipRect;
-  clipRect.x = inherited::myOffset.first + offsetX_in;
-  clipRect.y = inherited::myOffset.second + offsetY_in;
+  clipRect.x = (myBorderLeft +
+                (myScreen->w -
+                 (myBorderLeft + myBorderRight) -
+                 (inherited::mySize.first + inherited::myOffset.first)));
+  clipRect.y = (myBorderTop +
+                inherited::myOffset.second);
   clipRect.w = inherited::mySize.first;
   clipRect.h = inherited::mySize.second;
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
+  if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -278,14 +289,16 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
       // step3a: row 1
       destrect.x = 40 + (2 * x) - (2 * y);
       destrect.y = x + y;
-      pixels = static_cast<Uint32*>(mySurface->pixels) + (mySurface->pitch * (destrect.y + 6))
-                                                       + ((destrect.x + 6) * 4);
+      pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
+                                         (mySurface->pitch * (destrect.y + 6)) +
+                                         ((destrect.x + 6) * 4));
 //       pixels[0] = transparent -> dont write
       pixels[1] = color;
 //       pixels[2] = transparent -> dont write
       // step3b: row 2
-      pixels = static_cast<Uint32*>(mySurface->pixels) + (mySurface->pitch * (destrect.y + 7))
-                                                       + ((destrect.x + 6) * 4);
+      pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
+                                         (mySurface->pitch * (destrect.y + 7)) +
+                                         ((destrect.x + 6) * 4));
       pixels[0] = color;
       pixels[1] = color;
       pixels[2] = color;
@@ -295,21 +308,25 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
     SDL_UnlockSurface(mySurface);
 
   // step4: paint surface
-  RPG_Graphics_Surface::put(myOffset.first + offsetX_in,
-                            myOffset.second + offsetY_in,
+  RPG_Graphics_Surface::put((myBorderLeft +
+                             (myScreen->w -
+                              (myBorderLeft + myBorderRight) -
+                              (inherited::mySize.first + inherited::myOffset.first))),
+                            (myBorderTop +
+                             inherited::myOffset.second),
                             *mySurface,
-                            targetSurface_in);
+                            targetSurface);
 
-  // save image
-  std::string path = RPG_COMMON_DUMP_DIR;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
-  RPG_Graphics_Surface::savePNG(*mySurface,
-                                path,
-                                true);
+//   // save image
+//   std::string path = RPG_COMMON_DUMP_DIR;
+//   path += ACE_DIRECTORY_SEPARATOR_STR;
+//   path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
+//   RPG_Graphics_Surface::savePNG(*mySurface,
+//                                 path,
+//                                 true);
 
   // reset clipping
-  if (!SDL_SetClipRect(targetSurface_in, &(inherited::myClipRect)))
+  if (!SDL_SetClipRect(targetSurface, &(inherited::myClipRect)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -319,6 +336,24 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // remember position of last realization
-  inherited::myLastAbsolutePosition = std::make_pair(offsetX_in + inherited::myOffset.first,
-                                                     offsetY_in + inherited::myOffset.second);
+  inherited::myLastAbsolutePosition = std::make_pair((myBorderLeft +
+                                                      (myScreen->w -
+                                                       (myBorderLeft + myBorderRight) -
+                                                       (inherited::mySize.first + inherited::myOffset.first))),
+                                                     (myBorderTop +
+                                                      inherited::myOffset.second));
+}
+
+void
+RPG_Client_Window_MiniMap::init(RPG_Client_Engine* engine_in,
+                                RPG_Engine_Level* levelState_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::init"));
+
+  // sanity check(s)
+  ACE_ASSERT(engine_in);
+  ACE_ASSERT(levelState_in);
+
+  myEngine = engine_in;
+  myLevelState = levelState_in;
 }

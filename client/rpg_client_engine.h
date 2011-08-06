@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -49,6 +49,7 @@ class RPG_Client_Engine
 {
  public:
   RPG_Client_Engine();
+  // *NOTE*: needs to be WINDOW_MAP !!!
   RPG_Client_Engine(RPG_Graphics_IWindow*); // UI handle
   virtual ~RPG_Client_Engine();
 
@@ -64,6 +65,7 @@ class RPG_Client_Engine
   virtual void redraw();
   virtual void toggleDoor(const RPG_Map_Position_t&);
 
+  // *NOTE*: needs to be WINDOW_MAP !!!
   void init(RPG_Graphics_IWindow*); // UI handle
   void action(const RPG_Client_Action&); // action
 
