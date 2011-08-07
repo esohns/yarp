@@ -24,8 +24,9 @@ Existing funcionality has been grouped into modules (directories) reflecting the
 * *map*: structures and algorithms related to the generation and manipulation of area maps (currently 2D only). Contains path-finding logic as well
 * *monster*: higher-level characteristics of potential adversaries
 * *net*: base logic implementing client/server architecture and protocol design for networking
+* *net/protocol*: lower-level implementation of the protocol specifics
+* *net/stream*: lower-level implementation of the pipes-and-filters pattern, built ontop of the ACE framwork.
 * *sound*: glue code (uses SDL) realizing audio playback. Contains any soundwork as well
-* *stream*: lower-level implementation of the pipes-and-filters pattern, built ontop of the ACE framwork. Currently used by the *net* module to implement streamed messages (and should therefore really be a sub-module thereof)
 * *test_u*: home to the unit- testcases and related code
 * *Yarp*: meta-module combining all other modules, thereby facilitating higher level project work
 
@@ -70,9 +71,11 @@ The screen can be scrolled with the mouse or the cursor keys. Using the cursor k
 * SDL is used to implement lowlevel graphics representation (see [[http://www.libsdl.org]])
 * GLib/GTK+/libGlade is used to implement the current client prototype (see [[http://library.gnome.org/devel/references]])
 
-**Other decisions**
+**Other technical decisions**
 
-* Linux as primary development platform
-* configuration management through CMake and Autotools
-* version management through Git
+* Linux as primary development/target platform
+* configuration management through CMake and (!) Autotools
+* version management through git (see [[http://www.git.org]])
+* online project hosting on github (see [[http://www.github.org/esohns/Yarp]])
 * KDevelop4 as IDE
+

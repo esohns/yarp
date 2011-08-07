@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -416,7 +416,7 @@ print_feats_table(const RPG_Common_SubClass& subClass_in,
 }
 
 const bool
-print_spells_table(const RPG_Magic_Spells_t& spells_in,
+print_spells_table(const RPG_Magic_SpellTypes_t& spells_in,
                    RPG_Magic_SpellType& spell_inout)
 {
   RPG_TRACE(ACE_TEXT("::print_spells_table"));
@@ -424,7 +424,7 @@ print_spells_table(const RPG_Magic_Spells_t& spells_in,
   // init return value
   spell_inout = RPG_MAGIC_SPELLTYPE_INVALID;
 
-  RPG_Magic_SpellsIterator_t iterator = spells_in.begin();
+  RPG_Magic_SpellTypesIterator_t iterator = spells_in.begin();
   unsigned int spells_per_line = 4;
   unsigned int index = 1;
   unsigned int choice = 0;
@@ -991,9 +991,9 @@ generate_player_character()
   // step11: spells
   unsigned char numKnownSpells = 0;
   unsigned char numSpells = 0;
-  RPG_Magic_Spells_t knownSpells;
-  RPG_Magic_SpellList_t spells;
-  RPG_Magic_Spells_t available;
+  RPG_Magic_SpellTypes_t knownSpells;
+  RPG_Magic_Spells_t spells;
+  RPG_Magic_SpellTypes_t available;
   RPG_Magic_SpellType chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
   int numChosen = 0;
   RPG_Magic_SpellsIterator_t available_iterator;

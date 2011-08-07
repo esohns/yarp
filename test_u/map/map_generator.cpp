@@ -235,22 +235,18 @@ do_work(const unsigned long& minRoomSize_in,
   RPG_Dice_Common_Tools::initStringConversionTables();
 
   // step2: generate random dungeon map
-  RPG_Map_Position_t startingPosition = std::make_pair(0, 0);
-  RPG_Map_Positions_t seedPoints;
-  RPG_Map_FloorPlan_t floorPlan;
-  RPG_Map_Common_Tools::createFloorPlan(dimensionX_in,
-                                        dimensionY_in,
-                                        numAreas_in,
-                                        wantSquareRooms_in,
-                                        maximizeArea_in,
-                                        minRoomSize_in,
-                                        doors_in,
-                                        corridors_in,
-                                        true, // doors fill a position
-                                        maxDoorsPerRoom_in,
-                                        startingPosition,
-                                        seedPoints,
-                                        floorPlan);
+  RPG_Map_t map;
+  RPG_Map_Common_Tools::createMap(dimensionX_in,
+                                  dimensionY_in,
+                                  numAreas_in,
+                                  wantSquareRooms_in,
+                                  maximizeArea_in,
+                                  minRoomSize_in,
+                                  doors_in,
+                                  corridors_in,
+                                  true, // doors fill a position
+                                  maxDoorsPerRoom_in,
+                                  map);
 
   // step3: display the result
   RPG_Map_Position_t current_position;
@@ -258,26 +254,26 @@ do_work(const unsigned long& minRoomSize_in,
   bool is_starting_position = false;
   bool is_seed = false;
   for (unsigned long y = 0;
-       y < floorPlan.size_y;
+       y < map.plan.size_y;
        y++)
   {
     for (unsigned long x = 0;
-         x < floorPlan.size_x;
+         x < map.plan.size_x;
          x++)
     {
       current_position = std::make_pair(x, y);
       current_position_door.position = current_position;
-      is_starting_position = (current_position == startingPosition);
-      is_seed = seedPoints.find(current_position) != seedPoints.end();
+      is_starting_position = (current_position == map.start);
+      is_seed = map.seeds.find(current_position) != map.seeds.end();
 
       // unmapped, floor, wall, or door ?
       // *TODO*: cannot draw seed points that are not "unmapped"/"floor" without
       // losing essential information...
-      if (floorPlan.unmapped.find(current_position) != floorPlan.unmapped.end())
+      if (map.plan.unmapped.find(current_position) != map.plan.unmapped.end())
         std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
-      else if (floorPlan.walls.find(current_position) != floorPlan.walls.end())
+      else if (map.plan.walls.find(current_position) != map.plan.walls.end())
         std::cout << ACE_TEXT("#"); // wall
-      else if (floorPlan.doors.find(current_position_door) != floorPlan.doors.end())
+      else if (map.plan.doors.find(current_position_door) != map.plan.doors.end())
         std::cout << ACE_TEXT("="); // door
       else
         std::cout << (is_starting_position ? ACE_TEXT("X")

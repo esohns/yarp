@@ -156,32 +156,27 @@ do_work(const bool& buildCorridors_in,
   RPG_Common_Tools::initStringConversionTables();
 
   // step1: load floor plan
-  RPG_Map_Position_t  startingPosition;
-  RPG_Map_Positions_t seedPoints;
-  RPG_Map_FloorPlan_t floorPlan;
+  RPG_Map_t map;
   RPG_Map_Common_Tools::load(filename_in,
-                             startingPosition,
-                             seedPoints,
-                             floorPlan,
+                             map,
                              false,
                              debugParser_in);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded floor plan (\"%s\": size [%u,%u]...\n"),
+             ACE_TEXT("loaded floor plan %s\n"),
              filename_in.c_str(),
-             floorPlan.size_x,
-             floorPlan.size_y));
+             RPG_Map_Common_Tools::info(map).c_str()));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
-  for (RPG_Map_DoorsConstIterator_t iterator = floorPlan.doors.begin();
-       iterator != floorPlan.doors.end();
+  for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin();
+       iterator != map.plan.doors.end();
        iterator++)
   {
     // *WARNING*: set iterators are CONST for a good reason !
     // --> (but we know what we're doing)...
-    const_cast<RPG_Map_Door_t&> (*iterator).outside = RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
-                                                                                 floorPlan);
+    const_cast<RPG_Map_Door_t&>(*iterator).outside = RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
+                                                                                              map.plan);
 
     door_positions.insert((*iterator).position);
   } // end FOR
@@ -191,9 +186,9 @@ do_work(const bool& buildCorridors_in,
   RPG_Map_Path_t current_path;
   RPG_Map_Positions_t used_positions;
   RPG_Dice_RollResult_t result;
-  RPG_Map_DoorsConstIterator_t target_door = floorPlan.doors.end();
-  for (RPG_Map_DoorsConstIterator_t iterator = floorPlan.doors.begin();
-       iterator != floorPlan.doors.end();
+  RPG_Map_DoorsConstIterator_t target_door = map.plan.doors.end();
+  for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin();
+       iterator != map.plan.doors.end();
        iterator++)
   {
     // find target door:
@@ -201,18 +196,18 @@ do_work(const bool& buildCorridors_in,
     // - ignore doors that are already connected
     do
     {
-      target_door = floorPlan.doors.begin();
+      target_door = map.plan.doors.begin();
       result.clear();
-      RPG_Dice::generateRandomNumbers(floorPlan.doors.size(),
+      RPG_Dice::generateRandomNumbers(map.plan.doors.size(),
                                       1,
                                       result);
       std::advance(target_door, result.front() - 1);
     } while ((target_door == iterator) ||
              (used_positions.find((*target_door).position) != used_positions.end()));
 
-    if (!RPG_Map_Pathfinding_Tools::findPath(floorPlan.size_x,
-                                             floorPlan.size_y,
-                                             floorPlan.walls,
+    if (!RPG_Map_Pathfinding_Tools::findPath(map.plan.size_x,
+                                             map.plan.size_y,
+                                             map.plan.walls,
                                              (*iterator).position,
                                              (*iterator).outside,
                                              (*target_door).position,
@@ -261,7 +256,7 @@ do_work(const bool& buildCorridors_in,
       RPG_Map_Common_Tools::buildCorridor(*iterator,
                                            used_positions);
       if (!used_positions.empty())
-        floorPlan.walls.insert(used_positions.begin(), used_positions.end());
+        map.plan.walls.insert(used_positions.begin(), used_positions.end());
     } // end FOR
   } // end IF
 
@@ -271,22 +266,22 @@ do_work(const bool& buildCorridors_in,
   std::ostringstream converter;
   bool done = false;
   for (unsigned long y = 0;
-       y < floorPlan.size_y;
+       y < map.plan.size_y;
        y++)
   {
     for (unsigned long x = 0;
-         x < floorPlan.size_x;
+         x < map.plan.size_x;
          x++)
     {
       current_position = std::make_pair(x, y);
       current_position_door.position = current_position;
 
       // unmapped, floor, wall, or door ?
-      if (floorPlan.unmapped.find(current_position) != floorPlan.unmapped.end())
+      if (map.plan.unmapped.find(current_position) != map.plan.unmapped.end())
         converter << ACE_TEXT(" "); // unmapped
-      else if (floorPlan.walls.find(current_position) != floorPlan.walls.end())
+      else if (map.plan.walls.find(current_position) != map.plan.walls.end())
         converter << ACE_TEXT("#"); // wall
-      else if (floorPlan.doors.find(current_position_door) != floorPlan.doors.end())
+      else if (map.plan.doors.find(current_position_door) != map.plan.doors.end())
         converter << ACE_TEXT("="); // door
       else
       {

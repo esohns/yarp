@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -261,9 +261,9 @@ do_battle(RPG_Character_Party_t& party_in,
   condition.insert(CONDITION_NORMAL);
   // *TODO*: define monster abilities, spells, wealth, inventory (i.e. treasure)...
   RPG_Character_Abilities_t abilities;
-  RPG_Magic_Spells_t knownSpells;
+  RPG_Magic_SpellTypes_t knownSpells;
   unsigned int wealth = 0;
-  RPG_Magic_SpellList_t spells;
+  RPG_Magic_Spells_t spells;
   RPG_Item_List_t items;
 
   RPG_Monster_Group_t groupInstance;

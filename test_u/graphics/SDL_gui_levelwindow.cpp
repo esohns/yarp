@@ -736,7 +736,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   // refresh cursor highlight
   screen_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
                                                         inherited::mySize,
-                                                        inherited::myView);
+                                                        myView);
   // grab BG
   // sanity check for underruns
   if ((screen_position.first < targetSurface->w) &&
