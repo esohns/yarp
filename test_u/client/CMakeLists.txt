@@ -31,7 +31,7 @@ add_executable(client_gui ${client_gui_SRCS})
 add_dependencies(client_gui RPG_Chance RPG_Dice RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Sound RPG_Engine RPG_Client_GUI)
 
 target_link_libraries(client_gui
-		      ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
 #                      ${PKG_CONFIG_MODULE_SDL_GFX_LIBRARIES}
                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
@@ -50,7 +50,7 @@ target_link_libraries(client_gui
                       RPG_Magic
                       RPG_Item
                       RPG_Character
-                      RPG_Monster
+                      RPG_Character_Monster
                       RPG_Combat
                       RPG_Map
                       RPG_Graphics
@@ -59,4 +59,3 @@ target_link_libraries(client_gui
                       RPG_Client_GUI)
 
 install(TARGETS client_gui RUNTIME DESTINATION bin)
-

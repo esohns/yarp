@@ -876,7 +876,8 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
             // check whether we're channel operator
             if (nick.find(myCBData.nickname) != std::string::npos)
-              is_operator = (nick[0] == '@');
+              is_operator = ((nick[0] == '@') &&
+                             (nick.size() == (myCBData.nickname.size() + 1)));
 
             list.push_back(nick);
 
@@ -1001,12 +1002,13 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
         case RPG_Net_Protocol_IRCMessage::NICK:
         {
           // remember changed nickname...
+          std::string old_nick = myCBData.nickname;
           myCBData.nickname = message_in.params.front();
 
           GDK_THREADS_ENTER();
 
           // --> display (changed) nickname
-          // set server tab nickname label
+          // step1: set server tab nickname label
           GtkLabel* server_tab_nick_label = GTK_LABEL(gtk_builder_get_object(myCBData.builder,
                                                                              ACE_TEXT_ALWAYS_CHAR("server_tab_nick_label")));
           ACE_ASSERT(server_tab_nick_label);
@@ -1016,6 +1018,22 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           nickname_string += ACE_TEXT_ALWAYS_CHAR("</b>");
           gtk_label_set_markup(server_tab_nick_label,
                                nickname_string.c_str());
+
+          // step2: update channel tab nickname label(s)
+          // synch access
+          {
+            ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+            for (message_handlers_iterator_t iterator = myMessageHandlers.begin();
+                 iterator != myMessageHandlers.end();
+                 iterator++)
+            {
+              if ((*iterator).second->isServerLog())
+                continue;
+
+              (*iterator).second->updateNick(old_nick);
+            } // end FOR
+          } // end lock scope
 
           GDK_THREADS_LEAVE();
 
@@ -1433,17 +1451,23 @@ IRC_Client_GUI_Connection::getActiveID()
   GtkWidget* channel_tab = gtk_notebook_get_nth_page(server_tab_channel_tabs,
                                                      page_num);
   ACE_ASSERT(channel_tab);
-  for (message_handlers_iterator_t iterator = myMessageHandlers.begin();
-       iterator != myMessageHandlers.end();
-       iterator++)
-  {
-    if ((*iterator).second->getTopLevelPageChild() == channel_tab)
-    {
-      result = (*iterator).first;
 
-      break;
-    } // end IF
-  } // end FOR
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    for (message_handlers_iterator_t iterator = myMessageHandlers.begin();
+         iterator != myMessageHandlers.end();
+         iterator++)
+    {
+      if ((*iterator).second->getTopLevelPageChild() == channel_tab)
+      {
+        result = (*iterator).first;
+
+        break;
+      } // end IF
+    } // end FOR
+  } // end lock scope
 
   // sanity check
   if (result.empty())
@@ -1478,13 +1502,19 @@ IRC_Client_GUI_Connection::getActiveHandler()
   GtkWidget* channel_tab = gtk_notebook_get_nth_page(server_tab_channel_tabs,
                                                      page_num);
   ACE_ASSERT(channel_tab);
-  for (message_handlers_iterator_t iterator = myMessageHandlers.begin();
-       iterator != myMessageHandlers.end();
-       iterator++)
+
+  // synch access
   {
-    if ((*iterator).second->getTopLevelPageChild() == channel_tab)
-      return (*iterator).second;
-  } // end FOR
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    for (message_handlers_iterator_t iterator = myMessageHandlers.begin();
+         iterator != myMessageHandlers.end();
+         iterator++)
+    {
+      if ((*iterator).second->getTopLevelPageChild() == channel_tab)
+        return (*iterator).second;
+    } // end FOR
+  } // end lock scope
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("failed to lookup active handler, aborting\n")));

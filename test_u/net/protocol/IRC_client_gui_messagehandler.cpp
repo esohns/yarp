@@ -428,6 +428,14 @@ IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler()
   } // end IF
 }
 
+const bool
+IRC_Client_GUI_MessageHandler::isServerLog() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::isServerLog"));
+
+  return (myParent == NULL);
+}
+
 void
 IRC_Client_GUI_MessageHandler::queueForDisplay(const std::string& text_in)
 {
@@ -619,7 +627,7 @@ IRC_Client_GUI_MessageHandler::clearMembers()
   // retrieve channel liststore handle
   GtkListStore* channel_liststore = NULL;
   channel_liststore = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
-                                     ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
+                                                            ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
   ACE_ASSERT(channel_liststore);
 
   // clear liststore
@@ -627,14 +635,30 @@ IRC_Client_GUI_MessageHandler::clearMembers()
 }
 
 void
+IRC_Client_GUI_MessageHandler::updateNick(const std::string& oldNick_in)
+{
+  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::updateNick"));
+
+  std::string new_nick = myCBData.connection->getNickname();
+  if (myCBData.channelModes.test(CHANNELMODE_OPERATOR))
+    new_nick.insert(new_nick.begin(), '@');
+
+  remove(oldNick_in);
+  add(new_nick);
+}
+
+void
 IRC_Client_GUI_MessageHandler::add(const std::string& nick_in)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::add"));
 
+  // sanity check(s)
+  ACE_ASSERT(myCBData.builder);
+
   // retrieve channel liststore handle
   GtkListStore* channel_liststore = NULL;
   channel_liststore = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
-                                     ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
+                                                            ACE_TEXT_ALWAYS_CHAR("channel_liststore")));
   ACE_ASSERT(channel_liststore);
 
   // step1: convert text
@@ -662,6 +686,9 @@ void
 IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::remove"));
+
+  // sanity check(s)
+  ACE_ASSERT(myCBData.builder);
 
   // retrieve channel liststore handle
   GtkListStore* channel_liststore = NULL;
@@ -696,9 +723,11 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
     return;
   } // end IF
   bool found_row = false;
+  gchar* matched_substring = NULL;
   do
   {
     current_value_string = NULL;
+    matched_substring = NULL;
 
     // retrieve value
 //     gtk_tree_model_get_value(GTK_TREE_MODEL(channel_liststore),
@@ -708,19 +737,18 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
                        &current_iter,
                        0, &current_value_string,
                        -1);
-    if (g_strcasecmp(converted_nick_string,
-                     current_value_string) == 0)
-    {
+    if (g_str_equal(current_value_string,
+                    converted_nick_string) ||
+        (g_str_has_suffix(current_value_string,
+                          converted_nick_string) &&
+         ((current_value_string[0] == '@'))))
       found_row = true;
-
-      // clean up
-      g_free(current_value_string);
-
-      break; // found value
-    }
 
     // clean up
     g_free(current_value_string);
+
+    if (found_row)
+      break; // found value
   } while (gtk_tree_model_iter_next(GTK_TREE_MODEL(channel_liststore),
                                     &current_iter));
 

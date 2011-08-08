@@ -105,28 +105,31 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
   RPG_Net_Protocol_Message* message = message_inout;
   if (myCrunchMessages)
   {
+//     // debug info
+//     message->dump_state();
+
     // step1: get a new message buffer
     message = allocateMessage(RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE);
     if (message == NULL)
     {
       ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to allocate message(%u), aborting\n"),
-                  RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE));
+                 ACE_TEXT("failed to allocate message(%u), aborting\n"),
+                 RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE));
 
       return;
     } // end IF
 
     // step2: copy available data
     for (ACE_Message_Block* source = message_inout;
-          source != NULL;
-          source = source->cont())
+         source != NULL;
+         source = source->cont())
     {
       ACE_ASSERT(source->length() <= message->space());
       if (message->copy(source->rd_ptr(),
                         source->length()))
       {
         ACE_DEBUG((LM_ERROR,
-                    ACE_TEXT("failed to ACE_Message_Block::copy(): \"%m\", aborting\n")));
+                   ACE_TEXT("failed to ACE_Message_Block::copy(): \"%m\", aborting\n")));
 
         // clean up
         message->release();
@@ -176,7 +179,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 //              message_inout->length(),
 //              std::string(message_inout->rd_ptr(), message_inout->length()).c_str()));
 
-  myDriver.init(const_cast<RPG_Net_Protocol_IRCMessage&> (*message_inout->getData()),
+  myDriver.init(const_cast<RPG_Net_Protocol_IRCMessage&>(*message_inout->getData()),
                 myDebugScanner,
                 myDebugParser);
   if (!myDriver.parse(message,           // data block
@@ -211,7 +214,7 @@ RPG_Net_Protocol_Module_IRCParser::allocateMessage(const unsigned long& requeste
 
   try
   {
-    message_out = static_cast<RPG_Net_Protocol_Message*> (myAllocator->malloc(requestedSize_in));
+    message_out = static_cast<RPG_Net_Protocol_Message*>(myAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {

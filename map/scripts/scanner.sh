@@ -16,7 +16,7 @@ PROJECT=map
 cd ${HOME}/Projects/RPG/${PROJECT}/scripts
 
 # generate a scanner for map (text) files
-/usr/bin/flex -L --never-interactive -d --header=rpg_${PROJECT}_scanner.h -o rpg_${PROJECT}_scanner.cpp ./${PROJECT}_scanner.l
+/usr/bin/flex -b -B -d --header=rpg_${PROJECT}_scanner.h -L -o rpg_${PROJECT}_scanner.cpp -p -v ./${PROJECT}_scanner.l 2>&1 | tee ./scanner_report.txt
 
 # move generated files into the project directory
 mv -f rpg_${PROJECT}_scanner.h ./..

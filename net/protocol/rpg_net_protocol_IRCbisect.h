@@ -732,6 +732,10 @@ int IRCBisectget_lineno (yyscan_t yyscanner );
 
 void IRCBisectset_lineno (int line_number ,yyscan_t yyscanner );
 
+int IRCBisectget_column  (yyscan_t yyscanner );
+
+void IRCBisectset_column (int column_no ,yyscan_t yyscanner );
+
 /* %if-bison-bridge */
 /* %endif */
 
@@ -824,6 +828,6 @@ extern int IRCBisectlex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 828 "rpg_net_protocol_IRCbisect.h"
+#line 832 "rpg_net_protocol_IRCbisect.h"
 #undef IRCBisectIN_HEADER
 #endif /* IRCBisectHEADER_H */

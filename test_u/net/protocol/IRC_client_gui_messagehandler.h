@@ -44,12 +44,15 @@ class IRC_Client_GUI_MessageHandler
   // *WARNING*: ctors/dtor need GDK_THREADS_ENTER/GDK_THREADS_LEAVE protection
   // (or call from gtk_main context...)
   IRC_Client_GUI_MessageHandler(GtkTextView*);                 // text view
+  // ctor for regular channel handler
   IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Connection*,    // connection handle
                                 RPG_Net_Protocol_IIRCControl*, // controller handle
                                 const std::string&,            // identifier (channel/nick)
                                 const std::string&,            // UI (glade) file directory
                                 GtkNotebook*);                 // parent widget
   virtual ~IRC_Client_GUI_MessageHandler();
+
+  const bool isServerLog() const;
 
   // *WARNING*: to be called from gtk_main context ONLY (trigger with g_idle_add())
   // DO NOT USE DO NOT USE DO NOT USE DO NOT USE DO NOT USE DO NOT USE DO NOT USE !
@@ -88,6 +91,7 @@ class IRC_Client_GUI_MessageHandler
   void remove(const std::string&);
   void members(const string_list_t&);
   void endMembers();
+  void updateNick(const std::string&); // previous nickname
 
  private:
   // safety measures

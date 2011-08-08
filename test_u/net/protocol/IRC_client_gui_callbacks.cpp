@@ -110,10 +110,13 @@ connect_clicked_cb(GtkWidget* button_in,
   ACE_ASSERT(main_entry_entry);
   gtk_entry_buffer_delete_text(gtk_entry_get_buffer(main_entry_entry),
                                0, -1);
-  //   gtk_entry_set_max_length(main_entry_entry,
-  //                            0); // no limit
-  //   gtk_entry_set_width_chars(main_entry_entry,
-  //                             -1); // reset to default
+
+  // enforce sane values
+  // *TODO*: support the NICKLEN=xxx "feature" of the server...
+  gtk_entry_set_max_length(main_entry_entry,
+                           IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
+//   gtk_entry_set_width_chars(main_entry_entry,
+//                             -1); // reset to default
   gtk_entry_set_text(main_entry_entry,
                      data->loginOptions.nick.c_str());
   gtk_editable_select_region(GTK_EDITABLE(main_entry_entry),
@@ -149,6 +152,10 @@ connect_clicked_cb(GtkWidget* button_in,
 
     return;
   } // end IF
+  // sanity check: <= IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH characters ?
+  // *TODO*: support the NICKLEN=xxx "feature" of the server...
+  if (loginOptions.nick.size() > IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
+    loginOptions.nick.resize(IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
 
   // step3: create/init new final module
   std::string module_name = ACE_TEXT_ALWAYS_CHAR("IRCHandler");
@@ -577,7 +584,7 @@ change_clicked_cb(GtkWidget* button_in,
 //              ACE_TEXT("change_clicked_cb...\n")));
 
   ACE_UNUSED_ARG(button_in);
-  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*>(userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);

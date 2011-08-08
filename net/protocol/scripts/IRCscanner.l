@@ -52,29 +52,29 @@ And so on...
 <letter>      = [[:alpha:]]*/
 
 SPACE          [ ]
-HOST           [[:alpha:][:digit:].-]+
+HOST           ([[:alpha:][:digit:]]{+}[.-])+
 SERVERNAME     {HOST}
-LETTER         [[:alpha:]]
+/* LETTER         [[:alpha:]] */
 /*LETTER    ==     [a-zA-Z]*/
-NUMBER         [[:digit:]]
+/* NUMBER         [[:digit:]] */
 /*NUMBER    ==     [0-9]*/
 /* *NOTE*: violating the spec, some implementations allow '_'... */
-SPECIAL        [-\[\]\\`^{}_]
-NICK           {LETTER}([{LETTER}{NUMBER}{SPECIAL}])*
-ORIGIN         {SERVERNAME}|{NICK}
+/* SPECIAL        [-\[\]\\`^{}_] */
+NICK           [[:alpha:]]([[:alpha:][:digit:]]{+}[-\[\]\\`^{}_])*
+/*ORIGIN         {SERVERNAME}|{NICK}*/
 /* *NOTE*: "\r\n" is (ANSI-C) implementation-dependent --> use ASCII codes directly */
 /* *NOTE*: in order to pickup the hostname in a sequence "!user[@host] ",
            disallow "@" within a username... */
 USER           ([\x00-\xFF]{-}[ \t\0\x0D\x0A@])+
 /* NONWHITE       [\x00-\xFF]{-}[ \t\0\r\n] */
 /* USER           {NONWHITE}+ */
-CHSTRING       ([\x00-\xFF]{-}[ \b\0\x0D\x0A,])+
-MASK           [#$]{CHSTRING}
-CHANNEL        [#&]{CHSTRING}
+/* CHSTRING       ([\x00-\xFF]{-}[ \b\0\x0D\x0A,])+ */
+/* MASK           [#$]{([\x00-\xFF]{-}[ \b\0\x0D\x0A,])}+ */
+/* CHANNEL        [#&]{([\x00-\xFF]{-}[ \b\0\x0D\x0A,])}+ */
 PARAM          ([\x00-\xFF]{-}[: \0\x0D\x0A])([\x00-\xFF]{-}[ \0\x0D\x0A])*
 TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
 
-CRLF           \x0D\x0A
+/* CRLF           \x0D\x0A */
 
 %s             prefix
 %s             user
@@ -124,30 +124,24 @@ CRLF           \x0D\x0A
                              BEGIN(host);
                              yylval->ival = 1;
                              return token_type(yytext[0]); }
-{ORIGIN}/{SPACE}           { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string);
-                             yylval->sval->append(yytext, yyleng);
-                             return token::ORIGIN; }
-{ORIGIN}/"!"               { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string);
-                             yylval->sval->append(yytext, yyleng);
-                             return token::ORIGIN; }
-{ORIGIN}/"@"               { yylloc->step();
+{NICK}|{SERVERNAME}        { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
                              yylval->sval->append(yytext, yyleng);
                              return token::ORIGIN; }
 } // end <prefix>
 <user>{
-{USER}/{SPACE}             { yylloc->step();
-                             BEGIN(prefix);
+{SPACE}+                   { yylloc->step();
+                             BEGIN(command);
+                             yylval->ival = yyleng;
+                             return token::SPACE; }
+"@"                        { yylloc->step();
+                             BEGIN(host);
+                             yylval->ival = 1;
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
-                             yylval->sval->append(yytext, yyleng);
-                             return token::USER; }
-{USER}/"@"                 { yylloc->step();
+                             return token_type(yytext[0]); }
+{USER}                     { yylloc->step();
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
@@ -155,7 +149,11 @@ CRLF           \x0D\x0A
                              return token::USER; }
 } // end <user>
 <host>{
-{HOST}/{SPACE}             { yylloc->step();
+{SPACE}+                   { yylloc->step();
+                             BEGIN(command);
+                             yylval->ival = yyleng;
+                             return token::SPACE; }
+{HOST}                     { yylloc->step();
                              BEGIN(prefix);
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
@@ -163,15 +161,17 @@ CRLF           \x0D\x0A
                              return token::HOST; }
 } // end <host>
 <INITIAL,command>{
-{NUMBER}{3}/{SPACE}        { yylloc->step();
+{SPACE}+                   { yylloc->step();
                              BEGIN(params);
+                             yylval->ival = yyleng;
+                             return token::SPACE; }
+[[:digit:]]{3}             { yylloc->step();
                              converter.str(ACE_TEXT_ALWAYS_CHAR(""));
                              converter.clear();
                              converter << yytext;
                              converter >> yylval->ival;
                              return token::CMD_NUMERIC; }
-{LETTER}+/{SPACE}          { yylloc->step();
-                             BEGIN(params);
+[[:alpha:]]+               { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
                              yylval->sval->append(yytext, yyleng);
@@ -186,14 +186,8 @@ CRLF           \x0D\x0A
                              yylval->ival = 1;
                              return token_type(yytext[0]); }
 "\x0D"                     { yylloc->step(); /* *NOTE*: non-compliant (see above) */
-                             BEGIN(end_of_frame);
-                             yylval->ival = 1; }
-{PARAM}/{SPACE}            { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string);
-                             yylval->sval->append(yytext, yyleng);
-                             return token::PARAM; }
-{PARAM}/"\x0D"             { yylloc->step(); /* *NOTE*: non-compliant (see above) */
+                             BEGIN(end_of_frame); }
+{PARAM}                    { yylloc->step();
                              ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
                              yylval->sval->append(yytext, yyleng);
@@ -201,9 +195,8 @@ CRLF           \x0D\x0A
 } // end <params>
 <trailing>{
 "\x0D"                     { yylloc->step();
-                             BEGIN(end_of_frame);
-                             yylval->ival = 1; }
-{TRAILING_PARAM}/"\x0D"    { yylloc->step();
+                             BEGIN(end_of_frame); }
+{TRAILING_PARAM}           { yylloc->step();
                              if (yyleng > 0)
                              {
                                ACE_NEW_NORETURN(yylval->sval,
@@ -216,13 +209,16 @@ CRLF           \x0D\x0A
 <end_of_frame>{
 "\x0A"                     { yylloc->step();
                              BEGIN(INITIAL);
+                             yylval->ival = 2;
                              messageCount++; }
 }
 <<EOF>>                    { yyterminate(); }
 <*>(?s:.)                  { yylloc->step();
 
                              // debug info
-                             std::string error_message(ACE_TEXT("invalid character, aborting"));
+                             std::string error_message = ACE_TEXT("invalid character: \"");
+                             error_message += yytext[0];
+                             error_message += ACE_TEXT("\", aborting");
                              driver.error(*yylloc, error_message);
 
                              yyterminate(); }

@@ -36,7 +36,7 @@
 
 #include <rpg_engine_common_tools.h>
 
-#include <rpg_monster_defines.h>
+#include <rpg_character_monster_defines.h>
 
 #include <rpg_character_defines.h>
 #include <rpg_character_player.h>
@@ -258,7 +258,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_CONFIG_SUB;
   path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  path += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-e [FILE]   : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-f [FILE]   : floor plan (*.txt)") << std::endl;
   path = base_data_path;
@@ -333,7 +333,7 @@ process_arguments(const int argc_in,
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
   monsterDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionary_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionary_out += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
 
   floorPlan_out.clear();
 
@@ -717,8 +717,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
   // ***** window/screen setup *****
   // set window caption
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING)); // icon caption
+  std::string caption = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  caption += ACE_TEXT_ALWAYS_CHAR(" ");
+  caption += RPG_VERSION;
+  SDL_WM_SetCaption(caption.c_str(),  // window caption
+                    caption.c_str()); // icon caption
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
@@ -793,6 +796,9 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
+  GdkWindow* main_dialog_window = gtk_widget_get_window(main_dialog);
+//   gtk_window_set_title(,
+//                        caption.c_str());
 
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
                                                             RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
@@ -810,10 +816,10 @@ do_initGUI(const std::string& graphicsDirectory_in,
   } // end IF
 
   // step3: populate combobox
-  GtkComboBox* available_characters = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                                         RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
-  ACE_ASSERT(available_characters);
-  if (!available_characters)
+  GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
+                                                                        RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+  ACE_ASSERT(repository_combobox);
+  if (!repository_combobox)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
@@ -825,7 +831,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  gtk_cell_layout_clear(GTK_CELL_LAYOUT(available_characters));
+  gtk_cell_layout_clear(GTK_CELL_LAYOUT(repository_combobox));
   GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
   if (!renderer)
   {
@@ -838,11 +844,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(available_characters), renderer,
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(repository_combobox), renderer,
                              TRUE); // expand ?
-//   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(available_characters), renderer,
+//   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(repository_combobox), renderer,
 //                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
-  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(available_characters), renderer,
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(repository_combobox), renderer,
                                  ACE_TEXT_ALWAYS_CHAR("text"), 0,
                                  NULL);
   GtkListStore* list = gtk_list_store_new(1,
@@ -860,15 +866,15 @@ do_initGUI(const std::string& graphicsDirectory_in,
   } // end IF
   ::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
                   list);
-  gtk_combo_box_set_model(available_characters,
+  gtk_combo_box_set_model(repository_combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  gtk_widget_set_sensitive(GTK_WIDGET(available_characters),
-                           (g_list_length(gtk_container_get_children(GTK_CONTAINER(available_characters))) ? TRUE
+  gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox),
+                           (g_list_length(gtk_container_get_children(GTK_CONTAINER(repository_combobox))) ? TRUE
                                                                                                            : FALSE));
 
   // step4a: connect default signals
-  gpointer userData_p = const_cast<RPG_Client_GTK_CBData_t*> (&userData_in);
+  gpointer userData_p = const_cast<RPG_Client_GTK_CBData_t*>(&userData_in);
   g_signal_connect(main_dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(quit_activated_GTK_cb),
@@ -1028,8 +1034,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
   gtk_widget_show_all(main_dialog);
 
   // step7: activate first repository entry (if any)
-  if (gtk_widget_is_sensitive(GTK_WIDGET(available_characters)))
-    gtk_combo_box_set_active(available_characters, 0);
+  if (gtk_widget_is_sensitive(GTK_WIDGET(repository_combobox)))
+    gtk_combo_box_set_active(repository_combobox, 0);
 
   return true;
 }
@@ -1987,7 +1993,7 @@ ACE_TMAIN(int argc_in,
   monsterDictionary += ACE_DIRECTORY_SEPARATOR_STR;
   monsterDictionary += RPG_COMMON_DEF_CONFIG_SUB;
   monsterDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionary += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionary += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
 
   std::string graphicsDictionary = base_data_path;
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_STR;

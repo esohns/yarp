@@ -96,7 +96,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += IRC_CLIENT_CNF_DEF_INI_FILE;
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << RPG_NET_PROTOCOL_DEF_TRACE_PARSING << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-d          : debug") << ACE_TEXT(" [") << IRC_CLIENT_DEF_TRACE_ENABLED << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]  : reporting interval (seconds: 0 --> OFF)") << ACE_TEXT(" [") << IRC_CLIENT_DEF_STATSINTERVAL << ACE_TEXT("]") << std::endl;
   path = base_data_path;
@@ -113,7 +113,7 @@ const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& configFile_out,
-                  bool& debugParser_out,
+                  bool& debug_out,
                   bool& logToFile_out,
                   unsigned long& reportingInterval_out,
                   std::string& serverConfigFile_out,
@@ -136,7 +136,7 @@ process_arguments(const int argc_in,
   configFile_out           = base_data_path;
   configFile_out           += ACE_DIRECTORY_SEPARATOR_STR;
   configFile_out           += IRC_CLIENT_CNF_DEF_INI_FILE;
-  debugParser_out          = RPG_NET_PROTOCOL_DEF_TRACE_PARSING;
+  debug_out                = IRC_CLIENT_DEF_TRACE_ENABLED;
   logToFile_out            = false;
   reportingInterval_out    = IRC_CLIENT_DEF_STATSINTERVAL;
   serverConfigFile_out     = base_data_path;
@@ -170,7 +170,7 @@ process_arguments(const int argc_in,
       }
       case 'd':
       {
-        debugParser_out = true;
+        debug_out = true;
 
         break;
       }
@@ -292,7 +292,7 @@ tp_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -324,7 +324,7 @@ reactor_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -1228,9 +1228,7 @@ ACE_TMAIN(int argc,
   std::string configFile             = base_data_path;
   configFile                         += ACE_DIRECTORY_SEPARATOR_STR;;
   configFile                         += IRC_CLIENT_CNF_DEF_INI_FILE;
-  bool debugParser                   = RPG_NET_PROTOCOL_DEF_TRACE_PARSING;
-  bool debugScanner                  = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
-//   bool debugScanner                  = true;
+  bool debug                         = IRC_CLIENT_DEF_TRACE_ENABLED;
   bool logToFile                     = false;
   unsigned long reportingInterval    = IRC_CLIENT_DEF_STATSINTERVAL;
   std::string serverConfigFile       = base_data_path;
@@ -1244,7 +1242,7 @@ ACE_TMAIN(int argc,
   if (!(process_arguments(argc,
                           argv,
                           configFile,
-                          debugParser,
+                          debug,
                           logToFile,
                           reportingInterval,
                           serverConfigFile,
@@ -1310,8 +1308,8 @@ ACE_TMAIN(int argc,
   // step2d: init callback data
   main_cb_data_t userData;
   userData.allocator = &messageAllocator;
-  userData.debugScanner = debugScanner;
-  userData.debugParser = debugParser;
+  userData.debugScanner = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
+  userData.debugParser = debug;
   userData.statisticsReportingInterval = reportingInterval;
   userData.UIFileDirectory = UIFileDirectory;
   userData.builder = gtk_builder_new();

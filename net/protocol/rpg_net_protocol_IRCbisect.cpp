@@ -973,6 +973,10 @@ int IRCBisectget_lineno (yyscan_t yyscanner );
 
 void IRCBisectset_lineno (int line_number ,yyscan_t yyscanner );
 
+int IRCBisectget_column  (yyscan_t yyscanner );
+
+void IRCBisectset_column (int column_no ,yyscan_t yyscanner );
+
 /* %if-bison-bridge */
 /* %endif */
 
@@ -1257,7 +1261,7 @@ YY_RULE_SETUP
                          ACE_DEBUG((LM_ERROR,
                                     ACE_TEXT("ignoring invalid character: \"%c\" (%d)\n"),
                                     yytext[0],
-                                    static_cast<int> (yytext[0])));
+                                    static_cast<int>(yytext[0])));
                        }
 	YY_BREAK
 // end <INITIAL>

@@ -822,7 +822,7 @@ load_profiles(const std::string& repository_in,
   std::string extension(RPG_CHARACTER_PROFILE_EXT);
   GtkTreeIter iter;
   for (unsigned int i = 0;
-       i < static_cast<unsigned int> (entries.length());
+       i < static_cast<unsigned int>(entries.length());
        i++)
   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -1054,10 +1054,10 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
     data->current_entity.position = data->level_engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
-  GtkFrame* character_actions = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                               RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
-  ACE_ASSERT(character_actions);
-  gtk_widget_set_sensitive(GTK_WIDGET(character_actions), TRUE);
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
   // make join button sensitive (if it's not already)
   GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
@@ -1232,10 +1232,10 @@ characters_activated_GTK_cb(GtkWidget* widget_in,
                           data->xml);
 
   // make character display frame sensitive (if it's not already)
-  GtkFrame* player_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                          ACE_TEXT_ALWAYS_CHAR("player_frame")));
-  ACE_ASSERT(player_frame);
-  gtk_widget_set_sensitive(GTK_WIDGET(player_frame), TRUE);
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
   // make join button sensitive (if it's not already)
   GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
@@ -1260,10 +1260,10 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->xml);
 
   // retrieve tree model
-  GtkComboBox* available_characters = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
+  GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
                                                                          RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
-  ACE_ASSERT(available_characters);
-  GtkTreeModel* model = gtk_combo_box_get_model(available_characters);
+  ACE_ASSERT(repository_combobox);
+  GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
   ACE_ASSERT(model);
 
   // re-load profile data
@@ -1272,22 +1272,22 @@ characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
 
   // set sensitive as appropriate
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             ACE_TEXT_ALWAYS_CHAR("character")));
+                                                             ACE_TEXT_ALWAYS_CHAR("character_frame")));
   ACE_ASSERT(character_frame);
-  if (g_list_length(gtk_container_get_children(GTK_CONTAINER(available_characters))))
+  if (g_list_length(gtk_container_get_children(GTK_CONTAINER(repository_combobox))))
   {
-    gtk_widget_set_sensitive(GTK_WIDGET(available_characters), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
   } // end IF
   else
   {
-    gtk_widget_set_sensitive(GTK_WIDGET(available_characters), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
   } // end ELSE
 
   // ... activate first entry as appropriate
-  if (gtk_widget_is_sensitive(GTK_WIDGET(available_characters)))
-    gtk_combo_box_set_active(available_characters, 0);
+  if (gtk_widget_is_sensitive(GTK_WIDGET(repository_combobox)))
+    gtk_combo_box_set_active(repository_combobox, 0);
 
   return FALSE;
 }

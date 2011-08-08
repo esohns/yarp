@@ -56,4 +56,6 @@
 #define IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH        9
 #define IRC_CLIENT_CNF_IRC_MAX_CHANNEL_LENGTH     200
 
+#define IRC_CLIENT_DEF_TRACE_ENABLED              false
+
 #endif

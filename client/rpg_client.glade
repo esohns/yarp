@@ -82,7 +82,7 @@
   <widget class="GtkDialog" id="main_dialog">
     <property name="visible">True</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Project RPG</property>
+    <property name="title" translatable="yes">Yarp</property>
     <property name="resizable">False</property>
     <property name="type_hint">normal</property>
     <signal name="delete_event" handler="quit_activated_GTK_cb"/>
@@ -243,18 +243,18 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="available_characters_frame">
+                  <widget class="GtkFrame" id="repository">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">etched-out</property>
                     <child>
-                      <widget class="GtkAlignment" id="available_characters_alignment">
+                      <widget class="GtkAlignment" id="repository_alignment">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkHBox" id="available_characters_hbox">
+                          <widget class="GtkHBox" id="repository_hbox">
                             <property name="visible">True</property>
                             <child>
-                              <widget class="GtkComboBox" id="available_characters">
+                              <widget class="GtkComboBox" id="repository_combobox">
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
@@ -307,16 +307,16 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkFrame" id="player_frame">
+              <widget class="GtkFrame" id="character_frame">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">etched-out</property>
                 <child>
-                  <widget class="GtkAlignment" id="player_alignment">
+                  <widget class="GtkAlignment" id="character_alignment">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkHBox" id="player_hbox">
+                      <widget class="GtkHBox" id="character_hbox">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkVBox" id="statistics_vbox">
@@ -1047,7 +1047,7 @@
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="player_label">
+                  <widget class="GtkLabel" id="character_label">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">&lt;b&gt;Player&lt;/b&gt;</property>
                     <property name="use_markup">True</property>

@@ -219,7 +219,7 @@ RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,
   converter << location_in;
   // *NOTE*: the output format has been "adjusted" to fit in with bison error-reporting
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("\" (@%s): \"%s\"\n"),
+             ACE_TEXT("(@%s): %s\n"),
              converter.str().c_str(),
              message_in.c_str()));
 //   ACE_DEBUG((LM_ERROR,
@@ -229,8 +229,12 @@ RPG_Net_Protocol_IRCParserDriver::error(const yy::location& location_in,
 //              message_in.c_str()));
 
   // dump message
+  ACE_Message_Block* head = myCurrentFragment;
+  while (head->prev())
+    head = head->prev();
+  ACE_ASSERT(head);
   RPG_Net_Protocol_Message* message = NULL;
-  message = dynamic_cast<RPG_Net_Protocol_Message*> (myCurrentFragment);
+  message = dynamic_cast<RPG_Net_Protocol_Message*>(head);
   ACE_ASSERT(message);
   try
   {

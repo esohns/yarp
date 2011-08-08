@@ -544,7 +544,7 @@ do_work(const mode_t& mode_in,
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
-  std::string title = SDL_GUI_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
   SDL_GUI_MainWindow mainWindow(RPG_Graphics_WindowSize_t(screen->w,
                                                           screen->h), // size
                                 type,                                 // interface elements

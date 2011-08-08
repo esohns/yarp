@@ -99,7 +99,7 @@ command:      "cmd_string"                                    { ACE_ASSERT(drive
                                                                            ACE_TEXT("set command: \"%s\"\n"),
                                                                            driver.myCurrentMessage->command.string->c_str())); */
                                                               };
-              | "cmd_numeric"                                 { driver.myCurrentMessage->command.numeric = ACE_static_cast(RPG_Net_Protocol_IRCNumeric_t, $1);
+              | "cmd_numeric"                                 { driver.myCurrentMessage->command.numeric = static_cast<RPG_Net_Protocol_IRCNumeric_t>($1);
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                            ACE_TEXT("set command (numeric): %d\n"),

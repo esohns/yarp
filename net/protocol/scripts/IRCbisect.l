@@ -25,7 +25,7 @@ MESSAGE ([\x00-\xFF]{-}[\x0D\x0A])+
                          ACE_DEBUG((LM_ERROR,
                                     ACE_TEXT("ignoring invalid character: \"%c\" (%d)\n"),
                                     yytext[0],
-                                    ACE_static_cast(int, yytext[0])));
+                                    static_cast<int>(yytext[0])));
                        }
 } // end <INITIAL>
 <end_of_frame>{
