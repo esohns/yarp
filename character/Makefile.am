@@ -2,6 +2,8 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
+SUBDIRS = monster
+
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h
 
 include_HEADERS = rpg_character_XML_parser.h rpg_character_XML_tree.h \

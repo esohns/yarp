@@ -26,10 +26,10 @@
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
-#include <rpg_monster_defines.h>
-#include <rpg_monster.h>
-#include <rpg_monster_dictionary.h>
-#include <rpg_monster_common_tools.h>
+#include <rpg_character_monster_defines.h>
+#include <rpg_character_monster.h>
+#include <rpg_character_monster_dictionary.h>
+#include <rpg_character_monster_common_tools.h>
 
 #include <rpg_combat_common_tools.h>
 
@@ -94,7 +94,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  path += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]: number of players") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_PLAYERS << ACE_TEXT("]") << std::endl;
@@ -142,7 +142,7 @@ process_arguments(const int argc_in,
   itemDictionaryFilename_out += RPG_ITEM_DEF_DICTIONARY_FILE;
   monsterDictionaryFilename_out = base_data_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionaryFilename_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionaryFilename_out += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
   numMonsterTypes_out = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
   numPlayers_out = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
   traceInformation_out = false;
@@ -251,12 +251,12 @@ process_arguments(const int argc_in,
 
 const unsigned int
 do_battle(RPG_Character_Party_t& party_in,
-          const RPG_Monster_Encounter_t& encounter_in)
+          const RPG_Character_Monster_Encounter_t& encounter_in)
 {
   RPG_TRACE(ACE_TEXT("::do_battle"));
 
   // step1: instantiate monster(s)
-  RPG_Monster_Groups_t monsters;
+  RPG_Character_Monster_Groups_t monsters;
   RPG_Character_Conditions_t condition;
   condition.insert(CONDITION_NORMAL);
   // *TODO*: define monster abilities, spells, wealth, inventory (i.e. treasure)...
@@ -266,14 +266,14 @@ do_battle(RPG_Character_Party_t& party_in,
   RPG_Magic_Spells_t spells;
   RPG_Item_List_t items;
 
-  RPG_Monster_Group_t groupInstance;
-  RPG_Monster_Properties properties;
-  for (RPG_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
+  RPG_Character_Monster_Group_t groupInstance;
+  RPG_Character_Monster_Properties properties;
+  for (RPG_Character_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
        iterator++)
   {
     groupInstance.clear();
-    properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(iterator->first);
+    properties = RPG_CHARACTER_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(iterator->first);
 
     // compute individual hitpoints
     RPG_Dice_RollResult_t results;
@@ -284,24 +284,24 @@ do_battle(RPG_Character_Party_t& party_in,
          iterator2 != results.end();
          iterator2++)
     {
-      RPG_Monster monster(// base attributes
-                          (iterator->first).c_str(),
-                          properties.type,
-                          properties.alignment,
-                          properties.attributes,
-                          properties.skills,
-                          properties.feats,
-                          abilities,
-                          properties.size,
-                          (*iterator2),
-                          knownSpells,
-                          // current status
-                          condition,
-                          (*iterator2),
-                          wealth,
-                          spells,
-                          items,
-                          false);
+      RPG_Character_Monster monster(// base attributes
+                                    (iterator->first).c_str(),
+                                    properties.type,
+                                    properties.alignment,
+                                    properties.attributes,
+                                    properties.skills,
+                                    properties.feats,
+                                    abilities,
+                                    properties.size,
+                                    (*iterator2),
+                                    knownSpells,
+                                    // current status
+                                    condition,
+                                    (*iterator2),
+                                    wealth,
+                                    spells,
+                                    items,
+                                    false);
 
 //       // debug info
 //       monster.dump();
@@ -381,7 +381,7 @@ do_work(const std::string& magicDictionaryFilename_in,
   RPG_Magic_Common_Tools::init();
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::init();
-  RPG_Monster_Common_Tools::initStringConversionTables();
+  RPG_Character_Monster_Common_Tools::initStringConversionTables();
   RPG_Combat_Common_Tools::initStringConversionTables();
 
   // step2a: init magic dictionary
@@ -413,7 +413,7 @@ do_work(const std::string& magicDictionaryFilename_in,
   // step2c: init monster dictionary
   try
   {
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFilename_in);
+    RPG_CHARACTER_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFilename_in);
   }
   catch (...)
   {
@@ -456,15 +456,15 @@ do_work(const std::string& magicDictionaryFilename_in,
       RPG_Common_Environment environment;
       environment.climate = CLIMATE_ANY;
       environment.terrain = TERRAIN_ANY;
-      RPG_Monster_OrganizationSet_t organizations;
+      RPG_Character_Monster_OrganizationSet_t organizations;
       organizations.insert(ORGANIZATION_ANY);
-      RPG_Monster_Encounter_t encounter;
-      RPG_Monster_Common_Tools::generateRandomEncounter(numMonsterTypes_in,
-                                                        numFoes_in,
-                                                        alignment,
-                                                        environment,
-                                                        organizations,
-                                                        encounter);
+      RPG_Character_Monster_Encounter_t encounter;
+      RPG_Character_Monster_Common_Tools::generateRandomEncounter(numMonsterTypes_in,
+                                                                  numFoes_in,
+                                                                  alignment,
+                                                                  environment,
+                                                                  organizations,
+                                                                  encounter);
 
       // step5: FIGHT !
       gameTime += do_battle(party,
@@ -566,7 +566,7 @@ ACE_TMAIN(int argc,
   magicDictionaryFilename += RPG_MAGIC_DEF_DICTIONARY_FILE;
   std::string monsterDictionaryFilename = base_data_path;
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionaryFilename += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionaryFilename += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
   unsigned int numFoes = COMBAT_SIMULATOR_DEF_NUM_FOES;
   unsigned int numMonsterTypes = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
   unsigned int numPlayers = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;

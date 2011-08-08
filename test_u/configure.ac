@@ -91,11 +91,11 @@ AC_CHECK_FUNCS([memset])
 AC_CONFIG_FILES([Makefile
                  chance/Makefile
                  character/Makefile
+................ character/monster/Makefile
                  combat/Makefile
                  item/Makefile
                  magic/Makefile
                  map/Makefile
-                 monster/Makefile
                  net/Makefile
                  net/protocol/Makefile
                  sound/Makefile
@@ -103,3 +103,4 @@ AC_CONFIG_FILES([Makefile
                  client/Makefile])
 
 AC_OUTPUT
+

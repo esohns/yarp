@@ -460,21 +460,21 @@ do_main_window(const std::string& UIFileDirectory_in,
   g_signal_connect(entry,
                    ACE_TEXT_ALWAYS_CHAR("focus-in-event"),
                    G_CALLBACK(send_entry_kb_focused_cb),
-                   &const_cast<main_cb_data_t&> (userData_in));
+                   &const_cast<main_cb_data_t&>(userData_in));
   GtkButton* button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
                                                         ACE_TEXT_ALWAYS_CHAR("main_send_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(send_clicked_cb),
-                   &const_cast<main_cb_data_t&> (userData_in));
+                   &const_cast<main_cb_data_t&>(userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
                                              ACE_TEXT_ALWAYS_CHAR("main_connect_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(connect_clicked_cb),
-                   &const_cast<main_cb_data_t&> (userData_in));
+                   &const_cast<main_cb_data_t&>(userData_in));
   button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
                                              ACE_TEXT_ALWAYS_CHAR("main_quit_buton")));
   ACE_ASSERT(button);
@@ -511,7 +511,7 @@ do_main_window(const std::string& UIFileDirectory_in,
   // use correct screen
   if (parentWidget_in)
     gtk_window_set_screen(window,
-                          gtk_widget_get_screen(const_cast<GtkWidget*> (parentWidget_in)));
+                          gtk_widget_get_screen(const_cast<GtkWidget*>(parentWidget_in)));
 
   // step5: draw it
   gtk_widget_show_all(GTK_WIDGET(window));

@@ -108,6 +108,12 @@ connect_clicked_cb(GtkWidget* button_in,
   GtkEntry* main_entry_entry = GTK_ENTRY(gtk_builder_get_object(data->builder,
                                                                 ACE_TEXT_ALWAYS_CHAR("main_entry_entry")));
   ACE_ASSERT(main_entry_entry);
+  gtk_entry_buffer_delete_text(gtk_entry_get_buffer(main_entry_entry),
+                               0, -1);
+  //   gtk_entry_set_max_length(main_entry_entry,
+  //                            0); // no limit
+  //   gtk_entry_set_width_chars(main_entry_entry,
+  //                             -1); // reset to default
   gtk_entry_set_text(main_entry_entry,
                      data->loginOptions.nick.c_str());
   gtk_editable_select_region(GTK_EDITABLE(main_entry_entry),
@@ -117,7 +123,7 @@ connect_clicked_cb(GtkWidget* button_in,
                                                                    ACE_TEXT_ALWAYS_CHAR("main_entry_dialog")));
   ACE_ASSERT(main_entry_dialog);
   gtk_window_set_title(GTK_WINDOW(main_entry_dialog),
-                        IRC_CLIENT_GUI_DEF_NICK_DIALOG_TITLE);
+                       IRC_CLIENT_GUI_DEF_NICK_DIALOG_TITLE);
   if (gtk_dialog_run(main_entry_dialog))
   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -132,10 +138,17 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
   gtk_widget_hide(GTK_WIDGET(main_entry_dialog));
-  loginOptions.nick = gtk_entry_get_text(main_entry_entry);
+  loginOptions.nick = IRC_Client_Tools::UTF82Locale(gtk_entry_get_text(main_entry_entry), -1);
   // clean up
   gtk_entry_buffer_delete_text(gtk_entry_get_buffer(main_entry_entry),
                                0, -1);
+  if (loginOptions.nick.empty())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to set nickname, aborting\n")));
+
+    return;
+  } // end IF
 
   // step3: create/init new final module
   std::string module_name = ACE_TEXT_ALWAYS_CHAR("IRCHandler");
@@ -1091,7 +1104,7 @@ action_away_cb(GtkAction* action_in,
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("action_away_cb...\n")));
 
-  connection_cb_data_t* data = static_cast<connection_cb_data_t*> (userData_in);
+  connection_cb_data_t* data = static_cast<connection_cb_data_t*>(userData_in);
 
   // sanity check(s)
   ACE_ASSERT(data);
@@ -1127,6 +1140,10 @@ action_away_cb(GtkAction* action_in,
   //                            0); // no limit
   //   gtk_entry_set_width_chars(server_tab_entry_dialog_entry,
   //                             -1); // reset to default
+    gtk_entry_set_text(server_tab_entry_dialog_entry,
+                       IRC_CLIENT_DEF_IRC_AWAY_MESSAGE);
+    gtk_editable_select_region(GTK_EDITABLE(server_tab_entry_dialog_entry),
+                               0, -1);
 
     GtkDialog* server_tab_entry_dialog = GTK_DIALOG(gtk_builder_get_object(data->builder,
                                                                            ACE_TEXT_ALWAYS_CHAR("server_tab_entry_dialog")));

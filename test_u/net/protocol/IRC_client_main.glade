@@ -170,12 +170,11 @@
   <object class="GtkDialog" id="main_entry_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">please insert data...</property>
-    <property name="resizable">False</property>
+    <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
     <property name="deletable">False</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="main_entry_vbox">
         <property name="visible">True</property>
@@ -193,6 +192,7 @@
             <property name="width_chars">9</property>
             <property name="truncate_multiline">True</property>
             <property name="shadow_type">etched-out</property>
+            <property name="caps_lock_warning">False</property>
           </object>
           <packing>
             <property name="position">1</property>
@@ -201,32 +201,15 @@
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="main_entry_action_area">
             <property name="visible">True</property>
+            <property name="homogeneous">True</property>
             <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="main_entry_accept_button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="can_default">True</property>
-                <property name="has_default">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">True</property>
-                <property name="related_action">action_accept</property>
-                <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
             <child>
               <object class="GtkButton" id="main_entry_cancel_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">True</property>
                 <property name="related_action">action_cancel</property>
+                <property name="use_action_appearance">True</property>
                 <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
               </object>
@@ -234,6 +217,25 @@
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="main_entry_accept_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="related_action">action_accept</property>
+                <property name="use_action_appearance">True</property>
+                <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
+                <property name="position">0</property>
               </packing>
             </child>
           </object>
@@ -246,18 +248,20 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">main_entry_accept_button</action-widget>
       <action-widget response="1">main_entry_cancel_button</action-widget>
+      <action-widget response="0">main_entry_accept_button</action-widget>
     </action-widgets>
   </object>
   <object class="GtkAction" id="action_cancel">
     <property name="name">Cancel</property>
     <property name="label">Cancel</property>
+    <property name="short_label">Cancel</property>
     <property name="stock_id">gtk-cancel</property>
   </object>
   <object class="GtkAction" id="action_accept">
     <property name="name">Accept</property>
-    <property name="label">Accept</property>
+    <property name="label">OK</property>
+    <property name="short_label">OK</property>
     <property name="stock_id">gtk-ok</property>
   </object>
 </interface>

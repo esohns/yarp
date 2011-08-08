@@ -83,6 +83,8 @@ AC_TYPE_SIZE_T
 AC_CHECK_FUNCS([floor memset sqrt strerror])
 AC_CHECK_FUNCS([getcwd])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+		 monster/Makefile])
 
 AC_OUTPUT
+

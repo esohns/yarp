@@ -191,7 +191,6 @@
                     </child>
                     <child>
                       <object class="GtkHBox" id="channel_tab_mode_hbox2">
-                        <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="channel_tab_mode_key_label1">
                             <property name="visible">True</property>
@@ -403,7 +402,6 @@
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
     <property name="deletable">False</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="channel_tab_entry_dialog_vbox">
         <property name="visible">True</property>
@@ -491,15 +489,15 @@
     <child>
       <object class="GtkMenuItem" id="menuitem_info">
         <property name="visible">True</property>
-        <property name="use_action_appearance">True</property>
         <property name="related_action">action_info</property>
+        <property name="use_action_appearance">True</property>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem_msg">
         <property name="visible">True</property>
-        <property name="use_action_appearance">True</property>
         <property name="related_action">action_msg</property>
+        <property name="use_action_appearance">True</property>
       </object>
     </child>
     <child>
@@ -516,20 +514,17 @@
     <child>
       <object class="GtkMenuItem" id="menuitem_kick">
         <property name="visible">True</property>
-        <property name="use_action_appearance">True</property>
         <property name="related_action">action_kick</property>
+        <property name="use_action_appearance">True</property>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem_ban">
         <property name="visible">True</property>
-        <property name="use_action_appearance">True</property>
         <property name="related_action">action_ban</property>
+        <property name="use_action_appearance">True</property>
       </object>
     </child>
-  </object>
-  <object class="GtkTextBuffer" id="channel_textbuffer">
-    <property name="tag_table">channel_texttagtable</property>
   </object>
   <object class="GtkAction" id="action_msg">
     <property name="label">Dialogue...</property>
@@ -565,5 +560,8 @@
     <property name="short_label">Info...</property>
     <property name="stock_id">gtk-about</property>
     <signal name="activate" handler="action_info_cb"/>
+  </object>
+  <object class="GtkTextBuffer" id="channel_textbuffer">
+    <property name="tag_table">channel_texttagtable</property>
   </object>
 </interface>

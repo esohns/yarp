@@ -29,10 +29,10 @@
 
 #include <rpg_map_common_tools.h>
 
-#include <rpg_monster_common.h>
-#include <rpg_monster_common_tools.h>
-#include <rpg_monster_attackaction.h>
-#include <rpg_monster_dictionary.h>
+#include <rpg_character_monster_common.h>
+#include <rpg_character_monster_common_tools.h>
+#include <rpg_character_monster_attackaction.h>
+#include <rpg_character_monster_dictionary.h>
 
 #include <rpg_combat_common_tools.h>
 
@@ -87,7 +87,7 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Character_Common_Tools::init();
   RPG_Combat_Common_Tools::initStringConversionTables();
-  RPG_Monster_Common_Tools::initStringConversionTables();
+  RPG_Character_Monster_Common_Tools::initStringConversionTables();
 
   RPG_Engine_CommandHelper::init();
 
@@ -129,12 +129,12 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   {
     try
     {
-      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in);
+      RPG_CHARACTER_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in);
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Monster_Dictionary::init, returning\n")));
+                 ACE_TEXT("caught exception in RPG_Character_Monster_Dictionary::init, returning\n")));
 
       return;
     }
@@ -680,12 +680,12 @@ RPG_Engine_Common_Tools::isPartyHelpless(const RPG_Character_Party_t& party_in)
 }
 
 const bool
-RPG_Engine_Common_Tools::areMonstersHelpless(const RPG_Monster_Groups_t& monsters_in)
+RPG_Engine_Common_Tools::areMonstersHelpless(const RPG_Character_Monster_Groups_t& monsters_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::areMonstersHelpless"));
 
   unsigned int numHelplessGroups = 0;
-  for (RPG_Monster_GroupsIterator_t iterator = monsters_in.begin();
+  for (RPG_Character_Monster_GroupsIterator_t iterator = monsters_in.begin();
        iterator != monsters_in.end();
        iterator++)
   {
@@ -700,7 +700,7 @@ RPG_Engine_Common_Tools::areMonstersHelpless(const RPG_Monster_Groups_t& monster
 
 void
 RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& party_in,
-                                              const RPG_Monster_Groups_t& monsters_in,
+                                              const RPG_Character_Monster_Groups_t& monsters_in,
                                               RPG_Engine_CombatantSequence_t& battleSequence_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getCombatantSequence"));
@@ -716,15 +716,15 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& party
   {
     listOfCombatants.push_back(const_cast<RPG_Character_Player*>(&(*iterator)));
   } // end FOR
-  for (RPG_Monster_GroupsIterator_t iterator = monsters_in.begin();
+  for (RPG_Character_Monster_GroupsIterator_t iterator = monsters_in.begin();
        iterator != monsters_in.end();
        iterator++)
   {
-    for (RPG_Monster_GroupIterator_t iterator2 = (*iterator).begin();
+    for (RPG_Character_Monster_GroupIterator_t iterator2 = (*iterator).begin();
          iterator2 != (*iterator).end();
          iterator2++)
     {
-      listOfCombatants.push_back(const_cast<RPG_Monster*>(&(*iterator2)));
+      listOfCombatants.push_back(const_cast<RPG_Character_Monster*>(&(*iterator2)));
     } // end FOR
   } // end FOR
 
@@ -740,7 +740,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Character_Party_t& party
   bool num_slots_too_small = (listOfCombatants.size() > D_100);
   if (!num_slots_too_small)
   {
-    while (static_cast<unsigned int> (checkDie) < listOfCombatants.size())
+    while (static_cast<unsigned int>(checkDie) < listOfCombatants.size())
       checkDie++;
   } // end IF
   else
@@ -934,19 +934,17 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
 }
 
 const bool
-RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Monster_Group_t& groupInstance_in)
+RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Character_Monster_Group_t& groupInstance_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isMonsterGroupHelpless"));
 
   unsigned int numHelplessMonsters = 0;
-  for (RPG_Monster_GroupIterator_t iterator = groupInstance_in.begin();
+  for (RPG_Character_Monster_GroupIterator_t iterator = groupInstance_in.begin();
        iterator != groupInstance_in.end();
        iterator++)
   {
     if (isCharacterHelpless(&(*iterator)))
-    {
       numHelplessMonsters++;
-    } // end IF
   } // end FOR
 
   return (numHelplessMonsters == groupInstance_in.size());
@@ -1015,7 +1013,7 @@ RPG_Engine_Common_Tools::isCharacterDisabled(const RPG_Character_Base* const cha
 
 const unsigned int
 RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm& attackForm_in,
-                                                           const RPG_Monster_AttackActions_t& actions_in)
+                                                           const RPG_Character_Monster_AttackActions_t& actions_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions"));
 
@@ -1025,7 +1023,7 @@ RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_Atta
   {
     case ATTACKFORM_MELEE:
     {
-      for (RPG_Monster_AttackActionsIterator_t iterator = actions_in.begin();
+      for (RPG_Character_Monster_AttackActionsIterator_t iterator = actions_in.begin();
            iterator != actions_in.end();
            iterator++)
       {
@@ -1048,7 +1046,7 @@ RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_Atta
     }
     default:
     {
-      for (RPG_Monster_AttackActionsIterator_t iterator = actions_in.begin();
+      for (RPG_Character_Monster_AttackActionsIterator_t iterator = actions_in.begin();
             iterator != actions_in.end();
             iterator++)
       {
@@ -1067,7 +1065,7 @@ RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_Atta
 
 const bool
 RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm& attackForm_in,
-                                                         const RPG_Monster_AttackAction& action_in)
+                                                         const RPG_Character_Monster_AttackAction& action_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction"));
 
@@ -1178,8 +1176,8 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
 
     // step2: compute target AC
     // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size modifier [+ other modifiers]
-    RPG_Monster* monster = NULL;
-    monster = dynamic_cast<RPG_Monster*>(target_inout);
+    RPG_Character_Monster* monster = NULL;
+    monster = dynamic_cast<RPG_Character_Monster*>(target_inout);
     ACE_ASSERT(monster);
     targetArmorClass = monster->getArmorClass(defenseSituation_in);
     // *TODO*: consider other modifiers:
@@ -1365,9 +1363,9 @@ is_player_miss:
   {
     // if the attacker is a "regular" monster, we have a specific description of its weapons/abilities
     // step1a: get monster properties
-    const RPG_Monster* monster = dynamic_cast<const RPG_Monster*>(attacker_in);
+    const RPG_Character_Monster* monster = dynamic_cast<const RPG_Character_Monster*>(attacker_in);
     ACE_ASSERT(monster);
-    RPG_Monster_Properties monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(monster->getName());
+    RPG_Character_Monster_Properties monster_properties = RPG_CHARACTER_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(monster->getName());
 
     // step1b: compute target AC
     // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+ other modifiers]
@@ -1390,9 +1388,9 @@ is_player_miss:
     // current (non-)strategy: melee/ranged --> special attack
     bool is_special_attack = false;
     unsigned int numberOfPossibleAttackActions = 0;
-    std::vector<RPG_Monster_AttackAction>::const_iterator iterator;
-    std::vector<RPG_Monster_SpecialAttackProperties>::const_iterator special_iterator;
-    const RPG_Monster_AttackAction* current_action = NULL;
+    std::vector<RPG_Character_Monster_AttackAction>::const_iterator iterator;
+    std::vector<RPG_Character_Monster_SpecialAttackProperties>::const_iterator special_iterator;
+    const RPG_Character_Monster_AttackAction* current_action = NULL;
     int randomPossibleIndex = 0;
     int possibleIndex = 0;
     if (isFullRoundAction_in)
@@ -1410,7 +1408,7 @@ is_player_miss:
         // choose any single appropriate (i.e. possible) (set of) full action(s)
         // step1: count the number of available sets
         int numberOfPossibleSets = 0;
-        std::vector<RPG_Monster_AttackAction>::const_iterator iterator2 = monster_properties.attack.fullAttackActions.begin();
+        std::vector<RPG_Character_Monster_AttackAction>::const_iterator iterator2 = monster_properties.attack.fullAttackActions.begin();
         do
         {
           if (isCompatibleMonsterAttackAction(attackForm,
@@ -1498,7 +1496,7 @@ init_monster_standard_actions:
 
 init_monster_special_attack:
     // sanity check
-    for (std::vector<RPG_Monster_SpecialAttackProperties>::const_iterator iterator2 = monster_properties.specialAttacks.begin();
+        for (std::vector<RPG_Character_Monster_SpecialAttackProperties>::const_iterator iterator2 = monster_properties.specialAttacks.begin();
          iterator2 != monster_properties.specialAttacks.end();
          iterator2++)
     {
@@ -1633,13 +1631,13 @@ monster_perform_single_action:
           RPG_Common_PhysicalDamageList_t damageTypeList;
           switch (current_action->weapon.discriminator)
           {
-            case RPG_Monster_WeaponTypeUnion::NATURALWEAPON:
+            case RPG_Character_Monster_WeaponTypeUnion::NATURALWEAPON:
             {
-              damageTypeList = RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(current_action->weapon.naturalweapon);
+              damageTypeList = RPG_Character_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(current_action->weapon.naturalweapon);
 
               break;
             }
-            case RPG_Monster_WeaponTypeUnion::WEAPONTYPE:
+            case RPG_Character_Monster_WeaponTypeUnion::WEAPONTYPE:
             {
               weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(current_action->weapon.weapontype);
               damageTypeList = RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(weapon_properties.typeOfDamage);
@@ -1687,7 +1685,7 @@ monster_perform_single_action:
                  monster->getName().c_str(),
                  player_base->getName().c_str(),
                  targetArmorClass,
-                 RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str(),
+                 RPG_Character_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str(),
                  (attack_roll + currentAttackBonus),
                  (is_critical_hit ? ACE_TEXT_ALWAYS_CHAR(" (critical)") : ACE_TEXT_ALWAYS_CHAR(""))));
 
@@ -1711,7 +1709,7 @@ is_monster_miss:
                  monster->getName().c_str(),
                  player_base->getName().c_str(),
                  targetArmorClass,
-                 RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str(),
+                 RPG_Character_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str(),
                  (attack_roll + currentAttackBonus)));
     } // end FOR
 

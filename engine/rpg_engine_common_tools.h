@@ -30,7 +30,7 @@
 
 #include <rpg_map_common.h>
 
-#include <rpg_monster_common.h>
+#include <rpg_character_monster_common.h>
 
 #include <rpg_character_class_common.h>
 #include <rpg_character_player_common.h>
@@ -66,9 +66,9 @@ class RPG_Engine_Common_Tools
 
   // ***** combat-related *****
   static const bool isPartyHelpless(const RPG_Character_Party_t&); // party
-  static const bool areMonstersHelpless(const RPG_Monster_Groups_t&); // monsters
-  static void getCombatantSequence(const RPG_Character_Party_t&,     // party
-                                   const RPG_Monster_Groups_t&,      // monsters
+  static const bool areMonstersHelpless(const RPG_Character_Monster_Groups_t&); // monsters
+  static void getCombatantSequence(const RPG_Character_Party_t&,          // party
+                                   const RPG_Character_Monster_Groups_t&, // monsters
                                    RPG_Engine_CombatantSequence_t&); // battle sequence
   static void performCombatRound(const RPG_Combat_AttackSituation&,      // attack situation
                                  const RPG_Combat_DefenseSituation&,     // defense situation
@@ -96,16 +96,16 @@ class RPG_Engine_Common_Tools
   typedef std::deque<RPG_Engine_CombatantSequenceElement> RPG_Engine_CombatSequenceList_t;
   typedef RPG_Engine_CombatSequenceList_t::iterator RPG_Engine_CombatSequenceListIterator_t;
 
-  static const bool isMonsterGroupHelpless(const RPG_Monster_Group_t&); // group instance
+  static const bool isMonsterGroupHelpless(const RPG_Character_Monster_Group_t&); // group instance
   static const bool isCharacterHelpless(const RPG_Character_Base* const); // character handle
   static const bool isValidFoeAvailable(const bool&,                            // monsters ? : players
                                         const RPG_Engine_CombatantSequence_t&); // battle sequence
   static const bool isCharacterDisabled(const RPG_Character_Base* const); // character handle
 
   static const unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
-                                                              const RPG_Monster_AttackActions_t&);
+                                                              const RPG_Character_Monster_AttackActions_t&);
   static const bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
-                                                    const RPG_Monster_AttackAction&);
+                                                    const RPG_Character_Monster_AttackAction&);
   static void attackFoe(const RPG_Character_Base* const,    // attacker
                         RPG_Character_Base* const,          // target
                         const RPG_Combat_AttackSituation&,  // attacker situation

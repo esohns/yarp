@@ -12,23 +12,23 @@ Currently, development is (unit-) test-driven and so evolution will happen likew
 
 Existing funcionality has been grouped into modules (directories) reflecting the intermediate project structure. In alphabetical order, these are:
 
-* *chance*: anything to do with simulating dice and randomness
-* *character*: low-level characteristics of player- (and non-player-) entities
-* *client*: prototype of a (GNOME/SDL) client UI
-* *combat*: anything to do with (round-based) melee simulation (includes concepts for damage, different forms of attack, ...)
-* *common*: common concepts that have not been grouped yet (includes schemas for terrain, environment, climate and tools, ...)
-* *engine*: some logic to define/handle the non-player entities in an area - the home for any future work in AI
-* *graphics*: glue code (uses SDL) realizing surfaces, tiles, windows, cursors and other UI elements. Contains any artwork as well
-* *item*: characteristics of material objects that may be manipulated by entities (e.g. tools, weapons and armor)
-* *magic*: characteristics of non-material objects and attributes that may be manipulated by entities (i.e. things like spells and special abilities)
-* *map*: structures and algorithms related to the generation and manipulation of area maps (currently 2D only). Contains path-finding logic as well
-* *monster*: higher-level characteristics of potential adversaries
-* *net*: base logic implementing client/server architecture and protocol design for networking
-* *net/protocol*: lower-level implementation of the protocol specifics
-* *net/stream*: lower-level implementation of the pipes-and-filters pattern, built ontop of the ACE framwork.
-* *sound*: glue code (uses SDL) realizing audio playback. Contains any soundwork as well
-* *test_u*: home to the unit- testcases and related code
-* *Yarp*: meta-module combining all other modules, thereby facilitating higher level project work
+* *chance*: simulation of dice rolls and randomness
+* *character*: characteristics of player- and non-player- entities
+* *character/monster*: characteristics of adversaries
+* *client*: (graphical) UI
+* *combat*: (round-based) melee (includes concepts for damage, different forms of attack, ...)
+* *common*: some concepts (includes schemas for terrain, environment, climate and tools, ...)
+* *engine*: logic to handle entities and level state
+* *graphics*: glue code/data realizing surfaces, tiles, windows, cursors and other elements
+* *item*: characteristics of objects (e.g. tools, weapons and armor, ...)
+* *magic*: characteristics of magical objects and attributes (i.e. spells and special abilities)
+* *map*: structures, related algorithms and path-finding logic of area maps
+* *net*: logic of client/server architecture for networking
+* *net/protocol*: low-level specifics of networked interactions
+* *net/stream*: low-level implementation of the pipes-and-filters pattern
+* *sound*: glue code/data realizing audio playback
+* *test_u*: unit-test code
+* *Yarp*: meta-module, facilitates high-level project work
 
 **Overview of existing functionality**
 
@@ -38,15 +38,15 @@ The implemented unit test program names are self-describing:
 * chance_rangeToRoll: convert a requested range of values (e.g. 2-12) to an (approximated) appropriate dice roll (e.g. 2d6)
 * character_generator: generate a player character (text-based / UI)
 * character_parser: load/store a player character to/from a file
+* monster_parser: load/dump monster library
 * rpg_client_gui: client GUI (GNOME/SDL)
 * combat_simulator: simulate auto-combat (ATM text-based only)
 * graphics_parser: load graphics library
 * SDL_gui: test SDL library integration
-* item_parser: load item library
-* magic_parser: load magic library
+* item_parser: load/dump item library
+* magic_parser: load/dump magic library
 * map_generator: load/store area maps
 * path_finder: find shortest path between map locations
-* monster_parser: load monster library
 * net_client: network client stub
 * net_server: network server stub
 * IRC_client_gui: IRC client UI
