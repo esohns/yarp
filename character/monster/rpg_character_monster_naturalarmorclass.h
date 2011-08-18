@@ -9,9 +9,9 @@
 
 struct RPG_Character_Monster_NaturalArmorClass
 {
-  char normal;
-  char touch;
-  char flatFooted;
+  signed char normal;
+  signed char touch;
+  signed char flatFooted;
 };
 
 #endif

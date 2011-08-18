@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_XML_PARSER_H
 #define RPG_CHARACTER_XML_PARSER_H
 
@@ -78,19 +79,19 @@ class RPG_Character_Ability_Type
   virtual RPG_Character_Ability post_RPG_Character_Ability_Type();
 };
 
-class RPG_Character_Abilities_Type
-  : public RPG_Character_Abilities_Type_pskel
-{
-  public:
-    RPG_Character_Abilities_Type();
-
-//   virtual void pre();
-    virtual void ability(const RPG_Character_Ability&);
-    virtual RPG_Character_Abilities post_RPG_Character_Abilities_Type();
-
-  private:
-    RPG_Character_Abilities myCurrentAbilities;
-};
+// class RPG_Character_Abilities_Type
+//   : public RPG_Character_Abilities_Type_pskel
+// {
+//   public:
+//     RPG_Character_Abilities_Type();
+//
+// //   virtual void pre();
+//     virtual void ability(const RPG_Character_Ability&);
+//     virtual RPG_Character_Abilities post_RPG_Character_Abilities_Type();
+//
+//   private:
+//     RPG_Character_Abilities myCurrentAbilities;
+// };
 
 class RPG_Character_Attributes_Type
  : public RPG_Character_Attributes_Type_pskel

@@ -26,12 +26,13 @@
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
+#include <rpg_character_player.h>
+
 #include <rpg_character_defines.h>
 #include <rpg_character_alignmentcivic.h>
 #include <rpg_character_alignmentethic.h>
 #include <rpg_character_alignment.h>
 #include <rpg_character_offhand.h>
-#include <rpg_character_player.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_class_common_tools.h>
 #include <rpg_character_skills_common_tools.h>

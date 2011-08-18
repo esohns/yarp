@@ -9,7 +9,7 @@
 #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
 # C++ "glue code"
-/usr/local/bin/XML2CppCode -e -f ./../rpg_item.xsd -i -o ./.. -p ./../templates/h -s -u
+/usr/local/bin/XML2CppCode -e -f ./../rpg_item.xsd -i -o ./.. -s -u
 
 # generate "XMLSchema" namespace include file (rpg_item.xsd)
 /usr/bin/xsdcxx cxx-parser --char-type char --output-dir ./.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema_XML_types.xsd

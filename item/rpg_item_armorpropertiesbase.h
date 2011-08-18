@@ -14,7 +14,7 @@ struct RPG_Item_ArmorPropertiesBase
   RPG_Item_ArmorCategory armorCategory;
   unsigned char baseArmorBonus;
   unsigned char maxDexterityBonus;
-  char armorCheckPenalty;
+  signed char armorCheckPenalty;
   unsigned char arcaneSpellFailure;
   unsigned short int baseSpeed;
 };

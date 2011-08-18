@@ -30,7 +30,8 @@
 #define RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME       ACE_TEXT_ALWAYS_CHAR("about_dialog")
 #define RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME ACE_TEXT_ALWAYS_CHAR("filechooser_dialog")
 #define RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME         ACE_TEXT_ALWAYS_CHAR("character_frame")
-#define RPG_CLIENT_DEF_GNOME_CHARBOX_NAME           ACE_TEXT_ALWAYS_CHAR("repository_combobox")
+#define RPG_CLIENT_DEF_GNOME_CHARBOX_NAME           ACE_TEXT_ALWAYS_CHAR("character_repository_combobox")
+#define RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME           ACE_TEXT_ALWAYS_CHAR("server_repository_combobox")
 
 #define RPG_CLIENT_DEF_INI_FILE                     ACE_TEXT("rpg_client.ini")
 #define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER        ACE_TEXT("client")

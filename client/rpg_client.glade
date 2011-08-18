@@ -104,62 +104,152 @@
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">etched-out</property>
                     <child>
-                      <widget class="GtkVButtonBox" id="character_actions_buttons">
+                      <widget class="GtkVBox" id="character_actions_box">
                         <property name="visible">True</property>
-                        <property name="can_default">True</property>
-                        <property name="has_default">True</property>
-                        <property name="receives_default">True</property>
                         <property name="orientation">vertical</property>
-                        <property name="layout_style">spread</property>
                         <child>
-                          <widget class="GtkButton" id="create">
-                            <property name="label" translatable="yes">_Create</property>
+                          <widget class="GtkVButtonBox" id="character_actions_buttons">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
+                            <property name="can_default">True</property>
+                            <property name="has_default">True</property>
                             <property name="receives_default">True</property>
-                            <property name="relief">half</property>
-                            <property name="use_underline">True</property>
-                            <signal name="clicked" handler="create_character_actived_GTK_cb"/>
+                            <property name="orientation">vertical</property>
+                            <property name="layout_style">spread</property>
+                            <child>
+                              <widget class="GtkButton" id="create">
+                                <property name="label" translatable="yes">_Create</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="create_character_actived_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkButton" id="drop">
+                                <property name="label" translatable="yes">_Drop</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="drop_character_activated_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkButton" id="save">
+                                <property name="label" translatable="yes">_Save</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="save_character_actived_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkButton" id="load">
+                                <property name="label" translatable="yes">_Load</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="load_character_actived_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="load">
-                            <property name="label" translatable="yes">_Load</property>
+                          <widget class="GtkFrame" id="character_repository">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="can_default">True</property>
-                            <property name="has_default">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="relief">half</property>
-                            <property name="use_underline">True</property>
-                            <signal name="clicked" handler="load_character_actived_GTK_cb"/>
+                            <property name="label_xalign">0</property>
+                            <property name="shadow_type">etched-out</property>
+                            <child>
+                              <widget class="GtkAlignment" id="character_repository_alignment">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkHBox" id="character_repository_hbox">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkComboBox" id="character_repository_combobox">
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="has_frame">False</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="changed" handler="character_repository_combobox_changed_GTK_cb"/>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkButton" id="character_repository_button">
+                                        <property name="label">gtk-refresh</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="relief">half</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="character_repository_button_clicked_GTK_cb"/>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                </child>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="character_repository_label">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Available&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="type">label_item</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkButton" id="save">
-                            <property name="label" translatable="yes">_Save</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="relief">half</property>
-                            <property name="use_underline">True</property>
-                            <signal name="clicked" handler="save_character_actived_GTK_cb"/>
-                          </widget>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">2</property>
                           </packing>
                         </child>
                       </widget>
@@ -185,43 +275,117 @@
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">etched-out</property>
                     <child>
-                      <widget class="GtkVButtonBox" id="game_actions_buttons">
+                      <widget class="GtkVBox" id="game_actions_vbox">
                         <property name="visible">True</property>
-                        <property name="can_default">True</property>
-                        <property name="has_default">True</property>
-                        <property name="receives_default">True</property>
                         <property name="orientation">vertical</property>
-                        <property name="layout_style">spread</property>
                         <child>
-                          <widget class="GtkButton" id="join">
-                            <property name="label" translatable="yes">_Join</property>
+                          <widget class="GtkVButtonBox" id="game_actions_buttons">
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
+                            <property name="can_default">True</property>
+                            <property name="has_default">True</property>
                             <property name="receives_default">True</property>
-                            <property name="relief">half</property>
-                            <property name="use_underline">True</property>
-                            <signal name="clicked" handler="join_game_actived_GTK_cb"/>
+                            <property name="orientation">vertical</property>
+                            <property name="layout_style">spread</property>
+                            <child>
+                              <widget class="GtkButton" id="join">
+                                <property name="label" translatable="yes">_Join</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="can_default">True</property>
+                                <property name="has_default">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="join_game_actived_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkButton" id="part">
+                                <property name="label" translatable="yes">_Part</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="part_game_actived_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="part">
-                            <property name="label" translatable="yes">_Part</property>
+                          <widget class="GtkFrame" id="server_repository">
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="use_underline">True</property>
-                            <signal name="clicked" handler="part_game_actived_GTK_cb"/>
+                            <property name="label_xalign">0</property>
+                            <property name="shadow_type">etched-out</property>
+                            <child>
+                              <widget class="GtkAlignment" id="server_repository_alignment">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkHBox" id="server_repository_hbox">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkComboBox" id="server_repository_combobox">
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="has_frame">False</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="changed" handler="server_repository_combobox_changed_GTK_cb"/>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkButton" id="server_repository_button">
+                                        <property name="label">gtk-refresh</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="relief">half</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="server_repository_button_clicked_GTK_cb"/>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                </child>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="server_repository_label">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Available&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="type">label_item</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -240,65 +404,6 @@
                   </widget>
                   <packing>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkFrame" id="repository">
-                    <property name="visible">True</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">etched-out</property>
-                    <child>
-                      <widget class="GtkAlignment" id="repository_alignment">
-                        <property name="visible">True</property>
-                        <child>
-                          <widget class="GtkHBox" id="repository_hbox">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkComboBox" id="repository_combobox">
-                                <property name="visible">True</property>
-                                <property name="sensitive">False</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="has_frame">False</property>
-                                <property name="focus_on_click">False</property>
-                                <signal name="changed" handler="characters_activated_GTK_cb"/>
-                              </widget>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkButton" id="refresh">
-                                <property name="label">gtk-refresh</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="relief">half</property>
-                                <property name="use_stock">True</property>
-                                <signal name="clicked" handler="characters_refresh_activated_GTK_cb"/>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="available_characters_label">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Repository&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="type">label_item</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">2</property>
                   </packing>
                 </child>
               </widget>
@@ -1104,6 +1209,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
                 <signal name="clicked" handler="about_activated_GTK_cb"/>
               </widget>
               <packing>
@@ -1120,6 +1226,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
                 <signal name="clicked" handler="properties_activated_GTK_cb"/>
               </widget>
               <packing>
@@ -1135,6 +1242,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
                 <signal name="clicked" handler="quit_activated_GTK_cb"/>
               </widget>
               <packing>

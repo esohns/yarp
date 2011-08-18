@@ -24,8 +24,9 @@
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 #include "rpg_character_incl.h"
-#include "rpg_character_player_common.h"
-#include "rpg_character_player.h"
+#include "rpg_character_common.h"
+#include "rpg_character_race_common.h"
+#include "rpg_character_class_common.h"
 
 #include <ace/Global_Macros.h>
 
@@ -54,9 +55,6 @@ class RPG_Character_Common_Tools
   static const RPG_Dice_DieType getHitDie(const RPG_Common_SubClass&); // subclass
   static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Common_SubClass&, // subClass
                                                                   const unsigned char&);      // class level
-
-  static RPG_Character_Player generatePlayerCharacter(); // return value: (random) player
-  static const unsigned int restParty(RPG_Character_Party_t&); // party of players
 
  private:
   // safety measures

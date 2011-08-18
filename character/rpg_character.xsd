@@ -62,6 +62,30 @@
     </xsd:sequence>
   </xsd:complexType>
 
+ <xsd:complexType name="RPG_Character_Attributes_Type">
+   <xsd:sequence>
+     <xsd:element name="strength" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+     <xsd:element name="dexterity" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+     <xsd:element name="constitution" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+     <xsd:element name="intelligence" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+     <xsd:element name="wisdom" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+     <xsd:element name="charisma" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+   </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:complexType name="RPG_Character_SkillValue_Type">
+   <xsd:sequence>
+     <xsd:element name="skill" type="RPG_Common_Skill_Type" minOccurs="1" maxOccurs="1"/>
+     <xsd:element name="rank" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+   </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:complexType name="RPG_Character_Skills_Type">
+   <xsd:sequence>
+     <xsd:element name="skill" type="RPG_Character_SkillValue_Type" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+ </xsd:complexType>
+
   <xsd:simpleType name="RPG_Character_Ability_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ABILITY_ACID_ATTACK"/>
@@ -146,47 +170,6 @@
       <xsd:enumeration value="ABILITY_BONUS_FEAT"/>
     </xsd:restriction>
   </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Character_Abilities_Type">
-    <xsd:sequence>
-      <xsd:element name="ability" type="RPG_Character_Ability_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_Attributes_Type">
-    <xsd:sequence>
-      <xsd:element name="strength" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="dexterity" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="constitution" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="intelligence" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="wisdom" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="charisma" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_SkillValue_Type">
-    <xsd:sequence>
-      <xsd:element name="skill" type="RPG_Common_Skill_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="rank" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="RPG_Character_Skills_Type">
-    <xsd:sequence>
-      <xsd:element name="skill" type="RPG_Character_SkillValue_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:simpleType name="RPG_Character_CheckTypeUnion_Type">
-    <xsd:union memberTypes="RPG_Common_Attribute_Type RPG_Common_Skill_Type"/>
-  </xsd:simpleType>
-
-  <xsd:complexType name="RPG_Character_Check_Type">
-    <xsd:sequence>
-      <xsd:element name="type" type="RPG_Character_CheckTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
 
   <xsd:simpleType name="RPG_Character_Feat_Type">
     <xsd:restriction base="xsd:string">
@@ -315,11 +298,11 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Character_Feats_Type">
-    <xsd:sequence>
-      <xsd:element name="feat" type="RPG_Character_Feat_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
+ <xsd:complexType name="RPG_Character_Feats_Type">
+   <xsd:sequence>
+     <xsd:element name="feat" type="RPG_Character_Feat_Type" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+ </xsd:complexType>
 
   <xsd:simpleType name="RPG_Character_AlignmentCivic_Type">
     <xsd:restriction base="xsd:string">
@@ -377,5 +360,16 @@
       <xsd:enumeration value="OFFHAND_RIGHT"/>
     </xsd:restriction>
   </xsd:simpleType>
+
+ <xsd:simpleType name="RPG_Character_CheckTypeUnion_Type">
+   <xsd:union memberTypes="RPG_Common_Attribute_Type RPG_Common_Skill_Type"/>
+ </xsd:simpleType>
+
+ <xsd:complexType name="RPG_Character_Check_Type">
+   <xsd:sequence>
+     <xsd:element name="type" type="RPG_Character_CheckTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+     <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+   </xsd:sequence>
+ </xsd:complexType>
 
 </xsd:schema>

@@ -10,7 +10,7 @@
 struct RPG_Item_ArmorPropertiesXML
  : public RPG_Item_ArmorPropertiesBase
 {
-  char defenseModifier;
+  signed char defenseModifier;
 };
 
 #endif

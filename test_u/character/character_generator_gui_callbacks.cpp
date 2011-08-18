@@ -36,8 +36,9 @@
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
 
+#include <rpg_character_player_common_tools.h>
+
 #include <rpg_character_defines.h>
-#include <rpg_character_common_tools.h>
 
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_weapon.h>
@@ -143,17 +144,7 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
   // erase current entity profile
   if (data->entity.character)
   {
-    try
-    {
-      delete data->entity.character;
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception, aborting\n")));
-
-      return FALSE;
-    }
+    delete data->entity.character;
     data->entity.character = NULL;
   } // end IF
   data->entity.position = std::make_pair(0, 0);
@@ -165,19 +156,8 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // generate (random) player
-  RPG_Character_Player player = RPG_Character_Common_Tools::generatePlayerCharacter();
-  try
-  {
-    data->entity.character = new RPG_Character_Player(player);
-  }
-  catch (const std::bad_alloc& exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception: \"%s\", aborting\n"),
-               exception.what()));
-
-    return FALSE;
-  }
+  data->entity.character = RPG_Character_Player_Common_Tools::generatePlayerCharacter();
+  ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
   ::update_entity_profile(data->entity,

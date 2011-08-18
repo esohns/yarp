@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_item_XML_parser.h"
 
 #include "rpg_item_weapontype.h"
@@ -54,14 +55,13 @@ void RPG_Item_Dictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& weapon
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::weapon"));
 
   RPG_Item_WeaponProperties prop;
+  prop.toHitModifier = weapon_in.toHitModifier;
   prop.weaponCategory = weapon_in.weaponCategory;
-  prop.weaponClass    = weapon_in.weaponClass;
-  prop.baseStorePrice = weapon_in.baseStorePrice;
-  prop.baseDamage     = weapon_in.baseDamage;
-  prop.criticalHit    = weapon_in.criticalHit;
+  prop.weaponClass = weapon_in.weaponClass;
+  prop.baseDamage = weapon_in.baseDamage;
+  prop.criticalHit = weapon_in.criticalHit;
   prop.rangeIncrement = weapon_in.rangeIncrement;
-  prop.baseWeight     = weapon_in.baseWeight;
-  prop.typeOfDamage   = PHYSICALDAMAGE_NONE;
+  prop.typeOfDamage = PHYSICALDAMAGE_NONE;
   for (std::vector<RPG_Common_PhysicalDamageType>::const_iterator iterator = weapon_in.typeOfDamages.begin();
        iterator != weapon_in.typeOfDamages.end();
        iterator++)
@@ -76,9 +76,14 @@ void RPG_Item_Dictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& weapon
     if ((*iterator) != PHYSICALDAMAGE_NONE)
       prop.typeOfDamage.set((*iterator - 1));
   } // end FOR
-  prop.isNonLethal    = weapon_in.isNonLethal;
-  prop.isReachWeapon  = weapon_in.isReachWeapon;
+  prop.isNonLethal = weapon_in.isNonLethal;
+  prop.isReachWeapon = weapon_in.isReachWeapon;
   prop.isDoubleWeapon = weapon_in.isDoubleWeapon;
+  prop.aura = weapon_in.aura;
+  prop.prerequisites = weapon_in.prerequisites;
+  prop.baseWeight = weapon_in.baseWeight;
+  prop.baseStorePrice = weapon_in.baseStorePrice;
+  prop.costToCreate = weapon_in.costToCreate;
 
   myWeaponDictionary->insert(std::make_pair(weapon_in.weaponType, prop));
 }
@@ -88,14 +93,18 @@ void RPG_Item_Dictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& armor_in
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::armor"));
 
   RPG_Item_ArmorProperties prop;
+  prop.defenseModifier = armor_in.defenseModifier;
   prop.armorCategory = armor_in.armorCategory;
-  prop.baseStorePrice = armor_in.baseStorePrice;
   prop.baseArmorBonus = armor_in.baseArmorBonus;
   prop.maxDexterityBonus = armor_in.maxDexterityBonus;
   prop.armorCheckPenalty = armor_in.armorCheckPenalty;
   prop.arcaneSpellFailure = armor_in.arcaneSpellFailure;
   prop.baseSpeed = armor_in.baseSpeed;
+  prop.aura = armor_in.aura;
+  prop.prerequisites = armor_in.prerequisites;
   prop.baseWeight = armor_in.baseWeight;
+  prop.baseStorePrice = armor_in.baseStorePrice;
+  prop.costToCreate = armor_in.costToCreate;
 
   myArmorDictionary->insert(std::make_pair(armor_in.armorType, prop));
 }

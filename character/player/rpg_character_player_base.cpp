@@ -17,10 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_character_player_base.h"
 
-#include "rpg_character_common_tools.h"
-#include "rpg_character_skills_common_tools.h"
+#include <rpg_character_common_tools.h>
+#include <rpg_character_skills_common_tools.h>
 
 #include <rpg_item_common.h>
 #include <rpg_item_dictionary.h>

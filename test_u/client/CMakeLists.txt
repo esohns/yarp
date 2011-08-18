@@ -28,7 +28,7 @@ set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS "D
 
 add_executable(client_gui ${client_gui_SRCS})
 
-add_dependencies(client_gui RPG_Chance RPG_Dice RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Sound RPG_Engine RPG_Client_GUI)
+add_dependencies(client_gui RPG_Chance RPG_Dice RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Player RPG_Character_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Sound RPG_Engine RPG_Client_GUI)
 
 target_link_libraries(client_gui
                       ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
@@ -50,6 +50,7 @@ target_link_libraries(client_gui
                       RPG_Magic
                       RPG_Item
                       RPG_Character
+                      RPG_Character_Player
                       RPG_Character_Monster
                       RPG_Combat
                       RPG_Map

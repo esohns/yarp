@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_PLAYER_H
 #define RPG_CHARACTER_PLAYER_H
 
@@ -56,12 +57,14 @@ class RPG_Character_Player
 //   RPG_Character_Player& operator=(const RPG_Character_Player&);
 
   // load/save player from/to an XML file
-  static RPG_Character_Player load(const std::string&,  // FQ filename
-                                   const std::string&); // schema repository (directory)
+  // *WARNING*: result needs to be deleted(d) !
+  static RPG_Character_Player* load(const std::string&,  // FQ filename
+                                    const std::string&); // schema repository (directory)
   const bool save(const std::string&) const; // FQ filename
 
   // "empty" player
-  static RPG_Character_Player dummy();
+  // *WARNING*: result needs to be deleted(d) !
+  static RPG_Character_Player* dummy();
 
  private:
   typedef RPG_Character_Player_Base inherited;

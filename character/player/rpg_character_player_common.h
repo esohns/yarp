@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_PLAYER_COMMON_H
 #define RPG_CHARACTER_PLAYER_COMMON_H
 
@@ -28,7 +29,7 @@
 typedef std::vector<RPG_Character_Base*> RPG_Character_List_t;
 typedef RPG_Character_List_t::const_iterator RPG_Character_ListIterator_t;
 
-typedef std::vector<RPG_Character_Player> RPG_Character_Party_t;
+typedef std::vector<RPG_Character_Player*> RPG_Character_Party_t;
 typedef RPG_Character_Party_t::iterator RPG_Character_PartyIterator_t;
 typedef RPG_Character_Party_t::const_iterator RPG_Character_PartyConstIterator_t;
 

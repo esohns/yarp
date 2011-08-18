@@ -63,13 +63,10 @@ class RPG_Character_Gender_XMLTree_Type;
 class RPG_Character_Race_XMLTree_Type;
 class RPG_Character_MetaClass_XMLTree_Type;
 class RPG_Character_ClassXML_XMLTree_Type;
-class RPG_Character_Ability_XMLTree_Type;
-class RPG_Character_Abilities_XMLTree_Type;
 class RPG_Character_Attributes_XMLTree_Type;
 class RPG_Character_SkillValue_XMLTree_Type;
 class RPG_Character_Skills_XMLTree_Type;
-class RPG_Character_CheckTypeUnion_XMLTree_Type;
-class RPG_Character_Check_XMLTree_Type;
+class RPG_Character_Ability_XMLTree_Type;
 class RPG_Character_Feat_XMLTree_Type;
 class RPG_Character_Feats_XMLTree_Type;
 class RPG_Character_AlignmentCivic_XMLTree_Type;
@@ -77,6 +74,8 @@ class RPG_Character_AlignmentEthic_XMLTree_Type;
 class RPG_Character_Alignment_XMLTree_Type;
 class RPG_Character_EquipmentSlot_XMLTree_Type;
 class RPG_Character_OffHand_XMLTree_Type;
+class RPG_Character_CheckTypeUnion_XMLTree_Type;
+class RPG_Character_Check_XMLTree_Type;
 
 #include <memory>    // std::auto_ptr
 #include <limits>    // std::numeric_limits
@@ -368,208 +367,6 @@ bool
 operator!= (const RPG_Character_ClassXML_XMLTree_Type&, const RPG_Character_ClassXML_XMLTree_Type&);
 
 
-class RPG_Character_Ability_XMLTree_Type: public ::xml_schema::string
-{
-  public:
-  enum value
-  {
-    ABILITY_ACID_ATTACK,
-    ABILITY_CORROSIVE_SLIME,
-    ABILITY_DEATH_THROES,
-    ABILITY_ENTANGLE,
-    ABILITY_FLAMING_BODY,
-    ABILITY_LEAP_ATTACK,
-    ABILITY_REND_ARMOR,
-    ABILITY_SCORE_LOSS,
-    ABILITY_SNEAK_ATTACK,
-    ABILITY_SPORES,
-    ABILITY_STENCH,
-    ABILITY_THROW_WEB,
-    ABILITY_ALTERNATE_FORM,
-    ABILITY_ANTIMAGIC,
-    ABILITY_BLINDSIGHT,
-    ABILITY_BLINDSENSE,
-    ABILITY_BREATH_WEAPON,
-    ABILITY_CHANGE_SHAPE,
-    ABILITY_CHARM,
-    ABILITY_COMPULSION,
-    ABILITY_IMMUNITY_COLD,
-    ABILITY_CONSTRICT,
-    ABILITY_RESISTANCE_TO_DAMAGE,
-    ABILITY_DARKVISION,
-    ABILITY_DEATH_ATTACK,
-    ABILITY_DISEASE,
-    ABILITY_ENERGY_DRAIN,
-    ABILITY_ETHEREALNESS,
-    ABILITY_EVASION,
-    ABILITY_IMPROVED_EVASION,
-    ABILITY_FAST_HEALING,
-    ABILITY_FEAR,
-    ABILITY_IMMUNITY_FIRE,
-    ABILITY_GASEOUS_FORM,
-    ABILITY_GAZE_ATTACK,
-    ABILITY_IMPROVED_GRAB,
-    ABILITY_INCORPOREALITY,
-    ABILITY_INVISIBILITY,
-    ABILITY_LEVEL_LOSS,
-    ABILITY_LOWLIGHT_VISION,
-    ABILITY_MANUFACTURED_WEAPONS,
-    ABILITY_MOVEMENT_MODES,
-    ABILITY_NATURAL_WEAPONS,
-    ABILITY_NONABILITIES,
-    ABILITY_PARALYZE_ATTACK,
-    ABILITY_POISON_ATTACK,
-    ABILITY_IMMUNITY_POISON,
-    ABILITY_POLYMORPH,
-    ABILITY_POUNCE,
-    ABILITY_POWERFUL_CHARGE,
-    ABILITY_PSIONICS,
-    ABILITY_RAKE,
-    ABILITY_RAY_ATTACK,
-    ABILITY_REGENERATION,
-    ABILITY_RESISTANCE_TO_ENERGY,
-    ABILITY_SCENT,
-    ABILITY_SONIC_ATTACK,
-    ABILITY_IMMUNITY_SPELL,
-    ABILITY_RESISTANCE_TO_SPELL,
-    ABILITY_SPELLS,
-    ABILITY_SUMMON,
-    ABILITY_SWALLOW_WHOLE,
-    ABILITY_TELEPATHY,
-    ABILITY_TRAMPLE,
-    ABILITY_TREMOR_SENSE,
-    ABILITY_RESISTANCE_TO_TURNING,
-    ABILITY_VULNERABILITY_TO_ENERGY,
-    ABILITY_IMMUNITY_DISEASE,
-    ABILITY_ANIMAL_COMPANION,
-    ABILITY_WOODLAND_STRIDE,
-    ABILITY_SENSE_TRAPS,
-    ABILITY_UNCANNY_DODGE,
-    ABILITY_IMPROVED_UNCANNY_DODGE,
-    ABILITY_CRIPPLING_STRIKE,
-    ABILITY_DEFENSIVE_ROLL,
-    ABILITY_OPPORTUNIST,
-    ABILITY_SKILL_MASTERY,
-    ABILITY_SLIPPERY_MIND,
-    ABILITY_BONUS_FEAT
-  };
-
-  RPG_Character_Ability_XMLTree_Type (value v);
-
-  RPG_Character_Ability_XMLTree_Type (const char* v);
-
-  RPG_Character_Ability_XMLTree_Type (const ::std::string& v);
-
-  RPG_Character_Ability_XMLTree_Type (const ::xml_schema::string& v);
-
-  RPG_Character_Ability_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                      ::xml_schema::flags f = 0,
-                                      ::xml_schema::container* c = 0);
-
-  RPG_Character_Ability_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                      ::xml_schema::flags f = 0,
-                                      ::xml_schema::container* c = 0);
-
-  RPG_Character_Ability_XMLTree_Type (const ::xercesc::DOMAttr& a,
-                                      ::xml_schema::flags f = 0,
-                                      ::xml_schema::container* c = 0);
-
-  RPG_Character_Ability_XMLTree_Type (const ::std::string& s,
-                                      const ::xercesc::DOMElement* e,
-                                      ::xml_schema::flags f = 0,
-                                      ::xml_schema::container* c = 0);
-
-  RPG_Character_Ability_XMLTree_Type (const RPG_Character_Ability_XMLTree_Type& x,
-                                      ::xml_schema::flags f = 0,
-                                      ::xml_schema::container* c = 0);
-
-  virtual RPG_Character_Ability_XMLTree_Type*
-  _clone (::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0) const;
-
-  RPG_Character_Ability_XMLTree_Type&
-  operator= (value v);
-
-  virtual
-  operator value () const
-  {
-    return _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
-  }
-
-  protected:
-  value
-  _xsd_RPG_Character_Ability_XMLTree_Type_convert () const;
-
-  public:
-  static const char* const _xsd_RPG_Character_Ability_XMLTree_Type_literals_[79];
-  static const value _xsd_RPG_Character_Ability_XMLTree_Type_indexes_[79];
-};
-
-class RPG_Character_Abilities_XMLTree_Type: public ::xml_schema::type
-{
-  public:
-  // ability
-  // 
-  typedef ::RPG_Character_Ability_XMLTree_Type ability_type;
-  typedef ::xsd::cxx::tree::sequence< ability_type > ability_sequence;
-  typedef ability_sequence::iterator ability_iterator;
-  typedef ability_sequence::const_iterator ability_const_iterator;
-  typedef ::xsd::cxx::tree::traits< ability_type, char > ability_traits;
-
-  const ability_sequence&
-  ability () const;
-
-  ability_sequence&
-  ability ();
-
-  void
-  ability (const ability_sequence& s);
-
-  // Constructors.
-  //
-  RPG_Character_Abilities_XMLTree_Type ();
-
-  RPG_Character_Abilities_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                        ::xml_schema::flags f = 0,
-                                        ::xml_schema::container* c = 0);
-
-  RPG_Character_Abilities_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                        ::xml_schema::flags f = 0,
-                                        ::xml_schema::container* c = 0);
-
-  RPG_Character_Abilities_XMLTree_Type (const RPG_Character_Abilities_XMLTree_Type& x,
-                                        ::xml_schema::flags f = 0,
-                                        ::xml_schema::container* c = 0);
-
-  virtual RPG_Character_Abilities_XMLTree_Type*
-  _clone (::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0) const;
-
-  virtual 
-  ~RPG_Character_Abilities_XMLTree_Type ();
-
-  // Implementation.
-  //
-  protected:
-  void
-  parse (::xsd::cxx::xml::dom::parser< char >&,
-         ::xml_schema::flags);
-
-  protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
-  ability_sequence ability_;
-};
-
-bool
-operator== (const RPG_Character_Abilities_XMLTree_Type&, const RPG_Character_Abilities_XMLTree_Type&);
-
-bool
-operator!= (const RPG_Character_Abilities_XMLTree_Type&, const RPG_Character_Abilities_XMLTree_Type&);
-
-
 class RPG_Character_Attributes_XMLTree_Type: public ::xml_schema::type
 {
   public:
@@ -858,207 +655,142 @@ bool
 operator!= (const RPG_Character_Skills_XMLTree_Type&, const RPG_Character_Skills_XMLTree_Type&);
 
 
-class RPG_Character_CheckTypeUnion_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_Ability_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
   {
-    ATTRIBUTE_CHARISMA,
-    ATTRIBUTE_CONSTITUTION,
-    ATTRIBUTE_DEXTERITY,
-    ATTRIBUTE_INTELLIGENCE,
-    ATTRIBUTE_STRENGTH,
-    ATTRIBUTE_WISDOM,
-    ATTRIBUTE_ANY,
-    SKILL_APPRAISE,
-    SKILL_BALANCE,
-    SKILL_BLUFF,
-    SKILL_CLIMB,
-    SKILL_CONCENTRATION,
-    SKILL_CRAFT_ANY,
-    SKILL_CRAFT_ALL,
-    SKILL_CRAFT_ALCHEMY,
-    SKILL_CRAFT_FLETCHER,
-    SKILL_CRAFT_BOWYER,
-    SKILL_CRAFT_SMITH_ARMOR,
-    SKILL_CRAFT_SMITH_BLACK,
-    SKILL_CRAFT_SMITH_WEAPON,
-    SKILL_CRAFT_TRAP,
-    SKILL_CRAFT_OTHER,
-    SKILL_DECIPHER_SCRIPT,
-    SKILL_DIPLOMACY,
-    SKILL_DISABLE_DEVICE,
-    SKILL_DISGUISE,
-    SKILL_ESCAPE_ARTIST,
-    SKILL_FORGERY,
-    SKILL_GATHER_INFORMATION,
-    SKILL_HANDLE_ANIMAL,
-    SKILL_HEAL,
-    SKILL_HIDE,
-    SKILL_INTIMIDATE,
-    SKILL_JUMP,
-    SKILL_KNOWLEDGE_ANY,
-    SKILL_KNOWLEDGE_ALL,
-    SKILL_KNOWLEDGE_ARCANA,
-    SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING,
-    SKILL_KNOWLEDGE_DUNGEONS,
-    SKILL_KNOWLEDGE_GEOGRAPHY,
-    SKILL_KNOWLEDGE_HISTORY,
-    SKILL_KNOWLEDGE_LOCAL,
-    SKILL_KNOWLEDGE_NATURE,
-    SKILL_KNOWLEDGE_NOBILITY_ROYALTY,
-    SKILL_KNOWLEDGE_RELIGION,
-    SKILL_KNOWLEDGE_PLANES,
-    SKILL_LISTEN,
-    SKILL_MOVE_SILENTLY,
-    SKILL_OPEN_LOCK,
-    SKILL_PERFORM,
-    SKILL_PROFESSION,
-    SKILL_RIDE,
-    SKILL_SEARCH,
-    SKILL_SENSE_MOTIVE,
-    SKILL_SLEIGHT_OF_HAND,
-    SKILL_SPEAK_LANGUAGE,
-    SKILL_SPELLCRAFT,
-    SKILL_SPOT,
-    SKILL_SURVIVAL,
-    SKILL_SWIM,
-    SKILL_TUMBLE,
-    SKILL_USE_MAGIC_DEVICE,
-    SKILL_USE_ROPE
+    ABILITY_ACID_ATTACK,
+    ABILITY_CORROSIVE_SLIME,
+    ABILITY_DEATH_THROES,
+    ABILITY_ENTANGLE,
+    ABILITY_FLAMING_BODY,
+    ABILITY_LEAP_ATTACK,
+    ABILITY_REND_ARMOR,
+    ABILITY_SCORE_LOSS,
+    ABILITY_SNEAK_ATTACK,
+    ABILITY_SPORES,
+    ABILITY_STENCH,
+    ABILITY_THROW_WEB,
+    ABILITY_ALTERNATE_FORM,
+    ABILITY_ANTIMAGIC,
+    ABILITY_BLINDSIGHT,
+    ABILITY_BLINDSENSE,
+    ABILITY_BREATH_WEAPON,
+    ABILITY_CHANGE_SHAPE,
+    ABILITY_CHARM,
+    ABILITY_COMPULSION,
+    ABILITY_IMMUNITY_COLD,
+    ABILITY_CONSTRICT,
+    ABILITY_RESISTANCE_TO_DAMAGE,
+    ABILITY_DARKVISION,
+    ABILITY_DEATH_ATTACK,
+    ABILITY_DISEASE,
+    ABILITY_ENERGY_DRAIN,
+    ABILITY_ETHEREALNESS,
+    ABILITY_EVASION,
+    ABILITY_IMPROVED_EVASION,
+    ABILITY_FAST_HEALING,
+    ABILITY_FEAR,
+    ABILITY_IMMUNITY_FIRE,
+    ABILITY_GASEOUS_FORM,
+    ABILITY_GAZE_ATTACK,
+    ABILITY_IMPROVED_GRAB,
+    ABILITY_INCORPOREALITY,
+    ABILITY_INVISIBILITY,
+    ABILITY_LEVEL_LOSS,
+    ABILITY_LOWLIGHT_VISION,
+    ABILITY_MANUFACTURED_WEAPONS,
+    ABILITY_MOVEMENT_MODES,
+    ABILITY_NATURAL_WEAPONS,
+    ABILITY_NONABILITIES,
+    ABILITY_PARALYZE_ATTACK,
+    ABILITY_POISON_ATTACK,
+    ABILITY_IMMUNITY_POISON,
+    ABILITY_POLYMORPH,
+    ABILITY_POUNCE,
+    ABILITY_POWERFUL_CHARGE,
+    ABILITY_PSIONICS,
+    ABILITY_RAKE,
+    ABILITY_RAY_ATTACK,
+    ABILITY_REGENERATION,
+    ABILITY_RESISTANCE_TO_ENERGY,
+    ABILITY_SCENT,
+    ABILITY_SONIC_ATTACK,
+    ABILITY_IMMUNITY_SPELL,
+    ABILITY_RESISTANCE_TO_SPELL,
+    ABILITY_SPELLS,
+    ABILITY_SUMMON,
+    ABILITY_SWALLOW_WHOLE,
+    ABILITY_TELEPATHY,
+    ABILITY_TRAMPLE,
+    ABILITY_TREMOR_SENSE,
+    ABILITY_RESISTANCE_TO_TURNING,
+    ABILITY_VULNERABILITY_TO_ENERGY,
+    ABILITY_IMMUNITY_DISEASE,
+    ABILITY_ANIMAL_COMPANION,
+    ABILITY_WOODLAND_STRIDE,
+    ABILITY_SENSE_TRAPS,
+    ABILITY_UNCANNY_DODGE,
+    ABILITY_IMPROVED_UNCANNY_DODGE,
+    ABILITY_CRIPPLING_STRIKE,
+    ABILITY_DEFENSIVE_ROLL,
+    ABILITY_OPPORTUNIST,
+    ABILITY_SKILL_MASTERY,
+    ABILITY_SLIPPERY_MIND,
+    ABILITY_BONUS_FEAT
   };
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (value v);
+  RPG_Character_Ability_XMLTree_Type (value v);
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (const char* v);
+  RPG_Character_Ability_XMLTree_Type (const char* v);
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::std::string& v);
+  RPG_Character_Ability_XMLTree_Type (const ::std::string& v);
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
+  RPG_Character_Ability_XMLTree_Type (const ::xml_schema::string& v);
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                             ::xml_schema::flags f = 0,
-                                             ::xml_schema::container* c = 0);
+  RPG_Character_Ability_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                             ::xml_schema::flags f = 0,
-                                             ::xml_schema::container* c = 0);
+  RPG_Character_Ability_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMAttr& a,
-                                             ::xml_schema::flags f = 0,
-                                             ::xml_schema::container* c = 0);
+  RPG_Character_Ability_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::std::string& s,
-                                             const ::xercesc::DOMElement* e,
-                                             ::xml_schema::flags f = 0,
-                                             ::xml_schema::container* c = 0);
+  RPG_Character_Ability_XMLTree_Type (const ::std::string& s,
+                                      const ::xercesc::DOMElement* e,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type (const RPG_Character_CheckTypeUnion_XMLTree_Type& x,
-                                             ::xml_schema::flags f = 0,
-                                             ::xml_schema::container* c = 0);
+  RPG_Character_Ability_XMLTree_Type (const RPG_Character_Ability_XMLTree_Type& x,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
-  virtual RPG_Character_CheckTypeUnion_XMLTree_Type*
+  virtual RPG_Character_Ability_XMLTree_Type*
   _clone (::xml_schema::flags f = 0,
           ::xml_schema::container* c = 0) const;
 
-  RPG_Character_CheckTypeUnion_XMLTree_Type&
+  RPG_Character_Ability_XMLTree_Type&
   operator= (value v);
 
   virtual
   operator value () const
   {
-    return _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+    return _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
   }
 
   protected:
   value
-  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert () const;
+  _xsd_RPG_Character_Ability_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[63];
-  static const value _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_[63];
+  static const char* const _xsd_RPG_Character_Ability_XMLTree_Type_literals_[79];
+  static const value _xsd_RPG_Character_Ability_XMLTree_Type_indexes_[79];
 };
-
-class RPG_Character_Check_XMLTree_Type: public ::xml_schema::type
-{
-  public:
-  // type
-  // 
-  typedef ::RPG_Character_CheckTypeUnion_XMLTree_Type type_type;
-  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
-
-  const type_type&
-  type () const;
-
-  type_type&
-  type ();
-
-  void
-  type (const type_type& x);
-
-  void
-  type (::std::auto_ptr< type_type > p);
-
-  // difficultyClass
-  // 
-  typedef ::xml_schema::unsigned_byte difficultyClass_type;
-  typedef ::xsd::cxx::tree::traits< difficultyClass_type, char > difficultyClass_traits;
-
-  const difficultyClass_type&
-  difficultyClass () const;
-
-  difficultyClass_type&
-  difficultyClass ();
-
-  void
-  difficultyClass (const difficultyClass_type& x);
-
-  // Constructors.
-  //
-  RPG_Character_Check_XMLTree_Type (const type_type&,
-                                    const difficultyClass_type&);
-
-  RPG_Character_Check_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                    ::xml_schema::flags f = 0,
-                                    ::xml_schema::container* c = 0);
-
-  RPG_Character_Check_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                    ::xml_schema::flags f = 0,
-                                    ::xml_schema::container* c = 0);
-
-  RPG_Character_Check_XMLTree_Type (const RPG_Character_Check_XMLTree_Type& x,
-                                    ::xml_schema::flags f = 0,
-                                    ::xml_schema::container* c = 0);
-
-  virtual RPG_Character_Check_XMLTree_Type*
-  _clone (::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0) const;
-
-  virtual 
-  ~RPG_Character_Check_XMLTree_Type ();
-
-  // Implementation.
-  //
-  protected:
-  void
-  parse (::xsd::cxx::xml::dom::parser< char >&,
-         ::xml_schema::flags);
-
-  protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
-  ::xsd::cxx::tree::one< type_type > type_;
-  ::xsd::cxx::tree::one< difficultyClass_type > difficultyClass_;
-};
-
-bool
-operator== (const RPG_Character_Check_XMLTree_Type&, const RPG_Character_Check_XMLTree_Type&);
-
-bool
-operator!= (const RPG_Character_Check_XMLTree_Type&, const RPG_Character_Check_XMLTree_Type&);
-
 
 class RPG_Character_Feat_XMLTree_Type: public ::xml_schema::string
 {
@@ -1648,6 +1380,208 @@ class RPG_Character_OffHand_XMLTree_Type: public ::xml_schema::string
   static const value _xsd_RPG_Character_OffHand_XMLTree_Type_indexes_[3];
 };
 
+class RPG_Character_CheckTypeUnion_XMLTree_Type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    ATTRIBUTE_CHARISMA,
+    ATTRIBUTE_CONSTITUTION,
+    ATTRIBUTE_DEXTERITY,
+    ATTRIBUTE_INTELLIGENCE,
+    ATTRIBUTE_STRENGTH,
+    ATTRIBUTE_WISDOM,
+    ATTRIBUTE_ANY,
+    SKILL_APPRAISE,
+    SKILL_BALANCE,
+    SKILL_BLUFF,
+    SKILL_CLIMB,
+    SKILL_CONCENTRATION,
+    SKILL_CRAFT_ANY,
+    SKILL_CRAFT_ALL,
+    SKILL_CRAFT_ALCHEMY,
+    SKILL_CRAFT_FLETCHER,
+    SKILL_CRAFT_BOWYER,
+    SKILL_CRAFT_SMITH_ARMOR,
+    SKILL_CRAFT_SMITH_BLACK,
+    SKILL_CRAFT_SMITH_WEAPON,
+    SKILL_CRAFT_TRAP,
+    SKILL_CRAFT_OTHER,
+    SKILL_DECIPHER_SCRIPT,
+    SKILL_DIPLOMACY,
+    SKILL_DISABLE_DEVICE,
+    SKILL_DISGUISE,
+    SKILL_ESCAPE_ARTIST,
+    SKILL_FORGERY,
+    SKILL_GATHER_INFORMATION,
+    SKILL_HANDLE_ANIMAL,
+    SKILL_HEAL,
+    SKILL_HIDE,
+    SKILL_INTIMIDATE,
+    SKILL_JUMP,
+    SKILL_KNOWLEDGE_ANY,
+    SKILL_KNOWLEDGE_ALL,
+    SKILL_KNOWLEDGE_ARCANA,
+    SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING,
+    SKILL_KNOWLEDGE_DUNGEONS,
+    SKILL_KNOWLEDGE_GEOGRAPHY,
+    SKILL_KNOWLEDGE_HISTORY,
+    SKILL_KNOWLEDGE_LOCAL,
+    SKILL_KNOWLEDGE_NATURE,
+    SKILL_KNOWLEDGE_NOBILITY_ROYALTY,
+    SKILL_KNOWLEDGE_RELIGION,
+    SKILL_KNOWLEDGE_PLANES,
+    SKILL_LISTEN,
+    SKILL_MOVE_SILENTLY,
+    SKILL_OPEN_LOCK,
+    SKILL_PERFORM,
+    SKILL_PROFESSION,
+    SKILL_RIDE,
+    SKILL_SEARCH,
+    SKILL_SENSE_MOTIVE,
+    SKILL_SLEIGHT_OF_HAND,
+    SKILL_SPEAK_LANGUAGE,
+    SKILL_SPELLCRAFT,
+    SKILL_SPOT,
+    SKILL_SURVIVAL,
+    SKILL_SWIM,
+    SKILL_TUMBLE,
+    SKILL_USE_MAGIC_DEVICE,
+    SKILL_USE_ROPE
+  };
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (value v);
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (const char* v);
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::std::string& v);
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (const ::std::string& s,
+                                             const ::xercesc::DOMElement* e,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type (const RPG_Character_CheckTypeUnion_XMLTree_Type& x,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
+
+  virtual RPG_Character_CheckTypeUnion_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  RPG_Character_CheckTypeUnion_XMLTree_Type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert () const;
+
+  public:
+  static const char* const _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[63];
+  static const value _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_[63];
+};
+
+class RPG_Character_Check_XMLTree_Type: public ::xml_schema::type
+{
+  public:
+  // type
+  // 
+  typedef ::RPG_Character_CheckTypeUnion_XMLTree_Type type_type;
+  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
+
+  const type_type&
+  type () const;
+
+  type_type&
+  type ();
+
+  void
+  type (const type_type& x);
+
+  void
+  type (::std::auto_ptr< type_type > p);
+
+  // difficultyClass
+  // 
+  typedef ::xml_schema::unsigned_byte difficultyClass_type;
+  typedef ::xsd::cxx::tree::traits< difficultyClass_type, char > difficultyClass_traits;
+
+  const difficultyClass_type&
+  difficultyClass () const;
+
+  difficultyClass_type&
+  difficultyClass ();
+
+  void
+  difficultyClass (const difficultyClass_type& x);
+
+  // Constructors.
+  //
+  RPG_Character_Check_XMLTree_Type (const type_type&,
+                                    const difficultyClass_type&);
+
+  RPG_Character_Check_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
+
+  RPG_Character_Check_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
+
+  RPG_Character_Check_XMLTree_Type (const RPG_Character_Check_XMLTree_Type& x,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
+
+  virtual RPG_Character_Check_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  virtual 
+  ~RPG_Character_Check_XMLTree_Type ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
+  ::xsd::cxx::tree::one< type_type > type_;
+  ::xsd::cxx::tree::one< difficultyClass_type > difficultyClass_;
+};
+
+bool
+operator== (const RPG_Character_Check_XMLTree_Type&, const RPG_Character_Check_XMLTree_Type&);
+
+bool
+operator!= (const RPG_Character_Check_XMLTree_Type&, const RPG_Character_Check_XMLTree_Type&);
+
+
 #include <iosfwd>
 
 ::std::ostream&
@@ -1672,15 +1606,6 @@ operator<< (::std::ostream&, const RPG_Character_MetaClass_XMLTree_Type&);
 operator<< (::std::ostream&, const RPG_Character_ClassXML_XMLTree_Type&);
 
 ::std::ostream&
-operator<< (::std::ostream&, RPG_Character_Ability_XMLTree_Type::value);
-
-::std::ostream&
-operator<< (::std::ostream&, const RPG_Character_Ability_XMLTree_Type&);
-
-::std::ostream&
-operator<< (::std::ostream&, const RPG_Character_Abilities_XMLTree_Type&);
-
-::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Attributes_XMLTree_Type&);
 
 ::std::ostream&
@@ -1690,13 +1615,10 @@ operator<< (::std::ostream&, const RPG_Character_SkillValue_XMLTree_Type&);
 operator<< (::std::ostream&, const RPG_Character_Skills_XMLTree_Type&);
 
 ::std::ostream&
-operator<< (::std::ostream&, RPG_Character_CheckTypeUnion_XMLTree_Type::value);
+operator<< (::std::ostream&, RPG_Character_Ability_XMLTree_Type::value);
 
 ::std::ostream&
-operator<< (::std::ostream&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
-
-::std::ostream&
-operator<< (::std::ostream&, const RPG_Character_Check_XMLTree_Type&);
+operator<< (::std::ostream&, const RPG_Character_Ability_XMLTree_Type&);
 
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_Feat_XMLTree_Type::value);
@@ -1733,6 +1655,15 @@ operator<< (::std::ostream&, RPG_Character_OffHand_XMLTree_Type::value);
 
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_OffHand_XMLTree_Type&);
+
+::std::ostream&
+operator<< (::std::ostream&, RPG_Character_CheckTypeUnion_XMLTree_Type::value);
+
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
+
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Character_Check_XMLTree_Type&);
 
 #include <iosfwd>
 
@@ -1782,19 +1713,6 @@ void
 operator<< (::xercesc::DOMElement&, const RPG_Character_ClassXML_XMLTree_Type&);
 
 void
-operator<< (::xercesc::DOMElement&, const RPG_Character_Ability_XMLTree_Type&);
-
-void
-operator<< (::xercesc::DOMAttr&, const RPG_Character_Ability_XMLTree_Type&);
-
-void
-operator<< (::xml_schema::list_stream&,
-            const RPG_Character_Ability_XMLTree_Type&);
-
-void
-operator<< (::xercesc::DOMElement&, const RPG_Character_Abilities_XMLTree_Type&);
-
-void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Attributes_XMLTree_Type&);
 
 void
@@ -1804,17 +1722,14 @@ void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Skills_XMLTree_Type&);
 
 void
-operator<< (::xercesc::DOMElement&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
+operator<< (::xercesc::DOMElement&, const RPG_Character_Ability_XMLTree_Type&);
 
 void
-operator<< (::xercesc::DOMAttr&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
+operator<< (::xercesc::DOMAttr&, const RPG_Character_Ability_XMLTree_Type&);
 
 void
 operator<< (::xml_schema::list_stream&,
-            const RPG_Character_CheckTypeUnion_XMLTree_Type&);
-
-void
-operator<< (::xercesc::DOMElement&, const RPG_Character_Check_XMLTree_Type&);
+            const RPG_Character_Ability_XMLTree_Type&);
 
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Feat_XMLTree_Type&);
@@ -1872,6 +1787,19 @@ void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_OffHand_XMLTree_Type&);
 
+void
+operator<< (::xercesc::DOMElement&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
+
+void
+operator<< (::xercesc::DOMAttr&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
+
+void
+operator<< (::xml_schema::list_stream&,
+            const RPG_Character_CheckTypeUnion_XMLTree_Type&);
+
+void
+operator<< (::xercesc::DOMElement&, const RPG_Character_Check_XMLTree_Type&);
+
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Gender_XMLTree_Type&);
@@ -1890,14 +1818,6 @@ operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Character_Ability_XMLTree_Type&);
-
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Character_Abilities_XMLTree_Type&);
-
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Attributes_XMLTree_Type&);
 
 ::xml_schema::ostream< ACE_OutputCDR >&
@@ -1910,11 +1830,7 @@ operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Character_CheckTypeUnion_XMLTree_Type&);
-
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Character_Check_XMLTree_Type&);
+            const RPG_Character_Ability_XMLTree_Type&);
 
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
@@ -1943,6 +1859,14 @@ operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_OffHand_XMLTree_Type&);
+
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Character_CheckTypeUnion_XMLTree_Type&);
+
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Character_Check_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 

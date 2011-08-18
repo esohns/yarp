@@ -39,7 +39,10 @@ set_target_properties(RPG_Client_GUI PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS RPG_Client_GUI LIBRARY DESTINATION lib)
 
 ########### install files ###############
-install(FILES  rpg_client.glade rpg_client.ini DESTINATION share/RPG/config)
+install(FILES
+  rpg_client.glade
+  rpg_client.ini
+DESTINATION share/RPG/config)
 
 install(FILES
 	rpg_client_callbacks.h

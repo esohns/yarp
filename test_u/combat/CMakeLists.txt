@@ -19,7 +19,7 @@ add_executable(combat_simulator ${combat_simulator_SRCS})
 
 target_link_libraries(combat_simulator ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
 
-target_link_libraries(combat_simulator pthread ACE xerces-c RPG_Chance RPG_Dice RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+target_link_libraries(combat_simulator pthread ACE xerces-c RPG_Chance RPG_Dice RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Monster RPG_Character_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
 
 ########### install files ###############
 install(TARGETS combat_simulator RUNTIME DESTINATION bin)

@@ -796,7 +796,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  GdkWindow* main_dialog_window = gtk_widget_get_window(main_dialog);
+//   GdkWindow* main_dialog_window = gtk_widget_get_window(main_dialog);
 //   gtk_window_set_title(,
 //                        caption.c_str());
 
@@ -864,14 +864,27 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  ::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
-                  list);
   gtk_combo_box_set_model(repository_combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox),
-                           (g_list_length(gtk_container_get_children(GTK_CONTAINER(repository_combobox))) ? TRUE
-                                                                                                           : FALSE));
+  if (::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
+                      list))
+    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox),
+                             TRUE);
+  else
+  {
+    // make create button sensitive (if it's not already)
+    GtkButton* button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                                        ACE_TEXT_ALWAYS_CHAR("create")));
+    ACE_ASSERT(button);
+    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+    // make load button sensitive (if it's not already)
+    button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                             ACE_TEXT_ALWAYS_CHAR("load")));
+    ACE_ASSERT(button);
+    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  } // end ELSE
 
   // step4a: connect default signals
   gpointer userData_p = const_cast<RPG_Client_GTK_CBData_t*>(&userData_in);
@@ -899,6 +912,19 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                                 ACE_TEXT_ALWAYS_CHAR("create_character_activated_GTK_cb"),
 //                                 G_CALLBACK(create_character_activated_GTK_cb),
 //                                 userData_p);
+
+  button = NULL;
+  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                           ACE_TEXT_ALWAYS_CHAR("drop")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(drop_character_activated_GTK_cb),
+                   userData_p);
+  //   glade_xml_signal_connect_data(xml,
+  //                                 ACE_TEXT_ALWAYS_CHAR("drop_character_activated_GTK_cb"),
+  //                                 G_CALLBACK(drop_character_activated_GTK_cb),
+  //                                 userData_p);
 
   GtkFileChooser* filechooser = NULL;
   filechooser = GTK_FILE_CHOOSER(glade_xml_get_widget(userData_in.xml,
@@ -937,6 +963,31 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                                 G_CALLBACK(save_character_activated_GTK_cb),
 //                                 userData_p);
 
+  GtkComboBox* combobox = NULL;
+  combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
+                                                RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+  ACE_ASSERT(combobox);
+  g_signal_connect(combobox,
+                   ACE_TEXT_ALWAYS_CHAR("changed"),
+                   G_CALLBACK(character_repository_combobox_changed_GTK_cb),
+                   userData_p);
+  //   glade_xml_signal_connect_data(xml,
+  //                                 ACE_TEXT_ALWAYS_CHAR("characters_activated_GTK_cb"),
+  //                                 G_CALLBACK(characters_activated_GTK_cb),
+  //                                 userData_p);
+
+  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                           ACE_TEXT_ALWAYS_CHAR("character_repository_button")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(character_repository_button_clicked_GTK_cb),
+                   userData_p);
+  //   glade_xml_signal_connect_data(xml,
+  //                                 ACE_TEXT_ALWAYS_CHAR("characters_refresh_activated_GTK_cb"),
+  //                                 G_CALLBACK(characters_refresh_activated_GTK_cb),
+  //                                 userData_p);
+
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
                                            ACE_TEXT_ALWAYS_CHAR("join")));
   ACE_ASSERT(button);
@@ -961,13 +1012,13 @@ do_initGUI(const std::string& graphicsDirectory_in,
   //                                 G_CALLBACK(join_game_activated_GTK_cb),
   //                                 userData_p);
 
-  GtkComboBox* combobox = NULL;
+  combobox = NULL;
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+                                                RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
-                   G_CALLBACK(characters_activated_GTK_cb),
+                   G_CALLBACK(server_repository_combobox_changed_GTK_cb),
                    userData_p);
 //   glade_xml_signal_connect_data(xml,
 //                                 ACE_TEXT_ALWAYS_CHAR("characters_activated_GTK_cb"),
@@ -975,11 +1026,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //                                 userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
-                                           ACE_TEXT_ALWAYS_CHAR("refresh")));
+                                           ACE_TEXT_ALWAYS_CHAR("server_repository_button")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(characters_refresh_activated_GTK_cb),
+                   G_CALLBACK(server_repository_button_clicked_GTK_cb),
                    userData_p);
 //   glade_xml_signal_connect_data(xml,
 //                                 ACE_TEXT_ALWAYS_CHAR("characters_refresh_activated_GTK_cb"),

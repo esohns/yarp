@@ -221,73 +221,6 @@ subClass (const subClass_sequence& s)
 }
 
 
-// RPG_Character_Ability_XMLTree_Type
-// 
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (value v)
-: ::xml_schema::string (_xsd_RPG_Character_Ability_XMLTree_Type_literals_[v])
-{
-}
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (const char* v)
-: ::xml_schema::string (v)
-{
-}
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (const ::std::string& v)
-: ::xml_schema::string (v)
-{
-}
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (const ::xml_schema::string& v)
-: ::xml_schema::string (v)
-{
-}
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (const RPG_Character_Ability_XMLTree_Type& v,
-                                    ::xml_schema::flags f,
-                                    ::xml_schema::container* c)
-: ::xml_schema::string (v, f, c)
-{
-}
-
-RPG_Character_Ability_XMLTree_Type& RPG_Character_Ability_XMLTree_Type::
-operator= (value v)
-{
-  static_cast< ::xml_schema::string& > (*this) = 
-  ::xml_schema::string (_xsd_RPG_Character_Ability_XMLTree_Type_literals_[v]);
-
-  return *this;
-}
-
-
-// RPG_Character_Abilities_XMLTree_Type
-// 
-
-const RPG_Character_Abilities_XMLTree_Type::ability_sequence& RPG_Character_Abilities_XMLTree_Type::
-ability () const
-{
-  return this->ability_;
-}
-
-RPG_Character_Abilities_XMLTree_Type::ability_sequence& RPG_Character_Abilities_XMLTree_Type::
-ability ()
-{
-  return this->ability_;
-}
-
-void RPG_Character_Abilities_XMLTree_Type::
-ability (const ability_sequence& s)
-{
-  this->ability_ = s;
-}
-
-
 // RPG_Character_Attributes_XMLTree_Type
 // 
 
@@ -468,94 +401,48 @@ skill (const skill_sequence& s)
 }
 
 
-// RPG_Character_CheckTypeUnion_XMLTree_Type
+// RPG_Character_Ability_XMLTree_Type
 // 
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (value v)
-: ::xml_schema::string (_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[v])
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Character_Ability_XMLTree_Type_literals_[v])
 {
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (const char* v)
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (const char* v)
 : ::xml_schema::string (v)
 {
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (const ::std::string& v)
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (const ::std::string& v)
 : ::xml_schema::string (v)
 {
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xml_schema::string& v)
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (const ::xml_schema::string& v)
 : ::xml_schema::string (v)
 {
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (const RPG_Character_CheckTypeUnion_XMLTree_Type& v,
-                                           ::xml_schema::flags f,
-                                           ::xml_schema::container* c)
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (const RPG_Character_Ability_XMLTree_Type& v,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
 : ::xml_schema::string (v, f, c)
 {
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type& RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type& RPG_Character_Ability_XMLTree_Type::
 operator= (value v)
 {
   static_cast< ::xml_schema::string& > (*this) = 
-  ::xml_schema::string (_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[v]);
+  ::xml_schema::string (_xsd_RPG_Character_Ability_XMLTree_Type_literals_[v]);
 
   return *this;
-}
-
-
-// RPG_Character_Check_XMLTree_Type
-// 
-
-const RPG_Character_Check_XMLTree_Type::type_type& RPG_Character_Check_XMLTree_Type::
-type () const
-{
-  return this->type_.get ();
-}
-
-RPG_Character_Check_XMLTree_Type::type_type& RPG_Character_Check_XMLTree_Type::
-type ()
-{
-  return this->type_.get ();
-}
-
-void RPG_Character_Check_XMLTree_Type::
-type (const type_type& x)
-{
-  this->type_.set (x);
-}
-
-void RPG_Character_Check_XMLTree_Type::
-type (::std::auto_ptr< type_type > x)
-{
-  this->type_.set (x);
-}
-
-const RPG_Character_Check_XMLTree_Type::difficultyClass_type& RPG_Character_Check_XMLTree_Type::
-difficultyClass () const
-{
-  return this->difficultyClass_.get ();
-}
-
-RPG_Character_Check_XMLTree_Type::difficultyClass_type& RPG_Character_Check_XMLTree_Type::
-difficultyClass ()
-{
-  return this->difficultyClass_.get ();
-}
-
-void RPG_Character_Check_XMLTree_Type::
-difficultyClass (const difficultyClass_type& x)
-{
-  this->difficultyClass_.set (x);
 }
 
 
@@ -855,6 +742,97 @@ operator= (value v)
   ::xml_schema::string (_xsd_RPG_Character_OffHand_XMLTree_Type_literals_[v]);
 
   return *this;
+}
+
+
+// RPG_Character_CheckTypeUnion_XMLTree_Type
+// 
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (const RPG_Character_CheckTypeUnion_XMLTree_Type& v,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type& RPG_Character_CheckTypeUnion_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
+// RPG_Character_Check_XMLTree_Type
+// 
+
+const RPG_Character_Check_XMLTree_Type::type_type& RPG_Character_Check_XMLTree_Type::
+type () const
+{
+  return this->type_.get ();
+}
+
+RPG_Character_Check_XMLTree_Type::type_type& RPG_Character_Check_XMLTree_Type::
+type ()
+{
+  return this->type_.get ();
+}
+
+void RPG_Character_Check_XMLTree_Type::
+type (const type_type& x)
+{
+  this->type_.set (x);
+}
+
+void RPG_Character_Check_XMLTree_Type::
+type (::std::auto_ptr< type_type > x)
+{
+  this->type_.set (x);
+}
+
+const RPG_Character_Check_XMLTree_Type::difficultyClass_type& RPG_Character_Check_XMLTree_Type::
+difficultyClass () const
+{
+  return this->difficultyClass_.get ();
+}
+
+RPG_Character_Check_XMLTree_Type::difficultyClass_type& RPG_Character_Check_XMLTree_Type::
+difficultyClass ()
+{
+  return this->difficultyClass_.get ();
+}
+
+void RPG_Character_Check_XMLTree_Type::
+difficultyClass (const difficultyClass_type& x)
+{
+  this->difficultyClass_.set (x);
 }
 
 
@@ -1198,315 +1176,6 @@ operator== (const RPG_Character_ClassXML_XMLTree_Type& x, const RPG_Character_Cl
 
 bool
 operator!= (const RPG_Character_ClassXML_XMLTree_Type& x, const RPG_Character_ClassXML_XMLTree_Type& y)
-{
-  return !(x == y);
-}
-
-// RPG_Character_Ability_XMLTree_Type
-//
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                    ::xml_schema::flags f,
-                                    ::xml_schema::container* c)
-: ::xml_schema::string (e, f, c)
-{
-  _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
-}
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (const ::xercesc::DOMAttr& a,
-                                    ::xml_schema::flags f,
-                                    ::xml_schema::container* c)
-: ::xml_schema::string (a, f, c)
-{
-  _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
-}
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (const ::std::string& s,
-                                    const ::xercesc::DOMElement* e,
-                                    ::xml_schema::flags f,
-                                    ::xml_schema::container* c)
-: ::xml_schema::string (s, e, f, c)
-{
-  _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
-}
-
-RPG_Character_Ability_XMLTree_Type* RPG_Character_Ability_XMLTree_Type::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class RPG_Character_Ability_XMLTree_Type (*this, f, c);
-}
-
-RPG_Character_Ability_XMLTree_Type::value RPG_Character_Ability_XMLTree_Type::
-_xsd_RPG_Character_Ability_XMLTree_Type_convert () const
-{
-  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Character_Ability_XMLTree_Type_literals_);
-  const value* i (::std::lower_bound (
-                    _xsd_RPG_Character_Ability_XMLTree_Type_indexes_,
-                    _xsd_RPG_Character_Ability_XMLTree_Type_indexes_ + 79,
-                    *this,
-                    c));
-
-  if (i == _xsd_RPG_Character_Ability_XMLTree_Type_indexes_ + 79 || _xsd_RPG_Character_Ability_XMLTree_Type_literals_[*i] != *this)
-  {
-    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
-  }
-
-  return *i;
-}
-
-const char* const RPG_Character_Ability_XMLTree_Type::
-_xsd_RPG_Character_Ability_XMLTree_Type_literals_[79] =
-{
-  "ABILITY_ACID_ATTACK",
-  "ABILITY_CORROSIVE_SLIME",
-  "ABILITY_DEATH_THROES",
-  "ABILITY_ENTANGLE",
-  "ABILITY_FLAMING_BODY",
-  "ABILITY_LEAP_ATTACK",
-  "ABILITY_REND_ARMOR",
-  "ABILITY_SCORE_LOSS",
-  "ABILITY_SNEAK_ATTACK",
-  "ABILITY_SPORES",
-  "ABILITY_STENCH",
-  "ABILITY_THROW_WEB",
-  "ABILITY_ALTERNATE_FORM",
-  "ABILITY_ANTIMAGIC",
-  "ABILITY_BLINDSIGHT",
-  "ABILITY_BLINDSENSE",
-  "ABILITY_BREATH_WEAPON",
-  "ABILITY_CHANGE_SHAPE",
-  "ABILITY_CHARM",
-  "ABILITY_COMPULSION",
-  "ABILITY_IMMUNITY_COLD",
-  "ABILITY_CONSTRICT",
-  "ABILITY_RESISTANCE_TO_DAMAGE",
-  "ABILITY_DARKVISION",
-  "ABILITY_DEATH_ATTACK",
-  "ABILITY_DISEASE",
-  "ABILITY_ENERGY_DRAIN",
-  "ABILITY_ETHEREALNESS",
-  "ABILITY_EVASION",
-  "ABILITY_IMPROVED_EVASION",
-  "ABILITY_FAST_HEALING",
-  "ABILITY_FEAR",
-  "ABILITY_IMMUNITY_FIRE",
-  "ABILITY_GASEOUS_FORM",
-  "ABILITY_GAZE_ATTACK",
-  "ABILITY_IMPROVED_GRAB",
-  "ABILITY_INCORPOREALITY",
-  "ABILITY_INVISIBILITY",
-  "ABILITY_LEVEL_LOSS",
-  "ABILITY_LOWLIGHT_VISION",
-  "ABILITY_MANUFACTURED_WEAPONS",
-  "ABILITY_MOVEMENT_MODES",
-  "ABILITY_NATURAL_WEAPONS",
-  "ABILITY_NONABILITIES",
-  "ABILITY_PARALYZE_ATTACK",
-  "ABILITY_POISON_ATTACK",
-  "ABILITY_IMMUNITY_POISON",
-  "ABILITY_POLYMORPH",
-  "ABILITY_POUNCE",
-  "ABILITY_POWERFUL_CHARGE",
-  "ABILITY_PSIONICS",
-  "ABILITY_RAKE",
-  "ABILITY_RAY_ATTACK",
-  "ABILITY_REGENERATION",
-  "ABILITY_RESISTANCE_TO_ENERGY",
-  "ABILITY_SCENT",
-  "ABILITY_SONIC_ATTACK",
-  "ABILITY_IMMUNITY_SPELL",
-  "ABILITY_RESISTANCE_TO_SPELL",
-  "ABILITY_SPELLS",
-  "ABILITY_SUMMON",
-  "ABILITY_SWALLOW_WHOLE",
-  "ABILITY_TELEPATHY",
-  "ABILITY_TRAMPLE",
-  "ABILITY_TREMOR_SENSE",
-  "ABILITY_RESISTANCE_TO_TURNING",
-  "ABILITY_VULNERABILITY_TO_ENERGY",
-  "ABILITY_IMMUNITY_DISEASE",
-  "ABILITY_ANIMAL_COMPANION",
-  "ABILITY_WOODLAND_STRIDE",
-  "ABILITY_SENSE_TRAPS",
-  "ABILITY_UNCANNY_DODGE",
-  "ABILITY_IMPROVED_UNCANNY_DODGE",
-  "ABILITY_CRIPPLING_STRIKE",
-  "ABILITY_DEFENSIVE_ROLL",
-  "ABILITY_OPPORTUNIST",
-  "ABILITY_SKILL_MASTERY",
-  "ABILITY_SLIPPERY_MIND",
-  "ABILITY_BONUS_FEAT"
-};
-
-const RPG_Character_Ability_XMLTree_Type::value RPG_Character_Ability_XMLTree_Type::
-_xsd_RPG_Character_Ability_XMLTree_Type_indexes_[79] =
-{
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ACID_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ALTERNATE_FORM,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ANIMAL_COMPANION,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ANTIMAGIC,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_BLINDSENSE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_BLINDSIGHT,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_BONUS_FEAT,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_BREATH_WEAPON,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CHANGE_SHAPE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CHARM,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_COMPULSION,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CONSTRICT,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CORROSIVE_SLIME,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CRIPPLING_STRIKE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DARKVISION,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DEATH_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DEATH_THROES,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DEFENSIVE_ROLL,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DISEASE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ENERGY_DRAIN,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ENTANGLE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ETHEREALNESS,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_EVASION,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_FAST_HEALING,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_FEAR,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_FLAMING_BODY,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_GASEOUS_FORM,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_GAZE_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_COLD,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_DISEASE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_FIRE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_POISON,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_SPELL,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMPROVED_EVASION,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMPROVED_GRAB,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMPROVED_UNCANNY_DODGE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_INCORPOREALITY,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_INVISIBILITY,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_LEAP_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_LEVEL_LOSS,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_LOWLIGHT_VISION,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_MANUFACTURED_WEAPONS,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_MOVEMENT_MODES,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_NATURAL_WEAPONS,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_NONABILITIES,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_OPPORTUNIST,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_PARALYZE_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_POISON_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_POLYMORPH,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_POUNCE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_POWERFUL_CHARGE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_PSIONICS,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RAKE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RAY_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_REGENERATION,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_REND_ARMOR,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RESISTANCE_TO_DAMAGE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RESISTANCE_TO_ENERGY,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RESISTANCE_TO_SPELL,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RESISTANCE_TO_TURNING,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SCENT,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SCORE_LOSS,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SENSE_TRAPS,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SKILL_MASTERY,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SLIPPERY_MIND,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SNEAK_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SONIC_ATTACK,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SPELLS,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SPORES,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_STENCH,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SUMMON,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SWALLOW_WHOLE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_TELEPATHY,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_THROW_WEB,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_TRAMPLE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_TREMOR_SENSE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_UNCANNY_DODGE,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_VULNERABILITY_TO_ENERGY,
-  ::RPG_Character_Ability_XMLTree_Type::ABILITY_WOODLAND_STRIDE
-};
-
-// RPG_Character_Abilities_XMLTree_Type
-//
-
-RPG_Character_Abilities_XMLTree_Type::
-RPG_Character_Abilities_XMLTree_Type ()
-: ::xml_schema::type (),
-  ability_ (::xml_schema::flags (), this)
-{
-}
-
-RPG_Character_Abilities_XMLTree_Type::
-RPG_Character_Abilities_XMLTree_Type (const RPG_Character_Abilities_XMLTree_Type& x,
-                                      ::xml_schema::flags f,
-                                      ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  ability_ (x.ability_, f, this)
-{
-}
-
-RPG_Character_Abilities_XMLTree_Type::
-RPG_Character_Abilities_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                      ::xml_schema::flags f,
-                                      ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  ability_ (f, this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
-    this->parse (p, f);
-  }
-}
-
-void RPG_Character_Abilities_XMLTree_Type::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  for (; p.more_elements (); p.next_element ())
-  {
-    const ::xercesc::DOMElement& i (p.cur_element ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    // ability
-    //
-    if (n.name () == "ability" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< ability_type > r (
-        ability_traits::create (i, f, this));
-
-      this->ability_.push_back (r);
-      continue;
-    }
-
-    break;
-  }
-}
-
-RPG_Character_Abilities_XMLTree_Type* RPG_Character_Abilities_XMLTree_Type::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class RPG_Character_Abilities_XMLTree_Type (*this, f, c);
-}
-
-RPG_Character_Abilities_XMLTree_Type::
-~RPG_Character_Abilities_XMLTree_Type ()
-{
-}
-
-bool
-operator== (const RPG_Character_Abilities_XMLTree_Type& x, const RPG_Character_Abilities_XMLTree_Type& y)
-{
-  if (!(x.ability () == y.ability ()))
-    return false;
-
-  return true;
-}
-
-bool
-operator!= (const RPG_Character_Abilities_XMLTree_Type& x, const RPG_Character_Abilities_XMLTree_Type& y)
 {
   return !(x == y);
 }
@@ -1933,55 +1602,55 @@ operator!= (const RPG_Character_Skills_XMLTree_Type& x, const RPG_Character_Skil
   return !(x == y);
 }
 
-// RPG_Character_CheckTypeUnion_XMLTree_Type
+// RPG_Character_Ability_XMLTree_Type
 //
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                           ::xml_schema::flags f,
-                                           ::xml_schema::container* c)
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
 : ::xml_schema::string (e, f, c)
 {
-  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+  _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMAttr& a,
-                                           ::xml_schema::flags f,
-                                           ::xml_schema::container* c)
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
 : ::xml_schema::string (a, f, c)
 {
-  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+  _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (const ::std::string& s,
-                                           const ::xercesc::DOMElement* e,
-                                           ::xml_schema::flags f,
-                                           ::xml_schema::container* c)
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (const ::std::string& s,
+                                    const ::xercesc::DOMElement* e,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
 : ::xml_schema::string (s, e, f, c)
 {
-  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+  _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type* RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type* RPG_Character_Ability_XMLTree_Type::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class RPG_Character_CheckTypeUnion_XMLTree_Type (*this, f, c);
+  return new class RPG_Character_Ability_XMLTree_Type (*this, f, c);
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::value RPG_Character_CheckTypeUnion_XMLTree_Type::
-_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert () const
+RPG_Character_Ability_XMLTree_Type::value RPG_Character_Ability_XMLTree_Type::
+_xsd_RPG_Character_Ability_XMLTree_Type_convert () const
 {
-  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_);
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Character_Ability_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
-                    _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_,
-                    _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_ + 63,
+                    _xsd_RPG_Character_Ability_XMLTree_Type_indexes_,
+                    _xsd_RPG_Character_Ability_XMLTree_Type_indexes_ + 79,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_ + 63 || _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Character_Ability_XMLTree_Type_indexes_ + 79 || _xsd_RPG_Character_Ability_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -1989,261 +1658,173 @@ _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert () const
   return *i;
 }
 
-const char* const RPG_Character_CheckTypeUnion_XMLTree_Type::
-_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[63] =
+const char* const RPG_Character_Ability_XMLTree_Type::
+_xsd_RPG_Character_Ability_XMLTree_Type_literals_[79] =
 {
-  "ATTRIBUTE_CHARISMA",
-  "ATTRIBUTE_CONSTITUTION",
-  "ATTRIBUTE_DEXTERITY",
-  "ATTRIBUTE_INTELLIGENCE",
-  "ATTRIBUTE_STRENGTH",
-  "ATTRIBUTE_WISDOM",
-  "ATTRIBUTE_ANY",
-  "SKILL_APPRAISE",
-  "SKILL_BALANCE",
-  "SKILL_BLUFF",
-  "SKILL_CLIMB",
-  "SKILL_CONCENTRATION",
-  "SKILL_CRAFT_ANY",
-  "SKILL_CRAFT_ALL",
-  "SKILL_CRAFT_ALCHEMY",
-  "SKILL_CRAFT_FLETCHER",
-  "SKILL_CRAFT_BOWYER",
-  "SKILL_CRAFT_SMITH_ARMOR",
-  "SKILL_CRAFT_SMITH_BLACK",
-  "SKILL_CRAFT_SMITH_WEAPON",
-  "SKILL_CRAFT_TRAP",
-  "SKILL_CRAFT_OTHER",
-  "SKILL_DECIPHER_SCRIPT",
-  "SKILL_DIPLOMACY",
-  "SKILL_DISABLE_DEVICE",
-  "SKILL_DISGUISE",
-  "SKILL_ESCAPE_ARTIST",
-  "SKILL_FORGERY",
-  "SKILL_GATHER_INFORMATION",
-  "SKILL_HANDLE_ANIMAL",
-  "SKILL_HEAL",
-  "SKILL_HIDE",
-  "SKILL_INTIMIDATE",
-  "SKILL_JUMP",
-  "SKILL_KNOWLEDGE_ANY",
-  "SKILL_KNOWLEDGE_ALL",
-  "SKILL_KNOWLEDGE_ARCANA",
-  "SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING",
-  "SKILL_KNOWLEDGE_DUNGEONS",
-  "SKILL_KNOWLEDGE_GEOGRAPHY",
-  "SKILL_KNOWLEDGE_HISTORY",
-  "SKILL_KNOWLEDGE_LOCAL",
-  "SKILL_KNOWLEDGE_NATURE",
-  "SKILL_KNOWLEDGE_NOBILITY_ROYALTY",
-  "SKILL_KNOWLEDGE_RELIGION",
-  "SKILL_KNOWLEDGE_PLANES",
-  "SKILL_LISTEN",
-  "SKILL_MOVE_SILENTLY",
-  "SKILL_OPEN_LOCK",
-  "SKILL_PERFORM",
-  "SKILL_PROFESSION",
-  "SKILL_RIDE",
-  "SKILL_SEARCH",
-  "SKILL_SENSE_MOTIVE",
-  "SKILL_SLEIGHT_OF_HAND",
-  "SKILL_SPEAK_LANGUAGE",
-  "SKILL_SPELLCRAFT",
-  "SKILL_SPOT",
-  "SKILL_SURVIVAL",
-  "SKILL_SWIM",
-  "SKILL_TUMBLE",
-  "SKILL_USE_MAGIC_DEVICE",
-  "SKILL_USE_ROPE"
+  "ABILITY_ACID_ATTACK",
+  "ABILITY_CORROSIVE_SLIME",
+  "ABILITY_DEATH_THROES",
+  "ABILITY_ENTANGLE",
+  "ABILITY_FLAMING_BODY",
+  "ABILITY_LEAP_ATTACK",
+  "ABILITY_REND_ARMOR",
+  "ABILITY_SCORE_LOSS",
+  "ABILITY_SNEAK_ATTACK",
+  "ABILITY_SPORES",
+  "ABILITY_STENCH",
+  "ABILITY_THROW_WEB",
+  "ABILITY_ALTERNATE_FORM",
+  "ABILITY_ANTIMAGIC",
+  "ABILITY_BLINDSIGHT",
+  "ABILITY_BLINDSENSE",
+  "ABILITY_BREATH_WEAPON",
+  "ABILITY_CHANGE_SHAPE",
+  "ABILITY_CHARM",
+  "ABILITY_COMPULSION",
+  "ABILITY_IMMUNITY_COLD",
+  "ABILITY_CONSTRICT",
+  "ABILITY_RESISTANCE_TO_DAMAGE",
+  "ABILITY_DARKVISION",
+  "ABILITY_DEATH_ATTACK",
+  "ABILITY_DISEASE",
+  "ABILITY_ENERGY_DRAIN",
+  "ABILITY_ETHEREALNESS",
+  "ABILITY_EVASION",
+  "ABILITY_IMPROVED_EVASION",
+  "ABILITY_FAST_HEALING",
+  "ABILITY_FEAR",
+  "ABILITY_IMMUNITY_FIRE",
+  "ABILITY_GASEOUS_FORM",
+  "ABILITY_GAZE_ATTACK",
+  "ABILITY_IMPROVED_GRAB",
+  "ABILITY_INCORPOREALITY",
+  "ABILITY_INVISIBILITY",
+  "ABILITY_LEVEL_LOSS",
+  "ABILITY_LOWLIGHT_VISION",
+  "ABILITY_MANUFACTURED_WEAPONS",
+  "ABILITY_MOVEMENT_MODES",
+  "ABILITY_NATURAL_WEAPONS",
+  "ABILITY_NONABILITIES",
+  "ABILITY_PARALYZE_ATTACK",
+  "ABILITY_POISON_ATTACK",
+  "ABILITY_IMMUNITY_POISON",
+  "ABILITY_POLYMORPH",
+  "ABILITY_POUNCE",
+  "ABILITY_POWERFUL_CHARGE",
+  "ABILITY_PSIONICS",
+  "ABILITY_RAKE",
+  "ABILITY_RAY_ATTACK",
+  "ABILITY_REGENERATION",
+  "ABILITY_RESISTANCE_TO_ENERGY",
+  "ABILITY_SCENT",
+  "ABILITY_SONIC_ATTACK",
+  "ABILITY_IMMUNITY_SPELL",
+  "ABILITY_RESISTANCE_TO_SPELL",
+  "ABILITY_SPELLS",
+  "ABILITY_SUMMON",
+  "ABILITY_SWALLOW_WHOLE",
+  "ABILITY_TELEPATHY",
+  "ABILITY_TRAMPLE",
+  "ABILITY_TREMOR_SENSE",
+  "ABILITY_RESISTANCE_TO_TURNING",
+  "ABILITY_VULNERABILITY_TO_ENERGY",
+  "ABILITY_IMMUNITY_DISEASE",
+  "ABILITY_ANIMAL_COMPANION",
+  "ABILITY_WOODLAND_STRIDE",
+  "ABILITY_SENSE_TRAPS",
+  "ABILITY_UNCANNY_DODGE",
+  "ABILITY_IMPROVED_UNCANNY_DODGE",
+  "ABILITY_CRIPPLING_STRIKE",
+  "ABILITY_DEFENSIVE_ROLL",
+  "ABILITY_OPPORTUNIST",
+  "ABILITY_SKILL_MASTERY",
+  "ABILITY_SLIPPERY_MIND",
+  "ABILITY_BONUS_FEAT"
 };
 
-const RPG_Character_CheckTypeUnion_XMLTree_Type::value RPG_Character_CheckTypeUnion_XMLTree_Type::
-_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_[63] =
+const RPG_Character_Ability_XMLTree_Type::value RPG_Character_Ability_XMLTree_Type::
+_xsd_RPG_Character_Ability_XMLTree_Type_indexes_[79] =
 {
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_ANY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_CHARISMA,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_CONSTITUTION,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_DEXTERITY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_INTELLIGENCE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_STRENGTH,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_WISDOM,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_APPRAISE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_BALANCE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_BLUFF,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CLIMB,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CONCENTRATION,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_ALCHEMY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_ALL,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_ANY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_BOWYER,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_FLETCHER,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_OTHER,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_SMITH_ARMOR,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_SMITH_BLACK,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_SMITH_WEAPON,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_TRAP,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_DECIPHER_SCRIPT,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_DIPLOMACY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_DISABLE_DEVICE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_DISGUISE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_ESCAPE_ARTIST,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_FORGERY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_GATHER_INFORMATION,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_HANDLE_ANIMAL,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_HEAL,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_HIDE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_INTIMIDATE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_JUMP,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_ALL,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_ANY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_ARCANA,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_DUNGEONS,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_GEOGRAPHY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_HISTORY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_LOCAL,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_NATURE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_NOBILITY_ROYALTY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_PLANES,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_RELIGION,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_LISTEN,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_MOVE_SILENTLY,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_OPEN_LOCK,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_PERFORM,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_PROFESSION,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_RIDE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SEARCH,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SENSE_MOTIVE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SLEIGHT_OF_HAND,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SPEAK_LANGUAGE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SPELLCRAFT,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SPOT,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SURVIVAL,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SWIM,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_TUMBLE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_USE_MAGIC_DEVICE,
-  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_USE_ROPE
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ACID_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ALTERNATE_FORM,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ANIMAL_COMPANION,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ANTIMAGIC,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_BLINDSENSE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_BLINDSIGHT,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_BONUS_FEAT,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_BREATH_WEAPON,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CHANGE_SHAPE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CHARM,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_COMPULSION,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CONSTRICT,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CORROSIVE_SLIME,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_CRIPPLING_STRIKE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DARKVISION,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DEATH_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DEATH_THROES,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DEFENSIVE_ROLL,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_DISEASE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ENERGY_DRAIN,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ENTANGLE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_ETHEREALNESS,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_EVASION,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_FAST_HEALING,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_FEAR,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_FLAMING_BODY,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_GASEOUS_FORM,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_GAZE_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_COLD,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_DISEASE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_FIRE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_POISON,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMMUNITY_SPELL,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMPROVED_EVASION,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMPROVED_GRAB,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_IMPROVED_UNCANNY_DODGE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_INCORPOREALITY,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_INVISIBILITY,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_LEAP_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_LEVEL_LOSS,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_LOWLIGHT_VISION,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_MANUFACTURED_WEAPONS,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_MOVEMENT_MODES,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_NATURAL_WEAPONS,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_NONABILITIES,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_OPPORTUNIST,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_PARALYZE_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_POISON_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_POLYMORPH,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_POUNCE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_POWERFUL_CHARGE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_PSIONICS,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RAKE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RAY_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_REGENERATION,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_REND_ARMOR,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RESISTANCE_TO_DAMAGE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RESISTANCE_TO_ENERGY,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RESISTANCE_TO_SPELL,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_RESISTANCE_TO_TURNING,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SCENT,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SCORE_LOSS,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SENSE_TRAPS,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SKILL_MASTERY,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SLIPPERY_MIND,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SNEAK_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SONIC_ATTACK,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SPELLS,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SPORES,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_STENCH,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SUMMON,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_SWALLOW_WHOLE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_TELEPATHY,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_THROW_WEB,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_TRAMPLE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_TREMOR_SENSE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_UNCANNY_DODGE,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_VULNERABILITY_TO_ENERGY,
+  ::RPG_Character_Ability_XMLTree_Type::ABILITY_WOODLAND_STRIDE
 };
-
-// RPG_Character_Check_XMLTree_Type
-//
-
-RPG_Character_Check_XMLTree_Type::
-RPG_Character_Check_XMLTree_Type (const type_type& type,
-                                  const difficultyClass_type& difficultyClass)
-: ::xml_schema::type (),
-  type_ (type, ::xml_schema::flags (), this),
-  difficultyClass_ (difficultyClass, ::xml_schema::flags (), this)
-{
-}
-
-RPG_Character_Check_XMLTree_Type::
-RPG_Character_Check_XMLTree_Type (const RPG_Character_Check_XMLTree_Type& x,
-                                  ::xml_schema::flags f,
-                                  ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  type_ (x.type_, f, this),
-  difficultyClass_ (x.difficultyClass_, f, this)
-{
-}
-
-RPG_Character_Check_XMLTree_Type::
-RPG_Character_Check_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                  ::xml_schema::flags f,
-                                  ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  type_ (f, this),
-  difficultyClass_ (f, this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
-    this->parse (p, f);
-  }
-}
-
-void RPG_Character_Check_XMLTree_Type::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  for (; p.more_elements (); p.next_element ())
-  {
-    const ::xercesc::DOMElement& i (p.cur_element ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    // type
-    //
-    if (n.name () == "type" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< type_type > r (
-        type_traits::create (i, f, this));
-
-      if (!type_.present ())
-      {
-        this->type_.set (r);
-        continue;
-      }
-    }
-
-    // difficultyClass
-    //
-    if (n.name () == "difficultyClass" && n.namespace_ () == "urn:rpg")
-    {
-      if (!difficultyClass_.present ())
-      {
-        this->difficultyClass_.set (difficultyClass_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    break;
-  }
-
-  if (!type_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "type",
-      "urn:rpg");
-  }
-
-  if (!difficultyClass_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "difficultyClass",
-      "urn:rpg");
-  }
-}
-
-RPG_Character_Check_XMLTree_Type* RPG_Character_Check_XMLTree_Type::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class RPG_Character_Check_XMLTree_Type (*this, f, c);
-}
-
-RPG_Character_Check_XMLTree_Type::
-~RPG_Character_Check_XMLTree_Type ()
-{
-}
-
-bool
-operator== (const RPG_Character_Check_XMLTree_Type& x, const RPG_Character_Check_XMLTree_Type& y)
-{
-  if (!(x.type () == y.type ()))
-    return false;
-
-  if (!(x.difficultyClass () == y.difficultyClass ()))
-    return false;
-
-  return true;
-}
-
-bool
-operator!= (const RPG_Character_Check_XMLTree_Type& x, const RPG_Character_Check_XMLTree_Type& y)
-{
-  return !(x == y);
-}
 
 // RPG_Character_Feat_XMLTree_Type
 //
@@ -3081,6 +2662,318 @@ _xsd_RPG_Character_OffHand_XMLTree_Type_indexes_[3] =
   ::RPG_Character_OffHand_XMLTree_Type::OFFHAND_RIGHT
 };
 
+// RPG_Character_CheckTypeUnion_XMLTree_Type
+//
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (const ::std::string& s,
+                                           const ::xercesc::DOMElement* e,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type* RPG_Character_CheckTypeUnion_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Character_CheckTypeUnion_XMLTree_Type (*this, f, c);
+}
+
+RPG_Character_CheckTypeUnion_XMLTree_Type::value RPG_Character_CheckTypeUnion_XMLTree_Type::
+_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_,
+                    _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_ + 63,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_ + 63 || _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Character_CheckTypeUnion_XMLTree_Type::
+_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[63] =
+{
+  "ATTRIBUTE_CHARISMA",
+  "ATTRIBUTE_CONSTITUTION",
+  "ATTRIBUTE_DEXTERITY",
+  "ATTRIBUTE_INTELLIGENCE",
+  "ATTRIBUTE_STRENGTH",
+  "ATTRIBUTE_WISDOM",
+  "ATTRIBUTE_ANY",
+  "SKILL_APPRAISE",
+  "SKILL_BALANCE",
+  "SKILL_BLUFF",
+  "SKILL_CLIMB",
+  "SKILL_CONCENTRATION",
+  "SKILL_CRAFT_ANY",
+  "SKILL_CRAFT_ALL",
+  "SKILL_CRAFT_ALCHEMY",
+  "SKILL_CRAFT_FLETCHER",
+  "SKILL_CRAFT_BOWYER",
+  "SKILL_CRAFT_SMITH_ARMOR",
+  "SKILL_CRAFT_SMITH_BLACK",
+  "SKILL_CRAFT_SMITH_WEAPON",
+  "SKILL_CRAFT_TRAP",
+  "SKILL_CRAFT_OTHER",
+  "SKILL_DECIPHER_SCRIPT",
+  "SKILL_DIPLOMACY",
+  "SKILL_DISABLE_DEVICE",
+  "SKILL_DISGUISE",
+  "SKILL_ESCAPE_ARTIST",
+  "SKILL_FORGERY",
+  "SKILL_GATHER_INFORMATION",
+  "SKILL_HANDLE_ANIMAL",
+  "SKILL_HEAL",
+  "SKILL_HIDE",
+  "SKILL_INTIMIDATE",
+  "SKILL_JUMP",
+  "SKILL_KNOWLEDGE_ANY",
+  "SKILL_KNOWLEDGE_ALL",
+  "SKILL_KNOWLEDGE_ARCANA",
+  "SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING",
+  "SKILL_KNOWLEDGE_DUNGEONS",
+  "SKILL_KNOWLEDGE_GEOGRAPHY",
+  "SKILL_KNOWLEDGE_HISTORY",
+  "SKILL_KNOWLEDGE_LOCAL",
+  "SKILL_KNOWLEDGE_NATURE",
+  "SKILL_KNOWLEDGE_NOBILITY_ROYALTY",
+  "SKILL_KNOWLEDGE_RELIGION",
+  "SKILL_KNOWLEDGE_PLANES",
+  "SKILL_LISTEN",
+  "SKILL_MOVE_SILENTLY",
+  "SKILL_OPEN_LOCK",
+  "SKILL_PERFORM",
+  "SKILL_PROFESSION",
+  "SKILL_RIDE",
+  "SKILL_SEARCH",
+  "SKILL_SENSE_MOTIVE",
+  "SKILL_SLEIGHT_OF_HAND",
+  "SKILL_SPEAK_LANGUAGE",
+  "SKILL_SPELLCRAFT",
+  "SKILL_SPOT",
+  "SKILL_SURVIVAL",
+  "SKILL_SWIM",
+  "SKILL_TUMBLE",
+  "SKILL_USE_MAGIC_DEVICE",
+  "SKILL_USE_ROPE"
+};
+
+const RPG_Character_CheckTypeUnion_XMLTree_Type::value RPG_Character_CheckTypeUnion_XMLTree_Type::
+_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_[63] =
+{
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_ANY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_CHARISMA,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_CONSTITUTION,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_DEXTERITY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_INTELLIGENCE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_STRENGTH,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::ATTRIBUTE_WISDOM,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_APPRAISE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_BALANCE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_BLUFF,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CLIMB,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CONCENTRATION,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_ALCHEMY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_ALL,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_ANY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_BOWYER,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_FLETCHER,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_OTHER,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_SMITH_ARMOR,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_SMITH_BLACK,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_SMITH_WEAPON,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_CRAFT_TRAP,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_DECIPHER_SCRIPT,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_DIPLOMACY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_DISABLE_DEVICE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_DISGUISE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_ESCAPE_ARTIST,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_FORGERY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_GATHER_INFORMATION,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_HANDLE_ANIMAL,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_HEAL,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_HIDE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_INTIMIDATE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_JUMP,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_ALL,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_ANY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_ARCANA,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_DUNGEONS,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_GEOGRAPHY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_HISTORY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_LOCAL,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_NATURE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_NOBILITY_ROYALTY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_PLANES,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_KNOWLEDGE_RELIGION,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_LISTEN,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_MOVE_SILENTLY,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_OPEN_LOCK,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_PERFORM,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_PROFESSION,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_RIDE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SEARCH,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SENSE_MOTIVE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SLEIGHT_OF_HAND,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SPEAK_LANGUAGE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SPELLCRAFT,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SPOT,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SURVIVAL,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_SWIM,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_TUMBLE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_USE_MAGIC_DEVICE,
+  ::RPG_Character_CheckTypeUnion_XMLTree_Type::SKILL_USE_ROPE
+};
+
+// RPG_Character_Check_XMLTree_Type
+//
+
+RPG_Character_Check_XMLTree_Type::
+RPG_Character_Check_XMLTree_Type (const type_type& type,
+                                  const difficultyClass_type& difficultyClass)
+: ::xml_schema::type (),
+  type_ (type, ::xml_schema::flags (), this),
+  difficultyClass_ (difficultyClass, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Character_Check_XMLTree_Type::
+RPG_Character_Check_XMLTree_Type (const RPG_Character_Check_XMLTree_Type& x,
+                                  ::xml_schema::flags f,
+                                  ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  type_ (x.type_, f, this),
+  difficultyClass_ (x.difficultyClass_, f, this)
+{
+}
+
+RPG_Character_Check_XMLTree_Type::
+RPG_Character_Check_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                  ::xml_schema::flags f,
+                                  ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  type_ (f, this),
+  difficultyClass_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Character_Check_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // type
+    //
+    if (n.name () == "type" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< type_type > r (
+        type_traits::create (i, f, this));
+
+      if (!type_.present ())
+      {
+        this->type_.set (r);
+        continue;
+      }
+    }
+
+    // difficultyClass
+    //
+    if (n.name () == "difficultyClass" && n.namespace_ () == "urn:rpg")
+    {
+      if (!difficultyClass_.present ())
+      {
+        this->difficultyClass_.set (difficultyClass_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!type_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "type",
+      "urn:rpg");
+  }
+
+  if (!difficultyClass_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "difficultyClass",
+      "urn:rpg");
+  }
+}
+
+RPG_Character_Check_XMLTree_Type* RPG_Character_Check_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Character_Check_XMLTree_Type (*this, f, c);
+}
+
+RPG_Character_Check_XMLTree_Type::
+~RPG_Character_Check_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Character_Check_XMLTree_Type& x, const RPG_Character_Check_XMLTree_Type& y)
+{
+  if (!(x.type () == y.type ()))
+    return false;
+
+  if (!(x.difficultyClass () == y.difficultyClass ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Character_Check_XMLTree_Type& x, const RPG_Character_Check_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
 #include <ostream>
 
 ::std::ostream&
@@ -3134,31 +3027,6 @@ operator<< (::std::ostream& o, const RPG_Character_ClassXML_XMLTree_Type& i)
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, RPG_Character_Ability_XMLTree_Type::value i)
-{
-  return o << RPG_Character_Ability_XMLTree_Type::_xsd_RPG_Character_Ability_XMLTree_Type_literals_[i];
-}
-
-::std::ostream&
-operator<< (::std::ostream& o, const RPG_Character_Ability_XMLTree_Type& i)
-{
-  return o << static_cast< const ::xml_schema::string& > (i);
-}
-
-::std::ostream&
-operator<< (::std::ostream& o, const RPG_Character_Abilities_XMLTree_Type& i)
-{
-  for (RPG_Character_Abilities_XMLTree_Type::ability_const_iterator
-       b (i.ability ().begin ()), e (i.ability ().end ());
-       b != e; ++b)
-  {
-    o << ::std::endl << "ability: " << *b;
-  }
-
-  return o;
-}
-
-::std::ostream&
 operator<< (::std::ostream& o, const RPG_Character_Attributes_XMLTree_Type& i)
 {
   o << ::std::endl << "strength: " << i.strength ();
@@ -3192,23 +3060,15 @@ operator<< (::std::ostream& o, const RPG_Character_Skills_XMLTree_Type& i)
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, RPG_Character_CheckTypeUnion_XMLTree_Type::value i)
+operator<< (::std::ostream& o, RPG_Character_Ability_XMLTree_Type::value i)
 {
-  return o << RPG_Character_CheckTypeUnion_XMLTree_Type::_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[i];
+  return o << RPG_Character_Ability_XMLTree_Type::_xsd_RPG_Character_Ability_XMLTree_Type_literals_[i];
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
+operator<< (::std::ostream& o, const RPG_Character_Ability_XMLTree_Type& i)
 {
   return o << static_cast< const ::xml_schema::string& > (i);
-}
-
-::std::ostream&
-operator<< (::std::ostream& o, const RPG_Character_Check_XMLTree_Type& i)
-{
-  o << ::std::endl << "type: " << i.type ();
-  o << ::std::endl << "difficultyClass: " << i.difficultyClass ();
-  return o;
 }
 
 ::std::ostream&
@@ -3290,6 +3150,26 @@ operator<< (::std::ostream& o, RPG_Character_OffHand_XMLTree_Type::value i)
 operator<< (::std::ostream& o, const RPG_Character_OffHand_XMLTree_Type& i)
 {
   return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, RPG_Character_CheckTypeUnion_XMLTree_Type::value i)
+{
+  return o << RPG_Character_CheckTypeUnion_XMLTree_Type::_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Character_Check_XMLTree_Type& i)
+{
+  o << ::std::endl << "type: " << i.type ();
+  o << ::std::endl << "difficultyClass: " << i.difficultyClass ();
+  return o;
 }
 
 #include <istream>
@@ -3383,46 +3263,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_ClassXML_XMLTree_Type&
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
         "subClass",
-        "urn:rpg",
-        e));
-
-    s << *b;
-  }
-}
-
-void
-operator<< (::xercesc::DOMElement& e, const RPG_Character_Ability_XMLTree_Type& i)
-{
-  e << static_cast< const ::xml_schema::string& > (i);
-}
-
-void
-operator<< (::xercesc::DOMAttr& a, const RPG_Character_Ability_XMLTree_Type& i)
-{
-  a << static_cast< const ::xml_schema::string& > (i);
-}
-
-void
-operator<< (::xml_schema::list_stream& l,
-            const RPG_Character_Ability_XMLTree_Type& i)
-{
-  l << static_cast< const ::xml_schema::string& > (i);
-}
-
-void
-operator<< (::xercesc::DOMElement& e, const RPG_Character_Abilities_XMLTree_Type& i)
-{
-  e << static_cast< const ::xml_schema::type& > (i);
-
-  // ability
-  //
-  for (RPG_Character_Abilities_XMLTree_Type::ability_const_iterator
-       b (i.ability ().begin ()), n (i.ability ().end ());
-       b != n; ++b)
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "ability",
         "urn:rpg",
         e));
 
@@ -3560,52 +3400,22 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_Skills_XMLTree_Type& i
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
+operator<< (::xercesc::DOMElement& e, const RPG_Character_Ability_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::string& > (i);
 }
 
 void
-operator<< (::xercesc::DOMAttr& a, const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
+operator<< (::xercesc::DOMAttr& a, const RPG_Character_Ability_XMLTree_Type& i)
 {
   a << static_cast< const ::xml_schema::string& > (i);
 }
 
 void
 operator<< (::xml_schema::list_stream& l,
-            const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
+            const RPG_Character_Ability_XMLTree_Type& i)
 {
   l << static_cast< const ::xml_schema::string& > (i);
-}
-
-void
-operator<< (::xercesc::DOMElement& e, const RPG_Character_Check_XMLTree_Type& i)
-{
-  e << static_cast< const ::xml_schema::type& > (i);
-
-  // type
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "type",
-        "urn:rpg",
-        e));
-
-    s << i.type ();
-  }
-
-  // difficultyClass
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "difficultyClass",
-        "urn:rpg",
-        e));
-
-    s << i.difficultyClass ();
-  }
 }
 
 void
@@ -3754,6 +3564,55 @@ operator<< (::xml_schema::list_stream& l,
   l << static_cast< const ::xml_schema::string& > (i);
 }
 
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Character_Check_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // type
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "type",
+        "urn:rpg",
+        e));
+
+    s << i.type ();
+  }
+
+  // difficultyClass
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "difficultyClass",
+        "urn:rpg",
+        e));
+
+    s << i.difficultyClass ();
+  }
+}
+
 RPG_Character_Gender_XMLTree_Type::
 RPG_Character_Gender_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                    ::xml_schema::flags f,
@@ -3812,46 +3671,6 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
       while (n--)
       {
         ::std::auto_ptr< subClass_type > r (new subClass_type (s, f, this));
-        c.push_back (r);
-      }
-    }
-  }
-}
-
-RPG_Character_Ability_XMLTree_Type::
-RPG_Character_Ability_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                    ::xml_schema::flags f,
-                                    ::xml_schema::container* c)
-: ::xml_schema::string (s, f, c)
-{
-  _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
-}
-
-RPG_Character_Abilities_XMLTree_Type::
-RPG_Character_Abilities_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                      ::xml_schema::flags f,
-                                      ::xml_schema::container* c)
-: ::xml_schema::type (s, f, c),
-  ability_ (f, this)
-{
-  this->parse (s, f);
-}
-
-void RPG_Character_Abilities_XMLTree_Type::
-parse (::xml_schema::istream< ACE_InputCDR >& s,
-       ::xml_schema::flags f)
-{
-  {
-    ::std::size_t n;
-    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
-    s >> as;
-    if (n > 0)
-    {
-      ability_sequence& c (this->ability_);
-      c.reserve (n);
-      while (n--)
-      {
-        ::std::auto_ptr< ability_type > r (new ability_type (s, f, this));
         c.push_back (r);
       }
     }
@@ -3972,40 +3791,13 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 }
 
-RPG_Character_CheckTypeUnion_XMLTree_Type::
-RPG_Character_CheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                           ::xml_schema::flags f,
-                                           ::xml_schema::container* c)
+RPG_Character_Ability_XMLTree_Type::
+RPG_Character_Ability_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
 : ::xml_schema::string (s, f, c)
 {
-  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
-}
-
-RPG_Character_Check_XMLTree_Type::
-RPG_Character_Check_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                  ::xml_schema::flags f,
-                                  ::xml_schema::container* c)
-: ::xml_schema::type (s, f, c),
-  type_ (f, this),
-  difficultyClass_ (f, this)
-{
-  this->parse (s, f);
-}
-
-void RPG_Character_Check_XMLTree_Type::
-parse (::xml_schema::istream< ACE_InputCDR >& s,
-       ::xml_schema::flags f)
-{
-  {
-    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
-    this->type_.set (r);
-  }
-
-  {
-    difficultyClass_type r;
-    s >> r;
-    this->difficultyClass_.set (r);
-  }
+  _xsd_RPG_Character_Ability_XMLTree_Type_convert ();
 }
 
 RPG_Character_Feat_XMLTree_Type::
@@ -4110,6 +3902,42 @@ RPG_Character_OffHand_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   _xsd_RPG_Character_OffHand_XMLTree_Type_convert ();
 }
 
+RPG_Character_CheckTypeUnion_XMLTree_Type::
+RPG_Character_CheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Character_Check_XMLTree_Type::
+RPG_Character_Check_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f,
+                                  ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  difficultyClass_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Character_Check_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    difficultyClass_type r;
+    s >> r;
+    this->difficultyClass_.set (r);
+  }
+}
+
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Character_Gender_XMLTree_Type& x)
@@ -4140,31 +3968,6 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
     const RPG_Character_ClassXML_XMLTree_Type::subClass_sequence& c (x.subClass ());
     s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
     for (RPG_Character_ClassXML_XMLTree_Type::subClass_const_iterator
-         i (c.begin ()), e (c.end ());
-         i != e; ++i)
-    {
-      s << *i;
-    }
-  }
-
-  return s;
-}
-
-::xsd::cxx::tree::ostream< ACE_OutputCDR >&
-operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
-            const RPG_Character_Ability_XMLTree_Type& x)
-{
-  return s << static_cast< const ::xml_schema::string& > (x);
-}
-
-::xsd::cxx::tree::ostream< ACE_OutputCDR >&
-operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
-            const RPG_Character_Abilities_XMLTree_Type& x)
-{
-  {
-    const RPG_Character_Abilities_XMLTree_Type::ability_sequence& c (x.ability ());
-    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Character_Abilities_XMLTree_Type::ability_const_iterator
          i (c.begin ()), e (c.end ());
          i != e; ++i)
     {
@@ -4217,18 +4020,9 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
-            const RPG_Character_CheckTypeUnion_XMLTree_Type& x)
+            const RPG_Character_Ability_XMLTree_Type& x)
 {
   return s << static_cast< const ::xml_schema::string& > (x);
-}
-
-::xsd::cxx::tree::ostream< ACE_OutputCDR >&
-operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
-            const RPG_Character_Check_XMLTree_Type& x)
-{
-  s << x.type ();
-  s << x.difficultyClass ();
-  return s;
 }
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
@@ -4291,6 +4085,22 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Character_OffHand_XMLTree_Type& x)
 {
   return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Character_CheckTypeUnion_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Character_Check_XMLTree_Type& x)
+{
+  s << x.type ();
+  s << x.difficultyClass ();
+  return s;
 }
 
 #include <xsd/cxx/post.hxx>

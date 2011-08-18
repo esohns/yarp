@@ -10,7 +10,7 @@
 struct RPG_Item_WeaponPropertiesXML
  : public RPG_Item_WeaponPropertiesBase
 {
-  char toHitModifier;
+  signed char toHitModifier;
 };
 
 #endif

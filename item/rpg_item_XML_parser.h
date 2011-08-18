@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ITEM_XML_PARSER_H
 #define RPG_ITEM_XML_PARSER_H
 
@@ -273,7 +274,7 @@ class RPG_Item_ArmorPropertiesXML_Type
 };
 
 class RPG_Item_Dictionary_Type
- : public RPG_Item_Dictionary_Type_pskel
+ : public RPG_Item_DictionaryXML_Type_pskel
 {
  public:
   RPG_Item_Dictionary_Type(RPG_Item_WeaponDictionary_t*, // weapon dictionary

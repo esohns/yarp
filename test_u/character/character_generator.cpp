@@ -33,12 +33,14 @@
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
 
+#include <rpg_character_player.h>
+#include <rpg_character_player_common_tools.h>
+
 #include <rpg_character_defines.h>
 #include <rpg_character_alignmentcivic.h>
 #include <rpg_character_alignmentethic.h>
 #include <rpg_character_alignment.h>
 #include <rpg_character_offhand.h>
-#include <rpg_character_player.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_class_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
@@ -75,7 +77,6 @@
 #include <algorithm>
 #include <numeric>
 
-#define CHARACTER_GENERATOR_DEF_SPRITE          SPRITE_HUMAN
 #define CHARACTER_GENERATOR_DEF_GENERATE_ENTITY false
 #define CHARACTER_GENERATOR_DEF_GENERATE_PARTY  0
 #define CHARACTER_GENERATOR_DEF_RANDOM          false
@@ -649,13 +650,14 @@ generate_standard_items(const RPG_Common_SubClass& subClass_in)
   catch (const std::bad_alloc& exception)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught std::bad_alloc, continuing\n")));
+               ACE_TEXT("generate_standard_items(): caught exception: \"%s\", aborting\n"),
+               exception.what()));
   }
 
   return result;
 }
 
-RPG_Character_Player
+RPG_Character_Player*
 generate_player_character()
 {
   RPG_TRACE(ACE_TEXT("::generate_player_character"));
@@ -1088,69 +1090,82 @@ generate_player_character()
   RPG_Item_List_t items = generate_standard_items(playerSubClass);
 
   // instantiate player character
-  RPG_Character_Player player(// base attributes
-                              name,
-                              gender,
-                              playerRace,
-                              playerClass,
-                              alignment,
-                              attributes,
-                              skills,
-                              feats,
-                              abilities,
-                              offHand,
-                              hitPoints,
-                              knownSpells,
-                              // current status
-                              condition,
-                              hitPoints,
-                              0,
-                              RPG_CHARACTER_PLAYER_START_MONEY,
-                              spells,
-                              items);
+  RPG_Character_Player* player_p = NULL;
+  try
+  {
+    player_p = new RPG_Character_Player(// base attributes
+                                        name,
+                                        gender,
+                                        playerRace,
+                                        playerClass,
+                                        alignment,
+                                        attributes,
+                                        skills,
+                                        feats,
+                                        abilities,
+                                        offHand,
+                                        hitPoints,
+                                        knownSpells,
+                                        // current status
+                                        condition,
+                                        hitPoints,
+                                        0,
+                                        RPG_CHARACTER_PLAYER_START_MONEY,
+                                        spells,
+                                        items);
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player(): exception occurred: \"%s\", aborting\n"),
+               exception.what()));
 
-  return player;
+    return player_p;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player(): exception occurred, aborting\n")));
+
+    return player_p;
+  }
+  ACE_ASSERT(player_p);
+
+  return player_p;
 }
 
-RPG_Character_Player
-generate_random_player_character()
-{
-  RPG_TRACE(ACE_TEXT("::generate_random_player_character"));
-
-//   // init result
-//   RPG_Character_Player player = RPG_Character_Player::dummy();
-//
-//   char c = ' ';
-//   do
-//   {
-//     c = ' ';
-//
-//     // generate random player
-//     player = RPG_Character_Common_Tools::generatePlayerCharacter();
-//
-//     // dump player
-//     std::cout << player;
-//
-//     std::cout << ACE_TEXT("OK ? (y/n): ");
-//     std::cin >> c;
-//   } while (c == 'n');
-//
-//   return player;
-
-  return RPG_Character_Common_Tools::generatePlayerCharacter();
-}
-
-RPG_Engine_Entity
+RPG_Engine_Entity*
 generate_entity(const RPG_Character_Player& player_in,
                 const RPG_Graphics_Sprite& sprite_in)
 {
   RPG_TRACE(ACE_TEXT("::generate_entity"));
 
-  RPG_Engine_Entity result;
-  result.character = &const_cast<RPG_Character_Player&>(player_in);
-  result.position = std::make_pair(0, 0);
-  result.sprite = sprite_in;
-  result.graphic = NULL;
+  RPG_Engine_Entity* entity_p = NULL;
+  try
+  {
+    entity_p = new RPG_Engine_Entity;
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("generate_entity(): exception occurred: \"%s\", aborting\n"),
+               exception.what()));
+
+    return entity_p;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("generate_entity(): exception occurred, aborting\n")));
+
+    return entity_p;
+  }
+  ACE_ASSERT(entity_p);
+
+  entity_p->character = &const_cast<RPG_Character_Player&>(player_in);
+  entity_p->position = std::make_pair(0, 0);
+  entity_p->sprite = sprite_in;
+  entity_p->graphic = NULL;
 //   // *NOTE*: cannot load surface, as SDL hasn't been initialized...
 //   RPG_Graphics_GraphicTypeUnion type;
 //   type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
@@ -1159,7 +1174,7 @@ generate_entity(const RPG_Character_Player& player_in,
 //                                                           false); // don't cache
 //   ACE_ASSERT(result.graphic);
 
-  return result;
+  return entity_p;
 }
 
 void
@@ -1201,17 +1216,29 @@ do_work(const bool& generateEntity_in,
   }
 
   // step2: display menu options
-  RPG_Character_Player player = RPG_Character_Player::dummy();
+  RPG_Character_Player* player_p = NULL;
   bool done = false;
   char c = ' ';
   unsigned int numPlayers = 0;
-  RPG_Engine_Entity entity;
+  RPG_Engine_Entity* entity_p = NULL;
   do
   {
+    if (player_p)
+    {
+      delete player_p;
+      player_p = NULL;
+    } // end IF
+    if (entity_p)
+    {
+      delete entity_p;
+      entity_p = NULL;
+    } // end IF
+
     // step1: generate new player character
-    player = (random_in ? generate_random_player_character()
-                        : generate_player_character());
-    player.dump();
+    player_p = (random_in ? RPG_Character_Player_Common_Tools::generatePlayerCharacter()
+                          : generate_player_character());
+    ACE_ASSERT(player_p);
+    player_p->dump();
 
     if (numPartyMembers_in == 0)
     {
@@ -1229,7 +1256,7 @@ do_work(const bool& generateEntity_in,
           {
             std::string path = RPG_COMMON_DUMP_DIR;
             path += ACE_DIRECTORY_SEPARATOR_STR;
-            path += player.getName();
+            path += player_p->getName();
             path += RPG_CHARACTER_PROFILE_EXT;
 
             // sanity check
@@ -1269,15 +1296,15 @@ do_work(const bool& generateEntity_in,
             if (generateEntity_in)
             {
               // clean up
-              if (entity.graphic)
+              if (entity_p->graphic)
               {
-                SDL_FreeSurface(entity.graphic);
-                entity.graphic = NULL;
+                SDL_FreeSurface(entity_p->graphic);
+                entity_p->graphic = NULL;
               } // end IF
 
-              entity = generate_entity(player,
-                                       CHARACTER_GENERATOR_DEF_SPRITE);
-              if (!RPG_Engine_Common_Tools::saveEntity(entity,
+              entity_p = generate_entity(*player_p,
+                                         RPG_GRAPHICS_DEF_SPRITE);
+              if (!RPG_Engine_Common_Tools::saveEntity(*entity_p,
                                                        path))
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
@@ -1285,7 +1312,7 @@ do_work(const bool& generateEntity_in,
             } // end IF
             else
             {
-              if (!player.save(path))
+              if (!player_p->save(path))
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
                            path.c_str()));
@@ -1315,39 +1342,40 @@ do_work(const bool& generateEntity_in,
       // save player
       std::string path = RPG_COMMON_DUMP_DIR;
       path += ACE_DIRECTORY_SEPARATOR_STR;
-      path += player.getName();
+      path += player_p->getName();
       path += RPG_CHARACTER_PROFILE_EXT;
       if (generateEntity_in)
       {
         // clean up
-        if (entity.graphic)
+        if (entity_p->graphic)
         {
-          SDL_FreeSurface(entity.graphic);
-          entity.graphic = NULL;
+          SDL_FreeSurface(entity_p->graphic);
+          entity_p->graphic = NULL;
         } // end IF
 
-        entity = generate_entity(player,
-                                 CHARACTER_GENERATOR_DEF_SPRITE);
-        if (!RPG_Engine_Common_Tools::saveEntity(entity, path))
+        entity_p = generate_entity(*player_p,
+                                   RPG_GRAPHICS_DEF_SPRITE);
+        if (!RPG_Engine_Common_Tools::saveEntity(*entity_p,
+                                                 path))
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
                      path.c_str()));
         else
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
-                     player.getName().c_str(),
+                     player_p->getName().c_str(),
                      path.c_str()));
       } // end IF
       else
       {
-        if (!player.save(path))
+        if (!player_p->save(path))
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
                      path.c_str()));
         else
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-                     player.getName().c_str(),
+                     player_p->getName().c_str(),
                      path.c_str()));
       } // end ELSE
 

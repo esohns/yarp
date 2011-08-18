@@ -80,12 +80,12 @@ RPG_Magic_Common_Tools::initSpellsTables()
   // SUBCLASS_BARD
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(1, 0)), 2));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(2, 0)), 3));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(2, 1)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(2, 1)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(3, 0)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(3, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 0)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 1)), 2));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 2)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(4, 2)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 0)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 1)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(5, 2)), 1));
@@ -95,7 +95,7 @@ RPG_Magic_Common_Tools::initSpellsTables()
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 0)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 1)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 2)), 2));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 3)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(7, 3)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 0)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 1)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(8, 2)), 3));
@@ -108,7 +108,7 @@ RPG_Magic_Common_Tools::initSpellsTables()
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 1)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 2)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 3)), 2));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 4)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(10, 4)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 0)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 1)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(11, 2)), 3));
@@ -143,7 +143,7 @@ RPG_Magic_Common_Tools::initSpellsTables()
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 3)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 4)), 3));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 5)), 2));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 6)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(16, 6)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 0)), 4));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 1)), 4));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_BARD, std::make_pair(17, 2)), 4));
@@ -529,19 +529,19 @@ RPG_Magic_Common_Tools::initSpellsTables()
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_DRUID, std::make_pair(20, 9)), 4));
 
   // SUBCLASS_PALADIN
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(4, 1)), 0));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(5, 1)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(4, 1)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(5, 1)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(6, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(7, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(8, 1)), 1));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(8, 2)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(8, 2)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(9, 1)), 1));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(9, 2)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(9, 2)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(10, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(10, 2)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(11, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(11, 2)), 1));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(11, 3)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(11, 3)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(12, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(12, 2)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(12, 3)), 1));
@@ -551,7 +551,7 @@ RPG_Magic_Common_Tools::initSpellsTables()
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(14, 1)), 2));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(14, 2)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(14, 3)), 1));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(14, 4)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(14, 4)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(15, 1)), 2));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(15, 2)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(15, 3)), 1));
@@ -578,19 +578,19 @@ RPG_Magic_Common_Tools::initSpellsTables()
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_PALADIN, std::make_pair(20, 4)), 3));
 
   // SUBCLASS_RANGER
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(4, 1)), 0));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(5, 1)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(4, 1)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(5, 1)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(6, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(7, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(8, 1)), 1));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(8, 2)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(8, 2)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(9, 1)), 1));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(9, 2)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(9, 2)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(10, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(10, 2)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(11, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(11, 2)), 1));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(11, 3)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(11, 3)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(12, 1)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(12, 2)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(12, 3)), 1));
@@ -600,7 +600,7 @@ RPG_Magic_Common_Tools::initSpellsTables()
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(14, 1)), 2));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(14, 2)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(14, 3)), 1));
-  myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(14, 4)), 0));
+//   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(14, 4)), 0));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(15, 1)), 2));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(15, 2)), 1));
   myNumSpellsTable.insert(std::make_pair(std::make_pair(SUBCLASS_RANGER, std::make_pair(15, 3)), 1));
@@ -1956,28 +1956,22 @@ RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& subClass
   RPG_Magic_SubClassLevelPair_t combination = std::make_pair(subClass_in, levelPair);
 
   RPG_Magic_NumSpellsTableIterator_t iterator = myNumSpellsTable.find(combination);
-  if (iterator == myNumSpellsTable.end())
-  {
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("spells table: invalid combination (class \"%s\", level %d, spell %d), aborting\n"),
+  if (iterator != myNumSpellsTable.end())
+    numSpells_out = iterator->second;
+//   else
+//     ACE_DEBUG((LM_INFO,
+//                ACE_TEXT("spells table: combination (class \"%s\", level %d, spell %d) not found, aborting\n"),
 //                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-//                static_cast<unsigned int> (classLevel_in),
-//                static_cast<unsigned int> (spellLevel_in)));
-
-    return;
-  } // end IF
-  numSpells_out = iterator->second;
+//                static_cast<unsigned int>(classLevel_in),
+//                static_cast<unsigned int>(spellLevel_in)));
 
   iterator = myNumSpellsKnownTable.find(combination);
-  if (iterator == myNumSpellsKnownTable.end())
-  {
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("known spells table: invalid combination (class \"%s\", level %d, spell %d), aborting\n"),
+  if (iterator != myNumSpellsKnownTable.end())
+    numSpellsKnown_out = iterator->second;
+//   else
+//     ACE_DEBUG((LM_INFO,
+//                ACE_TEXT("known spells table: combination (class \"%s\", level %d, spell %d) not found, aborting\n"),
 //                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-//                static_cast<unsigned int> (classLevel_in),
-//                static_cast<unsigned int> (spellLevel_in)));
-
-    return;
-  } // end IF
-  numSpellsKnown_out = iterator->second;
+//                static_cast<unsigned int>(classLevel_in),
+//                static_cast<unsigned int>(spellLevel_in)));
 }

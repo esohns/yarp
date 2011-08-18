@@ -9,8 +9,8 @@
 
 struct RPG_Character_Monster_Attack
 {
-  char baseAttackBonus;
-  char grappleBonus;
+  signed char baseAttackBonus;
+  signed char grappleBonus;
   std::vector<RPG_Character_Monster_AttackAction> standardAttackActions;
   std::vector<RPG_Character_Monster_AttackAction> fullAttackActions;
   bool actionsAreInclusive;

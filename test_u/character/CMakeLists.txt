@@ -22,7 +22,7 @@ add_executable(character_generator ${character_generator_SRCS})
 
 target_link_libraries(character_generator ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
 
-target_link_libraries(character_generator ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+target_link_libraries(character_generator ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Monster RPG_Character_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
 
 ########### install files ###############
 install(TARGETS character_generator RUNTIME DESTINATION bin)
@@ -46,7 +46,7 @@ add_executable(character_generator_gui ${character_generator_gui_SRCS})
 
 target_link_libraries(character_generator_gui ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES} ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES} ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES})
 
-target_link_libraries(character_generator_gui ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Engine RPG_Client_GUI)
+target_link_libraries(character_generator_gui ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Monster RPG_Character_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine RPG_Client_GUI)
 
 ########### install files ###############
 install(TARGETS character_generator_gui RUNTIME DESTINATION bin)
@@ -66,7 +66,7 @@ add_executable(character_parser ${character_parser_SRCS})
 
 target_link_libraries(character_parser ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES} ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
 
-target_link_libraries(character_parser ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Monster RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+target_link_libraries(character_parser ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Character_Monster RPG_Character_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
 
 ########### install files ###############
 install(TARGETS character_parser RUNTIME DESTINATION bin)

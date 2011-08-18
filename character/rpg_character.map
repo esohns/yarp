@@ -19,7 +19,7 @@ namespace urn:rpg
   RPG_Character_ClassXML_Type       RPG_Character_ClassXML;
   RPG_Character_Condition_Type      RPG_Character_Condition;
   RPG_Character_Ability_Type        RPG_Character_Ability;
-  RPG_Character_Abilities_Type      RPG_Character_Abilities;
+#  RPG_Character_Abilities_Type      RPG_Character_Abilities;
   RPG_Character_Size_Type           RPG_Character_Size;
   RPG_Character_Attributes_Type     RPG_Character_Attributes;
   RPG_Character_Skill_Type          RPG_Character_Skill;

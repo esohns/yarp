@@ -40,6 +40,72 @@
 
 #include "rpg_character_player_XML_tree.h"
 
+// RPG_Character_Abilities_XMLTree_Type
+// 
+
+const RPG_Character_Abilities_XMLTree_Type::ability_sequence& RPG_Character_Abilities_XMLTree_Type::
+ability () const
+{
+  return this->ability_;
+}
+
+RPG_Character_Abilities_XMLTree_Type::ability_sequence& RPG_Character_Abilities_XMLTree_Type::
+ability ()
+{
+  return this->ability_;
+}
+
+void RPG_Character_Abilities_XMLTree_Type::
+ability (const ability_sequence& s)
+{
+  this->ability_ = s;
+}
+
+
+// RPG_Character_Spells_XMLTree_Type
+// 
+
+const RPG_Character_Spells_XMLTree_Type::spell_sequence& RPG_Character_Spells_XMLTree_Type::
+spell () const
+{
+  return this->spell_;
+}
+
+RPG_Character_Spells_XMLTree_Type::spell_sequence& RPG_Character_Spells_XMLTree_Type::
+spell ()
+{
+  return this->spell_;
+}
+
+void RPG_Character_Spells_XMLTree_Type::
+spell (const spell_sequence& s)
+{
+  this->spell_ = s;
+}
+
+
+// RPG_Character_Conditions_XMLTree_Type
+// 
+
+const RPG_Character_Conditions_XMLTree_Type::condition_sequence& RPG_Character_Conditions_XMLTree_Type::
+condition () const
+{
+  return this->condition_;
+}
+
+RPG_Character_Conditions_XMLTree_Type::condition_sequence& RPG_Character_Conditions_XMLTree_Type::
+condition ()
+{
+  return this->condition_;
+}
+
+void RPG_Character_Conditions_XMLTree_Type::
+condition (const condition_sequence& s)
+{
+  this->condition_ = s;
+}
+
+
 // RPG_Character_BaseXML_XMLTree_Type
 // 
 
@@ -115,16 +181,16 @@ attributes (::std::auto_ptr< attributes_type > x)
   this->attributes_.set (x);
 }
 
-const RPG_Character_BaseXML_XMLTree_Type::skills_type& RPG_Character_BaseXML_XMLTree_Type::
+const RPG_Character_BaseXML_XMLTree_Type::skills_optional& RPG_Character_BaseXML_XMLTree_Type::
 skills () const
 {
-  return this->skills_.get ();
+  return this->skills_;
 }
 
-RPG_Character_BaseXML_XMLTree_Type::skills_type& RPG_Character_BaseXML_XMLTree_Type::
+RPG_Character_BaseXML_XMLTree_Type::skills_optional& RPG_Character_BaseXML_XMLTree_Type::
 skills ()
 {
-  return this->skills_.get ();
+  return this->skills_;
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
@@ -134,21 +200,27 @@ skills (const skills_type& x)
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
+skills (const skills_optional& x)
+{
+  this->skills_ = x;
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
 skills (::std::auto_ptr< skills_type > x)
 {
   this->skills_.set (x);
 }
 
-const RPG_Character_BaseXML_XMLTree_Type::feats_type& RPG_Character_BaseXML_XMLTree_Type::
+const RPG_Character_BaseXML_XMLTree_Type::feats_optional& RPG_Character_BaseXML_XMLTree_Type::
 feats () const
 {
-  return this->feats_.get ();
+  return this->feats_;
 }
 
-RPG_Character_BaseXML_XMLTree_Type::feats_type& RPG_Character_BaseXML_XMLTree_Type::
+RPG_Character_BaseXML_XMLTree_Type::feats_optional& RPG_Character_BaseXML_XMLTree_Type::
 feats ()
 {
-  return this->feats_.get ();
+  return this->feats_;
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
@@ -158,27 +230,39 @@ feats (const feats_type& x)
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
+feats (const feats_optional& x)
+{
+  this->feats_ = x;
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
 feats (::std::auto_ptr< feats_type > x)
 {
   this->feats_.set (x);
 }
 
-const RPG_Character_BaseXML_XMLTree_Type::abilities_type& RPG_Character_BaseXML_XMLTree_Type::
+const RPG_Character_BaseXML_XMLTree_Type::abilities_optional& RPG_Character_BaseXML_XMLTree_Type::
 abilities () const
 {
-  return this->abilities_.get ();
+  return this->abilities_;
 }
 
-RPG_Character_BaseXML_XMLTree_Type::abilities_type& RPG_Character_BaseXML_XMLTree_Type::
+RPG_Character_BaseXML_XMLTree_Type::abilities_optional& RPG_Character_BaseXML_XMLTree_Type::
 abilities ()
 {
-  return this->abilities_.get ();
+  return this->abilities_;
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
 abilities (const abilities_type& x)
 {
   this->abilities_.set (x);
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
+abilities (const abilities_optional& x)
+{
+  this->abilities_ = x;
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
@@ -229,40 +313,58 @@ maxHP (const maxHP_type& x)
   this->maxHP_.set (x);
 }
 
-const RPG_Character_BaseXML_XMLTree_Type::knownSpell_sequence& RPG_Character_BaseXML_XMLTree_Type::
-knownSpell () const
+const RPG_Character_BaseXML_XMLTree_Type::knownSpells_optional& RPG_Character_BaseXML_XMLTree_Type::
+knownSpells () const
 {
-  return this->knownSpell_;
+  return this->knownSpells_;
 }
 
-RPG_Character_BaseXML_XMLTree_Type::knownSpell_sequence& RPG_Character_BaseXML_XMLTree_Type::
-knownSpell ()
+RPG_Character_BaseXML_XMLTree_Type::knownSpells_optional& RPG_Character_BaseXML_XMLTree_Type::
+knownSpells ()
 {
-  return this->knownSpell_;
-}
-
-void RPG_Character_BaseXML_XMLTree_Type::
-knownSpell (const knownSpell_sequence& s)
-{
-  this->knownSpell_ = s;
-}
-
-const RPG_Character_BaseXML_XMLTree_Type::condition_sequence& RPG_Character_BaseXML_XMLTree_Type::
-condition () const
-{
-  return this->condition_;
-}
-
-RPG_Character_BaseXML_XMLTree_Type::condition_sequence& RPG_Character_BaseXML_XMLTree_Type::
-condition ()
-{
-  return this->condition_;
+  return this->knownSpells_;
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
-condition (const condition_sequence& s)
+knownSpells (const knownSpells_type& x)
 {
-  this->condition_ = s;
+  this->knownSpells_.set (x);
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
+knownSpells (const knownSpells_optional& x)
+{
+  this->knownSpells_ = x;
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
+knownSpells (::std::auto_ptr< knownSpells_type > x)
+{
+  this->knownSpells_.set (x);
+}
+
+const RPG_Character_BaseXML_XMLTree_Type::conditions_type& RPG_Character_BaseXML_XMLTree_Type::
+conditions () const
+{
+  return this->conditions_.get ();
+}
+
+RPG_Character_BaseXML_XMLTree_Type::conditions_type& RPG_Character_BaseXML_XMLTree_Type::
+conditions ()
+{
+  return this->conditions_.get ();
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
+conditions (const conditions_type& x)
+{
+  this->conditions_.set (x);
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
+conditions (::std::auto_ptr< conditions_type > x)
+{
+  this->conditions_.set (x);
 }
 
 const RPG_Character_BaseXML_XMLTree_Type::HP_type& RPG_Character_BaseXML_XMLTree_Type::
@@ -319,58 +421,58 @@ gold (const gold_type& x)
   this->gold_.set (x);
 }
 
-const RPG_Character_BaseXML_XMLTree_Type::spell_sequence& RPG_Character_BaseXML_XMLTree_Type::
-spell () const
+const RPG_Character_BaseXML_XMLTree_Type::spells_optional& RPG_Character_BaseXML_XMLTree_Type::
+spells () const
 {
-  return this->spell_;
+  return this->spells_;
 }
 
-RPG_Character_BaseXML_XMLTree_Type::spell_sequence& RPG_Character_BaseXML_XMLTree_Type::
-spell ()
+RPG_Character_BaseXML_XMLTree_Type::spells_optional& RPG_Character_BaseXML_XMLTree_Type::
+spells ()
 {
-  return this->spell_;
-}
-
-void RPG_Character_BaseXML_XMLTree_Type::
-spell (const spell_sequence& s)
-{
-  this->spell_ = s;
-}
-
-const RPG_Character_BaseXML_XMLTree_Type::weapon_sequence& RPG_Character_BaseXML_XMLTree_Type::
-weapon () const
-{
-  return this->weapon_;
-}
-
-RPG_Character_BaseXML_XMLTree_Type::weapon_sequence& RPG_Character_BaseXML_XMLTree_Type::
-weapon ()
-{
-  return this->weapon_;
+  return this->spells_;
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
-weapon (const weapon_sequence& s)
+spells (const spells_type& x)
 {
-  this->weapon_ = s;
-}
-
-const RPG_Character_BaseXML_XMLTree_Type::armor_sequence& RPG_Character_BaseXML_XMLTree_Type::
-armor () const
-{
-  return this->armor_;
-}
-
-RPG_Character_BaseXML_XMLTree_Type::armor_sequence& RPG_Character_BaseXML_XMLTree_Type::
-armor ()
-{
-  return this->armor_;
+  this->spells_.set (x);
 }
 
 void RPG_Character_BaseXML_XMLTree_Type::
-armor (const armor_sequence& s)
+spells (const spells_optional& x)
 {
-  this->armor_ = s;
+  this->spells_ = x;
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
+spells (::std::auto_ptr< spells_type > x)
+{
+  this->spells_.set (x);
+}
+
+const RPG_Character_BaseXML_XMLTree_Type::inventory_type& RPG_Character_BaseXML_XMLTree_Type::
+inventory () const
+{
+  return this->inventory_.get ();
+}
+
+RPG_Character_BaseXML_XMLTree_Type::inventory_type& RPG_Character_BaseXML_XMLTree_Type::
+inventory ()
+{
+  return this->inventory_.get ();
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
+inventory (const inventory_type& x)
+{
+  this->inventory_.set (x);
+}
+
+void RPG_Character_BaseXML_XMLTree_Type::
+inventory (::std::auto_ptr< inventory_type > x)
+{
+  this->inventory_.set (x);
 }
 
 
@@ -470,6 +572,261 @@ offhand (::std::auto_ptr< offhand_type > x)
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
+// RPG_Character_Abilities_XMLTree_Type
+//
+
+RPG_Character_Abilities_XMLTree_Type::
+RPG_Character_Abilities_XMLTree_Type ()
+: ::xml_schema::type (),
+  ability_ (::xml_schema::flags (), this)
+{
+}
+
+RPG_Character_Abilities_XMLTree_Type::
+RPG_Character_Abilities_XMLTree_Type (const RPG_Character_Abilities_XMLTree_Type& x,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  ability_ (x.ability_, f, this)
+{
+}
+
+RPG_Character_Abilities_XMLTree_Type::
+RPG_Character_Abilities_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  ability_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Character_Abilities_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // ability
+    //
+    if (n.name () == "ability" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< ability_type > r (
+        ability_traits::create (i, f, this));
+
+      this->ability_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+}
+
+RPG_Character_Abilities_XMLTree_Type* RPG_Character_Abilities_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Character_Abilities_XMLTree_Type (*this, f, c);
+}
+
+RPG_Character_Abilities_XMLTree_Type::
+~RPG_Character_Abilities_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Character_Abilities_XMLTree_Type& x, const RPG_Character_Abilities_XMLTree_Type& y)
+{
+  if (!(x.ability () == y.ability ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Character_Abilities_XMLTree_Type& x, const RPG_Character_Abilities_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
+// RPG_Character_Spells_XMLTree_Type
+//
+
+RPG_Character_Spells_XMLTree_Type::
+RPG_Character_Spells_XMLTree_Type ()
+: ::xml_schema::type (),
+  spell_ (::xml_schema::flags (), this)
+{
+}
+
+RPG_Character_Spells_XMLTree_Type::
+RPG_Character_Spells_XMLTree_Type (const RPG_Character_Spells_XMLTree_Type& x,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  spell_ (x.spell_, f, this)
+{
+}
+
+RPG_Character_Spells_XMLTree_Type::
+RPG_Character_Spells_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  spell_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Character_Spells_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // spell
+    //
+    if (n.name () == "spell" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< spell_type > r (
+        spell_traits::create (i, f, this));
+
+      this->spell_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+}
+
+RPG_Character_Spells_XMLTree_Type* RPG_Character_Spells_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Character_Spells_XMLTree_Type (*this, f, c);
+}
+
+RPG_Character_Spells_XMLTree_Type::
+~RPG_Character_Spells_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Character_Spells_XMLTree_Type& x, const RPG_Character_Spells_XMLTree_Type& y)
+{
+  if (!(x.spell () == y.spell ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Character_Spells_XMLTree_Type& x, const RPG_Character_Spells_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
+// RPG_Character_Conditions_XMLTree_Type
+//
+
+RPG_Character_Conditions_XMLTree_Type::
+RPG_Character_Conditions_XMLTree_Type ()
+: ::xml_schema::type (),
+  condition_ (::xml_schema::flags (), this)
+{
+}
+
+RPG_Character_Conditions_XMLTree_Type::
+RPG_Character_Conditions_XMLTree_Type (const RPG_Character_Conditions_XMLTree_Type& x,
+                                       ::xml_schema::flags f,
+                                       ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  condition_ (x.condition_, f, this)
+{
+}
+
+RPG_Character_Conditions_XMLTree_Type::
+RPG_Character_Conditions_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                       ::xml_schema::flags f,
+                                       ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  condition_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Character_Conditions_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // condition
+    //
+    if (n.name () == "condition" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< condition_type > r (
+        condition_traits::create (i, f, this));
+
+      this->condition_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+}
+
+RPG_Character_Conditions_XMLTree_Type* RPG_Character_Conditions_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Character_Conditions_XMLTree_Type (*this, f, c);
+}
+
+RPG_Character_Conditions_XMLTree_Type::
+~RPG_Character_Conditions_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Character_Conditions_XMLTree_Type& x, const RPG_Character_Conditions_XMLTree_Type& y)
+{
+  if (!(x.condition () == y.condition ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Character_Conditions_XMLTree_Type& x, const RPG_Character_Conditions_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
 // RPG_Character_BaseXML_XMLTree_Type
 //
 
@@ -477,31 +834,29 @@ RPG_Character_BaseXML_XMLTree_Type::
 RPG_Character_BaseXML_XMLTree_Type (const name_type& name,
                                     const alignment_type& alignment,
                                     const attributes_type& attributes,
-                                    const skills_type& skills,
-                                    const feats_type& feats,
-                                    const abilities_type& abilities,
                                     const defaultSize_type& defaultSize,
                                     const maxHP_type& maxHP,
+                                    const conditions_type& conditions,
                                     const HP_type& HP,
                                     const XP_type& XP,
-                                    const gold_type& gold)
+                                    const gold_type& gold,
+                                    const inventory_type& inventory)
 : ::xml_schema::type (),
   name_ (name, ::xml_schema::flags (), this),
   alignment_ (alignment, ::xml_schema::flags (), this),
   attributes_ (attributes, ::xml_schema::flags (), this),
-  skills_ (skills, ::xml_schema::flags (), this),
-  feats_ (feats, ::xml_schema::flags (), this),
-  abilities_ (abilities, ::xml_schema::flags (), this),
+  skills_ (::xml_schema::flags (), this),
+  feats_ (::xml_schema::flags (), this),
+  abilities_ (::xml_schema::flags (), this),
   defaultSize_ (defaultSize, ::xml_schema::flags (), this),
   maxHP_ (maxHP, ::xml_schema::flags (), this),
-  knownSpell_ (::xml_schema::flags (), this),
-  condition_ (::xml_schema::flags (), this),
+  knownSpells_ (::xml_schema::flags (), this),
+  conditions_ (conditions, ::xml_schema::flags (), this),
   HP_ (HP, ::xml_schema::flags (), this),
   XP_ (XP, ::xml_schema::flags (), this),
   gold_ (gold, ::xml_schema::flags (), this),
-  spell_ (::xml_schema::flags (), this),
-  weapon_ (::xml_schema::flags (), this),
-  armor_ (::xml_schema::flags (), this)
+  spells_ (::xml_schema::flags (), this),
+  inventory_ (inventory, ::xml_schema::flags (), this)
 {
 }
 
@@ -509,31 +864,29 @@ RPG_Character_BaseXML_XMLTree_Type::
 RPG_Character_BaseXML_XMLTree_Type (const name_type& name,
                                     ::std::auto_ptr< alignment_type >& alignment,
                                     ::std::auto_ptr< attributes_type >& attributes,
-                                    ::std::auto_ptr< skills_type >& skills,
-                                    ::std::auto_ptr< feats_type >& feats,
-                                    ::std::auto_ptr< abilities_type >& abilities,
                                     const defaultSize_type& defaultSize,
                                     const maxHP_type& maxHP,
+                                    ::std::auto_ptr< conditions_type >& conditions,
                                     const HP_type& HP,
                                     const XP_type& XP,
-                                    const gold_type& gold)
+                                    const gold_type& gold,
+                                    ::std::auto_ptr< inventory_type >& inventory)
 : ::xml_schema::type (),
   name_ (name, ::xml_schema::flags (), this),
   alignment_ (alignment, ::xml_schema::flags (), this),
   attributes_ (attributes, ::xml_schema::flags (), this),
-  skills_ (skills, ::xml_schema::flags (), this),
-  feats_ (feats, ::xml_schema::flags (), this),
-  abilities_ (abilities, ::xml_schema::flags (), this),
+  skills_ (::xml_schema::flags (), this),
+  feats_ (::xml_schema::flags (), this),
+  abilities_ (::xml_schema::flags (), this),
   defaultSize_ (defaultSize, ::xml_schema::flags (), this),
   maxHP_ (maxHP, ::xml_schema::flags (), this),
-  knownSpell_ (::xml_schema::flags (), this),
-  condition_ (::xml_schema::flags (), this),
+  knownSpells_ (::xml_schema::flags (), this),
+  conditions_ (conditions, ::xml_schema::flags (), this),
   HP_ (HP, ::xml_schema::flags (), this),
   XP_ (XP, ::xml_schema::flags (), this),
   gold_ (gold, ::xml_schema::flags (), this),
-  spell_ (::xml_schema::flags (), this),
-  weapon_ (::xml_schema::flags (), this),
-  armor_ (::xml_schema::flags (), this)
+  spells_ (::xml_schema::flags (), this),
+  inventory_ (inventory, ::xml_schema::flags (), this)
 {
 }
 
@@ -550,14 +903,13 @@ RPG_Character_BaseXML_XMLTree_Type (const RPG_Character_BaseXML_XMLTree_Type& x,
   abilities_ (x.abilities_, f, this),
   defaultSize_ (x.defaultSize_, f, this),
   maxHP_ (x.maxHP_, f, this),
-  knownSpell_ (x.knownSpell_, f, this),
-  condition_ (x.condition_, f, this),
+  knownSpells_ (x.knownSpells_, f, this),
+  conditions_ (x.conditions_, f, this),
   HP_ (x.HP_, f, this),
   XP_ (x.XP_, f, this),
   gold_ (x.gold_, f, this),
-  spell_ (x.spell_, f, this),
-  weapon_ (x.weapon_, f, this),
-  armor_ (x.armor_, f, this)
+  spells_ (x.spells_, f, this),
+  inventory_ (x.inventory_, f, this)
 {
 }
 
@@ -574,14 +926,13 @@ RPG_Character_BaseXML_XMLTree_Type (const ::xercesc::DOMElement& e,
   abilities_ (f, this),
   defaultSize_ (f, this),
   maxHP_ (f, this),
-  knownSpell_ (f, this),
-  condition_ (f, this),
+  knownSpells_ (f, this),
+  conditions_ (f, this),
   HP_ (f, this),
   XP_ (f, this),
   gold_ (f, this),
-  spell_ (f, this),
-  weapon_ (f, this),
-  armor_ (f, this)
+  spells_ (f, this),
+  inventory_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -649,7 +1000,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< skills_type > r (
         skills_traits::create (i, f, this));
 
-      if (!skills_.present ())
+      if (!this->skills_)
       {
         this->skills_.set (r);
         continue;
@@ -663,7 +1014,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< feats_type > r (
         feats_traits::create (i, f, this));
 
-      if (!feats_.present ())
+      if (!this->feats_)
       {
         this->feats_.set (r);
         continue;
@@ -677,7 +1028,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< abilities_type > r (
         abilities_traits::create (i, f, this));
 
-      if (!abilities_.present ())
+      if (!this->abilities_)
       {
         this->abilities_.set (r);
         continue;
@@ -709,26 +1060,32 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // knownSpell
+    // knownSpells
     //
-    if (n.name () == "knownSpell" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "knownSpells" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< knownSpell_type > r (
-        knownSpell_traits::create (i, f, this));
+      ::std::auto_ptr< knownSpells_type > r (
+        knownSpells_traits::create (i, f, this));
 
-      this->knownSpell_.push_back (r);
-      continue;
+      if (!this->knownSpells_)
+      {
+        this->knownSpells_.set (r);
+        continue;
+      }
     }
 
-    // condition
+    // conditions
     //
-    if (n.name () == "condition" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "conditions" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< condition_type > r (
-        condition_traits::create (i, f, this));
+      ::std::auto_ptr< conditions_type > r (
+        conditions_traits::create (i, f, this));
 
-      this->condition_.push_back (r);
-      continue;
+      if (!conditions_.present ())
+      {
+        this->conditions_.set (r);
+        continue;
+      }
     }
 
     // HP
@@ -764,37 +1121,32 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // spell
+    // spells
     //
-    if (n.name () == "spell" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "spells" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< spell_type > r (
-        spell_traits::create (i, f, this));
+      ::std::auto_ptr< spells_type > r (
+        spells_traits::create (i, f, this));
 
-      this->spell_.push_back (r);
-      continue;
+      if (!this->spells_)
+      {
+        this->spells_.set (r);
+        continue;
+      }
     }
 
-    // weapon
+    // inventory
     //
-    if (n.name () == "weapon" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "inventory" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< weapon_type > r (
-        weapon_traits::create (i, f, this));
+      ::std::auto_ptr< inventory_type > r (
+        inventory_traits::create (i, f, this));
 
-      this->weapon_.push_back (r);
-      continue;
-    }
-
-    // armor
-    //
-    if (n.name () == "armor" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< armor_type > r (
-        armor_traits::create (i, f, this));
-
-      this->armor_.push_back (r);
-      continue;
+      if (!inventory_.present ())
+      {
+        this->inventory_.set (r);
+        continue;
+      }
     }
 
     break;
@@ -821,27 +1173,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "urn:rpg");
   }
 
-  if (!skills_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "skills",
-      "urn:rpg");
-  }
-
-  if (!feats_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "feats",
-      "urn:rpg");
-  }
-
-  if (!abilities_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "abilities",
-      "urn:rpg");
-  }
-
   if (!defaultSize_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
@@ -853,6 +1184,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "maxHP",
+      "urn:rpg");
+  }
+
+  if (!conditions_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "conditions",
       "urn:rpg");
   }
 
@@ -874,6 +1212,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "gold",
+      "urn:rpg");
+  }
+
+  if (!inventory_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "inventory",
       "urn:rpg");
   }
 }
@@ -917,10 +1262,10 @@ operator== (const RPG_Character_BaseXML_XMLTree_Type& x, const RPG_Character_Bas
   if (!(x.maxHP () == y.maxHP ()))
     return false;
 
-  if (!(x.knownSpell () == y.knownSpell ()))
+  if (!(x.knownSpells () == y.knownSpells ()))
     return false;
 
-  if (!(x.condition () == y.condition ()))
+  if (!(x.conditions () == y.conditions ()))
     return false;
 
   if (!(x.HP () == y.HP ()))
@@ -932,13 +1277,10 @@ operator== (const RPG_Character_BaseXML_XMLTree_Type& x, const RPG_Character_Bas
   if (!(x.gold () == y.gold ()))
     return false;
 
-  if (!(x.spell () == y.spell ()))
+  if (!(x.spells () == y.spells ()))
     return false;
 
-  if (!(x.weapon () == y.weapon ()))
-    return false;
-
-  if (!(x.armor () == y.armor ()))
+  if (!(x.inventory () == y.inventory ()))
     return false;
 
   return true;
@@ -957,28 +1299,26 @@ RPG_Character_PlayerXML_XMLTree_Type::
 RPG_Character_PlayerXML_XMLTree_Type (const name_type& name,
                                       const alignment_type& alignment,
                                       const attributes_type& attributes,
-                                      const skills_type& skills,
-                                      const feats_type& feats,
-                                      const abilities_type& abilities,
                                       const defaultSize_type& defaultSize,
                                       const maxHP_type& maxHP,
+                                      const conditions_type& conditions,
                                       const HP_type& HP,
                                       const XP_type& XP,
                                       const gold_type& gold,
+                                      const inventory_type& inventory,
                                       const gender_type& gender,
                                       const classXML_type& classXML,
                                       const offhand_type& offhand)
 : ::RPG_Character_BaseXML_XMLTree_Type (name,
                                         alignment,
                                         attributes,
-                                        skills,
-                                        feats,
-                                        abilities,
                                         defaultSize,
                                         maxHP,
+                                        conditions,
                                         HP,
                                         XP,
-                                        gold),
+                                        gold,
+                                        inventory),
   gender_ (gender, ::xml_schema::flags (), this),
   race_ (::xml_schema::flags (), this),
   classXML_ (classXML, ::xml_schema::flags (), this),
@@ -990,28 +1330,26 @@ RPG_Character_PlayerXML_XMLTree_Type::
 RPG_Character_PlayerXML_XMLTree_Type (const name_type& name,
                                       ::std::auto_ptr< alignment_type >& alignment,
                                       ::std::auto_ptr< attributes_type >& attributes,
-                                      ::std::auto_ptr< skills_type >& skills,
-                                      ::std::auto_ptr< feats_type >& feats,
-                                      ::std::auto_ptr< abilities_type >& abilities,
                                       const defaultSize_type& defaultSize,
                                       const maxHP_type& maxHP,
+                                      ::std::auto_ptr< conditions_type >& conditions,
                                       const HP_type& HP,
                                       const XP_type& XP,
                                       const gold_type& gold,
+                                      ::std::auto_ptr< inventory_type >& inventory,
                                       const gender_type& gender,
                                       ::std::auto_ptr< classXML_type >& classXML,
                                       const offhand_type& offhand)
 : ::RPG_Character_BaseXML_XMLTree_Type (name,
                                         alignment,
                                         attributes,
-                                        skills,
-                                        feats,
-                                        abilities,
                                         defaultSize,
                                         maxHP,
+                                        conditions,
                                         HP,
                                         XP,
-                                        gold),
+                                        gold,
+                                        inventory),
   gender_ (gender, ::xml_schema::flags (), this),
   race_ (::xml_schema::flags (), this),
   classXML_ (classXML, ::xml_schema::flags (), this),
@@ -1181,54 +1519,82 @@ operator!= (const RPG_Character_PlayerXML_XMLTree_Type& x, const RPG_Character_P
 #include <ostream>
 
 ::std::ostream&
-operator<< (::std::ostream& o, const RPG_Character_BaseXML_XMLTree_Type& i)
+operator<< (::std::ostream& o, const RPG_Character_Abilities_XMLTree_Type& i)
 {
-  o << ::std::endl << "name: " << i.name ();
-  o << ::std::endl << "alignment: " << i.alignment ();
-  o << ::std::endl << "attributes: " << i.attributes ();
-  o << ::std::endl << "skills: " << i.skills ();
-  o << ::std::endl << "feats: " << i.feats ();
-  o << ::std::endl << "abilities: " << i.abilities ();
-  o << ::std::endl << "defaultSize: " << i.defaultSize ();
-  o << ::std::endl << "maxHP: " << i.maxHP ();
-  for (RPG_Character_BaseXML_XMLTree_Type::knownSpell_const_iterator
-       b (i.knownSpell ().begin ()), e (i.knownSpell ().end ());
+  for (RPG_Character_Abilities_XMLTree_Type::ability_const_iterator
+       b (i.ability ().begin ()), e (i.ability ().end ());
        b != e; ++b)
   {
-    o << ::std::endl << "knownSpell: " << *b;
+    o << ::std::endl << "ability: " << *b;
   }
 
-  for (RPG_Character_BaseXML_XMLTree_Type::condition_const_iterator
-       b (i.condition ().begin ()), e (i.condition ().end ());
-       b != e; ++b)
-  {
-    o << ::std::endl << "condition: " << *b;
-  }
+  return o;
+}
 
-  o << ::std::endl << "HP: " << i.HP ();
-  o << ::std::endl << "XP: " << i.XP ();
-  o << ::std::endl << "gold: " << i.gold ();
-  for (RPG_Character_BaseXML_XMLTree_Type::spell_const_iterator
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Character_Spells_XMLTree_Type& i)
+{
+  for (RPG_Character_Spells_XMLTree_Type::spell_const_iterator
        b (i.spell ().begin ()), e (i.spell ().end ());
        b != e; ++b)
   {
     o << ::std::endl << "spell: " << *b;
   }
 
-  for (RPG_Character_BaseXML_XMLTree_Type::weapon_const_iterator
-       b (i.weapon ().begin ()), e (i.weapon ().end ());
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Character_Conditions_XMLTree_Type& i)
+{
+  for (RPG_Character_Conditions_XMLTree_Type::condition_const_iterator
+       b (i.condition ().begin ()), e (i.condition ().end ());
        b != e; ++b)
   {
-    o << ::std::endl << "weapon: " << *b;
+    o << ::std::endl << "condition: " << *b;
   }
 
-  for (RPG_Character_BaseXML_XMLTree_Type::armor_const_iterator
-       b (i.armor ().begin ()), e (i.armor ().end ());
-       b != e; ++b)
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Character_BaseXML_XMLTree_Type& i)
+{
+  o << ::std::endl << "name: " << i.name ();
+  o << ::std::endl << "alignment: " << i.alignment ();
+  o << ::std::endl << "attributes: " << i.attributes ();
+  if (i.skills ())
   {
-    o << ::std::endl << "armor: " << *b;
+    o << ::std::endl << "skills: " << *i.skills ();
   }
 
+  if (i.feats ())
+  {
+    o << ::std::endl << "feats: " << *i.feats ();
+  }
+
+  if (i.abilities ())
+  {
+    o << ::std::endl << "abilities: " << *i.abilities ();
+  }
+
+  o << ::std::endl << "defaultSize: " << i.defaultSize ();
+  o << ::std::endl << "maxHP: " << i.maxHP ();
+  if (i.knownSpells ())
+  {
+    o << ::std::endl << "knownSpells: " << *i.knownSpells ();
+  }
+
+  o << ::std::endl << "conditions: " << i.conditions ();
+  o << ::std::endl << "HP: " << i.HP ();
+  o << ::std::endl << "XP: " << i.XP ();
+  o << ::std::endl << "gold: " << i.gold ();
+  if (i.spells ())
+  {
+    o << ::std::endl << "spells: " << *i.spells ();
+  }
+
+  o << ::std::endl << "inventory: " << i.inventory ();
   return o;
 }
 
@@ -1539,6 +1905,69 @@ character_player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
 
 void
+operator<< (::xercesc::DOMElement& e, const RPG_Character_Abilities_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // ability
+  //
+  for (RPG_Character_Abilities_XMLTree_Type::ability_const_iterator
+       b (i.ability ().begin ()), n (i.ability ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "ability",
+        "urn:rpg",
+        e));
+
+    s << *b;
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Character_Spells_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // spell
+  //
+  for (RPG_Character_Spells_XMLTree_Type::spell_const_iterator
+       b (i.spell ().begin ()), n (i.spell ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "spell",
+        "urn:rpg",
+        e));
+
+    s << *b;
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Character_Conditions_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // condition
+  //
+  for (RPG_Character_Conditions_XMLTree_Type::condition_const_iterator
+       b (i.condition ().begin ()), n (i.condition ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "condition",
+        "urn:rpg",
+        e));
+
+    s << *b;
+  }
+}
+
+void
 operator<< (::xercesc::DOMElement& e, const RPG_Character_BaseXML_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
@@ -1581,6 +2010,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_BaseXML_XMLTree_Type& 
 
   // skills
   //
+  if (i.skills ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -1588,11 +2018,12 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_BaseXML_XMLTree_Type& 
         "urn:rpg",
         e));
 
-    s << i.skills ();
+    s << *i.skills ();
   }
 
   // feats
   //
+  if (i.feats ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -1600,11 +2031,12 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_BaseXML_XMLTree_Type& 
         "urn:rpg",
         e));
 
-    s << i.feats ();
+    s << *i.feats ();
   }
 
   // abilities
   //
+  if (i.abilities ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -1612,7 +2044,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_BaseXML_XMLTree_Type& 
         "urn:rpg",
         e));
 
-    s << i.abilities ();
+    s << *i.abilities ();
   }
 
   // defaultSize
@@ -1639,34 +2071,29 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_BaseXML_XMLTree_Type& 
     s << i.maxHP ();
   }
 
-  // knownSpell
+  // knownSpells
   //
-  for (RPG_Character_BaseXML_XMLTree_Type::knownSpell_const_iterator
-       b (i.knownSpell ().begin ()), n (i.knownSpell ().end ());
-       b != n; ++b)
+  if (i.knownSpells ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "knownSpell",
+        "knownSpells",
         "urn:rpg",
         e));
 
-    s << *b;
+    s << *i.knownSpells ();
   }
 
-  // condition
+  // conditions
   //
-  for (RPG_Character_BaseXML_XMLTree_Type::condition_const_iterator
-       b (i.condition ().begin ()), n (i.condition ().end ());
-       b != n; ++b)
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "condition",
+        "conditions",
         "urn:rpg",
         e));
 
-    s << *b;
+    s << i.conditions ();
   }
 
   // HP
@@ -1705,49 +2132,29 @@ operator<< (::xercesc::DOMElement& e, const RPG_Character_BaseXML_XMLTree_Type& 
     s << i.gold ();
   }
 
-  // spell
+  // spells
   //
-  for (RPG_Character_BaseXML_XMLTree_Type::spell_const_iterator
-       b (i.spell ().begin ()), n (i.spell ().end ());
-       b != n; ++b)
+  if (i.spells ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "spell",
+        "spells",
         "urn:rpg",
         e));
 
-    s << *b;
+    s << *i.spells ();
   }
 
-  // weapon
+  // inventory
   //
-  for (RPG_Character_BaseXML_XMLTree_Type::weapon_const_iterator
-       b (i.weapon ().begin ()), n (i.weapon ().end ());
-       b != n; ++b)
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "weapon",
+        "inventory",
         "urn:rpg",
         e));
 
-    s << *b;
-  }
-
-  // armor
-  //
-  for (RPG_Character_BaseXML_XMLTree_Type::armor_const_iterator
-       b (i.armor ().begin ()), n (i.armor ().end ());
-       b != n; ++b)
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "armor",
-        "urn:rpg",
-        e));
-
-    s << *b;
+    s << i.inventory ();
   }
 }
 
@@ -1956,6 +2363,99 @@ character_player (const ::RPG_Character_PlayerXML_XMLTree_Type& s,
   return d;
 }
 
+RPG_Character_Abilities_XMLTree_Type::
+RPG_Character_Abilities_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  ability_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Character_Abilities_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      ability_sequence& c (this->ability_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< ability_type > r (new ability_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Character_Spells_XMLTree_Type::
+RPG_Character_Spells_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  spell_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Character_Spells_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      spell_sequence& c (this->spell_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< spell_type > r (new spell_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Character_Conditions_XMLTree_Type::
+RPG_Character_Conditions_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f,
+                                       ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  condition_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Character_Conditions_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      condition_sequence& c (this->condition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< condition_type > r (new condition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
 RPG_Character_BaseXML_XMLTree_Type::
 RPG_Character_BaseXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                     ::xml_schema::flags f,
@@ -1969,14 +2469,13 @@ RPG_Character_BaseXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   abilities_ (f, this),
   defaultSize_ (f, this),
   maxHP_ (f, this),
-  knownSpell_ (f, this),
-  condition_ (f, this),
+  knownSpells_ (f, this),
+  conditions_ (f, this),
   HP_ (f, this),
   XP_ (f, this),
   gold_ (f, this),
-  spell_ (f, this),
-  weapon_ (f, this),
-  armor_ (f, this)
+  spells_ (f, this),
+  inventory_ (f, this)
 {
   this->parse (s, f);
 }
@@ -2001,18 +2500,33 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    ::std::auto_ptr< skills_type > r (new skills_type (s, f, this));
-    this->skills_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< skills_type > r (new skills_type (s, f, this));
+      this->skills_.set (r);
+    }
   }
 
   {
-    ::std::auto_ptr< feats_type > r (new feats_type (s, f, this));
-    this->feats_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< feats_type > r (new feats_type (s, f, this));
+      this->feats_.set (r);
+    }
   }
 
   {
-    ::std::auto_ptr< abilities_type > r (new abilities_type (s, f, this));
-    this->abilities_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< abilities_type > r (new abilities_type (s, f, this));
+      this->abilities_.set (r);
+    }
   }
 
   {
@@ -2027,35 +2541,18 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    ::std::size_t n;
-    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
-    s >> as;
-    if (n > 0)
+    bool p;
+    s >> p;
+    if (p)
     {
-      knownSpell_sequence& c (this->knownSpell_);
-      c.reserve (n);
-      while (n--)
-      {
-        ::std::auto_ptr< knownSpell_type > r (new knownSpell_type (s, f, this));
-        c.push_back (r);
-      }
+      ::std::auto_ptr< knownSpells_type > r (new knownSpells_type (s, f, this));
+      this->knownSpells_.set (r);
     }
   }
 
   {
-    ::std::size_t n;
-    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
-    s >> as;
-    if (n > 0)
-    {
-      condition_sequence& c (this->condition_);
-      c.reserve (n);
-      while (n--)
-      {
-        ::std::auto_ptr< condition_type > r (new condition_type (s, f, this));
-        c.push_back (r);
-      }
-    }
+    ::std::auto_ptr< conditions_type > r (new conditions_type (s, f, this));
+    this->conditions_.set (r);
   }
 
   {
@@ -2077,51 +2574,18 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    ::std::size_t n;
-    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
-    s >> as;
-    if (n > 0)
+    bool p;
+    s >> p;
+    if (p)
     {
-      spell_sequence& c (this->spell_);
-      c.reserve (n);
-      while (n--)
-      {
-        ::std::auto_ptr< spell_type > r (new spell_type (s, f, this));
-        c.push_back (r);
-      }
+      ::std::auto_ptr< spells_type > r (new spells_type (s, f, this));
+      this->spells_.set (r);
     }
   }
 
   {
-    ::std::size_t n;
-    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
-    s >> as;
-    if (n > 0)
-    {
-      weapon_sequence& c (this->weapon_);
-      c.reserve (n);
-      while (n--)
-      {
-        ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
-        c.push_back (r);
-      }
-    }
-  }
-
-  {
-    ::std::size_t n;
-    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
-    s >> as;
-    if (n > 0)
-    {
-      armor_sequence& c (this->armor_);
-      c.reserve (n);
-      while (n--)
-      {
-        ::std::auto_ptr< armor_type > r (new armor_type (s, f, this));
-        c.push_back (r);
-      }
-    }
+    ::std::auto_ptr< inventory_type > r (new inventory_type (s, f, this));
+    this->inventory_.set (r);
   }
 }
 
@@ -2176,74 +2640,107 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Character_Abilities_XMLTree_Type& x)
+{
+  {
+    const RPG_Character_Abilities_XMLTree_Type::ability_sequence& c (x.ability ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Character_Abilities_XMLTree_Type::ability_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Character_Spells_XMLTree_Type& x)
+{
+  {
+    const RPG_Character_Spells_XMLTree_Type::spell_sequence& c (x.spell ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Character_Spells_XMLTree_Type::spell_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Character_Conditions_XMLTree_Type& x)
+{
+  {
+    const RPG_Character_Conditions_XMLTree_Type::condition_sequence& c (x.condition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Character_Conditions_XMLTree_Type::condition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Character_BaseXML_XMLTree_Type& x)
 {
   s << x.name ();
   s << x.alignment ();
   s << x.attributes ();
-  s << x.skills ();
-  s << x.feats ();
-  s << x.abilities ();
+  {
+    bool p (x.skills ());
+    s << p;
+    if (p)
+      s << *x.skills ();
+  }
+
+  {
+    bool p (x.feats ());
+    s << p;
+    if (p)
+      s << *x.feats ();
+  }
+
+  {
+    bool p (x.abilities ());
+    s << p;
+    if (p)
+      s << *x.abilities ();
+  }
+
   s << x.defaultSize ();
   s << x.maxHP ();
   {
-    const RPG_Character_BaseXML_XMLTree_Type::knownSpell_sequence& c (x.knownSpell ());
-    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Character_BaseXML_XMLTree_Type::knownSpell_const_iterator
-         i (c.begin ()), e (c.end ());
-         i != e; ++i)
-    {
-      s << *i;
-    }
+    bool p (x.knownSpells ());
+    s << p;
+    if (p)
+      s << *x.knownSpells ();
   }
 
-  {
-    const RPG_Character_BaseXML_XMLTree_Type::condition_sequence& c (x.condition ());
-    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Character_BaseXML_XMLTree_Type::condition_const_iterator
-         i (c.begin ()), e (c.end ());
-         i != e; ++i)
-    {
-      s << *i;
-    }
-  }
-
+  s << x.conditions ();
   s << x.HP ();
   s << x.XP ();
   s << x.gold ();
   {
-    const RPG_Character_BaseXML_XMLTree_Type::spell_sequence& c (x.spell ());
-    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Character_BaseXML_XMLTree_Type::spell_const_iterator
-         i (c.begin ()), e (c.end ());
-         i != e; ++i)
-    {
-      s << *i;
-    }
+    bool p (x.spells ());
+    s << p;
+    if (p)
+      s << *x.spells ();
   }
 
-  {
-    const RPG_Character_BaseXML_XMLTree_Type::weapon_sequence& c (x.weapon ());
-    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Character_BaseXML_XMLTree_Type::weapon_const_iterator
-         i (c.begin ()), e (c.end ());
-         i != e; ++i)
-    {
-      s << *i;
-    }
-  }
-
-  {
-    const RPG_Character_BaseXML_XMLTree_Type::armor_sequence& c (x.armor ());
-    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Character_BaseXML_XMLTree_Type::armor_const_iterator
-         i (c.begin ()), e (c.end ());
-         i != e; ++i)
-    {
-      s << *i;
-    }
-  }
-
+  s << x.inventory ();
   return s;
 }
 

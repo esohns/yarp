@@ -68,27 +68,6 @@ RPG_Character_ClassXML_Type_pskel ()
 {
 }
 
-// RPG_Character_Abilities_Type_pskel
-//
-
-void RPG_Character_Abilities_Type_pskel::
-ability_parser (::RPG_Character_Ability_Type_pskel& p)
-{
-  this->ability_parser_ = &p;
-}
-
-void RPG_Character_Abilities_Type_pskel::
-parsers (::RPG_Character_Ability_Type_pskel& ability)
-{
-  this->ability_parser_ = &ability;
-}
-
-RPG_Character_Abilities_Type_pskel::
-RPG_Character_Abilities_Type_pskel ()
-: ability_parser_ (0)
-{
-}
-
 // RPG_Character_Attributes_Type_pskel
 //
 
@@ -206,36 +185,6 @@ RPG_Character_Skills_Type_pskel ()
 {
 }
 
-// RPG_Character_Check_Type_pskel
-//
-
-void RPG_Character_Check_Type_pskel::
-type_parser (::RPG_Character_CheckTypeUnion_Type_pskel& p)
-{
-  this->type_parser_ = &p;
-}
-
-void RPG_Character_Check_Type_pskel::
-difficultyClass_parser (::xml_schema::unsigned_byte_pskel& p)
-{
-  this->difficultyClass_parser_ = &p;
-}
-
-void RPG_Character_Check_Type_pskel::
-parsers (::RPG_Character_CheckTypeUnion_Type_pskel& type,
-         ::xml_schema::unsigned_byte_pskel& difficultyClass)
-{
-  this->type_parser_ = &type;
-  this->difficultyClass_parser_ = &difficultyClass;
-}
-
-RPG_Character_Check_Type_pskel::
-RPG_Character_Check_Type_pskel ()
-: type_parser_ (0),
-  difficultyClass_parser_ (0)
-{
-}
-
 // RPG_Character_Feats_Type_pskel
 //
 
@@ -284,6 +233,36 @@ RPG_Character_Alignment_Type_pskel::
 RPG_Character_Alignment_Type_pskel ()
 : civic_parser_ (0),
   ethic_parser_ (0)
+{
+}
+
+// RPG_Character_Check_Type_pskel
+//
+
+void RPG_Character_Check_Type_pskel::
+type_parser (::RPG_Character_CheckTypeUnion_Type_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Character_Check_Type_pskel::
+difficultyClass_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->difficultyClass_parser_ = &p;
+}
+
+void RPG_Character_Check_Type_pskel::
+parsers (::RPG_Character_CheckTypeUnion_Type_pskel& type,
+         ::xml_schema::unsigned_byte_pskel& difficultyClass)
+{
+  this->type_parser_ = &type;
+  this->difficultyClass_parser_ = &difficultyClass;
+}
+
+RPG_Character_Check_Type_pskel::
+RPG_Character_Check_Type_pskel ()
+: type_parser_ (0),
+  difficultyClass_parser_ (0)
 {
 }
 
@@ -352,55 +331,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->subClass_parser_)
       this->subClass (this->subClass_parser_->post_RPG_Common_SubClass_Type ());
-
-    return true;
-  }
-
-  return false;
-}
-
-// RPG_Character_Abilities_Type_pskel
-//
-
-void RPG_Character_Abilities_Type_pskel::
-ability (const RPG_Character_Ability&)
-{
-}
-
-bool RPG_Character_Abilities_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-    return true;
-
-  if (n == "ability" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->ability_parser_;
-
-    if (this->ability_parser_)
-      this->ability_parser_->pre ();
-
-    return true;
-  }
-
-  return false;
-}
-
-bool RPG_Character_Abilities_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
-    return true;
-
-  if (n == "ability" && ns == "urn:rpg")
-  {
-    if (this->ability_parser_)
-      this->ability (this->ability_parser_->post_RPG_Character_Ability_Type ());
 
     return true;
   }
@@ -693,78 +623,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-// RPG_Character_Check_Type_pskel
-//
-
-void RPG_Character_Check_Type_pskel::
-type (const RPG_Character_CheckTypeUnion&)
-{
-}
-
-void RPG_Character_Check_Type_pskel::
-difficultyClass (unsigned char)
-{
-}
-
-bool RPG_Character_Check_Type_pskel::
-_start_element_impl (const ::xml_schema::ro_string& ns,
-                     const ::xml_schema::ro_string& n,
-                     const ::xml_schema::ro_string* t)
-{
-  XSD_UNUSED (t);
-
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
-    return true;
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
-
-    if (this->type_parser_)
-      this->type_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "difficultyClass" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->difficultyClass_parser_;
-
-    if (this->difficultyClass_parser_)
-      this->difficultyClass_parser_->pre ();
-
-    return true;
-  }
-
-  return false;
-}
-
-bool RPG_Character_Check_Type_pskel::
-_end_element_impl (const ::xml_schema::ro_string& ns,
-                   const ::xml_schema::ro_string& n)
-{
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
-    return true;
-
-  if (n == "type" && ns == "urn:rpg")
-  {
-    if (this->type_parser_)
-      this->type (this->type_parser_->post_RPG_Character_CheckTypeUnion_Type ());
-
-    return true;
-  }
-
-  if (n == "difficultyClass" && ns == "urn:rpg")
-  {
-    if (this->difficultyClass_parser_)
-      this->difficultyClass (this->difficultyClass_parser_->post_unsigned_byte ());
-
-    return true;
-  }
-
-  return false;
-}
-
 // RPG_Character_Feats_Type_pskel
 //
 
@@ -879,6 +737,78 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->ethic_parser_)
       this->ethic (this->ethic_parser_->post_RPG_Character_AlignmentEthic_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Character_Check_Type_pskel
+//
+
+void RPG_Character_Check_Type_pskel::
+type (const RPG_Character_CheckTypeUnion&)
+{
+}
+
+void RPG_Character_Check_Type_pskel::
+difficultyClass (unsigned char)
+{
+}
+
+bool RPG_Character_Check_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "difficultyClass" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->difficultyClass_parser_;
+
+    if (this->difficultyClass_parser_)
+      this->difficultyClass_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Character_Check_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_RPG_Character_CheckTypeUnion_Type ());
+
+    return true;
+  }
+
+  if (n == "difficultyClass" && ns == "urn:rpg")
+  {
+    if (this->difficultyClass_parser_)
+      this->difficultyClass (this->difficultyClass_parser_->post_unsigned_byte ());
 
     return true;
   }

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_character_XML_parser.h"
 
 #include "rpg_character_incl.h"
@@ -88,31 +89,31 @@ RPG_Character_Ability RPG_Character_Ability_Type::post_RPG_Character_Ability_Typ
   return RPG_Character_AbilityHelper::stringToRPG_Character_Ability(post_string());
 }
 
-RPG_Character_Abilities_Type::RPG_Character_Abilities_Type()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::RPG_Character_Abilities_Type"));
-
-  myCurrentAbilities.abilities.clear();
-}
-
-void RPG_Character_Abilities_Type::ability(const RPG_Character_Ability& ability_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::ability"));
-
-  myCurrentAbilities.abilities.push_back(ability_in);
-}
-
-RPG_Character_Abilities RPG_Character_Abilities_Type::post_RPG_Character_Abilities_Type()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::post_RPG_Character_Abilities_Type"));
-
-  RPG_Character_Abilities result = myCurrentAbilities;
-
-  // clear structure
-  myCurrentAbilities.abilities.clear();
-
-  return result;
-}
+// RPG_Character_Abilities_Type::RPG_Character_Abilities_Type()
+// {
+//   RPG_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::RPG_Character_Abilities_Type"));
+//
+//   myCurrentAbilities.abilities.clear();
+// }
+//
+// void RPG_Character_Abilities_Type::ability(const RPG_Character_Ability& ability_in)
+// {
+//   RPG_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::ability"));
+//
+//   myCurrentAbilities.abilities.push_back(ability_in);
+// }
+//
+// RPG_Character_Abilities RPG_Character_Abilities_Type::post_RPG_Character_Abilities_Type()
+// {
+//   RPG_TRACE(ACE_TEXT("RPG_Character_Abilities_Type::post_RPG_Character_Abilities_Type"));
+//
+//   RPG_Character_Abilities result = myCurrentAbilities;
+//
+//   // clear structure
+//   myCurrentAbilities.abilities.clear();
+//
+//   return result;
+// }
 
 RPG_Character_Attributes_Type::RPG_Character_Attributes_Type()
 {

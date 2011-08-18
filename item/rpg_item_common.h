@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ITEM_COMMON_H
 #define RPG_ITEM_COMMON_H
 
@@ -46,38 +47,54 @@
 #include <set>
 #include <map>
 
-// typedef std::bitset<(RPG_ITEM_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
-typedef std::bitset<3> RPG_Item_WeaponDamageType;
+// typedef std::bitset<(RPG_COMMON_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
+typedef std::bitset<5> RPG_Item_WeaponDamageType;
 
 typedef RPG_Dice_Roll RPG_Item_Damage;
 
+// typedef RPG_Item_WeaponPropertiesXML RPG_Item_WeaponProperties;
 struct RPG_Item_WeaponProperties
 {
+  signed char toHitModifier;
+  // RPG_Item_WeaponPropertiesBase //
 //   RPG_Item_WeaponType weaponType;
-  RPG_Item_WeaponCategory        weaponCategory;
-  RPG_Item_WeaponClass           weaponClass;
-  RPG_Item_StorePrice            baseStorePrice;
-  RPG_Item_Damage                baseDamage;
+  RPG_Item_WeaponCategory weaponCategory;
+  RPG_Item_WeaponClass weaponClass;
+  RPG_Dice_Roll baseDamage;
   RPG_Item_CriticalHitProperties criticalHit;
-  unsigned char                  rangeIncrement;
-  unsigned short int             baseWeight;
-  RPG_Item_WeaponDamageType      typeOfDamage;
-  bool                           isNonLethal;
-  bool                           isReachWeapon;
-  bool                           isDoubleWeapon;
+  unsigned char rangeIncrement;
+  RPG_Item_WeaponDamageType typeOfDamage;
+  bool isNonLethal;
+  bool isReachWeapon;
+  bool isDoubleWeapon;
+  // RPG_Item_PropertiesBase //
+  RPG_Magic_School aura;
+  RPG_Item_MagicalPrerequisites prerequisites;
+  // RPG_Item_BaseProperties //
+  unsigned short int baseWeight;
+  RPG_Item_StorePrice baseStorePrice;
+  RPG_Item_CreationCost costToCreate;
 };
 
+// typedef RPG_Item_ArmorPropertiesXML RPG_Item_ArmorProperties;
 struct RPG_Item_ArmorProperties
 {
+  signed char defenseModifier;
+  // RPG_Item_ArmorPropertiesBase //
 //   RPG_Item_ArmorType armorType;
   RPG_Item_ArmorCategory armorCategory;
-  RPG_Item_StorePrice    baseStorePrice;
-  unsigned char          baseArmorBonus;
-  unsigned char          maxDexterityBonus;
-  char                   armorCheckPenalty;
-  unsigned char          arcaneSpellFailure;
-  unsigned short int     baseSpeed;
-  unsigned short int     baseWeight;
+  unsigned char baseArmorBonus;
+  unsigned char maxDexterityBonus;
+  signed char armorCheckPenalty;
+  unsigned char arcaneSpellFailure;
+  unsigned short int baseSpeed;
+  // RPG_Item_PropertiesBase //
+  RPG_Magic_School aura;
+  RPG_Item_MagicalPrerequisites prerequisites;
+  // RPG_Item_BaseProperties //
+  unsigned short int baseWeight;
+  RPG_Item_StorePrice baseStorePrice;
+  RPG_Item_CreationCost costToCreate;
 };
 
 // useful types

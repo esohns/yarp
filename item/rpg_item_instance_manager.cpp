@@ -51,7 +51,7 @@ RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
   {
     case ITEM_ARMOR:
     {
-      RPG_Item_ArmorType armorType = static_cast<RPG_Item_ArmorType> (itemSubType_in);
+      RPG_Item_ArmorType armorType = static_cast<RPG_Item_ArmorType>(itemSubType_in);
 
       try
       {
@@ -60,7 +60,7 @@ RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
       catch (const std::bad_alloc& exception)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception: \"%s\", aborting\n"),
+                   ACE_TEXT("RPG_Item_Instance_Manager::create(): caught exception: \"%s\", aborting\n"),
                    exception.what()));
       }
       if (!handle)
@@ -74,7 +74,7 @@ RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
     }
     case ITEM_WEAPON:
     {
-      RPG_Item_WeaponType weaponType = static_cast<RPG_Item_WeaponType> (itemSubType_in);
+      RPG_Item_WeaponType weaponType = static_cast<RPG_Item_WeaponType>(itemSubType_in);
 
       try
       {
@@ -83,7 +83,8 @@ RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
       catch (const std::bad_alloc& exception)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught std::bad_alloc, aborting\n")));
+                   ACE_TEXT("RPG_Item_Instance_Manager::create(): caught exception: \"%s\", aborting\n"),
+                   exception.what()));
       }
       if (!handle)
       {
@@ -94,10 +95,15 @@ RPG_Item_Instance_Manager::create(const RPG_Item_Type& itemType_in,
 
       break;
     }
-    // *TODO*: create these as well
     case ITEM_GOODS:
     case ITEM_OTHER:
     case ITEM_VALUABLE:
+    {
+      // *TODO*: create these as well
+      ACE_ASSERT(false);
+
+      break;
+    }
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -127,6 +133,75 @@ RPG_Item_Instance_Manager::get(const RPG_Item_ID_t& itemID_in,
   } // end IF
 
   return (iterator != myInstanceTable.end());
+}
+
+RPG_Item_List_t
+RPG_Item_Instance_Manager::instantiate(const RPG_Item_InventoryXML_XMLTree_Type& inventory_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_Instance_Manager::instantiate"));
+
+  RPG_Item_List_t list;
+
+  RPG_Item_Type item_type = RPG_ITEM_TYPE_INVALID;
+  RPG_Item_Instance_Base* item_base = NULL;
+  for (RPG_Item_InventoryXML_XMLTree_Type::item_const_iterator iterator = inventory_in.item().begin();
+       iterator != inventory_in.item().end();
+       iterator++)
+  {
+    item_type = RPG_Item_TypeHelper::stringToRPG_Item_Type((*iterator).type());
+    item_base = NULL;
+
+    switch (item_type)
+    {
+      case ITEM_ARMOR:
+      {
+        ACE_ASSERT((*iterator).armor().present());
+        RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_properties_xml = (*iterator).armor().get();
+
+        item_base = create(ITEM_ARMOR,
+                           RPG_Item_ArmorTypeHelper::stringToRPG_Item_ArmorType(armor_properties_xml.armorType()));
+        ACE_ASSERT(item_base);
+        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item_base);
+        ACE_ASSERT(armor);
+        list.insert(armor->getID());
+
+        break;
+      }
+      case ITEM_GOODS:
+      case ITEM_OTHER:
+      case ITEM_VALUABLE:
+      {
+        // *TODO*
+        ACE_ASSERT(false);
+
+        break;
+      }
+      case ITEM_WEAPON:
+      {
+        ACE_ASSERT((*iterator).weapon().present());
+        RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_properties_xml = (*iterator).weapon().get();
+
+        item_base = create(ITEM_WEAPON,
+                           RPG_Item_WeaponTypeHelper::stringToRPG_Item_WeaponType(weapon_properties_xml.weaponType()));
+        ACE_ASSERT(item_base);
+        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(item_base);
+        ACE_ASSERT(weapon);
+        list.insert(weapon->getID());
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid item type (was \"%s\"), aborting\n"),
+                   (*iterator).type().c_str()));
+
+        break;
+      }
+    } // end SWITCH
+  } // end FOR
+
+  return list;
 }
 
 void

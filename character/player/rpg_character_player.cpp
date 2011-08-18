@@ -17,15 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_character_player.h"
 
-#include "rpg_character_defines.h"
 #include "rpg_character_player_common_tools.h"
-#include "rpg_character_race_common_tools.h"
-#include "rpg_character_class_common_tools.h"
-#include "rpg_character_player_XML_tree.h"
 
-// #include "rpg_XMLSchema_XML_tree.h"
+#include <rpg_character_defines.h>
+#include <rpg_character_race_common_tools.h>
+#include <rpg_character_class_common_tools.h>
+#include "rpg_character_player_XML_tree.h"
 
 #include <rpg_item_instance_common.h>
 #include <rpg_item_instance_manager.h>
@@ -33,6 +33,7 @@
 #include <rpg_item_armor.h>
 #include <rpg_item_weapon.h>
 #include <rpg_item_common_tools.h>
+#include <rpg_item_dictionary.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
@@ -104,7 +105,7 @@ RPG_Character_Player::~RPG_Character_Player()
 
 }
 
-RPG_Character_Player
+RPG_Character_Player*
 RPG_Character_Player::load(const std::string& filename_in,
                            const std::string& schemaRepository_in)
 {
@@ -117,7 +118,7 @@ RPG_Character_Player::load(const std::string& filename_in,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
                filename_in.c_str()));
 
-    return RPG_Character_Player::dummy();
+    return NULL;
   } // end IF
 
   std::ifstream ifs;
@@ -138,7 +139,7 @@ RPG_Character_Player::load(const std::string& filename_in,
                  ACE_TEXT("failed to RPG_Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
                  schemaRepository_in.c_str()));
 
-      return RPG_Character_Player::dummy();
+      return NULL;
     } // end IF
 
     path = schemaRepository_in;
@@ -152,63 +153,33 @@ RPG_Character_Player::load(const std::string& filename_in,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
                path.c_str()));
 
-    return RPG_Character_Player::dummy();
+    return NULL;
   } // end IF
 
   props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
                         path);
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
+
+  std::auto_ptr<RPG_Character_PlayerXML_XMLTree_Type> player_p;
   try
   {
     ifs.open(filename_in.c_str(),
              std::ios_base::in);
 
-    ::std::auto_ptr< ::RPG_Character_PlayerXML_XMLTree_Type > player_p = character_player(ifs,
-                                                                                          RPG_XSDErrorHandler,
-                                                                                          flags,
-                                                                                          props);
+    player_p = ::character_player(ifs,
+                                  RPG_XSDErrorHandler,
+                                  flags,
+                                  props);
 
     ifs.close();
-
-    // init result
-    RPG_Character_Alignment alignment;
-    alignment.civic = RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic(player_p->alignment().civic());
-    alignment.ethic = RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic(player_p->alignment().ethic());
-    RPG_Character_Attributes attributes;
-    attributes.strength = player_p->attributes().strength();
-    attributes.dexterity = player_p->attributes().dexterity();
-    attributes.constitution = player_p->attributes().constitution();
-    attributes.intelligence = player_p->attributes().intelligence();
-    attributes.wisdom = player_p->attributes().wisdom();
-    attributes.charisma = player_p->attributes().charisma();
-    // *TODO*: serialize/parse items
-    RPG_Item_List_t items;
-    RPG_Character_Player player(player_p->name(),
-                                RPG_Character_GenderHelper::stringToRPG_Character_Gender(player_p->gender()),
-                                RPG_Character_Race_Common_Tools::raceXMLTreeToRace(player_p->race()),
-                                RPG_Character_Class_Common_Tools::classXMLTreeToClass(player_p->classXML()),
-                                alignment,
-                                attributes,
-                                RPG_Character_Player_Common_Tools::skillsXMLTreeToSkills(player_p->skills()),
-                                RPG_Character_Player_Common_Tools::featsXMLTreeToFeats(player_p->feats()),
-                                RPG_Character_Player_Common_Tools::abilitiesXMLTreeToAbilities(player_p->abilities()),
-                                RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(player_p->offhand()),
-                                player_p->maxHP(),
-                                RPG_Character_Player_Common_Tools::knownSpellXMLTreeToSpells(player_p->knownSpell()),
-                                RPG_Character_Player_Common_Tools::conditionXMLTreeToCondition(player_p->condition()),
-                                player_p->HP(),
-                                player_p->XP(),
-                                player_p->gold(),
-                                RPG_Character_Player_Common_Tools::spellXMLTreeToSpells(player_p->spell()),
-                                items);
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("loaded player \"%s\" from file: \"%s\"\n"),
 //                player.getName().c_str(),
 //                filename_in.c_str()));
 
-    return player;
+    return RPG_Character_Player_Common_Tools::playerXMLToPlayer(*player_p);
   }
   catch (const std::ifstream::failure&)
   {
@@ -243,7 +214,7 @@ RPG_Character_Player::load(const std::string& filename_in,
                filename_in.c_str()));
   }
 
-  return RPG_Character_Player::dummy();
+  return NULL;
 }
 
 const bool
@@ -274,95 +245,30 @@ RPG_Character_Player::save(const std::string& filename_in) const
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
 
+  RPG_Character_PlayerXML_XMLTree_Type* player_model = NULL;
   try
   {
     ofs.open(filename_in.c_str(),
              (std::ios_base::out | std::ios_base::trunc));
 
-    RPG_Character_Alignment_XMLTree_Type alignment(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(getAlignment().civic),
-              RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(getAlignment().ethic));
-    RPG_Character_Attributes_XMLTree_Type attributes(getAttribute(ATTRIBUTE_STRENGTH),
-                                                     getAttribute(ATTRIBUTE_DEXTERITY),
-                                                     getAttribute(ATTRIBUTE_CONSTITUTION),
-                                                     getAttribute(ATTRIBUTE_INTELLIGENCE),
-                                                     getAttribute(ATTRIBUTE_WISDOM),
-                                                     getAttribute(ATTRIBUTE_CHARISMA));
-    RPG_Character_Skills_XMLTree_Type skills;
-    for (RPG_Character_SkillsConstIterator_t iterator = mySkills.begin();
-         iterator != mySkills.end();
-         iterator++)
-    {
-      RPG_Character_SkillValue_XMLTree_Type skill(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first),
-                                                  (*iterator).second);
-      skills.skill().push_back(skill);
-    } // end FOR
-    RPG_Character_Feats_XMLTree_Type feats;
-    for (RPG_Character_FeatsConstIterator_t iterator = myFeats.begin();
-         iterator != myFeats.end();
-         iterator++)
-      feats.feat().push_back(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator));
-    RPG_Character_Abilities_XMLTree_Type abilities;
-    for (RPG_Character_AbilitiesConstIterator_t iterator = myAbilities.begin();
-         iterator != myAbilities.end();
-         iterator++)
-      abilities.ability().push_back(RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator));
-    RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(myClass.metaClass));
-    for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
-         iterator != myClass.subClasses.end();
-         iterator++)
-      classXML.subClass().push_back(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator));
-    RPG_Character_PlayerXML_XMLTree_Type player_model(getName(),
-                                                      alignment,
-                                                      attributes,
-                                                      skills,
-                                                      feats,
-                                                      abilities,
-                                                      RPG_Common_SizeHelper::RPG_Common_SizeToString(getSize()),
-                                                      getNumTotalHitPoints(),
-                                                      getNumHitPoints(),
-                                                      getExperience(),
-                                                      getWealth(),
-                                                      RPG_Character_GenderHelper::RPG_Character_GenderToString(getGender()),
-                                                      classXML,
-                                                      RPG_Character_OffHandHelper::RPG_Character_OffHandToString(getOffHand()));
-    // *NOTE*: add race, known spells, condition, prepared spells sequences "manually"
-    unsigned int race_index = 1;
-    for (unsigned int index = 0;
-         index < myRace.size();
-         index++, race_index++)
-    {
-      if (myRace.test(index))
-        player_model.race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)));
-    } // end IF
-    for (RPG_Magic_SpellTypesIterator_t iterator = myKnownSpells.begin();
-         iterator != myKnownSpells.end();
-         iterator++)
-      player_model.knownSpell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
-    for (RPG_Character_ConditionsIterator_t iterator = myCondition.begin();
-         iterator != myCondition.end();
-         iterator++)
-      player_model.condition().push_back(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
-    for (RPG_Magic_SpellsIterator_t iterator = mySpells.begin();
-         iterator != mySpells.end();
-         iterator++)
-      player_model.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
-    // *TODO*: add item sequence
+    player_model = RPG_Character_Player_Common_Tools::playerToPlayerXML(*this);
+    ACE_ASSERT(player_model);
 
-    character_player(ofs,
-                     player_model,
-                     map,
-                     character_set,
-                     flags);
+    ::character_player(ofs,
+                       *player_model,
+                       map,
+                       character_set,
+                       flags);
 
     ofs.close();
   }
-  catch (const std::ofstream::failure&)
+  catch (const std::ofstream::failure& exception)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("\"%s\": unable to open or write error, aborting\n"),
                filename_in.c_str()));
 
-    return false;
+    throw exception;
   }
   catch (const ::xml_schema::serialization& exception)
   {
@@ -390,10 +296,13 @@ RPG_Character_Player::save(const std::string& filename_in) const
              getName().c_str(),
              filename_in.c_str()));
 
+  // clean up
+  delete player_model;
+
   return true;
 }
 
-RPG_Character_Player
+RPG_Character_Player*
 RPG_Character_Player::dummy()
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Player::dummy"));
@@ -420,28 +329,49 @@ RPG_Character_Player::dummy()
   condition.insert(CONDITION_NORMAL);
   RPG_Magic_Spells_t preparedSpells;
   RPG_Item_List_t items;
-  RPG_Character_Player player(// base attributes
-                              name,
-                              GENDER_NONE,
-                              RACE_NONE,
-                              player_class,
-                              alignment,
-                              attributes,
-                              skills,
-                              feats,
-                              abilities,
-                              OFFHAND_LEFT,
-                              1,
-                              knownSpells,
-                              // current status
-                              condition,
-                              1,
-                              0,
-                              0,
-                              preparedSpells,
-                              items);
 
-  return player;
+  RPG_Character_Player* player_p = NULL;
+  try
+  {
+    player_p = new RPG_Character_Player(// base attributes
+                                        name,
+                                        GENDER_NONE,
+                                        RACE_NONE,
+                                        player_class,
+                                        alignment,
+                                        attributes,
+                                        skills,
+                                        feats,
+                                        abilities,
+                                        OFFHAND_LEFT,
+                                        1,
+                                        knownSpells,
+                                        // current status
+                                        condition,
+                                        1,
+                                        0,
+                                        0,
+                                        preparedSpells,
+                                        items);
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::dummy(): exception occurred: \"%s\", aborting\n"),
+               exception.what()));
+
+    return player_p;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Character_Player::dummy(): exception occurred, aborting\n")));
+
+    return player_p;
+  }
+  ACE_ASSERT(player_p);
+
+  return player_p;
 }
 
 void

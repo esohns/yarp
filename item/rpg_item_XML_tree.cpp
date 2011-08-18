@@ -268,16 +268,16 @@ operator= (value v)
 // RPG_Item_StorePrice_XMLTree_Type
 // 
 
-const RPG_Item_StorePrice_XMLTree_Type::numGoldPieces_type& RPG_Item_StorePrice_XMLTree_Type::
+const RPG_Item_StorePrice_XMLTree_Type::numGoldPieces_optional& RPG_Item_StorePrice_XMLTree_Type::
 numGoldPieces () const
 {
-  return this->numGoldPieces_.get ();
+  return this->numGoldPieces_;
 }
 
-RPG_Item_StorePrice_XMLTree_Type::numGoldPieces_type& RPG_Item_StorePrice_XMLTree_Type::
+RPG_Item_StorePrice_XMLTree_Type::numGoldPieces_optional& RPG_Item_StorePrice_XMLTree_Type::
 numGoldPieces ()
 {
-  return this->numGoldPieces_.get ();
+  return this->numGoldPieces_;
 }
 
 void RPG_Item_StorePrice_XMLTree_Type::
@@ -286,22 +286,34 @@ numGoldPieces (const numGoldPieces_type& x)
   this->numGoldPieces_.set (x);
 }
 
-const RPG_Item_StorePrice_XMLTree_Type::numSilverPieces_type& RPG_Item_StorePrice_XMLTree_Type::
-numSilverPieces () const
+void RPG_Item_StorePrice_XMLTree_Type::
+numGoldPieces (const numGoldPieces_optional& x)
 {
-  return this->numSilverPieces_.get ();
+  this->numGoldPieces_ = x;
 }
 
-RPG_Item_StorePrice_XMLTree_Type::numSilverPieces_type& RPG_Item_StorePrice_XMLTree_Type::
+const RPG_Item_StorePrice_XMLTree_Type::numSilverPieces_optional& RPG_Item_StorePrice_XMLTree_Type::
+numSilverPieces () const
+{
+  return this->numSilverPieces_;
+}
+
+RPG_Item_StorePrice_XMLTree_Type::numSilverPieces_optional& RPG_Item_StorePrice_XMLTree_Type::
 numSilverPieces ()
 {
-  return this->numSilverPieces_.get ();
+  return this->numSilverPieces_;
 }
 
 void RPG_Item_StorePrice_XMLTree_Type::
 numSilverPieces (const numSilverPieces_type& x)
 {
   this->numSilverPieces_.set (x);
+}
+
+void RPG_Item_StorePrice_XMLTree_Type::
+numSilverPieces (const numSilverPieces_optional& x)
+{
+  this->numSilverPieces_ = x;
 }
 
 
@@ -348,16 +360,16 @@ damageModifier (const damageModifier_type& x)
 // RPG_Item_CreationCost_XMLTree_Type
 // 
 
-const RPG_Item_CreationCost_XMLTree_Type::numGoldPieces_type& RPG_Item_CreationCost_XMLTree_Type::
+const RPG_Item_CreationCost_XMLTree_Type::numGoldPieces_optional& RPG_Item_CreationCost_XMLTree_Type::
 numGoldPieces () const
 {
-  return this->numGoldPieces_.get ();
+  return this->numGoldPieces_;
 }
 
-RPG_Item_CreationCost_XMLTree_Type::numGoldPieces_type& RPG_Item_CreationCost_XMLTree_Type::
+RPG_Item_CreationCost_XMLTree_Type::numGoldPieces_optional& RPG_Item_CreationCost_XMLTree_Type::
 numGoldPieces ()
 {
-  return this->numGoldPieces_.get ();
+  return this->numGoldPieces_;
 }
 
 void RPG_Item_CreationCost_XMLTree_Type::
@@ -366,22 +378,34 @@ numGoldPieces (const numGoldPieces_type& x)
   this->numGoldPieces_.set (x);
 }
 
-const RPG_Item_CreationCost_XMLTree_Type::numExperiencePoints_type& RPG_Item_CreationCost_XMLTree_Type::
-numExperiencePoints () const
+void RPG_Item_CreationCost_XMLTree_Type::
+numGoldPieces (const numGoldPieces_optional& x)
 {
-  return this->numExperiencePoints_.get ();
+  this->numGoldPieces_ = x;
 }
 
-RPG_Item_CreationCost_XMLTree_Type::numExperiencePoints_type& RPG_Item_CreationCost_XMLTree_Type::
+const RPG_Item_CreationCost_XMLTree_Type::numExperiencePoints_optional& RPG_Item_CreationCost_XMLTree_Type::
+numExperiencePoints () const
+{
+  return this->numExperiencePoints_;
+}
+
+RPG_Item_CreationCost_XMLTree_Type::numExperiencePoints_optional& RPG_Item_CreationCost_XMLTree_Type::
 numExperiencePoints ()
 {
-  return this->numExperiencePoints_.get ();
+  return this->numExperiencePoints_;
 }
 
 void RPG_Item_CreationCost_XMLTree_Type::
 numExperiencePoints (const numExperiencePoints_type& x)
 {
   this->numExperiencePoints_.set (x);
+}
+
+void RPG_Item_CreationCost_XMLTree_Type::
+numExperiencePoints (const numExperiencePoints_optional& x)
+{
+  this->numExperiencePoints_ = x;
 }
 
 
@@ -464,22 +488,28 @@ costToCreate (::std::auto_ptr< costToCreate_type > x)
 // RPG_Item_MagicalPrerequisites_XMLTree_Type
 // 
 
-const RPG_Item_MagicalPrerequisites_XMLTree_Type::minCasterLevel_type& RPG_Item_MagicalPrerequisites_XMLTree_Type::
+const RPG_Item_MagicalPrerequisites_XMLTree_Type::minCasterLevel_optional& RPG_Item_MagicalPrerequisites_XMLTree_Type::
 minCasterLevel () const
 {
-  return this->minCasterLevel_.get ();
+  return this->minCasterLevel_;
 }
 
-RPG_Item_MagicalPrerequisites_XMLTree_Type::minCasterLevel_type& RPG_Item_MagicalPrerequisites_XMLTree_Type::
+RPG_Item_MagicalPrerequisites_XMLTree_Type::minCasterLevel_optional& RPG_Item_MagicalPrerequisites_XMLTree_Type::
 minCasterLevel ()
 {
-  return this->minCasterLevel_.get ();
+  return this->minCasterLevel_;
 }
 
 void RPG_Item_MagicalPrerequisites_XMLTree_Type::
 minCasterLevel (const minCasterLevel_type& x)
 {
   this->minCasterLevel_.set (x);
+}
+
+void RPG_Item_MagicalPrerequisites_XMLTree_Type::
+minCasterLevel (const minCasterLevel_optional& x)
+{
+  this->minCasterLevel_ = x;
 }
 
 
@@ -670,22 +700,28 @@ criticalHit (::std::auto_ptr< criticalHit_type > x)
   this->criticalHit_.set (x);
 }
 
-const RPG_Item_WeaponPropertiesBase_XMLTree_Type::rangeIncrement_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+const RPG_Item_WeaponPropertiesBase_XMLTree_Type::rangeIncrement_optional& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
 rangeIncrement () const
 {
-  return this->rangeIncrement_.get ();
+  return this->rangeIncrement_;
 }
 
-RPG_Item_WeaponPropertiesBase_XMLTree_Type::rangeIncrement_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+RPG_Item_WeaponPropertiesBase_XMLTree_Type::rangeIncrement_optional& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
 rangeIncrement ()
 {
-  return this->rangeIncrement_.get ();
+  return this->rangeIncrement_;
 }
 
 void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
 rangeIncrement (const rangeIncrement_type& x)
 {
   this->rangeIncrement_.set (x);
+}
+
+void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+rangeIncrement (const rangeIncrement_optional& x)
+{
+  this->rangeIncrement_ = x;
 }
 
 const RPG_Item_WeaponPropertiesBase_XMLTree_Type::typeOfDamage_sequence& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
@@ -1067,40 +1103,150 @@ defenseModifier (const defenseModifier_optional& x)
 }
 
 
-// RPG_Item_Dictionary_XMLTree_Type
+// RPG_Item_XML_XMLTree_Type
 // 
 
-const RPG_Item_Dictionary_XMLTree_Type::weapon_sequence& RPG_Item_Dictionary_XMLTree_Type::
+const RPG_Item_XML_XMLTree_Type::type_type& RPG_Item_XML_XMLTree_Type::
+type () const
+{
+  return this->type_.get ();
+}
+
+RPG_Item_XML_XMLTree_Type::type_type& RPG_Item_XML_XMLTree_Type::
+type ()
+{
+  return this->type_.get ();
+}
+
+void RPG_Item_XML_XMLTree_Type::
+type (const type_type& x)
+{
+  this->type_.set (x);
+}
+
+void RPG_Item_XML_XMLTree_Type::
+type (::std::auto_ptr< type_type > x)
+{
+  this->type_.set (x);
+}
+
+const RPG_Item_XML_XMLTree_Type::weapon_optional& RPG_Item_XML_XMLTree_Type::
 weapon () const
 {
   return this->weapon_;
 }
 
-RPG_Item_Dictionary_XMLTree_Type::weapon_sequence& RPG_Item_Dictionary_XMLTree_Type::
+RPG_Item_XML_XMLTree_Type::weapon_optional& RPG_Item_XML_XMLTree_Type::
 weapon ()
 {
   return this->weapon_;
 }
 
-void RPG_Item_Dictionary_XMLTree_Type::
-weapon (const weapon_sequence& s)
+void RPG_Item_XML_XMLTree_Type::
+weapon (const weapon_type& x)
 {
-  this->weapon_ = s;
+  this->weapon_.set (x);
 }
 
-const RPG_Item_Dictionary_XMLTree_Type::armor_sequence& RPG_Item_Dictionary_XMLTree_Type::
+void RPG_Item_XML_XMLTree_Type::
+weapon (const weapon_optional& x)
+{
+  this->weapon_ = x;
+}
+
+void RPG_Item_XML_XMLTree_Type::
+weapon (::std::auto_ptr< weapon_type > x)
+{
+  this->weapon_.set (x);
+}
+
+const RPG_Item_XML_XMLTree_Type::armor_optional& RPG_Item_XML_XMLTree_Type::
 armor () const
 {
   return this->armor_;
 }
 
-RPG_Item_Dictionary_XMLTree_Type::armor_sequence& RPG_Item_Dictionary_XMLTree_Type::
+RPG_Item_XML_XMLTree_Type::armor_optional& RPG_Item_XML_XMLTree_Type::
 armor ()
 {
   return this->armor_;
 }
 
-void RPG_Item_Dictionary_XMLTree_Type::
+void RPG_Item_XML_XMLTree_Type::
+armor (const armor_type& x)
+{
+  this->armor_.set (x);
+}
+
+void RPG_Item_XML_XMLTree_Type::
+armor (const armor_optional& x)
+{
+  this->armor_ = x;
+}
+
+void RPG_Item_XML_XMLTree_Type::
+armor (::std::auto_ptr< armor_type > x)
+{
+  this->armor_.set (x);
+}
+
+
+// RPG_Item_InventoryXML_XMLTree_Type
+// 
+
+const RPG_Item_InventoryXML_XMLTree_Type::item_sequence& RPG_Item_InventoryXML_XMLTree_Type::
+item () const
+{
+  return this->item_;
+}
+
+RPG_Item_InventoryXML_XMLTree_Type::item_sequence& RPG_Item_InventoryXML_XMLTree_Type::
+item ()
+{
+  return this->item_;
+}
+
+void RPG_Item_InventoryXML_XMLTree_Type::
+item (const item_sequence& s)
+{
+  this->item_ = s;
+}
+
+
+// RPG_Item_DictionaryXML_XMLTree_Type
+// 
+
+const RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
+weapon () const
+{
+  return this->weapon_;
+}
+
+RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
+weapon ()
+{
+  return this->weapon_;
+}
+
+void RPG_Item_DictionaryXML_XMLTree_Type::
+weapon (const weapon_sequence& s)
+{
+  this->weapon_ = s;
+}
+
+const RPG_Item_DictionaryXML_XMLTree_Type::armor_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
+armor () const
+{
+  return this->armor_;
+}
+
+RPG_Item_DictionaryXML_XMLTree_Type::armor_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
+armor ()
+{
+  return this->armor_;
+}
+
+void RPG_Item_DictionaryXML_XMLTree_Type::
 armor (const armor_sequence& s)
 {
   this->armor_ = s;
@@ -1627,11 +1773,10 @@ _xsd_RPG_Item_WeaponType_XMLTree_Type_indexes_[73] =
 //
 
 RPG_Item_StorePrice_XMLTree_Type::
-RPG_Item_StorePrice_XMLTree_Type (const numGoldPieces_type& numGoldPieces,
-                                  const numSilverPieces_type& numSilverPieces)
+RPG_Item_StorePrice_XMLTree_Type ()
 : ::xml_schema::type (),
-  numGoldPieces_ (numGoldPieces, ::xml_schema::flags (), this),
-  numSilverPieces_ (numSilverPieces, ::xml_schema::flags (), this)
+  numGoldPieces_ (::xml_schema::flags (), this),
+  numSilverPieces_ (::xml_schema::flags (), this)
 {
 }
 
@@ -1674,7 +1819,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "numGoldPieces" && n.namespace_ () == "urn:rpg")
     {
-      if (!numGoldPieces_.present ())
+      if (!this->numGoldPieces_)
       {
         this->numGoldPieces_.set (numGoldPieces_traits::create (i, f, this));
         continue;
@@ -1685,7 +1830,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "numSilverPieces" && n.namespace_ () == "urn:rpg")
     {
-      if (!numSilverPieces_.present ())
+      if (!this->numSilverPieces_)
       {
         this->numSilverPieces_.set (numSilverPieces_traits::create (i, f, this));
         continue;
@@ -1693,20 +1838,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     }
 
     break;
-  }
-
-  if (!numGoldPieces_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "numGoldPieces",
-      "urn:rpg");
-  }
-
-  if (!numSilverPieces_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "numSilverPieces",
-      "urn:rpg");
   }
 }
 
@@ -1861,11 +1992,10 @@ operator!= (const RPG_Item_CriticalHitProperties_XMLTree_Type& x, const RPG_Item
 //
 
 RPG_Item_CreationCost_XMLTree_Type::
-RPG_Item_CreationCost_XMLTree_Type (const numGoldPieces_type& numGoldPieces,
-                                    const numExperiencePoints_type& numExperiencePoints)
+RPG_Item_CreationCost_XMLTree_Type ()
 : ::xml_schema::type (),
-  numGoldPieces_ (numGoldPieces, ::xml_schema::flags (), this),
-  numExperiencePoints_ (numExperiencePoints, ::xml_schema::flags (), this)
+  numGoldPieces_ (::xml_schema::flags (), this),
+  numExperiencePoints_ (::xml_schema::flags (), this)
 {
 }
 
@@ -1908,7 +2038,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "numGoldPieces" && n.namespace_ () == "urn:rpg")
     {
-      if (!numGoldPieces_.present ())
+      if (!this->numGoldPieces_)
       {
         this->numGoldPieces_.set (numGoldPieces_traits::create (i, f, this));
         continue;
@@ -1919,7 +2049,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "numExperiencePoints" && n.namespace_ () == "urn:rpg")
     {
-      if (!numExperiencePoints_.present ())
+      if (!this->numExperiencePoints_)
       {
         this->numExperiencePoints_.set (numExperiencePoints_traits::create (i, f, this));
         continue;
@@ -1927,20 +2057,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     }
 
     break;
-  }
-
-  if (!numGoldPieces_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "numGoldPieces",
-      "urn:rpg");
-  }
-
-  if (!numExperiencePoints_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "numExperiencePoints",
-      "urn:rpg");
   }
 }
 
@@ -2128,9 +2244,9 @@ operator!= (const RPG_Item_BaseProperties_XMLTree_Type& x, const RPG_Item_BasePr
 //
 
 RPG_Item_MagicalPrerequisites_XMLTree_Type::
-RPG_Item_MagicalPrerequisites_XMLTree_Type (const minCasterLevel_type& minCasterLevel)
+RPG_Item_MagicalPrerequisites_XMLTree_Type ()
 : ::xml_schema::type (),
-  minCasterLevel_ (minCasterLevel, ::xml_schema::flags (), this)
+  minCasterLevel_ (::xml_schema::flags (), this)
 {
 }
 
@@ -2171,7 +2287,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "minCasterLevel" && n.namespace_ () == "urn:rpg")
     {
-      if (!minCasterLevel_.present ())
+      if (!this->minCasterLevel_)
       {
         this->minCasterLevel_.set (minCasterLevel_traits::create (i, f, this));
         continue;
@@ -2179,13 +2295,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     }
 
     break;
-  }
-
-  if (!minCasterLevel_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "minCasterLevel",
-      "urn:rpg");
   }
 }
 
@@ -2352,8 +2461,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                             const weaponCategory_type& weaponCategory,
                                             const weaponClass_type& weaponClass,
                                             const baseDamage_type& baseDamage,
-                                            const criticalHit_type& criticalHit,
-                                            const rangeIncrement_type& rangeIncrement)
+                                            const criticalHit_type& criticalHit)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
   weaponType_ (weaponType, ::xml_schema::flags (), this),
@@ -2361,7 +2469,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
   weaponClass_ (weaponClass, ::xml_schema::flags (), this),
   baseDamage_ (baseDamage, ::xml_schema::flags (), this),
   criticalHit_ (criticalHit, ::xml_schema::flags (), this),
-  rangeIncrement_ (rangeIncrement, ::xml_schema::flags (), this),
+  rangeIncrement_ (::xml_schema::flags (), this),
   typeOfDamage_ (::xml_schema::flags (), this),
   isNonLethal_ (isNonLethal_default_value (), ::xml_schema::flags (), this),
   isReachWeapon_ (isReachWeapon_default_value (), ::xml_schema::flags (), this),
@@ -2376,8 +2484,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                             const weaponCategory_type& weaponCategory,
                                             const weaponClass_type& weaponClass,
                                             ::std::auto_ptr< baseDamage_type >& baseDamage,
-                                            ::std::auto_ptr< criticalHit_type >& criticalHit,
-                                            const rangeIncrement_type& rangeIncrement)
+                                            ::std::auto_ptr< criticalHit_type >& criticalHit)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
   weaponType_ (weaponType, ::xml_schema::flags (), this),
@@ -2385,7 +2492,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
   weaponClass_ (weaponClass, ::xml_schema::flags (), this),
   baseDamage_ (baseDamage, ::xml_schema::flags (), this),
   criticalHit_ (criticalHit, ::xml_schema::flags (), this),
-  rangeIncrement_ (rangeIncrement, ::xml_schema::flags (), this),
+  rangeIncrement_ (::xml_schema::flags (), this),
   typeOfDamage_ (::xml_schema::flags (), this),
   isNonLethal_ (isNonLethal_default_value (), ::xml_schema::flags (), this),
   isReachWeapon_ (isReachWeapon_default_value (), ::xml_schema::flags (), this),
@@ -2520,7 +2627,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "rangeIncrement" && n.namespace_ () == "urn:rpg")
     {
-      if (!rangeIncrement_.present ())
+      if (!this->rangeIncrement_)
       {
         this->rangeIncrement_.set (rangeIncrement_traits::create (i, f, this));
         continue;
@@ -2573,13 +2680,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "criticalHit",
-      "urn:rpg");
-  }
-
-  if (!rangeIncrement_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "rangeIncrement",
       "urn:rpg");
   }
 
@@ -2692,16 +2792,14 @@ RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                            const weaponCategory_type& weaponCategory,
                                            const weaponClass_type& weaponClass,
                                            const baseDamage_type& baseDamage,
-                                           const criticalHit_type& criticalHit,
-                                           const rangeIncrement_type& rangeIncrement)
+                                           const criticalHit_type& criticalHit)
 : ::RPG_Item_WeaponPropertiesBase_XMLTree_Type (baseWeight,
                                                 baseStorePrice,
                                                 weaponType,
                                                 weaponCategory,
                                                 weaponClass,
                                                 baseDamage,
-                                                criticalHit,
-                                                rangeIncrement),
+                                                criticalHit),
   toHitModifier_ (::xml_schema::flags (), this)
 {
 }
@@ -2713,16 +2811,14 @@ RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                            const weaponCategory_type& weaponCategory,
                                            const weaponClass_type& weaponClass,
                                            ::std::auto_ptr< baseDamage_type >& baseDamage,
-                                           ::std::auto_ptr< criticalHit_type >& criticalHit,
-                                           const rangeIncrement_type& rangeIncrement)
+                                           ::std::auto_ptr< criticalHit_type >& criticalHit)
 : ::RPG_Item_WeaponPropertiesBase_XMLTree_Type (baseWeight,
                                                 baseStorePrice,
                                                 weaponType,
                                                 weaponCategory,
                                                 weaponClass,
                                                 baseDamage,
-                                                criticalHit,
-                                                rangeIncrement),
+                                                criticalHit),
   toHitModifier_ (::xml_schema::flags (), this)
 {
 }
@@ -3395,31 +3491,251 @@ operator!= (const RPG_Item_ArmorPropertiesXML_XMLTree_Type& x, const RPG_Item_Ar
   return !(x == y);
 }
 
-// RPG_Item_Dictionary_XMLTree_Type
+// RPG_Item_XML_XMLTree_Type
 //
 
-RPG_Item_Dictionary_XMLTree_Type::
-RPG_Item_Dictionary_XMLTree_Type ()
+RPG_Item_XML_XMLTree_Type::
+RPG_Item_XML_XMLTree_Type (const type_type& type)
+: ::xml_schema::type (),
+  type_ (type, ::xml_schema::flags (), this),
+  weapon_ (::xml_schema::flags (), this),
+  armor_ (::xml_schema::flags (), this)
+{
+}
+
+RPG_Item_XML_XMLTree_Type::
+RPG_Item_XML_XMLTree_Type (const RPG_Item_XML_XMLTree_Type& x,
+                           ::xml_schema::flags f,
+                           ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  type_ (x.type_, f, this),
+  weapon_ (x.weapon_, f, this),
+  armor_ (x.armor_, f, this)
+{
+}
+
+RPG_Item_XML_XMLTree_Type::
+RPG_Item_XML_XMLTree_Type (const ::xercesc::DOMElement& e,
+                           ::xml_schema::flags f,
+                           ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  type_ (f, this),
+  weapon_ (f, this),
+  armor_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Item_XML_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // type
+    //
+    if (n.name () == "type" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< type_type > r (
+        type_traits::create (i, f, this));
+
+      if (!type_.present ())
+      {
+        this->type_.set (r);
+        continue;
+      }
+    }
+
+    // weapon
+    //
+    if (n.name () == "weapon" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< weapon_type > r (
+        weapon_traits::create (i, f, this));
+
+      if (!this->weapon_)
+      {
+        this->weapon_.set (r);
+        continue;
+      }
+    }
+
+    // armor
+    //
+    if (n.name () == "armor" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< armor_type > r (
+        armor_traits::create (i, f, this));
+
+      if (!this->armor_)
+      {
+        this->armor_.set (r);
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!type_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "type",
+      "urn:rpg");
+  }
+}
+
+RPG_Item_XML_XMLTree_Type* RPG_Item_XML_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Item_XML_XMLTree_Type (*this, f, c);
+}
+
+RPG_Item_XML_XMLTree_Type::
+~RPG_Item_XML_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Item_XML_XMLTree_Type& x, const RPG_Item_XML_XMLTree_Type& y)
+{
+  if (!(x.type () == y.type ()))
+    return false;
+
+  if (!(x.weapon () == y.weapon ()))
+    return false;
+
+  if (!(x.armor () == y.armor ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Item_XML_XMLTree_Type& x, const RPG_Item_XML_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
+// RPG_Item_InventoryXML_XMLTree_Type
+//
+
+RPG_Item_InventoryXML_XMLTree_Type::
+RPG_Item_InventoryXML_XMLTree_Type ()
+: ::xml_schema::type (),
+  item_ (::xml_schema::flags (), this)
+{
+}
+
+RPG_Item_InventoryXML_XMLTree_Type::
+RPG_Item_InventoryXML_XMLTree_Type (const RPG_Item_InventoryXML_XMLTree_Type& x,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  item_ (x.item_, f, this)
+{
+}
+
+RPG_Item_InventoryXML_XMLTree_Type::
+RPG_Item_InventoryXML_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  item_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Item_InventoryXML_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // item
+    //
+    if (n.name () == "item" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< item_type > r (
+        item_traits::create (i, f, this));
+
+      this->item_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+}
+
+RPG_Item_InventoryXML_XMLTree_Type* RPG_Item_InventoryXML_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Item_InventoryXML_XMLTree_Type (*this, f, c);
+}
+
+RPG_Item_InventoryXML_XMLTree_Type::
+~RPG_Item_InventoryXML_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Item_InventoryXML_XMLTree_Type& x, const RPG_Item_InventoryXML_XMLTree_Type& y)
+{
+  if (!(x.item () == y.item ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Item_InventoryXML_XMLTree_Type& x, const RPG_Item_InventoryXML_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
+// RPG_Item_DictionaryXML_XMLTree_Type
+//
+
+RPG_Item_DictionaryXML_XMLTree_Type::
+RPG_Item_DictionaryXML_XMLTree_Type ()
 : ::xml_schema::type (),
   weapon_ (::xml_schema::flags (), this),
   armor_ (::xml_schema::flags (), this)
 {
 }
 
-RPG_Item_Dictionary_XMLTree_Type::
-RPG_Item_Dictionary_XMLTree_Type (const RPG_Item_Dictionary_XMLTree_Type& x,
-                                  ::xml_schema::flags f,
-                                  ::xml_schema::container* c)
+RPG_Item_DictionaryXML_XMLTree_Type::
+RPG_Item_DictionaryXML_XMLTree_Type (const RPG_Item_DictionaryXML_XMLTree_Type& x,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   weapon_ (x.weapon_, f, this),
   armor_ (x.armor_, f, this)
 {
 }
 
-RPG_Item_Dictionary_XMLTree_Type::
-RPG_Item_Dictionary_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                  ::xml_schema::flags f,
-                                  ::xml_schema::container* c)
+RPG_Item_DictionaryXML_XMLTree_Type::
+RPG_Item_DictionaryXML_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   weapon_ (f, this),
   armor_ (f, this)
@@ -3431,7 +3747,7 @@ RPG_Item_Dictionary_XMLTree_Type (const ::xercesc::DOMElement& e,
   }
 }
 
-void RPG_Item_Dictionary_XMLTree_Type::
+void RPG_Item_DictionaryXML_XMLTree_Type::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
@@ -3467,20 +3783,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   }
 }
 
-RPG_Item_Dictionary_XMLTree_Type* RPG_Item_Dictionary_XMLTree_Type::
+RPG_Item_DictionaryXML_XMLTree_Type* RPG_Item_DictionaryXML_XMLTree_Type::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class RPG_Item_Dictionary_XMLTree_Type (*this, f, c);
+  return new class RPG_Item_DictionaryXML_XMLTree_Type (*this, f, c);
 }
 
-RPG_Item_Dictionary_XMLTree_Type::
-~RPG_Item_Dictionary_XMLTree_Type ()
+RPG_Item_DictionaryXML_XMLTree_Type::
+~RPG_Item_DictionaryXML_XMLTree_Type ()
 {
 }
 
 bool
-operator== (const RPG_Item_Dictionary_XMLTree_Type& x, const RPG_Item_Dictionary_XMLTree_Type& y)
+operator== (const RPG_Item_DictionaryXML_XMLTree_Type& x, const RPG_Item_DictionaryXML_XMLTree_Type& y)
 {
   if (!(x.weapon () == y.weapon ()))
     return false;
@@ -3492,7 +3808,7 @@ operator== (const RPG_Item_Dictionary_XMLTree_Type& x, const RPG_Item_Dictionary
 }
 
 bool
-operator!= (const RPG_Item_Dictionary_XMLTree_Type& x, const RPG_Item_Dictionary_XMLTree_Type& y)
+operator!= (const RPG_Item_DictionaryXML_XMLTree_Type& x, const RPG_Item_DictionaryXML_XMLTree_Type& y)
 {
   return !(x == y);
 }
@@ -3562,8 +3878,16 @@ operator<< (::std::ostream& o, const RPG_Item_WeaponType_XMLTree_Type& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Item_StorePrice_XMLTree_Type& i)
 {
-  o << ::std::endl << "numGoldPieces: " << i.numGoldPieces ();
-  o << ::std::endl << "numSilverPieces: " << i.numSilverPieces ();
+  if (i.numGoldPieces ())
+  {
+    o << ::std::endl << "numGoldPieces: " << *i.numGoldPieces ();
+  }
+
+  if (i.numSilverPieces ())
+  {
+    o << ::std::endl << "numSilverPieces: " << *i.numSilverPieces ();
+  }
+
   return o;
 }
 
@@ -3578,8 +3902,16 @@ operator<< (::std::ostream& o, const RPG_Item_CriticalHitProperties_XMLTree_Type
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Item_CreationCost_XMLTree_Type& i)
 {
-  o << ::std::endl << "numGoldPieces: " << i.numGoldPieces ();
-  o << ::std::endl << "numExperiencePoints: " << i.numExperiencePoints ();
+  if (i.numGoldPieces ())
+  {
+    o << ::std::endl << "numGoldPieces: " << *i.numGoldPieces ();
+  }
+
+  if (i.numExperiencePoints ())
+  {
+    o << ::std::endl << "numExperiencePoints: " << *i.numExperiencePoints ();
+  }
+
   return o;
 }
 
@@ -3599,7 +3931,11 @@ operator<< (::std::ostream& o, const RPG_Item_BaseProperties_XMLTree_Type& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Item_MagicalPrerequisites_XMLTree_Type& i)
 {
-  o << ::std::endl << "minCasterLevel: " << i.minCasterLevel ();
+  if (i.minCasterLevel ())
+  {
+    o << ::std::endl << "minCasterLevel: " << *i.minCasterLevel ();
+  }
+
   return o;
 }
 
@@ -3631,7 +3967,11 @@ operator<< (::std::ostream& o, const RPG_Item_WeaponPropertiesBase_XMLTree_Type&
   o << ::std::endl << "weaponClass: " << i.weaponClass ();
   o << ::std::endl << "baseDamage: " << i.baseDamage ();
   o << ::std::endl << "criticalHit: " << i.criticalHit ();
-  o << ::std::endl << "rangeIncrement: " << i.rangeIncrement ();
+  if (i.rangeIncrement ())
+  {
+    o << ::std::endl << "rangeIncrement: " << *i.rangeIncrement ();
+  }
+
   for (RPG_Item_WeaponPropertiesBase_XMLTree_Type::typeOfDamage_const_iterator
        b (i.typeOfDamage ().begin ()), e (i.typeOfDamage ().end ());
        b != e; ++b)
@@ -3711,16 +4051,46 @@ operator<< (::std::ostream& o, const RPG_Item_ArmorPropertiesXML_XMLTree_Type& i
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, const RPG_Item_Dictionary_XMLTree_Type& i)
+operator<< (::std::ostream& o, const RPG_Item_XML_XMLTree_Type& i)
 {
-  for (RPG_Item_Dictionary_XMLTree_Type::weapon_const_iterator
+  o << ::std::endl << "type: " << i.type ();
+  if (i.weapon ())
+  {
+    o << ::std::endl << "weapon: " << *i.weapon ();
+  }
+
+  if (i.armor ())
+  {
+    o << ::std::endl << "armor: " << *i.armor ();
+  }
+
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Item_InventoryXML_XMLTree_Type& i)
+{
+  for (RPG_Item_InventoryXML_XMLTree_Type::item_const_iterator
+       b (i.item ().begin ()), e (i.item ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "item: " << *b;
+  }
+
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Item_DictionaryXML_XMLTree_Type& i)
+{
+  for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
        b (i.weapon ().begin ()), e (i.weapon ().end ());
        b != e; ++b)
   {
     o << ::std::endl << "weapon: " << *b;
   }
 
-  for (RPG_Item_Dictionary_XMLTree_Type::armor_const_iterator
+  for (RPG_Item_DictionaryXML_XMLTree_Type::armor_const_iterator
        b (i.armor ().begin ()), e (i.armor ().end ());
        b != e; ++b)
   {
@@ -3840,6 +4210,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_StorePrice_XMLTree_Type& i)
 
   // numGoldPieces
   //
+  if (i.numGoldPieces ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -3847,11 +4218,12 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_StorePrice_XMLTree_Type& i)
         "urn:rpg",
         e));
 
-    s << i.numGoldPieces ();
+    s << *i.numGoldPieces ();
   }
 
   // numSilverPieces
   //
+  if (i.numSilverPieces ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -3859,7 +4231,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_StorePrice_XMLTree_Type& i)
         "urn:rpg",
         e));
 
-    s << i.numSilverPieces ();
+    s << *i.numSilverPieces ();
   }
 }
 
@@ -3900,6 +4272,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_CreationCost_XMLTree_Type& 
 
   // numGoldPieces
   //
+  if (i.numGoldPieces ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -3907,11 +4280,12 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_CreationCost_XMLTree_Type& 
         "urn:rpg",
         e));
 
-    s << i.numGoldPieces ();
+    s << *i.numGoldPieces ();
   }
 
   // numExperiencePoints
   //
+  if (i.numExperiencePoints ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -3919,7 +4293,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_CreationCost_XMLTree_Type& 
         "urn:rpg",
         e));
 
-    s << i.numExperiencePoints ();
+    s << *i.numExperiencePoints ();
   }
 }
 
@@ -3973,6 +4347,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_MagicalPrerequisites_XMLTre
 
   // minCasterLevel
   //
+  if (i.minCasterLevel ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -3980,7 +4355,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_MagicalPrerequisites_XMLTre
         "urn:rpg",
         e));
 
-    s << i.minCasterLevel ();
+    s << *i.minCasterLevel ();
   }
 }
 
@@ -4083,6 +4458,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_WeaponPropertiesBase_XMLTre
 
   // rangeIncrement
   //
+  if (i.rangeIncrement ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -4090,7 +4466,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_WeaponPropertiesBase_XMLTre
         "urn:rpg",
         e));
 
-    s << i.rangeIncrement ();
+    s << *i.rangeIncrement ();
   }
 
   // typeOfDamage
@@ -4309,13 +4685,78 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_ArmorPropertiesXML_XMLTree_
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const RPG_Item_Dictionary_XMLTree_Type& i)
+operator<< (::xercesc::DOMElement& e, const RPG_Item_XML_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // type
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "type",
+        "urn:rpg",
+        e));
+
+    s << i.type ();
+  }
+
+  // weapon
+  //
+  if (i.weapon ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "weapon",
+        "urn:rpg",
+        e));
+
+    s << *i.weapon ();
+  }
+
+  // armor
+  //
+  if (i.armor ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "armor",
+        "urn:rpg",
+        e));
+
+    s << *i.armor ();
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Item_InventoryXML_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // item
+  //
+  for (RPG_Item_InventoryXML_XMLTree_Type::item_const_iterator
+       b (i.item ().begin ()), n (i.item ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "item",
+        "urn:rpg",
+        e));
+
+    s << *b;
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Item_DictionaryXML_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
 
   // weapon
   //
-  for (RPG_Item_Dictionary_XMLTree_Type::weapon_const_iterator
+  for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
        b (i.weapon ().begin ()), n (i.weapon ().end ());
        b != n; ++b)
   {
@@ -4330,7 +4771,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_Dictionary_XMLTree_Type& i)
 
   // armor
   //
-  for (RPG_Item_Dictionary_XMLTree_Type::armor_const_iterator
+  for (RPG_Item_DictionaryXML_XMLTree_Type::armor_const_iterator
        b (i.armor ().begin ()), n (i.armor ().end ());
        b != n; ++b)
   {
@@ -4405,15 +4846,25 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
   {
-    numGoldPieces_type r;
-    s >> r;
-    this->numGoldPieces_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numGoldPieces_type r;
+      s >> r;
+      this->numGoldPieces_.set (r);
+    }
   }
 
   {
-    numSilverPieces_type r;
-    s >> r;
-    this->numSilverPieces_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numSilverPieces_type r;
+      s >> r;
+      this->numSilverPieces_.set (r);
+    }
   }
 }
 
@@ -4461,15 +4912,25 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
   {
-    numGoldPieces_type r;
-    s >> r;
-    this->numGoldPieces_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numGoldPieces_type r;
+      s >> r;
+      this->numGoldPieces_.set (r);
+    }
   }
 
   {
-    numExperiencePoints_type r;
-    s >> r;
-    this->numExperiencePoints_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numExperiencePoints_type r;
+      s >> r;
+      this->numExperiencePoints_.set (r);
+    }
   }
 }
 
@@ -4526,9 +4987,14 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
   {
-    minCasterLevel_type r;
-    s >> r;
-    this->minCasterLevel_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      minCasterLevel_type r;
+      s >> r;
+      this->minCasterLevel_.set (r);
+    }
   }
 }
 
@@ -4617,9 +5083,14 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    rangeIncrement_type r;
-    s >> r;
-    this->rangeIncrement_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      rangeIncrement_type r;
+      s >> r;
+      this->rangeIncrement_.set (r);
+    }
   }
 
   {
@@ -4788,10 +5259,83 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 }
 
-RPG_Item_Dictionary_XMLTree_Type::
-RPG_Item_Dictionary_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                  ::xml_schema::flags f,
-                                  ::xml_schema::container* c)
+RPG_Item_XML_XMLTree_Type::
+RPG_Item_XML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                           ::xml_schema::flags f,
+                           ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  weapon_ (f, this),
+  armor_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_XML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
+      this->weapon_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< armor_type > r (new armor_type (s, f, this));
+      this->armor_.set (r);
+    }
+  }
+}
+
+RPG_Item_InventoryXML_XMLTree_Type::
+RPG_Item_InventoryXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  item_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_InventoryXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      item_sequence& c (this->item_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< item_type > r (new item_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Item_DictionaryXML_XMLTree_Type::
+RPG_Item_DictionaryXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
 : ::xml_schema::type (s, f, c),
   weapon_ (f, this),
   armor_ (f, this)
@@ -4799,7 +5343,7 @@ RPG_Item_Dictionary_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   this->parse (s, f);
 }
 
-void RPG_Item_Dictionary_XMLTree_Type::
+void RPG_Item_DictionaryXML_XMLTree_Type::
 parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
@@ -4875,8 +5419,20 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Item_StorePrice_XMLTree_Type& x)
 {
-  s << x.numGoldPieces ();
-  s << x.numSilverPieces ();
+  {
+    bool p (x.numGoldPieces ());
+    s << p;
+    if (p)
+      s << *x.numGoldPieces ();
+  }
+
+  {
+    bool p (x.numSilverPieces ());
+    s << p;
+    if (p)
+      s << *x.numSilverPieces ();
+  }
+
   return s;
 }
 
@@ -4893,8 +5449,20 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Item_CreationCost_XMLTree_Type& x)
 {
-  s << x.numGoldPieces ();
-  s << x.numExperiencePoints ();
+  {
+    bool p (x.numGoldPieces ());
+    s << p;
+    if (p)
+      s << *x.numGoldPieces ();
+  }
+
+  {
+    bool p (x.numExperiencePoints ());
+    s << p;
+    if (p)
+      s << *x.numExperiencePoints ();
+  }
+
   return s;
 }
 
@@ -4918,7 +5486,13 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Item_MagicalPrerequisites_XMLTree_Type& x)
 {
-  s << x.minCasterLevel ();
+  {
+    bool p (x.minCasterLevel ());
+    s << p;
+    if (p)
+      s << *x.minCasterLevel ();
+  }
+
   return s;
 }
 
@@ -4954,7 +5528,13 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
   s << x.weaponClass ();
   s << x.baseDamage ();
   s << x.criticalHit ();
-  s << x.rangeIncrement ();
+  {
+    bool p (x.rangeIncrement ());
+    s << p;
+    if (p)
+      s << *x.rangeIncrement ();
+  }
+
   {
     const RPG_Item_WeaponPropertiesBase_XMLTree_Type::typeOfDamage_sequence& c (x.typeOfDamage ());
     s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
@@ -5033,12 +5613,52 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
-            const RPG_Item_Dictionary_XMLTree_Type& x)
+            const RPG_Item_XML_XMLTree_Type& x)
+{
+  s << x.type ();
+  {
+    bool p (x.weapon ());
+    s << p;
+    if (p)
+      s << *x.weapon ();
+  }
+
+  {
+    bool p (x.armor ());
+    s << p;
+    if (p)
+      s << *x.armor ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_InventoryXML_XMLTree_Type& x)
 {
   {
-    const RPG_Item_Dictionary_XMLTree_Type::weapon_sequence& c (x.weapon ());
+    const RPG_Item_InventoryXML_XMLTree_Type::item_sequence& c (x.item ());
     s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Item_Dictionary_XMLTree_Type::weapon_const_iterator
+    for (RPG_Item_InventoryXML_XMLTree_Type::item_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_DictionaryXML_XMLTree_Type& x)
+{
+  {
+    const RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& c (x.weapon ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
          i (c.begin ()), e (c.end ());
          i != e; ++i)
     {
@@ -5047,9 +5667,9 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
   }
 
   {
-    const RPG_Item_Dictionary_XMLTree_Type::armor_sequence& c (x.armor ());
+    const RPG_Item_DictionaryXML_XMLTree_Type::armor_sequence& c (x.armor ());
     s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Item_Dictionary_XMLTree_Type::armor_const_iterator
+    for (RPG_Item_DictionaryXML_XMLTree_Type::armor_const_iterator
          i (c.begin ()), e (c.end ());
          i != e; ++i)
     {

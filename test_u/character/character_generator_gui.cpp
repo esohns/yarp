@@ -580,9 +580,10 @@ do_work(const std::string& magicDictionary_in,
   userData.entity.sprite    = RPG_GRAPHICS_SPRITE_INVALID;
   userData.entity.graphic   = NULL;
   // init sprite gallery
-  userData.sprite_gallery.push_back(SPRITE_GOBLIN);
-  userData.sprite_gallery.push_back(SPRITE_HUMAN);
-  userData.sprite_gallery.push_back(SPRITE_PRIEST);
+  for (int index = 0;
+       index < RPG_GRAPHICS_SPRITE_MAX;
+       index++)
+    userData.sprite_gallery.push_back(static_cast<RPG_Graphics_Sprite>(index));
   userData.current_sprite   = userData.sprite_gallery.begin();
 
   GDK_THREADS_ENTER();

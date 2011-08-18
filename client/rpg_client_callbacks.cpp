@@ -750,6 +750,228 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
     gtk_image_clear(image);
 }
 
+void
+reset_entity_profile(GladeXML* xml_in)
+{
+  RPG_TRACE(ACE_TEXT("::reset_entity_profile"));
+
+  // sanity checks
+  ACE_ASSERT(xml_in);
+
+  // step1: reset character profile
+  GtkWidget* current = NULL;
+
+  // step1a: name
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("name")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1b: gender
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("gender")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1c: race
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("race")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1d: class
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("class")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1e: alignment
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("alignment")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1f: condition
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("condition")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1g: HP
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("hitpoints")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1h: AC
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("armorclass")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1i: XP
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("experience")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1j: level(s)
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("level")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1k: gold
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("gold")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1l: attributes
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("strength")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("dexterity")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("constitution")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("intelligence")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("wisdom")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("charisma")));
+  ACE_ASSERT(current);
+  gtk_label_set_text(GTK_LABEL(current),
+                     NULL);
+
+  // step1m: feats
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("feats_vbox")));
+  ACE_ASSERT(current);
+  GList* entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+
+  // step1n: abilities
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("abilities_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+
+  // step1o: skills
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("skills_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+
+  // step1p: spells
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("spells_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+
+  // step1q: inventory
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("inventory_items_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+
+  // step2: reset image (if available)
+  GtkImage* image = GTK_IMAGE(glade_xml_get_widget(xml_in,
+                                                   ACE_TEXT_ALWAYS_CHAR("image_sprite")));
+  ACE_ASSERT(image);
+  gtk_image_clear(image);
+}
+
 // callbacks used by ::scandir...
 int
 dirent_selector(const dirent* entry_in)
@@ -782,12 +1004,14 @@ dirent_comparator(const dirent** entry1_in,
                         (*entry2_in)->d_name);
 }
 
-void
+const unsigned long
 load_profiles(const std::string& repository_in,
               GtkListStore* listStore_in)
 //                         GtkComboBox* comboBox_in)
 {
   RPG_TRACE(ACE_TEXT("::load_profiles"));
+
+  unsigned long return_value = 0;
 
   // sanity check(s)
   ACE_ASSERT(listStore_in);
@@ -797,7 +1021,7 @@ load_profiles(const std::string& repository_in,
                ACE_TEXT("failed to load_character_profiles(\"%s\"), not a directory, aborting\n"),
                repository_in.c_str()));
 
-    return;
+    return 0;
   } // end IF
 
   // retrieve all existing character profiles (*.xml) and sort them alphabetically...
@@ -810,7 +1034,7 @@ load_profiles(const std::string& repository_in,
                ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
                repository_in.c_str()));
 
-    return;
+    return 0;
   } // end IF
 
   // clear existing entries
@@ -833,7 +1057,7 @@ load_profiles(const std::string& repository_in,
     // sanitize name (chop off extension)
     entry = entries[i]->d_name;
     entry.erase(entry.rfind(extension,
-                std::string::npos),
+                            std::string::npos),
                 std::string::npos);
 
     // append new (text) entry
@@ -841,6 +1065,8 @@ load_profiles(const std::string& repository_in,
     gtk_list_store_set(listStore_in, &iter,
                        0, entry.c_str(), // column 0
                        -1);
+
+    return_value++;
   } // end FOR
 
   // clean up
@@ -852,18 +1078,16 @@ load_profiles(const std::string& repository_in,
                   0,
                   sizeof(value));
   const gchar* text = NULL;
-  if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(listStore_in),
-      &iter))
-  {
-    gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
-                             0, &value);
-    text = g_value_get_string(&value);
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("profile[0]: %s\n"),
-               std::string(text).c_str()));
-
-    g_value_unset(&value);
-  } // end IF
+  if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(listStore_in),
+                                     &iter))
+    return 0;
+  gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
+                           0, &value);
+  text = g_value_get_string(&value);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("profile[0]: %s\n"),
+             std::string(text).c_str()));
+  g_value_unset(&value);
   for (unsigned int i = 1;
        gtk_tree_model_iter_next(GTK_TREE_MODEL(listStore_in),
                                 &iter);
@@ -884,6 +1108,8 @@ load_profiles(const std::string& repository_in,
 
     g_value_unset(&value);
   } // end FOR
+
+  return return_value;
 }
 
 #ifdef __cplusplus
@@ -943,7 +1169,7 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
 
   ACE_UNUSED_ARG(widget_in);
 //   ACE_UNUSED_ARG(userData_in);
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
   ACE_ASSERT(data);
 
 //   // leave GTK
@@ -972,7 +1198,114 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::create_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(userData_in);
+  //   ACE_UNUSED_ARG(userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+  ACE_ASSERT(data->current_entity.character == NULL);
+
+  data->current_entity = RPG_Engine_Common_Tools::createEntity();
+  ACE_ASSERT(data->current_entity.character);
+
+  // update entity profile widgets
+  ::update_entity_profile(data->current_entity,
+                          data->xml);
+
+  // if necessary, update starting position
+  if ((data->current_entity.position.first == 0) &&
+      (data->current_entity.position.second == 0))
+    data->current_entity.position = data->level_engine->getStartPosition();
+
+  // make character display frame sensitive (if it's not already)
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+
+  // make drop button sensitive (if it's not already)
+  GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                      ACE_TEXT_ALWAYS_CHAR("drop")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make save button sensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("save")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make load button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("load")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+  // make join button sensitive (if it's not already)
+  GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                         ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(join_game);
+  gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+drop_character_activated_GTK_cb(GtkWidget* widget_in,
+                                gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::drop_character_activated_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  //   ACE_UNUSED_ARG(userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // clean up
+  if (data->current_entity.character)
+  {
+    data->current_entity.actions.clear();
+    delete data->current_entity.character;
+    data->current_entity.character = NULL;
+    SDL_FreeSurface(data->current_entity.graphic);
+    data->current_entity.graphic = NULL;
+    data->current_entity.position = std::make_pair(0, 0);
+    data->current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  } // end IF
+
+  // reset profile widgets
+ ::reset_entity_profile(data->xml);
+
+  // make character display frame insensitive (if it's not already)
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
+
+  // make create button sensitive (if it's not already)
+  GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                      ACE_TEXT_ALWAYS_CHAR("create")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make save button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("save")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+  // make load button sensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("load")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make join button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+  // make this insensitive
+  gtk_widget_set_sensitive(widget_in, FALSE);
 
   return FALSE;
 }
@@ -984,7 +1317,7 @@ load_character_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -1035,6 +1368,18 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   // hide widget
   gtk_widget_hide(GTK_WIDGET(filechooser_dialog));
 
+  // clean up
+  if (data->current_entity.character)
+  {
+    data->current_entity.actions.clear();
+    delete data->current_entity.character;
+    data->current_entity.character = NULL;
+    SDL_FreeSurface(data->current_entity.graphic);
+    data->current_entity.graphic = NULL;
+    data->current_entity.position = std::make_pair(0, 0);
+    data->current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  } // end IF
+
   // retrieve selected filename
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
 
@@ -1059,11 +1404,29 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
+  // make create button insensitive (if it's not already)
+  GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                      ACE_TEXT_ALWAYS_CHAR("create")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+  // make drop button sensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("drop")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make load button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("load")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
   // make join button sensitive (if it's not already)
-  GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                                         ACE_TEXT_ALWAYS_CHAR("join")));
-  ACE_ASSERT(join_game);
-  gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   return FALSE;
 }
@@ -1095,6 +1458,161 @@ save_character_activated_GTK_cb(GtkWidget* widget_in,
 
   // make save button INsensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
+                                             gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::character_repository_combobox_changed_GTK_cb"));
+
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(widget_in);
+  ACE_ASSERT(data->xml);
+
+  // retrieve active item
+  std::string active_item;
+  GtkTreeIter selected;
+  GtkTreeModel* model = NULL;
+  GValue value;
+  const gchar* text = NULL;
+  if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget_in), &selected))
+  {
+    // *WARNING*: refreshing the combobox triggers removal of items
+    // which also generates this signal...
+    return FALSE;
+  } // end IF
+  model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget_in));
+  ACE_ASSERT(model);
+  ACE_OS::memset(&value,
+                 0,
+                 sizeof(value));
+  gtk_tree_model_get_value(model, &selected,
+                           0, &value);
+  text = g_value_get_string(&value);
+  // sanity check
+  ACE_ASSERT(text);
+  active_item = text;
+  g_value_unset(&value);
+
+  // clean up
+  if (data->current_entity.character)
+  {
+    data->current_entity.actions.clear();
+    delete data->current_entity.character;
+    data->current_entity.character = NULL;
+    SDL_FreeSurface(data->current_entity.graphic);
+    data->current_entity.graphic = NULL;
+    data->current_entity.position = std::make_pair(0, 0);
+    data->current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  } // end IF
+
+  // construct filename
+  std::string filename = RPG_CLIENT_DEF_CHARACTER_REPOSITORY;
+  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += active_item;
+  filename += RPG_CHARACTER_PROFILE_EXT;
+
+  // load player profile
+  data->current_entity = RPG_Engine_Common_Tools::loadEntity(filename,
+                                                             data->schemaRepository,
+                                                             true);
+  ACE_ASSERT(data->current_entity.character);
+
+  // update entity profile widgets
+  ::update_entity_profile(data->current_entity,
+                          data->xml);
+
+  // make character display frame sensitive (if it's not already)
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+  ACE_ASSERT(character_frame);
+  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+
+  // make create button insensitive (if it's not already)
+  GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                      ACE_TEXT_ALWAYS_CHAR("create")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+  // make drop button sensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("drop")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make load button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("load")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+  // make join button sensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
+                                           gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::character_repository_button_clicked_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->xml);
+
+  // retrieve tree model
+  GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
+                                                                        RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+  ACE_ASSERT(repository_combobox);
+  GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
+  ACE_ASSERT(model);
+
+  // re-load profile data
+  unsigned long num_entries = ::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
+                                              GTK_LIST_STORE(model));
+
+  // set sensitive as appropriate
+  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+  ACE_ASSERT(character_frame);
+
+  // ... sensitize/activate widgets as appropriate
+  if (num_entries)
+  {
+    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), TRUE);
+    gtk_combo_box_set_active(repository_combobox, 0);
+  } // end IF
+  else
+  {
+    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
+
+    // make create button sensitive (if it's not already)
+    GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                                        ACE_TEXT_ALWAYS_CHAR("create")));
+    ACE_ASSERT(button);
+    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+    // make load button sensitive (if it's not already)
+    button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                             ACE_TEXT_ALWAYS_CHAR("load")));
+    ACE_ASSERT(button);
+    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  } // end ELSE
 
   return FALSE;
 }
@@ -1178,116 +1696,116 @@ part_game_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-characters_activated_GTK_cb(GtkWidget* widget_in,
-                            gpointer userData_in)
+server_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
+                                          gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::characters_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::server_repository_combobox_changed_GTK_cb"));
 
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
-  ACE_ASSERT(data);
-
-  // sanity check(s)
-  ACE_ASSERT(widget_in);
-  ACE_ASSERT(data->xml);
-
-  // retrieve active item
-  std::string active_item;
-  GtkTreeIter selected;
-  GtkTreeModel* model = NULL;
-  GValue value;
-  const gchar* text = NULL;
-  if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget_in), &selected))
-  {
-    // *WARNING*: refreshing the combobox triggers removal of items
-    // which also generates this signal...
-    return FALSE;
-  } // end IF
-  model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget_in));
-  ACE_ASSERT(model);
-  ACE_OS::memset(&value,
-                 0,
-                 sizeof(value));
-  gtk_tree_model_get_value(model, &selected,
-                           0, &value);
-  text = g_value_get_string(&value);
-  // sanity check
-  ACE_ASSERT(text);
-  active_item = text;
-  g_value_unset(&value);
-
-  // construct filename
-  std::string filename = RPG_CLIENT_DEF_CHARACTER_REPOSITORY;
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
-  filename += active_item;
-  filename += RPG_CHARACTER_PROFILE_EXT;
-
-  // load player profile
-  data->current_entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                             data->schemaRepository,
-                                                             true);
-  ACE_ASSERT(data->current_entity.character);
-
-  // update entity profile widgets
-  ::update_entity_profile(data->current_entity,
-                          data->xml);
-
-  // make character display frame sensitive (if it's not already)
-  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
-  ACE_ASSERT(character_frame);
-  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
-
-  // make join button sensitive (if it's not already)
-  GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                                         ACE_TEXT_ALWAYS_CHAR("join")));
-  ACE_ASSERT(join_game);
-  gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
+//   RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+//   ACE_ASSERT(data);
+//
+//   // sanity check(s)
+//   ACE_ASSERT(widget_in);
+//   ACE_ASSERT(data->xml);
+//
+//   // retrieve active item
+//   std::string active_item;
+//   GtkTreeIter selected;
+//   GtkTreeModel* model = NULL;
+//   GValue value;
+//   const gchar* text = NULL;
+//   if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget_in), &selected))
+//   {
+//     // *WARNING*: refreshing the combobox triggers removal of items
+//     // which also generates this signal...
+//     return FALSE;
+//   } // end IF
+//   model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget_in));
+//   ACE_ASSERT(model);
+//   ACE_OS::memset(&value,
+//                  0,
+//                  sizeof(value));
+//   gtk_tree_model_get_value(model, &selected,
+//                            0, &value);
+//   text = g_value_get_string(&value);
+//   // sanity check
+//   ACE_ASSERT(text);
+//   active_item = text;
+//   g_value_unset(&value);
+//
+//   // construct filename
+//   std::string filename = RPG_CLIENT_DEF_CHARACTER_REPOSITORY;
+//   filename += ACE_DIRECTORY_SEPARATOR_STR;
+//   filename += active_item;
+//   filename += RPG_CHARACTER_PROFILE_EXT;
+//
+//   // load player profile
+//   data->current_entity = RPG_Engine_Common_Tools::loadEntity(filename,
+//                                                              data->schemaRepository,
+//                                                              true);
+//   ACE_ASSERT(data->current_entity.character);
+//
+//   // update entity profile widgets
+//   ::update_entity_profile(data->current_entity,
+//                           data->xml);
+//
+//   // make character display frame sensitive (if it's not already)
+//   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+//                                                              RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+//   ACE_ASSERT(character_frame);
+//   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+//
+//   // make join button sensitive (if it's not already)
+//   GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->xml,
+//                                                          ACE_TEXT_ALWAYS_CHAR("join")));
+//   ACE_ASSERT(join_game);
+//   gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
 
   return FALSE;
 }
 
 G_MODULE_EXPORT gint
-characters_refresh_activated_GTK_cb(GtkWidget* widget_in,
-                                    gpointer userData_in)
+server_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
+                                        gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::characters_refresh_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::server_repository_button_clicked_GTK_cb"));
 
-  ACE_UNUSED_ARG(widget_in);
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
-  ACE_ASSERT(data);
-
-  // sanity check(s)
-  ACE_ASSERT(data->xml);
-
-  // retrieve tree model
-  GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
-                                                                         RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
-  ACE_ASSERT(repository_combobox);
-  GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
-  ACE_ASSERT(model);
-
-  // re-load profile data
-  ::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
-                  GTK_LIST_STORE(model));
-
-  // set sensitive as appropriate
-  GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             ACE_TEXT_ALWAYS_CHAR("character_frame")));
-  ACE_ASSERT(character_frame);
-  if (g_list_length(gtk_container_get_children(GTK_CONTAINER(repository_combobox))))
-  {
-    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), TRUE);
-    gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
-  } // end IF
-  else
-  {
-    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
-  } // end ELSE
-
-  // ... activate first entry as appropriate
-  if (gtk_widget_is_sensitive(GTK_WIDGET(repository_combobox)))
-    gtk_combo_box_set_active(repository_combobox, 0);
+//   ACE_UNUSED_ARG(widget_in);
+//   RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+//   ACE_ASSERT(data);
+//
+//   // sanity check(s)
+//   ACE_ASSERT(data->xml);
+//
+//   // retrieve tree model
+//   GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
+//                                                                          RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+//   ACE_ASSERT(repository_combobox);
+//   GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
+//   ACE_ASSERT(model);
+//
+//   // re-load profile data
+//   ::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
+//                   GTK_LIST_STORE(model));
+//
+//   // set sensitive as appropriate
+//   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
+//                                                              RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+//   ACE_ASSERT(character_frame);
+//   if (g_list_length(gtk_container_get_children(GTK_CONTAINER(repository_combobox))))
+//   {
+//     gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), TRUE);
+//     gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+//   } // end IF
+//   else
+//   {
+//     gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), FALSE);
+//     gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
+//   } // end ELSE
+//
+//   // ... activate first entry as appropriate
+//   if (gtk_widget_is_sensitive(GTK_WIDGET(repository_combobox)))
+//     gtk_combo_box_set_active(repository_combobox, 0);
 
   return FALSE;
 }

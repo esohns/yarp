@@ -23,6 +23,7 @@
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_level.h"
+#include "rpg_engine_XML_tree.h"
 
 #include <rpg_graphics_orientation.h>
 #include <rpg_graphics_cursor.h>
@@ -32,8 +33,10 @@
 
 #include <rpg_character_monster_common.h>
 
-#include <rpg_character_class_common.h>
 #include <rpg_character_player_common.h>
+#include <rpg_character_player_XML_tree.h>
+
+#include <rpg_character_class_common.h>
 
 #include <ace/Global_Macros.h>
 
@@ -115,6 +118,9 @@ class RPG_Engine_Common_Tools
 
   static const bool isCorner(const RPG_Map_Position_t&,
                              const RPG_Engine_Level&);
+
+  // *WARNING*: result needs to be delete()d !
+  static RPG_Engine_Player_XMLTree_Type* playerXMLToEntityXML(const RPG_Character_PlayerXML_XMLTree_Type&);
 };
 
 #endif

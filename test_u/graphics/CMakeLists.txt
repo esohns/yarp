@@ -63,6 +63,7 @@ add_dependencies(SDL_gui
                  RPG_Item
                  RPG_Character
                  RPG_Character_Monster
+                 RPG_Character_Player
                  RPG_Combat
                  RPG_Map
                  RPG_Graphics
@@ -86,6 +87,7 @@ target_link_libraries(SDL_gui
                       RPG_Item
                       RPG_Character
                       RPG_Character_Monster
+                      RPG_Character_Player
                       RPG_Combat
                       RPG_Map
                       RPG_Graphics

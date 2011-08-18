@@ -9,9 +9,9 @@
 
 struct RPG_Character_Monster_SavingThrowModifiers
 {
-  char fortitude;
-  char reflex;
-  char will;
+  signed char fortitude;
+  signed char reflex;
+  signed char will;
 };
 
 #endif

@@ -13,7 +13,7 @@ struct RPG_Character_Monster_PropertiesXML
   RPG_Common_Size size;
   RPG_Common_CreatureType type;
   RPG_Dice_Roll hitDice;
-  char initiative;
+  signed char initiative;
   unsigned char speed;
   RPG_Character_Monster_NaturalArmorClass armorClass;
   std::vector<RPG_Character_Monster_SpecialDefenseProperties> specialDefenses;

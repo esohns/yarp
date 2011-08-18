@@ -1,6 +1,7 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 add_subdirectory(monster)
+add_subdirectory(player)
 
 ########### next target ###############
 
@@ -13,8 +14,10 @@ set(RPG_Character_LIB_SRCS
     rpg_character_XML_tree.h
     rpg_character_XML_types.cpp
     rpg_character_XML_types.h
-    rpg_character_abilities.h
     rpg_character_ability.h
+    rpg_character_skillvalue.h
+    rpg_character_skills.h
+    rpg_character_feats.h
     rpg_character_alignment.h
     rpg_character_alignmentcivic.h
     rpg_character_alignmentethic.h
@@ -35,31 +38,19 @@ set(RPG_Character_LIB_SRCS
     rpg_character_equipment.h
     rpg_character_equipment_common.h
     rpg_character_feat.h
-    rpg_character_feats.h
     rpg_character_gender.h
     rpg_character_incl.h
     rpg_character_inventory.cpp
     rpg_character_inventory.h
     rpg_character_metaclass.h
     rpg_character_offhand.h
-    rpg_character_player.cpp
-    rpg_character_player.h
-    rpg_character_player_XML_tree.cpp
-    rpg_character_player_XML_tree.h
-    rpg_character_player_base.cpp
-    rpg_character_player_base.h
-    rpg_character_player_common.h
-    rpg_character_player_common_tools.cpp
-    rpg_character_player_common_tools.h
     rpg_character_race.h
     rpg_character_race_common.h
     rpg_character_race_common_tools.cpp
     rpg_character_race_common_tools.h
-    rpg_character_skills.h
     rpg_character_skills_common.h
     rpg_character_skills_common_tools.cpp
-    rpg_character_skills_common_tools.h
-    rpg_character_skillvalue.h)
+    rpg_character_skills_common_tools.h)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Character_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
@@ -76,15 +67,17 @@ install(TARGETS RPG_Character LIBRARY DESTINATION lib)
 
 install(FILES
 	rpg_character.xsd
-	rpg_character_player.xsd
 DESTINATION share/RPG/config)
 
 install(FILES
+  rpg_XMLSchema_XML_tree.h
 	rpg_character_XML_parser.h
 	rpg_character_XML_tree.h
 	rpg_character_XML_types.h
-	rpg_character_abilities.h
 	rpg_character_ability.h
+  rpg_character_skillvalue.h
+  rpg_character_skills.h
+  rpg_character_feats.h
 	rpg_character_alignment.h
 	rpg_character_alignmentcivic.h
 	rpg_character_alignmentethic.h
@@ -102,24 +95,15 @@ install(FILES
 	rpg_character_equipment_common.h
 	rpg_character_equipmentslot.h
 	rpg_character_feat.h
-	rpg_character_feats.h
 	rpg_character_gender.h
 	rpg_character_incl.h
 	rpg_character_inventory.h
 	rpg_character_inventory_common.h
 	rpg_character_metaclass.h
 	rpg_character_offhand.h
-	rpg_character_player.h
-	rpg_character_player_XML_tree.h
-	rpg_character_player_base.h
-	rpg_character_player_common.h
-	rpg_character_player_common_tools.h
 	rpg_character_race.h
 	rpg_character_race_common.h
 	rpg_character_race_common_tools.h
-	rpg_character_skills.h
 	rpg_character_skills_common.h
 	rpg_character_skills_common_tools.h
-	rpg_character_skillvalue.h
 DESTINATION include)
-

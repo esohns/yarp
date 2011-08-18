@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_MONSTER_COMMON_H
 #define RPG_CHARACTER_MONSTER_COMMON_H
 
@@ -80,7 +81,7 @@ struct RPG_Character_Monster_Properties
   unsigned char levelAdjustment;
 };
 
-typedef std::vector<RPG_Character_Monster> RPG_Character_Monster_Group_t;
+typedef std::vector<RPG_Character_Monster*> RPG_Character_Monster_Group_t;
 typedef RPG_Character_Monster_Group_t::const_iterator RPG_Character_Monster_GroupIterator_t;
 typedef std::vector<RPG_Character_Monster_Group_t> RPG_Character_Monster_Groups_t;
 typedef RPG_Character_Monster_Groups_t::const_iterator RPG_Character_Monster_GroupsIterator_t;

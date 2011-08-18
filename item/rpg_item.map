@@ -35,5 +35,8 @@ namespace urn:rpg
   RPG_Item_ArmorPropertiesBase_Type      RPG_Item_ArmorPropertiesBase;
   RPG_Item_ArmorPropertiesXML_Type       RPG_Item_ArmorPropertiesXML;
 
-#  RPG_Item_Dictionary_Type              RPG_Item_Dictionary;
+#  RPG_Item_XML_Type                      RPG_Item_XML;
+#  RPG_Item_InventoryXML_Type             RPG_Item_InventoryXML;
+
+#  RPG_Item_DictionaryXML_Type            RPG_Item_DictionaryXML;
 }

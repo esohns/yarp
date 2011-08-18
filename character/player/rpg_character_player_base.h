@@ -17,21 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_PLAYER_BASE_H
 #define RPG_CHARACTER_PLAYER_BASE_H
 
 #include <rpg_common_subclass.h>
 
-#include "rpg_character_base.h"
-#include "rpg_character_gender.h"
-#include "rpg_character_race_common.h"
-#include "rpg_character_class_common.h"
-#include "rpg_character_offhand.h"
-#include "rpg_character_alignmentcivic.h"
-#include "rpg_character_alignmentethic.h"
-#include "rpg_character_alignment.h"
-#include "rpg_character_attributes.h"
-#include "rpg_character_skills_common.h"
+#include <rpg_character_base.h>
+#include <rpg_character_gender.h>
+#include <rpg_character_race_common.h>
+#include <rpg_character_class_common.h>
+#include <rpg_character_offhand.h>
+#include <rpg_character_alignmentcivic.h>
+#include <rpg_character_alignmentethic.h>
+#include <rpg_character_alignment.h>
+#include <rpg_character_attributes.h>
+#include <rpg_character_skills_common.h>
 
 #include <rpg_combat_attacksituation.h>
 #include <rpg_combat_defensesituation.h>

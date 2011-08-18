@@ -102,7 +102,7 @@ RPG_Character_Monster_Common_Tools::attackActionToString(const RPG_Character_Mon
   result += ACE_TEXT_ALWAYS_CHAR("attackBonus(es): ");
 
   std::ostringstream converter;
-  for (std::vector<char>::const_iterator iterator = attackAction_in.attackBonuses.begin();
+  for (std::vector<signed char>::const_iterator iterator = attackAction_in.attackBonuses.begin();
        iterator != attackAction_in.attackBonuses.end();
        iterator++)
   {

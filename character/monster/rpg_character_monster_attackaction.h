@@ -10,7 +10,7 @@
 struct RPG_Character_Monster_AttackAction
 {
   RPG_Character_Monster_WeaponTypeUnion weapon;
-  std::vector<char> attackBonuses;
+  std::vector<signed char> attackBonuses;
   std::vector<RPG_Combat_AttackForm> attackForms;
   RPG_Combat_Damage damage;
   RPG_Magic_SpellLikeProperties effect;

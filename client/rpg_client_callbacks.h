@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CLIENT_CALLBACKS_H
 #define RPG_CLIENT_CALLBACKS_H
 
@@ -31,7 +32,11 @@
 
 void update_character_profile(const RPG_Character_Player&, GladeXML*);
 void update_entity_profile(const RPG_Engine_Entity&, GladeXML*);
-void load_profiles(const std::string&, GtkListStore*);
+void reset_entity_profile(GladeXML*);
+// int dirent_selector(const dirent*);
+// int dirent_comparator(const dirent**,
+//                       const dirent**);
+const unsigned long load_profiles(const std::string&, GtkListStore*);
 
 #ifdef __cplusplus
 extern "C"
@@ -42,13 +47,16 @@ extern "C"
   gint properties_activated_GTK_cb(GtkWidget*, gpointer);
   gint quit_activated_GTK_cb(GtkWidget*, gpointer);
   gint create_character_activated_GTK_cb(GtkWidget*, gpointer);
+  gint drop_character_activated_GTK_cb(GtkWidget*, gpointer);
   gint load_character_activated_GTK_cb(GtkWidget*, gpointer);
   gint character_file_activated_GTK_cb(GtkWidget*, gpointer);
   gint save_character_activated_GTK_cb(GtkWidget*, gpointer);
+  gint character_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
+  gint character_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
   gint join_game_activated_GTK_cb(GtkWidget*, gpointer);
   gint part_game_activated_GTK_cb(GtkWidget*, gpointer);
-  gint characters_activated_GTK_cb(GtkWidget*, gpointer);
-  gint characters_refresh_activated_GTK_cb(GtkWidget*, gpointer);
+  gint server_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
+  gint server_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
 //   gint do_SDLEventLoop_GTK_cb(gpointer);
 //   gboolean gtk_quit_handler_cb(gpointer);
 #ifdef __cplusplus

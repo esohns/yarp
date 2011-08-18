@@ -33,10 +33,12 @@
 
 #include <rpg_combat_common_tools.h>
 
-#include <rpg_character_common_tools.h>
-#include <rpg_character_skills_common_tools.h>
 #include <rpg_character_player.h>
 #include <rpg_character_player_common.h>
+#include <rpg_character_player_common_tools.h>
+
+#include <rpg_character_common_tools.h>
+#include <rpg_character_skills_common_tools.h>
 
 #include <rpg_item_defines.h>
 #include <rpg_item_dictionary.h>
@@ -268,6 +270,7 @@ do_battle(RPG_Character_Party_t& party_in,
 
   RPG_Character_Monster_Group_t groupInstance;
   RPG_Character_Monster_Properties properties;
+  RPG_Character_Monster* monster_p = NULL;
   for (RPG_Character_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
        iterator++)
@@ -284,29 +287,49 @@ do_battle(RPG_Character_Party_t& party_in,
          iterator2 != results.end();
          iterator2++)
     {
-      RPG_Character_Monster monster(// base attributes
-                                    (iterator->first).c_str(),
-                                    properties.type,
-                                    properties.alignment,
-                                    properties.attributes,
-                                    properties.skills,
-                                    properties.feats,
-                                    abilities,
-                                    properties.size,
-                                    (*iterator2),
-                                    knownSpells,
-                                    // current status
-                                    condition,
-                                    (*iterator2),
-                                    wealth,
-                                    spells,
-                                    items,
-                                    false);
+      monster_p = NULL;
+      try
+      {
+        monster_p = new RPG_Character_Monster(// base attributes
+                                              (iterator->first).c_str(),
+                                              properties.type,
+                                              properties.alignment,
+                                              properties.attributes,
+                                              properties.skills,
+                                              properties.feats,
+                                              abilities,
+                                              properties.size,
+                                              (*iterator2),
+                                              knownSpells,
+                                              // current status
+                                              condition,
+                                              (*iterator2),
+                                              wealth,
+                                              spells,
+                                              items,
+                                              false);
+      }
+      catch (const std::bad_alloc& exception)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("RPG_Character_Monster(): exception occurred: \"%s\", aborting\n"),
+                   exception.what()));
+
+        throw exception;
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("RPG_Character_Monster(): exception occurred, aborting\n")));
+
+        throw;
+      }
+      ACE_ASSERT(monster_p);
 
 //       // debug info
-//       monster.dump();
+//       monster_p->dump();
 
-      groupInstance.push_back(monster);
+      groupInstance.push_back(monster_p);
     } // end FOR
 
     monsters.push_back(groupInstance);
@@ -424,18 +447,20 @@ do_work(const std::string& magicDictionaryFilename_in,
   }
 
   unsigned int gameTime = 0;
+  RPG_Character_Player* player_p = NULL;
   do
   {
     // step3: generate a (random) party
     RPG_Character_Party_t party;
     for (unsigned int i = 0;
-        i < numPlayers_in;
-        i++)
+         i < numPlayers_in;
+         i++)
     {
-      RPG_Character_Player player = RPG_Character_Common_Tools::generatePlayerCharacter();
-    //   player.dump();
+      player_p = RPG_Character_Player_Common_Tools::generatePlayerCharacter();
+      ACE_ASSERT(player_p);
+//       player_p->dump();
 
-      party.push_back(player);
+      party.push_back(player_p);
     } // end FOR
 
     ACE_DEBUG((LM_INFO,
@@ -474,7 +499,7 @@ do_work(const std::string& magicDictionaryFilename_in,
         break;
 
       // party has survived --> rest/recover...
-      gameTime += RPG_Character_Common_Tools::restParty(party);
+      gameTime += RPG_Character_Player_Common_Tools::restParty(party);
 
       if (numBattles_in && (numBattle == numBattles_in))
         break;

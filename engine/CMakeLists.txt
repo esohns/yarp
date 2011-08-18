@@ -3,7 +3,7 @@
 ########### next target ###############
 
 set(RPG_Engine_LIB_SRCS
-    rpg_XMLSchema_XML_tree.h
+    rpg_XMLSchema_XML_types.h
     rpg_engine_XML_tree.cpp
     rpg_engine_XML_tree.h
     rpg_engine_common.h
@@ -24,14 +24,16 @@ endif()
 
 add_library(RPG_Engine SHARED ${RPG_Engine_LIB_SRCS})
 
-add_dependencies(RPG_Engine RPG_Graphics RPG_Map RPG_Monster RPG_Combat RPG_Character RPG_Item RPG_Magic RPG_Common RPG_Dice)
+add_dependencies(RPG_Engine RPG_Graphics RPG_Map RPG_Combat RPG_Character RPG_Character_Monster RPG_Character_Player RPG_Item RPG_Magic RPG_Common RPG_Dice)
 
 set_target_properties(RPG_Engine PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS RPG_Engine LIBRARY DESTINATION lib)
 
 ########### install files ###############
 
-install(FILES  rpg_engine.xsd DESTINATION share/RPG/config)
+install(FILES
+        rpg_engine.xsd
+DESTINATION share/RPG/config)
 
 install(FILES
 	rpg_engine_XML_tree.h
