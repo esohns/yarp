@@ -72,7 +72,8 @@ class RPG_Graphics_Common_Tools
                               RPG_Graphics_DoorTileSet_t&);  // return value: tileset
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_GraphicTypeUnion&, // type
-                                  const bool& = true);                  // cache graphic ?
+                                  const bool&,                          // convert to display format ?
+                                  const bool&);                         // cache graphic ?
 
   static SDL_Surface* renderText(const RPG_Graphics_Font&, // font
                                  const std::string&,       // string

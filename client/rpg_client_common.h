@@ -75,7 +75,7 @@ struct RPG_Client_GTK_CBData_t
 //   RPG_Client_WindowLevel* map_window;
   RPG_Client_Engine*      client_engine;
   std::string             schemaRepository;
-  RPG_Engine_Entity       current_entity;
+  RPG_Engine_Entity       entity;
   RPG_Engine_Level*       level_engine;
 };
 

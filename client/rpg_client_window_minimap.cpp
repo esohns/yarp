@@ -55,6 +55,7 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTERFACE_MINIMAP;
   myBG = RPG_Graphics_Common_Tools::loadGraphic(type,
+                                                true,   // convert to display format
                                                 false); // don't cache this one
   ACE_ASSERT(myBG);
 

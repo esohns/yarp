@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_magic_common_tools.h"
 
 #include "rpg_magic_dictionary.h"
@@ -24,6 +25,7 @@
 #include <rpg_dice_common_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 #include <rpg_common_tools.h>
 
 #include <ace/Log_Msg.h>
@@ -1948,9 +1950,9 @@ RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& subClass
   numSpells_out = 0;
   numSpellsKnown_out = 0;
 
-  ACE_ASSERT(spellLevel_in <= 9);
+  ACE_ASSERT(spellLevel_in <= RPG_COMMON_MAX_SPELL_LEVEL);
   // *TODO*: implement this case...
-  ACE_ASSERT(classLevel_in <= 20);
+  ACE_ASSERT(classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
 
   RPG_Magic_ClassLevelSpellLevelPair_t levelPair = std::make_pair(classLevel_in, spellLevel_in);
   RPG_Magic_SubClassLevelPair_t combination = std::make_pair(subClass_in, levelPair);

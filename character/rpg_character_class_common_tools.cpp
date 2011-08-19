@@ -101,9 +101,12 @@ RPG_Character_Class_Common_Tools::isCasterClass(const RPG_Common_SubClass& subCl
     case SUBCLASS_BARD:
     case SUBCLASS_CLERIC:
     case SUBCLASS_DRUID:
+//     case SUBCLASS_INVOKER:
     case SUBCLASS_PALADIN:
     case SUBCLASS_RANGER:
+//     case SUBCLASS_SHAMAN:
     case SUBCLASS_SORCERER:
+//     case SUBCLASS_WARLOCK:
     case SUBCLASS_WIZARD:
       return true;
     default:

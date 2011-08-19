@@ -42,7 +42,6 @@ const unsigned long load_profiles(const std::string&, GtkListStore*);
 extern "C"
 {
 #endif /* __cplusplus */
-  // main
   gint about_activated_GTK_cb(GtkWidget*, gpointer);
   gint properties_activated_GTK_cb(GtkWidget*, gpointer);
   gint quit_activated_GTK_cb(GtkWidget*, gpointer);

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <glade-interface>
   <!-- interface-requires gtk+ 2.20 -->
   <!-- interface-naming-policy project-wide -->
@@ -11,7 +11,7 @@
     <property name="deletable">False</property>
     <property name="create_folders">False</property>
     <property name="preview_widget_active">False</property>
-    <signal name="file_activated" handler="character_file_activated_GTK_cb" swapped="no"/>
+    <signal name="file_activated" handler="character_file_activated_GTK_cb"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="filechooser_vbox">
         <property name="visible">True</property>
@@ -54,7 +54,7 @@
     <property name="version">0.1</property>
     <property name="authors">Erik Sohns</property>
     <property name="wrap_license">True</property>
-    <signal name="response" handler="gtk_widget_hide" swapped="no"/>
+    <signal name="response" handler="gtk_widget_hide"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="about_vbox">
         <property name="visible">True</property>
@@ -85,10 +85,11 @@
     <property name="title" translatable="yes">character generator</property>
     <property name="resizable">False</property>
     <property name="type_hint">normal</property>
-    <signal name="delete_event" handler="quit_activated_GTK_cb" swapped="no"/>
+    <signal name="delete_event" handler="quit_activated_GTK_cb"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <widget class="GtkHBox" id="hbox">
@@ -96,6 +97,7 @@
             <child>
               <widget class="GtkVBox" id="vbox">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="character_actions_frame">
                     <property name="visible">True</property>
@@ -107,17 +109,20 @@
                         <property name="can_default">True</property>
                         <property name="has_default">True</property>
                         <property name="receives_default">True</property>
+                        <property name="orientation">vertical</property>
                         <property name="homogeneous">True</property>
                         <property name="layout_style">spread</property>
                         <child>
                           <widget class="GtkButton" id="create">
                             <property name="label" translatable="yes">_Create</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="create_character_actived_GTK_cb" swapped="no"/>
+                            <property name="focus_on_click">False</property>
+                            <signal name="clicked" handler="create_character_actived_GTK_cb"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -126,16 +131,16 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="load">
-                            <property name="label" translatable="yes">_Load</property>
+                          <widget class="GtkButton" id="drop">
+                            <property name="label" translatable="yes">_Drop</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
-                            <property name="can_default">True</property>
-                            <property name="has_default">True</property>
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="load_character_actived_GTK_cb" swapped="no"/>
+                            <property name="focus_on_click">False</property>
+                            <signal name="clicked" handler="drop_character_actived_GTK_cb"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -152,12 +157,33 @@
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
-                            <signal name="clicked" handler="save_character_actived_GTK_cb" swapped="no"/>
+                            <property name="focus_on_click">False</property>
+                            <signal name="clicked" handler="save_character_actived_GTK_cb"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkButton" id="load">
+                            <property name="label" translatable="yes">_Load</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="can_default">True</property>
+                            <property name="has_default">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="relief">half</property>
+                            <property name="use_underline">True</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="clicked" handler="load_character_actived_GTK_cb"/>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                       </widget>
@@ -178,25 +204,25 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="available_characters_frame">
+                  <widget class="GtkFrame" id="character_repository_frame">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">etched-out</property>
                     <child>
-                      <widget class="GtkAlignment" id="available_characters_alignment">
+                      <widget class="GtkAlignment" id="character_repository_alignment">
                         <property name="visible">True</property>
                         <child>
-                          <widget class="GtkHBox" id="available_characters_hbox">
+                          <widget class="GtkHBox" id="characters_repository_hbox">
                             <property name="visible">True</property>
                             <child>
-                              <widget class="GtkComboBox" id="available_characters">
+                              <widget class="GtkComboBox" id="character_repository_combobox">
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="has_frame">False</property>
                                 <property name="focus_on_click">False</property>
-                                <signal name="changed" handler="characters_activated_GTK_cb" swapped="no"/>
+                                <signal name="changed" handler="characters_activated_GTK_cb"/>
                               </widget>
                               <packing>
                                 <property name="position">0</property>
@@ -210,7 +236,8 @@
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_stock">True</property>
-                                <signal name="clicked" handler="characters_refresh_activated_GTK_cb" swapped="no"/>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="characters_refresh_activated_GTK_cb"/>
                               </widget>
                               <packing>
                                 <property name="position">1</property>
@@ -221,9 +248,9 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="available_characters_label">
+                      <widget class="GtkLabel" id="character_repository_label">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Repository&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Available&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>
@@ -242,7 +269,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkFrame" id="character">
+              <widget class="GtkFrame" id="character_frame">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="label_xalign">0</property>
@@ -256,6 +283,7 @@
                         <child>
                           <widget class="GtkVBox" id="statistics_vbox">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkHBox" id="name_hbox">
                                 <property name="visible">True</property>
@@ -397,33 +425,7 @@
                                     <child>
                                       <widget class="GtkVBox" id="status_vbox">
                                         <property name="visible">True</property>
-                                        <property name="homogeneous">True</property>
-                                        <child>
-                                          <widget class="GtkHBox" id="condition_hbox">
-                                            <property name="visible">True</property>
-                                            <property name="homogeneous">True</property>
-                                            <child>
-                                              <widget class="GtkLabel" id="condition_label">
-                                                <property name="visible">True</property>
-                                                <property name="label" translatable="yes">Condition:</property>
-                                              </widget>
-                                              <packing>
-                                                <property name="position">0</property>
-                                              </packing>
-                                            </child>
-                                            <child>
-                                              <widget class="GtkLabel" id="condition">
-                                                <property name="visible">True</property>
-                                              </widget>
-                                              <packing>
-                                                <property name="position">1</property>
-                                              </packing>
-                                            </child>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
+                                        <property name="orientation">vertical</property>
                                         <child>
                                           <widget class="GtkHBox" id="hitpoints_hbox">
                                             <property name="visible">True</property>
@@ -447,7 +449,7 @@
                                             </child>
                                           </widget>
                                           <packing>
-                                            <property name="position">1</property>
+                                            <property name="position">0</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -473,7 +475,7 @@
                                             </child>
                                           </widget>
                                           <packing>
-                                            <property name="position">2</property>
+                                            <property name="position">1</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -499,7 +501,7 @@
                                             </child>
                                           </widget>
                                           <packing>
-                                            <property name="position">3</property>
+                                            <property name="position">2</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -525,7 +527,7 @@
                                             </child>
                                           </widget>
                                           <packing>
-                                            <property name="position">4</property>
+                                            <property name="position">3</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -547,6 +549,40 @@
                                               </widget>
                                               <packing>
                                                 <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">4</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkFrame" id="condition_frame">
+                                            <property name="visible">True</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">etched-out</property>
+                                            <child>
+                                              <widget class="GtkAlignment" id="condition_alignment">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <widget class="GtkVBox" id="condition_vbox">
+                                                    <property name="visible">True</property>
+                                                    <property name="orientation">vertical</property>
+                                                    <property name="homogeneous">True</property>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                  </widget>
+                                                </child>
+                                              </widget>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkLabel" id="condition_label">
+                                                <property name="visible">True</property>
+                                                <property name="label" translatable="yes">Condition</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="type">label_item</property>
                                               </packing>
                                             </child>
                                           </widget>
@@ -584,7 +620,7 @@
                                     <child>
                                       <widget class="GtkVBox" id="attribute_vbox">
                                         <property name="visible">True</property>
-                                        <property name="homogeneous">True</property>
+                                        <property name="orientation">vertical</property>
                                         <child>
                                           <widget class="GtkHBox" id="strength_hbox">
                                             <property name="visible">True</property>
@@ -771,6 +807,7 @@
                                     <child>
                                       <widget class="GtkVBox" id="feats_vbox">
                                         <property name="visible">True</property>
+                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
@@ -805,6 +842,7 @@
                                     <child>
                                       <widget class="GtkVBox" id="abilities_vbox">
                                         <property name="visible">True</property>
+                                        <property name="orientation">vertical</property>
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <placeholder/>
@@ -844,6 +882,7 @@
                                 <child>
                                   <widget class="GtkVBox" id="skills_vbox">
                                     <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
                                     <property name="homogeneous">True</property>
                                     <child>
                                       <placeholder/>
@@ -870,6 +909,7 @@
                         <child>
                           <widget class="GtkVBox" id="inventory_vbox">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkFrame" id="spells_frame">
                                 <property name="visible">True</property>
@@ -881,9 +921,74 @@
                                     <child>
                                       <widget class="GtkVBox" id="spells_vbox">
                                         <property name="visible">True</property>
-                                        <property name="homogeneous">True</property>
+                                        <property name="orientation">vertical</property>
                                         <child>
-                                          <placeholder/>
+                                          <widget class="GtkFrame" id="known_spells_frame">
+                                            <property name="visible">True</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">etched-out</property>
+                                            <child>
+                                              <widget class="GtkAlignment" id="known_spells_alignment">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <widget class="GtkVBox" id="known_spells_vbox">
+                                                    <property name="visible">True</property>
+                                                    <property name="orientation">vertical</property>
+                                                    <property name="homogeneous">True</property>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                  </widget>
+                                                </child>
+                                              </widget>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkLabel" id="known_spells_label">
+                                                <property name="visible">True</property>
+                                                <property name="label" translatable="yes">known</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="type">label_item</property>
+                                              </packing>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkFrame" id="memorized_spells_frame">
+                                            <property name="visible">True</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">etched-out</property>
+                                            <child>
+                                              <widget class="GtkAlignment" id="memorized_spells_alignment">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <widget class="GtkVBox" id="memorized_spells_vbox">
+                                                    <property name="visible">True</property>
+                                                    <property name="orientation">vertical</property>
+                                                    <property name="homogeneous">True</property>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                  </widget>
+                                                </child>
+                                              </widget>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkLabel" id="memorized_spells_label">
+                                                <property name="visible">True</property>
+                                                <property name="label" translatable="yes">memorized</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="type">label_item</property>
+                                              </packing>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">1</property>
+                                          </packing>
                                         </child>
                                       </widget>
                                     </child>
@@ -954,6 +1059,7 @@
                                 <child>
                                   <widget class="GtkVBox" id="image_vbox">
                                     <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkImage" id="image_sprite">
                                         <property name="visible">True</property>
@@ -975,6 +1081,7 @@
                                             <property name="receives_default">True</property>
                                             <property name="relief">half</property>
                                             <property name="use_stock">True</property>
+                                            <property name="focus_on_click">False</property>
                                           </widget>
                                           <packing>
                                             <property name="position">0</property>
@@ -988,6 +1095,7 @@
                                             <property name="receives_default">True</property>
                                             <property name="relief">half</property>
                                             <property name="use_stock">True</property>
+                                            <property name="focus_on_click">False</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>
@@ -1080,7 +1188,8 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="about_activated_GTK_cb" swapped="no"/>
+                <property name="focus_on_click">False</property>
+                <signal name="clicked" handler="about_activated_GTK_cb"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -1095,7 +1204,8 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="quit_activated_GTK_cb" swapped="no"/>
+                <property name="focus_on_click">False</property>
+                <signal name="clicked" handler="quit_activated_GTK_cb"/>
               </widget>
               <packing>
                 <property name="expand">False</property>

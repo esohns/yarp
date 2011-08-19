@@ -3,7 +3,6 @@
 add_subdirectory(data)
 
 ########### next target ###############
-
 set(RPG_Graphics_LIB_SRCS
     rpg_XMLSchema_XML_tree.h
     rpg_XMLSchema_XML_types.h
@@ -69,18 +68,25 @@ set_source_files_properties(${RPG_Graphics_LIB_SRCS} PROPERTIES COMPILE_DEFINITI
 
 add_library(RPG_Graphics SHARED ${RPG_Graphics_LIB_SRCS})
 
+# add_custom_target(graphics_bindings
+#                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics.xsd)
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics_XML_types.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics_XML_types.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics_XML_tree.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics_XML_tree.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics.xsd ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics.map
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+                   COMMENT "generating XML <--> C++ bindings...")
+
 add_dependencies(RPG_Graphics RPG_Common RPG_Dice)
 
 set_target_properties(RPG_Graphics PROPERTIES VERSION 1.0.0 SOVERSION 1)
-install(TARGETS RPG_Graphics LIBRARY DESTINATION lib)
 
 ########### install files ###############
-
+install(TARGETS RPG_Graphics LIBRARY
+        DESTINATION lib)
 install(FILES
         rpg_graphics.xml
         rpg_graphics.xsd
-DESTINATION share/RPG/config)
-
+        DESTINATION share/RPG/config)
 install(FILES
         rpg_graphics_SDL_tools.h
         rpg_graphics_SDL_window_base.h
@@ -124,4 +130,4 @@ install(FILES
         rpg_graphics_tiletype.h
         rpg_graphics_toplevel.h
         rpg_graphics_wallstyle.h
-DESTINATION include)
+        DESTINATION include)

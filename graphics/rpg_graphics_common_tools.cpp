@@ -1534,6 +1534,7 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
 
 SDL_Surface*
 RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_GraphicTypeUnion& type_in,
+                                       const bool& convertToDisplayFormat_in,
                                        const bool& cacheGraphic_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadGraphic"));
@@ -1591,8 +1592,8 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_GraphicTypeUnion& type
   ACE_ASSERT(!filename.empty());
 
   // load file
-  node.image = RPG_Graphics_Surface::load(filename, // file
-                                          true);    // convert to display format
+  node.image = RPG_Graphics_Surface::load(filename,                   // file
+                                          convertToDisplayFormat_in); // convert to display format
   if (!node.image)
   {
     ACE_DEBUG((LM_ERROR,

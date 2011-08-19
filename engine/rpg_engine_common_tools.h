@@ -58,13 +58,13 @@ class RPG_Engine_Common_Tools
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
   // *NOTE*: entity.character must be deleted() by the caller !
-  static RPG_Engine_Entity loadEntity(const std::string&,  // FQ filename
-                                      const std::string&,  // schema repository (directory)
-                                      const bool& = true); // load SDL surface ?
+  static RPG_Engine_Entity loadEntity(const std::string&, // FQ filename
+                                      const std::string&, // schema repository (directory)
+                                      const bool&);       // load sprite graphic ?
   static const bool saveEntity(const RPG_Engine_Entity&, // entity
                                const std::string&);      // FQ filename
-  // *NOTE*: entity.character must be deleted() by the caller !
-  static RPG_Engine_Entity createEntity(); // return value: (random) player entity
+  // *NOTE*: return value entity.character must be deleted() by the caller !
+  static RPG_Engine_Entity createEntity(const bool&); // load sprite graphic ?
   static std::string info(const RPG_Engine_Entity&); // entity
 
   // ***** combat-related *****

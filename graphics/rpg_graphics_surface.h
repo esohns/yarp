@@ -60,8 +60,8 @@ class RPG_Graphics_Surface
 
   // *NOTE*: results need to be SDL_FreeSurface()d !
   // *WARNING*: display format is not available until AFTER SDL_SetVideoMode() !
-  static SDL_Surface* load(const std::string&,  // file
-                           const bool& = true); // convert to display format ?
+  static SDL_Surface* load(const std::string&, // file
+                           const bool&);       // convert to display format ?
 
   static void savePNG(const SDL_Surface&, // image
                       const std::string&, // file

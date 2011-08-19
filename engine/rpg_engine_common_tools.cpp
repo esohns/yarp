@@ -66,9 +66,8 @@
 
 #include <ace/Log_Msg.h>
 
-#include <algorithm>
-#include <sstream>
 #include <fstream>
+#include <string>
 
 // init statics
 RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
@@ -154,7 +153,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   RPG_Engine_Entity result;
   result.character = NULL;
   result.position = std::make_pair(0, 0);
-  result.actions.clear();
+//   result.actions.clear();
   result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   result.graphic = NULL;
 
@@ -340,6 +339,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
     type.sprite = result.sprite;
     result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                            true,   // convert to display format
                                                             false); // don't cache
     ACE_ASSERT(result.graphic);
   } // end IF
@@ -458,7 +458,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
 }
 
 RPG_Engine_Entity
-RPG_Engine_Common_Tools::createEntity()
+RPG_Engine_Common_Tools::createEntity(const bool& loadImage_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 
@@ -475,12 +475,14 @@ RPG_Engine_Common_Tools::createEntity()
 
   // step2: generate/load player sprite
   result.sprite = RPG_Engine_Common_Tools::class2Sprite(player_p->getClass());
-  if (result.sprite != RPG_GRAPHICS_SPRITE_INVALID)
+  ACE_ASSERT(result.sprite != RPG_GRAPHICS_SPRITE_INVALID);
+  if (loadImage_in)
   {
     RPG_Graphics_GraphicTypeUnion type;
     type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
     type.sprite = result.sprite;
     result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                            true,   // convert to display format
                                                             false); // don't cache
     ACE_ASSERT(result.graphic);
   } // end IF

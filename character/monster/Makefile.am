@@ -4,41 +4,82 @@ ACLOCAL_AMFLAGS = -I m4
 
 noinst_HEADERS = rpg_XMLSchema_XML_types.h
 
-include_HEADERS = rpg_character_monster.h rpg_character_monster_XML_parser.h \
-	rpg_character_monster_XML_types.h rpg_character_monster_actiontrigger.h rpg_character_monster_advancement.h \
-	rpg_character_monster_advancementstep.h rpg_character_monster_attack.h rpg_character_monster_attackaction.h rpg_character_monster_common.h \
-	rpg_character_monster_common_tools.h rpg_character_monster_defenseaction.h rpg_character_monster_defines.h \
-	rpg_character_monster_dictionary.h rpg_character_monster_incl.h rpg_character_monster_naturalarmorclass.h \
-	rpg_character_monster_naturalweapon.h rpg_character_monster_organization.h rpg_character_monster_organizations.h \
-	rpg_character_monster_organizationslaverstep.h rpg_character_monster_organizationstep.h rpg_character_monster_propertiesxml.h \
-	rpg_character_monster_savingthrowmodifiers.h rpg_character_monster_specialabilityprecondition.h \
-	rpg_character_monster_specialabilityproperties.h rpg_character_monster_specialattackprecondition.h \
-	rpg_character_monster_specialattackproperties.h rpg_character_monster_specialbaseproperties.h \
-	rpg_character_monster_specialdefenseprecondition.h rpg_character_monster_specialdefenseproperties.h \
-	rpg_character_monster_specialpropertytypeunion.h rpg_character_monster_summonmonster.h rpg_character_monster_weapontypeunion.h
+include_HEADERS = rpg_character_monster.h \
+		  rpg_character_monster_XML_parser.h \
+		  rpg_character_monster_XML_types.h \
+		  rpg_character_monster_actiontrigger.h \
+		  rpg_character_monster_advancement.h \
+		  rpg_character_monster_advancementstep.h \
+		  rpg_character_monster_attack.h \
+		  rpg_character_monster_attackaction.h \
+		  rpg_character_monster_common.h \
+		  rpg_character_monster_common_tools.h \
+		  rpg_character_monster_defenseaction.h \
+		  rpg_character_monster_defines.h \
+		  rpg_character_monster_dictionary.h \
+		  rpg_character_monster_incl.h \
+		  rpg_character_monster_naturalarmorclass.h \
+		  rpg_character_monster_naturalweapon.h \
+		  rpg_character_monster_organization.h \
+		  rpg_character_monster_organizations.h \
+		  rpg_character_monster_organizationslaverstep.h \
+		  rpg_character_monster_organizationstep.h \
+		  rpg_character_monster_propertiesxml.h \
+		  rpg_character_monster_savingthrowmodifiers.h \
+		  rpg_character_monster_specialabilityprecondition.h \
+		  rpg_character_monster_specialabilityproperties.h \
+		  rpg_character_monster_specialattackprecondition.h \
+		  rpg_character_monster_specialattackproperties.h \
+		  rpg_character_monster_specialbaseproperties.h \
+		  rpg_character_monster_specialdefenseprecondition.h \
+		  rpg_character_monster_specialdefenseproperties.h \
+		  rpg_character_monster_specialpropertytypeunion.h \
+		  rpg_character_monster_summonmonster.h \
+		  rpg_character_monster_weapontypeunion.h
 
 lib_LTLIBRARIES = libRPG_Character_Monster.la
 
-libRPG_Character_Monster_la_LDFLAGS = -L/usr/local/lib
-libRPG_Character_Monster_la_SOURCES = rpg_XMLSchema_XML_types.h rpg_character_monster.cpp \
-	rpg_character_monster.h rpg_character_monster_XML_parser.cpp rpg_character_monster_XML_parser.h \
-	rpg_character_monster_XML_types.cpp rpg_character_monster_XML_types.h rpg_character_monster_actiontrigger.h \
-	rpg_character_monster_advancement.h rpg_character_monster_advancementstep.h rpg_character_monster_attack.h \
-	rpg_character_monster_attackaction.h rpg_character_monster_common.h rpg_character_monster_common_tools.cpp \
-	rpg_character_monster_common_tools.h rpg_character_monster_defenseaction.h rpg_character_monster_defines.h \
-	rpg_character_monster_dictionary.cpp rpg_character_monster_dictionary.h rpg_character_monster_incl.h \
-	rpg_character_monster_naturalarmorclass.h rpg_character_monster_naturalweapon.h rpg_character_monster_organization.h \
-	rpg_character_monster_organizations.h rpg_character_monster_organizationslaverstep.h rpg_character_monster_organizationstep.h \
-	rpg_character_monster_propertiesxml.h rpg_character_monster_savingthrowmodifiers.h \
-	rpg_character_monster_specialabilityprecondition.h rpg_character_monster_specialabilityproperties.h \
-	rpg_character_monster_specialattackprecondition.h rpg_character_monster_specialattackproperties.h \
-	rpg_character_monster_specialbaseproperties.h rpg_character_monster_specialdefenseprecondition.h \
-	rpg_character_monster_specialdefenseproperties.h rpg_character_monster_specialpropertytypeunion.h rpg_character_monster_summonmonster.h \
-	rpg_character_monster_weapontypeunion.h
+libRPG_Character_Monster_la_SOURCES = rpg_XMLSchema_XML_types.h \
+				      rpg_character_monster.cpp \
+				      rpg_character_monster.h \
+				      rpg_character_monster_XML_parser.cpp \
+				      rpg_character_monster_XML_parser.h \
+				      rpg_character_monster_XML_types.cpp \
+				      rpg_character_monster_XML_types.h \
+				      rpg_character_monster_actiontrigger.h \
+				      rpg_character_monster_advancement.h \
+				      rpg_character_monster_advancementstep.h \
+				      rpg_character_monster_attack.h \
+				      rpg_character_monster_attackaction.h \
+				      rpg_character_monster_common.h \
+				      rpg_character_monster_common_tools.cpp \
+				      rpg_character_monster_common_tools.h \
+				      rpg_character_monster_defenseaction.h \
+				      rpg_character_monster_defines.h \
+				      rpg_character_monster_dictionary.cpp \
+				      rpg_character_monster_dictionary.h \
+				      rpg_character_monster_incl.h \
+				      rpg_character_monster_naturalarmorclass.h \
+				      rpg_character_monster_naturalweapon.h \
+				      rpg_character_monster_organization.h \
+				      rpg_character_monster_organizations.h \
+				      rpg_character_monster_organizationslaverstep.h \
+				      rpg_character_monster_organizationstep.h \
+				      rpg_character_monster_propertiesxml.h \
+				      rpg_character_monster_savingthrowmodifiers.h \
+				      rpg_character_monster_specialabilityprecondition.h \
+				      rpg_character_monster_specialabilityproperties.h \
+				      rpg_character_monster_specialattackprecondition.h \
+				      rpg_character_monster_specialattackproperties.h \
+				      rpg_character_monster_specialbaseproperties.h \
+				      rpg_character_monster_specialdefenseprecondition.h \
+				      rpg_character_monster_specialdefenseproperties.h \
+				      rpg_character_monster_specialpropertytypeunion.h \
+				      rpg_character_monster_summonmonster.h \
+				      rpg_character_monster_weapontypeunion.h
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
 config_DATA = rpg_character_monster.xsd rpg_character_monster.xml
 
 EXTRA_DIST = $(config_DATA)
-

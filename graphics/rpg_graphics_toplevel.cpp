@@ -91,7 +91,8 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
 
   SDL_Surface* interface_image = NULL;
   interface_image = RPG_Graphics_Common_Tools::loadGraphic(type_in,
-                                                           false); // don't cache this one
+                                                           true,    // convert to display format
+                                                           false);  // don't cache this one
   if (!interface_image)
   {
     ACE_DEBUG((LM_ERROR,

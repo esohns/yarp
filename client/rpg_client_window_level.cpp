@@ -100,6 +100,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_OFF_MAP;
   myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                               true,   // convert to display format
                                                                false); // don't cache
   if (!myCurrentOffMapTile)
     ACE_DEBUG((LM_ERROR,
@@ -116,6 +117,7 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
                RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
   type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
   myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                           true,   // convert to display format
                                                            false); // don't cache
   if (!myHighlightTile)
     ACE_DEBUG((LM_ERROR,
@@ -1508,6 +1510,7 @@ RPG_Client_WindowLevel::initCeiling()
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_CEILING;
   myCurrentCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                                true,   // convert to display format
                                                                 false); // don't cache
   if (!myCurrentCeilingTile)
   {

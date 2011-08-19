@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_magic_dictionary.h"
 
 #include "rpg_magic_XML_parser.h"
@@ -25,6 +26,7 @@
 #include <rpg_character_XML_parser.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 #include <rpg_common_XML_parser.h>
 #include <rpg_common_tools.h>
 
@@ -241,7 +243,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
 //              filename_in.c_str()));
 }
 
-const RPG_Magic_Spell_Properties
+RPG_Magic_Spell_Properties
 RPG_Magic_Dictionary::getSpellProperties(const std::string& spellName_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
@@ -259,7 +261,7 @@ RPG_Magic_Dictionary::getSpellProperties(const std::string& spellName_in) const
   return iterator->second;
 }
 
-const RPG_Magic_Spell_Properties
+RPG_Magic_Spell_Properties
 RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in,
                                          std::string& spellName_out) const
 {
@@ -290,7 +292,7 @@ RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in
   return dummy;
 }
 
-const RPG_Magic_SpellTypes_t
+RPG_Magic_SpellTypes_t
 RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
                                 const unsigned char& spellLevel_in) const
 {
@@ -305,7 +307,6 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
   for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
        iterator != myDictionary.end();
        iterator++)
-  {
     for (RPG_Magic_SpellLevelsIterator_t iterator2 = (*iterator).second.levels.begin();
          iterator2 != (*iterator).second.levels.end();
          iterator2++)
@@ -361,7 +362,6 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
 
       break;
     } // end FOR
-  } // end FOR
 
   return result;
 }
@@ -435,9 +435,12 @@ RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
 }
 
 void
-RPG_Magic_Dictionary::dump() const
+RPG_Magic_Dictionary::dump(const bool& groupLevels_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dump"));
+
+  if (groupLevels_in)
+    return dumpLevels();
 
   std::ostringstream converter;
   for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
@@ -473,5 +476,49 @@ RPG_Magic_Dictionary::dump() const
                ((iterator->second).resistible ? ACE_TEXT_ALWAYS_CHAR("true") : ACE_TEXT_ALWAYS_CHAR("false"))));
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("===========================\n")));
+  } // end FOR
+}
+
+void
+RPG_Magic_Dictionary::dumpLevels() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dumpLevels"));
+
+  RPG_Magic_SpellTypes_t spell_types;
+  RPG_Magic_DictionaryIterator_t iterator;
+  RPG_Magic_SpellLevelsIterator_t iterator2;
+  RPG_Magic_SpellTypesIterator_t iterator3;
+  unsigned int index = 0;
+  for (unsigned char i = 0;
+       i <= RPG_COMMON_MAX_SPELL_LEVEL;
+       i++)
+  {
+    // step1: collect all known spells / level
+    spell_types.clear();
+    for (iterator = myDictionary.begin();
+         iterator != myDictionary.end();
+         iterator++)
+      for (iterator2 = (*iterator).second.levels.begin();
+           iterator2 != (*iterator).second.levels.end();
+           iterator2++)
+        if ((*iterator2).level == i)
+        {
+          spell_types.insert((*iterator).second.type.type);
+          break;
+        } // end IF
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("============== level %u [%u] =============\n"),
+               static_cast<unsigned int>(i),
+               spell_types.size()));
+
+    index = 0;
+    for (iterator3 = spell_types.begin();
+         iterator3 != spell_types.end();
+         iterator3++, index++)
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("[%u]: %s\n"),
+                 index,
+                 RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator3).c_str()));
   } // end FOR
 }

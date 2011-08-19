@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_MAGIC_DICTIONARY_H
 #define RPG_MAGIC_DICTIONARY_H
 
@@ -44,14 +45,14 @@ class RPG_Magic_Dictionary
   void init(const std::string&,  // filename
             const bool& = true); // validate XML ?
 
-  const RPG_Magic_Spell_Properties getSpellProperties(const std::string&) const; // name of spell
-  const RPG_Magic_Spell_Properties getSpellProperties(const RPG_Magic_SpellType&, // type of spell
-                                                      std::string&) const;        // return value: name
-  const RPG_Magic_SpellTypes_t getSpells(const RPG_Magic_CasterClassUnion&,  // caster class
-                                         const unsigned char& = 0xFF) const; // spell level (default: ALL)
+  RPG_Magic_Spell_Properties getSpellProperties(const std::string&) const; // name of spell
+  RPG_Magic_Spell_Properties getSpellProperties(const RPG_Magic_SpellType&, // type of spell
+                                                std::string&) const;        // return value: name
+  RPG_Magic_SpellTypes_t getSpells(const RPG_Magic_CasterClassUnion&,  // caster class
+                                   const unsigned char& = 0xFF) const; // spell level (default: ALL)
 
   // debug info
-  void dump() const;
+  void dump(const bool&) const; // group Levels ?
 
  private:
   // safety measures
@@ -71,6 +72,9 @@ class RPG_Magic_Dictionary
                         ::xsd::cxx::xml::error_handler<char>::severity, // severity
                         const std::string&);                            // message
   };
+
+  // helper methods
+  void dumpLevels() const;
 
   RPG_Magic_Dictionary_t myDictionary;
   XSD_Error_Handler      myXSDErrorHandler;

@@ -69,43 +69,42 @@ add_library(RPG_Net SHARED ${RPG_Net_LIB_SRCS})
 add_dependencies(RPG_Net RPG_Stream)
 
 set_target_properties(RPG_Net PROPERTIES VERSION 1.0.0 SOVERSION 1)
-install(TARGETS RPG_Net LIBRARY DESTINATION lib)
 
 ########### install files ###############
-
+install(TARGETS RPG_Net LIBRARY
+        DESTINATION lib)
 install(FILES
-	rpg_net_client_sockethandler.h
-	rpg_net_common.h
-	rpg_net_common_tools.h
-	rpg_net_connection_manager.h
-	rpg_net_connection_manager.i
-	rpg_net_controller_base.h
-	rpg_net_defines.h
-	rpg_net_iconnection.h
-	rpg_net_iconnectionmanager.h
-	rpg_net_icounter.h
-	rpg_net_listener.h
-	rpg_net_message.h
-	rpg_net_module_headerparser.h
-	rpg_net_module_protocolhandler.h
-	rpg_net_module_runtimestatistic.h
-	rpg_net_module_runtimestatistic.i
-	rpg_net_module_sockethandler.h
-	rpg_net_packet_headers.h
-	rpg_net_protocol_layer.h
-	rpg_net_remote_comm.h
-	rpg_net_resetcounterhandler.h
-	rpg_net_sessionmessage.h
-	rpg_net_signalhandler.h
-	rpg_net_sockethandler.h
-	rpg_net_sockethandler_base.h
-	rpg_net_sockethandler_base.i
-	rpg_net_statistichandler.h
-	rpg_net_statistichandler.i
-	rpg_net_stream.h
-	rpg_net_stream_config.h
-	rpg_net_stream_messageallocator.h
-	rpg_net_stream_socket_base.h
-	rpg_net_stream_socket_base.i
-DESTINATION include)
-
+        rpg_net_client_sockethandler.h
+        rpg_net_common.h
+        rpg_net_common_tools.h
+        rpg_net_connection_manager.h
+        rpg_net_connection_manager.i
+        rpg_net_controller_base.h
+        rpg_net_defines.h
+        rpg_net_iconnection.h
+        rpg_net_iconnectionmanager.h
+        rpg_net_icounter.h
+        rpg_net_listener.h
+        rpg_net_message.h
+        rpg_net_module_headerparser.h
+        rpg_net_module_protocolhandler.h
+        rpg_net_module_runtimestatistic.h
+        rpg_net_module_runtimestatistic.i
+        rpg_net_module_sockethandler.h
+        rpg_net_packet_headers.h
+        rpg_net_protocol_layer.h
+        rpg_net_remote_comm.h
+        rpg_net_resetcounterhandler.h
+        rpg_net_sessionmessage.h
+        rpg_net_signalhandler.h
+        rpg_net_sockethandler.h
+        rpg_net_sockethandler_base.h
+        rpg_net_sockethandler_base.i
+        rpg_net_statistichandler.h
+        rpg_net_statistichandler.i
+        rpg_net_stream.h
+        rpg_net_stream_config.h
+        rpg_net_stream_messageallocator.h
+        rpg_net_stream_socket_base.h
+        rpg_net_stream_socket_base.i
+        DESTINATION include)

@@ -1103,7 +1103,9 @@ do_runIntro(SDL_Surface* screen_in)
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTRO_MAIN;
-  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(type);
+  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(type,
+                                                             true,   // convert to display format
+                                                             false); // don't cache
   if (!logo)
   {
     ACE_DEBUG((LM_ERROR,
@@ -1131,6 +1133,9 @@ do_runIntro(SDL_Surface* screen_in)
                                   3.0,                                 // interval
                                   RPG_Graphics_SDL_Tools::CLR32_BLACK, // fade to black
                                   screen_in);                          // screen
+
+  // clean up
+  SDL_FreeSurface(logo);
 
   return true;
 }
@@ -1211,11 +1216,11 @@ do_work(const RPG_Client_Config& config_in,
 //   userData.map_window           = NULL;
   userData.client_engine         = &client_engine;
   userData.schemaRepository      = schemaRepository_in;
-  userData.current_entity.character = NULL;
-  userData.current_entity.position = std::make_pair(0, 0);
-//   userData.current_entity.actions();
-  userData.current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-  userData.current_entity.graphic = NULL;
+  userData.entity.character = NULL;
+  userData.entity.position = std::make_pair(0, 0);
+//   userData.entity.actions();
+  userData.entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  userData.entity.graphic = NULL;
   userData.level_engine = &level_engine;
 
   GDK_THREADS_ENTER();

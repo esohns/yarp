@@ -37,10 +37,12 @@ set(character_generator_gui_SRCS
     character_generator_gui_common.h)
 
 if (CMAKE_COMPILER_IS_GNUCC)
-    set_source_files_properties(${character_generator_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+    set_source_files_properties(${character_generator_gui_SRCS}
+                                PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
 
-set_source_files_properties(${character_generator_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG")
+set_source_files_properties(${character_generator_gui_SRCS}
+                            PROPERTIES COMPILE_DEFINITIONS "DATADIR=\"/usr/local/share/RPG\";CONFIGDIR=\".\"")
 
 add_executable(character_generator_gui ${character_generator_gui_SRCS})
 
@@ -50,6 +52,7 @@ target_link_libraries(character_generator_gui ACE pthread xerces-c RPG_Dice RPG_
 
 ########### install files ###############
 install(TARGETS character_generator_gui RUNTIME DESTINATION bin)
+install(FILES character_generator_gui.glade DESTINATION bin)
 
 ########### next target ###############
 set(character_parser_SRCS character_parser.cpp)
@@ -70,4 +73,3 @@ target_link_libraries(character_parser ACE pthread xerces-c RPG_Dice RPG_Chance 
 
 ########### install files ###############
 install(TARGETS character_parser RUNTIME DESTINATION bin)
-install(FILES  character_generator_gui.glade DESTINATION share/RPG/config)

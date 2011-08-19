@@ -286,14 +286,10 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
     skill = static_cast<RPG_Common_Skill> ((result.front() - 1));
     iterator = skills.find(skill);
     if (iterator != skills.end())
-    {
       (iterator->second)++;
-    } // end IF
     else
-    {
       skills.insert(std::make_pair(skill,
                                    static_cast<char>(1)));
-    } // end ELSE
   } // end FOR
 
   // step8: (initial) feats & abilities
@@ -401,6 +397,7 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
       casterClass.subclass = *iterator;
       available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
                                                                         i);
+      ACE_ASSERT(!available.empty());
 
       // Bards and Sorcerers don't need to prepare any spells ahead of time, but
       // have a limited set of "known" spells to choose from.
@@ -434,9 +431,6 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
       } // end IF
       else
       {
-        // make sure we have enough variety...
-        ACE_ASSERT(!available.empty());
-
         for (unsigned int j = 0;
              j < numSpells;
              j++)

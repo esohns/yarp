@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef CHARACTER_GENERATOR_GUI_CALLBACKS_H
 #define CHARACTER_GENERATOR_GUI_CALLBACKS_H
 
@@ -25,20 +26,22 @@
 #include <gtk/gtk.h>
 
 void update_sprite_gallery(GTK_cb_data_t&);
+void set_current_image(const RPG_Graphics_Sprite&,
+                       GladeXML*);
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
-  // main
   gint about_activated_GTK_cb(GtkWidget*, gpointer);
   gint quit_activated_GTK_cb(GtkWidget*, gpointer);
   gint create_character_activated_GTK_cb(GtkWidget*, gpointer);
+  gint drop_character_activated_GTK_cb(GtkWidget*, gpointer);
   gint load_character_activated_GTK_cb(GtkWidget*, gpointer);
   gint character_file_activated_GTK_cb(GtkWidget*, gpointer);
   gint save_character_activated_GTK_cb(GtkWidget*, gpointer);
-  gint characters_activated_GTK_cb(GtkWidget*, gpointer);
-  gint characters_refresh_activated_GTK_cb(GtkWidget*, gpointer);
+  gint character_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
+  gint character_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
   gint prev_image_activated_GTK_cb(GtkWidget*, gpointer);
   gint next_image_activated_GTK_cb(GtkWidget*, gpointer);
 #ifdef __cplusplus

@@ -84,55 +84,55 @@ endif()
 add_library(RPG_Stream SHARED ${RPG_Stream_LIB_SRCS})
 
 set_target_properties(RPG_Stream PROPERTIES VERSION 1.0.0 SOVERSION 1)
-install(TARGETS RPG_Stream LIBRARY DESTINATION lib)
 
 ########### install files ###############
-
+install(TARGETS RPG_Stream LIBRARY
+        DESTINATION lib)
 install(FILES
-	rpg_stream.h
+        rpg_stream.h
         rpg_stream_allocatorheap.h
-	rpg_stream_base.h 
-	rpg_stream_base.i 
-	rpg_stream_counter.h 
-	rpg_stream_data_message_base.h 
-	rpg_stream_data_message_base.i 
-	rpg_stream_datablockallocatorheap.h 
-	rpg_stream_defines.h 
-	rpg_stream_headmoduletask.h 
-	rpg_stream_headmoduletask_base.h 
-	rpg_stream_headmoduletask_base.i 
-	rpg_stream_iallocator.h 
-	rpg_stream_imessagequeue.h 
-	rpg_stream_irefcount.h 
-	rpg_stream_istreamcontrol.h 
-	rpg_stream_itask.h 
-	rpg_stream_itask_base.h 
-	rpg_stream_message_base.h 
-	rpg_stream_messageallocatorheap.h 
-	rpg_stream_messageallocatorheap_base.h 
-	rpg_stream_messageallocatorheap_base.i 
-	rpg_stream_messagequeue.h 
-	rpg_stream_messagequeue_base.h 
-	rpg_stream_module.h 
-	rpg_stream_session_config.h 
-	rpg_stream_session_config_base.h 
-	rpg_stream_session_config_base.i 
-	rpg_stream_session_message.h 
-	rpg_stream_session_message_base.h 
-	rpg_stream_session_message_base.i 
-	rpg_stream_statemachine_control.h 
-	rpg_stream_streammodule.h 
-	rpg_stream_streammodule.i 
-	rpg_stream_streammodule_base.h 
-	rpg_stream_streammodule_base.i 
-	rpg_stream_task.h 
-	rpg_stream_task_asynch.h 
-	rpg_stream_task_base.h 
-	rpg_stream_task_base.i 
-	rpg_stream_task_base_asynch.h 	
-	rpg_stream_task_base_asynch.i 
-	rpg_stream_task_base_synch.h 
-	rpg_stream_task_base_synch.i 
-	rpg_stream_task_synch.h 
-	rpg_stream_tools.h
-DESTINATION include)
+        rpg_stream_base.h
+        rpg_stream_base.i
+        rpg_stream_counter.h
+        rpg_stream_data_message_base.h
+        rpg_stream_data_message_base.i
+        rpg_stream_datablockallocatorheap.h
+        rpg_stream_defines.h
+        rpg_stream_headmoduletask.h
+        rpg_stream_headmoduletask_base.h
+        rpg_stream_headmoduletask_base.i
+        rpg_stream_iallocator.h
+        rpg_stream_imessagequeue.h
+        rpg_stream_irefcount.h
+        rpg_stream_istreamcontrol.h
+        rpg_stream_itask.h
+        rpg_stream_itask_base.h
+        rpg_stream_message_base.h
+        rpg_stream_messageallocatorheap.h
+        rpg_stream_messageallocatorheap_base.h
+        rpg_stream_messageallocatorheap_base.i
+        rpg_stream_messagequeue.h
+        rpg_stream_messagequeue_base.h
+        rpg_stream_module.h
+        rpg_stream_session_config.h
+        rpg_stream_session_config_base.h
+        rpg_stream_session_config_base.i
+        rpg_stream_session_message.h
+        rpg_stream_session_message_base.h
+        rpg_stream_session_message_base.i
+        rpg_stream_statemachine_control.h
+        rpg_stream_streammodule.h
+        rpg_stream_streammodule.i
+        rpg_stream_streammodule_base.h
+        rpg_stream_streammodule_base.i
+        rpg_stream_task.h
+        rpg_stream_task_asynch.h
+        rpg_stream_task_base.h
+        rpg_stream_task_base.i
+        rpg_stream_task_base_asynch.h
+        rpg_stream_task_base_asynch.i
+        rpg_stream_task_base_synch.h
+        rpg_stream_task_base_synch.i
+        rpg_stream_task_synch.h
+        rpg_stream_tools.h
+        DESTINATION include)

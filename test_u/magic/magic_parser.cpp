@@ -59,6 +59,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump spell dictionary") << std::endl;
+  std::cout << ACE_TEXT("-l       : group levels") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_MAGIC_DEF_DICTIONARY_FILE;
@@ -71,6 +72,7 @@ const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   bool& dumpDictionary_out,
+                  bool& groupLevels_out,
                   std::string& magicDictionaryFilename_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
@@ -86,6 +88,7 @@ process_arguments(const int argc_in,
 #endif // #ifdef DATADIR
 
   dumpDictionary_out = false;
+  groupLevels_out = false;
   magicDictionaryFilename_out = base_data_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
   magicDictionaryFilename_out += RPG_MAGIC_DEF_DICTIONARY_FILE;
@@ -94,7 +97,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("dm:tv"));
+                             ACE_TEXT("dlm:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -104,6 +107,12 @@ process_arguments(const int argc_in,
       case 'd':
       {
         dumpDictionary_out = true;
+
+        break;
+      }
+      case 'l':
+      {
+        groupLevels_out = true;
 
         break;
       }
@@ -150,6 +159,7 @@ process_arguments(const int argc_in,
 
 void
 do_work(const bool& dumpDictionary_in,
+        const bool& groupLevels_in,
         const std::string& fileName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
@@ -175,7 +185,7 @@ do_work(const bool& dumpDictionary_in,
 
   if (dumpDictionary_in)
   {
-    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->dump();
+    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->dump(groupLevels_in);
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
@@ -188,9 +198,9 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-      << ACE_TEXT(" : ")
-      << RPG_VERSION
-      << std::endl;
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+            << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -253,17 +263,19 @@ ACE_TMAIN(int argc,
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
 
-  bool dumpDictionary  = false;
+  bool dumpDictionary = false;
+  bool groupLevels = false;
   std::string magicDictionaryFilename = base_data_path;
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
   magicDictionaryFilename += RPG_MAGIC_DEF_DICTIONARY_FILE;
-  bool traceInformation    = false;
+  bool traceInformation = false;
   bool printVersionAndExit = false;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
                           dumpDictionary,
+                          groupLevels,
                           magicDictionaryFilename,
                           traceInformation,
                           printVersionAndExit)))
@@ -326,6 +338,7 @@ ACE_TMAIN(int argc,
 
   // step2: do actual work
   do_work(dumpDictionary,
+          groupLevels,
           magicDictionaryFilename);
 
   timer.stop();

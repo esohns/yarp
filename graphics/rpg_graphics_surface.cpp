@@ -81,6 +81,7 @@ RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion& 
 
   // (try to) load graphic
   mySurface = RPG_Graphics_Common_Tools::loadGraphic(type_in,         // graphic
+                                                     true,            // convert to display format
                                                      !ownSurface_in); // cache graphic ?
   if (!mySurface)
   {
@@ -151,6 +152,7 @@ RPG_Graphics_Surface::init(const RPG_Graphics_GraphicTypeUnion& type_in,
 
   // (try to) load graphic
   mySurface = RPG_Graphics_Common_Tools::loadGraphic(type_in,         // graphic
+                                                     true,            // convert to display format
                                                      !ownSurface_in); // cache graphic ?
   if (!mySurface)
   {
@@ -1078,9 +1080,9 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
 
   // sanity check
   //--> buffer must contain a PNG file
-  if (png_sig_cmp(const_cast<unsigned char*> (buffer_in), // buffer
-                  0,                                         // start at the beginning
-                  RPG_GRAPHICS_PNG_SIGNATURE_BYTES))         // #signature bytes to check
+  if (png_sig_cmp(const_cast<unsigned char*>(buffer_in), // buffer
+                  0,                                     // start at the beginning
+                  RPG_GRAPHICS_PNG_SIGNATURE_BYTES))     // #signature bytes to check
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to png_sig_cmp(): %m, aborting\n")));
@@ -1142,7 +1144,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   // set up data input callback
   // *TODO*: use png_init_io() instead (load directly from the file...)
   png_set_read_fn(png_ptr,
-                  const_cast<unsigned char*> (buffer_in),
+                  const_cast<unsigned char*>(buffer_in),
                   PNG_read_callback);
 
   // read PNG header info
@@ -1297,7 +1299,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   for (unsigned long row = 0;
        row < height;
        row++)
-    row_pointers[row] = static_cast<png_bytep> (static_cast<Uint8*> (result->pixels) + (row * result->pitch));
+    row_pointers[row] = static_cast<png_bytep>(static_cast<Uint8*>(result->pixels) + (row * result->pitch));
 
   // read the image from the memory buffer onto the surface buffer
   // --> read the whole image into memory at once

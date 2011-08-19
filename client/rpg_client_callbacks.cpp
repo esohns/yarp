@@ -257,47 +257,7 @@ update_character_profile(const RPG_Character_Player& player_in,
   gtk_label_set_text(GTK_LABEL(current),
                      text.c_str());
 
-  // step6: condition
-  text.clear();
-  RPG_Character_Conditions_t player_condition = player_in.getCondition();
-  if (player_condition.size() > 1)
-    text += ACE_TEXT_ALWAYS_CHAR(" (");
-  for (RPG_Character_ConditionsIterator_t iterator = player_condition.begin();
-       iterator != player_condition.end();
-       iterator++)
-  {
-    switch (*iterator)
-    {
-      case RPG_COMMON_CONDITION_MAX:
-      case RPG_COMMON_CONDITION_INVALID:
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid condition (was: \"%s\"), aborting\n"),
-                   RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator).c_str()));
-
-        break;
-      }
-      default:
-      {
-        text += RPG_Common_Tools::enumToString(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
-
-        break;
-      }
-    } // end SWITCH
-    text += ACE_TEXT_ALWAYS_CHAR(",");
-  } // end FOR
-  if (!player_condition.empty())
-    text.erase(--text.end());
-  if (player_condition.size() > 1)
-    text += ACE_TEXT_ALWAYS_CHAR(")");
-
-  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("condition")));
-  ACE_ASSERT(current);
-  gtk_label_set_text(GTK_LABEL(current),
-                     text.c_str());
-
-  // step7: HP
+  // step6: HP
   unsigned short int total_hp = player_in.getNumTotalHitPoints();
   short int hp = player_in.getNumHitPoints();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -311,7 +271,7 @@ update_character_profile(const RPG_Character_Player& player_in,
   gtk_label_set_text(GTK_LABEL(current),
                      converter.str().c_str());
 
-  // step8: AC
+  // step7: AC
   signed char armor_class_normal = player_in.getArmorClass(DEFENSE_NORMAL);
   signed char armor_class_touch = player_in.getArmorClass(DEFENSE_TOUCH);
   signed char armor_class_flatfooted = player_in.getArmorClass(DEFENSE_FLATFOOTED);
@@ -328,7 +288,7 @@ update_character_profile(const RPG_Character_Player& player_in,
   gtk_label_set_text(GTK_LABEL(current),
                      converter.str().c_str());
 
-  // step9: XP
+  // step8: XP
   unsigned int experience = player_in.getExperience();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
@@ -339,7 +299,7 @@ update_character_profile(const RPG_Character_Player& player_in,
   gtk_label_set_text(GTK_LABEL(current),
                      converter.str().c_str());
 
-  // step10: level(s)
+  // step9: level(s)
   text.clear();
   unsigned char level = 0;
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -373,7 +333,7 @@ update_character_profile(const RPG_Character_Player& player_in,
   gtk_label_set_text(GTK_LABEL(current),
                      text.c_str());
 
-  // step11: gold
+  // step10: gold
   unsigned int gold = player_in.getWealth();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
@@ -383,6 +343,42 @@ update_character_profile(const RPG_Character_Player& player_in,
   ACE_ASSERT(current);
   gtk_label_set_text(GTK_LABEL(current),
                      converter.str().c_str());
+
+  // step11: condition
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("condition_vbox")));
+  ACE_ASSERT(current);
+  GList* entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+  GtkWidget* label = NULL;
+  RPG_Character_Conditions_t player_condition = player_in.getCondition();
+  for (RPG_Character_ConditionsIterator_t iterator = player_condition.begin();
+       iterator != player_condition.end();
+       iterator++)
+  {
+    text = RPG_Common_Tools::enumToString(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+  gtk_widget_show_all(current);
 
   // step12: attributes
   unsigned int attribute = 0;
@@ -445,7 +441,7 @@ update_character_profile(const RPG_Character_Player& player_in,
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("feats_vbox")));
   ACE_ASSERT(current);
-  GList* entries = gtk_container_get_children(GTK_CONTAINER(current));
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
 //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -459,7 +455,7 @@ update_character_profile(const RPG_Character_Player& player_in,
 
     g_list_free(entries);
   } // end IF
-  GtkWidget* label = NULL;
+  label = NULL;
   RPG_Character_Feats_t player_feats = player_in.getFeats();
   for (RPG_Character_FeatsConstIterator_t iterator = player_feats.begin();
        iterator != player_feats.end();
@@ -571,7 +567,7 @@ update_character_profile(const RPG_Character_Player& player_in,
 
   // step16: spells
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("spells_vbox")));
+                                            ACE_TEXT_ALWAYS_CHAR("known_spells_vbox")));
   ACE_ASSERT(current);
   entries = gtk_container_get_children(GTK_CONTAINER(current));
 //   ACE_ASSERT(entries);
@@ -588,43 +584,55 @@ update_character_profile(const RPG_Character_Player& player_in,
     g_list_free(entries);
   } // end IF
   RPG_Magic_SpellTypes_t player_known_spells = player_in.getKnownSpells();
-  RPG_Magic_Spells_t player_spells = player_in.getSpells();
-  // *NOTE*: only Bards and Sorcerers have a limited set of "known" spells to choose from
-  if (RPG_Character_Class_Common_Tools::hasSubClass(player_class,
-                                                    SUBCLASS_BARD) ||
-      RPG_Character_Class_Common_Tools::hasSubClass(player_class,
-                                                    SUBCLASS_SORCERER))
-    for (RPG_Magic_SpellTypesIterator_t iterator = player_known_spells.begin();
-         iterator != player_known_spells.end();
-         iterator++)
-    {
-      text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+  for (RPG_Magic_SpellTypesIterator_t iterator = player_known_spells.begin();
+       iterator != player_known_spells.end();
+       iterator++)
+  {
+    text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
 
-      label = NULL;
-      label = gtk_label_new(text.c_str());
-      ACE_ASSERT(label);
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
 //     gtk_container_add(GTK_CONTAINER(current), label);
-      gtk_box_pack_start(GTK_BOX(current), label,
-                         TRUE, // expand
-                         TRUE, // fill
-                         0);   // padding
-    } // end FOR
-  else
-    for (RPG_Magic_SpellsIterator_t iterator = player_spells.begin();
-         iterator != player_spells.end();
-         iterator++)
+    gtk_box_pack_start(GTK_BOX(current), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+  gtk_widget_show_all(current);
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("memorized_spells_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
     {
-      text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
-
-      label = NULL;
-      label = gtk_label_new(text.c_str());
-      ACE_ASSERT(label);
-  //     gtk_container_add(GTK_CONTAINER(current), label);
-      gtk_box_pack_start(GTK_BOX(current), label,
-                        TRUE, // expand
-                        TRUE, // fill
-                        0);   // padding
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
     } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+  RPG_Magic_Spells_t player_spells = player_in.getSpells();
+  for (RPG_Magic_SpellsIterator_t iterator = player_spells.begin();
+       iterator != player_spells.end();
+       iterator++)
+  {
+    text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), label,
+                      TRUE, // expand
+                      TRUE, // fill
+                      0);   // padding
+  } // end FOR
   gtk_widget_show_all(current);
 
   // step17: inventory
@@ -796,47 +804,59 @@ reset_entity_profile(GladeXML* xml_in)
   gtk_label_set_text(GTK_LABEL(current),
                      NULL);
 
-  // step1f: condition
-  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("condition")));
-  ACE_ASSERT(current);
-  gtk_label_set_text(GTK_LABEL(current),
-                     NULL);
-
-  // step1g: HP
+  // step1f: HP
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("hitpoints")));
   ACE_ASSERT(current);
   gtk_label_set_text(GTK_LABEL(current),
                      NULL);
 
-  // step1h: AC
+  // step1g: AC
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("armorclass")));
   ACE_ASSERT(current);
   gtk_label_set_text(GTK_LABEL(current),
                      NULL);
 
-  // step1i: XP
+  // step1h: XP
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("experience")));
   ACE_ASSERT(current);
   gtk_label_set_text(GTK_LABEL(current),
                      NULL);
 
-  // step1j: level(s)
+  // step1i: level(s)
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("level")));
   ACE_ASSERT(current);
   gtk_label_set_text(GTK_LABEL(current),
                      NULL);
 
-  // step1k: gold
+  // step1j: gold
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("gold")));
   ACE_ASSERT(current);
   gtk_label_set_text(GTK_LABEL(current),
                      NULL);
+
+  // step1k: condition
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("condition_vbox")));
+  ACE_ASSERT(current);
+  GList* entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
 
   // step1l: attributes
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
@@ -874,7 +894,7 @@ reset_entity_profile(GladeXML* xml_in)
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("feats_vbox")));
   ACE_ASSERT(current);
-  GList* entries = gtk_container_get_children(GTK_CONTAINER(current));
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
 //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -929,7 +949,24 @@ reset_entity_profile(GladeXML* xml_in)
 
   // step1p: spells
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("spells_vbox")));
+                                            ACE_TEXT_ALWAYS_CHAR("known_spells_vbox")));
+  ACE_ASSERT(current);
+  entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("memorized_spells_vbox")));
   ACE_ASSERT(current);
   entries = gtk_container_get_children(GTK_CONTAINER(current));
 //   ACE_ASSERT(entries);
@@ -1201,19 +1238,19 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
   //   ACE_UNUSED_ARG(userData_in);
   RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
   ACE_ASSERT(data);
-  ACE_ASSERT(data->current_entity.character == NULL);
+  ACE_ASSERT(data->entity.character == NULL);
 
-  data->current_entity = RPG_Engine_Common_Tools::createEntity();
-  ACE_ASSERT(data->current_entity.character);
+  data->entity = RPG_Engine_Common_Tools::createEntity(true);
+  ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
-  ::update_entity_profile(data->current_entity,
+  ::update_entity_profile(data->entity,
                           data->xml);
 
   // if necessary, update starting position
-  if ((data->current_entity.position.first == 0) &&
-      (data->current_entity.position.second == 0))
-    data->current_entity.position = data->level_engine->getStartPosition();
+  if ((data->entity.position.first == 0) &&
+      (data->entity.position.second == 0))
+    data->entity.position = data->level_engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
@@ -1245,6 +1282,9 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(join_game);
   gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
 
+  // make this insensitive
+  gtk_widget_set_sensitive(widget_in, FALSE);
+
   return FALSE;
 }
 
@@ -1260,15 +1300,15 @@ drop_character_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
 
   // clean up
-  if (data->current_entity.character)
+  if (data->entity.character)
   {
-    data->current_entity.actions.clear();
-    delete data->current_entity.character;
-    data->current_entity.character = NULL;
-    SDL_FreeSurface(data->current_entity.graphic);
-    data->current_entity.graphic = NULL;
-    data->current_entity.position = std::make_pair(0, 0);
-    data->current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.actions.clear();
+    delete data->entity.character;
+    data->entity.character = NULL;
+    SDL_FreeSurface(data->entity.graphic);
+    data->entity.graphic = NULL;
+    data->entity.position = std::make_pair(0, 0);
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   } // end IF
 
   // reset profile widgets
@@ -1369,34 +1409,34 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   gtk_widget_hide(GTK_WIDGET(filechooser_dialog));
 
   // clean up
-  if (data->current_entity.character)
+  if (data->entity.character)
   {
-    data->current_entity.actions.clear();
-    delete data->current_entity.character;
-    data->current_entity.character = NULL;
-    SDL_FreeSurface(data->current_entity.graphic);
-    data->current_entity.graphic = NULL;
-    data->current_entity.position = std::make_pair(0, 0);
-    data->current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.actions.clear();
+    delete data->entity.character;
+    data->entity.character = NULL;
+    SDL_FreeSurface(data->entity.graphic);
+    data->entity.graphic = NULL;
+    data->entity.position = std::make_pair(0, 0);
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   } // end IF
 
   // retrieve selected filename
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
 
   // load player profile
-  data->current_entity = RPG_Engine_Common_Tools::loadEntity(filename,
+  data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
                                                              data->schemaRepository,
                                                              true);
-  ACE_ASSERT(data->current_entity.character);
+  ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
-  ::update_entity_profile(data->current_entity,
+  ::update_entity_profile(data->entity,
                           data->xml);
 
   // if necessary, update starting position
-  if ((data->current_entity.position.first == 0) &&
-      (data->current_entity.position.second == 0))
-    data->current_entity.position = data->level_engine->getStartPosition();
+  if ((data->entity.position.first == 0) &&
+      (data->entity.position.second == 0))
+    data->entity.position = data->level_engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
@@ -1442,15 +1482,15 @@ save_character_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
 
   // sanity check(s)
-  ACE_ASSERT(data->current_entity.character);
+  ACE_ASSERT(data->entity.character);
 
   // assemble target filename
   std::string filename = RPG_COMMON_DUMP_DIR;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
-  filename += data->current_entity.character->getName();
+  filename += data->entity.character->getName();
   filename += RPG_CHARACTER_PROFILE_EXT;
 
-  if (!RPG_Engine_Common_Tools::saveEntity(data->current_entity,
+  if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
@@ -1501,15 +1541,15 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   g_value_unset(&value);
 
   // clean up
-  if (data->current_entity.character)
+  if (data->entity.character)
   {
-    data->current_entity.actions.clear();
-    delete data->current_entity.character;
-    data->current_entity.character = NULL;
-    SDL_FreeSurface(data->current_entity.graphic);
-    data->current_entity.graphic = NULL;
-    data->current_entity.position = std::make_pair(0, 0);
-    data->current_entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.actions.clear();
+    delete data->entity.character;
+    data->entity.character = NULL;
+    SDL_FreeSurface(data->entity.graphic);
+    data->entity.graphic = NULL;
+    data->entity.position = std::make_pair(0, 0);
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   } // end IF
 
   // construct filename
@@ -1519,13 +1559,13 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   filename += RPG_CHARACTER_PROFILE_EXT;
 
   // load player profile
-  data->current_entity = RPG_Engine_Common_Tools::loadEntity(filename,
+  data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
                                                              data->schemaRepository,
                                                              true);
-  ACE_ASSERT(data->current_entity.character);
+  ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
-  ::update_entity_profile(data->current_entity,
+  ::update_entity_profile(data->entity,
                           data->xml);
 
   // make character display frame sensitive (if it's not already)
@@ -1629,16 +1669,16 @@ join_game_activated_GTK_cb(GtkWidget* widget_in,
 
   // sanity check(s)
   ACE_ASSERT(data->client_engine);
-  ACE_ASSERT(data->current_entity.character);
+  ACE_ASSERT(data->entity.character);
   ACE_ASSERT(data->level_engine);
 
   // set start position, if necessary
-  if ((data->current_entity.position.first == 0) &&
-      (data->current_entity.position.second == 0))
-    data->current_entity.position = data->level_engine->getStartPosition();
+  if ((data->entity.position.first == 0) &&
+      (data->entity.position.second == 0))
+    data->entity.position = data->level_engine->getStartPosition();
 
   // activate the current character
-  RPG_Engine_EntityID_t id = data->level_engine->add(&(data->current_entity));
+  RPG_Engine_EntityID_t id = data->level_engine->add(&(data->entity));
   data->client_engine->setPlayer(id);
 
   // make join button INsensitive
@@ -1740,13 +1780,13 @@ server_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 //   filename += RPG_CHARACTER_PROFILE_EXT;
 //
 //   // load player profile
-//   data->current_entity = RPG_Engine_Common_Tools::loadEntity(filename,
+//   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
 //                                                              data->schemaRepository,
 //                                                              true);
-//   ACE_ASSERT(data->current_entity.character);
+//   ACE_ASSERT(data->entity.character);
 //
 //   // update entity profile widgets
-//   ::update_entity_profile(data->current_entity,
+//   ::update_entity_profile(data->entity,
 //                           data->xml);
 //
 //   // make character display frame sensitive (if it's not already)

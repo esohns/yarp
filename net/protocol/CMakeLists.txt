@@ -1,5 +1,3 @@
-#add_subdirectory(scripts)
-
 ########### next target ###############
 set(RPG_Net_Protocol_LIB_SRCS
     location.hh
@@ -47,46 +45,49 @@ endif()
 
 add_library(RPG_Net_Protocol SHARED ${RPG_Net_Protocol_LIB_SRCS})
 
+# add_custom_target(protocol_scanner
+#                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/protocol_scanner.l)
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCbisect.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCbisect.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCscanner.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCscanner.h
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/scanner.sh
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/IRCbisect.l ${CMAKE_CURRENT_SOURCE_DIR}/scripts/IRCscanner.l
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+                   COMMENT "generating flex scanner...")
+
+# add_custom_target(protocol_parser
+#                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/protocol_parser.y)
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCparser.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCparser.h ${CMAKE_CURRENT_SOURCE_DIR}/location.hh ${CMAKE_CURRENT_SOURCE_DIR}/position.hh ${CMAKE_CURRENT_SOURCE_DIR}/stack.hh
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/parser.sh
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/IRCparser.y
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+                   COMMENT "generating bison parser...")
+
 add_dependencies(RPG_Net_Protocol RPG_Net RPG_Stream)
 
 set_target_properties(RPG_Net_Protocol PROPERTIES VERSION 1.0.0 SOVERSION 1)
-install(TARGETS RPG_Net_Protocol LIBRARY DESTINATION lib)
 
 ########### install files ###############
-
-install(FILES  location.hh position.hh rpg_net_protocol_IRC_codes.h  	rpg_net_protocol_IRCmessage.h rpg_net_protocol_IRCparser.h rpg_net_protocol_IRCparser_driver.h  	rpg_net_protocol_common.h rpg_net_protocol_defines.h rpg_net_protocol_iIRCControl.h  	rpg_net_protocol_inotify.h rpg_net_protocol_message.h rpg_net_protocol_messageallocator.h  	rpg_net_protocol_module_IRChandler.h rpg_net_protocol_module_IRCparser.h  	rpg_net_protocol_module_IRCsplitter.h rpg_net_protocol_module_IRCstreamer.h rpg_net_protocol_sessionmessage.h  	rpg_net_protocol_sockethandler.h rpg_net_protocol_stream.h rpg_net_protocol_tools.h stack.hh DESTINATION include)
-
-#original Makefile.am contents follow:
-
-#METASOURCES = AUTO
-#
-#ACLOCAL_AMFLAGS = -I m4
-#
-#SUBDIRS = scripts
-#
-#include_HEADERS = location.hh position.hh rpg_net_protocol_IRC_codes.h \
-#	rpg_net_protocol_IRCmessage.h rpg_net_protocol_IRCparser.h rpg_net_protocol_IRCparser_driver.h \
-#	rpg_net_protocol_common.h rpg_net_protocol_defines.h rpg_net_protocol_iIRCControl.h \
-#	rpg_net_protocol_inotify.h rpg_net_protocol_message.h rpg_net_protocol_messageallocator.h \
-#	rpg_net_protocol_module_IRChandler.h rpg_net_protocol_module_IRCparser.h \
-#	rpg_net_protocol_module_IRCsplitter.h rpg_net_protocol_module_IRCstreamer.h rpg_net_protocol_sessionmessage.h \
-#	rpg_net_protocol_sockethandler.h rpg_net_protocol_stream.h rpg_net_protocol_tools.h stack.hh
-#
-#lib_LTLIBRARIES = libRPG_Net_Protocol.la
-#
-#libRPG_Net_Protocol_la_SOURCES = location.hh position.hh \
-#	rpg_net_protocol_IRC_codes.h rpg_net_protocol_IRCbisect.cpp rpg_net_protocol_IRCbisect.h \
-#	rpg_net_protocol_IRCmessage.cpp rpg_net_protocol_IRCmessage.h rpg_net_protocol_IRCparser.cpp \
-#	rpg_net_protocol_IRCparser.h rpg_net_protocol_IRCparser_driver.cpp \
-#	rpg_net_protocol_IRCparser_driver.h rpg_net_protocol_IRCscanner.cpp rpg_net_protocol_IRCscanner.h \
-#	rpg_net_protocol_common.h rpg_net_protocol_defines.h rpg_net_protocol_iIRCControl.h \
-#	rpg_net_protocol_inotify.h rpg_net_protocol_message.cpp rpg_net_protocol_message.h \
-#	rpg_net_protocol_messageallocator.cpp rpg_net_protocol_messageallocator.h \
-#	rpg_net_protocol_module_IRChandler.cpp rpg_net_protocol_module_IRChandler.h \
-#	rpg_net_protocol_module_IRCparser.cpp rpg_net_protocol_module_IRCparser.h \
-#	rpg_net_protocol_module_IRCsplitter.cpp rpg_net_protocol_module_IRCsplitter.h \
-#	rpg_net_protocol_module_IRCstreamer.cpp rpg_net_protocol_module_IRCstreamer.h \
-#	rpg_net_protocol_sessionmessage.cpp rpg_net_protocol_sessionmessage.h rpg_net_protocol_sockethandler.cpp \
-#	rpg_net_protocol_sockethandler.h rpg_net_protocol_stream.cpp rpg_net_protocol_stream.h \
-#	rpg_net_protocol_tools.cpp rpg_net_protocol_tools.h stack.hh
-#libRPG_Net_Protocol_la_CPPFLAGS = -I$(srcdir)/..
+install(TARGETS RPG_Net_Protocol LIBRARY
+        DESTINATION lib)
+install(FILES
+        location.hh
+        position.hh
+        rpg_net_protocol_IRC_codes.h
+        rpg_net_protocol_IRCmessage.h
+        rpg_net_protocol_IRCparser.h
+        rpg_net_protocol_IRCparser_driver.h
+        rpg_net_protocol_common.h
+        rpg_net_protocol_defines.h
+        rpg_net_protocol_iIRCControl.h
+        rpg_net_protocol_inotify.h
+        rpg_net_protocol_message.h
+        rpg_net_protocol_messageallocator.h
+        rpg_net_protocol_module_IRChandler.h
+        rpg_net_protocol_module_IRCparser.h
+        rpg_net_protocol_module_IRCsplitter.h
+        rpg_net_protocol_module_IRCstreamer.h
+        rpg_net_protocol_sessionmessage.h
+        rpg_net_protocol_sockethandler.h
+        rpg_net_protocol_stream.h
+        rpg_net_protocol_tools.h
+        stack.hh
+        DESTINATION include)
