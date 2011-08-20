@@ -91,12 +91,15 @@ class RPG_Magic_Dictionary_Type_pskel;
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_common_environment_incl.h>
 #include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
 #include "rpg_dice_XML_types.h"
 
 #include "rpg_common_XML_types.h"
+
+#include "rpg_common_environment_XML_types.h"
 
 #include "rpg_character_XML_types.h"
 
@@ -497,6 +500,9 @@ class RPG_Magic_Spell_TargetProperties_Type_pskel: public ::xml_schema::complex_
   levelIncrement (unsigned char);
 
   virtual void
+  levelIncrementMax (unsigned char);
+
+  virtual void
   effect (const RPG_Magic_Spell_AreaOfEffect&);
 
   virtual void
@@ -514,6 +520,9 @@ class RPG_Magic_Spell_TargetProperties_Type_pskel: public ::xml_schema::complex_
   virtual void
   rangeIsInHD (bool);
 
+  virtual void
+  incrementIsReciprocal (bool);
+
   virtual RPG_Magic_Spell_TargetProperties
   post_RPG_Magic_Spell_TargetProperties_Type () = 0;
 
@@ -524,6 +533,9 @@ class RPG_Magic_Spell_TargetProperties_Type_pskel: public ::xml_schema::complex_
 
   void
   levelIncrement_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
+  levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
   effect_parser (::RPG_Magic_Spell_AreaOfEffect_Type_pskel&);
@@ -544,14 +556,19 @@ class RPG_Magic_Spell_TargetProperties_Type_pskel: public ::xml_schema::complex_
   rangeIsInHD_parser (::xml_schema::boolean_pskel&);
 
   void
+  incrementIsReciprocal_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::RPG_Common_Amount_Type_pskel& /* base */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrement */,
+           ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
            ::RPG_Magic_Spell_AreaOfEffect_Type_pskel& /* effect */,
            ::RPG_Common_AreaOfEffect_Type_pskel& /* shape */,
            ::xml_schema::unsigned_byte_pskel& /* radius */,
            ::xml_schema::unsigned_byte_pskel& /* height */,
            ::RPG_Magic_Spell_Target_Type_pskel& /* target */,
-           ::xml_schema::boolean_pskel& /* rangeIsInHD */);
+           ::xml_schema::boolean_pskel& /* rangeIsInHD */,
+           ::xml_schema::boolean_pskel& /* incrementIsReciprocal */);
 
   // Constructor.
   //
@@ -577,12 +594,14 @@ class RPG_Magic_Spell_TargetProperties_Type_pskel: public ::xml_schema::complex_
   protected:
   ::RPG_Common_Amount_Type_pskel* base_parser_;
   ::xml_schema::unsigned_byte_pskel* levelIncrement_parser_;
+  ::xml_schema::unsigned_byte_pskel* levelIncrementMax_parser_;
   ::RPG_Magic_Spell_AreaOfEffect_Type_pskel* effect_parser_;
   ::RPG_Common_AreaOfEffect_Type_pskel* shape_parser_;
   ::xml_schema::unsigned_byte_pskel* radius_parser_;
   ::xml_schema::unsigned_byte_pskel* height_parser_;
   ::RPG_Magic_Spell_Target_Type_pskel* target_parser_;
   ::xml_schema::boolean_pskel* rangeIsInHD_parser_;
+  ::xml_schema::boolean_pskel* incrementIsReciprocal_parser_;
 };
 
 class RPG_Magic_Spell_Duration_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -695,6 +714,9 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   size (const RPG_Common_Size&);
 
   virtual void
+  environment (const RPG_Common_Environment&);
+
+  virtual void
   reverse (bool);
 
   virtual void
@@ -733,6 +755,9 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   size_parser (::RPG_Common_Size_Type_pskel&);
 
   void
+  environment_parser (::RPG_Common_Environment_Type_pskel&);
+
+  void
   reverse_parser (::xml_schema::boolean_pskel&);
 
   void
@@ -748,6 +773,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
            ::RPG_Common_Condition_Type_pskel& /* condition */,
            ::RPG_Common_CreatureType_Type_pskel& /* creature */,
            ::RPG_Common_Size_Type_pskel& /* size */,
+           ::RPG_Common_Environment_Type_pskel& /* environment */,
            ::xml_schema::boolean_pskel& /* reverse */,
            ::xml_schema::boolean_pskel& /* baseIsCasterLevel */);
 
@@ -782,6 +808,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   ::RPG_Common_Condition_Type_pskel* condition_parser_;
   ::RPG_Common_CreatureType_Type_pskel* creature_parser_;
   ::RPG_Common_Size_Type_pskel* size_parser_;
+  ::RPG_Common_Environment_Type_pskel* environment_parser_;
   ::xml_schema::boolean_pskel* reverse_parser_;
   ::xml_schema::boolean_pskel* baseIsCasterLevel_parser_;
 };
@@ -1008,7 +1035,13 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   attribute (const RPG_Common_Attribute&);
 
   virtual void
+  creature (const RPG_Common_CreatureType&);
+
+  virtual void
   duration (const RPG_Common_EffectDuration&);
+
+  virtual void
+  precondition (const RPG_Magic_Spell_PreconditionProperties&);
 
   virtual void
   maxRange (unsigned char);
@@ -1020,7 +1053,7 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   includeAdjacent (bool);
 
   virtual void
-  effectsAreInclusive (bool);
+  incrementIsReciprocal (bool);
 
   virtual RPG_Magic_Spell_EffectProperties
   post_RPG_Magic_Spell_EffectProperties_Type () = 0;
@@ -1049,7 +1082,13 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   attribute_parser (::RPG_Common_Attribute_Type_pskel&);
 
   void
+  creature_parser (::RPG_Common_CreatureType_Type_pskel&);
+
+  void
   duration_parser (::RPG_Common_EffectDuration_Type_pskel&);
+
+  void
+  precondition_parser (::RPG_Magic_Spell_PreconditionProperties_Type_pskel&);
 
   void
   maxRange_parser (::xml_schema::unsigned_byte_pskel&);
@@ -1061,7 +1100,7 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   includeAdjacent_parser (::xml_schema::boolean_pskel&);
 
   void
-  effectsAreInclusive_parser (::xml_schema::boolean_pskel&);
+  incrementIsReciprocal_parser (::xml_schema::boolean_pskel&);
 
   void
   parsers (::RPG_Magic_Spell_Effect_Type_pskel& /* type */,
@@ -1071,11 +1110,13 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
            ::RPG_Common_Amount_Type_pskel& /* levelIncrement */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
            ::RPG_Common_Attribute_Type_pskel& /* attribute */,
+           ::RPG_Common_CreatureType_Type_pskel& /* creature */,
            ::RPG_Common_EffectDuration_Type_pskel& /* duration */,
+           ::RPG_Magic_Spell_PreconditionProperties_Type_pskel& /* precondition */,
            ::xml_schema::unsigned_byte_pskel& /* maxRange */,
            ::RPG_Magic_CounterMeasure_Type_pskel& /* counterMeasure */,
            ::xml_schema::boolean_pskel& /* includeAdjacent */,
-           ::xml_schema::boolean_pskel& /* effectsAreInclusive */);
+           ::xml_schema::boolean_pskel& /* incrementIsReciprocal */);
 
   // Constructor.
   //
@@ -1106,11 +1147,13 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   ::RPG_Common_Amount_Type_pskel* levelIncrement_parser_;
   ::xml_schema::unsigned_byte_pskel* levelIncrementMax_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
+  ::RPG_Common_CreatureType_Type_pskel* creature_parser_;
   ::RPG_Common_EffectDuration_Type_pskel* duration_parser_;
+  ::RPG_Magic_Spell_PreconditionProperties_Type_pskel* precondition_parser_;
   ::xml_schema::unsigned_byte_pskel* maxRange_parser_;
   ::RPG_Magic_CounterMeasure_Type_pskel* counterMeasure_parser_;
   ::xml_schema::boolean_pskel* includeAdjacent_parser_;
-  ::xml_schema::boolean_pskel* effectsAreInclusive_parser_;
+  ::xml_schema::boolean_pskel* incrementIsReciprocal_parser_;
 };
 
 class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
@@ -1160,6 +1203,9 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   virtual void
   resistible (bool);
 
+  virtual void
+  effectsAreInclusive (bool);
+
   virtual RPG_Magic_Spell_PropertiesXML
   post_RPG_Magic_Spell_PropertiesXML_Type () = 0;
 
@@ -1205,6 +1251,9 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   resistible_parser (::xml_schema::boolean_pskel&);
 
   void
+  effectsAreInclusive_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::xml_schema::string_pskel& /* name */,
            ::RPG_Magic_Spell_Type_Type_pskel& /* type */,
            ::RPG_Magic_Spell_Level_Type_pskel& /* level */,
@@ -1217,7 +1266,8 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
            ::RPG_Magic_Spell_EffectProperties_Type_pskel& /* effect */,
            ::RPG_Magic_CounterMeasure_Type_pskel& /* counterMeasure */,
            ::RPG_Common_SavingThrow_Type_pskel& /* saveable */,
-           ::xml_schema::boolean_pskel& /* resistible */);
+           ::xml_schema::boolean_pskel& /* resistible */,
+           ::xml_schema::boolean_pskel& /* effectsAreInclusive */);
 
   // Constructor.
   //
@@ -1254,6 +1304,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   ::RPG_Magic_CounterMeasure_Type_pskel* counterMeasure_parser_;
   ::RPG_Common_SavingThrow_Type_pskel* saveable_parser_;
   ::xml_schema::boolean_pskel* resistible_parser_;
+  ::xml_schema::boolean_pskel* effectsAreInclusive_parser_;
 };
 
 class RPG_Magic_SpellLikeProperties_Type_pskel: public ::xml_schema::complex_content

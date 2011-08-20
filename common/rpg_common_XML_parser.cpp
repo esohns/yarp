@@ -491,6 +491,7 @@ RPG_Common_Environment_Type::RPG_Common_Environment_Type()
 
   myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
+  myCurrentEnvironment.outdoors = true;
 }
 
 void RPG_Common_Environment_Type::terrain(const RPG_Common_Terrain& terrain_in)
@@ -507,6 +508,13 @@ void RPG_Common_Environment_Type::climate(const RPG_Common_Climate& climate_in)
   myCurrentEnvironment.climate = climate_in;
 }
 
+void RPG_Common_Environment_Type::outdoors(bool outdoors_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::outdoors"));
+
+  myCurrentEnvironment.outdoors = outdoors_in;
+}
+
 RPG_Common_Environment RPG_Common_Environment_Type::post_RPG_Common_Environment_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::post_RPG_Common_Environment_Type"));
@@ -516,6 +524,7 @@ RPG_Common_Environment RPG_Common_Environment_Type::post_RPG_Common_Environment_
   // clear structure
   myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
+  myCurrentEnvironment.outdoors = true;
 
   return result;
 }

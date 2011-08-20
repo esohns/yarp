@@ -18,6 +18,7 @@ struct RPG_Magic_Spell_PreconditionProperties
   RPG_Common_Condition condition;
   std::vector<RPG_Common_CreatureType> creatures;
   RPG_Common_Size size;
+  RPG_Common_Environment environment;
   bool reverse;
   bool baseIsCasterLevel;
 };

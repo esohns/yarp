@@ -1360,22 +1360,33 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
     result += RPG_Magic_Spell_PreconditionHelper::RPG_Magic_Spell_PreconditionToString((*iterator).type);
     switch ((*iterator).type)
     {
+      case PRECONDITION_ALLY:
+      case PRECONDITION_ATTACK_MELEE_ANY:
+      case PRECONDITION_ATTACK_MELEE_RANGED_TOUCH:
+      case PRECONDITION_CASTER_PLANE:
+      case PRECONDITION_IMMUNITY_POISON:
       case PRECONDITION_MANUFACTURED:
       case PRECONDITION_NONMAGICAL:
       case PRECONDITION_OBJECT:
-      case PRECONDITION_RANGED_TOUCH_ATTACK:
+      case PRECONDITION_SIGHTLESS:
       {
         break;
       }
+      case PRECONDITION_ALIGNMENT_ETHIC:
       case PRECONDITION_ATTRIBUTE_MAX:
       case PRECONDITION_CONDITION:
+      case PRECONDITION_ENVIRONMENT:
       case PRECONDITION_HD_MAX:
+      case PRECONDITION_HD_MIN:
+      case PRECONDITION_SPELLLEVEL_MAX:
       case PRECONDITION_SIZE_MAX:
       case PRECONDITION_SIZE_RELATIVE:
       {
         result += ACE_TEXT_ALWAYS_CHAR(": ");
 
-        if ((*iterator).type == PRECONDITION_ATTRIBUTE_MAX)
+        if ((*iterator).type == PRECONDITION_ALIGNMENT_ETHIC)
+          result += RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString((*iterator).ethic);
+        else if ((*iterator).type == PRECONDITION_ATTRIBUTE_MAX)
         {
           result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).attribute);
           result += ACE_TEXT_ALWAYS_CHAR(" <= ");
@@ -1386,7 +1397,10 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
         } // end IF
         else if ((*iterator).type == PRECONDITION_CONDITION)
           result += RPG_Common_ConditionHelper::RPG_Common_ConditionToString((*iterator).condition);
-        else if ((*iterator).type == PRECONDITION_SIZE_MAX)
+        else if ((*iterator).type == PRECONDITION_ENVIRONMENT)
+          result += RPG_Common_Tools::environmentToString((*iterator).environment);
+        else if (((*iterator).type == PRECONDITION_SIZE_MAX) ||
+                 ((*iterator).type == PRECONDITION_SIZE_RELATIVE))
           result += RPG_Common_SizeHelper::RPG_Common_SizeToString((*iterator).size);
         else
         {
@@ -1396,7 +1410,8 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
           converter << (*iterator).value;
           result += converter.str();
 
-          if ((*iterator).type == PRECONDITION_HD_MAX)
+          if (((*iterator).type == PRECONDITION_HD_MAX) ||
+              ((*iterator).type == PRECONDITION_HD_MIN))
             result += ACE_TEXT_ALWAYS_CHAR(" HD ");
         } // end ELSE
 
@@ -1418,7 +1433,7 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
             result += ACE_TEXT_ALWAYS_CHAR(" (max: ");
             converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-            converter << static_cast<unsigned int> ((*iterator).levelIncrementMax);
+            converter << static_cast<unsigned int>((*iterator).levelIncrementMax);
             result += converter.str();
             result += ACE_TEXT_ALWAYS_CHAR("th)");
           } // end IF

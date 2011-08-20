@@ -30,6 +30,8 @@ set(RPG_Common_LIB_SRCS
     rpg_common_effectduration.h
     rpg_common_effecttype.h
     rpg_common_environment.h
+    rpg_common_environment_XML_tree.cpp
+    rpg_common_environment_XML_tree.h
     rpg_common_environment_XML_types.cpp
     rpg_common_environment_XML_types.h
     rpg_common_environment_incl.h
@@ -111,6 +113,7 @@ install(FILES
         rpg_common_effecttype.h
         rpg_common_effectduration.h
         rpg_common_environment.h
+        rpg_common_environment_XML_tree.h
         rpg_common_environment_XML_types.h
         rpg_common_environment_incl.h
         rpg_common_file_tools.h

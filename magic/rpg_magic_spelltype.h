@@ -63,9 +63,28 @@ enum RPG_Magic_SpellType
   SPELL_BULLS_STRENGTH_MASS,
   SPELL_BURNING_HANDS,
   SPELL_CALL_LIGHTNING,
-  SPELL_CANTRIP,
+  SPELL_CALL_LIGHTNING_STORM,
+  SPELL_CALM_ANIMALS,
+  SPELL_CALM_EMOTIONS,
+  SPELL_CATS_GRACE,
+  SPELL_CATS_GRACE_MASS,
+  SPELL_CAUSE_FEAR,
+  SPELL_CHAIN_LIGHTNING,
+  SPELL_CHANGESTAFF,
   SPELL_CHAOS_HAMMER,
+  SPELL_CHARM_ANIMAL,
   SPELL_CHARM_MONSTER,
+  SPELL_CHARM_MONSTER_MASS,
+  SPELL_CHARM_PERSON,
+  SPELL_CHILL_METAL,
+  SPELL_CHILL_TOUCH,
+  SPELL_CIRCLE_OF_DEATH,
+  SPELL_CLAIRAUDIENCE_CLAIRVOYANCE,
+  SPELL_CLENCHED_FIST,
+  SPELL_CLOAK_OF_CHAOS,
+  SPELL_CLONE,
+  SPELL_CLOUDKILL,
+  SPELL_COLOR_SPRAY,
   SPELL_COMMUNE,
   SPELL_CONFUSION,
   SPELL_DARKNESS,
@@ -78,6 +97,7 @@ enum RPG_Magic_SpellType
   SPELL_DETECT_THOUGHTS,
   SPELL_DIMENSION_DOOR,
   SPELL_DISCERN_LOCATION,
+  SPELL_DISINTEGRATE,
   SPELL_DISPEL_MAGIC,
   SPELL_DISPEL_MAGIC_GREATER,
   SPELL_DOMINATE_MONSTER,
@@ -89,6 +109,7 @@ enum RPG_Magic_SpellType
   SPELL_GASEOUS_FORM,
   SPELL_HEAL,
   SPELL_HEAL_MASS,
+  SPELL_HEAT_METAL,
   SPELL_HEROISM,
   SPELL_HOLD_MONSTER,
   SPELL_IMPLOSION,
@@ -104,6 +125,7 @@ enum RPG_Magic_SpellType
   SPELL_PROJECT_IMAGE,
   SPELL_REMOVE_CURSE,
   SPELL_REMOVE_DISEASE,
+  SPELL_REMOVE_FEAR,
   SPELL_RESTORATION,
   SPELL_RESTORATION_GREATER,
   SPELL_REVERSE_GRAVITY,
@@ -202,9 +224,28 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BULLS_STRENGTH_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_BULLS_STRENGTH_MASS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_BURNING_HANDS, ACE_TEXT_ALWAYS_CHAR("SPELL_BURNING_HANDS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CALL_LIGHTNING, ACE_TEXT_ALWAYS_CHAR("SPELL_CALL_LIGHTNING")));
-    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CANTRIP, ACE_TEXT_ALWAYS_CHAR("SPELL_CANTRIP")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CALL_LIGHTNING_STORM, ACE_TEXT_ALWAYS_CHAR("SPELL_CALL_LIGHTNING_STORM")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CALM_ANIMALS, ACE_TEXT_ALWAYS_CHAR("SPELL_CALM_ANIMALS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CALM_EMOTIONS, ACE_TEXT_ALWAYS_CHAR("SPELL_CALM_EMOTIONS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CATS_GRACE, ACE_TEXT_ALWAYS_CHAR("SPELL_CATS_GRACE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CATS_GRACE_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_CATS_GRACE_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CAUSE_FEAR, ACE_TEXT_ALWAYS_CHAR("SPELL_CAUSE_FEAR")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHAIN_LIGHTNING, ACE_TEXT_ALWAYS_CHAR("SPELL_CHAIN_LIGHTNING")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHANGESTAFF, ACE_TEXT_ALWAYS_CHAR("SPELL_CHANGESTAFF")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHAOS_HAMMER, ACE_TEXT_ALWAYS_CHAR("SPELL_CHAOS_HAMMER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHARM_ANIMAL, ACE_TEXT_ALWAYS_CHAR("SPELL_CHARM_ANIMAL")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHARM_MONSTER, ACE_TEXT_ALWAYS_CHAR("SPELL_CHARM_MONSTER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHARM_MONSTER_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_CHARM_MONSTER_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHARM_PERSON, ACE_TEXT_ALWAYS_CHAR("SPELL_CHARM_PERSON")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHILL_METAL, ACE_TEXT_ALWAYS_CHAR("SPELL_CHILL_METAL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CHILL_TOUCH, ACE_TEXT_ALWAYS_CHAR("SPELL_CHILL_TOUCH")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CIRCLE_OF_DEATH, ACE_TEXT_ALWAYS_CHAR("SPELL_CIRCLE_OF_DEATH")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CLAIRAUDIENCE_CLAIRVOYANCE, ACE_TEXT_ALWAYS_CHAR("SPELL_CLAIRAUDIENCE_CLAIRVOYANCE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CLENCHED_FIST, ACE_TEXT_ALWAYS_CHAR("SPELL_CLENCHED_FIST")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CLOAK_OF_CHAOS, ACE_TEXT_ALWAYS_CHAR("SPELL_CLOAK_OF_CHAOS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CLONE, ACE_TEXT_ALWAYS_CHAR("SPELL_CLONE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CLOUDKILL, ACE_TEXT_ALWAYS_CHAR("SPELL_CLOUDKILL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COLOR_SPRAY, ACE_TEXT_ALWAYS_CHAR("SPELL_COLOR_SPRAY")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COMMUNE, ACE_TEXT_ALWAYS_CHAR("SPELL_COMMUNE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONFUSION, ACE_TEXT_ALWAYS_CHAR("SPELL_CONFUSION")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DARKNESS, ACE_TEXT_ALWAYS_CHAR("SPELL_DARKNESS")));
@@ -217,6 +258,7 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_THOUGHTS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_THOUGHTS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DIMENSION_DOOR, ACE_TEXT_ALWAYS_CHAR("SPELL_DIMENSION_DOOR")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISCERN_LOCATION, ACE_TEXT_ALWAYS_CHAR("SPELL_DISCERN_LOCATION")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISINTEGRATE, ACE_TEXT_ALWAYS_CHAR("SPELL_DISINTEGRATE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPEL_MAGIC, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPEL_MAGIC")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPEL_MAGIC_GREATER, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPEL_MAGIC_GREATER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DOMINATE_MONSTER, ACE_TEXT_ALWAYS_CHAR("SPELL_DOMINATE_MONSTER")));
@@ -228,6 +270,7 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_GASEOUS_FORM, ACE_TEXT_ALWAYS_CHAR("SPELL_GASEOUS_FORM")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_HEAL, ACE_TEXT_ALWAYS_CHAR("SPELL_HEAL")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_HEAL_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_HEAL_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_HEAT_METAL, ACE_TEXT_ALWAYS_CHAR("SPELL_HEAT_METAL")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_HEROISM, ACE_TEXT_ALWAYS_CHAR("SPELL_HEROISM")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_HOLD_MONSTER, ACE_TEXT_ALWAYS_CHAR("SPELL_HOLD_MONSTER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_IMPLOSION, ACE_TEXT_ALWAYS_CHAR("SPELL_IMPLOSION")));
@@ -243,6 +286,7 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_PROJECT_IMAGE, ACE_TEXT_ALWAYS_CHAR("SPELL_PROJECT_IMAGE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_REMOVE_CURSE, ACE_TEXT_ALWAYS_CHAR("SPELL_REMOVE_CURSE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_REMOVE_DISEASE, ACE_TEXT_ALWAYS_CHAR("SPELL_REMOVE_DISEASE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_REMOVE_FEAR, ACE_TEXT_ALWAYS_CHAR("SPELL_REMOVE_FEAR")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_RESTORATION, ACE_TEXT_ALWAYS_CHAR("SPELL_RESTORATION")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_RESTORATION_GREATER, ACE_TEXT_ALWAYS_CHAR("SPELL_RESTORATION_GREATER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_REVERSE_GRAVITY, ACE_TEXT_ALWAYS_CHAR("SPELL_REVERSE_GRAVITY")));

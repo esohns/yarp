@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_COMMON_XML_PARSER_H
 #define RPG_COMMON_XML_PARSER_H
 
@@ -320,6 +321,7 @@ class RPG_Common_Environment_Type
 //   virtual void pre();
   virtual void terrain(const RPG_Common_Terrain&);
   virtual void climate(const RPG_Common_Climate&);
+  virtual void outdoors(bool);
   virtual RPG_Common_Environment post_RPG_Common_Environment_Type();
 
  private:

@@ -10,6 +10,8 @@
   <xsd:include schemaLocation="rpg_dice.xsd"/>
   <!-- include common schema -->
   <xsd:include schemaLocation="rpg_common.xsd"/>
+  <!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
 <!-- include character schema -->
   <xsd:include schemaLocation="rpg_character.xsd"/>
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
@@ -171,9 +173,28 @@
       <xsd:enumeration value="SPELL_BULLS_STRENGTH_MASS"/>
       <xsd:enumeration value="SPELL_BURNING_HANDS"/>
       <xsd:enumeration value="SPELL_CALL_LIGHTNING"/>
-      <xsd:enumeration value="SPELL_CANTRIP"/>
+      <xsd:enumeration value="SPELL_CALL_LIGHTNING_STORM"/>
+      <xsd:enumeration value="SPELL_CALM_ANIMALS"/>
+      <xsd:enumeration value="SPELL_CALM_EMOTIONS"/>
+      <xsd:enumeration value="SPELL_CATS_GRACE"/>
+      <xsd:enumeration value="SPELL_CATS_GRACE_MASS"/>
+      <xsd:enumeration value="SPELL_CAUSE_FEAR"/>
+      <xsd:enumeration value="SPELL_CHAIN_LIGHTNING"/>
+      <xsd:enumeration value="SPELL_CHANGESTAFF"/>
       <xsd:enumeration value="SPELL_CHAOS_HAMMER"/>
+      <xsd:enumeration value="SPELL_CHARM_ANIMAL"/>
       <xsd:enumeration value="SPELL_CHARM_MONSTER"/>
+      <xsd:enumeration value="SPELL_CHARM_MONSTER_MASS"/>
+      <xsd:enumeration value="SPELL_CHARM_PERSON"/>
+      <xsd:enumeration value="SPELL_CHILL_METAL"/>
+      <xsd:enumeration value="SPELL_CHILL_TOUCH"/>
+      <xsd:enumeration value="SPELL_CIRCLE_OF_DEATH"/>
+      <xsd:enumeration value="SPELL_CLAIRAUDIENCE_CLAIRVOYANCE"/>
+      <xsd:enumeration value="SPELL_CLENCHED_FIST"/>
+      <xsd:enumeration value="SPELL_CLOAK_OF_CHAOS"/>
+      <xsd:enumeration value="SPELL_CLONE"/>
+      <xsd:enumeration value="SPELL_CLOUDKILL"/>
+      <xsd:enumeration value="SPELL_COLOR_SPRAY"/>
       <xsd:enumeration value="SPELL_COMMUNE"/>
       <xsd:enumeration value="SPELL_CONFUSION"/>
       <xsd:enumeration value="SPELL_DARKNESS"/>
@@ -186,6 +207,7 @@
       <xsd:enumeration value="SPELL_DETECT_THOUGHTS"/>
       <xsd:enumeration value="SPELL_DIMENSION_DOOR"/>
       <xsd:enumeration value="SPELL_DISCERN_LOCATION"/>
+      <xsd:enumeration value="SPELL_DISINTEGRATE"/>
       <xsd:enumeration value="SPELL_DISPEL_MAGIC"/>
       <xsd:enumeration value="SPELL_DISPEL_MAGIC_GREATER"/>
       <xsd:enumeration value="SPELL_DOMINATE_MONSTER"/>
@@ -197,6 +219,7 @@
       <xsd:enumeration value="SPELL_GASEOUS_FORM"/>
       <xsd:enumeration value="SPELL_HEAL"/>
       <xsd:enumeration value="SPELL_HEAL_MASS"/>
+      <xsd:enumeration value="SPELL_HEAT_METAL"/>
       <xsd:enumeration value="SPELL_HEROISM"/>
       <xsd:enumeration value="SPELL_HOLD_MONSTER"/>
       <xsd:enumeration value="SPELL_IMPLOSION"/>
@@ -212,6 +235,7 @@
       <xsd:enumeration value="SPELL_PROJECT_IMAGE"/>
       <xsd:enumeration value="SPELL_REMOVE_CURSE"/>
       <xsd:enumeration value="SPELL_REMOVE_DISEASE"/>
+      <xsd:enumeration value="SPELL_REMOVE_FEAR"/>
       <xsd:enumeration value="SPELL_RESTORATION"/>
       <xsd:enumeration value="SPELL_RESTORATION_GREATER"/>
       <xsd:enumeration value="SPELL_REVERSE_GRAVITY"/>
@@ -326,6 +350,7 @@
     <xsd:sequence>
       <xsd:element name="base" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="effect" type="RPG_Magic_Spell_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="shape" type="RPG_Common_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="radius" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
@@ -333,6 +358,7 @@
     </xsd:sequence>
     <xsd:attribute name="target" type="RPG_Magic_Spell_Target_Type" use="optional" default="TARGET_SELF"/>
     <xsd:attribute name="rangeIsInHD" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="incrementIsReciprocal" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Magic_Spell_Duration_Type">
@@ -358,15 +384,20 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="PRECONDITION_ALLY"/>
       <xsd:enumeration value="PRECONDITION_ALIGNMENT_ETHIC"/>
+      <xsd:enumeration value="PRECONDITION_ATTACK_MELEE_ANY"/>
+      <xsd:enumeration value="PRECONDITION_ATTACK_MELEE_RANGED_TOUCH"/>
       <xsd:enumeration value="PRECONDITION_ATTRIBUTE_MAX"/>
+      <xsd:enumeration value="PRECONDITION_CASTER_PLANE"/>
       <xsd:enumeration value="PRECONDITION_CONDITION"/>
+      <xsd:enumeration value="PRECONDITION_ENVIRONMENT"/>
       <xsd:enumeration value="PRECONDITION_HD_MAX"/>
+      <xsd:enumeration value="PRECONDITION_HD_MIN"/>
+      <xsd:enumeration value="PRECONDITION_IMMUNITY_POISON"/>
       <xsd:enumeration value="PRECONDITION_SPELLLEVEL_MAX"/>
       <xsd:enumeration value="PRECONDITION_MANUFACTURED"/>
       <xsd:enumeration value="PRECONDITION_NONMAGICAL"/>
       <xsd:enumeration value="PRECONDITION_OBJECT"/>
-      <xsd:enumeration value="PRECONDITION_PLANT"/>
-      <xsd:enumeration value="PRECONDITION_RANGED_TOUCH_ATTACK"/>
+      <xsd:enumeration value="PRECONDITION_SIGHTLESS"/>
       <xsd:enumeration value="PRECONDITION_SIZE_MAX"/>
       <xsd:enumeration value="PRECONDITION_SIZE_RELATIVE"/>
       <xsd:enumeration value="PRECONDITION_TYPE"/>
@@ -384,6 +415,7 @@
       <xsd:element name="condition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="creature" type="RPG_Common_CreatureType_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="environment" type="RPG_Common_Environment_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="reverse" type="xsd:boolean" use="optional" default="false"/>
     <xsd:attribute name="baseIsCasterLevel" type="xsd:boolean" use="optional" default="false"/>
@@ -391,10 +423,10 @@
 
   <xsd:simpleType name="RPG_Magic_Spell_Effect_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="SPELLEFFECT_ABILITIY_LOSS_MAGICAL_ALL"/>
-      <xsd:enumeration value="SPELLEFFECT_ABILITIY_LOSS_MAGICAL_EXTRAORDINARY"/>
-      <xsd:enumeration value="SPELLEFFECT_ABILITIY_LOSS_MAGICAL_SPELLLIKE"/>
-      <xsd:enumeration value="SPELLEFFECT_ABILITIY_LOSS_MAGICAL_SUPERNATURAL"/>
+      <xsd:enumeration value="SPELLEFFECT_ABILITY_LOSS_MAGICAL_ALL"/>
+      <xsd:enumeration value="SPELLEFFECT_ABILITY_LOSS_MAGICAL_EXTRAORDINARY"/>
+      <xsd:enumeration value="SPELLEFFECT_ABILITY_LOSS_MAGICAL_SPELLLIKE"/>
+      <xsd:enumeration value="SPELLEFFECT_ABILITY_LOSS_MAGICAL_SUPERNATURAL"/>
       <xsd:enumeration value="SPELLEFFECT_ALIGN_WEAPON"/>
       <xsd:enumeration value="SPELLEFFECT_ANIMATE_DEAD"/>
       <xsd:enumeration value="SPELLEFFECT_ANIMATE_OBJECT"/>
@@ -406,6 +438,9 @@
       <xsd:enumeration value="SPELLEFFECT_BLESS_WATER"/>
       <xsd:enumeration value="SPELLEFFECT_BLESS_WEAPON"/>
       <xsd:enumeration value="SPELLEFFECT_BLIND"/>
+      <xsd:enumeration value="SPELLEFFECT_CALM_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_CHARM_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_CONFUSE"/>
       <xsd:enumeration value="SPELLEFFECT_DAMAGE"/>
       <xsd:enumeration value="SPELLEFFECT_DAZE"/>
       <xsd:enumeration value="SPELLEFFECT_DEAFEN"/>
@@ -414,11 +449,15 @@
       <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>
       <xsd:enumeration value="SPELLEFFECT_ETHEREAL"/>
       <xsd:enumeration value="SPELLEFFECT_FASCINATE"/>
+      <xsd:enumeration value="SPELLEFFECT_FEAR"/>
       <xsd:enumeration value="SPELLEFFECT_GROW"/>
       <xsd:enumeration value="SPELLEFFECT_HOLD_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_IDENTIFY"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_MIND_AFFECTING"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_POSSESSION"/>
       <xsd:enumeration value="SPELLEFFECT_INVISIBLE"/>
       <xsd:enumeration value="SPELLEFFECT_KILL"/>
+      <xsd:enumeration value="SPELLEFFECT_KNOCKOUT"/>
       <xsd:enumeration value="SPELLEFFECT_LEVITATE"/>
       <xsd:enumeration value="SPELLEFFECT_LOCK"/>
       <xsd:enumeration value="SPELLEFFECT_MARK"/>
@@ -437,7 +476,12 @@
       <xsd:enumeration value="SPELLEFFECT_PARALYSIS"/>
       <xsd:enumeration value="SPELLEFFECT_POLYMORPH"/>
       <xsd:enumeration value="SPELLEFFECT_RAISE_DEAD"/>
+      <xsd:enumeration value="SPELLEFFECT_RESISTANCE_SPELL_LAWFUL"/>
+      <xsd:enumeration value="SPELLEFFECT_SENSOR_AUDIAL"/>
       <xsd:enumeration value="SPELLEFFECT_SENSOR_VISUAL"/>
+      <xsd:enumeration value="SPELLEFFECT_SLOW"/>
+      <xsd:enumeration value="SPELLEFFECT_STUN"/>
+      <xsd:enumeration value="SPELLEFFECT_SUMMON_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_TELEPORT_INTERPLANAR"/>
       <xsd:enumeration value="SPELLEFFECT_TRIGGER_ALARM"/>
     </xsd:restriction>
@@ -479,12 +523,14 @@
       <xsd:element name="levelIncrement" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="creature" type="RPG_Common_CreatureType_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="duration" type="RPG_Common_EffectDuration_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="precondition" type="RPG_Magic_Spell_PreconditionProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="maxRange" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="counterMeasure" type="RPG_Magic_CounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
     <xsd:attribute name="includeAdjacent" type="xsd:boolean" use="optional" default="false"/>
-    <xsd:attribute name="effectsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
+    <xsd:attribute name="incrementIsReciprocal" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Magic_Spell_PropertiesXML_Type">
@@ -503,6 +549,7 @@
     </xsd:sequence>
     <xsd:attribute name="saveable" type="RPG_Common_SavingThrow_Type" use="optional" default="SAVE_NONE"/>
     <xsd:attribute name="resistible" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="effectsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Magic_SpellLikeProperties_Type">

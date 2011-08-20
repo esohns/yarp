@@ -10,7 +10,7 @@
 struct RPG_Common_EffectDuration
 {
   RPG_Common_Amount base;
-  char levelIncrement;
+  signed char levelIncrement;
   unsigned char levelIncrementMax;
   unsigned char reciprocalIncrement;
 };

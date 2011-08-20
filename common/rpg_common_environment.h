@@ -11,6 +11,7 @@ struct RPG_Common_Environment
 {
   RPG_Common_Terrain terrain;
   RPG_Common_Climate climate;
+  bool outdoors;
 };
 
 #endif

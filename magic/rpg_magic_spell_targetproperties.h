@@ -11,12 +11,14 @@ struct RPG_Magic_Spell_TargetProperties
 {
   RPG_Common_Amount base;
   unsigned char levelIncrement;
+  unsigned char levelIncrementMax;
   RPG_Magic_Spell_AreaOfEffect effect;
   RPG_Common_AreaOfEffect shape;
   unsigned char radius;
   unsigned char height;
   RPG_Magic_Spell_Target target;
   bool rangeIsInHD;
+  bool incrementIsReciprocal;
 };
 
 #endif

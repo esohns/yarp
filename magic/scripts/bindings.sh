@@ -9,7 +9,7 @@
 #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
 # C++ "glue code"
-/usr/local/bin/XML2CppCode -e -f ./../rpg_magic.xsd -i -o ./.. -p ./../templates/h -s -u
+/usr/local/bin/XML2CppCode -e -f ./../rpg_magic.xsd -i -o ./.. -s -u
 
 # XML Parser/Tree
 # generate "XMLSchema" namespace include file (rpg_magic.xsd)

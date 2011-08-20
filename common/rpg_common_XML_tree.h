@@ -195,6 +195,7 @@ class RPG_Common_CreatureSubType_XMLTree_Type: public ::xml_schema::string
     SUBTYPE_INCORPOREAL,
     SUBTYPE_LAWFUL,
     SUBTYPE_NATIVE,
+    SUBTYPE_NEUTRAL,
     SUBTYPE_REPTILIAN,
     SUBTYPE_SHAPECHANGER,
     SUBTYPE_SWARM,
@@ -248,8 +249,8 @@ class RPG_Common_CreatureSubType_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Common_CreatureSubType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_[20];
-  static const value _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_[20];
+  static const char* const _xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_[21];
+  static const value _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_[21];
 };
 
 class RPG_Common_CreatureType_XMLTree_Type: public ::xml_schema::type
@@ -894,7 +895,8 @@ class RPG_Common_AreaOfEffect_XMLTree_Type: public ::xml_schema::string
     AREA_CONE,
     AREA_CUBE,
     AREA_CYLINDER,
-    AREA_LINE,
+    AREA_LINE_HORIZONTAL,
+    AREA_LINE_VERTICAL,
     AREA_RING,
     AREA_SPHERE,
     AREA_WALL
@@ -947,8 +949,8 @@ class RPG_Common_AreaOfEffect_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[7];
-  static const value _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[7];
+  static const char* const _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[8];
+  static const value _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[8];
 };
 
 class RPG_Common_EffectType_XMLTree_Type: public ::xml_schema::string

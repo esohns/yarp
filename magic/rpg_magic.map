@@ -4,6 +4,7 @@ namespace urn:rpg
 
   include <rpg_dice_incl.h>;
   include <rpg_common_incl.h>;
+  include <rpg_common_environment_incl.h>;
   include <rpg_character_incl.h>;
 
   RPG_Dice_Roll_Type                          RPG_Dice_Roll;
@@ -25,6 +26,9 @@ namespace urn:rpg
 #  RPG_Common_SavingThrowCheck_Type            RPG_Common_SavingThrowCheck;
   RPG_Common_Duration_Type                    RPG_Common_Duration;
   RPG_Common_EffectDuration_Type              RPG_Common_EffectDuration;
+  RPG_Common_Terrain_Type                     RPG_Common_Terrain;
+  RPG_Common_Climate_Type                     RPG_Common_Climate;
+  RPG_Common_Environment_Type                 RPG_Common_Environment;
 
   RPG_Character_AlignmentEthic_Type           RPG_Character_AlignmentEthic;
 

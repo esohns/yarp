@@ -22,6 +22,7 @@ struct RPG_Magic_Spell_PropertiesXML
   std::vector<RPG_Magic_CounterMeasure> counterMeasures;
   RPG_Common_SavingThrow saveable;
   bool resistible;
+  bool effectsAreInclusive;
 };
 
 #endif

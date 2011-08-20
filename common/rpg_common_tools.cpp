@@ -184,45 +184,46 @@ RPG_Common_Tools::terrainToPlane(const RPG_Common_Terrain& terrain_in)
 
   switch (terrain_in)
   {
-    case TERRAIN_UNDERGROUND:
-    case TERRAIN_PLAINS:
+    case TERRAIN_DESERTS:
     case TERRAIN_FORESTS:
     case TERRAIN_HILLS:
     case TERRAIN_MOUNTAINS:
-    case TERRAIN_DESERTS:
-    case TERRAIN_MATERIALPLANE_ANY:
+    case TERRAIN_PLAINS:
+    case TERRAIN_PLANE_MATERIAL_ANY:
+    case TERRAIN_UNDER_GROUND:
+    case TERRAIN_UNDER_WATER:
     {
       return PLANE_MATERIAL;
     }
-    case TERRAIN_TRANSITIVEPLANE_ASTRAL:
-    case TERRAIN_TRANSITIVEPLANE_ETHERAL:
-    case TERRAIN_TRANSITIVEPLANE_SHADOW:
-    case TERRAIN_TRANSITIVEPLANE_ANY:
+    case TERRAIN_PLANE_TRANSITIVE_ASTRAL:
+    case TERRAIN_PLANE_TRANSITIVE_ETHERAL:
+    case TERRAIN_PLANE_TRANSITIVE_SHADOW:
+    case TERRAIN_PLANE_TRANSITIVE_ANY:
     {
       return PLANE_TRANSITIVE;
     }
-    case TERRAIN_INNERPLANE_AIR:
-    case TERRAIN_INNERPLANE_EARTH:
-    case TERRAIN_INNERPLANE_FIRE:
-    case TERRAIN_INNERPLANE_WATER:
-    case TERRAIN_INNERPLANE_POSITIVE:
-    case TERRAIN_INNERPLANE_NEGATIVE:
-    case TERRAIN_INNERPLANE_ANY:
+    case TERRAIN_PLANE_INNER_AIR:
+    case TERRAIN_PLANE_INNER_EARTH:
+    case TERRAIN_PLANE_INNER_FIRE:
+    case TERRAIN_PLANE_INNER_WATER:
+    case TERRAIN_PLANE_INNER_POSITIVE:
+    case TERRAIN_PLANE_INNER_NEGATIVE:
+    case TERRAIN_PLANE_INNER_ANY:
     {
       return PLANE_INNER;
     }
-    case TERRAIN_OUTERPLANE_LAWFUL_ANY:
-    case TERRAIN_OUTERPLANE_CHAOTIC_ANY:
-    case TERRAIN_OUTERPLANE_GOOD_ANY:
-    case TERRAIN_OUTERPLANE_EVIL_ANY:
-    case TERRAIN_OUTERPLANE_LAWFUL_GOOD:
-    case TERRAIN_OUTERPLANE_LAWFUL_EVIL:
-    case TERRAIN_OUTERPLANE_CHAOTIC_GOOD:
-    case TERRAIN_OUTERPLANE_CHAOTIC_EVIL:
-    case TERRAIN_OUTERPLANE_NEUTRAL:
-    case TERRAIN_OUTERPLANE_MILD_ANY:
-    case TERRAIN_OUTERPLANE_STRONG_ANY:
-    case TERRAIN_OUTERPLANE_ANY:
+    case TERRAIN_PLANE_OUTER_LAWFUL_ANY:
+    case TERRAIN_PLANE_OUTER_CHAOTIC_ANY:
+    case TERRAIN_PLANE_OUTER_GOOD_ANY:
+    case TERRAIN_PLANE_OUTER_EVIL_ANY:
+    case TERRAIN_PLANE_OUTER_LAWFUL_GOOD:
+    case TERRAIN_PLANE_OUTER_LAWFUL_EVIL:
+    case TERRAIN_PLANE_OUTER_CHAOTIC_GOOD:
+    case TERRAIN_PLANE_OUTER_CHAOTIC_EVIL:
+    case TERRAIN_PLANE_OUTER_NEUTRAL:
+    case TERRAIN_PLANE_OUTER_MILD_ANY:
+    case TERRAIN_PLANE_OUTER_STRONG_ANY:
+    case TERRAIN_PLANE_OUTER_ANY:
     {
       return PLANE_OUTER;
     }
@@ -259,8 +260,8 @@ RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
   {
     case PLANE_MATERIAL:
     {
-      if ((environmentA_in.terrain == TERRAIN_MATERIALPLANE_ANY) ||
-          (environmentB_in.terrain == TERRAIN_MATERIALPLANE_ANY))
+      if ((environmentA_in.terrain == TERRAIN_PLANE_MATERIAL_ANY) ||
+          (environmentB_in.terrain == TERRAIN_PLANE_MATERIAL_ANY))
         return true;
 
       // handle climate
@@ -273,56 +274,56 @@ RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
     }
     case PLANE_TRANSITIVE:
     {
-      if ((environmentA_in.terrain == TERRAIN_TRANSITIVEPLANE_ANY) ||
-          (environmentB_in.terrain == TERRAIN_TRANSITIVEPLANE_ANY))
+      if ((environmentA_in.terrain == TERRAIN_PLANE_TRANSITIVE_ANY) ||
+          (environmentB_in.terrain == TERRAIN_PLANE_TRANSITIVE_ANY))
         return true;
 
       return (environmentA_in.terrain == environmentB_in.terrain);
     }
     case PLANE_INNER:
     {
-      if ((environmentA_in.terrain == TERRAIN_INNERPLANE_ANY) ||
-          (environmentB_in.terrain == TERRAIN_INNERPLANE_ANY))
+      if ((environmentA_in.terrain == TERRAIN_PLANE_INNER_ANY) ||
+          (environmentB_in.terrain == TERRAIN_PLANE_INNER_ANY))
         return true;
 
       return (environmentA_in.terrain == environmentB_in.terrain);
     }
     case PLANE_OUTER:
     {
-      if ((environmentA_in.terrain == TERRAIN_OUTERPLANE_ANY) ||
-          (environmentB_in.terrain == TERRAIN_OUTERPLANE_ANY))
+      if ((environmentA_in.terrain == TERRAIN_PLANE_OUTER_ANY) ||
+          (environmentB_in.terrain == TERRAIN_PLANE_OUTER_ANY))
         return true;
 
       switch (environmentA_in.terrain)
       {
-        case TERRAIN_OUTERPLANE_LAWFUL_ANY:
+        case TERRAIN_PLANE_OUTER_LAWFUL_ANY:
         {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_GOOD) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_EVIL));
+          return ((environmentB_in.terrain == TERRAIN_PLANE_OUTER_LAWFUL_GOOD) ||
+                  (environmentB_in.terrain == TERRAIN_PLANE_OUTER_LAWFUL_EVIL));
         }
-        case TERRAIN_OUTERPLANE_CHAOTIC_ANY:
+        case TERRAIN_PLANE_OUTER_CHAOTIC_ANY:
         {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_GOOD) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_EVIL));
+          return ((environmentB_in.terrain == TERRAIN_PLANE_OUTER_CHAOTIC_GOOD) ||
+                  (environmentB_in.terrain == TERRAIN_PLANE_OUTER_CHAOTIC_EVIL));
         }
-        case TERRAIN_OUTERPLANE_GOOD_ANY:
+        case TERRAIN_PLANE_OUTER_GOOD_ANY:
         {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_GOOD) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_GOOD));
+          return ((environmentB_in.terrain == TERRAIN_PLANE_OUTER_LAWFUL_GOOD) ||
+                  (environmentB_in.terrain == TERRAIN_PLANE_OUTER_CHAOTIC_GOOD));
         }
-        case TERRAIN_OUTERPLANE_EVIL_ANY:
+        case TERRAIN_PLANE_OUTER_EVIL_ANY:
         {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_LAWFUL_EVIL) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_CHAOTIC_EVIL));
+          return ((environmentB_in.terrain == TERRAIN_PLANE_OUTER_LAWFUL_EVIL) ||
+                  (environmentB_in.terrain == TERRAIN_PLANE_OUTER_CHAOTIC_EVIL));
         }
-        case TERRAIN_OUTERPLANE_NEUTRAL:
+        case TERRAIN_PLANE_OUTER_NEUTRAL:
         {
-          return ((environmentB_in.terrain == TERRAIN_OUTERPLANE_NEUTRAL) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_MILD_ANY) ||
-                  (environmentB_in.terrain == TERRAIN_OUTERPLANE_STRONG_ANY));
+          return ((environmentB_in.terrain == TERRAIN_PLANE_OUTER_NEUTRAL) ||
+                  (environmentB_in.terrain == TERRAIN_PLANE_OUTER_MILD_ANY) ||
+                  (environmentB_in.terrain == TERRAIN_PLANE_OUTER_STRONG_ANY));
         }
-        case TERRAIN_OUTERPLANE_MILD_ANY:
-        case TERRAIN_OUTERPLANE_STRONG_ANY:
+        case TERRAIN_PLANE_OUTER_MILD_ANY:
+        case TERRAIN_PLANE_OUTER_STRONG_ANY:
         default:
         {
           ACE_DEBUG((LM_ERROR,

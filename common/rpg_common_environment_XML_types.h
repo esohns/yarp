@@ -116,6 +116,9 @@ class RPG_Common_Environment_Type_pskel: public ::xml_schema::complex_content
   virtual void
   climate (const RPG_Common_Climate&);
 
+  virtual void
+  outdoors (bool);
+
   virtual RPG_Common_Environment
   post_RPG_Common_Environment_Type () = 0;
 
@@ -128,8 +131,12 @@ class RPG_Common_Environment_Type_pskel: public ::xml_schema::complex_content
   climate_parser (::RPG_Common_Climate_Type_pskel&);
 
   void
+  outdoors_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::RPG_Common_Terrain_Type_pskel& /* terrain */,
-           ::RPG_Common_Climate_Type_pskel& /* climate */);
+           ::RPG_Common_Climate_Type_pskel& /* climate */,
+           ::xml_schema::boolean_pskel& /* outdoors */);
 
   // Constructor.
   //
@@ -147,9 +154,15 @@ class RPG_Common_Environment_Type_pskel: public ::xml_schema::complex_content
   _end_element_impl (const ::xml_schema::ro_string&,
                      const ::xml_schema::ro_string&);
 
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
   protected:
   ::RPG_Common_Terrain_Type_pskel* terrain_parser_;
   ::RPG_Common_Climate_Type_pskel* climate_parser_;
+  ::xml_schema::boolean_pskel* outdoors_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

@@ -30,31 +30,32 @@
       <xsd:enumeration value="TERRAIN_MARSHES"/>
       <xsd:enumeration value="TERRAIN_MOUNTAINS"/>
       <xsd:enumeration value="TERRAIN_PLAINS"/>
-      <xsd:enumeration value="TERRAIN_UNDERGROUND"/>
-      <xsd:enumeration value="TERRAIN_MATERIALPLANE_ANY"/>
-      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ASTRAL"/>
-      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ETHERAL"/>
-      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_SHADOW"/>
-      <xsd:enumeration value="TERRAIN_TRANSITIVEPLANE_ANY"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_AIR"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_EARTH"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_FIRE"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_WATER"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_POSITIVE"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_NEGATIVE"/>
-      <xsd:enumeration value="TERRAIN_INNERPLANE_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_GOOD_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_EVIL_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_GOOD"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_LAWFUL_EVIL"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_GOOD"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_CHAOTIC_EVIL"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_NEUTRAL"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_MILD_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_STRONG_ANY"/>
-      <xsd:enumeration value="TERRAIN_OUTERPLANE_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_INNER_AIR"/>
+      <xsd:enumeration value="TERRAIN_PLANE_INNER_EARTH"/>
+      <xsd:enumeration value="TERRAIN_PLANE_INNER_FIRE"/>
+      <xsd:enumeration value="TERRAIN_PLANE_INNER_WATER"/>
+      <xsd:enumeration value="TERRAIN_PLANE_INNER_POSITIVE"/>
+      <xsd:enumeration value="TERRAIN_PLANE_INNER_NEGATIVE"/>
+      <xsd:enumeration value="TERRAIN_PLANE_INNER_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_MATERIAL_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_LAWFUL_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_CHAOTIC_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_GOOD_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_EVIL_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_LAWFUL_GOOD"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_LAWFUL_EVIL"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_CHAOTIC_GOOD"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_CHAOTIC_EVIL"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_NEUTRAL"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_MILD_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_STRONG_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_OUTER_ANY"/>
+      <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_ASTRAL"/>
+      <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_ETHERAL"/>
+      <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_SHADOW"/>
+      <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_ANY"/>
+      <xsd:enumeration value="TERRAIN_UNDER_GROUND"/>
+      <xsd:enumeration value="TERRAIN_UNDER_WATER"/>
       <xsd:enumeration value="TERRAIN_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -73,6 +74,7 @@
       <xsd:element name="terrain" type="RPG_Common_Terrain_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="climate" type="RPG_Common_Climate_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
+    <xsd:attribute name="outdoors" type="xsd:boolean" use="optional" default="true"/>
   </xsd:complexType>
 
 </xsd:schema>

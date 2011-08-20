@@ -1417,11 +1417,11 @@ _xsd_RPG_Common_CreatureSubType_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_ + 20,
+                    _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_ + 21,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_ + 20 || _xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_ + 21 || _xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -1430,7 +1430,7 @@ _xsd_RPG_Common_CreatureSubType_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_CreatureSubType_XMLTree_Type::
-_xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_[20] =
+_xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_[21] =
 {
   "SUBTYPE_AIR",
   "SUBTYPE_ANGEL",
@@ -1448,6 +1448,7 @@ _xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_[20] =
   "SUBTYPE_INCORPOREAL",
   "SUBTYPE_LAWFUL",
   "SUBTYPE_NATIVE",
+  "SUBTYPE_NEUTRAL",
   "SUBTYPE_REPTILIAN",
   "SUBTYPE_SHAPECHANGER",
   "SUBTYPE_SWARM",
@@ -1455,7 +1456,7 @@ _xsd_RPG_Common_CreatureSubType_XMLTree_Type_literals_[20] =
 };
 
 const RPG_Common_CreatureSubType_XMLTree_Type::value RPG_Common_CreatureSubType_XMLTree_Type::
-_xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_[20] =
+_xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_[21] =
 {
   ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_AIR,
   ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_ANGEL,
@@ -1473,6 +1474,7 @@ _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_[20] =
   ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_INCORPOREAL,
   ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_LAWFUL,
   ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_NATIVE,
+  ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_NEUTRAL,
   ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_REPTILIAN,
   ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_SHAPECHANGER,
   ::RPG_Common_CreatureSubType_XMLTree_Type::SUBTYPE_SWARM,
@@ -2387,11 +2389,11 @@ _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_ + 7,
+                    _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_ + 8,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_ + 7 || _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_ + 8 || _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2400,24 +2402,26 @@ _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_AreaOfEffect_XMLTree_Type::
-_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[7] =
+_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_literals_[8] =
 {
   "AREA_CONE",
   "AREA_CUBE",
   "AREA_CYLINDER",
-  "AREA_LINE",
+  "AREA_LINE_HORIZONTAL",
+  "AREA_LINE_VERTICAL",
   "AREA_RING",
   "AREA_SPHERE",
   "AREA_WALL"
 };
 
 const RPG_Common_AreaOfEffect_XMLTree_Type::value RPG_Common_AreaOfEffect_XMLTree_Type::
-_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[7] =
+_xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[8] =
 {
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_CONE,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_CUBE,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_CYLINDER,
-  ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_LINE,
+  ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_LINE_HORIZONTAL,
+  ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_LINE_VERTICAL,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_RING,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_SPHERE,
   ::RPG_Common_AreaOfEffect_XMLTree_Type::AREA_WALL

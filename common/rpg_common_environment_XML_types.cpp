@@ -54,17 +54,26 @@ climate_parser (::RPG_Common_Climate_Type_pskel& p)
 }
 
 void RPG_Common_Environment_Type_pskel::
+outdoors_parser (::xml_schema::boolean_pskel& p)
+{
+  this->outdoors_parser_ = &p;
+}
+
+void RPG_Common_Environment_Type_pskel::
 parsers (::RPG_Common_Terrain_Type_pskel& terrain,
-         ::RPG_Common_Climate_Type_pskel& climate)
+         ::RPG_Common_Climate_Type_pskel& climate,
+         ::xml_schema::boolean_pskel& outdoors)
 {
   this->terrain_parser_ = &terrain;
   this->climate_parser_ = &climate;
+  this->outdoors_parser_ = &outdoors;
 }
 
 RPG_Common_Environment_Type_pskel::
 RPG_Common_Environment_Type_pskel ()
 : terrain_parser_ (0),
-  climate_parser_ (0)
+  climate_parser_ (0),
+  outdoors_parser_ (0)
 {
 }
 
@@ -78,6 +87,11 @@ terrain (const RPG_Common_Terrain&)
 
 void RPG_Common_Environment_Type_pskel::
 climate (const RPG_Common_Climate&)
+{
+}
+
+void RPG_Common_Environment_Type_pskel::
+outdoors (bool)
 {
 }
 
@@ -133,6 +147,31 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->climate_parser_)
       this->climate (this->climate_parser_->post_RPG_Common_Climate_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Common_Environment_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "outdoors" && ns.empty ())
+  {
+    if (this->outdoors_parser_)
+    {
+      this->outdoors_parser_->pre ();
+      this->outdoors_parser_->_pre_impl ();
+      this->outdoors_parser_->_characters (v);
+      this->outdoors_parser_->_post_impl ();
+      this->outdoors (this->outdoors_parser_->post_boolean ());
+    }
 
     return true;
   }

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_MAGIC_XML_PARSER_H
 #define RPG_MAGIC_XML_PARSER_H
 
@@ -205,12 +206,14 @@ class RPG_Magic_Spell_TargetProperties_Type
 //     virtual void pre();
     virtual void base(const RPG_Common_Amount&);
     virtual void levelIncrement(unsigned char);
+    virtual void levelIncrementMax(unsigned char);
     virtual void effect(const RPG_Magic_Spell_AreaOfEffect&);
     virtual void shape(const RPG_Common_AreaOfEffect&);
     virtual void radius(unsigned char);
     virtual void height(unsigned char);
     virtual void target(const RPG_Magic_Spell_Target&);
     virtual void rangeIsInHD(bool);
+    virtual void incrementIsReciprocal(bool);
     virtual RPG_Magic_Spell_TargetProperties post_RPG_Magic_Spell_TargetProperties_Type();
 
   private:
@@ -272,6 +275,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type
     virtual void condition(const RPG_Common_Condition&);
     virtual void creature(const RPG_Common_CreatureType&);
     virtual void size(const RPG_Common_Size&);
+    virtual void environment(const RPG_Common_Environment&);
     virtual void reverse(bool);
     virtual void baseIsCasterLevel(bool);
     virtual RPG_Magic_Spell_PreconditionProperties post_RPG_Magic_Spell_PreconditionProperties_Type();
@@ -366,11 +370,13 @@ class RPG_Magic_Spell_EffectProperties_Type
     virtual void levelIncrement(const RPG_Common_Amount&);
     virtual void levelIncrementMax(unsigned char);
     virtual void attribute(const RPG_Common_Attribute&);
+    virtual void creature(const RPG_Common_CreatureType&);
     virtual void duration(const RPG_Common_EffectDuration&);
+    virtual void precondition(const RPG_Magic_Spell_PreconditionProperties&);
     virtual void maxRange(unsigned char);
     virtual void counterMeasure(const RPG_Magic_CounterMeasure&);
     virtual void includeAdjacent(bool);
-    virtual void effectsAreInclusive(bool);
+    virtual void incrementIsReciprocal(bool);
     virtual RPG_Magic_Spell_EffectProperties post_RPG_Magic_Spell_EffectProperties_Type();
 
   private:
@@ -397,6 +403,7 @@ class RPG_Magic_Spell_PropertiesXML_Type
     virtual void counterMeasure(const RPG_Magic_CounterMeasure&);
     virtual void saveable(const RPG_Common_SavingThrow&);
     virtual void resistible(bool);
+    virtual void effectsAreInclusive(bool);
     virtual RPG_Magic_Spell_PropertiesXML post_RPG_Magic_Spell_PropertiesXML_Type();
 
   private:

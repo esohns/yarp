@@ -16,11 +16,13 @@ struct RPG_Magic_Spell_EffectProperties
   RPG_Common_Amount levelIncrement;
   unsigned char levelIncrementMax;
   RPG_Common_Attribute attribute;
+  RPG_Common_CreatureType creature;
   RPG_Common_EffectDuration duration;
+  std::vector<RPG_Magic_Spell_PreconditionProperties> preconditions;
   unsigned char maxRange;
   std::vector<RPG_Magic_CounterMeasure> counterMeasures;
   bool includeAdjacent;
-  bool effectsAreInclusive;
+  bool incrementIsReciprocal;
 };
 
 #endif

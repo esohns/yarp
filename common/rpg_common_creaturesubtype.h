@@ -25,6 +25,7 @@ enum RPG_Common_CreatureSubType
   SUBTYPE_INCORPOREAL,
   SUBTYPE_LAWFUL,
   SUBTYPE_NATIVE,
+  SUBTYPE_NEUTRAL,
   SUBTYPE_REPTILIAN,
   SUBTYPE_SHAPECHANGER,
   SUBTYPE_SWARM,
@@ -64,6 +65,7 @@ class RPG_Common_CreatureSubTypeHelper
     myRPG_Common_CreatureSubTypeToStringTable.insert(std::make_pair(SUBTYPE_INCORPOREAL, ACE_TEXT_ALWAYS_CHAR("SUBTYPE_INCORPOREAL")));
     myRPG_Common_CreatureSubTypeToStringTable.insert(std::make_pair(SUBTYPE_LAWFUL, ACE_TEXT_ALWAYS_CHAR("SUBTYPE_LAWFUL")));
     myRPG_Common_CreatureSubTypeToStringTable.insert(std::make_pair(SUBTYPE_NATIVE, ACE_TEXT_ALWAYS_CHAR("SUBTYPE_NATIVE")));
+    myRPG_Common_CreatureSubTypeToStringTable.insert(std::make_pair(SUBTYPE_NEUTRAL, ACE_TEXT_ALWAYS_CHAR("SUBTYPE_NEUTRAL")));
     myRPG_Common_CreatureSubTypeToStringTable.insert(std::make_pair(SUBTYPE_REPTILIAN, ACE_TEXT_ALWAYS_CHAR("SUBTYPE_REPTILIAN")));
     myRPG_Common_CreatureSubTypeToStringTable.insert(std::make_pair(SUBTYPE_SHAPECHANGER, ACE_TEXT_ALWAYS_CHAR("SUBTYPE_SHAPECHANGER")));
     myRPG_Common_CreatureSubTypeToStringTable.insert(std::make_pair(SUBTYPE_SWARM, ACE_TEXT_ALWAYS_CHAR("SUBTYPE_SWARM")));
