@@ -293,10 +293,13 @@ RPG_Character_Monster_Dictionary::init(const std::string& filename_in,
   feats_p.parsers(feat_p);
   RPG_Common_Terrain_Type                        terrain_p;
   RPG_Common_Climate_Type                        climate_p;
+  RPG_Common_TimeOfDay_Type                      time_p;
   RPG_Common_Environment_Type                    environment_p;
   environment_p.parsers(terrain_p,
-                        climate_p);
-  RPG_Character_Monster_Organization_Type                  organization_p;
+                        climate_p,
+                        time_p,
+                        bool_p);
+  RPG_Character_Monster_Organization_Type        organization_p;
   RPG_Dice_ValueRange_Type                       range_p;
   range_p.parsers(int_p,
                   int_p);

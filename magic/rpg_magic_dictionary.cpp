@@ -111,9 +111,10 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                              unsigned_byte_p,
                              area_of_effect_p,
                              shape_p,
-                             unsigned_byte_p,
-                             unsigned_byte_p,
+                             unsigned_int_p,
+                             unsigned_int_p,
                              target_p,
+                             bool_p,
                              bool_p,
                              bool_p);
 
@@ -139,9 +140,11 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
   RPG_Common_Size_Type                        size_p;
   RPG_Common_Terrain_Type                     terrain_p;
   RPG_Common_Climate_Type                     climate_p;
+  RPG_Common_TimeOfDay_Type                   time_p;
   RPG_Common_Environment_Type                 environment_p;
   environment_p.parsers(terrain_p,
                         climate_p,
+                        time_p,
                         bool_p);
   RPG_Magic_Spell_PreconditionProperties_Type preconditionProperties_p;
   preconditionProperties_p.parsers(precondition_p,

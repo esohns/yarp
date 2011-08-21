@@ -85,10 +85,46 @@ enum RPG_Magic_SpellType
   SPELL_CLONE,
   SPELL_CLOUDKILL,
   SPELL_COLOR_SPRAY,
+  SPELL_COMMAND,
+  SPELL_COMMAND_GREATER,
+  SPELL_COMMAND_PLANTS,
+  SPELL_COMMAND_UNDEAD,
   SPELL_COMMUNE,
+  SPELL_COMMUNE_WITH_NATURE,
+  SPELL_COMPREHEND_LANGUAGES,
+  SPELL_CONE_OF_COLD,
   SPELL_CONFUSION,
+  SPELL_CONFUSION_LESSER,
+  SPELL_CONSECRATE,
+  SPELL_CONTACT_OTHER_PLANE,
+  SPELL_CONTAGION,
+  SPELL_CONTINGENCY,
+  SPELL_CONTINUAL_FLAME,
+  SPELL_CONTROL_PLANTS,
+  SPELL_CONTROL_UNDEAD,
+  SPELL_CONTROL_WATER,
+  SPELL_CONTROL_WEATHER,
+  SPELL_CONTROL_WINDS,
+  SPELL_CREATE_FOOD_AND_WATER,
+  SPELL_CREATE_UNDEAD,
+  SPELL_CREATE_UNDEAD_GREATER,
+  SPELL_CREATE_WATER,
+  SPELL_CREEPING_DOOM,
+  SPELL_CRUSHING_DESPAIR,
+  SPELL_CRUSHING_HAND,
+  SPELL_CURE_WOUNDS_CRITICAL,
+  SPELL_CURE_WOUNDS_CRITICAL_MASS,
+  SPELL_CURE_WOUNDS_LIGHT,
+  SPELL_CURE_WOUNDS_LIGHT_MASS,
+  SPELL_CURE_WOUNDS_MINOR,
+  SPELL_CURE_WOUNDS_MODERATE,
+  SPELL_CURE_WOUNDS_MODERATE_MASS,
+  SPELL_CURE_WOUNDS_SERIOUS,
+  SPELL_CURE_WOUNDS_SERIOUS_MASS,
+  SPELL_CURSE_WATER,
   SPELL_DARKNESS,
   SPELL_DELAY_POISON,
+  SPELL_DESECRATE,
   SPELL_DETECT_CHAOS,
   SPELL_DETECT_EVIL,
   SPELL_DETECT_GOOD,
@@ -107,6 +143,7 @@ enum RPG_Magic_SpellType
   SPELL_FEEBLEMIND,
   SPELL_FIRE_STORM,
   SPELL_GASEOUS_FORM,
+  SPELL_GOOD_HOPE,
   SPELL_HEAL,
   SPELL_HEAL_MASS,
   SPELL_HEAT_METAL,
@@ -246,10 +283,46 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CLONE, ACE_TEXT_ALWAYS_CHAR("SPELL_CLONE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CLOUDKILL, ACE_TEXT_ALWAYS_CHAR("SPELL_CLOUDKILL")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COLOR_SPRAY, ACE_TEXT_ALWAYS_CHAR("SPELL_COLOR_SPRAY")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COMMAND, ACE_TEXT_ALWAYS_CHAR("SPELL_COMMAND")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COMMAND_GREATER, ACE_TEXT_ALWAYS_CHAR("SPELL_COMMAND_GREATER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COMMAND_PLANTS, ACE_TEXT_ALWAYS_CHAR("SPELL_COMMAND_PLANTS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COMMAND_UNDEAD, ACE_TEXT_ALWAYS_CHAR("SPELL_COMMAND_UNDEAD")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COMMUNE, ACE_TEXT_ALWAYS_CHAR("SPELL_COMMUNE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COMMUNE_WITH_NATURE, ACE_TEXT_ALWAYS_CHAR("SPELL_COMMUNE_WITH_NATURE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_COMPREHEND_LANGUAGES, ACE_TEXT_ALWAYS_CHAR("SPELL_COMPREHEND_LANGUAGES")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONE_OF_COLD, ACE_TEXT_ALWAYS_CHAR("SPELL_CONE_OF_COLD")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONFUSION, ACE_TEXT_ALWAYS_CHAR("SPELL_CONFUSION")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONFUSION_LESSER, ACE_TEXT_ALWAYS_CHAR("SPELL_CONFUSION_LESSER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONSECRATE, ACE_TEXT_ALWAYS_CHAR("SPELL_CONSECRATE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTACT_OTHER_PLANE, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTACT_OTHER_PLANE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTAGION, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTAGION")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTINGENCY, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTINGENCY")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTINUAL_FLAME, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTINUAL_FLAME")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTROL_PLANTS, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTROL_PLANTS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTROL_UNDEAD, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTROL_UNDEAD")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTROL_WATER, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTROL_WATER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTROL_WEATHER, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTROL_WEATHER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CONTROL_WINDS, ACE_TEXT_ALWAYS_CHAR("SPELL_CONTROL_WINDS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CREATE_FOOD_AND_WATER, ACE_TEXT_ALWAYS_CHAR("SPELL_CREATE_FOOD_AND_WATER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CREATE_UNDEAD, ACE_TEXT_ALWAYS_CHAR("SPELL_CREATE_UNDEAD")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CREATE_UNDEAD_GREATER, ACE_TEXT_ALWAYS_CHAR("SPELL_CREATE_UNDEAD_GREATER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CREATE_WATER, ACE_TEXT_ALWAYS_CHAR("SPELL_CREATE_WATER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CREEPING_DOOM, ACE_TEXT_ALWAYS_CHAR("SPELL_CREEPING_DOOM")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CRUSHING_DESPAIR, ACE_TEXT_ALWAYS_CHAR("SPELL_CRUSHING_DESPAIR")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CRUSHING_HAND, ACE_TEXT_ALWAYS_CHAR("SPELL_CRUSHING_HAND")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_CRITICAL, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_CRITICAL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_CRITICAL_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_CRITICAL_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_LIGHT, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_LIGHT")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_LIGHT_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_LIGHT_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_MINOR, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_MINOR")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_MODERATE, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_MODERATE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_MODERATE_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_MODERATE_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_SERIOUS, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_SERIOUS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_SERIOUS_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_SERIOUS_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURSE_WATER, ACE_TEXT_ALWAYS_CHAR("SPELL_CURSE_WATER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DARKNESS, ACE_TEXT_ALWAYS_CHAR("SPELL_DARKNESS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DELAY_POISON, ACE_TEXT_ALWAYS_CHAR("SPELL_DELAY_POISON")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DESECRATE, ACE_TEXT_ALWAYS_CHAR("SPELL_DESECRATE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_CHAOS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_CHAOS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_EVIL, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_EVIL")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_GOOD, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_GOOD")));
@@ -268,6 +341,7 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_FEEBLEMIND, ACE_TEXT_ALWAYS_CHAR("SPELL_FEEBLEMIND")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_FIRE_STORM, ACE_TEXT_ALWAYS_CHAR("SPELL_FIRE_STORM")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_GASEOUS_FORM, ACE_TEXT_ALWAYS_CHAR("SPELL_GASEOUS_FORM")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_GOOD_HOPE, ACE_TEXT_ALWAYS_CHAR("SPELL_GOOD_HOPE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_HEAL, ACE_TEXT_ALWAYS_CHAR("SPELL_HEAL")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_HEAL_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_HEAL_MASS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_HEAT_METAL, ACE_TEXT_ALWAYS_CHAR("SPELL_HEAT_METAL")));

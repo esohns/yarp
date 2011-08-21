@@ -242,8 +242,8 @@
       <xsd:enumeration value="PHYSICALDAMAGE_PIERCING"/>
       <xsd:enumeration value="PHYSICALDAMAGE_SLASHING"/>
       <!--                                            -->
-      <xsd:enumeration value="PHYSICALDAMAGE_CONSTRICT"/>
-      <xsd:enumeration value="PHYSICALDAMAGE_WITHER"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_CRUSHING"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_WITHERING"/>
     </xsd:restriction>
   </xsd:simpleType>
 

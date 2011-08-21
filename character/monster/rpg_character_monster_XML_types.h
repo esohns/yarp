@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX_____RPG_CHARACTER_MONSTER_XML_TYPES_H
-#define CXX_____RPG_CHARACTER_MONSTER_XML_TYPES_H
+#ifndef CXX___RPG_CHARACTER_MONSTER_XML_TYPES_H
+#define CXX___RPG_CHARACTER_MONSTER_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -1627,4 +1627,4 @@ class RPG_Character_Monster_Dictionary_Type_pskel: public ::xml_schema::complex_
 //
 // End epilogue.
 
-#endif // CXX_____RPG_CHARACTER_MONSTER_XML_TYPES_H
+#endif // CXX___RPG_CHARACTER_MONSTER_XML_TYPES_H

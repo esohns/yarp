@@ -42,7 +42,7 @@
       <xsd:element name="increment" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
 <!--       <xsd:element name="effect" type="RPG_Combat_RangedEffectUnion_Type" minOccurs="1" maxOccurs="1"/> -->
     </xsd:sequence>
-    <xsd:attribute name="effect" type="RPG_Combat_RangedEffectUnion_Type" use="optional" default="AREA_LINE"/>
+    <xsd:attribute name="effect" type="RPG_Combat_RangedEffectUnion_Type" use="optional" default="AREA_LINE_HORIZONTAL"/>
   </xsd:complexType>
 
   <xsd:simpleType name="RPG_Combat_AttackSituation_Type">

@@ -14,9 +14,10 @@ struct RPG_Magic_Spell_TargetProperties
   unsigned char levelIncrementMax;
   RPG_Magic_Spell_AreaOfEffect effect;
   RPG_Common_AreaOfEffect shape;
-  unsigned char radius;
-  unsigned char height;
+  unsigned int radius;
+  unsigned int height;
   RPG_Magic_Spell_Target target;
+  bool shapeable;
   bool rangeIsInHD;
   bool incrementIsReciprocal;
 };

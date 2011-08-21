@@ -485,12 +485,20 @@ RPG_Common_Climate RPG_Common_Climate_Type::post_RPG_Common_Climate_Type()
   return RPG_Common_ClimateHelper::stringToRPG_Common_Climate(post_string());
 }
 
+RPG_Common_TimeOfDay RPG_Common_TimeOfDay_Type::post_RPG_Common_TimeOfDay_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_TimeOfDay_Type::post_RPG_Common_TimeOfDay_Type"));
+
+  return RPG_Common_TimeOfDayHelper::stringToRPG_Common_TimeOfDay(post_string());
+}
+
 RPG_Common_Environment_Type::RPG_Common_Environment_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::RPG_Common_Environment_Type"));
 
   myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
+  myCurrentEnvironment.time = RPG_COMMON_TIMEOFDAY_INVALID;
   myCurrentEnvironment.outdoors = true;
 }
 
@@ -506,6 +514,13 @@ void RPG_Common_Environment_Type::climate(const RPG_Common_Climate& climate_in)
   RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::climate"));
 
   myCurrentEnvironment.climate = climate_in;
+}
+
+void RPG_Common_Environment_Type::time(const RPG_Common_TimeOfDay& timeOfDay_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::time"));
+
+  myCurrentEnvironment.time = timeOfDay_in;
 }
 
 void RPG_Common_Environment_Type::outdoors(bool outdoors_in)
@@ -524,6 +539,7 @@ RPG_Common_Environment RPG_Common_Environment_Type::post_RPG_Common_Environment_
   // clear structure
   myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
+  myCurrentEnvironment.time = RPG_COMMON_TIMEOFDAY_INVALID;
   myCurrentEnvironment.outdoors = true;
 
   return result;

@@ -17,11 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_COMBAT_COMMON_TOOLS_H
 #define RPG_COMBAT_COMMON_TOOLS_H
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
+#include <rpg_common_environment_incl.h>
 #include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
 #include <rpg_item_weapontype.h>

@@ -209,9 +209,10 @@ class RPG_Magic_Spell_TargetProperties_Type
     virtual void levelIncrementMax(unsigned char);
     virtual void effect(const RPG_Magic_Spell_AreaOfEffect&);
     virtual void shape(const RPG_Common_AreaOfEffect&);
-    virtual void radius(unsigned char);
-    virtual void height(unsigned char);
+    virtual void radius(unsigned int);
+    virtual void height(unsigned int);
     virtual void target(const RPG_Magic_Spell_Target&);
+    virtual void shapeable(bool);
     virtual void rangeIsInHD(bool);
     virtual void incrementIsReciprocal(bool);
     virtual RPG_Magic_Spell_TargetProperties post_RPG_Magic_Spell_TargetProperties_Type();

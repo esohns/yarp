@@ -55,6 +55,7 @@ set(RPG_Common_LIB_SRCS
     rpg_common_skill.h
     rpg_common_subclass.h
     rpg_common_terrain.h
+    rpg_common_timeofday.h
     rpg_common_timer_manager.cpp
     rpg_common_timer_manager.h
     rpg_common_timerhandler.cpp
@@ -134,6 +135,7 @@ install(FILES
         rpg_common_skill.h
         rpg_common_subclass.h
         rpg_common_terrain.h
+        rpg_common_timeofday.h
         rpg_common_timer_manager.h
         rpg_common_timerhandler.h
         rpg_common_tools.h

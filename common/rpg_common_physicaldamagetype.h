@@ -13,8 +13,8 @@ enum RPG_Common_PhysicalDamageType
   PHYSICALDAMAGE_BLUDGEONING,
   PHYSICALDAMAGE_PIERCING,
   PHYSICALDAMAGE_SLASHING,
-  PHYSICALDAMAGE_CONSTRICT,
-  PHYSICALDAMAGE_WITHER,
+  PHYSICALDAMAGE_CRUSHING,
+  PHYSICALDAMAGE_WITHERING,
   //
   RPG_COMMON_PHYSICALDAMAGETYPE_MAX,
   RPG_COMMON_PHYSICALDAMAGETYPE_INVALID
@@ -38,8 +38,8 @@ class RPG_Common_PhysicalDamageTypeHelper
     myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_BLUDGEONING, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_BLUDGEONING")));
     myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_PIERCING, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_PIERCING")));
     myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_SLASHING, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_SLASHING")));
-    myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_CONSTRICT, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_CONSTRICT")));
-    myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_WITHER, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_WITHER")));
+    myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_CRUSHING, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_CRUSHING")));
+    myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_WITHERING, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_WITHERING")));
   };
 
   inline static std::string RPG_Common_PhysicalDamageTypeToString(const RPG_Common_PhysicalDamageType& element_in)

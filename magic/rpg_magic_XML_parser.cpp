@@ -340,6 +340,7 @@ RPG_Magic_Spell_TargetProperties_Type::RPG_Magic_Spell_TargetProperties_Type()
   myCurrentProperties.radius = 0;
   myCurrentProperties.height = 0;
   myCurrentProperties.target = RPG_MAGIC_SPELL_TARGET_INVALID;
+  myCurrentProperties.shapeable = false;
   myCurrentProperties.rangeIsInHD = false;
   myCurrentProperties.incrementIsReciprocal = false;
 }
@@ -365,14 +366,14 @@ void RPG_Magic_Spell_TargetProperties_Type::levelIncrementMax(unsigned char leve
   myCurrentProperties.levelIncrementMax = levelIncrementMax_in;
 }
 
-void RPG_Magic_Spell_TargetProperties_Type::radius(unsigned char radius_in)
+void RPG_Magic_Spell_TargetProperties_Type::radius(unsigned int radius_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_TargetProperties_Type::radius"));
 
   myCurrentProperties.radius = radius_in;
 }
 
-void RPG_Magic_Spell_TargetProperties_Type::height(unsigned char height_in)
+void RPG_Magic_Spell_TargetProperties_Type::height(unsigned int height_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_TargetProperties_Type::height"));
 
@@ -398,6 +399,13 @@ void RPG_Magic_Spell_TargetProperties_Type::target(const RPG_Magic_Spell_Target&
   RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_TargetProperties_Type::target"));
 
   myCurrentProperties.target = target_in;
+}
+
+void RPG_Magic_Spell_TargetProperties_Type::shapeable(bool shapeable_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_TargetProperties_Type::shapeable"));
+
+  myCurrentProperties.shapeable = shapeable_in;
 }
 
 void RPG_Magic_Spell_TargetProperties_Type::rangeIsInHD(bool rangeIsInHD_in)
@@ -432,6 +440,7 @@ RPG_Magic_Spell_TargetProperties RPG_Magic_Spell_TargetProperties_Type::post_RPG
   myCurrentProperties.radius = 0;
   myCurrentProperties.height = 0;
   myCurrentProperties.target = RPG_MAGIC_SPELL_TARGET_INVALID;
+  myCurrentProperties.shapeable = false;
   myCurrentProperties.rangeIsInHD = false;
   myCurrentProperties.incrementIsReciprocal = false;
 

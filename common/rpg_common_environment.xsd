@@ -54,6 +54,7 @@
       <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_ETHERAL"/>
       <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_SHADOW"/>
       <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_ANY"/>
+      <xsd:enumeration value="TERRAIN_SETTLEMENT"/>
       <xsd:enumeration value="TERRAIN_UNDER_GROUND"/>
       <xsd:enumeration value="TERRAIN_UNDER_WATER"/>
       <xsd:enumeration value="TERRAIN_ANY"/>
@@ -69,10 +70,19 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+ <xsd:simpleType name="RPG_Common_TimeOfDay_Type">
+   <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="TIMEOFDAY_DAYTIME"/>
+     <xsd:enumeration value="TIMEOFDAY_NIGHTTIME"/>
+     <xsd:enumeration value="TIMEOFDAY_ANY"/>
+   </xsd:restriction>
+ </xsd:simpleType>
+
   <xsd:complexType name="RPG_Common_Environment_Type">
     <xsd:sequence>
-      <xsd:element name="terrain" type="RPG_Common_Terrain_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="terrain" type="RPG_Common_Terrain_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="climate" type="RPG_Common_Climate_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="time" type="RPG_Common_TimeOfDay_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="outdoors" type="xsd:boolean" use="optional" default="true"/>
   </xsd:complexType>

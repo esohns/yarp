@@ -312,6 +312,15 @@ class RPG_Common_Climate_Type
   virtual RPG_Common_Climate post_RPG_Common_Climate_Type();
 };
 
+class RPG_Common_TimeOfDay_Type
+ : public RPG_Common_TimeOfDay_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+  // virtual void pre();
+  virtual RPG_Common_TimeOfDay post_RPG_Common_TimeOfDay_Type();
+};
+
 class RPG_Common_Environment_Type
  : public RPG_Common_Environment_Type_pskel
 {
@@ -321,6 +330,7 @@ class RPG_Common_Environment_Type
 //   virtual void pre();
   virtual void terrain(const RPG_Common_Terrain&);
   virtual void climate(const RPG_Common_Climate&);
+  virtual void time(const RPG_Common_TimeOfDay&);
   virtual void outdoors(bool);
   virtual RPG_Common_Environment post_RPG_Common_Environment_Type();
 

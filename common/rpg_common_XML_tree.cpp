@@ -2250,19 +2250,19 @@ _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[6] =
   "PHYSICALDAMAGE_BLUDGEONING",
   "PHYSICALDAMAGE_PIERCING",
   "PHYSICALDAMAGE_SLASHING",
-  "PHYSICALDAMAGE_CONSTRICT",
-  "PHYSICALDAMAGE_WITHER"
+  "PHYSICALDAMAGE_CRUSHING",
+  "PHYSICALDAMAGE_WITHERING"
 };
 
 const RPG_Common_PhysicalDamageType_XMLTree_Type::value RPG_Common_PhysicalDamageType_XMLTree_Type::
 _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[6] =
 {
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_BLUDGEONING,
-  ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_CONSTRICT,
+  ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_CRUSHING,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_NONE,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_PIERCING,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_SLASHING,
-  ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_WITHER
+  ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_WITHERING
 };
 
 // RPG_Common_ActionType_XMLTree_Type

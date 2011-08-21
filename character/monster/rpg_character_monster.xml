@@ -167,7 +167,7 @@
       <feat>FEAT_IRON_WILL</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_UNDER_GROUND</terrain>
     </environment>
     <organizations>
       <step>
@@ -416,7 +416,7 @@
       <feat>FEAT_SPELL_PENETRATION</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_UNDER_GROUND</terrain>
     </environment>
     <organizations>
       <step>
@@ -562,7 +562,7 @@
       <feat>FEAT_SPRING_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_LAWFUL_ANY</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_LAWFUL_ANY</terrain>
     </environment>
     <organizations>
       <step>
@@ -905,7 +905,7 @@
       <feat>FEAT_POWER_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_GOOD_ANY</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_GOOD_ANY</terrain>
     </environment>
     <organizations>
       <step>
@@ -1108,7 +1108,7 @@
       <feat>FEAT_POWER_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_GOOD_ANY</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_GOOD_ANY</terrain>
     </environment>
     <organizations>
       <step>
@@ -1367,7 +1367,7 @@
       <feat>FEAT_TRACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_GOOD_ANY</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_GOOD_ANY</terrain>
     </environment>
     <organizations>
       <step>
@@ -2349,7 +2349,7 @@
       <feat>FEAT_IMPROVED_INITIATIVE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_LAWFUL_GOOD</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_LAWFUL_GOOD</terrain>
     </environment>
     <organizations>
       <step>
@@ -2561,7 +2561,7 @@
       <feat>FEAT_TRACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_LAWFUL_GOOD</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_LAWFUL_GOOD</terrain>
     </environment>
     <organizations>
       <step>
@@ -2785,7 +2785,7 @@
       <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_LAWFUL_GOOD</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_LAWFUL_GOOD</terrain>
     </environment>
     <organizations>
       <step>
@@ -2942,7 +2942,7 @@
       <feat>FEAT_POWER_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_LAWFUL_GOOD</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_LAWFUL_GOOD</terrain>
     </environment>
     <organizations>
       <step>
@@ -3109,7 +3109,7 @@
       <feat>FEAT_WEAPON_FINESSE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_INNERPLANE_AIR</terrain>
+      <terrain>TERRAIN_PLANE_INNER_AIR</terrain>
     </environment>
     <organizations>
       <step>
@@ -3267,7 +3267,7 @@
       <feat>FEAT_WEAPON_FINESSE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_INNERPLANE_AIR</terrain>
+      <terrain>TERRAIN_PLANE_INNER_AIR</terrain>
     </environment>
     <organizations>
       <step>
@@ -3429,7 +3429,7 @@
       <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_INNERPLANE_AIR</terrain>
+      <terrain>TERRAIN_PLANE_INNER_AIR</terrain>
     </environment>
     <organizations>
       <step>
@@ -3520,7 +3520,7 @@
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
-            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <type>PHYSICALDAMAGE_CRUSHING</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_6</typeDice>
@@ -4030,7 +4030,7 @@
       <feat>FEAT_WEAPON_FINESSE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_GOOD_ANY</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_GOOD_ANY</terrain>
     </environment>
     <organizations>
       <step>
@@ -4196,7 +4196,7 @@
       <feat>FEAT_POWER_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_INNERPLANE_FIRE</terrain>
+      <terrain>TERRAIN_PLANE_INNER_FIRE</terrain>
     </environment>
     <organizations>
       <step>
@@ -4379,7 +4379,7 @@
       <feat>FEAT_TRACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_EVIL_ANY</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_EVIL_ANY</terrain>
     </environment>
     <organizations>
       <step>
@@ -4554,7 +4554,7 @@
       <feat>FEAT_TRACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_EVIL_ANY</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_EVIL_ANY</terrain>
     </environment>
     <organizations>
       <step>
@@ -4857,7 +4857,7 @@
       <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -4969,7 +4969,7 @@
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
-            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <type>PHYSICALDAMAGE_CRUSHING</type>
             <amount>
               <numDice>2</numDice>
               <typeDice>D_8</typeDice>
@@ -5286,7 +5286,7 @@
       <feat>FEAT_WEAPON_FINESSE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_INNERPLANE_AIR</terrain>
+      <terrain>TERRAIN_PLANE_INNER_AIR</terrain>
     </environment>
     <organizations>
       <step>
@@ -5571,7 +5571,7 @@
       <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -5840,7 +5840,7 @@
       <feat>FEAT_POWER_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_GOOD</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_GOOD</terrain>
     </environment>
     <organizations>
       <step>
@@ -6527,7 +6527,7 @@
       <feat>FEAT_MOBILITY</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_ANY</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_ANY</terrain>
     </environment>
     <organizations>
       <step>
@@ -6848,7 +6848,7 @@
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
-            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <type>PHYSICALDAMAGE_CRUSHING</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_3</typeDice>
@@ -6894,7 +6894,7 @@
       <feat>FEAT_STEALTHY</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_UNDER_GROUND</terrain>
     </environment>
     <organizations>
       <step>
@@ -6995,7 +6995,7 @@
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
-            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <type>PHYSICALDAMAGE_CRUSHING</type>
             <amount>
               <numDice>3</numDice>
               <typeDice>D_6</typeDice>
@@ -7328,7 +7328,7 @@
       <feat>FEAT_IMPROVED_INITIATIVE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_UNDER_GROUND</terrain>
     </environment>
     <organizations>
       <step>
@@ -7575,7 +7575,7 @@
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
-            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <type>PHYSICALDAMAGE_CRUSHING</type>
             <amount>
               <numDice>2</numDice>
               <typeDice>D_8</typeDice>
@@ -7823,7 +7823,7 @@
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
-            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <type>PHYSICALDAMAGE_CRUSHING</type>
             <amount>
               <numDice>1</numDice>
               <typeDice>D_4</typeDice>
@@ -7880,7 +7880,7 @@
       <feat>FEAT_IMPROVED_INITIATIVE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_UNDER_GROUND</terrain>
     </environment>
     <organizations>
       <step>
@@ -8128,7 +8128,7 @@
       <feat>FEAT_TOUGHNESS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_UNDERGROUND</terrain>
+      <terrain>TERRAIN_UNDER_GROUND</terrain>
     </environment>
     <organizations>
       <step>
@@ -8402,7 +8402,7 @@
       <feat>FEAT_POWER_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -8849,7 +8849,7 @@
       <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -9153,7 +9153,7 @@
       <feat>FEAT_TRACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -9359,7 +9359,7 @@
       <feat>FEAT_MULTI_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -9681,7 +9681,7 @@
       <feat>FEAT_POWER_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -9984,7 +9984,7 @@
       <feat>FEAT_TOUGHNESS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -10186,7 +10186,7 @@
         <attackForm>ATTACKFORM_MELEE</attackForm>
         <damage>
           <element>
-            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <type>PHYSICALDAMAGE_CRUSHING</type>
             <amount>
               <numDice>4</numDice>
               <typeDice>D_6</typeDice>
@@ -10194,7 +10194,7 @@
             </amount>
           </element>
           <element>
-            <type>PHYSICALDAMAGE_CONSTRICT</type>
+            <type>PHYSICALDAMAGE_CRUSHING</type>
             <condition>CONDITION_UNCONSCIOUS</condition>
             <duration vicinity="true">
               <totalPeriod>
@@ -10413,7 +10413,7 @@
       <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -10743,7 +10743,7 @@
       <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -11036,7 +11036,7 @@
       <feat>FEAT_WEAPON_FINESSE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -11225,7 +11225,7 @@
       <charisma>1</charisma>
     </attributes>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -11504,7 +11504,7 @@
       <feat>FEAT_PERSUASIVE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>
@@ -11825,7 +11825,7 @@
       <feat>FEAT_POWER_ATTACK</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_OUTERPLANE_CHAOTIC_EVIL</terrain>
+      <terrain>TERRAIN_PLANE_OUTER_CHAOTIC_EVIL</terrain>
     </environment>
     <organizations>
       <step>

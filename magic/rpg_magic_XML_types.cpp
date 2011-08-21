@@ -228,13 +228,13 @@ shape_parser (::RPG_Common_AreaOfEffect_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-radius_parser (::xml_schema::unsigned_byte_pskel& p)
+radius_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->radius_parser_ = &p;
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-height_parser (::xml_schema::unsigned_byte_pskel& p)
+height_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->height_parser_ = &p;
 }
@@ -243,6 +243,12 @@ void RPG_Magic_Spell_TargetProperties_Type_pskel::
 target_parser (::RPG_Magic_Spell_Target_Type_pskel& p)
 {
   this->target_parser_ = &p;
+}
+
+void RPG_Magic_Spell_TargetProperties_Type_pskel::
+shapeable_parser (::xml_schema::boolean_pskel& p)
+{
+  this->shapeable_parser_ = &p;
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
@@ -263,9 +269,10 @@ parsers (::RPG_Common_Amount_Type_pskel& base,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Magic_Spell_AreaOfEffect_Type_pskel& effect,
          ::RPG_Common_AreaOfEffect_Type_pskel& shape,
-         ::xml_schema::unsigned_byte_pskel& radius,
-         ::xml_schema::unsigned_byte_pskel& height,
+         ::xml_schema::unsigned_int_pskel& radius,
+         ::xml_schema::unsigned_int_pskel& height,
          ::RPG_Magic_Spell_Target_Type_pskel& target,
+         ::xml_schema::boolean_pskel& shapeable,
          ::xml_schema::boolean_pskel& rangeIsInHD,
          ::xml_schema::boolean_pskel& incrementIsReciprocal)
 {
@@ -277,6 +284,7 @@ parsers (::RPG_Common_Amount_Type_pskel& base,
   this->radius_parser_ = &radius;
   this->height_parser_ = &height;
   this->target_parser_ = &target;
+  this->shapeable_parser_ = &shapeable;
   this->rangeIsInHD_parser_ = &rangeIsInHD;
   this->incrementIsReciprocal_parser_ = &incrementIsReciprocal;
 }
@@ -291,6 +299,7 @@ RPG_Magic_Spell_TargetProperties_Type_pskel ()
   radius_parser_ (0),
   height_parser_ (0),
   target_parser_ (0),
+  shapeable_parser_ (0),
   rangeIsInHD_parser_ (0),
   incrementIsReciprocal_parser_ (0)
 {
@@ -1334,17 +1343,22 @@ shape (const RPG_Common_AreaOfEffect&)
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-radius (unsigned char)
+radius (unsigned int)
 {
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
-height (unsigned char)
+height (unsigned int)
 {
 }
 
 void RPG_Magic_Spell_TargetProperties_Type_pskel::
 target (const RPG_Magic_Spell_Target&)
+{
+}
+
+void RPG_Magic_Spell_TargetProperties_Type_pskel::
+shapeable (bool)
 {
 }
 
@@ -1491,7 +1505,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "radius" && ns == "urn:rpg")
   {
     if (this->radius_parser_)
-      this->radius (this->radius_parser_->post_unsigned_byte ());
+      this->radius (this->radius_parser_->post_unsigned_int ());
 
     return true;
   }
@@ -1499,7 +1513,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "height" && ns == "urn:rpg")
   {
     if (this->height_parser_)
-      this->height (this->height_parser_->post_unsigned_byte ());
+      this->height (this->height_parser_->post_unsigned_int ());
 
     return true;
   }
@@ -1524,6 +1538,20 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
       this->target_parser_->_characters (v);
       this->target_parser_->_post_impl ();
       this->target (this->target_parser_->post_RPG_Magic_Spell_Target_Type ());
+    }
+
+    return true;
+  }
+
+  if (n == "shapeable" && ns.empty ())
+  {
+    if (this->shapeable_parser_)
+    {
+      this->shapeable_parser_->pre ();
+      this->shapeable_parser_->_pre_impl ();
+      this->shapeable_parser_->_characters (v);
+      this->shapeable_parser_->_post_impl ();
+      this->shapeable (this->shapeable_parser_->post_boolean ());
     }
 
     return true;

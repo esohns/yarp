@@ -1070,6 +1070,30 @@ target_default_value ()
   return target_default_value_;
 }
 
+const RPG_Magic_Spell_TargetProperties_XMLTree_Type::shapeable_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+shapeable () const
+{
+  return this->shapeable_.get ();
+}
+
+RPG_Magic_Spell_TargetProperties_XMLTree_Type::shapeable_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+shapeable ()
+{
+  return this->shapeable_.get ();
+}
+
+void RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+shapeable (const shapeable_type& x)
+{
+  this->shapeable_.set (x);
+}
+
+RPG_Magic_Spell_TargetProperties_XMLTree_Type::shapeable_type RPG_Magic_Spell_TargetProperties_XMLTree_Type::
+shapeable_default_value ()
+{
+  return shapeable_type (false);
+}
+
 const RPG_Magic_Spell_TargetProperties_XMLTree_Type::rangeIsInHD_type& RPG_Magic_Spell_TargetProperties_XMLTree_Type::
 rangeIsInHD () const
 {
@@ -1721,22 +1745,28 @@ operator= (value v)
 // RPG_Magic_Check_XMLTree_Type
 // 
 
-const RPG_Magic_Check_XMLTree_Type::type_type& RPG_Magic_Check_XMLTree_Type::
+const RPG_Magic_Check_XMLTree_Type::type_optional& RPG_Magic_Check_XMLTree_Type::
 type () const
 {
-  return this->type_.get ();
+  return this->type_;
 }
 
-RPG_Magic_Check_XMLTree_Type::type_type& RPG_Magic_Check_XMLTree_Type::
+RPG_Magic_Check_XMLTree_Type::type_optional& RPG_Magic_Check_XMLTree_Type::
 type ()
 {
-  return this->type_.get ();
+  return this->type_;
 }
 
 void RPG_Magic_Check_XMLTree_Type::
 type (const type_type& x)
 {
   this->type_.set (x);
+}
+
+void RPG_Magic_Check_XMLTree_Type::
+type (const type_optional& x)
+{
+  this->type_ = x;
 }
 
 void RPG_Magic_Check_XMLTree_Type::
@@ -3194,11 +3224,11 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Magic_SpellType_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_,
-                    _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_ + 142,
+                    _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_ + 179,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_ + 142 || _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_ + 179 || _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -3207,7 +3237,7 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Magic_SpellType_XMLTree_Type::
-_xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[142] =
+_xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[179] =
 {
   "SPELL_NONE",
   "SPELL_ACID_ARROW",
@@ -3285,10 +3315,46 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[142] =
   "SPELL_CLONE",
   "SPELL_CLOUDKILL",
   "SPELL_COLOR_SPRAY",
+  "SPELL_COMMAND",
+  "SPELL_COMMAND_GREATER",
+  "SPELL_COMMAND_PLANTS",
+  "SPELL_COMMAND_UNDEAD",
   "SPELL_COMMUNE",
+  "SPELL_COMMUNE_WITH_NATURE",
+  "SPELL_COMPREHEND_LANGUAGES",
+  "SPELL_CONE_OF_COLD",
   "SPELL_CONFUSION",
+  "SPELL_CONFUSION_LESSER",
+  "SPELL_CONSECRATE",
+  "SPELL_CONTACT_OTHER_PLANE",
+  "SPELL_CONTAGION",
+  "SPELL_CONTINGENCY",
+  "SPELL_CONTINUAL_FLAME",
+  "SPELL_CONTROL_PLANTS",
+  "SPELL_CONTROL_UNDEAD",
+  "SPELL_CONTROL_WATER",
+  "SPELL_CONTROL_WEATHER",
+  "SPELL_CONTROL_WINDS",
+  "SPELL_CREATE_FOOD_AND_WATER",
+  "SPELL_CREATE_UNDEAD",
+  "SPELL_CREATE_UNDEAD_GREATER",
+  "SPELL_CREATE_WATER",
+  "SPELL_CREEPING_DOOM",
+  "SPELL_CRUSHING_DESPAIR",
+  "SPELL_CRUSHING_HAND",
+  "SPELL_CURE_WOUNDS_CRITICAL",
+  "SPELL_CURE_WOUNDS_CRITICAL_MASS",
+  "SPELL_CURE_WOUNDS_LIGHT",
+  "SPELL_CURE_WOUNDS_LIGHT_MASS",
+  "SPELL_CURE_WOUNDS_MINOR",
+  "SPELL_CURE_WOUNDS_MODERATE",
+  "SPELL_CURE_WOUNDS_MODERATE_MASS",
+  "SPELL_CURE_WOUNDS_SERIOUS",
+  "SPELL_CURE_WOUNDS_SERIOUS_MASS",
+  "SPELL_CURSE_WATER",
   "SPELL_DARKNESS",
   "SPELL_DELAY_POISON",
+  "SPELL_DESECRATE",
   "SPELL_DETECT_CHAOS",
   "SPELL_DETECT_EVIL",
   "SPELL_DETECT_GOOD",
@@ -3307,6 +3373,7 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[142] =
   "SPELL_FEEBLEMIND",
   "SPELL_FIRE_STORM",
   "SPELL_GASEOUS_FORM",
+  "SPELL_GOOD_HOPE",
   "SPELL_HEAL",
   "SPELL_HEAL_MASS",
   "SPELL_HEAT_METAL",
@@ -3354,7 +3421,7 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[142] =
 };
 
 const RPG_Magic_SpellType_XMLTree_Type::value RPG_Magic_SpellType_XMLTree_Type::
-_xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[142] =
+_xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[179] =
 {
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_ACID_ARROW,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_ACID_FOG,
@@ -3431,10 +3498,46 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[142] =
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CLONE,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CLOUDKILL,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_COLOR_SPRAY,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_COMMAND,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_COMMAND_GREATER,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_COMMAND_PLANTS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_COMMAND_UNDEAD,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_COMMUNE,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_COMMUNE_WITH_NATURE,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_COMPREHEND_LANGUAGES,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONE_OF_COLD,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONFUSION,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONFUSION_LESSER,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONSECRATE,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTACT_OTHER_PLANE,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTAGION,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTINGENCY,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTINUAL_FLAME,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTROL_PLANTS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTROL_UNDEAD,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTROL_WATER,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTROL_WEATHER,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CONTROL_WINDS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CREATE_FOOD_AND_WATER,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CREATE_UNDEAD,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CREATE_UNDEAD_GREATER,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CREATE_WATER,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CREEPING_DOOM,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CRUSHING_DESPAIR,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CRUSHING_HAND,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_CRITICAL,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_CRITICAL_MASS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_LIGHT,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_LIGHT_MASS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_MINOR,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_MODERATE,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_MODERATE_MASS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_SERIOUS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURE_WOUNDS_SERIOUS_MASS,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_CURSE_WATER,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_DARKNESS,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_DELAY_POISON,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_DESECRATE,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_DETECT_CHAOS,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_DETECT_EVIL,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_DETECT_GOOD,
@@ -3453,6 +3556,7 @@ _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[142] =
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_FEEBLEMIND,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_FIRE_STORM,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_GASEOUS_FORM,
+  ::RPG_Magic_SpellType_XMLTree_Type::SPELL_GOOD_HOPE,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_HEAL,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_HEAL_MASS,
   ::RPG_Magic_SpellType_XMLTree_Type::SPELL_HEAT_METAL,
@@ -4592,6 +4696,7 @@ RPG_Magic_Spell_TargetProperties_XMLTree_Type ()
   radius_ (::xml_schema::flags (), this),
   height_ (::xml_schema::flags (), this),
   target_ (target_default_value (), ::xml_schema::flags (), this),
+  shapeable_ (shapeable_default_value (), ::xml_schema::flags (), this),
   rangeIsInHD_ (rangeIsInHD_default_value (), ::xml_schema::flags (), this),
   incrementIsReciprocal_ (incrementIsReciprocal_default_value (), ::xml_schema::flags (), this)
 {
@@ -4610,6 +4715,7 @@ RPG_Magic_Spell_TargetProperties_XMLTree_Type (const RPG_Magic_Spell_TargetPrope
   radius_ (x.radius_, f, this),
   height_ (x.height_, f, this),
   target_ (x.target_, f, this),
+  shapeable_ (x.shapeable_, f, this),
   rangeIsInHD_ (x.rangeIsInHD_, f, this),
   incrementIsReciprocal_ (x.incrementIsReciprocal_, f, this)
 {
@@ -4628,6 +4734,7 @@ RPG_Magic_Spell_TargetProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
   radius_ (f, this),
   height_ (f, this),
   target_ (f, this),
+  shapeable_ (f, this),
   rangeIsInHD_ (f, this),
   incrementIsReciprocal_ (f, this)
 {
@@ -4752,6 +4859,12 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       continue;
     }
 
+    if (n.name () == "shapeable" && n.namespace_ ().empty ())
+    {
+      this->shapeable_.set (shapeable_traits::create (i, f, this));
+      continue;
+    }
+
     if (n.name () == "rangeIsInHD" && n.namespace_ ().empty ())
     {
       this->rangeIsInHD_.set (rangeIsInHD_traits::create (i, f, this));
@@ -4768,6 +4881,11 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   if (!target_.present ())
   {
     this->target_.set (target_default_value ());
+  }
+
+  if (!shapeable_.present ())
+  {
+    this->shapeable_.set (shapeable_default_value ());
   }
 
   if (!rangeIsInHD_.present ())
@@ -4818,6 +4936,9 @@ operator== (const RPG_Magic_Spell_TargetProperties_XMLTree_Type& x, const RPG_Ma
     return false;
 
   if (!(x.target () == y.target ()))
+    return false;
+
+  if (!(x.shapeable () == y.shapeable ()))
     return false;
 
   if (!(x.rangeIsInHD () == y.rangeIsInHD ()))
@@ -5477,11 +5598,11 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_,
-                    _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_ + 61,
+                    _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_ + 78,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_ + 61 || _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_ + 78 || _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -5490,7 +5611,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Magic_Spell_Effect_XMLTree_Type::
-_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[61] =
+_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[78] =
 {
   "SPELLEFFECT_ABILITY_LOSS_MAGICAL_ALL",
   "SPELLEFFECT_ABILITY_LOSS_MAGICAL_EXTRAORDINARY",
@@ -5509,10 +5630,24 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[61] =
   "SPELLEFFECT_BLIND",
   "SPELLEFFECT_CALM_CREATURE",
   "SPELLEFFECT_CHARM_CREATURE",
+  "SPELLEFFECT_COMMAND",
+  "SPELLEFFECT_COMPREHEND_LANGUAGES",
   "SPELLEFFECT_CONFUSE",
+  "SPELLEFFECT_CONSECRATE",
+  "SPELLEFFECT_CONTACT_DIETY",
+  "SPELLEFFECT_CONTROL_CREATURE",
+  "SPELLEFFECT_CONTROL_WATER",
+  "SPELLEFFECT_CONTROL_WEATHER",
+  "SPELLEFFECT_CONTROL_WINDS",
+  "SPELLEFFECT_CONTINGENCY",
+  "SPELLEFFECT_CREATE_FOOD_AND_WATER",
+  "SPELLEFFECT_CREATE_WATER",
+  "SPELLEFFECT_CURSE_WATER",
   "SPELLEFFECT_DAMAGE",
+  "SPELLEFFECT_DARKNESS",
   "SPELLEFFECT_DAZE",
   "SPELLEFFECT_DEAFEN",
+  "SPELLEFFECT_DESECRATE",
   "SPELLEFFECT_DETECT_MAGIC",
   "SPELLEFFECT_DISPEL_MAGIC",
   "SPELLEFFECT_ENTANGLE",
@@ -5520,6 +5655,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[61] =
   "SPELLEFFECT_FASCINATE",
   "SPELLEFFECT_FEAR",
   "SPELLEFFECT_GROW",
+  "SPELLEFFECT_HEAL",
   "SPELLEFFECT_HOLD_CREATURE",
   "SPELLEFFECT_IDENTIFY",
   "SPELLEFFECT_IMMUNITY_MIND_AFFECTING",
@@ -5528,6 +5664,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[61] =
   "SPELLEFFECT_KILL",
   "SPELLEFFECT_KNOCKOUT",
   "SPELLEFFECT_LEVITATE",
+  "SPELLEFFECT_LIGHT_MAGICAL",
   "SPELLEFFECT_LOCK",
   "SPELLEFFECT_MARK",
   "SPELLEFFECT_MESSENGER",
@@ -5542,6 +5679,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[61] =
   "SPELLEFFECT_MODIFIER_SAVE_ALL",
   "SPELLEFFECT_MODIFIER_SAVE_FEAR",
   "SPELLEFFECT_MODIFIER_SAVE_REFLEX",
+  "SPELLEFFECT_MODIFIER_WEAPON_DAMAGE_ROLL",
   "SPELLEFFECT_PARALYSIS",
   "SPELLEFFECT_POLYMORPH",
   "SPELLEFFECT_RAISE_DEAD",
@@ -5556,7 +5694,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[61] =
 };
 
 const RPG_Magic_Spell_Effect_XMLTree_Type::value RPG_Magic_Spell_Effect_XMLTree_Type::
-_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[61] =
+_xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[78] =
 {
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_ABILITY_LOSS_MAGICAL_ALL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_ABILITY_LOSS_MAGICAL_EXTRAORDINARY,
@@ -5575,10 +5713,24 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[61] =
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_BLIND,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CALM_CREATURE,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CHARM_CREATURE,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_COMMAND,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_COMPREHEND_LANGUAGES,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CONFUSE,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CONSECRATE,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CONTACT_DIETY,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CONTINGENCY,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CONTROL_CREATURE,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CONTROL_WATER,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CONTROL_WEATHER,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CONTROL_WINDS,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CREATE_FOOD_AND_WATER,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CREATE_WATER,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_CURSE_WATER,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DAMAGE,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DARKNESS,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DAZE,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DEAFEN,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DESECRATE,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DETECT_MAGIC,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_DISPEL_MAGIC,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_ENTANGLE,
@@ -5586,6 +5738,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[61] =
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_FASCINATE,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_FEAR,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_GROW,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_HEAL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_HOLD_CREATURE,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_IDENTIFY,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_IMMUNITY_MIND_AFFECTING,
@@ -5594,6 +5747,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[61] =
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_KILL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_KNOCKOUT,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_LEVITATE,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_LIGHT_MAGICAL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_LOCK,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_MARK,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_MESSENGER,
@@ -5608,6 +5762,7 @@ _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[61] =
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_MODIFIER_SAVE_ALL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_MODIFIER_SAVE_FEAR,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_MODIFIER_SAVE_REFLEX,
+  ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_MODIFIER_WEAPON_DAMAGE_ROLL,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_PARALYSIS,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_POLYMORPH,
   ::RPG_Magic_Spell_Effect_XMLTree_Type::SPELLEFFECT_RAISE_DEAD,
@@ -5949,9 +6104,9 @@ _xsd_RPG_Magic_CheckTypeUnion_XMLTree_Type_indexes_[71] =
 //
 
 RPG_Magic_Check_XMLTree_Type::
-RPG_Magic_Check_XMLTree_Type (const type_type& type)
+RPG_Magic_Check_XMLTree_Type ()
 : ::xml_schema::type (),
-  type_ (type, ::xml_schema::flags (), this),
+  type_ (::xml_schema::flags (), this),
   difficultyClass_ (::xml_schema::flags (), this),
   modifier_ (::xml_schema::flags (), this),
   levelIncrementMax_ (::xml_schema::flags (), this),
@@ -6007,7 +6162,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< type_type > r (
         type_traits::create (i, f, this));
 
-      if (!type_.present ())
+      if (!this->type_)
       {
         this->type_.set (r);
         continue;
@@ -6048,13 +6203,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     }
 
     break;
-  }
-
-  if (!type_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "type",
-      "urn:rpg");
   }
 
   while (p.more_attributes ())
@@ -7491,6 +7639,7 @@ operator<< (::std::ostream& o, const RPG_Magic_Spell_TargetProperties_XMLTree_Ty
   }
 
   o << ::std::endl << "target: " << i.target ();
+  o << ::std::endl << "shapeable: " << i.shapeable ();
   o << ::std::endl << "rangeIsInHD: " << i.rangeIsInHD ();
   o << ::std::endl << "incrementIsReciprocal: " << i.incrementIsReciprocal ();
   return o;
@@ -7625,7 +7774,11 @@ operator<< (::std::ostream& o, const RPG_Magic_CheckTypeUnion_XMLTree_Type& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Magic_Check_XMLTree_Type& i)
 {
-  o << ::std::endl << "type: " << i.type ();
+  if (i.type ())
+  {
+    o << ::std::endl << "type: " << *i.type ();
+  }
+
   if (i.difficultyClass ())
   {
     o << ::std::endl << "difficultyClass: " << *i.difficultyClass ();
@@ -8594,6 +8747,17 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_TargetProperties_XML
     a << i.target ();
   }
 
+  // shapeable
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "shapeable",
+        e));
+
+    a << i.shapeable ();
+  }
+
   // rangeIsInHD
   //
   {
@@ -8906,6 +9070,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Check_XMLTree_Type& i)
 
   // type
   //
+  if (i.type ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -8913,7 +9078,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Check_XMLTree_Type& i)
         "urn:rpg",
         e));
 
-    s << i.type ();
+    s << *i.type ();
   }
 
   // difficultyClass
@@ -9898,6 +10063,7 @@ RPG_Magic_Spell_TargetProperties_XMLTree_Type (::xml_schema::istream< ACE_InputC
   radius_ (f, this),
   height_ (f, this),
   target_ (f, this),
+  shapeable_ (f, this),
   rangeIsInHD_ (f, this),
   incrementIsReciprocal_ (f, this)
 {
@@ -9985,6 +10151,12 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   {
     ::std::auto_ptr< target_type > r (new target_type (s, f, this));
     this->target_.set (r);
+  }
+
+  {
+    shapeable_type r;
+    s >> r;
+    this->shapeable_.set (r);
   }
 
   {
@@ -10233,8 +10405,13 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
   {
-    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
-    this->type_.set (r);
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+      this->type_.set (r);
+    }
   }
 
   {
@@ -10947,6 +11124,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
   }
 
   s << x.target ();
+  s << x.shapeable ();
   s << x.rangeIsInHD ();
   s << x.incrementIsReciprocal ();
   return s;
@@ -11078,7 +11256,13 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Magic_Check_XMLTree_Type& x)
 {
-  s << x.type ();
+  {
+    bool p (x.type ());
+    s << p;
+    if (p)
+      s << *x.type ();
+  }
+
   {
     bool p (x.difficultyClass ());
     s << p;
