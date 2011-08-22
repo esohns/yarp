@@ -618,20 +618,55 @@ update_character_profile(const RPG_Character_Player& player_in,
     g_list_free(entries);
   } // end IF
   RPG_Magic_Spells_t player_spells = player_in.getSpells();
+  unsigned int count = 0;
+  RPG_Magic_SpellTypes_t processsed_types;
   for (RPG_Magic_SpellsIterator_t iterator = player_spells.begin();
        iterator != player_spells.end();
        iterator++)
   {
-    text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    if (processsed_types.find(*iterator) != processsed_types.end())
+      continue;
 
+    // count instances
+    count = 0;
+    for (RPG_Magic_SpellsIterator_t iterator2 = player_spells.begin();
+         iterator2 != player_spells.end();
+         iterator2++)
+      if (*iterator2 == *iterator)
+        count++;
+
+    text = RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
+    current_box = NULL;
+    current_box = gtk_hbox_new(TRUE, // homogeneous
+                               0);   // spacing
+    ACE_ASSERT(current_box);
     label = NULL;
     label = gtk_label_new(text.c_str());
     ACE_ASSERT(label);
-//     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start(GTK_BOX(current), label,
-                      TRUE, // expand
-                      TRUE, // fill
-                      0);   // padding
+    gtk_box_pack_start(GTK_BOX(current_box), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+
+    converter.str(ACE_TEXT(""));
+    converter.clear();
+    converter << count;
+    text = converter.str();
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+    gtk_box_pack_start(GTK_BOX(current_box), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+
+    //     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), current_box,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+
+    processsed_types.insert(*iterator);
   } // end FOR
   gtk_widget_show_all(current);
 

@@ -297,7 +297,7 @@ RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in
   } // end IF
 
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("invalid spell type \"%s\" --> check implementation !, aborting\n"),
+             ACE_TEXT("invalid spell type \"%s\", aborting\n"),
              RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(spellType_in).c_str()));
 
   ACE_ASSERT(false);
