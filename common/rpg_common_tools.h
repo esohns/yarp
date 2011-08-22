@@ -47,6 +47,9 @@ class RPG_Common_Tools
   static const bool match(const RPG_Common_Environment&,  // a
                           const RPG_Common_Environment&); // b
 
+  static const bool isCasterClass(const RPG_Common_SubClass&); // subClass
+  static const bool isDivineCasterClass(const RPG_Common_SubClass&); // subClass
+
   static const signed char getSizeModifier(const RPG_Common_Size&);
   static const unsigned char sizeToReach(const RPG_Common_Size&);
 

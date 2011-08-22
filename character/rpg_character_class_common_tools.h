@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_CLASS_COMMON_TOOLS_H
 #define RPG_CHARACTER_CLASS_COMMON_TOOLS_H
 
@@ -33,8 +34,9 @@ class RPG_Character_Class_Common_Tools
                                 const RPG_Common_SubClass&); // subclass
   static const RPG_Character_MetaClass subClassToMetaClass(const RPG_Common_SubClass&); // subclass
 
-  static const bool isCasterClass(const RPG_Character_Class&); // class(es)
-  static const bool isCasterClass(const RPG_Common_SubClass&); // subClass
+  static const bool hasCasterClass(const RPG_Character_Class&); // class(es)
+  static const bool hasDivineCasterClass(const RPG_Character_Class&); // class(es)
+  static const bool hasArcaneCasterClass(const RPG_Character_Class&); // class(es)
 
   static RPG_Character_Class classXMLTreeToClass(const RPG_Character_ClassXML_XMLTree_Type&); // class (XML format)
 

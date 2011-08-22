@@ -1098,15 +1098,15 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkFrame" id="memorized_spells_frame">
+                                          <widget class="GtkFrame" id="prepared_spells_frame">
                                             <property name="visible">True</property>
                                             <property name="label_xalign">0</property>
                                             <property name="shadow_type">etched-out</property>
                                             <child>
-                                              <widget class="GtkAlignment" id="memorized_spells_alignment">
+                                              <widget class="GtkAlignment" id="prepared_spells_alignment">
                                                 <property name="visible">True</property>
                                                 <child>
-                                                  <widget class="GtkVBox" id="memorized_spells_vbox">
+                                                  <widget class="GtkVBox" id="prepared_spells_vbox">
                                                     <property name="visible">True</property>
                                                     <property name="orientation">vertical</property>
                                                     <child>
@@ -1117,9 +1117,9 @@
                                               </widget>
                                             </child>
                                             <child>
-                                              <widget class="GtkLabel" id="memorized_spells_label">
+                                              <widget class="GtkLabel" id="prepared_spells_label">
                                                 <property name="visible">True</property>
-                                                <property name="label" translatable="yes">memorized</property>
+                                                <property name="label" translatable="yes">prepared</property>
                                               </widget>
                                               <packing>
                                                 <property name="type">label_item</property>

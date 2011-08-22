@@ -50,11 +50,12 @@ class RPG_Magic_Common_Tools
   static const std::string spellsToString(const RPG_Magic_Spells_t&); // spells
   static const std::string spellsToString(const RPG_Magic_SpellTypes_t&); // spells
 
-  static void getNumSpellsPerLevel(const RPG_Common_SubClass&, // subclass
-                                   const unsigned char&,       // class level
-                                   const unsigned char&,       // spell level
-                                   unsigned char&,             // return value: #spells (/day)
-                                   unsigned char&);            // return value: #spells known
+  static const unsigned int getNumKnownSpells(const RPG_Common_SubClass&, // subclass
+                                              const unsigned char&,       // class level
+                                              const unsigned char&);      // spell level (Bard/Sorcerer)
+  static const unsigned int getNumSpells(const RPG_Common_SubClass&, // subclass
+                                         const unsigned char&,       // class level
+                                         const unsigned char&);      // spell level
 
  private:
   // safety measures

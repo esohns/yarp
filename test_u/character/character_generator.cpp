@@ -1005,34 +1005,36 @@ generate_player_character()
        iterator != playerClass.subClasses.end();
        iterator++)
   {
+    if (!RPG_Common_Tools::isCasterClass(*iterator))
+      continue;
+
     for (unsigned char i = 0;
          i <= RPG_COMMON_MAX_SPELL_LEVEL;
          i++)
     {
-      RPG_Magic_Common_Tools::getNumSpellsPerLevel(*iterator,
-                                                   1,
-                                                   i,
-                                                   numSpells,
-                                                   numKnownSpells);
-      if ((numSpells == 0) &&
-          (numKnownSpells == 0))
-        continue;
+      numKnownSpells = 0;
+      numSpells = 0;
 
-      // get list of available spells
+      // step1: get list of available spells
       casterClass.subclass = *iterator;
       available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
                                                                         i);
 
-      // only Bards and Sorcerers have a limited set of "known" spells to choose from
-      if ((*iterator == SUBCLASS_BARD) ||
-          (*iterator == SUBCLASS_SORCERER))
+      // *NOTE*: divine casters know ALL spells from the levels they can cast
+      if (!RPG_Common_Tools::isDivineCasterClass(*iterator))
       {
+        // step2: compute # known spells
+        numKnownSpells = RPG_Magic_Common_Tools::getNumKnownSpells(*iterator,
+                                                                   1,
+                                                                   i);
+
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),
                    i,
-                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(playerSubClass).c_str(),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
                    numKnownSpells));
 
+        // step3: choose known spells
         numChosen = 0;
         while (numChosen < numKnownSpells)
         {
@@ -1051,34 +1053,34 @@ generate_player_character()
         } // end WHILE
       } // end IF
 
-      // ... other magic-users get to prepare/memorize a number of (available) spells
-      // ... again, apart from the Bard/Sorcerer, who don't need to prepare any spells ahead of time
-      if (RPG_Character_Class_Common_Tools::isCasterClass(playerClass) &&
-          (*iterator != SUBCLASS_BARD) &&
-          (*iterator != SUBCLASS_SORCERER))
+      // step4: compute # prepared spells
+      numSpells = RPG_Magic_Common_Tools::getNumSpells(*iterator,
+                                                       1,
+                                                       i);
+
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+                 i,
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+                 numSpells));
+
+      // step5: choose prepared spells
+      numChosen = 0;
+      while (numChosen < numSpells)
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
-                   i,
-                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(playerSubClass).c_str(),
-                   numSpells));
+        chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
+        // header line
+        std::cout << ACE_TEXT("remaining spell(s): ") << (numSpells - numChosen) << std::endl;
+        std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
-        numChosen = 0;
-        while (numChosen < numSpells)
+        if (print_spells_table((RPG_Common_Tools::isDivineCasterClass(*iterator) ? available
+                                                                                 : knownSpells),
+                               chosen_spell))
         {
-          chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
-          // header line
-          std::cout << ACE_TEXT("remaining spell(s): ") << (numSpells - numChosen) << std::endl;
-          std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
-
-          if (print_spells_table(available,
-                                 chosen_spell))
-          {
-            spells.push_back(chosen_spell);
-            numChosen++;
-          } // end IF
-        } // end WHILE
-      } // end IF
+          spells.push_back(chosen_spell);
+          numChosen++;
+        } // end IF
+      } // end WHILE
     } // end FOR
   } // end FOR
 

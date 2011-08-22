@@ -17,9 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_MAGIC_DEFINES_H
 #define RPG_MAGIC_DEFINES_H
 
-#define RPG_MAGIC_DEF_DICTIONARY_FILE    ACE_TEXT_ALWAYS_CHAR("rpg_magic.xml")
+#define RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL 2
+
+#define RPG_MAGIC_DEF_DICTIONARY_FILE          ACE_TEXT_ALWAYS_CHAR("rpg_magic.xml")
 
 #endif

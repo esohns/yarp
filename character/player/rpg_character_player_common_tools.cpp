@@ -34,6 +34,7 @@
 
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
+#include <rpg_common_tools.h>
 
 #include <rpg_dice_common.h>
 #include <rpg_dice.h>
@@ -362,11 +363,11 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
   hitpoints = RPG_Character_Common_Tools::getHitDie(player_subclass);
 
   // step11: (initial) set of spells
-  unsigned char numKnownSpells = 0;
-  unsigned char numSpells = 0;
+  unsigned int numKnownSpells = 0;
+  unsigned int numSpells = 0;
   RPG_Magic_SpellTypes_t knownSpells;
   RPG_Magic_Spells_t spells;
-  int numChosen = 0;
+  unsigned int numChosen = 0;
   RPG_Magic_SpellTypes_t available;
   RPG_Magic_SpellTypesIterator_t available_iterator;
   RPG_Magic_CasterClassUnion casterClass;
@@ -375,39 +376,39 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
        iterator != player_class.subClasses.end();
        iterator++)
   {
-    if (!RPG_Character_Class_Common_Tools::isCasterClass(*iterator))
+    if (!RPG_Common_Tools::isCasterClass(*iterator))
       continue;
 
     for (unsigned char i = 0;
          i <= RPG_COMMON_MAX_SPELL_LEVEL;
          i++)
     {
-      numSpells = 0;
       numKnownSpells = 0;
-      RPG_Magic_Common_Tools::getNumSpellsPerLevel(*iterator,
-                                                   1,
-                                                   i,
-                                                   numSpells,
-                                                   numKnownSpells);
-      if ((numSpells == 0) &&
-          (numKnownSpells == 0))
-        continue;
+      numSpells = 0;
 
-      // get list of available spells
+      // step1: get list of available spells
       casterClass.subclass = *iterator;
       available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
                                                                         i);
-      ACE_ASSERT(!available.empty());
 
-      // Bards and Sorcerers don't need to prepare any spells ahead of time, but
-      // have a limited set of "known" spells to choose from.
-      // Other magic-users get to prepare/memorize a number of (available) spells
-      if ((*iterator == SUBCLASS_BARD) ||
-          (*iterator == SUBCLASS_SORCERER))
+      // *NOTE*: divine casters know ALL spells from the levels they can cast
+      if (!RPG_Common_Tools::isDivineCasterClass(*iterator))
       {
+        // step2: compute # known spells
+        numKnownSpells = RPG_Magic_Common_Tools::getNumKnownSpells(*iterator,
+                                                                   1,
+                                                                   i);
+
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+//                    i,
+//                    RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+//                    numKnownSpells));
+
         // make sure we have enough variety...
         ACE_ASSERT(numKnownSpells <= available.size());
 
+        // step3: choose known spells
         numChosen = 0;
         while (numChosen < numKnownSpells);
         {
@@ -429,27 +430,39 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
           numChosen++;
         } // end WHILE
       } // end IF
-      else
+
+      // step4: compute # prepared spells
+      numSpells = RPG_Magic_Common_Tools::getNumSpells(*iterator,
+                                                       1,
+                                                       i);
+
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+//                  i,
+//                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+//                  numSpells));
+
+      // step5: choose prepared spells
+      for (unsigned int j = 0;
+           j < numSpells;
+           j++)
       {
-        for (unsigned int j = 0;
-             j < numSpells;
-             j++)
-        {
-          available_iterator = available.begin();
-          result.clear();
-          RPG_Dice::generateRandomNumbers(available.size(),
-                                          1,
-                                          result);
-          std::advance(available_iterator, result.front() - 1);
+        available_iterator = (RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
+                                                                               : knownSpells.begin());
+        result.clear();
+        RPG_Dice::generateRandomNumbers((RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.size()
+                                                                                          : knownSpells.size()),
+                                        1,
+                                        result);
+        std::advance(available_iterator, result.front() - 1);
 
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("chose prepared/memorized spell #%d: \"%s\"\n"),
-                     j + 1,
-                     RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("chose prepared/memorized spell #%d: \"%s\"\n"),
+                   j + 1,
+                   RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
 
-          spells.push_back(*available_iterator);
-        } // end FOR
-      } // end IF
+        spells.push_back(*available_iterator);
+      } // end FOR
     } // end FOR
   } // end FOR
 

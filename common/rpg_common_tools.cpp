@@ -351,6 +351,50 @@ RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
   return false;
 }
 
+const bool
+RPG_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::isCasterClass"));
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_BARD:
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_DRUID:
+//     case SUBCLASS_INVOKER:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_RANGER:
+//     case SUBCLASS_SHAMAN:
+    case SUBCLASS_SORCERER:
+//     case SUBCLASS_WARLOCK:
+    case SUBCLASS_WIZARD:
+      return true;
+    default:
+      break;
+  } // end SWITCH
+
+  return false;
+}
+
+const bool
+RPG_Common_Tools::isDivineCasterClass(const RPG_Common_SubClass& subClass_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::isDivineCasterClass"));
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_DRUID:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_RANGER:
+      return true;
+    default:
+      break;
+  } // end SWITCH
+
+  return false;
+}
+
 const signed char
 RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
 {

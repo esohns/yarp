@@ -20,13 +20,14 @@
 
 #include "rpg_magic_common_tools.h"
 
+#include "rpg_magic_defines.h"
 #include "rpg_magic_dictionary.h"
-
-#include <rpg_dice_common_tools.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 #include <rpg_common_tools.h>
+
+#include <rpg_dice_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -1952,43 +1953,64 @@ RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_RangeProperties& range_
   } // end SWITCH
 }
 
-void
-RPG_Magic_Common_Tools::getNumSpellsPerLevel(const RPG_Common_SubClass& subClass_in,
-                                             const unsigned char& classLevel_in,
-                                             const unsigned char& spellLevel_in,
-                                             unsigned char& numSpells_out,
-                                             unsigned char& numSpellsKnown_out)
+const unsigned int
+RPG_Magic_Common_Tools::getNumKnownSpells(const RPG_Common_SubClass& subClass_in,
+                                          const unsigned char& classLevel_in,
+                                          const unsigned char& spellLevel_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::getNumSpellsPerLevel"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::getNumKnownSpells"));
 
-  // init return value(s)
-  numSpells_out = 0;
-  numSpellsKnown_out = 0;
-
-  ACE_ASSERT(spellLevel_in <= RPG_COMMON_MAX_SPELL_LEVEL);
-  // *TODO*: implement this case...
+  // sanity check(s)
   ACE_ASSERT(classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
+  if (!RPG_Common_Tools::isCasterClass(subClass_in))
+    return 0;
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_BARD:
+    case SUBCLASS_SORCERER:
+    {
+      // sanity check(s)
+      ACE_ASSERT(spellLevel_in <= RPG_COMMON_MAX_SPELL_LEVEL);
+
+      RPG_Magic_ClassLevelSpellLevelPair_t levelPair = std::make_pair(classLevel_in, spellLevel_in);
+      RPG_Magic_SubClassLevelPair_t combination = std::make_pair(subClass_in, levelPair);
+
+      RPG_Magic_NumSpellsTableIterator_t iterator = myNumSpellsKnownTable.find(combination);
+
+      return ((iterator != myNumSpellsKnownTable.end()) ? iterator->second
+                                                        : 0);
+    }
+    case SUBCLASS_WIZARD:
+      break;
+    default:
+      return std::numeric_limits<unsigned int>::max(); // ALL
+  } // end SWITCH
+
+  // sanity check(s)
+  ACE_UNUSED_ARG(spellLevel_in);
+
+  return (RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL * classLevel_in);
+}
+
+const unsigned int
+RPG_Magic_Common_Tools::getNumSpells(const RPG_Common_SubClass& subClass_in,
+                                     const unsigned char& classLevel_in,
+                                     const unsigned char& spellLevel_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::getNumSpells"));
+
+  // sanity check(s)
+  ACE_ASSERT(classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
+  ACE_ASSERT(spellLevel_in <= RPG_COMMON_MAX_SPELL_LEVEL);
+  if (!RPG_Common_Tools::isCasterClass(subClass_in))
+    return 0;
 
   RPG_Magic_ClassLevelSpellLevelPair_t levelPair = std::make_pair(classLevel_in, spellLevel_in);
   RPG_Magic_SubClassLevelPair_t combination = std::make_pair(subClass_in, levelPair);
 
   RPG_Magic_NumSpellsTableIterator_t iterator = myNumSpellsTable.find(combination);
-  if (iterator != myNumSpellsTable.end())
-    numSpells_out = iterator->second;
-//   else
-//     ACE_DEBUG((LM_INFO,
-//                ACE_TEXT("spells table: combination (class \"%s\", level %d, spell %d) not found, aborting\n"),
-//                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-//                static_cast<unsigned int>(classLevel_in),
-//                static_cast<unsigned int>(spellLevel_in)));
 
-  iterator = myNumSpellsKnownTable.find(combination);
-  if (iterator != myNumSpellsKnownTable.end())
-    numSpellsKnown_out = iterator->second;
-//   else
-//     ACE_DEBUG((LM_INFO,
-//                ACE_TEXT("known spells table: combination (class \"%s\", level %d, spell %d) not found, aborting\n"),
-//                RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-//                static_cast<unsigned int>(classLevel_in),
-//                static_cast<unsigned int>(spellLevel_in)));
+  return ((iterator != myNumSpellsTable.end()) ? iterator->second
+                                               : 0);
 }

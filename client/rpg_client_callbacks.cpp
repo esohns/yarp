@@ -567,6 +567,14 @@ update_character_profile(const RPG_Character_Player& player_in,
 
   // step16: spells
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("spells_frame")));
+  ACE_ASSERT(current);
+  if (!RPG_Character_Class_Common_Tools::hasCasterClass(player_class))
+    gtk_widget_hide_all(current);
+  else
+    gtk_widget_show_all(current);
+
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("known_spells_vbox")));
   ACE_ASSERT(current);
   entries = gtk_container_get_children(GTK_CONTAINER(current));
@@ -583,6 +591,16 @@ update_character_profile(const RPG_Character_Player& player_in,
 
     g_list_free(entries);
   } // end IF
+
+  // divine casters know ALL spells from the levels they can cast...
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("known_spells_frame")));
+  ACE_ASSERT(current);
+  if (!RPG_Character_Class_Common_Tools::hasArcaneCasterClass(player_class))
+    gtk_widget_hide_all(current);
+  else
+    gtk_widget_show_all(current);
+
   RPG_Magic_SpellTypes_t player_known_spells = player_in.getKnownSpells();
   for (RPG_Magic_SpellTypesIterator_t iterator = player_known_spells.begin();
        iterator != player_known_spells.end();
@@ -601,7 +619,7 @@ update_character_profile(const RPG_Character_Player& player_in,
   } // end FOR
   gtk_widget_show_all(current);
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("memorized_spells_vbox")));
+                                            ACE_TEXT_ALWAYS_CHAR("prepared_spells_vbox")));
   ACE_ASSERT(current);
   entries = gtk_container_get_children(GTK_CONTAINER(current));
 //   ACE_ASSERT(entries);
@@ -1001,7 +1019,7 @@ reset_entity_profile(GladeXML* xml_in)
     g_list_free(entries);
   } // end IF
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("memorized_spells_vbox")));
+                                            ACE_TEXT_ALWAYS_CHAR("prepared_spells_vbox")));
   ACE_ASSERT(current);
   entries = gtk_container_get_children(GTK_CONTAINER(current));
 //   ACE_ASSERT(entries);
