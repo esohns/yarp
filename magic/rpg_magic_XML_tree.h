@@ -526,9 +526,23 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
     SPELL_CURE_WOUNDS_SERIOUS,
     SPELL_CURE_WOUNDS_SERIOUS_MASS,
     SPELL_CURSE_WATER,
+    SPELL_DANCING_LIGHTS,
     SPELL_DARKNESS,
+    SPELL_DARKNESS_DEEPER,
+    SPELL_DARKVISION,
+    SPELL_DAYLIGHT,
+    SPELL_DAZE,
+    SPELL_DAZE_MONSTER,
+    SPELL_DEATH_KNELL,
+    SPELL_DEATH_WARD,
+    SPELL_DEATHWATCH,
+    SPELL_DEEP_SLUMBER,
     SPELL_DELAY_POISON,
+    SPELL_DELAYED_BLAST_FIREBALL,
+    SPELL_DEMAND,
     SPELL_DESECRATE,
+    SPELL_DESTRUCTION,
+    SPELL_DETECT_ANIMALS_PLANTS,
     SPELL_DETECT_CHAOS,
     SPELL_DETECT_EVIL,
     SPELL_DETECT_GOOD,
@@ -641,8 +655,8 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_SpellType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[179];
-  static const value _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[179];
+  static const char* const _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[193];
+  static const value _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[193];
 };
 
 class RPG_Magic_AbilityClass_XMLTree_Type: public ::xml_schema::string
@@ -2279,7 +2293,7 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_COMMAND,
     SPELLEFFECT_COMPREHEND_LANGUAGES,
     SPELLEFFECT_CONFUSE,
-    SPELLEFFECT_CONSECRATE,
+    SPELLEFFECT_CONSUME,
     SPELLEFFECT_CONTACT_DIETY,
     SPELLEFFECT_CONTROL_CREATURE,
     SPELLEFFECT_CONTROL_WATER,
@@ -2291,10 +2305,12 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_CURSE_WATER,
     SPELLEFFECT_DAMAGE,
     SPELLEFFECT_DARKNESS,
+    SPELLEFFECT_DARKVISION,
     SPELLEFFECT_DAZE,
     SPELLEFFECT_DEAFEN,
-    SPELLEFFECT_DESECRATE,
+    SPELLEFFECT_DETECT_ANIMALS_PLANTS,
     SPELLEFFECT_DETECT_MAGIC,
+    SPELLEFFECT_DISINTEGRATE,
     SPELLEFFECT_DISPEL_MAGIC,
     SPELLEFFECT_ENTANGLE,
     SPELLEFFECT_ETHEREAL,
@@ -2304,7 +2320,10 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_HEAL,
     SPELLEFFECT_HOLD_CREATURE,
     SPELLEFFECT_IDENTIFY,
-    SPELLEFFECT_IMMUNITY_MIND_AFFECTING,
+    SPELLEFFECT_IDENTIFY_CONDITION,
+    SPELLEFFECT_IMMUNITY_MAGIC_DEATH,
+    SPELLEFFECT_IMMUNITY_MAGIC_MIND_AFFECTING,
+    SPELLEFFECT_IMMUNITY_POISON,
     SPELLEFFECT_IMMUNITY_POSSESSION,
     SPELLEFFECT_INVISIBLE,
     SPELLEFFECT_KILL,
@@ -2319,8 +2338,11 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_MODIFIER_ATTACK_ROLL,
     SPELLEFFECT_MODIFIER_ATTRIBUTE,
     SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_ALL,
+    SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_CHARISMA,
     SPELLEFFECT_MODIFIER_CHECK_SKILL_ALL,
+    SPELLEFFECT_MODIFIER_DAMAGE_ROLL,
     SPELLEFFECT_MODIFIER_HP,
+    SPELLEFFECT_MODIFIER_LEVEL_CASTER,
     SPELLEFFECT_MODIFIER_MORALE,
     SPELLEFFECT_MODIFIER_SAVE_ALL,
     SPELLEFFECT_MODIFIER_SAVE_FEAR,
@@ -2332,8 +2354,10 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_RESISTANCE_SPELL_LAWFUL,
     SPELLEFFECT_SENSOR_AUDIAL,
     SPELLEFFECT_SENSOR_VISUAL,
+    SPELLEFFECT_SLEEP,
     SPELLEFFECT_SLOW,
     SPELLEFFECT_STUN,
+    SPELLEFFECT_SUGGESTION,
     SPELLEFFECT_SUMMON_CREATURE,
     SPELLEFFECT_TELEPORT_INTERPLANAR,
     SPELLEFFECT_TRIGGER_ALARM
@@ -2386,8 +2410,8 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[78];
-  static const value _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[78];
+  static const char* const _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[88];
+  static const value _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[88];
 };
 
 class RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type: public ::xml_schema::string
@@ -2399,8 +2423,8 @@ class RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type: public ::xml_schema::string
     PHYSICALDAMAGE_BLUDGEONING,
     PHYSICALDAMAGE_PIERCING,
     PHYSICALDAMAGE_SLASHING,
-    PHYSICALDAMAGE_CONSTRICT,
-    PHYSICALDAMAGE_WITHER,
+    PHYSICALDAMAGE_CRUSHING,
+    PHYSICALDAMAGE_WITHERING,
     DESCRIPTOR_ACID,
     DESCRIPTOR_AIR,
     DESCRIPTOR_CHAOTIC,
@@ -3013,6 +3037,27 @@ class RPG_Magic_Spell_EffectProperties_XMLTree_Type: public ::xml_schema::type
   void
   attribute (::std::auto_ptr< attribute_type > p);
 
+  // domain
+  // 
+  typedef ::RPG_Magic_Domain_XMLTree_Type domain_type;
+  typedef ::xsd::cxx::tree::optional< domain_type > domain_optional;
+  typedef ::xsd::cxx::tree::traits< domain_type, char > domain_traits;
+
+  const domain_optional&
+  domain () const;
+
+  domain_optional&
+  domain ();
+
+  void
+  domain (const domain_type& x);
+
+  void
+  domain (const domain_optional& x);
+
+  void
+  domain (::std::auto_ptr< domain_type > p);
+
   // creature
   // 
   typedef ::RPG_Common_CreatureType_XMLTree_Type creature_type;
@@ -3183,6 +3228,7 @@ class RPG_Magic_Spell_EffectProperties_XMLTree_Type: public ::xml_schema::type
   levelIncrement_optional levelIncrement_;
   levelIncrementMax_optional levelIncrementMax_;
   attribute_optional attribute_;
+  domain_optional domain_;
   creature_optional creature_;
   duration_optional duration_;
   precondition_sequence precondition_;

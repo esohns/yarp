@@ -122,9 +122,23 @@ enum RPG_Magic_SpellType
   SPELL_CURE_WOUNDS_SERIOUS,
   SPELL_CURE_WOUNDS_SERIOUS_MASS,
   SPELL_CURSE_WATER,
+  SPELL_DANCING_LIGHTS,
   SPELL_DARKNESS,
+  SPELL_DARKNESS_DEEPER,
+  SPELL_DARKVISION,
+  SPELL_DAYLIGHT,
+  SPELL_DAZE,
+  SPELL_DAZE_MONSTER,
+  SPELL_DEATH_KNELL,
+  SPELL_DEATH_WARD,
+  SPELL_DEATHWATCH,
+  SPELL_DEEP_SLUMBER,
   SPELL_DELAY_POISON,
+  SPELL_DELAYED_BLAST_FIREBALL,
+  SPELL_DEMAND,
   SPELL_DESECRATE,
+  SPELL_DESTRUCTION,
+  SPELL_DETECT_ANIMALS_PLANTS,
   SPELL_DETECT_CHAOS,
   SPELL_DETECT_EVIL,
   SPELL_DETECT_GOOD,
@@ -320,9 +334,23 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_SERIOUS, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_SERIOUS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURE_WOUNDS_SERIOUS_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_CURE_WOUNDS_SERIOUS_MASS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_CURSE_WATER, ACE_TEXT_ALWAYS_CHAR("SPELL_CURSE_WATER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DANCING_LIGHTS, ACE_TEXT_ALWAYS_CHAR("SPELL_DANCING_LIGHTS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DARKNESS, ACE_TEXT_ALWAYS_CHAR("SPELL_DARKNESS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DARKNESS_DEEPER, ACE_TEXT_ALWAYS_CHAR("SPELL_DARKNESS_DEEPER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DARKVISION, ACE_TEXT_ALWAYS_CHAR("SPELL_DARKVISION")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DAYLIGHT, ACE_TEXT_ALWAYS_CHAR("SPELL_DAYLIGHT")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DAZE, ACE_TEXT_ALWAYS_CHAR("SPELL_DAZE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DAZE_MONSTER, ACE_TEXT_ALWAYS_CHAR("SPELL_DAZE_MONSTER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DEATH_KNELL, ACE_TEXT_ALWAYS_CHAR("SPELL_DEATH_KNELL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DEATH_WARD, ACE_TEXT_ALWAYS_CHAR("SPELL_DEATH_WARD")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DEATHWATCH, ACE_TEXT_ALWAYS_CHAR("SPELL_DEATHWATCH")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DEEP_SLUMBER, ACE_TEXT_ALWAYS_CHAR("SPELL_DEEP_SLUMBER")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DELAY_POISON, ACE_TEXT_ALWAYS_CHAR("SPELL_DELAY_POISON")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DELAYED_BLAST_FIREBALL, ACE_TEXT_ALWAYS_CHAR("SPELL_DELAYED_BLAST_FIREBALL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DEMAND, ACE_TEXT_ALWAYS_CHAR("SPELL_DEMAND")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DESECRATE, ACE_TEXT_ALWAYS_CHAR("SPELL_DESECRATE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DESTRUCTION, ACE_TEXT_ALWAYS_CHAR("SPELL_DESTRUCTION")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_ANIMALS_PLANTS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_ANIMALS_PLANTS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_CHAOS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_CHAOS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_EVIL, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_EVIL")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_GOOD, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_GOOD")));

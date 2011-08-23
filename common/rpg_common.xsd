@@ -364,6 +364,8 @@
      <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
    </xsd:sequence>
    <xsd:attribute name="reciprocalIncrement" type="xsd:unsignedByte" use="optional" default="0"/>
+   <xsd:attribute name="isMaxDelay" type="xsd:boolean" use="optional" default="false"/>
+   <xsd:attribute name="incrementIsInHD" type="xsd:boolean" use="optional" default="false"/>
  </xsd:complexType>
 
   <xsd:simpleType name="RPG_Common_Camp_Type">

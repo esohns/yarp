@@ -409,6 +409,8 @@ RPG_Common_EffectDuration_Type::RPG_Common_EffectDuration_Type()
   myCurrentProperties.levelIncrement = 0;
   myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.reciprocalIncrement = 0;
+  myCurrentProperties.isMaxDelay = false;
+  myCurrentProperties.incrementIsInHD = false;
 }
 
 void RPG_Common_EffectDuration_Type::base(const RPG_Common_Amount& amount_in)
@@ -439,6 +441,20 @@ void RPG_Common_EffectDuration_Type::reciprocalIncrement(unsigned char increment
   myCurrentProperties.reciprocalIncrement = increment_in;
 }
 
+void RPG_Common_EffectDuration_Type::isMaxDelay(bool isMaxDelay_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::isMaxDelay"));
+
+  myCurrentProperties.isMaxDelay = isMaxDelay_in;
+}
+
+void RPG_Common_EffectDuration_Type::incrementIsInHD(bool incrementIsInHD_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::incrementIsInHD"));
+
+  myCurrentProperties.incrementIsInHD = incrementIsInHD_in;
+}
+
 RPG_Common_EffectDuration RPG_Common_EffectDuration_Type::post_RPG_Common_EffectDuration_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_EffectDuration_Type::post_RPG_Common_EffectDuration_Type"));
@@ -453,6 +469,8 @@ RPG_Common_EffectDuration RPG_Common_EffectDuration_Type::post_RPG_Common_Effect
   myCurrentProperties.levelIncrement = 0;
   myCurrentProperties.levelIncrementMax = 0;
   myCurrentProperties.reciprocalIncrement = 0;
+  myCurrentProperties.isMaxDelay = false;
+  myCurrentProperties.incrementIsInHD = false;
 
   return result;
 }

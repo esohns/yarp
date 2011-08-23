@@ -590,6 +590,12 @@ class RPG_Common_EffectDuration_Type_pskel: public ::xml_schema::complex_content
   virtual void
   reciprocalIncrement (unsigned char);
 
+  virtual void
+  isMaxDelay (bool);
+
+  virtual void
+  incrementIsInHD (bool);
+
   virtual RPG_Common_EffectDuration
   post_RPG_Common_EffectDuration_Type () = 0;
 
@@ -608,10 +614,18 @@ class RPG_Common_EffectDuration_Type_pskel: public ::xml_schema::complex_content
   reciprocalIncrement_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
+  isMaxDelay_parser (::xml_schema::boolean_pskel&);
+
+  void
+  incrementIsInHD_parser (::xml_schema::boolean_pskel&);
+
+  void
   parsers (::RPG_Common_Amount_Type_pskel& /* base */,
            ::xml_schema::byte_pskel& /* levelIncrement */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
-           ::xml_schema::unsigned_byte_pskel& /* reciprocalIncrement */);
+           ::xml_schema::unsigned_byte_pskel& /* reciprocalIncrement */,
+           ::xml_schema::boolean_pskel& /* isMaxDelay */,
+           ::xml_schema::boolean_pskel& /* incrementIsInHD */);
 
   // Constructor.
   //
@@ -639,6 +653,8 @@ class RPG_Common_EffectDuration_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::byte_pskel* levelIncrement_parser_;
   ::xml_schema::unsigned_byte_pskel* levelIncrementMax_parser_;
   ::xml_schema::unsigned_byte_pskel* reciprocalIncrement_parser_;
+  ::xml_schema::boolean_pskel* isMaxDelay_parser_;
+  ::xml_schema::boolean_pskel* incrementIsInHD_parser_;
 };
 
 class RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel

@@ -3145,7 +3145,7 @@
       <type>SPELLEFFECT_IMMUNITY_POSSESSION</type>
     </effect>
     <effect>
-      <type>SPELLEFFECT_IMMUNITY_MIND_AFFECTING</type>
+      <type>SPELLEFFECT_IMMUNITY_MAGIC_MIND_AFFECTING</type>
     </effect>
     <effect>
       <type>SPELLEFFECT_CONFUSE</type>
@@ -3779,7 +3779,46 @@
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
-      <type>SPELLEFFECT_CONSECRATE</type>
+      <type>SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_CHARISMA</type>
+      <base>
+        <value>3</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_ATTACK_ROLL</type>
+      <base>
+        <value>-1</value>
+      </base>
+      <precondition>
+        <type>PRECONDITION_TYPE</type>
+        <creature>
+          <metaType>METATYPE_UNDEAD</metaType>
+        </creature>
+      </precondition>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_DAMAGE_ROLL</type>
+      <base>
+        <value>-1</value>
+      </base>
+      <precondition>
+        <type>PRECONDITION_TYPE</type>
+        <creature>
+          <metaType>METATYPE_UNDEAD</metaType>
+        </creature>
+      </precondition>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_SAVE_ALL</type>
+      <base>
+        <value>-1</value>
+      </base>
+      <precondition>
+        <type>PRECONDITION_TYPE</type>
+        <creature>
+          <metaType>METATYPE_UNDEAD</metaType>
+        </creature>
+      </precondition>
     </effect>
   </spell>
   <spell>
@@ -5200,6 +5239,938 @@
     </precondition>
     <effect>
       <type>SPELLEFFECT_CURSE_WATER</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Dancing Lights</name>
+    <type>
+      <type>SPELL_DANCING_LIGHTS</type>
+      <school>SCHOOL_EVOCATION</school>
+      <descriptor>DESCRIPTOR_LIGHT</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>0</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_MEDIUM">
+    </range>
+    <target target="TARGET_SEVERAL">
+      <base>
+        <range>
+          <typeDice>D_4</typeDice>
+        </range>
+      </base>
+      <radius>10</radius>
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>10</value>
+      </base>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_LIGHT_MAGICAL</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Darkness</name>
+    <type counterSpell="SPELL_DAYLIGHT">
+      <type>SPELL_DARKNESS</type>
+      <school>SCHOOL_CONJURATION</school>
+      <descriptor>DESCRIPTOR_DARKNESS</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>2</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_OBJECT</type>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_DARKNESS</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Darkvision</name>
+    <type>
+      <type>SPELL_DARKVISION</type>
+      <school>SCHOOL_TRANSMUTATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_RANGER</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>2</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>600</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_DARKVISION</type>
+      <base>
+        <value>60</value>
+      </base>
+    </effect>
+  </spell>
+  <spell>
+    <name>Daylight</name>
+    <type counterSpell="SPELL_DARKNESS">
+      <type>SPELL_DAYLIGHT</type>
+      <school>SCHOOL_EVOCATION</school>
+      <descriptor>DESCRIPTOR_LIGHT</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_PALADIN</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>3</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_OBJECT</type>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_LIGHT_MAGICAL</type>
+      <base>
+        <value>60</value>
+      </base>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Daze</name>
+    <type>
+      <type>SPELL_DAZE</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>0</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>1</value>
+      </base>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_TYPE</type>
+      <creature>
+        <metaType>METATYPE_HUMANOID</metaType>
+      </creature>
+    </precondition>
+    <precondition>
+      <type>PRECONDITION_HD_MAX</type>
+      <value>4</value>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_DAZE</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Daze Monster</name>
+    <type>
+      <type>SPELL_DAZE_MONSTER</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>2</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_MEDIUM">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>1</value>
+      </base>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_TYPE</type>
+      <creature>
+        <metaType>METATYPE_UNDEAD</metaType>
+      </creature>
+    </precondition>
+    <precondition>
+      <type>PRECONDITION_HD_MAX</type>
+      <value>6</value>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_DAZE</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Death Knell</name>
+    <type>
+      <type>SPELL_DEATH_KNELL</type>
+      <school>SCHOOL_NECROMANCY</school>
+      <descriptor>DESCRIPTOR_DEATH</descriptor>
+      <descriptor>DESCRIPTOR_EVIL</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_DEATH</casterClass>
+      <level>2</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_DYING</condition>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_KILL</type>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_HP</type>
+      <base>
+        <range>
+          <typeDice>D_8</typeDice>
+        </range>
+      </base>
+      <duration incrementIsInHD="true">
+        <base>
+          <value>100</value>
+        </base>
+        <levelIncrement>1</levelIncrement>
+      </duration>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_ATTRIBUTE</type>
+      <base>
+        <value>2</value>
+      </base>
+      <attribute>ATTRIBUTE_STRENGTH</attribute>
+      <duration incrementIsInHD="true">
+        <base>
+          <value>100</value>
+        </base>
+        <levelIncrement>1</levelIncrement>
+      </duration>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_LEVEL_CASTER</type>
+      <base>
+        <value>1</value>
+      </base>
+      <duration incrementIsInHD="true">
+        <base>
+          <value>100</value>
+        </base>
+        <levelIncrement>1</levelIncrement>
+      </duration>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Death Ward</name>
+    <type>
+      <type>SPELL_DEATH_WARD</type>
+      <school>SCHOOL_NECROMANCY</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>4</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>5</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_PALADIN</casterClass>
+      <level>4</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_DEATH</casterClass>
+      <level>4</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_TYPE</type>
+      <creature>
+        <metaType>METATYPE_UNDEAD</metaType>
+      </creature>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_IMMUNITY_MAGIC_DEATH</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Deathwatch</name>
+    <type>
+      <type>SPELL_DEATHWATCH</type>
+      <school>SCHOOL_NECROMANCY</school>
+      <descriptor>DESCRIPTOR_EVIL</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>1</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_RANGED">
+      <max>30</max>
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_EMANATION</effect>
+      <shape>AREA_CONE</shape>
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>100</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_IDENTIFY_CONDITION</type>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Deep Slumber</name>
+    <type>
+      <type>SPELL_DEEP_SLUMBER</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>3</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>3</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target target="TARGET_SEVERAL" rangeIsInHD="true">
+      <base>
+        <value>10</value>
+      </base>
+      <effect>EFFECT_BURST</effect>
+      <shape>AREA_RING</shape>
+      <radius>10</radius>
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>10</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition reverse="true">
+      <type>PRECONDITION_CONDITION</type>
+      <condition>CONDITION_UNCONSCIOUS</condition>
+    </precondition>
+    <precondition reverse="true">
+      <type>PRECONDITION_TYPE</type>
+      <creature>
+        <metaType>METATYPE_CONSTRUCT</metaType>
+      </creature>
+    </precondition>
+    <precondition reverse="true">
+      <type>PRECONDITION_TYPE</type>
+      <creature>
+        <metaType>METATYPE_UNDEAD</metaType>
+      </creature>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_SLEEP</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Deeper Darkness</name>
+    <type counterSpell="SPELL_DAYLIGHT">
+      <type>SPELL_DARKNESS_DEEPER</type>
+      <school>SCHOOL_EVOCATION</school>
+      <descriptor>DESCRIPTOR_DARKNESS</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>3</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>14400</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <precondition>
+      <type>PRECONDITION_OBJECT</type>
+    </precondition>
+    <effect>
+      <type>SPELLEFFECT_DARKNESS</type>
+      <base>
+        <value>60</value>
+      </base>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_FORTITUDE" resistible="true">
+    <name>Delay Poison</name>
+    <type>
+      <type>SPELL_DELAY_POISON</type>
+      <school>SCHOOL_CONJURATION</school>
+      <subSchool>SUBSCHOOL_HEALING</subSchool>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_PALADIN</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_RANGER</casterClass>
+      <level>1</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_TOUCH">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>600</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_IMMUNITY_POISON</type>
+    </effect>
+  </spell>
+  <spell resistible="true">
+    <name>Delayed Blast Fireball</name>
+    <type>
+      <type>SPELL_DELAYED_BLAST_FIREBALL</type>
+      <school>SCHOOL_EVOCATION</school>
+      <descriptor>DESCRIPTOR_FIRE</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>7</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>7</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_LONG">
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_SPREAD</effect>
+      <shape>AREA_RING</shape>
+      <radius>20</radius>
+    </target>
+    <duration>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_DAMAGE</type>
+      <base>
+        <range>
+          <typeDice>D_6</typeDice>
+        </range>
+      </base>
+      <levelIncrement>
+        <value>1</value>
+      </levelIncrement>
+      <levelIncrementMax>20</levelIncrementMax>
+      <duration isMaxDelay="true">
+        <base>
+          <value>5</value>
+        </base>
+      </duration>
+      <counterMeasure reduction="SAVEREDUCTION_HALF">
+        <type>COUNTERMEASURE_CHECK</type>
+        <check>
+          <type>SAVE_REFLEX</type>
+        </check>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_WILL" resistible="true">
+    <name>Demand</name>
+    <type>
+      <type>SPELL_DEMAND</type>
+      <school>SCHOOL_ENCHANTMENT</school>
+      <subSchool>SUBSCHOOL_COMPULSION</subSchool>
+      <descriptor>DESCRIPTOR_MIND_AFFECTING</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>8</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>8</level>
+    </level>
+    <time action="ACTION_TIME">
+      <rounds>100</rounds>
+    </time>
+    <range effect="RANGEEFFECT_UNLIMITED">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>1</value>
+      </base>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_SUGGESTION</type>
+      <counterMeasure reduction="SAVEREDUCTION_PARTIAL">
+        <type>COUNTERMEASURE_CHECK</type>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell resistible="true">
+    <name>Desecrate</name>
+    <type counterSpell="SPELL_CONSECRATE">
+      <type>SPELL_DESECRATE</type>
+      <school>SCHOOL_EVOCATION</school>
+      <descriptor>DESCRIPTOR_EVIL</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>2</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_EVIL</casterClass>
+      <level>2</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_EMANATION</effect>
+      <shape>AREA_RING</shape>
+      <radius>20</radius>
+    </target>
+    <duration duration="DURATION_TIMED">
+      <base>
+        <value>1200</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_CHARISMA</type>
+      <base>
+        <value>-3</value>
+      </base>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_ATTACK_ROLL</type>
+      <base>
+        <value>1</value>
+      </base>
+      <precondition reverse="true">
+        <type>PRECONDITION_TYPE</type>
+        <creature>
+          <metaType>METATYPE_UNDEAD</metaType>
+        </creature>
+      </precondition>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_DAMAGE_ROLL</type>
+      <base>
+        <value>1</value>
+      </base>
+      <precondition reverse="true">
+        <type>PRECONDITION_TYPE</type>
+        <creature>
+          <metaType>METATYPE_UNDEAD</metaType>
+        </creature>
+      </precondition>
+    </effect>
+    <effect>
+      <type>SPELLEFFECT_MODIFIER_SAVE_ALL</type>
+      <base>
+        <value>1</value>
+      </base>
+      <precondition reverse="true">
+        <type>PRECONDITION_TYPE</type>
+        <creature>
+          <metaType>METATYPE_UNDEAD</metaType>
+        </creature>
+      </precondition>
+    </effect>
+  </spell>
+  <spell saveable="SAVE_FORTITUDE" resistible="true">
+    <name>Destruction</name>
+    <type>
+      <type>SPELL_DESTRUCTION</type>
+      <school>SCHOOL_NECROMANCY</school>
+      <descriptor>DESCRIPTOR_DEATH</descriptor>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>7</level>
+    </level>
+    <level>
+      <casterClass>DOMAIN_DEATH</casterClass>
+      <level>7</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_CLOSE">
+    </range>
+    <target target="TARGET_SINGLE">
+    </target>
+    <duration>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_CONSUME</type>
+      <base>
+        <range>
+          <numDice>10</numDice>
+          <typeDice>D_6</typeDice>
+        </range>
+      </base>
+      <counterMeasure reduction="SAVEREDUCTION_PARTIAL">
+        <type>COUNTERMEASURE_CHECK</type>
+      </counterMeasure>
+    </effect>
+  </spell>
+  <spell>
+    <name>Detect Animals Or Plants</name>
+    <type>
+      <type>SPELL_DETECT_ANIMALS_PLANTS</type>
+      <school>SCHOOL_DIVINATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>1</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_RANGER</casterClass>
+      <level>1</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_LONG">
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_EMANATION</effect>
+      <shape>AREA_CONE</shape>
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_DETECT_ANIMALS_PLANTS</type>
+    </effect>
+  </spell>
+  <spell>
+    <name>Detect Chaos</name>
+    <type>
+      <type>SPELL_DETECT_CHAOS</type>
+      <school>SCHOOL_DIVINATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>1</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_RANGED">
+      <max>60</max>
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_EMANATION</effect>
+      <shape>AREA_CONE</shape>
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_DETECT_MAGIC</type>
+      <domain>DOMAIN_CHAOS</domain>
+    </effect>
+  </spell>
+  <spell>
+    <name>Detect Evil</name>
+    <type>
+      <type>SPELL_DETECT_EVIL</type>
+      <school>SCHOOL_DIVINATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>1</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_RANGED">
+      <max>60</max>
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_EMANATION</effect>
+      <shape>AREA_CONE</shape>
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_DETECT_MAGIC</type>
+      <domain>DOMAIN_EVIL</domain>
+    </effect>
+  </spell>
+  <spell>
+    <name>Detect Good</name>
+    <type>
+      <type>SPELL_DETECT_GOOD</type>
+      <school>SCHOOL_DIVINATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>1</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_RANGED">
+      <max>60</max>
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_EMANATION</effect>
+      <shape>AREA_CONE</shape>
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_DETECT_MAGIC</type>
+      <domain>DOMAIN_GOOD</domain>
+    </effect>
+  </spell>
+  <spell>
+    <name>Detect Law</name>
+    <type>
+      <type>SPELL_DETECT_LAW</type>
+      <school>SCHOOL_DIVINATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>1</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_RANGED">
+      <max>60</max>
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_EMANATION</effect>
+      <shape>AREA_CONE</shape>
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>100</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_DETECT_MAGIC</type>
+      <domain>DOMAIN_LAW</domain>
+    </effect>
+  </spell>
+  <spell>
+    <name>Detect Magic</name>
+    <type>
+      <type>SPELL_DETECT_MAGIC</type>
+      <school>SCHOOL_DIVINATION</school>
+    </type>
+    <level>
+      <casterClass>SUBCLASS_BARD</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_CLERIC</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_DRUID</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_SORCERER</casterClass>
+      <level>0</level>
+    </level>
+    <level>
+      <casterClass>SUBCLASS_WIZARD</casterClass>
+      <level>0</level>
+    </level>
+    <time>
+    </time>
+    <range effect="RANGEEFFECT_RANGED">
+      <max>60</max>
+    </range>
+    <target target="TARGET_AREA">
+      <effect>EFFECT_EMANATION</effect>
+      <shape>AREA_CONE</shape>
+    </target>
+    <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>10</value>
+      </base>
+      <levelIncrement>1</levelIncrement>
+    </duration>
+    <effect>
+      <type>SPELLEFFECT_DETECT_MAGIC</type>
     </effect>
   </spell>
 </spellDictionary>

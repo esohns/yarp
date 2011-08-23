@@ -119,12 +119,21 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                              bool_p);
 
   ::xml_schema::byte_pimpl                    byte_p;
+  RPG_Common_EffectDuration_Type              effectDuration_p;
+  effectDuration_p.parsers(amount_p,
+                           byte_p,
+                           unsigned_byte_p,
+                           unsigned_byte_p,
+                           bool_p,
+                           bool_p);
   RPG_Magic_Spell_Duration_Type               durationType_p;
   RPG_Magic_Spell_DurationProperties_Type     duration_p;
   duration_p.parsers(amount_p,
                      byte_p,
                      unsigned_byte_p,
                      unsigned_byte_p,
+                     bool_p,
+                     bool_p,
                      durationType_p,
                      bool_p);
 
@@ -162,7 +171,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
 
   RPG_Magic_Spell_Effect_Type                 effect_p;
   RPG_Magic_Spell_DamageTypeUnion_Type        damageType_p;
-  RPG_Common_EffectDuration_Type              effectDuration_p;
+  RPG_Magic_Domain_Type                       domain_p;
   RPG_Common_CounterMeasure_Type              counterType_p;
   RPG_Magic_CheckTypeUnion_Type               checkType_p;
   RPG_Magic_Check_Type                        check_p;
@@ -185,6 +194,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                              amount_p,
                              unsigned_byte_p,
                              attribute_p,
+                             domain_p,
                              creatureType_p,
                              effectDuration_p,
                              preconditionProperties_p,

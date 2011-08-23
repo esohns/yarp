@@ -654,6 +654,8 @@ class RPG_Magic_Spell_DurationProperties_Type_pskel: public virtual ::RPG_Common
            ::xml_schema::byte_pskel& /* levelIncrement */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
            ::xml_schema::unsigned_byte_pskel& /* reciprocalIncrement */,
+           ::xml_schema::boolean_pskel& /* isMaxDelay */,
+           ::xml_schema::boolean_pskel& /* incrementIsInHD */,
            ::RPG_Magic_Spell_Duration_Type_pskel& /* duration */,
            ::xml_schema::boolean_pskel& /* dismissible */);
 
@@ -1043,6 +1045,9 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   attribute (const RPG_Common_Attribute&);
 
   virtual void
+  domain (const RPG_Magic_Domain&);
+
+  virtual void
   creature (const RPG_Common_CreatureType&);
 
   virtual void
@@ -1090,6 +1095,9 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   attribute_parser (::RPG_Common_Attribute_Type_pskel&);
 
   void
+  domain_parser (::RPG_Magic_Domain_Type_pskel&);
+
+  void
   creature_parser (::RPG_Common_CreatureType_Type_pskel&);
 
   void
@@ -1118,6 +1126,7 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
            ::RPG_Common_Amount_Type_pskel& /* levelIncrement */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
            ::RPG_Common_Attribute_Type_pskel& /* attribute */,
+           ::RPG_Magic_Domain_Type_pskel& /* domain */,
            ::RPG_Common_CreatureType_Type_pskel& /* creature */,
            ::RPG_Common_EffectDuration_Type_pskel& /* duration */,
            ::RPG_Magic_Spell_PreconditionProperties_Type_pskel& /* precondition */,
@@ -1155,6 +1164,7 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   ::RPG_Common_Amount_Type_pskel* levelIncrement_parser_;
   ::xml_schema::unsigned_byte_pskel* levelIncrementMax_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
+  ::RPG_Magic_Domain_Type_pskel* domain_parser_;
   ::RPG_Common_CreatureType_Type_pskel* creature_parser_;
   ::RPG_Common_EffectDuration_Type_pskel* duration_parser_;
   ::RPG_Magic_Spell_PreconditionProperties_Type_pskel* precondition_parser_;

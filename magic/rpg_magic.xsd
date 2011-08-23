@@ -232,9 +232,23 @@
       <xsd:enumeration value="SPELL_CURE_WOUNDS_SERIOUS"/>
       <xsd:enumeration value="SPELL_CURE_WOUNDS_SERIOUS_MASS"/>
       <xsd:enumeration value="SPELL_CURSE_WATER"/>
+      <xsd:enumeration value="SPELL_DANCING_LIGHTS"/>
       <xsd:enumeration value="SPELL_DARKNESS"/>
+      <xsd:enumeration value="SPELL_DARKNESS_DEEPER"/>
+      <xsd:enumeration value="SPELL_DARKVISION"/>
+      <xsd:enumeration value="SPELL_DAYLIGHT"/>
+      <xsd:enumeration value="SPELL_DAZE"/>
+      <xsd:enumeration value="SPELL_DAZE_MONSTER"/>
+      <xsd:enumeration value="SPELL_DEATH_KNELL"/>
+      <xsd:enumeration value="SPELL_DEATH_WARD"/>
+      <xsd:enumeration value="SPELL_DEATHWATCH"/>
+      <xsd:enumeration value="SPELL_DEEP_SLUMBER"/>
       <xsd:enumeration value="SPELL_DELAY_POISON"/>
+      <xsd:enumeration value="SPELL_DELAYED_BLAST_FIREBALL"/>
+      <xsd:enumeration value="SPELL_DEMAND"/>
       <xsd:enumeration value="SPELL_DESECRATE"/>
+      <xsd:enumeration value="SPELL_DESTRUCTION"/>
+      <xsd:enumeration value="SPELL_DETECT_ANIMALS_PLANTS"/>
       <xsd:enumeration value="SPELL_DETECT_CHAOS"/>
       <xsd:enumeration value="SPELL_DETECT_EVIL"/>
       <xsd:enumeration value="SPELL_DETECT_GOOD"/>
@@ -481,7 +495,7 @@
       <xsd:enumeration value="SPELLEFFECT_COMMAND"/>
       <xsd:enumeration value="SPELLEFFECT_COMPREHEND_LANGUAGES"/>
       <xsd:enumeration value="SPELLEFFECT_CONFUSE"/>
-      <xsd:enumeration value="SPELLEFFECT_CONSECRATE"/>
+      <xsd:enumeration value="SPELLEFFECT_CONSUME"/>
       <xsd:enumeration value="SPELLEFFECT_CONTACT_DIETY"/>
       <xsd:enumeration value="SPELLEFFECT_CONTROL_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_CONTROL_WATER"/>
@@ -493,10 +507,12 @@
       <xsd:enumeration value="SPELLEFFECT_CURSE_WATER"/>
       <xsd:enumeration value="SPELLEFFECT_DAMAGE"/>
       <xsd:enumeration value="SPELLEFFECT_DARKNESS"/>
+      <xsd:enumeration value="SPELLEFFECT_DARKVISION"/>
       <xsd:enumeration value="SPELLEFFECT_DAZE"/>
       <xsd:enumeration value="SPELLEFFECT_DEAFEN"/>
-      <xsd:enumeration value="SPELLEFFECT_DESECRATE"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_ANIMALS_PLANTS"/>
       <xsd:enumeration value="SPELLEFFECT_DETECT_MAGIC"/>
+      <xsd:enumeration value="SPELLEFFECT_DISINTEGRATE"/>
       <xsd:enumeration value="SPELLEFFECT_DISPEL_MAGIC"/>
       <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>
       <xsd:enumeration value="SPELLEFFECT_ETHEREAL"/>
@@ -506,7 +522,10 @@
       <xsd:enumeration value="SPELLEFFECT_HEAL"/>
       <xsd:enumeration value="SPELLEFFECT_HOLD_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_IDENTIFY"/>
-      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_MIND_AFFECTING"/>
+      <xsd:enumeration value="SPELLEFFECT_IDENTIFY_CONDITION"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_MAGIC_DEATH"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_MAGIC_MIND_AFFECTING"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_POISON"/>
       <xsd:enumeration value="SPELLEFFECT_IMMUNITY_POSSESSION"/>
       <xsd:enumeration value="SPELLEFFECT_INVISIBLE"/>
       <xsd:enumeration value="SPELLEFFECT_KILL"/>
@@ -521,8 +540,11 @@
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_ATTACK_ROLL"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_ATTRIBUTE"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_ALL"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_CHARISMA"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_CHECK_SKILL_ALL"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_DAMAGE_ROLL"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_HP"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_LEVEL_CASTER"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_MORALE"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE_ALL"/>
       <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE_FEAR"/>
@@ -534,8 +556,10 @@
       <xsd:enumeration value="SPELLEFFECT_RESISTANCE_SPELL_LAWFUL"/>
       <xsd:enumeration value="SPELLEFFECT_SENSOR_AUDIAL"/>
       <xsd:enumeration value="SPELLEFFECT_SENSOR_VISUAL"/>
+      <xsd:enumeration value="SPELLEFFECT_SLEEP"/>
       <xsd:enumeration value="SPELLEFFECT_SLOW"/>
       <xsd:enumeration value="SPELLEFFECT_STUN"/>
+      <xsd:enumeration value="SPELLEFFECT_SUGGESTION"/>
       <xsd:enumeration value="SPELLEFFECT_SUMMON_CREATURE"/>
       <xsd:enumeration value="SPELLEFFECT_TELEPORT_INTERPLANAR"/>
       <xsd:enumeration value="SPELLEFFECT_TRIGGER_ALARM"/>
@@ -578,6 +602,7 @@
       <xsd:element name="levelIncrement" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="domain" type="RPG_Magic_Domain_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="creature" type="RPG_Common_CreatureType_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="duration" type="RPG_Common_EffectDuration_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="precondition" type="RPG_Magic_Spell_PreconditionProperties_Type" minOccurs="0" maxOccurs="unbounded"/>

@@ -927,6 +927,7 @@ RPG_Magic_Spell_EffectProperties_Type::RPG_Magic_Spell_EffectProperties_Type()
   myCurrentProperties.duration.reciprocalIncrement = 0;
   myCurrentProperties.preconditions.clear();
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentProperties.domain = RPG_MAGIC_DOMAIN_INVALID;
   myCurrentProperties.creature.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentProperties.creature.subTypes.clear();
   myCurrentProperties.maxRange = 0;
@@ -982,6 +983,13 @@ void RPG_Magic_Spell_EffectProperties_Type::attribute(const RPG_Common_Attribute
   RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::attribute"));
 
   myCurrentProperties.attribute = attribute_in;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type::domain(const RPG_Magic_Domain& domain_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_EffectProperties_Type::domain"));
+
+  myCurrentProperties.domain = domain_in;
 }
 
 void RPG_Magic_Spell_EffectProperties_Type::creature(const RPG_Common_CreatureType& type_in)
@@ -1062,6 +1070,7 @@ RPG_Magic_Spell_EffectProperties RPG_Magic_Spell_EffectProperties_Type::post_RPG
   myCurrentProperties.duration.reciprocalIncrement = 0;
   myCurrentProperties.preconditions.clear();
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
+  myCurrentProperties.domain = RPG_MAGIC_DOMAIN_INVALID;
   myCurrentProperties.creature.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentProperties.creature.subTypes.clear();
   myCurrentProperties.maxRange = 0;

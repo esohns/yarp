@@ -1227,6 +1227,54 @@ reciprocalIncrement_default_value ()
   return reciprocalIncrement_type (0);
 }
 
+const RPG_Common_EffectDuration_XMLTree_Type::isMaxDelay_type& RPG_Common_EffectDuration_XMLTree_Type::
+isMaxDelay () const
+{
+  return this->isMaxDelay_.get ();
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::isMaxDelay_type& RPG_Common_EffectDuration_XMLTree_Type::
+isMaxDelay ()
+{
+  return this->isMaxDelay_.get ();
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+isMaxDelay (const isMaxDelay_type& x)
+{
+  this->isMaxDelay_.set (x);
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::isMaxDelay_type RPG_Common_EffectDuration_XMLTree_Type::
+isMaxDelay_default_value ()
+{
+  return isMaxDelay_type (false);
+}
+
+const RPG_Common_EffectDuration_XMLTree_Type::incrementIsInHD_type& RPG_Common_EffectDuration_XMLTree_Type::
+incrementIsInHD () const
+{
+  return this->incrementIsInHD_.get ();
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::incrementIsInHD_type& RPG_Common_EffectDuration_XMLTree_Type::
+incrementIsInHD ()
+{
+  return this->incrementIsInHD_.get ();
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+incrementIsInHD (const incrementIsInHD_type& x)
+{
+  this->incrementIsInHD_.set (x);
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::incrementIsInHD_type RPG_Common_EffectDuration_XMLTree_Type::
+incrementIsInHD_default_value ()
+{
+  return incrementIsInHD_type (false);
+}
+
 
 // RPG_Common_Camp_XMLTree_Type
 // 
@@ -3405,7 +3453,9 @@ RPG_Common_EffectDuration_XMLTree_Type ()
   base_ (::xml_schema::flags (), this),
   levelIncrement_ (::xml_schema::flags (), this),
   levelIncrementMax_ (::xml_schema::flags (), this),
-  reciprocalIncrement_ (reciprocalIncrement_default_value (), ::xml_schema::flags (), this)
+  reciprocalIncrement_ (reciprocalIncrement_default_value (), ::xml_schema::flags (), this),
+  isMaxDelay_ (isMaxDelay_default_value (), ::xml_schema::flags (), this),
+  incrementIsInHD_ (incrementIsInHD_default_value (), ::xml_schema::flags (), this)
 {
 }
 
@@ -3417,7 +3467,9 @@ RPG_Common_EffectDuration_XMLTree_Type (const RPG_Common_EffectDuration_XMLTree_
   base_ (x.base_, f, this),
   levelIncrement_ (x.levelIncrement_, f, this),
   levelIncrementMax_ (x.levelIncrementMax_, f, this),
-  reciprocalIncrement_ (x.reciprocalIncrement_, f, this)
+  reciprocalIncrement_ (x.reciprocalIncrement_, f, this),
+  isMaxDelay_ (x.isMaxDelay_, f, this),
+  incrementIsInHD_ (x.incrementIsInHD_, f, this)
 {
 }
 
@@ -3429,7 +3481,9 @@ RPG_Common_EffectDuration_XMLTree_Type (const ::xercesc::DOMElement& e,
   base_ (f, this),
   levelIncrement_ (f, this),
   levelIncrementMax_ (f, this),
-  reciprocalIncrement_ (f, this)
+  reciprocalIncrement_ (f, this),
+  isMaxDelay_ (f, this),
+  incrementIsInHD_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -3498,11 +3552,33 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       this->reciprocalIncrement_.set (reciprocalIncrement_traits::create (i, f, this));
       continue;
     }
+
+    if (n.name () == "isMaxDelay" && n.namespace_ ().empty ())
+    {
+      this->isMaxDelay_.set (isMaxDelay_traits::create (i, f, this));
+      continue;
+    }
+
+    if (n.name () == "incrementIsInHD" && n.namespace_ ().empty ())
+    {
+      this->incrementIsInHD_.set (incrementIsInHD_traits::create (i, f, this));
+      continue;
+    }
   }
 
   if (!reciprocalIncrement_.present ())
   {
     this->reciprocalIncrement_.set (reciprocalIncrement_default_value ());
+  }
+
+  if (!isMaxDelay_.present ())
+  {
+    this->isMaxDelay_.set (isMaxDelay_default_value ());
+  }
+
+  if (!incrementIsInHD_.present ())
+  {
+    this->incrementIsInHD_.set (incrementIsInHD_default_value ());
   }
 }
 
@@ -3531,6 +3607,12 @@ operator== (const RPG_Common_EffectDuration_XMLTree_Type& x, const RPG_Common_Ef
     return false;
 
   if (!(x.reciprocalIncrement () == y.reciprocalIncrement ()))
+    return false;
+
+  if (!(x.isMaxDelay () == y.isMaxDelay ()))
+    return false;
+
+  if (!(x.incrementIsInHD () == y.incrementIsInHD ()))
     return false;
 
   return true;
@@ -3907,6 +3989,8 @@ operator<< (::std::ostream& o, const RPG_Common_EffectDuration_XMLTree_Type& i)
   }
 
   o << ::std::endl << "reciprocalIncrement: " << i.reciprocalIncrement ();
+  o << ::std::endl << "isMaxDelay: " << i.isMaxDelay ();
+  o << ::std::endl << "incrementIsInHD: " << i.incrementIsInHD ();
   return o;
 }
 
@@ -4496,6 +4580,28 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_EffectDuration_XMLTree_Ty
 
     a << i.reciprocalIncrement ();
   }
+
+  // isMaxDelay
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "isMaxDelay",
+        e));
+
+    a << i.isMaxDelay ();
+  }
+
+  // incrementIsInHD
+  //
+  {
+    ::xercesc::DOMAttr& a (
+      ::xsd::cxx::xml::dom::create_attribute (
+        "incrementIsInHD",
+        e));
+
+    a << i.incrementIsInHD ();
+  }
 }
 
 void
@@ -4881,7 +4987,9 @@ RPG_Common_EffectDuration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s
   base_ (f, this),
   levelIncrement_ (f, this),
   levelIncrementMax_ (f, this),
-  reciprocalIncrement_ (f, this)
+  reciprocalIncrement_ (f, this),
+  isMaxDelay_ (f, this),
+  incrementIsInHD_ (f, this)
 {
   this->parse (s, f);
 }
@@ -4926,6 +5034,18 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     reciprocalIncrement_type r;
     s >> r;
     this->reciprocalIncrement_.set (r);
+  }
+
+  {
+    isMaxDelay_type r;
+    s >> r;
+    this->isMaxDelay_.set (r);
+  }
+
+  {
+    incrementIsInHD_type r;
+    s >> r;
+    this->incrementIsInHD_.set (r);
   }
 }
 
@@ -5183,6 +5303,8 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
   }
 
   s << x.reciprocalIncrement ();
+  s << x.isMaxDelay ();
+  s << x.incrementIsInHD ();
   return s;
 }
 

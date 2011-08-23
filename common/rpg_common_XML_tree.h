@@ -1823,6 +1823,40 @@ class RPG_Common_EffectDuration_XMLTree_Type: public ::xml_schema::type
   static reciprocalIncrement_type
   reciprocalIncrement_default_value ();
 
+  // isMaxDelay
+  // 
+  typedef ::xml_schema::boolean isMaxDelay_type;
+  typedef ::xsd::cxx::tree::traits< isMaxDelay_type, char > isMaxDelay_traits;
+
+  const isMaxDelay_type&
+  isMaxDelay () const;
+
+  isMaxDelay_type&
+  isMaxDelay ();
+
+  void
+  isMaxDelay (const isMaxDelay_type& x);
+
+  static isMaxDelay_type
+  isMaxDelay_default_value ();
+
+  // incrementIsInHD
+  // 
+  typedef ::xml_schema::boolean incrementIsInHD_type;
+  typedef ::xsd::cxx::tree::traits< incrementIsInHD_type, char > incrementIsInHD_traits;
+
+  const incrementIsInHD_type&
+  incrementIsInHD () const;
+
+  incrementIsInHD_type&
+  incrementIsInHD ();
+
+  void
+  incrementIsInHD (const incrementIsInHD_type& x);
+
+  static incrementIsInHD_type
+  incrementIsInHD_default_value ();
+
   // Constructors.
   //
   RPG_Common_EffectDuration_XMLTree_Type ();
@@ -1862,6 +1896,8 @@ class RPG_Common_EffectDuration_XMLTree_Type: public ::xml_schema::type
   levelIncrement_optional levelIncrement_;
   levelIncrementMax_optional levelIncrementMax_;
   ::xsd::cxx::tree::one< reciprocalIncrement_type > reciprocalIncrement_;
+  ::xsd::cxx::tree::one< isMaxDelay_type > isMaxDelay_;
+  ::xsd::cxx::tree::one< incrementIsInHD_type > incrementIsInHD_;
 };
 
 bool

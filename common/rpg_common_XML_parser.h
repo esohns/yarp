@@ -269,6 +269,8 @@ class RPG_Common_EffectDuration_Type
   virtual void levelIncrement(signed char);
   virtual void levelIncrementMax(unsigned char);
   virtual void reciprocalIncrement(unsigned char);
+  virtual void isMaxDelay(bool);
+  virtual void incrementIsInHD(bool);
   virtual RPG_Common_EffectDuration post_RPG_Common_EffectDuration_Type();
 
  private:

@@ -252,15 +252,31 @@ reciprocalIncrement_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Common_EffectDuration_Type_pskel::
+isMaxDelay_parser (::xml_schema::boolean_pskel& p)
+{
+  this->isMaxDelay_parser_ = &p;
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+incrementIsInHD_parser (::xml_schema::boolean_pskel& p)
+{
+  this->incrementIsInHD_parser_ = &p;
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
 parsers (::RPG_Common_Amount_Type_pskel& base,
          ::xml_schema::byte_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
-         ::xml_schema::unsigned_byte_pskel& reciprocalIncrement)
+         ::xml_schema::unsigned_byte_pskel& reciprocalIncrement,
+         ::xml_schema::boolean_pskel& isMaxDelay,
+         ::xml_schema::boolean_pskel& incrementIsInHD)
 {
   this->base_parser_ = &base;
   this->levelIncrement_parser_ = &levelIncrement;
   this->levelIncrementMax_parser_ = &levelIncrementMax;
   this->reciprocalIncrement_parser_ = &reciprocalIncrement;
+  this->isMaxDelay_parser_ = &isMaxDelay;
+  this->incrementIsInHD_parser_ = &incrementIsInHD;
 }
 
 RPG_Common_EffectDuration_Type_pskel::
@@ -268,7 +284,9 @@ RPG_Common_EffectDuration_Type_pskel ()
 : base_parser_ (0),
   levelIncrement_parser_ (0),
   levelIncrementMax_parser_ (0),
-  reciprocalIncrement_parser_ (0)
+  reciprocalIncrement_parser_ (0),
+  isMaxDelay_parser_ (0),
+  incrementIsInHD_parser_ (0)
 {
 }
 
@@ -754,6 +772,16 @@ reciprocalIncrement (unsigned char)
 {
 }
 
+void RPG_Common_EffectDuration_Type_pskel::
+isMaxDelay (bool)
+{
+}
+
+void RPG_Common_EffectDuration_Type_pskel::
+incrementIsInHD (bool)
+{
+}
+
 bool RPG_Common_EffectDuration_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
@@ -848,6 +876,34 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
       this->reciprocalIncrement_parser_->_characters (v);
       this->reciprocalIncrement_parser_->_post_impl ();
       this->reciprocalIncrement (this->reciprocalIncrement_parser_->post_unsigned_byte ());
+    }
+
+    return true;
+  }
+
+  if (n == "isMaxDelay" && ns.empty ())
+  {
+    if (this->isMaxDelay_parser_)
+    {
+      this->isMaxDelay_parser_->pre ();
+      this->isMaxDelay_parser_->_pre_impl ();
+      this->isMaxDelay_parser_->_characters (v);
+      this->isMaxDelay_parser_->_post_impl ();
+      this->isMaxDelay (this->isMaxDelay_parser_->post_boolean ());
+    }
+
+    return true;
+  }
+
+  if (n == "incrementIsInHD" && ns.empty ())
+  {
+    if (this->incrementIsInHD_parser_)
+    {
+      this->incrementIsInHD_parser_->pre ();
+      this->incrementIsInHD_parser_->_pre_impl ();
+      this->incrementIsInHD_parser_->_characters (v);
+      this->incrementIsInHD_parser_->_post_impl ();
+      this->incrementIsInHD (this->incrementIsInHD_parser_->post_boolean ());
     }
 
     return true;

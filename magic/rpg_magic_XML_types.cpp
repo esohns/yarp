@@ -325,6 +325,8 @@ parsers (::RPG_Common_Amount_Type_pskel& base,
          ::xml_schema::byte_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::xml_schema::unsigned_byte_pskel& reciprocalIncrement,
+         ::xml_schema::boolean_pskel& isMaxDelay,
+         ::xml_schema::boolean_pskel& incrementIsInHD,
          ::RPG_Magic_Spell_Duration_Type_pskel& duration,
          ::xml_schema::boolean_pskel& dismissible)
 {
@@ -332,6 +334,8 @@ parsers (::RPG_Common_Amount_Type_pskel& base,
   this->levelIncrement_parser_ = &levelIncrement;
   this->levelIncrementMax_parser_ = &levelIncrementMax;
   this->reciprocalIncrement_parser_ = &reciprocalIncrement;
+  this->isMaxDelay_parser_ = &isMaxDelay;
+  this->incrementIsInHD_parser_ = &incrementIsInHD;
   this->duration_parser_ = &duration;
   this->dismissible_parser_ = &dismissible;
 }
@@ -614,6 +618,12 @@ attribute_parser (::RPG_Common_Attribute_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
+domain_parser (::RPG_Magic_Domain_Type_pskel& p)
+{
+  this->domain_parser_ = &p;
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
 creature_parser (::RPG_Common_CreatureType_Type_pskel& p)
 {
   this->creature_parser_ = &p;
@@ -663,6 +673,7 @@ parsers (::RPG_Magic_Spell_Effect_Type_pskel& type,
          ::RPG_Common_Amount_Type_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
          ::RPG_Common_Attribute_Type_pskel& attribute,
+         ::RPG_Magic_Domain_Type_pskel& domain,
          ::RPG_Common_CreatureType_Type_pskel& creature,
          ::RPG_Common_EffectDuration_Type_pskel& duration,
          ::RPG_Magic_Spell_PreconditionProperties_Type_pskel& precondition,
@@ -678,6 +689,7 @@ parsers (::RPG_Magic_Spell_Effect_Type_pskel& type,
   this->levelIncrement_parser_ = &levelIncrement;
   this->levelIncrementMax_parser_ = &levelIncrementMax;
   this->attribute_parser_ = &attribute;
+  this->domain_parser_ = &domain;
   this->creature_parser_ = &creature;
   this->duration_parser_ = &duration;
   this->precondition_parser_ = &precondition;
@@ -696,6 +708,7 @@ RPG_Magic_Spell_EffectProperties_Type_pskel ()
   levelIncrement_parser_ (0),
   levelIncrementMax_parser_ (0),
   attribute_parser_ (0),
+  domain_parser_ (0),
   creature_parser_ (0),
   duration_parser_ (0),
   precondition_parser_ (0),
@@ -2257,6 +2270,11 @@ attribute (const RPG_Common_Attribute&)
 }
 
 void RPG_Magic_Spell_EffectProperties_Type_pskel::
+domain (const RPG_Magic_Domain&)
+{
+}
+
+void RPG_Magic_Spell_EffectProperties_Type_pskel::
 creature (const RPG_Common_CreatureType&)
 {
 }
@@ -2367,6 +2385,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->attribute_parser_)
       this->attribute_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "domain" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->domain_parser_;
+
+    if (this->domain_parser_)
+      this->domain_parser_->pre ();
 
     return true;
   }
@@ -2483,6 +2511,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->attribute_parser_)
       this->attribute (this->attribute_parser_->post_RPG_Common_Attribute_Type ());
+
+    return true;
+  }
+
+  if (n == "domain" && ns == "urn:rpg")
+  {
+    if (this->domain_parser_)
+      this->domain (this->domain_parser_->post_RPG_Magic_Domain_Type ());
 
     return true;
   }

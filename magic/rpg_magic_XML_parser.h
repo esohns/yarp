@@ -371,6 +371,7 @@ class RPG_Magic_Spell_EffectProperties_Type
     virtual void levelIncrement(const RPG_Common_Amount&);
     virtual void levelIncrementMax(unsigned char);
     virtual void attribute(const RPG_Common_Attribute&);
+    virtual void domain(const RPG_Magic_Domain&);
     virtual void creature(const RPG_Common_CreatureType&);
     virtual void duration(const RPG_Common_EffectDuration&);
     virtual void precondition(const RPG_Magic_Spell_PreconditionProperties&);

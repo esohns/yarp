@@ -13,6 +13,8 @@ struct RPG_Common_EffectDuration
   signed char levelIncrement;
   unsigned char levelIncrementMax;
   unsigned char reciprocalIncrement;
+  bool isMaxDelay;
+  bool incrementIsInHD;
 };
 
 #endif
