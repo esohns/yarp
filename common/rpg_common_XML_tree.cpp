@@ -1685,11 +1685,11 @@ _xsd_RPG_Common_SubClass_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_SubClass_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_SubClass_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_SubClass_XMLTree_Type_indexes_ + 17,
+                    _xsd_RPG_Common_SubClass_XMLTree_Type_indexes_ + 10,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_SubClass_XMLTree_Type_indexes_ + 17 || _xsd_RPG_Common_SubClass_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_SubClass_XMLTree_Type_indexes_ + 10 || _xsd_RPG_Common_SubClass_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -1698,46 +1698,32 @@ _xsd_RPG_Common_SubClass_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_SubClass_XMLTree_Type::
-_xsd_RPG_Common_SubClass_XMLTree_Type_literals_[17] =
+_xsd_RPG_Common_SubClass_XMLTree_Type_literals_[10] =
 {
   "SUBCLASS_NONE",
-  "SUBCLASS_AVENGER",
-  "SUBCLASS_BARBARIAN",
   "SUBCLASS_BARD",
   "SUBCLASS_CLERIC",
   "SUBCLASS_DRUID",
   "SUBCLASS_FIGHTER",
-  "SUBCLASS_INVOKER",
-  "SUBCLASS_MONK",
   "SUBCLASS_PALADIN",
   "SUBCLASS_RANGER",
-  "SUBCLASS_SHAMAN",
   "SUBCLASS_SORCERER",
   "SUBCLASS_THIEF",
-  "SUBCLASS_WARLOCK",
-  "SUBCLASS_WARLORD",
   "SUBCLASS_WIZARD"
 };
 
 const RPG_Common_SubClass_XMLTree_Type::value RPG_Common_SubClass_XMLTree_Type::
-_xsd_RPG_Common_SubClass_XMLTree_Type_indexes_[17] =
+_xsd_RPG_Common_SubClass_XMLTree_Type_indexes_[10] =
 {
-  ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_AVENGER,
-  ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_BARBARIAN,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_BARD,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_CLERIC,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_DRUID,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_FIGHTER,
-  ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_INVOKER,
-  ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_MONK,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_NONE,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_PALADIN,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_RANGER,
-  ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_SHAMAN,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_SORCERER,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_THIEF,
-  ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_WARLOCK,
-  ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_WARLORD,
   ::RPG_Common_SubClass_XMLTree_Type::SUBCLASS_WIZARD
 };
 

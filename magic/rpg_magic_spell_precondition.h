@@ -10,7 +10,7 @@
 enum RPG_Magic_Spell_Precondition
 {
   PRECONDITION_ALLY = 0,
-  PRECONDITION_ALIGNMENT_ETHIC,
+  PRECONDITION_ALIGNMENT,
   PRECONDITION_ATTACK_MELEE_ANY,
   PRECONDITION_ATTACK_MELEE_RANGED_TOUCH,
   PRECONDITION_ATTRIBUTE_MAX,
@@ -48,7 +48,7 @@ class RPG_Magic_Spell_PreconditionHelper
   {
     myRPG_Magic_Spell_PreconditionToStringTable.clear();
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ALLY, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ALLY")));
-    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ALIGNMENT_ETHIC, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ALIGNMENT_ETHIC")));
+    myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ALIGNMENT, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ALIGNMENT")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ATTACK_MELEE_ANY, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ATTACK_MELEE_ANY")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ATTACK_MELEE_RANGED_TOUCH, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ATTACK_MELEE_RANGED_TOUCH")));
     myRPG_Magic_Spell_PreconditionToStringTable.insert(std::make_pair(PRECONDITION_ATTRIBUTE_MAX, ACE_TEXT_ALWAYS_CHAR("PRECONDITION_ATTRIBUTE_MAX")));

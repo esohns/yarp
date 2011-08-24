@@ -271,7 +271,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type
     virtual void value(long long);
     virtual void levelIncrement(unsigned char);
     virtual void levelIncrementMax(unsigned char);
-    virtual void ethic(const RPG_Character_AlignmentEthic&);
+    virtual void alignment(const RPG_Character_Alignment&);
     virtual void attribute(const RPG_Common_Attribute&);
     virtual void condition(const RPG_Common_Condition&);
     virtual void creature(const RPG_Common_CreatureType&);

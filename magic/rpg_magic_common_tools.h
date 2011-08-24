@@ -55,7 +55,7 @@ class RPG_Magic_Common_Tools
                                               const unsigned char&);      // spell level (Bard/Sorcerer)
   static const unsigned int getNumSpells(const RPG_Common_SubClass&, // subclass
                                          const unsigned char&,       // class level
-                                         const unsigned char&);      // spell level
+                                         const unsigned char&);      // spell level (== 0xFF ? total # spell slots)
 
  private:
   // safety measures

@@ -342,21 +342,14 @@ class RPG_Common_SubClass_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     SUBCLASS_NONE,
-    SUBCLASS_AVENGER,
-    SUBCLASS_BARBARIAN,
     SUBCLASS_BARD,
     SUBCLASS_CLERIC,
     SUBCLASS_DRUID,
     SUBCLASS_FIGHTER,
-    SUBCLASS_INVOKER,
-    SUBCLASS_MONK,
     SUBCLASS_PALADIN,
     SUBCLASS_RANGER,
-    SUBCLASS_SHAMAN,
     SUBCLASS_SORCERER,
     SUBCLASS_THIEF,
-    SUBCLASS_WARLOCK,
-    SUBCLASS_WARLORD,
     SUBCLASS_WIZARD
   };
 
@@ -407,8 +400,8 @@ class RPG_Common_SubClass_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Common_SubClass_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_SubClass_XMLTree_Type_literals_[17];
-  static const value _xsd_RPG_Common_SubClass_XMLTree_Type_indexes_[17];
+  static const char* const _xsd_RPG_Common_SubClass_XMLTree_Type_literals_[10];
+  static const value _xsd_RPG_Common_SubClass_XMLTree_Type_indexes_[10];
 };
 
 class RPG_Common_Attribute_XMLTree_Type: public ::xml_schema::string

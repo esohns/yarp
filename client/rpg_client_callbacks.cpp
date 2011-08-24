@@ -574,6 +574,15 @@ update_character_profile(const RPG_Character_Player& player_in,
   else
     gtk_widget_show_all(current);
 
+  // divine casters know ALL spells from the levels they can cast...
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("known_spells_frame")));
+  ACE_ASSERT(current);
+  if (!RPG_Character_Class_Common_Tools::hasArcaneCasterClass(player_class))
+    gtk_widget_hide_all(current);
+  else
+    gtk_widget_show_all(current);
+
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("known_spells_vbox")));
   ACE_ASSERT(current);
@@ -591,16 +600,6 @@ update_character_profile(const RPG_Character_Player& player_in,
 
     g_list_free(entries);
   } // end IF
-
-  // divine casters know ALL spells from the levels they can cast...
-  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("known_spells_frame")));
-  ACE_ASSERT(current);
-  if (!RPG_Character_Class_Common_Tools::hasArcaneCasterClass(player_class))
-    gtk_widget_hide_all(current);
-  else
-    gtk_widget_show_all(current);
-
   RPG_Magic_SpellTypes_t player_known_spells = player_in.getKnownSpells();
   for (RPG_Magic_SpellTypesIterator_t iterator = player_known_spells.begin();
        iterator != player_known_spells.end();
@@ -731,7 +730,7 @@ update_character_profile(const RPG_Character_Player& player_in,
     {
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*> (item);
+        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(item);
         ACE_ASSERT(weapon);
 
         // *TODO*: pretty-print this string
@@ -741,7 +740,7 @@ update_character_profile(const RPG_Character_Player& player_in,
       }
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*> (item);
+        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item);
         ACE_ASSERT(armor);
 
         text = RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
@@ -1001,6 +1000,14 @@ reset_entity_profile(GladeXML* xml_in)
   } // end IF
 
   // step1p: spells
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("spells_frame")));
+  ACE_ASSERT(current);
+  gtk_widget_show_all(current);
+  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
+                                            ACE_TEXT_ALWAYS_CHAR("known_spells_frame")));
+  ACE_ASSERT(current);
+  gtk_widget_show_all(current);
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("known_spells_vbox")));
   ACE_ASSERT(current);

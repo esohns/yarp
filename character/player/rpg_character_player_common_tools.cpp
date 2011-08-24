@@ -25,6 +25,7 @@
 #include <rpg_item_armor.h>
 #include <rpg_item_dictionary.h>
 
+#include <rpg_magic_defines.h>
 #include <rpg_magic_common_tools.h>
 
 #include <rpg_character_defines.h>
@@ -379,91 +380,235 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
     if (!RPG_Common_Tools::isCasterClass(*iterator))
       continue;
 
-    for (unsigned char i = 0;
-         i <= RPG_COMMON_MAX_SPELL_LEVEL;
-         i++)
+    casterClass.subclass = *iterator;
+
+    switch (*iterator)
     {
-      numKnownSpells = 0;
-      numSpells = 0;
-
-      // step1: get list of available spells
-      casterClass.subclass = *iterator;
-      available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
-                                                                        i);
-
-      // *NOTE*: divine casters know ALL spells from the levels they can cast
-      if (!RPG_Common_Tools::isDivineCasterClass(*iterator))
+      case SUBCLASS_BARD:
+      case SUBCLASS_SORCERER:
       {
-        // step2: compute # known spells
-        numKnownSpells = RPG_Magic_Common_Tools::getNumKnownSpells(*iterator,
-                                                                   1,
-                                                                   i);
-
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),
-//                    i,
-//                    RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
-//                    numKnownSpells));
-
-        // make sure we have enough variety...
-        ACE_ASSERT(numKnownSpells <= available.size());
-
-        // step3: choose known spells
-        numChosen = 0;
-        while (numChosen < numKnownSpells);
+        for (unsigned char i = 0;
+             i <= RPG_COMMON_MAX_SPELL_LEVEL;
+             i++)
         {
-          available_iterator = available.begin();
+          numKnownSpells = 0;
+
+          // step1: get list of available spells
+          available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                            i);
+
+          // step2: compute # known spells
+          numKnownSpells = RPG_Magic_Common_Tools::getNumKnownSpells(*iterator,
+                                                                     1,
+                                                                     i);
+
+          //         ACE_DEBUG((LM_DEBUG,
+          //                    ACE_TEXT("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+          //                    i,
+          //                    RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+          //                    numKnownSpells));
+
+          // make sure we have enough variety...
+          ACE_ASSERT(numKnownSpells <= available.size());
+
+          // step3: choose known spells
+          if (numKnownSpells == 0)
+            break; // done
+
+          numChosen = 0;
+          while (numChosen < numKnownSpells)
+          {
+            result.clear();
+            RPG_Dice::generateRandomNumbers(available.size(),
+                                            (numKnownSpells - numChosen),
+                                            result);
+
+            for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
+                 iterator2 != result.end();
+                 iterator2++)
+            {
+              available_iterator = available.begin();
+              std::advance(available_iterator, *iterator2 - 1);
+              if (knownSpells.find(*available_iterator) != knownSpells.end())
+                continue; // try again
+
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("chose known spell #%d: \"%s\"\n"),
+                         numChosen + 1,
+                         RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
+              knownSpells.insert(*available_iterator);
+              numChosen++;
+            } // end FOR
+          } // end WHILE
+        } // end FOR
+
+        // *WARNING*: falls through !
+      }
+      case SUBCLASS_CLERIC:
+      case SUBCLASS_DRUID:
+      case SUBCLASS_PALADIN:
+      case SUBCLASS_RANGER:
+      {
+        for (unsigned char i = 0;
+             i <= RPG_COMMON_MAX_SPELL_LEVEL;
+             i++)
+        {
+          numSpells = 0;
+
+          // step1: get list of available spells
+          available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                            i);
+
+          // step2: compute # prepared spells
+          numSpells = RPG_Magic_Common_Tools::getNumSpells(*iterator,
+                                                           1,
+                                                           i);
+
+    //       ACE_DEBUG((LM_DEBUG,
+    //                  ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+    //                  i,
+    //                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+    //                  numSpells));
+
+          // step3: choose prepared spells
+          if (numSpells == 0)
+            break; // done
+
+          result.clear();
+          RPG_Dice::generateRandomNumbers((RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.size()
+                                                                                            : knownSpells.size()),
+                                          numSpells,
+                                          result);
+          for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
+               iterator2 != result.end();
+               iterator2++)
+          {
+            available_iterator = (RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
+                                                                                   : knownSpells.begin());
+            std::advance(available_iterator, *iterator2 - 1);
+
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("chose prepared spell: \"%s\"\n"),
+                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
+            spells.push_back(*available_iterator);
+          } // end FOR
+        } // end FOR
+
+        break;
+      }
+      case SUBCLASS_WIZARD:
+      {
+        numKnownSpells = RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL;
+
+        // step1: collect list of available spells
+        RPG_Magic_SpellTypes_t current;
+        unsigned char i = 0;
+        for (;
+             i <= RPG_COMMON_MAX_SPELL_LEVEL;
+             i++)
+        {
+          if (RPG_Magic_Common_Tools::getNumSpells(*iterator,
+                                                   1,
+                                                   i) == 0)
+          {
+            i--;
+
+            break; // done
+          } // end FOR
+
+          current = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                          i);
+          available.insert(current.begin(), current.end());
+        } // end FOR
+
+        // step2: chose # known spells
+        numChosen = 0;
+        while (numChosen < numKnownSpells)
+        {
           result.clear();
           RPG_Dice::generateRandomNumbers(available.size(),
-                                          1,
+                                          (numKnownSpells - numChosen),
                                           result);
-          std::advance(available_iterator, result.front() - 1);
-          if (knownSpells.find(*available_iterator) != knownSpells.end())
-            continue; // try again
 
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("chose known spell #%d: \"%s\"\n"),
-                     numChosen + 1,
-                     RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+          for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
+               iterator2 != result.end();
+               iterator2++)
+          {
+            available_iterator = available.begin();
+            std::advance(available_iterator, *iterator2 - 1);
+            if (knownSpells.find(*available_iterator) != knownSpells.end())
+              continue; // try again
 
-          knownSpells.insert(*available_iterator);
-          numChosen++;
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("chose known spell #%d: \"%s\"\n"),
+                       numChosen + 1,
+                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
+            knownSpells.insert(*available_iterator);
+            numChosen++;
+          } // end FOR
         } // end WHILE
-      } // end IF
 
-      // step4: compute # prepared spells
-      numSpells = RPG_Magic_Common_Tools::getNumSpells(*iterator,
-                                                       1,
-                                                       i);
+        // step3: chose # prepared spells
+        for (unsigned char j = i;
+             j >= 0;
+             j--)
+        {
+          numSpells += RPG_Magic_Common_Tools::getNumSpells(*iterator,
+                                                            1,
+                                                            j);
+          ACE_ASSERT(numSpells);
 
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
-//                  i,
-//                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
-//                  numSpells));
+          current = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                          j);
+          available.clear();
+          for (RPG_Magic_SpellTypesIterator_t iterator2 = current.begin();
+               iterator2 != current.end();
+               iterator2++)
+            if (knownSpells.find(*iterator2) != knownSpells.end())
+              available.insert(*iterator2);
+//           std::set_intersection(current.begin(),
+//                                 current.end(),
+//                                 knownSpells.begin(),
+//                                 knownSpells.end(),
+//                                 available.begin());
+          if (available.empty())
+            continue; // done
 
-      // step5: choose prepared spells
-      for (unsigned int j = 0;
-           j < numSpells;
-           j++)
+          result.clear();
+          RPG_Dice::generateRandomNumbers(available.size(),
+                                          numSpells,
+                                          result);
+          for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
+               iterator2 != result.end();
+               iterator2++)
+          {
+            available_iterator = available.begin();
+            std::advance(available_iterator, *iterator2 - 1);
+
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("chose prepared spell: \"%s\"\n"),
+                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
+            spells.push_back(*available_iterator);
+          } // end FOR
+
+          numSpells = 0;
+        } // end FOR
+
+        break;
+      }
+      default:
       {
-        available_iterator = (RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
-                                                                               : knownSpells.begin());
-        result.clear();
-        RPG_Dice::generateRandomNumbers((RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.size()
-                                                                                          : knownSpells.size()),
-                                        1,
-                                        result);
-        std::advance(available_iterator, result.front() - 1);
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid class (was: %s), aborting\n"),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str()));
 
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("chose prepared/memorized spell #%d: \"%s\"\n"),
-                   j + 1,
-                   RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
-
-        spells.push_back(*available_iterator);
-      } // end FOR
-    } // end FOR
+        break;
+      }
+    } // end SWITCH
   } // end FOR
 
   // step12: initialize condition

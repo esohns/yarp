@@ -254,15 +254,56 @@
       <xsd:enumeration value="SPELL_DETECT_GOOD"/>
       <xsd:enumeration value="SPELL_DETECT_LAW"/>
       <xsd:enumeration value="SPELL_DETECT_MAGIC"/>
+      <xsd:enumeration value="SPELL_DETECT_POISON"/>
+      <xsd:enumeration value="SPELL_DETECT_SCRYING"/>
+      <xsd:enumeration value="SPELL_DETECT_SECRET_DOORS"/>
+      <xsd:enumeration value="SPELL_DETECT_SNARES_AND_PITS"/>
       <xsd:enumeration value="SPELL_DETECT_THOUGHTS"/>
+      <xsd:enumeration value="SPELL_DETECT_UNDEAD"/>
+      <xsd:enumeration value="SPELL_DICTUM"/>
       <xsd:enumeration value="SPELL_DIMENSION_DOOR"/>
+      <xsd:enumeration value="SPELL_DIMENSIONAL_ANCHOR"/>
+      <xsd:enumeration value="SPELL_DIMENSIONAL_LOCK"/>
+      <xsd:enumeration value="SPELL_DIMINISH_PLANTS"/>
+      <xsd:enumeration value="SPELL_DISCERN_LIES"/>
       <xsd:enumeration value="SPELL_DISCERN_LOCATION"/>
+      <xsd:enumeration value="SPELL_DISGUISE_SELF"/>
       <xsd:enumeration value="SPELL_DISINTEGRATE"/>
+      <xsd:enumeration value="SPELL_DISMISSAL"/>
+      <xsd:enumeration value="SPELL_DISPEL_CHAOS"/>
+      <xsd:enumeration value="SPELL_DISPEL_EVIL"/>
+      <xsd:enumeration value="SPELL_DISPEL_GOOD"/>
+      <xsd:enumeration value="SPELL_DISPEL_LAW"/>
       <xsd:enumeration value="SPELL_DISPEL_MAGIC"/>
       <xsd:enumeration value="SPELL_DISPEL_MAGIC_GREATER"/>
+      <xsd:enumeration value="SPELL_DISPLACEMENT"/>
+      <xsd:enumeration value="SPELL_DISRUPT_UNDEAD"/>
+      <xsd:enumeration value="SPELL_DISRUPTING_WEAPON"/>
+      <xsd:enumeration value="SPELL_DIVINATION"/>
+      <xsd:enumeration value="SPELL_DIVINE_FAVOR"/>
+      <xsd:enumeration value="SPELL_DIVINE_POWER"/>
+      <xsd:enumeration value="SPELL_DOMINATE_ANIMAL"/>
       <xsd:enumeration value="SPELL_DOMINATE_MONSTER"/>
+      <xsd:enumeration value="SPELL_DOMINATE_PERSON"/>
+      <xsd:enumeration value="SPELL_DOOM"/>
+      <xsd:enumeration value="SPELL_DREAM"/>
+      <xsd:enumeration value="SPELL_EAGLES_SPLENDOR"/>
+      <xsd:enumeration value="SPELL_EAGLES_SPLENDOR_MASS"/>
+      <xsd:enumeration value="SPELL_ELEMENTAL_SWARM"/>
+      <xsd:enumeration value="SPELL_ENDURE_ELEMENTS"/>
+      <xsd:enumeration value="SPELL_ENERGY_DRAIN"/>
+      <xsd:enumeration value="SPELL_ENERVATION"/>
+      <xsd:enumeration value="SPELL_ENLARGE_PERSON"/>
+      <xsd:enumeration value="SPELL_ENLARGE_PERSON_MASS"/>
       <xsd:enumeration value="SPELL_ENTANGLE"/>
+      <xsd:enumeration value="SPELL_ENTHRALL"/>
+      <xsd:enumeration value="SPELL_ENTROPIC_SHIELD"/>
+      <xsd:enumeration value="SPELL_ERASE"/>
       <xsd:enumeration value="SPELL_ETHEREAL_JAUNT"/>
+      <xsd:enumeration value="SPELL_ETHEREALNESS"/>
+      <xsd:enumeration value="SPELL_EXPEDITIOUS_RETREAT"/>
+      <xsd:enumeration value="SPELL_EXPLOSIVE_RUNES"/>
+      <xsd:enumeration value="SPELL_EYEBITE"/>
       <xsd:enumeration value="SPELL_FEAR"/>
       <xsd:enumeration value="SPELL_FEEBLEMIND"/>
       <xsd:enumeration value="SPELL_FIRE_STORM"/>
@@ -281,6 +322,7 @@
       <xsd:enumeration value="SPELL_MIRROR_IMAGE"/>
       <xsd:enumeration value="SPELL_NEUTRALIZE_POISON"/>
       <xsd:enumeration value="SPELL_PLANE_SHIFT"/>
+      <xsd:enumeration value="SPELL_PLANT_GROWTH"/>
       <xsd:enumeration value="SPELL_POLYMORPH"/>
       <xsd:enumeration value="SPELL_POWER_WORD_STUN"/>
       <xsd:enumeration value="SPELL_PROJECT_IMAGE"/>
@@ -435,7 +477,7 @@
   <xsd:simpleType name="RPG_Magic_Spell_Precondition_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="PRECONDITION_ALLY"/>
-      <xsd:enumeration value="PRECONDITION_ALIGNMENT_ETHIC"/>
+      <xsd:enumeration value="PRECONDITION_ALIGNMENT"/>
       <xsd:enumeration value="PRECONDITION_ATTACK_MELEE_ANY"/>
       <xsd:enumeration value="PRECONDITION_ATTACK_MELEE_RANGED_TOUCH"/>
       <xsd:enumeration value="PRECONDITION_ATTRIBUTE_MAX"/>
@@ -462,7 +504,7 @@
       <xsd:element name="value" type="xsd:int" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="ethic" type="RPG_Character_AlignmentEthic_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="condition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="creature" type="RPG_Common_CreatureType_Type" minOccurs="0" maxOccurs="unbounded"/>
@@ -512,6 +554,16 @@
       <xsd:enumeration value="SPELLEFFECT_DEAFEN"/>
       <xsd:enumeration value="SPELLEFFECT_DETECT_ANIMALS_PLANTS"/>
       <xsd:enumeration value="SPELLEFFECT_DETECT_MAGIC"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_POISON"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_SCRYING"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_SECRET_DOORS"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_SNARES_AND_PITS"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_THOUGHTS"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_UNDEAD"/>
+      <xsd:enumeration value="SPELLEFFECT_DIMENSIONAL_ANCHOR"/>
+      <xsd:enumeration value="SPELLEFFECT_DIMINISH"/>
+      <xsd:enumeration value="SPELLEFFECT_DISCERN_LIES"/>
+      <xsd:enumeration value="SPELLEFFECT_DISGUISE"/>
       <xsd:enumeration value="SPELLEFFECT_DISINTEGRATE"/>
       <xsd:enumeration value="SPELLEFFECT_DISPEL_MAGIC"/>
       <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>
@@ -532,6 +584,7 @@
       <xsd:enumeration value="SPELLEFFECT_KNOCKOUT"/>
       <xsd:enumeration value="SPELLEFFECT_LEVITATE"/>
       <xsd:enumeration value="SPELLEFFECT_LIGHT_MAGICAL"/>
+      <xsd:enumeration value="SPELLEFFECT_LOCATE"/>
       <xsd:enumeration value="SPELLEFFECT_LOCK"/>
       <xsd:enumeration value="SPELLEFFECT_MARK"/>
       <xsd:enumeration value="SPELLEFFECT_MESSENGER"/>
@@ -561,6 +614,7 @@
       <xsd:enumeration value="SPELLEFFECT_STUN"/>
       <xsd:enumeration value="SPELLEFFECT_SUGGESTION"/>
       <xsd:enumeration value="SPELLEFFECT_SUMMON_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_TELEPORT"/>
       <xsd:enumeration value="SPELLEFFECT_TELEPORT_INTERPLANAR"/>
       <xsd:enumeration value="SPELLEFFECT_TRIGGER_ALARM"/>
     </xsd:restriction>

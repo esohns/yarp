@@ -144,15 +144,56 @@ enum RPG_Magic_SpellType
   SPELL_DETECT_GOOD,
   SPELL_DETECT_LAW,
   SPELL_DETECT_MAGIC,
+  SPELL_DETECT_POISON,
+  SPELL_DETECT_SCRYING,
+  SPELL_DETECT_SECRET_DOORS,
+  SPELL_DETECT_SNARES_AND_PITS,
   SPELL_DETECT_THOUGHTS,
+  SPELL_DETECT_UNDEAD,
+  SPELL_DICTUM,
   SPELL_DIMENSION_DOOR,
+  SPELL_DIMENSIONAL_ANCHOR,
+  SPELL_DIMENSIONAL_LOCK,
+  SPELL_DIMINISH_PLANTS,
+  SPELL_DISCERN_LIES,
   SPELL_DISCERN_LOCATION,
+  SPELL_DISGUISE_SELF,
   SPELL_DISINTEGRATE,
+  SPELL_DISMISSAL,
+  SPELL_DISPEL_CHAOS,
+  SPELL_DISPEL_EVIL,
+  SPELL_DISPEL_GOOD,
+  SPELL_DISPEL_LAW,
   SPELL_DISPEL_MAGIC,
   SPELL_DISPEL_MAGIC_GREATER,
+  SPELL_DISPLACEMENT,
+  SPELL_DISRUPT_UNDEAD,
+  SPELL_DISRUPTING_WEAPON,
+  SPELL_DIVINATION,
+  SPELL_DIVINE_FAVOR,
+  SPELL_DIVINE_POWER,
+  SPELL_DOMINATE_ANIMAL,
   SPELL_DOMINATE_MONSTER,
+  SPELL_DOMINATE_PERSON,
+  SPELL_DOOM,
+  SPELL_DREAM,
+  SPELL_EAGLES_SPLENDOR,
+  SPELL_EAGLES_SPLENDOR_MASS,
+  SPELL_ELEMENTAL_SWARM,
+  SPELL_ENDURE_ELEMENTS,
+  SPELL_ENERGY_DRAIN,
+  SPELL_ENERVATION,
+  SPELL_ENLARGE_PERSON,
+  SPELL_ENLARGE_PERSON_MASS,
   SPELL_ENTANGLE,
+  SPELL_ENTHRALL,
+  SPELL_ENTROPIC_SHIELD,
+  SPELL_ERASE,
   SPELL_ETHEREAL_JAUNT,
+  SPELL_ETHEREALNESS,
+  SPELL_EXPEDITIOUS_RETREAT,
+  SPELL_EXPLOSIVE_RUNES,
+  SPELL_EYEBITE,
   SPELL_FEAR,
   SPELL_FEEBLEMIND,
   SPELL_FIRE_STORM,
@@ -171,6 +212,7 @@ enum RPG_Magic_SpellType
   SPELL_MIRROR_IMAGE,
   SPELL_NEUTRALIZE_POISON,
   SPELL_PLANE_SHIFT,
+  SPELL_PLANT_GROWTH,
   SPELL_POLYMORPH,
   SPELL_POWER_WORD_STUN,
   SPELL_PROJECT_IMAGE,
@@ -356,15 +398,56 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_GOOD, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_GOOD")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_LAW, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_LAW")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_MAGIC, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_MAGIC")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_POISON, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_POISON")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_SCRYING, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_SCRYING")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_SECRET_DOORS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_SECRET_DOORS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_SNARES_AND_PITS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_SNARES_AND_PITS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_THOUGHTS, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_THOUGHTS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DETECT_UNDEAD, ACE_TEXT_ALWAYS_CHAR("SPELL_DETECT_UNDEAD")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DICTUM, ACE_TEXT_ALWAYS_CHAR("SPELL_DICTUM")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DIMENSION_DOOR, ACE_TEXT_ALWAYS_CHAR("SPELL_DIMENSION_DOOR")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DIMENSIONAL_ANCHOR, ACE_TEXT_ALWAYS_CHAR("SPELL_DIMENSIONAL_ANCHOR")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DIMENSIONAL_LOCK, ACE_TEXT_ALWAYS_CHAR("SPELL_DIMENSIONAL_LOCK")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DIMINISH_PLANTS, ACE_TEXT_ALWAYS_CHAR("SPELL_DIMINISH_PLANTS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISCERN_LIES, ACE_TEXT_ALWAYS_CHAR("SPELL_DISCERN_LIES")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISCERN_LOCATION, ACE_TEXT_ALWAYS_CHAR("SPELL_DISCERN_LOCATION")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISGUISE_SELF, ACE_TEXT_ALWAYS_CHAR("SPELL_DISGUISE_SELF")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISINTEGRATE, ACE_TEXT_ALWAYS_CHAR("SPELL_DISINTEGRATE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISMISSAL, ACE_TEXT_ALWAYS_CHAR("SPELL_DISMISSAL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPEL_CHAOS, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPEL_CHAOS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPEL_EVIL, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPEL_EVIL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPEL_GOOD, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPEL_GOOD")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPEL_LAW, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPEL_LAW")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPEL_MAGIC, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPEL_MAGIC")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPEL_MAGIC_GREATER, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPEL_MAGIC_GREATER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISPLACEMENT, ACE_TEXT_ALWAYS_CHAR("SPELL_DISPLACEMENT")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISRUPT_UNDEAD, ACE_TEXT_ALWAYS_CHAR("SPELL_DISRUPT_UNDEAD")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DISRUPTING_WEAPON, ACE_TEXT_ALWAYS_CHAR("SPELL_DISRUPTING_WEAPON")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DIVINATION, ACE_TEXT_ALWAYS_CHAR("SPELL_DIVINATION")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DIVINE_FAVOR, ACE_TEXT_ALWAYS_CHAR("SPELL_DIVINE_FAVOR")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DIVINE_POWER, ACE_TEXT_ALWAYS_CHAR("SPELL_DIVINE_POWER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DOMINATE_ANIMAL, ACE_TEXT_ALWAYS_CHAR("SPELL_DOMINATE_ANIMAL")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DOMINATE_MONSTER, ACE_TEXT_ALWAYS_CHAR("SPELL_DOMINATE_MONSTER")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DOMINATE_PERSON, ACE_TEXT_ALWAYS_CHAR("SPELL_DOMINATE_PERSON")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DOOM, ACE_TEXT_ALWAYS_CHAR("SPELL_DOOM")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_DREAM, ACE_TEXT_ALWAYS_CHAR("SPELL_DREAM")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_EAGLES_SPLENDOR, ACE_TEXT_ALWAYS_CHAR("SPELL_EAGLES_SPLENDOR")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_EAGLES_SPLENDOR_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_EAGLES_SPLENDOR_MASS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ELEMENTAL_SWARM, ACE_TEXT_ALWAYS_CHAR("SPELL_ELEMENTAL_SWARM")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ENDURE_ELEMENTS, ACE_TEXT_ALWAYS_CHAR("SPELL_ENDURE_ELEMENTS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ENERGY_DRAIN, ACE_TEXT_ALWAYS_CHAR("SPELL_ENERGY_DRAIN")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ENERVATION, ACE_TEXT_ALWAYS_CHAR("SPELL_ENERVATION")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ENLARGE_PERSON, ACE_TEXT_ALWAYS_CHAR("SPELL_ENLARGE_PERSON")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ENLARGE_PERSON_MASS, ACE_TEXT_ALWAYS_CHAR("SPELL_ENLARGE_PERSON_MASS")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ENTANGLE, ACE_TEXT_ALWAYS_CHAR("SPELL_ENTANGLE")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ENTHRALL, ACE_TEXT_ALWAYS_CHAR("SPELL_ENTHRALL")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ENTROPIC_SHIELD, ACE_TEXT_ALWAYS_CHAR("SPELL_ENTROPIC_SHIELD")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ERASE, ACE_TEXT_ALWAYS_CHAR("SPELL_ERASE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ETHEREAL_JAUNT, ACE_TEXT_ALWAYS_CHAR("SPELL_ETHEREAL_JAUNT")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_ETHEREALNESS, ACE_TEXT_ALWAYS_CHAR("SPELL_ETHEREALNESS")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_EXPEDITIOUS_RETREAT, ACE_TEXT_ALWAYS_CHAR("SPELL_EXPEDITIOUS_RETREAT")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_EXPLOSIVE_RUNES, ACE_TEXT_ALWAYS_CHAR("SPELL_EXPLOSIVE_RUNES")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_EYEBITE, ACE_TEXT_ALWAYS_CHAR("SPELL_EYEBITE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_FEAR, ACE_TEXT_ALWAYS_CHAR("SPELL_FEAR")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_FEEBLEMIND, ACE_TEXT_ALWAYS_CHAR("SPELL_FEEBLEMIND")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_FIRE_STORM, ACE_TEXT_ALWAYS_CHAR("SPELL_FIRE_STORM")));
@@ -383,6 +466,7 @@ class RPG_Magic_SpellTypeHelper
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_MIRROR_IMAGE, ACE_TEXT_ALWAYS_CHAR("SPELL_MIRROR_IMAGE")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_NEUTRALIZE_POISON, ACE_TEXT_ALWAYS_CHAR("SPELL_NEUTRALIZE_POISON")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_PLANE_SHIFT, ACE_TEXT_ALWAYS_CHAR("SPELL_PLANE_SHIFT")));
+    myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_PLANT_GROWTH, ACE_TEXT_ALWAYS_CHAR("SPELL_PLANT_GROWTH")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_POLYMORPH, ACE_TEXT_ALWAYS_CHAR("SPELL_POLYMORPH")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_POWER_WORD_STUN, ACE_TEXT_ALWAYS_CHAR("SPELL_POWER_WORD_STUN")));
     myRPG_Magic_SpellTypeToStringTable.insert(std::make_pair(SPELL_PROJECT_IMAGE, ACE_TEXT_ALWAYS_CHAR("SPELL_PROJECT_IMAGE")));

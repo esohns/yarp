@@ -375,9 +375,9 @@ levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
-ethic_parser (::RPG_Character_AlignmentEthic_Type_pskel& p)
+alignment_parser (::RPG_Character_Alignment_Type_pskel& p)
 {
-  this->ethic_parser_ = &p;
+  this->alignment_parser_ = &p;
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
@@ -427,7 +427,7 @@ parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
          ::xml_schema::int_pskel& value,
          ::xml_schema::unsigned_byte_pskel& levelIncrement,
          ::xml_schema::unsigned_byte_pskel& levelIncrementMax,
-         ::RPG_Character_AlignmentEthic_Type_pskel& ethic,
+         ::RPG_Character_Alignment_Type_pskel& alignment,
          ::RPG_Common_Attribute_Type_pskel& attribute,
          ::RPG_Common_Condition_Type_pskel& condition,
          ::RPG_Common_CreatureType_Type_pskel& creature,
@@ -440,7 +440,7 @@ parsers (::RPG_Magic_Spell_Precondition_Type_pskel& type,
   this->value_parser_ = &value;
   this->levelIncrement_parser_ = &levelIncrement;
   this->levelIncrementMax_parser_ = &levelIncrementMax;
-  this->ethic_parser_ = &ethic;
+  this->alignment_parser_ = &alignment;
   this->attribute_parser_ = &attribute;
   this->condition_parser_ = &condition;
   this->creature_parser_ = &creature;
@@ -456,7 +456,7 @@ RPG_Magic_Spell_PreconditionProperties_Type_pskel ()
   value_parser_ (0),
   levelIncrement_parser_ (0),
   levelIncrementMax_parser_ (0),
-  ethic_parser_ (0),
+  alignment_parser_ (0),
   attribute_parser_ (0),
   condition_parser_ (0),
   creature_parser_ (0),
@@ -1677,7 +1677,7 @@ levelIncrementMax (unsigned char)
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type_pskel::
-ethic (const RPG_Character_AlignmentEthic&)
+alignment ()
 {
 }
 
@@ -1766,12 +1766,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "ethic" && ns == "urn:rpg")
+  if (n == "alignment" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->ethic_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->alignment_parser_;
 
-    if (this->ethic_parser_)
-      this->ethic_parser_->pre ();
+    if (this->alignment_parser_)
+      this->alignment_parser_->pre ();
 
     return true;
   }
@@ -1868,10 +1868,13 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "ethic" && ns == "urn:rpg")
+  if (n == "alignment" && ns == "urn:rpg")
   {
-    if (this->ethic_parser_)
-      this->ethic (this->ethic_parser_->post_RPG_Character_AlignmentEthic_Type ());
+    if (this->alignment_parser_)
+    {
+      this->alignment_parser_->post_RPG_Character_Alignment_Type ();
+      this->alignment ();
+    }
 
     return true;
   }

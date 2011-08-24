@@ -709,7 +709,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   levelIncrementMax (unsigned char);
 
   virtual void
-  ethic (const RPG_Character_AlignmentEthic&);
+  alignment ();
 
   virtual void
   attribute (const RPG_Common_Attribute&);
@@ -750,7 +750,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   levelIncrementMax_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  ethic_parser (::RPG_Character_AlignmentEthic_Type_pskel&);
+  alignment_parser (::RPG_Character_Alignment_Type_pskel&);
 
   void
   attribute_parser (::RPG_Common_Attribute_Type_pskel&);
@@ -778,7 +778,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
            ::xml_schema::int_pskel& /* value */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrement */,
            ::xml_schema::unsigned_byte_pskel& /* levelIncrementMax */,
-           ::RPG_Character_AlignmentEthic_Type_pskel& /* ethic */,
+           ::RPG_Character_Alignment_Type_pskel& /* alignment */,
            ::RPG_Common_Attribute_Type_pskel& /* attribute */,
            ::RPG_Common_Condition_Type_pskel& /* condition */,
            ::RPG_Common_CreatureType_Type_pskel& /* creature */,
@@ -813,7 +813,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   ::xml_schema::int_pskel* value_parser_;
   ::xml_schema::unsigned_byte_pskel* levelIncrement_parser_;
   ::xml_schema::unsigned_byte_pskel* levelIncrementMax_parser_;
-  ::RPG_Character_AlignmentEthic_Type_pskel* ethic_parser_;
+  ::RPG_Character_Alignment_Type_pskel* alignment_parser_;
   ::RPG_Common_Attribute_Type_pskel* attribute_parser_;
   ::RPG_Common_Condition_Type_pskel* condition_parser_;
   ::RPG_Common_CreatureType_Type_pskel* creature_parser_;

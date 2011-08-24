@@ -548,15 +548,56 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
     SPELL_DETECT_GOOD,
     SPELL_DETECT_LAW,
     SPELL_DETECT_MAGIC,
+    SPELL_DETECT_POISON,
+    SPELL_DETECT_SCRYING,
+    SPELL_DETECT_SECRET_DOORS,
+    SPELL_DETECT_SNARES_AND_PITS,
     SPELL_DETECT_THOUGHTS,
+    SPELL_DETECT_UNDEAD,
+    SPELL_DICTUM,
     SPELL_DIMENSION_DOOR,
+    SPELL_DIMENSIONAL_ANCHOR,
+    SPELL_DIMENSIONAL_LOCK,
+    SPELL_DIMINISH_PLANTS,
+    SPELL_DISCERN_LIES,
     SPELL_DISCERN_LOCATION,
+    SPELL_DISGUISE_SELF,
     SPELL_DISINTEGRATE,
+    SPELL_DISMISSAL,
+    SPELL_DISPEL_CHAOS,
+    SPELL_DISPEL_EVIL,
+    SPELL_DISPEL_GOOD,
+    SPELL_DISPEL_LAW,
     SPELL_DISPEL_MAGIC,
     SPELL_DISPEL_MAGIC_GREATER,
+    SPELL_DISPLACEMENT,
+    SPELL_DISRUPT_UNDEAD,
+    SPELL_DISRUPTING_WEAPON,
+    SPELL_DIVINATION,
+    SPELL_DIVINE_FAVOR,
+    SPELL_DIVINE_POWER,
+    SPELL_DOMINATE_ANIMAL,
     SPELL_DOMINATE_MONSTER,
+    SPELL_DOMINATE_PERSON,
+    SPELL_DOOM,
+    SPELL_DREAM,
+    SPELL_EAGLES_SPLENDOR,
+    SPELL_EAGLES_SPLENDOR_MASS,
+    SPELL_ELEMENTAL_SWARM,
+    SPELL_ENDURE_ELEMENTS,
+    SPELL_ENERGY_DRAIN,
+    SPELL_ENERVATION,
+    SPELL_ENLARGE_PERSON,
+    SPELL_ENLARGE_PERSON_MASS,
     SPELL_ENTANGLE,
+    SPELL_ENTHRALL,
+    SPELL_ENTROPIC_SHIELD,
+    SPELL_ERASE,
     SPELL_ETHEREAL_JAUNT,
+    SPELL_ETHEREALNESS,
+    SPELL_EXPEDITIOUS_RETREAT,
+    SPELL_EXPLOSIVE_RUNES,
+    SPELL_EYEBITE,
     SPELL_FEAR,
     SPELL_FEEBLEMIND,
     SPELL_FIRE_STORM,
@@ -575,6 +616,7 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
     SPELL_MIRROR_IMAGE,
     SPELL_NEUTRALIZE_POISON,
     SPELL_PLANE_SHIFT,
+    SPELL_PLANT_GROWTH,
     SPELL_POLYMORPH,
     SPELL_POWER_WORD_STUN,
     SPELL_PROJECT_IMAGE,
@@ -655,8 +697,8 @@ class RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_SpellType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[193];
-  static const value _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[193];
+  static const char* const _xsd_RPG_Magic_SpellType_XMLTree_Type_literals_[235];
+  static const value _xsd_RPG_Magic_SpellType_XMLTree_Type_indexes_[235];
 };
 
 class RPG_Magic_AbilityClass_XMLTree_Type: public ::xml_schema::string
@@ -933,21 +975,14 @@ class RPG_Magic_CasterClassUnion_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     SUBCLASS_NONE,
-    SUBCLASS_AVENGER,
-    SUBCLASS_BARBARIAN,
     SUBCLASS_BARD,
     SUBCLASS_CLERIC,
     SUBCLASS_DRUID,
     SUBCLASS_FIGHTER,
-    SUBCLASS_INVOKER,
-    SUBCLASS_MONK,
     SUBCLASS_PALADIN,
     SUBCLASS_RANGER,
-    SUBCLASS_SHAMAN,
     SUBCLASS_SORCERER,
     SUBCLASS_THIEF,
-    SUBCLASS_WARLOCK,
-    SUBCLASS_WARLORD,
     SUBCLASS_WIZARD,
     DOMAIN_NONE,
     DOMAIN_AIR,
@@ -1021,8 +1056,8 @@ class RPG_Magic_CasterClassUnion_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_CasterClassUnion_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_CasterClassUnion_XMLTree_Type_literals_[40];
-  static const value _xsd_RPG_Magic_CasterClassUnion_XMLTree_Type_indexes_[40];
+  static const char* const _xsd_RPG_Magic_CasterClassUnion_XMLTree_Type_literals_[33];
+  static const value _xsd_RPG_Magic_CasterClassUnion_XMLTree_Type_indexes_[33];
 };
 
 class RPG_Magic_Spell_Level_XMLTree_Type: public ::xml_schema::type
@@ -1911,7 +1946,7 @@ class RPG_Magic_Spell_Precondition_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     PRECONDITION_ALLY,
-    PRECONDITION_ALIGNMENT_ETHIC,
+    PRECONDITION_ALIGNMENT,
     PRECONDITION_ATTACK_MELEE_ANY,
     PRECONDITION_ATTACK_MELEE_RANGED_TOUCH,
     PRECONDITION_ATTRIBUTE_MAX,
@@ -2056,26 +2091,26 @@ class RPG_Magic_Spell_PreconditionProperties_XMLTree_Type: public ::xml_schema::
   void
   levelIncrementMax (const levelIncrementMax_optional& x);
 
-  // ethic
+  // alignment
   // 
-  typedef ::RPG_Character_AlignmentEthic_XMLTree_Type ethic_type;
-  typedef ::xsd::cxx::tree::optional< ethic_type > ethic_optional;
-  typedef ::xsd::cxx::tree::traits< ethic_type, char > ethic_traits;
+  typedef ::RPG_Character_Alignment_XMLTree_Type alignment_type;
+  typedef ::xsd::cxx::tree::optional< alignment_type > alignment_optional;
+  typedef ::xsd::cxx::tree::traits< alignment_type, char > alignment_traits;
 
-  const ethic_optional&
-  ethic () const;
+  const alignment_optional&
+  alignment () const;
 
-  ethic_optional&
-  ethic ();
-
-  void
-  ethic (const ethic_type& x);
+  alignment_optional&
+  alignment ();
 
   void
-  ethic (const ethic_optional& x);
+  alignment (const alignment_type& x);
 
   void
-  ethic (::std::auto_ptr< ethic_type > p);
+  alignment (const alignment_optional& x);
+
+  void
+  alignment (::std::auto_ptr< alignment_type > p);
 
   // attribute
   // 
@@ -2251,7 +2286,7 @@ class RPG_Magic_Spell_PreconditionProperties_XMLTree_Type: public ::xml_schema::
   value_optional value_;
   levelIncrement_optional levelIncrement_;
   levelIncrementMax_optional levelIncrementMax_;
-  ethic_optional ethic_;
+  alignment_optional alignment_;
   attribute_optional attribute_;
   condition_optional condition_;
   creature_sequence creature_;
@@ -2310,6 +2345,16 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_DEAFEN,
     SPELLEFFECT_DETECT_ANIMALS_PLANTS,
     SPELLEFFECT_DETECT_MAGIC,
+    SPELLEFFECT_DETECT_POISON,
+    SPELLEFFECT_DETECT_SCRYING,
+    SPELLEFFECT_DETECT_SECRET_DOORS,
+    SPELLEFFECT_DETECT_SNARES_AND_PITS,
+    SPELLEFFECT_DETECT_THOUGHTS,
+    SPELLEFFECT_DETECT_UNDEAD,
+    SPELLEFFECT_DIMENSIONAL_ANCHOR,
+    SPELLEFFECT_DIMINISH,
+    SPELLEFFECT_DISCERN_LIES,
+    SPELLEFFECT_DISGUISE,
     SPELLEFFECT_DISINTEGRATE,
     SPELLEFFECT_DISPEL_MAGIC,
     SPELLEFFECT_ENTANGLE,
@@ -2330,6 +2375,7 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_KNOCKOUT,
     SPELLEFFECT_LEVITATE,
     SPELLEFFECT_LIGHT_MAGICAL,
+    SPELLEFFECT_LOCATE,
     SPELLEFFECT_LOCK,
     SPELLEFFECT_MARK,
     SPELLEFFECT_MESSENGER,
@@ -2359,6 +2405,7 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
     SPELLEFFECT_STUN,
     SPELLEFFECT_SUGGESTION,
     SPELLEFFECT_SUMMON_CREATURE,
+    SPELLEFFECT_TELEPORT,
     SPELLEFFECT_TELEPORT_INTERPLANAR,
     SPELLEFFECT_TRIGGER_ALARM
   };
@@ -2410,8 +2457,8 @@ class RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[88];
-  static const value _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[88];
+  static const char* const _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_literals_[100];
+  static const value _xsd_RPG_Magic_Spell_Effect_XMLTree_Type_indexes_[100];
 };
 
 class RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type: public ::xml_schema::string

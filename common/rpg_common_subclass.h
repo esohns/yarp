@@ -10,21 +10,14 @@
 enum RPG_Common_SubClass
 {
   SUBCLASS_NONE = 0,
-  SUBCLASS_AVENGER,
-  SUBCLASS_BARBARIAN,
   SUBCLASS_BARD,
   SUBCLASS_CLERIC,
   SUBCLASS_DRUID,
   SUBCLASS_FIGHTER,
-  SUBCLASS_INVOKER,
-  SUBCLASS_MONK,
   SUBCLASS_PALADIN,
   SUBCLASS_RANGER,
-  SUBCLASS_SHAMAN,
   SUBCLASS_SORCERER,
   SUBCLASS_THIEF,
-  SUBCLASS_WARLOCK,
-  SUBCLASS_WARLORD,
   SUBCLASS_WIZARD,
   //
   RPG_COMMON_SUBCLASS_MAX,
@@ -46,21 +39,14 @@ class RPG_Common_SubClassHelper
   {
     myRPG_Common_SubClassToStringTable.clear();
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_NONE, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_NONE")));
-    myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_AVENGER, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_AVENGER")));
-    myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_BARBARIAN, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_BARBARIAN")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_BARD, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_BARD")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_CLERIC, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_CLERIC")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_DRUID, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_DRUID")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_FIGHTER, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_FIGHTER")));
-    myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_INVOKER, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_INVOKER")));
-    myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_MONK, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_MONK")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_PALADIN, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_PALADIN")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_RANGER, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_RANGER")));
-    myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_SHAMAN, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_SHAMAN")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_SORCERER, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_SORCERER")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_THIEF, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_THIEF")));
-    myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_WARLOCK, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WARLOCK")));
-    myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_WARLORD, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WARLORD")));
     myRPG_Common_SubClassToStringTable.insert(std::make_pair(SUBCLASS_WIZARD, ACE_TEXT_ALWAYS_CHAR("SUBCLASS_WIZARD")));
   };
 

@@ -78,21 +78,21 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="SUBCLASS_NONE"/>
       <!--                                 -->
-      <xsd:enumeration value="SUBCLASS_AVENGER"/>
-      <xsd:enumeration value="SUBCLASS_BARBARIAN"/>
+<!--       <xsd:enumeration value="SUBCLASS_AVENGER"/> -->
+<!--       <xsd:enumeration value="SUBCLASS_BARBARIAN"/> -->
       <xsd:enumeration value="SUBCLASS_BARD"/>
       <xsd:enumeration value="SUBCLASS_CLERIC"/>
       <xsd:enumeration value="SUBCLASS_DRUID"/>
       <xsd:enumeration value="SUBCLASS_FIGHTER"/>
-      <xsd:enumeration value="SUBCLASS_INVOKER"/>
-      <xsd:enumeration value="SUBCLASS_MONK"/>
+<!--       <xsd:enumeration value="SUBCLASS_INVOKER"/> -->
+<!--       <xsd:enumeration value="SUBCLASS_MONK"/> -->
       <xsd:enumeration value="SUBCLASS_PALADIN"/>
       <xsd:enumeration value="SUBCLASS_RANGER"/>
-      <xsd:enumeration value="SUBCLASS_SHAMAN"/>
+<!--       <xsd:enumeration value="SUBCLASS_SHAMAN"/> -->
       <xsd:enumeration value="SUBCLASS_SORCERER"/>
       <xsd:enumeration value="SUBCLASS_THIEF"/>
-      <xsd:enumeration value="SUBCLASS_WARLOCK"/>
-      <xsd:enumeration value="SUBCLASS_WARLORD"/>
+<!--       <xsd:enumeration value="SUBCLASS_WARLOCK"/> -->
+<!--       <xsd:enumeration value="SUBCLASS_WARLORD"/> -->
       <xsd:enumeration value="SUBCLASS_WIZARD"/>
     </xsd:restriction>
   </xsd:simpleType>

@@ -139,6 +139,10 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
 
   RPG_Magic_Spell_Precondition_Type           precondition_p;
   RPG_Character_AlignmentEthic_Type           ethic_p;
+  RPG_Character_AlignmentCivic_Type           civic_p;
+  RPG_Character_Alignment_Type                alignment_p;
+  alignment_p.parsers(civic_p,
+                      ethic_p);
   RPG_Common_Attribute_Type                   attribute_p;
   RPG_Common_Condition_Type                   condition_p;
   RPG_Common_CreatureMetaType_Type            creatureMetaType_p;
@@ -160,7 +164,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                                    int_p,
                                    unsigned_byte_p,
                                    unsigned_byte_p,
-                                   ethic_p,
+                                   alignment_p,
                                    attribute_p,
                                    condition_p,
                                    creatureType_p,

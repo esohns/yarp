@@ -13,7 +13,7 @@ struct RPG_Magic_Spell_PreconditionProperties
   int value;
   unsigned char levelIncrement;
   unsigned char levelIncrementMax;
-  RPG_Character_AlignmentEthic ethic;
+  RPG_Character_Alignment alignment;
   RPG_Common_Attribute attribute;
   RPG_Common_Condition condition;
   std::vector<RPG_Common_CreatureType> creatures;

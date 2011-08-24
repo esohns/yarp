@@ -555,7 +555,8 @@ RPG_Magic_Spell_PreconditionProperties_Type::RPG_Magic_Spell_PreconditionPropert
   myCurrentProperties.value = 0;
   myCurrentProperties.levelIncrement = 0;
   myCurrentProperties.levelIncrementMax = 0;
-  myCurrentProperties.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+  myCurrentProperties.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+  myCurrentProperties.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.condition = RPG_COMMON_CONDITION_INVALID;
   myCurrentProperties.creatures.clear();
@@ -594,11 +595,11 @@ void RPG_Magic_Spell_PreconditionProperties_Type::levelIncrementMax(unsigned cha
   myCurrentProperties.levelIncrementMax = levelIncrementMax_in;
 }
 
-void RPG_Magic_Spell_PreconditionProperties_Type::ethic(const RPG_Character_AlignmentEthic& ethic_in)
+void RPG_Magic_Spell_PreconditionProperties_Type::alignment(const RPG_Character_Alignment& alignment_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::ethic"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::alignment"));
 
-  myCurrentProperties.ethic = ethic_in;
+  myCurrentProperties.alignment = alignment_in;
 }
 
 void RPG_Magic_Spell_PreconditionProperties_Type::attribute(const RPG_Common_Attribute& attribute_in)
@@ -661,7 +662,8 @@ RPG_Magic_Spell_PreconditionProperties RPG_Magic_Spell_PreconditionProperties_Ty
   myCurrentProperties.value = 0;
   myCurrentProperties.levelIncrement = 0;
   myCurrentProperties.levelIncrementMax = 0;
-  myCurrentProperties.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+  myCurrentProperties.alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+  myCurrentProperties.alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   myCurrentProperties.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentProperties.condition = RPG_COMMON_CONDITION_INVALID;
   myCurrentProperties.creatures.clear();
