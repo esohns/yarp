@@ -1516,6 +1516,12 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
+  // make save button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("save")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
   // make load button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->xml,
                                            ACE_TEXT_ALWAYS_CHAR("load")));
@@ -1645,6 +1651,12 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
                                            ACE_TEXT_ALWAYS_CHAR("drop")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make save button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("save")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make load button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->xml,

@@ -45,7 +45,6 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
              std::string()), // title
 //              NULL),          // background
    myLevelState(levelState_in),
-   myCurrentPlayerEntityID(0),
    myBG(NULL),
    mySurface(NULL)
 {
@@ -56,6 +55,7 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTERFACE_MINIMAP;
   myBG = RPG_Graphics_Common_Tools::loadGraphic(type,
+                                                true,   // convert to display format
                                                 false); // don't cache this one
   ACE_ASSERT(myBG);
 
@@ -208,6 +208,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   Uint32 color = 0;
   SDL_Rect destrect = {0, 0, 3, 2};
   Uint32* pixels = NULL;
+  RPG_Map_Position_t active_position = myLevelState->getPosition(myLevelState->getActive());
   for (unsigned int y = 0;
        y < dimensions.second;
        y++)
@@ -216,45 +217,38 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
          x++)
     {
       // step1: retrieve appropriate symbol
+      map_position.first = x;
+      map_position.second = y;
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      if (myCurrentPlayerEntityID)
+      if (myLevelState->getActive() &&
+          (map_position == active_position))
+        tile = MINIMAPTILE_PLAYER;
+      else if (myLevelState->hasMonster(map_position))
+        tile = MINIMAPTILE_MONSTER;
+      else
       {
-        map_position = myLevelState->getPosition(myCurrentPlayerEntityID);
-        if ((x == map_position.first) &&
-            (y == map_position.second))
-          tile = MINIMAPTILE_PLAYER;
-      } // end IF
-      if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
-      {
-        map_position.first = x;
-        map_position.second = y;
-        if (myLevelState->hasMonster(map_position))
-          tile = MINIMAPTILE_MONSTER;
-        else
+        switch (myLevelState->getElement(map_position))
         {
-          switch (myLevelState->getElement(map_position))
+          case MAPELEMENT_UNMAPPED:
+          case MAPELEMENT_WALL:
+            tile = MINIMAPTILE_NONE; break;
+          case MAPELEMENT_FLOOR:
+            tile = MINIMAPTILE_FLOOR; break;
+          case MAPELEMENT_STAIRS:
+            tile = MINIMAPTILE_STAIRS; break;
+          case MAPELEMENT_DOOR:
+            tile = MINIMAPTILE_DOOR; break;
+          default:
           {
-            case MAPELEMENT_UNMAPPED:
-            case MAPELEMENT_WALL:
-              tile = MINIMAPTILE_NONE; break;
-            case MAPELEMENT_FLOOR:
-              tile = MINIMAPTILE_FLOOR; break;
-            case MAPELEMENT_STAIRS:
-              tile = MINIMAPTILE_STAIRS; break;
-            case MAPELEMENT_DOOR:
-              tile = MINIMAPTILE_DOOR; break;
-            default:
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
-                         x,
-                         y,
-                         myLevelState->getElement(map_position)));
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
+                       x,
+                       y,
+                       myLevelState->getElement(map_position)));
 
-              return;
-            }
-          } // end SWITCH
-        } // end ELSE
+            return;
+          }
+        } // end SWITCH
       } // end ELSE
 
       // step2: map symbol to color
@@ -320,13 +314,13 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
                             *mySurface,
                             targetSurface_in);
 
-  // save image
-  std::string path = RPG_COMMON_DUMP_DIR;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
-  RPG_Graphics_Surface::savePNG(*mySurface,
-                                path,
-                                true);
+//   // save image
+//   std::string path = RPG_COMMON_DUMP_DIR;
+//   path += ACE_DIRECTORY_SEPARATOR_STR;
+//   path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
+//   RPG_Graphics_Surface::savePNG(*mySurface,
+//                                 path,
+//                                 true);
 
   // reset clipping
   if (!SDL_SetClipRect(targetSurface_in, &(inherited::myClipRect)))
@@ -345,12 +339,4 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
                                                        (inherited::mySize.first + inherited::myOffset.first))),
                                                      (myBorderTop +
                                                       inherited::myOffset.second));
-}
-
-void
-SDL_GUI_MinimapWindow::init(const RPG_Engine_EntityID_t& entityID_in)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::init"));
-
-  myCurrentPlayerEntityID = entityID_in;
 }

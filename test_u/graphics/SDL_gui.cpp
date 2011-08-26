@@ -284,7 +284,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-c ([FILE]): character profile (*.xml)") << ACE_TEXT(" [") << SDL_GUI_DEF_CHARACTER << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-c ([FILE]): character profile (*.xml)") << ACE_TEXT(" [") << SDL_GUI_DEF_ENTITY << ACE_TEXT("]") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_DATA_SUB;
@@ -309,7 +309,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_MAGIC_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-m [FILE]: magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-p ([FILE]): floor plan (*.txt)") << ACE_TEXT(" [") << SDL_GUI_DEF_FLOOR_PLAN << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-p ([FILE]): map (*.txt)") << ACE_TEXT(" [") << SDL_GUI_DEF_MAP << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s       : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES) << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
@@ -360,8 +360,8 @@ process_arguments(const int argc_in,
   graphicsDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
   graphicsDictionary_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
-  entityFile_out = SDL_GUI_DEF_CHARACTER;
-  mapFile_out = SDL_GUI_DEF_FLOOR_PLAN;
+  entityFile_out = SDL_GUI_DEF_ENTITY;
+  mapFile_out = SDL_GUI_DEF_MAP;
   slideShowMode_out = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -466,6 +466,630 @@ process_arguments(const int argc_in,
 }
 
 void
+do_slideshow(const std::string& graphicsDirectory_in,
+             SDL_GUI_MainWindow* mainWindow_in)
+{
+  RPG_TRACE(ACE_TEXT("::do_slideshow"));
+
+  // this simply draws (random) images inside the main "window"
+
+  SDL_Event event;
+  bool done = false;
+  RPG_Graphics_IWindow* window = NULL;
+  bool need_redraw = false;
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  type.image = RPG_GRAPHICS_IMAGE_INVALID;
+  RPG_Graphics_t graphic;
+  graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+  graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  RPG_Dice_RollResult_t result;
+  SDL_Surface* image = NULL;
+  bool release_image = false;
+  do
+  {
+    window = NULL;
+    need_redraw = false;
+    image = NULL;
+    release_image = false;
+
+    // reset screen
+    mainWindow_in->draw();
+    mainWindow_in->refresh();
+
+    // step1: choose (random) category
+    do
+    {
+      result.clear();
+      RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CATEGORY_MAX,
+                                      1,
+                                      result);
+      graphic.category = static_cast<RPG_Graphics_Category>((result.front() - 1));
+    } while (graphic.category == CATEGORY_FONT); // cannot display fonts at the moment
+
+    // step2: choose (random) type within category
+    result.clear();
+    switch (graphic.category)
+    {
+      case CATEGORY_CURSOR:
+      {
+        RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CURSOR_MAX,
+                                        1,
+                                        result);
+        type.cursor = static_cast<RPG_Graphics_Cursor>((result.front() - 1));
+        type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
+
+        break;
+      }
+      case CATEGORY_INTERFACE:
+      case CATEGORY_IMAGE:
+      {
+        RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_IMAGE_MAX,
+                                        1,
+                                        result);
+        type.image = static_cast<RPG_Graphics_Image>((result.front() - 1));
+        type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+
+        break;
+      }
+      case CATEGORY_TILE:
+      {
+        RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILEGRAPHIC_MAX,
+                                        1,
+                                        result);
+        type.tilegraphic = static_cast<RPG_Graphics_TileGraphic>((result.front() - 1));
+        type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
+
+        break;
+      }
+      case CATEGORY_TILESET:
+      {
+        RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILESETGRAPHIC_MAX,
+                                        1,
+                                        result);
+        type.tilesetgraphic = static_cast<RPG_Graphics_TileSetGraphic>((result.front() - 1));
+        type.discriminator = RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC;
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid category (was: \"%s\"), continuing\n"),
+                   RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+
+        continue;
+      }
+    } // end SWITCH
+
+    // step3: load image/graphic
+    if (graphic.category != CATEGORY_TILESET)
+    {
+      image = RPG_Graphics_Common_Tools::loadGraphic(type,
+                                                     true,  // convert to display format
+                                                     true); // cache graphic
+      if (!image)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+                   RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+
+        continue;
+      } // end IF
+    } // end IF
+    else
+    {
+      // need to load this manually --> retrieve filename(s)
+      graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+      graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+      graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+      ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
+                 (graphic.type.tilesetgraphic == type.tilesetgraphic));
+      ACE_ASSERT(!graphic.tileset.tiles.empty());
+
+      // choose random tile
+      std::vector<RPG_Graphics_Tile>::const_iterator iterator = graphic.tileset.tiles.begin();
+      result.clear();
+      RPG_Dice::generateRandomNumbers(graphic.tileset.tiles.size(),
+                                      1,
+                                      result);
+      std::advance(iterator, (result.front() - 1));
+
+      // assemble filename
+      std::string filename = graphicsDirectory_in;
+      filename += ACE_DIRECTORY_SEPARATOR_STR;
+      switch (graphic.tileset.type)
+      {
+        case TILESETTYPE_DOOR:
+          filename += RPG_GRAPHICS_TILE_DEF_DOORS_SUB; break;
+        case TILESETTYPE_FLOOR:
+          filename += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB; break;
+        case TILESETTYPE_WALL:
+          filename += RPG_GRAPHICS_TILE_DEF_WALLS_SUB; break;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid tileset type (was: \"%s\"), continuing\n"),
+                     RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()));
+
+          continue;
+        }
+      } // end SWITCH
+      filename += ACE_DIRECTORY_SEPARATOR_STR;
+      filename += (*iterator).file;
+
+      image = RPG_Graphics_Surface::load(filename, // file
+                                         true);    // convert to display format
+      if (!image)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), continuing\n"),
+                   filename.c_str()));
+
+        continue;
+      } // end IF
+      release_image = true;
+    } // end ELSE
+    ACE_ASSERT(image);
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("showing graphics type \"%s\"...\n"),
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+
+    // step4: draw image to screen
+    RPG_Graphics_Surface::put((screen->w - image->w) / 2, // location x
+                              (screen->h - image->h) / 2, // location y
+                              *image,                     // image
+                              screen);                    // screen
+    if (SDL_Flip(screen))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
+                 SDL_GetError()));
+
+      return;
+    } // end IF
+
+    // step5: wait a little while (max: 3 seconds)
+    do
+    {
+      do_SDL_waitForInput(3,      // second(s)
+                          event); // return value: event
+      switch (event.type)
+      {
+        case SDL_KEYDOWN:
+        {
+          switch (event.key.keysym.sym)
+          {
+            case SDLK_q:
+            {
+              // finished event processing
+              done = true;
+
+              break;
+            } // end IF
+            default:
+              break;
+          } // end SWITCH
+
+          if (done)
+            break;
+          // *WARNING*: falls through !
+        }
+        case SDL_ACTIVEEVENT:
+//             case SDL_MOUSEMOTION:
+        case SDL_MOUSEBUTTONDOWN:
+//             case SDL_GUI_SDL_HOVEREVENT: // hovering...
+        {
+          // find window
+          RPG_Graphics_Position_t mouse_position(0, 0);
+          switch (event.type)
+          {
+            case SDL_MOUSEMOTION:
+              mouse_position = std::make_pair(event.motion.x,
+                                              event.motion.y); break;
+            case SDL_MOUSEBUTTONDOWN:
+              mouse_position = std::make_pair(event.button.x,
+                                              event.button.y); break;
+            default:
+            {
+              int x,y;
+              SDL_GetMouseState(&x, &y);
+              mouse_position = std::make_pair(x,
+                                              y);
+
+              break;
+            }
+          } // end SWITCH
+          window = mainWindow_in->getWindow(mouse_position);
+          ACE_ASSERT(window);
+          try
+          {
+            window->handleEvent(event,
+                                window,
+                                need_redraw);
+          }
+          catch (...)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+          }
+
+          break;
+        }
+        case SDL_QUIT:
+        {
+          // finished event processing
+          done = true;
+
+          break;
+        }
+        case SDL_KEYUP:
+        case SDL_MOUSEBUTTONUP:
+        case SDL_JOYAXISMOTION:
+        case SDL_JOYBALLMOTION:
+        case SDL_JOYHATMOTION:
+        case SDL_JOYBUTTONDOWN:
+        case SDL_JOYBUTTONUP:
+        case SDL_SYSWMEVENT:
+        case SDL_VIDEORESIZE:
+        case SDL_VIDEOEXPOSE:
+        case SDL_GUI_SDL_TIMEREVENT:
+        default:
+        {
+
+          break;
+        }
+      } // end SWITCH
+    } while (event.type == SDL_MOUSEMOTION);
+
+    // clean up
+    if (release_image)
+      SDL_FreeSurface(image);
+  } while (!done);
+}
+
+void
+do_UI(RPG_Engine_Entity& entity_in,
+      RPG_Engine_Level& engine_in,
+      RPG_Graphics_MapStyle_t& mapStyle_in,
+      RPG_Map_t& map_in,
+      const map_config_t& mapConfig_in,
+      SDL_GUI_MainWindow* mainWindow_in)
+{
+  RPG_TRACE(ACE_TEXT("::do_UI"));
+
+  SDL_Event event;
+  bool done = false;
+  RPG_Graphics_IWindow* window = NULL;
+  RPG_Graphics_IWindow* previous_window = NULL;
+  bool need_redraw = false;
+  bool force_redraw = false;
+  RPG_Graphics_Position_t mouse_position;
+  do
+  {
+    window = NULL;
+    need_redraw = false;
+    mouse_position = std::make_pair(0, 0);
+    force_redraw = false;
+
+    // step1: retrieve next event
+    if (SDL_WaitEvent(&event) != 1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                 SDL_GetError()));
+
+      return;
+    } // end IF
+
+    // if necessary, reset hover_time
+    if (event.type != RPG_GRAPHICS_SDL_HOVEREVENT)
+    {
+      // synch access
+      ACE_Guard<ACE_Thread_Mutex> aGuard(hover_lock);
+
+      hover_time = 0;
+    } // end IF
+
+    // step2: process current event
+    switch (event.type)
+    {
+      case SDL_KEYDOWN:
+      {
+        switch (event.key.keysym.sym)
+        {
+          case SDLK_e:
+          {
+            std::string dump_path = RPG_COMMON_DUMP_DIR;
+            dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+            dump_path += ACE_TEXT("player.xml");
+            if (!RPG_Engine_Common_Tools::saveEntity(entity_in,
+                                                     dump_path))
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), aborting\n"),
+                         dump_path.c_str()));
+
+              return;
+            } // end IF
+
+            break;
+          }
+          case SDLK_f:
+          {
+            mapStyle_in.floor_style = static_cast<RPG_Graphics_FloorStyle>(mapStyle_in.floor_style + 1);
+            if (mapStyle_in.floor_style == RPG_GRAPHICS_FLOORSTYLE_MAX)
+              mapStyle_in.floor_style = static_cast<RPG_Graphics_FloorStyle>(0);
+            RPG_Graphics_StyleUnion style;
+            style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
+            style.floorstyle = mapStyle_in.floor_style;
+
+            SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->getChild(WINDOW_MAP));
+            ACE_ASSERT(map_window);
+            map_window->setStyle(style);
+
+            // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+
+            force_redraw = true;
+
+            break;
+          }
+          case SDLK_l:
+          {
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("generating level map...\n")));
+
+            RPG_Map_Common_Tools::createMap(mapConfig_in.map_size_x,
+                                            mapConfig_in.map_size_y,
+                                            mapConfig_in.num_areas,
+                                            mapConfig_in.square_rooms,
+                                            mapConfig_in.maximize_rooms,
+                                            mapConfig_in.min_room_size,
+                                            mapConfig_in.doors,
+                                            mapConfig_in.corridors,
+                                            true, // *NOTE*: currently, doors fill one position
+                                            mapConfig_in.max_num_doors_per_room,
+                                            map_in);
+
+            if (engine_in.isRunning())
+              engine_in.stop();
+
+            entity_in.position = map_in.start;
+
+            SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->getChild(WINDOW_MAP));
+            ACE_ASSERT(map_window);
+            // *NOTE*: triggers a center/redraw/refresh of the map window !
+            // --> but as we're not using the client engine, it doesn't redraw...
+            engine_in.init(map_window,
+                           map_in);
+            engine_in.start();
+
+            // center map window...
+            try
+            {
+              map_window->setView(entity_in.position);
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::setView, continuing\n")));
+            }
+
+            // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+
+            force_redraw = true;
+
+            break;
+          }
+          case SDLK_r:
+          {
+            force_redraw = true;
+
+            break;
+          }
+          case SDLK_s:
+          {
+            std::string dump_path = RPG_COMMON_DUMP_DIR;
+            dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+            dump_path += ACE_TEXT("map.txt");
+            if (!RPG_Map_Common_Tools::save(dump_path,
+                                            map_in))
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
+                         dump_path.c_str()));
+
+              return;
+            } // end IF
+
+            break;
+          }
+          case SDLK_q:
+          {
+            // finished event processing
+            done = true;
+
+            break;
+          }
+          case SDLK_w:
+          {
+            mapStyle_in.wall_style = static_cast<RPG_Graphics_WallStyle> (mapStyle_in.wall_style + 1);;
+            if (mapStyle_in.wall_style == RPG_GRAPHICS_WALLSTYLE_MAX)
+              mapStyle_in.wall_style = static_cast<RPG_Graphics_WallStyle> (0);
+            RPG_Graphics_StyleUnion style;
+            style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+            style.wallstyle = mapStyle_in.wall_style;
+
+            SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->getChild(WINDOW_MAP));
+            ACE_ASSERT(map_window);
+            map_window->setStyle(style);
+
+            // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+
+            force_redraw = true;
+
+            break;
+          }
+          default:
+          {
+            break;
+          }
+        } // end SWITCH
+
+        if (done)
+          break; // leave
+        // *WARNING*: falls through !
+      }
+      case SDL_ACTIVEEVENT:
+      case SDL_MOUSEMOTION:
+      case SDL_MOUSEBUTTONDOWN:
+      case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
+      {
+        // find window
+        switch (event.type)
+        {
+          case SDL_MOUSEMOTION:
+            mouse_position = std::make_pair(event.motion.x,
+                                            event.motion.y); break;
+          case SDL_MOUSEBUTTONDOWN:
+            mouse_position = std::make_pair(event.button.x,
+                                            event.button.y); break;
+          default:
+          {
+            int x,y;
+            SDL_GetMouseState(&x, &y);
+            mouse_position = std::make_pair(x,
+                                            y);
+
+            break;
+          }
+        } // end SWITCH
+        window = mainWindow_in->getWindow(mouse_position);
+        ACE_ASSERT(window);
+
+        // notify previously "active" window upon losing "focus"
+        if (event.type == SDL_MOUSEMOTION)
+        {
+          if (previous_window &&
+//                 (previous_window != mainWindow)
+              (previous_window != window))
+          {
+            event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
+            try
+            {
+              previous_window->handleEvent(event,
+                                           previous_window,
+                                           need_redraw);
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+            }
+            event.type = SDL_MOUSEMOTION;
+          } // end IF
+        } // end IF
+        // remember last "active" window
+        previous_window = window;
+
+        // notify "active" window
+        try
+        {
+          window->handleEvent(event,
+                              window,
+                              need_redraw);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+        }
+
+        break;
+      }
+      case SDL_QUIT:
+      {
+        // finished event processing
+        done = true;
+
+        break;
+      }
+      case SDL_KEYUP:
+      case SDL_MOUSEBUTTONUP:
+      case SDL_JOYAXISMOTION:
+      case SDL_JOYBALLMOTION:
+      case SDL_JOYHATMOTION:
+      case SDL_JOYBUTTONDOWN:
+      case SDL_JOYBUTTONUP:
+      case SDL_SYSWMEVENT:
+      case SDL_VIDEORESIZE:
+      case SDL_VIDEOEXPOSE:
+      case SDL_GUI_SDL_TIMEREVENT:
+      default:
+      {
+
+        break;
+      }
+    } // end SWITCH
+
+    // redraw map ?
+    if (force_redraw || need_redraw)
+    {
+      SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->getChild(WINDOW_MAP));
+      ACE_ASSERT(map_window);
+
+      try
+      {
+        map_window->draw();
+        map_window->refresh();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+      }
+    } // end IF
+
+    // redraw cursor ?
+    switch (event.type)
+    {
+      case SDL_KEYDOWN:
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        // map hasn't changed --> no need to redraw
+        if (!need_redraw)
+          break;
+
+        // *WARNING*: falls through !
+      }
+      case SDL_MOUSEMOTION:
+      case RPG_GRAPHICS_SDL_HOVEREVENT:
+      {
+        // map has changed, cursor MAY have been drawn over...
+        // --> redraw cursor
+        SDL_Rect dirtyRegion;
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
+                                                               mouse_position.second,
+                                                               screen,
+                                                               dirtyRegion);
+        RPG_Graphics_Surface::update(dirtyRegion,
+                                     screen);
+
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    } // end SWITCH
+  } while (!done);
+}
+
+void
 do_work(const mode_t& mode_in,
         const std::string& entity_in,
         const std::string& map_in,
@@ -556,290 +1180,18 @@ do_work(const mode_t& mode_in,
   SDL_WarpMouse((screen->w / 2),
                 (screen->h / 2));
 
-  SDL_Event event;
-  bool done = false;
-  RPG_Graphics_IWindow* window = NULL;
-  RPG_Graphics_IWindow* previous_window = NULL;
-  bool need_redraw = false;
   switch (mode_in)
   {
     case MODE_RANDOM_IMAGES:
     {
-      // step3: show (random) images inside main "window"
-      RPG_Graphics_GraphicTypeUnion type;
-      type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
-      type.image = RPG_GRAPHICS_IMAGE_INVALID;
-      RPG_Graphics_t graphic;
-      graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-      graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
-      RPG_Dice_RollResult_t result;
-      SDL_Surface* image = NULL;
-      bool release_image = false;
-      do
-      {
-        window = NULL;
-        need_redraw = false;
-        image = NULL;
-        release_image = false;
-
-        // reset screen
-        mainWindow.draw();
-        mainWindow.refresh();
-
-        // choose category
-        do
-        {
-          result.clear();
-          RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CATEGORY_MAX,
-                                          1,
-                                          result);
-          graphic.category = static_cast<RPG_Graphics_Category>((result.front() - 1));
-        } while (graphic.category == CATEGORY_FONT); // cannot display fonts at the moment
-
-        // choose type within category
-        result.clear();
-        switch (graphic.category)
-        {
-          case CATEGORY_CURSOR:
-          {
-            RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CURSOR_MAX,
-                                            1,
-                                            result);
-            type.cursor = static_cast<RPG_Graphics_Cursor>((result.front() - 1));
-            type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
-
-            break;
-          }
-          case CATEGORY_INTERFACE:
-          case CATEGORY_IMAGE:
-          {
-            RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_IMAGE_MAX,
-                                            1,
-                                            result);
-            type.image = static_cast<RPG_Graphics_Image>((result.front() - 1));
-            type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
-
-            break;
-          }
-          case CATEGORY_TILE:
-          {
-            RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILEGRAPHIC_MAX,
-                                            1,
-                                            result);
-            type.tilegraphic = static_cast<RPG_Graphics_TileGraphic>((result.front() - 1));
-            type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
-
-            break;
-          }
-          case CATEGORY_TILESET:
-          {
-            RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_TILESETGRAPHIC_MAX,
-                                            1,
-                                            result);
-            type.tilesetgraphic = static_cast<RPG_Graphics_TileSetGraphic>((result.front() - 1));
-            type.discriminator = RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC;
-
-            break;
-          }
-          default:
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid category (was: \"%s\"), continuing\n"),
-                       RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
-
-            continue;
-          }
-        } // end SWITCH
-
-        if (graphic.category != CATEGORY_TILESET)
-        {
-          image = RPG_Graphics_Common_Tools::loadGraphic(type);
-          if (!image)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-                       RPG_Graphics_Common_Tools::typeToString(type).c_str()));
-
-            continue;
-          } // end IF
-        } // end IF
-        else
-        {
-          // need to load this manually --> retrieve filename(s)
-          graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-          graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
-          graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-          ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
-                     (graphic.type.tilesetgraphic == type.tilesetgraphic));
-          ACE_ASSERT(!graphic.tileset.tiles.empty());
-
-          // choose random tile
-          std::vector<RPG_Graphics_Tile>::const_iterator iterator = graphic.tileset.tiles.begin();
-          result.clear();
-          RPG_Dice::generateRandomNumbers(graphic.tileset.tiles.size(),
-                                          1,
-                                          result);
-          std::advance(iterator, (result.front() - 1));
-
-          // assemble filename
-          std::string filename = graphicsDirectory_in;
-          filename += ACE_DIRECTORY_SEPARATOR_STR;
-          switch (graphic.tileset.type)
-          {
-            case TILESETTYPE_DOOR:
-              filename += RPG_GRAPHICS_TILE_DEF_DOORS_SUB; break;
-            case TILESETTYPE_FLOOR:
-              filename += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB; break;
-            case TILESETTYPE_WALL:
-              filename += RPG_GRAPHICS_TILE_DEF_WALLS_SUB; break;
-            default:
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid tileset type (was: \"%s\"), continuing\n"),
-                         RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()));
-
-              continue;
-            }
-          } // end SWITCH
-          filename += ACE_DIRECTORY_SEPARATOR_STR;
-          filename += (*iterator).file;
-
-          image = RPG_Graphics_Surface::load(filename, // file
-                                             true);    // convert to display format
-          if (!image)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), continuing\n"),
-                       filename.c_str()));
-
-            continue;
-          } // end IF
-          release_image = true;
-        } // end ELSE
-        ACE_ASSERT(image);
-
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("showing graphics type \"%s\"...\n"),
-                   RPG_Graphics_Common_Tools::typeToString(type).c_str()));
-
-        RPG_Graphics_Surface::put((screen->w - image->w) / 2, // location x
-                                  (screen->h - image->h) / 2, // location y
-                                  *image,                     // image
-                                  screen);                    // screen
-        if (SDL_Flip(screen))
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
-                     SDL_GetError()));
-
-          return;
-        } // end IF
-
-        // step4: wait a little while (max: 3 seconds)
-        do
-        {
-          do_SDL_waitForInput(3,      // second(s)
-                              event); // return value: event
-          switch (event.type)
-          {
-            case SDL_KEYDOWN:
-            {
-              switch (event.key.keysym.sym)
-              {
-                case SDLK_q:
-                {
-                  // finished event processing
-                  done = true;
-
-                  break;
-                } // end IF
-                default:
-                  break;
-              } // end SWITCH
-
-              if (done)
-                break;
-              // *WARNING*: falls through !
-            }
-            case SDL_ACTIVEEVENT:
-//             case SDL_MOUSEMOTION:
-            case SDL_MOUSEBUTTONDOWN:
-//             case SDL_GUI_SDL_HOVEREVENT: // hovering...
-            {
-              // find window
-              RPG_Graphics_Position_t mouse_position(0, 0);
-              switch (event.type)
-              {
-                case SDL_MOUSEMOTION:
-                  mouse_position = std::make_pair(event.motion.x,
-                                                  event.motion.y); break;
-                case SDL_MOUSEBUTTONDOWN:
-                  mouse_position = std::make_pair(event.button.x,
-                                                  event.button.y); break;
-                default:
-                {
-                  int x,y;
-                  SDL_GetMouseState(&x, &y);
-                  mouse_position = std::make_pair(x,
-                                                  y);
-
-                  break;
-                }
-              } // end SWITCH
-              window = mainWindow.getWindow(mouse_position);
-              ACE_ASSERT(window);
-              try
-              {
-                window->handleEvent(event,
-                                    window,
-                                    need_redraw);
-              }
-              catch (...)
-              {
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-              }
-
-              break;
-            }
-            case SDL_QUIT:
-            {
-              // finished event processing
-              done = true;
-
-              break;
-            }
-            case SDL_KEYUP:
-            case SDL_MOUSEBUTTONUP:
-            case SDL_JOYAXISMOTION:
-            case SDL_JOYBALLMOTION:
-            case SDL_JOYHATMOTION:
-            case SDL_JOYBUTTONDOWN:
-            case SDL_JOYBUTTONUP:
-            case SDL_SYSWMEVENT:
-            case SDL_VIDEORESIZE:
-            case SDL_VIDEOEXPOSE:
-            case SDL_GUI_SDL_TIMEREVENT:
-            default:
-            {
-
-              break;
-            }
-          } // end SWITCH
-        } while (event.type == SDL_MOUSEMOTION);
-
-        // clean up
-        if (release_image)
-          SDL_FreeSurface(image);
-      } while (!done);
+      do_slideshow(graphicsDirectory_in,
+                   &mainWindow);
 
       break;
     }
     case MODE_FLOOR_PLAN:
     {
-      bool force_redraw = false;
-
-      // step3a: setup level
+      // step1: create/load initial level map
       RPG_Map_t map;
       if (map_in.empty())
       {
@@ -879,7 +1231,7 @@ do_work(const mode_t& mode_in,
       } // end ELSE
 //       RPG_Map_Common_Tools::print(map);
 
-      // step3b: setup style
+      // step2: setup initial style
       RPG_Graphics_MapStyle_t mapStyle;
       mapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
       mapStyle.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
@@ -887,10 +1239,10 @@ do_work(const mode_t& mode_in,
       mapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
       mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
-      // step4: set default cursor
+      // step3: set default cursor
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
 
-      // step5a: entity
+      // step4: create/load initial entity
       std::string base_data_path;
 #ifdef DATADIR
       base_data_path = DATADIR;
@@ -901,12 +1253,17 @@ do_work(const mode_t& mode_in,
       schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
       schemaRepository += RPG_COMMON_DEF_CONFIG_SUB;
       RPG_Engine_Entity entity;
+      entity.actions.clear();
+      entity.character = NULL;
+      entity.graphic = NULL;
+      entity.position = std::make_pair(0, 0);
+      entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
       if (entity_in.empty())
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating entity...\n")));
 
-        entity = RPG_Engine_Common_Tools::createEntity();
+        entity = RPG_Engine_Common_Tools::createEntity(true);
       } // end IF
       else
       {
@@ -927,19 +1284,13 @@ do_work(const mode_t& mode_in,
                    entity_in.c_str(),
                    RPG_Engine_Common_Tools::info(entity).c_str()));
       } // end ELSE
+      entity.position = map.start;
 
-      // step5b: level engine
+      // step5: init sub-windows (level window, hotspots, minimap, ...)
       RPG_Engine_Level level_engine;
-      level_engine.init(NULL,
-                        map);
-      level_engine.start();
-      RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity);
-
-      // step5c: init sub-windows (level window, hotspots, minimap, ...)
       mainWindow.init(&level_engine,
-                      mapStyle,
-                      map,
-                      entity_ID);
+                      mapStyle);
+      // step5a: draw main window borders...
       try
       {
         mainWindow.draw();
@@ -951,7 +1302,33 @@ do_work(const mode_t& mode_in,
                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
       }
 
-      // step6: start timer (triggers hover events)
+      // step6: init level state engine
+      SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
+      ACE_ASSERT(map_window);
+      // *NOTE*: triggers a center/draw/refresh...
+      // --> but as we're not using the client engine, it doesn't redraw...
+      level_engine.init(map_window,
+                        map);
+      level_engine.start();
+      RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity);
+      // *NOTE*: triggers a center/draw...
+      // --> but as we're not using the client engine, it doesn't redraw...
+      level_engine.setActive(entity_ID);
+
+      // step6a: redraw map window...
+      try
+      {
+        map_window->setView(level_engine.getPosition(level_engine.getActive()));
+        map_window->draw();
+        map_window->refresh();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::setView/draw/refresh, continuing\n")));
+      }
+
+      // step7: start timer (triggers hover events)
       SDL_TimerID timer = NULL;
       timer = SDL_AddTimer(SDL_GUI_SDL_EVENT_TIMEOUT, // interval (ms)
                            event_timer_SDL_cb,        // event timer callback
@@ -966,295 +1343,15 @@ do_work(const mode_t& mode_in,
         return;
       } // end IF
 
-      RPG_Graphics_Position_t mouse_position;
-      bool hide_walls = false;
-      do
-      {
-        window = NULL;
-        need_redraw = false;
-        mouse_position = std::make_pair(0, 0);
-        force_redraw = false;
+      // step8: run interface
+      do_UI(entity,
+            level_engine,
+            mapStyle,
+            map,
+            mapConfig_in,
+            &mainWindow);
 
-        // step7: process events
-        if (SDL_WaitEvent(&event) != 1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                     SDL_GetError()));
-
-          return;
-        } // end IF
-
-        // if necessary, reset hover_time
-        if (event.type != RPG_GRAPHICS_SDL_HOVEREVENT)
-        {
-          // synch access
-          ACE_Guard<ACE_Thread_Mutex> aGuard(hover_lock);
-
-          hover_time = 0;
-        } // end IF
-
-        switch (event.type)
-        {
-          case SDL_KEYDOWN:
-          {
-            switch (event.key.keysym.sym)
-            {
-              case SDLK_c:
-              {
-                std::string dump_path = RPG_COMMON_DUMP_DIR;
-                dump_path += ACE_DIRECTORY_SEPARATOR_STR;
-                dump_path += ACE_TEXT("player.xml");
-                if (!RPG_Engine_Common_Tools::saveEntity(entity,
-                                                         dump_path))
-                {
-                  ACE_DEBUG((LM_ERROR,
-                             ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), aborting\n"),
-                             dump_path.c_str()));
-
-                  return;
-                } // end IF
-
-                break;
-              }
-              case SDLK_f:
-              {
-                mapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle>(mapStyle.floor_style + 1);
-                if (mapStyle.floor_style == RPG_GRAPHICS_FLOORSTYLE_MAX)
-                  mapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle>(0);
-                RPG_Graphics_StyleUnion style;
-                style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-                style.floorstyle = mapStyle.floor_style;
-
-                SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
-                ACE_ASSERT(map_window);
-                map_window->setStyle(style);
-
-                // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
-                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-
-                force_redraw = true;
-
-                break;
-              }
-              case SDLK_h:
-              {
-                // toggle setting
-                if (hide_walls)
-                  hide_walls = false;
-                else
-                  hide_walls = true;
-
-                SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
-                ACE_ASSERT(map_window);
-                map_window->hideWalls(hide_walls);
-
-                // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
-                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-
-                force_redraw = true;
-
-                break;
-              }
-              case SDLK_p:
-              {
-                std::string dump_path = RPG_COMMON_DUMP_DIR;
-                dump_path += ACE_DIRECTORY_SEPARATOR_STR;
-                dump_path += ACE_TEXT("map.txt");
-                if (!RPG_Map_Common_Tools::save(dump_path,
-                                                map))
-                {
-                  ACE_DEBUG((LM_ERROR,
-                             ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
-                             dump_path.c_str()));
-
-                  return;
-                } // end IF
-
-                break;
-              }
-              case SDLK_q:
-              {
-                // finished event processing
-                done = true;
-
-                break;
-              }
-              case SDLK_w:
-              {
-                mapStyle.wall_style = static_cast<RPG_Graphics_WallStyle> (mapStyle.wall_style + 1);;
-                if (mapStyle.wall_style == RPG_GRAPHICS_WALLSTYLE_MAX)
-                  mapStyle.wall_style = static_cast<RPG_Graphics_WallStyle> (0);
-                RPG_Graphics_StyleUnion style;
-                style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-                style.wallstyle = mapStyle.wall_style;
-
-                SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
-                ACE_ASSERT(map_window);
-                map_window->setStyle(style);
-
-                // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
-                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-
-                force_redraw = true;
-
-                break;
-              }
-              default:
-              {
-                break;
-              }
-            } // end SWITCH
-
-            if (done)
-              break; // leave
-            // *WARNING*: falls through !
-          }
-          case SDL_ACTIVEEVENT:
-          case SDL_MOUSEMOTION:
-          case SDL_MOUSEBUTTONDOWN:
-          case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
-          {
-            // find window
-            switch (event.type)
-            {
-              case SDL_MOUSEMOTION:
-                mouse_position = std::make_pair(event.motion.x,
-                                                event.motion.y); break;
-              case SDL_MOUSEBUTTONDOWN:
-                mouse_position = std::make_pair(event.button.x,
-                                                event.button.y); break;
-              default:
-              {
-                int x,y;
-                SDL_GetMouseState(&x, &y);
-                mouse_position = std::make_pair(x,
-                                                y);
-
-                break;
-              }
-            } // end SWITCH
-            window = mainWindow.getWindow(mouse_position);
-            ACE_ASSERT(window);
-
-            // notify previously "active" window upon losing "focus"
-            if (event.type == SDL_MOUSEMOTION)
-            {
-              if (previous_window &&
-  //                 (previous_window != mainWindow)
-                  (previous_window != window))
-              {
-                event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
-                try
-                {
-                  previous_window->handleEvent(event,
-                                               previous_window,
-                                               need_redraw);
-                }
-                catch (...)
-                {
-                  ACE_DEBUG((LM_ERROR,
-                             ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-                }
-                event.type = SDL_MOUSEMOTION;
-              } // end IF
-            } // end IF
-            // remember last "active" window
-            previous_window = window;
-
-            // notify "active" window
-            try
-            {
-              window->handleEvent(event,
-                                  window,
-                                  need_redraw);
-            }
-            catch (...)
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-            }
-
-            break;
-          }
-          case SDL_QUIT:
-          {
-            // finished event processing
-            done = true;
-
-            break;
-          }
-          case SDL_KEYUP:
-          case SDL_MOUSEBUTTONUP:
-          case SDL_JOYAXISMOTION:
-          case SDL_JOYBALLMOTION:
-          case SDL_JOYHATMOTION:
-          case SDL_JOYBUTTONDOWN:
-          case SDL_JOYBUTTONUP:
-          case SDL_SYSWMEVENT:
-          case SDL_VIDEORESIZE:
-          case SDL_VIDEOEXPOSE:
-          case SDL_GUI_SDL_TIMEREVENT:
-          default:
-          {
-
-            break;
-          }
-        } // end SWITCH
-
-        // redraw map ?
-        if (force_redraw || need_redraw)
-        {
-          SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
-          ACE_ASSERT(map_window);
-
-          try
-          {
-            map_window->draw();
-            map_window->refresh();
-          }
-          catch (...)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
-          }
-        } // end IF
-
-        // redraw cursor ?
-        switch (event.type)
-        {
-          case SDL_KEYDOWN:
-          case SDL_MOUSEBUTTONDOWN:
-          {
-            // map hasn't changed --> no need to redraw
-            if (!need_redraw)
-              break;
-
-            // *WARNING*: falls through !
-          }
-          case SDL_MOUSEMOTION:
-          case RPG_GRAPHICS_SDL_HOVEREVENT:
-          {
-            // map has changed, cursor MAY have been drawn over...
-            // --> redraw cursor
-            SDL_Rect dirtyRegion;
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
-                                                                   mouse_position.second,
-                                                                   screen,
-                                                                   dirtyRegion);
-            RPG_Graphics_Surface::update(dirtyRegion,
-                                         screen);
-
-            break;
-          }
-          default:
-          {
-            break;
-          }
-        } // end SWITCH
-      } while (!done);
-
-      // step8: clean up
+      // clean up
       level_engine.stop();
       if (!SDL_RemoveTimer(timer))
       {
@@ -1380,8 +1477,8 @@ ACE_TMAIN(int argc,
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
   graphicsDictionary += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
   mode_t mode = SDL_GUI_DEF_MODE;
-  std::string entityFilename = SDL_GUI_DEF_CHARACTER;
-  std::string mapFilename = SDL_GUI_DEF_FLOOR_PLAN;
+  std::string entityFilename = SDL_GUI_DEF_ENTITY;
+  std::string mapFilename = SDL_GUI_DEF_MAP;
   bool slideShowMode = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   bool traceInformation = false;
   bool printVersionAndExit = false;

@@ -480,16 +480,18 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
                                                                                             : knownSpells.size()),
                                           numSpells,
                                           result);
+          int index = 0;
           for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
                iterator2 != result.end();
-               iterator2++)
+               iterator2++, index++)
           {
             available_iterator = (RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
                                                                                    : knownSpells.begin());
             std::advance(available_iterator, *iterator2 - 1);
 
             ACE_DEBUG((LM_DEBUG,
-                       ACE_TEXT("chose prepared spell: \"%s\"\n"),
+                       ACE_TEXT("chose prepared spell #%d: \"%s\"\n"),
+                       index + 1,
                        RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
 
             spells.push_back(*available_iterator);
@@ -581,15 +583,17 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
           RPG_Dice::generateRandomNumbers(available.size(),
                                           numSpells,
                                           result);
+          int index = 0;
           for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
                iterator2 != result.end();
-               iterator2++)
+               iterator2++, index++)
           {
             available_iterator = available.begin();
             std::advance(available_iterator, *iterator2 - 1);
 
             ACE_DEBUG((LM_DEBUG,
-                       ACE_TEXT("chose prepared spell: \"%s\"\n"),
+                       ACE_TEXT("chose prepared spell #%d: \"%s\"\n"),
+                       index + 1,
                        RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
 
             spells.push_back(*available_iterator);
@@ -626,33 +630,33 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
       case SUBCLASS_FIGHTER:
       {
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_MAIL_SPLINT);
+                                                                          ARMOR_MAIL_SPLINT);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_HEAVY_WOODEN);
+                                                                          ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
         break;
       }
       case SUBCLASS_PALADIN:
-      case SUBCLASS_WARLORD:
+//       case SUBCLASS_WARLORD:
       {
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_PLATE_FULL);
+                                                                          ARMOR_PLATE_FULL);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_HEAVY_STEEL);
+                                                                          ARMOR_SHIELD_HEAVY_STEEL);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -661,15 +665,15 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
       case SUBCLASS_RANGER:
       {
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            RANGED_WEAPON_BOW_LONG);
+                                                                          RANGED_WEAPON_BOW_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_HIDE);
+                                                                          ARMOR_HIDE);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -677,89 +681,89 @@ RPG_Character_Player_Common_Tools::generatePlayerCharacter()
 
         break;
       }
-      case SUBCLASS_BARBARIAN:
-      {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
-        ACE_ASSERT(current);
-        items.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_HIDE);
-        ACE_ASSERT(current);
-        items.insert(current->getID());
-
-        break;
-      }
+//       case SUBCLASS_BARBARIAN:
+//       {
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+//             ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+//         ACE_ASSERT(current);
+//         items.insert(current->getID());
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+//             ARMOR_HIDE);
+//         ACE_ASSERT(current);
+//         items.insert(current->getID());
+//
+//         break;
+//       }
       case SUBCLASS_WIZARD:
       case SUBCLASS_SORCERER:
-      case SUBCLASS_WARLOCK:
+//       case SUBCLASS_WARLOCK:
       {
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+                                                                          TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
         break;
       }
       case SUBCLASS_CLERIC:
-      case SUBCLASS_AVENGER:
-      case SUBCLASS_INVOKER:
+//       case SUBCLASS_AVENGER:
+//       case SUBCLASS_INVOKER:
       {
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+                                                                          ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_MAIL_CHAIN);
+                                                                          ARMOR_MAIL_CHAIN);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_HEAVY_WOODEN);
+                                                                          ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
         break;
       }
       case SUBCLASS_DRUID:
-      case SUBCLASS_SHAMAN:
+//       case SUBCLASS_SHAMAN:
       {
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            LIGHT_MELEE_WEAPON_SICKLE);
+                                                                          LIGHT_MELEE_WEAPON_SICKLE);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_HIDE);
+                                                                          ARMOR_HIDE);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_LIGHT_WOODEN);
+                                                                          ARMOR_SHIELD_LIGHT_WOODEN);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
         break;
       }
-      case SUBCLASS_MONK:
-      {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
-        ACE_ASSERT(current);
-        items.insert(current->getID());
-
-        break;
-      }
+//       case SUBCLASS_MONK:
+//       {
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+//             TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+//         ACE_ASSERT(current);
+//         items.insert(current->getID());
+//
+//         break;
+//       }
       case SUBCLASS_THIEF:
       case SUBCLASS_BARD:
       {
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            LIGHT_MELEE_WEAPON_SWORD_SHORT);
+                                                                          LIGHT_MELEE_WEAPON_SWORD_SHORT);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_LEATHER);
+                                                                          ARMOR_LEATHER);
         ACE_ASSERT(current);
         items.insert(current->getID());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_LIGHT_STEEL);
+                                                                          ARMOR_SHIELD_LIGHT_STEEL);
         ACE_ASSERT(current);
         items.insert(current->getID());
 

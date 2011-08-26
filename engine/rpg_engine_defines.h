@@ -29,4 +29,7 @@
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE         ACE_TEXT("rpg_engine.xsd")
 
+// engine-specific
+#define RPG_ENGINE_CENTER_ON_PLAYER    true
+
 #endif

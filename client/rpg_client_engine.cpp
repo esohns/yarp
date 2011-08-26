@@ -422,6 +422,21 @@ RPG_Client_Engine::dump_state() const
 }
 
 void
+RPG_Client_Engine::init()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::init"));
+
+  RPG_Client_Action new_action;
+  new_action.command = COMMAND_WINDOW_INIT;
+  new_action.map_position = std::make_pair(0, 0);
+  new_action.graphics_position = std::make_pair(0, 0);
+  new_action.window = myLevelWindow;
+  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+
+  action(new_action);
+}
+
+void
 RPG_Client_Engine::redraw()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::redraw"));
@@ -431,6 +446,7 @@ RPG_Client_Engine::redraw()
   new_action.map_position = std::make_pair(0, 0);
   new_action.graphics_position = std::make_pair(0, 0);
   new_action.window = myLevelWindow;
+  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
 
   action(new_action);
 }
@@ -445,6 +461,22 @@ RPG_Client_Engine::toggleDoor(const RPG_Map_Position_t& position_in)
   new_action.map_position = position_in;
   new_action.graphics_position = std::make_pair(0, 0);
   new_action.window = myLevelWindow;
+  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+
+  action(new_action);
+}
+
+void
+RPG_Client_Engine::center(const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::center"));
+
+  RPG_Client_Action new_action;
+  new_action.command = COMMAND_SET_VIEW;
+  new_action.map_position = position_in;
+  new_action.graphics_position = std::make_pair(0, 0);
+  new_action.window = myLevelWindow;
+  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
 
   action(new_action);
 }
@@ -575,6 +607,30 @@ RPG_Client_Engine::handleActions()
 
         break;
       }
+      case COMMAND_SET_VIEW:
+      {
+        RPG_Client_WindowLevel* window = dynamic_cast<RPG_Client_WindowLevel*>((*iterator).window);
+        ACE_ASSERT(window);
+        try
+        {
+          window->setView((*iterator).map_position);
+          window->draw();
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_CRITICAL,
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_WindowLevel::setView([%u,%u])/draw(), aborting\n"),
+                     window,
+                     (*iterator).map_position.first,
+                     (*iterator).map_position.second));
+
+          return;
+        }
+
+        refresh_window = true;
+
+        break;
+      }
       case COMMAND_TILE_HIGHLIGHT_DRAW:
       {
         RPG_Client_WindowLevel* window = dynamic_cast<RPG_Client_WindowLevel*>((*iterator).window);
@@ -652,6 +708,8 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
+        refresh_window = true;
+
         break;
       }
       case COMMAND_WINDOW_DRAW:
@@ -665,6 +723,28 @@ RPG_Client_Engine::handleActions()
           ACE_DEBUG((LM_CRITICAL,
                      ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::draw(), aborting\n"),
                      (*iterator).window));
+
+          return;
+        }
+
+        refresh_window = true;
+
+        break;
+      }
+      case COMMAND_WINDOW_INIT:
+      {
+        RPG_Client_WindowLevel* window = dynamic_cast<RPG_Client_WindowLevel*>((*iterator).window);
+        ACE_ASSERT(window);
+        try
+        {
+          window->init();
+          window->draw();
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_CRITICAL,
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_WindowMain::init/draw(), aborting\n"),
+                     window));
 
           return;
         }
@@ -697,25 +777,13 @@ RPG_Client_Engine::handleActions()
         try
         {
           window->toggleDoor((*iterator).map_position);
+          window->draw();
         }
         catch (...)
         {
           ACE_DEBUG((LM_CRITICAL,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_WindowLevel::toggleDoor(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_WindowLevel::toggleDoor/draw(), aborting\n"),
                      window));
-
-          return;
-        }
-
-        try
-        {
-          (*iterator).window->draw();
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_CRITICAL,
-                     ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::draw(), aborting\n"),
-                     (*iterator).window));
 
           return;
         }

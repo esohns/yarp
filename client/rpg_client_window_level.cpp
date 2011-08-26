@@ -299,6 +299,50 @@ RPG_Client_WindowLevel::init(RPG_Client_Engine* engine_in,
   myEngine = engine_in;
   myLevelState = levelState_in;
 
+  // init style
+  RPG_Graphics_StyleUnion style;
+  style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
+  style.floorstyle = mapStyle_in.floor_style;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
+  style.edgestyle = mapStyle_in.edge_style;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+  style.wallstyle = mapStyle_in.wall_style;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
+  style.doorstyle = mapStyle_in.door_style;
+  setStyle(style);
+
+  // init edge, wall, door tiles
+  init();
+
+  // *NOTE*: fiddling with the view invalidates the cursor BG !
+  RPG_Client_Action client_action;
+  client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+  client_action.map_position = std::make_pair(0, 0);
+  client_action.graphics_position = std::make_pair(0, 0);
+  client_action.window = this;
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  myEngine->action(client_action);
+
+  // clear highlight BG
+  RPG_Graphics_Surface::clear(myHighlightBG);
+
+  // init cursor highlighting
+  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
+  myHighlightBGPosition = std::make_pair(dimensions.first / 2,
+                                         dimensions.second / 2);
+
+  // init minimap
+  initMiniMap();
+}
+
+void
+RPG_Client_WindowLevel::init()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::init"));
+
   // clean up
   myFloorEdgeTiles.clear();
   myWallTiles.clear();
@@ -316,45 +360,11 @@ RPG_Client_WindowLevel::init(RPG_Client_Engine* engine_in,
                                      myCurrentDoorSet,
                                      myDoorTiles);
 
-  // init style
-  RPG_Graphics_StyleUnion style;
-  style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = mapStyle_in.floor_style;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
-  style.edgestyle = mapStyle_in.edge_style;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = mapStyle_in.wall_style;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
-  style.doorstyle = mapStyle_in.door_style;
-  setStyle(style);
-
   // init view
   RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
   RPG_Map_Position_t center_position = std::make_pair(dimensions.first / 2,
                                                       dimensions.second / 2);
   setView(center_position);
-
-  // *NOTE*: fiddling with the view invalidates the cursor BG !
-  RPG_Client_Action client_action;
-  client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-  client_action.map_position = std::make_pair(0, 0);
-  client_action.graphics_position = std::make_pair(0, 0);
-  client_action.window = this;
-  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  myEngine->action(client_action);
-
-  // clear highlight BG
-  RPG_Graphics_Surface::clear(myHighlightBG);
-
-  // init cursor highlighting
-  myHighlightBGPosition = std::make_pair(dimensions.first / 2,
-                                         dimensions.second / 2);
-
-  // init minimap
-  initMiniMap();
 }
 
 void

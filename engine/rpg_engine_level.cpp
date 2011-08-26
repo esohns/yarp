@@ -35,7 +35,10 @@ ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> RPG_Engine_Level::myCurre
 RPG_Engine_Level::RPG_Engine_Level()
  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
    myCondition(myLock),
-   myClient(NULL)
+//    myEntities(),
+   myActivePlayer(0),
+   myClient(NULL),
+   myCenterOnActivePlayer(RPG_ENGINE_CENTER_ON_PLAYER)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Engine_Level"));
 
@@ -390,6 +393,22 @@ RPG_Engine_Level::init(RPG_Engine_IWindow* client_in,
 
   inherited::init(map_in);
   myClient = client_in;
+
+  if (myClient)
+  {
+    try
+    {
+      myClient->init();
+      myClient->center(std::make_pair(map_in.plan.size_x / 2,
+                                      map_in.plan.size_y / 2));
+      myClient->redraw();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Engine_IWindow::init/center/redraw(), continuing\n")));
+    }
+  } // end IF
 }
 
 const RPG_Engine_EntityID_t
@@ -459,6 +478,55 @@ RPG_Engine_Level::action(const RPG_Engine_EntityID_t& id_in,
       break;
     }
   } // end SWITCH
+}
+
+void
+RPG_Engine_Level::setActive(const RPG_Engine_EntityID_t& id_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::setActive"));
+
+  // sanity check(s)
+  ACE_ASSERT(id_in);
+
+  RPG_Map_Position_t player_position;
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    RPG_Engine_EntitiesIterator_t iterator = myEntities.find(id_in);
+    ACE_ASSERT(iterator != myEntities.end());
+    player_position = (*iterator).second->position;
+
+    myActivePlayer = id_in;
+  } // end lock scope
+
+  if (myClient)
+  {
+    try
+    {
+      myClient->center(player_position);
+      myClient->redraw();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Engine_IWindow::center/redraw(), continuing\n")));
+    }
+  } // end IF
+}
+
+const RPG_Engine_EntityID_t
+RPG_Engine_Level::getActive() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getActive"));
+
+  RPG_Engine_EntityID_t result = 0;
+
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    result = myActivePlayer;
+  } // end scope
+
+  return result;
 }
 
 const RPG_Map_Element
@@ -640,6 +708,19 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
 }
 
 void
+RPG_Engine_Level::clearEntityActions()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::clearEntityActions"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  for (RPG_Engine_EntitiesIterator_t iterator = myEntities.begin();
+       iterator != myEntities.end();
+       iterator++)
+    (*iterator).second->actions.clear();
+}
+
+void
 RPG_Engine_Level::handleEntities(bool& redrawUI_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::handleEntities"));
@@ -734,6 +815,21 @@ RPG_Engine_Level::handleEntities(bool& redrawUI_out)
           } // end IF
 
           (*iterator).second->position = targetPosition;
+
+          if (myCenterOnActivePlayer && myClient)
+          {
+            try
+            {
+              myClient->center(targetPosition);
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("caught exception in RPG_Engine_IWindow::center([%u,%u]), continuing\n"),
+                        targetPosition.first,
+                        targetPosition.second));
+            }
+          } // end IF
 
           redrawUI_out = true;
         } // end IF

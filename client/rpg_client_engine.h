@@ -62,8 +62,10 @@ class RPG_Client_Engine
   virtual void dump_state() const;
 
   // implement RPG_Engine_IWindow
+  virtual void init();
   virtual void redraw();
   virtual void toggleDoor(const RPG_Map_Position_t&);
+  virtual void center(const RPG_Map_Position_t&);
 
   // *NOTE*: needs to be WINDOW_MAP !!!
   void init(RPG_Graphics_IWindow*); // UI handle

@@ -62,13 +62,18 @@ class RPG_Engine_Level
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
+  // *WARNING*: DO NOT USE this while the engine is running !
   void init(RPG_Engine_IWindow*, // UI handle
             const RPG_Map_t&);   // map
+
   // *WARNING*: fire&forget API, added entities are controlled by the engine !
   const RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
   void action(const RPG_Engine_EntityID_t&, // id
               const RPG_Engine_Action&);    // action
+
+  void setActive(const RPG_Engine_EntityID_t&); // id
+  const RPG_Engine_EntityID_t getActive() const; // return value: id (if any)
 
   const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
   const RPG_Engine_EntityGraphics_t getGraphics() const;
@@ -94,9 +99,11 @@ class RPG_Engine_Level
   virtual int close(u_long = 0);
   virtual int svc(void);
 
+  // helper methods
   void handleDoor(const RPG_Map_Position_t&, // position
                   const bool&,               // open ? : close
                   bool&);                    // return value: schedule a redraw ?
+  void clearEntityActions();
 
   // perform (one round of) actions
   void handleEntities(bool&); // return value: schedule a redraw ?
@@ -113,8 +120,11 @@ class RPG_Engine_Level
   ACE_Condition<ACE_Thread_Mutex> myCondition;
 
   RPG_Engine_Entities_t           myEntities;
+  RPG_Engine_EntityID_t           myActivePlayer;
 
   RPG_Engine_IWindow*             myClient;
+
+  bool                            myCenterOnActivePlayer;
 };
 
 #endif

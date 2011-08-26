@@ -1244,24 +1244,24 @@ RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_USE_ROPE);
   myClassSkillsTable.insert(std::make_pair(SUBCLASS_RANGER, skillSet));
 
-  skillSet.clear();
-  // SUBCLASS_BARBARIAN
-  skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CRAFT_FLETCHER);
-  skillSet.insert(SKILL_CRAFT_BOWYER);
-  skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
-  skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
-  skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
-  skillSet.insert(SKILL_CRAFT_OTHER);
-  skillSet.insert(SKILL_HANDLE_ANIMAL);
-  skillSet.insert(SKILL_HEAL);
-  skillSet.insert(SKILL_INTIMIDATE);
-  skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_LISTEN);
-  skillSet.insert(SKILL_RIDE);
-  skillSet.insert(SKILL_SURVIVAL);
-  skillSet.insert(SKILL_SWIM);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_BARBARIAN, skillSet));
+//   skillSet.clear();
+//   // SUBCLASS_BARBARIAN
+//   skillSet.insert(SKILL_CLIMB);
+//   skillSet.insert(SKILL_CRAFT_FLETCHER);
+//   skillSet.insert(SKILL_CRAFT_BOWYER);
+//   skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
+//   skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
+//   skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
+//   skillSet.insert(SKILL_CRAFT_OTHER);
+//   skillSet.insert(SKILL_HANDLE_ANIMAL);
+//   skillSet.insert(SKILL_HEAL);
+//   skillSet.insert(SKILL_INTIMIDATE);
+//   skillSet.insert(SKILL_JUMP);
+//   skillSet.insert(SKILL_LISTEN);
+//   skillSet.insert(SKILL_RIDE);
+//   skillSet.insert(SKILL_SURVIVAL);
+//   skillSet.insert(SKILL_SWIM);
+//   myClassSkillsTable.insert(std::make_pair(SUBCLASS_BARBARIAN, skillSet));
 
   skillSet.clear();
   // SUBCLASS_WIZARD
@@ -1323,27 +1323,27 @@ RPG_Character_Skills_Common_Tools::initClassSkillsTable()
   skillSet.insert(SKILL_SWIM);
   myClassSkillsTable.insert(std::make_pair(SUBCLASS_DRUID, skillSet));
 
-  skillSet.clear();
-  // SUBCLASS_MONK
-  skillSet.insert(SKILL_BALANCE);
-  skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT_ALCHEMY);
-  skillSet.insert(SKILL_DIPLOMACY);
-  skillSet.insert(SKILL_ESCAPE_ARTIST);
-  skillSet.insert(SKILL_HIDE);
-  skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
-  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
-  skillSet.insert(SKILL_LISTEN);
-  skillSet.insert(SKILL_MOVE_SILENTLY);
-  skillSet.insert(SKILL_PERFORM);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_SENSE_MOTIVE);
-  skillSet.insert(SKILL_SPOT);
-  skillSet.insert(SKILL_SWIM);
-  skillSet.insert(SKILL_TUMBLE);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_MONK, skillSet));
+// // //   skillSet.clear();
+// // //   // SUBCLASS_MONK
+// // //   skillSet.insert(SKILL_BALANCE);
+// // //   skillSet.insert(SKILL_CLIMB);
+// // //   skillSet.insert(SKILL_CONCENTRATION);
+// // //   skillSet.insert(SKILL_CRAFT_ALCHEMY);
+// // //   skillSet.insert(SKILL_DIPLOMACY);
+// // //   skillSet.insert(SKILL_ESCAPE_ARTIST);
+// // //   skillSet.insert(SKILL_HIDE);
+// // //   skillSet.insert(SKILL_JUMP);
+// // //   skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
+// // //   skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
+// // //   skillSet.insert(SKILL_LISTEN);
+// // //   skillSet.insert(SKILL_MOVE_SILENTLY);
+// // //   skillSet.insert(SKILL_PERFORM);
+// // //   skillSet.insert(SKILL_PROFESSION);
+// // //   skillSet.insert(SKILL_SENSE_MOTIVE);
+// // //   skillSet.insert(SKILL_SPOT);
+// // //   skillSet.insert(SKILL_SWIM);
+// // //   skillSet.insert(SKILL_TUMBLE);
+// // //   myClassSkillsTable.insert(std::make_pair(SUBCLASS_MONK, skillSet));
 
   skillSet.clear();
   // SUBCLASS_THIEF
@@ -1460,20 +1460,19 @@ RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_Common_SubClass& sub
     case SUBCLASS_WIZARD:
     case SUBCLASS_SORCERER:
     case SUBCLASS_CLERIC:
-    // *TODO*: don't know if this makes sense...
-    case SUBCLASS_WARLORD:
-    case SUBCLASS_WARLOCK:
-    case SUBCLASS_AVENGER:
-    case SUBCLASS_INVOKER:
-    case SUBCLASS_SHAMAN:
+//     case SUBCLASS_WARLORD:
+//     case SUBCLASS_WARLOCK:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
     {
       baseValue += 2;
 
       break;
     }
-    case SUBCLASS_BARBARIAN:
+//     case SUBCLASS_BARBARIAN:
     case SUBCLASS_DRUID:
-    case SUBCLASS_MONK:
+//     case SUBCLASS_MONK:
     {
       baseValue += 4;
 
@@ -1494,7 +1493,6 @@ RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_Common_SubClass& sub
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid subclass: \"%s\", aborting\n"),
                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
@@ -1552,7 +1550,7 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
       break;
     }
     case SUBCLASS_PALADIN:
-    case SUBCLASS_WARLORD:
+//     case SUBCLASS_WARLORD:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
@@ -1582,7 +1580,7 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
       break;
     }
     case SUBCLASS_SORCERER:
-    case SUBCLASS_WARLOCK:
+//     case SUBCLASS_WARLOCK:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
 
@@ -1591,8 +1589,8 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
       break;
     }
     case SUBCLASS_CLERIC:
-    case SUBCLASS_AVENGER:
-    case SUBCLASS_INVOKER:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       // TODO: a cleric with the War domain receives the appropriate WEAPON_FOCUS and MARTIAL_WEAPON proficiency...
@@ -1605,17 +1603,17 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
 
       break;
     }
-    case SUBCLASS_BARBARIAN:
-    case SUBCLASS_SHAMAN:
-    {
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
-      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
-
-      break;
-    }
+//     case SUBCLASS_BARBARIAN:
+//     case SUBCLASS_SHAMAN:
+//     {
+//       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+//       baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+//       baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+//       baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
+//       baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+//
+//       break;
+//     }
     case SUBCLASS_DRUID:
     {
       // *TODO*: proficient with dagger, club, dart, quarterstaff, scimitar, sickle shortspear, sling and spear ONLY (+ natural attacks)
@@ -1644,55 +1642,55 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
 
       break;
     }
-    case SUBCLASS_MONK:
-    {
-      // *TODO*: proficient with dagger, club, crossbow (light and heavy), handaxe, javelin,
-      //         kama, nunchaku, quarterstaff, sai, shuriken, siangham and sling ONLY
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
-      baseFeats_out.insert(FEAT_IMPROVED_UNARMED_STRIKE);
-      // *TODO*: choose EITHER of these two at first level
-      baseFeats_out.insert(FEAT_IMPROVED_GRAPPLE);
-      baseFeats_out.insert(FEAT_STUNNING_FIST);
-      if (currentLevel_in == 2)
-      {
-        // *TODO*: choose EITHER of these two
-        baseFeats_out.insert(FEAT_COMBAT_REFLEXES);
-        baseFeats_out.insert(FEAT_DEFLECT_ARROWS);
-      } // end IF
-      if (currentLevel_in == 6)
-      {
-        // *TODO*: choose EITHER of these two
-        baseFeats_out.insert(FEAT_IMPROVED_DISARM);
-        baseFeats_out.insert(FEAT_IMPROVED_TRIP);
-      } // end IF
-
-      if (currentLevel_in >= 2)
-      {
-        baseAbilities_out.insert(ABILITY_EVASION);
-      } // end IF
-      if (currentLevel_in >= 5)
-      {
-        baseAbilities_out.insert(ABILITY_IMMUNITY_DISEASE);
-      } // end IF
-      if (currentLevel_in >= 11)
-      {
-        baseAbilities_out.insert(ABILITY_IMMUNITY_POISON);
-      } // end IF
-      if (currentLevel_in >= 13)
-      {
-        baseAbilities_out.insert(ABILITY_RESISTANCE_TO_SPELL);
-      } // end IF
-      if (currentLevel_in >= 19)
-      {
-        baseAbilities_out.insert(ABILITY_ETHEREALNESS);
-      } // end IF
-      if (currentLevel_in >= 20)
-      {
-        baseAbilities_out.insert(ABILITY_RESISTANCE_TO_DAMAGE);
-      } // end IF
-
-      break;
-    }
+//     case SUBCLASS_MONK:
+//     {
+//       // *TODO*: proficient with dagger, club, crossbow (light and heavy), handaxe, javelin,
+//       //         kama, nunchaku, quarterstaff, sai, shuriken, siangham and sling ONLY
+//       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+//       baseFeats_out.insert(FEAT_IMPROVED_UNARMED_STRIKE);
+//       // *TODO*: choose EITHER of these two at first level
+//       baseFeats_out.insert(FEAT_IMPROVED_GRAPPLE);
+//       baseFeats_out.insert(FEAT_STUNNING_FIST);
+//       if (currentLevel_in == 2)
+//       {
+//         // *TODO*: choose EITHER of these two
+//         baseFeats_out.insert(FEAT_COMBAT_REFLEXES);
+//         baseFeats_out.insert(FEAT_DEFLECT_ARROWS);
+//       } // end IF
+//       if (currentLevel_in == 6)
+//       {
+//         // *TODO*: choose EITHER of these two
+//         baseFeats_out.insert(FEAT_IMPROVED_DISARM);
+//         baseFeats_out.insert(FEAT_IMPROVED_TRIP);
+//       } // end IF
+//
+//       if (currentLevel_in >= 2)
+//       {
+//         baseAbilities_out.insert(ABILITY_EVASION);
+//       } // end IF
+//       if (currentLevel_in >= 5)
+//       {
+//         baseAbilities_out.insert(ABILITY_IMMUNITY_DISEASE);
+//       } // end IF
+//       if (currentLevel_in >= 11)
+//       {
+//         baseAbilities_out.insert(ABILITY_IMMUNITY_POISON);
+//       } // end IF
+//       if (currentLevel_in >= 13)
+//       {
+//         baseAbilities_out.insert(ABILITY_RESISTANCE_TO_SPELL);
+//       } // end IF
+//       if (currentLevel_in >= 19)
+//       {
+//         baseAbilities_out.insert(ABILITY_ETHEREALNESS);
+//       } // end IF
+//       if (currentLevel_in >= 20)
+//       {
+//         baseAbilities_out.insert(ABILITY_RESISTANCE_TO_DAMAGE);
+//       } // end IF
+//
+//       break;
+//     }
     case SUBCLASS_RANGER:
     {
       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
@@ -1798,7 +1796,6 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
         } // end FOR
         if (options < numChoices)
         {
-          // debug info
           ACE_DEBUG((LM_WARNING,
                      ACE_TEXT("%d/%d abilities already acquired --> cannot choose %d among them\n"),
                      choiceList.size() - options,
@@ -1834,7 +1831,6 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid subclass: \"%s\", aborting\n"),
                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
@@ -2133,7 +2129,7 @@ RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& 
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << static_cast<int> (iterator->second);
+    converter << static_cast<int>(iterator->second);
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR

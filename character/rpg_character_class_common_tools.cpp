@@ -50,19 +50,19 @@ RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass&
     case SUBCLASS_FIGHTER:
     case SUBCLASS_PALADIN:
     case SUBCLASS_RANGER:
-    case SUBCLASS_BARBARIAN:
-    case SUBCLASS_WARLORD:
+//     case SUBCLASS_BARBARIAN:
+//     case SUBCLASS_WARLORD:
       return METACLASS_WARRIOR;
     case SUBCLASS_WIZARD:
     case SUBCLASS_SORCERER:
-    case SUBCLASS_WARLOCK:
+//     case SUBCLASS_WARLOCK:
       return METACLASS_WIZARD;
     case SUBCLASS_CLERIC:
     case SUBCLASS_DRUID:
-    case SUBCLASS_MONK:
-    case SUBCLASS_AVENGER:
-    case SUBCLASS_INVOKER:
-    case SUBCLASS_SHAMAN:
+//     case SUBCLASS_MONK:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
       return METACLASS_PRIEST;
     case SUBCLASS_THIEF:
     case SUBCLASS_BARD:

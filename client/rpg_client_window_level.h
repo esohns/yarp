@@ -61,6 +61,7 @@ class RPG_Client_WindowLevel
   void init(RPG_Client_Engine*,              // engine handle
             RPG_Engine_Level*,               // level state handle
             const RPG_Graphics_MapStyle_t&); // map style
+  void init();
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)

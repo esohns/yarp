@@ -51,7 +51,6 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
              std::make_pair(0, 0), // offset
              std::string()),       // title
 //              NULL),                // background
-   myEntityID(0),
    myLevelState(levelState_in),
 //    myCurrentMapStyle(),
 //    myCurrentFloorSet(),
@@ -61,7 +60,7 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
    myCurrentOffMapTile(NULL),
 //    myFloorEdgeTiles(),
 //    myWallTiles(),
-   myHideWalls(false),
+   myHideWalls(SDL_GUI_DEF_GRAPHICS_HIDE_WALLS),
    myWallBlend(NULL),
    myView(std::make_pair(myLevelState->getFloorPlan().size_x / 2,
                          myLevelState->getFloorPlan().size_y / 2)),
@@ -83,6 +82,7 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_OFF_MAP;
   myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                               true,   // convert to display format
                                                                false); // don't cache
   if (!myCurrentOffMapTile)
     ACE_DEBUG((LM_ERROR,
@@ -99,16 +99,6 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
   ACE_OS::memset(&myCurrentDoorSet,
                  0,
                  sizeof(myCurrentDoorSet));
-//   RPG_Client_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
-//                                           myCurrentFloorEdgeSet,
-//                                           myFloorEdgeTiles);
-//   RPG_Client_Common_Tools::initWalls(myLevelState->getFloorPlan(),
-//                                      myCurrentWallSet,
-//                                      myWallTiles);
-//   RPG_Client_Common_Tools::initDoors(myLevelState->getFloorPlan(),
-//                                      *myLevelState,
-//                                      myCurrentDoorSet,
-//                                      myDoorTiles);
 
   // init cursor highlighting
   myHighlightBG = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
@@ -120,6 +110,7 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
                RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
   type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
   myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                           true,   // convert to display format
                                                            false); // don't cache
   if (!myHighlightTile)
     ACE_DEBUG((LM_ERROR,
@@ -262,29 +253,9 @@ SDL_GUI_LevelWindow::centerView()
 }
 
 void
-SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
-                          const RPG_Engine_EntityID_t& entityID_in)
+SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
-
-  myEntityID = entityID_in;
-
-  // clean up
-  myFloorEdgeTiles.clear();
-  myWallTiles.clear();
-  myDoorTiles.clear();
-
-  // init tiles / position
-  RPG_Client_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
-                                          myCurrentFloorEdgeSet,
-                                          myFloorEdgeTiles);
-  RPG_Client_Common_Tools::initWalls(myLevelState->getFloorPlan(),
-                                     myCurrentWallSet,
-                                     myWallTiles);
-  RPG_Client_Common_Tools::initDoors(myLevelState->getFloorPlan(),
-                                     *myLevelState,
-                                     myCurrentDoorSet,
-                                     myDoorTiles);
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -301,13 +272,8 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   style.doorstyle = mapStyle_in.door_style;
   setStyle(style);
 
-  // init view
-  centerView();
-
-  // *NOTE*: fiddling with the view invalidates the cursor BG !
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-  // clear highlight BG
-  RPG_Graphics_Surface::clear(myHighlightBG);
+  // init edge, floor, door tiles
+  init();
 
   // init cursor highlighting
   RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
@@ -369,10 +335,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   //
   // pass 2:
   //   1. north & west walls
-  //   2. furniture
+  //   2. doors & furniture
   //   3. traps
   //   4. objects
-  //   5. monsters
+  //   5. creatures
   //   6. effects
   //   7. south & east walls
   //   8. ceiling
@@ -631,6 +597,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   // pass 2
   RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
+  RPG_Engine_EntityGraphics_t entity_graphics = myLevelState->getGraphics();
+  RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
   for (i = -top_right.second;
        i <= static_cast<int>(top_right.second);
        i++)
@@ -681,7 +649,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                                     targetSurface);
       } // end IF
 
-      // step2: doors
+      // step2: doors & furniture
       if (door_iterator != myDoorTiles.end())
       {
         // *NOTE*: door are drawn in the "middle" of the floor tile
@@ -697,7 +665,30 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                                   targetSurface);
       } // end IF
 
-      // step3: walls (south & east)
+      // step3: traps
+
+      // step4: objects
+
+      // step5: creatures
+      creature_iterator = entity_graphics.find(current_map_position);
+      if (creature_iterator != entity_graphics.end())
+      {
+        // sanity check
+        ACE_ASSERT((*creature_iterator).second);
+
+        // *NOTE*: creatures are drawn in the "middle" of the floor tile
+        RPG_Graphics_Surface::put((screen_position.first +
+                                   ((RPG_GRAPHICS_TILE_FLOOR_WIDTH - (*creature_iterator).second->w) / 2)),
+                                  (screen_position.second +
+                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
+                                   (*creature_iterator).second->h),
+                                  *((*creature_iterator).second),
+                                  targetSurface);
+      } // end IF
+
+      // step6: effects
+
+      // step7: walls (south & east)
       if ((wall_iterator != myWallTiles.end()) &&
           !myHideWalls)
       {
@@ -718,7 +709,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                                     targetSurface);
       } // end IF
 
-      // step4: ceiling
+      // step8: ceiling
       if (RPG_Engine_Common_Tools::hasCeiling(current_map_position, *myLevelState) &&
           !myHideWalls)
       {
@@ -819,39 +810,95 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         case SDLK_LEFT:
         case SDLK_RIGHT:
         {
+          RPG_Map_Direction direction = DIRECTION_INVALID;
           switch (event_in.key.keysym.sym)
           {
             case SDLK_c:
-              centerView(); break;
-//             case SDLK_UP:
-//               mapWindow->setView(0,
-//                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
-//             case SDLK_DOWN:
-//               mapWindow->setView(0,
-//                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
-//             case SDLK_LEFT:
-//               mapWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-//                                  0); break;
-//             case SDLK_RIGHT:
-//               mapWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-//                                  0); break;
+            {
+              if (myLevelState->getActive())
+                setView(myLevelState->getPosition(myLevelState->getActive()));
+              else
+                centerView();
+
+              break;
+            }
             case SDLK_UP:
-              setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+            {
+              if (event_in.key.keysym.mod & KMOD_SHIFT)
+                setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              else
+                direction = DIRECTION_UP;
+
+              break;
+            }
             case SDLK_DOWN:
-              setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+            {
+              if (event_in.key.keysym.mod & KMOD_SHIFT)
+                setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              else
+                direction = DIRECTION_DOWN;
+
+              break;
+            }
             case SDLK_LEFT:
-              setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+            {
+              if (event_in.key.keysym.mod & KMOD_SHIFT)
+                setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              else
+                direction = DIRECTION_LEFT;
+
+              break;
+            }
             case SDLK_RIGHT:
-              setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
+            {
+              if (event_in.key.keysym.mod & KMOD_SHIFT)
+                setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              else
+                direction = DIRECTION_RIGHT;
+
+              break;
+            }
             default:
               break;
           } // end SWITCH
 
+          if ((direction != DIRECTION_INVALID) &&
+              myLevelState->getActive())
+          {
+            RPG_Engine_Action action;
+            action.command = COMMAND_STEP;
+            action.direction = direction;
+            myLevelState->action(myLevelState->getActive(), action);
+
+            setView(myLevelState->getPosition(myLevelState->getActive()));
+          } // end IF
+
           // *NOTE*: fiddling with the view invalidates the cursor BG !
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+          // clear highlight BG
+          RPG_Graphics_Surface::clear(myHighlightBG);
+
+          // need a redraw
+          redraw_out = true;
+
+          // done with this event
+          return;
+        }
+        case SDLK_h:
+        {
+          // toggle setting
+          myCurrentMapStyle.half_height_walls = !myCurrentMapStyle.half_height_walls;
+
+          RPG_Graphics_StyleUnion new_style;
+          new_style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+          new_style.wallstyle = myCurrentMapStyle.wall_style;
+          setStyle(new_style);
+
+          // *NOTE*: fiddling with the style invalidates the cursor BG !
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
           // clear highlight BG
           RPG_Graphics_Surface::clear(myHighlightBG);
@@ -866,11 +913,35 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         {
           myMinimapIsOn = !myMinimapIsOn;
 
+          // *NOTE*: fiddling with the view invalidates the cursor BG !
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+          // clear highlight BG
+          RPG_Graphics_Surface::clear(myHighlightBG);
+
           // need a redraw
           redraw_out = true;
 
           // done with this event
           return;
+        }
+        case SDLK_w:
+        {
+          if (event_in.key.keysym.mod & KMOD_SHIFT)
+          {
+            // toggle setting
+            myHideWalls = !myHideWalls;
+
+            // *NOTE*: fiddling with the style invalidates the cursor BG !
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+            // clear highlight BG
+            RPG_Graphics_Surface::clear(myHighlightBG);
+
+            // need a redraw
+            redraw_out = true;
+
+            // done with this event
+            return;
+          } // end IF
         }
         default:
         {
@@ -1011,49 +1082,12 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         if (myLevelState->getElement(map_position) == MAPELEMENT_DOOR)
         {
           RPG_Map_Door_t door = myLevelState->getDoor(map_position);
-          if (!door.is_open)
-          {
-            RPG_Engine_Action action;
-            action.command = COMMAND_DOOR_OPEN;
-            action.position = map_position;
-            myLevelState->action(myEntityID, action);
 
-            // change tile
-            RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-            orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
-                                                                      map_position);
-            switch (orientation)
-            {
-              case ORIENTATION_HORIZONTAL:
-              {
-                myDoorTiles[map_position] = myCurrentDoorSet.horizontal_open;
-
-                break;
-              }
-              case ORIENTATION_VERTICAL:
-              {
-                myDoorTiles[map_position] = myCurrentDoorSet.vertical_open;
-
-                break;
-              }
-              default:
-              {
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
-                           RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
-
-                return;
-              }
-            } // end SWITCH
-
-            // invalidate cursor BG
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-            // clear highlight BG
-            RPG_Graphics_Surface::clear(myHighlightBG);
-
-            // need a redraw
-            redraw_out = true;
-          } // end IF
+          RPG_Engine_Action action;
+          action.command = (door.is_open ? COMMAND_DOOR_CLOSE
+                                         : COMMAND_DOOR_OPEN);
+          action.position = map_position;
+          myLevelState->action(myLevelState->getActive(), action);
         } // end IF
       } // end IF
 
@@ -1099,6 +1133,85 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       break;
     }
   } // end SWITCH
+}
+
+void
+SDL_GUI_LevelWindow::init()
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
+
+  // clean up
+  myFloorEdgeTiles.clear();
+  myWallTiles.clear();
+  myDoorTiles.clear();
+
+  // init tiles / position
+  RPG_Client_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
+                                          myCurrentFloorEdgeSet,
+                                          myFloorEdgeTiles);
+  RPG_Client_Common_Tools::initWalls(myLevelState->getFloorPlan(),
+                                     myCurrentWallSet,
+                                     myWallTiles);
+  RPG_Client_Common_Tools::initDoors(myLevelState->getFloorPlan(),
+                                     *myLevelState,
+                                     myCurrentDoorSet,
+                                     myDoorTiles);
+
+  // init view
+  centerView();
+
+  // *NOTE*: fiddling with the view invalidates the cursor BG !
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+  // clear highlight BG
+  RPG_Graphics_Surface::clear(myHighlightBG);
+}
+
+void
+SDL_GUI_LevelWindow::redraw()
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::redraw"));
+
+//   draw();
+//   refresh();
+}
+
+void
+SDL_GUI_LevelWindow::toggleDoor(const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::toggleDoor"));
+
+  RPG_Map_Door_t door = myLevelState->getDoor(position_in);
+  ACE_ASSERT(door.position == position_in);
+
+  // change tile accordingly
+  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+  orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
+                                                            position_in);
+  switch (orientation)
+  {
+    case ORIENTATION_HORIZONTAL:
+      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.horizontal_open
+      : myCurrentDoorSet.horizontal_closed); break;
+    case ORIENTATION_VERTICAL:
+      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.vertical_open
+      : myCurrentDoorSet.vertical_closed); break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
+                 RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+
+      return;
+    }
+  } // end SWITCH
+}
+
+void
+SDL_GUI_LevelWindow::center(const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::center"));
+
+//   setView(position_in);
 }
 
 void
@@ -1439,14 +1552,6 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
 }
 
 void
-SDL_GUI_LevelWindow::hideWalls(const bool& hideWalls_in)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::hideWalls"));
-
-  myHideWalls = hideWalls_in;
-}
-
-void
 SDL_GUI_LevelWindow::initCeiling()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initCeiling"));
@@ -1463,6 +1568,7 @@ SDL_GUI_LevelWindow::initCeiling()
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_CEILING;
   myCurrentCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                                true,   // convert to display format
                                                                 false); // don't cache
   if (!myCurrentCeilingTile)
   {

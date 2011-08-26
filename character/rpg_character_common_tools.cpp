@@ -344,23 +344,23 @@ RPG_Character_Common_Tools::getHitDie(const RPG_Common_SubClass& subClass_in)
 
   switch (subClass_in)
   {
-    case SUBCLASS_BARBARIAN:
-    {
-      return D_12;
-    }
+//     case SUBCLASS_BARBARIAN:
+//     {
+//       return D_12;
+//     }
     case SUBCLASS_FIGHTER:
     case SUBCLASS_PALADIN:
-    case SUBCLASS_WARLORD:
+//     case SUBCLASS_WARLORD:
     {
       return D_10;
     }
     case SUBCLASS_RANGER:
     case SUBCLASS_CLERIC:
     case SUBCLASS_DRUID:
-    case SUBCLASS_MONK:
-    case SUBCLASS_AVENGER:
-    case SUBCLASS_INVOKER:
-    case SUBCLASS_SHAMAN:
+//     case SUBCLASS_MONK:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
     {
       return D_8;
     }
@@ -371,7 +371,7 @@ RPG_Character_Common_Tools::getHitDie(const RPG_Common_SubClass& subClass_in)
     }
     case SUBCLASS_WIZARD:
     case SUBCLASS_SORCERER:
-    case SUBCLASS_WARLOCK:
+//     case SUBCLASS_WARLOCK:
     {
       return D_4;
     }
@@ -402,8 +402,8 @@ RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subCla
     case SUBCLASS_FIGHTER:
     case SUBCLASS_PALADIN:
     case SUBCLASS_RANGER:
-    case SUBCLASS_BARBARIAN:
-    case SUBCLASS_WARLORD:
+//     case SUBCLASS_BARBARIAN:
+//     case SUBCLASS_WARLORD:
     {
       baseAttackBonus = classLevel_in;
 
@@ -411,7 +411,7 @@ RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subCla
     }
     case SUBCLASS_WIZARD:
     case SUBCLASS_SORCERER:
-    case SUBCLASS_WARLOCK:
+//     case SUBCLASS_WARLOCK:
     {
       baseAttackBonus = ((classLevel_in & 0x1) == classLevel_in) ? ((classLevel_in - 1) >> 1)
                                                                  : (classLevel_in >> 1);
@@ -420,12 +420,12 @@ RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subCla
     }
     case SUBCLASS_CLERIC:
     case SUBCLASS_DRUID:
-    case SUBCLASS_MONK:
+//     case SUBCLASS_MONK:
     case SUBCLASS_THIEF:
     case SUBCLASS_BARD:
-    case SUBCLASS_AVENGER:
-    case SUBCLASS_INVOKER:
-    case SUBCLASS_SHAMAN:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
     {
       baseAttackBonus = (classLevel_in - 1) - ((classLevel_in - 1) / 4);
 

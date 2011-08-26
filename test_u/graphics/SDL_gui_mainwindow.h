@@ -21,8 +21,6 @@
 #ifndef SDL_GUI_MAINWINDOW_H
 #define SDL_GUI_MAINWINDOW_H
 
-#include <rpg_engine_common.h>
-
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_cursor.h>
 #include <rpg_graphics_font.h>
@@ -58,10 +56,8 @@ class SDL_GUI_MainWindow
 
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  void init(RPG_Engine_Level*,              // level state handle
-            const RPG_Graphics_MapStyle_t&, // map style
-            const RPG_Map_t&,               // map
-            const RPG_Engine_EntityID_t&);  // entity ID
+  void init(RPG_Engine_Level*,               // level state handle
+            const RPG_Graphics_MapStyle_t&); // map style
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -82,10 +78,8 @@ class SDL_GUI_MainWindow
 
   // helper methods
   void initScrollSpots();
-  void initMap(RPG_Engine_Level*,              // level state handle
-               const RPG_Graphics_MapStyle_t&, // map style
-               const RPG_Map_t&,               // map
-               const RPG_Engine_EntityID_t&);  // entity ID
+  void initMap(RPG_Engine_Level*,               // level state handle
+               const RPG_Graphics_MapStyle_t&); // map style
   void drawBorder(SDL_Surface* = NULL,       // target surface (default: screen)
                   const unsigned long& = 0,  // offset x (top-left = [0,0])
                   const unsigned long& = 0); // offset y (top-left = [0,0])

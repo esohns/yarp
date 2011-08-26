@@ -21,7 +21,7 @@
 #ifndef SDL_GUI_LEVELWINDOW_H
 #define SDL_GUI_LEVELWINDOW_H
 
-#include <rpg_engine_common.h>
+#include <rpg_engine_iwindow.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
@@ -39,7 +39,8 @@ class RPG_Engine_Level;
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class SDL_GUI_LevelWindow
- : public RPG_Graphics_SDLWindowBase
+ : public RPG_Graphics_SDLWindowBase,
+   public RPG_Engine_IWindow
 {
  public:
   SDL_GUI_LevelWindow(// *** SDL window ***
@@ -55,10 +56,8 @@ class SDL_GUI_LevelWindow
   void centerView();
 
   // set level properties
-  void init(const RPG_Graphics_MapStyle_t&, // map style
-            const RPG_Engine_EntityID_t&);  // entity ID
+  void init(const RPG_Graphics_MapStyle_t&); // map style
   void setStyle(const RPG_Graphics_StyleUnion&);
-  void hideWalls(const bool& = true); // hide walls ?
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
@@ -67,6 +66,12 @@ class SDL_GUI_LevelWindow
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
+
+  // implement RPG_Engine_IWindow
+  virtual void init();
+  virtual void redraw();
+  virtual void toggleDoor(const RPG_Map_Position_t&);
+  virtual void center(const RPG_Map_Position_t&);
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
@@ -87,7 +92,6 @@ class SDL_GUI_LevelWindow
   void initMiniMap(RPG_Engine_Level*); // level state handle
   void restoreBG();
 
-  RPG_Engine_EntityID_t           myEntityID;
   RPG_Engine_Level*               myLevelState;
 
   RPG_Graphics_MapStyle_t         myCurrentMapStyle;
@@ -105,6 +109,7 @@ class SDL_GUI_LevelWindow
   RPG_Graphics_WallTileMap_t      myWallTiles;
 
   bool                            myHideWalls;
+
   SDL_Surface*                    myWallBlend;
 
   // door tiles / position

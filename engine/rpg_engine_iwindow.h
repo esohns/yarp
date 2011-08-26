@@ -28,8 +28,10 @@ class RPG_Engine_IWindow
   // -Wno-non-virtual-dtor in the project settings...
 
   // exposed interface
+  virtual void init() = 0;
   virtual void redraw() = 0;
   virtual void toggleDoor(const RPG_Map_Position_t&) = 0;
+  virtual void center(const RPG_Map_Position_t&) = 0;
 };
 
 #endif // RPG_ENGINE_IWINDOW_H

@@ -19,8 +19,6 @@
 #ifndef SDL_GUI_MINIMAPWINDOW_H
 #define SDL_GUI_MINIMAPWINDOW_H
 
-#include <rpg_engine_common.h>
-
 #include <rpg_graphics_SDL_window_sub.h>
 
 #include <SDL/SDL.h>
@@ -48,8 +46,6 @@ class SDL_GUI_MinimapWindow
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
 
-  void init(const RPG_Engine_EntityID_t&); // player entity ID
-
  private:
   typedef RPG_Graphics_SDLWindowSub inherited;
 
@@ -58,11 +54,10 @@ class SDL_GUI_MinimapWindow
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow(const SDL_GUI_MinimapWindow&));
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow& operator=(const SDL_GUI_MinimapWindow&));
 
-  RPG_Engine_Level*     myLevelState;
-  RPG_Engine_EntityID_t myCurrentPlayerEntityID;
+  RPG_Engine_Level* myLevelState;
 
-  SDL_Surface*          myBG;
-  SDL_Surface*          mySurface;
+  SDL_Surface*      myBG;
+  SDL_Surface*      mySurface;
 };
 
 #endif // RPG_GRAPHICS_MINIMAP_H
