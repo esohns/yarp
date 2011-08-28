@@ -62,6 +62,7 @@ class RPG_Client_Engine
   virtual void dump_state() const;
 
   // implement RPG_Engine_IWindow
+  // *NOTE*: these are called by the level engine ONLY
   virtual void init();
   virtual void redraw();
   virtual void toggleDoor(const RPG_Map_Position_t&);
@@ -70,10 +71,6 @@ class RPG_Client_Engine
   // *NOTE*: needs to be WINDOW_MAP !!!
   void init(RPG_Graphics_IWindow*); // UI handle
   void action(const RPG_Client_Action&); // action
-
-  // set/get active player
-  void setPlayer(const RPG_Engine_EntityID_t&); // player ID
-  const RPG_Engine_EntityID_t getPlayer() const;
 
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
@@ -101,7 +98,6 @@ class RPG_Client_Engine
   bool                            myStop;
 
   RPG_Engine_Level*               myLevelState;
-  RPG_Engine_EntityID_t           myPlayerID;
   RPG_Graphics_IWindow*           myLevelWindow;
 
   RPG_Client_Actions_t            myActions;

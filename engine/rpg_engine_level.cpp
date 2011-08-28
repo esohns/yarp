@@ -336,6 +336,8 @@ RPG_Engine_Level::stop()
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("worker thread has joined...\n")));
+
+  clearEntityActions();
 }
 
 const bool
@@ -409,6 +411,18 @@ RPG_Engine_Level::init(RPG_Engine_IWindow* client_in,
                  ACE_TEXT("caught exception in RPG_Engine_IWindow::init/center/redraw(), continuing\n")));
     }
   } // end IF
+}
+
+void
+RPG_Engine_Level::save(const std::string& filename_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::save"));
+
+  if (!RPG_Map_Common_Tools::save(filename_in,
+                                  inherited::myMap))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), continuing\n"),
+               filename_in.c_str()));
 }
 
 const RPG_Engine_EntityID_t
@@ -485,17 +499,19 @@ RPG_Engine_Level::setActive(const RPG_Engine_EntityID_t& id_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::setActive"));
 
-  // sanity check(s)
-  ACE_ASSERT(id_in);
+  RPG_Map_Position_t player_position = std::make_pair(inherited::myMap.plan.size_x / 2,
+                                                      inherited::myMap.plan.size_y / 2);
 
-  RPG_Map_Position_t player_position;
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-    RPG_Engine_EntitiesIterator_t iterator = myEntities.find(id_in);
-    ACE_ASSERT(iterator != myEntities.end());
-    player_position = (*iterator).second->position;
 
     myActivePlayer = id_in;
+    if (myActivePlayer)
+    {
+      RPG_Engine_EntitiesIterator_t iterator = myEntities.find(id_in);
+      ACE_ASSERT(iterator != myEntities.end());
+      player_position = (*iterator).second->position;
+    } // end IF
   } // end lock scope
 
   if (myClient)

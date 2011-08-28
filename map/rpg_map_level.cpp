@@ -56,6 +56,14 @@ RPG_Map_Level::init(const RPG_Map_t& map_in)
   myMap = map_in;
 }
 
+const std::string
+RPG_Map_Level::getName() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getName"));
+
+  return myMap.name;
+}
+
 const RPG_Map_Position_t
 RPG_Map_Level::getStartPosition() const
 {

@@ -36,7 +36,6 @@ RPG_Client_Engine::RPG_Client_Engine()
  : myCondition(myLock),
    myStop(false),
    myLevelState(NULL),
-   myPlayerID(0),
    myLevelWindow(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::RPG_Client_Engine"));
@@ -50,7 +49,6 @@ RPG_Client_Engine::RPG_Client_Engine(RPG_Graphics_IWindow* window_in)
  : myCondition(myLock),
    myStop(false),
    myLevelState(NULL),
-   myPlayerID(0),
    myLevelWindow(window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::RPG_Client_Engine"));
@@ -67,44 +65,6 @@ RPG_Client_Engine::~RPG_Client_Engine()
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::~RPG_Client_Engine"));
 
 }
-
-// int
-// RPG_Client_Engine::open(void* args_in)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::open"));
-//
-//   ACE_UNUSED_ARG(args_in);
-//
-//   // *IMPORTANT NOTE*: the first time 'round, our queue will have been open()ed
-//   // from within the default ctor; this sets it into an ACTIVATED state, which
-//   // is what we want.
-//   // If we come here a second time (i.e. we have been stopped/started, our queue
-//   // will have been deactivated in the process, and getq() (see svc()) will fail
-//   // miserably (ESHUTDOWN) --> (re-)activate() our queue !
-//   // step1: (re-)activate() our queue
-//   if (myQueue.activate() == -1)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to ACE_Message_Queue::activate(): \"%m\", aborting\n")));
-//
-//     return -1;
-//   } // end IF
-//
-//   try
-//   {
-//     start();
-//   }
-//   catch (...)
-//   {
-//     ACE_DEBUG((LM_CRITICAL,
-//                ACE_TEXT("caught exception in start() method, aborting\n")));
-//
-//     // what else can we do here ?
-//     return -1;
-//   }
-//
-//   return 0;
-// }
 
 int
 RPG_Client_Engine::close(u_long arg_in)
@@ -149,76 +109,6 @@ RPG_Client_Engine::close(u_long arg_in)
 
   return 0;
 }
-
-// int
-// RPG_Client_Engine::svc(void)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::svc"));
-//
-//   ACE_Message_Block* ace_mb          = NULL;
-//   ACE_Time_Value     idle_delay(0, (RPG_CLIENT_ENGINE_IDLE_DELAY * 1000));
-//   ACE_Time_Value     now;
-//   bool               stop_processing = false;
-//
-//   while (!stop_processing)
-//   {
-//     now = ACE_OS::gettimeofday();
-//     if (inherited::getq(ace_mb, &now) != -1)
-//     {
-//       switch (ace_mb->msg_type())
-//       {
-//         // currently, we only use these...
-//         case ACE_Message_Block::MB_STOP:
-//         {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("received MB_STOP...\n")));
-//
-//           stop_processing = true;
-//
-//           break;
-//         }
-//         default:
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                      ACE_TEXT("received an unknown control message (type: %d), continuing\n"),
-//                      ace_mb->msg_type()));
-//
-//           break;
-//         }
-//       } // end SWITCH
-//
-//       // clean up
-//       ace_mb->release();
-//       ace_mb = NULL;
-//
-//       if (stop_processing)
-//         return 0;
-//     } // end IF
-//
-//     // process actions
-//     myLock.acquire();
-//
-//     if (myActions.empty())
-//     {
-//       myLock.release();
-//
-//       // wait for activity
-//       ACE_Thread::yield();
-// //       ACE_OS::sleep(idle_delay);
-//
-//       continue;
-//     } // end IF
-//
-//     handleActions();
-//
-//     myLock.release();
-//   } // end WHILE
-//
-//   // SHOULD NEVER-EVER GET HERE !
-//   ACE_ASSERT(false);
-//
-//   return -1;
-// }
 
 int
 RPG_Client_Engine::svc(void)
@@ -293,73 +183,6 @@ RPG_Client_Engine::start()
                thread_ids[0]));
 }
 
-// void
-// RPG_Client_Engine::stop()
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::stop"));
-//
-//   // sanity check
-//   if (!isRunning())
-//     return;
-//
-//   // drop control message into the queue...
-//   ACE_Message_Block* stop_mb = NULL;
-//   try
-//   {
-//     stop_mb = new ACE_Message_Block(0,                                  // size
-//                                     ACE_Message_Block::MB_STOP,         // type
-//                                     NULL,                               // continuation
-//                                     NULL,                               // data
-//                                     NULL,                               // buffer allocator
-//                                     NULL,                               // locking strategy
-//                                     ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-//                                     ACE_Time_Value::zero,               // execution time
-//                                     ACE_Time_Value::max_time,           // deadline time
-//                                     NULL,                               // data block allocator
-//                                     NULL);                              // message allocator
-//   }
-//   catch (...)
-//   {
-//     ACE_DEBUG((LM_CRITICAL,
-//                ACE_TEXT("caught exception in new, returning\n")));
-//
-//     // *TODO*: what else can we do ?
-//     return;
-//   }
-//   if (!stop_mb)
-//   {
-//     ACE_DEBUG((LM_CRITICAL,
-//                ACE_TEXT("unable to allocate memory, returning\n")));
-//
-//     // *TODO*: what else can we do ?
-//     return;
-//   } // end IF
-//
-//   // block, if necessary
-//   if (inherited::putq(stop_mb, NULL) == -1)
-//   {
-//     ACE_DEBUG((LM_CRITICAL,
-//                ACE_TEXT("failed to ACE_Task::putq(): \"%m\", returning\n")));
-//
-//     // clean up, what else can we do ?
-//     stop_mb->release();
-//
-//     return;
-//   } // end IF
-//
-//   // ... and wait for the worker thread to join
-//   if (inherited::wait() == -1)
-//   {
-//     ACE_DEBUG((LM_CRITICAL,
-//                ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", returning\n")));
-//
-//     return;
-//   } // end IF
-//
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("worker thread has joined...\n")));
-// }
-
 void
 RPG_Client_Engine::stop()
 {
@@ -399,16 +222,6 @@ RPG_Client_Engine::isRunning()
   return (inherited::thr_count() > 0);
 }
 
-// void
-// RPG_Client_Engine::dump_state() const
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::dump_state"));
-//
-//   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-//
-//   myQueue.dump();
-// }
-
 void
 RPG_Client_Engine::dump_state() const
 {
@@ -426,6 +239,10 @@ RPG_Client_Engine::init()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::init"));
 
+  // sanity check(s)
+  if (myLevelWindow == NULL)
+    return;
+
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_INIT;
   new_action.map_position = std::make_pair(0, 0);
@@ -440,6 +257,10 @@ void
 RPG_Client_Engine::redraw()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::redraw"));
+
+  // sanity check(s)
+  if (myLevelWindow == NULL)
+    return;
 
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_DRAW;
@@ -470,6 +291,10 @@ void
 RPG_Client_Engine::center(const RPG_Map_Position_t& position_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::center"));
+
+  // sanity check(s)
+  if (myLevelWindow == NULL)
+    return;
 
   RPG_Client_Action new_action;
   new_action.command = COMMAND_SET_VIEW;
@@ -503,61 +328,6 @@ RPG_Client_Engine::action(const RPG_Client_Action& action_in)
 
   // wake up the (waiting) worker thread
   myCondition.signal();
-}
-
-void
-RPG_Client_Engine::setPlayer(const RPG_Engine_EntityID_t& playerID_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::setPlayer"));
-
-  // sanity check(s)
-  if (playerID_in == 0)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("reset player...\n")));
-
-  myPlayerID = playerID_in;
-
-  // center view
-  SDL_Event event;
-  event.type = SDL_KEYDOWN;
-  event.key.keysym.sym = SDLK_c;
-  bool shedule_redraw = false;
-  try
-  {
-    myLevelWindow->handleEvent(event,
-                               NULL,
-                               shedule_redraw);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::handleEvent(), aborting\n"),
-               myLevelWindow));
-
-    // what else can we do here ?
-    return;
-  }
-
-  if (shedule_redraw)
-  {
-    // redraw & refresh
-    redraw();
-
-    RPG_Client_Action refresh_action;
-    refresh_action.command = COMMAND_WINDOW_REFRESH;
-    refresh_action.map_position = std::make_pair(0, 0);
-    refresh_action.graphics_position = std::make_pair(0, 0);
-    refresh_action.window = myLevelWindow;
-    action(refresh_action);
-  } // end IF
-}
-
-const RPG_Engine_EntityID_t
-RPG_Client_Engine::getPlayer() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::getPlayer"));
-
-  return myPlayerID;
 }
 
 void
@@ -609,6 +379,9 @@ RPG_Client_Engine::handleActions()
       }
       case COMMAND_SET_VIEW:
       {
+        // fiddling with the view invalidates the cursor BG
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+
         RPG_Client_WindowLevel* window = dynamic_cast<RPG_Client_WindowLevel*>((*iterator).window);
         ACE_ASSERT(window);
         try
@@ -733,6 +506,9 @@ RPG_Client_Engine::handleActions()
       }
       case COMMAND_WINDOW_INIT:
       {
+        // fiddling with the view invalidates the cursor BG
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+
         RPG_Client_WindowLevel* window = dynamic_cast<RPG_Client_WindowLevel*>((*iterator).window);
         ACE_ASSERT(window);
         try

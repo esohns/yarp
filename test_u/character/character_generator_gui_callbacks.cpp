@@ -153,10 +153,10 @@ quit_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-create_character_activated_GTK_cb(GtkWidget* widget_in,
+create_character_clicked_GTK_cb(GtkWidget* widget_in,
                                   gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::create_character_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::create_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   //   ACE_UNUSED_ARG(userData_in);
@@ -202,10 +202,10 @@ create_character_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-drop_character_activated_GTK_cb(GtkWidget* widget_in,
-                                gpointer userData_in)
+drop_character_clicked_GTK_cb(GtkWidget* widget_in,
+                              gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::drop_character_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::drop_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   //   ACE_UNUSED_ARG(userData_in);
@@ -262,10 +262,10 @@ drop_character_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-load_character_activated_GTK_cb(GtkWidget* widget_in,
-                                gpointer userData_in)
+load_character_clicked_GTK_cb(GtkWidget* widget_in,
+                              gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::load_character_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::load_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
@@ -377,10 +377,10 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-save_character_activated_GTK_cb(GtkWidget* widget_in,
-                                gpointer userData_in)
+save_character_clicked_GTK_cb(GtkWidget* widget_in,
+                              gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::save_character_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::save_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);

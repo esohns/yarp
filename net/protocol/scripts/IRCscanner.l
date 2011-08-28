@@ -85,7 +85,7 @@ TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
 %s             end_of_frame
 
 %{
-#define YY_USER_ACTION  yylloc->columns(yyleng);
+#define YY_USER_ACTION yylloc->columns(yyleng);
 %}
 
 /* *NOTE*: it seems that the following "exceptions" are allowed:

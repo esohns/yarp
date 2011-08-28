@@ -33,10 +33,13 @@
 void update_character_profile(const RPG_Character_Player&, GladeXML*);
 void update_entity_profile(const RPG_Engine_Entity&, GladeXML*);
 void reset_entity_profile(GladeXML*);
-// int dirent_selector(const dirent*);
+// int dirent_selector_profiles(const dirent*);
+// int dirent_selector_maps(const dirent*);
 // int dirent_comparator(const dirent**,
 //                       const dirent**);
-const unsigned long load_profiles(const std::string&, GtkListStore*);
+const unsigned long load_files(const std::string&, // directory
+                               const bool&,        // load player profiles ? : maps
+                               GtkListStore*);     // target liststore
 
 #ifdef __cplusplus
 extern "C"
@@ -45,15 +48,21 @@ extern "C"
   gint about_activated_GTK_cb(GtkWidget*, gpointer);
   gint properties_activated_GTK_cb(GtkWidget*, gpointer);
   gint quit_activated_GTK_cb(GtkWidget*, gpointer);
-  gint create_character_activated_GTK_cb(GtkWidget*, gpointer);
-  gint drop_character_activated_GTK_cb(GtkWidget*, gpointer);
-  gint load_character_activated_GTK_cb(GtkWidget*, gpointer);
-  gint character_file_activated_GTK_cb(GtkWidget*, gpointer);
-  gint save_character_activated_GTK_cb(GtkWidget*, gpointer);
+  gint create_character_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint drop_character_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint load_character_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint file_activated_GTK_cb(GtkWidget*, gpointer);
+  gint save_character_clicked_GTK_cb(GtkWidget*, gpointer);
   gint character_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
   gint character_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint join_game_activated_GTK_cb(GtkWidget*, gpointer);
-  gint part_game_activated_GTK_cb(GtkWidget*, gpointer);
+  gint create_map_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint drop_map_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint load_map_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint save_map_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint map_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
+  gint map_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint join_game_clicked_GTK_cb(GtkWidget*, gpointer);
+  gint part_game_clicked_GTK_cb(GtkWidget*, gpointer);
   gint server_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
   gint server_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
 //   gint do_SDLEventLoop_GTK_cb(gpointer);

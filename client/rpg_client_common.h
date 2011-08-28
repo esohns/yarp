@@ -41,6 +41,19 @@
 // forward declaration(s)
 class RPG_Client_Engine;
 
+struct RPG_Client_MapConfig_t
+{
+  unsigned long min_room_size; // 0: don't care
+  bool          doors;
+  bool          corridors;
+  unsigned long max_num_doors_per_room;
+  bool          maximize_rooms;
+  unsigned long num_areas;
+  bool          square_rooms;
+  unsigned long map_size_x;
+  unsigned long map_size_y;
+};
+
 struct RPG_Client_GTK_CBData_t
 {
  inline RPG_Client_GTK_CBData_t()
@@ -68,6 +81,7 @@ struct RPG_Client_GTK_CBData_t
   unsigned long           hover_time;
   unsigned long           gtk_time;
   bool                    gtk_main_quit_invoked;
+  bool                    load_profile;
   GladeXML*               xml;
   SDL_Surface*            screen;
   SDL_TimerID             event_timer;
@@ -77,6 +91,7 @@ struct RPG_Client_GTK_CBData_t
   std::string             schemaRepository;
   RPG_Engine_Entity       entity;
   RPG_Engine_Level*       level_engine;
+  RPG_Client_MapConfig_t  map_config;
 };
 
 // *NOTE* types as used by SDL
@@ -98,19 +113,6 @@ struct RPG_Client_SDL_VideoConfig_t
 //   Uint32 screen_flags;
   bool   fullScreen;
   bool   doubleBuffer;
-};
-
-struct RPG_Client_MapConfig_t
-{
-  unsigned long min_room_size; // 0: don't care
-  bool          doors;
-  bool          corridors;
-  unsigned long max_num_doors_per_room;
-  bool          maximize_rooms;
-  unsigned long num_areas;
-  bool          square_rooms;
-  unsigned long map_size_x;
-  unsigned long map_size_y;
 };
 
 struct RPG_Client_Config

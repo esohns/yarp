@@ -23,6 +23,8 @@
 
 #include "rpg_map_common.h"
 
+#include <string>
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
@@ -35,6 +37,7 @@ class RPG_Map_Level
 
   void init(const RPG_Map_t&); // map
 
+  const std::string getName() const;
   const RPG_Map_Position_t getStartPosition() const;
   const RPG_Map_Positions_t getSeedPoints() const;
   const RPG_Map_FloorPlan_t getFloorPlan() const;

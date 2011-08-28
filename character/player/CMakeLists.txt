@@ -3,6 +3,7 @@
 ########### next target ###############
 set(RPG_Character_Player_LIB_SRCS
     rpg_XMLSchema_XML_tree.h
+    rpg_character_player_defines.h
     rpg_character_player.cpp
     rpg_character_player.h
     rpg_character_player_XML_tree.cpp
@@ -38,6 +39,7 @@ install(FILES rpg_character_player.xsd
         DESTINATION share/RPG/config)
 install(FILES
         rpg_XMLSchema_XML_tree.h
+        rpg_character_player_defines.h
         rpg_character_player.h
         rpg_character_player_XML_tree.h
         rpg_character_player_base.h

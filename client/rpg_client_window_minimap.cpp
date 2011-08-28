@@ -43,7 +43,6 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
-   myEngine(NULL),
    myLevelState(NULL),
    myBG(NULL),
    mySurface(NULL)
@@ -215,9 +214,9 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
     {
       // step1: retrieve appropriate symbol
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      if (myEngine->getPlayer())
+      if (myLevelState->getActive())
       {
-        map_position = myLevelState->getPosition(myEngine->getPlayer());
+        map_position = myLevelState->getPosition(myLevelState->getActive());
         if ((x == map_position.first) &&
             (y == map_position.second))
           tile = MINIMAPTILE_PLAYER;
@@ -346,15 +345,12 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_Window_MiniMap::init(RPG_Client_Engine* engine_in,
-                                RPG_Engine_Level* levelState_in)
+RPG_Client_Window_MiniMap::init(RPG_Engine_Level* levelState_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::init"));
 
   // sanity check(s)
-  ACE_ASSERT(engine_in);
   ACE_ASSERT(levelState_in);
 
-  myEngine = engine_in;
   myLevelState = levelState_in;
 }

@@ -25,13 +25,15 @@ typedef void* yyscan_t;
   //@$.begin.filename = @$.end.filename = &driver.file;
 
   // initialize the token value container
-  $$.val = 0;
+  $$.cval = 0;
+  $$.sval = NULL;
 }
 
 // symbols
 %union
 {
-  char val;
+  char         cval;
+  std::string* sval;
 }
 
 %code {
@@ -45,84 +47,84 @@ typedef void* yyscan_t;
 #include <string>
 }
 
-%token <val> GLYPH      "glyph"
-%token <val> END_OF_ROW "end_of_row"
-%token END 0            "end_of_file"
+%token <sval> NAME       "name"
+%token <cval> GLYPH      "glyph"
+%token <cval> END_OF_ROW "end_of_row"
+%token END 0             "end_of_file"
 
-%printer { debug_stream() << $$; } <val>
+%printer    { debug_stream() << $$; } <val>
 %destructor { $$ = 0; } <val>
+%printer    { debug_stream() << *$$; } <sval>
+%destructor { delete $$; $$ = NULL; } <sval>
 
 %%
 %start map;
-%nonassoc END END_OF_ROW;
+%nonassoc NAME END END_OF_ROW;
 %left GLYPH;
 
-map:    chars "end_of_file"    /* default */
-chars:                         /* empty */
-        | chars "glyph"        {
-                                 switch ($2)
-                                 {
-                                   case ' ':
-                                   {
-                                     driver.myCurrentPlan->unmapped.insert(driver.myCurrentPosition);
-                                     driver.myCurrentPosition.first++;
-                                     break;
-                                   }
-                                   case '.':
-                                   {
-                                     driver.myCurrentPosition.first++;
-                                     break;
-                                   }
-                                   case '#':
-                                   {
-                                     driver.myCurrentPlan->walls.insert(driver.myCurrentPosition);
-                                     driver.myCurrentPosition.first++;
-                                     break;
-                                   }
-                                   case '=':
-                                   {
-                                     RPG_Map_Door_t door;
-                                     door.position = driver.myCurrentPosition;
-                                     door.outside = DIRECTION_INVALID;
-                                     door.is_open = false;
-                                     door.is_locked = false;
-                                     door.is_broken = false;
-                                     driver.myCurrentPlan->doors.insert(door);
-                                     driver.myCurrentPosition.first++;
-                                     break;
-                                   }
-                                   case '@':
-                                   {
-                                     driver.myCurrentSeedPoints->insert(driver.myCurrentPosition);
-                                     driver.myCurrentPosition.first++;
-                                     break;
-                                   }
-                                   case 'X':
-                                   {
-                                     *(driver.myCurrentStartPosition) = driver.myCurrentPosition;
-                                     driver.myCurrentPosition.first++;
-                                     break;
-                                   }
-                                   default:
-                                   {
-                                     ACE_DEBUG((LM_ERROR,
-                                                ACE_TEXT("invalid/unknown glyph: \"%c\", continuing\n"),
-                                                $2));
+map:    name glyphs "end_of_file" /* default */
+name:   "name"                    { *(driver.myCurrentName) = *$1;
+                                  };
+glyphs:                           /* empty */
+        | glyphs "glyph"          { switch ($2)
+                                    {
+                                      case ' ':
+                                      {
+                                        driver.myCurrentPlan->unmapped.insert(driver.myCurrentPosition);
+                                        driver.myCurrentPosition.first++;
+                                        break;
+                                      }
+                                      case '.':
+                                      {
+                                        driver.myCurrentPosition.first++;
+                                        break;
+                                      }
+                                      case '#':
+                                      {
+                                        driver.myCurrentPlan->walls.insert(driver.myCurrentPosition);
+                                        driver.myCurrentPosition.first++;
+                                        break;
+                                      }
+                                      case '=':
+                                      {
+                                        RPG_Map_Door_t door;
+                                        door.position = driver.myCurrentPosition;
+                                        door.outside = DIRECTION_INVALID;
+                                        door.is_open = false;
+                                        door.is_locked = false;
+                                        door.is_broken = false;
+                                        driver.myCurrentPlan->doors.insert(door);
+                                        driver.myCurrentPosition.first++;
+                                        break;
+                                      }
+                                      case '@':
+                                      {
+                                        driver.myCurrentSeedPoints->insert(driver.myCurrentPosition);
+                                        driver.myCurrentPosition.first++;
+                                        break;
+                                      }
+                                      case 'X':
+                                      {
+                                        *(driver.myCurrentStartPosition) = driver.myCurrentPosition;
+                                        driver.myCurrentPosition.first++;
+                                        break;
+                                      }
+                                      default:
+                                      {
+                                        ACE_DEBUG((LM_ERROR,
+                                                   ACE_TEXT("invalid/unknown glyph: \"%c\", continuing\n"),
+                                                   $2));
 
-                                     driver.myCurrentPosition.first++;
-
-                                     break;
-                                   }
-                                 } // end SWITCH
-                               }
-;
-        | chars "end_of_row"   {
-                                 if (driver.myCurrentSizeX == 0)
-                                     driver.myCurrentSizeX = driver.myCurrentPosition.first;
+                                        driver.myCurrentPosition.first++;
+                                        break;
+                                      }
+                                    } // end SWITCH
+                                  };
+        | glyphs "end_of_row"  { if (driver.myCurrentSizeX == 0)
+                                   driver.myCurrentSizeX = driver.myCurrentPosition.first;
                                  driver.myCurrentPosition.first = 0;
                                  driver.myCurrentPosition.second++;
-                               }
-;
+                               };
 %%
 
 void

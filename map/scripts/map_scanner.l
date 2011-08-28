@@ -14,14 +14,15 @@
 %}
 
 %option pointer full nounistd 8bit
-/* %option c++ outfile="rpg_map_scanner.cpp" prefix="MapScanner" nounput */
-%option warn nodefault batch nomain noyywrap
+/* %option c++ outfile="rpg_map_scanner.cpp" prefix="MapScanner" */
+%option warn nodefault batch nomain noyywrap nounput
 %option debug perf-report verbose
 /*%option reentrant extra-type="unsigned long*"*/
 %option reentrant extra-type="RPG_Map_ParserDriver*"
 /* %option bison-bridge bison-locations stack */
 %option prefix="MapScanner" yylineno
 
+NAME          [[:print:]]
 /* currently supported glyphs:
 ' ': unmapped
 '.': floor
@@ -38,11 +39,12 @@ SEED           [@]
 START          [X]
 GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 
+%s             name
 %s             row
 %s             last_row
 
 %{
-#define YY_USER_ACTION  yylloc->columns(yyleng);
+#define YY_USER_ACTION yylloc->columns(yyleng);
 %}
 
 %%
@@ -54,39 +56,51 @@ GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 %}
 
 <INITIAL>{
+"["{NAME}*/"]\n"           { BEGIN(name);
+                             yyless(0); }
 {GLYPH}+/\n                { BEGIN(row);
                              yyless(0); }
-{GLYPH}                    { BEGIN(last_row);
-                             unput(yytext[0]); }
+{GLYPH}*                   { BEGIN(last_row);
+                             yyless(0); }
 \n                         { yylloc->step();
-                             yylval->val = '\n';
                              line_count++; }
 } // end <INITIAL>
+<name>{
+"["{NAME}*/"]"             { yylloc->step();
+                             ACE_NEW_NORETURN(yylval->sval,
+                                              std::string);
+                             yylval->sval->append(yytext, yyleng);
+                             yylval->sval->erase(0, 1);
+                             return token::NAME; }
+"]\n"                      { yylloc->step();
+                             BEGIN(row);
+                             line_count++; }
+} // end <name>
 <row>{
 {GLYPH}                    { yylloc->step();
-                             yylval->val = yytext[0];
+                             yylval->cval = yytext[0];
                              return token::GLYPH; }
 \n                         { yylloc->step();
                              BEGIN(INITIAL);
-                             yylval->val = '\n';
                              line_count++;
                              return token::END_OF_ROW; }
 } // end <row>
 <last_row>{
 {GLYPH}                    { yylloc->step();
-                             yylval->val = yytext[0];
+                             yylval->cval = yytext[0];
                              return token::GLYPH; }
-<<EOF>>                    { BEGIN(row);
-                             unput('\n'); }
 } // end <last_row>
-<<EOF>>                    { yyterminate(); }
+<<EOF>>                    { BEGIN(INITIAL);
+                             yyterminate(); }
 <*>(?s:.)                  { yylloc->step();
-                             yylval->val = yytext[0];
+                             yylval->cval = yytext[0];
 
-                             ACE_DEBUG((LM_DEBUG,
-                                        ACE_TEXT("unknown/invalid glyph (was: \"%c\"), continuing\n"),
-                                        yytext[0]));
+                             // debug info
+                             std::string error_message = ACE_TEXT("invalid character: \"");
+                             error_message += yytext[0];
+                             error_message += ACE_TEXT("\", aborting");
+                             driver.error(*yylloc, error_message);
 
-                             return token_type(yytext[0]);
+                             yyterminate();
                            }
 %%

@@ -28,4 +28,6 @@
 #define RPG_MAP_DEF_TRACE_SCANNING false
 #define RPG_MAP_DEF_TRACE_PARSING  false
 
+#define RPG_MAP_EXT                ACE_TEXT(".txt")
+
 #endif

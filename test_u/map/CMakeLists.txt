@@ -1,4 +1,15 @@
 ########### next target ###############
+set(map_parser_SRCS map_parser.cpp)
+
+if (CMAKE_COMPILER_IS_GNUCC)
+    set_source_files_properties(${map_parser_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
+endif()
+
+add_executable(map_parser ${map_parser_SRCS})
+
+target_link_libraries(map_parser pthread ACE xerces-c RPG_Dice RPG_Common RPG_Map)
+
+########### next target ###############
 set(map_generator_SRCS map_generator.cpp)
 
 if (CMAKE_COMPILER_IS_GNUCC)
@@ -8,8 +19,6 @@ endif()
 add_executable(map_generator ${map_generator_SRCS})
 
 target_link_libraries(map_generator pthread ACE xerces-c RPG_Dice RPG_Common RPG_Map)
-
-install(TARGETS map_generator RUNTIME DESTINATION bin)
 
 ########### next target ###############
 set(path_finder_SRCS path_finder.cpp)
@@ -24,20 +33,12 @@ add_dependencies(path_finder RPG_Dice RPG_Common RPG_Map)
 
 target_link_libraries(path_finder pthread ACE xerces-c RPG_Dice RPG_Common RPG_Map)
 
-install(TARGETS path_finder RUNTIME DESTINATION bin)
-
 ########### install files ###############
+install(TARGETS map_parser
+        RUNTIME DESTINATION bin)
 
-#original Makefile.am contents follow:
+install(TARGETS map_generator
+        RUNTIME DESTINATION bin)
 
-#METASOURCES = AUTO
-#
-#ACLOCAL_AMFLAGS = -I m4
-#
-#bin_PROGRAMS = map_generator path_finder
-#
-#map_generator_SOURCES = map_generator.cpp
-#map_generator_LDADD = -lpthread -lACE -lxerces-c -lRPG_Dice -lRPG_Common -lRPG_Map
-#
-#path_finder_SOURCES = path_finder.cpp
-#path_finder_LDADD = -lpthread -lACE -lxerces-c -lRPG_Dice -lRPG_Common -lRPG_Map
+install(TARGETS path_finder
+        RUNTIME DESTINATION bin)

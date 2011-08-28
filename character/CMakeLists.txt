@@ -32,7 +32,6 @@ set(RPG_Character_LIB_SRCS
     rpg_character_common.h
     rpg_character_common_tools.cpp
     rpg_character_common_tools.h
-    rpg_character_defines.h
     rpg_character_equipment.cpp
     rpg_character_equipment.h
     rpg_character_equipment_common.h
@@ -95,7 +94,6 @@ install(FILES
         rpg_character_classxml.h
         rpg_character_common.h
         rpg_character_common_tools.h
-        rpg_character_defines.h
         rpg_character_equipment.h
         rpg_character_equipment_common.h
         rpg_character_equipmentslot.h

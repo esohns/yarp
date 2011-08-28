@@ -112,7 +112,8 @@ namespace yy {
     {
 
 
-  char val;
+  char         cval;
+  std::string* sval;
 
 
 
@@ -128,8 +129,9 @@ namespace yy {
       /* Tokens.  */
    enum yytokentype {
      END = 0,
-     GLYPH = 258,
-     END_OF_ROW = 259
+     NAME = 258,
+     GLYPH = 259,
+     END_OF_ROW = 260
    };
 
     };

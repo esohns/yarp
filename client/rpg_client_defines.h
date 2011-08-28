@@ -31,13 +31,14 @@
 #define RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME ACE_TEXT_ALWAYS_CHAR("filechooser_dialog")
 #define RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME         ACE_TEXT_ALWAYS_CHAR("character_frame")
 #define RPG_CLIENT_DEF_GNOME_CHARBOX_NAME           ACE_TEXT_ALWAYS_CHAR("character_repository_combobox")
-#define RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME           ACE_TEXT_ALWAYS_CHAR("server_repository_combobox")
+#define RPG_CLIENT_DEF_GNOME_MAPBOX_NAME            ACE_TEXT_ALWAYS_CHAR("map_repository_combobox")
+#define RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME         ACE_TEXT_ALWAYS_CHAR("server_repository_combobox")
 
 #define RPG_CLIENT_DEF_INI_FILE                     ACE_TEXT("rpg_client.ini")
 #define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER        ACE_TEXT("client")
 #define RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER    ACE_TEXT("connection")
-#define RPG_CLIENT_DEF_CHARACTER_REPOSITORY         ACE_TEXT("/var/tmp")
 #define RPG_CLIENT_DEF_ENTITY_REPOSITORY            ACE_TEXT("/var/tmp")
+#define RPG_CLIENT_DEF_MAP_REPOSITORY               ACE_TEXT("/var/tmp")
 
 #define RPG_CLIENT_DEF_GRAPHICS_CACHESIZE           50
 #define RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE    IMAGE_INTERFACE_MAIN

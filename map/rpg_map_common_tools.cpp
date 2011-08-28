@@ -59,9 +59,10 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
   // (try to) parse file
   RPG_Map_ParserDriver parser_driver(traceScanning_in,
                                      traceParsing_in);
-  parser_driver.init(&map_out.plan,     // floor plan
-                     &map_out.seeds,    // seed points
+  parser_driver.init(&map_out.name,     // name
                      &map_out.start,    // starting point
+                     &map_out.seeds,    // seed points
+                     &map_out.plan,     // floor plan
                      traceScanning_in,  // trace scanning ?
                      traceParsing_in);  // trace parsing ?
   if (!parser_driver.parse(filename_in))
@@ -119,6 +120,58 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
 
   ssize_t sent_bytes = 0;
   std::string row;
+
+  // write name
+  row += ACE_TEXT_ALWAYS_CHAR("[");
+  row += map_in.name;
+  row += ACE_TEXT_ALWAYS_CHAR("]\n");
+
+  // write the row to the file
+  sent_bytes = fileStream.send(row.c_str(),
+                               row.size());
+  switch (sent_bytes)
+  {
+    case -1:
+    case 0:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_FILE_IO::send(%u): %m, aborting\n"),
+                 row.size()));
+
+      // clean up
+      if (fileStream.close() == -1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
+      } // end IF
+
+      return false;
+    }
+    default:
+    {
+      if (static_cast<size_t>(sent_bytes) != row.size())
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_FILE_IO::send(%u) (result was: %d), aborting\n"),
+                   row.size(),
+                   sent_bytes));
+
+        // clean up
+        if (fileStream.close() == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
+        } // end IF
+
+        return false;
+      } // end IF
+
+      break;
+    }
+  } // end SWITCH
+
+  sent_bytes = 0;
+  row.clear();
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
   for (unsigned long y = 0;
@@ -415,6 +468,11 @@ RPG_Map_Common_Tools::print(const RPG_Map_t& map_in)
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::print"));
 
   ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("map [%s]\nstart position: [%u,%u]\n"),
+             map_in.name.c_str(),
+             map_in.start.first,
+             map_in.start.second));
+  ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("seed point(s): [")));
   RPG_Map_PositionsConstIterator_t next = map_in.seeds.begin();
   for (RPG_Map_PositionsConstIterator_t iterator = map_in.seeds.begin();
@@ -436,7 +494,7 @@ RPG_Map_Common_Tools::print(const RPG_Map_t& map_in)
              ACE_TEXT("]\n")));
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("map ([%ux%u] - %u unmapped, %u walls, %u doors)...\n"),
+             ACE_TEXT("plan ([%ux%u] - %u unmapped, %u walls, %u doors)...\n"),
              map_in.plan.size_x,
              map_in.plan.size_y,
              map_in.plan.unmapped.size(),

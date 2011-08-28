@@ -37,6 +37,8 @@
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
+#include <string>
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
@@ -65,6 +67,7 @@ class RPG_Engine_Level
   // *WARNING*: DO NOT USE this while the engine is running !
   void init(RPG_Engine_IWindow*, // UI handle
             const RPG_Map_t&);   // map
+  void save(const std::string&) const; // FQ filename
 
   // *WARNING*: fire&forget API, added entities are controlled by the engine !
   const RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity

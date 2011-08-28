@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_map_parser_driver.h"
 
 #include "rpg_map_scanner.h"
@@ -43,6 +44,7 @@ RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
    myCurrentPlan(NULL),
    myCurrentSeedPoints(NULL),
    myCurrentStartPosition(NULL),
+   myCurrentName(NULL),
    myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::RPG_Map_ParserDriver"));
@@ -67,9 +69,10 @@ RPG_Map_ParserDriver::~RPG_Map_ParserDriver ()
 }
 
 void
-RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
-                           RPG_Map_Positions_t* seedPoints_in,
+RPG_Map_ParserDriver::init(std::string* name_in,
                            RPG_Map_Position_t* startPosition_in,
+                           RPG_Map_Positions_t* seedPoints_in,
+                           RPG_Map_FloorPlan_t* plan_in,
                            const bool& traceScanning_in,
                            const bool& traceParsing_in)
 {
@@ -77,8 +80,10 @@ RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
 
   // sanity check(s)
   ACE_ASSERT(!myIsInitialized);
-  ACE_ASSERT(plan_in);
+  ACE_ASSERT(name_in);
+  ACE_ASSERT(startPosition_in);
   ACE_ASSERT(seedPoints_in);
+  ACE_ASSERT(plan_in);
 
   // (re-)init scanner/parser state
   myCurrentNumLines = 0;
@@ -88,10 +93,12 @@ RPG_Map_ParserDriver::init(RPG_Map_FloorPlan_t* plan_in,
   myCurrentSizeX = 0;
 
   // set parse target data
-  myCurrentPlan = plan_in;
-  myCurrentSeedPoints = seedPoints_in;
+  myCurrentName = name_in;
   myCurrentStartPosition = startPosition_in;
+  myCurrentSeedPoints = seedPoints_in;
+  myCurrentPlan = plan_in;
   // init target structures
+  myCurrentName->clear();
   *myCurrentStartPosition = std::make_pair(0, 0);
   myCurrentSeedPoints->clear();
   myCurrentPlan->size_x = 0;

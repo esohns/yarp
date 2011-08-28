@@ -36,11 +36,12 @@
 
 #include <rpg_combat_common_tools.h>
 
-#include <rpg_character_defines.h>
+#include <rpg_character_player_defines.h>
+#include <rpg_character_player_common_tools.h>
+
 #include <rpg_character_common_tools.h>
 #include <rpg_character_race_common_tools.h>
 #include <rpg_character_class_common_tools.h>
-#include <rpg_character_player_common_tools.h>
 
 #include <rpg_item_common.h>
 #include <rpg_item_armor.h>

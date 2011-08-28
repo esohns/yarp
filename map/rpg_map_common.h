@@ -21,6 +21,7 @@
 #ifndef RPG_MAP_COMMON_H
 #define RPG_MAP_COMMON_H
 
+#include <string>
 #include <vector>
 #include <map>
 #include <set>
@@ -109,6 +110,7 @@ struct RPG_Map_FloorPlan_t
 
 struct RPG_Map_t
 {
+  std::string name;          // name
   RPG_Map_Position_t start;  // starting position
   RPG_Map_Positions_t seeds; // seed points
   RPG_Map_FloorPlan_t plan;  // floor plan

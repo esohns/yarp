@@ -927,7 +927,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         {
           RPG_Map_Position_t position;
           if ((event_in.key.keysym.mod & KMOD_SHIFT) ||
-              (myEngine->getPlayer() == 0))
+              (myLevelState->getActive() == 0))
           {
             // center view
             RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
@@ -935,7 +935,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             position.second = dimensions.second / 2;
           } // end IF
           else
-            position = myLevelState->getPosition(myEngine->getPlayer());
+            position = myLevelState->getPosition(myLevelState->getActive());
 
           setView(position);
 
@@ -1032,7 +1032,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           } // end SWITCH
 
           if (!(event_in.key.keysym.mod & KMOD_SHIFT) &&
-              myEngine->getPlayer())
+              myLevelState->getActive())
           {
             player_action.command = COMMAND_STEP;
             do_player_action = true;
@@ -1166,7 +1166,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                    map_position.first,
                    map_position.second));
 
-        if (myEngine->getPlayer() == 0)
+        if (myLevelState->getActive() == 0)
           break;
 
         // player standing next to door ?
@@ -1178,10 +1178,11 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
             // closed --> (try to) open it
             if ((!door.is_open) &&
-                (RPG_Map_Common_Tools::dist2Positions(myLevelState->getPosition(myEngine->getPlayer()),
+                (RPG_Map_Common_Tools::dist2Positions(myLevelState->getPosition(myLevelState->getActive()),
                                                       map_position) == 1))
             {
-              player_action.command = (door.is_open ? COMMAND_DOOR_CLOSE : COMMAND_DOOR_OPEN);
+              player_action.command = (door.is_open ? COMMAND_DOOR_CLOSE
+                                                    : COMMAND_DOOR_OPEN);
               player_action.position = map_position;
               do_player_action = true;
 
@@ -1247,7 +1248,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
   } // end SWITCH
 
   if (do_player_action)
-    myLevelState->action(myEngine->getPlayer(), player_action);
+    myLevelState->action(myLevelState->getActive(), player_action);
 
   if (delegate_to_parent)
     getParent()->handleEvent(event_in,
@@ -1599,7 +1600,6 @@ RPG_Client_WindowLevel::initMiniMap()
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initMiniMap"));
 
   // sanity check(s)
-  ACE_ASSERT(myEngine);
   ACE_ASSERT(myLevelState);
   ACE_ASSERT(inherited::myScreen);
 
@@ -1630,8 +1630,7 @@ RPG_Client_WindowLevel::initMiniMap()
     return;
   } // end IF
 
-  minimap_window->init(myEngine,
-                       myLevelState);
+  minimap_window->init(myLevelState);
   minimap_window->setScreen(inherited::myScreen);
 }
 
@@ -1693,8 +1692,8 @@ RPG_Client_WindowLevel::restoreHighlightBG()
 
   SDL_Rect dirtyRegion, clipRect;
   RPG_Graphics_Position_t tile_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                      mySize,
-                                                      myView);
+                                                                              mySize,
+                                                                              myView);
   // sanity check for underruns
   if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
       (tile_position.second < static_cast<unsigned long>(myScreen->h)))

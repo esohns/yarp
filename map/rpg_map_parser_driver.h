@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_MAP_PARSER_DRIVER_H
 #define RPG_MAP_PARSER_DRIVER_H
 
@@ -54,9 +55,10 @@ class RPG_Map_ParserDriver
   virtual ~RPG_Map_ParserDriver();
 
   // target data, needs to be set PRIOR to invoking parse() !
-  void init(RPG_Map_FloorPlan_t*, // target data: floor plan
-            RPG_Map_Positions_t*, // target data: seed points
+  void init(std::string*,         // target data: name
             RPG_Map_Position_t*,  // target data: start position
+            RPG_Map_Positions_t*, // target data: seed points
+            RPG_Map_FloorPlan_t*, // target data: floor plan
             const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
             const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
   // *WARNING*: the argument needs to have been prepared for usage by flex:
@@ -103,6 +105,7 @@ class RPG_Map_ParserDriver
   RPG_Map_FloorPlan_t* myCurrentPlan;
   RPG_Map_Positions_t* myCurrentSeedPoints;
   RPG_Map_Position_t*  myCurrentStartPosition;
+  std::string*         myCurrentName;
 
   bool                 myIsInitialized;
 };
