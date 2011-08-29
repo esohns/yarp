@@ -130,7 +130,7 @@ RPG_Engine_Level::close(u_long arg_in)
     case 0:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("worker thread (ID: %t) leaving...\n")));
+                 ACE_TEXT("(state engine) worker thread (ID: %t) leaving...\n")));
 
       // don't do anything...
       break;
@@ -182,8 +182,8 @@ RPG_Engine_Level::svc(void)
         // currently, we only use these...
         case ACE_Message_Block::MB_STOP:
         {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("received MB_STOP...\n")));
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("received MB_STOP...\n")));
 
           stop_processing = true;
 
@@ -266,7 +266,7 @@ RPG_Engine_Level::start()
                ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
   else
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("started worker thread (group: %d, id: %u)...\n"),
+               ACE_TEXT("(state engine) started worker thread (group: %d, id: %u)...\n"),
                inherited2::grp_id(),
                thread_ids[0]));
 }

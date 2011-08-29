@@ -25,7 +25,6 @@
 
 #include <rpg_engine_common.h>
 #include <rpg_engine_iwindow.h>
-#include <rpg_engine_level.h>
 
 #include <rpg_graphics_iwindow.h>
 
@@ -38,6 +37,9 @@
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
+// forward declarations
+class RPG_Engine_Level;
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
@@ -49,8 +51,9 @@ class RPG_Client_Engine
 {
  public:
   RPG_Client_Engine();
-  // *NOTE*: needs to be WINDOW_MAP !!!
-  RPG_Client_Engine(RPG_Graphics_IWindow*); // UI handle
+  // *WARNING*: UI handle needs to be of WINDOW_MAP type !!!
+  RPG_Client_Engine(RPG_Engine_Level*,      // level state
+                    RPG_Graphics_IWindow*); // UI handle
   virtual ~RPG_Client_Engine();
 
   // implement RPG_Common_IControl
@@ -68,8 +71,9 @@ class RPG_Client_Engine
   virtual void toggleDoor(const RPG_Map_Position_t&);
   virtual void center(const RPG_Map_Position_t&);
 
-  // *NOTE*: needs to be WINDOW_MAP !!!
-  void init(RPG_Graphics_IWindow*); // UI handle
+  // *WARNING*: UI handle needs to be of WINDOW_MAP type !!!
+  void init(RPG_Engine_Level*,      // level state
+            RPG_Graphics_IWindow*); // UI handle
   void action(const RPG_Client_Action&); // action
 
  private:

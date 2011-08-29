@@ -41,19 +41,6 @@
 // forward declaration(s)
 class RPG_Client_Engine;
 
-struct RPG_Client_MapConfig_t
-{
-  unsigned long min_room_size; // 0: don't care
-  bool          doors;
-  bool          corridors;
-  unsigned long max_num_doors_per_room;
-  bool          maximize_rooms;
-  unsigned long num_areas;
-  bool          square_rooms;
-  unsigned long map_size_x;
-  unsigned long map_size_y;
-};
-
 struct RPG_Client_GTK_CBData_t
 {
  inline RPG_Client_GTK_CBData_t()
@@ -62,36 +49,36 @@ struct RPG_Client_GTK_CBData_t
     gtk_time(0),
     gtk_main_quit_invoked(false),
     xml(NULL),
+    entity_filter(NULL),
+    map_filter(NULL),
     screen(NULL),
     event_timer(NULL),
-//     previous_window(NULL),
-//     map_window(NULL),
     client_engine(NULL),
-//     current_entity(),
-    level_engine(NULL)
+//     entity(),
+    level_engine(NULL)//,
+//     map_config()
  {
 //    entity.character = NULL;
 //    entity.position = std::make_pair(0, 0);
-// //    entity.actions;
+//    entity.actions;
 //    entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
 //    entity.graphic = NULL;
  };
 
-  ACE_Thread_Mutex        lock;
-  unsigned long           hover_time;
-  unsigned long           gtk_time;
-  bool                    gtk_main_quit_invoked;
-  bool                    load_profile;
-  GladeXML*               xml;
-  SDL_Surface*            screen;
-  SDL_TimerID             event_timer;
-//   RPG_Graphics_IWindow*   previous_window;
-//   RPG_Client_WindowLevel* map_window;
-  RPG_Client_Engine*      client_engine;
-  std::string             schemaRepository;
-  RPG_Engine_Entity       entity;
-  RPG_Engine_Level*       level_engine;
-  RPG_Client_MapConfig_t  map_config;
+  ACE_Thread_Mutex           lock;
+  unsigned long              hover_time;
+  unsigned long              gtk_time;
+  bool                       gtk_main_quit_invoked;
+  GladeXML*                  xml;
+  GtkFileFilter*             entity_filter;
+  GtkFileFilter*             map_filter;
+  SDL_Surface*               screen;
+  SDL_TimerID                event_timer;
+  RPG_Client_Engine*         client_engine;
+  std::string                schemaRepository;
+  RPG_Engine_Entity          entity;
+  RPG_Engine_Level*          level_engine;
+  RPG_Map_FloorPlan_Config_t map_config;
 };
 
 // *NOTE* types as used by SDL
@@ -139,7 +126,7 @@ struct RPG_Client_Config
   // *** monster ***
   std::string                  monster_dictionary;
   // *** map ***
-  RPG_Client_MapConfig_t       map_config;
+  RPG_Map_FloorPlan_Config_t   map_config;
   std::string                  map_file;
 };
 

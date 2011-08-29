@@ -20,12 +20,12 @@
 
 #include "rpg_character_player.h"
 
+#include "rpg_character_player_defines.h"
 #include "rpg_character_player_common_tools.h"
+#include "rpg_character_player_XML_tree.h"
 
-#include <rpg_character_defines.h>
 #include <rpg_character_race_common_tools.h>
 #include <rpg_character_class_common_tools.h>
-#include "rpg_character_player_XML_tree.h"
 
 #include <rpg_item_instance_common.h>
 #include <rpg_item_instance_manager.h>

@@ -46,6 +46,19 @@ enum RPG_Map_Element
   MAPELEMENT_INVALID
 };
 
+struct RPG_Map_FloorPlan_Config_t
+{
+  unsigned long min_room_size; // 0: don't care
+  bool          doors;
+  bool          corridors;
+  unsigned long max_num_doors_per_room;
+  bool          maximize_rooms;
+  unsigned long num_areas;
+  bool          square_rooms;
+  unsigned long map_size_x;
+  unsigned long map_size_y;
+};
+
 typedef std::pair<unsigned long, unsigned long> RPG_Map_Dimensions_t;
 
 typedef std::pair<unsigned long, unsigned long> RPG_Map_Position_t;

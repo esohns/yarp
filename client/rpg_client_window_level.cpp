@@ -70,6 +70,22 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
 
+  // init style
+  myCurrentMapStyle.door_style = RPG_GRAPHICS_DOORSTYLE_INVALID;
+  myCurrentMapStyle.edge_style = RPG_GRAPHICS_EDGESTYLE_INVALID;
+  myCurrentMapStyle.floor_style = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+  myCurrentMapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
+  myCurrentMapStyle.wall_style = RPG_GRAPHICS_WALLSTYLE_INVALID;
+  //   RPG_Graphics_Common_Tools::loadDoorTileSet(myCurrentMapStyle.door_style,
+  //                                              myCurrentDoorSet);
+  //   RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(myCurrentMapStyle.edge_style,
+  //                                                   myCurrentFloorEdgeSet);
+  //   RPG_Graphics_Common_Tools::loadFloorTileSet(myCurrentMapStyle.floor_style,
+  //                                               myCurrentFloorSet);
+  //   RPG_Graphics_Common_Tools::loadWallTileSet(myCurrentMapStyle.wall_style,
+  //                                              myCurrentMapStyle.half_height_walls,
+  //                                              myCurrentWallSet);
+
   ACE_OS::memset(&myCurrentFloorEdgeSet,
                  0,
                  sizeof(myCurrentFloorEdgeSet));
@@ -123,22 +139,6 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
                RPG_Graphics_Common_Tools::typeToString(type).c_str()));
-
-  // init style
-  myCurrentMapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-  myCurrentMapStyle.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
-  myCurrentMapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  myCurrentMapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  myCurrentMapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-  RPG_Graphics_Common_Tools::loadDoorTileSet(myCurrentMapStyle.door_style,
-                                             myCurrentDoorSet);
-  RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(myCurrentMapStyle.edge_style,
-                                                  myCurrentFloorEdgeSet);
-  RPG_Graphics_Common_Tools::loadFloorTileSet(myCurrentMapStyle.floor_style,
-                                              myCurrentFloorSet);
-  RPG_Graphics_Common_Tools::loadWallTileSet(myCurrentMapStyle.wall_style,
-                                             myCurrentMapStyle.half_height_walls,
-                                             myCurrentWallSet);
 }
 
 RPG_Client_WindowLevel::~RPG_Client_WindowLevel()

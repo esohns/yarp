@@ -6,7 +6,7 @@ Name: yarp
 Version: 0.1
 Release: 1
 Vendor: N/A
-Summary: (yet another ?) Role-Playing-Game system framework...
+Summary: (yet another ?) role-playing game system framework...
 License: LGPL
 Distribution: N/A
 #Icon: N/A
@@ -20,7 +20,7 @@ AutoReqProv: yes
 Prefix: /usr/local
 
 %description
-(yet another ?) Role-Playing-Game system framework...
+(yet another ?) role-playing game system framework...
 
 %prep
 %setup -q

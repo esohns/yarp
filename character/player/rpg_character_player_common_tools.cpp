@@ -20,6 +20,8 @@
 
 #include "rpg_character_player_common_tools.h"
 
+#include "rpg_character_player_defines.h"
+
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
@@ -28,7 +30,6 @@
 #include <rpg_magic_defines.h>
 #include <rpg_magic_common_tools.h>
 
-#include <rpg_character_defines.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_class_common_tools.h>
 #include <rpg_character_skills_common_tools.h>

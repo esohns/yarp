@@ -88,7 +88,7 @@
 #include <sstream>
 
 // init statics
-static GtkWidget* main_dialog = NULL;
+// static GtkWidget* main_dialog = NULL;
 
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
@@ -717,9 +717,10 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
   // ***** window/screen setup *****
   // set window caption
-  std::string caption = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
-  caption += ACE_TEXT_ALWAYS_CHAR(" ");
-  caption += RPG_VERSION;
+  std::string caption;
+  caption = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
+//   caption += ACE_TEXT_ALWAYS_CHAR(" ");
+//   caption += RPG_VERSION;
   SDL_WM_SetCaption(caption.c_str(),  // window caption
                     caption.c_str()); // icon caption
   // set window icon
@@ -769,7 +770,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
                                   graphicsCacheSize_in);
 
   // step1: load widget tree
-    ACE_ASSERT(userData_in.xml == NULL);
+  ACE_ASSERT(userData_in.xml == NULL);
   userData_in.xml = glade_xml_new(UIfile_in.c_str(), // definition file
                                   NULL,              // root widget --> construct all
                                   NULL);             // domain
@@ -782,13 +783,14 @@ do_initGUI(const std::string& graphicsDirectory_in,
   } // end IF
 
   // step2: retrieve dialog handles
-  main_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME));
-  if (!main_dialog)
+  GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(userData_in.xml,
+                                                                                          RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+  ACE_ASSERT(filechooser_dialog);
+  userData_in.map_filter = gtk_file_filter_new();
+  if (!userData_in.map_filter)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME));
+               ACE_TEXT("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
 
     // clean up
     g_object_unref(G_OBJECT(userData_in.xml));
@@ -796,17 +798,52 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
+  std::string pattern = ACE_TEXT_ALWAYS_CHAR("*");
+  pattern += RPG_MAP_EXT;
+  gtk_file_filter_add_pattern(userData_in.map_filter, pattern.c_str());
+  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.map_filter);
+  g_object_unref(G_OBJECT(userData_in.map_filter));
+  userData_in.entity_filter = gtk_file_filter_new();
+  if (!userData_in.entity_filter)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
+
+    // clean up
+    g_object_unref(G_OBJECT(userData_in.xml));
+    userData_in.xml = NULL;
+
+    return false;
+  } // end IF
+  pattern = ACE_TEXT_ALWAYS_CHAR("*");
+  pattern += RPG_CHARACTER_PLAYER_PROFILE_EXT;
+  gtk_file_filter_add_pattern(userData_in.entity_filter, pattern.c_str());
+  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.entity_filter);
+  g_object_unref(G_OBJECT(userData_in.entity_filter));
+
+  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
+                                                            RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
+  ACE_ASSERT(about_dialog);
+
+  GtkWidget* main_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
+                                                           RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME));
+  ACE_ASSERT(main_dialog);
 //   GdkWindow* main_dialog_window = gtk_widget_get_window(main_dialog);
 //   gtk_window_set_title(,
 //                        caption.c_str());
 
-  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                            RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
-  if (!about_dialog)
+  GtkWidget* main_entry_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
+                                                                 RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME));
+  ACE_ASSERT(main_entry_dialog);
+  GtkEntry* entry = GTK_ENTRY(glade_xml_get_widget(userData_in.xml,
+                                                   RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME));
+  ACE_ASSERT(entry);
+  GtkEntryBuffer* entry_buffer = gtk_entry_buffer_new(RPG_MAP_DEF_NAME, // text
+                                                      -1);              // length in bytes (-1: \0-terminated)
+  if (!entry_buffer)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
+               ACE_TEXT("failed to gtk_entry_buffer_new(): \"%m\", aborting\n")));
 
     // clean up
     g_object_unref(G_OBJECT(userData_in.xml));
@@ -814,25 +851,15 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
+  gtk_entry_set_buffer(entry, entry_buffer);
+//   g_object_unref(G_OBJECT(entry_buffer));
 
   // step3: populate comboboxes
   // step3a: character repository
-  GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                                        RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
-  ACE_ASSERT(repository_combobox);
-  if (!repository_combobox)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
-
-    // clean up
-    g_object_unref(G_OBJECT(userData_in.xml));
-    userData_in.xml = NULL;
-
-    return false;
-  } // end IF
-  gtk_cell_layout_clear(GTK_CELL_LAYOUT(repository_combobox));
+  GtkComboBox* combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
+                                                             RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+  ACE_ASSERT(combobox);
+  gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
   GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
   if (!renderer)
   {
@@ -845,11 +872,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(repository_combobox), renderer,
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer,
                              TRUE); // expand ?
 //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(repository_combobox), renderer,
 //                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
-  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(repository_combobox), renderer,
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), renderer,
                                  ACE_TEXT_ALWAYS_CHAR("text"), 0,
                                  NULL);
   GtkListStore* list = gtk_list_store_new(1,
@@ -865,13 +892,13 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  gtk_combo_box_set_model(repository_combobox,
+  gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  if (::load_files(RPG_CLIENT_DEF_ENTITY_REPOSITORY,
+  if (::load_files(RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY,
                    true,
                    list))
-    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox),
+    gtk_widget_set_sensitive(GTK_WIDGET(combobox),
                              TRUE);
   else
   {
@@ -888,22 +915,10 @@ do_initGUI(const std::string& graphicsDirectory_in,
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   } // end ELSE
   // step3b: maps repository
-  repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                           RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
-  ACE_ASSERT(repository_combobox);
-  if (!repository_combobox)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
-
-    // clean up
-    g_object_unref(G_OBJECT(userData_in.xml));
-    userData_in.xml = NULL;
-
-    return false;
-  } // end IF
-  gtk_cell_layout_clear(GTK_CELL_LAYOUT(repository_combobox));
+  combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
+                                                RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
+  ACE_ASSERT(combobox);
+  gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
   renderer = gtk_cell_renderer_text_new();
   if (!renderer)
   {
@@ -916,11 +931,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(repository_combobox), renderer,
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer,
                              TRUE); // expand ?
-//   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(repository_combobox), renderer,
+//   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(combobox), renderer,
 //                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
-  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(repository_combobox), renderer,
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), renderer,
                                  ACE_TEXT_ALWAYS_CHAR("text"), 0,
                                  NULL);
   list = gtk_list_store_new(1,
@@ -936,13 +951,13 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
-  gtk_combo_box_set_model(repository_combobox,
+  gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  if (::load_files(RPG_CLIENT_DEF_MAP_REPOSITORY,
+  if (::load_files(RPG_MAP_DEF_REPOSITORY,
                    false,
                    list))
-    gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox),
+    gtk_widget_set_sensitive(GTK_WIDGET(combobox),
                              TRUE);
   else
   {
@@ -960,17 +975,25 @@ do_initGUI(const std::string& graphicsDirectory_in,
   } // end ELSE
 
   // step4a: connect default signals
-  gpointer userData_p = const_cast<RPG_Client_GTK_CBData_t*>(&userData_in);
-  g_signal_connect(main_dialog,
-                   ACE_TEXT_ALWAYS_CHAR("destroy"),
-                   G_CALLBACK(quit_activated_GTK_cb),
-//                    G_CALLBACK(gtk_widget_destroyed),
-//                    &main_dialog,
-                   userData_p);
+  g_signal_connect(filechooser_dialog,
+                   ACE_TEXT_ALWAYS_CHAR("response"),
+                   G_CALLBACK(gtk_widget_hide),
+                   &filechooser_dialog);
   g_signal_connect(about_dialog,
                    ACE_TEXT_ALWAYS_CHAR("response"),
                    G_CALLBACK(gtk_widget_hide),
                    &about_dialog);
+  gpointer userData_p = const_cast<RPG_Client_GTK_CBData_t*>(&userData_in);
+  g_signal_connect(main_dialog,
+                   ACE_TEXT_ALWAYS_CHAR("destroy"),
+                   G_CALLBACK(quit_clicked_GTK_cb),
+                   //                    G_CALLBACK(gtk_widget_destroyed),
+                   //                    &main_dialog,
+                   userData_p);
+  g_signal_connect(main_entry_dialog,
+                   ACE_TEXT_ALWAYS_CHAR("response"),
+                   G_CALLBACK(gtk_widget_hide),
+                   &main_entry_dialog);
 
    // step4b: connect custom signals
   GtkButton* button = NULL;
@@ -990,15 +1013,6 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    G_CALLBACK(drop_character_clicked_GTK_cb),
                    userData_p);
 
-  GtkFileChooser* filechooser = NULL;
-  filechooser = GTK_FILE_CHOOSER(glade_xml_get_widget(userData_in.xml,
-                                                      RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
-  ACE_ASSERT(filechooser);
-  g_signal_connect(filechooser,
-                   ACE_TEXT_ALWAYS_CHAR("file-activated"),
-                   G_CALLBACK(file_activated_GTK_cb),
-                   userData_p);
-
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
                                            ACE_TEXT_ALWAYS_CHAR("load")));
   ACE_ASSERT(button);
@@ -1015,7 +1029,6 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    G_CALLBACK(save_character_clicked_GTK_cb),
                    userData_p);
 
-  GtkComboBox* combobox = NULL;
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
                                                 RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
   ACE_ASSERT(combobox);
@@ -1087,10 +1100,6 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(join_game_clicked_GTK_cb),
                    userData_p);
-//   glade_xml_signal_connect_data(xml,
-//                                 ACE_TEXT_ALWAYS_CHAR("join_game_activated_GTK_cb"),
-//                                 G_CALLBACK(join_game_activated_GTK_cb),
-//                                 userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
                                            ACE_TEXT_ALWAYS_CHAR("part")));
@@ -1099,10 +1108,6 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(part_game_clicked_GTK_cb),
                    userData_p);
-  //   glade_xml_signal_connect_data(xml,
-  //                                 ACE_TEXT_ALWAYS_CHAR("join_game_activated_GTK_cb"),
-  //                                 G_CALLBACK(join_game_activated_GTK_cb),
-  //                                 userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
                                                 RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME));
@@ -1111,10 +1116,6 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
                    G_CALLBACK(server_repository_combobox_changed_GTK_cb),
                    userData_p);
-//   glade_xml_signal_connect_data(xml,
-//                                 ACE_TEXT_ALWAYS_CHAR("characters_activated_GTK_cb"),
-//                                 G_CALLBACK(characters_activated_GTK_cb),
-//                                 userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
                                            ACE_TEXT_ALWAYS_CHAR("server_repository_button")));
@@ -1123,42 +1124,23 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(server_repository_button_clicked_GTK_cb),
                    userData_p);
-//   glade_xml_signal_connect_data(xml,
-//                                 ACE_TEXT_ALWAYS_CHAR("characters_refresh_activated_GTK_cb"),
-//                                 G_CALLBACK(characters_refresh_activated_GTK_cb),
-//                                 userData_p);
-
-  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
-                                           ACE_TEXT_ALWAYS_CHAR("quit")));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(quit_activated_GTK_cb),
-                   userData_p);
-//   glade_xml_signal_connect_data(xml,
-//                                 ACE_TEXT_ALWAYS_CHAR("quit_activated_GTK_cb"),
-//                                 G_CALLBACK(quit_activated_GTK_cb),
-//                                 userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
                                            ACE_TEXT_ALWAYS_CHAR("about")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(about_activated_GTK_cb),
+                   G_CALLBACK(about_clicked_GTK_cb),
                    userData_p);
-//   glade_xml_signal_connect_data(xml,
-//                                 ACE_TEXT_ALWAYS_CHAR("about_activated_GTK_cb"),
-//                                 G_CALLBACK(about_activated_GTK_cb),
-//                                 userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
-                                           ACE_TEXT_ALWAYS_CHAR("properties")));
+                                           ACE_TEXT_ALWAYS_CHAR("quit")));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(properties_activated_GTK_cb),
+                   G_CALLBACK(quit_clicked_GTK_cb),
                    userData_p);
+
 //   glade_xml_signal_connect_data(xml,
 //                                 ACE_TEXT_ALWAYS_CHAR("properties_activated_GTK_cb"),
 //                                 G_CALLBACK(properties_activated_GTK_cb),
@@ -1172,20 +1154,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //     gtk_window_set_screen(GTK_WINDOW(dialog),
 //                           gtk_widget_get_screen(const_cast<GtkWidget*> (//                                                                parentWidget_in)));
 
-  // step6: draw it
+  // step6: draw main dialog
   gtk_widget_show_all(main_dialog);
-
-  // step7: activate first repository entry (if any)
-  repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                           RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
-  ACE_ASSERT(repository_combobox);
-  if (gtk_widget_is_sensitive(GTK_WIDGET(repository_combobox)))
-    gtk_combo_box_set_active(repository_combobox, 0);
-  repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                           RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
-  ACE_ASSERT(repository_combobox);
-  if (gtk_widget_is_sensitive(GTK_WIDGET(repository_combobox)))
-    gtk_combo_box_set_active(repository_combobox, 0);
 
   return true;
 }
@@ -1309,10 +1279,10 @@ do_work(const RPG_Client_Config& config_in,
   userData.gtk_time              = 0;
   userData.gtk_main_quit_invoked = false;
   userData.xml                   = NULL;
+  userData.entity_filter         = NULL;
+  userData.map_filter            = NULL;
   userData.screen                = NULL;
   userData.event_timer           = NULL;
-//   userData.previous_window       = NULL;
-//   userData.map_window           = NULL;
   userData.client_engine         = &client_engine;
   userData.schemaRepository      = schemaRepository_in;
   userData.entity.character = NULL;
@@ -1338,8 +1308,8 @@ do_work(const RPG_Client_Config& config_in,
     return;
   } // end IF
   GDK_THREADS_LEAVE();
-  ACE_ASSERT(main_dialog);
   ACE_ASSERT(userData.screen);
+  ACE_ASSERT(userData.xml);
 
   // ***** mouse setup *****
   SDL_WarpMouse((userData.screen->w / 2),
@@ -1365,47 +1335,7 @@ do_work(const RPG_Client_Config& config_in,
   map_style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
   map_style.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
-  // step5c: setup map
-  RPG_Map_t map;
-  if (config_in.map_file.empty())
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("generating floor plan...\n")));
-
-    RPG_Map_Common_Tools::createMap(config_in.map_config.map_size_x,
-                                    config_in.map_config.map_size_y,
-                                    config_in.map_config.num_areas,
-                                    config_in.map_config.square_rooms,
-                                    config_in.map_config.maximize_rooms,
-                                    config_in.map_config.min_room_size,
-                                    config_in.map_config.doors,
-                                    config_in.map_config.corridors,
-                                    true, // *NOTE*: currently, doors fill one position
-                                    config_in.map_config.max_num_doors_per_room,
-                                    map);
-  } // end IF
-  else
-  {
-    if (!RPG_Map_Common_Tools::load(config_in.map_file,
-                                    map,
-                                    false,
-                                    false))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
-                 config_in.map_file.c_str()));
-
-      return;
-    } // end IF
-
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("loaded map (\"%s\":\n%s\n"),
-               config_in.map_file.c_str(),
-               RPG_Map_Common_Tools::info(map).c_str()));
-  } // end ELSE
-//   RPG_Map_Common_Tools::print(map);
-
-  // step5d: level engine
+  // step5c: level engine
 //   level_engine.init(&client_engine,
 //                     map);
   level_engine.start();
@@ -1417,7 +1347,7 @@ do_work(const RPG_Client_Config& config_in,
     return;
   } // end IF
 
-  // step5e: setup main "window"
+  // step5d: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
@@ -1432,8 +1362,9 @@ do_work(const RPG_Client_Config& config_in,
                   &level_engine,
                   map_style);
 
-  // step5f: level engine
-  client_engine.init(mainWindow.getChild(WINDOW_MAP));
+  // step5e: client engine
+  client_engine.init(&level_engine,
+                     mainWindow.getChild(WINDOW_MAP));
   client_engine.start();
   if (!client_engine.isRunning())
   {
@@ -1446,7 +1377,7 @@ do_work(const RPG_Client_Config& config_in,
     return;
   } // end IF
 
-  // trigger initial drawing
+  // step5f: trigger initial drawing
   RPG_Client_Action client_action;
   client_action.command = COMMAND_WINDOW_DRAW;
   client_action.map_position = std::make_pair(0, 0);
@@ -1458,7 +1389,7 @@ do_work(const RPG_Client_Config& config_in,
   client_action.window = &mainWindow;
   client_engine.action(client_action);
 
-  // start timer (triggers hover- and GTK events)
+  // step5g: start timer (triggers hover- and GTK events)
   userData.event_timer = NULL;
   userData.event_timer = SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
                                       event_timer_SDL_cb,           // event timer callback
@@ -1477,7 +1408,19 @@ do_work(const RPG_Client_Config& config_in,
     return;
   } // end IF
 
-  // step6: setup event loops
+  // step6: activate first repository entry (if any)
+  GtkComboBox* combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData.xml,
+                                                             RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+  ACE_ASSERT(combobox);
+  if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
+    gtk_combo_box_set_active(combobox, 0);
+  combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData.xml,
+                                                RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
+  ACE_ASSERT(combobox);
+  if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
+    gtk_combo_box_set_active(combobox, 0);
+
+  // step7: setup event loops
 //   FPSmanager fps_manager;
 //   SDL_initFramerate(&fps_manager);
 // //   if (SDL_setFramerate(&fps_manager, RPG_CLIENT_DEF_VIDEO_FRAMERATE) == -1)
@@ -1638,22 +1581,6 @@ do_work(const RPG_Client_Config& config_in,
       {
         switch (event.key.keysym.sym)
         {
-          case SDLK_m:
-          {
-            if (event.key.keysym.mod & KMOD_SHIFT)
-            {
-              std::string dump_path = RPG_COMMON_DUMP_DIR;
-              dump_path += ACE_DIRECTORY_SEPARATOR_STR;
-              dump_path += ACE_TEXT("map.txt");
-              if (!RPG_Map_Common_Tools::save(dump_path,
-                                              map))
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), continuing\n"),
-                           dump_path.c_str()));
-            } // end IF
-
-            break;
-          }
           case SDLK_q:
           {
             // finished event processing
@@ -2085,10 +2012,12 @@ do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
+  // step1: print program name/version
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in << ACE_TEXT(" : ") << RPG_VERSION << std::endl;
 
-  // create version string...
+  // step2: print ACE version
+  // create ACE version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
   // number... We need this, as the library soname is compared to this string.
   std::ostringstream version_number;
@@ -2101,10 +2030,23 @@ do_printVersion(const std::string& programName_in)
     version_number << ACE::beta_version();
   } // end IF
 
+//   std::cout << "ACE: " << ACE_VERSION << std::endl;
   std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
-//   std::cout << "ACE: "
-//             << ACE_VERSION
-//             << std::endl;
+
+  // step3: print compiler name/version
+  version_number.str("");
+  version_number << ACE::compiler_name();
+  version_number << ACE_TEXT(" ");
+  version_number << ACE::compiler_major_version();
+  version_number << ACE_TEXT(".");
+  version_number << ACE::compiler_minor_version();
+  if (ACE::compiler_beta_version())
+  {
+    version_number << ACE_TEXT(".");
+    version_number << ACE::compiler_beta_version();
+  } // end IF
+
+  std::cout << ACE_TEXT("compiled by: ") << version_number.str() << std::endl;
 }
 
 int

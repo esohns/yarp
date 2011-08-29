@@ -24,6 +24,8 @@
 #include "rpg_client_window_main.h"
 #include "rpg_client_window_level.h"
 
+#include <rpg_engine_level.h>
+
 #include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_surface.h>
 
@@ -44,16 +46,18 @@ RPG_Client_Engine::RPG_Client_Engine()
 //   inherited::msg_queue(&myQueue);
 }
 
-RPG_Client_Engine::RPG_Client_Engine(RPG_Graphics_IWindow* window_in)
+RPG_Client_Engine::RPG_Client_Engine(RPG_Engine_Level* levelState_in,
+                                     RPG_Graphics_IWindow* window_in)
 //  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
  : myCondition(myLock),
    myStop(false),
-   myLevelState(NULL),
+   myLevelState(levelState_in),
    myLevelWindow(window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::RPG_Client_Engine"));
 
-  // sanity check
+  // sanity check(s)
+  ACE_ASSERT(levelState_in);
   ACE_ASSERT(window_in);
 
   // use member message queue...
@@ -81,7 +85,7 @@ RPG_Client_Engine::close(u_long arg_in)
     case 0:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("worker thread (ID: %t) leaving...\n")));
+                 ACE_TEXT("(graphics engine) worker thread (ID: %t) leaving...\n")));
 
       // don't do anything...
       break;
@@ -179,7 +183,7 @@ RPG_Client_Engine::start()
                ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
   else
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("started worker thread (id: %u)...\n"),
+               ACE_TEXT("(graphics engine) started worker thread (id: %u)...\n"),
                thread_ids[0]));
 }
 
@@ -307,13 +311,16 @@ RPG_Client_Engine::center(const RPG_Map_Position_t& position_in)
 }
 
 void
-RPG_Client_Engine::init(RPG_Graphics_IWindow* window_in)
+RPG_Client_Engine::init(RPG_Engine_Level* levelState_in,
+                        RPG_Graphics_IWindow* window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::init"));
 
-  // sanity check
+  // sanity check(s)
+  ACE_ASSERT(levelState_in);
   ACE_ASSERT(window_in);
 
+  myLevelState = levelState_in;
   myLevelWindow = window_in;
 }
 
@@ -509,6 +516,7 @@ RPG_Client_Engine::handleActions()
         // fiddling with the view invalidates the cursor BG
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
 
+        // step1: init/redraw level map
         RPG_Client_WindowLevel* window = dynamic_cast<RPG_Client_WindowLevel*>((*iterator).window);
         ACE_ASSERT(window);
         try
@@ -524,6 +532,25 @@ RPG_Client_Engine::handleActions()
 
           return;
         }
+
+        // step2: (re)set level window title caption/iconify
+        std::string caption = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
+        if (!myLevelState->getName().empty())
+        {
+          caption = ACE_TEXT_ALWAYS_CHAR("* ");
+          caption += myLevelState->getName();
+          caption += ACE_TEXT_ALWAYS_CHAR(" *");
+        } // end IF
+        else
+        {
+          // no map --> iconify
+          if (SDL_WM_IconifyWindow() == 0)
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to SDL_WM_IconifyWindow(): \"%s\", continuing\n"),
+                       SDL_GetError()));
+        } // end IF
+        SDL_WM_SetCaption(caption.c_str(),  // window caption
+                          caption.c_str()); // icon caption
 
         refresh_window = true;
 
