@@ -38,6 +38,10 @@
 
 #include <rpg_character_class_common.h>
 
+#include <rpg_item_instance_common.h>
+
+#include <rpg_common_subclass.h>
+
 #include <ace/Global_Macros.h>
 
 #include <string>
@@ -66,6 +70,8 @@ class RPG_Engine_Common_Tools
   // *NOTE*: return value entity.character must be deleted() by the caller !
   static RPG_Engine_Entity createEntity(const bool&); // load sprite graphic ?
   static std::string info(const RPG_Engine_Entity&); // entity
+
+  static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
 
   // ***** combat-related *****
   static const bool isPartyHelpless(const RPG_Character_Party_t&); // party

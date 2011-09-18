@@ -37,8 +37,8 @@ class RPG_Stream_MessageAllocatorHeap
    public RPG_Stream_IAllocator
 {
  public:
-  RPG_Stream_MessageAllocatorHeap(const unsigned long&,   // total number of concurrent messages
-                              RPG_Stream_AllocatorHeap*); // (heap) memory allocator...
+  RPG_Stream_MessageAllocatorHeap(const unsigned long&,       // total number of concurrent messages
+                                  RPG_Stream_AllocatorHeap*); // (heap) memory allocator...
   virtual ~RPG_Stream_MessageAllocatorHeap();
 
   // overload these to do what we want
@@ -99,12 +99,12 @@ class RPG_Stream_MessageAllocatorHeap
                       int = PROT_RDWR); // protection
 
   // our blocking counter condition...
-  ACE_Thread_Semaphore            myFreeMessageCounter;
+  ACE_Thread_Semaphore              myFreeMessageCounter;
   ACE_Atomic_Op<ACE_Thread_Mutex,
-                unsigned long>    myPoolSize;
+                unsigned long>      myPoolSize;
 
   // data block allocator
-  RPG_Stream_DataBlockAllocatorHeap   myDataBlockAllocator;
+  RPG_Stream_DataBlockAllocatorHeap myDataBlockAllocator;
 };
 
 #endif

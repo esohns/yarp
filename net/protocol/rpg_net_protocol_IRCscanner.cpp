@@ -2327,7 +2327,7 @@ And so on...
 /* CHANNEL        [#&]{([\x00-\xFF]{-}[ \b\0\x0D\x0A,])}+ */
 /* CRLF           \x0D\x0A */
 
-#define YY_USER_ACTION  yylloc->columns(yyleng);
+#define YY_USER_ACTION yylloc->columns(yyleng);
 /* *NOTE*: it seems that the following "exceptions" are allowed:
            - the trailing param does NOT need a ':' prefix IF it doesn't contain
              <SPACE>s...

@@ -41,6 +41,8 @@
 
 #include <rpg_magic_defines.h>
 
+#include <rpg_character_player_defines.h>
+
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 #include <rpg_common_tools.h>
@@ -331,8 +333,9 @@ do_initGUI(const std::string& graphicsDirectory_in,
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  if (::load_profiles(RPG_CLIENT_DEF_ENTITY_REPOSITORY,
-                      list))
+  if (::load_files(RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY,
+                   true,
+                   list))
     gtk_widget_set_sensitive(GTK_WIDGET(combobox),
                              TRUE);
   else
@@ -354,7 +357,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   gpointer userData_p = const_cast<GTK_cb_data_t*>(&userData_in);
   g_signal_connect(main_dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
-                   G_CALLBACK(quit_activated_GTK_cb),
+                   G_CALLBACK(quit_clicked_GTK_cb),
 //                    G_CALLBACK(gtk_widget_destroyed),
 //                    &main_dialog,
                    userData_p);
@@ -370,7 +373,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(create_character_activated_GTK_cb),
+                   G_CALLBACK(create_character_clicked_GTK_cb),
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
@@ -378,7 +381,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(drop_character_activated_GTK_cb),
+                   G_CALLBACK(drop_character_clicked_GTK_cb),
                    userData_p);
 
   GtkFileChooser* filechooser = NULL;
@@ -395,7 +398,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(load_character_activated_GTK_cb),
+                   G_CALLBACK(load_character_clicked_GTK_cb),
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
@@ -403,7 +406,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(save_character_activated_GTK_cb),
+                   G_CALLBACK(save_character_clicked_GTK_cb),
                    userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
@@ -427,7 +430,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(prev_image_activated_GTK_cb),
+                   G_CALLBACK(prev_image_clicked_GTK_cb),
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
@@ -435,7 +438,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(next_image_activated_GTK_cb),
+                   G_CALLBACK(next_image_clicked_GTK_cb),
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
@@ -443,7 +446,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(quit_activated_GTK_cb),
+                   G_CALLBACK(quit_clicked_GTK_cb),
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
@@ -451,7 +454,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(about_activated_GTK_cb),
+                   G_CALLBACK(about_clicked_GTK_cb),
                    userData_p);
 
   // step5: auto-connect signals/slots

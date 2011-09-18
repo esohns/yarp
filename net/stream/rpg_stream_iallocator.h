@@ -26,7 +26,7 @@
 #include <stddef.h>
 
 class RPG_Stream_IAllocator
-//  : public ACE_Allocator
+//  : public virtual ACE_Allocator
 {
  public:
   virtual void* malloc(size_t) = 0; // bytes

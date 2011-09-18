@@ -6,6 +6,8 @@ set(RPG_Stream_LIB_SRCS
     rpg_stream.h
     rpg_stream_allocatorheap.cpp
     rpg_stream_allocatorheap.h
+    rpg_stream_cachedallocatorheap.cpp
+    rpg_stream_cachedallocatorheap.h
     rpg_stream_base.cpp
     rpg_stream_base.h
     rpg_stream_base.i
@@ -16,6 +18,8 @@ set(RPG_Stream_LIB_SRCS
     rpg_stream_data_message_base.i
     rpg_stream_datablockallocatorheap.cpp
     rpg_stream_datablockallocatorheap.h
+    rpg_stream_cacheddatablockallocatorheap.cpp
+    rpg_stream_cacheddatablockallocatorheap.h
     rpg_stream_defines.h
     rpg_stream_headmoduletask.cpp
     rpg_stream_headmoduletask.h
@@ -32,9 +36,14 @@ set(RPG_Stream_LIB_SRCS
     rpg_stream_message_base.h
     rpg_stream_messageallocatorheap.cpp
     rpg_stream_messageallocatorheap.h
+    rpg_stream_cachedmessageallocatorheap.cpp
+    rpg_stream_cachedmessageallocatorheap.h
     rpg_stream_messageallocatorheap_base.cpp
     rpg_stream_messageallocatorheap_base.h
     rpg_stream_messageallocatorheap_base.i
+    rpg_stream_cachedmessageallocatorheap_base.cpp
+    rpg_stream_cachedmessageallocatorheap_base.h
+    rpg_stream_cachedmessageallocatorheap_base.i
     rpg_stream_messagequeue.cpp
     rpg_stream_messagequeue.h
     rpg_stream_messagequeue_base.cpp
@@ -91,12 +100,14 @@ install(TARGETS RPG_Stream LIBRARY
 install(FILES
         rpg_stream.h
         rpg_stream_allocatorheap.h
+        rpg_stream_cachedallocatorheap.h
         rpg_stream_base.h
         rpg_stream_base.i
         rpg_stream_counter.h
         rpg_stream_data_message_base.h
         rpg_stream_data_message_base.i
         rpg_stream_datablockallocatorheap.h
+        rpg_stream_cacheddatablockallocatorheap.h
         rpg_stream_defines.h
         rpg_stream_headmoduletask.h
         rpg_stream_headmoduletask_base.h
@@ -109,8 +120,11 @@ install(FILES
         rpg_stream_itask_base.h
         rpg_stream_message_base.h
         rpg_stream_messageallocatorheap.h
+        rpg_stream_cachedmessageallocatorheap.h
         rpg_stream_messageallocatorheap_base.h
         rpg_stream_messageallocatorheap_base.i
+        rpg_stream_cachedmessageallocatorheap_base.h
+        rpg_stream_cachedmessageallocatorheap_base.i
         rpg_stream_messagequeue.h
         rpg_stream_messagequeue_base.h
         rpg_stream_module.h

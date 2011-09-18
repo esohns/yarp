@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Erik Sohns   *
+ *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,34 +18,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef CHARACTER_GENERATOR_GUI_CALLBACKS_H
-#define CHARACTER_GENERATOR_GUI_CALLBACKS_H
+#include "rpg_stream_cachedallocatorheap.h"
 
-#include "character_generator_gui_common.h"
+#include <rpg_common_macros.h>
 
-#include <gtk/gtk.h>
-
-void update_sprite_gallery(GTK_cb_data_t&);
-void set_current_image(const RPG_Graphics_Sprite&,
-                       GladeXML*);
-
-#ifdef __cplusplus
-extern "C"
+RPG_Stream_CachedAllocatorHeap::RPG_Stream_CachedAllocatorHeap(const unsigned long& poolSize_in,
+                                                               const unsigned long& chunkSize_in)
+ : inherited(poolSize_in, chunkSize_in),
+   myPoolSize(poolSize_in * chunkSize_in)
 {
-#endif /* __cplusplus */
-  gint about_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint quit_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint create_character_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint drop_character_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint load_character_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint character_file_activated_GTK_cb(GtkWidget*, gpointer);
-  gint save_character_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint character_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
-  gint character_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint prev_image_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint next_image_clicked_GTK_cb(GtkWidget*, gpointer);
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+  RPG_TRACE(ACE_TEXT("RPG_Stream_CachedAllocatorHeap::RPG_Stream_CachedAllocatorHeap"));
 
-#endif
+}
+
+RPG_Stream_CachedAllocatorHeap::~RPG_Stream_CachedAllocatorHeap()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_CachedAllocatorHeap::~RPG_Stream_CachedAllocatorHeap"));
+
+}
+
+size_t
+RPG_Stream_CachedAllocatorHeap::cache_depth() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_CachedAllocatorHeap::cache_depth"));
+
+  return const_cast<RPG_Stream_CachedAllocatorHeap*>(this)->pool_depth();
+}
+
+size_t
+RPG_Stream_CachedAllocatorHeap::cache_size() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_CachedAllocatorHeap::cache_size"));
+
+  return myPoolSize;
+}

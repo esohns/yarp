@@ -37,9 +37,8 @@
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
 
+#include <rpg_character_player_defines.h>
 #include <rpg_character_player_common_tools.h>
-
-#include <rpg_character_defines.h>
 
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_weapon.h>
@@ -108,10 +107,10 @@ extern "C"
 {
 #endif /* __cplusplus */
 G_MODULE_EXPORT gint
-about_activated_GTK_cb(GtkWidget* widget_in,
+about_clicked_GTK_cb(GtkWidget* widget_in,
                        gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::about_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::about_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
@@ -133,10 +132,10 @@ about_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-quit_activated_GTK_cb(GtkWidget* widget_in,
+quit_clicked_GTK_cb(GtkWidget* widget_in,
                       gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::quit_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::quit_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(userData_in);
@@ -393,10 +392,10 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   data->entity.sprite = *(data->current_sprite);
 
   // assemble target filename
-  std::string filename = RPG_COMMON_DUMP_DIR;
+  std::string filename = RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += data->entity.character->getName();
-  filename += RPG_CHARACTER_PROFILE_EXT;
+  filename += RPG_CHARACTER_PLAYER_PROFILE_EXT;
 
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
@@ -461,10 +460,10 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // construct filename
-  std::string filename = RPG_CLIENT_DEF_CHARACTER_REPOSITORY;
+  std::string filename = RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += active_item;
-  filename += RPG_CHARACTER_PROFILE_EXT;
+  filename += RPG_CHARACTER_PLAYER_PROFILE_EXT;
 
   // load entity profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
@@ -531,8 +530,9 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load profile data
-  unsigned long num_entries = ::load_profiles(RPG_CLIENT_DEF_CHARACTER_REPOSITORY,
-                                              GTK_LIST_STORE(model));
+  unsigned long num_entries = ::load_files(RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY,
+                                           true,
+                                           GTK_LIST_STORE(model));
 
   // set sensitive as appropriate
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
@@ -567,10 +567,10 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-prev_image_activated_GTK_cb(GtkWidget* widget_in,
-                            gpointer userData_in)
+prev_image_clicked_GTK_cb(GtkWidget* widget_in,
+                          gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::prev_image_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::prev_image_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
@@ -596,10 +596,10 @@ prev_image_activated_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-next_image_activated_GTK_cb(GtkWidget* widget_in,
-                            gpointer userData_in)
+next_image_clicked_GTK_cb(GtkWidget* widget_in,
+                          gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::next_image_activated_GTK_cb"));
+  RPG_TRACE(ACE_TEXT("::next_image_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Erik Sohns   *
+ *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,34 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef CHARACTER_GENERATOR_GUI_CALLBACKS_H
-#define CHARACTER_GENERATOR_GUI_CALLBACKS_H
+#ifndef RPG_STREAM_CACHEDALLOCATORHEAP_H
+#define RPG_STREAM_CACHEDALLOCATORHEAP_H
 
-#include "character_generator_gui_common.h"
+#include "rpg_stream_iallocator.h"
 
-#include <gtk/gtk.h>
+#include <ace/Malloc_T.h>
+#include <ace/Synch.h>
+#include <ace/Atomic_Op.h>
 
-void update_sprite_gallery(GTK_cb_data_t&);
-void set_current_image(const RPG_Graphics_Sprite&,
-                       GladeXML*);
-
-#ifdef __cplusplus
-extern "C"
+class RPG_Stream_CachedAllocatorHeap
+ : public ACE_Dynamic_Cached_Allocator<ACE_SYNCH_MUTEX>,
+   public RPG_Stream_IAllocator
 {
-#endif /* __cplusplus */
-  gint about_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint quit_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint create_character_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint drop_character_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint load_character_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint character_file_activated_GTK_cb(GtkWidget*, gpointer);
-  gint save_character_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint character_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
-  gint character_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint prev_image_clicked_GTK_cb(GtkWidget*, gpointer);
-  gint next_image_clicked_GTK_cb(GtkWidget*, gpointer);
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+ public:
+  RPG_Stream_CachedAllocatorHeap(const unsigned long&,  // pool size
+                                 const unsigned long&); // chunk size
+  virtual ~RPG_Stream_CachedAllocatorHeap();
+
+  // *NOTE*: these return the amount of allocated (heap) memory...
+  virtual size_t cache_depth() const;
+  virtual size_t cache_size() const;
+
+ private:
+  typedef ACE_Dynamic_Cached_Allocator<ACE_SYNCH_MUTEX> inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_CachedAllocatorHeap(const RPG_Stream_CachedAllocatorHeap&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_CachedAllocatorHeap& operator=(const RPG_Stream_CachedAllocatorHeap&));
+
+  unsigned long myPoolSize;
+};
 
 #endif

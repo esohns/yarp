@@ -543,6 +543,180 @@ RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
   return result;
 }
 
+RPG_Item_List_t
+RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subClass_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::generateStandardItems"));
+
+  RPG_Item_List_t result;
+
+  RPG_Item_Instance_Base* current = NULL;
+  try
+  {
+    switch (subClass_in)
+    {
+      case SUBCLASS_FIGHTER:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_MAIL_SPLINT);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_HEAVY_WOODEN);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+
+        break;
+      }
+      case SUBCLASS_PALADIN:
+//       case SUBCLASS_WARLORD:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_PLATE_FULL);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_HEAVY_STEEL);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+
+        break;
+      }
+      case SUBCLASS_RANGER:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            RANGED_WEAPON_BOW_LONG);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_HIDE);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+
+        // *TODO*: no arrows ?
+
+        break;
+      }
+//       case SUBCLASS_BARBARIAN:
+//       {
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+//             ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+//         ACE_ASSERT(current);
+//         result.insert(current->getID());
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+//             ARMOR_HIDE);
+//         ACE_ASSERT(current);
+//         result.insert(current->getID());
+//
+//         break;
+//       }
+      case SUBCLASS_WIZARD:
+      case SUBCLASS_SORCERER:
+//       case SUBCLASS_WARLOCK:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+
+        break;
+      }
+      case SUBCLASS_CLERIC:
+//       case SUBCLASS_AVENGER:
+//       case SUBCLASS_INVOKER:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_MAIL_CHAIN);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_HEAVY_WOODEN);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+
+        break;
+      }
+      case SUBCLASS_DRUID:
+//       case SUBCLASS_SHAMAN:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            LIGHT_MELEE_WEAPON_SICKLE);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_HIDE);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_LIGHT_WOODEN);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+
+        break;
+      }
+//       case SUBCLASS_MONK:
+//       {
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+//             TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+//         ACE_ASSERT(current);
+//         result.insert(current->getID());
+//
+//         break;
+//       }
+      case SUBCLASS_THIEF:
+      case SUBCLASS_BARD:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+            LIGHT_MELEE_WEAPON_SWORD_SHORT);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_LEATHER);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+            ARMOR_SHIELD_LIGHT_STEEL);
+        ACE_ASSERT(current);
+        result.insert(current->getID());
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid subclass \"%s\", aborting\n"),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("generate_standard_items(): caught exception: \"%s\", aborting\n"),
+               exception.what()));
+  }
+
+  return result;
+}
+
 const bool
 RPG_Engine_Common_Tools::isPartyHelpless(const RPG_Character_Party_t& party_in)
 {

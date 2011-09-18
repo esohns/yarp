@@ -27,7 +27,7 @@
 #include <rpg_common_macros.h>
 
 RPG_Stream_MessageAllocatorHeap::RPG_Stream_MessageAllocatorHeap(const unsigned long& maxNumMessages_in,
-                                                         RPG_Stream_AllocatorHeap* allocator_in)
+                                                                 RPG_Stream_AllocatorHeap* allocator_in)
  : //inherited(),
    myFreeMessageCounter(maxNumMessages_in,
                         NULL,

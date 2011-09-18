@@ -26,9 +26,9 @@
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
+#include <rpg_character_player_defines.h>
 #include <rpg_character_player.h>
 
-#include <rpg_character_defines.h>
 #include <rpg_character_alignmentcivic.h>
 #include <rpg_character_alignmentethic.h>
 #include <rpg_character_alignment.h>

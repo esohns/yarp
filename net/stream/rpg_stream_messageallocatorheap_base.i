@@ -28,8 +28,8 @@
 template <typename MessageType,
           typename SessionMessageType>
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
-                                SessionMessageType>::RPG_Stream_MessageAllocatorHeapBase(const unsigned long& maxNumMessages_in,
-                                                                                     RPG_Stream_AllocatorHeap* allocator_in)
+                                    SessionMessageType>::RPG_Stream_MessageAllocatorHeapBase(const unsigned long& maxNumMessages_in,
+                                                                                             RPG_Stream_IAllocator* allocator_in)
  : //inherited(),
    myFreeMessageCounter(maxNumMessages_in,
                         NULL,
@@ -55,7 +55,7 @@ template <typename MessageType,
           typename SessionMessageType>
 void*
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
-                                SessionMessageType>::malloc(size_t bytes_in)
+                                    SessionMessageType>::malloc(size_t bytes_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageAllocatorHeapBase::malloc"));
 

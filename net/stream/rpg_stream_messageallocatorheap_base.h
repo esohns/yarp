@@ -21,16 +21,17 @@
 #ifndef RPG_STREAM_MESSAGEALLOCATORHEAP_BASE_H
 #define RPG_STREAM_MESSAGEALLOCATORHEAP_BASE_H
 
-#include "rpg_stream_iallocator.h"
 #include "rpg_stream_datablockallocatorheap.h"
+
+#include "rpg_stream_iallocator.h"
 
 #include <ace/Malloc_Allocator.h>
 #include <ace/Thread_Semaphore.h>
 #include <ace/Synch.h>
 #include <ace/Atomic_Op.h>
 
-// forward declarations
-class RPG_Stream_AllocatorHeap;
+// // forward declarations
+// class RPG_Stream_IAllocator;
 
 template <typename MessageType,
           typename SessionMessageType>
@@ -39,8 +40,8 @@ class RPG_Stream_MessageAllocatorHeapBase
    public RPG_Stream_IAllocator
 {
  public:
-  RPG_Stream_MessageAllocatorHeapBase(const unsigned long&,   // total number of concurrent messages
-                                  RPG_Stream_AllocatorHeap*); // (heap) memory allocator...
+  RPG_Stream_MessageAllocatorHeapBase(const unsigned long&,    // total number of concurrent messages
+                                      RPG_Stream_IAllocator*); // (heap) memory allocator...
   virtual ~RPG_Stream_MessageAllocatorHeapBase();
 
   // overload these to do what we want
@@ -105,12 +106,12 @@ class RPG_Stream_MessageAllocatorHeapBase
                       int = PROT_RDWR); // protection
 
   // our blocking counter condition...
-  ACE_Thread_Semaphore            myFreeMessageCounter;
+  ACE_Thread_Semaphore              myFreeMessageCounter;
   ACE_Atomic_Op<ACE_Thread_Mutex,
-                unsigned long>    myPoolSize;
+                unsigned long>      myPoolSize;
 
   // data block allocator
-  RPG_Stream_DataBlockAllocatorHeap   myDataBlockAllocator;
+  RPG_Stream_DataBlockAllocatorHeap myDataBlockAllocator;
 };
 
 // include template implementation
