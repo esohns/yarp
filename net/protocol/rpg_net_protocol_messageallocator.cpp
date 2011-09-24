@@ -22,8 +22,10 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/Malloc_Base.h>
+
 RPG_Net_Protocol_MessageAllocator::RPG_Net_Protocol_MessageAllocator(const unsigned long& maxNumMessages_in,
-                                                                     RPG_Stream_AllocatorHeap* allocator_in)
+                                                                     ACE_Allocator* allocator_in)
  : inherited(maxNumMessages_in,
              allocator_in)
 {

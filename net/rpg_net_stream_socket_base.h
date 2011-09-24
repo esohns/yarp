@@ -22,14 +22,12 @@
 #define RPG_NET_STREAMSOCKET_BASE_H
 
 #include "rpg_net_sockethandler_base.h"
+#include "rpg_net_iconnectionmanager.h"
 
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
-class RPG_Stream_IAllocator;
 class ACE_Message_Block;
-template <typename ConfigType,
-          typename StatisticsContainerType> class RPG_Net_IConnectionManager;
 
 template <typename ConfigType,
           typename StatisticsContainerType,
@@ -64,12 +62,9 @@ class RPG_Net_StreamSocketBase
  protected:
   RPG_Net_StreamSocketBase(MANAGER_t*);
 
-  StreamType             myStream;
-
-  RPG_Stream_IAllocator* myAllocator; // message allocator
-  unsigned long          myDefaultBufferSize;
-  ACE_Message_Block*     myCurrentReadBuffer;
-  ACE_Message_Block*     myCurrentWriteBuffer;
+  StreamType         myStream;
+  ACE_Message_Block* myCurrentReadBuffer;
+  ACE_Message_Block* myCurrentWriteBuffer;
 
   // helper method(s)
   ACE_Message_Block* allocateMessage(const unsigned long&); // requested size

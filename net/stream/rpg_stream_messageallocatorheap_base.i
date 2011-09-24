@@ -29,7 +29,7 @@ template <typename MessageType,
           typename SessionMessageType>
 RPG_Stream_MessageAllocatorHeapBase<MessageType,
                                     SessionMessageType>::RPG_Stream_MessageAllocatorHeapBase(const unsigned long& maxNumMessages_in,
-                                                                                             RPG_Stream_IAllocator* allocator_in)
+                                                                                             RPG_Stream_AllocatorHeap* allocator_in)
  : //inherited(),
    myFreeMessageCounter(maxNumMessages_in,
                         NULL,

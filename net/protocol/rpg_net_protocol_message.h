@@ -31,21 +31,15 @@
 class ACE_Allocator;
 class ACE_Message_Block;
 class ACE_Data_Block;
-// *NOTE*: this avoids a circular dependency...
-class RPG_Net_Protocol_SessionMessage;
-// class RPG_Net_StreamMessageAllocator;
-template <typename MessageType,
-          typename SessionMessageType> class RPG_Stream_MessageAllocatorHeapBase;
 
 class RPG_Net_Protocol_Message
  : public RPG_Stream_DataMessageBase<RPG_Net_Protocol_IRCMessage>
 {
-  // enable access to specific private ctors...
-//   friend class RPG_Net_StreamMessageAllocator;
-  friend class RPG_Stream_MessageAllocatorHeapBase<RPG_Net_Protocol_Message,
-                                                   RPG_Net_Protocol_SessionMessage>;
-
  public:
+  // *NOTE*: to be used by allocators...
+  RPG_Net_Protocol_Message(ACE_Data_Block*, // data block to use
+                           ACE_Allocator*); // message allocator
+  //   RPG_Net_Protocol_Message(ACE_Allocator*); // message allocator
   virtual ~RPG_Net_Protocol_Message();
 
   virtual const int getCommand() const; // return value: (protocol) message type
@@ -88,11 +82,6 @@ class RPG_Net_Protocol_Message
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message& operator=(const RPG_Net_Protocol_Message&));
-
-  // *NOTE*: to be used by allocators...
-  RPG_Net_Protocol_Message(ACE_Data_Block*, // data block to use
-                           ACE_Allocator*); // message allocator
-//   RPG_Net_Protocol_Message(ACE_Allocator*); // message allocator
 };
 
 #endif

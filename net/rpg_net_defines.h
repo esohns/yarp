@@ -70,10 +70,8 @@
 #define RPG_NET_DEF_GROUP_ID_TASK                 11
 // *IMPORTANT NOTE*: set to too small a value, any of these MAY seriously
 // affect performance !!!
-#define RPG_NET_DEF_MAX_QUEUE_SLOTS               10000
-// *IMPORTANT NOTE*: static heap memory consumption can be measured roughly
-// as RPG_NET_DEF_MAX_MESSAGES * sizeof(RPG_Net_Remote_Comm::RuntimePing) bytes !
-#define RPG_NET_DEF_MAX_MESSAGES                  10000
+#define RPG_NET_DEF_MAX_QUEUE_SLOTS               1000
+#define RPG_NET_DEF_MAX_MESSAGES                  100
 
 // seconds, 0 --> OFF
 #define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL   0

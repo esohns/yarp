@@ -32,8 +32,6 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::RPG_Net_StreamSocketBase(MANAGER_t* manager_in)
  : inherited(manager_in),
-   myAllocator(NULL),
-   myDefaultBufferSize(RPG_NET_DEF_NETWORK_BUFFER_SIZE),
    myCurrentReadBuffer(NULL),
    myCurrentWriteBuffer(NULL)
 {
@@ -79,15 +77,6 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   // *TODO*: assumptions about ConfigType ?!?: clearly a design glitch
   // --> implement higher up !
-
-  // step0: retrieve config, init ourselves
-  myAllocator = inherited::myUserData.messageAllocator;
-  // sanity check
-  ACE_ASSERT(myAllocator);
-
-  myDefaultBufferSize = inherited::myUserData.defaultBufferSize;
-  // sanity check
-  ACE_ASSERT(myDefaultBufferSize);
 
   // step1: init/start data processing stream
   inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
@@ -179,12 +168,12 @@ RPG_Net_StreamSocketBase<ConfigType,
   ACE_ASSERT(myCurrentReadBuffer == NULL);
 
   // read some data from the socket
-  myCurrentReadBuffer = allocateMessage(myDefaultBufferSize);
+  myCurrentReadBuffer = allocateMessage(inherited::myUserData.defaultBufferSize);
   if (myCurrentReadBuffer == NULL)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
-               myDefaultBufferSize));
+               inherited::myUserData.defaultBufferSize));
 
     // reactor will invoke handle_close()
     return -1;
@@ -458,7 +447,7 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   try
   {
-    message_out = static_cast<ACE_Message_Block*> (myAllocator->malloc(requestedSize_in));
+    message_out = static_cast<ACE_Message_Block*>(inherited::myUserData.messageAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {

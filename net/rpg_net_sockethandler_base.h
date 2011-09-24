@@ -22,25 +22,19 @@
 #define RPG_NET_SOCKETHANDLER_BASE_H
 
 #include "rpg_net_iconnection.h"
-// *NOTE*: RPG_Net_IConnection already implements RPG_Common_IDumpState...
-// #include <rpg_common_idumpstate.h>
+#include "rpg_net_iconnectionmanager.h"
 
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
 #include <ace/Synch.h>
 #include <ace/Reactor_Notification_Strategy.h>
 
-// forward declaration(s)
-template <typename ConfigType,
-          typename StatisticsContainerType> class RPG_Net_IConnectionManager;
-
 template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_SocketHandlerBase
  : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH>,
    public RPG_Net_IConnection<ConfigType,
-                              StatisticsContainerType>//,
-//    public RPG_Common_IDumpState
+                              StatisticsContainerType>
 {
  protected:
   // convenient types

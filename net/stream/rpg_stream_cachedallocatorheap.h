@@ -28,13 +28,24 @@
 #include <ace/Atomic_Op.h>
 
 class RPG_Stream_CachedAllocatorHeap
- : public ACE_Dynamic_Cached_Allocator<ACE_SYNCH_MUTEX>,
-   public RPG_Stream_IAllocator
+ : public RPG_Stream_IAllocator,
+   public ACE_Dynamic_Cached_Allocator<ACE_SYNCH_MUTEX>
 {
  public:
   RPG_Stream_CachedAllocatorHeap(const unsigned long&,  // pool size
                                  const unsigned long&); // chunk size
   virtual ~RPG_Stream_CachedAllocatorHeap();
+
+  // *IMPORTANT NOTE*: need to implement these as ACE_Dynamic_Cached_Allocator
+  // doesn't implement them as virtual (BUG)
+  inline virtual void* malloc(size_t numBytes_in)
+  {
+    return inherited::malloc(numBytes_in);
+  };
+  inline virtual void free(void* pointer_in)
+  {
+    return inherited::free(pointer_in);
+  };
 
   // *NOTE*: these return the amount of allocated (heap) memory...
   virtual size_t cache_depth() const;

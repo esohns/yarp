@@ -36,7 +36,7 @@
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
 
-#include <rpg_stream_allocatorheap.h>
+#include <rpg_stream_cachedallocatorheap.h>
 
 #include <gtk/gtk.h>
 
@@ -1301,7 +1301,8 @@ ACE_TMAIN(int argc,
                              ACE_Log_Msg::PROCESS);
 
   // init global (!) processing stream message allocator
-  RPG_Stream_AllocatorHeap heapAllocator;
+  RPG_Stream_CachedAllocatorHeap heapAllocator(RPG_NET_DEF_MAX_MESSAGES,
+                                               RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE);
   RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                      &heapAllocator);
 

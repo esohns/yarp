@@ -25,7 +25,6 @@
 #include "rpg_net_sessionmessage.h"
 
 #include <rpg_stream_messageallocatorheap_base.h>
-#include <rpg_stream_datablockallocatorheap.h>
 
 // forward declarations
 class Stream_AllocatorHeap;
