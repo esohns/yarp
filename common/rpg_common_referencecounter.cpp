@@ -22,6 +22,8 @@
 
 #include "rpg_common_macros.h"
 
+#include <ace/Guard_T.h>
+
 RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter(const unsigned long& initCount_in,
                                                          const bool& deleteOnZero_in)
  : myCounter(initCount_in),

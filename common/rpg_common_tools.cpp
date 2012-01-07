@@ -24,9 +24,12 @@
 #include "rpg_common_defines.h"
 #include "rpg_common_environment_incl.h"
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include <sstream>
+#include <algorithm>
+#include <locale>
 
 // init statics
 RPG_Common_CreatureMetaTypeToStringTable_t RPG_Common_CreatureMetaTypeHelper::myRPG_Common_CreatureMetaTypeToStringTable;
@@ -490,7 +493,7 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
   std::transform(first,
                  result.end(),
                  first,
-                 static_cast<int(*)(int)> (std::tolower));
+                 std::bind2nd(std::ptr_fun(&std::tolower<char>), std::locale("")));
 
   return result;
 }
@@ -506,10 +509,10 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
 
   // extract hours and minutes...
   ACE_Time_Value temp = period_in;
-  int hours = temp.sec() / (60 * 60);
+  int hours = static_cast<int>(temp.sec()) / (60 * 60);
   temp.sec(temp.sec() % (60 * 60));
 
-  int minutes = temp.sec() / 60;
+  int minutes = static_cast<int>(temp.sec()) / 60;
   temp.sec(temp.sec() % 60);
 
   char time_string[RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH];
@@ -580,12 +583,16 @@ RPG_Common_Tools::getUserName(std::string& username_out,
   } // end IF
   username_out = user_name;
 
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   char pw_buf[BUFSIZ];
   struct passwd pw_struct;
+  struct passwd* result = NULL;
   if (ACE_OS::getpwnam_r(user_name,
                          &pw_struct,
                          pw_buf,
-                         sizeof(pw_buf)) == NULL)
+                         sizeof(pw_buf),
+						 &result) ||
+	  (result == NULL))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::getpwnam_r(): \"%m\", aborting\n")));
@@ -593,6 +600,7 @@ RPG_Common_Tools::getUserName(std::string& username_out,
     return false;
   } // end IF
   realname_out = pw_struct.pw_gecos;
+#endif
 
   return true;
 }

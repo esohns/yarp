@@ -22,6 +22,7 @@
 
 #include "rpg_common_macros.h"
 
+#include <ace/ACE.h>
 #include <ace/OS.h>
 #include <ace/FILE_IO.h>
 #include <ace/FILE_Connector.h>

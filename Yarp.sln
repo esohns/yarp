@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chance", "chance\chance.vcxproj", "{680D55C6-2821-4D27-ACD2-88873D145794}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dice", "chance\dice\dice.vcxproj", "{371EAC10-4D0B-4F1D-8DEA-351DC54C7433}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "common\common.vcxproj", "{5633F302-FF53-4014-8587-7BB1F35561CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{680D55C6-2821-4D27-ACD2-88873D145794}.Debug|Win32.ActiveCfg = Debug|Win32
+		{680D55C6-2821-4D27-ACD2-88873D145794}.Debug|Win32.Build.0 = Debug|Win32
+		{680D55C6-2821-4D27-ACD2-88873D145794}.Release|Win32.ActiveCfg = Release|Win32
+		{680D55C6-2821-4D27-ACD2-88873D145794}.Release|Win32.Build.0 = Release|Win32
+		{371EAC10-4D0B-4F1D-8DEA-351DC54C7433}.Debug|Win32.ActiveCfg = Debug|Win32
+		{371EAC10-4D0B-4F1D-8DEA-351DC54C7433}.Debug|Win32.Build.0 = Debug|Win32
+		{371EAC10-4D0B-4F1D-8DEA-351DC54C7433}.Release|Win32.ActiveCfg = Release|Win32
+		{371EAC10-4D0B-4F1D-8DEA-351DC54C7433}.Release|Win32.Build.0 = Release|Win32
+		{5633F302-FF53-4014-8587-7BB1F35561CD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5633F302-FF53-4014-8587-7BB1F35561CD}.Debug|Win32.Build.0 = Debug|Win32
+		{5633F302-FF53-4014-8587-7BB1F35561CD}.Release|Win32.ActiveCfg = Release|Win32
+		{5633F302-FF53-4014-8587-7BB1F35561CD}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

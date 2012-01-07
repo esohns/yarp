@@ -17,12 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+// *NOTE*: workaround for ACE_WIN32/64
+#define NOMINMAX
+
 #include "rpg_dice.h"
 
 #include "rpg_dice_common_tools.h"
 
 #include <rpg_common_macros.h>
 
+#include <ace/OS.h>
 #include <ace/Time_Value.h>
 #include <ace/Log_Msg.h>
 
@@ -43,7 +48,7 @@ void RPG_Dice::init()
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ::srandom(now.sec());
 #else
-  ACE_OS::srand(now.sec());
+  ACE_OS::srand(static_cast<u_int>(now.sec()));
 #endif
 
   ACE_DEBUG((LM_DEBUG,
