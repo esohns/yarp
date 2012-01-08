@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{8ceed5c9-8efb-4d75-8d7a-df3121c29de7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_chance_common_tools.cpp">
@@ -23,5 +26,13 @@
     <ClInclude Include="rpg_chance_common_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_chance_exports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\bindings.bat">
+      <Filter>scripts</Filter>
+    </None>
   </ItemGroup>
 </Project>

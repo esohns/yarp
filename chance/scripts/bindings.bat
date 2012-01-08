@@ -8,6 +8,7 @@
 @rem #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
 @rem generate exports file
+"E:\ACE_wrappers\bin\generate_export_file.pl" -n RPG_Chance > .\..\rpg_chance_exports.h
 "E:\ACE_wrappers\bin\generate_export_file.pl" -n RPG_Dice > .\..\dice\rpg_dice_exports.h
 
 @rem C++ "glue code"

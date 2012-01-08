@@ -20,7 +20,7 @@
 
 #include "rpg_character_common_tools.h"
 
-#include "rpg_character_defines.h"
+//#include "rpg_character_defines.h"
 #include "rpg_character_race_common.h"
 #include "rpg_character_class_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
@@ -320,7 +320,7 @@ RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& att
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
 
-  short int baseValue = -5;
+  signed char baseValue = -5;
   baseValue += ((attributeAbility_in & 0x1) == attributeAbility_in) ? ((attributeAbility_in - 1) >> 1)
                                                                     : (attributeAbility_in >> 1);
 

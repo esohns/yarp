@@ -20,6 +20,8 @@
 #ifndef RPG_CHANCE_COMMON_TOOLS_H
 #define RPG_CHANCE_COMMON_TOOLS_H
 
+#include "rpg_chance_exports.h"
+
 #include <rpg_dice_dietype.h>
 
 #include <ace/Global_Macros.h>
@@ -27,7 +29,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Chance_Common_Tools
+class RPG_Chance_Export RPG_Chance_Common_Tools
 {
  public:
   // perform a standard die roll check
