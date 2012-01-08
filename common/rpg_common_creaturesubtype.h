@@ -35,6 +35,8 @@ enum RPG_Common_CreatureSubType
   RPG_COMMON_CREATURESUBTYPE_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -43,7 +45,7 @@ enum RPG_Common_CreatureSubType
 typedef std::map<RPG_Common_CreatureSubType, std::string> RPG_Common_CreatureSubTypeToStringTable_t;
 typedef RPG_Common_CreatureSubTypeToStringTable_t::const_iterator RPG_Common_CreatureSubTypeToStringTableIterator_t;
 
-class RPG_Common_CreatureSubTypeHelper
+class RPG_Common_Export RPG_Common_CreatureSubTypeHelper
 {
  public:
   inline static void init()

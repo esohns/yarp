@@ -104,13 +104,13 @@ class RPG_Magic_Dictionary_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "rpg_dice_XML_tree.h"
+#include "../chance/dice/rpg_dice_XML_tree.h"
 
-#include "rpg_common_XML_tree.h"
+#include "../common/rpg_common_XML_tree.h"
 
-#include "rpg_common_environment_XML_tree.h"
+#include "../common/rpg_common_environment_XML_tree.h"
 
-#include "rpg_character_XML_tree.h"
+#include "../character/rpg_character_XML_tree.h"
 
 class RPG_Magic_School_XMLTree_Type: public ::xml_schema::string
 {
@@ -1297,23 +1297,23 @@ class RPG_Magic_Spell_RangeEffect_XMLTree_Type: public ::xml_schema::string
 class RPG_Magic_Spell_RangeProperties_XMLTree_Type: public ::xml_schema::type
 {
   public:
-  // max
+  // maximum
   // 
-  typedef ::xml_schema::unsigned_int max_type;
-  typedef ::xsd::cxx::tree::optional< max_type > max_optional;
-  typedef ::xsd::cxx::tree::traits< max_type, char > max_traits;
+  typedef ::xml_schema::unsigned_int maximum_type;
+  typedef ::xsd::cxx::tree::optional< maximum_type > maximum_optional;
+  typedef ::xsd::cxx::tree::traits< maximum_type, char > maximum_traits;
 
-  const max_optional&
-  max () const;
+  const maximum_optional&
+  maximum () const;
 
-  max_optional&
-  max ();
-
-  void
-  max (const max_type& x);
+  maximum_optional&
+  maximum ();
 
   void
-  max (const max_optional& x);
+  maximum (const maximum_type& x);
+
+  void
+  maximum (const maximum_optional& x);
 
   // increment
   // 
@@ -1388,7 +1388,7 @@ class RPG_Magic_Spell_RangeProperties_XMLTree_Type: public ::xml_schema::type
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
-  max_optional max_;
+  maximum_optional maximum_;
   increment_optional increment_;
   ::xsd::cxx::tree::one< effect_type > effect_;
   static const effect_type effect_default_value_;

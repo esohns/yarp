@@ -21,6 +21,7 @@
 #ifndef RPG_MAGIC_DICTIONARY_H
 #define RPG_MAGIC_DICTIONARY_H
 
+#include "rpg_magic_exports.h"
 #include "rpg_magic_common.h"
 
 #include <xsd/cxx/xml/error-handler.hxx>
@@ -82,5 +83,6 @@ class RPG_Magic_Dictionary
 
 typedef ACE_Singleton<RPG_Magic_Dictionary,
                       ACE_Thread_Mutex> RPG_MAGIC_DICTIONARY_SINGLETON;
+RPG_MAGIC_SINGLETON_DECLARE(ACE_Singleton, RPG_Magic_Dictionary, ACE_Thread_Mutex);
 
 #endif

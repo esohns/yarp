@@ -38,7 +38,9 @@
 #  include <ace/Trace.h>
 #endif /* RPG_NTRACE */
 
+#ifdef __GNUC__
 #define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#endif
 #define COMPILER_NAME ACE::compiler_name()
 #define COMPILER_VERSION (ACE::compiler_major_version() * 10000 + ACE::compiler_minor_version() * 100 + ACE::compiler_beta_version())
 

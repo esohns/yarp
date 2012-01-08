@@ -315,7 +315,7 @@ RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in
              RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(spellType_in).c_str()));
 
   ACE_ASSERT(false);
-  ACE_NOTREACHED();
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
 
   RPG_Magic_Spell_Properties dummy;
   return dummy;
@@ -353,16 +353,13 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
 
           break;
         }
-        // *PORTABILITY*: gcc complains about enum identifiers named "DOMAIN"
-        // this is probably a bug (it only complains in some cases...) or some "internal"
-        // issue --> we provide a (temporary) workaround here...
-        // *TODO*: clean this up...
-        /* Test for GCC <= 4.5.1 */
-#if GCC_VERSION <= 40501
-#pragma message "applying gcc quirk code for this compiler version..."
-        case RPG_Magic_CasterClassUnion::__GCC_QUIRK__DOMAIN:
+        // *PORTABILITY*: "DOMAIN" seems to be a constant (see math.h)
+        // --> provide a (temporary) workaround here...
+#if defined __GNUC__ || defined _MSC_VER
+#pragma message("applying quirk code for this compiler...")
+        case RPG_Magic_CasterClassUnion::__QUIRK__DOMAIN:
 #else
-#pragma message "re-check code for this compiler version"
+#pragma message("re-check code for this compiler")
         case RPG_Magic_CasterClassUnion::DOMAIN:
 #endif
         {

@@ -21,11 +21,13 @@
 #ifndef RPG_COMMON_FILE_TOOLS_H
 #define RPG_COMMON_FILE_TOOLS_H
 
+#include "rpg_common_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <string>
 
-class RPG_Common_File_Tools
+class RPG_Common_Export RPG_Common_File_Tools
 {
  public:
   static const bool isReadable(const std::string&); // FQ filename

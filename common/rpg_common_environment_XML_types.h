@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX_____RPG_COMMON_ENVIRONMENT_XML_TYPES_H
-#define CXX_____RPG_COMMON_ENVIRONMENT_XML_TYPES_H
+#ifndef CXX___RPG_COMMON_ENVIRONMENT_XML_TYPES_H
+#define CXX___RPG_COMMON_ENVIRONMENT_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -67,7 +67,7 @@ class RPG_Common_Environment_Type_pskel;
 
 #include "rpg_common_environment_incl.h"
 
-class RPG_Common_Plane_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_Plane_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -79,7 +79,7 @@ class RPG_Common_Plane_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_Plane_Type () = 0;
 };
 
-class RPG_Common_Terrain_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_Terrain_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -91,7 +91,7 @@ class RPG_Common_Terrain_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_Terrain_Type () = 0;
 };
 
-class RPG_Common_Climate_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_Climate_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -103,7 +103,7 @@ class RPG_Common_Climate_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_Climate_Type () = 0;
 };
 
-class RPG_Common_TimeOfDay_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_TimeOfDay_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -115,7 +115,7 @@ class RPG_Common_TimeOfDay_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_TimeOfDay_Type () = 0;
 };
 
-class RPG_Common_Environment_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_Export RPG_Common_Environment_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -193,4 +193,4 @@ class RPG_Common_Environment_Type_pskel: public ::xml_schema::complex_content
 //
 // End epilogue.
 
-#endif // CXX_____RPG_COMMON_ENVIRONMENT_XML_TYPES_H
+#endif // CXX___RPG_COMMON_ENVIRONMENT_XML_TYPES_H

@@ -16,6 +16,9 @@
     <Filter Include="XML">
       <UniqueIdentifier>{84574c65-5618-4365-8fbe-f4258bb2bb58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{5c7f9cd0-2759-4585-9fb7-98e2b6c25feb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rpg_dice_common.h">
@@ -54,6 +57,9 @@
     <ClInclude Include="rpg_dice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_dice_exports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_dice_common_tools.cpp">
@@ -75,6 +81,9 @@
   <ItemGroup>
     <None Include="rpg_dice.map">
       <Filter>XML</Filter>
+    </None>
+    <None Include="..\scripts\bindings.bat">
+      <Filter>scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@
 #ifndef RPG_DICE_COMMON_TOOLS_H
 #define RPG_DICE_COMMON_TOOLS_H
 
+#include "rpg_dice_exports.h"
 #include "rpg_dice_dietype.h"
 #include "rpg_dice_roll.h"
 #include "rpg_dice_valuerange.h"
@@ -31,7 +32,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Dice_Common_Tools
+class RPG_Dice_Export RPG_Dice_Common_Tools
 {
  public:
   // init string tables

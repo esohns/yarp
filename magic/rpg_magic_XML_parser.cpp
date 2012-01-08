@@ -159,16 +159,13 @@ void RPG_Magic_CasterClassUnion_Type::_characters(const ::xml_schema::ro_string&
   else
   {
     myCurrentCasterClassUnion.domain = RPG_Magic_DomainHelper::stringToRPG_Magic_Domain(casterClass_in);
-    // *PORTABILITY*: gcc complains about enum identifiers named "DOMAIN"
-    // this is probably a bug (it only complains in some cases...) or some "internal"
-    // issue --> we provide a (temporary) workaround here...
-    // *TODO*: clean this up...
-    /* Test for GCC <= 4.5.1 */
-#if GCC_VERSION <= 40501
-#pragma message "applying gcc quirk code for this compiler version..."
-   myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::__GCC_QUIRK__DOMAIN;
+    // *PORTABILITY*: "DOMAIN" seems to be a constant (see math.h)
+    // --> provide a (temporary) workaround here...
+#if defined __GNUC__ || defined _MSC_VER
+#pragma message("applying quirk code for this compiler...")
+    myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::__QUIRK__DOMAIN;
 #else
-#pragma message "re-check code for this compiler version"
+#pragma message("re-check code for this compiler")
     myCurrentCasterClassUnion.discriminator = RPG_Magic_CasterClassUnion::DOMAIN;
 #endif
   } // end ELSE
@@ -270,16 +267,16 @@ RPG_Magic_Spell_RangeProperties_Type::RPG_Magic_Spell_RangeProperties_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::RPG_Magic_Spell_RangeProperties_Type"));
 
-  myCurrentProperties.max = 0;
+  myCurrentProperties.maximum = 0;
   myCurrentProperties.increment = 0;
   myCurrentProperties.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
 }
 
-void RPG_Magic_Spell_RangeProperties_Type::max(unsigned int max_in)
+void RPG_Magic_Spell_RangeProperties_Type::maximum(unsigned int max_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::max"));
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_RangeProperties_Type::maximum"));
 
-  myCurrentProperties.max = max_in;
+  myCurrentProperties.maximum = max_in;
 }
 
 void RPG_Magic_Spell_RangeProperties_Type::increment(unsigned int increment_in)
@@ -303,7 +300,7 @@ RPG_Magic_Spell_RangeProperties RPG_Magic_Spell_RangeProperties_Type::post_RPG_M
   RPG_Magic_Spell_RangeProperties result = myCurrentProperties;
 
   // clear structure
-  myCurrentProperties.max = 0;
+  myCurrentProperties.maximum = 0;
   myCurrentProperties.increment = 0;
   myCurrentProperties.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
 
@@ -573,7 +570,7 @@ void RPG_Magic_Spell_PreconditionProperties_Type::type(const RPG_Magic_Spell_Pre
   myCurrentProperties.type = type_in;
 }
 
-void RPG_Magic_Spell_PreconditionProperties_Type::value(long long value_in)
+void RPG_Magic_Spell_PreconditionProperties_Type::value(int value_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Spell_PreconditionProperties_Type::value"));
 
@@ -1095,7 +1092,7 @@ RPG_Magic_Spell_PropertiesXML_Type::RPG_Magic_Spell_PropertiesXML_Type()
   myCurrentProperties.cost = 0;
   myCurrentProperties.time.rounds = 0;
   myCurrentProperties.time.action = ACTION_STANDARD;
-  myCurrentProperties.range.max = 0;
+  myCurrentProperties.range.maximum = 0;
   myCurrentProperties.range.increment = 0;
   myCurrentProperties.range.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
   myCurrentProperties.targets.clear();
@@ -1229,7 +1226,7 @@ RPG_Magic_Spell_PropertiesXML RPG_Magic_Spell_PropertiesXML_Type::post_RPG_Magic
   myCurrentProperties.cost = 0;
   myCurrentProperties.time.rounds = 0;
   myCurrentProperties.time.action = ACTION_STANDARD;
-  myCurrentProperties.range.max = 0;
+  myCurrentProperties.range.maximum = 0;
   myCurrentProperties.range.increment = 0;
   myCurrentProperties.range.effect = RPG_MAGIC_SPELL_RANGEEFFECT_INVALID;
   myCurrentProperties.targets.clear();

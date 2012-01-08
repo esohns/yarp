@@ -176,7 +176,7 @@ RPG_Character_Equipment::getBodyArmor() const
   } // end IF
 
   // armor ?
-  if (handle->getType() != ITEM_ARMOR);
+  if (handle->getType() != ITEM_ARMOR)
   {
     // item is not an armor...
     return ARMOR_NONE;
@@ -217,7 +217,7 @@ RPG_Character_Equipment::getShield(const RPG_Character_OffHand& offHand_in) cons
   } // end IF
 
   // armor ?
-  if (handle->getType() != ITEM_ARMOR);
+  if (handle->getType() != ITEM_ARMOR)
   {
     // item is not an armor...
     return ARMOR_NONE;

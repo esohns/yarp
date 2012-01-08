@@ -21,13 +21,14 @@
 #ifndef RPG_CHARACTER_CLASS_COMMON_TOOLS_H
 #define RPG_CHARACTER_CLASS_COMMON_TOOLS_H
 
+#include "rpg_character_exports.h"
 #include "rpg_character_class_common.h"
 #include "rpg_character_metaclass.h"
 #include "rpg_character_XML_tree.h"
 
 #include <rpg_common_subclass.h>
 
-class RPG_Character_Class_Common_Tools
+class RPG_Character_Export RPG_Character_Class_Common_Tools
 {
  public:
   static const bool hasSubClass(const RPG_Character_Class&,  // class(es)

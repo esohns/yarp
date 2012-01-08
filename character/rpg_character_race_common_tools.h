@@ -21,11 +21,12 @@
 #ifndef RPG_CHARACTER_RACE_COMMON_TOOLS_H
 #define RPG_CHARACTER_RACE_COMMON_TOOLS_H
 
+#include "rpg_character_exports.h"
 #include "rpg_character_race_common.h"
 
 #include <ace/Global_Macros.h>
 
-class RPG_Character_Race_Common_Tools
+class RPG_Character_Export RPG_Character_Race_Common_Tools
 {
  public:
 

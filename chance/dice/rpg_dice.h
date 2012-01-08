@@ -20,6 +20,7 @@
 #ifndef RPG_DICE_H
 #define RPG_DICE_H
 
+#include "rpg_dice_exports.h"
 #include "rpg_dice_dietype.h"
 #include "rpg_dice_roll.h"
 #include "rpg_dice_valuerange.h"
@@ -34,7 +35,7 @@ emulate rolling an n-sided die
 
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Dice
+class RPG_Dice_Export RPG_Dice
 {
  public:
   // init random seed

@@ -18,6 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+// *NOTE*: workaround quirky MSVC...
+#define NOMINMAX
+
 #include "rpg_magic_common_tools.h"
 
 #include "rpg_magic_defines.h"
@@ -1080,16 +1083,13 @@ RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_SpellLevels_t& level
 
         break;
       }
-      // *PORTABILITY*: gcc complains about enum identifiers named "DOMAIN"
-      // this is probably a bug (it only complains in some cases...) or some "internal"
-      // issue --> we provide a (temporary) workaround here...
-      // *TODO*: clean this up...
-      /* Test for GCC <= 4.5.1 */
-#if GCC_VERSION <= 40501
-#pragma message "applying gcc quirk code for this compiler version..."
-      case RPG_Magic_CasterClassUnion::__GCC_QUIRK__DOMAIN:
+      // *PORTABILITY*: "DOMAIN" seems to be a constant (see math.h)
+      // --> provide a (temporary) workaround here...
+#if defined __GNUC__ || defined _MSC_VER
+#pragma message("applying quirk code for this compiler...")
+      case RPG_Magic_CasterClassUnion::__QUIRK__DOMAIN:
 #else
-#pragma message "re-check code for this compiler version"
+#pragma message("re-check code for this compiler")
       case RPG_Magic_CasterClassUnion::DOMAIN:
 #endif
       {
@@ -1127,7 +1127,7 @@ RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spell_RangeProperties
 
   std::ostringstream converter;
   RPG_Magic_Spell_RangeProperties temp = range_in;
-  if ((range_in.max == 0) || (range_in.increment == 0))
+  if ((range_in.maximum == 0) || (range_in.increment == 0))
     updateSpellRange(temp);
 
   switch (temp.effect)
@@ -1147,8 +1147,8 @@ RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spell_RangeProperties
     case RANGEEFFECT_UNLIMITED:
     case RANGEEFFECT_RANGED:
     {
-      result += ACE_TEXT_ALWAYS_CHAR("max: ");
-      converter << temp.max;
+      result += ACE_TEXT_ALWAYS_CHAR("maximum: ");
+      converter << temp.maximum;
       result += converter.str();
       result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
       result += ACE_TEXT_ALWAYS_CHAR("increment: ");
@@ -1906,35 +1906,35 @@ RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_RangeProperties& range_
     case RANGEEFFECT_PERSONAL:
     case RANGEEFFECT_TOUCH:
     {
-      range_inout.max = 0;
+      range_inout.maximum = 0;
       range_inout.increment = 0;
 
       break;
     }
     case RANGEEFFECT_CLOSE:
     {
-      range_inout.max = 25;
+      range_inout.maximum = 25;
       range_inout.increment = 5; // per casterLevel/2
 
       break;
     }
     case RANGEEFFECT_MEDIUM:
     {
-      range_inout.max = 100;
+      range_inout.maximum = 100;
       range_inout.increment = 10; // per casterLevel
 
       break;
     }
     case RANGEEFFECT_LONG:
     {
-      range_inout.max = 400;
+      range_inout.maximum = 400;
       range_inout.increment = 40; // per casterLevel
 
       break;
     }
     case RANGEEFFECT_UNLIMITED:
     {
-      range_inout.max = std::numeric_limits<unsigned int>::max();
+      range_inout.maximum = std::numeric_limits<unsigned int>::max();
       range_inout.increment = std::numeric_limits<unsigned int>::max();
 
       break;

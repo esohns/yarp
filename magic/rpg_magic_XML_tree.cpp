@@ -682,28 +682,28 @@ operator= (value v)
 // RPG_Magic_Spell_RangeProperties_XMLTree_Type
 // 
 
-const RPG_Magic_Spell_RangeProperties_XMLTree_Type::max_optional& RPG_Magic_Spell_RangeProperties_XMLTree_Type::
-max () const
+const RPG_Magic_Spell_RangeProperties_XMLTree_Type::maximum_optional& RPG_Magic_Spell_RangeProperties_XMLTree_Type::
+maximum () const
 {
-  return this->max_;
+  return this->maximum_;
 }
 
-RPG_Magic_Spell_RangeProperties_XMLTree_Type::max_optional& RPG_Magic_Spell_RangeProperties_XMLTree_Type::
-max ()
+RPG_Magic_Spell_RangeProperties_XMLTree_Type::maximum_optional& RPG_Magic_Spell_RangeProperties_XMLTree_Type::
+maximum ()
 {
-  return this->max_;
-}
-
-void RPG_Magic_Spell_RangeProperties_XMLTree_Type::
-max (const max_type& x)
-{
-  this->max_.set (x);
+  return this->maximum_;
 }
 
 void RPG_Magic_Spell_RangeProperties_XMLTree_Type::
-max (const max_optional& x)
+maximum (const maximum_type& x)
 {
-  this->max_ = x;
+  this->maximum_.set (x);
+}
+
+void RPG_Magic_Spell_RangeProperties_XMLTree_Type::
+maximum (const maximum_optional& x)
+{
+  this->maximum_ = x;
 }
 
 const RPG_Magic_Spell_RangeProperties_XMLTree_Type::increment_optional& RPG_Magic_Spell_RangeProperties_XMLTree_Type::
@@ -4536,7 +4536,7 @@ const RPG_Magic_Spell_RangeProperties_XMLTree_Type::effect_type RPG_Magic_Spell_
 RPG_Magic_Spell_RangeProperties_XMLTree_Type::
 RPG_Magic_Spell_RangeProperties_XMLTree_Type ()
 : ::xml_schema::type (),
-  max_ (::xml_schema::flags (), this),
+  maximum_ (::xml_schema::flags (), this),
   increment_ (::xml_schema::flags (), this),
   effect_ (effect_default_value (), ::xml_schema::flags (), this)
 {
@@ -4547,7 +4547,7 @@ RPG_Magic_Spell_RangeProperties_XMLTree_Type (const RPG_Magic_Spell_RangePropert
                                               ::xml_schema::flags f,
                                               ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  max_ (x.max_, f, this),
+  maximum_ (x.maximum_, f, this),
   increment_ (x.increment_, f, this),
   effect_ (x.effect_, f, this)
 {
@@ -4558,7 +4558,7 @@ RPG_Magic_Spell_RangeProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                               ::xml_schema::flags f,
                                               ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  max_ (f, this),
+  maximum_ (f, this),
   increment_ (f, this),
   effect_ (f, this)
 {
@@ -4579,13 +4579,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
-    // max
+    // maximum
     //
-    if (n.name () == "max" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "maximum" && n.namespace_ () == "urn:rpg")
     {
-      if (!this->max_)
+      if (!this->maximum_)
       {
-        this->max_.set (max_traits::create (i, f, this));
+        this->maximum_.set (maximum_traits::create (i, f, this));
         continue;
       }
     }
@@ -4641,7 +4641,7 @@ RPG_Magic_Spell_RangeProperties_XMLTree_Type::
 bool
 operator== (const RPG_Magic_Spell_RangeProperties_XMLTree_Type& x, const RPG_Magic_Spell_RangeProperties_XMLTree_Type& y)
 {
-  if (!(x.max () == y.max ()))
+  if (!(x.maximum () == y.maximum ()))
     return false;
 
   if (!(x.increment () == y.increment ()))
@@ -7754,9 +7754,9 @@ operator<< (::std::ostream& o, const RPG_Magic_Spell_RangeEffect_XMLTree_Type& i
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Magic_Spell_RangeProperties_XMLTree_Type& i)
 {
-  if (i.max ())
+  if (i.maximum ())
   {
-    o << ::std::endl << "max: " << *i.max ();
+    o << ::std::endl << "maximum: " << *i.maximum ();
   }
 
   if (i.increment ())
@@ -8761,17 +8761,17 @@ operator<< (::xercesc::DOMElement& e, const RPG_Magic_Spell_RangeProperties_XMLT
 {
   e << static_cast< const ::xml_schema::type& > (i);
 
-  // max
+  // maximum
   //
-  if (i.max ())
+  if (i.maximum ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "max",
+        "maximum",
         "urn:rpg",
         e));
 
-    s << *i.max ();
+    s << *i.maximum ();
   }
 
   // increment
@@ -10203,7 +10203,7 @@ RPG_Magic_Spell_RangeProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCD
                                               ::xml_schema::flags f,
                                               ::xml_schema::container* c)
 : ::xml_schema::type (s, f, c),
-  max_ (f, this),
+  maximum_ (f, this),
   increment_ (f, this),
   effect_ (f, this)
 {
@@ -10219,9 +10219,9 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     s >> p;
     if (p)
     {
-      max_type r;
+      maximum_type r;
       s >> r;
-      this->max_.set (r);
+      this->maximum_.set (r);
     }
   }
 
@@ -11260,10 +11260,10 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Magic_Spell_RangeProperties_XMLTree_Type& x)
 {
   {
-    bool p (x.max ());
+    bool p (x.maximum ());
     s << p;
     if (p)
-      s << *x.max ();
+      s << *x.maximum ();
   }
 
   {

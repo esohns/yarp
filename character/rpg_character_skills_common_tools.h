@@ -20,6 +20,7 @@
 #ifndef RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 #define RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 
+#include "rpg_character_exports.h"
 #include "rpg_character_feat.h"
 #include "rpg_character_race.h"
 #include "rpg_character_attributes.h"
@@ -40,7 +41,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Skills_Common_Tools
+class RPG_Character_Export RPG_Character_Skills_Common_Tools
 {
   // allow access to initialization methods
   friend class RPG_Character_Common_Tools;

@@ -21,6 +21,7 @@
 #ifndef RPG_COMMON_XML_PARSER_H
 #define RPG_COMMON_XML_PARSER_H
 
+#include "rpg_common_exports.h"
 #include "rpg_common_XML_types.h"
 #include "rpg_common_environment_XML_types.h"
 
@@ -29,7 +30,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Common_CreatureMetaType_Type
+class RPG_Common_Export RPG_Common_CreatureMetaType_Type
   : public RPG_Common_CreatureMetaType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -38,7 +39,7 @@ class RPG_Common_CreatureMetaType_Type
     virtual RPG_Common_CreatureMetaType post_RPG_Common_CreatureMetaType_Type();
 };
 
-class RPG_Common_CreatureSubType_Type
+class RPG_Common_Export RPG_Common_CreatureSubType_Type
   : public RPG_Common_CreatureSubType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -47,7 +48,7 @@ class RPG_Common_CreatureSubType_Type
     virtual RPG_Common_CreatureSubType post_RPG_Common_CreatureSubType_Type();
 };
 
-class RPG_Common_CreatureType_Type
+class RPG_Common_Export RPG_Common_CreatureType_Type
   : public RPG_Common_CreatureType_Type_pskel
 {
   public:
@@ -62,7 +63,7 @@ class RPG_Common_CreatureType_Type
     RPG_Common_CreatureType myCurrentType;
 };
 
-class RPG_Common_SubClass_Type
+class RPG_Common_Export RPG_Common_SubClass_Type
   : public RPG_Common_SubClass_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -71,7 +72,7 @@ class RPG_Common_SubClass_Type
     virtual RPG_Common_SubClass post_RPG_Common_SubClass_Type();
 };
 
-class RPG_Common_Attribute_Type
+class RPG_Common_Export RPG_Common_Attribute_Type
  : public RPG_Common_Attribute_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -80,7 +81,7 @@ class RPG_Common_Attribute_Type
   virtual RPG_Common_Attribute post_RPG_Common_Attribute_Type();
 };
 
-class RPG_Common_Size_Type
+class RPG_Common_Export RPG_Common_Size_Type
   : public RPG_Common_Size_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -89,7 +90,7 @@ class RPG_Common_Size_Type
     virtual RPG_Common_Size post_RPG_Common_Size_Type();
 };
 
-class RPG_Common_Condition_Type
+class RPG_Common_Export RPG_Common_Condition_Type
   : public RPG_Common_Condition_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -98,7 +99,7 @@ class RPG_Common_Condition_Type
     virtual RPG_Common_Condition post_RPG_Common_Condition_Type();
 };
 
-class RPG_Common_Skill_Type
+class RPG_Common_Export RPG_Common_Skill_Type
   : public RPG_Common_Skill_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -107,7 +108,7 @@ class RPG_Common_Skill_Type
     virtual RPG_Common_Skill post_RPG_Common_Skill_Type();
 };
 
-class RPG_Common_PhysicalDamageType_Type
+class RPG_Common_Export RPG_Common_PhysicalDamageType_Type
  : public RPG_Common_PhysicalDamageType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -116,7 +117,7 @@ class RPG_Common_PhysicalDamageType_Type
   virtual RPG_Common_PhysicalDamageType post_RPG_Common_PhysicalDamageType_Type();
 };
 
-class RPG_Common_ActionType_Type
+class RPG_Common_Export RPG_Common_ActionType_Type
   : public RPG_Common_ActionType_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -125,7 +126,7 @@ class RPG_Common_ActionType_Type
     virtual RPG_Common_ActionType post_RPG_Common_ActionType_Type();
 };
 
-class RPG_Common_AreaOfEffect_Type
+class RPG_Common_Export RPG_Common_AreaOfEffect_Type
   : public RPG_Common_AreaOfEffect_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -134,7 +135,7 @@ class RPG_Common_AreaOfEffect_Type
     virtual RPG_Common_AreaOfEffect post_RPG_Common_AreaOfEffect_Type();
 };
 
-class RPG_Common_EffectType_Type
+class RPG_Common_Export RPG_Common_EffectType_Type
   : public RPG_Common_EffectType_Type_pskel,
     public ::xml_schema::string_pimpl
 {
@@ -143,7 +144,7 @@ class RPG_Common_EffectType_Type
     virtual RPG_Common_EffectType post_RPG_Common_EffectType_Type();
 };
 
-class RPG_Common_CounterMeasure_Type
+class RPG_Common_Export RPG_Common_CounterMeasure_Type
   : public RPG_Common_CounterMeasure_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -152,7 +153,7 @@ class RPG_Common_CounterMeasure_Type
     virtual RPG_Common_CounterMeasure post_RPG_Common_CounterMeasure_Type();
 };
 
-class RPG_Common_CheckType_Type
+class RPG_Common_Export RPG_Common_CheckType_Type
  : public RPG_Common_CheckType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -161,7 +162,7 @@ class RPG_Common_CheckType_Type
   virtual RPG_Common_CheckType post_RPG_Common_CheckType_Type();
 };
 
-class RPG_Common_SavingThrow_Type
+class RPG_Common_Export RPG_Common_SavingThrow_Type
  : public RPG_Common_SavingThrow_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -170,7 +171,7 @@ class RPG_Common_SavingThrow_Type
   virtual RPG_Common_SavingThrow post_RPG_Common_SavingThrow_Type();
 };
 
-class RPG_Common_BaseCheckTypeUnion_Type
+class RPG_Common_Export RPG_Common_BaseCheckTypeUnion_Type
  : public RPG_Common_BaseCheckTypeUnion_Type_pskel
 {
  public:
@@ -184,7 +185,7 @@ class RPG_Common_BaseCheckTypeUnion_Type
   RPG_Common_BaseCheckTypeUnion myBaseCheckTypeUnion;
 };
 
-class RPG_Common_SaveReductionType_Type
+class RPG_Common_Export RPG_Common_SaveReductionType_Type
   : public RPG_Common_SaveReductionType_Type_pskel,
     public ::xml_schema::string_pimpl
 {
@@ -193,7 +194,7 @@ class RPG_Common_SaveReductionType_Type
     virtual RPG_Common_SaveReductionType post_RPG_Common_SaveReductionType_Type();
 };
 
-class RPG_Common_SavingThrowCheck_Type
+class RPG_Common_Export RPG_Common_SavingThrowCheck_Type
   : public RPG_Common_SavingThrowCheck_Type_pskel
 {
   public:
@@ -210,7 +211,7 @@ class RPG_Common_SavingThrowCheck_Type
     RPG_Common_SavingThrowCheck myCurrentCheck;
 };
 
-class RPG_Common_Amount_Type
+class RPG_Common_Export RPG_Common_Amount_Type
   : public RPG_Common_Amount_Type_pskel
 {
   public:
@@ -225,7 +226,7 @@ class RPG_Common_Amount_Type
     RPG_Common_Amount myCurrentAmount;
 };
 
-class RPG_Common_Usage_Type
+class RPG_Common_Export RPG_Common_Usage_Type
  : public RPG_Common_Usage_Type_pskel
 {
  public:
@@ -241,7 +242,7 @@ class RPG_Common_Usage_Type
   RPG_Common_Usage myCurrentUsage;
 };
 
-class RPG_Common_Duration_Type
+class RPG_Common_Export RPG_Common_Duration_Type
  : public RPG_Common_Duration_Type_pskel
 {
  public:
@@ -258,7 +259,7 @@ class RPG_Common_Duration_Type
   RPG_Common_Duration myCurrentDuration;
 };
 
-class RPG_Common_EffectDuration_Type
+class RPG_Common_Export RPG_Common_EffectDuration_Type
 : public RPG_Common_EffectDuration_Type_pskel
 {
  public:
@@ -277,7 +278,7 @@ class RPG_Common_EffectDuration_Type
   RPG_Common_EffectDuration myCurrentProperties;
 };
 
-class RPG_Common_Camp_Type
+class RPG_Common_Export RPG_Common_Camp_Type
   : public RPG_Common_Camp_Type_pskel,
     public ::xml_schema::string_pimpl
 {
@@ -287,7 +288,7 @@ class RPG_Common_Camp_Type
 };
 
 // ************************* environment types *************************
-class RPG_Common_Plane_Type
+class RPG_Common_Export RPG_Common_Plane_Type
   : public RPG_Common_Plane_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -296,7 +297,7 @@ class RPG_Common_Plane_Type
   virtual RPG_Common_Plane post_RPG_Common_Plane_Type();
 };
 
-class RPG_Common_Terrain_Type
+class RPG_Common_Export RPG_Common_Terrain_Type
  : public RPG_Common_Terrain_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -305,7 +306,7 @@ class RPG_Common_Terrain_Type
   virtual RPG_Common_Terrain post_RPG_Common_Terrain_Type();
 };
 
-class RPG_Common_Climate_Type
+class RPG_Common_Export RPG_Common_Climate_Type
  : public RPG_Common_Climate_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -314,7 +315,7 @@ class RPG_Common_Climate_Type
   virtual RPG_Common_Climate post_RPG_Common_Climate_Type();
 };
 
-class RPG_Common_TimeOfDay_Type
+class RPG_Common_Export RPG_Common_TimeOfDay_Type
  : public RPG_Common_TimeOfDay_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -323,7 +324,7 @@ class RPG_Common_TimeOfDay_Type
   virtual RPG_Common_TimeOfDay post_RPG_Common_TimeOfDay_Type();
 };
 
-class RPG_Common_Environment_Type
+class RPG_Common_Export RPG_Common_Environment_Type
  : public RPG_Common_Environment_Type_pskel
 {
  public:

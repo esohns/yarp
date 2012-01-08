@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D93F14B1-CFE8-45DF-816D-06AB1CA74CD6}</ProjectGuid>
+    <RootNamespace>character</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.props" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\chance;E:\Yarp\common;E:\Yarp\chance\dice;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_CHARACTER_BUILD_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="rpg_character_ability.h" />
+    <ClInclude Include="rpg_character_alignment.h" />
+    <ClInclude Include="rpg_character_alignmentcivic.h" />
+    <ClInclude Include="rpg_character_alignmentethic.h" />
+    <ClInclude Include="rpg_character_attributes.h" />
+    <ClInclude Include="rpg_character_base.h" />
+    <ClInclude Include="rpg_character_check.h" />
+    <ClInclude Include="rpg_character_checktypeunion.h" />
+    <ClInclude Include="rpg_character_classxml.h" />
+    <ClInclude Include="rpg_character_class_common.h" />
+    <ClInclude Include="rpg_character_class_common_tools.h" />
+    <ClInclude Include="rpg_character_common.h" />
+    <ClInclude Include="rpg_character_common_tools.h" />
+    <ClInclude Include="rpg_character_equipment.h" />
+    <ClInclude Include="rpg_character_equipmentslot.h" />
+    <ClInclude Include="rpg_character_equipment_common.h" />
+    <ClInclude Include="rpg_character_exports.h" />
+    <ClInclude Include="rpg_character_feat.h" />
+    <ClInclude Include="rpg_character_feats.h" />
+    <ClInclude Include="rpg_character_gender.h" />
+    <ClInclude Include="rpg_character_incl.h" />
+    <ClInclude Include="rpg_character_inventory.h" />
+    <ClInclude Include="rpg_character_inventory_common.h" />
+    <ClInclude Include="rpg_character_metaclass.h" />
+    <ClInclude Include="rpg_character_offhand.h" />
+    <ClInclude Include="rpg_character_race.h" />
+    <ClInclude Include="rpg_character_race_common.h" />
+    <ClInclude Include="rpg_character_race_common_tools.h" />
+    <ClInclude Include="rpg_character_skills.h" />
+    <ClInclude Include="rpg_character_skills_common.h" />
+    <ClInclude Include="rpg_character_skills_common_tools.h" />
+    <ClInclude Include="rpg_character_skillvalue.h" />
+    <ClInclude Include="rpg_character_XML_parser.h" />
+    <ClInclude Include="rpg_character_XML_tree.h" />
+    <ClInclude Include="rpg_character_XML_types.h" />
+    <ClInclude Include="rpg_XMLSchema_XML_tree.h" />
+    <ClInclude Include="rpg_XMLSchema_XML_types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rpg_character.map" />
+    <None Include="scripts\bindings.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="rpg_character_base.cpp" />
+    <ClCompile Include="rpg_character_class_common_tools.cpp" />
+    <ClCompile Include="rpg_character_common_tools.cpp" />
+    <ClCompile Include="rpg_character_equipment.cpp" />
+    <ClCompile Include="rpg_character_inventory.cpp" />
+    <ClCompile Include="rpg_character_race_common_tools.cpp" />
+    <ClCompile Include="rpg_character_skills_common_tools.cpp" />
+    <ClCompile Include="rpg_character_XML_parser.cpp" />
+    <ClCompile Include="rpg_character_XML_tree.cpp" />
+    <ClCompile Include="rpg_character_XML_types.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Parser_Mapping_Rule Include="rpg_character.xsd">
+      <FileType>Document</FileType>
+      <HeaderSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.h</HeaderSuffix>
+      <SourceSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.cpp</SourceSuffix>
+      <InlineSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </InlineSuffix>
+      <SkelFileSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_XML_types</SkelFileSuffix>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">--include-with-brackets --extern-xml-schema rpg_XMLSchema.h --force-overwrite --show-anonymous --show-sloc %(AdditionalOptions)</AdditionalOptions>
+      <NamespaceMap Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">urn:rpg=</NamespaceMap>
+      <TypeMap Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">rpg_character.map</TypeMap>
+      <SkelTypeSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </SkelTypeSuffix>
+      <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">__declspec(dllexport)</ExportSymbol>
+    </CXX_Parser_Mapping_Rule>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.targets" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.targets" />
+  </ImportGroup>
+</Project>

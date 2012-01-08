@@ -159,9 +159,9 @@ RPG_Magic_Spell_CastingTime_Type_pskel ()
 //
 
 void RPG_Magic_Spell_RangeProperties_Type_pskel::
-max_parser (::xml_schema::unsigned_int_pskel& p)
+maximum_parser (::xml_schema::unsigned_int_pskel& p)
 {
-  this->max_parser_ = &p;
+  this->maximum_parser_ = &p;
 }
 
 void RPG_Magic_Spell_RangeProperties_Type_pskel::
@@ -177,18 +177,18 @@ effect_parser (::RPG_Magic_Spell_RangeEffect_Type_pskel& p)
 }
 
 void RPG_Magic_Spell_RangeProperties_Type_pskel::
-parsers (::xml_schema::unsigned_int_pskel& max,
+parsers (::xml_schema::unsigned_int_pskel& maximum,
          ::xml_schema::unsigned_int_pskel& increment,
          ::RPG_Magic_Spell_RangeEffect_Type_pskel& effect)
 {
-  this->max_parser_ = &max;
+  this->maximum_parser_ = &maximum;
   this->increment_parser_ = &increment;
   this->effect_parser_ = &effect;
 }
 
 RPG_Magic_Spell_RangeProperties_Type_pskel::
 RPG_Magic_Spell_RangeProperties_Type_pskel ()
-: max_parser_ (0),
+: maximum_parser_ (0),
   increment_parser_ (0),
   effect_parser_ (0)
 {
@@ -1229,7 +1229,7 @@ _attribute_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Magic_Spell_RangeProperties_Type_pskel::
-max (unsigned int)
+maximum (unsigned int)
 {
 }
 
@@ -1253,12 +1253,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
 
-  if (n == "max" && ns == "urn:rpg")
+  if (n == "maximum" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->max_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->maximum_parser_;
 
-    if (this->max_parser_)
-      this->max_parser_->pre ();
+    if (this->maximum_parser_)
+      this->maximum_parser_->pre ();
 
     return true;
   }
@@ -1283,10 +1283,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
 
-  if (n == "max" && ns == "urn:rpg")
+  if (n == "maximum" && ns == "urn:rpg")
   {
-    if (this->max_parser_)
-      this->max (this->max_parser_->post_unsigned_int ());
+    if (this->maximum_parser_)
+      this->maximum (this->maximum_parser_->post_unsigned_int ());
 
     return true;
   }

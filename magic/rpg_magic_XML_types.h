@@ -95,13 +95,13 @@ class RPG_Magic_Dictionary_Type_pskel;
 #include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
-#include "rpg_dice_XML_types.h"
+#include "../chance/dice/rpg_dice_XML_types.h"
 
-#include "rpg_common_XML_types.h"
+#include "../common/rpg_common_XML_types.h"
 
-#include "rpg_common_environment_XML_types.h"
+#include "../common/rpg_common_environment_XML_types.h"
 
-#include "rpg_character_XML_types.h"
+#include "../character/rpg_character_XML_types.h"
 
 class RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -407,7 +407,7 @@ class RPG_Magic_Spell_RangeProperties_Type_pskel: public ::xml_schema::complex_c
   // pre ();
 
   virtual void
-  max (unsigned int);
+  maximum (unsigned int);
 
   virtual void
   increment (unsigned int);
@@ -421,7 +421,7 @@ class RPG_Magic_Spell_RangeProperties_Type_pskel: public ::xml_schema::complex_c
   // Parser construction API.
   //
   void
-  max_parser (::xml_schema::unsigned_int_pskel&);
+  maximum_parser (::xml_schema::unsigned_int_pskel&);
 
   void
   increment_parser (::xml_schema::unsigned_int_pskel&);
@@ -430,7 +430,7 @@ class RPG_Magic_Spell_RangeProperties_Type_pskel: public ::xml_schema::complex_c
   effect_parser (::RPG_Magic_Spell_RangeEffect_Type_pskel&);
 
   void
-  parsers (::xml_schema::unsigned_int_pskel& /* max */,
+  parsers (::xml_schema::unsigned_int_pskel& /* maximum */,
            ::xml_schema::unsigned_int_pskel& /* increment */,
            ::RPG_Magic_Spell_RangeEffect_Type_pskel& /* effect */);
 
@@ -456,7 +456,7 @@ class RPG_Magic_Spell_RangeProperties_Type_pskel: public ::xml_schema::complex_c
                    const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::unsigned_int_pskel* max_parser_;
+  ::xml_schema::unsigned_int_pskel* maximum_parser_;
   ::xml_schema::unsigned_int_pskel* increment_parser_;
   ::RPG_Magic_Spell_RangeEffect_Type_pskel* effect_parser_;
 };

@@ -113,7 +113,7 @@ inline RPG_Dice_DieType operator--(RPG_Dice_DieType& dieType_inout, int)
 };
 
 // allow multiplier
-// struct RPG_Dice_Roll
+// struct RPG_Dice_Export RPG_Dice_Roll
 // {
 //   unsigned int numDice;
 //   RPG_Dice_DieType typeDice;

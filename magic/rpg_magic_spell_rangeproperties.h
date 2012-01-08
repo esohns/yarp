@@ -9,7 +9,7 @@
 
 struct RPG_Magic_Spell_RangeProperties
 {
-  unsigned int max;
+  unsigned int maximum;
   unsigned int increment;
   RPG_Magic_Spell_RangeEffect effect;
 };

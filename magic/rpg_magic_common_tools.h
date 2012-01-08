@@ -27,6 +27,7 @@
 #include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
+#include "rpg_magic_exports.h"
 #include "rpg_magic_common.h"
 #include "rpg_magic_dictionary.h"
 
@@ -35,7 +36,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Magic_Common_Tools
+class RPG_Magic_Export RPG_Magic_Common_Tools
 {
   // allow access to some specific helper methods
   friend class RPG_Magic_Dictionary;

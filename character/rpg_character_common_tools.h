@@ -23,6 +23,7 @@
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
+#include "rpg_character_exports.h"
 #include "rpg_character_incl.h"
 #include "rpg_character_common.h"
 #include "rpg_character_race_common.h"
@@ -35,7 +36,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Common_Tools
+class RPG_Character_Export RPG_Character_Common_Tools
 {
  public:
   // init string conversion (and other) tables

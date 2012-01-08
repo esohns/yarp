@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_DICE_XML_PARSER_H
 #define RPG_DICE_XML_PARSER_H
 
@@ -25,7 +26,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Dice_DieType_Type
+class RPG_Dice_Export RPG_Dice_DieType_Type
  : public RPG_Dice_DieType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -34,7 +35,7 @@ class RPG_Dice_DieType_Type
   virtual RPG_Dice_DieType post_RPG_Dice_DieType_Type();
 };
 
-class RPG_Dice_Roll_Type
+class RPG_Dice_Export RPG_Dice_Roll_Type
  : public RPG_Dice_Roll_Type_pskel
 {
  public:
@@ -50,7 +51,7 @@ class RPG_Dice_Roll_Type
   RPG_Dice_Roll myCurrentRoll;
 };
 
-class RPG_Dice_ValueRange_Type
+class RPG_Dice_Export RPG_Dice_ValueRange_Type
  : public RPG_Dice_ValueRange_Type_pskel
 {
  public:

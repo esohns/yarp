@@ -25,6 +25,8 @@
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
 
+#include "rpg_common_exports.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
 
@@ -33,7 +35,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Common_Tools
+class RPG_Common_Export RPG_Common_Tools
 {
  public:
   static void initStringConversionTables();

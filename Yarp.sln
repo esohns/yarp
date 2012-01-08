@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dice", "chance\dice\dice.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "common\common.vcxproj", "{5633F302-FF53-4014-8587-7BB1F35561CD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "character", "character\character.vcxproj", "{D93F14B1-CFE8-45DF-816D-06AB1CA74CD6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "magic", "magic\magic.vcxproj", "{6867CF99-3611-4345-B992-85780C27119E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +29,14 @@ Global
 		{5633F302-FF53-4014-8587-7BB1F35561CD}.Debug|Win32.Build.0 = Debug|Win32
 		{5633F302-FF53-4014-8587-7BB1F35561CD}.Release|Win32.ActiveCfg = Release|Win32
 		{5633F302-FF53-4014-8587-7BB1F35561CD}.Release|Win32.Build.0 = Release|Win32
+		{D93F14B1-CFE8-45DF-816D-06AB1CA74CD6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D93F14B1-CFE8-45DF-816D-06AB1CA74CD6}.Debug|Win32.Build.0 = Debug|Win32
+		{D93F14B1-CFE8-45DF-816D-06AB1CA74CD6}.Release|Win32.ActiveCfg = Release|Win32
+		{D93F14B1-CFE8-45DF-816D-06AB1CA74CD6}.Release|Win32.Build.0 = Release|Win32
+		{6867CF99-3611-4345-B992-85780C27119E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6867CF99-3611-4345-B992-85780C27119E}.Debug|Win32.Build.0 = Debug|Win32
+		{6867CF99-3611-4345-B992-85780C27119E}.Release|Win32.ActiveCfg = Release|Win32
+		{6867CF99-3611-4345-B992-85780C27119E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

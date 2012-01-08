@@ -16,11 +16,11 @@
     <Filter Include="XML">
       <UniqueIdentifier>{70a947a1-a569-4a23-8f3b-8db1a84fdf4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{1c841097-efbf-4461-a031-cdbe7b0127b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rpg_common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rpg_common_actiontype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -70,9 +70,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_common_effecttype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_common_environment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_common_environment_incl.h">
@@ -171,6 +168,12 @@
     <ClInclude Include="rpg_XMLSchema_XML_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_common_exports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_common_environment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="rpg_common.map">
@@ -179,11 +182,8 @@
     <None Include="rpg_common_environment.map">
       <Filter>XML</Filter>
     </None>
-    <None Include="rpg_common.xsd">
-      <Filter>XML</Filter>
-    </None>
-    <None Include="rpg_common_environment.xsd">
-      <Filter>XML</Filter>
+    <None Include="scripts\bindings.bat">
+      <Filter>scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -220,5 +220,13 @@
     <ClCompile Include="rpg_common_xsderrorhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Parser_Mapping_Rule Include="rpg_common.xsd">
+      <Filter>XML</Filter>
+    </CXX_Parser_Mapping_Rule>
+    <CXX_Parser_Mapping_Rule Include="rpg_common_environment.xsd">
+      <Filter>XML</Filter>
+    </CXX_Parser_Mapping_Rule>
   </ItemGroup>
 </Project>

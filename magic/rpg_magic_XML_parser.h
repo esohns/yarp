@@ -170,7 +170,7 @@ class RPG_Magic_Spell_RangeProperties_Type
     RPG_Magic_Spell_RangeProperties_Type();
 
 //     virtual void pre();
-    virtual void max(unsigned int);
+    virtual void maximum(unsigned int);
     virtual void increment(unsigned int);
     virtual void effect(const RPG_Magic_Spell_RangeEffect&);
     virtual RPG_Magic_Spell_RangeProperties post_RPG_Magic_Spell_RangeProperties_Type();
@@ -268,7 +268,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type
 
 //     virtual void pre();
     virtual void type(const RPG_Magic_Spell_Precondition&);
-    virtual void value(long long);
+    virtual void value(int);
     virtual void levelIncrement(unsigned char);
     virtual void levelIncrementMax(unsigned char);
     virtual void alignment(const RPG_Character_Alignment&);
