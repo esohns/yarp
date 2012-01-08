@@ -36,6 +36,7 @@
 
 // Begin prologue.
 //
+#include "rpg_common_exports.h"
 //
 // End prologue.
 

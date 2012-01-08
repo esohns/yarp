@@ -21,6 +21,7 @@
 #ifndef RPG_NET_COMMON_TOOLS_H
 #define RPG_NET_COMMON_TOOLS_H
 
+#include "rpg_net_exports.h"
 #include "rpg_net_remote_comm.h"
 
 #include <ace/Global_Macros.h>
@@ -31,7 +32,7 @@
 // forward declaration(s)
 struct dirent;
 
-class RPG_Net_Common_Tools
+class RPG_Net_Export RPG_Net_Common_Tools
 {
  public:
   // *NOTE*: this implements log rotation...

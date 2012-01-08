@@ -7,7 +7,9 @@
 #ifndef RPG_CHARACTER_MONSTER_ORGANIZATIONSTEP_H
 #define RPG_CHARACTER_MONSTER_ORGANIZATIONSTEP_H
 
-struct RPG_Character_Monster_OrganizationStep
+#include "rpg_character_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Character_Monster_OrganizationStep
 {
   RPG_Character_Monster_Organization type;
   RPG_Dice_ValueRange range;

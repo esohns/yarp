@@ -17,9 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_item_dictionary.h"
 
-#include "rpg_item_dictionary_parser.h"
+#include "rpg_item_ACEXML_dictionary.h"
+
+#include "rpg_item_ACEXML_dictionary_parser.h"
 
 #include <ACEXML/common/FileCharStream.h>
 #include <ACEXML/parser/parser/Parser.h>

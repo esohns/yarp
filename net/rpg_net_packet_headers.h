@@ -23,6 +23,10 @@
 
 #include <ace/OS.h>
 
+#ifdef _MSC_VER
+#pragma pack(push, 1)
+#endif
+
 // *IMPORTANT NOTE*: this header doesn't exist on the Windows platform...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
 #include <netinet/tcp.h>
@@ -61,7 +65,11 @@ struct tcphdr
   u_short window;  // Window
   u_short check;   // Checksum
   u_short urg_ptr; // Urgent pointer
+#ifdef __GNUC__
 } __attribute__ ((__packed__));
+#else
+};
+#endif
 #endif
 
 // *IMPORTANT NOTE*: this header doesn't exist on the Windows platform...
@@ -74,42 +82,54 @@ struct udphdr
   u_short dest;   // Destination port
   u_short len;    // Datagram length
   u_short check;  // Checksum
+#ifdef __GNUC__
 } __attribute__ ((__packed__));
+#else
+};
+#endif
 #endif
 
 // *IMPORTANT NOTE*: this header doesn't exist on the Windows platform...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
 #include <netinet/ip6.h>
 #else
-struct in6_addr
-{
-  union
-  {
-    uint8_t u6_addr8[16];
-    uint16_t u6_addr16[8];
-    uint32_t u6_addr32[4];
-  } in6_u;
-#define s6_addr     in6_u.u6_addr8
-#define s6_addr16   in6_u.u6_addr16
-#define s6_addr32   in6_u.u6_addr32
-}  __attribute__ ((__packed__));
-
-struct ip6_hdr
-{
-  union
-  {
-    struct ip6_hdrctl
-    {
-      uint32_t ip6_un1_flow;   /* 4 bits version, 8 bits TC, 20 bits flow-ID */
-      uint16_t ip6_un1_plen;   /* payload length */
-      uint8_t  ip6_un1_nxt;    /* next header */
-      uint8_t  ip6_un1_hlim;   /* hop limit */
-    } ip6_un1;
-    uint8_t ip6_un2_vfc;       /* 4 bits version, top 4 bits tclass */
-  } ip6_ctlun;
-  struct in6_addr ip6_src;     /* source address */
-  struct in6_addr ip6_dst;     /* destination address */
-}  __attribute__ ((__packed__));
+#include <in6addr.h>
+//struct in6_addr
+//{
+//  union
+//  {
+//    uint8_t u6_addr8[16];
+//    uint16_t u6_addr16[8];
+//    uint32_t u6_addr32[4];
+//  } in6_u;
+//#define s6_addr     in6_u.u6_addr8
+//#define s6_addr16   in6_u.u6_addr16
+//#define s6_addr32   in6_u.u6_addr32
+//#ifdef __GNUC__
+//} __attribute__ ((__packed__));
+//#else
+//};
+//#endif
+//struct ip6_hdr
+//{
+//  union
+//  {
+//    struct ip6_hdrctl
+//    {
+//      uint32_t ip6_un1_flow;   /* 4 bits version, 8 bits TC, 20 bits flow-ID */
+//      uint16_t ip6_un1_plen;   /* payload length */
+//      uint8_t  ip6_un1_nxt;    /* next header */
+//      uint8_t  ip6_un1_hlim;   /* hop limit */
+//    } ip6_un1;
+//    uint8_t ip6_un2_vfc;       /* 4 bits version, top 4 bits tclass */
+//  } ip6_ctlun;
+//  struct in6_addr ip6_src;     /* source address */
+//  struct in6_addr ip6_dst;     /* destination address */
+//#ifdef __GNUC__
+//} __attribute__ ((__packed__));
+//#else
+//};
+//#endif
 #endif
 
 // *IMPORTANT NOTE*: this header doesn't exist on the Windows platform...
@@ -146,7 +166,11 @@ struct iphdr
   u_long  daddr;          // Destination address
 // *IMPORTANT NOTE*: this field is optional (i.e. it only exists if ihl > 5 !
 //  u_int   op_pad;       // Option + Padding
+#ifdef __GNUC__
 } __attribute__ ((__packed__));
+#else
+};
+#endif
 #endif
 
 // *IMPORTANT NOTE*: this header doesn't exist on the Windows platform...
@@ -214,7 +238,11 @@ struct ether_header
   u_char   h_dest[ETH_ALEN];   /* destination eth addr */
   u_char   h_source[ETH_ALEN]; /* source ether addr    */
   u_short  ether_type;         /* packet type ID field */
-} __attribute__((packed));
+#ifdef __GNUC__
+} __attribute__ ((__packed__));
+#else
+};
+#endif
 #endif
 
 /*
@@ -435,7 +463,11 @@ struct fddi_8022_1_hdr
   u_char dsap; /* destination service access point */
   u_char ssap; /* source service access point */
   u_char ctrl; /* control byte #1 */
+#ifdef __GNUC__
 } __attribute__ ((__packed__));
+#else
+};
+#endif
 
 /* Define 802.2 Type 2 header */
 struct fddi_8022_2_hdr
@@ -444,7 +476,11 @@ struct fddi_8022_2_hdr
   u_char ssap;   /* source service access point */
   u_char ctrl_1; /* control byte #1 */
   u_char ctrl_2; /* control byte #2 */
+#ifdef __GNUC__
 } __attribute__ ((__packed__));
+#else
+};
+#endif
 
 /* Define 802.2 SNAP header */
 #define FDDI_K_OUI_LEN	 3
@@ -455,7 +491,11 @@ struct fddi_snap_hdr
   u_char  ctrl;					       /* always 0x03 */
   u_char  oui[FDDI_K_OUI_LEN]; /* organizational universal id */
   u_short	ethertype;				   /* packet type ID field */
+#ifdef __GNUC__
 } __attribute__ ((__packed__));
+#else
+};
+#endif
 
 /* Define FDDI LLC frame header */
 #define FDDI_K_ALEN      6               /* Octets in one fddi addr      */
@@ -470,7 +510,15 @@ struct fddi_header
     struct fddi_8022_2_hdr llc_8022_2;
     struct fddi_snap_hdr   llc_snap;
   } hdr;
+#ifdef __GNUC__
 } __attribute__ ((__packed__));
+#else
+};
+#endif
+
+#ifdef _MSC_VER
+#pragma pack(pop)
+#endif
 
 #define FDDI_K_SNAP_HLEN 21             /* Total octets in header.       */
 #endif

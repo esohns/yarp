@@ -7,7 +7,9 @@
 #ifndef RPG_CHARACTER_MONSTER_SPECIALATTACKPRECONDITION_H
 #define RPG_CHARACTER_MONSTER_SPECIALATTACKPRECONDITION_H
 
-struct RPG_Character_Monster_SpecialAttackPreCondition
+#include "rpg_character_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Character_Monster_SpecialAttackPreCondition
 {
   RPG_Character_Monster_ActionTrigger action;
   RPG_Character_Alignment targetAlignment;

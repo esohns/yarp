@@ -2,29 +2,30 @@
 %error-verbose
 %define parser_class_name "RPG_Net_Protocol_IRCParser"
 /* %define api.pure */
-/* %locations */
+%locations
+/* %define parse.lac full */
 /* %define namespace "" */
 /* %name-prefix "IRCParse" */
 
 %code requires {
 class RPG_Net_Protocol_IRCParserDriver;
-typedef void* yyscan_t;
+class RPG_Net_Protocol_IRCScanner;
 }
 
 // calling conventions / parameter passing
 %parse-param { RPG_Net_Protocol_IRCParserDriver& driver }
 %parse-param { unsigned long& messageCount }
 %parse-param { std::string& memory }
-%parse-param { yyscan_t& context }
-%lex-param   { RPG_Net_Protocol_IRCParserDriver& driver }
+%parse-param { RPG_Net_Protocol_IRCScanner& scanner }
+%lex-param { RPG_Net_Protocol_IRCParserDriver& driver }
 %lex-param   { unsigned long& messageCount }
 %lex-param   { std::string& memory }
-%lex-param   { yyscan_t& context }
+%lex-param   { RPG_Net_Protocol_IRCScanner& scanner }
 
 %initial-action
 {
   // Initialize the initial location
-  //@$.begin.filename = @$.end.filename = &driver.file;
+  //@$.begin.filename = @$.end.filename = &driver->file;
 
   // initialize the token value container
   // $$.ival = 0;
@@ -102,15 +103,15 @@ command:      "cmd_string"                                    { ACE_ASSERT(drive
               | "cmd_numeric"                                 { driver.myCurrentMessage->command.numeric = static_cast<RPG_Net_Protocol_IRCNumeric_t>($1);
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
 /*                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set command (numeric): %d\n"),
-                                                                           $1)); */
+                                                                             ACE_TEXT("set command (numeric): %d\n"),
+                                                                             $1)); */
                                                               };
 params:       "space" params                                  /* default */
               | ':' trailing                                  /* default */
               | "param" params                                { driver.myCurrentMessage->params.push_front(*$1);
 /*                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set param: \"%s\"\n"),
-                                                                           driver.myCurrentMessage->params.front().c_str())); */
+                                                                             ACE_TEXT("set param: \"%s\"\n"),
+                                                                             driver.myCurrentMessage->params.front().c_str())); */
                                                               };
               |                                               /* empty */
 trailing:     "param"                                         { driver.myCurrentMessage->params.push_front(*$1);

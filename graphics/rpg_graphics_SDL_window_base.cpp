@@ -27,6 +27,8 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/OS.h>
+
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t& size_in,
                                                        const RPG_Graphics_WindowType& type_in,
                                                        const std::string& title_in)
@@ -89,10 +91,10 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
   myParent->addChild(this);
 
   // init clip rect
-  myClipRect.x = myBorderLeft + myOffset.first;
-  myClipRect.y = myBorderTop + myOffset.second;
-  myClipRect.w = size_parent.first - (myBorderLeft + myBorderRight) - myOffset.first;
-  myClipRect.h = size_parent.second - (myBorderTop + myBorderBottom) - myOffset.second;
+  myClipRect.x = static_cast<int16_t>(myBorderLeft + myOffset.first);
+  myClipRect.y = static_cast<int16_t>(myBorderTop + myOffset.second);
+  myClipRect.w = static_cast<uint16_t>(size_parent.first - (myBorderLeft + myBorderRight) - myOffset.first);
+  myClipRect.h = static_cast<uint16_t>(size_parent.second - (myBorderTop + myBorderBottom) - myOffset.second);
 }
 
 RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
@@ -553,10 +555,10 @@ RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
   SDL_GetClipRect(targetSurface, &myClipRect);
 
   SDL_Rect clipRect;
-  clipRect.x = offsetX_in + myBorderLeft + myOffset.first;
-  clipRect.y = offsetY_in + myBorderTop + myOffset.second;
-  clipRect.w = (targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
-  clipRect.h = (targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
+  clipRect.x = static_cast<int16_t>(offsetX_in + myBorderLeft + myOffset.first);
+  clipRect.y = static_cast<int16_t>(offsetY_in + myBorderTop + myOffset.second);
+  clipRect.w = static_cast<uint16_t>(targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
+  clipRect.h = static_cast<uint16_t>(targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,

@@ -21,7 +21,8 @@
 #ifndef RPG_NET_PROTOCOL_STREAM_H
 #define RPG_NET_PROTOCOL_STREAM_H
 
-#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_exports.h"
+#include "rpg_net_protocol_common_modules.h"
 #include "rpg_net_protocol_module_IRCsplitter.h"
 #include "rpg_net_protocol_module_IRCstreamer.h"
 #include "rpg_net_protocol_module_IRCparser.h"
@@ -40,7 +41,7 @@
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
-class RPG_Net_Protocol_Stream
+class RPG_Protocol_Export RPG_Net_Protocol_Stream
  : public RPG_Stream_Base<RPG_Net_Protocol_ConfigPOD,
                           RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
                           RPG_Net_Protocol_SessionMessage,

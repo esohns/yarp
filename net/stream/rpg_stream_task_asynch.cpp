@@ -83,8 +83,7 @@ RPG_Stream_TaskAsynch::open(void* args_in)
   if (myQueue.activate() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Message_Queue::activate(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Message_Queue::activate(): \"%m\", aborting\n")));
 
     return -1;
   } // end IF
@@ -112,8 +111,7 @@ RPG_Stream_TaskAsynch::open(void* args_in)
   if (ret == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Task_Base::activate(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", aborting\n")));
 
     return -1;
   } // end IF
@@ -250,13 +248,14 @@ RPG_Stream_TaskAsynch::svc(void)
 
   // debug info
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("worker thread (ID: %t) failed to ACE_Task::getq(): \"%s\", aborting\n"),
-             ACE_OS::strerror(errno)));
+             ACE_TEXT("worker thread (ID: %t) failed to ACE_Task::getq(): \"%m\", aborting\n")));
 
   // SHOULD NEVER GET HERE !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 void
@@ -311,8 +310,7 @@ RPG_Stream_TaskAsynch::shutdown()
   if (!stop_mb)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate ACE_Message_Block: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
     // what else can we do ?
     return;
@@ -321,8 +319,7 @@ RPG_Stream_TaskAsynch::shutdown()
   if (put(stop_mb, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::put(): \"%s\", continuing\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Stream::put(): \"%m\", continuing\n")));
 
     // clean up
     stop_mb->release();

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ITEM_DICTIONARY_PARSER_H
 #define RPG_ITEM_DICTIONARY_PARSER_H
 
@@ -30,12 +31,13 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Dictionary_Parser : public ACEXML_DefaultHandler
+class RPG_Item_Dictionary_Parser
+ : public ACEXML_DefaultHandler
 {
  public:
-  RPG_Item_Dictionary_Parser(const std::string&,            // dictionary filename
-                             RPG_ITEM_WEAPON_DICTIONARY_T*, // weapon dictionary
-                             RPG_ITEM_ARMOR_DICTIONARY_T*); // armor dictionary
+  RPG_Item_Dictionary_Parser(const std::string&,           // dictionary filename
+                             RPG_Item_WeaponDictionary_t*, // weapon dictionary
+                             RPG_Item_ArmorDictionary_t*); // armor dictionary
   virtual ~RPG_Item_Dictionary_Parser();
 
   virtual void characters(const ACEXML_Char*, // ch
@@ -91,13 +93,13 @@ class RPG_Item_Dictionary_Parser : public ACEXML_DefaultHandler
 
   void resetCurrentItems();
 
-  std::string     myFileName;
-  RPG_ITEM_WEAPON_DICTIONARY_T* myWeaponDictionary;
-  RPG_Item_Weapon_Properties    myCurrentWeapon;
-  RPG_ITEM_ARMOR_DICTIONARY_T*  myArmorDictionary;
-  RPG_Item_Armor_Properties     myCurrentArmor;
+  std::string                  myFileName;
+  RPG_Item_WeaponDictionary_t* myWeaponDictionary;
+  RPG_Item_Weapon_Properties   myCurrentWeapon;
+  RPG_Item_ArmorDictionary_t*  myArmorDictionary;
+  RPG_Item_Armor_Properties    myCurrentArmor;
 
-  ACEXML_Locator* myLocator;
+  ACEXML_Locator*              myLocator;
 };
 
 #endif

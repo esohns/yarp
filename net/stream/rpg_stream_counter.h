@@ -21,6 +21,7 @@
 #ifndef RPG_STREAM_COUNTER_H
 #define RPG_STREAM_COUNTER_H
 
+#include "rpg_stream_exports.h"
 #include "rpg_stream_irefcount.h"
 
 #include <rpg_common_idumpstate.h>
@@ -29,7 +30,7 @@
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
-class RPG_Stream_Counter
+class RPG_Stream_Export RPG_Stream_Counter
  : public RPG_Stream_IRefCount,
    public RPG_Common_IDumpState
 {

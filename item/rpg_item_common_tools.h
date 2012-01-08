@@ -17,11 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ITEM_COMMON_TOOLS_H
 #define RPG_ITEM_COMMON_TOOLS_H
 
 #include <rpg_common.h>
 
+#include "rpg_item_exports.h"
 #include "rpg_item_common.h"
 
 #include <ace/Global_Macros.h>
@@ -29,7 +31,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Common_Tools
+class RPG_Item_Export RPG_Item_Common_Tools
 {
  public:
   static void initStringConversionTables();

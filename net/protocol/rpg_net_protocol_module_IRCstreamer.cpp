@@ -27,6 +27,10 @@
 
 #include <rpg_common_macros.h>
 
+#if defined ACE_WIN32 || defined ACE_WIN64
+#include <stdio.h>
+#endif
+
 RPG_Net_Protocol_Module_IRCStreamer::RPG_Net_Protocol_Module_IRCStreamer()
 //  : inherited()
 {
@@ -215,7 +219,11 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
         return;
       } // end IF
       // convert number into the equivalent 3-letter string
+#if defined ACE_WIN32 || ACE_WIN64
+      if (::_snprintf(message_inout->wr_ptr(),      // target
+#else
       if (::snprintf(message_inout->wr_ptr(),      // target
+#endif
                      4,                            // max length
                      ACE_TEXT_ALWAYS_CHAR("%.3u"), // format string
                      message_inout->getData()->command.numeric) != 3)

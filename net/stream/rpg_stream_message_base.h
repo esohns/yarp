@@ -21,6 +21,7 @@
 #ifndef RPG_STREAM_MESSAGE_BASE_H
 #define RPG_STREAM_MESSAGE_BASE_H
 
+#include "rpg_stream_exports.h"
 #include "rpg_stream_messageallocatorheap.h"
 
 #include <rpg_common_idumpstate.h>
@@ -35,7 +36,7 @@
 // forward declaratation(s)
 class ACE_Allocator;
 
-class RPG_Stream_MessageBase
+class RPG_Stream_Export RPG_Stream_MessageBase
  : public ACE_Message_Block,
    public RPG_Common_IDumpState
 {
@@ -91,8 +92,8 @@ class RPG_Stream_MessageBase
                      const bool& = true); // increment running message counter ?
 
   // used for pre-allocated messages...
-  void init(ACE_Data_Block*/*,        // data block to use
-            const ACE_Time_Value&*/); // scheduled execution time
+  void init(ACE_Data_Block*          // data block to use
+            /*const ACE_Time_Value&*/); // scheduled execution time
 
  private:
   typedef ACE_Message_Block inherited;

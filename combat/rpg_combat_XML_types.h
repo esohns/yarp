@@ -36,6 +36,7 @@
 
 // Begin prologue.
 //
+#include "rpg_combat_exports.h"
 //
 // End prologue.
 
@@ -84,13 +85,13 @@ class RPG_Combat_Damage_Type_pskel;
 #include <rpg_magic_incl.h>
 #include "rpg_combat_incl.h"
 
-#include "rpg_dice_XML_types.h"
+#include "../chance/dice/rpg_dice_XML_types.h"
 
-#include "rpg_common_XML_types.h"
+#include "../common/rpg_common_XML_types.h"
 
-#include "rpg_magic_XML_types.h"
+#include "../magic/rpg_magic_XML_types.h"
 
-class RPG_Combat_AttackForm_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Combat_Export RPG_Combat_AttackForm_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -102,7 +103,7 @@ class RPG_Combat_AttackForm_Type_pskel: public virtual ::xml_schema::string_pske
   post_RPG_Combat_AttackForm_Type () = 0;
 };
 
-class RPG_Combat_RangedEffectUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Combat_Export RPG_Combat_RangedEffectUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -117,7 +118,7 @@ class RPG_Combat_RangedEffectUnion_Type_pskel: public ::xml_schema::simple_conte
   post_RPG_Combat_RangedEffectUnion_Type () = 0;
 };
 
-class RPG_Combat_RangedAttackProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Combat_Export RPG_Combat_RangedAttackProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -180,7 +181,7 @@ class RPG_Combat_RangedAttackProperties_Type_pskel: public ::xml_schema::complex
   ::RPG_Combat_RangedEffectUnion_Type_pskel* effect_parser_;
 };
 
-class RPG_Combat_AttackSituation_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Combat_Export RPG_Combat_AttackSituation_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -192,7 +193,7 @@ class RPG_Combat_AttackSituation_Type_pskel: public virtual ::xml_schema::string
   post_RPG_Combat_AttackSituation_Type () = 0;
 };
 
-class RPG_Combat_DefenseSituation_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Combat_Export RPG_Combat_DefenseSituation_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -204,7 +205,7 @@ class RPG_Combat_DefenseSituation_Type_pskel: public virtual ::xml_schema::strin
   post_RPG_Combat_DefenseSituation_Type () = 0;
 };
 
-class RPG_Combat_SpecialAttack_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Combat_Export RPG_Combat_SpecialAttack_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -216,7 +217,7 @@ class RPG_Combat_SpecialAttack_Type_pskel: public virtual ::xml_schema::string_p
   post_RPG_Combat_SpecialAttack_Type () = 0;
 };
 
-class RPG_Combat_SpecialDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Combat_Export RPG_Combat_SpecialDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -228,7 +229,7 @@ class RPG_Combat_SpecialDamageType_Type_pskel: public virtual ::xml_schema::stri
   post_RPG_Combat_SpecialDamageType_Type () = 0;
 };
 
-class RPG_Combat_DamageTypeUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Combat_Export RPG_Combat_DamageTypeUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -243,7 +244,7 @@ class RPG_Combat_DamageTypeUnion_Type_pskel: public ::xml_schema::simple_content
   post_RPG_Combat_DamageTypeUnion_Type () = 0;
 };
 
-class RPG_Combat_DamageDuration_Type_pskel: public ::xml_schema::complex_content
+class RPG_Combat_Export RPG_Combat_DamageDuration_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -322,7 +323,7 @@ class RPG_Combat_DamageDuration_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::boolean_pskel* vicinity_parser_;
 };
 
-class RPG_Combat_CheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Combat_Export RPG_Combat_CheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -337,7 +338,7 @@ class RPG_Combat_CheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
   post_RPG_Combat_CheckTypeUnion_Type () = 0;
 };
 
-class RPG_Combat_Check_Type_pskel: public ::xml_schema::complex_content
+class RPG_Combat_Export RPG_Combat_Check_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -395,7 +396,7 @@ class RPG_Combat_Check_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_byte_pskel* difficultyClass_parser_;
 };
 
-class RPG_Combat_DamageReductionType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Combat_Export RPG_Combat_DamageReductionType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -407,7 +408,7 @@ class RPG_Combat_DamageReductionType_Type_pskel: public virtual ::xml_schema::st
   post_RPG_Combat_DamageReductionType_Type () = 0;
 };
 
-class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_content
+class RPG_Combat_Export RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -494,7 +495,7 @@ class RPG_Combat_DamageCounterMeasure_Type_pskel: public ::xml_schema::complex_c
   ::RPG_Combat_DamageReductionType_Type_pskel* reduction_parser_;
 };
 
-class RPG_Combat_OtherDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Combat_Export RPG_Combat_OtherDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -506,7 +507,7 @@ class RPG_Combat_OtherDamageType_Type_pskel: public virtual ::xml_schema::string
   post_RPG_Combat_OtherDamageType_Type () = 0;
 };
 
-class RPG_Combat_OtherDamage_Type_pskel: public ::xml_schema::complex_content
+class RPG_Combat_Export RPG_Combat_OtherDamage_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -564,7 +565,7 @@ class RPG_Combat_OtherDamage_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Combat_DamageCounterMeasure_Type_pskel* counterMeasure_parser_;
 };
 
-class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
+class RPG_Combat_Export RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -675,7 +676,7 @@ class RPG_Combat_DamageElement_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Common_EffectType_Type_pskel* effect_parser_;
 };
 
-class RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content
+class RPG_Combat_Export RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.

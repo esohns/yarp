@@ -20,42 +20,38 @@
 
 #include "rpg_map_parser_driver.h"
 
-#include "rpg_map_scanner.h"
 #include "rpg_map_common_tools.h"
 
 #include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
+#include <fstream>
 #include <sstream>
 
 RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
                                            const bool& traceParsing_in)
  : myTraceScanning(traceScanning_in),
-   myScannerContext(NULL),
+   //myScanner(),
    myCurrentNumLines(0),
    myCurrentBufferState(NULL),
-   myParser(*this,             // driver
-            myCurrentNumLines, // counter
-            myScannerContext), // scanner context
+   myParser(this,       // driver
+            myScanner), // scanner
    myCurrentSizeX(0),
    myCurrentPosition(std::make_pair(0, 0)),
    myCurrentPlan(NULL),
    myCurrentSeedPoints(NULL),
    myCurrentStartPosition(NULL),
    myCurrentName(NULL),
+//   myCurrentFilename(),
    myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::RPG_Map_ParserDriver"));
 
-  // init scanner context
-  if (MapScannerlex_init_extra(this,               // extra data
-                               &myScannerContext)) // scanner context handle
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to MapScannerlex_init_extra(): \"%m\", continuing\n")));
-
   // trace ?
+  myScanner.set_debug((traceScanning_in ? 1 : 0));
   myParser.set_debug_level((traceParsing_in ? 1 : 0)); // binary (see bison manual)
 }
 
@@ -63,9 +59,6 @@ RPG_Map_ParserDriver::~RPG_Map_ParserDriver ()
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::~RPG_Map_ParserDriver"));
 
-  // fini scanner context
-  if (myScannerContext)
-    MapScannerlex_destroy(myScannerContext);
 }
 
 void
@@ -108,9 +101,8 @@ RPG_Map_ParserDriver::init(std::string* name_in,
   myCurrentPlan->doors.clear();
 
   // trace ?
-  myTraceScanning = traceScanning_in;
-  if (traceParsing_in)
-    myParser.set_debug_level((traceParsing_in ? 1 : 0)); // binary (see bison manual)
+  myScanner.set_debug((traceScanning_in ? 1 : 0));
+  myParser.set_debug_level((traceParsing_in ? 1 : 0)); // binary (see bison manual)
 
   // OK
   myIsInitialized = true;
@@ -133,46 +125,50 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   } // end IF
 
   // open file
-  FILE* fp = NULL;
-  fp = ACE_OS::fopen(filename_in.c_str(),
-                     ACE_TEXT_ALWAYS_CHAR("rb"));
-  if (!fp)
+  std::ifstream file;
+  file.open(filename_in.c_str(), ios_base::in);
+  if (file.fail())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
+               ACE_TEXT("failed to open file \"%s\", aborting\n"),
                filename_in.c_str()));
 
     return false;
   } // end IF
 
   // init scan buffer
-  if (!scan_begin(fp))
+  if (!scan_begin(&file))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to parse IRC message fragment, aborting\n")));
+               ACE_TEXT("failed to parse map file \"%s\", aborting\n"),
+			   filename_in.c_str()));
 
     // clean up
-    if (ACE_OS::fclose(fp))
+	file.close();
+    if (file.fail())
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
+                 ACE_TEXT("failed to close file \"%s\", aborting\n"),
                  filename_in.c_str()));
 
     return false;
   } // end IF
 
   // parse file
+  myCurrentFilename = filename_in;
   int result = -1;
   result = myParser.parse();
   if (result)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to parse map file, aborting\n")));
+               ACE_TEXT("failed to parse map file \"%s\", aborting\n"),
+			   filename_in.c_str()));
 
     // clean up
     scan_end();
-    if (ACE_OS::fclose(fp))
+	file.close();
+    if (file.fail())
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
+                 ACE_TEXT("failed to close file \"%s\", aborting\n"),
                  filename_in.c_str()));
 
     return false;
@@ -186,14 +182,12 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   scan_end();
 
   // clean up
-  if (ACE_OS::fclose(fp))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
+  myCurrentFilename.clear();
+  file.close();
+  if (file.fail())
+	ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to close file \"%s\", aborting\n"),
                filename_in.c_str()));
-
-    return false;
-  } // end IF
 
 //   if (myParser.debug_level())
 //     RPG_Map_Common_Tools::displayFloorPlan(*myCurrentPlan);
@@ -239,7 +233,7 @@ RPG_Map_ParserDriver::error(const std::string& message_in)
 }
 
 const bool
-RPG_Map_ParserDriver::scan_begin(FILE* file_in)
+RPG_Map_ParserDriver::scan_begin(std::istream* file_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::scan_begin"));
 
@@ -247,21 +241,18 @@ RPG_Map_ParserDriver::scan_begin(FILE* file_in)
   ACE_ASSERT(file_in);
   ACE_ASSERT(myCurrentBufferState == NULL);
 
-  myCurrentBufferState = MapScanner_create_buffer(file_in,
-                                                  YY_BUF_SIZE,
-                                                  myScannerContext);
+  myCurrentBufferState = myScanner.yy_create_buffer(file_in,
+													RPG_MAP_SCANNER_BUFSIZE);
   if (myCurrentBufferState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ::MapScanner_create_buffer(%@, %d, %@), aborting\n"),
+               ACE_TEXT("failed to yy_create_buffer(%@, %d), aborting\n"),
                file_in,
-               YY_BUF_SIZE,
-               myScannerContext));
+               RPG_MAP_SCANNER_BUFSIZE));
 
     return false;
   } // end IF
-  MapScanner_switch_to_buffer(myCurrentBufferState,
-                              myScannerContext);
+  myScanner.yy_switch_to_buffer(myCurrentBufferState);
 
   return true;
 }
@@ -275,7 +266,19 @@ RPG_Map_ParserDriver::scan_end()
   ACE_ASSERT(myCurrentBufferState);
 
   // clean state
-  MapScanner_delete_buffer(myCurrentBufferState,
-                           myScannerContext);
+  myScanner.yy_delete_buffer(myCurrentBufferState);
   myCurrentBufferState = NULL;
+}
+
+int
+yylex(yy::RPG_Map_Parser::semantic_type* token_in,
+      yy::RPG_Map_Parser::location_type* location_in,
+	  RPG_Map_ParserDriver* driver_in,
+	  RPG_Map_Scanner& scanner_in)
+{
+  RPG_TRACE(ACE_TEXT("::yylex"));
+
+  scanner_in.set(token_in, location_in, driver_in);
+
+  return scanner_in.yylex();
 }

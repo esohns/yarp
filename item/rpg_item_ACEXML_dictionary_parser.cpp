@@ -17,13 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "rpg_item_dictionary_parser.h"
+
+#include "rpg_item_ACEXML_dictionary_parser.h"
 
 #include <ace/Log_Msg.h>
 
 RPG_Item_Dictionary_Parser::RPG_Item_Dictionary_Parser(const std::string& fileName_in,
-                                                       RPG_ITEM_WEAPON_DICTIONARY_T* weaponDictionary_in,
-                                                       RPG_ITEM_ARMOR_DICTIONARY_T* armorDictionary_in)
+                                                       RPG_Item_WeaponDictionary_t* weaponDictionary_in,
+                                                       RPG_Item_ArmorDictionary_t* armorDictionary_in)
  : myFileName(fileName_in),
    myWeaponDictionary(weaponDictionary_in),
    myArmorDictionary(armorDictionary_in),
@@ -41,9 +42,10 @@ RPG_Item_Dictionary_Parser::~RPG_Item_Dictionary_Parser()
 
 }
 
-void RPG_Item_Dictionary_Parser::characters(const ACEXML_Char* cdata_in,
-                                            size_t start_in,
-                                            size_t length_in)
+void
+RPG_Item_Dictionary_Parser::characters(const ACEXML_Char* cdata_in,
+                                       size_t start_in,
+                                       size_t length_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::characters"));
 
@@ -73,10 +75,11 @@ void RPG_Item_Dictionary_Parser::characters(const ACEXML_Char* cdata_in,
 //              ACE_TEXT("* Event endDocument () ***************\n")));
 // }
 
-void RPG_Item_Dictionary_Parser::startElement(const ACEXML_Char* uri_in,
-                                              const ACEXML_Char* name_in,
-                                              const ACEXML_Char* qName_in,
-                                              ACEXML_Attributes* alist_in)
+void
+RPG_Item_Dictionary_Parser::startElement(const ACEXML_Char* uri_in,
+                                         const ACEXML_Char* name_in,
+                                         const ACEXML_Char* qName_in,
+                                         ACEXML_Attributes* alist_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::startElement"));
 
@@ -101,9 +104,10 @@ void RPG_Item_Dictionary_Parser::startElement(const ACEXML_Char* uri_in,
   } // end IF
 }
 
-void RPG_Item_Dictionary_Parser::endElement(const ACEXML_Char* uri_in,
-                                            const ACEXML_Char* name_in,
-                                            const ACEXML_Char* qName_in)
+void
+RPG_Item_Dictionary_Parser::endElement(const ACEXML_Char* uri_in,
+                                       const ACEXML_Char* name_in,
+                                       const ACEXML_Char* qName_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::endElement"));
 
@@ -140,9 +144,10 @@ void RPG_Item_Dictionary_Parser::endElement(const ACEXML_Char* uri_in,
 //              prefix_in));
 // }
 
-void RPG_Item_Dictionary_Parser::ignorableWhitespace(const ACEXML_Char* whitespace_in,
-                                                     int start_in,
-                                                     int length_in)
+void
+RPG_Item_Dictionary_Parser::ignorableWhitespace(const ACEXML_Char* whitespace_in,
+                                                int start_in,
+                                                int length_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::ignorableWhitespace"));
 
@@ -151,8 +156,9 @@ void RPG_Item_Dictionary_Parser::ignorableWhitespace(const ACEXML_Char* whitespa
              ACE_TEXT("* Event ignorableWhitespace () ***************\n")));
 }
 
-void RPG_Item_Dictionary_Parser::processingInstruction(const ACEXML_Char* target_in,
-                                                       const ACEXML_Char* data_in)
+void
+RPG_Item_Dictionary_Parser::processingInstruction(const ACEXML_Char* target_in,
+                                                  const ACEXML_Char* data_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::processingInstruction"));
 
@@ -163,7 +169,8 @@ void RPG_Item_Dictionary_Parser::processingInstruction(const ACEXML_Char* target
              data_in));
 }
 
-void RPG_Item_Dictionary_Parser::setDocumentLocator(ACEXML_Locator* locator_in)
+void
+RPG_Item_Dictionary_Parser::setDocumentLocator(ACEXML_Locator* locator_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::setDocumentLocator"));
 
@@ -181,7 +188,8 @@ void RPG_Item_Dictionary_Parser::setDocumentLocator(ACEXML_Locator* locator_in)
 //              ACE_TEXT("* Event setDocumentLocator () ***************\n")));
 }
 
-void RPG_Item_Dictionary_Parser::skippedEntity(const ACEXML_Char* name_in)
+void
+RPG_Item_Dictionary_Parser::skippedEntity(const ACEXML_Char* name_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::skippedEntity"));
 
@@ -192,9 +200,10 @@ void RPG_Item_Dictionary_Parser::skippedEntity(const ACEXML_Char* name_in)
 }
 
 // *** Methods inherit from ACEXML_DTDHandler.
-void RPG_Item_Dictionary_Parser::notationDecl(const ACEXML_Char* name_in,
-                                              const ACEXML_Char* publicID_in,
-                                              const ACEXML_Char* systemID_in)
+void
+RPG_Item_Dictionary_Parser::notationDecl(const ACEXML_Char* name_in,
+                                         const ACEXML_Char* publicID_in,
+                                         const ACEXML_Char* systemID_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::notationDecl"));
 
@@ -224,10 +233,11 @@ void RPG_Item_Dictionary_Parser::notationDecl(const ACEXML_Char* name_in,
   } // end ELSE
 }
 
-void RPG_Item_Dictionary_Parser::unparsedEntityDecl(const ACEXML_Char* name_in,
-                                                    const ACEXML_Char* publicID_in,
-                                                    const ACEXML_Char* systemID_in,
-                                                    const ACEXML_Char* notationName_in)
+void
+RPG_Item_Dictionary_Parser::unparsedEntityDecl(const ACEXML_Char* name_in,
+                                               const ACEXML_Char* publicID_in,
+                                               const ACEXML_Char* systemID_in,
+                                               const ACEXML_Char* notationName_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::unparsedEntityDecl"));
 
@@ -256,8 +266,9 @@ void RPG_Item_Dictionary_Parser::unparsedEntityDecl(const ACEXML_Char* name_in,
 }
 
 // Methods inherit from ACEXML_EnitityResolver.
-ACEXML_InputSource* RPG_Item_Dictionary_Parser::resolveEntity(const ACEXML_Char* publicID_in,
-                                                              const ACEXML_Char* systemID_in)
+ACEXML_InputSource*
+RPG_Item_Dictionary_Parser::resolveEntity(const ACEXML_Char* publicID_in,
+                                          const ACEXML_Char* systemID_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::resolveEntity"));
 
@@ -269,7 +280,8 @@ ACEXML_InputSource* RPG_Item_Dictionary_Parser::resolveEntity(const ACEXML_Char*
 }
 
 // Methods inherit from ACEXML_ErrorHandler.
-void RPG_Item_Dictionary_Parser::error(ACEXML_SAXParseException& exception_in)
+void
+RPG_Item_Dictionary_Parser::error(ACEXML_SAXParseException& exception_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::error"));
 
@@ -286,7 +298,8 @@ void RPG_Item_Dictionary_Parser::error(ACEXML_SAXParseException& exception_in)
   exception_in.print();
 }
 
-void RPG_Item_Dictionary_Parser::fatalError(ACEXML_SAXParseException& exception_in)
+void
+RPG_Item_Dictionary_Parser::fatalError(ACEXML_SAXParseException& exception_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::fatalError"));
 
@@ -303,7 +316,8 @@ void RPG_Item_Dictionary_Parser::fatalError(ACEXML_SAXParseException& exception_
   exception_in.print();
 }
 
-void RPG_Item_Dictionary_Parser::warning(ACEXML_SAXParseException& exception_in)
+void
+RPG_Item_Dictionary_Parser::warning(ACEXML_SAXParseException& exception_in)
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::warning"));
 
@@ -320,7 +334,8 @@ void RPG_Item_Dictionary_Parser::warning(ACEXML_SAXParseException& exception_in)
   exception_in.print();
 }
 
-void RPG_Item_Dictionary_Parser::resetCurrentItems()
+void
+RPG_Item_Dictionary_Parser::resetCurrentItems()
 {
   ACE_TRACE(ACE_TEXT("RPG_Item_Dictionary_Parser::resetCurrentItems"));
 

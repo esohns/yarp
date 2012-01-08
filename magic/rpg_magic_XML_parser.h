@@ -21,6 +21,7 @@
 #ifndef RPG_MAGIC_XML_PARSER_H
 #define RPG_MAGIC_XML_PARSER_H
 
+#include "rpg_magic_exports.h"
 #include "rpg_magic_XML_types.h"
 #include "rpg_magic_common.h"
 
@@ -29,7 +30,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Magic_School_Type
+class RPG_Magic_Export RPG_Magic_School_Type
  : public RPG_Magic_School_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -38,7 +39,7 @@ class RPG_Magic_School_Type
   virtual RPG_Magic_School post_RPG_Magic_School_Type();
 };
 
-class RPG_Magic_SubSchool_Type
+class RPG_Magic_Export RPG_Magic_SubSchool_Type
   : public RPG_Magic_SubSchool_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -47,7 +48,7 @@ class RPG_Magic_SubSchool_Type
     virtual RPG_Magic_SubSchool post_RPG_Magic_SubSchool_Type();
 };
 
-class RPG_Magic_Descriptor_Type
+class RPG_Magic_Export RPG_Magic_Descriptor_Type
   : public RPG_Magic_Descriptor_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -56,7 +57,7 @@ class RPG_Magic_Descriptor_Type
     virtual RPG_Magic_Descriptor post_RPG_Magic_Descriptor_Type();
 };
 
-class RPG_Magic_Domain_Type
+class RPG_Magic_Export RPG_Magic_Domain_Type
  : public RPG_Magic_Domain_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -65,7 +66,7 @@ class RPG_Magic_Domain_Type
   virtual RPG_Magic_Domain post_RPG_Magic_Domain_Type();
 };
 
-class RPG_Magic_SpellType_Type
+class RPG_Magic_Export RPG_Magic_SpellType_Type
   : public RPG_Magic_SpellType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -74,7 +75,7 @@ class RPG_Magic_SpellType_Type
    virtual RPG_Magic_SpellType post_RPG_Magic_SpellType_Type();
 };
 
-class RPG_Magic_AbilityClass_Type
+class RPG_Magic_Export RPG_Magic_AbilityClass_Type
  : public RPG_Magic_AbilityClass_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -83,7 +84,7 @@ class RPG_Magic_AbilityClass_Type
   virtual RPG_Magic_AbilityClass post_RPG_Magic_AbilityClass_Type();
 };
 
-class RPG_Magic_AbilityType_Type
+class RPG_Magic_Export RPG_Magic_AbilityType_Type
  : public RPG_Magic_AbilityType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -92,7 +93,7 @@ class RPG_Magic_AbilityType_Type
   virtual RPG_Magic_AbilityType post_RPG_Magic_AbilityType_Type();
 };
 
-class RPG_Magic_Spell_Type_Type
+class RPG_Magic_Export RPG_Magic_Spell_Type_Type
   : public RPG_Magic_Spell_Type_Type_pskel
 {
   public:
@@ -110,7 +111,7 @@ class RPG_Magic_Spell_Type_Type
     RPG_Magic_Spell_Type myCurrentType;
 };
 
-class RPG_Magic_CasterClassUnion_Type
+class RPG_Magic_Export RPG_Magic_CasterClassUnion_Type
   : public RPG_Magic_CasterClassUnion_Type_pskel
 {
   public:
@@ -124,7 +125,7 @@ class RPG_Magic_CasterClassUnion_Type
     RPG_Magic_CasterClassUnion myCurrentCasterClassUnion;
 };
 
-class RPG_Magic_Spell_Level_Type
+class RPG_Magic_Export RPG_Magic_Spell_Level_Type
   : public RPG_Magic_Spell_Level_Type_pskel
 {
   public:
@@ -139,7 +140,7 @@ class RPG_Magic_Spell_Level_Type
     RPG_Magic_Spell_Level myCurrentSpellLevel;
 };
 
-class RPG_Magic_Spell_CastingTime_Type
+class RPG_Magic_Export RPG_Magic_Spell_CastingTime_Type
   : public RPG_Magic_Spell_CastingTime_Type_pskel
 {
   public:
@@ -154,7 +155,7 @@ class RPG_Magic_Spell_CastingTime_Type
     RPG_Magic_Spell_CastingTime myCurrentCastingTime;
 };
 
-class RPG_Magic_Spell_RangeEffect_Type
+class RPG_Magic_Export RPG_Magic_Spell_RangeEffect_Type
   : public RPG_Magic_Spell_RangeEffect_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -163,7 +164,7 @@ class RPG_Magic_Spell_RangeEffect_Type
     virtual RPG_Magic_Spell_RangeEffect post_RPG_Magic_Spell_RangeEffect_Type();
 };
 
-class RPG_Magic_Spell_RangeProperties_Type
+class RPG_Magic_Export RPG_Magic_Spell_RangeProperties_Type
   : public RPG_Magic_Spell_RangeProperties_Type_pskel
 {
   public:
@@ -179,7 +180,7 @@ class RPG_Magic_Spell_RangeProperties_Type
     RPG_Magic_Spell_RangeProperties myCurrentProperties;
 };
 
-class RPG_Magic_Spell_Target_Type
+class RPG_Magic_Export RPG_Magic_Spell_Target_Type
   : public RPG_Magic_Spell_Target_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -188,7 +189,7 @@ class RPG_Magic_Spell_Target_Type
     virtual RPG_Magic_Spell_Target post_RPG_Magic_Spell_Target_Type();
 };
 
-class RPG_Magic_Spell_AreaOfEffect_Type
+class RPG_Magic_Export RPG_Magic_Spell_AreaOfEffect_Type
 : public RPG_Magic_Spell_AreaOfEffect_Type_pskel,
 public ::xml_schema::string_pimpl
 {
@@ -197,7 +198,7 @@ public:
   virtual RPG_Magic_Spell_AreaOfEffect post_RPG_Magic_Spell_AreaOfEffect_Type();
 };
 
-class RPG_Magic_Spell_TargetProperties_Type
+class RPG_Magic_Export RPG_Magic_Spell_TargetProperties_Type
   : public RPG_Magic_Spell_TargetProperties_Type_pskel
 {
   public:
@@ -221,7 +222,7 @@ class RPG_Magic_Spell_TargetProperties_Type
     RPG_Magic_Spell_TargetProperties myCurrentProperties;
 };
 
-class RPG_Magic_Spell_Duration_Type
+class RPG_Magic_Export RPG_Magic_Spell_Duration_Type
   : public RPG_Magic_Spell_Duration_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -230,7 +231,7 @@ class RPG_Magic_Spell_Duration_Type
     virtual RPG_Magic_Spell_Duration post_RPG_Magic_Spell_Duration_Type();
 };
 
-class RPG_Magic_Spell_DurationProperties_Type
+class RPG_Magic_Export RPG_Magic_Spell_DurationProperties_Type
   : public RPG_Magic_Spell_DurationProperties_Type_pskel
 {
   public:
@@ -251,7 +252,7 @@ class RPG_Magic_Spell_DurationProperties_Type
     RPG_Magic_Spell_DurationProperties myCurrentProperties;
 };
 
-class RPG_Magic_Spell_Precondition_Type
+class RPG_Magic_Export RPG_Magic_Spell_Precondition_Type
   : public RPG_Magic_Spell_Precondition_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -260,7 +261,7 @@ class RPG_Magic_Spell_Precondition_Type
     virtual RPG_Magic_Spell_Precondition post_RPG_Magic_Spell_Precondition_Type();
 };
 
-class RPG_Magic_Spell_PreconditionProperties_Type
+class RPG_Magic_Export RPG_Magic_Spell_PreconditionProperties_Type
   : public RPG_Magic_Spell_PreconditionProperties_Type_pskel
 {
   public:
@@ -285,7 +286,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type
     RPG_Magic_Spell_PreconditionProperties myCurrentProperties;
 };
 
-class RPG_Magic_Spell_Effect_Type
+class RPG_Magic_Export RPG_Magic_Spell_Effect_Type
   : public RPG_Magic_Spell_Effect_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -294,7 +295,7 @@ class RPG_Magic_Spell_Effect_Type
     virtual RPG_Magic_Spell_Effect post_RPG_Magic_Spell_Effect_Type();
 };
 
-class RPG_Magic_Spell_DamageTypeUnion_Type
+class RPG_Magic_Export RPG_Magic_Spell_DamageTypeUnion_Type
 : public RPG_Magic_Spell_DamageTypeUnion_Type_pskel
 {
 public:
@@ -308,7 +309,7 @@ private:
   RPG_Magic_Spell_DamageTypeUnion myCurrentDamageTypeUnion;
 };
 
-class RPG_Magic_CheckTypeUnion_Type
+class RPG_Magic_Export RPG_Magic_CheckTypeUnion_Type
   : public RPG_Magic_CheckTypeUnion_Type_pskel
 {
   public:
@@ -322,7 +323,7 @@ class RPG_Magic_CheckTypeUnion_Type
     RPG_Magic_CheckTypeUnion myCurrentCheckTypeUnion;
 };
 
-class RPG_Magic_Check_Type
+class RPG_Magic_Export RPG_Magic_Check_Type
   : public RPG_Magic_Check_Type_pskel
 {
   public:
@@ -340,7 +341,7 @@ class RPG_Magic_Check_Type
     RPG_Magic_Check myCurrentCheck;
 };
 
-class RPG_Magic_CounterMeasure_Type
+class RPG_Magic_Export RPG_Magic_CounterMeasure_Type
   : public RPG_Magic_CounterMeasure_Type_pskel
 {
   public:
@@ -357,7 +358,7 @@ class RPG_Magic_CounterMeasure_Type
     RPG_Magic_CounterMeasure myCurrentCounterMeasure;
 };
 
-class RPG_Magic_Spell_EffectProperties_Type
+class RPG_Magic_Export RPG_Magic_Spell_EffectProperties_Type
   : public RPG_Magic_Spell_EffectProperties_Type_pskel
 {
   public:
@@ -385,7 +386,7 @@ class RPG_Magic_Spell_EffectProperties_Type
     RPG_Magic_Spell_EffectProperties myCurrentProperties;
 };
 
-class RPG_Magic_Spell_PropertiesXML_Type
+class RPG_Magic_Export RPG_Magic_Spell_PropertiesXML_Type
   : public RPG_Magic_Spell_PropertiesXML_Type_pskel
 {
   public:
@@ -412,7 +413,7 @@ class RPG_Magic_Spell_PropertiesXML_Type
     RPG_Magic_Spell_PropertiesXML myCurrentProperties;
 };
 
-class RPG_Magic_SpellLikeProperties_Type
+class RPG_Magic_Export RPG_Magic_SpellLikeProperties_Type
   : public RPG_Magic_SpellLikeProperties_Type_pskel
 {
   public:
@@ -429,7 +430,7 @@ class RPG_Magic_SpellLikeProperties_Type
     RPG_Magic_SpellLikeProperties myCurrentProperties;
 };
 
-class RPG_Magic_Dictionary_Type
+class RPG_Magic_Export RPG_Magic_Dictionary_Type
   : public RPG_Magic_Dictionary_Type_pskel
 {
   public:

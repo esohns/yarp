@@ -21,13 +21,15 @@
 #ifndef RPG_STREAM_CACHEDDATABLOCKALLOCATORHEAP_H
 #define RPG_STREAM_CACHEDDATABLOCKALLOCATORHEAP_H
 
+#include "rpg_stream_exports.h"
 #include "rpg_stream_iallocator.h"
 
 #include <ace/Malloc_T.h>
 #include <ace/Message_Block.h>
 #include <ace/Synch.h>
+#include <ace/Lock_Adapter_T.h>
 
-class RPG_Stream_CachedDataBlockAllocatorHeap
+class RPG_Stream_Export RPG_Stream_CachedDataBlockAllocatorHeap
  : public ACE_Cached_Allocator<ACE_Data_Block, ACE_SYNCH_MUTEX>,
    public RPG_Stream_IAllocator
 {

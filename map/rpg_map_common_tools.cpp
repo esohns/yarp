@@ -18,6 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+// *NOTE*: workaround for MSVC quirk with min/max
+#define NOMINMAX
+
 #include "rpg_map_common_tools.h"
 
 #include "rpg_map_parser_driver.h"
@@ -32,6 +35,7 @@
 #include <ace/FILE_Connector.h>
 #include <ace/FILE.h>
 #include <ace/FILE_IO.h>
+#include <ace/Time_Value.h>
 #include <ace/Log_Msg.h>
 
 #include <sstream>
@@ -1516,7 +1520,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
       if (!crop_walls.empty())
       {
         RPG_Map_Position_t upper_left, upper_right, lower_left, lower_right;
-        RPG_Map_PositionsConstIterator_t first, last;
+        RPG_Map_ZoneConstIterator_t first, last;
         for (RPG_Map_DirectionsConstIterator_t crop_iter = crop_walls.begin();
              crop_iter != crop_walls.end();
              crop_iter++)
@@ -2384,8 +2388,8 @@ RPG_Map_Common_Tools::dist2Positions(const RPG_Map_Position_t& position1_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dist2Positions"));
 
-  return (::abs(position1_in.first - position2_in.first) +
-          ::abs(position1_in.second - position2_in.second));
+  return (::abs(static_cast<long>(position1_in.first - position2_in.first)) +
+          ::abs(static_cast<long>(position1_in.second - position2_in.second)));
 }
 
 const bool
@@ -2790,8 +2794,8 @@ RPG_Map_Common_Tools::area2Positions(const RPG_Map_Position_t& position1_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::area2Positions"));
 
-  return ((::abs(position1_in.first - position2_in.first) + 1) *
-          (::abs(position1_in.second - position2_in.second) + 1));
+  return ((::abs(static_cast<long>(position1_in.first - position2_in.first)) + 1) *
+          (::abs(static_cast<long>(position1_in.second - position2_in.second)) + 1));
 }
 
 const bool
@@ -3073,32 +3077,33 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
        zone_iterator++)
     alt_room.insert(*zone_iterator);
 
-  begin_sequence = alt_room.begin();
+  RPG_Map_AltPositionsConstIterator_t begin_alt_room = alt_room.begin();
+  RPG_Map_AltPositionsConstIterator_t line_iterator_alt;
+  RPG_Map_AltPositionsConstIterator_t zone_iterator_alt = alt_room.begin();
   unsigned long next_y = 0;
   count = 0;
-  zone_iterator = alt_room.begin();
   while (true)
   {
-    if ((zone_iterator != alt_room.end()) &&
-        ((*zone_iterator).first == (*begin_sequence).first))
+    if ((zone_iterator_alt != alt_room.end()) &&
+        ((*zone_iterator_alt).first == (*begin_alt_room).first))
     {
       // skip to next column/end
-      zone_iterator++;
+      zone_iterator_alt++;
       continue;
     } // end IF
 
     // iterate over column
-    next_y = (*begin_sequence).second;
+    next_y = (*begin_alt_room).second;
     count = 0;
-    line_iterator = begin_sequence;
-    while (line_iterator != zone_iterator) // maybe end
+    line_iterator_alt = begin_alt_room;
+    while (line_iterator_alt != zone_iterator_alt) // maybe end
     {
-      while ((line_iterator != room_inout.end()) &&
-            ((*line_iterator).second == next_y))
+      while ((line_iterator_alt != alt_room.end()) &&
+            ((*line_iterator_alt).second == next_y))
       {
         next_y++;
         count++;
-        line_iterator++;
+        line_iterator_alt++;
       } // end IF
 
       // there is a gap (maybe next column)
@@ -3109,25 +3114,25 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
 //         end_sequence = line_iterator;
 //         end_sequence--;
 //         alt_room.erase(begin_sequence, end_sequence);
-        alt_room.erase(begin_sequence, line_iterator);
+        alt_room.erase(begin_alt_room, line_iterator_alt);
       } // end IF
-      begin_sequence = line_iterator;
-      next_y = (*begin_sequence).second;
+      begin_alt_room = line_iterator_alt;
+      next_y = (*begin_alt_room).second;
       count = 0;
     } // end WHILE
 
     // finished ?
     if (alt_room.empty() ||
-        (zone_iterator == alt_room.end()))
+        (zone_iterator_alt == alt_room.end()))
       break;
   } // end WHILE
 
   // return original sorting
   room_inout.clear();
-  for (zone_iterator = alt_room.begin();
-       zone_iterator != alt_room.end();
-       zone_iterator++)
-    room_inout.insert(*zone_iterator);
+  for (zone_iterator_alt = alt_room.begin();
+       zone_iterator_alt != alt_room.end();
+       zone_iterator_alt++)
+    room_inout.insert(*zone_iterator_alt);
 }
 
 // void

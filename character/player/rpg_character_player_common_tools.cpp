@@ -41,6 +41,7 @@
 #include <rpg_dice_common.h>
 #include <rpg_dice.h>
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include <numeric>

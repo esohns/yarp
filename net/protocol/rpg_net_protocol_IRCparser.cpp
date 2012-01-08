@@ -1,9 +1,10 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
-   Software Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
+   Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -58,7 +59,7 @@
 
 
 #ifndef YY_
-# if defined YYENABLE_NLS && YYENABLE_NLS
+# if YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -118,6 +119,7 @@ do {					\
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 
+
 namespace yy {
 
 #if YYERROR_VERBOSE
@@ -162,7 +164,7 @@ namespace yy {
 #endif
 
   /// Build a parser object.
-  RPG_Net_Protocol_IRCParser::RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& messageCount_yyarg, std::string& memory_yyarg, yyscan_t& context_yyarg)
+  RPG_Net_Protocol_IRCParser::RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& messageCount_yyarg, std::string& memory_yyarg, RPG_Net_Protocol_IRCScanner& scanner_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
@@ -171,7 +173,7 @@ namespace yy {
       driver (driver_yyarg),
       messageCount (messageCount_yyarg),
       memory (memory_yyarg),
-      context (context_yyarg)
+      scanner (scanner_yyarg)
   {
   }
 
@@ -354,7 +356,7 @@ namespace yy {
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location_type yyerror_range[3];
+    location_type yyerror_range[2];
 
     /// $$.
     semantic_type yyval;
@@ -370,7 +372,7 @@ namespace yy {
     
 {
   // Initialize the initial location
-  //@$.begin.filename = @$.end.filename = &driver.file;
+  //@$.begin.filename = @$.end.filename = &driver->file;
 
   // initialize the token value container
   // $$.ival = 0;
@@ -411,7 +413,7 @@ namespace yy {
     if (yychar == yyempty_)
       {
 	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, driver, messageCount, memory, context);
+	yychar = yylex (&yylval, &yylloc, driver, messageCount, memory, scanner);
       }
 
 
@@ -537,8 +539,8 @@ namespace yy {
     { driver.myCurrentMessage->command.numeric = static_cast<RPG_Net_Protocol_IRCNumeric_t>((yysemantic_stack_[(1) - (1)].ival));
                                                                 driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
 /*                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set command (numeric): %d\n"),
-                                                                           $1)); */
+                                                                             ACE_TEXT("set command (numeric): %d\n"),
+                                                                             $1)); */
                                                               }
     break;
 
@@ -546,8 +548,8 @@ namespace yy {
 
     { driver.myCurrentMessage->params.push_front(*(yysemantic_stack_[(2) - (1)].sval));
 /*                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set param: \"%s\"\n"),
-                                                                           driver.myCurrentMessage->params.front().c_str())); */
+                                                                             ACE_TEXT("set param: \"%s\"\n"),
+                                                                             driver.myCurrentMessage->params.front().c_str())); */
                                                               }
     break;
 
@@ -595,7 +597,7 @@ namespace yy {
 	error (yylloc, yysyntax_error_ (yystate, yytoken));
       }
 
-    yyerror_range[1] = yylloc;
+    yyerror_range[0] = yylloc;
     if (yyerrstatus_ == 3)
       {
 	/* If just tried and failed to reuse lookahead token after an
@@ -630,7 +632,7 @@ namespace yy {
     if (false)
       goto yyerrorlab;
 
-    yyerror_range[1] = yylocation_stack_[yylen - 1];
+    yyerror_range[0] = yylocation_stack_[yylen - 1];
     /* Do not reclaim the symbols of the rule which action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -662,7 +664,7 @@ namespace yy {
 	if (yystate_stack_.height () == 1)
 	YYABORT;
 
-	yyerror_range[1] = yylocation_stack_[0];
+	yyerror_range[0] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
 		     yystos_[yystate],
 		     &yysemantic_stack_[0], &yylocation_stack_[0]);
@@ -671,10 +673,10 @@ namespace yy {
 	YY_STACK_PRINT ();
       }
 
-    yyerror_range[2] = yylloc;
+    yyerror_range[1] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
     // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
+    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
@@ -896,8 +898,8 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    73,    73,    74,    75,    76,    81,    86,    91,    92,
-      93,   102,   108,   109,   110,   115,   116,   121
+         0,    74,    74,    75,    76,    77,    82,    87,    92,    93,
+      94,   103,   109,   110,   111,   116,   117,   122
   };
 
   // Print the state stack on the debug stream.
@@ -982,6 +984,7 @@ namespace yy {
 
   const unsigned int RPG_Net_Protocol_IRCParser::yyuser_token_number_max_ = 264;
   const RPG_Net_Protocol_IRCParser::token_number_type RPG_Net_Protocol_IRCParser::yyundef_token_ = 2;
+
 
 
 } // yy

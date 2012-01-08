@@ -21,6 +21,8 @@
 #ifndef RPG_STREAM_MODULE_H
 #define RPG_STREAM_MODULE_H
 
+#include "rpg_stream_exports.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Module.h>
 #include <ace/Synch.h>
@@ -30,7 +32,7 @@
 // forward declaration(s)
 class RPG_Stream_IRefCount;
 
-class RPG_Stream_Module
+class RPG_Stream_Export RPG_Stream_Module
  : public ACE_Module<ACE_MT_SYNCH>
 {
  public:

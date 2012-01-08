@@ -17,10 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_GRAPHICS_CURSOR_MANAGER_H
 #define RPG_GRAPHICS_CURSOR_MANAGER_H
 
-#include "rpg_graphics_export.h"
+#include "rpg_graphics_exports.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
 
@@ -35,7 +36,7 @@
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */
-class RPG_Graphics_Cursor_Manager
+class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Graphics_Cursor_Manager,
@@ -62,7 +63,7 @@ class RPG_Graphics_Cursor_Manager
  private:
   // safety measures
   virtual ~RPG_Graphics_Cursor_Manager();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager());
+  RPG_Graphics_Cursor_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager(const RPG_Graphics_Cursor_Manager&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager& operator=(const RPG_Graphics_Cursor_Manager&));
 
@@ -80,10 +81,9 @@ class RPG_Graphics_Cursor_Manager
   RPG_Graphics_Cursor_Cache_t myCache;
 };
 
-RPG_GRAPHICS_SINGLETON_DECLARE(ACE_Singleton,
-                               RPG_Graphics_Cursor_Manager,
-                               ACE_Recursive_Thread_Mutex)
 typedef ACE_Singleton<RPG_Graphics_Cursor_Manager,
                       ACE_Recursive_Thread_Mutex> RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON;
-
+RPG_GRAPHICS_SINGLETON_DECLARE(ACE_Singleton,
+                               RPG_Graphics_Cursor_Manager,
+                               ACE_Recursive_Thread_Mutex);
 #endif

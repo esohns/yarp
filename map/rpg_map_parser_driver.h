@@ -24,23 +24,22 @@
 #include "rpg_map_defines.h"
 #include "rpg_map_common.h"
 #include "rpg_map_parser.h"
+#include "rpg_map_scanner.h"
 
 #include <ace/Global_Macros.h>
 
 #include <string>
+#include <iostream>
 
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 
-// tell flex the lexer's prototype ...
-#define YY_DECL                                     \
-  yy::RPG_Map_Parser::token_type                    \
-  yylex(yy::RPG_Map_Parser::semantic_type* yylval,  \
-        yy::RPG_Map_Parser::location_type* yylloc,  \
-        RPG_Map_ParserDriver& driver,               \
-        unsigned long& line_count,                  \
-        yyscan_t& yyscanner)
-// ... and declare it for the parser's sake
-YY_DECL;
+//// Tell Flex the lexer's prototype ...
+//#define YY_DECL                                            \
+//  yy::RPG_Map_Parser::token_type                           \
+//  driver.yylex(yy::RPG_Map_Parser::semantic_type* yylval,  \
+//               yy::RPG_Map_Parser::location_type* yylloc)
+//// ... and declare it for the parser's sake
+//YY_DECL;
 
 class RPG_Map_ParserDriver
 {
@@ -84,13 +83,12 @@ class RPG_Map_ParserDriver
 //   void reset();
 
   // helper methods
-  const bool scan_begin(FILE*); // file handle
+  const bool scan_begin(std::istream*); // file handle
   void scan_end();
 
   // scanner
   bool                 myTraceScanning;
-  yyscan_t             myScannerContext;
-//   MapFlexLexer    myScanner;
+  RPG_Map_Scanner      myScanner;
   unsigned long        myCurrentNumLines;
 
   // scan buffer
@@ -107,7 +105,14 @@ class RPG_Map_ParserDriver
   RPG_Map_Position_t*  myCurrentStartPosition;
   std::string*         myCurrentName;
 
+  std::string          myCurrentFilename;
   bool                 myIsInitialized;
 };
+
+int
+yylex(yy::RPG_Map_Parser::semantic_type*,
+      yy::RPG_Map_Parser::location_type*,
+	  RPG_Map_ParserDriver*,
+	  RPG_Map_Scanner&);
 
 #endif

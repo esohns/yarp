@@ -20,9 +20,11 @@
 #ifndef RPG_CHARACTER_SKILLS_COMMON_H
 #define RPG_CHARACTER_SKILLS_COMMON_H
 
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
+#include "rpg_character_incl.h"
+
 #include "rpg_character_class_common.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_ability.h"
 
 #include <rpg_common_attribute.h>
 #include <rpg_common_skill.h>

@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include "rpg_map_parser_driver.h"
@@ -10,17 +11,16 @@
 /* By default yylex returns int, we use token_type.
    Unfortunately yyterminate by default returns 0, which is
    not of token_type. */
-#define yyterminate() return token::END
+#define yyterminate() return yy::RPG_Map_Parser::token::END
 %}
 
-%option pointer full nounistd 8bit
+/* %option pointer full nounistd 8bit */
+%option pointer 8bit c++ stack never-interactive yyclass="RPG_Map_Scanner"
 /* %option c++ outfile="rpg_map_scanner.cpp" prefix="MapScanner" */
 %option warn nodefault batch nomain noyywrap nounput
-%option debug perf-report verbose
-/*%option reentrant extra-type="unsigned long*"*/
-%option reentrant extra-type="RPG_Map_ParserDriver*"
+%option debug perf-report verbose yylineno
+/* %option reentrant extra-type="RPG_Map_ParserDriver*" */
 /* %option bison-bridge bison-locations stack */
-%option prefix="MapScanner" yylineno
 
 NAME          [[:print:]]
 /* currently supported glyphs:
@@ -44,15 +44,15 @@ GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 %s             last_row
 
 %{
-#define YY_USER_ACTION yylloc->columns(yyleng);
+#define YY_USER_ACTION myLocation->columns(yyleng);
 %}
 
 %%
 %{
-  yylloc->step();
-  typedef yy::RPG_Map_Parser::token token;
-  typedef yy::RPG_Map_Parser::token_type token_type;
-  yy_flex_debug = driver.getDebugScanner();
+  myLocation->step();
+  //typedef yy::RPG_Map_Parser::token token;
+  //typedef yy::RPG_Map_Parser::token_type token_type;
+  //yy_flex_debug = driver.getDebugScanner();
 %}
 
 <INITIAL>{
@@ -62,44 +62,44 @@ GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
                              yyless(0); }
 {GLYPH}*                   { BEGIN(last_row);
                              yyless(0); }
-\n                         { yylloc->step();
-                             line_count++; }
+\n                         { myLocation->step();
+                             /* line_count++; */ }
 } // end <INITIAL>
 <name>{
-"["{NAME}*/"]"             { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
+"["{NAME}*/"]"             { myLocation->step();
+                             ACE_NEW_NORETURN(myToken->sval,
                                               std::string);
-                             yylval->sval->append(yytext, yyleng);
-                             yylval->sval->erase(0, 1);
-                             return token::NAME; }
-"]\n"                      { yylloc->step();
+                             myToken->sval->append(yytext, yyleng);
+                             myToken->sval->erase(0, 1);
+                             return yy::RPG_Map_Parser::token::NAME; }
+"]\n"                      { myLocation->step();
                              BEGIN(row);
-                             line_count++; }
+                             /* line_count++; */ }
 } // end <name>
 <row>{
-{GLYPH}                    { yylloc->step();
-                             yylval->cval = yytext[0];
-                             return token::GLYPH; }
-\n                         { yylloc->step();
+{GLYPH}                    { myLocation->step();
+                             myToken->cval = yytext[0];
+                             return yy::RPG_Map_Parser::token::GLYPH; }
+\n                         { myLocation->step();
                              BEGIN(INITIAL);
-                             line_count++;
-                             return token::END_OF_ROW; }
+                             /* line_count++; */
+                             return yy::RPG_Map_Parser::token::END_OF_ROW; }
 } // end <row>
 <last_row>{
-{GLYPH}                    { yylloc->step();
-                             yylval->cval = yytext[0];
-                             return token::GLYPH; }
+{GLYPH}                    { myLocation->step();
+                             myToken->cval = yytext[0];
+                             return yy::RPG_Map_Parser::token::GLYPH; }
 } // end <last_row>
 <<EOF>>                    { BEGIN(INITIAL);
                              yyterminate(); }
-<*>(?s:.)                  { yylloc->step();
-                             yylval->cval = yytext[0];
+.                          { myLocation->step();
+                             myToken->cval = yytext[0];
 
                              // debug info
                              std::string error_message = ACE_TEXT("invalid character: \"");
                              error_message += yytext[0];
                              error_message += ACE_TEXT("\", aborting");
-                             driver.error(*yylloc, error_message);
+                             myDriver->error(*myLocation, error_message);
 
                              yyterminate();
                            }

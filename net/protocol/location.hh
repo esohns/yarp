@@ -1,9 +1,9 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Locations for Bison parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2009, 2010 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@
 # include <iostream>
 # include <string>
 # include "position.hh"
+
 
 
 namespace yy {
@@ -153,6 +154,7 @@ namespace yy {
       ostr << '-' << last.column;
     return ostr;
   }
+
 
 
 } // yy

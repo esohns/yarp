@@ -59,7 +59,7 @@ RPG_Character_Player::RPG_Character_Player(// base attributes
                                            const RPG_Magic_SpellTypes_t& knownSpells_in,
                                            // current status
                                            const RPG_Character_Conditions_t& condition_in,
-                                           const unsigned short int& hitpoints_in,
+                                           const short int& hitpoints_in,
                                            const unsigned int& experience_in,
                                            const unsigned int& wealth_in,
                                            const RPG_Magic_Spells_t& spells_in,

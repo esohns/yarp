@@ -21,6 +21,7 @@
 #ifndef RPG_COMMON_REFERENCE_COUNTER_H
 #define RPG_COMMON_REFERENCE_COUNTER_H
 
+#include "rpg_common_exports.h"
 #include "rpg_common_irefcount.h"
 #include "rpg_common_idumpstate.h"
 
@@ -28,7 +29,7 @@
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
-class RPG_Common_ReferenceCounter
+class RPG_Common_Export RPG_Common_ReferenceCounter
  : public RPG_Common_IRefCount,
    public RPG_Common_IDumpState
 {

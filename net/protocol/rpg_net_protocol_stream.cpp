@@ -262,5 +262,5 @@ RPG_Net_Protocol_Stream::report() const
   // just a dummy
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED()
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
 }

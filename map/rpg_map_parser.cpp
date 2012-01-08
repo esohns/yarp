@@ -1,9 +1,10 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
-   Software Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
+   Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -58,7 +59,7 @@
 
 
 #ifndef YY_
-# if defined YYENABLE_NLS && YYENABLE_NLS
+# if YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -118,6 +119,7 @@ do {					\
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 
+
 namespace yy {
 
 #if YYERROR_VERBOSE
@@ -162,15 +164,14 @@ namespace yy {
 #endif
 
   /// Build a parser object.
-  RPG_Map_Parser::RPG_Map_Parser (RPG_Map_ParserDriver& driver_yyarg, unsigned long& line_count_yyarg, yyscan_t& context_yyarg)
+  RPG_Map_Parser::RPG_Map_Parser (RPG_Map_ParserDriver* driver_yyarg, RPG_Map_Scanner& scanner_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
       yycdebug_ (&std::cerr),
 #endif
       driver (driver_yyarg),
-      line_count (line_count_yyarg),
-      context (context_yyarg)
+      scanner (scanner_yyarg)
   {
   }
 
@@ -293,7 +294,7 @@ namespace yy {
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location_type yyerror_range[3];
+    location_type yyerror_range[2];
 
     /// $$.
     semantic_type yyval;
@@ -309,7 +310,7 @@ namespace yy {
     
 {
   // Initialize the initial location
-  //@$.begin.filename = @$.end.filename = &driver.file;
+  yylloc.begin.filename = yylloc.end.filename = &driver->myCurrentFilename;
 
   // initialize the token value container
   yylval.cval = 0;
@@ -350,7 +351,7 @@ namespace yy {
     if (yychar == yyempty_)
       {
 	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, driver, line_count, context);
+	yychar = yylex (&yylval, &yylloc, driver, scanner);
       }
 
 
@@ -433,7 +434,7 @@ namespace yy {
       {
 	  case 3:
 
-    { *(driver.myCurrentName) = *(yysemantic_stack_[(1) - (1)].sval);
+    { *(driver->myCurrentName) = *(yysemantic_stack_[(1) - (1)].sval);
                                   }
     break;
 
@@ -443,43 +444,43 @@ namespace yy {
                                     {
                                       case ' ':
                                       {
-                                        driver.myCurrentPlan->unmapped.insert(driver.myCurrentPosition);
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPlan->unmapped.insert(driver->myCurrentPosition);
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '.':
                                       {
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '#':
                                       {
-                                        driver.myCurrentPlan->walls.insert(driver.myCurrentPosition);
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPlan->walls.insert(driver->myCurrentPosition);
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '=':
                                       {
                                         RPG_Map_Door_t door;
-                                        door.position = driver.myCurrentPosition;
+                                        door.position = driver->myCurrentPosition;
                                         door.outside = DIRECTION_INVALID;
                                         door.is_open = false;
                                         door.is_locked = false;
                                         door.is_broken = false;
-                                        driver.myCurrentPlan->doors.insert(door);
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPlan->doors.insert(door);
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '@':
                                       {
-                                        driver.myCurrentSeedPoints->insert(driver.myCurrentPosition);
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentSeedPoints->insert(driver->myCurrentPosition);
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case 'X':
                                       {
-                                        *(driver.myCurrentStartPosition) = driver.myCurrentPosition;
-                                        driver.myCurrentPosition.first++;
+                                        *(driver->myCurrentStartPosition) = driver->myCurrentPosition;
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       default:
@@ -488,7 +489,7 @@ namespace yy {
                                                    ACE_TEXT("invalid/unknown glyph: \"%c\", continuing\n"),
                                                    (yysemantic_stack_[(2) - (2)].cval)));
 
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                     } // end SWITCH
@@ -497,10 +498,10 @@ namespace yy {
 
   case 6:
 
-    { if (driver.myCurrentSizeX == 0)
-                                   driver.myCurrentSizeX = driver.myCurrentPosition.first;
-                                 driver.myCurrentPosition.first = 0;
-                                 driver.myCurrentPosition.second++;
+    { if (driver->myCurrentSizeX == 0)
+                                   driver->myCurrentSizeX = driver->myCurrentPosition.first;
+                                 driver->myCurrentPosition.first = 0;
+                                 driver->myCurrentPosition.second++;
                                }
     break;
 
@@ -539,7 +540,7 @@ namespace yy {
 	error (yylloc, yysyntax_error_ (yystate, yytoken));
       }
 
-    yyerror_range[1] = yylloc;
+    yyerror_range[0] = yylloc;
     if (yyerrstatus_ == 3)
       {
 	/* If just tried and failed to reuse lookahead token after an
@@ -574,7 +575,7 @@ namespace yy {
     if (false)
       goto yyerrorlab;
 
-    yyerror_range[1] = yylocation_stack_[yylen - 1];
+    yyerror_range[0] = yylocation_stack_[yylen - 1];
     /* Do not reclaim the symbols of the rule which action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -606,7 +607,7 @@ namespace yy {
 	if (yystate_stack_.height () == 1)
 	YYABORT;
 
-	yyerror_range[1] = yylocation_stack_[0];
+	yyerror_range[0] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
 		     yystos_[yystate],
 		     &yysemantic_stack_[0], &yylocation_stack_[0]);
@@ -615,10 +616,10 @@ namespace yy {
 	YY_STACK_PRINT ();
       }
 
-    yyerror_range[2] = yylloc;
+    yyerror_range[1] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
     // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
+    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
@@ -821,7 +822,7 @@ namespace yy {
   const unsigned char
   RPG_Map_Parser::yyrline_[] =
   {
-         0,    65,    65,    66,    68,    69,   123
+         0,    64,    64,    65,    67,    68,   122
   };
 
   // Print the state stack on the debug stream.
@@ -908,6 +909,7 @@ namespace yy {
   const RPG_Map_Parser::token_number_type RPG_Map_Parser::yyundef_token_ = 2;
 
 
+
 } // yy
 
 
@@ -920,6 +922,6 @@ yy::RPG_Map_Parser::error(const location_type& location_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Parser::error"));
 
-  driver.error(location_in, message_in);
+  driver->error(location_in, message_in);
 }
 

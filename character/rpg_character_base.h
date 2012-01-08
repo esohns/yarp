@@ -25,6 +25,7 @@
 #include <rpg_common_incl.h>
 #include "rpg_character_incl.h"
 
+#include "rpg_character_exports.h"
 #include "rpg_character_inventory_common.h"
 #include "rpg_character_inventory.h"
 #include "rpg_character_equipment.h"
@@ -44,7 +45,7 @@ base class of all PCs, NPCs and monsters
 
   @author Erik Sohns <erik.sohns@web.de>
  */
-class RPG_Character_Base
+class RPG_Character_Export RPG_Character_Base
 {
  public:
   virtual ~RPG_Character_Base();
@@ -110,7 +111,7 @@ class RPG_Character_Base
                      const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
                      // current status
                      const RPG_Character_Conditions_t&, // condition
-                     const unsigned short int&,         // HP
+                     const short int&,                  // HP
                      const unsigned int&,               // wealth (GP)
                      const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
                      const RPG_Item_List_t&);           // list of (carried) items
@@ -129,7 +130,7 @@ class RPG_Character_Base
             const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
             // current status
             const RPG_Character_Conditions_t&, // condition
-            const unsigned short int&,         // HP
+            const short int&,                  // HP
             const unsigned int&,               // wealth (GP)
             const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
             const RPG_Item_List_t&);           // list of (carried) items

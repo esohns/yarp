@@ -25,6 +25,7 @@
 #include <rpg_common_macros.h>
 
 #include <ace/Message_Block.h>
+#include <ace/Log_Msg.h>
 
 // *NOTE*: this is implicitly invoked by duplicate() as well...
 RPG_Net_Message::RPG_Net_Message(const RPG_Net_Message& message_in)

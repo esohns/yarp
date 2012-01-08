@@ -22,6 +22,9 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/Guard_T.h>
+#include <ace/Synch.h>
+
 RPG_Stream_StateMachine_Control::RPG_Stream_StateMachine_Control()
  : myState(RPG_Stream_StateMachine_Control::INIT)
 {

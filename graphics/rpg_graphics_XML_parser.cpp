@@ -450,14 +450,14 @@ void RPG_Graphics_Tile_Type::file(const ::std::string& file_in)
   myCurrentTile.file = file_in;
 }
 
-void RPG_Graphics_Tile_Type::offsetX(long long offsetX_in)
+void RPG_Graphics_Tile_Type::offsetX(int offsetX_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::offsetX"));
 
   myCurrentTile.offsetX = offsetX_in;
 }
 
-void RPG_Graphics_Tile_Type::offsetY(long long offsetY_in)
+void RPG_Graphics_Tile_Type::offsetY(int offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Tile_Type::offsetY"));
 

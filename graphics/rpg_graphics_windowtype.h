@@ -19,6 +19,8 @@ enum RPG_Graphics_WindowType
   RPG_GRAPHICS_WINDOWTYPE_INVALID
 };
 
+#include "rpg_graphics_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -27,7 +29,7 @@ enum RPG_Graphics_WindowType
 typedef std::map<RPG_Graphics_WindowType, std::string> RPG_Graphics_WindowTypeToStringTable_t;
 typedef RPG_Graphics_WindowTypeToStringTable_t::const_iterator RPG_Graphics_WindowTypeToStringTableIterator_t;
 
-class RPG_Graphics_WindowTypeHelper
+class RPG_Graphics_Export RPG_Graphics_WindowTypeHelper
 {
  public:
   inline static void init()

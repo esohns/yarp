@@ -27,7 +27,7 @@
 #include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
-#include <rpg_item_weapontype.h>
+#include <rpg_item_incl.h>
 #include "rpg_character_monster_incl.h"
 
 #include "rpg_character_monster.h"

@@ -17,17 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_INVENTORY_H
 #define RPG_CHARACTER_INVENTORY_H
 
 #include <rpg_item_instance_common.h>
+
+#include "rpg_character_exports.h"
 
 #include <ace/Global_Macros.h>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Inventory
+class RPG_Character_Export RPG_Character_Inventory
 {
  public:
   RPG_Character_Inventory(const RPG_Item_List_t&); // list of (initial) items

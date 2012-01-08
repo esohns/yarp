@@ -69,6 +69,7 @@
 
 #include <fstream>
 #include <string>
+#include <math.h>
 
 // init statics
 RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
@@ -246,6 +247,8 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   }
   catch (::xml_schema::exception const& exception)
   {
+    ACE_UNUSED_ARG(exception);
+
     // *NOTE*: maybe this was a CHARACTER profile (expected ENTITY profile)
     // --> try parsing that instead...
     ::xml_schema::properties props_alt;
@@ -1351,7 +1354,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Character_Base* const attacker_in,
             (weapon_type != RANGED_WEAPON_CROSSBOW_HAND) &&
             (weapon_type != RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT) &&
             (weapon_type != RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY)))))
-        damage_element.amount.modifier += ::lround(RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor);
+        damage_element.amount.modifier += static_cast<int>(::floor((RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor) + 0.5));
       // *TODO*: extra damage over and above a weapon’s normal damage is not multiplied
       if (is_critical_hit) // *IMPORTANT NOTE*: this applies for physical/natural damage only !
         damage_element.amount *= static_cast<int>(weapon_properties.criticalHit.damageModifier);

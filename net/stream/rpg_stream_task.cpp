@@ -56,7 +56,9 @@ RPG_Stream_Task::open(void* args_in)
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 int
@@ -69,7 +71,9 @@ RPG_Stream_Task::close(u_long arg_in)
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 int
@@ -80,7 +84,9 @@ RPG_Stream_Task::module_closed(void)
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 int
@@ -95,7 +101,9 @@ RPG_Stream_Task::put(ACE_Message_Block* mb_in,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 int
@@ -106,7 +114,9 @@ RPG_Stream_Task::svc(void)
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 // *** END dummy stub methods ***
 
@@ -239,7 +249,7 @@ RPG_Stream_Task::dump_state() const
 
 void
 RPG_Stream_Task::handleMessage(ACE_Message_Block* mb_in,
-                           bool& stopProcessing_out)
+                               bool& stopProcessing_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleMessage"));
 
@@ -377,8 +387,8 @@ RPG_Stream_Task::handleMessage(ACE_Message_Block* mb_in,
 
 void
 RPG_Stream_Task::handleControlMessage(ACE_Message_Block* controlMessage_in,
-                                  bool& stopProcessing_out,
-                                  bool& passMessageDownstream_out)
+                                      bool& stopProcessing_out,
+                                      bool& passMessageDownstream_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleControlMessage"));
 

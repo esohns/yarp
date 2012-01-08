@@ -21,13 +21,15 @@
 #ifndef RPG_STREAM_STATEMACHINE_CONTROL_H
 #define RPG_STREAM_STATEMACHINE_CONTROL_H
 
+#include "rpg_stream_exports.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
 #include <ace/Condition_T.h>
 
 #include <string>
 
-class RPG_Stream_StateMachine_Control
+class RPG_Stream_Export RPG_Stream_StateMachine_Control
 {
  public:
   enum Control_StateType

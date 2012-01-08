@@ -17,6 +17,8 @@ enum RPG_Combat_AttackForm
   RPG_COMBAT_ATTACKFORM_INVALID
 };
 
+#include "rpg_combat_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -25,7 +27,7 @@ enum RPG_Combat_AttackForm
 typedef std::map<RPG_Combat_AttackForm, std::string> RPG_Combat_AttackFormToStringTable_t;
 typedef RPG_Combat_AttackFormToStringTable_t::const_iterator RPG_Combat_AttackFormToStringTableIterator_t;
 
-class RPG_Combat_AttackFormHelper
+class RPG_Combat_Export RPG_Combat_AttackFormHelper
 {
  public:
   inline static void init()

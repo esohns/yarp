@@ -7,7 +7,9 @@
 #ifndef RPG_CHARACTER_MONSTER_SPECIALDEFENSEPRECONDITION_H
 #define RPG_CHARACTER_MONSTER_SPECIALDEFENSEPRECONDITION_H
 
-struct RPG_Character_Monster_SpecialDefensePreCondition
+#include "rpg_character_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Character_Monster_SpecialDefensePreCondition
 {
   std::vector<RPG_Character_Monster_WeaponTypeUnion> weaponTypes;
   std::vector<RPG_Common_Condition> ownConditions;

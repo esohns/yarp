@@ -21,6 +21,7 @@
 #ifndef RPG_MAP_LEVEL_H
 #define RPG_MAP_LEVEL_H
 
+#include "rpg_map_exports.h"
 #include "rpg_map_common.h"
 
 #include <string>
@@ -28,7 +29,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Map_Level
+class RPG_Map_Export RPG_Map_Level
 {
  public:
   RPG_Map_Level();

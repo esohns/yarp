@@ -24,9 +24,12 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/Guard_T.h>
+#include <ace/Synch.h>
+
 RPG_Stream_SessionConfig::RPG_Stream_SessionConfig(const void* data_in,
-                                           const ACE_Time_Value& startOfSession_in,
-                                           const bool& userAbort_in)
+												   const ACE_Time_Value& startOfSession_in,
+												   const bool& userAbort_in)
  : inherited(1),
    myUserData(data_in),
    myStartOfSession(startOfSession_in),

@@ -34,6 +34,8 @@
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
+#include <algorithm>
+
 RPG_Character_Player_Base::RPG_Character_Player_Base(// base attributes
                                                      const std::string& name_in,
                                                      const RPG_Character_Gender& gender_in,
@@ -49,7 +51,7 @@ RPG_Character_Player_Base::RPG_Character_Player_Base(// base attributes
                                                      const RPG_Magic_SpellTypes_t& knownSpells_in,
                                                      // current status
                                                      const RPG_Character_Conditions_t& condition_in,
-                                                     const unsigned short int& hitpoints_in,
+                                                     const short int& hitpoints_in,
                                                      const unsigned int& experience_in,
                                                      const unsigned int& wealth_in,
                                                      const RPG_Magic_Spells_t& spells_in,
@@ -127,7 +129,7 @@ RPG_Character_Player_Base::init(// base attributes
                                 const RPG_Magic_SpellTypes_t& knownSpells_in,
                                 // current status
                                 const RPG_Character_Conditions_t& condition_in,
-                                const unsigned short int& hitpoints_in,
+                                const short int& hitpoints_in,
                                 const unsigned int& experience_in,
                                 const unsigned int& wealth_in,
                                 const RPG_Magic_Spells_t& spells_in,
@@ -202,7 +204,7 @@ RPG_Character_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) cons
 
   unsigned char result = 0;
 
-  result = static_cast<unsigned int> (ACE_OS::floor((1.0 + ::sqrt((myExperience / 125) + 1)) / 2.0));
+  result = static_cast<unsigned char>(ACE_OS::floor((1.0 + ::sqrt(static_cast<double>(myExperience / 125) + 1.0)) / 2.0));
 
   return result;
 }
@@ -291,10 +293,7 @@ RPG_Character_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defe
   {
     DEX_modifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(ATTRIBUTE_DEXTERITY));
     if (type != ARMOR_NONE)
-    {
-      DEX_modifier = std::min(static_cast<int> (properties.maxDexterityBonus),
-                              static_cast<int> (DEX_modifier));
-    } // end IF
+      DEX_modifier = std::min<int>(static_cast<int>(properties.maxDexterityBonus), DEX_modifier);
   } // end IF
   result += DEX_modifier;
 

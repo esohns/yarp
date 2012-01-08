@@ -1,9 +1,10 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
-   Software Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
+   Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,7 +41,7 @@
 
 
 class RPG_Net_Protocol_IRCParserDriver;
-typedef void* yyscan_t;
+class RPG_Net_Protocol_IRCScanner;
 
 
 
@@ -51,10 +52,12 @@ typedef void* yyscan_t;
 #include "stack.hh"
 
 
+
 namespace yy {
 
   class position;
   class location;
+
 
 } // yy
 
@@ -97,6 +100,7 @@ do {							\
     }							\
 } while (false)
 #endif
+
 
 
 namespace yy {
@@ -143,7 +147,7 @@ namespace yy {
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& messageCount_yyarg, std::string& memory_yyarg, yyscan_t& context_yyarg);
+    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& messageCount_yyarg, std::string& memory_yyarg, RPG_Net_Protocol_IRCScanner& scanner_yyarg);
     virtual ~RPG_Net_Protocol_IRCParser ();
 
     /// Parse.
@@ -306,8 +310,9 @@ namespace yy {
     RPG_Net_Protocol_IRCParserDriver& driver;
     unsigned long& messageCount;
     std::string& memory;
-    yyscan_t& context;
+    RPG_Net_Protocol_IRCScanner& scanner;
   };
+
 
 } // yy
 

@@ -20,6 +20,7 @@
 #ifndef RPG_CHARACTER_EQUIPMENT_H
 #define RPG_CHARACTER_EQUIPMENT_H
 
+#include "rpg_character_exports.h"
 #include "rpg_character_equipment_common.h"
 #include "rpg_character_offhand.h"
 
@@ -32,7 +33,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Equipment
+class RPG_Character_Export RPG_Character_Equipment
 {
  public:
   RPG_Character_Equipment();

@@ -7,7 +7,9 @@
 #ifndef RPG_CHARACTER_MONSTER_SPECIALABILITYPROPERTIES_H
 #define RPG_CHARACTER_MONSTER_SPECIALABILITYPROPERTIES_H
 
-struct RPG_Character_Monster_SpecialAbilityProperties
+#include "rpg_character_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Character_Monster_SpecialAbilityProperties
  : public RPG_Character_Monster_SpecialBaseProperties
 {
   std::vector<RPG_Character_Monster_SpecialAbilityPreCondition> preConditions;

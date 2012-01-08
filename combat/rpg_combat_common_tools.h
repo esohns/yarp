@@ -26,9 +26,10 @@
 #include <rpg_common_environment_incl.h>
 #include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
-#include <rpg_item_weapontype.h>
+#include <rpg_item_incl.h>
 #include "rpg_combat_incl.h"
 
+#include "rpg_combat_exports.h"
 #include "rpg_combat_common.h"
 
 #include <ace/Global_Macros.h>
@@ -38,7 +39,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Combat_Common_Tools
+class RPG_Combat_Export RPG_Combat_Common_Tools
 {
  public:
   static void initStringConversionTables();

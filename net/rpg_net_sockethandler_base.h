@@ -51,7 +51,7 @@ class RPG_Net_SocketHandlerBase
   // worker (registered with the reactor, we would get "handle_closed" twice,
   // leading to serious mayhem)
   // *WARNING*: the current algorithm works only for 1 worker !!!
-  virtual int close(ulong = 0); // args
+  virtual int close(u_long = 0); // args
 //   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
 //                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 

@@ -21,13 +21,14 @@
 #ifndef RPG_COMMON_TIMERHANDLER_H
 #define RPG_COMMON_TIMERHANDLER_H
 
+#include "rpg_common_exports.h"
 #include "rpg_common_itimer.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>
 #include <ace/Time_Value.h>
 
-class RPG_Common_TimerHandler
+class RPG_Common_Export RPG_Common_TimerHandler
  : public ACE_Event_Handler
 {
  public:

@@ -25,6 +25,7 @@
 #include <rpg_common_macros.h>
 
 #include <ace/Message_Block.h>
+#include <ace/Log_Msg.h>
 
 // init statics
 RPG_Stream_DataBlockAllocatorHeap::DATABLOCK_LOCK_TYPE RPG_Stream_DataBlockAllocatorHeap::myReferenceCountLock;

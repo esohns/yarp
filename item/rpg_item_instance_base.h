@@ -17,9 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ITEM_INSTANCE_BASE_H
 #define RPG_ITEM_INSTANCE_BASE_H
 
+#include "rpg_item_exports.h"
 #include "rpg_item_instance_common.h"
 
 #include <rpg_common_referencecounter.h>
@@ -31,7 +33,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Instance_Base
+class RPG_Item_Export RPG_Item_Instance_Base
  : public RPG_Common_ReferenceCounter
 {
  public:

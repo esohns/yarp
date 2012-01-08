@@ -7,7 +7,9 @@
 #ifndef RPG_GRAPHICS_GRAPHIC_H
 #define RPG_GRAPHICS_GRAPHIC_H
 
-struct RPG_Graphics_Graphic
+#include "rpg_graphics_exports.h"
+
+struct RPG_Graphics_Export RPG_Graphics_Graphic
 {
   RPG_Graphics_Category category;
   RPG_Graphics_GraphicTypeUnion type;

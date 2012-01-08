@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_character_base.h"
 
 #include "rpg_character_common_tools.h"
@@ -49,7 +50,7 @@ RPG_Character_Base::RPG_Character_Base(// base attributes
                                        const RPG_Magic_SpellTypes_t& knownSpells_in,
                                        // current status
                                        const RPG_Character_Conditions_t& condition_in,
-                                       const unsigned short int& hitpoints_in,
+                                       const short int& hitpoints_in,
                                        const unsigned int& wealth_in,
                                        const RPG_Magic_Spells_t& spells_in,
                                        const RPG_Item_List_t& inventory_in)
@@ -132,7 +133,7 @@ RPG_Character_Base::init(// base attributes
                          const RPG_Magic_SpellTypes_t& knownSpells_in,
                          // current status
                          const RPG_Character_Conditions_t& condition_in,
-                         const unsigned short int& hitpoints_in,
+                         const short int& hitpoints_in,
                          const unsigned int& wealth_in,
                          const RPG_Magic_Spells_t& spells_in,
                          const RPG_Item_List_t& inventory_in)

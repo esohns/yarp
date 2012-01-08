@@ -22,6 +22,8 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/Log_Msg.h>
+
 // init statics
 ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> RPG_Stream_MessageBase::myCurrentID = 1;
 

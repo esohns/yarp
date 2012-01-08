@@ -27,6 +27,7 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 RPG_Graphics_Cursor_Manager::RPG_Graphics_Cursor_Manager()
@@ -225,10 +226,10 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
   myBGPosition.second = offsetY_in;
 
   // compute bounding box
-  dirtyRegion_out.x = offsetX_in;
-  dirtyRegion_out.y = offsetY_in;
-  dirtyRegion_out.w = myCurrentGraphic->w;
-  dirtyRegion_out.h = myCurrentGraphic->h;
+  dirtyRegion_out.x = static_cast<int16_t>(offsetX_in);
+  dirtyRegion_out.y = static_cast<int16_t>(offsetY_in);
+  dirtyRegion_out.w = static_cast<uint16_t>(myCurrentGraphic->w);
+  dirtyRegion_out.h = static_cast<uint16_t>(myCurrentGraphic->h);
   // handle clipping
   if ((dirtyRegion_out.x + dirtyRegion_out.w) > targetSurface_in->w)
     dirtyRegion_out.w -= ((dirtyRegion_out.x + dirtyRegion_out.w) - targetSurface_in->w);
@@ -284,10 +285,10 @@ RPG_Graphics_Cursor_Manager::restoreBG(SDL_Surface* targetSurface_in,
 //   ACE_ASSERT(myBGPosition.first != 0);
 //   ACE_ASSERT(myBGPosition.second != 0);
 
-  dirtyRegion_out.x = myBGPosition.first;
-  dirtyRegion_out.y = myBGPosition.second;
-  dirtyRegion_out.w = myBG->w;
-  dirtyRegion_out.h = myBG->h;
+  dirtyRegion_out.x = static_cast<int16_t>(myBGPosition.first);
+  dirtyRegion_out.y = static_cast<int16_t>(myBGPosition.second);
+  dirtyRegion_out.w = static_cast<uint16_t>(myBG->w);
+  dirtyRegion_out.h = static_cast<uint16_t>(myBG->h);
   // handle clipping
   if ((dirtyRegion_out.x + dirtyRegion_out.w) > targetSurface_in->w)
     dirtyRegion_out.w -= ((dirtyRegion_out.x + dirtyRegion_out.w) - targetSurface_in->w);

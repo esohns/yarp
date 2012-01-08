@@ -17,11 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_MONSTER_XML_PARSER_H
 #define RPG_CHARACTER_MONSTER_XML_PARSER_H
 
 #include "rpg_character_monster_XML_types.h"
 
+#include "rpg_character_monster_exports.h"
 #include "rpg_character_monster_common.h"
 
 #include <ace/Global_Macros.h>
@@ -29,7 +31,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Monster_NaturalArmorClass_Type
+class RPG_Monster_Export RPG_Character_Monster_NaturalArmorClass_Type
  : public RPG_Character_Monster_NaturalArmorClass_Type_pskel
 {
  public:
@@ -45,7 +47,7 @@ class RPG_Character_Monster_NaturalArmorClass_Type
   RPG_Character_Monster_NaturalArmorClass myCurrentNaturalArmorClass;
 };
 
-class RPG_Character_Monster_SpecialPropertyTypeUnion_Type
+class RPG_Monster_Export RPG_Character_Monster_SpecialPropertyTypeUnion_Type
   : public RPG_Character_Monster_SpecialPropertyTypeUnion_Type_pskel
 {
   public:
@@ -59,7 +61,7 @@ class RPG_Character_Monster_SpecialPropertyTypeUnion_Type
     RPG_Character_Monster_SpecialPropertyTypeUnion myCurrentUnionType;
 };
 
-class RPG_Character_Monster_SpecialBaseProperties_Type
+class RPG_Monster_Export RPG_Character_Monster_SpecialBaseProperties_Type
   : public RPG_Character_Monster_SpecialBaseProperties_Type_pskel
 {
   public:
@@ -76,7 +78,7 @@ class RPG_Character_Monster_SpecialBaseProperties_Type
     RPG_Character_Monster_SpecialBaseProperties myCurrentProperties;
 };
 
-class RPG_Character_Monster_SpecialDefensePreCondition_Type
+class RPG_Monster_Export RPG_Character_Monster_SpecialDefensePreCondition_Type
   : public RPG_Character_Monster_SpecialDefensePreCondition_Type_pskel
 {
   public:
@@ -93,7 +95,7 @@ class RPG_Character_Monster_SpecialDefensePreCondition_Type
     RPG_Character_Monster_SpecialDefensePreCondition myCurrentPreCondition;
 };
 
-class RPG_Character_Monster_DefenseAction_Type
+class RPG_Monster_Export RPG_Character_Monster_DefenseAction_Type
   : public RPG_Character_Monster_DefenseAction_Type_pskel
 {
   public:
@@ -109,7 +111,7 @@ class RPG_Character_Monster_DefenseAction_Type
     RPG_Character_Monster_DefenseAction myCurrentAction;
 };
 
-class RPG_Character_Monster_SpecialDefenseProperties_Type
+class RPG_Monster_Export RPG_Character_Monster_SpecialDefenseProperties_Type
   : public RPG_Character_Monster_SpecialDefenseProperties_Type_pskel
 {
   public:
@@ -129,7 +131,7 @@ class RPG_Character_Monster_SpecialDefenseProperties_Type
     RPG_Character_Monster_SpecialDefenseProperties myCurrentProperties;
 };
 
-class RPG_Character_Monster_NaturalWeapon_Type
+class RPG_Monster_Export RPG_Character_Monster_NaturalWeapon_Type
  : public RPG_Character_Monster_NaturalWeapon_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -138,7 +140,7 @@ class RPG_Character_Monster_NaturalWeapon_Type
   virtual RPG_Character_Monster_NaturalWeapon post_RPG_Character_Monster_NaturalWeapon_Type();
 };
 
-class RPG_Character_Monster_WeaponTypeUnion_Type
+class RPG_Monster_Export RPG_Character_Monster_WeaponTypeUnion_Type
  : public RPG_Character_Monster_WeaponTypeUnion_Type_pskel
 {
  public:
@@ -152,7 +154,7 @@ class RPG_Character_Monster_WeaponTypeUnion_Type
   RPG_Character_Monster_WeaponTypeUnion myCurrentWeaponType;
 };
 
-class RPG_Character_Monster_AttackAction_Type
+class RPG_Monster_Export RPG_Character_Monster_AttackAction_Type
  : public RPG_Character_Monster_AttackAction_Type_pskel
 {
  public:
@@ -175,7 +177,7 @@ class RPG_Character_Monster_AttackAction_Type
   RPG_Character_Monster_AttackAction myCurrentAttackAction;
 };
 
-class RPG_Character_Monster_Attack_Type
+class RPG_Monster_Export RPG_Character_Monster_Attack_Type
  : public RPG_Character_Monster_Attack_Type_pskel
 {
  public:
@@ -193,7 +195,7 @@ class RPG_Character_Monster_Attack_Type
   RPG_Character_Monster_Attack myCurrentAttack;
 };
 
-class RPG_Character_Monster_ActionTrigger_Type
+class RPG_Monster_Export RPG_Character_Monster_ActionTrigger_Type
   : public RPG_Character_Monster_ActionTrigger_Type_pskel
 {
   public:
@@ -208,7 +210,7 @@ class RPG_Character_Monster_ActionTrigger_Type
     RPG_Character_Monster_ActionTrigger myCurrentTrigger;
 };
 
-class RPG_Character_Monster_SpecialAttackPreCondition_Type
+class RPG_Monster_Export RPG_Character_Monster_SpecialAttackPreCondition_Type
   : public RPG_Character_Monster_SpecialAttackPreCondition_Type_pskel
 {
   public:
@@ -227,7 +229,7 @@ class RPG_Character_Monster_SpecialAttackPreCondition_Type
     RPG_Character_Monster_SpecialAttackPreCondition myCurrentPreCondition;
 };
 
-class RPG_Character_Monster_SpecialAttackProperties_Type
+class RPG_Monster_Export RPG_Character_Monster_SpecialAttackProperties_Type
   : public RPG_Character_Monster_SpecialAttackProperties_Type_pskel
 {
   public:
@@ -249,7 +251,7 @@ class RPG_Character_Monster_SpecialAttackProperties_Type
     RPG_Character_Monster_SpecialAttackProperties myCurrentProperties;
 };
 
-class RPG_Character_Monster_SpecialAbilityPreCondition_Type
+class RPG_Monster_Export RPG_Character_Monster_SpecialAbilityPreCondition_Type
   : public RPG_Character_Monster_SpecialAbilityPreCondition_Type_pskel
 {
   public:
@@ -265,7 +267,7 @@ class RPG_Character_Monster_SpecialAbilityPreCondition_Type
     RPG_Character_Monster_SpecialAbilityPreCondition myCurrentPreCondition;
 };
 
-class RPG_Character_Monster_SummonMonster_Type
+class RPG_Monster_Export RPG_Character_Monster_SummonMonster_Type
   : public RPG_Character_Monster_SummonMonster_Type_pskel
 {
   public:
@@ -282,7 +284,7 @@ class RPG_Character_Monster_SummonMonster_Type
     RPG_Character_Monster_SummonMonster myCurrentSummonStep;
 };
 
-class RPG_Character_Monster_SpecialAbilityProperties_Type
+class RPG_Monster_Export RPG_Character_Monster_SpecialAbilityProperties_Type
   : public RPG_Character_Monster_SpecialAbilityProperties_Type_pskel
 {
   public:
@@ -305,7 +307,7 @@ class RPG_Character_Monster_SpecialAbilityProperties_Type
     RPG_Character_Monster_SpecialAbilityProperties myCurrentProperties;
 };
 
-class RPG_Character_Monster_SavingThrowModifiers_Type
+class RPG_Monster_Export RPG_Character_Monster_SavingThrowModifiers_Type
  : public RPG_Character_Monster_SavingThrowModifiers_Type_pskel
 {
  public:
@@ -321,7 +323,7 @@ class RPG_Character_Monster_SavingThrowModifiers_Type
   RPG_Character_Monster_SavingThrowModifiers myCurrentSavingThrowModifiers;
 };
 
-class RPG_Character_Monster_Organization_Type
+class RPG_Monster_Export RPG_Character_Monster_Organization_Type
  : public RPG_Character_Monster_Organization_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -330,7 +332,7 @@ class RPG_Character_Monster_Organization_Type
   virtual RPG_Character_Monster_Organization post_RPG_Character_Monster_Organization_Type();
 };
 
-class RPG_Character_Monster_OrganizationSlaverStep_Type
+class RPG_Monster_Export RPG_Character_Monster_OrganizationSlaverStep_Type
  : public RPG_Character_Monster_OrganizationSlaverStep_Type_pskel
 {
  public:
@@ -345,7 +347,7 @@ class RPG_Character_Monster_OrganizationSlaverStep_Type
   RPG_Character_Monster_OrganizationSlaverStep myCurrentOrganizationSlaverStep;
 };
 
-class RPG_Character_Monster_OrganizationStep_Type
+class RPG_Monster_Export RPG_Character_Monster_OrganizationStep_Type
  : public RPG_Character_Monster_OrganizationStep_Type_pskel
 {
  public:
@@ -361,7 +363,7 @@ class RPG_Character_Monster_OrganizationStep_Type
   RPG_Character_Monster_OrganizationStep myCurrentOrganizationStep;
 };
 
-class RPG_Character_Monster_Organizations_Type
+class RPG_Monster_Export RPG_Character_Monster_Organizations_Type
  : public RPG_Character_Monster_Organizations_Type_pskel
 {
  public:
@@ -375,7 +377,7 @@ class RPG_Character_Monster_Organizations_Type
   RPG_Character_Monster_Organizations myCurrentOrganizations;
 };
 
-class RPG_Character_Monster_AdvancementStep_Type
+class RPG_Monster_Export RPG_Character_Monster_AdvancementStep_Type
  : public RPG_Character_Monster_AdvancementStep_Type_pskel
 {
  public:
@@ -390,7 +392,7 @@ class RPG_Character_Monster_AdvancementStep_Type
   RPG_Character_Monster_AdvancementStep myCurrentAdvancementStep;
 };
 
-class RPG_Character_Monster_Advancement_Type
+class RPG_Monster_Export RPG_Character_Monster_Advancement_Type
  : public RPG_Character_Monster_Advancement_Type_pskel
 {
  public:
@@ -404,7 +406,7 @@ class RPG_Character_Monster_Advancement_Type
   RPG_Character_Monster_Advancement myCurrentAdvancement;
 };
 
-class RPG_Character_Monster_PropertiesXML_Type
+class RPG_Monster_Export RPG_Character_Monster_PropertiesXML_Type
  : public RPG_Character_Monster_PropertiesXML_Type_pskel
 {
  public:
@@ -441,7 +443,7 @@ class RPG_Character_Monster_PropertiesXML_Type
   RPG_Character_Monster_PropertiesXML myCurrentProperties;
 };
 
-class RPG_Character_Monster_Dictionary_Type
+class RPG_Monster_Export RPG_Character_Monster_Dictionary_Type
   : public RPG_Character_Monster_Dictionary_Type_pskel
 {
   public:

@@ -423,7 +423,7 @@ RPG_Character_Monster_Common_Tools::generateRandomEncounter(const unsigned int& 
       numCurrentFoes += (*iterator).second;
     } // end FOR
     RPG_Character_Monster_EncounterIterator_t iterator;
-    int diff = ::abs(numCurrentFoes - numMonsters_in);
+    int diff = static_cast<int>(::abs(static_cast<long>(numCurrentFoes - numMonsters_in)));
     while (diff)
     {
       iterator = encounter_out.begin();

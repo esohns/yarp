@@ -29,12 +29,14 @@
 #include <rpg_character_common.h>
 #include <rpg_character_base.h>
 
+#include "rpg_character_monster_exports.h"
+
 #include <ace/Global_Macros.h>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Monster
+class RPG_Monster_Export RPG_Character_Monster
  : public RPG_Character_Base
 {
  public:

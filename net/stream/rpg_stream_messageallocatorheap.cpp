@@ -26,6 +26,8 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/Log_Msg.h>
+
 RPG_Stream_MessageAllocatorHeap::RPG_Stream_MessageAllocatorHeap(const unsigned long& maxNumMessages_in,
                                                                  RPG_Stream_AllocatorHeap* allocator_in)
  : //inherited(),
@@ -65,7 +67,7 @@ RPG_Stream_MessageAllocatorHeap::malloc(size_t bytes_in)
   try
   {
     ACE_ALLOCATOR_NORETURN(data_block,
-                           static_cast<ACE_Data_Block*> (myDataBlockAllocator.malloc(bytes_in)));
+                           static_cast<ACE_Data_Block*>(myDataBlockAllocator.malloc(bytes_in)));
   }
   catch (...)
   {

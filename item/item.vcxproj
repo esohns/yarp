@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{63173994-11A3-40D3-B835-63A0E9A8BFE3}</ProjectGuid>
+    <RootNamespace>item</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.props" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>E:\Yarp\character;E:\Yarp\magic;E:\Yarp\common;E:\Yarp\chance\dice;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_ITEM_BUILD_DLL;RPG_MAGIC_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>magic.lib;common.lib;dice.lib;xerces-c_3D.lib;ACEd.lib</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="rpg_item_ACEXML_dictionary.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="rpg_item_ACEXML_dictionary_parser.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="rpg_item_armor.h" />
+    <ClInclude Include="rpg_item_armorcategory.h" />
+    <ClInclude Include="rpg_item_armorpropertiesbase.h" />
+    <ClInclude Include="rpg_item_armorpropertiesxml.h" />
+    <ClInclude Include="rpg_item_armortype.h" />
+    <ClInclude Include="rpg_item_base.h" />
+    <ClInclude Include="rpg_item_baseproperties.h" />
+    <ClInclude Include="rpg_item_common.h" />
+    <ClInclude Include="rpg_item_common_tools.h" />
+    <ClInclude Include="rpg_item_creationcost.h" />
+    <ClInclude Include="rpg_item_criticalhitproperties.h" />
+    <ClInclude Include="rpg_item_defines.h" />
+    <ClInclude Include="rpg_item_dictionary.h" />
+    <ClInclude Include="rpg_item_exports.h" />
+    <ClInclude Include="rpg_item_incl.h" />
+    <ClInclude Include="rpg_item_instance_base.h" />
+    <ClInclude Include="rpg_item_instance_common.h" />
+    <ClInclude Include="rpg_item_instance_manager.h" />
+    <ClInclude Include="rpg_item_magicalprerequisites.h" />
+    <ClInclude Include="rpg_item_money.h" />
+    <ClInclude Include="rpg_item_propertiesbase.h" />
+    <ClInclude Include="rpg_item_storeprice.h" />
+    <ClInclude Include="rpg_item_type.h" />
+    <ClInclude Include="rpg_item_weapon.h" />
+    <ClInclude Include="rpg_item_weaponcategory.h" />
+    <ClInclude Include="rpg_item_weaponclass.h" />
+    <ClInclude Include="rpg_item_weaponpropertiesbase.h" />
+    <ClInclude Include="rpg_item_weaponpropertiesxml.h" />
+    <ClInclude Include="rpg_item_weapontype.h" />
+    <ClInclude Include="rpg_item_XML_parser.h" />
+    <ClInclude Include="rpg_item_XML_tree.h" />
+    <ClInclude Include="rpg_item_XML_types.h" />
+    <ClInclude Include="rpg_XMLSchema_XML_tree.h" />
+    <ClInclude Include="rpg_XMLSchema_XML_types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rpg_item.map" />
+    <None Include="rpg_item.xml" />
+    <None Include="scripts\bindings.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="rpg_item_ACEXML_dictionary.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="rpg_item_ACEXML_dictionary_parser.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="rpg_item_armor.cpp" />
+    <ClCompile Include="rpg_item_base.cpp" />
+    <ClCompile Include="rpg_item_common_tools.cpp" />
+    <ClCompile Include="rpg_item_dictionary.cpp" />
+    <ClCompile Include="rpg_item_instance_base.cpp" />
+    <ClCompile Include="rpg_item_instance_manager.cpp" />
+    <ClCompile Include="rpg_item_weapon.cpp" />
+    <ClCompile Include="rpg_item_XML_parser.cpp" />
+    <ClCompile Include="rpg_item_XML_tree.cpp" />
+    <ClCompile Include="rpg_item_XML_types.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Parser_Mapping_Rule Include="rpg_item.xsd">
+      <FileType>XSD</FileType>
+      <HeaderSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.h</HeaderSuffix>
+      <SourceSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.cpp</SourceSuffix>
+      <InlineSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </InlineSuffix>
+      <SkelFileSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_XML_types</SkelFileSuffix>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">--include-with-brackets --extern-xml-schema rpg_XMLSchema.h --force-overwrite --show-anonymous --show-sloc %(AdditionalOptions)</AdditionalOptions>
+      <TypeMap Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">rpg_item.map</TypeMap>
+      <SkelTypeSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </SkelTypeSuffix>
+      <NamespaceMap Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">urn:rpg=</NamespaceMap>
+      <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">RPG_Item_Export</ExportSymbol>
+    </CXX_Parser_Mapping_Rule>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.targets" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.targets" />
+  </ImportGroup>
+</Project>

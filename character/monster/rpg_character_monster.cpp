@@ -192,7 +192,7 @@ RPG_Character_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Monster::getAttackBonus"));
 
-  ACE_NOTREACHED();
+  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
 
   ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
@@ -208,7 +208,7 @@ RPG_Character_Monster::getShieldBonus() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Monster::getShieldBonus"));
 
-  ACE_NOTREACHED();
+  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
 
   signed char result = 0;

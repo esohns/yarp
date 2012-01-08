@@ -23,8 +23,9 @@
 
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
-#include "rpg_character_exports.h"
 #include "rpg_character_incl.h"
+
+#include "rpg_character_exports.h"
 #include "rpg_character_common.h"
 #include "rpg_character_race_common.h"
 #include "rpg_character_class_common.h"

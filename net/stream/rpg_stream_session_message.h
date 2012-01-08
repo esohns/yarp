@@ -21,6 +21,7 @@
 #ifndef RPG_STREAM_SESSION_MESSAGE_H
 #define RPG_STREAM_SESSION_MESSAGE_H
 
+#include "rpg_stream_exports.h"
 #include "rpg_stream_messageallocatorheap.h"
 #include "rpg_stream_message_base.h"
 
@@ -35,7 +36,7 @@
 class RPG_Stream_SessionConfig;
 class ACE_Allocator;
 
-class RPG_Stream_SessionMessage
+class RPG_Stream_Export RPG_Stream_SessionMessage
  : public ACE_Message_Block,
    public RPG_Common_IDumpState
 {

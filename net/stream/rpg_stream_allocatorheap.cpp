@@ -22,6 +22,8 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/Log_Msg.h>
+
 RPG_Stream_AllocatorHeap::RPG_Stream_AllocatorHeap()
  : //inherited(),
    myPoolSize(0)

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_MONSTER_COMMON_TOOLS_H
 #define RPG_CHARACTER_MONSTER_COMMON_TOOLS_H
 
@@ -29,9 +30,9 @@
 #include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
-
 #include "rpg_character_monster_incl.h"
 
+#include "rpg_character_monster_exports.h"
 #include "rpg_character_monster_common.h"
 
 #include <ace/Global_Macros.h>
@@ -39,7 +40,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Monster_Common_Tools
+class RPG_Monster_Export RPG_Character_Monster_Common_Tools
 {
  public:
   static void initStringConversionTables();

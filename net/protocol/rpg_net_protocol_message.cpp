@@ -309,7 +309,12 @@ RPG_Net_Protocol_Message::commandType2String(const RPG_Net_Protocol_CommandType_
       result = ACE_TEXT("PING"); break;
     case RPG_Net_Protocol_IRCMessage::PONG:
       result = ACE_TEXT("PONG"); break;
+#if defined ACE_WIN32 || defined ACE_WIN64
+#pragma message("applying quirk code for this compiler...")
+	case RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR:
+#else
     case RPG_Net_Protocol_IRCMessage::ERROR:
+#endif
       result = ACE_TEXT("ERROR"); break;
     case RPG_Net_Protocol_IRCMessage::AWAY:
       result = ACE_TEXT("AWAY"); break;

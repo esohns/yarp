@@ -32,8 +32,6 @@
 #include <ace/Condition_T.h>
 #include <ace/Containers_T.h>
 
-// #include <list>
-
 // forward declarations
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_IConnection;

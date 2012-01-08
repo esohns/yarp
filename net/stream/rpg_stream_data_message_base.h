@@ -23,8 +23,6 @@
 
 #include "rpg_stream_message_base.h"
 
-#include <rpg_common_idumpstate.h>
-
 #include <ace/Global_Macros.h>
 #include <ace/Message_Block.h>
 
@@ -33,8 +31,7 @@ class ACE_Allocator;
 
 template <typename DataType>
 class RPG_Stream_DataMessageBase
- : public RPG_Stream_MessageBase,
-   public RPG_Common_IDumpState
+ : public RPG_Stream_MessageBase
 {
  public:
   virtual ~RPG_Stream_DataMessageBase();
@@ -47,7 +44,7 @@ class RPG_Stream_DataMessageBase
   // *TODO*: clean this up !
   const DataType* const getData() const;
 
-  // implement RPG_Common_IDumpState
+  // override RPG_Common_IDumpState
   virtual void dump_state() const;
 
  protected:

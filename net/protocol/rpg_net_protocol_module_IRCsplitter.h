@@ -23,6 +23,7 @@
 
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_IRCbisect.h"
 
 #include <rpg_net_statistichandler.h>
 
@@ -100,24 +101,24 @@ class RPG_Net_Protocol_Module_IRCSplitter
                         const size_t&); // length of data block
   void scan_end();
 
-  bool                      myCrunchMessages;
-  unsigned long             mySessionID;
+  bool                       myCrunchMessages;
+  unsigned long              mySessionID;
 
   // timer stuff
-  STATISTICHANDLER_TYPE     myStatCollectHandler;
-  int                       myStatCollectHandlerID;
+  STATISTICHANDLER_TYPE      myStatCollectHandler;
+  int                        myStatCollectHandlerID;
 
   // scanner
-  yyscan_t                  myScannerContext;
-//   IRCBisectFlexLexer    myScanner;
-  unsigned long             myCurrentNumFrames;
-  YY_BUFFER_STATE           myCurrentBufferState;
+//  yyscan_t                  myScannerContext;
+  RPG_Net_Protocol_IRCBisect myScanner;
+  unsigned long              myCurrentNumFrames;
+  YY_BUFFER_STATE            myCurrentBufferState;
   // message buffers
-  RPG_Net_Protocol_Message* myCurrentMessage;
-  RPG_Net_Protocol_Message* myCurrentBuffer;
-  unsigned long             myCurrentMessageLength;
+  RPG_Net_Protocol_Message*  myCurrentMessage;
+  RPG_Net_Protocol_Message*  myCurrentBuffer;
+  unsigned long              myCurrentMessageLength;
 
-  bool                      myIsInitialized;
+  bool                       myIsInitialized;
 };
 
 // declare module

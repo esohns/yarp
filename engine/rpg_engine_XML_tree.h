@@ -36,6 +36,7 @@
 
 // Begin prologue.
 //
+#include "rpg_engine_exports.h"
 //
 // End prologue.
 
@@ -77,13 +78,13 @@ class RPG_Engine_Player_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "rpg_character_player_XML_tree.h"
+#include "../character/player/rpg_character_player_XML_tree.h"
 
-#include "rpg_map_XML_tree.h"
+#include "../map/rpg_map_XML_tree.h"
 
-#include "rpg_graphics_XML_tree.h"
+#include "../graphics/rpg_graphics_XML_tree.h"
 
-class RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
+class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -147,7 +148,7 @@ class RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
   static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[6];
 };
 
-class RPG_Engine_Player_XMLTree_Type: public ::RPG_Character_PlayerXML_XMLTree_Type
+class RPG_Engine_Export RPG_Engine_Player_XMLTree_Type: public ::RPG_Character_PlayerXML_XMLTree_Type
 {
   public:
   // position
@@ -253,21 +254,26 @@ class RPG_Engine_Player_XMLTree_Type: public ::RPG_Character_PlayerXML_XMLTree_T
   ::xsd::cxx::tree::one< sprite_type > sprite_;
 };
 
+RPG_Engine_Export
 bool
 operator== (const RPG_Engine_Player_XMLTree_Type&, const RPG_Engine_Player_XMLTree_Type&);
 
+RPG_Engine_Export
 bool
 operator!= (const RPG_Engine_Player_XMLTree_Type&, const RPG_Engine_Player_XMLTree_Type&);
 
 
 #include <iosfwd>
 
+RPG_Engine_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Engine_Command_XMLTree_Type::value);
 
+RPG_Engine_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Engine_Command_XMLTree_Type&);
 
+RPG_Engine_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Engine_Player_XMLTree_Type&);
 
@@ -280,17 +286,20 @@ operator<< (::std::ostream&, const RPG_Engine_Player_XMLTree_Type&);
 // Parse a URI or a local file.
 //
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (const ::std::string& uri,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (const ::std::string& uri,
                ::xml_schema::error_handler& eh,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (const ::std::string& uri,
                ::xercesc::DOMErrorHandler& eh,
@@ -300,29 +309,34 @@ engine_player (const ::std::string& uri,
 // Parse std::istream.
 //
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::std::istream& is,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::std::istream& is,
                ::xml_schema::error_handler& eh,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::std::istream& is,
                ::xercesc::DOMErrorHandler& eh,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::std::istream& is,
                const ::std::string& id,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::std::istream& is,
                const ::std::string& id,
@@ -330,6 +344,7 @@ engine_player (::std::istream& is,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::std::istream& is,
                const ::std::string& id,
@@ -340,17 +355,20 @@ engine_player (::std::istream& is,
 // Parse xercesc::InputSource.
 //
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::xercesc::InputSource& is,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::xercesc::InputSource& is,
                ::xml_schema::error_handler& eh,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::xercesc::InputSource& is,
                ::xercesc::DOMErrorHandler& eh,
@@ -360,11 +378,13 @@ engine_player (::xercesc::InputSource& is,
 // Parse xercesc::DOMDocument.
 //
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (const ::xercesc::DOMDocument& d,
                ::xml_schema::flags f = 0,
                const ::xml_schema::properties& p = ::xml_schema::properties ());
 
+RPG_Engine_Export
 ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
 engine_player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
                ::xml_schema::flags f = 0,
@@ -378,22 +398,27 @@ engine_player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
+RPG_Engine_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Engine_Command_XMLTree_Type&);
 
+RPG_Engine_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Engine_Command_XMLTree_Type&);
 
+RPG_Engine_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Engine_Command_XMLTree_Type&);
 
+RPG_Engine_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Engine_Player_XMLTree_Type&);
 
 // Serialize to std::ostream.
 //
 
+RPG_Engine_Export
 void
 engine_player (::std::ostream& os,
                const ::RPG_Engine_Player_XMLTree_Type& x, 
@@ -401,6 +426,7 @@ engine_player (::std::ostream& os,
                const ::std::string& e = "UTF-8",
                ::xml_schema::flags f = 0);
 
+RPG_Engine_Export
 void
 engine_player (::std::ostream& os,
                const ::RPG_Engine_Player_XMLTree_Type& x, 
@@ -409,6 +435,7 @@ engine_player (::std::ostream& os,
                const ::std::string& e = "UTF-8",
                ::xml_schema::flags f = 0);
 
+RPG_Engine_Export
 void
 engine_player (::std::ostream& os,
                const ::RPG_Engine_Player_XMLTree_Type& x, 
@@ -420,6 +447,7 @@ engine_player (::std::ostream& os,
 // Serialize to xercesc::XMLFormatTarget.
 //
 
+RPG_Engine_Export
 void
 engine_player (::xercesc::XMLFormatTarget& ft,
                const ::RPG_Engine_Player_XMLTree_Type& x, 
@@ -427,6 +455,7 @@ engine_player (::xercesc::XMLFormatTarget& ft,
                const ::std::string& e = "UTF-8",
                ::xml_schema::flags f = 0);
 
+RPG_Engine_Export
 void
 engine_player (::xercesc::XMLFormatTarget& ft,
                const ::RPG_Engine_Player_XMLTree_Type& x, 
@@ -435,6 +464,7 @@ engine_player (::xercesc::XMLFormatTarget& ft,
                const ::std::string& e = "UTF-8",
                ::xml_schema::flags f = 0);
 
+RPG_Engine_Export
 void
 engine_player (::xercesc::XMLFormatTarget& ft,
                const ::RPG_Engine_Player_XMLTree_Type& x, 
@@ -446,6 +476,7 @@ engine_player (::xercesc::XMLFormatTarget& ft,
 // Serialize to an existing xercesc::DOMDocument.
 //
 
+RPG_Engine_Export
 void
 engine_player (::xercesc::DOMDocument& d,
                const ::RPG_Engine_Player_XMLTree_Type& x,
@@ -454,15 +485,18 @@ engine_player (::xercesc::DOMDocument& d,
 // Serialize to a new xercesc::DOMDocument.
 //
 
+RPG_Engine_Export
 ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
 engine_player (const ::RPG_Engine_Player_XMLTree_Type& x, 
                const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
                ::xml_schema::flags f = 0);
 
+RPG_Engine_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Engine_Command_XMLTree_Type&);
 
+RPG_Engine_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Engine_Player_XMLTree_Type&);

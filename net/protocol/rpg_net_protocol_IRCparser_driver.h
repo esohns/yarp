@@ -22,6 +22,7 @@
 #define RPG_NET_PROTOCOL_IRCPARSER_DRIVER_H
 
 #include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_IRCscanner.h"
 #include "rpg_net_protocol_IRCparser.h"
 
 #include <ace/Global_Macros.h>
@@ -31,21 +32,16 @@
 // forward declaration(s)
 class RPG_Net_Protocol_IRCMessage;
 class ACE_Message_Block;
-// class IRCParse::RPG_Net_Protocol_IRCParser;
-// typedef void* yyscan_t;
+
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 
-// tell flex the lexer's prototype ...
-#define YY_DECL                                                 \
-  yy::RPG_Net_Protocol_IRCParser::token_type                    \
-  yylex(yy::RPG_Net_Protocol_IRCParser::semantic_type* yylval,  \
-        yy::RPG_Net_Protocol_IRCParser::location_type* yylloc,  \
-        RPG_Net_Protocol_IRCParserDriver& driver,               \
-        unsigned long& messageCount,                            \
-        std::string& memory,                                    \
-        yyscan_t& yyscanner)
-// ... and declare it for the parser's sake.
-YY_DECL;
+//// Tell Flex the lexer's prototype ...
+//#define YY_DECL                                            \
+//  yy::RPG_Map_Parser::token_type                           \
+//  driver.yylex(yy::semantic_type* yylval,  \
+//               yy::location_type* yylloc)
+//// ... and declare it for the parser's sake
+//YY_DECL;
 
 class RPG_Net_Protocol_IRCParserDriver
 {
@@ -95,9 +91,10 @@ class RPG_Net_Protocol_IRCParserDriver
   void scan_end();
 
   // scanner
-  bool                           myDebugScanner;
-  yyscan_t                       myScannerContext;
+  bool                           myTraceScanning;
+  RPG_Net_Protocol_IRCScanner    myScanner;
   unsigned long                  myCurrentNumMessages;
+
   // *NOTE*: stores unscanned data, enabling transitions between continuations...
   std::string                    myMemory;
   ACE_Message_Block*             myCurrentFragment;
@@ -111,5 +108,13 @@ class RPG_Net_Protocol_IRCParserDriver
   RPG_Net_Protocol_IRCMessage*   myCurrentMessage;
   bool                           myIsInitialized;
 };
+
+int
+yylex(yy::RPG_Net_Protocol_IRCParser::semantic_type*,
+      yy::RPG_Net_Protocol_IRCParser::location_type*,
+	  RPG_Net_Protocol_IRCParserDriver&,
+	  unsigned long&,
+	  std::string&,
+	  RPG_Net_Protocol_IRCScanner&);
 
 #endif

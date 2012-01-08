@@ -17,9 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_MAP_PATHFINDING_TOOLS_H
 #define RPG_MAP_PATHFINDING_TOOLS_H
 
+#include "rpg_map_exports.h"
 #include "rpg_map_common.h"
 
 #include <ace/Global_Macros.h>
@@ -30,7 +32,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Map_Pathfinding_Tools
+class RPG_Map_Export RPG_Map_Pathfinding_Tools
 {
  public:
   // "classic" A* algorithm

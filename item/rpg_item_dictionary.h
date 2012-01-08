@@ -21,6 +21,14 @@
 #ifndef RPG_ITEM_DICTIONARY_H
 #define RPG_ITEM_DICTIONARY_H
 
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
+#include <rpg_common_environment_incl.h>
+#include <rpg_character_incl.h>
+#include <rpg_magic_incl.h>
+#include "rpg_item_incl.h"
+
+#include "rpg_item_exports.h"
 #include "rpg_item_common.h"
 
 #include <xsd/cxx/xml/error-handler.hxx>
@@ -34,7 +42,7 @@
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */
-class RPG_Item_Dictionary
+class RPG_Item_Export RPG_Item_Dictionary
 {
   // singleton requires access to the ctor/dtor
  friend class ACE_Singleton<RPG_Item_Dictionary,
@@ -76,5 +84,6 @@ class RPG_Item_Dictionary
 
 typedef ACE_Singleton<RPG_Item_Dictionary,
                       ACE_Thread_Mutex> RPG_ITEM_DICTIONARY_SINGLETON;
+RPG_ITEM_SINGLETON_DECLARE(ACE_Singleton, RPG_Item_Dictionary, ACE_Thread_Mutex);
 
 #endif

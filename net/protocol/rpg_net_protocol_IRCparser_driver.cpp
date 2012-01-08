@@ -33,10 +33,10 @@
 
 #include <sstream>
 
-RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& debugScanner_in,
-                                                                   const bool& debugParser_in)
- : myDebugScanner(debugScanner_in),
-   myScannerContext(NULL),
+RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& traceScanning_in,
+                                                                   const bool& traceParsing_in)
+ : myTraceScanning(traceScanning_in),
+   //myScanner(),
    myCurrentNumMessages(0),
    myMemory(),
    myCurrentFragment(NULL),
@@ -45,35 +45,27 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& d
    myParser(*this,                // driver
             myCurrentNumMessages, // counter
             myMemory,             // memory cache
-            myScannerContext),    // scanner
+            myScanner),           // scanner
    myCurrentMessage(NULL),
    myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver"));
 
-  // init scanner context
-  if (IRCScannerlex_init_extra(this,               // extra data
-                               &myScannerContext)) // scanner context handle
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to IRCScannerlex_init_extra(): \"%m\", continuing\n")));
-
-  // init parser
-  myParser.set_debug_level(debugParser_in ? 1 : 0); // binary (see bison manual)
+  // trace ?
+  myScanner.set_debug((traceScanning_in ? 1 : 0));
+  myParser.set_debug_level(traceParsing_in ? 1 : 0); // binary (see bison manual)
 }
 
 RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver ()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::~RPG_Net_Protocol_IRCParserDriver"));
 
-  // fini scanner context
-  if (myScannerContext)
-    IRCScannerlex_destroy(myScannerContext);
 }
 
 void
 RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in,
-                                       const bool& debugScanner_in,
-                                       const bool& debugParser_in)
+                                       const bool& traceScanning_in,
+                                       const bool& traceParsing_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::init"));
 
@@ -83,8 +75,9 @@ RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in,
   // set parse target
   myCurrentMessage = &message_in;
 
-  myDebugScanner = debugScanner_in;
-  myParser.set_debug_level(debugParser_in ? 1 : 0); // binary (see bison manual)
+  // trace ?
+  myScanner.set_debug((traceScanning_in ? 1 : 0));
+  myParser.set_debug_level(traceParsing_in ? 1 : 0); // binary (see bison manual)
 
   // OK
   myIsInitialized = true;
@@ -164,14 +157,13 @@ RPG_Net_Protocol_IRCParserDriver::switchBuffer()
 
   // clean state
   ACE_ASSERT(myCurrentBufferState);
-  IRCScanner_delete_buffer(myCurrentBufferState,
-                           myScannerContext);
+  myScanner.yy_delete_buffer(myCurrentBufferState);
   myCurrentBufferState = NULL;
 
   // init next buffer
-  myCurrentBufferState = IRCScanner_scan_bytes(myCurrentFragment->rd_ptr(),
-                                               myCurrentFragment->length(),
-                                               myScannerContext);
+  //myCurrentBufferState = IRCScanner_scan_bytes(myCurrentFragment->rd_ptr(),
+  //                                             myCurrentFragment->length(),
+  //                                             myScannerContext);
   if (myCurrentBufferState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
@@ -184,8 +176,7 @@ RPG_Net_Protocol_IRCParserDriver::switchBuffer()
   } // end IF
 
   // *WARNING*: contrary (!) to the documentation, still need to switch_buffers()...
-  IRCScanner_switch_to_buffer(myCurrentBufferState,
-                              myScannerContext);
+  myScanner.yy_switch_to_buffer(myCurrentBufferState);
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("switched to next buffer...\n")));
@@ -206,7 +197,7 @@ RPG_Net_Protocol_IRCParserDriver::getDebugScanner() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getDebugScanner"));
 
-  return myDebugScanner;
+  return myTraceScanning;
 }
 
 void
@@ -276,14 +267,14 @@ RPG_Net_Protocol_IRCParserDriver::scan_begin(const bool& useYYScanBuffer_in)
   ACE_ASSERT(myCurrentFragment);
 
   // create/init a new buffer state
-  if (useYYScanBuffer_in)
-    myCurrentBufferState = IRCScanner_scan_buffer(myCurrentFragment->rd_ptr(),
-                                                  (myCurrentFragment->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE),
-                                                  myScannerContext);
-  else
-    myCurrentBufferState = IRCScanner_scan_bytes(myCurrentFragment->rd_ptr(),
-                                                 myCurrentFragment->length(),
-                                                 myScannerContext);
+  //if (useYYScanBuffer_in)
+  //  myCurrentBufferState = IRCScanner_scan_buffer(myCurrentFragment->rd_ptr(),
+  //                                                (myCurrentFragment->length() + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE),
+  //                                                myScannerContext);
+  //else
+  //  myCurrentBufferState = IRCScanner_scan_bytes(myCurrentFragment->rd_ptr(),
+  //                                               myCurrentFragment->length(),
+  //                                               myScannerContext);
   if (myCurrentBufferState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
@@ -296,8 +287,7 @@ RPG_Net_Protocol_IRCParserDriver::scan_begin(const bool& useYYScanBuffer_in)
   } // end IF
 
   // *WARNING*: contrary (!) to the documentation, still need to switch_buffers()...
-  IRCScanner_switch_to_buffer(myCurrentBufferState,
-                              myScannerContext);
+  myScanner.yy_switch_to_buffer(myCurrentBufferState);
 
   return true;
 }
@@ -321,10 +311,28 @@ RPG_Net_Protocol_IRCParserDriver::scan_end()
 //   } // end IF
 
   // clean state
-  IRCScanner_delete_buffer(myCurrentBufferState,
-                           myScannerContext);
+  myScanner.yy_delete_buffer(myCurrentBufferState);
   myCurrentBufferState = NULL;
 
 //   // switch to the next fragment (if any)
 //   myCurrentFragment = myCurrentFragment->cont();
+}
+
+int
+yylex(yy::RPG_Net_Protocol_IRCParser::semantic_type* token_in,
+      yy::RPG_Net_Protocol_IRCParser::location_type* location_in,
+	  RPG_Net_Protocol_IRCParserDriver& driver_in,
+	  unsigned long& messageCount_in,
+	  std::string& memory_in,
+	  RPG_Net_Protocol_IRCScanner& scanner_in)
+{
+  RPG_TRACE(ACE_TEXT("::yylex"));
+
+  scanner_in.set(token_in,
+	             location_in,
+				 &driver_in,
+				 &messageCount_in,
+				 &memory_in);
+
+  return scanner_in.yylex();
 }

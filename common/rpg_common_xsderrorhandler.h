@@ -20,12 +20,14 @@
 #ifndef RPG_COMMON_XSDERRORHANDLER_H
 #define RPG_COMMON_XSDERRORHANDLER_H
 
+#include "rpg_common_exports.h"
+
 #include <xsd/cxx/xml/error-handler.hxx>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Common_XSDErrorHandler
+class RPG_Common_Export RPG_Common_XSDErrorHandler
  : public ::xsd::cxx::xml::error_handler<char>
 {
  public:

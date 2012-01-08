@@ -17,9 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_SOUND_XML_PARSER_H
 #define RPG_SOUND_XML_PARSER_H
 
+#include "rpg_sound_exports.h"
 #include "rpg_sound_XML_types.h"
 #include "rpg_sound_common.h"
 
@@ -28,7 +30,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Sound_Category_Type
+class RPG_Sound_Export RPG_Sound_Category_Type
  : public RPG_Sound_Category_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -37,7 +39,7 @@ class RPG_Sound_Category_Type
   virtual RPG_Sound_Category post_RPG_Sound_Category_Type();
 };
 
-class RPG_Sound_Event_Type
+class RPG_Sound_Export RPG_Sound_Event_Type
  : public RPG_Sound_Event_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -46,7 +48,7 @@ class RPG_Sound_Event_Type
   virtual RPG_Sound_Event post_RPG_Sound_Event_Type();
 };
 
-class RPG_Sound_Type
+class RPG_Sound_Export RPG_Sound_Type
  : public RPG_Sound_Type_pskel
 {
  public:
@@ -56,14 +58,14 @@ class RPG_Sound_Type
   virtual void category(const RPG_Sound_Category&);
   virtual void event(const RPG_Sound_Event&);
   virtual void file(const ::std::string&);
-  virtual void interval(const unsigned char);
+  virtual void interval(unsigned char);
   virtual RPG_Sound post_RPG_Sound_Type();
 
  private:
   RPG_Sound myCurrentSound;
 };
 
-class RPG_Sound_Dictionary_Type
+class RPG_Sound_Export RPG_Sound_Dictionary_Type
  : public RPG_Sound_Dictionary_Type_pskel
 {
  public:

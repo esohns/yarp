@@ -20,12 +20,12 @@ speed and efficiency */
 #define yyterminate() return token::END
 %}
 
-%option pointer full nounistd 8bit
+/* %option pointer full nounistd 8bit */
+%option pointer 8bit
 /* %option c++ outfile="rpg_net_protocol_IRCscanner.cpp" prefix="IRCScanner" noyywrap nounput */
 %option warn nodefault batch nomain noyywrap nounput
 %option debug perf-report verbose
-/*%option reentrant extra-type="unsigned long*"*/
-%option reentrant extra-type="RPG_Net_Protocol_IRCParserDriver*"
+/*%option reentrant extra-type="RPG_Net_Protocol_IRCParserDriver*"*/
 /* %option bison-bridge bison-locations stack */
 %option prefix="IRCScanner" yylineno
 
@@ -95,131 +95,131 @@ TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
 
 %%
 %{
-  yylloc->step();
+  myLocation->step();
   typedef yy::RPG_Net_Protocol_IRCParser::token token;
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
-  yy_flex_debug=driver.getDebugScanner();
+  yy_flex_debug=driver->getDebugScanner();
   std::stringstream converter;
 %}
 
 <INITIAL>{
-":"                        { yylloc->step();
+":"                        { myLocation->step();
                              BEGIN(prefix);
-                             yylval->ival = 1;
+                             myToken->ival = 1;
                              return token_type(yytext[0]); }
-"\x0D"                     { yylloc->step();
+"\x0D"                     { myLocation->step();
                              BEGIN(end_of_frame);
-                             yylval->ival = 1; }
+                             myToken->ival = 1; }
 } // end <INITIAL>
 <prefix>{
-{SPACE}+                   { yylloc->step();
+{SPACE}+                   { myLocation->step();
                              BEGIN(command);
-                             yylval->ival = yyleng;
+                             myToken->ival = yyleng;
                              return token::SPACE; }
-"!"                        { yylloc->step();
+"!"                        { myLocation->step();
                              BEGIN(user);
-                             yylval->ival = 1;
+                             myToken->ival = 1;
                              return token_type(yytext[0]); }
-"@"                        { yylloc->step();
+"@"                        { myLocation->step();
                              BEGIN(host);
-                             yylval->ival = 1;
+                             myToken->ival = 1;
                              return token_type(yytext[0]); }
-{NICK}|{SERVERNAME}        { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
+{NICK}|{SERVERNAME}        { myLocation->step();
+                             ACE_NEW_NORETURN(myToken->sval,
                                               std::string);
-                             yylval->sval->append(yytext, yyleng);
+                             myToken->sval->append(yytext, yyleng);
                              return token::ORIGIN; }
 } // end <prefix>
 <user>{
-{SPACE}+                   { yylloc->step();
+{SPACE}+                   { myLocation->step();
                              BEGIN(command);
-                             yylval->ival = yyleng;
+                             myToken->ival = yyleng;
                              return token::SPACE; }
-"@"                        { yylloc->step();
+"@"                        { myLocation->step();
                              BEGIN(host);
-                             yylval->ival = 1;
-                             ACE_NEW_NORETURN(yylval->sval,
+                             myToken->ival = 1;
+                             ACE_NEW_NORETURN(myToken->sval,
                                               std::string);
                              return token_type(yytext[0]); }
-{USER}                     { yylloc->step();
+{USER}                     { myLocation->step();
                              BEGIN(prefix);
-                             ACE_NEW_NORETURN(yylval->sval,
+                             ACE_NEW_NORETURN(myToken->sval,
                                               std::string);
-                             yylval->sval->append(yytext, yyleng);
+                             myToken->sval->append(yytext, yyleng);
                              return token::USER; }
 } // end <user>
 <host>{
-{SPACE}+                   { yylloc->step();
+{SPACE}+                   { myLocation->step();
                              BEGIN(command);
-                             yylval->ival = yyleng;
+                             myToken->ival = yyleng;
                              return token::SPACE; }
-{HOST}                     { yylloc->step();
+{HOST}                     { myLocation->step();
                              BEGIN(prefix);
-                             ACE_NEW_NORETURN(yylval->sval,
+                             ACE_NEW_NORETURN(myToken->sval,
                                               std::string);
-                             yylval->sval->append(yytext, yyleng);
+                             myToken->sval->append(yytext, yyleng);
                              return token::HOST; }
 } // end <host>
 <INITIAL,command>{
-{SPACE}+                   { yylloc->step();
+{SPACE}+                   { myLocation->step();
                              BEGIN(params);
-                             yylval->ival = yyleng;
+                             myToken->ival = yyleng;
                              return token::SPACE; }
-[[:digit:]]{3}             { yylloc->step();
+[[:digit:]]{3}             { myLocation->step();
                              converter.str(ACE_TEXT_ALWAYS_CHAR(""));
                              converter.clear();
                              converter << yytext;
-                             converter >> yylval->ival;
+                             converter >> myToken->ival;
                              return token::CMD_NUMERIC; }
-[[:alpha:]]+               { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
+[[:alpha:]]+               { myLocation->step();
+                             ACE_NEW_NORETURN(myToken->sval,
                                               std::string);
-                             yylval->sval->append(yytext, yyleng);
+                             myToken->sval->append(yytext, yyleng);
                              return token::CMD_STRING; }
 } // end <INITIAL, command>
 <params>{
-{SPACE}+                   { yylloc->step();
-                             yylval->ival = yyleng;
+{SPACE}+                   { myLocation->step();
+                             myToken->ival = yyleng;
                              return token::SPACE; }
-":"                        { yylloc->step();
+":"                        { myLocation->step();
                              BEGIN(trailing);
-                             yylval->ival = 1;
+                             myToken->ival = 1;
                              return token_type(yytext[0]); }
-"\x0D"                     { yylloc->step(); /* *NOTE*: non-compliant (see above) */
+"\x0D"                     { myLocation->step(); /* *NOTE*: non-compliant (see above) */
                              BEGIN(end_of_frame); }
-{PARAM}                    { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
+{PARAM}                    { myLocation->step();
+                             ACE_NEW_NORETURN(myToken->sval,
                                               std::string);
-                             yylval->sval->append(yytext, yyleng);
+                             myToken->sval->append(yytext, yyleng);
                              return token::PARAM; }
 } // end <params>
 <trailing>{
-"\x0D"                     { yylloc->step();
+"\x0D"                     { myLocation->step();
                              BEGIN(end_of_frame); }
-{TRAILING_PARAM}           { yylloc->step();
+{TRAILING_PARAM}           { myLocation->step();
                              if (yyleng > 0)
                              {
-                               ACE_NEW_NORETURN(yylval->sval,
+                               ACE_NEW_NORETURN(myToken->sval,
                                                 std::string);
-                               yylval->sval->append(yytext, yyleng);
+                               myToken->sval->append(yytext, yyleng);
                                return token::PARAM;
                              } // end IF
                            }
 } // end <trailing>
 <end_of_frame>{
-"\x0A"                     { yylloc->step();
+"\x0A"                     { myLocation->step();
                              BEGIN(INITIAL);
-                             yylval->ival = 2;
+                             myToken->ival = 2;
                              messageCount++; }
 }
 <<EOF>>                    { yyterminate(); }
-<*>(?s:.)                  { yylloc->step();
+<*>(?s:.)                  { myLocation->step();
 
                              // debug info
                              std::string error_message = ACE_TEXT("invalid character: \"");
                              error_message += yytext[0];
                              error_message += ACE_TEXT("\", aborting");
-                             driver.error(*yylloc, error_message);
+                             driver->error(*myLocation, error_message);
 
                              yyterminate(); }
 %%

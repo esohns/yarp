@@ -21,10 +21,9 @@
 #ifndef RPG_NET_PROTOCOL_COMMON_H
 #define RPG_NET_PROTOCOL_COMMON_H
 
-#include "rpg_net_protocol_IRCmessage.h"
+#include "rpg_net_protocol_exports.h"
 
-#include <rpg_stream_streammodule.h>
-#include <rpg_stream_streammodule_base.h>
+#include <rpg_net_connection_manager.h>
 
 #include <ace/Time_Value.h>
 #include <ace/Date_Time.h>
@@ -42,29 +41,6 @@ class RPG_Stream_IAllocator;
 class RPG_Stream_Module;
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;
-class RPG_Net_Protocol_Module_IRCSplitter;
-class RPG_Net_Protocol_Module_IRCStreamer;
-class RPG_Net_Protocol_SessionMessage;
-class RPG_Net_Protocol_Message;
-template <typename SessionMessageType,
-          typename ProtocolMessageType,
-          typename ProtocolCommandType,
-          typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic;
-
-struct RPG_Net_Protocol_RuntimeStatistic
-{
-  unsigned long numDataMessages; // (protocol) messages
-  double        numBytes;        // amount of processed data
-
-  // convenience
-  inline RPG_Net_Protocol_RuntimeStatistic operator+=(const RPG_Net_Protocol_RuntimeStatistic& rhs_in)
-  {
-    numDataMessages += rhs_in.numDataMessages;
-    numBytes += rhs_in.numBytes;
-
-    return *this;
-  };
-};
 
 struct RPG_Net_Protocol_IRCLoginOptions
 {
@@ -189,6 +165,21 @@ struct RPG_Net_Protocol_PhoneBook
   RPG_Net_Protocol_Servers_t servers;
 };
 
+struct RPG_Net_Protocol_RuntimeStatistic
+{
+  unsigned long numDataMessages; // (protocol) messages
+  double        numBytes;        // amount of processed data
+
+  // convenience
+  inline RPG_Net_Protocol_RuntimeStatistic operator+=(const RPG_Net_Protocol_RuntimeStatistic& rhs_in)
+  {
+    numDataMessages += rhs_in.numDataMessages;
+    numBytes += rhs_in.numBytes;
+
+    return *this;
+  };
+};
+
 struct RPG_Net_Protocol_ConfigPOD
 {
   // ************ connection config data ************
@@ -210,19 +201,11 @@ struct RPG_Net_Protocol_ConfigPOD
   ACE_Time_Value                    lastCollectionTimestamp;
 };
 
-typedef ACE_Singleton<RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
-                                                 RPG_Net_Protocol_RuntimeStatistic>,
+typedef RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
+                                   RPG_Net_Protocol_RuntimeStatistic> RPG_Net_Protocol_Connection_Manager_t;
+typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
-
-// declare module(s)
-DATASTREAM_MODULE_DUPLEX(RPG_Net_Protocol_Module_IRCSplitter,
-                         RPG_Net_Protocol_Module_IRCStreamer,
-                         RPG_Net_Protocol_Module_IRCMarshal);
-typedef RPG_Net_Module_RuntimeStatistic<RPG_Net_Protocol_SessionMessage,
-                                        RPG_Net_Protocol_Message,
-                                        RPG_Net_Protocol_CommandType_t,
-                                        RPG_Net_Protocol_RuntimeStatistic> RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T;
-DATASTREAM_MODULE_T(RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T,
-                    RPG_Net_Protocol_Module_RuntimeStatistic);
-
+RPG_PROTOCOL_SINGLETON_DECLARE(ACE_Singleton,
+					           RPG_Net_Protocol_Connection_Manager_t,
+							   ACE_Recursive_Thread_Mutex);
 #endif

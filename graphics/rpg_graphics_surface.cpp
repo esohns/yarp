@@ -27,23 +27,11 @@
 #include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
 
+#include <ace/OS.h>
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
 
 #include <png.h>
-
-static void
-PNG_read_callback(png_structp png_ptr_in,
-                  png_bytep target_inout,
-                  png_size_t size_in)
-{
-  RPG_TRACE(ACE_TEXT("::PNG_read_callback"));
-
-  ACE_OS::memcpy(target_inout,
-                 static_cast<void*> (png_ptr_in->io_ptr),
-                 size_in);
-  png_ptr_in->io_ptr = (static_cast<unsigned char*> (png_ptr_in->io_ptr) + size_in);
-}
 
 RPG_Graphics_Surface::RPG_Graphics_Surface()
  : mySurface(NULL),
@@ -212,26 +200,38 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
     return NULL;
   } // end IF
 
-  // load complete file into memory
-  // *TODO*: this isn't really necessary...
-  unsigned char* srcbuf = NULL;
-  if (!RPG_Common_File_Tools::loadFile(filename_in,
-                                       srcbuf))
+  //// load complete file into memory
+  //// *TODO*: this isn't really necessary...
+  //unsigned char* srcbuf = NULL;
+  //if (!RPG_Common_File_Tools::loadFile(filename_in,
+  //                                     srcbuf))
+  //{
+  //  ACE_DEBUG((LM_ERROR,
+  //             ACE_TEXT("failed to RPG_Common_File_Tools::loadFile(\"%s\"), aborting\n"),
+  //             filename_in.c_str()));
+
+  //  return NULL;
+  //} // end IF
+  FILE* file_ptr = NULL;
+  if ((file_ptr = ACE_OS::fopen(filename_in.c_str(),                  // filename
+	                            ACE_TEXT_ALWAYS_CHAR("rb"))) == NULL) // mode
+
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::loadFile(\"%s\"), aborting\n"),
+               ACE_TEXT("failed to ACE_OS::fopen(\"%s\"): \"%m\", aborting\n"),
                filename_in.c_str()));
 
     return NULL;
   } // end IF
 
-  // *NOTE*: beyond this point:
-  // - delete[] srcbuf
+  //// *NOTE*: beyond this point:
+  //// - delete[] srcbuf
 
   // extract SDL surface from PNG
   result = RPG_Graphics_Surface::loadPNG(std::string(ACE::basename(filename_in.c_str())),
-                                         srcbuf);
-//                                          alpha_in);
+	                                     file_ptr);
+//                                         srcbuf);
+//                                         alpha_in);
   if (!result)
   {
     ACE_DEBUG((LM_ERROR,
@@ -239,13 +239,21 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
                filename_in.c_str()));
 
     // clean up
-    delete[] srcbuf;
+	if (ACE_OS::fclose(file_ptr))
+	  ACE_DEBUG((LM_ERROR,
+		         ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+			     filename_in.c_str()));
+    //delete[] srcbuf;
 
     return NULL;
   } // end IF
 
   // clean up
-  delete[] srcbuf;
+  if (ACE_OS::fclose(file_ptr))
+	ACE_DEBUG((LM_ERROR,
+	           ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+			   filename_in.c_str()));
+  //delete[] srcbuf;
 
   if (convertToDisplayFormat_in)
   {
@@ -359,7 +367,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((&surface_in)))
-    if (SDL_LockSurface(&const_cast<SDL_Surface&> (surface_in)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&>(surface_in)))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
@@ -369,7 +377,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     } // end IF
 
   // (if neccessary,) strip out alpha bytes and reorder the image bytes to RGB
-  Uint32* pixels = static_cast<Uint32*> (surface_in.pixels);
+  Uint32* pixels = static_cast<Uint32*>(surface_in.pixels);
   for (unsigned long j = 0;
        j < static_cast<unsigned long> (surface_in.h);
        j++)
@@ -377,7 +385,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     image[j] = output;
 
     for (unsigned long i = 0;
-         i < static_cast<unsigned long> (surface_in.w);
+         i < static_cast<unsigned long>(surface_in.w);
          i++)
     {
       *output++ = (((*pixels) & surface_in.format->Rmask) >> surface_in.format->Rshift);   /* red   */
@@ -460,7 +468,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   } // end IF
 
   // save stack context, set up error handling
-  if (::setjmp(png_ptr->jmpbuf))
+  if (::setjmp(png_jmpbuf(png_ptr)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ::setjmp(): %m, aborting\n")));
@@ -672,10 +680,10 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   {
     // bounding box
     SDL_Rect clipRect;
-    clipRect.x = offsetX_in;
-    clipRect.y = offsetY_in;
-    clipRect.w = clipped_width;
-    clipRect.h = clipped_height;
+    clipRect.x = static_cast<int16_t>(offsetX_in);
+    clipRect.y = static_cast<int16_t>(offsetY_in);
+    clipRect.w = static_cast<uint16_t>(clipped_width);
+    clipRect.h = static_cast<uint16_t>(clipped_height);
     if (SDL_BlitSurface(const_cast<SDL_Surface*>(&source_in), // source
                         &clipRect,                            // aspect
                         &target_inout,                        // target
@@ -741,10 +749,10 @@ RPG_Graphics_Surface::put(const unsigned long& offsetX_in,
 
   // clipping
   SDL_Rect toRect;
-  toRect.x = offsetX_in;
-  toRect.y = offsetY_in;
-  toRect.w = image_in.w;
-  toRect.h = image_in.h;
+  toRect.x = static_cast<int16_t>(offsetX_in);
+  toRect.y = static_cast<int16_t>(offsetY_in);
+  toRect.w = static_cast<uint16_t>(image_in.w);
+  toRect.h = static_cast<uint16_t>(image_in.h);
 
   if (SDL_BlitSurface(&const_cast<SDL_Surface&>(image_in), // source
                       NULL,                                // aspect (--> everything)
@@ -1070,25 +1078,26 @@ RPG_Graphics_Surface::update(const SDL_Rect& dirty_in,
 
 SDL_Surface*
 RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
-                              const unsigned char* buffer_in)
-//                               const unsigned char& alpha_in)
+                              FILE* file_in)
+//                              const unsigned char* buffer_in)
+//                              const unsigned char& alpha_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::loadPNG"));
 
   // init return value(s)
   SDL_Surface* result = NULL;
 
-  // sanity check
-  //--> buffer must contain a PNG file
-  if (png_sig_cmp(const_cast<unsigned char*>(buffer_in), // buffer
-                  0,                                     // start at the beginning
-                  RPG_GRAPHICS_PNG_SIGNATURE_BYTES))     // #signature bytes to check
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to png_sig_cmp(): %m, aborting\n")));
+  //// sanity check
+  ////--> buffer must contain a PNG file
+  //if (png_sig_cmp(const_cast<unsigned char*>(buffer_in), // buffer
+  //                0,                                     // start at the beginning
+  //                RPG_GRAPHICS_PNG_SIGNATURE_BYTES))     // #signature bytes to check
+  //{
+  //  ACE_DEBUG((LM_ERROR,
+  //             ACE_TEXT("failed to png_sig_cmp(): %m, aborting\n")));
 
-    return NULL;
-  } // end IF
+  //  return NULL;
+  //} // end IF
 
   png_structp png_ptr = NULL;
   // create the PNG loading context structure
@@ -1128,7 +1137,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   // - cleanup "info_ptr"
 
   // save stack context, set up error handling
-  if (::setjmp(png_ptr->jmpbuf))
+  if (::setjmp(png_jmpbuf(png_ptr)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ::setjmp(): %m, aborting\n")));
@@ -1142,10 +1151,11 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   } // end IF
 
   // set up data input callback
-  // *TODO*: use png_init_io() instead (load directly from the file...)
-  png_set_read_fn(png_ptr,
-                  const_cast<unsigned char*>(buffer_in),
-                  PNG_read_callback);
+  png_init_io(png_ptr, file_in);
+  //// *TODO*: use png_init_io() instead (load directly from the file...)
+  //png_set_read_fn(png_ptr,
+  //                const_cast<unsigned char*>(buffer_in),
+  //                PNG_read_callback);
 
   // read PNG header info
   png_read_info(png_ptr,
@@ -1174,7 +1184,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
              width,
              height,
              bit_depth,
-             static_cast<unsigned long> (png_get_channels(png_ptr, info_ptr)),
+             static_cast<unsigned long>(png_get_channels(png_ptr, info_ptr)),
              color_type,
              interlace,
              compression,
@@ -1199,17 +1209,20 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
 //   // --> strip any alpha channel
 //   png_set_strip_alpha(png_ptr);
 
-  // add an (opaque) alpha channel to anything that doesn't have one yet
-  // --> add a filler byte to 8-bit Gray or 24-bit RGB images
-  png_set_filler(png_ptr,
-                 0xFF,
-//                  alpha_in,
-                 PNG_FILLER_AFTER);
-  png_set_add_alpha(png_ptr,
-                    0xFF,
-//                     alpha_in,
-                    PNG_FILLER_AFTER);
-  info_ptr->color_type |= PNG_COLOR_MASK_ALPHA;
+  if ((color_type & PNG_COLOR_MASK_ALPHA) == 0)
+  {
+	// add an (opaque) alpha channel to anything that doesn't have one yet
+    // --> add a filler byte to 8-bit Gray or 24-bit RGB images
+	png_set_filler(png_ptr,
+			       0xFF,
+//                   alpha_in,
+				   PNG_FILLER_AFTER);
+	png_set_add_alpha(png_ptr,
+		              0xFF,
+//                      alpha_in,
+			          PNG_FILLER_AFTER);
+	png_read_update_info(png_ptr, info_ptr);
+  } // end IF
 
   // allocate surface
   // *NOTE*:

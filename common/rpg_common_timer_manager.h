@@ -21,6 +21,7 @@
 #ifndef RPG_COMMON_TIMER_MANAGER_H
 #define RPG_COMMON_TIMER_MANAGER_H
 
+#include "rpg_common_exports.h"
 #include "rpg_common_timerhandler.h"
 #include "rpg_common_idumpstate.h"
 
@@ -38,7 +39,7 @@
 // forward declarations
 class RPG_Common_ITimer;
 
-class RPG_Common_Timer_Manager
+class RPG_Common_Export RPG_Common_Timer_Manager
  : public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors

@@ -61,7 +61,9 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 template <typename SessionMessageType,
@@ -77,7 +79,9 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 template <typename SessionMessageType,
@@ -91,7 +95,9 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 template <typename SessionMessageType,
@@ -109,7 +115,9 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 
 template <typename SessionMessageType,
@@ -123,7 +131,9 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(return -1;)
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+
+  return -1;
 }
 // *** END dummy stub methods ***
 
@@ -432,7 +442,7 @@ RPG_Stream_TaskBase<SessionMessageType,
     {
       SessionMessageType* sessionMessage = NULL;
       // downcast message
-      sessionMessage = dynamic_cast<SessionMessageType*> (controlMessage_in);
+      sessionMessage = dynamic_cast<SessionMessageType*>(controlMessage_in);
       if (!sessionMessage)
       {
         // debug info

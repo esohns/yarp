@@ -21,6 +21,7 @@
 #ifndef RPG_MAP_COMMON_TOOLS_H
 #define RPG_MAP_COMMON_TOOLS_H
 
+#include "rpg_map_exports.h"
 #include "rpg_map_defines.h"
 #include "rpg_map_common.h"
 
@@ -33,7 +34,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Map_Common_Tools
+class RPG_Map_Export RPG_Map_Common_Tools
 {
  public:
   static void create(const std::string&,                // name

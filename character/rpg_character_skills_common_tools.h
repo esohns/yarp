@@ -17,19 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 #define RPG_CHARACTER_SKILLS_COMMON_TOOLS_H
 
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
+#include "rpg_character_incl.h"
+
 #include "rpg_character_exports.h"
-#include "rpg_character_feat.h"
-#include "rpg_character_race.h"
-#include "rpg_character_attributes.h"
 #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
 #include "rpg_character_common_tools.h"
-
-#include <rpg_common_subclass.h>
-#include <rpg_common_skill.h>
 
 #include <ace/Global_Macros.h>
 

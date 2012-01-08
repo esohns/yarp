@@ -46,7 +46,7 @@ class RPG_Character_Player
                        const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
                        // current status
                        const RPG_Character_Conditions_t&, // condition
-                       const unsigned short int&,         // HP
+                       const short int&,                  // HP
                        const unsigned int&,               // XP
                        const unsigned int&,               // wealth (GP)
                        const RPG_Magic_Spells_t&,         // list of prepared spells (if any)

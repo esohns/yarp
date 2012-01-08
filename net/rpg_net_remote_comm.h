@@ -34,25 +34,43 @@ class RPG_Net_Remote_Comm
   };
 
   // define a common message header
+#ifdef _MSC_VER
+#pragma pack(push, 1)
+#endif
   struct MessageHeader
   {
     // *NOTE*: messageLength is (currently) defined as:
     // *PORTABILITY*: total message length - sizeof(unsigned long) !
     unsigned long messageLength;
     MessageType   messageType;
-  }; __attribute__ ((__packed__));
+#ifdef __GNUC__
+  } __attribute__ ((__packed__));
+#else
+  };
+#endif
 
   // -----------**** protocol messages ****-----------
   struct PingMessage
   {
     MessageHeader messageHeader;
     unsigned long counter;
-  }; __attribute__ ((__packed__));
+#ifdef __GNUC__
+  } __attribute__ ((__packed__));
+#else
+  };
+#endif
   struct PongMessage
   {
     MessageHeader messageHeader;
-  }; __attribute__ ((__packed__));
+#ifdef __GNUC__
+  } __attribute__ ((__packed__));
+#else
+  };
+#endif
   // -----------**** protocol messages END ****-----------
+#ifdef _MSC_VER
+#pragma pack(pop)
+#endif
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm());

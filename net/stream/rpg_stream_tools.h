@@ -21,12 +21,14 @@
 #ifndef RPG_STREAM_TOOLS_H
 #define RPG_STREAM_TOOLS_H
 
+#include "rpg_stream_exports.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
 
 #include <string>
 
-class RPG_Stream_Tools
+class RPG_Stream_Export RPG_Stream_Tools
 {
  public:
   // *WARNING*: beware, this uses localtime_r internally, so you should probably pass in a local time
@@ -38,7 +40,6 @@ class RPG_Stream_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Tools(const RPG_Stream_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Tools& operator=(const RPG_Stream_Tools&));
-  virtual ~RPG_Stream_Tools();
 };
 
 #endif

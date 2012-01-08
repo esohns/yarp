@@ -112,8 +112,9 @@ class RPG_Graphics_Surface
  private:
   // helper methods
   static SDL_Surface* loadPNG(const std::string&,    // filename
-                              const unsigned char*); // source buffer
-//                             const unsigned char&); // alpha (0: transparent --> 255: opaque)
+	                          FILE*);                // file handle
+//                              const unsigned char*); // source buffer
+//                              const unsigned char&); // alpha (0: transparent --> 255: opaque)
 
   SDL_Surface*                  mySurface;
   RPG_Graphics_GraphicTypeUnion myType;

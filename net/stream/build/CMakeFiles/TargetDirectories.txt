@@ -1,1 +1,0 @@
-/mnt/win_c/Projects/RPG/stream/build/CMakeFiles/RPG_Stream.dir

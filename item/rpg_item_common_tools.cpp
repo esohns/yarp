@@ -17,11 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_item_common_tools.h"
 
 #include "rpg_item_incl.h"
 #include "rpg_item_dictionary.h"
 
+#include <rpg_common_environment_incl.h>
 #include <rpg_character_incl.h>
 #include <rpg_magic_incl.h>
 
@@ -40,7 +42,8 @@ RPG_Item_WeaponTypeToStringTable_t RPG_Item_WeaponTypeHelper::myRPG_Item_WeaponT
 RPG_Item_ArmorCategoryToStringTable_t RPG_Item_ArmorCategoryHelper::myRPG_Item_ArmorCategoryToStringTable;
 RPG_Item_ArmorTypeToStringTable_t RPG_Item_ArmorTypeHelper::myRPG_Item_ArmorTypeToStringTable;
 
-void RPG_Item_Common_Tools::initStringConversionTables()
+void
+RPG_Item_Common_Tools::initStringConversionTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::initStringConversionTables"));
 
@@ -57,7 +60,8 @@ void RPG_Item_Common_Tools::initStringConversionTables()
              ACE_TEXT("RPG_Item_Common_Tools: initialized string conversion tables...\n")));
 }
 
-const std::string RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item_WeaponDamageType& weaponDamageType_in)
+const std::string
+RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item_WeaponDamageType& weaponDamageType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageTypeToString"));
 
@@ -95,7 +99,8 @@ const std::string RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item
   return result;
 }
 
-const RPG_Common_PhysicalDamageList_t RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType& weaponDamageType_in)
+const RPG_Common_PhysicalDamageList_t
+RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType& weaponDamageType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType"));
 
@@ -124,7 +129,8 @@ const RPG_Common_PhysicalDamageList_t RPG_Item_Common_Tools::weaponDamageTypeToP
   return result;
 }
 
-const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& damage_in)
+const std::string
+RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& damage_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::damageToString"));
 
@@ -155,7 +161,8 @@ const std::string RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& d
   return result;
 }
 
-const bool RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_in)
+const bool
+RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isShield"));
 
@@ -179,7 +186,8 @@ const bool RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_i
   return false;
 }
 
-const bool RPG_Item_Common_Tools::isThrownWeapon(const RPG_Item_WeaponType& weaponType_in)
+const bool
+RPG_Item_Common_Tools::isThrownWeapon(const RPG_Item_WeaponType& weaponType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isThrownWeapon"));
 
@@ -188,7 +196,8 @@ const bool RPG_Item_Common_Tools::isThrownWeapon(const RPG_Item_WeaponType& weap
   return (weapon_properties.rangeIncrement && !isProjectileWeapon(weaponType_in));
 }
 
-const bool RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& weaponType_in)
+const bool
+RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& weaponType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isProjectileWeapon"));
 
@@ -216,14 +225,16 @@ const bool RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& 
   return false;
 }
 
-const bool RPG_Item_Common_Tools::isRangedWeapon(const RPG_Item_WeaponType& weaponType_in)
+const bool
+RPG_Item_Common_Tools::isRangedWeapon(const RPG_Item_WeaponType& weaponType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isRangedWeapon"));
 
   return (isThrownWeapon(weaponType_in) || isProjectileWeapon(weaponType_in));
 }
 
-const bool RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_in)
+const bool
+RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isTwoHandedWeapon"));
 
@@ -265,7 +276,8 @@ const bool RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& w
   return false;
 }
 
-const bool RPG_Item_Common_Tools::isMeleeWeapon(const RPG_Item_WeaponType& weaponType_in)
+const bool
+RPG_Item_Common_Tools::isMeleeWeapon(const RPG_Item_WeaponType& weaponType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isMeleeWeapon"));
 

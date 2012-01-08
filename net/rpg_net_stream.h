@@ -21,7 +21,9 @@
 #ifndef RPG_NET_STREAM_H
 #define RPG_NET_STREAM_H
 
+#include "rpg_net_exports.h"
 #include "rpg_net_common.h"
+#include "rpg_net_common_modules.h"
 #include "rpg_net_stream_config.h"
 #include "rpg_net_module_sockethandler.h"
 #include "rpg_net_module_headerparser.h"
@@ -38,7 +40,7 @@
 class RPG_Net_SessionMessage;
 class RPG_Net_Message;
 
-class RPG_Net_Stream
+class RPG_Net_Export RPG_Net_Stream
  : public RPG_Stream_Base<RPG_Net_ConfigPOD,
                           RPG_Net_StreamConfig,
                           RPG_Net_SessionMessage,

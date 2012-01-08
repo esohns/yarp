@@ -123,12 +123,12 @@ RPG_Graphics_SDLWindowSub::restoreBG()
                             myScreen);
   // update screen immediately
   SDL_Rect dirtyRegion;
-  dirtyRegion.x = (myScreen->w -
-                   (myBorderLeft + myBorderRight) -
-                   myOffset.first);
-  dirtyRegion.y = (myScreen->h -
-                   (myBorderTop + myBorderBottom) -
-                   myOffset.second);
+  dirtyRegion.x = static_cast<int16_t>(myScreen->w -
+                                       (myBorderLeft + myBorderRight) -
+                                       myOffset.first);
+  dirtyRegion.y = static_cast<int16_t>(myScreen->h -
+                                       (myBorderTop + myBorderBottom) -
+                                       myOffset.second);
   dirtyRegion.w = myBG->w;
   dirtyRegion.h = myBG->h;
   RPG_Graphics_Surface::update(dirtyRegion,

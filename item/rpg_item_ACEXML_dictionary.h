@@ -17,9 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ITEM_DICTIONARY_H
 #define RPG_ITEM_DICTIONARY_H
 
+#include "rpg_item_exports.h"
 #include "rpg_item_common.h"
 
 #include <ace/Global_Macros.h>
@@ -54,5 +56,6 @@ class RPG_Item_Dictionary
 
 typedef ACE_Singleton<RPG_Item_Dictionary,
                       ACE_Thread_Mutex> RPG_ITEM_DICTIONARY_SINGLETON;
+RPG_ITEM_SINGLETON_DECLARE(ACE_Singleton, RPG_Item_Dictionary, ACE_Thread_Mutex)
 
 #endif

@@ -22,6 +22,9 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/Guard_T.h>
+#include <ace/Synch.h>
+
 RPG_Stream_Counter::RPG_Stream_Counter(const unsigned long& initCount_in)
  : myCounter(initCount_in),
    myCondition(myLock)

@@ -28,6 +28,8 @@
 #define RPG_MAP_DEF_TRACE_SCANNING false
 #define RPG_MAP_DEF_TRACE_PARSING  false
 
+#define RPG_MAP_SCANNER_BUFSIZE    16384 // == to YY_BUF_SIZE
+
 #define RPG_MAP_EXT                ACE_TEXT(".txt")
 
 #define RPG_MAP_NAME_MAX_LENGTH    30

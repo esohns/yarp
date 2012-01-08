@@ -353,7 +353,12 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 
           break;
         }
+#if defined ACE_WIN32 || defined ACE_WIN64
+#pragma message("applying quirk code for this compiler...")
+		case RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR:
+#else
         case RPG_Net_Protocol_IRCMessage::ERROR:
+#endif
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("[%u]: received \"ERROR\": \"%s\"\n"),

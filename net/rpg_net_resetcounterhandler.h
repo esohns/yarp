@@ -21,6 +21,8 @@
 #ifndef RPG_NET_RESETCOUNTERHANDLER_H
 #define RPG_NET_RESETCOUNTERHANDLER_H
 
+#include "rpg_net_exports.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>
 #include <ace/Time_Value.h>
@@ -28,7 +30,7 @@
 // forward declaration(s)
 class RPG_Net_ICounter;
 
-class RPG_Net_ResetCounterHandler
+class RPG_Net_Export RPG_Net_ResetCounterHandler
  : public ACE_Event_Handler
 {
  public:

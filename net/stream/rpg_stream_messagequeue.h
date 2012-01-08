@@ -21,11 +21,12 @@
 #ifndef RPG_STREAM_MESSAGEQUEUE_H
 #define RPG_STREAM_MESSAGEQUEUE_H
 
+#include "rpg_stream_exports.h"
 #include "rpg_stream_messagequeue_base.h"
 
 #include <ace/Global_Macros.h>
 
-class RPG_Stream_MessageQueue
+class RPG_Stream_Export RPG_Stream_MessageQueue
  : public RPG_Stream_MessageQueueBase
 {
  public:

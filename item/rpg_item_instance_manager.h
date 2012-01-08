@@ -21,6 +21,7 @@
 #ifndef RPG_ITEM_INSTANCE_MANAGER_H
 #define RPG_ITEM_INSTANCE_MANAGER_H
 
+#include "rpg_item_exports.h"
 #include "rpg_item_instance_base.h"
 #include "rpg_item_base.h"
 #include "rpg_item_XML_tree.h"
@@ -33,7 +34,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Instance_Manager
+class RPG_Item_Export RPG_Item_Instance_Manager
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
   friend class ACE_Singleton<RPG_Item_Instance_Manager,
@@ -71,5 +72,6 @@ class RPG_Item_Instance_Manager
 
 typedef ACE_Singleton<RPG_Item_Instance_Manager,
                       ACE_Thread_Mutex> RPG_ITEM_INSTANCE_MANAGER_SINGLETON;
+RPG_ITEM_SINGLETON_DECLARE(ACE_Singleton, RPG_Item_Instance_Manager, ACE_Thread_Mutex);
 
 #endif

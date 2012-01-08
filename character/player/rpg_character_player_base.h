@@ -21,6 +21,8 @@
 #ifndef RPG_CHARACTER_PLAYER_BASE_H
 #define RPG_CHARACTER_PLAYER_BASE_H
 
+#include "rpg_character_player_exports.h"
+
 #include <rpg_common_subclass.h>
 
 #include <rpg_character_base.h>
@@ -51,7 +53,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Player_Base
+class RPG_Player_Export RPG_Character_Player_Base
  : public RPG_Character_Base
 {
  public:
@@ -99,7 +101,7 @@ class RPG_Character_Player_Base
                             const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
                             // current status
                             const RPG_Character_Conditions_t&, // condition
-                            const unsigned short int&,         // HP
+                            const short int&,                  // HP
                             const unsigned int&,               // XP
                             const unsigned int&,               // wealth (GP)
                             const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
@@ -122,7 +124,7 @@ class RPG_Character_Player_Base
             const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
             // current status
             const RPG_Character_Conditions_t&, // condition
-            const unsigned short int&,         // HP
+            const short int&,                  // HP
             const unsigned int&,               // XP
             const unsigned int&,               // wealth (GP)
             const RPG_Magic_Spells_t&,         // list of prepared spells (if any)

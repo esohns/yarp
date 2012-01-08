@@ -192,7 +192,12 @@ RPG_Net_Protocol_Tools::IRCCommandString2Type(const std::string& commandString_i
   else if (commandString_in == ACE_TEXT("PONG"))
     return RPG_Net_Protocol_IRCMessage::PONG;
   else if (commandString_in == ACE_TEXT("ERROR"))
+#if defined ACE_WIN32 || defined ACE_WIN64
+#pragma message("applying quirk code for this compiler...")
+    return RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR;
+#else
     return RPG_Net_Protocol_IRCMessage::ERROR;
+#endif
   else if ((commandString_in) == ACE_TEXT("AWAY"))
     return RPG_Net_Protocol_IRCMessage::AWAY;
   else if ((commandString_in) == ACE_TEXT("REHASH"))
@@ -1406,7 +1411,12 @@ RPG_Net_Protocol_Tools::IRCMessage2String(const RPG_Net_Protocol_IRCMessage& mes
         case RPG_Net_Protocol_IRCMessage::TOPIC:
         case RPG_Net_Protocol_IRCMessage::INVITE:
         case RPG_Net_Protocol_IRCMessage::KICK:
+#if defined ACE_WIN32 || defined ACE_WIN64
+#pragma message("applying quirk code for this compiler...")
+		case RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR:
+#else
         case RPG_Net_Protocol_IRCMessage::ERROR:
+#endif
         case RPG_Net_Protocol_IRCMessage::AWAY:
         case RPG_Net_Protocol_IRCMessage::USERS:
         case RPG_Net_Protocol_IRCMessage::USERHOST:

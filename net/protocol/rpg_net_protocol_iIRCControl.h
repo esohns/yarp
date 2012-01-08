@@ -22,6 +22,7 @@
 #define RPG_NET_PROTOCOL_IIRCCONTROL_H
 
 #include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_IRCmessage.h"
 
 #include <string>
 

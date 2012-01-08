@@ -7,7 +7,9 @@
 #ifndef RPG_ITEM_ARMORPROPERTIESBASE_H
 #define RPG_ITEM_ARMORPROPERTIESBASE_H
 
-struct RPG_Item_ArmorPropertiesBase
+#include "rpg_item_exports.h"
+
+struct RPG_Item_Export RPG_Item_ArmorPropertiesBase
  : public RPG_Item_PropertiesBase
 {
   RPG_Item_ArmorType armorType;

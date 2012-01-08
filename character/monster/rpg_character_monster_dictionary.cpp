@@ -17,12 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_character_monster_dictionary.h"
 
-#include "rpg_character_monster_XML_parser.h"
-#include "rpg_character_monster_common_tools.h"
+#include <rpg_dice_XML_parser.h>
+#include <rpg_dice_common_tools.h>
 
-#include <rpg_combat_XML_parser.h>
+#include <rpg_common_XML_parser.h>
+#include <rpg_common_tools.h>
 
 #include <rpg_character_XML_parser.h>
 #include <rpg_character_common_tools.h>
@@ -30,11 +32,10 @@
 
 #include <rpg_magic_XML_parser.h>
 
-#include <rpg_common_XML_parser.h>
-#include <rpg_common_tools.h>
+#include <rpg_combat_XML_parser.h>
 
-#include <rpg_dice_XML_parser.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_character_monster_XML_parser.h"
+#include "rpg_character_monster_common_tools.h"
 
 #include <rpg_common_macros.h>
 

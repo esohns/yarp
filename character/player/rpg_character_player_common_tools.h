@@ -21,6 +21,7 @@
 #ifndef RPG_CHARACTER_PLAYER_COMMON_TOOLS_H
 #define RPG_CHARACTER_PLAYER_COMMON_TOOLS_H
 
+#include "rpg_character_player_exports.h"
 #include "rpg_character_player_common.h"
 #include "rpg_character_player_XML_tree.h"
 
@@ -30,7 +31,7 @@
 
 #include <rpg_magic_common.h>
 
-class RPG_Character_Player_Common_Tools
+class RPG_Player_Export RPG_Character_Player_Common_Tools
 {
  public:
   // *WARNING*: result needs to be delete()d !

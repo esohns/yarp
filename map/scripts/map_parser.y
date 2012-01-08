@@ -2,27 +2,26 @@
 %error-verbose
 %define parser_class_name "RPG_Map_Parser"
 /* %define api.pure */
-/* %locations */
+%locations
+/* %define parse.lac full */
 /* %define namespace "" */
 /* %name-prefix "MapParse" */
 
 %code requires {
 class RPG_Map_ParserDriver;
-typedef void* yyscan_t;
+class RPG_Map_Scanner;
 }
 
 // parsing context
-%parse-param { RPG_Map_ParserDriver& driver }
-%parse-param { unsigned long& line_count }
-%parse-param { yyscan_t& context }
-%lex-param   { RPG_Map_ParserDriver& driver }
-%lex-param   { unsigned long& line_count }
-%lex-param   { yyscan_t& context }
+%parse-param { RPG_Map_ParserDriver* driver }
+%parse-param { RPG_Map_Scanner& scanner }
+%lex-param { RPG_Map_ParserDriver* driver }
+%lex-param { RPG_Map_Scanner& scanner }
 
 %initial-action
 {
   // Initialize the initial location
-  //@$.begin.filename = @$.end.filename = &driver.file;
+  @$.begin.filename = @$.end.filename = &driver->myCurrentFilename;
 
   // initialize the token value container
   $$.cval = 0;
@@ -63,50 +62,50 @@ typedef void* yyscan_t;
 %left GLYPH;
 
 map:    name glyphs "end_of_file" /* default */
-name:   "name"                    { *(driver.myCurrentName) = *$1;
+name:   "name"                    { *(driver->myCurrentName) = *$1;
                                   };
 glyphs:                           /* empty */
         | glyphs "glyph"          { switch ($2)
                                     {
                                       case ' ':
                                       {
-                                        driver.myCurrentPlan->unmapped.insert(driver.myCurrentPosition);
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPlan->unmapped.insert(driver->myCurrentPosition);
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '.':
                                       {
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '#':
                                       {
-                                        driver.myCurrentPlan->walls.insert(driver.myCurrentPosition);
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPlan->walls.insert(driver->myCurrentPosition);
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '=':
                                       {
                                         RPG_Map_Door_t door;
-                                        door.position = driver.myCurrentPosition;
+                                        door.position = driver->myCurrentPosition;
                                         door.outside = DIRECTION_INVALID;
                                         door.is_open = false;
                                         door.is_locked = false;
                                         door.is_broken = false;
-                                        driver.myCurrentPlan->doors.insert(door);
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPlan->doors.insert(door);
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '@':
                                       {
-                                        driver.myCurrentSeedPoints->insert(driver.myCurrentPosition);
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentSeedPoints->insert(driver->myCurrentPosition);
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case 'X':
                                       {
-                                        *(driver.myCurrentStartPosition) = driver.myCurrentPosition;
-                                        driver.myCurrentPosition.first++;
+                                        *(driver->myCurrentStartPosition) = driver->myCurrentPosition;
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       default:
@@ -115,15 +114,15 @@ glyphs:                           /* empty */
                                                    ACE_TEXT("invalid/unknown glyph: \"%c\", continuing\n"),
                                                    $2));
 
-                                        driver.myCurrentPosition.first++;
+                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                     } // end SWITCH
                                   };
-        | glyphs "end_of_row"  { if (driver.myCurrentSizeX == 0)
-                                   driver.myCurrentSizeX = driver.myCurrentPosition.first;
-                                 driver.myCurrentPosition.first = 0;
-                                 driver.myCurrentPosition.second++;
+        | glyphs "end_of_row"  { if (driver->myCurrentSizeX == 0)
+                                   driver->myCurrentSizeX = driver->myCurrentPosition.first;
+                                 driver->myCurrentPosition.first = 0;
+                                 driver->myCurrentPosition.second++;
                                };
 %%
 
@@ -133,5 +132,5 @@ yy::RPG_Map_Parser::error(const location_type& location_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Map_Parser::error"));
 
-  driver.error(location_in, message_in);
+  driver->error(location_in, message_in);
 }

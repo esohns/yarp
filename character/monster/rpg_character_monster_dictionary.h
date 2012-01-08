@@ -17,16 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_CHARACTER_MONSTER_DICTIONARY_H
 #define RPG_CHARACTER_MONSTER_DICTIONARY_H
 
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
+#include <rpg_common_environment_incl.h>
+#include <rpg_character_incl.h>
+
+#include "rpg_character_monster_exports.h"
 #include "rpg_character_monster_common.h"
-
-#include <rpg_character_alignment.h>
-#include <rpg_common_environment.h>
-
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_roll.h>
 
 #include <xsd/cxx/xml/error-handler.hxx>
 
@@ -39,7 +40,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Monster_Dictionary
+class RPG_Monster_Export RPG_Character_Monster_Dictionary
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
   friend class ACE_Singleton<RPG_Character_Monster_Dictionary,
@@ -87,5 +88,6 @@ class RPG_Character_Monster_Dictionary
 
 typedef ACE_Singleton<RPG_Character_Monster_Dictionary,
                       ACE_Thread_Mutex> RPG_CHARACTER_MONSTER_DICTIONARY_SINGLETON;
+RPG_MONSTER_SINGLETON_DECLARE(ACE_Singleton, RPG_Character_Monster_Dictionary, ACE_Thread_Mutex);
 
 #endif

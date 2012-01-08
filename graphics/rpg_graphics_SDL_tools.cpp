@@ -24,6 +24,7 @@
 
 #include <rpg_common_macros.h>
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 // init statics
@@ -401,10 +402,10 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
 
   // init result
   SDL_Rect result;
-  result.x = ((rect1_in.x < rect2_in.x) ? rect1_in.x : rect2_in.x);
-  result.y = ((rect1_in.y < rect2_in.y) ? rect1_in.y : rect2_in.y);
-  result.w = (lower_right.first - result.x) + 1;
-  result.h = (lower_right.second - result.y) + 1;
+  result.x = static_cast<int16_t>((rect1_in.x < rect2_in.x) ? rect1_in.x : rect2_in.x);
+  result.y = static_cast<int16_t>((rect1_in.y < rect2_in.y) ? rect1_in.y : rect2_in.y);
+  result.w = static_cast<uint16_t>(lower_right.first - result.x) + 1;
+  result.h = static_cast<uint16_t>(lower_right.second - result.y) + 1;
 
   return result;
 }
@@ -421,10 +422,10 @@ RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
 
   // init result
   SDL_Rect result;
-  result.x = ((rect1_in.x > rect2_in.x) ? rect1_in.x : rect2_in.x);
-  result.y = ((rect1_in.y > rect2_in.y) ? rect1_in.y : rect2_in.y);
-  result.w = (lower_right.first - result.x) + 1;
-  result.h = (lower_right.second - result.y) + 1;
+  result.x = static_cast<int16_t>((rect1_in.x > rect2_in.x) ? rect1_in.x : rect2_in.x);
+  result.y = static_cast<int16_t>((rect1_in.y > rect2_in.y) ? rect1_in.y : rect2_in.y);
+  result.w = static_cast<uint16_t>(lower_right.first - result.x) + 1;
+  result.h = static_cast<uint16_t>(lower_right.second - result.y) + 1;
 
   return result;
 }

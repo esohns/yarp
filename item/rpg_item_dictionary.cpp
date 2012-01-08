@@ -17,19 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_item_dictionary.h"
+
+#include <rpg_dice_common_tools.h>
+#include <rpg_dice_XML_parser.h>
+
+#include <rpg_common_macros.h>
+#include <rpg_common_XML_parser.h>
+
+#include <rpg_magic_XML_parser.h>
 
 #include "rpg_item_common.h"
 #include "rpg_item_common_tools.h"
 #include "rpg_item_XML_parser.h"
-
-#include <rpg_dice_common_tools.h>
-
-#include <rpg_magic_XML_parser.h>
-#include <rpg_dice_XML_parser.h>
-#include <rpg_common_XML_parser.h>
-
-#include <rpg_common_macros.h>
 
 #include <ace/Log_Msg.h>
 

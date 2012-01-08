@@ -21,16 +21,18 @@
 #ifndef RPG_STREAM_DATABLOCKALLOCATORHEAP_H
 #define RPG_STREAM_DATABLOCKALLOCATORHEAP_H
 
+#include "rpg_stream_exports.h"
 #include "rpg_stream_iallocator.h"
 
 #include <ace/Malloc_Allocator.h>
 #include <ace/Synch.h>
+#include <ace/Lock_Adapter_T.h>
 #include <ace/Atomic_Op.h>
 
 // forward declarations
 class RPG_Stream_AllocatorHeap;
 
-class RPG_Stream_DataBlockAllocatorHeap
+class RPG_Stream_Export RPG_Stream_DataBlockAllocatorHeap
  : public ACE_New_Allocator,
    public RPG_Stream_IAllocator
 {

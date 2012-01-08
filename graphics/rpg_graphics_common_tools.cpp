@@ -28,6 +28,7 @@
 #include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
 
+#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
 #include <png.h>
@@ -1993,7 +1994,7 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fade"));
 
   // calculate the number of blends
-  int n_steps = RPG_GRAPHICS_FADE_REFRESH_RATE * interval_in;
+  int n_steps = static_cast<int>(RPG_GRAPHICS_FADE_REFRESH_RATE * interval_in);
   if (SDL_SetAlpha(targetImage_in,
                    (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
                    (SDL_ALPHA_OPAQUE / n_steps)))
@@ -2007,7 +2008,7 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
 
   Uint32 cur_clock, end_clock, start_clock, sleeptime, elapsed;
   start_clock = cur_clock = SDL_GetTicks();
-  end_clock = start_clock + (interval_in * 1000);
+  end_clock = start_clock + static_cast<int>(interval_in * 1000);
   while (cur_clock <= end_clock)
   {
     // *NOTE*: blitting the image onto the screen repeatedly

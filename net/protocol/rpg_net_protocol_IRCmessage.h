@@ -87,7 +87,12 @@ class RPG_Net_Protocol_IRCMessage
       KILL,
       PING,
       PONG,
+#if defined ACE_WIN32 || defined ACE_WIN64
+#pragma message("applying quirk code for this compiler...")
+      __QUIRK__ERROR,
+#else
       ERROR,
+#endif
       AWAY,
       REHASH,
       RESTART,
