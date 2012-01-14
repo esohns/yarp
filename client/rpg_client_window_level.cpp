@@ -471,7 +471,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   clear();
 
   // pass 1
-  for (i = -top_right.second;
+  for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
        i++)
   {
@@ -707,7 +707,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
   RPG_Engine_EntityGraphics_t entity_graphics = myLevelState->getGraphics();
   RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
-  for (i = -top_right.second;
+  for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
        i++)
   {
@@ -1651,10 +1651,10 @@ RPG_Client_WindowLevel::drawHighlight(const RPG_Graphics_Position_t& graphicsPos
   unclip();
 
   SDL_Rect dirtyRegion, clipRect;
-  dirtyRegion.x = graphicsPosition_in.first;
-  dirtyRegion.y = graphicsPosition_in.second;
-  dirtyRegion.w = myHighlightTile->w;
-  dirtyRegion.h = myHighlightTile->h;
+  dirtyRegion.x = static_cast<int16_t>(graphicsPosition_in.first);
+  dirtyRegion.y = static_cast<int16_t>(graphicsPosition_in.second);
+  dirtyRegion.w = static_cast<uint16_t>(myHighlightTile->w);
+  dirtyRegion.h = static_cast<uint16_t>(myHighlightTile->h);
   SDL_GetClipRect(myScreen, &clipRect);
 
 //   invalidate(dirtyRegion);
@@ -1703,10 +1703,10 @@ RPG_Client_WindowLevel::restoreHighlightBG()
                               *myHighlightBG,
                               myScreen);
 
-    dirtyRegion.x = tile_position.first;
-    dirtyRegion.y = tile_position.second;
-    dirtyRegion.w = myHighlightBG->w;
-    dirtyRegion.h = myHighlightBG->h;
+    dirtyRegion.x = static_cast<int16_t>(tile_position.first);
+    dirtyRegion.y = static_cast<int16_t>(tile_position.second);
+    dirtyRegion.w = static_cast<uint16_t>(myHighlightBG->w);
+    dirtyRegion.h = static_cast<uint16_t>(myHighlightBG->h);
     SDL_GetClipRect(myScreen, &clipRect);
 //       invalidate(dirtyRegion);
     // *NOTE*: updating straight away reduces ugly smears...

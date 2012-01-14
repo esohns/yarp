@@ -21,6 +21,7 @@
 #ifndef RPG_GRAPHICS_SDL_WINDOW_BASE_H
 #define RPG_GRAPHICS_SDL_WINDOW_BASE_H
 
+#include "rpg_graphics_exports.h"
 #include "rpg_graphics_iwindow.h"
 #include "rpg_graphics_common.h"
 
@@ -33,7 +34,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_SDLWindowBase
+class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
  : public RPG_Graphics_IWindow
 {
  public:

@@ -166,14 +166,14 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   // init clipping
   SDL_GetClipRect(targetSurface, &(inherited::myClipRect));
   SDL_Rect clipRect;
-  clipRect.x = (myBorderLeft +
-                (myScreen->w -
-                 (myBorderLeft + myBorderRight) -
-                 (inherited::mySize.first + inherited::myOffset.first)));
-  clipRect.y = (myBorderTop +
-                inherited::myOffset.second);
-  clipRect.w = inherited::mySize.first;
-  clipRect.h = inherited::mySize.second;
+  clipRect.x = static_cast<int16_t>(myBorderLeft +
+                                    (myScreen->w -
+                                     (myBorderLeft + myBorderRight) -
+                                     (inherited::mySize.first + inherited::myOffset.first)));
+  clipRect.y = static_cast<int16_t>(myBorderTop +
+                                    inherited::myOffset.second);
+  clipRect.w = static_cast<uint16_t>(inherited::mySize.first);
+  clipRect.h = static_cast<uint16_t>(inherited::mySize.second);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,

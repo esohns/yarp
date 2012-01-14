@@ -39,7 +39,8 @@
 #include <string>
 #include <algorithm>
 
-void print_usage(const std::string& programName_in)
+void
+print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
@@ -55,13 +56,14 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
 
-const bool process_arguments(const int argc_in,
-                             ACE_TCHAR* argv_in[], // cannot be const...
-                             RPG_Dice_Roll& rollSpecs_out,
-                             unsigned int& numRolls_out,
-                             bool& includeSortedResult_out,
-                             bool& traceInformation_out,
-                             bool& printVersionAndExit_out)
+const bool
+process_arguments(const int argc_in,
+                  ACE_TCHAR* argv_in[], // cannot be const...
+                  RPG_Dice_Roll& rollSpecs_out,
+                  unsigned int& numRolls_out,
+                  bool& includeSortedResult_out,
+                  bool& traceInformation_out,
+                  bool& printVersionAndExit_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -175,9 +177,10 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const RPG_Dice_Roll& rollSpecs_in,
-             const unsigned int& numRolls_in,
-             const bool& includeSortedResult_in)
+void
+do_work(const RPG_Dice_Roll& rollSpecs_in,
+        const unsigned int& numRolls_in,
+        const bool& includeSortedResult_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -310,14 +313,17 @@ void do_work(const RPG_Dice_Roll& rollSpecs_in,
              ACE_TEXT("finished working...\n")));
 } // end do_work
 
-void do_printVersion(const std::string& programName_in)
+void
+do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-      << ACE_TEXT(" : ")
-      << RPG_VERSION
-      << std::endl;
+#ifdef HAVE_CONFIG_H
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+#endif
+            << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -330,8 +336,7 @@ void do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -346,8 +351,7 @@ void do_printVersion(const std::string& programName_in)
     else
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
       return;
     } // end ELSE
@@ -355,8 +359,7 @@ void do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -368,8 +371,9 @@ void do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-int ACE_TMAIN(int argc,
-              ACE_TCHAR* argv[])
+int
+ACE_TMAIN(int argc,
+          ACE_TCHAR* argv[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 

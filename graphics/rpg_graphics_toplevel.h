@@ -21,6 +21,7 @@
 #ifndef RPG_GRAPHICS_TOPLEVEL_H
 #define RPG_GRAPHICS_TOPLEVEL_H
 
+#include "rpg_graphics_exports.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_font.h"
@@ -37,7 +38,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_TopLevel
+class RPG_Graphics_Export RPG_Graphics_TopLevel
  : public RPG_Graphics_SDLWindowBase
 {
  public:

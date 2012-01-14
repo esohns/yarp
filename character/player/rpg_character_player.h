@@ -21,13 +21,14 @@
 #ifndef RPG_CHARACTER_PLAYER_H
 #define RPG_CHARACTER_PLAYER_H
 
+#include "rpg_character_player_exports.h"
 #include "rpg_character_player_base.h"
 
 /**
 player character
 @author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Player
+class RPG_Player_Export RPG_Character_Player
  : public RPG_Character_Player_Base
 {
  public:

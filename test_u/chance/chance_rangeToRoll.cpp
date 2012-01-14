@@ -38,7 +38,8 @@
 #include <string>
 #include <sstream>
 
-void print_usage(const std::string& programName_in)
+void
+print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
@@ -50,12 +51,13 @@ void print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-v              : print version information and exit") << std::endl;
 } // end print_usage
 
-const bool process_arguments(const int argc_in,
-                             ACE_TCHAR* argv_in[], // cannot be const...
-                             bool& printAllResults_out,
-                             RPG_Dice_ValueRange& valueRange_out,
-                             bool& traceInformation_out,
-                             bool& printVersionAndExit_out)
+const bool
+process_arguments(const int argc_in,
+                  ACE_TCHAR* argv_in[], // cannot be const...
+                  bool& printAllResults_out,
+                  RPG_Dice_ValueRange& valueRange_out,
+                  bool& traceInformation_out,
+                  bool& printVersionAndExit_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -144,8 +146,9 @@ const bool process_arguments(const int argc_in,
   return true;
 }
 
-void do_work(const RPG_Dice_ValueRange& valueRange_in,
-             RPG_Dice_Rolls_t& rolls_out)
+void
+do_work(const RPG_Dice_ValueRange& valueRange_in,
+        RPG_Dice_Rolls_t& rolls_out)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -268,10 +271,10 @@ void do_work(const RPG_Dice_ValueRange& valueRange_in,
     else
     {
       // cannot match the requested range --> approximate
-      result.modifier = (std::max(::abs(current_range.begin),
-                                  ::abs(current_range.end)) -
-                         std::min(::abs(current_range.begin),
-                                  ::abs(current_range.end))) / 2;
+      result.modifier = (std::max<int>(::abs(current_range.begin),
+                                       ::abs(current_range.end)) -
+                         std::min<int>(::abs(current_range.begin),
+                                       ::abs(current_range.end))) / 2;
 
       if (current_dieType == D_0)
       {
@@ -310,8 +313,10 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
+#ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
             << RPG_VERSION
+#endif
             << std::endl;
 
   // create version string...
@@ -358,8 +363,9 @@ do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-int ACE_TMAIN(int argc,
-              ACE_TCHAR* argv[])
+int
+ACE_TMAIN(int argc,
+          ACE_TCHAR* argv[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 

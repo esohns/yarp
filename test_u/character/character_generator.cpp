@@ -1223,9 +1223,11 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-      << ACE_TEXT(" : ")
-      << RPG_VERSION
-      << std::endl;
+#ifdef HAVE_CONFIG_H
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+#endif
+            << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -1238,8 +1240,7 @@ do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -1254,8 +1255,7 @@ do_printVersion(const std::string& programName_in)
     else
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%s\", returning\n"),
-                 ACE_OS::strerror(errno)));
+                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
       return;
     } // end ELSE
@@ -1263,8 +1263,7 @@ do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%s\", returning\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
 
     return;
   } // end ELSE
@@ -1276,8 +1275,9 @@ do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-int ACE_TMAIN(int argc,
-              ACE_TCHAR* argv[])
+int
+ACE_TMAIN(int argc,
+          ACE_TCHAR* argv[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 

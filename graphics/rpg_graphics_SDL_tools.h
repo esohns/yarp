@@ -21,6 +21,8 @@
 #ifndef RPG_GRAPHICS_SDL_TOOLS_H
 #define RPG_GRAPHICS_SDL_TOOLS_H
 
+#include "rpg_graphics_exports.h"
+
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
@@ -30,7 +32,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_SDL_Tools
+class RPG_Graphics_Export RPG_Graphics_SDL_Tools
 {
   // grant access to initColors()
   friend class RPG_Graphics_Common_Tools;

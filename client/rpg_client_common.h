@@ -31,6 +31,7 @@
 #include <rpg_map_common.h>
 
 #include <glade/glade.h>
+#include <gtk/gtk.h>
 #include <SDL/SDL.h>
 
 #include <ace/Synch.h>

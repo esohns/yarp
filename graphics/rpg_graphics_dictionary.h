@@ -21,6 +21,7 @@
 #ifndef RPG_GRAPHICS_DICTIONARY_H
 #define RPG_GRAPHICS_DICTIONARY_H
 
+#include "rpg_graphics_exports.h"
 #include "rpg_graphics_common.h"
 
 #include <ace/Global_Macros.h>
@@ -32,7 +33,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_Dictionary
+class RPG_Graphics_Export RPG_Graphics_Dictionary
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
   friend class ACE_Singleton<RPG_Graphics_Dictionary,
@@ -60,5 +61,6 @@ class RPG_Graphics_Dictionary
 
 typedef ACE_Singleton<RPG_Graphics_Dictionary,
                       ACE_Thread_Mutex> RPG_GRAPHICS_DICTIONARY_SINGLETON;
+RPG_GRAPHICS_SINGLETON_DECLARE(ACE_Singleton, RPG_Graphics_Dictionary, ACE_Thread_Mutex);
 
 #endif

@@ -21,6 +21,7 @@
 #ifndef RPG_ENGINE_COMMON_TOOLS_H
 #define RPG_ENGINE_COMMON_TOOLS_H
 
+#include "rpg_engine_exports.h"
 #include "rpg_engine_common.h"
 #include "rpg_engine_level.h"
 #include "rpg_engine_XML_tree.h"
@@ -50,7 +51,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Engine_Common_Tools
+class RPG_Engine_Export RPG_Engine_Common_Tools
 {
  public:
   // *NOTE*: initializes (static) data from ALL individual modules

@@ -21,6 +21,7 @@
 #ifndef RPG_ENGINE_LEVEL_H
 #define RPG_ENGINE_LEVEL_H
 
+#include "rpg_engine_exports.h"
 #include "rpg_engine_common.h"
 #include "rpg_engine_iwindow.h"
 #include "rpg_engine_messagequeue.h"
@@ -42,7 +43,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Engine_Level
+class RPG_Engine_Export RPG_Engine_Level
  : public RPG_Map_Level,
    public ACE_Task<ACE_MT_SYNCH>,
    public RPG_Common_IControl,
