@@ -112,7 +112,7 @@ class RPG_Map_ParserDriver
 int
 yylex(yy::RPG_Map_Parser::semantic_type*,
       yy::RPG_Map_Parser::location_type*,
-	  RPG_Map_ParserDriver*,
-	  RPG_Map_Scanner&);
+      RPG_Map_ParserDriver*,
+      RPG_Map_Scanner&);
 
 #endif

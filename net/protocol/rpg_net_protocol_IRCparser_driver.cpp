@@ -321,18 +321,18 @@ RPG_Net_Protocol_IRCParserDriver::scan_end()
 int
 yylex(yy::RPG_Net_Protocol_IRCParser::semantic_type* token_in,
       yy::RPG_Net_Protocol_IRCParser::location_type* location_in,
-	  RPG_Net_Protocol_IRCParserDriver& driver_in,
-	  unsigned long& messageCount_in,
-	  std::string& memory_in,
-	  RPG_Net_Protocol_IRCScanner& scanner_in)
+      RPG_Net_Protocol_IRCParserDriver& driver_in,
+      unsigned long& messageCount_in,
+      std::string& memory_in,
+      RPG_Net_Protocol_IRCScanner& scanner_in)
 {
   RPG_TRACE(ACE_TEXT("::yylex"));
 
   scanner_in.set(token_in,
-	             location_in,
-				 &driver_in,
-				 &messageCount_in,
-				 &memory_in);
+                 location_in,
+                 &driver_in,
+                 &messageCount_in,
+                 &memory_in);
 
   return scanner_in.yylex();
 }

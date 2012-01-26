@@ -1,5 +1,10 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+cmake_minimum_required(VERSION 2.8)
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../common")
+
 ########### next target ###############
 set(RPG_Stream_LIB_SRCS
     rpg_stream.cpp
@@ -21,6 +26,7 @@ set(RPG_Stream_LIB_SRCS
     rpg_stream_cacheddatablockallocatorheap.cpp
     rpg_stream_cacheddatablockallocatorheap.h
     rpg_stream_defines.h
+    rpg_stream_exports.h
     rpg_stream_headmoduletask.cpp
     rpg_stream_headmoduletask.h
     rpg_stream_headmoduletask_base.cpp
@@ -109,6 +115,7 @@ install(FILES
         rpg_stream_datablockallocatorheap.h
         rpg_stream_cacheddatablockallocatorheap.h
         rpg_stream_defines.h
+        rpg_stream_exports.h
         rpg_stream_headmoduletask.h
         rpg_stream_headmoduletask_base.h
         rpg_stream_headmoduletask_base.i

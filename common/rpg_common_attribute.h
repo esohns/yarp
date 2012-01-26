@@ -21,8 +21,6 @@ enum RPG_Common_Attribute
   RPG_COMMON_ATTRIBUTE_INVALID
 };
 
-#include "rpg_common_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -31,7 +29,7 @@ enum RPG_Common_Attribute
 typedef std::map<RPG_Common_Attribute, std::string> RPG_Common_AttributeToStringTable_t;
 typedef RPG_Common_AttributeToStringTable_t::const_iterator RPG_Common_AttributeToStringTableIterator_t;
 
-class RPG_Common_Export RPG_Common_AttributeHelper
+class RPG_Common_AttributeHelper
 {
  public:
   inline static void init()

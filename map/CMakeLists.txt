@@ -1,5 +1,10 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+cmake_minimum_required(VERSION 2.8)
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../common")
+
 ########### next target ###############
 set(RPG_Map_LIB_SRCS
     location.hh
@@ -21,6 +26,7 @@ set(RPG_Map_LIB_SRCS
     rpg_map_parser_driver.h
     rpg_map_pathfinding_tools.cpp
     rpg_map_pathfinding_tools.h
+    lex.yy.cc
     rpg_map_scanner.cpp
     rpg_map_scanner.h
     stack.hh)
@@ -33,7 +39,7 @@ add_library(RPG_Map SHARED ${RPG_Map_LIB_SRCS})
 
 # add_custom_target(map_scanner
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/map_scanner.l)
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map_scanner.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map_scanner.h
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/lex.yy.cc
                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/scanner.sh
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/map_scanner.l
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts

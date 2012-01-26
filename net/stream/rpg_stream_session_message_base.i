@@ -23,6 +23,7 @@
 #include <rpg_common_macros.h>
 
 #include <ace/Malloc_Base.h>
+#include <ace/Log_Msg.h>
 
 template <typename ConfigType>
 RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(const unsigned long& sessionID_in,
@@ -39,9 +40,9 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(const u
              ACE_Time_Value::max_time,              // deadline time
              NULL,                                  // data block allocator
              NULL),                                 // message block allocator
+   myConfig(config_inout),
    myID(sessionID_in),
    myMessageType(messageType_in),
-   myConfig(config_inout),
    myIsInitialized(true)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));
@@ -53,9 +54,9 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(const u
 template <typename ConfigType>
 RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(ACE_Allocator* messageAllocator_in)
  : inherited(messageAllocator_in), // message block allocator
+   myConfig(NULL),
    myID(0),
    myMessageType(RPG_Stream_SessionMessage::MB_BEGIN_STREAM_SESSION_MAP), // == RPG_Stream_MessageBase::MB_STREAM_SESSION
-   myConfig(NULL),
    myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));
@@ -75,9 +76,9 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(ACE_Dat
  : inherited(dataBlock_in,         // use (don't own (!) memory of-) this data block
              0,                    // flags --> also "free" our data block upon destruction !
              messageAllocator_in), // re-use the same allocator
+   myConfig(NULL),
    myID(0),
    myMessageType(RPG_Stream_SessionMessage::MB_BEGIN_STREAM_SESSION_MAP), // == RPG_Stream_MessageBase::MB_STREAM_SESSION
-   myConfig(NULL),
    myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
@@ -95,9 +96,9 @@ RPG_Stream_SessionMessageBase<ConfigType>::RPG_Stream_SessionMessageBase(const R
  : inherited(message_in.data_block_->duplicate(),  // make a "shallow" copy of the data block
              0,                                    // "own" the duplicate
              message_in.message_block_allocator_), // message allocator
+   myConfig(message_in.myConfig),
    myID(message_in.myID),
    myMessageType(message_in.myMessageType),
-   myConfig(message_in.myConfig),
    myIsInitialized(message_in.myIsInitialized)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_SessionMessageBase::RPG_Stream_SessionMessageBase"));

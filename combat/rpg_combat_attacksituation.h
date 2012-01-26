@@ -17,8 +17,6 @@ enum RPG_Combat_AttackSituation
   RPG_COMBAT_ATTACKSITUATION_INVALID
 };
 
-#include "rpg_combat_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -27,7 +25,7 @@ enum RPG_Combat_AttackSituation
 typedef std::map<RPG_Combat_AttackSituation, std::string> RPG_Combat_AttackSituationToStringTable_t;
 typedef RPG_Combat_AttackSituationToStringTable_t::const_iterator RPG_Combat_AttackSituationToStringTableIterator_t;
 
-class RPG_Combat_Export RPG_Combat_AttackSituationHelper
+class RPG_Combat_AttackSituationHelper
 {
  public:
   inline static void init()

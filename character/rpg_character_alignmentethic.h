@@ -18,8 +18,6 @@ enum RPG_Character_AlignmentEthic
   RPG_CHARACTER_ALIGNMENTETHIC_INVALID
 };
 
-#include "rpg_character_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -28,7 +26,7 @@ enum RPG_Character_AlignmentEthic
 typedef std::map<RPG_Character_AlignmentEthic, std::string> RPG_Character_AlignmentEthicToStringTable_t;
 typedef RPG_Character_AlignmentEthicToStringTable_t::const_iterator RPG_Character_AlignmentEthicToStringTableIterator_t;
 
-class RPG_Character_Export RPG_Character_AlignmentEthicHelper
+class RPG_Character_AlignmentEthicHelper
 {
  public:
   inline static void init()

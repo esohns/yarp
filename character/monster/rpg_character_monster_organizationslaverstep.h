@@ -7,9 +7,7 @@
 #ifndef RPG_CHARACTER_MONSTER_ORGANIZATIONSLAVERSTEP_H
 #define RPG_CHARACTER_MONSTER_ORGANIZATIONSLAVERSTEP_H
 
-#include "rpg_character_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Character_Monster_OrganizationSlaverStep
+struct RPG_Character_Monster_OrganizationSlaverStep
 {
   std::string name;
   RPG_Dice_ValueRange range;

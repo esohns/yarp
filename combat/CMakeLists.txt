@@ -1,5 +1,13 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+cmake_minimum_required(VERSION 2.8)
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../common")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../character")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../magic")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../item")
+
 ########### next target ###############
 set(RPG_Combat_LIB_SRCS
     rpg_XMLSchema_XML_types.h

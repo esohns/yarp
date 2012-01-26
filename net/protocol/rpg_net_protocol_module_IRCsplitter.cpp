@@ -20,7 +20,7 @@
 
 #include "rpg_net_protocol_module_IRCsplitter.h"
 
-//#include "rpg_net_protocol_IRCbisect.h"
+#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 
@@ -47,6 +47,8 @@ RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter"));
 
+  // trace ?
+  myScanner.set_debug((RPG_NET_PROTOCOL_DEF_TRACE_SCANNING ? 1 : 0));
 }
 
 RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
@@ -302,7 +304,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
 //   while (myCurrentMessageLength = myScanner.yylex())
   do
   {
-	scanned_chunk = myScanner.yylex();
+    scanned_chunk = myScanner.yylex();
 //    scanned_chunk = IRCBisectlex(myScannerContext);
     switch (scanned_chunk)
     {

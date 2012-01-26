@@ -218,15 +218,8 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const unsigned long& minRoomSize_in,
-        const bool& doors_in,
-        const bool& corridors_in,
-        const unsigned long& maxDoorsPerRoom_in,
-        const bool& maximizeArea_in,
-        const unsigned long& numAreas_in,
-        const bool& wantSquareRooms_in,
-        const unsigned long& dimensionX_in,
-        const unsigned long& dimensionY_in)
+do_work(const std::string& name_in,
+        const RPG_Map_FloorPlan_Config_t& mapConfig_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -236,17 +229,9 @@ do_work(const unsigned long& minRoomSize_in,
 
   // step2: generate random dungeon map
   RPG_Map_t map;
-  RPG_Map_Common_Tools::createMap(dimensionX_in,
-                                  dimensionY_in,
-                                  numAreas_in,
-                                  wantSquareRooms_in,
-                                  maximizeArea_in,
-                                  minRoomSize_in,
-                                  doors_in,
-                                  corridors_in,
-                                  true, // doors fill a position
-                                  maxDoorsPerRoom_in,
-                                  map);
+  RPG_Map_Common_Tools::create(name_in,
+                               mapConfig_in,
+                               map);
 
   // step3: display the result
   RPG_Map_Position_t current_position;
@@ -434,15 +419,19 @@ ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work(minRoomSize,
-          doors,
-          corridors,
-          maxNumDoorsPerRoom,
-          maximizeRoomSize,
-          numAreas,
-          squareRooms,
-          dimension_X,
-          dimension_Y);
+  std::string name = RPG_MAP_DEF_NAME;
+  RPG_Map_FloorPlan_Config_t config;
+  config.corridors = corridors;
+  config.doors = doors;
+  config.map_size_x = dimension_X;
+  config.map_size_y = dimension_Y;
+  config.max_num_doors_per_room = maxNumDoorsPerRoom;
+  config.maximize_rooms = maximizeRoomSize;
+  config.min_room_size = minRoomSize;
+  config.num_areas = numAreas;
+  config.square_rooms = squareRooms;
+  do_work(name,
+          config);
 
   timer.stop();
 

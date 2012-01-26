@@ -43,7 +43,7 @@ RPG_Map_Scanner::~RPG_Map_Scanner ()
 void
 RPG_Map_Scanner::set(yy::RPG_Map_Parser::semantic_type* token_in,
                      yy::RPG_Map_Parser::location_type* location_in,
-					 RPG_Map_ParserDriver* driver_in)
+                     RPG_Map_ParserDriver* driver_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Scanner::set"));
 

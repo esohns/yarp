@@ -1,5 +1,14 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+cmake_minimum_required(VERSION 2.8)
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../common")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../magic")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../item")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../combat")
+
 ########### next target ###############
 set(RPG_Character_Monster_LIB_SRCS
     rpg_XMLSchema_XML_types.h
@@ -44,6 +53,7 @@ set(RPG_Character_Monster_LIB_SRCS
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Character_Monster_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
+set_source_files_properties(${RPG_Character_Monster_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_MONSTER_BUILD_DLL)
 
 add_library(RPG_Character_Monster SHARED ${RPG_Character_Monster_LIB_SRCS})
 

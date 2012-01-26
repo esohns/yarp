@@ -28,8 +28,8 @@ RPG_Net_Protocol_IRCScanner::RPG_Net_Protocol_IRCScanner()
    myToken(NULL),
    myLocation(NULL),
    myDriver(NULL),
-   myMessageCount(NULL),
-   myMemory(NULL),
+   myMessageCounter(NULL),
+   myBuffer(NULL),
    myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCScanner::RPG_Net_Protocol_IRCScanner"));
@@ -45,9 +45,9 @@ RPG_Net_Protocol_IRCScanner::~RPG_Net_Protocol_IRCScanner ()
 void
 RPG_Net_Protocol_IRCScanner::set(yy::RPG_Net_Protocol_IRCParser::semantic_type* token_in,
                                  yy::RPG_Net_Protocol_IRCParser::location_type* location_in,
-								 RPG_Net_Protocol_IRCParserDriver* driver_in,
-	                             unsigned long* messageCount_in,
-	                             std::string* memory_in)
+                                 RPG_Net_Protocol_IRCParserDriver* driver_in,
+                                 unsigned long* messageCounter_in,
+                                 std::string* buffer_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCScanner::set"));
 
@@ -58,8 +58,7 @@ RPG_Net_Protocol_IRCScanner::set(yy::RPG_Net_Protocol_IRCParser::semantic_type* 
   myToken = token_in;
   myLocation = location_in;
   myDriver = driver_in;
-  myMessageCount = messageCount_in;
-  myMemory = memory_in;
-
-  myIsInitialized = true;
+  myMessageCounter = messageCounter_in;
+  myBuffer = buffer_in;
+  myIsInitialized = (driver_in != NULL);
 }

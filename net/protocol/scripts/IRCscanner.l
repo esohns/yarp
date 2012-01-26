@@ -20,14 +20,13 @@ speed and efficiency */
 #define yyterminate() return token::END
 %}
 
-/* %option pointer full nounistd 8bit */
-%option pointer 8bit
-/* %option c++ outfile="rpg_net_protocol_IRCscanner.cpp" prefix="IRCScanner" noyywrap nounput */
-%option warn nodefault batch nomain noyywrap nounput
-%option debug perf-report verbose
-/*%option reentrant extra-type="RPG_Net_Protocol_IRCParserDriver*"*/
+%option pointer 8bit c++ stack never-interactive yyclass="RPG_Net_Protocol_IRCScanner" nounistd prefix="IRCScanner"
+%option warn batch nomain noyywrap nounput
+%option debug perf-report verbose yylineno ansi-definitions ansi-prototypes
+%option full backup perf-report verbose
+%option outfile="IRCScanner_lex.yy.cc"
+/* %option reentrant noline nodefault extra-type="RPG_Net_Protocol_IRCParserDriver*" */
 /* %option bison-bridge bison-locations stack */
-%option prefix="IRCScanner" yylineno
 
 /* *NOTE*: "see RFC 952 [DNS:4] for details on allowed hostnames..."
 RFC 952
@@ -85,7 +84,7 @@ TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
 %s             end_of_frame
 
 %{
-#define YY_USER_ACTION yylloc->columns(yyleng);
+#define YY_USER_ACTION myLocation->columns(yyleng);
 %}
 
 /* *NOTE*: it seems that the following "exceptions" are allowed:
@@ -98,7 +97,7 @@ TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
   myLocation->step();
   typedef yy::RPG_Net_Protocol_IRCParser::token token;
   typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
-  yy_flex_debug=driver->getDebugScanner();
+  yy_flex_debug=myDriver->getDebugScanner();
   std::stringstream converter;
 %}
 
@@ -210,7 +209,7 @@ TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
 "\x0A"                     { myLocation->step();
                              BEGIN(INITIAL);
                              myToken->ival = 2;
-                             messageCount++; }
+                             (*myMessageCounter)++; }
 }
 <<EOF>>                    { yyterminate(); }
 <*>(?s:.)                  { myLocation->step();
@@ -219,7 +218,7 @@ TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
                              std::string error_message = ACE_TEXT("invalid character: \"");
                              error_message += yytext[0];
                              error_message += ACE_TEXT("\", aborting");
-                             driver->error(*myLocation, error_message);
+                             myDriver->error(*myLocation, error_message);
 
                              yyterminate(); }
 %%

@@ -7,9 +7,7 @@
 #ifndef RPG_CHARACTER_MONSTER_ATTACK_H
 #define RPG_CHARACTER_MONSTER_ATTACK_H
 
-#include "rpg_character_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Character_Monster_Attack
+struct RPG_Character_Monster_Attack
 {
   signed char baseAttackBonus;
   signed char grappleBonus;

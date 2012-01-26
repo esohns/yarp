@@ -16,11 +16,10 @@ PROJECT=map
 cd ${HOME}/Projects/RPG/${PROJECT}/scripts
 
 # generate a scanner for map (text) files
-/usr/bin/flex -b -B -d --header=rpg_${PROJECT}_scanner.h -L -o rpg_${PROJECT}_scanner.cpp -p -v ./${PROJECT}_scanner.l 2>&1 | tee ./scanner_report.txt
+flex ./${PROJECT}_scanner.l 2>&1 | tee ./scanner_report.txt
 
 # move generated files into the project directory
-mv -f rpg_${PROJECT}_scanner.h ./..
-mv -f rpg_${PROJECT}_scanner.cpp ./..
+mv -f lex.yy.cc ./..
 
 # ...go back to where we came from
 popd >/dev/null 2>&1

@@ -1262,7 +1262,7 @@ offsetX (const offsetX_type& x)
 RPG_Graphics_Tile_XMLTree_Type::offsetX_type RPG_Graphics_Tile_XMLTree_Type::
 offsetX_default_value ()
 {
-  return offsetX_type (0LL);
+  return offsetX_type (0);
 }
 
 const RPG_Graphics_Tile_XMLTree_Type::offsetY_type& RPG_Graphics_Tile_XMLTree_Type::
@@ -1286,7 +1286,7 @@ offsetY (const offsetY_type& x)
 RPG_Graphics_Tile_XMLTree_Type::offsetY_type RPG_Graphics_Tile_XMLTree_Type::
 offsetY_default_value ()
 {
-  return offsetY_type (0LL);
+  return offsetY_type (0);
 }
 
 const RPG_Graphics_Tile_XMLTree_Type::open_type& RPG_Graphics_Tile_XMLTree_Type::

@@ -15,11 +15,13 @@
 %}
 
 /* %option pointer full nounistd 8bit */
-%option pointer 8bit c++ stack never-interactive yyclass="RPG_Map_Scanner"
+%option pointer 8bit c++ stack never-interactive yyclass="RPG_Map_Scanner" nounistd
 /* %option c++ outfile="rpg_map_scanner.cpp" prefix="MapScanner" */
-%option warn nodefault batch nomain noyywrap nounput
-%option debug perf-report verbose yylineno
-/* %option reentrant extra-type="RPG_Map_ParserDriver*" */
+%option warn batch nomain noyywrap nounput
+%option debug perf-report verbose yylineno ansi-definitions ansi-prototypes
+%option full backup perf-report verbose
+%option outfile="lex.yy.cc"
+/* %option reentrant noline nodefault extra-type="RPG_Map_ParserDriver*" */
 /* %option bison-bridge bison-locations stack */
 
 NAME          [[:print:]]
@@ -92,7 +94,7 @@ GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 } // end <last_row>
 <<EOF>>                    { BEGIN(INITIAL);
                              yyterminate(); }
-.                          { myLocation->step();
+<*>(?s:.)                  { myLocation->step();
                              myToken->cval = yytext[0];
 
                              // debug info

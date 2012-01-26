@@ -522,8 +522,8 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
                       ACE_TEXT_ALWAYS_CHAR("%d:%d:%d.%d"),
                       hours,
                       minutes,
-                      temp.sec(),
-                      temp.usec()) < 0)
+                      static_cast<int>(temp.sec()),
+                      static_cast<int>(temp.usec())) < 0)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::snprintf(): \"%m\", aborting\n")));

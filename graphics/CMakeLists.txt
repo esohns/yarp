@@ -1,6 +1,11 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+cmake_minimum_required(VERSION 2.8)
+
 add_subdirectory(data)
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../common")
 
 ########### next target ###############
 set(RPG_Graphics_LIB_SRCS
@@ -20,7 +25,7 @@ set(RPG_Graphics_LIB_SRCS
     rpg_graphics_XML_types.h
     rpg_graphics_category.h
     rpg_graphics_common.h
-    rpg_graphics_export.h
+    rpg_graphics_exports.h
     rpg_graphics_common_tools.cpp
     rpg_graphics_common_tools.h
     rpg_graphics_cursor.h
@@ -96,7 +101,7 @@ install(FILES
         rpg_graphics_XML_types.h
         rpg_graphics_category.h
         rpg_graphics_common.h
-        rpg_graphics_export.h
+        rpg_graphics_exports.h
         rpg_graphics_common_tools.h
         rpg_graphics_cursor.h
         rpg_graphics_cursor_manager.h

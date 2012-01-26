@@ -70,7 +70,7 @@ class RPG_Stream_SessionMessageBase
   RPG_Stream_SessionMessageBase(ACE_Data_Block*, // data block
                             ACE_Allocator*); // message allocator
 
-  ConfigType*               myConfig;
+  ConfigType*                   myConfig;
 
  private:
   typedef ACE_Message_Block inherited;
@@ -83,9 +83,9 @@ class RPG_Stream_SessionMessageBase
   // *WARNING*: any children need to override this too !
   virtual ACE_Message_Block* duplicate(void) const;
 
-  unsigned long             myID;
+  unsigned long                 myID;
   RPG_Stream_SessionMessageType myMessageType;
-  bool                      myIsInitialized;
+  bool                          myIsInitialized;
 };
 
 // include template implementation

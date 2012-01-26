@@ -24,8 +24,7 @@
 
 RPG_Net_Protocol_IRCBisect::RPG_Net_Protocol_IRCBisect()
  : inherited(NULL,
-             NULL),
-   myIsInitialized(false)
+             NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCBisect::RPG_Net_Protocol_IRCBisect"));
 
@@ -35,16 +34,4 @@ RPG_Net_Protocol_IRCBisect::~RPG_Net_Protocol_IRCBisect ()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCBisect::~RPG_Net_Protocol_IRCBisect"));
 
-}
-
-void
-RPG_Net_Protocol_IRCBisect::init()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCScanner::init"));
-
-  // sanity check(s)
-  ACE_ASSERT(!myIsInitialized);
-
-  // OK
-  myIsInitialized = true;
 }

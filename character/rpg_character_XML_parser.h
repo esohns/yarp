@@ -21,6 +21,7 @@
 #ifndef RPG_CHARACTER_XML_PARSER_H
 #define RPG_CHARACTER_XML_PARSER_H
 
+#include "rpg_character_exports.h"
 #include "rpg_character_XML_types.h"
 
 #include <ace/Global_Macros.h>

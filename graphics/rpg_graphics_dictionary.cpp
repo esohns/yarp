@@ -58,7 +58,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
   RPG_Graphics_StyleUnion_Type                style_p;
   RPG_Graphics_Orientation_Type               orientation_p;
   ::xml_schema::string_pimpl                  string_p;
-  ::xml_schema::integer_pimpl                 int_p;
+  ::xml_schema::int_pimpl                     int_p;
   ::xml_schema::boolean_pimpl                 bool_p;
   tile_p.parsers(tileType_p,
                  type_p,

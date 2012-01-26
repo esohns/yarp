@@ -83,19 +83,6 @@ enum userMode_t
   MODE_MAX
 };
 
-struct map_config_t
-{
-  unsigned long min_room_size; // 0: don't care
-  bool          doors;
-  bool          corridors;
-  unsigned long max_num_doors_per_room;
-  bool          maximize_rooms;
-  unsigned long num_areas;
-  bool          square_rooms;
-  unsigned long map_size_x;
-  unsigned long map_size_y;
-};
-
 // *NOTE* types as used by SDL
 struct SDL_video_config_t
 {
@@ -754,7 +741,7 @@ do_UI(RPG_Engine_Entity& entity_in,
       RPG_Engine_Level& engine_in,
       RPG_Graphics_MapStyle_t& mapStyle_in,
       RPG_Map_t& map_in,
-      const map_config_t& mapConfig_in,
+      const RPG_Map_FloorPlan_Config_t& mapConfig_in,
       SDL_GUI_MainWindow* mainWindow_in)
 {
   RPG_TRACE(ACE_TEXT("::do_UI"));
@@ -841,17 +828,9 @@ do_UI(RPG_Engine_Entity& entity_in,
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("generating level map...\n")));
 
-            RPG_Map_Common_Tools::createMap(mapConfig_in.map_size_x,
-                                            mapConfig_in.map_size_y,
-                                            mapConfig_in.num_areas,
-                                            mapConfig_in.square_rooms,
-                                            mapConfig_in.maximize_rooms,
-                                            mapConfig_in.min_room_size,
-                                            mapConfig_in.doors,
-                                            mapConfig_in.corridors,
-                                            true, // *NOTE*: currently, doors fill one position
-                                            mapConfig_in.max_num_doors_per_room,
-                                            map_in);
+            RPG_Map_Common_Tools::create(std::string(RPG_MAP_DEF_NAME),
+                                         mapConfig_in,
+                                         map_in);
 
             if (engine_in.isRunning())
               engine_in.stop();
@@ -1093,7 +1072,7 @@ void
 do_work(const mode_t& mode_in,
         const std::string& entity_in,
         const std::string& map_in,
-        const map_config_t& mapConfig_in,
+        const RPG_Map_FloorPlan_Config_t& mapConfig_in,
         const SDL_video_config_t& videoConfig_in,
         const std::string& magicDictionary_in,
         const std::string& itemsDictionary_in,
@@ -1198,17 +1177,9 @@ do_work(const mode_t& mode_in,
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating level map...\n")));
 
-        RPG_Map_Common_Tools::createMap(mapConfig_in.map_size_x,
-                                        mapConfig_in.map_size_y,
-                                        mapConfig_in.num_areas,
-                                        mapConfig_in.square_rooms,
-                                        mapConfig_in.maximize_rooms,
-                                        mapConfig_in.min_room_size,
-                                        mapConfig_in.doors,
-                                        mapConfig_in.corridors,
-                                        true, // *NOTE*: currently, doors fill one position
-                                        mapConfig_in.max_num_doors_per_room,
-                                        map);
+        RPG_Map_Common_Tools::create(std::string(RPG_MAP_DEF_NAME),
+                                     mapConfig_in,
+                                     map);
       } // end IF
       else
       {
@@ -1485,7 +1456,7 @@ ACE_TMAIN(int argc,
   bool validateXML = SDL_GUI_DEF_VALIDATE_XML;
 
   // *** map ***
-  map_config_t map_config;
+  RPG_Map_FloorPlan_Config_t map_config;
   map_config.min_room_size          = SDL_GUI_DEF_MAP_MIN_ROOM_SIZE;
   map_config.doors                  = SDL_GUI_DEF_MAP_DOORS;
   map_config.corridors              = SDL_GUI_DEF_MAP_CORRIDORS;

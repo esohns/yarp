@@ -112,9 +112,9 @@ class RPG_Net_Protocol_IRCParserDriver
 int
 yylex(yy::RPG_Net_Protocol_IRCParser::semantic_type*,
       yy::RPG_Net_Protocol_IRCParser::location_type*,
-	  RPG_Net_Protocol_IRCParserDriver&,
-	  unsigned long&,
-	  std::string&,
-	  RPG_Net_Protocol_IRCScanner&);
+      RPG_Net_Protocol_IRCParserDriver&,
+      unsigned long&,
+      std::string&,
+      RPG_Net_Protocol_IRCScanner&);
 
 #endif

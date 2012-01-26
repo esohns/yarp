@@ -11,11 +11,11 @@
 <!-- include common schema -->
 <!--   <xsd:include schemaLocation="rpg_common.xsd"/> -->
 <!-- include character player schema -->
-  <xsd:include schemaLocation="..\character\player\rpg_character_player.xsd"/>
+  <xsd:include schemaLocation="../character/player/rpg_character_player.xsd"/>
 <!-- include map schema -->
-  <xsd:include schemaLocation="..\map\rpg_map.xsd"/>
+  <xsd:include schemaLocation="../map/rpg_map.xsd"/>
 <!-- include graphics schema -->
-  <xsd:include schemaLocation="..\graphics\rpg_graphics.xsd"/>
+  <xsd:include schemaLocation="../graphics/rpg_graphics.xsd"/>
 
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->

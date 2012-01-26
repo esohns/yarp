@@ -7,9 +7,7 @@
 #ifndef RPG_CHARACTER_MONSTER_DEFENSEACTION_H
 #define RPG_CHARACTER_MONSTER_DEFENSEACTION_H
 
-#include "rpg_character_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Character_Monster_DefenseAction
+struct RPG_Character_Monster_DefenseAction
 {
   std::vector<RPG_Character_Monster_SpecialDefensePreCondition> preConditions;
   RPG_Combat_Damage damage;

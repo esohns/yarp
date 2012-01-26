@@ -1,3 +1,11 @@
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
+cmake_minimum_required(VERSION 2.8)
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../common")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
+
 ########### next target ###############
 set(RPG_Net_Protocol_LIB_SRCS
     location.hh
@@ -11,6 +19,8 @@ set(RPG_Net_Protocol_LIB_SRCS
     rpg_net_protocol_IRCparser.h
     rpg_net_protocol_IRCparser_driver.cpp
     rpg_net_protocol_IRCparser_driver.h
+    IRCBisect_lex.yy.cc
+    IRCScanner_lex.yy.cc
     rpg_net_protocol_IRCscanner.cpp
     rpg_net_protocol_IRCscanner.h
     rpg_net_protocol_common.h
@@ -42,12 +52,13 @@ set(RPG_Net_Protocol_LIB_SRCS
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Net_Protocol_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
+set_source_files_properties(${RPG_Net_Protocol_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_PROTOCOL_BUILD_DLL)
 
 add_library(RPG_Net_Protocol SHARED ${RPG_Net_Protocol_LIB_SRCS})
 
 # add_custom_target(protocol_scanner
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/protocol_scanner.l)
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCbisect.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCbisect.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCscanner.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCscanner.h
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/IRCBisect_lex.yy.cc ${CMAKE_CURRENT_SOURCE_DIR}/IRCScanner_lex.yy.cc
                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/scanner.sh
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/IRCbisect.l ${CMAKE_CURRENT_SOURCE_DIR}/scripts/IRCscanner.l
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts

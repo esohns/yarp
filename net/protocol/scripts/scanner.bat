@@ -8,8 +8,8 @@
 @rem #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
 @rem # generate a scanner for the IRC protocol
-"E:\GnuWin32\bin\flex.exe" -b -d -p -B -L -o.\IRCbisect_lex.yy.cc .\IRCbisect.l
-"E:\GnuWin32\bin\flex.exe" -b -d -p -B -L -o.\IRCscanner_lex.yy.cc .\IRCscanner.l
+"E:\GnuWin32\bin\flex.exe" .\IRCbisect.l
+"E:\GnuWin32\bin\flex.exe" .\IRCscanner.l
 
-copy /Y IRCbisect_lex.yy.cc .\..
-copy /Y IRCscanner_lex.yy.cc .\..
+copy /Y IRCBisect_lex.yy.cc .\..
+copy /Y IRCScanner_lex.yy.cc .\..

@@ -136,8 +136,6 @@ enum RPG_Character_Feat
   RPG_CHARACTER_FEAT_INVALID
 };
 
-#include "rpg_character_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -146,7 +144,7 @@ enum RPG_Character_Feat
 typedef std::map<RPG_Character_Feat, std::string> RPG_Character_FeatToStringTable_t;
 typedef RPG_Character_FeatToStringTable_t::const_iterator RPG_Character_FeatToStringTableIterator_t;
 
-class RPG_Character_Export RPG_Character_FeatHelper
+class RPG_Character_FeatHelper
 {
  public:
   inline static void init()

@@ -7,9 +7,7 @@
 #ifndef RPG_CHARACTER_MONSTER_SUMMONMONSTER_H
 #define RPG_CHARACTER_MONSTER_SUMMONMONSTER_H
 
-#include "rpg_character_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Character_Monster_SummonMonster
+struct RPG_Character_Monster_SummonMonster
 {
   std::string name;
   RPG_Dice_Roll amount;

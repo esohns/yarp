@@ -21,7 +21,13 @@
 #ifndef RPG_NET_PROTOCOL_IRCBISECT_H
 #define RPG_NET_PROTOCOL_IRCBISECT_H
 
+// #ifdef yyFlexLexer
+// #undef yyFlexLexer
+// #endif
+// #define yyFlexLexer IRCBisectFlexLexer
+// #ifndef yyFlexLexerOnce
 #include <FlexLexer.h>
+// #endif
 
 #include <ace/Global_Macros.h>
 
@@ -34,16 +40,11 @@ class RPG_Net_Protocol_IRCBisect
 
   virtual int yylex();
 
-  void init();
-
  private:
   typedef yyFlexLexer inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCBisect());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCBisect(const RPG_Net_Protocol_IRCBisect&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCBisect& operator=(const RPG_Net_Protocol_IRCBisect&));
-
-  bool myIsInitialized;
 };
 #endif

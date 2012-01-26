@@ -7,9 +7,7 @@
 #ifndef RPG_GRAPHICS_GRAPHICTYPEUNION_H
 #define RPG_GRAPHICS_GRAPHICTYPEUNION_H
 
-#include "rpg_graphics_exports.h"
-
-struct RPG_Graphics_Export RPG_Graphics_GraphicTypeUnion
+struct RPG_Graphics_GraphicTypeUnion
 {
   union
   {

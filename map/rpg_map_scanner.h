@@ -24,7 +24,9 @@
 #include "rpg_map_defines.h"
 #include "rpg_map_parser.h"
 
+#ifndef yyFlexLexerOnce
 #include <FlexLexer.h>
+#endif
 
 #include <ace/Global_Macros.h>
 
@@ -42,19 +44,18 @@ class RPG_Map_Scanner
 
   void set(yy::RPG_Map_Parser::semantic_type*, // YYSTYPE
            yy::RPG_Map_Parser::location_type*, // location
-		   RPG_Map_ParserDriver*);             // driver
+           RPG_Map_ParserDriver*);             // driver
 
  private:
   typedef yyFlexLexer inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Scanner());
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Scanner(const RPG_Map_Scanner&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Scanner& operator=(const RPG_Map_Scanner&));
 
   yy::RPG_Map_Parser::semantic_type* myToken;
   yy::RPG_Map_Parser::location_type* myLocation;
   RPG_Map_ParserDriver*              myDriver;
-  bool								 myIsInitialized;
+  bool                               myIsInitialized;
 };
 #endif

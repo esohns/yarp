@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_common_exports.h"
 //
 // End prologue.
 
@@ -101,7 +100,7 @@ class RPG_Common_Camp_XMLTree_Type;
 
 #include "../chance/dice/rpg_dice_XML_tree.h"
 
-class RPG_Common_Export RPG_Common_CreatureMetaType_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_CreatureMetaType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -175,7 +174,7 @@ class RPG_Common_Export RPG_Common_CreatureMetaType_XMLTree_Type: public ::xml_s
   static const value _xsd_RPG_Common_CreatureMetaType_XMLTree_Type_indexes_[16];
 };
 
-class RPG_Common_Export RPG_Common_CreatureSubType_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_CreatureSubType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -254,7 +253,7 @@ class RPG_Common_Export RPG_Common_CreatureSubType_XMLTree_Type: public ::xml_sc
   static const value _xsd_RPG_Common_CreatureSubType_XMLTree_Type_indexes_[21];
 };
 
-class RPG_Common_Export RPG_Common_CreatureType_XMLTree_Type: public ::xml_schema::type
+class RPG_Common_CreatureType_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // metaType
@@ -330,16 +329,14 @@ class RPG_Common_Export RPG_Common_CreatureType_XMLTree_Type: public ::xml_schem
   subType_sequence subType_;
 };
 
-RPG_Common_Export
 bool
 operator== (const RPG_Common_CreatureType_XMLTree_Type&, const RPG_Common_CreatureType_XMLTree_Type&);
 
-RPG_Common_Export
 bool
 operator!= (const RPG_Common_CreatureType_XMLTree_Type&, const RPG_Common_CreatureType_XMLTree_Type&);
 
 
-class RPG_Common_Export RPG_Common_SubClass_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_SubClass_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -407,7 +404,7 @@ class RPG_Common_Export RPG_Common_SubClass_XMLTree_Type: public ::xml_schema::s
   static const value _xsd_RPG_Common_SubClass_XMLTree_Type_indexes_[10];
 };
 
-class RPG_Common_Export RPG_Common_Attribute_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Attribute_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -472,7 +469,7 @@ class RPG_Common_Export RPG_Common_Attribute_XMLTree_Type: public ::xml_schema::
   static const value _xsd_RPG_Common_Attribute_XMLTree_Type_indexes_[7];
 };
 
-class RPG_Common_Export RPG_Common_Size_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Size_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -539,7 +536,7 @@ class RPG_Common_Export RPG_Common_Size_XMLTree_Type: public ::xml_schema::strin
   static const value _xsd_RPG_Common_Size_XMLTree_Type_indexes_[9];
 };
 
-class RPG_Common_Export RPG_Common_Condition_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Condition_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -640,7 +637,7 @@ class RPG_Common_Export RPG_Common_Condition_XMLTree_Type: public ::xml_schema::
   static const value _xsd_RPG_Common_Condition_XMLTree_Type_indexes_[43];
 };
 
-class RPG_Common_Export RPG_Common_Skill_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Skill_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -754,7 +751,7 @@ class RPG_Common_Export RPG_Common_Skill_XMLTree_Type: public ::xml_schema::stri
   static const value _xsd_RPG_Common_Skill_XMLTree_Type_indexes_[56];
 };
 
-class RPG_Common_Export RPG_Common_PhysicalDamageType_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_PhysicalDamageType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -818,7 +815,7 @@ class RPG_Common_Export RPG_Common_PhysicalDamageType_XMLTree_Type: public ::xml
   static const value _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[6];
 };
 
-class RPG_Common_Export RPG_Common_ActionType_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_ActionType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -883,7 +880,7 @@ class RPG_Common_Export RPG_Common_ActionType_XMLTree_Type: public ::xml_schema:
   static const value _xsd_RPG_Common_ActionType_XMLTree_Type_indexes_[7];
 };
 
-class RPG_Common_Export RPG_Common_AreaOfEffect_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_AreaOfEffect_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -949,7 +946,7 @@ class RPG_Common_Export RPG_Common_AreaOfEffect_XMLTree_Type: public ::xml_schem
   static const value _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_indexes_[8];
 };
 
-class RPG_Common_Export RPG_Common_EffectType_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_EffectType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1011,7 +1008,7 @@ class RPG_Common_Export RPG_Common_EffectType_XMLTree_Type: public ::xml_schema:
   static const value _xsd_RPG_Common_EffectType_XMLTree_Type_indexes_[4];
 };
 
-class RPG_Common_Export RPG_Common_CounterMeasure_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_CounterMeasure_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1071,7 +1068,7 @@ class RPG_Common_Export RPG_Common_CounterMeasure_XMLTree_Type: public ::xml_sch
   static const value _xsd_RPG_Common_CounterMeasure_XMLTree_Type_indexes_[2];
 };
 
-class RPG_Common_Export RPG_Common_CheckType_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_CheckType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1132,7 +1129,7 @@ class RPG_Common_Export RPG_Common_CheckType_XMLTree_Type: public ::xml_schema::
   static const value _xsd_RPG_Common_CheckType_XMLTree_Type_indexes_[3];
 };
 
-class RPG_Common_Export RPG_Common_SavingThrow_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_SavingThrow_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1195,7 +1192,7 @@ class RPG_Common_Export RPG_Common_SavingThrow_XMLTree_Type: public ::xml_schema
   static const value _xsd_RPG_Common_SavingThrow_XMLTree_Type_indexes_[5];
 };
 
-class RPG_Common_Export RPG_Common_BaseCheckTypeUnion_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_BaseCheckTypeUnion_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1261,7 +1258,7 @@ class RPG_Common_Export RPG_Common_BaseCheckTypeUnion_XMLTree_Type: public ::xml
   static const value _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_indexes_[8];
 };
 
-class RPG_Common_Export RPG_Common_SaveReductionType_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_SaveReductionType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1322,7 +1319,7 @@ class RPG_Common_Export RPG_Common_SaveReductionType_XMLTree_Type: public ::xml_
   static const value _xsd_RPG_Common_SaveReductionType_XMLTree_Type_indexes_[3];
 };
 
-class RPG_Common_Export RPG_Common_SavingThrowCheck_XMLTree_Type: public ::xml_schema::type
+class RPG_Common_SavingThrowCheck_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // type
@@ -1440,16 +1437,14 @@ class RPG_Common_Export RPG_Common_SavingThrowCheck_XMLTree_Type: public ::xml_s
   static const reduction_type reduction_default_value_;
 };
 
-RPG_Common_Export
 bool
 operator== (const RPG_Common_SavingThrowCheck_XMLTree_Type&, const RPG_Common_SavingThrowCheck_XMLTree_Type&);
 
-RPG_Common_Export
 bool
 operator!= (const RPG_Common_SavingThrowCheck_XMLTree_Type&, const RPG_Common_SavingThrowCheck_XMLTree_Type&);
 
 
-class RPG_Common_Export RPG_Common_Amount_XMLTree_Type: public ::xml_schema::type
+class RPG_Common_Amount_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // value
@@ -1530,16 +1525,14 @@ class RPG_Common_Export RPG_Common_Amount_XMLTree_Type: public ::xml_schema::typ
   range_optional range_;
 };
 
-RPG_Common_Export
 bool
 operator== (const RPG_Common_Amount_XMLTree_Type&, const RPG_Common_Amount_XMLTree_Type&);
 
-RPG_Common_Export
 bool
 operator!= (const RPG_Common_Amount_XMLTree_Type&, const RPG_Common_Amount_XMLTree_Type&);
 
 
-class RPG_Common_Export RPG_Common_Usage_XMLTree_Type: public ::xml_schema::type
+class RPG_Common_Usage_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // numUses
@@ -1635,16 +1628,14 @@ class RPG_Common_Export RPG_Common_Usage_XMLTree_Type: public ::xml_schema::type
   interval_optional interval_;
 };
 
-RPG_Common_Export
 bool
 operator== (const RPG_Common_Usage_XMLTree_Type&, const RPG_Common_Usage_XMLTree_Type&);
 
-RPG_Common_Export
 bool
 operator!= (const RPG_Common_Usage_XMLTree_Type&, const RPG_Common_Usage_XMLTree_Type&);
 
 
-class RPG_Common_Export RPG_Common_Duration_XMLTree_Type: public ::xml_schema::type
+class RPG_Common_Duration_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // activation
@@ -1741,16 +1732,14 @@ class RPG_Common_Export RPG_Common_Duration_XMLTree_Type: public ::xml_schema::t
   total_optional total_;
 };
 
-RPG_Common_Export
 bool
 operator== (const RPG_Common_Duration_XMLTree_Type&, const RPG_Common_Duration_XMLTree_Type&);
 
-RPG_Common_Export
 bool
 operator!= (const RPG_Common_Duration_XMLTree_Type&, const RPG_Common_Duration_XMLTree_Type&);
 
 
-class RPG_Common_Export RPG_Common_EffectDuration_XMLTree_Type: public ::xml_schema::type
+class RPG_Common_EffectDuration_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // base
@@ -1904,16 +1893,14 @@ class RPG_Common_Export RPG_Common_EffectDuration_XMLTree_Type: public ::xml_sch
   ::xsd::cxx::tree::one< incrementIsInHD_type > incrementIsInHD_;
 };
 
-RPG_Common_Export
 bool
 operator== (const RPG_Common_EffectDuration_XMLTree_Type&, const RPG_Common_EffectDuration_XMLTree_Type&);
 
-RPG_Common_Export
 bool
 operator!= (const RPG_Common_EffectDuration_XMLTree_Type&, const RPG_Common_EffectDuration_XMLTree_Type&);
 
 
-class RPG_Common_Export RPG_Common_Camp_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Camp_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1975,163 +1962,123 @@ class RPG_Common_Export RPG_Common_Camp_XMLTree_Type: public ::xml_schema::strin
 
 #include <iosfwd>
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_CreatureMetaType_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_CreatureMetaType_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_CreatureSubType_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_CreatureSubType_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_CreatureType_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_SubClass_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_SubClass_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Attribute_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Attribute_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Size_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Size_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Condition_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Condition_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Skill_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Skill_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_PhysicalDamageType_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_PhysicalDamageType_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_ActionType_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_ActionType_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_AreaOfEffect_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_AreaOfEffect_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_EffectType_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_EffectType_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_CounterMeasure_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_CounterMeasure_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_CheckType_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_CheckType_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_SavingThrow_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_SavingThrow_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_BaseCheckTypeUnion_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_BaseCheckTypeUnion_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_SaveReductionType_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_SaveReductionType_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_SavingThrowCheck_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Amount_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Usage_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Duration_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_EffectDuration_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Camp_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Camp_XMLTree_Type&);
 
@@ -2149,362 +2096,282 @@ operator<< (::std::ostream&, const RPG_Common_Camp_XMLTree_Type&);
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_CreatureMetaType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_CreatureMetaType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_CreatureMetaType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_CreatureSubType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_CreatureSubType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_CreatureSubType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_CreatureType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_SubClass_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_SubClass_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_SubClass_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Attribute_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Attribute_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Attribute_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Size_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Size_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Size_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Condition_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Condition_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Condition_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Skill_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Skill_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Skill_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_PhysicalDamageType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_PhysicalDamageType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_PhysicalDamageType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_ActionType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_ActionType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_ActionType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_AreaOfEffect_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_AreaOfEffect_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_AreaOfEffect_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_EffectType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_EffectType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_EffectType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_CounterMeasure_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_CounterMeasure_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_CounterMeasure_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_CheckType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_CheckType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_CheckType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_SavingThrow_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_SavingThrow_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_SavingThrow_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_BaseCheckTypeUnion_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_BaseCheckTypeUnion_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_BaseCheckTypeUnion_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_SaveReductionType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_SaveReductionType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_SaveReductionType_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_SavingThrowCheck_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Amount_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Usage_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Duration_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_EffectDuration_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Camp_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Camp_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Camp_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_CreatureMetaType_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_CreatureSubType_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_CreatureType_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_SubClass_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Attribute_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Size_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Condition_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Skill_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_PhysicalDamageType_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_ActionType_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_AreaOfEffect_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_EffectType_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_CounterMeasure_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_CheckType_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_SavingThrow_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_BaseCheckTypeUnion_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_SaveReductionType_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_SavingThrowCheck_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Amount_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Usage_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Duration_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_EffectDuration_XMLTree_Type&);
 
-RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Camp_XMLTree_Type&);

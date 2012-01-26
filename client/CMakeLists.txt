@@ -1,5 +1,7 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+cmake_minimum_required(VERSION 2.8)
+
 include(FindPkgConfig)
 pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
 pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
@@ -7,6 +9,17 @@ pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
 pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
 pkg_check_modules(PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
 
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../common")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../character")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../magic")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../item")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../combat")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../character/player")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../character/monster")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../map")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../engine")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../graphics")
 include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS} ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS} ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
 
 ########### next target ###############

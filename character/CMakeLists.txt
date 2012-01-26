@@ -1,7 +1,17 @@
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+cmake_minimum_required(VERSION 2.8)
+
 add_subdirectory(monster)
 add_subdirectory(player)
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../common")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../magic")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../item")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../combat")
 
 ########### next target ###############
 set(RPG_Character_LIB_SRCS

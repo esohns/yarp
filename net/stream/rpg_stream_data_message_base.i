@@ -23,6 +23,7 @@
 #include <rpg_common_macros.h>
 
 #include <ace/Malloc_Base.h>
+#include <ace/Log_Msg.h>
 
 template <typename DataType>
 RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(DataType*& data_inout)

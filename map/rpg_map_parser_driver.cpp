@@ -126,7 +126,7 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
 
   // open file
   std::ifstream file;
-  file.open(filename_in.c_str(), ios_base::in);
+  file.open(filename_in.c_str(), std::ios_base::in);
   if (file.fail())
   {
     ACE_DEBUG((LM_ERROR,
@@ -141,10 +141,10 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to parse map file \"%s\", aborting\n"),
-			   filename_in.c_str()));
+               filename_in.c_str()));
 
     // clean up
-	file.close();
+    file.close();
     if (file.fail())
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to close file \"%s\", aborting\n"),
@@ -161,11 +161,11 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to parse map file \"%s\", aborting\n"),
-			   filename_in.c_str()));
+               filename_in.c_str()));
 
     // clean up
     scan_end();
-	file.close();
+    file.close();
     if (file.fail())
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to close file \"%s\", aborting\n"),
@@ -185,7 +185,7 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   myCurrentFilename.clear();
   file.close();
   if (file.fail())
-	ACE_DEBUG((LM_ERROR,
+    ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to close file \"%s\", aborting\n"),
                filename_in.c_str()));
 
@@ -242,7 +242,7 @@ RPG_Map_ParserDriver::scan_begin(std::istream* file_in)
   ACE_ASSERT(myCurrentBufferState == NULL);
 
   myCurrentBufferState = myScanner.yy_create_buffer(file_in,
-													RPG_MAP_SCANNER_BUFSIZE);
+                                                    RPG_MAP_SCANNER_BUFSIZE);
   if (myCurrentBufferState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
@@ -273,8 +273,8 @@ RPG_Map_ParserDriver::scan_end()
 int
 yylex(yy::RPG_Map_Parser::semantic_type* token_in,
       yy::RPG_Map_Parser::location_type* location_in,
-	  RPG_Map_ParserDriver* driver_in,
-	  RPG_Map_Scanner& scanner_in)
+      RPG_Map_ParserDriver* driver_in,
+      RPG_Map_Scanner& scanner_in)
 {
   RPG_TRACE(ACE_TEXT("::yylex"));
 

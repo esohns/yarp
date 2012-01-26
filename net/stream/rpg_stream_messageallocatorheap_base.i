@@ -24,6 +24,7 @@
 #include <rpg_common_macros.h>
 
 #include <ace/Message_Block.h>
+#include <ace/Log_Msg.h>
 
 template <typename MessageType,
           typename SessionMessageType>

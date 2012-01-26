@@ -37,7 +37,7 @@
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
-typedef void* yyscan_t;
+//typedef void* yyscan_t;
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;

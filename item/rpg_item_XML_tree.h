@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_item_exports.h"
 //
 // End prologue.
 
@@ -102,7 +101,7 @@ class RPG_Item_DictionaryXML_XMLTree_Type;
 
 #include "../magic/rpg_magic_XML_tree.h"
 
-class RPG_Item_Export RPG_Item_Type_XMLTree_Type: public ::xml_schema::string
+class RPG_Item_Type_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -165,7 +164,7 @@ class RPG_Item_Export RPG_Item_Type_XMLTree_Type: public ::xml_schema::string
   static const value _xsd_RPG_Item_Type_XMLTree_Type_indexes_[5];
 };
 
-class RPG_Item_Export RPG_Item_Money_XMLTree_Type: public ::xml_schema::string
+class RPG_Item_Money_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -229,7 +228,7 @@ class RPG_Item_Export RPG_Item_Money_XMLTree_Type: public ::xml_schema::string
   static const value _xsd_RPG_Item_Money_XMLTree_Type_indexes_[6];
 };
 
-class RPG_Item_Export RPG_Item_WeaponCategory_XMLTree_Type: public ::xml_schema::string
+class RPG_Item_WeaponCategory_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -290,7 +289,7 @@ class RPG_Item_Export RPG_Item_WeaponCategory_XMLTree_Type: public ::xml_schema:
   static const value _xsd_RPG_Item_WeaponCategory_XMLTree_Type_indexes_[3];
 };
 
-class RPG_Item_Export RPG_Item_WeaponClass_XMLTree_Type: public ::xml_schema::string
+class RPG_Item_WeaponClass_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -353,7 +352,7 @@ class RPG_Item_Export RPG_Item_WeaponClass_XMLTree_Type: public ::xml_schema::st
   static const value _xsd_RPG_Item_WeaponClass_XMLTree_Type_indexes_[5];
 };
 
-class RPG_Item_Export RPG_Item_WeaponType_XMLTree_Type: public ::xml_schema::string
+class RPG_Item_WeaponType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -484,7 +483,7 @@ class RPG_Item_Export RPG_Item_WeaponType_XMLTree_Type: public ::xml_schema::str
   static const value _xsd_RPG_Item_WeaponType_XMLTree_Type_indexes_[73];
 };
 
-class RPG_Item_Export RPG_Item_StorePrice_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_StorePrice_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // numGoldPieces
@@ -562,16 +561,14 @@ class RPG_Item_Export RPG_Item_StorePrice_XMLTree_Type: public ::xml_schema::typ
   numSilverPieces_optional numSilverPieces_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_StorePrice_XMLTree_Type&, const RPG_Item_StorePrice_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_StorePrice_XMLTree_Type&, const RPG_Item_StorePrice_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_CriticalHitProperties_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_CriticalHitProperties_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // minToHitRoll
@@ -642,16 +639,14 @@ class RPG_Item_Export RPG_Item_CriticalHitProperties_XMLTree_Type: public ::xml_
   ::xsd::cxx::tree::one< damageModifier_type > damageModifier_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_CriticalHitProperties_XMLTree_Type&, const RPG_Item_CriticalHitProperties_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_CriticalHitProperties_XMLTree_Type&, const RPG_Item_CriticalHitProperties_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_CreationCost_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_CreationCost_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // numGoldPieces
@@ -729,16 +724,14 @@ class RPG_Item_Export RPG_Item_CreationCost_XMLTree_Type: public ::xml_schema::t
   numExperiencePoints_optional numExperiencePoints_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_CreationCost_XMLTree_Type&, const RPG_Item_CreationCost_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_CreationCost_XMLTree_Type&, const RPG_Item_CreationCost_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_BaseProperties_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_BaseProperties_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // baseWeight
@@ -837,16 +830,14 @@ class RPG_Item_Export RPG_Item_BaseProperties_XMLTree_Type: public ::xml_schema:
   costToCreate_optional costToCreate_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_BaseProperties_XMLTree_Type&, const RPG_Item_BaseProperties_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_BaseProperties_XMLTree_Type&, const RPG_Item_BaseProperties_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_MagicalPrerequisites_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_MagicalPrerequisites_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // minCasterLevel
@@ -905,16 +896,14 @@ class RPG_Item_Export RPG_Item_MagicalPrerequisites_XMLTree_Type: public ::xml_s
   minCasterLevel_optional minCasterLevel_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_MagicalPrerequisites_XMLTree_Type&, const RPG_Item_MagicalPrerequisites_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_MagicalPrerequisites_XMLTree_Type&, const RPG_Item_MagicalPrerequisites_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_PropertiesBase_XMLTree_Type: public ::RPG_Item_BaseProperties_XMLTree_Type
+class RPG_Item_PropertiesBase_XMLTree_Type: public ::RPG_Item_BaseProperties_XMLTree_Type
 {
   public:
   // aura
@@ -1002,16 +991,14 @@ class RPG_Item_Export RPG_Item_PropertiesBase_XMLTree_Type: public ::RPG_Item_Ba
   prerequisites_optional prerequisites_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_PropertiesBase_XMLTree_Type&, const RPG_Item_PropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_PropertiesBase_XMLTree_Type&, const RPG_Item_PropertiesBase_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_Item_PropertiesBase_XMLTree_Type
+class RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_Item_PropertiesBase_XMLTree_Type
 {
   public:
   // weaponType
@@ -1246,16 +1233,14 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_I
   ::xsd::cxx::tree::one< isDoubleWeapon_type > isDoubleWeapon_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_WeaponPropertiesBase_XMLTree_Type&, const RPG_Item_WeaponPropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_WeaponPropertiesBase_XMLTree_Type&, const RPG_Item_WeaponPropertiesBase_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_WeaponPropertiesXML_XMLTree_Type: public ::RPG_Item_WeaponPropertiesBase_XMLTree_Type
+class RPG_Item_WeaponPropertiesXML_XMLTree_Type: public ::RPG_Item_WeaponPropertiesBase_XMLTree_Type
 {
   public:
   // toHitModifier
@@ -1328,16 +1313,14 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_XMLTree_Type: public ::RPG_It
   toHitModifier_optional toHitModifier_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_WeaponPropertiesXML_XMLTree_Type&, const RPG_Item_WeaponPropertiesXML_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_WeaponPropertiesXML_XMLTree_Type&, const RPG_Item_WeaponPropertiesXML_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_ArmorCategory_XMLTree_Type: public ::xml_schema::string
+class RPG_Item_ArmorCategory_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1399,7 +1382,7 @@ class RPG_Item_Export RPG_Item_ArmorCategory_XMLTree_Type: public ::xml_schema::
   static const value _xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_[4];
 };
 
-class RPG_Item_Export RPG_Item_ArmorType_XMLTree_Type: public ::xml_schema::string
+class RPG_Item_ArmorType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1476,7 +1459,7 @@ class RPG_Item_Export RPG_Item_ArmorType_XMLTree_Type: public ::xml_schema::stri
   static const value _xsd_RPG_Item_ArmorType_XMLTree_Type_indexes_[19];
 };
 
-class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_Item_PropertiesBase_XMLTree_Type
+class RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_Item_PropertiesBase_XMLTree_Type
 {
   public:
   // armorType
@@ -1645,16 +1628,14 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
   ::xsd::cxx::tree::one< baseSpeed_type > baseSpeed_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_ArmorPropertiesBase_XMLTree_Type&, const RPG_Item_ArmorPropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_ArmorPropertiesBase_XMLTree_Type&, const RPG_Item_ArmorPropertiesBase_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_ArmorPropertiesXML_XMLTree_Type: public ::RPG_Item_ArmorPropertiesBase_XMLTree_Type
+class RPG_Item_ArmorPropertiesXML_XMLTree_Type: public ::RPG_Item_ArmorPropertiesBase_XMLTree_Type
 {
   public:
   // defenseModifier
@@ -1731,16 +1712,14 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_XMLTree_Type: public ::RPG_Ite
   defenseModifier_optional defenseModifier_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_ArmorPropertiesXML_XMLTree_Type&, const RPG_Item_ArmorPropertiesXML_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_ArmorPropertiesXML_XMLTree_Type&, const RPG_Item_ArmorPropertiesXML_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // type
@@ -1842,16 +1821,14 @@ class RPG_Item_Export RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
   armor_optional armor_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_XML_XMLTree_Type&, const RPG_Item_XML_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_XML_XMLTree_Type&, const RPG_Item_XML_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_InventoryXML_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_InventoryXML_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // item
@@ -1909,16 +1886,14 @@ class RPG_Item_Export RPG_Item_InventoryXML_XMLTree_Type: public ::xml_schema::t
   item_sequence item_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_InventoryXML_XMLTree_Type&, const RPG_Item_InventoryXML_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_InventoryXML_XMLTree_Type&, const RPG_Item_InventoryXML_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_DictionaryXML_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_DictionaryXML_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // weapon
@@ -1994,122 +1969,93 @@ class RPG_Item_Export RPG_Item_DictionaryXML_XMLTree_Type: public ::xml_schema::
   armor_sequence armor_;
 };
 
-RPG_Item_Export
 bool
 operator== (const RPG_Item_DictionaryXML_XMLTree_Type&, const RPG_Item_DictionaryXML_XMLTree_Type&);
 
-RPG_Item_Export
 bool
 operator!= (const RPG_Item_DictionaryXML_XMLTree_Type&, const RPG_Item_DictionaryXML_XMLTree_Type&);
 
 
 #include <iosfwd>
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Item_Type_XMLTree_Type::value);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_Type_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Item_Money_XMLTree_Type::value);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_Money_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Item_WeaponCategory_XMLTree_Type::value);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_WeaponCategory_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Item_WeaponClass_XMLTree_Type::value);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_WeaponClass_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Item_WeaponType_XMLTree_Type::value);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_WeaponType_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_StorePrice_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_CriticalHitProperties_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_CreationCost_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_BaseProperties_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_MagicalPrerequisites_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_PropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_WeaponPropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_WeaponPropertiesXML_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Item_ArmorCategory_XMLTree_Type::value);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_ArmorCategory_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Item_ArmorType_XMLTree_Type::value);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_ArmorType_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_ArmorPropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_ArmorPropertiesXML_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_XML_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_InventoryXML_XMLTree_Type&);
 
-RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_DictionaryXML_XMLTree_Type&);
 
@@ -2127,245 +2073,191 @@ operator<< (::std::ostream&, const RPG_Item_DictionaryXML_XMLTree_Type&);
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_Type_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Item_Type_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Item_Type_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_Money_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Item_Money_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Item_Money_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_WeaponCategory_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Item_WeaponCategory_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Item_WeaponCategory_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_WeaponClass_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Item_WeaponClass_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Item_WeaponClass_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_WeaponType_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Item_WeaponType_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Item_WeaponType_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_StorePrice_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_CriticalHitProperties_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_CreationCost_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_BaseProperties_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_MagicalPrerequisites_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_PropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_WeaponPropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_WeaponPropertiesXML_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_ArmorCategory_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Item_ArmorCategory_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Item_ArmorCategory_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_ArmorType_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Item_ArmorType_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Item_ArmorType_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_ArmorPropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_ArmorPropertiesXML_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_XML_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_InventoryXML_XMLTree_Type&);
 
-RPG_Item_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Item_DictionaryXML_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_Type_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_Money_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_WeaponCategory_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_WeaponClass_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_WeaponType_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_StorePrice_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_CriticalHitProperties_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_CreationCost_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_BaseProperties_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_MagicalPrerequisites_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_PropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_WeaponPropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_WeaponPropertiesXML_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_ArmorCategory_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_ArmorType_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_ArmorPropertiesBase_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_ArmorPropertiesXML_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_XML_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_InventoryXML_XMLTree_Type&);
 
-RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_DictionaryXML_XMLTree_Type&);
