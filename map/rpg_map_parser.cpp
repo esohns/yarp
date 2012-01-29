@@ -31,6 +31,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+// Take the name prefix into account.
+#define yylex   RPG_Map_Scanner_lex
 
 /* First part of user declarations.  */
 
@@ -47,6 +49,7 @@
 
 #include "rpg_map_common.h"
 #include "rpg_map_parser_driver.h"
+#include "stack.hh"
 
 #include <rpg_common_macros.h>
 
@@ -162,14 +165,15 @@ namespace yy {
 #endif
 
   /// Build a parser object.
-  RPG_Map_Parser::RPG_Map_Parser (RPG_Map_ParserDriver* driver_yyarg, RPG_Map_Scanner& scanner_yyarg)
+  RPG_Map_Parser::RPG_Map_Parser (RPG_Map_ParserDriver* driver_yyarg, unsigned int* line_count_yyarg, yyscan_t yyscanner_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
       yycdebug_ (&std::cerr),
 #endif
       driver (driver_yyarg),
-      scanner (scanner_yyarg)
+      line_count (line_count_yyarg),
+      yyscanner (yyscanner_yyarg)
   {
   }
 
@@ -193,6 +197,16 @@ namespace yy {
         case 3: /* "\"name\"" */
 
 	{ debug_stream() << *(yyvaluep->sval); };
+
+	break;
+      case 4: /* "\"glyph\"" */
+
+	{ debug_stream() << (yyvaluep->cval); };
+
+	break;
+      case 5: /* "\"end_of_row\"" */
+
+	{ debug_stream() << (yyvaluep->cval); };
 
 	break;
        default:
@@ -228,6 +242,16 @@ namespace yy {
         case 3: /* "\"name\"" */
 
 	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
+
+	break;
+      case 4: /* "\"glyph\"" */
+
+	{ (yyvaluep->cval) = 0; };
+
+	break;
+      case 5: /* "\"end_of_row\"" */
+
+	{ (yyvaluep->cval) = 0; };
 
 	break;
 
@@ -349,7 +373,7 @@ namespace yy {
     if (yychar == yyempty_)
       {
 	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, driver, scanner);
+	yychar = yylex (&yylval, &yylloc, driver, line_count, yyscanner);
       }
 
 
@@ -497,10 +521,10 @@ namespace yy {
   case 6:
 
     { if (driver->myCurrentSizeX == 0)
-                                   driver->myCurrentSizeX = driver->myCurrentPosition.first;
-                                 driver->myCurrentPosition.first = 0;
-                                 driver->myCurrentPosition.second++;
-                               }
+                                      driver->myCurrentSizeX = driver->myCurrentPosition.first;
+                                    driver->myCurrentPosition.first = 0;
+                                    driver->myCurrentPosition.second++;
+                                  }
     break;
 
 
@@ -820,7 +844,7 @@ namespace yy {
   const unsigned char
   RPG_Map_Parser::yyrline_[] =
   {
-         0,    64,    64,    65,    67,    68,   122
+         0,    78,    78,    79,    81,    82,   136
   };
 
   // Print the state stack on the debug stream.
@@ -917,7 +941,9 @@ void
 yy::RPG_Map_Parser::error(const location_type& location_in,
                           const std::string& message_in)
 {
-  ACE_TRACE(ACE_TEXT("RPG_Map_Parser::error"));
+  RPG_TRACE(ACE_TEXT("yy::RPG_Map_Parser::error"));
+
+  ACE_ASSERT(driver);
 
   driver->error(location_in, message_in);
 }

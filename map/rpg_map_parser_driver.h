@@ -24,29 +24,35 @@
 #include "rpg_map_defines.h"
 #include "rpg_map_common.h"
 #include "rpg_map_parser.h"
-#include "rpg_map_scanner.h"
 
 #include <ace/Global_Macros.h>
 
 #include <string>
 #include <iostream>
 
-typedef struct yy_buffer_state* YY_BUFFER_STATE;
+// Tell Flex the lexer's prototype ...
+// union YYSTYPE;
+// struct YYLTYPE;
+// tell flex the lexer's prototype ...
+#define YY_DECL                                   \
+yy::RPG_Map_Parser::token_type                    \
+RPG_Map_Scanner_lex(yy::RPG_Map_Parser::semantic_type* yylval,  \
+                    yy::RPG_Map_Parser::location_type* yylloc,  \
+                    RPG_Map_ParserDriver* driver,               \
+                    unsigned int* line_count,                   \
+                    yyscan_t yyscanner)
+// ... and declare it for the parser's sake
+YY_DECL;
 
-//// Tell Flex the lexer's prototype ...
-//#define YY_DECL                                            \
-//  yy::RPG_Map_Parser::token_type                           \
-//  driver.yylex(yy::RPG_Map_Parser::semantic_type* yylval,  \
-//               yy::RPG_Map_Parser::location_type* yylloc)
-//// ... and declare it for the parser's sake
-//YY_DECL;
+typedef void* yyscan_t;
+typedef struct yy_buffer_state* YY_BUFFER_STATE;
 
 class RPG_Map_ParserDriver
 {
   // allow access to our internals (i.e. the current plan, seed points)
   friend class yy::RPG_Map_Parser;
   // allow access to our internals (i.e. error reporting)
-//   friend class RPG_Map_Scanner;
+  //friend class RPG_Map_Scanner;
 
  public:
   RPG_Map_ParserDriver(const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
@@ -69,8 +75,8 @@ class RPG_Map_ParserDriver
   const bool getDebugScanner() const;
 
   // error-handling
-  void error(const yy::location&, // location
-             const std::string&); // message
+  void error(const yy::RPG_Map_Parser::location_type&, // location
+             const std::string&);                      // message
   void error(const std::string&); // message
 
  private:
@@ -83,21 +89,17 @@ class RPG_Map_ParserDriver
 //   void reset();
 
   // helper methods
-  const bool scan_begin(std::istream*); // file handle
+  //const bool scan_begin(std::istream*); // file handle
+  const bool scan_begin(FILE*); // file handle
   void scan_end();
 
   // scanner
-  bool                 myTraceScanning;
-  RPG_Map_Scanner      myScanner;
-  unsigned long        myCurrentNumLines;
+  bool                myTraceParsing;
+  unsigned int        myCurrentNumLines;
 
   // scan buffer
+  yyscan_t             myCurrentScannerState;
   YY_BUFFER_STATE      myCurrentBufferState;
-
-  // parser
-  yy::RPG_Map_Parser   myParser;
-  unsigned long        myCurrentSizeX;
-  RPG_Map_Position_t   myCurrentPosition;
 
   // target data
   RPG_Map_FloorPlan_t* myCurrentPlan;
@@ -105,14 +107,12 @@ class RPG_Map_ParserDriver
   RPG_Map_Position_t*  myCurrentStartPosition;
   std::string*         myCurrentName;
 
+  // state
+  unsigned int         myCurrentSizeX;
+  RPG_Map_Position_t   myCurrentPosition;
+
   std::string          myCurrentFilename;
   bool                 myIsInitialized;
 };
-
-int
-yylex(yy::RPG_Map_Parser::semantic_type*,
-      yy::RPG_Map_Parser::location_type*,
-      RPG_Map_ParserDriver*,
-      RPG_Map_Scanner&);
 
 #endif

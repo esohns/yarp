@@ -19,7 +19,8 @@ cd ${HOME}/Projects/RPG/${PROJECT}/scripts
 flex ./${PROJECT}_scanner.l 2>&1 | tee ./scanner_report.txt
 
 # move generated files into the project directory
-mv -f lex.yy.cc ./..
+mv -f rpg_map_scanner.cpp ./..
+mv -f rpg_map_scanner.h ./..
 
 # ...go back to where we came from
 popd >/dev/null 2>&1

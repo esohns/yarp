@@ -227,7 +227,7 @@ do_work(const std::string& name_in,
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
 
-  // step2: generate random dungeon map
+  // step2: generate random map
   RPG_Map_t map;
   RPG_Map_Common_Tools::create(name_in,
                                mapConfig_in,
@@ -238,6 +238,10 @@ do_work(const std::string& name_in,
   RPG_Map_Door_t current_position_door;
   bool is_starting_position = false;
   bool is_seed = false;
+  std::cout << ACE_TEXT_ALWAYS_CHAR("[")
+            << name_in
+            << ACE_TEXT_ALWAYS_CHAR("]")
+            << std::endl;
   for (unsigned long y = 0;
        y < map.plan.size_y;
        y++)

@@ -39,8 +39,10 @@
 /* "%code requires" blocks.  */
 
 
+#include <string>
+
 class RPG_Map_ParserDriver;
-class RPG_Map_Scanner;
+typedef void* yyscan_t;
 
 
 
@@ -139,7 +141,7 @@ namespace yy {
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    RPG_Map_Parser (RPG_Map_ParserDriver* driver_yyarg, RPG_Map_Scanner& scanner_yyarg);
+    RPG_Map_Parser (RPG_Map_ParserDriver* driver_yyarg, unsigned int* line_count_yyarg, yyscan_t yyscanner_yyarg);
     virtual ~RPG_Map_Parser ();
 
     /// Parse.
@@ -300,7 +302,8 @@ namespace yy {
 
     /* User arguments.  */
     RPG_Map_ParserDriver* driver;
-    RPG_Map_Scanner& scanner;
+    unsigned int* line_count;
+    yyscan_t yyscanner;
   };
 
 } // yy

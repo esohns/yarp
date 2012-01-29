@@ -26,7 +26,6 @@ set(RPG_Map_LIB_SRCS
     rpg_map_parser_driver.h
     rpg_map_pathfinding_tools.cpp
     rpg_map_pathfinding_tools.h
-    lex.yy.cc
     rpg_map_scanner.cpp
     rpg_map_scanner.h
     stack.hh)
@@ -34,12 +33,13 @@ set(RPG_Map_LIB_SRCS
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Map_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
+set_source_files_properties(${RPG_Map_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS YY_NO_UNISTD_H)
 
 add_library(RPG_Map SHARED ${RPG_Map_LIB_SRCS})
 
 # add_custom_target(map_scanner
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/map_scanner.l)
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/lex.yy.cc
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map_scanner.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map_scanner.h
                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/scanner.sh
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/map_scanner.l
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts

@@ -16,7 +16,7 @@ PROJECT=map
 cd ${HOME}/Projects/RPG/${PROJECT}/scripts
 
 # generate a parser for map (text) files
-/usr/bin/bison --language=C++ --skeleton="lalr1.cc" --debug --locations --no-lines --token-table --verbose --defines=rpg_${PROJECT}_parser.h --output=rpg_${PROJECT}_parser.cpp --graph=parser_graph.txt --xml=parser_graph.xml ./${PROJECT}_parser.y --report=all --report-file=parser_report.txt --warnings=all
+/usr/bin/bison --warnings=all --verbose --graph=parser_graph.txt --xml=parser_graph.xml ./${PROJECT}_parser.y --report=all --report-file=parser_report.txt
 
 # move generated files into the project directory
 mv -f position.hh ./..
