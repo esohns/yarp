@@ -19,7 +19,8 @@ cd ${HOME}/Projects/RPG/${PROJECT}/scripts
 flex ./IRCbisect.l 2>&1 | tee ./IRCbisect_scanner_report.txt
 
 # move the file into our project directory
-mv -f IRCBisect_lex.yy.cc ./..
+mv -f rpg_net_protocol_IRCbisect.cpp ./..
+mv -f rpg_net_protocol_IRCbisect.h ./..
 
 # -------------------------------------------------------------------
 
@@ -27,7 +28,8 @@ mv -f IRCBisect_lex.yy.cc ./..
 flex ./IRCscanner.l 2>&1 | tee -a ./IRCScanner_scanner_report.txt
 
 # move the file into the project directory
-mv -f IRCScanner_lex.yy.cc ./..
+mv -f rpg_net_protocol_IRCscanner.cpp ./..
+mv -f rpg_net_protocol_IRCscanner.h ./..
 
 # go back
 popd >/dev/null 2>&1

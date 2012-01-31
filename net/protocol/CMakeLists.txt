@@ -11,16 +11,14 @@ set(RPG_Net_Protocol_LIB_SRCS
     location.hh
     position.hh
     rpg_net_protocol_IRC_codes.h
-    rpg_net_protocol_IRCbisect.cpp
-    rpg_net_protocol_IRCbisect.h
     rpg_net_protocol_IRCmessage.cpp
     rpg_net_protocol_IRCmessage.h
     rpg_net_protocol_IRCparser.cpp
     rpg_net_protocol_IRCparser.h
     rpg_net_protocol_IRCparser_driver.cpp
     rpg_net_protocol_IRCparser_driver.h
-    IRCBisect_lex.yy.cc
-    IRCScanner_lex.yy.cc
+    rpg_net_protocol_IRCbisect.cpp
+    rpg_net_protocol_IRCbisect.h
     rpg_net_protocol_IRCscanner.cpp
     rpg_net_protocol_IRCscanner.h
     rpg_net_protocol_common.h
@@ -58,11 +56,12 @@ add_library(RPG_Net_Protocol SHARED ${RPG_Net_Protocol_LIB_SRCS})
 
 # add_custom_target(protocol_scanner
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/protocol_scanner.l)
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/IRCBisect_lex.yy.cc ${CMAKE_CURRENT_SOURCE_DIR}/IRCScanner_lex.yy.cc
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCbisect.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCbisect.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCscanner.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/rpg_net_protocol_IRCscanner.h
                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/scanner.sh
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/IRCbisect.l ${CMAKE_CURRENT_SOURCE_DIR}/scripts/IRCscanner.l
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-                   COMMENT "generating flex scanner...")
+                   COMMENT "generating flex scanners...")
 
 # add_custom_target(protocol_parser
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/protocol_parser.y)

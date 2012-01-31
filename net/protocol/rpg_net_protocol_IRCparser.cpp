@@ -31,6 +31,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+// Take the name prefix into account.
+#define yylex   RPG_Net_Protocol_IRCScanner_lex
 
 /* First part of user declarations.  */
 
@@ -162,7 +164,7 @@ namespace yy {
 #endif
 
   /// Build a parser object.
-  RPG_Net_Protocol_IRCParser::RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& messageCount_yyarg, std::string& memory_yyarg, RPG_Net_Protocol_IRCScanner& scanner_yyarg)
+  RPG_Net_Protocol_IRCParser::RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver* driver_yyarg, unsigned int* messageCount_yyarg, yyscan_t yyscanner_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
@@ -170,8 +172,7 @@ namespace yy {
 #endif
       driver (driver_yyarg),
       messageCount (messageCount_yyarg),
-      memory (memory_yyarg),
-      scanner (scanner_yyarg)
+      yyscanner (yyscanner_yyarg)
   {
   }
 
@@ -411,7 +412,7 @@ namespace yy {
     if (yychar == yyempty_)
       {
 	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, driver, messageCount, memory, scanner);
+	yychar = yylex (&yylval, &yylloc, driver, messageCount, yyscanner);
       }
 
 
@@ -494,25 +495,25 @@ namespace yy {
       {
 	  case 5:
 
-    { driver.myCurrentMessage->prefix.origin = *(yysemantic_stack_[(3) - (2)].sval);
+    { driver->myCurrentMessage->prefix.origin = *(yysemantic_stack_[(3) - (2)].sval);
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                            ACE_TEXT("set origin: \"%s\"\n"),
-                                                                  driver.myCurrentMessage->prefix.origin.c_str())); */
+                                                                                                                                             driver->myCurrentMessage->prefix.origin.c_str())); */
                                                               }
     break;
 
   case 6:
 
-    { driver.myCurrentMessage->prefix.user = *(yysemantic_stack_[(3) - (2)].sval);
+    { driver->myCurrentMessage->prefix.user = *(yysemantic_stack_[(3) - (2)].sval);
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                            ACE_TEXT("set user: \"%s\"\n"),
-                                                                           driver.myCurrentMessage->prefix.user.c_str())); */
+                                                                                                                                                      driver->myCurrentMessage->prefix.user.c_str())); */
                                                               }
     break;
 
   case 7:
 
-    { driver.myCurrentMessage->prefix.host = *(yysemantic_stack_[(3) - (2)].sval);
+    { driver->myCurrentMessage->prefix.host = *(yysemantic_stack_[(3) - (2)].sval);
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                            ACE_TEXT("set host: \"%s\"\n"),
                                                                            driver.myCurrentMessage->prefix.host.c_str())); */
@@ -521,21 +522,21 @@ namespace yy {
 
   case 10:
 
-    { ACE_ASSERT(driver.myCurrentMessage->command.string == NULL);
-                                                                ACE_NEW_NORETURN(driver.myCurrentMessage->command.string,
+    { ACE_ASSERT(driver->myCurrentMessage->command.string == NULL);
+                                                                ACE_NEW_NORETURN(driver->myCurrentMessage->command.string,
                                                                                  std::string(*(yysemantic_stack_[(1) - (1)].sval)));
-                                                                ACE_ASSERT(driver.myCurrentMessage->command.string);
-                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+                                                                ACE_ASSERT(driver->myCurrentMessage->command.string);
+                                                                driver->myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 /*                                                                ACE_DEBUG((LM_DEBUG,
-                                                                           ACE_TEXT("set command: \"%s\"\n"),
-                                                                           driver.myCurrentMessage->command.string->c_str())); */
+                                                                             ACE_TEXT("set command: \"%s\"\n"),
+                                                                             driver->myCurrentMessage->command.string->c_str())); */
                                                               }
     break;
 
   case 11:
 
-    { driver.myCurrentMessage->command.numeric = static_cast<RPG_Net_Protocol_IRCNumeric_t>((yysemantic_stack_[(1) - (1)].ival));
-                                                                driver.myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
+    { driver->myCurrentMessage->command.numeric = static_cast<RPG_Net_Protocol_IRCNumeric_t>((yysemantic_stack_[(1) - (1)].ival));
+                                                                driver->myCurrentMessage->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::NUMERIC;
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                              ACE_TEXT("set command (numeric): %d\n"),
                                                                              $1)); */
@@ -544,19 +545,19 @@ namespace yy {
 
   case 14:
 
-    { driver.myCurrentMessage->params.push_front(*(yysemantic_stack_[(2) - (1)].sval));
+    { driver->myCurrentMessage->params.push_front(*(yysemantic_stack_[(2) - (1)].sval));
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                              ACE_TEXT("set param: \"%s\"\n"),
-                                                                             driver.myCurrentMessage->params.front().c_str())); */
+                                                                             driver->myCurrentMessage->params.front().c_str())); */
                                                               }
     break;
 
   case 16:
 
-    { driver.myCurrentMessage->params.push_front(*(yysemantic_stack_[(1) - (1)].sval));
+    { driver->myCurrentMessage->params.push_front(*(yysemantic_stack_[(1) - (1)].sval));
 /*                                                                ACE_DEBUG((LM_DEBUG,
                                                                              ACE_TEXT("set final param: \"%s\"\n"),
-                                                                             driver.myCurrentMessage->params.front().c_str())); */
+                                                                             driver->myCurrentMessage->params.front().c_str())); */
                                                               }
     break;
 
@@ -896,8 +897,8 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    74,    74,    75,    76,    77,    82,    87,    92,    93,
-      94,   103,   109,   110,   111,   116,   117,   122
+         0,    83,    83,    84,    85,    86,    91,    96,   101,   102,
+     103,   112,   118,   119,   120,   125,   126,   131
   };
 
   // Print the state stack on the debug stream.
@@ -996,6 +997,6 @@ yy::RPG_Net_Protocol_IRCParser::error(const location_type& location_in,
 {
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParser::error"));
 
-  driver.error(location_in, message_in);
+  driver->error(location_in, message_in);
 }
 

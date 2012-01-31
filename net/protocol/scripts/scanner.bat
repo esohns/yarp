@@ -11,5 +11,7 @@
 "E:\GnuWin32\bin\flex.exe" .\IRCbisect.l
 "E:\GnuWin32\bin\flex.exe" .\IRCscanner.l
 
-copy /Y IRCBisect_lex.yy.cc .\..
-copy /Y IRCScanner_lex.yy.cc .\..
+copy /Y rpg_net_protocol_IRCbisect.cpp .\..
+copy /Y rpg_net_protocol_IRCbisect.h .\..
+copy /Y rpg_net_protocol_IRCscanner.cpp .\..
+copy /Y rpg_net_protocol_IRCscanner.h .\..

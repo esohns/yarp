@@ -101,24 +101,24 @@ class RPG_Net_Protocol_Module_IRCSplitter
                         const size_t&); // length of data block
   void scan_end();
 
-  bool                       myCrunchMessages;
-  unsigned long              mySessionID;
+  bool                      myCrunchMessages;
+  unsigned int              mySessionID;
 
   // timer stuff
-  STATISTICHANDLER_TYPE      myStatCollectHandler;
-  int                        myStatCollectHandlerID;
+  STATISTICHANDLER_TYPE     myStatCollectHandler;
+  int                       myStatCollectHandlerID;
 
   // scanner
-//  yyscan_t                  myScannerContext;
-  RPG_Net_Protocol_IRCBisect myScanner;
-  unsigned long              myCurrentNumFrames;
-  YY_BUFFER_STATE            myCurrentBufferState;
-  // message buffers
-  RPG_Net_Protocol_Message*  myCurrentMessage;
-  RPG_Net_Protocol_Message*  myCurrentBuffer;
-  unsigned long              myCurrentMessageLength;
+  yyscan_t                  myScannerContext;
+  YY_BUFFER_STATE           myCurrentBufferState;
+  unsigned int              myCurrentNumFrames;
 
-  bool                       myIsInitialized;
+  // message buffers
+  RPG_Net_Protocol_Message* myCurrentMessage;
+  RPG_Net_Protocol_Message* myCurrentBuffer;
+  unsigned int              myCurrentMessageLength;
+
+  bool                      myIsInitialized;
 };
 
 // declare module

@@ -30,22 +30,20 @@
 #include <string>
 #include <iostream>
 
-// Tell Flex the lexer's prototype ...
-// union YYSTYPE;
-// struct YYLTYPE;
+// forward declaration(s)
+typedef void* yyscan_t;
+typedef struct yy_buffer_state* YY_BUFFER_STATE;
+
 // tell flex the lexer's prototype ...
-#define YY_DECL                                   \
-yy::RPG_Map_Parser::token_type                    \
-RPG_Map_Scanner_lex(yy::RPG_Map_Parser::semantic_type* yylval,  \
-                    yy::RPG_Map_Parser::location_type* yylloc,  \
-                    RPG_Map_ParserDriver* driver,               \
-                    unsigned int* line_count,                   \
+#define YY_DECL                                                \
+yy::RPG_Map_Parser::token_type                                 \
+RPG_Map_Scanner_lex(yy::RPG_Map_Parser::semantic_type* yylval, \
+                    yy::RPG_Map_Parser::location_type* yylloc, \
+                    RPG_Map_ParserDriver* driver,              \
+                    unsigned int* line_count,                  \
                     yyscan_t yyscanner)
 // ... and declare it for the parser's sake
 YY_DECL;
-
-typedef void* yyscan_t;
-typedef struct yy_buffer_state* YY_BUFFER_STATE;
 
 class RPG_Map_ParserDriver
 {
@@ -93,11 +91,11 @@ class RPG_Map_ParserDriver
   const bool scan_begin(FILE*); // file handle
   void scan_end();
 
-  // scanner
+  // context
   bool                myTraceParsing;
   unsigned int        myCurrentNumLines;
 
-  // scan buffer
+  // scanner
   yyscan_t             myCurrentScannerState;
   YY_BUFFER_STATE      myCurrentBufferState;
 

@@ -10,4 +10,5 @@
 @rem # generate a scanner for map (text) files
 "E:\GnuWin32\bin\flex.exe" .\map_scanner.l
 
-copy /Y lex.yy.cc .\..
+copy /Y rpg_map_scanner.cpp .\..
+copy /Y rpg_map_scanner.h .\..

@@ -14,7 +14,7 @@
 #define yyterminate() return yy::RPG_Map_Parser::token::END
 %}
 
-%option pointer 8bit reentrant never-interactive nounistd
+%option pointer 8bit reentrant never-interactive nounistd nodefault
 /* %option c++ yyclass="RPG_Map_Scanner" stack noline bison-bridge bison-locations */
 %option warn batch nomain noyywrap nounput extra-type="RPG_Map_ParserDriver*"
 %option debug perf-report verbose yylineno ansi-definitions ansi-prototypes
@@ -49,8 +49,6 @@ GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 %%
 %{
   yylloc->step();
-  //typedef yy::RPG_Map_Parser::token token;
-  //typedef yy::RPG_Map_Parser::token_type token_type;
   yy_flex_debug = driver->getDebugScanner();
 %}
 

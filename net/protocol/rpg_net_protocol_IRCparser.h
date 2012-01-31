@@ -42,6 +42,8 @@
 class RPG_Net_Protocol_IRCParserDriver;
 class RPG_Net_Protocol_IRCScanner;
 
+typedef void* yyscan_t;
+
 
 
 
@@ -143,7 +145,7 @@ namespace yy {
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver& driver_yyarg, unsigned long& messageCount_yyarg, std::string& memory_yyarg, RPG_Net_Protocol_IRCScanner& scanner_yyarg);
+    RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver* driver_yyarg, unsigned int* messageCount_yyarg, yyscan_t yyscanner_yyarg);
     virtual ~RPG_Net_Protocol_IRCParser ();
 
     /// Parse.
@@ -303,10 +305,9 @@ namespace yy {
     static const token_number_type yyundef_token_;
 
     /* User arguments.  */
-    RPG_Net_Protocol_IRCParserDriver& driver;
-    unsigned long& messageCount;
-    std::string& memory;
-    RPG_Net_Protocol_IRCScanner& scanner;
+    RPG_Net_Protocol_IRCParserDriver* driver;
+    unsigned int* messageCount;
+    yyscan_t yyscanner;
   };
 
 } // yy

@@ -17,16 +17,15 @@ speed and efficiency */
 /* By default yylex returns int, we use token_type.
    Unfortunately yyterminate by default returns 0, which is
    not of token_type. */
-#define yyterminate() return token::END
+#define yyterminate() return yy::RPG_Net_Protocol_IRCParser::token::END
 %}
 
-%option pointer 8bit c++ stack never-interactive yyclass="RPG_Net_Protocol_IRCScanner" nounistd prefix="IRCScanner"
-%option warn batch nomain noyywrap nounput
+%option pointer 8bit reentrant never-interactive nounistd nodefault
+/* %option c++ yyclass="RPG_Net_Protocol_IRCScanner" stack noline bison-bridge bison-locations */
+%option warn batch nomain noyywrap nounput extra-type="RPG_Net_Protocol_IRCParserDriver*"
 %option debug perf-report verbose yylineno ansi-definitions ansi-prototypes
 %option full backup perf-report verbose
-%option outfile="IRCScanner_lex.yy.cc"
-/* %option reentrant noline nodefault extra-type="RPG_Net_Protocol_IRCParserDriver*" */
-/* %option bison-bridge bison-locations stack */
+%option outfile="rpg_net_protocol_IRCscanner.cpp" header-file="rpg_net_protocol_IRCscanner.h" prefix="RPG_Net_Protocol_IRCscanner_"
 
 /* *NOTE*: "see RFC 952 [DNS:4] for details on allowed hostnames..."
 RFC 952
@@ -84,7 +83,7 @@ TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
 %s             end_of_frame
 
 %{
-#define YY_USER_ACTION myLocation->columns(yyleng);
+#define YY_USER_ACTION yylloc->columns(yyleng);
 %}
 
 /* *NOTE*: it seems that the following "exceptions" are allowed:
@@ -94,131 +93,129 @@ TRAILING_PARAM ([\x00-\xFF]{-}[\0\x0D\x0A])*
 
 %%
 %{
-  myLocation->step();
-  typedef yy::RPG_Net_Protocol_IRCParser::token token;
-  typedef yy::RPG_Net_Protocol_IRCParser::token_type token_type;
-  yy_flex_debug=myDriver->getDebugScanner();
+  yylloc->step();
+  yy_flex_debug = driver->getDebugScanner();
   std::stringstream converter;
 %}
 
 <INITIAL>{
-":"                        { myLocation->step();
+  ":"                      { yylloc->step();
                              BEGIN(prefix);
-                             myToken->ival = 1;
-                             return token_type(yytext[0]); }
-"\x0D"                     { myLocation->step();
+                             yylval->ival = 1;
+                             return yy::RPG_Net_Protocol_IRCParser::token_type(yytext[0]); }
+"\x0D"                     { yylloc->step();
                              BEGIN(end_of_frame);
-                             myToken->ival = 1; }
+                             yylval->ival = 1; }
 } // end <INITIAL>
 <prefix>{
-{SPACE}+                   { myLocation->step();
+{SPACE}+                   { yylloc->step();
                              BEGIN(command);
-                             myToken->ival = yyleng;
-                             return token::SPACE; }
-"!"                        { myLocation->step();
+                             yylval->ival = yyleng;
+                             return yy::RPG_Net_Protocol_IRCParser::token::SPACE; }
+"!"                        { yylloc->step();
                              BEGIN(user);
-                             myToken->ival = 1;
-                             return token_type(yytext[0]); }
-"@"                        { myLocation->step();
+                             yylval->ival = 1;
+                             return yy::RPG_Net_Protocol_IRCParser::token_type(yytext[0]); }
+"@"                        { yylloc->step();
                              BEGIN(host);
-                             myToken->ival = 1;
-                             return token_type(yytext[0]); }
-{NICK}|{SERVERNAME}        { myLocation->step();
-                             ACE_NEW_NORETURN(myToken->sval,
+                             yylval->ival = 1;
+                             return yy::RPG_Net_Protocol_IRCParser::token_type(yytext[0]); }
+{NICK}|{SERVERNAME}        { yylloc->step();
+                             ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
-                             myToken->sval->append(yytext, yyleng);
-                             return token::ORIGIN; }
+                             yylval->sval->append(yytext, yyleng);
+                             return yy::RPG_Net_Protocol_IRCParser::token::ORIGIN; }
 } // end <prefix>
 <user>{
-{SPACE}+                   { myLocation->step();
+{SPACE}+                   { yylloc->step();
                              BEGIN(command);
-                             myToken->ival = yyleng;
-                             return token::SPACE; }
-"@"                        { myLocation->step();
+                             yylval->ival = yyleng;
+                             return yy::RPG_Net_Protocol_IRCParser::token::SPACE; }
+"@"                        { yylloc->step();
                              BEGIN(host);
-                             myToken->ival = 1;
-                             ACE_NEW_NORETURN(myToken->sval,
+                             yylval->ival = 1;
+                             ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
-                             return token_type(yytext[0]); }
-{USER}                     { myLocation->step();
+                             return yy::RPG_Net_Protocol_IRCParser::token_type(yytext[0]); }
+{USER}                     { yylloc->step();
                              BEGIN(prefix);
-                             ACE_NEW_NORETURN(myToken->sval,
+                             ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
-                             myToken->sval->append(yytext, yyleng);
-                             return token::USER; }
+                             yylval->sval->append(yytext, yyleng);
+                             return yy::RPG_Net_Protocol_IRCParser::token::USER; }
 } // end <user>
 <host>{
-{SPACE}+                   { myLocation->step();
+{SPACE}+                   { yylloc->step();
                              BEGIN(command);
-                             myToken->ival = yyleng;
-                             return token::SPACE; }
-{HOST}                     { myLocation->step();
+                             yylval->ival = yyleng;
+                             return yy::RPG_Net_Protocol_IRCParser::token::SPACE; }
+{HOST}                     { yylloc->step();
                              BEGIN(prefix);
-                             ACE_NEW_NORETURN(myToken->sval,
+                             ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
-                             myToken->sval->append(yytext, yyleng);
-                             return token::HOST; }
+                             yylval->sval->append(yytext, yyleng);
+                             return yy::RPG_Net_Protocol_IRCParser::token::HOST; }
 } // end <host>
 <INITIAL,command>{
-{SPACE}+                   { myLocation->step();
+{SPACE}+                   { yylloc->step();
                              BEGIN(params);
-                             myToken->ival = yyleng;
-                             return token::SPACE; }
-[[:digit:]]{3}             { myLocation->step();
+                             yylval->ival = yyleng;
+                             return yy::RPG_Net_Protocol_IRCParser::token::SPACE; }
+[[:digit:]]{3}             { yylloc->step();
                              converter.str(ACE_TEXT_ALWAYS_CHAR(""));
                              converter.clear();
                              converter << yytext;
-                             converter >> myToken->ival;
-                             return token::CMD_NUMERIC; }
-[[:alpha:]]+               { myLocation->step();
-                             ACE_NEW_NORETURN(myToken->sval,
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_IRCParser::token::CMD_NUMERIC; }
+[[:alpha:]]+               { yylloc->step();
+                             ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
-                             myToken->sval->append(yytext, yyleng);
-                             return token::CMD_STRING; }
+                             yylval->sval->append(yytext, yyleng);
+                             return yy::RPG_Net_Protocol_IRCParser::token::CMD_STRING; }
 } // end <INITIAL, command>
 <params>{
-{SPACE}+                   { myLocation->step();
-                             myToken->ival = yyleng;
-                             return token::SPACE; }
-":"                        { myLocation->step();
+{SPACE}+                   { yylloc->step();
+                             yylval->ival = yyleng;
+                             return yy::RPG_Net_Protocol_IRCParser::token::SPACE; }
+":"                        { yylloc->step();
                              BEGIN(trailing);
-                             myToken->ival = 1;
-                             return token_type(yytext[0]); }
-"\x0D"                     { myLocation->step(); /* *NOTE*: non-compliant (see above) */
+                             yylval->ival = 1;
+                             return yy::RPG_Net_Protocol_IRCParser::token_type(yytext[0]); }
+"\x0D"                     { yylloc->step(); /* *NOTE*: non-compliant (see above) */
                              BEGIN(end_of_frame); }
-{PARAM}                    { myLocation->step();
-                             ACE_NEW_NORETURN(myToken->sval,
+{PARAM}                    { yylloc->step();
+                             ACE_NEW_NORETURN(yylval->sval,
                                               std::string);
-                             myToken->sval->append(yytext, yyleng);
-                             return token::PARAM; }
+                             yylval->sval->append(yytext, yyleng);
+                             return yy::RPG_Net_Protocol_IRCParser::token::PARAM; }
 } // end <params>
 <trailing>{
-"\x0D"                     { myLocation->step();
+"\x0D"                     { yylloc->step();
                              BEGIN(end_of_frame); }
-{TRAILING_PARAM}           { myLocation->step();
+{TRAILING_PARAM}           { yylloc->step();
                              if (yyleng > 0)
                              {
-                               ACE_NEW_NORETURN(myToken->sval,
+                               ACE_NEW_NORETURN(yylval->sval,
                                                 std::string);
-                               myToken->sval->append(yytext, yyleng);
-                               return token::PARAM;
+                               yylval->sval->append(yytext, yyleng);
+                               return yy::RPG_Net_Protocol_IRCParser::token::PARAM;
                              } // end IF
                            }
 } // end <trailing>
 <end_of_frame>{
-"\x0A"                     { myLocation->step();
+"\x0A"                     { yylloc->step();
                              BEGIN(INITIAL);
-                             myToken->ival = 2;
-                             (*myMessageCounter)++; }
+                             yylval->ival = 2;
+                             (*messageCounter)++; }
 }
 <<EOF>>                    { yyterminate(); }
-<*>(?s:.)                  { myLocation->step();
+<*>(?s:.)                  { yylloc->step();
 
                              // debug info
                              std::string error_message = ACE_TEXT("invalid character: \"");
                              error_message += yytext[0];
                              error_message += ACE_TEXT("\", aborting");
-                             myDriver->error(*myLocation, error_message);
+                             driver->error(*yylloc, error_message);
 
                              yyterminate(); }
 %%
