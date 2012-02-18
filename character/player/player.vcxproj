@@ -84,8 +84,8 @@
   </ItemGroup>
   <ItemGroup>
     <CXX_Tree_Mapping_Rule Include="rpg_character_player.xsd">
-      <HeaderSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.h</HeaderSuffix>
-      <SourceSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.cpp</SourceSuffix>
+      <HeaderSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_XML_tree.h</HeaderSuffix>
+      <SourceSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_XML_tree.cpp</SourceSuffix>
       <InlineSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </InlineSuffix>
       <ForwardSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

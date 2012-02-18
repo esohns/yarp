@@ -7,7 +7,9 @@
 #ifndef RPG_ITEM_CRITICALHITPROPERTIES_H
 #define RPG_ITEM_CRITICALHITPROPERTIES_H
 
-struct RPG_Item_CriticalHitProperties
+#include "rpg_item_exports.h"
+
+struct RPG_Item_Export RPG_Item_CriticalHitProperties
 {
   unsigned char minToHitRoll;
   unsigned char damageModifier;

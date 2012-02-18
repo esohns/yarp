@@ -91,7 +91,6 @@
     <ClInclude Include="rpg_XMLSchema_XML_tree.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lex.yy.cc" />
     <ClCompile Include="rpg_map_common_tools.cpp" />
     <ClCompile Include="rpg_map_level.cpp" />
     <ClCompile Include="rpg_map_parser.cpp" />

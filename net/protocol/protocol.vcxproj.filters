@@ -157,9 +157,6 @@
     <ClCompile Include="rpg_net_protocol_tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IRCbisect_lex.yy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rpg_net_protocol_IRCbisect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -38,7 +38,7 @@
 /* begin standard C headers. */
 /* %if-c-only */
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <errno.h>
 #include <stdlib.h>
 /* %endif */
@@ -1350,6 +1350,7 @@ static yyconst flex_int16_t yy_rule_linenum[11] =
 #include <string>
 
 #include <ace/Log_Msg.h>
+#include <ace/OS_Memory.h>
 
 #include "rpg_map_parser.h"
 #include "rpg_map_parser_driver.h"

@@ -4,6 +4,7 @@
 #include <string>
 
 #include <ace/Log_Msg.h>
+#include <ace/OS_Memory.h>
 
 #include "rpg_map_parser.h"
 #include "rpg_map_parser_driver.h"

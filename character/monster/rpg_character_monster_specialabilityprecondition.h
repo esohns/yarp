@@ -7,7 +7,9 @@
 #ifndef RPG_CHARACTER_MONSTER_SPECIALABILITYPRECONDITION_H
 #define RPG_CHARACTER_MONSTER_SPECIALABILITYPRECONDITION_H
 
-struct RPG_Character_Monster_SpecialAbilityPreCondition
+#include "rpg_character_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Character_Monster_SpecialAbilityPreCondition
 {
   std::vector<RPG_Common_Condition> targetConditions;
   RPG_Common_Size maxTargetSize;

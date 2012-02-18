@@ -29,6 +29,8 @@ enum RPG_Character_Monster_NaturalWeapon
   RPG_CHARACTER_MONSTER_NATURALWEAPON_INVALID
 };
 
+#include "rpg_character_monster_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -37,7 +39,7 @@ enum RPG_Character_Monster_NaturalWeapon
 typedef std::map<RPG_Character_Monster_NaturalWeapon, std::string> RPG_Character_Monster_NaturalWeaponToStringTable_t;
 typedef RPG_Character_Monster_NaturalWeaponToStringTable_t::const_iterator RPG_Character_Monster_NaturalWeaponToStringTableIterator_t;
 
-class RPG_Character_Monster_NaturalWeaponHelper
+class RPG_Monster_Export RPG_Character_Monster_NaturalWeaponHelper
 {
  public:
   inline static void init()

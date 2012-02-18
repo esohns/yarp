@@ -17,6 +17,8 @@ enum RPG_Item_WeaponCategory
   RPG_ITEM_WEAPONCATEGORY_INVALID
 };
 
+#include "rpg_item_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -25,7 +27,7 @@ enum RPG_Item_WeaponCategory
 typedef std::map<RPG_Item_WeaponCategory, std::string> RPG_Item_WeaponCategoryToStringTable_t;
 typedef RPG_Item_WeaponCategoryToStringTable_t::const_iterator RPG_Item_WeaponCategoryToStringTableIterator_t;
 
-class RPG_Item_WeaponCategoryHelper
+class RPG_Item_Export RPG_Item_WeaponCategoryHelper
 {
  public:
   inline static void init()

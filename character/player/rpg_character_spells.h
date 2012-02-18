@@ -7,7 +7,7 @@
 #ifndef RPG_CHARACTER_SPELLS_H
 #define RPG_CHARACTER_SPELLS_H
 
-#include "rpg_character_exports.h"
+#include "rpg_character_player_exports.h"
 
 struct RPG_Player_Export RPG_Character_Spells
 {

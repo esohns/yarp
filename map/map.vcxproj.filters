@@ -109,9 +109,6 @@
     <ClCompile Include="rpg_map_XML_tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lex.yy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CXX_Tree_Mapping_Rule Include="rpg_map.xsd">

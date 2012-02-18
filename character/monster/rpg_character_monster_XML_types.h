@@ -36,6 +36,7 @@
 
 // Begin prologue.
 //
+#include "rpg_character_monster_exports.h"
 //
 // End prologue.
 
@@ -95,14 +96,20 @@ class RPG_Character_Monster_Dictionary_Type_pskel;
 #include "rpg_character_monster_incl.h"
 
 #include "../../chance/dice/rpg_dice_XML_types.h"
+
 #include "../../common/rpg_common_XML_types.h"
+
 #include "../../common/rpg_common_environment_XML_types.h"
+
 #include "../../magic/rpg_magic_XML_types.h"
+
 #include "../../item/rpg_item_XML_types.h"
+
 #include "../../combat/rpg_combat_XML_types.h"
+
 #include "../rpg_character_XML_types.h"
 
-class RPG_Character_Monster_NaturalArmorClass_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_NaturalArmorClass_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -160,7 +167,7 @@ class RPG_Character_Monster_NaturalArmorClass_Type_pskel: public ::xml_schema::c
   ::xml_schema::byte_pskel* flatFooted_parser_;
 };
 
-class RPG_Character_Monster_SpecialPropertyTypeUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Monster_Export RPG_Character_Monster_SpecialPropertyTypeUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -175,7 +182,7 @@ class RPG_Character_Monster_SpecialPropertyTypeUnion_Type_pskel: public ::xml_sc
   post_RPG_Character_Monster_SpecialPropertyTypeUnion_Type () = 0;
 };
 
-class RPG_Character_Monster_SpecialBaseProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_SpecialBaseProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -241,7 +248,7 @@ class RPG_Character_Monster_SpecialBaseProperties_Type_pskel: public ::xml_schem
   ::RPG_Common_Usage_Type_pskel* usage_parser_;
 };
 
-class RPG_Character_Monster_NaturalWeapon_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Monster_Export RPG_Character_Monster_NaturalWeapon_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -253,7 +260,7 @@ class RPG_Character_Monster_NaturalWeapon_Type_pskel: public virtual ::xml_schem
   post_RPG_Character_Monster_NaturalWeapon_Type () = 0;
 };
 
-class RPG_Character_Monster_WeaponTypeUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Monster_Export RPG_Character_Monster_WeaponTypeUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -268,7 +275,7 @@ class RPG_Character_Monster_WeaponTypeUnion_Type_pskel: public ::xml_schema::sim
   post_RPG_Character_Monster_WeaponTypeUnion_Type () = 0;
 };
 
-class RPG_Character_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -339,7 +346,7 @@ class RPG_Character_Monster_SpecialDefensePreCondition_Type_pskel: public ::xml_
   ::xml_schema::boolean_pskel* isMagicalWeapon_parser_;
 };
 
-class RPG_Character_Monster_DefenseAction_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_DefenseAction_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -397,7 +404,7 @@ class RPG_Character_Monster_DefenseAction_Type_pskel: public ::xml_schema::compl
   ::RPG_Combat_RangedAttackProperties_Type_pskel* ranged_parser_;
 };
 
-class RPG_Character_Monster_SpecialDefenseProperties_Type_pskel: public virtual ::RPG_Character_Monster_SpecialBaseProperties_Type_pskel
+class RPG_Monster_Export RPG_Character_Monster_SpecialDefenseProperties_Type_pskel: public virtual ::RPG_Character_Monster_SpecialBaseProperties_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -443,7 +450,7 @@ class RPG_Character_Monster_SpecialDefenseProperties_Type_pskel: public virtual 
   ::RPG_Character_Monster_DefenseAction_Type_pskel* action_parser_;
 };
 
-class RPG_Character_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_AttackAction_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -562,7 +569,7 @@ class RPG_Character_Monster_AttackAction_Type_pskel: public ::xml_schema::comple
   ::xml_schema::boolean_pskel* fullAttackIncludesNextAction_parser_;
 };
 
-class RPG_Character_Monster_Attack_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_Attack_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -641,7 +648,7 @@ class RPG_Character_Monster_Attack_Type_pskel: public ::xml_schema::complex_cont
   ::xml_schema::boolean_pskel* actionsAreInclusive_parser_;
 };
 
-class RPG_Character_Monster_ActionTrigger_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_ActionTrigger_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -691,7 +698,7 @@ class RPG_Character_Monster_ActionTrigger_Type_pskel: public ::xml_schema::compl
   ::xml_schema::unsigned_byte_pskel* numHits_parser_;
 };
 
-class RPG_Character_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -781,7 +788,7 @@ class RPG_Character_Monster_SpecialAttackPreCondition_Type_pskel: public ::xml_s
   ::RPG_Combat_Check_Type_pskel* check_parser_;
 };
 
-class RPG_Character_Monster_SpecialAttackProperties_Type_pskel: public virtual ::RPG_Character_Monster_SpecialBaseProperties_Type_pskel
+class RPG_Monster_Export RPG_Character_Monster_SpecialAttackProperties_Type_pskel: public virtual ::RPG_Character_Monster_SpecialBaseProperties_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -835,7 +842,7 @@ class RPG_Character_Monster_SpecialAttackProperties_Type_pskel: public virtual :
   ::RPG_Character_Monster_AttackAction_Type_pskel* action_parser_;
 };
 
-class RPG_Character_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -893,7 +900,7 @@ class RPG_Character_Monster_SpecialAbilityPreCondition_Type_pskel: public ::xml_
   ::RPG_Combat_Check_Type_pskel* check_parser_;
 };
 
-class RPG_Character_Monster_SummonMonster_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_SummonMonster_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -964,7 +971,7 @@ class RPG_Character_Monster_SummonMonster_Type_pskel: public ::xml_schema::compl
   ::xml_schema::boolean_pskel* actionsAreInclusive_parser_;
 };
 
-class RPG_Character_Monster_SpecialAbilityProperties_Type_pskel: public virtual ::RPG_Character_Monster_SpecialBaseProperties_Type_pskel
+class RPG_Monster_Export RPG_Character_Monster_SpecialAbilityProperties_Type_pskel: public virtual ::RPG_Character_Monster_SpecialBaseProperties_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1034,7 +1041,7 @@ class RPG_Character_Monster_SpecialAbilityProperties_Type_pskel: public virtual 
   ::RPG_Combat_RangedAttackProperties_Type_pskel* ranged_parser_;
 };
 
-class RPG_Character_Monster_SavingThrowModifiers_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_SavingThrowModifiers_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1092,7 +1099,7 @@ class RPG_Character_Monster_SavingThrowModifiers_Type_pskel: public ::xml_schema
   ::xml_schema::byte_pskel* will_parser_;
 };
 
-class RPG_Character_Monster_Organization_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Monster_Export RPG_Character_Monster_Organization_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1104,7 +1111,7 @@ class RPG_Character_Monster_Organization_Type_pskel: public virtual ::xml_schema
   post_RPG_Character_Monster_Organization_Type () = 0;
 };
 
-class RPG_Character_Monster_OrganizationSlaverStep_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_OrganizationSlaverStep_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1154,7 +1161,7 @@ class RPG_Character_Monster_OrganizationSlaverStep_Type_pskel: public ::xml_sche
   ::RPG_Dice_ValueRange_Type_pskel* range_parser_;
 };
 
-class RPG_Character_Monster_OrganizationStep_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_OrganizationStep_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1212,7 +1219,7 @@ class RPG_Character_Monster_OrganizationStep_Type_pskel: public ::xml_schema::co
   ::RPG_Character_Monster_OrganizationSlaverStep_Type_pskel* slaves_parser_;
 };
 
-class RPG_Character_Monster_Organizations_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_Organizations_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1254,7 +1261,7 @@ class RPG_Character_Monster_Organizations_Type_pskel: public ::xml_schema::compl
   ::RPG_Character_Monster_OrganizationStep_Type_pskel* step_parser_;
 };
 
-class RPG_Character_Monster_AdvancementStep_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_AdvancementStep_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1304,7 +1311,7 @@ class RPG_Character_Monster_AdvancementStep_Type_pskel: public ::xml_schema::com
   ::RPG_Dice_ValueRange_Type_pskel* range_parser_;
 };
 
-class RPG_Character_Monster_Advancement_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_Advancement_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1346,7 +1353,7 @@ class RPG_Character_Monster_Advancement_Type_pskel: public ::xml_schema::complex
   ::RPG_Character_Monster_AdvancementStep_Type_pskel* step_parser_;
 };
 
-class RPG_Character_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1572,7 +1579,7 @@ class RPG_Character_Monster_PropertiesXML_Type_pskel: public ::xml_schema::compl
   ::xml_schema::unsigned_byte_pskel* levelAdjustment_parser_;
 };
 
-class RPG_Character_Monster_Dictionary_Type_pskel: public ::xml_schema::complex_content
+class RPG_Monster_Export RPG_Character_Monster_Dictionary_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.

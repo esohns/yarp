@@ -36,6 +36,7 @@
 
 // Begin prologue.
 //
+#include "rpg_item_exports.h"
 //
 // End prologue.
 
@@ -94,7 +95,7 @@ class RPG_Item_DictionaryXML_Type_pskel;
 
 #include "../magic/rpg_magic_XML_types.h"
 
-class RPG_Item_Type_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_Export RPG_Item_Type_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -106,7 +107,7 @@ class RPG_Item_Type_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Item_Type_Type ();
 };
 
-class RPG_Item_Money_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_Export RPG_Item_Money_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -118,7 +119,7 @@ class RPG_Item_Money_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Item_Money_Type ();
 };
 
-class RPG_Item_WeaponCategory_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_Export RPG_Item_WeaponCategory_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -130,7 +131,7 @@ class RPG_Item_WeaponCategory_Type_pskel: public virtual ::xml_schema::string_ps
   post_RPG_Item_WeaponCategory_Type () = 0;
 };
 
-class RPG_Item_WeaponClass_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_Export RPG_Item_WeaponClass_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -142,7 +143,7 @@ class RPG_Item_WeaponClass_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Item_WeaponClass_Type () = 0;
 };
 
-class RPG_Item_WeaponType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_Export RPG_Item_WeaponType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -154,7 +155,7 @@ class RPG_Item_WeaponType_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Item_WeaponType_Type () = 0;
 };
 
-class RPG_Item_StorePrice_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_StorePrice_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -204,7 +205,7 @@ class RPG_Item_StorePrice_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* numSilverPieces_parser_;
 };
 
-class RPG_Item_CriticalHitProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_CriticalHitProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -254,7 +255,7 @@ class RPG_Item_CriticalHitProperties_Type_pskel: public ::xml_schema::complex_co
   ::xml_schema::unsigned_byte_pskel* damageModifier_parser_;
 };
 
-class RPG_Item_CreationCost_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_CreationCost_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -304,7 +305,7 @@ class RPG_Item_CreationCost_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* numExperiencePoints_parser_;
 };
 
-class RPG_Item_BaseProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_BaseProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -362,7 +363,7 @@ class RPG_Item_BaseProperties_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Item_CreationCost_Type_pskel* costToCreate_parser_;
 };
 
-class RPG_Item_MagicalPrerequisites_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -404,7 +405,7 @@ class RPG_Item_MagicalPrerequisites_Type_pskel: public ::xml_schema::complex_con
   ::xml_schema::unsigned_byte_pskel* minCasterLevel_parser_;
 };
 
-class RPG_Item_PropertiesBase_Type_pskel: public virtual ::RPG_Item_BaseProperties_Type_pskel
+class RPG_Item_Export RPG_Item_PropertiesBase_Type_pskel: public virtual ::RPG_Item_BaseProperties_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -457,7 +458,7 @@ class RPG_Item_PropertiesBase_Type_pskel: public virtual ::RPG_Item_BaseProperti
   ::RPG_Item_MagicalPrerequisites_Type_pskel* prerequisites_parser_;
 };
 
-class RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual ::RPG_Item_PropertiesBase_Type_pskel
+class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual ::RPG_Item_PropertiesBase_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -581,7 +582,7 @@ class RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual ::RPG_Item_Proper
   ::xml_schema::boolean_pskel* isDoubleWeapon_parser_;
 };
 
-class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_WeaponPropertiesBase_Type_pskel
+class RPG_Item_Export RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_WeaponPropertiesBase_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -638,7 +639,7 @@ class RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::RPG_Item_WeaponP
   ::xml_schema::byte_pskel* toHitModifier_parser_;
 };
 
-class RPG_Item_ArmorCategory_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_Export RPG_Item_ArmorCategory_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -650,7 +651,7 @@ class RPG_Item_ArmorCategory_Type_pskel: public virtual ::xml_schema::string_psk
   post_RPG_Item_ArmorCategory_Type () = 0;
 };
 
-class RPG_Item_ArmorType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Item_Export RPG_Item_ArmorType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -662,7 +663,7 @@ class RPG_Item_ArmorType_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Item_ArmorType_Type () = 0;
 };
 
-class RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::RPG_Item_PropertiesBase_Type_pskel
+class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::RPG_Item_PropertiesBase_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -757,7 +758,7 @@ class RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::RPG_Item_Propert
   ::xml_schema::unsigned_short_pskel* baseSpeed_parser_;
 };
 
-class RPG_Item_ArmorPropertiesXML_Type_pskel: public virtual ::RPG_Item_ArmorPropertiesBase_Type_pskel
+class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type_pskel: public virtual ::RPG_Item_ArmorPropertiesBase_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -811,7 +812,7 @@ class RPG_Item_ArmorPropertiesXML_Type_pskel: public virtual ::RPG_Item_ArmorPro
   ::xml_schema::byte_pskel* defenseModifier_parser_;
 };
 
-class RPG_Item_XML_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_XML_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -869,7 +870,7 @@ class RPG_Item_XML_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Item_ArmorPropertiesXML_Type_pskel* armor_parser_;
 };
 
-class RPG_Item_InventoryXML_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_InventoryXML_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -911,7 +912,7 @@ class RPG_Item_InventoryXML_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Item_XML_Type_pskel* item_parser_;
 };
 
-class RPG_Item_DictionaryXML_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_DictionaryXML_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.

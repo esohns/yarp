@@ -7,7 +7,9 @@
 #ifndef RPG_ITEM_WEAPONPROPERTIESBASE_H
 #define RPG_ITEM_WEAPONPROPERTIESBASE_H
 
-struct RPG_Item_WeaponPropertiesBase
+#include "rpg_item_exports.h"
+
+struct RPG_Item_Export RPG_Item_WeaponPropertiesBase
  : public RPG_Item_PropertiesBase
 {
   RPG_Item_WeaponType weaponType;

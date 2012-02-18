@@ -20,6 +20,8 @@ enum RPG_Graphics_Orientation
   RPG_GRAPHICS_ORIENTATION_INVALID
 };
 
+#include "rpg_graphics_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -28,7 +30,7 @@ enum RPG_Graphics_Orientation
 typedef std::map<RPG_Graphics_Orientation, std::string> RPG_Graphics_OrientationToStringTable_t;
 typedef RPG_Graphics_OrientationToStringTable_t::const_iterator RPG_Graphics_OrientationToStringTableIterator_t;
 
-class RPG_Graphics_OrientationHelper
+class RPG_Graphics_Export RPG_Graphics_OrientationHelper
 {
  public:
   inline static void init()

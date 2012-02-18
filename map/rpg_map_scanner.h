@@ -36,7 +36,7 @@
 /* begin standard C headers. */
 /* %if-c-only */
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <errno.h>
 #include <stdlib.h>
 /* %endif */

@@ -99,7 +99,6 @@
     <ClInclude Include="rpg_net_protocol_tools.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IRCbisect_lex.yy.cc" />
     <ClCompile Include="rpg_net_protocol_IRCbisect.cpp" />
     <ClCompile Include="rpg_net_protocol_IRCmessage.cpp" />
     <ClCompile Include="rpg_net_protocol_IRCparser.cpp" />

@@ -19,6 +19,8 @@ enum RPG_Item_Type
   RPG_ITEM_TYPE_INVALID
 };
 
+#include "rpg_item_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -27,7 +29,7 @@ enum RPG_Item_Type
 typedef std::map<RPG_Item_Type, std::string> RPG_Item_TypeToStringTable_t;
 typedef RPG_Item_TypeToStringTable_t::const_iterator RPG_Item_TypeToStringTableIterator_t;
 
-class RPG_Item_TypeHelper
+class RPG_Item_Export RPG_Item_TypeHelper
 {
  public:
   inline static void init()

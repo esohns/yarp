@@ -18,6 +18,8 @@ enum RPG_Combat_DamageReductionType
   RPG_COMBAT_DAMAGEREDUCTIONTYPE_INVALID
 };
 
+#include "rpg_combat_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -26,7 +28,7 @@ enum RPG_Combat_DamageReductionType
 typedef std::map<RPG_Combat_DamageReductionType, std::string> RPG_Combat_DamageReductionTypeToStringTable_t;
 typedef RPG_Combat_DamageReductionTypeToStringTable_t::const_iterator RPG_Combat_DamageReductionTypeToStringTableIterator_t;
 
-class RPG_Combat_DamageReductionTypeHelper
+class RPG_Combat_Export RPG_Combat_DamageReductionTypeHelper
 {
  public:
   inline static void init()

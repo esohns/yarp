@@ -572,6 +572,21 @@ offhand (::std::auto_ptr< offhand_type > x)
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
+#include <xsd/cxx/tree/type-factory-map.hxx>
+
+#include <xsd/cxx/tree/comparison-map.hxx>
+
+namespace _xsd
+{
+  static
+  const ::xsd::cxx::tree::type_factory_plate< 0, char >
+  type_factory_plate_init;
+
+  static
+  const ::xsd::cxx::tree::comparison_plate< 0, char >
+  comparison_plate_init;
+}
+
 // RPG_Character_Abilities_XMLTree_Type
 //
 
@@ -1518,6 +1533,15 @@ operator!= (const RPG_Character_PlayerXML_XMLTree_Type& x, const RPG_Character_P
 
 #include <ostream>
 
+#include <xsd/cxx/tree/std-ostream-map.hxx>
+
+namespace _xsd
+{
+  static
+  const ::xsd::cxx::tree::std_ostream_plate< 0, char >
+  std_ostream_plate_init;
+}
+
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Character_Abilities_XMLTree_Type& i)
 {
@@ -1903,6 +1927,15 @@ character_player (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
 #include <ostream>
 #include <xsd/cxx/tree/error-handler.hxx>
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
+
+#include <xsd/cxx/tree/type-serializer-map.hxx>
+
+namespace _xsd
+{
+  static
+  const ::xsd::cxx::tree::type_serializer_plate< 0, char >
+  type_serializer_plate_init;
+}
 
 void
 operator<< (::xercesc::DOMElement& e, const RPG_Character_Abilities_XMLTree_Type& i)
@@ -2363,6 +2396,15 @@ character_player (const ::RPG_Character_PlayerXML_XMLTree_Type& s,
   return d;
 }
 
+#include <xsd/cxx/tree/stream-extraction-map.hxx>
+
+namespace _xsd
+{
+  static
+  const ::xsd::cxx::tree::stream_extraction_plate< 0, ACE_InputCDR, char >
+  stream_extraction_plate_init_0;
+}
+
 RPG_Character_Abilities_XMLTree_Type::
 RPG_Character_Abilities_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                       ::xml_schema::flags f,
@@ -2636,6 +2678,15 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     ::std::auto_ptr< offhand_type > r (new offhand_type (s, f, this));
     this->offhand_.set (r);
   }
+}
+
+#include <xsd/cxx/tree/stream-insertion-map.hxx>
+
+namespace _xsd
+{
+  static
+  const ::xsd::cxx::tree::stream_insertion_plate< 0, ACE_OutputCDR, char >
+  stream_insertion_plate_init_0;
 }
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
