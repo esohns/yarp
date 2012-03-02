@@ -32,16 +32,16 @@
 
 #include <string>
 
-void update_character_profile(const RPG_Character_Player&, GladeXML*);
-void update_entity_profile(const RPG_Engine_Entity&, GladeXML*);
-void reset_entity_profile(GladeXML*);
+RPG_Client_Export void update_character_profile(const RPG_Character_Player&, GladeXML*);
+RPG_Client_Export void update_entity_profile(const RPG_Engine_Entity&, GladeXML*);
+RPG_Client_Export void reset_entity_profile(GladeXML*);
 // int dirent_selector_profiles(const dirent*);
 // int dirent_selector_maps(const dirent*);
 // int dirent_comparator(const dirent**,
 //                       const dirent**);
-const unsigned long load_files(const std::string&, // directory
-                               const bool&,        // load player profiles ? : maps
-                               GtkListStore*);     // target liststore
+RPG_Client_Export const unsigned long load_files(const std::string&, // directory
+                                                 const bool&,        // load player profiles ? : maps
+                                                 GtkListStore*);     // target liststore
 
 #ifdef __cplusplus
 extern "C"

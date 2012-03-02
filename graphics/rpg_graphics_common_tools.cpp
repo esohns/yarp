@@ -844,7 +844,8 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
   RPG_Graphics_Tile_t current_tile;
   unsigned long type = 0;
   std::istringstream converter;
-  size_t edge_position = std::string::npos;
+//  size_t edge_position = std::string::npos;
+  size_t edge_position = -1;
   for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
        iterator != graphic.tileset.tiles.end();
        iterator++)
@@ -933,7 +934,8 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
     converter.clear();
     converter.str((*iterator).file);
     edge_position = (*iterator).file.find(ACE_TEXT_ALWAYS_CHAR("edge"), 7, 4);
-    if (edge_position == std::string::npos)
+//    if (edge_position == std::string::npos)
+    if (edge_position == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to find \"edge\" sequence in filename (was: \"%s\"), aborting\n"),

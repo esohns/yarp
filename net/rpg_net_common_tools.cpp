@@ -298,8 +298,10 @@ RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
   if (!port_in)
   {
     std::string::size_type last_colon_pos = result.find_last_of(':',
-                                                                std::string::npos); // begin searching at the end !
-    if (last_colon_pos != std::string::npos)
+		                                                        -1); // begin searching at the end !
+//                                                                std::string::npos); // begin searching at the end !
+//    if (last_colon_pos != std::string::npos)
+    if (last_colon_pos != -1)
     {
       result = result.substr(0, last_colon_pos);
     } // end IF

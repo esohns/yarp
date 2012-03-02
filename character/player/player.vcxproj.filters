@@ -59,6 +59,9 @@
     <ClCompile Include="rpg_character_player_XML_tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vs2010_workaround.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CXX_Tree_Mapping_Rule Include="rpg_character_player.xsd">

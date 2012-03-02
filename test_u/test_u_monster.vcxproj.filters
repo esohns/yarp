@@ -15,18 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="character\character_generator_gui_common.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="character\character_generator_gui_callbacks.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="character\character_generator_gui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="character\character_generator_gui_callbacks.cpp">
+    <ClCompile Include="character\monster\monster_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

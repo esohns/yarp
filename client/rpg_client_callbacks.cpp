@@ -1079,7 +1079,8 @@ dirent_selector_profiles(const dirent* entry_in)
   std::string filename(entry_in->d_name);
   std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
   if (filename.rfind(extension,
-      std::string::npos) != (filename.size() - extension.size()))
+//                     std::string::npos) != (filename.size() - extension.size()))
+                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("ignoring \"%s\"...\n"),
@@ -1100,7 +1101,8 @@ dirent_selector_maps(const dirent* entry_in)
   std::string filename(entry_in->d_name);
   std::string extension(RPG_MAP_EXT);
   if (filename.rfind(extension,
-      std::string::npos) != (filename.size() - extension.size()))
+//                     std::string::npos) != (filename.size() - extension.size()))
+                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("ignoring \"%s\"...\n"),
@@ -1172,8 +1174,10 @@ load_files(const std::string& repository_in,
     // sanitize name (chop off extension)
     entry = entries[i]->d_name;
     entry.erase(entry.rfind(extension,
-                            std::string::npos),
-                std::string::npos);
+//                            std::string::npos),
+                            -1),
+//                std::string::npos);
+                -1);
 
     // append new (text) entry
     gtk_list_store_append(listStore_in, &iter);

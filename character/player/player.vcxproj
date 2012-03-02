@@ -44,13 +44,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_PLAYER_BUILD_DLL;RPG_CHARACTER_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RPG_PLAYER_BUILD_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>item.lib;magic.lib;character.lib;common.lib;dice.lib;xerces-c_3D.lib;ACEd.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <ShowProgress>
+      </ShowProgress>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -81,6 +83,7 @@
     <ClCompile Include="rpg_character_player_base.cpp" />
     <ClCompile Include="rpg_character_player_common_tools.cpp" />
     <ClCompile Include="rpg_character_player_XML_tree.cpp" />
+    <ClCompile Include="vs2010_workaround.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CXX_Tree_Mapping_Rule Include="rpg_character_player.xsd">

@@ -330,17 +330,18 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
     // *NOTE*: the "final" parameter may be a list-item, but in this case
     // the whitespace is excluded from the allowed set of characters...
     if ((reverse_i == 1) &&
-        ((*iterator).find(' ') != std::string::npos))
+//        ((*iterator).find(' ') != std::string::npos))
+        ((*iterator).find(' ') != -1))
     {
       // sanity check(s)
       ACE_ASSERT(param_separator == ' '); // cannot be (part of) a list-item
       if (message_inout->space() < 1)
       {
         ACE_DEBUG((LM_ERROR,
-                    ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
-                    message_inout->getID(),
-                    std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
-                    message_inout->length()));
+                   ACE_TEXT("[%u]: out of buffer space (\"%s\", %u), aborting\n"),
+                   message_inout->getID(),
+                   std::string(message_inout->rd_ptr(), message_inout->length()).c_str(),
+                   message_inout->length()));
 
         // clean up
         passMessageDownstream_out = false;

@@ -553,8 +553,12 @@ do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
-//   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
-  std::cout << programName_in << ACE_TEXT(" : ") << RPG_VERSION << std::endl;
+  std::cout << programName_in
+#ifdef HAVE_CONFIG_H
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+#endif
+            << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -726,8 +730,12 @@ ACE_TMAIN(int argc_in,
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
   GnomeProgram* gnomeProgram = NULL;
   gnomeProgram = gnome_program_init(RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_APPLICATION_ID, // app ID
+#ifdef HAVE_CONFIG_H
 //                                     ACE_TEXT_ALWAYS_CHAR(VERSION),     // version
                                     ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),    // version
+#else
+	                                NULL,
+#endif
                                     LIBGNOMEUI_MODULE,                    // module info
                                     argc_in,                              // cmdline
                                     argv_in,                              // cmdline

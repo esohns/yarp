@@ -10,17 +10,9 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="character\character_generator_gui_callbacks.h" />
-    <ClInclude Include="character\character_generator_gui_common.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="character\character_generator_gui.cpp" />
-    <ClCompile Include="character\character_generator_gui_callbacks.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{29AF366D-9D9D-4CAC-A612-5120FD6AA4EB}</ProjectGuid>
-    <RootNamespace>test_u_character3</RootNamespace>
+    <ProjectGuid>{20053AC9-B17A-4B26-A78D-B1641D33258F}</ProjectGuid>
+    <RootNamespace>test_u_monster</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -49,14 +41,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\engine;E:\Yarp\graphics;E:\Yarp\map;E:\Yarp\character\player;E:\Yarp\character\monster;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\libgnomeui-dev-2.22.1\include\libgnomeui-2.0;E:\Yarp\3rd_party;E:\gnome-vfs-dev_2.24.1-1_win32\include\gnome-vfs-2.0;E:\libbonoboui-dev_2.24.0-1_win32\include\libbonoboui-2.0;E:\libbonobo-dev_2.24.0-1_win32\include\libbonobo-2.0;E:\libgnomecanvas-dev_2.30.1-1_win32\include\libgnomecanvas-2.0;E:\libart-lgpl-dev_2.3.21-1_win32\include\libart-2.0;E:\libgnome-dev_2.24.1-1_win32\include\libgnome-2.0;E:\libglade-2.4.0-dev\include\libglade-2.0;E:\Gtk\include\cairo;E:\Gtk\include\pango-1.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gtk-2.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\glib-2.0;E:\Yarp\3rd_party\glib;E:\SDL-1.2.14;E:\lpng157;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_CLIENT_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;GNOME_DISABLE_DEPRECATED;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Yarp\character\monster;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_MONSTER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>client.lib;engine.lib;player.lib;graphics.lib;item.lib;magic.lib;character.lib;common.lib;dice.lib;libglade-2.0.dll.a;libgnomeui-2.dll.a;libgnome-2.dll.a;libgobject-2.0.dll.a;libgthread-2.0.dll.a;libgtk-win32-2.0.dll.a;libgdk-win32-2.0.dll.a;SDLmain.lib;SDL.lib;ACEd.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\libglade-2.4.0-dev\lib;E:\libgnomeui-dev-2.22.1\lib;E:\libgnome-dev_2.24.1-1_win32\lib;E:\Gtk\lib;E:\SDL-1.2.14\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>monster.lib;combat.lib;item.lib;magic.lib;character.lib;common.lib;dice.lib;ACEd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -72,6 +63,9 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="character\monster\monster_parser.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

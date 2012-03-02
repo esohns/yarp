@@ -477,7 +477,8 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
   if (chopPrefix_in)
   {
     std::string::size_type underscore = result.find('_', 0);
-    if (underscore != std::string::npos)
+//    if (underscore != std::string::npos)
+	if (underscore != -1)
     {
       std::string::iterator last = result.begin();
       std::advance(last, underscore + 1); // *NOTE*: move one past '_'
