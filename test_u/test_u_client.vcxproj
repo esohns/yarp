@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3AE469E3-4F34-4D0A-9581-0B6467D1705B}</ProjectGuid>
+    <RootNamespace>test_u_client</RootNamespace>
+    <ProjectName>test_u_client_gui</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\graphics;E:\Yarp\sound;E:\Yarp\map;E:\Yarp\engine;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\3rd_party\glib;E:\Yarp\3rd_party;E:\libgnomeui-dev-2.22.1\include\libgnomeui-2.0;E:\gnome-vfs-dev_2.24.1-1_win32\include\gnome-vfs-2.0;E:\libbonoboui-dev_2.24.0-1_win32\include\libbonoboui-2.0;E:\libgnomecanvas-dev_2.30.1-1_win32\include\libgnomecanvas-2.0;E:\libart-lgpl-dev_2.3.21-1_win32\include\libart-2.0;E:\libgnome-dev_2.24.1-1_win32\include\libgnome-2.0;E:\libglade-2.4.0-dev\include\libglade-2.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\include\gtk-2.0;E:\Gtk\include\glib-2.0;E:\lpng157;E:\SDL-1.2.14;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_CLIENT_HAS_DLL;RPG_GRAPHICS_HAS_DLL;RPG_SOUND_HAS_DLL;RPG_MAP_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;GNOME_DISABLE_DEPRECATED;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>libglade-2.0.dll.a;libgnomeui-2.dll.a;libgnome-2.dll.a;libgobject-2.0.dll.a;libgthread-2.0.dll.a;libgtk-win32-2.0.dll.a;libgdk-win32-2.0.dll.a;SDL_ttf.lib;SDL_mixer.lib;SDLmain.lib;SDL.lib;ACEd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\libglade-2.4.0-dev\lib;E:\libgnomeui-dev-2.22.1\lib;E:\libgnome-dev_2.24.1-1_win32\lib;E:\Gtk\lib;E:\SDL-1.2.14\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="client\rpg_client_gui.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\chance\dice\dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\character\character.vcxproj">
+      <Project>{d93f14b1-cfe8-45df-816d-06ab1ca74cd6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\character\player\player.vcxproj">
+      <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\client\client.vcxproj">
+      <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\engine\engine.vcxproj">
+      <Project>{6512261a-32d3-4877-be0c-5d24e88b3b23}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\graphics\graphics.vcxproj">
+      <Project>{dc39b751-377f-4093-9f76-4821f97f4de5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\item\item.vcxproj">
+      <Project>{63173994-11a3-40d3-b835-63a0e9a8bfe3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\magic\magic.vcxproj">
+      <Project>{6867cf99-3611-4345-b992-85780c27119e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\sound\sound.vcxproj">
+      <Project>{d55b85ff-fd26-43de-a8b1-8833ac97b05c}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

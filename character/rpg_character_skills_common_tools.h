@@ -35,7 +35,6 @@
 #include <set>
 #include <map>
 #include <vector>
-#include <string>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -57,6 +56,7 @@ class RPG_Character_Export RPG_Character_Skills_Common_Tools
                                                  RPG_Character_Feats_t&,      // return value: base feats
                                                  unsigned int&,               // return value: initial feats (level 1)
                                                  RPG_Character_Abilities_t&); // return value: base abilities
+
   static const bool meetsFeatPrerequisites(const RPG_Character_Feat&,         // feat
                                            const RPG_Common_SubClass&,        // subclass
                                            const unsigned char&,              // current level

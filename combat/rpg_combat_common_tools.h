@@ -31,6 +31,7 @@
 
 #include "rpg_combat_exports.h"
 #include "rpg_combat_common.h"
+#include "rpg_combat_damage.h"
 
 #include <ace/Global_Macros.h>
 

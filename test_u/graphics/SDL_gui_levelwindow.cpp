@@ -363,7 +363,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   clear();
 
   // pass 1
-  for (i = -top_right.second;
+  for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
        i++)
   {
@@ -599,7 +599,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
   RPG_Engine_EntityGraphics_t entity_graphics = myLevelState->getGraphics();
   RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
-  for (i = -top_right.second;
+  for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
        i++)
   {
@@ -770,10 +770,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   // whole viewport needs a refresh...
   SDL_Rect dirtyRegion;
-  dirtyRegion.x = offsetX_in + myBorderLeft + myOffset.first;
-  dirtyRegion.y = offsetY_in + myBorderTop + myOffset.second;
-  dirtyRegion.w = (targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
-  dirtyRegion.h = (targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
+  dirtyRegion.x = static_cast<Sint16>(offsetX_in + myBorderLeft + myOffset.first);
+  dirtyRegion.y = static_cast<Sint16>(offsetY_in + myBorderTop + myOffset.second);
+  dirtyRegion.w = static_cast<Uint16>(targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
+  dirtyRegion.h = static_cast<Uint16>(targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
   invalidate(dirtyRegion);
 
   // remember position of last realization
@@ -1028,10 +1028,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                     *myHighlightTile,
                                     myScreen);
 
-          dirtyRegion.x = tile_position.first;
-          dirtyRegion.y = tile_position.second;
-          dirtyRegion.w = myHighlightTile->w;
-          dirtyRegion.h = myHighlightTile->h;
+          dirtyRegion.x = static_cast<Sint16>(tile_position.first);
+          dirtyRegion.y = static_cast<Sint16>(tile_position.second);
+          dirtyRegion.w = static_cast<Uint16>(myHighlightTile->w);
+          dirtyRegion.h = static_cast<Uint16>(myHighlightTile->h);
           SDL_GetClipRect(myScreen, &clipRect);
           unclip();
 //           invalidate(dirtyRegion);
@@ -1224,10 +1224,10 @@ SDL_GUI_LevelWindow::clear()
   SDL_GetClipRect(myScreen, &old_clip_rect);
 
   SDL_Rect clipRect;
-  clipRect.x = myBorderLeft + myOffset.first;
-  clipRect.y = myBorderTop + myOffset.second;
-  clipRect.w = (myScreen->w - (myBorderLeft + myBorderRight) - myOffset.first);
-  clipRect.h = (myScreen->h - (myBorderTop + myBorderBottom) - myOffset.second);
+  clipRect.x = static_cast<Sint16>(myBorderLeft + myOffset.first);
+  clipRect.y = static_cast<Sint16>(myBorderTop + myOffset.second);
+  clipRect.w = static_cast<Uint16>(myScreen->w - (myBorderLeft + myBorderRight) - myOffset.first);
+  clipRect.h = static_cast<Uint16>(myScreen->h - (myBorderTop + myBorderBottom) - myOffset.second);
   if (!SDL_SetClipRect(myScreen, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -1707,10 +1707,10 @@ SDL_GUI_LevelWindow::restoreBG()
                                 *myHighlightBG,
                                 myScreen);
 
-      dirtyRegion.x = tile_position.first;
-      dirtyRegion.y = tile_position.second;
-      dirtyRegion.w = myHighlightBG->w;
-      dirtyRegion.h = myHighlightBG->h;
+      dirtyRegion.x = static_cast<Sint16>(tile_position.first);
+      dirtyRegion.y = static_cast<Sint16>(tile_position.second);
+      dirtyRegion.w = static_cast<Uint16>(myHighlightBG->w);
+      dirtyRegion.h = static_cast<Uint16>(myHighlightBG->h);
       SDL_GetClipRect(myScreen, &clipRect);
       unclip();
 //             invalidate(dirtyRegion);

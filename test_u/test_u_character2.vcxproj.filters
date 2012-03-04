@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="character\character_generator.cpp">
+    <ClCompile Include="character\player\vs2010_workaround.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="character\vs2010_workaround.cpp">
+    <ClCompile Include="character\player\character_generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

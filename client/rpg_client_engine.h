@@ -21,6 +21,7 @@
 #ifndef RPG_CLIENT_ENGINE_H
 #define RPG_CLIENT_ENGINE_H
 
+#include "rpg_client_exports.h"
 #include "rpg_client_common.h"
 
 #include <rpg_engine_common.h>
@@ -43,7 +44,7 @@ class RPG_Engine_Level;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_Engine
+class RPG_Client_Export RPG_Client_Engine
  : public ACE_Task<ACE_MT_SYNCH>,
    public RPG_Common_IControl,
    public RPG_Common_IDumpState,

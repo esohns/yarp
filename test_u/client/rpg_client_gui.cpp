@@ -36,10 +36,10 @@
 
 #include <rpg_engine_common_tools.h>
 
-#include <rpg_character_monster_defines.h>
+#include <rpg_monster_defines.h>
 
-#include <rpg_character_player_defines.h>
-#include <rpg_character_player.h>
+#include <rpg_player_defines.h>
+#include <rpg_player.h>
 
 #include <rpg_item_defines.h>
 
@@ -68,7 +68,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
-#include <SDL/SDL_framerate.h>
+//#include <SDL/SDL_framerate.h>
 
 #include <ace/ACE.h>
 #include <ace/Version.h>
@@ -258,7 +258,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_CONFIG_SUB;
   path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
+  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-e [FILE]   : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-f [FILE]   : floor plan (*.txt)") << std::endl;
   path = base_data_path;
@@ -333,7 +333,7 @@ process_arguments(const int argc_in,
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
   monsterDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionary_out += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionary_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
 
   floorPlan_out.clear();
 
@@ -816,7 +816,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
     return false;
   } // end IF
   pattern = ACE_TEXT_ALWAYS_CHAR("*");
-  pattern += RPG_CHARACTER_PLAYER_PROFILE_EXT;
+  pattern += RPG_PLAYER_PROFILE_EXT;
   gtk_file_filter_add_pattern(userData_in.entity_filter, pattern.c_str());
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.entity_filter);
   g_object_unref(G_OBJECT(userData_in.entity_filter));
@@ -895,7 +895,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  if (::load_files(RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY,
+  if (::load_files(RPG_PLAYER_DEF_ENTITY_REPOSITORY,
                    true,
                    list))
     gtk_widget_set_sensitive(GTK_WIDGET(combobox),
@@ -2014,7 +2014,12 @@ do_printVersion(const std::string& programName_in)
 
   // step1: print program name/version
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
-  std::cout << programName_in << ACE_TEXT(" : ") << RPG_VERSION << std::endl;
+  std::cout << programName_in
+#ifdef HAVE_CONFIG_H
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+#endif
+            << std::endl;
 
   // step2: print ACE version
   // create ACE version string...
@@ -2091,7 +2096,7 @@ ACE_TMAIN(int argc_in,
   monsterDictionary += ACE_DIRECTORY_SEPARATOR_STR;
   monsterDictionary += RPG_COMMON_DEF_CONFIG_SUB;
   monsterDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionary += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionary += RPG_MONSTER_DEF_DICTIONARY_FILE;
 
   std::string graphicsDictionary = base_data_path;
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
@@ -2322,13 +2327,17 @@ ACE_TMAIN(int argc_in,
 //   ACE_ASSERT(gnomeSession);
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
   GnomeProgram* gnomeProgram = NULL;
-  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID,  // app ID
-//                                     ACE_TEXT_ALWAYS_CHAR(VERSION),     // version
-                                    ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),    // version
-                                    LIBGNOMEUI_MODULE,                    // module info
-                                    argc_in,                              // cmdline
-                                    argv_in,                              // cmdline
-                                    NULL);                                // property name(s)
+  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID, // app ID
+#ifdef HAVE_CONFIG_H
+//                                     ACE_TEXT_ALWAYS_CHAR(VERSION),    // version
+                                    ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),   // version
+#else
+	                                NULL,
+#endif
+                                    LIBGNOMEUI_MODULE,                   // module info
+                                    argc_in,                             // cmdline
+                                    argv_in,                             // cmdline
+                                    NULL);                               // property name(s)
   ACE_ASSERT(gnomeProgram);
 
   ACE_High_Res_Timer timer;
@@ -2380,14 +2389,15 @@ ACE_TMAIN(int argc_in,
                                   user_time_string);
   RPG_Common_Tools::period2String(system_time,
                                   system_time_string);
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-             elapsed_time.real_time,
+			 elapsed_time.real_time,
              elapsed_time.user_time,
              elapsed_time.system_time,
              user_time_string.c_str(),
              system_time_string.c_str(),
-             elapsed_rusage.ru_maxrss,
+			 elapsed_rusage.ru_maxrss,
              elapsed_rusage.ru_ixrss,
              elapsed_rusage.ru_idrss,
              elapsed_rusage.ru_isrss,
@@ -2401,6 +2411,15 @@ ACE_TMAIN(int argc_in,
              elapsed_rusage.ru_nsignals,
              elapsed_rusage.ru_nvcsw,
              elapsed_rusage.ru_nivcsw));
+#else
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
+             elapsed_time.real_time,
+             elapsed_time.user_time,
+             elapsed_time.system_time,
+             user_time_string.c_str(),
+             system_time_string.c_str()));
+#endif
 
   // *PORTABILITY*: on Windows, we must fini ACE...
 // #if defined (ACE_WIN32) || defined (ACE_WIN64)

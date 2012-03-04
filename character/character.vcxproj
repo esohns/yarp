@@ -38,20 +38,26 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\chance;E:\Yarp\common;E:\Yarp\chance\dice;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_CHARACTER_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RPG_CHARACTER_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>item.lib;magic.lib;chance.lib;common.lib;dice.lib;xerces-c_3D.lib;ACEd.lib</AdditionalDependencies>
+      <AdditionalDependencies>xerces-c_3D.lib;ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -72,7 +78,6 @@
     <ClInclude Include="rpg_character_alignmentcivic.h" />
     <ClInclude Include="rpg_character_alignmentethic.h" />
     <ClInclude Include="rpg_character_attributes.h" />
-    <ClInclude Include="rpg_character_base.h" />
     <ClInclude Include="rpg_character_check.h" />
     <ClInclude Include="rpg_character_checktypeunion.h" />
     <ClInclude Include="rpg_character_classxml.h" />
@@ -80,16 +85,12 @@
     <ClInclude Include="rpg_character_class_common_tools.h" />
     <ClInclude Include="rpg_character_common.h" />
     <ClInclude Include="rpg_character_common_tools.h" />
-    <ClInclude Include="rpg_character_equipment.h" />
     <ClInclude Include="rpg_character_equipmentslot.h" />
-    <ClInclude Include="rpg_character_equipment_common.h" />
     <ClInclude Include="rpg_character_exports.h" />
     <ClInclude Include="rpg_character_feat.h" />
     <ClInclude Include="rpg_character_feats.h" />
     <ClInclude Include="rpg_character_gender.h" />
     <ClInclude Include="rpg_character_incl.h" />
-    <ClInclude Include="rpg_character_inventory.h" />
-    <ClInclude Include="rpg_character_inventory_common.h" />
     <ClInclude Include="rpg_character_metaclass.h" />
     <ClInclude Include="rpg_character_offhand.h" />
     <ClInclude Include="rpg_character_race.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="rpg_character_skills_common_tools.h" />
     <ClInclude Include="rpg_character_skillvalue.h" />
     <ClInclude Include="rpg_character_XML_parser.h" />
+    <ClInclude Include="rpg_character_XML_tools.h" />
     <ClInclude Include="rpg_character_XML_tree.h" />
     <ClInclude Include="rpg_character_XML_types.h" />
     <ClInclude Include="rpg_XMLSchema_XML_tree.h" />
@@ -110,14 +112,12 @@
     <None Include="scripts\bindings.bat" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rpg_character_base.cpp" />
     <ClCompile Include="rpg_character_class_common_tools.cpp" />
     <ClCompile Include="rpg_character_common_tools.cpp" />
-    <ClCompile Include="rpg_character_equipment.cpp" />
-    <ClCompile Include="rpg_character_inventory.cpp" />
     <ClCompile Include="rpg_character_race_common_tools.cpp" />
     <ClCompile Include="rpg_character_skills_common_tools.cpp" />
     <ClCompile Include="rpg_character_XML_parser.cpp" />
+    <ClCompile Include="rpg_character_XML_tools.cpp" />
     <ClCompile Include="rpg_character_XML_tree.cpp" />
     <ClCompile Include="rpg_character_XML_types.cpp" />
   </ItemGroup>
@@ -136,6 +136,17 @@
       </SkelTypeSuffix>
       <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">__declspec(dllexport)</ExportSymbol>
     </CXX_Parser_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\chance\chance.vcxproj">
+      <Project>{680d55c6-2821-4d27-acd2-88873d145794}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\chance\dice\dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

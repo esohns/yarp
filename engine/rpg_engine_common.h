@@ -27,7 +27,7 @@
 
 #include <rpg_map_common.h>
 
-#include <rpg_character_base.h>
+#include <rpg_player_base.h>
 
 #include <SDL/SDL.h>
 
@@ -48,7 +48,7 @@ typedef RPG_Engine_Actions_t::const_iterator RPG_Engine_ActionsConstIterator_t;
 
 struct RPG_Engine_Entity
 {
-  RPG_Character_Base*  character;
+  RPG_Player_Base*     character;
   RPG_Map_Position_t   position;
   RPG_Engine_Actions_t actions;
   RPG_Graphics_Sprite  sprite;
@@ -144,9 +144,9 @@ struct RPG_Engine_CombatantSequenceElement
     return !operator==(rhs_in);
   }
 
-  char                      initiative;
-  short int                 DEXModifier;
-  const RPG_Character_Base* handle;
+  char                   initiative;
+  short int              DEXModifier;
+  const RPG_Player_Base* handle;
 };
 
 // struct lessThanRPG_Engine_CombatantSequenceElement

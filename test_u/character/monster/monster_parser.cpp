@@ -23,9 +23,9 @@
 #include <rpg_config.h>
 #endif
 
-#include <rpg_character_monster_defines.h>
-#include <rpg_character_monster_dictionary.h>
-#include <rpg_character_monster_common_tools.h>
+#include <rpg_monster_defines.h>
+#include <rpg_monster_dictionary.h>
+#include <rpg_monster_common_tools.h>
 
 #include <rpg_combat_common_tools.h>
 

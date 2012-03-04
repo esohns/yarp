@@ -23,15 +23,15 @@
 
 #include <rpg_common_condition.h>
 
-#include <vector>
 #include <set>
+#include <vector>
 
 // some useful types
+typedef std::set<RPG_Common_Condition> RPG_Character_Conditions_t;
+typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsIterator_t;
+
 typedef std::vector<signed char> RPG_Character_BaseAttackBonus_t;
 typedef RPG_Character_BaseAttackBonus_t::iterator RPG_Character_BaseAttackBonusIterator_t;
 typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttackBonusConstIterator_t;
-
-typedef std::set<RPG_Common_Condition> RPG_Character_Conditions_t;
-typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsIterator_t;
 
 #endif

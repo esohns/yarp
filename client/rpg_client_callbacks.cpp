@@ -36,7 +36,7 @@
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
 
-#include <rpg_character_player_defines.h>
+#include <rpg_player_defines.h>
 #include <rpg_character_class_common_tools.h>
 
 #include <rpg_item_instance_manager.h>
@@ -57,7 +57,7 @@
 #include <sstream>
 
 void
-update_character_profile(const RPG_Character_Player& player_in,
+update_character_profile(const RPG_Player& player_in,
                          GladeXML* xml_in)
 {
   RPG_TRACE(ACE_TEXT("::update_character_profile"));
@@ -705,7 +705,7 @@ update_character_profile(const RPG_Character_Player& player_in,
 
     g_list_free(entries);
   } // end IF
-  RPG_Character_Inventory player_inventory = player_in.getInventory();
+  RPG_Player_Inventory player_inventory = player_in.getInventory();
 //   RPG_Character_Equipment player_equipment = player_in.getEquipment();
   RPG_Item_Base* item = NULL;
   for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin();
@@ -780,7 +780,7 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
   // sanity checks
   ACE_ASSERT(entity_in.character);
   ACE_ASSERT(entity_in.character->isPlayerCharacter());
-  RPG_Character_Player* player = dynamic_cast<RPG_Character_Player*>(entity_in.character);
+  RPG_Player* player = dynamic_cast<RPG_Player*>(entity_in.character);
   ACE_ASSERT(player);
   ACE_ASSERT(xml_in);
 
@@ -1077,7 +1077,7 @@ dirent_selector_profiles(const dirent* entry_in)
 
   // *NOTE*: select player profiles
   std::string filename(entry_in->d_name);
-  std::string extension(RPG_CHARACTER_PLAYER_PROFILE_EXT);
+  std::string extension(RPG_PLAYER_PROFILE_EXT);
   if (filename.rfind(extension,
 //                     std::string::npos) != (filename.size() - extension.size()))
                      -1) != (filename.size() - extension.size()))
@@ -1164,7 +1164,7 @@ load_files(const std::string& repository_in,
 
   // iterate over entries
   std::string entry;
-  std::string extension = (loadPlayerProfiles_in ? RPG_CHARACTER_PLAYER_PROFILE_EXT
+  std::string extension = (loadPlayerProfiles_in ? RPG_PLAYER_PROFILE_EXT
                                                  : RPG_MAP_EXT);
   GtkTreeIter iter;
   for (unsigned int i = 0;
@@ -1439,7 +1439,7 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // step1b: setup chooser dialog
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
-                                      RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY);
+                                      RPG_PLAYER_DEF_ENTITY_REPOSITORY);
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               data->entity_filter);
 
@@ -1528,10 +1528,10 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->entity.character);
 
   // assemble target filename
-  std::string filename = RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY;
+  std::string filename = RPG_PLAYER_DEF_ENTITY_REPOSITORY;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += data->entity.character->getName();
-  filename += RPG_CHARACTER_PLAYER_PROFILE_EXT;
+  filename += RPG_PLAYER_PROFILE_EXT;
 
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
@@ -1596,10 +1596,10 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // construct filename
-  std::string filename = RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY;
+  std::string filename = RPG_PLAYER_DEF_ENTITY_REPOSITORY;
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += active_item;
-  filename += RPG_CHARACTER_PLAYER_PROFILE_EXT;
+  filename += RPG_PLAYER_PROFILE_EXT;
 
   // load player profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
@@ -1648,7 +1648,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load profile data
-  unsigned long num_entries = ::load_files(RPG_CHARACTER_PLAYER_DEF_ENTITY_REPOSITORY,
+  unsigned long num_entries = ::load_files(RPG_PLAYER_DEF_ENTITY_REPOSITORY,
                                            true,
                                            GTK_LIST_STORE(model));
 

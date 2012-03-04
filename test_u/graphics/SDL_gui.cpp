@@ -108,8 +108,14 @@ do_initVideo(const std::string& graphicsDirectory_in,
 
   // ***** window/screen setup *****
   // set window caption
+#ifdef HAVE_CONFIG_H
   SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING),  // window caption
                     ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING)); // icon caption
+#else
+  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION),  // window caption
+                    ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION)); // icon caption
+#endif
+
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
@@ -271,36 +277,36 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-c ([FILE]): character profile (*.xml)") << ACE_TEXT(" [") << SDL_GUI_DEF_ENTITY << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-c ([FILE]): character profile (*.xml)") << ACE_TEXT(" [") << ACE_TEXT(SDL_GUI_DEF_ENTITY) << ACE_TEXT("]") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_DATA_SUB;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_GRAPHICS_DEF_DATA_SUB;
-  std::cout << ACE_TEXT("-d [DIR] : graphics directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-d [DIR]   : graphics directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_CONFIG_SUB;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
-  std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_CONFIG_SUB;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_ITEM_DEF_DICTIONARY_FILE;
-  std::cout << ACE_TEXT("-i [FILE]: items dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-i [FILE]  : items dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_COMMON_DEF_CONFIG_SUB;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += RPG_MAGIC_DEF_DICTIONARY_FILE;
-  std::cout << ACE_TEXT("-m [FILE]: magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-p ([FILE]): map (*.txt)") << ACE_TEXT(" [") << SDL_GUI_DEF_MAP << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-s       : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES) << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x       : do NOT validate XML") << ACE_TEXT(" [") << SDL_GUI_DEF_VALIDATE_XML << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-p ([FILE]): map (*.txt)") << ACE_TEXT(" [") << ACE_TEXT(SDL_GUI_DEF_MAP) << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s         : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES) << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-t         : trace information") << std::endl;
+  std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-x         : do NOT validate XML") << ACE_TEXT(" [") << SDL_GUI_DEF_VALIDATE_XML << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -1353,7 +1359,12 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
-  std::cout << programName_in << ACE_TEXT(" : ") << RPG_VERSION << std::endl;
+  std::cout << programName_in
+#ifdef HAVE_CONFIG_H
+            << ACE_TEXT(" : ")
+            << RPG_VERSION
+#endif
+            << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version

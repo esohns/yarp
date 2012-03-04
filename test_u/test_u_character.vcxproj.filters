@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="character\character_parser.cpp">
+    <ClCompile Include="character\player\character_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,7 +11,7 @@
 <!-- include common schema -->
 <!--   <xsd:include schemaLocation="rpg_common.xsd"/> -->
 <!-- include character player schema -->
-  <xsd:include schemaLocation="../character/player/rpg_character_player.xsd"/>
+  <xsd:include schemaLocation="../character/player/rpg_player.xsd"/>
 <!-- include map schema -->
   <xsd:include schemaLocation="../map/rpg_map.xsd"/>
 <!-- include graphics schema -->
@@ -42,7 +42,7 @@
 
  <xsd:complexType name="RPG_Engine_Player_Type" id="skip0">
     <xsd:complexContent>
-      <xsd:extension base="RPG_Character_PlayerXML_Type">
+      <xsd:extension base="RPG_Player_PlayerXML_Type">
         <xsd:sequence>
           <xsd:element name="position" type="RPG_Map_Position_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="sprite" type="RPG_Graphics_Sprite_Type" minOccurs="1" maxOccurs="1"/>
@@ -52,6 +52,6 @@
   </xsd:complexType>
 
   <!-- substitution group root -->
-  <xsd:element name="engine_player" type="RPG_Engine_Player_Type"/>
+  <xsd:element name="engine_player_t" type="RPG_Engine_Player_Type"/>
 
 </xsd:schema>

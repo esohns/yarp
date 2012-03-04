@@ -1849,14 +1849,74 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
   return numFeats;
 }
 
+const std::string
+RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& skills_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::skillsToString"));
+
+  std::string result;
+
+  std::ostringstream converter;
+  for (RPG_Character_SkillsConstIterator_t iterator = skills_in.begin();
+       iterator != skills_in.end();
+       iterator++)
+  {
+    result += RPG_Common_SkillHelper::RPG_Common_SkillToString(iterator->first);
+    result += ACE_TEXT_ALWAYS_CHAR(": ");
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << static_cast<int>(iterator->second);
+    result += converter.str();
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+
+  return result;
+}
+
+const std::string
+RPG_Character_Skills_Common_Tools::featsToString(const RPG_Character_Feats_t& feats_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::featsToString"));
+
+  std::string result;
+
+  for (RPG_Character_FeatsConstIterator_t iterator = feats_in.begin();
+       iterator != feats_in.end();
+       iterator++)
+  {
+    result += RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+
+  return result;
+}
+
+const std::string
+RPG_Character_Skills_Common_Tools::abilitiesToString(const RPG_Character_Abilities_t& abilities_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilitiesToString"));
+
+  std::string result;
+
+  for (RPG_Character_AbilitiesConstIterator_t iterator = abilities_in.begin();
+       iterator != abilities_in.end();
+       iterator++)
+  {
+    result += RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+
+  return result;
+}
+
 const bool
 RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_Character_Feat& feat_in,
-                                                          const RPG_Common_SubClass& subClass_in,
-                                                          const unsigned char& currentLevel_in,
-                                                          const RPG_Character_Attributes& attributes_in,
-                                                          const RPG_Character_Skills_t& skills_in,
-                                                          const RPG_Character_Feats_t& feats_in,
-                                                          const RPG_Character_Abilities_t& abilities_in)
+														  const RPG_Common_SubClass& subClass_in,
+														  const unsigned char& currentLevel_in,
+														  const RPG_Character_Attributes& attributes_in,
+														  const RPG_Character_Skills_t& skills_in,
+														  const RPG_Character_Feats_t& feats_in,
+														  const RPG_Character_Abilities_t& abilities_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
 
@@ -2112,64 +2172,4 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_Character_Fe
   } // end FOR
 
   return true;
-}
-
-const std::string
-RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& skills_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::skillsToString"));
-
-  std::string result;
-
-  std::ostringstream converter;
-  for (RPG_Character_SkillsConstIterator_t iterator = skills_in.begin();
-       iterator != skills_in.end();
-       iterator++)
-  {
-    result += RPG_Common_SkillHelper::RPG_Common_SkillToString(iterator->first);
-    result += ACE_TEXT_ALWAYS_CHAR(": ");
-    converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << static_cast<int>(iterator->second);
-    result += converter.str();
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
-  } // end FOR
-
-  return result;
-}
-
-const std::string
-RPG_Character_Skills_Common_Tools::featsToString(const RPG_Character_Feats_t& feats_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::featsToString"));
-
-  std::string result;
-
-  for (RPG_Character_FeatsConstIterator_t iterator = feats_in.begin();
-       iterator != feats_in.end();
-       iterator++)
-  {
-    result += RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator);
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
-  } // end FOR
-
-  return result;
-}
-
-const std::string
-RPG_Character_Skills_Common_Tools::abilitiesToString(const RPG_Character_Abilities_t& abilities_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilitiesToString"));
-
-  std::string result;
-
-  for (RPG_Character_AbilitiesConstIterator_t iterator = abilities_in.begin();
-       iterator != abilities_in.end();
-       iterator++)
-  {
-    result += RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator);
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
-  } // end FOR
-
-  return result;
 }

@@ -21,6 +21,8 @@
 #ifndef RPG_CLIENT_COMMON_TOOLS_H
 #define RPG_CLIENT_COMMON_TOOLS_H
 
+#include "rpg_client_exports.h"
+
 #include <rpg_engine_level.h>
 
 #include <rpg_graphics_common.h>
@@ -32,7 +34,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_Common_Tools
+class RPG_Client_Export RPG_Client_Common_Tools
 {
  public:
   // *NOTE*: initializes cursor manager singleton

@@ -169,14 +169,13 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   // init clipping
   SDL_GetClipRect(targetSurface_in, &(inherited::myClipRect));
   SDL_Rect clipRect;
-  clipRect.x = (myBorderLeft +
-                (myScreen->w -
-                 (myBorderLeft + myBorderRight) -
-                 (inherited::mySize.first + inherited::myOffset.first)));
-  clipRect.y = (myBorderTop +
-                inherited::myOffset.second);
-  clipRect.w = inherited::mySize.first;
-  clipRect.h = inherited::mySize.second;
+  clipRect.x = static_cast<Sint16>(myBorderLeft +
+                                   (myScreen->w -
+                                    (myBorderLeft + myBorderRight) -
+                                   (inherited::mySize.first + inherited::myOffset.first)));
+  clipRect.y = static_cast<Sint16>(myBorderTop + inherited::myOffset.second);
+  clipRect.w = static_cast<Uint16>(inherited::mySize.first);
+  clipRect.h = static_cast<Uint16>(inherited::mySize.second);
   if (!SDL_SetClipRect(targetSurface_in, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,

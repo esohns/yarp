@@ -17,16 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_COMBAT_COMMON_H
 #define RPG_COMBAT_COMMON_H
 
-#include "rpg_combat_attackform.h"
-
-#include <ace/Log_Msg.h>
+#include <rpg_dice_incl.h>
+#include <rpg_common_incl.h>
+#include <rpg_character_alignmentcivic.h>
+#include <rpg_character_alignmentethic.h>
+#include <rpg_character_alignment.h>
+#include <rpg_magic_spelltype.h>
+#include "rpg_combat_incl.h"
 
 #include <vector>
 
+// some useful types
 typedef std::vector<RPG_Combat_AttackForm> RPG_Combat_AttackForms_t;
 typedef RPG_Combat_AttackForms_t::const_iterator RPG_Combat_AttackFormsIterator_t;
+
+typedef std::vector<RPG_Combat_DamageElement> RPG_Combat_Damages_t;
+typedef RPG_Combat_Damages_t::const_iterator RPG_Combat_DamagesConstIterator_t;
 
 #endif

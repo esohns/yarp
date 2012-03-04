@@ -21,6 +21,8 @@
 #ifndef RPG_CLIENT_WINDOW_MAIN_H
 #define RPG_CLIENT_WINDOW_MAIN_H
 
+#include "rpg_client_exports.h"
+
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_cursor.h>
 #include <rpg_graphics_font.h>
@@ -43,7 +45,7 @@ class RPG_Engine_Level;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_WindowMain
+class RPG_Client_Export RPG_Client_WindowMain
  : public RPG_Graphics_TopLevel
 {
  public:

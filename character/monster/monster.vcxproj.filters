@@ -21,140 +21,140 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rpg_XMLSchema_XML_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_actiontrigger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_advancement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_advancementstep.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_attack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_attackaction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_common_tools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_defenseaction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_defines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_dictionary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_incl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_naturalarmorclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_naturalweapon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_organization.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_organizations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_organizationslaverstep.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_organizationstep.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_propertiesxml.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_savingthrowmodifiers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_specialabilityprecondition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_specialabilityproperties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_specialattackprecondition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_specialattackproperties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_specialbaseproperties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_specialdefenseprecondition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_specialdefenseproperties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_specialpropertytypeunion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_summonmonster.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_weapontypeunion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_XML_parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_XML_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_monster_exports.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="rpg_character_monster.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg_character_monster_common_tools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg_character_monster_dictionary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg_character_monster_XML_parser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg_character_monster_XML_types.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="rpg_character_monster.xml">
-      <Filter>XML</Filter>
-    </None>
-    <None Include="rpg_character_monster.map">
-      <Filter>XML</Filter>
-    </None>
     <None Include="scripts\bindings.bat">
       <Filter>scripts</Filter>
     </None>
+    <None Include="rpg_monster.map">
+      <Filter>XML</Filter>
+    </None>
+    <None Include="rpg_monster.xml">
+      <Filter>XML</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <CXX_Parser_Mapping_Rule Include="rpg_character_monster.xsd">
+    <ClInclude Include="rpg_XMLSchema_XML_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_actiontrigger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_advancement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_advancementstep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_attack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_attackaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_common_tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_defenseaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_dictionary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_exports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_incl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_naturalarmorclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_naturalweapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_organization.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_organizations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_organizationslaverstep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_organizationstep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_propertiesxml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_savingthrowmodifiers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_specialabilityprecondition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_specialabilityproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_specialattackprecondition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_specialattackproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_specialbaseproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_specialdefenseprecondition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_specialdefenseproperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_specialpropertytypeunion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_summonmonster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_weapontypeunion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_XML_parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_XML_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="rpg_monster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_monster_common_tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_monster_dictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_monster_XML_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_monster_XML_types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="rpg_monster.xsd">
       <Filter>XML</Filter>
-    </CXX_Parser_Mapping_Rule>
+    </CXX_Tree_Mapping_Rule>
   </ItemGroup>
 </Project>

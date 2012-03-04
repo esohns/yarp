@@ -13,21 +13,29 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="XML">
+      <UniqueIdentifier>{6bd27041-7345-4e92-b333-acbc013e0ed4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="character\character_generator_gui_common.h">
+    <ClCompile Include="character\player\character_generator_gui.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="character\player\character_generator_gui_callbacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="character\player\character_generator_gui_callbacks.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="character\character_generator_gui_callbacks.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="character\player\character_generator_gui_common.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="character\character_generator_gui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="character\character_generator_gui_callbacks.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <None Include="character\player\character_generator_gui.glade">
+      <Filter>XML</Filter>
+    </None>
   </ItemGroup>
 </Project>

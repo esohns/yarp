@@ -21,6 +21,7 @@
 #define RPG_SOUND_COMMON_TOOLS_H
 
 #include "rpg_sound_incl.h"
+#include "rpg_sound_exports.h"
 #include "rpg_sound_common.h"
 
 #include <ace/Global_Macros.h>
@@ -29,7 +30,7 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Sound_Common_Tools
+class RPG_Sound_Export RPG_Sound_Common_Tools
 {
  public:
   // init string conversion facilities

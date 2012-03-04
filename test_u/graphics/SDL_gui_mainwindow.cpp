@@ -103,10 +103,10 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 
   // step3: fill central area
   SDL_Rect clipRect;
-  clipRect.x = offsetX_in + myBorderLeft;
-  clipRect.y = offsetY_in + myBorderTop;
-  clipRect.w = (targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight));
-  clipRect.h = (targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom));
+  clipRect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
+  clipRect.y = static_cast<Sint16>(offsetY_in + myBorderTop);
+  clipRect.w = static_cast<Uint16>(targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight));
+  clipRect.h = static_cast<Uint16>(targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom));
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -819,10 +819,10 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   SDL_GetClipRect(targetSurface, &prev_clipRect);
 
   // step1: draw borders
-  clipRect.x = offsetX_in + myBorderLeft;
-  clipRect.y = offsetY_in;
-  clipRect.w = (targetSurface->w - (myBorderLeft + myBorderRight));
-  clipRect.h = myBorderTop;
+  clipRect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
+  clipRect.y = static_cast<Sint16>(offsetY_in);
+  clipRect.w = static_cast<Uint16>(targetSurface->w - (myBorderLeft + myBorderRight));
+  clipRect.h = static_cast<Uint16>(myBorderTop);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -842,10 +842,10 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
                               targetSurface);
   invalidate(clipRect);
 
-  clipRect.x = offsetX_in;
-  clipRect.y = (offsetY_in + myBorderTop);
-  clipRect.w = myBorderLeft;
-  clipRect.h = (targetSurface->h - (myBorderTop + myBorderBottom));
+  clipRect.x = static_cast<Sint16>(offsetX_in);
+  clipRect.y = static_cast<Sint16>(offsetY_in + myBorderTop);
+  clipRect.w = static_cast<Uint16>(myBorderLeft);
+  clipRect.h = static_cast<Uint16>(targetSurface->h - (myBorderTop + myBorderBottom));
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -865,10 +865,10 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
                               targetSurface);
   invalidate(clipRect);
 
-  clipRect.x = (targetSurface->w - myBorderRight);
-  clipRect.y = offsetY_in + myBorderTop;
-  clipRect.w = myBorderRight;
-  clipRect.h = (targetSurface->h - (myBorderTop + myBorderBottom));
+  clipRect.x = static_cast<Sint16>(targetSurface->w - myBorderRight);
+  clipRect.y = static_cast<Sint16>(offsetY_in + myBorderTop);
+  clipRect.w = static_cast<Uint16>(myBorderRight);
+  clipRect.h = static_cast<Uint16>(targetSurface->h - (myBorderTop + myBorderBottom));
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -888,10 +888,10 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
                                targetSurface);
   invalidate(clipRect);
 
-  clipRect.x = offsetX_in + myBorderLeft;
-  clipRect.y = (targetSurface->h - myBorderBottom);
-  clipRect.w = (targetSurface->w - (myBorderLeft + myBorderRight));
-  clipRect.h = myBorderBottom;
+  clipRect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
+  clipRect.y = static_cast<Sint16>(targetSurface->h - myBorderBottom);
+  clipRect.w = static_cast<Uint16>(targetSurface->w - (myBorderLeft + myBorderRight));
+  clipRect.h = static_cast<Uint16>(myBorderBottom);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -914,12 +914,12 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   // step2: draw corners
 
   // NW
-  clipRect.x = offsetX_in;
-  clipRect.y = offsetY_in;
+  clipRect.x = static_cast<Sint16>(offsetX_in);
+  clipRect.y = static_cast<Sint16>(offsetY_in);
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  clipRect.w = (*iterator).second->w;
-  clipRect.h = (*iterator).second->h;
+  clipRect.w = static_cast<Uint16>((*iterator).second->w);
+  clipRect.h = static_cast<Uint16>((*iterator).second->h);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -935,12 +935,12 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   invalidate(clipRect);
 
   // NE
-  clipRect.y = offsetY_in;
+  clipRect.y = static_cast<Sint16>(offsetY_in);
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  clipRect.x = (targetSurface->w - (*iterator).second->w);
-  clipRect.w = (*iterator).second->w;
-  clipRect.h = (*iterator).second->h;
+  clipRect.x = static_cast<Sint16>(targetSurface->w - (*iterator).second->w);
+  clipRect.w = static_cast<Uint16>((*iterator).second->w);
+  clipRect.h = static_cast<Uint16>((*iterator).second->h);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -956,12 +956,12 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   invalidate(clipRect);
 
   // SW
-  clipRect.x = offsetX_in;
+  clipRect.x = static_cast<Sint16>(offsetX_in);
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  clipRect.y = (targetSurface->h - (*iterator).second->h);
-  clipRect.w = (*iterator).second->w;
-  clipRect.h = (*iterator).second->h;
+  clipRect.y = static_cast<Sint16>(targetSurface->h - (*iterator).second->h);
+  clipRect.w = static_cast<Uint16>((*iterator).second->w);
+  clipRect.h = static_cast<Uint16>((*iterator).second->h);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -1027,10 +1027,10 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
                                                                            text_in);
 
   SDL_Rect clipRect;
-  clipRect.x = myBorderLeft;
-  clipRect.y = ((myBorderTop - title_size.second) / 2);
-  clipRect.w = title_size.first;
-  clipRect.h = title_size.second;
+  clipRect.x = static_cast<Sint16>(myBorderLeft);
+  clipRect.y = static_cast<Sint16>((myBorderTop - title_size.second) / 2);
+  clipRect.w = static_cast<Uint16>(title_size.first);
+  clipRect.h = static_cast<Uint16>(title_size.second);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,

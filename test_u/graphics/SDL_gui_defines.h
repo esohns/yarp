@@ -21,6 +21,8 @@
 #ifndef SDL_GUI_DEFINES_H
 #define SDL_GUI_DEFINES_H
 
+#define SDL_GUI_DEF_CAPTION                    "SDL_gui"
+
 #define SDL_GUI_DEF_MODE                       MODE_FLOOR_PLAN
 
 #define SDL_GUI_DEF_MAP_MIN_ROOM_SIZE          0 // 0: don't care
@@ -40,8 +42,8 @@
 #define SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_X  10 // from the right side
 #define SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_Y  10
 
-#define SDL_GUI_DEF_ENTITY                     ACE_TEXT("/var/tmp/default_player.xml")
-#define SDL_GUI_DEF_MAP                        ACE_TEXT("/var/tmp/default_map.txt")
+#define SDL_GUI_DEF_ENTITY                     "/var/tmp/default_player.xml"
+#define SDL_GUI_DEF_MAP                        "/var/tmp/default_map.txt"
 #define SDL_GUI_DEF_VALIDATE_XML               true
 
 #define SDL_GUI_DEF_VIDEO_W                    1024

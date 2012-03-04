@@ -39,9 +39,6 @@
     <ClInclude Include="rpg_character_attributes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rpg_character_base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rpg_character_check.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -63,12 +60,6 @@
     <ClInclude Include="rpg_character_common_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rpg_character_equipment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_equipment_common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rpg_character_equipmentslot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -82,12 +73,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_character_incl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_inventory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_character_inventory_common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_character_metaclass.h">
@@ -132,21 +117,15 @@
     <ClInclude Include="rpg_character_exports.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_character_XML_tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rpg_character_base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rpg_character_class_common_tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_character_common_tools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg_character_equipment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg_character_inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_character_race_common_tools.cpp">
@@ -162,6 +141,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_character_XML_types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_character_XML_tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
