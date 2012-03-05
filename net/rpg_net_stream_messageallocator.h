@@ -21,6 +21,7 @@
 #ifndef RPG_NET_STREAM_MESSAGEALLOCATOR_H
 #define RPG_NET_STREAM_MESSAGEALLOCATOR_H
 
+#include "rpg_net_exports.h"
 #include "rpg_net_message.h"
 #include "rpg_net_sessionmessage.h"
 
@@ -29,7 +30,7 @@
 // forward declarations
 class Stream_AllocatorHeap;
 
-class RPG_Net_StreamMessageAllocator
+class RPG_Net_Export RPG_Net_StreamMessageAllocator
  : public RPG_Stream_MessageAllocatorHeapBase<RPG_Net_Message,
                                               RPG_Net_SessionMessage>
 {

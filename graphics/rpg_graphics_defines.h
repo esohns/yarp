@@ -74,7 +74,7 @@
 // #define RPG_GRAPHICS_DEF_DUMP_DIR                      ACE_TEXT("/var/tmp")
 
 // DATADIR-specific
-#define RPG_GRAPHICS_DEF_DATA_SUB                      ACE_TEXT("graphic")
+#define RPG_GRAPHICS_DEF_DATA_SUB                      ACE_TEXT("graphics")
 
 // buffer for printing keyboard events (debug info)
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE            32

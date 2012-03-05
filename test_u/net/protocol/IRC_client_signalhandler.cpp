@@ -86,14 +86,10 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
   {
     case SIGINT:
     case SIGTERM:
-    // *PORTABILITY*: this isn't portable: on Windows SIGQUIT and SIGHUP are not defined,
-    // so we handle SIGBREAK (21) and SIGABRT (22) instead...
+// *PORTABILITY*: this isn't portable: on Windows SIGQUIT and SIGHUP are not defined...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGHUP:
     case SIGQUIT:
-#else
-    case SIGBREAK:
-    case SIGABRT:
 #endif
     {
 //       // *PORTABILITY*: tracing in a signal handler context is not portable
@@ -105,14 +101,24 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
 
       break;
     }
+// *PORTABILITY*: this isn't portable: on Windows SIGUSR1 and SIGUSR2 are not defined,
+// so we handle SIGBREAK (21) and SIGABRT (22) instead...
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR1:
+#else
+	case SIGBREAK:
+#endif
     {
       // (try to) connect...
       connect_to_server = true;
 
       break;
     }
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR2:
+#else
+	case SIGABRT:
+#endif
     {
       // (try to) abort oldest connection...
       abort_oldest = true;
@@ -121,10 +127,10 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
     }
     default:
     {
-      // *PORTABILITY*: tracing in a signal handler context is not portable
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("received unknown signal: \"%S\", continuing\n"),
-                 signal_in));
+      //// *PORTABILITY*: tracing in a signal handler context is not portable
+      //ACE_DEBUG((LM_ERROR,
+      //           ACE_TEXT("received unknown signal: \"%S\", continuing\n"),
+      //           signal_in));
 
       break;
     }
@@ -134,7 +140,7 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
   if (abort_oldest)
   {
     // release an existing connection...
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+    RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
   } // end IF
 
   // ...connect ?
@@ -167,7 +173,7 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
                  buf));
 
       // release an existing connection, maybe that helps...
-      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+      RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
     } // end IF
   } // end IF
 

@@ -21,13 +21,14 @@
 #ifndef RPG_NET_SOCKETHANDLER_H
 #define RPG_NET_SOCKETHANDLER_H
 
+#include "rpg_net_exports.h"
 #include "rpg_net_stream_socket_base.h"
 #include "rpg_net_common.h"
 #include "rpg_net_stream.h"
 
 #include <ace/Global_Macros.h>
 
-class RPG_Net_SocketHandler
+class RPG_Net_Export RPG_Net_SocketHandler
  : public RPG_Net_StreamSocketBase<RPG_Net_ConfigPOD,
                                    RPG_Net_RuntimeStatistic,
                                    RPG_Net_Stream>

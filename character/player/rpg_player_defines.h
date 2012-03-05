@@ -25,9 +25,13 @@
 #define RPG_PLAYER_ATTR_MIN_SUM          80
 
 // XML-specific
-#define RPG_PLAYER_SCHEMA_FILE           ACE_TEXT("rpg_character_player.xsd")
-#define RPG_PLAYER_PROFILE_EXT           ACE_TEXT(".xml")
+#define RPG_PLAYER_SCHEMA_FILE           "rpg_player.xsd"
+#define RPG_PLAYER_PROFILE_EXT           ".xml"
 
-#define RPG_PLAYER_DEF_ENTITY_REPOSITORY ACE_TEXT("/var/tmp")
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#define RPG_PLAYER_DEF_ENTITY_REPOSITORY "/var/tmp"
+#else
+#define RPG_PLAYER_DEF_ENTITY_REPOSITORY "TEMP" // environment
+#endif
 
 #endif

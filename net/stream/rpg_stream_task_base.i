@@ -159,8 +159,8 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::handleSessionMessage(SessionMessageType*& message_inout,
-                                                           bool& passMessageDownstream_out)
+                    ProtocolMessageType>::handleSessionMessage(SessionMessageType*& message_inout,
+                                                               bool& passMessageDownstream_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleSessionMessage"));
 
@@ -425,9 +425,9 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::handleControlMessage(ACE_Message_Block* controlMessage_in,
-                                                           bool& stopProcessing_out,
-                                                           bool& passMessageDownstream_out)
+                    ProtocolMessageType>::handleControlMessage(ACE_Message_Block* controlMessage_in,
+                                                               bool& stopProcessing_out,
+                                                               bool& passMessageDownstream_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleControlMessage"));
 

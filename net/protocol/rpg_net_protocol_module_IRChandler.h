@@ -21,7 +21,10 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCHANDLER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCHANDLER_H
 
+#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_iIRCControl.h"
+#include "rpg_net_protocol_sessionmessage.h"
+#include "rpg_net_protocol_message.h"
 
 #include <rpg_stream_task_base_synch.h>
 #include <rpg_stream_streammodule.h>
@@ -35,11 +38,9 @@
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
-class RPG_Net_Protocol_SessionMessage;
-class RPG_Net_Protocol_Message;
 class RPG_Net_Protocol_IRCMessage;
 
-class RPG_Net_Protocol_Module_IRCHandler
+class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
  : public RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
                                    RPG_Net_Protocol_Message>,
    public RPG_Net_Protocol_IIRCControl
@@ -123,7 +124,6 @@ class RPG_Net_Protocol_Module_IRCHandler
   ACE_Recursive_Thread_Mutex             myLock;
   Subscribers_t                          mySubscribers;
 
-//   std::string        myChannelName;
   RPG_Stream_IAllocator*                 myAllocator;
   unsigned long                          myDefaultBufferSize;
   bool                                   myAutomaticPong;

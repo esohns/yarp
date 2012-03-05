@@ -21,13 +21,14 @@
 #ifndef RPG_STREAM_ALLOCATORHEAP_H
 #define RPG_STREAM_ALLOCATORHEAP_H
 
+#include "rpg_stream_exports.h"
 #include "rpg_stream_iallocator.h"
 
 #include <ace/Malloc_Allocator.h>
 #include <ace/Synch.h>
 #include <ace/Atomic_Op.h>
 
-class RPG_Stream_AllocatorHeap
+class RPG_Stream_Export RPG_Stream_AllocatorHeap
  : public ACE_New_Allocator,
    public RPG_Stream_IAllocator
 {

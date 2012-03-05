@@ -155,7 +155,7 @@ connect_clicked_cb(GtkWidget* button_in,
   } // end IF
   // sanity check: <= IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH characters ?
   // *TODO*: support the NICKLEN=xxx "feature" of the server...
-  if (loginOptions.nick.size() > IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
+  if (loginOptions.nick.size() > IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH)
     loginOptions.nick.resize(IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
 
   // step3: create/init new final module
@@ -621,7 +621,7 @@ change_clicked_cb(GtkWidget* button_in,
 
   // sanity check: <= IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH characters ?
   // *TODO*: support the NICKLEN=xxx "feature" of the server...
-  if (nick_string.size() > IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
+  if (nick_string.size() > IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH)
     nick_string.resize(IRC_CLIENT_CNF_IRC_MAX_NICK_LENGTH);
 
   try
@@ -1542,7 +1542,7 @@ members_clicked_cb(GtkWidget* widget_in,
   // find out which row was actually clicked
   GtkTreePath* path = NULL;
   if (!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget_in),
-                                     event_in->x, event_in->y,
+                                     static_cast<gint>(event_in->x), static_cast<gint>(event_in->y),
                                      &path, NULL,
                                      NULL, NULL))
     return FALSE; // no row at this position --> propagate event

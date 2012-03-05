@@ -22,4 +22,7 @@
 
 #define RPG_ITEM_DEF_DICTIONARY_FILE      ACE_TEXT_ALWAYS_CHAR("rpg_item.xml")
 
+// DATADIR-specific
+#define RPG_ITEM_DEF_DATA_SUB             ACE_TEXT("item")
+
 #endif

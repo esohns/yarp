@@ -1077,7 +1077,7 @@ dirent_selector_profiles(const dirent* entry_in)
 
   // *NOTE*: select player profiles
   std::string filename(entry_in->d_name);
-  std::string extension(RPG_PLAYER_PROFILE_EXT);
+  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT));
   if (filename.rfind(extension,
 //                     std::string::npos) != (filename.size() - extension.size()))
                      -1) != (filename.size() - extension.size()))
@@ -1164,7 +1164,7 @@ load_files(const std::string& repository_in,
 
   // iterate over entries
   std::string entry;
-  std::string extension = (loadPlayerProfiles_in ? RPG_PLAYER_PROFILE_EXT
+  std::string extension = (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT)
                                                  : RPG_MAP_EXT);
   GtkTreeIter iter;
   for (unsigned int i = 0;
@@ -1439,7 +1439,11 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // step1b: setup chooser dialog
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
-                                      RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+                                      ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#else
+                                      ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY)));
+#endif
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               data->entity_filter);
 
@@ -1528,10 +1532,14 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->entity.character);
 
   // assemble target filename
-  std::string filename = RPG_PLAYER_DEF_ENTITY_REPOSITORY;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string filename = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += data->entity.character->getName();
-  filename += RPG_PLAYER_PROFILE_EXT;
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
@@ -1596,15 +1604,19 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // construct filename
-  std::string filename = RPG_PLAYER_DEF_ENTITY_REPOSITORY;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string filename = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
   filename += ACE_DIRECTORY_SEPARATOR_STR;
   filename += active_item;
-  filename += RPG_PLAYER_PROFILE_EXT;
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   // load player profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                             data->schemaRepository,
-                                                             true);
+                                                     data->schemaRepository,
+                                                     true);
   ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
@@ -1648,7 +1660,11 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load profile data
-  unsigned long num_entries = ::load_files(RPG_PLAYER_DEF_ENTITY_REPOSITORY,
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  unsigned long num_entries = ::load_files(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY,
+#else
+  unsigned long num_entries = ::load_files(ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY)),
+#endif
                                            true,
                                            GTK_LIST_STORE(model));
 

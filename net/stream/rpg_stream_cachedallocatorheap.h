@@ -21,13 +21,14 @@
 #ifndef RPG_STREAM_CACHEDALLOCATORHEAP_H
 #define RPG_STREAM_CACHEDALLOCATORHEAP_H
 
+#include "rpg_stream_exports.h"
 #include "rpg_stream_iallocator.h"
 
 #include <ace/Malloc_T.h>
 #include <ace/Synch.h>
 #include <ace/Atomic_Op.h>
 
-class RPG_Stream_CachedAllocatorHeap
+class RPG_Stream_Export RPG_Stream_CachedAllocatorHeap
  : public RPG_Stream_IAllocator,
    public ACE_Dynamic_Cached_Allocator<ACE_SYNCH_MUTEX>
 {

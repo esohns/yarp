@@ -1,5 +1,5 @@
 pkgdatadir = $(datadir)/@META_PACKAGE@
-graphicdir = $(pkgdatadir)/data/graphic/walls
+graphicdir = $(pkgdatadir)/data/graphics/walls
 graphic_DATA = wall_brick_banner_f_e.png wall_brick_banner_f_n.png \
 	wall_brick_banner_f_s.png wall_brick_banner_f_w.png wall_brick_banner_h_e.png \
 	wall_brick_banner_h_n.png wall_brick_banner_h_s.png wall_brick_banner_h_w.png wall_brick_f_e.png \

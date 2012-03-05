@@ -1237,7 +1237,7 @@
     </level>
     <time></time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>50</max>
+      <maximum>50</maximum>
     </range>
     <target target="TARGET_AREA">
       <shape>AREA_SPHERE</shape>
@@ -1676,7 +1676,7 @@
     </level>
     <time></time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>40</max>
+      <maximum>40</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_SPREAD</effect>
@@ -1776,7 +1776,7 @@
     </level>
     <time></time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>50</max>
+      <maximum>50</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_BURST</effect>
@@ -2197,7 +2197,7 @@
     </level>
     <time></time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>15</max>
+      <maximum>15</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_BURST</effect>
@@ -3100,7 +3100,7 @@
     </level>
     <time></time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>20</max>
+      <maximum>20</maximum>
     </range>
     <target target="TARGET_SEVERAL">
       <levelIncrement>1</levelIncrement>
@@ -3267,7 +3267,7 @@
     </level>
     <time></time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>15</max>
+      <maximum>15</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_BURST</effect>
@@ -3640,7 +3640,7 @@
     </level>
     <time></time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_BURST</effect>
@@ -4213,7 +4213,7 @@
       <rounds>100</rounds>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>9600000</max>
+      <maximum>9600000</maximum>
     </range>
     <target target="TARGET_AREA">
       <shape>AREA_RING</shape>
@@ -4427,7 +4427,7 @@
       <rounds>1</rounds>
     </time>
     <range effect="RANGEEFFECT_CLOSE">
-      <max>100</max>
+      <maximum>100</maximum>
     </range>
     <target target="TARGET_LOCATION" incrementIsReciprocal="true">
       <levelIncrement>2</levelIncrement>
@@ -4465,7 +4465,7 @@
     </level>
     <time></time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>30</max>
+      <maximum>30</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_BURST</effect>
@@ -5619,7 +5619,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>30</max>
+      <maximum>30</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6008,7 +6008,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6038,7 +6038,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6068,7 +6068,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6098,7 +6098,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6144,7 +6144,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6223,7 +6223,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>40</max>
+      <maximum>40</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6263,7 +6263,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6296,7 +6296,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6338,7 +6338,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6379,7 +6379,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>60</max>
+      <maximum>60</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_EMANATION</effect>
@@ -6414,7 +6414,7 @@
     <time>
     </time>
     <range effect="RANGEEFFECT_RANGED">
-      <max>40</max>
+      <maximum>40</maximum>
     </range>
     <target target="TARGET_AREA">
       <effect>EFFECT_SPREAD</effect>

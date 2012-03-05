@@ -21,6 +21,7 @@
 #ifndef RPG_NET_PROTOCOL_MESSAGEALLOCATOR_H
 #define RPG_NET_PROTOCOL_MESSAGEALLOCATOR_H
 
+#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_sessionmessage.h"
 
@@ -29,7 +30,7 @@
 // forward declarations
 class ACE_Allocator;
 
-class RPG_Net_Protocol_MessageAllocator
+class RPG_Protocol_Export RPG_Net_Protocol_MessageAllocator
  : public RPG_Stream_CachedMessageAllocatorHeapBase<RPG_Net_Protocol_Message,
                                                     RPG_Net_Protocol_SessionMessage>
 {

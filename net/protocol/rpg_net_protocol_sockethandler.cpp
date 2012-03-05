@@ -25,7 +25,7 @@
 #include <rpg_net_connection_manager.h>
 
 RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler()
- : inherited(RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance())
+ : inherited(RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance())
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler"));
 

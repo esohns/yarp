@@ -333,7 +333,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  if (::load_files(RPG_PLAYER_DEF_ENTITY_REPOSITORY,
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  if (::load_files(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY),
+#else
+  if (::load_files(ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY)),
+#endif
                    true,
                    list))
     gtk_widget_set_sensitive(GTK_WIDGET(combobox),

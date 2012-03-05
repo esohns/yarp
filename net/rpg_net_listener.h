@@ -21,9 +21,8 @@
 #ifndef RPG_NET_LISTENER_H
 #define RPG_NET_LISTENER_H
 
+#include "rpg_net_exports.h"
 #include "rpg_net_sockethandler.h"
-// #include "rpg_net_stream.h"
-// #include "rpg_net_stream_socket_base.h"
 
 #include <rpg_common_icontrol.h>
 #include <rpg_common_idumpstate.h>
@@ -34,9 +33,8 @@
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
 
-class RPG_Net_Listener
+class RPG_Net_Export RPG_Net_Listener
  : public ACE_Acceptor<RPG_Net_SocketHandler,
-//                         RPG_Net_StreamSocketBase<RPG_Net_Stream>,
                        ACE_SOCK_ACCEPTOR>,
     public RPG_Common_IControl
 {
@@ -82,5 +80,6 @@ class RPG_Net_Listener
 
 typedef ACE_Singleton<RPG_Net_Listener,
                       ACE_Recursive_Thread_Mutex> RPG_NET_LISTENER_SINGLETON;
+RPG_NET_SINGLETON_DECLARE(ACE_Singleton, RPG_Net_Listener, ACE_Recursive_Thread_Mutex);
 
 #endif

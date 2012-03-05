@@ -1,5 +1,5 @@
 pkgdatadir = $(datadir)/@META_PACKAGE@
-graphicdir = $(pkgdatadir)/data/graphic/cursors
+graphicdir = $(pkgdatadir)/data/graphics/cursors
 graphic_DATA = cursor_door_open.png cursor_goblet.png cursor_hourglass.png \
 	cursor_normal.png cursor_scroll_down.png cursor_scroll_downleft.png \
 	cursor_scroll_downright.png cursor_scroll_left.png cursor_scroll_right.png cursor_scroll_up.png \

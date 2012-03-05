@@ -254,7 +254,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     ::xml_schema::properties props_alt;
     schemaFile = base_path;
     schemaFile += ACE_DIRECTORY_SEPARATOR_STR;
-    schemaFile += RPG_PLAYER_SCHEMA_FILE;
+    schemaFile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
     // sanity check(s)
     if (!RPG_Common_File_Tools::isReadable(schemaFile))
     {

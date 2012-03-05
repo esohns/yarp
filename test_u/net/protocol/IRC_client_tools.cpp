@@ -64,7 +64,7 @@ IRC_Client_Tools::connect(RPG_Stream_IAllocator* messageAllocator_in,
   stream_config.currentStatistics.numDataMessages = 0;
   stream_config.currentStatistics.numBytes = 0;
   stream_config.lastCollectionTimestamp = ACE_Time_Value::zero;
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->set(stream_config);
+  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->set(stream_config);
 
   // step2: init client connector
   IRC_Client_Connector connector(ACE_Reactor::instance(), // reactor

@@ -21,6 +21,7 @@
 #ifndef RPG_NET_SIGNALHANDLER_H
 #define RPG_NET_SIGNALHANDLER_H
 
+#include "rpg_net_exports.h"
 #include "rpg_net_common.h"
 
 #include <rpg_common_istatistic.h>
@@ -34,7 +35,7 @@
 // forward declaration(s)
 class RPG_Common_IControl;
 
-class RPG_Net_SignalHandler
+class RPG_Net_Export RPG_Net_SignalHandler
  : public ACE_Event_Handler
 {
  public:

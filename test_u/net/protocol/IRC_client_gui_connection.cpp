@@ -1316,14 +1316,22 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           break;
         }
         case RPG_Net_Protocol_IRCMessage::NOTICE:
+#if defined ACE_WIN32 || defined ACE_WIN64
+        case RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR:
+#else
         case RPG_Net_Protocol_IRCMessage::ERROR:
+#endif
         case RPG_Net_Protocol_IRCMessage::AWAY:
         {
           GDK_THREADS_ENTER();
 
           log(message_in);
 
+#if defined ACE_WIN32 || defined ACE_WIN64
+          if (command == RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR)
+#else
           if (command == RPG_Net_Protocol_IRCMessage::ERROR)
+#endif
             error(message_in); // --> show on statusbar as well...
 
           GDK_THREADS_LEAVE();

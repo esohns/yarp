@@ -145,7 +145,7 @@ RPG_Player::load(const std::string& filename_in,
     path = schemaRepository_in;
   } // end ELSE
   path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_PLAYER_SCHEMA_FILE;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(path))
   {
@@ -240,7 +240,7 @@ RPG_Player::save(const std::string& filename_in) const
   ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
   ::xml_schema::namespace_infomap map;
   map[""].name = RPG_COMMON_XML_TARGET_NAMESPACE;
-  map[""].schema = RPG_PLAYER_SCHEMA_FILE;
+  map[""].schema = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
   std::string character_set(RPG_COMMON_XML_SCHEMA_CHARSET);
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;

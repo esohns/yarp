@@ -70,7 +70,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
+  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
@@ -99,7 +99,7 @@ process_arguments(const int argc_in,
   dumpDictionary_out = false;
   monsterDictionaryFilename_out = base_data_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionaryFilename_out += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionaryFilename_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
@@ -181,13 +181,13 @@ do_work(const std::string& filename_in,
   RPG_Character_Common_Tools::init();
   RPG_Magic_Common_Tools::init();
   RPG_Combat_Common_Tools::initStringConversionTables();
-  RPG_Character_Monster_Common_Tools::initStringConversionTables();
+  RPG_Monster_Common_Tools::initStringConversionTables();
 
   // step2: init monster dictionary
   try
   {
-    RPG_CHARACTER_MONSTER_DICTIONARY_SINGLETON::instance()->init(filename_in,
-                                                                 validateXML_in);
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(filename_in,
+                                                       validateXML_in);
   }
   catch (...)
   {
@@ -199,7 +199,7 @@ do_work(const std::string& filename_in,
 
   // step3: dump monster descriptions
   if (dumpDictionary_in)
-    RPG_CHARACTER_MONSTER_DICTIONARY_SINGLETON::instance()->dump();
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->dump();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -279,7 +279,7 @@ ACE_TMAIN(int argc,
   bool dumpDictionary      = false;
   std::string monsterDictionaryFilename = base_data_path;
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionaryFilename += RPG_CHARACTER_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionaryFilename += RPG_MONSTER_DEF_DICTIONARY_FILE;
   bool traceInformation    = false;
   bool printVersionAndExit = false;
   bool validateXML         = true;

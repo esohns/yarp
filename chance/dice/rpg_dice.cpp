@@ -35,7 +35,8 @@
 #include <algorithm>
 #include <string>
 
-void RPG_Dice::init()
+void
+RPG_Dice::init()
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice::init"));
 
@@ -55,9 +56,10 @@ void RPG_Dice::init()
              ACE_TEXT("initializing random seed...DONE\n")));
 }
 
-void RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
-                                     const unsigned int& numRolls_in,
-                                     RPG_Dice_RollResult_t& results_out)
+void
+RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
+                                const unsigned int& numRolls_in,
+                                RPG_Dice_RollResult_t& results_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice::generateRandomNumbers"));
 
@@ -80,9 +82,10 @@ void RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
   } // end FOR
 }
 
-void RPG_Dice::simulateRoll(const RPG_Dice_Roll& rollSpecs_in,
-                            const unsigned int& numRolls_in,
-                            RPG_Dice_RollResult_t& results_out)
+void
+RPG_Dice::simulateRoll(const RPG_Dice_Roll& rollSpecs_in,
+                       const unsigned int& numRolls_in,
+                       RPG_Dice_RollResult_t& results_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice::simulateRoll"));
 
@@ -108,12 +111,12 @@ void RPG_Dice::simulateRoll(const RPG_Dice_Roll& rollSpecs_in,
          j < rollSpecs_in.numDice;
          j++)
     {
-    // *PORTABILITY*: this is most probably not portable...
+      // *PORTABILITY*: outside glibc, this is not very portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
       tempResult += ((::random() % rollSpecs_in.typeDice) + 1);
 #else
-    // *TODO*
-      ACE_ASSERT(false);
+      // *TODO*: use ACE_OS::rand_r() for improved reentrancy !
+	  tempResult += ((ACE_OS::rand() % rollSpecs_in.typeDice) + 1);
 #endif
     } // end FOR
 
@@ -121,8 +124,9 @@ void RPG_Dice::simulateRoll(const RPG_Dice_Roll& rollSpecs_in,
   } // end FOR
 }
 
-void RPG_Dice::rollToRange(const RPG_Dice_Roll& roll_in,
-                           RPG_Dice_ValueRange& valueRange_out)
+void
+RPG_Dice::rollToRange(const RPG_Dice_Roll& roll_in,
+                      RPG_Dice_ValueRange& valueRange_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice::rollToRange"));
 
@@ -130,8 +134,9 @@ void RPG_Dice::rollToRange(const RPG_Dice_Roll& roll_in,
   valueRange_out.end = roll_in.modifier + (roll_in.numDice * roll_in.typeDice);
 }
 
-void RPG_Dice::rangeToRoll(const RPG_Dice_ValueRange& valueRange_in,
-                           RPG_Dice_Roll& roll_out)
+void
+RPG_Dice::rangeToRoll(const RPG_Dice_ValueRange& valueRange_in,
+                      RPG_Dice_Roll& roll_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice::rangeToRoll"));
 
@@ -276,8 +281,9 @@ void RPG_Dice::rangeToRoll(const RPG_Dice_ValueRange& valueRange_in,
   } // end IF
 }
 
-const unsigned int RPG_Dice::distanceRangeToRange(const RPG_Dice_ValueRange& rangeA_in,
-                                                  const RPG_Dice_ValueRange& rangeB_in)
+const unsigned int
+RPG_Dice::distanceRangeToRange(const RPG_Dice_ValueRange& rangeA_in,
+                               const RPG_Dice_ValueRange& rangeB_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Dice::distanceRangeToRange"));
 

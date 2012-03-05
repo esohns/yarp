@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_DICE_H
 #define RPG_DICE_H
 
@@ -41,12 +42,14 @@ class RPG_Dice_Export RPG_Dice
   // init random seed
   static void init();
 
+  // *TODO*: make these thread-safe !
   static void generateRandomNumbers(const unsigned int&,     // range [1..max]
                                     const unsigned int&,     // number of rolls
                                     RPG_Dice_RollResult_t&); // result(s)
   static void simulateRoll(const RPG_Dice_Roll&,    // specifics (number of dice, type, modifier)
                            const unsigned int&,     // number of rolls
                            RPG_Dice_RollResult_t&); // result(s)
+
   static void rollToRange(const RPG_Dice_Roll&,  // roll specifics
                           RPG_Dice_ValueRange&); // result
   static void rangeToRoll(const RPG_Dice_ValueRange&, // range

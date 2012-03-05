@@ -44,15 +44,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\graphics;E:\Yarp\sound;E:\Yarp\map;E:\Yarp\engine;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\3rd_party\glib;E:\Yarp\3rd_party;E:\libgnomeui-dev-2.22.1\include\libgnomeui-2.0;E:\gnome-vfs-dev_2.24.1-1_win32\include\gnome-vfs-2.0;E:\libbonoboui-dev_2.24.0-1_win32\include\libbonoboui-2.0;E:\libgnomecanvas-dev_2.30.1-1_win32\include\libgnomecanvas-2.0;E:\libart-lgpl-dev_2.3.21-1_win32\include\libart-2.0;E:\libgnome-dev_2.24.1-1_win32\include\libgnome-2.0;E:\libglade-2.4.0-dev\include\libglade-2.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\include\gtk-2.0;E:\Gtk\include\glib-2.0;E:\lpng157;E:\SDL-1.2.14;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\graphics;E:\Yarp\sound;E:\Yarp\map;E:\Yarp\engine;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\3rd_party;E:\libgnomeui-dev-2.22.1\include\libgnomeui-2.0;E:\gnome-vfs-dev_2.24.1-1_win32\include\gnome-vfs-2.0;E:\libbonoboui-dev_2.24.0-1_win32\include\libbonoboui-2.0;E:\libgnomecanvas-dev_2.30.1-1_win32\include\libgnomecanvas-2.0;E:\libart-lgpl-dev_2.3.21-1_win32\include\libart-2.0;E:\libgnome-dev_2.24.1-1_win32\include\libgnome-2.0;E:\libglade-dev_2.6.4-1_win32\include\libglade-2.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\lib\gtk-2.0\include;E:\Gtk\include\gtk-2.0;E:\Gtk\lib\glib-2.0\include;E:\Gtk\include\glib-2.0;E:\SDL-1.2.14;E:\Gtk\include\libpng14;E:\Gtk\include;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_CLIENT_HAS_DLL;RPG_GRAPHICS_HAS_DLL;RPG_SOUND_HAS_DLL;RPG_MAP_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;GNOME_DISABLE_DEPRECATED;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>libglade-2.0.dll.a;libgnomeui-2.dll.a;libgnome-2.dll.a;libgobject-2.0.dll.a;libgthread-2.0.dll.a;libgtk-win32-2.0.dll.a;libgdk-win32-2.0.dll.a;SDL_ttf.lib;SDL_mixer.lib;SDLmain.lib;SDL.lib;ACEd.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\libglade-2.4.0-dev\lib;E:\libgnomeui-dev-2.22.1\lib;E:\libgnome-dev_2.24.1-1_win32\lib;E:\Gtk\lib;E:\SDL-1.2.14\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libgnomeui-2.dll.a;libgnome-2.dll.a;libglade-2.0.dll.a;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gthread-2.0.lib;glib-2.0.lib;SDL_ttf.lib;SDL_mixer.lib;SDLmain.lib;SDL.lib;ACEd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\libgnomeui-dev-2.22.1\lib;E:\libgnome-dev_2.24.1-1_win32\lib;E:\libglade-dev_2.6.4-1_win32\lib;E:\Gtk\lib;E:\SDL-1.2.14\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ProjectReference>

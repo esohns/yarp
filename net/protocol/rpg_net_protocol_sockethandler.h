@@ -21,6 +21,7 @@
 #ifndef RPG_NET_PROTOCOL_SOCKETHANDLER_H
 #define RPG_NET_PROTOCOL_SOCKETHANDLER_H
 
+#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_stream.h"
 
@@ -31,7 +32,7 @@
 // forward declaration(s)
 class ACE_Message_Block;
 
-class RPG_Net_Protocol_SocketHandler
+class RPG_Protocol_Export RPG_Net_Protocol_SocketHandler
  : public RPG_Net_StreamSocketBase<RPG_Net_Protocol_ConfigPOD,
                                    RPG_Net_Protocol_RuntimeStatistic,
                                    RPG_Net_Protocol_Stream>

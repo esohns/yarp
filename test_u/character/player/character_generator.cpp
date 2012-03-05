@@ -143,13 +143,22 @@ process_arguments(const int argc_in,
 
   itemDictionaryFilename_out = base_data_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  itemDictionaryFilename_out += RPG_ITEM_DEF_DATA_SUB;
+  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
   itemDictionaryFilename_out += RPG_ITEM_DEF_DICTIONARY_FILE;
+
   magicDictionaryFilename_out = base_data_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  magicDictionaryFilename_out += RPG_MAGIC_DEF_DATA_SUB;
+  magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
   magicDictionaryFilename_out += RPG_MAGIC_DEF_DICTIONARY_FILE;
+
   graphicsDictionaryFilename_out = base_data_path;
   graphicsDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDictionaryFilename_out += RPG_GRAPHICS_DEF_DATA_SUB;
+  graphicsDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
   graphicsDictionaryFilename_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+
   generateParty_out = CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
   random_out = CHARACTER_GENERATOR_DEF_RANDOM;
   traceInformation_out = false;
@@ -268,7 +277,7 @@ print_skills_table(RPG_Character_Skills_t& skills_in)
       std::cout << ACE_TEXT("[") << std::setw(2) << std::right << index << ACE_TEXT("]: ") << std::setw(20) << std::left << iterator->second.c_str() << ACE_TEXT(": ");
       if (skills_iterator != skills_in.end())
       {
-        std::cout << std::setw(3) << std::right << static_cast<unsigned int> (skills_iterator->second) << ACE_TEXT(" ");
+        std::cout << std::setw(3) << std::right << static_cast<unsigned int>(skills_iterator->second) << ACE_TEXT(" ");
       } // end IF
       else
       {
@@ -1082,10 +1091,14 @@ do_work(const bool& generateEntity_in,
             break;
           case 's':
           {
-            std::string path = RPG_PLAYER_DEF_ENTITY_REPOSITORY;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+            std::string path = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+            std::string path = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
             path += ACE_DIRECTORY_SEPARATOR_STR;
             path += player_p->getName();
-            path += RPG_PLAYER_PROFILE_EXT;
+            path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
             // sanity check
             if (RPG_Common_File_Tools::isReadable(path))
@@ -1095,8 +1108,8 @@ do_work(const bool& generateEntity_in,
               do
               {
                 std::cout << ACE_TEXT("file \"")
-					      << path
-						  << ACE_TEXT("\" exists, overwrite ? (y/n): ");
+					                << path
+						              << ACE_TEXT("\" exists, overwrite ? (y/n): ");
                 std::cin >> c;
                 switch (c)
                 {
@@ -1170,10 +1183,14 @@ do_work(const bool& generateEntity_in,
     else
     {
       // save player
-      std::string path = RPG_PLAYER_DEF_ENTITY_REPOSITORY;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+      std::string path = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+      std::string path = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
       path += ACE_DIRECTORY_SEPARATOR_STR;
       path += player_p->getName();
-      path += RPG_PLAYER_PROFILE_EXT;
+      path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
       if (generateEntity_in)
       {
         // clean up
@@ -1294,23 +1311,38 @@ ACE_TMAIN(int argc,
 
   // init configuration
   bool generateEntity          = CHARACTER_GENERATOR_DEF_GENERATE_ENTITY;
+
   std::string itemDictionaryFilename = base_data_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  itemDictionaryFilename += RPG_ITEM_DEF_DATA_SUB;
+  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
   itemDictionaryFilename += RPG_ITEM_DEF_DICTIONARY_FILE;
+
   std::string magicDictionaryFilename = base_data_path;
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  magicDictionaryFilename += RPG_MAGIC_DEF_DATA_SUB;
+  magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
   magicDictionaryFilename += RPG_MAGIC_DEF_DICTIONARY_FILE;
+
   std::string graphicsDictionaryFilename = base_data_path;
+  graphicsDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDictionaryFilename += RPG_GRAPHICS_DEF_DATA_SUB;
   graphicsDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
   graphicsDictionaryFilename += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
 
   std::string graphicsDirectory = base_data_path;
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+#if defined DATADIR
   graphicsDirectory += ACE_TEXT(".."); // go back one...
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
   graphicsDirectory += RPG_COMMON_DEF_DATA_SUB;
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
   graphicsDirectory += RPG_GRAPHICS_DEF_DATA_SUB;
+#else
+  graphicsDirectory += RPG_GRAPHICS_DEF_DATA_SUB;
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
+  graphicsDirectory += RPG_COMMON_DEF_DATA_SUB;
+#endif
 
   unsigned int numPartyMembers = CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
   bool random                  = CHARACTER_GENERATOR_DEF_RANDOM;

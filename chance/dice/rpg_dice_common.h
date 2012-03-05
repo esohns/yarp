@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_DICE_COMMON_H
 #define RPG_DICE_COMMON_H
 
@@ -60,10 +61,10 @@ inline RPG_Dice_DieType& operator++(RPG_Dice_DieType& dieType_inout)
 {
   switch (dieType_inout)
   {
-//     case D_0: dieType_inout = D_2; break;
-    case D_0: dieType_inout = D_4; break;
-//     case D_2: dieType_inout = D_3; break;
-//     case D_3: dieType_inout = D_4; break;
+//    case D_0: dieType_inout = D_4; break;
+    case D_0: dieType_inout = D_2; break;
+    case D_2: dieType_inout = D_3; break;
+    case D_3: dieType_inout = D_4; break;
     case D_4: dieType_inout = D_6; break;
     case D_6: dieType_inout = D_8; break;
     case D_8: dieType_inout = D_10; break;
@@ -89,10 +90,10 @@ inline RPG_Dice_DieType& operator--(RPG_Dice_DieType& dieType_inout)
   switch (dieType_inout)
   {
     case D_0: dieType_inout = D_100; break;
-//     case D_2: dieType_inout = D_0; break;
-//     case D_3: dieType_inout = D_2; break;
-//     case D_4: dieType_inout = D_3; break;
-    case D_4: dieType_inout = D_0; break;
+    case D_2: dieType_inout = D_0; break;
+    case D_3: dieType_inout = D_2; break;
+//    case D_4: dieType_inout = D_0; break;
+    case D_4: dieType_inout = D_3; break;
     case D_6: dieType_inout = D_4; break;
     case D_8: dieType_inout = D_6; break;
     case D_10: dieType_inout = D_8; break;

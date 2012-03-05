@@ -1,5 +1,5 @@
 pkgdatadir = $(datadir)/@META_PACKAGE@
-graphicdir = $(pkgdatadir)/data/graphic/floors
+graphicdir = $(pkgdatadir)/data/graphics/floors
 graphic_DATA = floor_air_0_0.png floor_air_0_1.png floor_air_0_2.png \
 	floor_air_1_0.png floor_air_1_1.png floor_air_1_2.png floor_air_2_0.png floor_air_2_1.png \
 	floor_air_2_2.png floor_carpet_0_0.png floor_carpet_0_1.png floor_carpet_1_0.png \

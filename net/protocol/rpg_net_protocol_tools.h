@@ -21,6 +21,7 @@
 #ifndef RPG_NET_PROTOCOL_TOOLS_H
 #define RPG_NET_PROTOCOL_TOOLS_H
 
+#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_IRCmessage.h"
 #include "rpg_net_protocol_IRC_codes.h"
@@ -29,7 +30,7 @@
 
 #include <string>
 
-class RPG_Net_Protocol_Tools
+class RPG_Protocol_Export RPG_Net_Protocol_Tools
 {
  public:
   // debug info
