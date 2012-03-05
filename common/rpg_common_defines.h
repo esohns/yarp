@@ -29,13 +29,13 @@
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_COMMON_XML_SCHEMA_CHARSET          ACE_TEXT("UTF-8")
-#define RPG_COMMON_XML_TARGET_NAMESPACE        ACE_TEXT("urn:rpg")
+#define RPG_COMMON_XML_SCHEMA_CHARSET          "UTF-8"
+#define RPG_COMMON_XML_TARGET_NAMESPACE        "urn:rpg"
 
 // DATADIR-specific
-#define RPG_COMMON_DEF_DATA_SUB                ACE_TEXT("data")
-#define RPG_COMMON_DEF_CONFIG_SUB              ACE_TEXT("config")
+#define RPG_COMMON_DEF_DATA_SUB                "data"
+#define RPG_COMMON_DEF_CONFIG_SUB              "config"
 
-#define RPG_COMMON_DUMP_DIR                    ACE_TEXT("/var/tmp")
+#define RPG_COMMON_DUMP_DIR                    "/var/tmp"
 
 #endif

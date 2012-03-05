@@ -115,7 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="rpg_magic.map" />
-    <None Include="rpg_magic.xml" />
+    <None Include="rpg_magic.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="scripts\bindings.bat" />
   </ItemGroup>
   <ItemGroup>

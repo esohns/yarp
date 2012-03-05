@@ -24,26 +24,26 @@
 #define RPG_CLIENT_DEF_ACE_USES_TP                     false
 #define RPG_CLIENT_DEF_ACE_NUM_TP_THREADS              5
 
-#define RPG_CLIENT_DEF_GNOME_APPLICATION_ID            ACE_TEXT_ALWAYS_CHAR("rpg_client")
-#define RPG_CLIENT_DEF_GNOME_UI_FILE                   ACE_TEXT("rpg_client.glade")
-#define RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_TITLE     ACE_TEXT_ALWAYS_CHAR("please insert data...")
-#define RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME      ACE_TEXT_ALWAYS_CHAR("main_entry_dialog")
-#define RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME ACE_TEXT_ALWAYS_CHAR("main_entry_dialog_entry")
-#define RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME           ACE_TEXT_ALWAYS_CHAR("main_dialog")
-#define RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME          ACE_TEXT_ALWAYS_CHAR("about_dialog")
-#define RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME    ACE_TEXT_ALWAYS_CHAR("filechooser_dialog")
-#define RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME            ACE_TEXT_ALWAYS_CHAR("character_frame")
-#define RPG_CLIENT_DEF_GNOME_CHARBOX_NAME              ACE_TEXT_ALWAYS_CHAR("character_repository_combobox")
-#define RPG_CLIENT_DEF_GNOME_MAPBOX_NAME               ACE_TEXT_ALWAYS_CHAR("map_repository_combobox")
-#define RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME            ACE_TEXT_ALWAYS_CHAR("server_repository_combobox")
+#define RPG_CLIENT_DEF_GNOME_APPLICATION_ID            "rpg_client"
+#define RPG_CLIENT_DEF_GNOME_UI_FILE                   "rpg_client.glade"
+#define RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_TITLE     "please insert data..."
+#define RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME      "main_entry_dialog"
+#define RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME "main_entry_dialog_entry"
+#define RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME           "main_dialog"
+#define RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME          "about_dialog"
+#define RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME    "filechooser_dialog"
+#define RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME            "character_frame"
+#define RPG_CLIENT_DEF_GNOME_CHARBOX_NAME              "character_repository_combobox"
+#define RPG_CLIENT_DEF_GNOME_MAPBOX_NAME               "map_repository_combobox"
+#define RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME            "server_repository_combobox"
 
-#define RPG_CLIENT_DEF_INI_FILE                        ACE_TEXT("rpg_client.ini")
-#define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER           ACE_TEXT("client")
-#define RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER       ACE_TEXT("connection")
+#define RPG_CLIENT_DEF_INI_FILE                        "rpg_client.ini"
+#define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER           "client"
+#define RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER       "connection"
 
 #define RPG_CLIENT_DEF_GRAPHICS_CACHESIZE              50
 #define RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE       IMAGE_INTERFACE_MAIN
-#define RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE       ACE_TEXT_ALWAYS_CHAR("Yarp")
+#define RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE       "Yarp"
 
 // default style
 #define RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE             FLOORSTYLE_STONE_COBBLED

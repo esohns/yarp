@@ -17,14 +17,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_SOUND_DEFINES_H
 #define RPG_SOUND_DEFINES_H
 
-#define RPG_SOUND_DEF_DICTIONARY_FILE ACE_TEXT_ALWAYS_CHAR("rpg_sound.xml")
+#define RPG_SOUND_DEF_DICTIONARY_FILE "rpg_sound.xml"
 
 // DATADIR-specific
-#define RPG_SOUND_DEF_DATA_SUB        ACE_TEXT_ALWAYS_CHAR("sound")
-#define RPG_SOUND_DEF_AMBIENT_SUB     ACE_TEXT_ALWAYS_CHAR("ambient")
-#define RPG_SOUND_DEF_EFFECT_SUB      ACE_TEXT_ALWAYS_CHAR("effect")
+#define RPG_SOUND_DEF_DATA_SUB        "sound"
+#define RPG_SOUND_DEF_AMBIENT_SUB     "ambient"
+#define RPG_SOUND_DEF_EFFECT_SUB      "effect"
 
 #endif

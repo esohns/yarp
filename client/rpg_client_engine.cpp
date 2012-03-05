@@ -534,7 +534,7 @@ RPG_Client_Engine::handleActions()
         }
 
         // step2: (re)set level window title caption/iconify
-        std::string caption = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
+        std::string caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
         if (!myLevelState->getName().empty())
         {
           caption = ACE_TEXT_ALWAYS_CHAR("* ");

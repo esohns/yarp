@@ -58,8 +58,8 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump item dictionary") << std::endl;
   std::string path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_ITEM_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
@@ -85,8 +85,8 @@ process_arguments(const int argc_in,
 
   dumpItemDictionary_out = false;
   itemDictionaryFilename_out = base_data_path;
-  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
-  itemDictionaryFilename_out += RPG_ITEM_DEF_DICTIONARY_FILE;
+  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
@@ -254,8 +254,8 @@ ACE_TMAIN(int argc,
 
   bool dumpItemDictionary  = false;
   std::string itemDictionaryFilename = base_data_path;
-  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
-  itemDictionaryFilename += RPG_ITEM_DEF_DICTIONARY_FILE;
+  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   bool traceInformation    = false;
   bool printVersionAndExit = false;
 

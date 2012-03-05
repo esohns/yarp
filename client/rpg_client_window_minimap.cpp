@@ -318,8 +318,8 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
                             targetSurface);
 
 //   // save image
-//   std::string path = RPG_COMMON_DUMP_DIR;
-//   path += ACE_DIRECTORY_SEPARATOR_STR;
+//   std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+//   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //   path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
 //   RPG_Graphics_Surface::savePNG(*mySurface,
 //                                 path,

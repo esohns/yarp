@@ -144,7 +144,7 @@ RPG_Player::load(const std::string& filename_in,
 
     path = schemaRepository_in;
   } // end ELSE
-  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(path))
@@ -156,7 +156,7 @@ RPG_Player::load(const std::string& filename_in,
     return NULL;
   } // end IF
 
-  props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
+  props.schema_location(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
                         path);
 //   props.no_namespace_schema_location(RPG_Player_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
@@ -239,9 +239,9 @@ RPG_Player::save(const std::string& filename_in) const
   std::ofstream ofs;
   ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
   ::xml_schema::namespace_infomap map;
-  map[""].name = RPG_COMMON_XML_TARGET_NAMESPACE;
+  map[""].name = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
   map[""].schema = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
-  std::string character_set(RPG_COMMON_XML_SCHEMA_CHARSET);
+  std::string character_set(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_CHARSET));
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
 

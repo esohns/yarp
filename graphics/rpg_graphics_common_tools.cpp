@@ -598,15 +598,15 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
 
   // init return value(s)
   file_out = myGraphicsDirectory;
-  file_out += ACE_DIRECTORY_SEPARATOR_STR;
+  file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   switch (graphic_in.category)
   {
     case CATEGORY_CURSOR:
     {
       // assemble path
-      file_out += RPG_GRAPHICS_TILE_DEF_CURSORS_SUB;
-      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_CURSORS_SUB);
+      file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic_in.file;
 
       break;
@@ -614,8 +614,8 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
     case CATEGORY_FONT:
     {
       // assemble path
-      file_out += RPG_GRAPHICS_TILE_DEF_FONTS_SUB;
-      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FONTS_SUB);
+      file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic_in.file;
 
       break;
@@ -624,8 +624,8 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
     case CATEGORY_IMAGE:
     {
       // assemble path
-      file_out += RPG_GRAPHICS_TILE_DEF_IMAGES_SUB;
-      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_IMAGES_SUB);
+      file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic_in.file;
 
       break;
@@ -633,8 +633,8 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
     case CATEGORY_SPRITE:
     {
       // assemble path
-      file_out += RPG_GRAPHICS_TILE_DEF_CREATURES_SUB;
-      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_CREATURES_SUB);
+      file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic_in.file;
 
       break;
@@ -661,11 +661,11 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
       switch (graphic.tile.type)
       {
         case TILETYPE_FLOOR:
-          file_out += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB; break;
+          file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FLOORS_SUB); break;
         case TILETYPE_WALL:
-          file_out += RPG_GRAPHICS_TILE_DEF_WALLS_SUB; break;
+          file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_WALLS_SUB); break;
         case TILETYPE_DOOR:
-          file_out += RPG_GRAPHICS_TILE_DEF_DOORS_SUB; break;
+          file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_DOORS_SUB); break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -677,7 +677,7 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
           return;
         }
       } // end SWITCH
-      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic.tile.file;
 
       break;
@@ -836,9 +836,9 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
 
   // assemble base path
   std::string path_base = myGraphicsDirectory;
-  path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  path_base += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB;
-  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path_base += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FLOORS_SUB);
+  path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
   RPG_Graphics_Tile_t current_tile;
@@ -1102,9 +1102,9 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
 
   // assemble base path
   std::string path_base = myGraphicsDirectory;
-  path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  path_base += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB;
-  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path_base += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FLOORS_SUB);
+  path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
   RPG_Graphics_Tile_t current_tile;
@@ -1234,9 +1234,9 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
 
   // assemble base path
   std::string path_base = myGraphicsDirectory;
-  path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  path_base += RPG_GRAPHICS_TILE_DEF_WALLS_SUB;
-  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path_base += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_WALLS_SUB);
+  path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
   RPG_Graphics_Tile_t current_tile;
@@ -1404,9 +1404,9 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
 
   // assemble base path
   std::string path_base = myGraphicsDirectory;
-  path_base += ACE_DIRECTORY_SEPARATOR_STR;
-  path_base += RPG_GRAPHICS_TILE_DEF_DOORS_SUB;
-  path_base += ACE_DIRECTORY_SEPARATOR_STR;
+  path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path_base += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_DOORS_SUB);
+  path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
   RPG_Graphics_Tile_t current_tile;
@@ -1823,9 +1823,9 @@ RPG_Graphics_Common_Tools::initFonts()
 
       // construct FQ filename
       path = myGraphicsDirectory;
-      path += ACE_DIRECTORY_SEPARATOR_STR;
-      path += RPG_GRAPHICS_TILE_DEF_FONTS_SUB;
-      path += ACE_DIRECTORY_SEPARATOR_STR;
+      path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+      path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FONTS_SUB);
+      path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       path += (*iterator).file;
       // sanity check
       if (!RPG_Common_File_Tools::isReadable(path))

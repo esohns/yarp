@@ -282,8 +282,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
-          std::string dump_path = RPG_COMMON_DUMP_DIR;
-          dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+          std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+          dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
           dump_path += ACE_TEXT("screenshot_");
           dump_path += converter.str();
           dump_path += ACE_TEXT(".png");

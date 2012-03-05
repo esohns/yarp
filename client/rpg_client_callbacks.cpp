@@ -1099,7 +1099,7 @@ dirent_selector_maps(const dirent* entry_in)
 
   // *NOTE*: select maps
   std::string filename(entry_in->d_name);
-  std::string extension(RPG_MAP_EXT);
+  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT));
   if (filename.rfind(extension,
 //                     std::string::npos) != (filename.size() - extension.size()))
                      -1) != (filename.size() - extension.size()))
@@ -1165,7 +1165,7 @@ load_files(const std::string& repository_in,
   // iterate over entries
   std::string entry;
   std::string extension = (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT)
-                                                 : RPG_MAP_EXT);
+                                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT));
   GtkTreeIter iter;
   for (unsigned int i = 0;
        i < static_cast<unsigned int>(entries.length());
@@ -1250,13 +1250,13 @@ about_clicked_GTK_cb(GtkWidget* widget_in,
 
   // retrieve about dialog handle
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                                            RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
+                                                            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME)));
   ACE_ASSERT(about_dialog);
   if (!about_dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
+               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME)));
 
     return TRUE; // propagate
   } // end IF
@@ -1324,7 +1324,7 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
@@ -1386,7 +1386,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // make character display frame insensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
 
@@ -1434,7 +1434,7 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // step1a: retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->xml,
-                                                                                          RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
@@ -1484,7 +1484,7 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
@@ -1537,7 +1537,7 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
 #else
   std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
 #endif
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->entity.character->getName();
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
@@ -1609,7 +1609,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 #else
   std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
 #endif
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
@@ -1625,7 +1625,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
@@ -1654,7 +1654,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 
   // retrieve tree model
   GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
-                                                                        RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+                                                                        ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
   ACE_ASSERT(repository_combobox);
   GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
   ACE_ASSERT(model);
@@ -1670,7 +1670,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 
   // set sensitive as appropriate
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
 
   // ... sensitize/activate widgets as appropriate
@@ -1718,7 +1718,7 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
 
   // step1a: setup entry dialog
   GtkEntry* main_entry_dialog_entry = GTK_ENTRY(glade_xml_get_widget(data->xml,
-                                                                     RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME));
+                                                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME)));
   ACE_ASSERT(main_entry_dialog_entry);
   gtk_entry_buffer_delete_text(gtk_entry_get_buffer(main_entry_dialog_entry),
                                0, -1);
@@ -1728,12 +1728,12 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
 //   gtk_entry_set_width_chars(main_entry_dialog_entry,
 //                             -1); // reset to default
   gtk_entry_set_text(main_entry_dialog_entry,
-                     RPG_MAP_DEF_NAME);
+                     ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME));
   gtk_editable_select_region(GTK_EDITABLE(main_entry_dialog_entry),
                              0, -1);
   // step1b: retrieve entry dialog handle
   GtkDialog* main_entry_dialog = GTK_DIALOG(glade_xml_get_widget(data->xml,
-                                                                 RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME));
+                                                                 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME)));
   ACE_ASSERT(main_entry_dialog);
   // step1c: run entry dialog
   gint response_id = gtk_dialog_run(main_entry_dialog);
@@ -1854,12 +1854,12 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
 
   // step1a: retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->xml,
-                                                                                          RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
-                                      RPG_MAP_DEF_REPOSITORY);
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               data->map_filter);
 
@@ -1921,10 +1921,10 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
   ACE_ASSERT(data->xml);
 
-  std::string filename = RPG_MAP_DEF_REPOSITORY;
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  std::string filename = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->level_engine->getName();
-  filename += RPG_MAP_EXT;
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
   data->level_engine->save(filename);
 
   // make "this" insensitive
@@ -1974,10 +1974,10 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   g_value_unset(&value);
 
   // construct filename
-  std::string filename = RPG_MAP_DEF_REPOSITORY;
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  std::string filename = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
-  filename += RPG_MAP_EXT;
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
 
   // load map
   RPG_Map_t map;
@@ -2034,13 +2034,13 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 
   // retrieve tree model
   GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
-                                                                        RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
+                                                                        ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(repository_combobox);
   GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
   ACE_ASSERT(model);
 
   // re-load maps data
-  unsigned long num_entries = ::load_files(RPG_MAP_DEF_REPOSITORY,
+  unsigned long num_entries = ::load_files(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY),
                                            false,
                                            GTK_LIST_STORE(model));
 
@@ -2248,7 +2248,7 @@ server_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 //
 //   // construct filename
 //   std::string filename = RPG_CLIENT_DEF_CHARACTER_REPOSITORY;
-//   filename += ACE_DIRECTORY_SEPARATOR_STR;
+//   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //   filename += active_item;
 //   filename += RPG_CHARACTER_PROFILE_EXT;
 //
@@ -2264,7 +2264,7 @@ server_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 //
 //   // make character display frame sensitive (if it's not already)
 //   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-//                                                              RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+//                                                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
 //   ACE_ASSERT(character_frame);
 //   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 //
@@ -2292,7 +2292,7 @@ server_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 //
 //   // retrieve tree model
 //   GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
-//                                                                          RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+//                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
 //   ACE_ASSERT(repository_combobox);
 //   GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
 //   ACE_ASSERT(model);
@@ -2303,7 +2303,7 @@ server_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 //
 //   // set sensitive as appropriate
 //   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-//                                                              RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME));
+//                                                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
 //   ACE_ASSERT(character_frame);
 //   if (g_list_length(gtk_container_get_children(GTK_CONTAINER(repository_combobox))))
 //   {
@@ -2357,7 +2357,7 @@ server_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 //           case SDLK_m:
 //           {
 //             std::string dump_path = RPG_MAP_DUMP_DIR;
-//             dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+//             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //             dump_path += ACE_TEXT("map.txt");
 //             if (!RPG_Map_Common_Tools::save(dump_path,         // file
 //                                             data->seed_points, // seed points

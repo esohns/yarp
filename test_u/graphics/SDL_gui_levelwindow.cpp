@@ -1332,8 +1332,8 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       initWallBlend(myCurrentMapStyle.half_height_walls);
 
       // debug info
-      std::string dump_path_base = RPG_COMMON_DUMP_DIR;
-      dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
+      std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+      dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       std::string dump_path;
 
 //       dump_path = dump_path_base;
@@ -1641,8 +1641,8 @@ SDL_GUI_LevelWindow::initWallBlend(const bool& halfHeightWalls_in)
   } // end IF
 
 //   // debug info
-//   std::string dump_path_base = RPG_COMMON_DUMP_DIR;
-//   dump_path_base += ACE_DIRECTORY_SEPARATOR_STR;
+//   std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+//   dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //   std::string dump_path = dump_path_base;
 //   dump_path += ACE_TEXT("wall_blend.png");
 //   RPG_Graphics_Surface::savePNG(*myWallBlend, // image

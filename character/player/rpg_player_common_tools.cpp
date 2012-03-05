@@ -152,7 +152,7 @@ RPG_Player_Common_Tools::generatePlayer()
        i++)
   {
     // upper/lower ?
-    if (result[26 + i + 1] > 13)
+    if (result[length + i] > 13)
       lowercase = false;
     else
       lowercase = true;
@@ -477,7 +477,7 @@ RPG_Player_Common_Tools::generatePlayer()
 
         // step1: collect list of available spells
         RPG_Magic_SpellTypes_t current;
-        unsigned char i = 0;
+        char i = 0;
         for (;
              i <= RPG_COMMON_MAX_SPELL_LEVEL;
              i++)
@@ -525,7 +525,7 @@ RPG_Player_Common_Tools::generatePlayer()
         } // end WHILE
 
         // step3: chose # prepared spells
-        for (unsigned char j = i;
+        for (char j = i;
              j >= 0;
              j--)
         {

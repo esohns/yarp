@@ -17,12 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_ITEM_DEFINES_H
 #define RPG_ITEM_DEFINES_H
 
-#define RPG_ITEM_DEF_DICTIONARY_FILE      ACE_TEXT_ALWAYS_CHAR("rpg_item.xml")
+#define RPG_ITEM_DEF_DICTIONARY_FILE      "rpg_item.xml"
 
 // DATADIR-specific
-#define RPG_ITEM_DEF_DATA_SUB             ACE_TEXT("item")
+#define RPG_ITEM_DEF_DATA_SUB             "item"
 
 #endif

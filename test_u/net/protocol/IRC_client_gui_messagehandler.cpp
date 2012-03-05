@@ -118,7 +118,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
 
   // init builder (load widget tree)
   std::string filename = UIFileDirectory_in;
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += IRC_CLIENT_GUI_DEF_UI_CHANNEL_TAB_FILE;
   if (!RPG_Common_File_Tools::isReadable(filename))
   {

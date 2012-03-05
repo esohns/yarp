@@ -27,7 +27,10 @@
 #define RPG_ENGINE_EVENT_PEEK_INTERVAL 50 // ms
 
 // XML-specific
-#define RPG_ENGINE_SCHEMA_FILE         ACE_TEXT("rpg_engine.xsd")
+#define RPG_ENGINE_SCHEMA_FILE         "rpg_engine.xsd"
+
+// DATADIR-specific
+#define RPG_ENGINE_DEF_DATA_SUB        "engine"
 
 // engine-specific
 #define RPG_ENGINE_CENTER_ON_PLAYER    true

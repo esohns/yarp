@@ -73,7 +73,7 @@ print_usage(const std::string& programName_in)
 #else
   path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
-  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += IRC_CLIENT_CNF_DEF_INI_FILE;
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
@@ -108,7 +108,7 @@ process_arguments(const int argc_in,
 
   // init results
   configFile_out           = base_data_path;
-  configFile_out           += ACE_DIRECTORY_SEPARATOR_STR;;
+  configFile_out           += ACE_DIRECTORY_SEPARATOR_CHAR_A;;
   configFile_out           += IRC_CLIENT_CNF_DEF_INI_FILE;
   debugParser_out          = false;
   logToFile_out            = false;
@@ -777,7 +777,7 @@ ACE_TMAIN(int argc,
 #endif // #ifdef DATADIR
 
   std::string configFile             = base_data_path;
-  configFile                         += ACE_DIRECTORY_SEPARATOR_STR;;
+  configFile                         += ACE_DIRECTORY_SEPARATOR_CHAR_A;;
   configFile                         += IRC_CLIENT_CNF_DEF_INI_FILE;
   bool debugParser                   = false;
   bool logToFile                     = false;
@@ -893,7 +893,7 @@ ACE_TMAIN(int argc,
     // *NOTE*: hybrid-7.2.3 seems to have a bug: 4 --> +i
     config.loginOptions.user.hostname.mode = IRC_CLIENT_DEF_IRC_USERMODE;
   } // end ELSE
-  config.loginOptions.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
+  config.loginOptions.user.servername = ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME);
 //   config.loginOptions.user.realname = ;
   config.loginOptions.channel = IRC_CLIENT_DEF_IRC_CHANNEL;
   // ************ stream config data ****************

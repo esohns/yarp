@@ -62,7 +62,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << RPG_NET_DEF_CNF_NETWORK_INTERFACE << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]  : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
   std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval") << ACE_TEXT(" [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
@@ -90,7 +90,7 @@ process_arguments(const int argc_in,
   clientPingInterval_out = RPG_NET_DEF_PING_INTERVAL;
   keepAliveTimeout_out = RPG_NET_DEF_KEEPALIVE;
   logToFile_out = false;
-  networkInterface_out = RPG_NET_DEF_CNF_NETWORK_INTERFACE;
+  networkInterface_out = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
   listeningPortNumber_out = RPG_NET_DEF_LISTENING_PORT;
   statisticsReportingInterval_out = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
@@ -762,7 +762,7 @@ ACE_TMAIN(int argc,
   unsigned long clientPingInterval          = RPG_NET_DEF_PING_INTERVAL;
   unsigned long keepAliveTimeout            = RPG_NET_DEF_KEEPALIVE;
   bool logToFile                            = false;
-  std::string networkInterface              = RPG_NET_DEF_CNF_NETWORK_INTERFACE;
+  std::string networkInterface              = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
   unsigned short listeningPortNumber        = RPG_NET_DEF_LISTENING_PORT;
   unsigned long statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                     = false;

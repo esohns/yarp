@@ -428,7 +428,7 @@ ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  std::string name = RPG_MAP_DEF_NAME;
+  std::string name = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME);
   RPG_Map_FloorPlan_Config_t config;
   config.corridors = corridors;
   config.doors = doors;

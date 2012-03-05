@@ -73,10 +73,10 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
 
   // construct correct logfilename...
   FQLogFilename_out = directory_in;
-  FQLogFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
-  std::string logFileName = (isServerProcess_in ? RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX
-                                                : RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX);
-  logFileName += RPG_NET_DEF_LOG_FILENAME_SUFFIX;
+  FQLogFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  std::string logFileName = (isServerProcess_in ? ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)
+                                                : ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX));
+  logFileName += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_FILENAME_SUFFIX);
   FQLogFilename_out += logFileName;
 
   // retrieve all existing logs and sort them alphabetically...
@@ -110,7 +110,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
   int number = 0;
   int return_val = -1;
   std::string format_string("%d");
-  format_string += RPG_NET_DEF_LOG_FILENAME_SUFFIX;
+  format_string += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_FILENAME_SUFFIX);
   std::stringstream converter;
   for (int i = entries.length() - 1, index = RPG_Net_Common_Tools::myMaxNumberOfLogFiles - 1;
        i >= 0;
@@ -133,8 +133,8 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
       // *TODO*: do this in C++...
       return_val = ::sscanf(entries[i]->d_name +
                             // skip some characters...
-                            (ACE_OS::strlen((isServerProcess_in ? RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX
-                                                                : RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX)) + 1),
+                            (ACE_OS::strlen((isServerProcess_in ? ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)
+                                                                : ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX))) + 1),
                             format_string.c_str(),
                             &number);
       if (return_val != 1)
@@ -174,7 +174,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
 
       // clean up
       std::string FQfilename = directory_in;
-      FQfilename += ACE_DIRECTORY_SEPARATOR_STR;
+      FQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       FQfilename += entries[i]->d_name;
       RPG_Common_File_Tools::deleteFile(FQfilename);
 
@@ -183,13 +183,13 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
 
     // logrotate file...
     std::string oldFQfilename = directory_in;
-    oldFQfilename += ACE_DIRECTORY_SEPARATOR_STR;
+    oldFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     oldFQfilename += entries[i]->d_name;
 
     std::string newFQfilename = directory_in;
-    newFQfilename += ACE_DIRECTORY_SEPARATOR_STR;
-    newFQfilename += (isServerProcess_in ? RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX
-                                         : RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX);
+    newFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    newFQfilename += (isServerProcess_in ? ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)
+                                         : ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX));
     newFQfilename += "_";
 
     converter.clear();
@@ -197,7 +197,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
     converter << index;
 
     newFQfilename += converter.str();
-    newFQfilename += RPG_NET_DEF_LOG_FILENAME_SUFFIX;
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_FILENAME_SUFFIX);
     // *IMPORTANT NOTE*: last parameter affects Win32 behaviour only,
     // see "ace/OS_NS_stdio.inl" !
     if (ACE_OS::rename(oldFQfilename.c_str(),
@@ -225,11 +225,11 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
   if (found_current)
   {
     std::string newFQfilename = directory_in;
-    newFQfilename += ACE_DIRECTORY_SEPARATOR_STR;
-    newFQfilename += (isServerProcess_in ? RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX
-                                         : RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX);
+    newFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    newFQfilename += (isServerProcess_in ? ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)
+                                         : ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX));
     newFQfilename += "_1";
-    newFQfilename += RPG_NET_DEF_LOG_FILENAME_SUFFIX;
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_FILENAME_SUFFIX);
 
     // *TODO*: last parameter affects Win32 behaviour only, see "ace/OS_NS_stdio.inl" !
     if (ACE_OS::rename(FQLogFilename_out.c_str(),
@@ -1656,8 +1656,8 @@ RPG_Net_Common_Tools::client_selector(const dirent* dirEntry_in)
 
   // sanity check --> prefix ok ?
   if (ACE_OS::strncmp(dirEntry_in->d_name,
-                      RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX,
-                      ACE_OS::strlen(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX)) != 0)
+                      ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX),
+                      ACE_OS::strlen(ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX))) != 0)
   {
 //     // debug info
 //     ACE_DEBUG((LM_DEBUG,
@@ -1680,8 +1680,8 @@ RPG_Net_Common_Tools::server_selector(const dirent* dirEntry_in)
 
   // sanity check --> prefix ok ?
   if (ACE_OS::strncmp(dirEntry_in->d_name,
-                      RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX,
-                      ACE_OS::strlen(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)) != 0)
+                      ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX),
+                      ACE_OS::strlen(ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX))) != 0)
   {
 //     // debug info
 //     ACE_DEBUG((LM_DEBUG,

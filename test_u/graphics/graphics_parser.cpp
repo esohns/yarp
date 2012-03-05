@@ -60,8 +60,8 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
@@ -89,8 +89,8 @@ process_arguments(const int argc_in,
   // init results
   dumpDictionary_out = false;
   filename_out = base_data_path;
-  filename_out += ACE_DIRECTORY_SEPARATOR_STR;
-  filename_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
@@ -278,8 +278,8 @@ ACE_TMAIN(int argc,
   // init results
   bool dumpDictionary            = false;
   std::string filename = base_data_path;
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
-  filename += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   bool traceInformation          = false;
   bool printVersionAndExit       = false;
   bool validateXML               = true;

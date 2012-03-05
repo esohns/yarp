@@ -69,7 +69,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += RPG_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
@@ -98,7 +98,7 @@ process_arguments(const int argc_in,
 
   dumpDictionary_out = false;
   monsterDictionaryFilename_out = base_data_path;
-  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_STR;
+  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionaryFilename_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -278,7 +278,7 @@ ACE_TMAIN(int argc,
 
   bool dumpDictionary      = false;
   std::string monsterDictionaryFilename = base_data_path;
-  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_STR;
+  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionaryFilename += RPG_MONSTER_DEF_DICTIONARY_FILE;
   bool traceInformation    = false;
   bool printVersionAndExit = false;

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_sound_common_tools.h"
 
 #include "rpg_sound_defines.h"
@@ -105,7 +106,7 @@ RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
 
   // init return value(s)
   file_out = mySoundDirectory;
-  file_out += ACE_DIRECTORY_SEPARATOR_STR;
+  file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   switch (sound_in.category)
   {
@@ -113,8 +114,8 @@ RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
     case CATEGORY_EFFECT_INTERVAL:
     {
       // assemble path
-      file_out += RPG_SOUND_DEF_EFFECT_SUB;
-      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_EFFECT_SUB);
+      file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += sound_in.file;
 
       break;
@@ -123,8 +124,8 @@ RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
     case CATEGORY_MUSIC_AMBIENT:
     {
       // assemble path
-      file_out += RPG_SOUND_DEF_AMBIENT_SUB;
-      file_out += ACE_DIRECTORY_SEPARATOR_STR;
+      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_AMBIENT_SUB);
+      file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += sound_in.file;
 
       break;

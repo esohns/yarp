@@ -24,13 +24,14 @@
 // *** trace log ***
 // *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-#define RPG_NET_DEF_LOG_DIRECTORY                 ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR("TEMP"))
+//#define RPG_NET_DEF_LOG_DIRECTORY                 ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR("TEMP"))
+#define RPG_NET_DEF_LOG_DIRECTORY                 "TEMP"
 #else
-#define RPG_NET_DEF_LOG_DIRECTORY                 ACE_TEXT("/var/tmp")
+#define RPG_NET_DEF_LOG_DIRECTORY                 "/var/tmp"
 #endif
-#define RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX    ACE_TEXT("net_server")
-#define RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX    ACE_TEXT("net_client")
-#define RPG_NET_DEF_LOG_FILENAME_SUFFIX           ACE_TEXT(".log")
+#define RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX    "net_server"
+#define RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX    "net_client"
+#define RPG_NET_DEF_LOG_FILENAME_SUFFIX           ".log"
 
 // - WARNING: current implementation cannot support numbers that have
 //   more than 7 digits !!!
@@ -41,9 +42,9 @@
 // *PORTABILITY*: interface names are not portable, so we let the
 // user choose the interface from a list on Windows (see select_Interface())...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-#define RPG_NET_DEF_CNF_NETWORK_INTERFACE         ACE_TEXT("")
+#define RPG_NET_DEF_CNF_NETWORK_INTERFACE         ""
 #else
-#define RPG_NET_DEF_CNF_NETWORK_INTERFACE         ACE_TEXT("eth0")
+#define RPG_NET_DEF_CNF_NETWORK_INTERFACE         "eth0"
 #endif
 
 // use a thread pool for handling network data ?

@@ -35,13 +35,13 @@
 #define RPG_GRAPHICS_FONT_DEF_SHADECOLOR               RPG_Graphics_SDL_Tools::CLR32_BLACK
 
 // default (tiles) data directory tree organization
-#define RPG_GRAPHICS_TILE_DEF_CREATURES_SUB            ACE_TEXT("creatures")
-#define RPG_GRAPHICS_TILE_DEF_CURSORS_SUB              ACE_TEXT("cursors")
-#define RPG_GRAPHICS_TILE_DEF_DOORS_SUB                ACE_TEXT("doors")
-#define RPG_GRAPHICS_TILE_DEF_FLOORS_SUB               ACE_TEXT("floors")
-#define RPG_GRAPHICS_TILE_DEF_FONTS_SUB                ACE_TEXT("fonts")
-#define RPG_GRAPHICS_TILE_DEF_IMAGES_SUB               ACE_TEXT("images")
-#define RPG_GRAPHICS_TILE_DEF_WALLS_SUB                ACE_TEXT("walls")
+#define RPG_GRAPHICS_TILE_DEF_CREATURES_SUB            "creatures"
+#define RPG_GRAPHICS_TILE_DEF_CURSORS_SUB              "cursors"
+#define RPG_GRAPHICS_TILE_DEF_DOORS_SUB                "doors"
+#define RPG_GRAPHICS_TILE_DEF_FLOORS_SUB               "floors"
+#define RPG_GRAPHICS_TILE_DEF_FONTS_SUB                "fonts"
+#define RPG_GRAPHICS_TILE_DEF_IMAGES_SUB               "images"
+#define RPG_GRAPHICS_TILE_DEF_WALLS_SUB                "walls"
 
 // pixel coordinate difference from one map square to the next
 // *NOTE*: due to isometry, this is not the same as the width/height of a tile
@@ -70,11 +70,11 @@
 // *NOTE*: offsets are measured in view coordinates (i.e. map squares)
 #define RPG_GRAPHICS_WINDOW_SCROLL_OFFSET              1
 
-#define RPG_GRAPHICS_DEF_DICTIONARY_FILE               ACE_TEXT_ALWAYS_CHAR("rpg_graphics.xml")
-// #define RPG_GRAPHICS_DEF_DUMP_DIR                      ACE_TEXT("/var/tmp")
+#define RPG_GRAPHICS_DEF_DICTIONARY_FILE               "rpg_graphics.xml"
+// #define RPG_GRAPHICS_DEF_DUMP_DIR                      "/var/tmp"
 
 // DATADIR-specific
-#define RPG_GRAPHICS_DEF_DATA_SUB                      ACE_TEXT("graphics")
+#define RPG_GRAPHICS_DEF_DATA_SUB                      "graphics"
 
 // buffer for printing keyboard events (debug info)
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE            32

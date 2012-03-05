@@ -25,7 +25,7 @@
 #define YY_END_OF_BUFFER_CHAR                          0
 #define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE     2
 // CRLF = "\r\n"
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY            ACE_TEXT_ALWAYS_CHAR("\r\n")
+#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY            "\r\n"
 #define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE       2
 #define RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE             512
 
@@ -63,8 +63,8 @@
 // // default IRC configuration
 // *NOTE*: bitset: "1100" [2]: +w; [3]: +i (see rfc2812 3.1.3/3.1.5 and rfc1459 4.1.3)
 #define RPG_NET_PROTOCOL_DEF_IRC_USERMODE              0 // (!wallops && !invisible)
-// #define RPG_NET_PROTOCOL_DEF_IRC_HOSTNAME              ACE_TEXT_ALWAYS_CHAR("localhost")
-// #define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            ACE_TEXT_ALWAYS_CHAR("localhost")
-#define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            ACE_TEXT_ALWAYS_CHAR("*")
+// #define RPG_NET_PROTOCOL_DEF_IRC_HOSTNAME              "localhost"
+// #define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            "localhost"
+#define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            "*"
 
 #endif

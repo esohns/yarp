@@ -93,14 +93,14 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += IRC_CLIENT_CNF_DEF_INI_FILE;
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-d          : debug") << ACE_TEXT(" [") << IRC_CLIENT_DEF_TRACE_ENABLED << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]  : reporting interval (seconds: 0 --> OFF)") << ACE_TEXT(" [") << IRC_CLIENT_DEF_STATSINTERVAL << ACE_TEXT("]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   std::cout << ACE_TEXT("-s [FILE]   : server config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -134,13 +134,13 @@ process_arguments(const int argc_in,
 
   // init results
   configFile_out           = base_data_path;
-  configFile_out           += ACE_DIRECTORY_SEPARATOR_STR;
+  configFile_out           += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   configFile_out           += IRC_CLIENT_CNF_DEF_INI_FILE;
   debug_out                = IRC_CLIENT_DEF_TRACE_ENABLED;
   logToFile_out            = false;
   reportingInterval_out    = IRC_CLIENT_DEF_STATSINTERVAL;
   serverConfigFile_out     = base_data_path;
-  serverConfigFile_out     += ACE_DIRECTORY_SEPARATOR_STR;
+  serverConfigFile_out     += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   serverConfigFile_out     += IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   traceInformation_out     = false;
   UIFileDirectory_out      = base_data_path;
@@ -356,7 +356,7 @@ do_main_window(const std::string& UIFileDirectory_in,
 
   // step0: assemble FQ filename (Glade-UI XML)
   std::string filename = UIFileDirectory_in;
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += IRC_CLIENT_GUI_DEF_UI_MAIN_FILE;
   if (!RPG_Common_File_Tools::isReadable(filename))
   {
@@ -1231,13 +1231,13 @@ ACE_TMAIN(int argc,
 #endif // #ifdef DATADIR
 
   std::string configFile             = base_data_path;
-  configFile                         += ACE_DIRECTORY_SEPARATOR_STR;;
+  configFile                         += ACE_DIRECTORY_SEPARATOR_CHAR_A;;
   configFile                         += IRC_CLIENT_CNF_DEF_INI_FILE;
   bool debug                         = IRC_CLIENT_DEF_TRACE_ENABLED;
   bool logToFile                     = false;
   unsigned long reportingInterval    = IRC_CLIENT_DEF_STATSINTERVAL;
   std::string serverConfigFile       = base_data_path;
-  serverConfigFile                   += ACE_DIRECTORY_SEPARATOR_STR;
+  serverConfigFile                   += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   serverConfigFile                   += IRC_CLIENT_GUI_DEF_SERVERS_FILE;
   bool traceInformation              = false;
   std::string UIFileDirectory        = base_data_path;
@@ -1336,7 +1336,7 @@ ACE_TMAIN(int argc,
     // *NOTE*: hybrid-7.2.3 seems to have a bug: 4 --> +i
     userData.loginOptions.user.hostname.mode = IRC_CLIENT_DEF_IRC_USERMODE;
   } // end ELSE
-  userData.loginOptions.user.servername = RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME;
+  userData.loginOptions.user.servername = ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME);
 //   userData.loginOptions.user.realname = ;
   userData.loginOptions.channel = IRC_CLIENT_DEF_IRC_CHANNEL;
   userData.connections.clear();

@@ -81,7 +81,7 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
 
   // init builder (load widget tree)
   std::string filename = myUIFileDirectory;
-  filename += ACE_DIRECTORY_SEPARATOR_STR;
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += IRC_CLIENT_GUI_DEF_UI_SERVER_PAGE_FILE;
   if (!RPG_Common_File_Tools::isReadable(filename))
   {

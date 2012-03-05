@@ -249,49 +249,49 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_CLIENT_DEF_INI_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_INI_FILE);
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += RPG_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-e [FILE]   : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-f [FILE]   : floor plan (*.txt)") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_ITEM_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]   : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]   : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_SOUND_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-s [FILE]   : sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_CLIENT_DEF_GNOME_UI_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_UI_FILE);
   std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << RPG_CLIENT_DEF_ACE_USES_TP  << ACE_TEXT(" : ") << RPG_CLIENT_DEF_ACE_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
@@ -324,52 +324,52 @@ process_arguments(const int argc_in,
 #endif // #ifdef DATADIR
 
   iniFile_out = base_data_path;
-  iniFile_out += ACE_DIRECTORY_SEPARATOR_STR;
-  iniFile_out += RPG_COMMON_DEF_CONFIG_SUB;
-  iniFile_out += ACE_DIRECTORY_SEPARATOR_STR;
-  iniFile_out += RPG_CLIENT_DEF_INI_FILE;
+  iniFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  iniFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  iniFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  iniFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_INI_FILE);
 
   monsterDictionary_out = base_data_path;
-  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
-  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
 
   floorPlan_out.clear();
 
   graphicsDictionary_out = base_data_path;
-  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
-  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDictionary_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   itemDictionary_out = base_data_path;
-  itemDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  itemDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
-  itemDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  itemDictionary_out += RPG_ITEM_DEF_DICTIONARY_FILE;
+  itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   logToFile_out            = false;
 
   magicDictionary_out = base_data_path;
-  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  magicDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
-  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  magicDictionary_out += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   soundDictionary_out = base_data_path;
-  soundDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  soundDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
-  soundDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  soundDictionary_out += RPG_SOUND_DEF_DICTIONARY_FILE;
+  soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  soundDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  soundDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
 
   traceInformation_out     = false;
 
   UIfile_out = base_data_path;
-  UIfile_out += ACE_DIRECTORY_SEPARATOR_STR;
-  UIfile_out += RPG_COMMON_DEF_CONFIG_SUB;
-  UIfile_out += ACE_DIRECTORY_SEPARATOR_STR;
-  UIfile_out += RPG_CLIENT_DEF_GNOME_UI_FILE;
+  UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  UIfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  UIfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_UI_FILE);
 
   printVersionAndExit_out  = false;
 
@@ -718,7 +718,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   // ***** window/screen setup *****
   // set window caption
   std::string caption;
-  caption = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
 //   caption += ACE_TEXT_ALWAYS_CHAR(" ");
 //   caption += RPG_VERSION;
   SDL_WM_SetCaption(caption.c_str(),  // window caption
@@ -730,9 +730,9 @@ do_initGUI(const std::string& graphicsDirectory_in,
   RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
   ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_GRAPHICS_TILE_DEF_IMAGES_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_IMAGES_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;
   icon_image = RPG_Graphics_Surface::load(path,   // graphics file
@@ -784,7 +784,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
   // step2: retrieve dialog handles
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(userData_in.xml,
-                                                                                          RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME));
+                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
   ACE_ASSERT(filechooser_dialog);
   userData_in.map_filter = gtk_file_filter_new();
   if (!userData_in.map_filter)
@@ -799,7 +799,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
     return false;
   } // end IF
   std::string pattern = ACE_TEXT_ALWAYS_CHAR("*");
-  pattern += RPG_MAP_EXT;
+  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
   gtk_file_filter_add_pattern(userData_in.map_filter, pattern.c_str());
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.map_filter);
   g_object_unref(G_OBJECT(userData_in.map_filter));
@@ -822,23 +822,23 @@ do_initGUI(const std::string& graphicsDirectory_in,
   g_object_unref(G_OBJECT(userData_in.entity_filter));
 
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                            RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME));
+                                                            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME)));
   ACE_ASSERT(about_dialog);
 
   GtkWidget* main_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                           RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME));
+                                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME)));
   ACE_ASSERT(main_dialog);
 //   GdkWindow* main_dialog_window = gtk_widget_get_window(main_dialog);
 //   gtk_window_set_title(,
 //                        caption.c_str());
 
   GtkWidget* main_entry_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                                 RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME));
+                                                                 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME)));
   ACE_ASSERT(main_entry_dialog);
   GtkEntry* entry = GTK_ENTRY(glade_xml_get_widget(userData_in.xml,
-                                                   RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME));
+                                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME)));
   ACE_ASSERT(entry);
-  GtkEntryBuffer* entry_buffer = gtk_entry_buffer_new(RPG_MAP_DEF_NAME, // text
+  GtkEntryBuffer* entry_buffer = gtk_entry_buffer_new(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME), // text
                                                       -1);              // length in bytes (-1: \0-terminated)
   if (!entry_buffer)
   {
@@ -857,7 +857,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   // step3: populate comboboxes
   // step3a: character repository
   GtkComboBox* combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                             RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
   ACE_ASSERT(combobox);
   gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
   GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
@@ -921,7 +921,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   } // end ELSE
   // step3b: maps repository
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(combobox);
   gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
   renderer = gtk_cell_renderer_text_new();
@@ -959,7 +959,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  if (::load_files(RPG_MAP_DEF_REPOSITORY,
+  if (::load_files(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY),
                    false,
                    list))
     gtk_widget_set_sensitive(GTK_WIDGET(combobox),
@@ -1035,7 +1035,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -1083,7 +1083,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -1115,7 +1115,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -1356,7 +1356,7 @@ do_work(const RPG_Client_Config& config_in,
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
-  std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
   RPG_Client_WindowMain mainWindow(RPG_Graphics_WindowSize_t(userData.screen->w,
                                                              userData.screen->h), // size
                                    type,                                          // interface elements
@@ -1415,12 +1415,12 @@ do_work(const RPG_Client_Config& config_in,
 
   // step6: activate first repository entry (if any)
   GtkComboBox* combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData.xml,
-                                                             RPG_CLIENT_DEF_GNOME_CHARBOX_NAME));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
   ACE_ASSERT(combobox);
   if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
     gtk_combo_box_set_active(combobox, 0);
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData.xml,
-                                                RPG_CLIENT_DEF_GNOME_MAPBOX_NAME));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(combobox);
   if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
     gtk_combo_box_set_active(combobox, 0);
@@ -1857,13 +1857,13 @@ do_parseIniFile(const std::string& iniFilename_in,
   // find/open "client" section...
   ACE_Configuration_Section_Key section_key;
   if (config_heap.open_section(config_heap.root_section(),
-                               RPG_CLIENT_CNF_CLIENT_SECTION_HEADER,
+                               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CNF_CLIENT_SECTION_HEADER),
                                0, // MUST exist !
                                section_key) != 0)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-               RPG_CLIENT_CNF_CLIENT_SECTION_HEADER));
+               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CNF_CLIENT_SECTION_HEADER)));
 
     return;
   } // end IF
@@ -1934,13 +1934,13 @@ do_parseIniFile(const std::string& iniFilename_in,
 
 //   // find/open "connection" section...
 //   if (config_heap.open_section(config_heap.root_section(),
-//                                RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER,
+//                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER),
 //                                0, // MUST exist !
 //                                section_key) != 0)
 //   {
 //     ACE_ERROR((LM_ERROR,
 //                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-//                RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER));
+//                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER)));
 //
 //     return;
 //   } // end IF
@@ -2092,50 +2092,50 @@ ACE_TMAIN(int argc_in,
 
   // step1a: process commandline arguments
   std::string iniFile = base_data_path;
-  iniFile += ACE_DIRECTORY_SEPARATOR_STR;
-  iniFile += RPG_COMMON_DEF_CONFIG_SUB;
-  iniFile += ACE_DIRECTORY_SEPARATOR_STR;
-  iniFile += RPG_CLIENT_DEF_INI_FILE;
+  iniFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  iniFile += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  iniFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  iniFile += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_INI_FILE);
 
   std::string monsterDictionary = base_data_path;
-  monsterDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  monsterDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  monsterDictionary += ACE_DIRECTORY_SEPARATOR_STR;
+  monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary += RPG_MONSTER_DEF_DICTIONARY_FILE;
 
   std::string graphicsDictionary = base_data_path;
-  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDictionary += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   std::string itemDictionary = base_data_path;
-  itemDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  itemDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  itemDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  itemDictionary += RPG_ITEM_DEF_DICTIONARY_FILE;
+  itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   std::string magicDictionary = base_data_path;
-  magicDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  magicDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  magicDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  magicDictionary += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   std::string soundDictionary = base_data_path;
-  soundDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  soundDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  soundDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  soundDictionary += RPG_SOUND_DEF_DICTIONARY_FILE;
+  soundDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  soundDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  soundDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  soundDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
 
   std::string UIfile = base_data_path;
-  UIfile += ACE_DIRECTORY_SEPARATOR_STR;
-  UIfile += RPG_COMMON_DEF_CONFIG_SUB;
-  UIfile += ACE_DIRECTORY_SEPARATOR_STR;
-  UIfile += RPG_CLIENT_DEF_GNOME_UI_FILE;
+  UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  UIfile += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  UIfile += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_UI_FILE);
 
   std::string schemaRepository = base_data_path;
-  schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
-  schemaRepository += RPG_COMMON_DEF_CONFIG_SUB;
+  schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 
   // sanity check
   if (!RPG_Common_File_Tools::isDirectory(schemaRepository))
@@ -2238,10 +2238,10 @@ ACE_TMAIN(int argc_in,
   config.audio_config.channels             = RPG_CLIENT_DEF_AUDIO_CHANNELS;
   config.audio_config.samples              = RPG_CLIENT_DEF_AUDIO_SAMPLES;
   config.sound_directory                   = base_data_path;
-  config.sound_directory                   += ACE_DIRECTORY_SEPARATOR_STR;
-  config.sound_directory                   += RPG_COMMON_DEF_DATA_SUB;
-  config.sound_directory                   += ACE_DIRECTORY_SEPARATOR_STR;
-  config.sound_directory                   += RPG_SOUND_DEF_DATA_SUB;
+  config.sound_directory                   += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  config.sound_directory                   += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  config.sound_directory                   += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  config.sound_directory                   += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
   config.sound_cache_size                  = RPG_CLIENT_DEF_SOUND_CACHESIZE;
   config.sound_dictionary                  = soundDictionary;
 
@@ -2252,10 +2252,10 @@ ACE_TMAIN(int argc_in,
   config.video_config.fullScreen           = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
   config.video_config.doubleBuffer         = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
   config.graphics_directory                = base_data_path;
-  config.graphics_directory                += ACE_DIRECTORY_SEPARATOR_STR;
-  config.graphics_directory                += RPG_COMMON_DEF_DATA_SUB;
-  config.graphics_directory                += ACE_DIRECTORY_SEPARATOR_STR;
-  config.graphics_directory                += RPG_GRAPHICS_DEF_DATA_SUB;
+  config.graphics_directory                += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  config.graphics_directory                += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  config.graphics_directory                += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  config.graphics_directory                += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
   config.graphics_cache_size               = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
   config.graphics_dictionary               = graphicsDictionary;
 
@@ -2332,7 +2332,7 @@ ACE_TMAIN(int argc_in,
 //   ACE_ASSERT(gnomeSession);
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
   GnomeProgram* gnomeProgram = NULL;
-  gnomeProgram = gnome_program_init(RPG_CLIENT_DEF_GNOME_APPLICATION_ID, // app ID
+  gnomeProgram = gnome_program_init(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_APPLICATION_ID), // app ID
 #ifdef HAVE_CONFIG_H
 //                                     ACE_TEXT_ALWAYS_CHAR(VERSION),    // version
                                     ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),   // version

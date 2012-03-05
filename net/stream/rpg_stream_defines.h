@@ -27,9 +27,10 @@
 // trace log
 // *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-#define RPG_STREAM_DEF_LOG_DIRECTORY               ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR("TEMP"))
+//#define RPG_STREAM_DEF_LOG_DIRECTORY               ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR("TEMP"))
+#define RPG_STREAM_DEF_LOG_DIRECTORY               "TEMP"
 #else
-#define RPG_STREAM_DEF_LOG_DIRECTORY               ACE_TEXT("/var/tmp")
+#define RPG_STREAM_DEF_LOG_DIRECTORY               "/var/tmp"
 #endif
 
 // queue / task / buffers

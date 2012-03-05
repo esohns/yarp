@@ -30,11 +30,11 @@
 
 #define RPG_MAP_SCANNER_BUFSIZE    16384 // == to YY_BUF_SIZE
 
-#define RPG_MAP_EXT                ACE_TEXT(".txt")
+#define RPG_MAP_EXT                ".txt"
 
 #define RPG_MAP_NAME_MAX_LENGTH    30
-#define RPG_MAP_DEF_NAME           ACE_TEXT("default map")
+#define RPG_MAP_DEF_NAME           "default map"
 
-#define RPG_MAP_DEF_REPOSITORY     ACE_TEXT("/var/tmp")
+#define RPG_MAP_DEF_REPOSITORY     "/var/tmp"
 
 #endif

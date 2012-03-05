@@ -123,9 +123,9 @@ do_initVideo(const std::string& graphicsDirectory_in,
   RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
   ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_GRAPHICS_TILE_DEF_IMAGES_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_IMAGES_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;
   icon_image = RPG_Graphics_Surface::load(path,   // file
@@ -279,28 +279,28 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c ([FILE]): character profile (*.xml)") << ACE_TEXT(" [") << ACE_TEXT(SDL_GUI_DEF_ENTITY) << ACE_TEXT("]") << std::endl;
   std::string path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_DATA_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_GRAPHICS_DEF_DATA_SUB;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
   std::cout << ACE_TEXT("-d [DIR]   : graphics directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_ITEM_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]  : items dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_COMMON_DEF_CONFIG_SUB;
-  path += ACE_DIRECTORY_SEPARATOR_STR;
-  path += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-p ([FILE]): map (*.txt)") << ACE_TEXT(" [") << ACE_TEXT(SDL_GUI_DEF_MAP) << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s         : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES) << ACE_TEXT("]") << std::endl;
@@ -334,25 +334,25 @@ process_arguments(const int argc_in,
 #endif // #ifdef DATADIR
 
   magicDictionary_out = base_data_path;
-  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  magicDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
-  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  magicDictionary_out += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   itemsDictionary_out = base_data_path;
-  itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  itemsDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
-  itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  itemsDictionary_out += RPG_ITEM_DEF_DICTIONARY_FILE;
+  itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   directory_out = base_data_path;
-  directory_out += ACE_DIRECTORY_SEPARATOR_STR;
-  directory_out += RPG_COMMON_DEF_DATA_SUB;
-  directory_out += ACE_DIRECTORY_SEPARATOR_STR;
-  directory_out += RPG_GRAPHICS_DEF_DATA_SUB;
+  directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
   graphicsDictionary_out = base_data_path;
-  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDictionary_out += RPG_COMMON_DEF_CONFIG_SUB;
-  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDictionary_out += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   entityFile_out = SDL_GUI_DEF_ENTITY;
   mapFile_out = SDL_GUI_DEF_MAP;
   slideShowMode_out = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
@@ -590,15 +590,15 @@ do_slideshow(const std::string& graphicsDirectory_in,
 
       // assemble filename
       std::string filename = graphicsDirectory_in;
-      filename += ACE_DIRECTORY_SEPARATOR_STR;
+      filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       switch (graphic.tileset.type)
       {
         case TILESETTYPE_DOOR:
-          filename += RPG_GRAPHICS_TILE_DEF_DOORS_SUB; break;
+          filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_DOORS_SUB); break;
         case TILESETTYPE_FLOOR:
-          filename += RPG_GRAPHICS_TILE_DEF_FLOORS_SUB; break;
+          filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FLOORS_SUB); break;
         case TILESETTYPE_WALL:
-          filename += RPG_GRAPHICS_TILE_DEF_WALLS_SUB; break;
+          filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_WALLS_SUB); break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -608,7 +608,7 @@ do_slideshow(const std::string& graphicsDirectory_in,
           continue;
         }
       } // end SWITCH
-      filename += ACE_DIRECTORY_SEPARATOR_STR;
+      filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       filename += (*iterator).file;
 
       image = RPG_Graphics_Surface::load(filename, // file
@@ -794,8 +794,8 @@ do_UI(RPG_Engine_Entity& entity_in,
         {
           case SDLK_e:
           {
-            std::string dump_path = RPG_COMMON_DUMP_DIR;
-            dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+            std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+            dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             dump_path += ACE_TEXT("player.xml");
             if (!RPG_Engine_Common_Tools::saveEntity(entity_in,
                                                      dump_path))
@@ -834,7 +834,7 @@ do_UI(RPG_Engine_Entity& entity_in,
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("generating level map...\n")));
 
-            RPG_Map_Common_Tools::create(std::string(RPG_MAP_DEF_NAME),
+            RPG_Map_Common_Tools::create(std::string(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME)),
                                          mapConfig_in,
                                          map_in);
 
@@ -877,8 +877,8 @@ do_UI(RPG_Engine_Entity& entity_in,
           }
           case SDLK_s:
           {
-            std::string dump_path = RPG_COMMON_DUMP_DIR;
-            dump_path += ACE_DIRECTORY_SEPARATOR_STR;
+            std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+            dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             dump_path += ACE_TEXT("map.txt");
             if (!RPG_Map_Common_Tools::save(dump_path,
                                             map_in))
@@ -1153,7 +1153,7 @@ do_work(const mode_t& mode_in,
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
-  std::string title = RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE;
+  std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
   SDL_GUI_MainWindow mainWindow(RPG_Graphics_WindowSize_t(screen->w,
                                                           screen->h), // size
                                 type,                                 // interface elements
@@ -1183,7 +1183,7 @@ do_work(const mode_t& mode_in,
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating level map...\n")));
 
-        RPG_Map_Common_Tools::create(std::string(RPG_MAP_DEF_NAME),
+        RPG_Map_Common_Tools::create(std::string(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME)),
                                      mapConfig_in,
                                      map);
       } // end IF
@@ -1227,8 +1227,8 @@ do_work(const mode_t& mode_in,
       base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
       std::string schemaRepository = base_data_path;
-      schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
-      schemaRepository += RPG_COMMON_DEF_CONFIG_SUB;
+      schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+      schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
       RPG_Engine_Entity entity;
       entity.actions.clear();
       entity.character = NULL;
@@ -1438,26 +1438,26 @@ ACE_TMAIN(int argc,
 #endif // #ifdef DATADIR
 
   std::string magicDictionary = base_data_path;
-  magicDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  magicDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  magicDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  magicDictionary += RPG_MAGIC_DEF_DICTIONARY_FILE;
+  magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::string itemsDictionary = base_data_path;
-  itemsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  itemsDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  itemsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  itemsDictionary += RPG_ITEM_DEF_DICTIONARY_FILE;
+  itemsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  itemsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::string graphicsDirectory = base_data_path;
-  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDirectory += RPG_COMMON_DEF_DATA_SUB;
-  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDirectory += RPG_GRAPHICS_DEF_DATA_SUB;
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
   unsigned long cacheSize = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
   std::string graphicsDictionary = base_data_path;
-  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDictionary += RPG_COMMON_DEF_CONFIG_SUB;
-  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_STR;
-  graphicsDictionary += RPG_GRAPHICS_DEF_DICTIONARY_FILE;
+  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   mode_t mode = SDL_GUI_DEF_MODE;
   std::string entityFilename = SDL_GUI_DEF_ENTITY;
   std::string mapFilename = SDL_GUI_DEF_MAP;

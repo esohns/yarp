@@ -194,8 +194,8 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     base_path = schemaRepository_in;
   } // end ELSE
   std::string schemaFile = base_path;
-  schemaFile += ACE_DIRECTORY_SEPARATOR_STR;
-  schemaFile += RPG_ENGINE_SCHEMA_FILE;
+  schemaFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schemaFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(schemaFile))
   {
@@ -206,7 +206,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     return result;
   } // end IF
 
-  props.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
+  props.schema_location(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
                         schemaFile);
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
@@ -253,7 +253,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     // --> try parsing that instead...
     ::xml_schema::properties props_alt;
     schemaFile = base_path;
-    schemaFile += ACE_DIRECTORY_SEPARATOR_STR;
+    schemaFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schemaFile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
     // sanity check(s)
     if (!RPG_Common_File_Tools::isReadable(schemaFile))
@@ -264,7 +264,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
 
       return result;
     } // end IF
-    props_alt.schema_location(RPG_COMMON_XML_TARGET_NAMESPACE,
+    props_alt.schema_location(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
                               schemaFile);
     try
     {
@@ -379,9 +379,9 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
   std::ofstream ofs;
   ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
   ::xml_schema::namespace_infomap map;
-  map[""].name = RPG_COMMON_XML_TARGET_NAMESPACE;
-  map[""].schema = RPG_ENGINE_SCHEMA_FILE;
-  std::string character_set(RPG_COMMON_XML_SCHEMA_CHARSET);
+  map[""].name = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
+  map[""].schema = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+  std::string character_set(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_CHARSET));
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
 

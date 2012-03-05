@@ -23,9 +23,9 @@
 
 #define RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL 2
 
-#define RPG_MAGIC_DEF_DICTIONARY_FILE          ACE_TEXT_ALWAYS_CHAR("rpg_magic.xml")
+#define RPG_MAGIC_DEF_DICTIONARY_FILE          "rpg_magic.xml"
 
 // DATADIR-specific
-#define RPG_MAGIC_DEF_DATA_SUB                 ACE_TEXT("magic")
+#define RPG_MAGIC_DEF_DATA_SUB                 "magic"
 
 #endif
