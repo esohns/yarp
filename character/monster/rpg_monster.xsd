@@ -16,10 +16,10 @@
   <xsd:include schemaLocation="../../magic/rpg_magic.xsd"/>
   <!-- include item schema -->
   <xsd:include schemaLocation="../../item/rpg_item.xsd"/>
-<!-- include combat schema -->
+  <!-- include combat schema -->
   <xsd:include schemaLocation="../../combat/rpg_combat.xsd"/>
   <!-- include character schema -->
-  <xsd:include schemaLocation="../rpg_character.xsd"/>
+  <!--<xsd:include schemaLocation="../rpg_character.xsd"/>-->
  
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->

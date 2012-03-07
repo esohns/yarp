@@ -120,6 +120,9 @@
     <ClInclude Include="rpg_character_XML_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_character_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_character_class_common_tools.cpp">

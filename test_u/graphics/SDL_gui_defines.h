@@ -42,8 +42,6 @@
 #define SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_X  10 // from the right side
 #define SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_Y  10
 
-#define SDL_GUI_DEF_ENTITY                     "/var/tmp/default_player.xml"
-#define SDL_GUI_DEF_MAP                        "/var/tmp/default_map.txt"
 #define SDL_GUI_DEF_VALIDATE_XML               true
 
 #define SDL_GUI_DEF_VIDEO_W                    1024

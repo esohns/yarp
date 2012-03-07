@@ -29,6 +29,7 @@
 
 #include <rpg_combat_common_tools.h>
 
+#include <rpg_character_defines.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 
@@ -70,7 +71,16 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
+#ifdef DATADIR
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
@@ -97,9 +107,20 @@ process_arguments(const int argc_in,
 #endif // #ifdef DATADIR
 
   dumpDictionary_out = false;
+
   monsterDictionaryFilename_out = base_data_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
+#ifdef DATADIR
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
+  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+#endif
+  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
@@ -277,9 +298,20 @@ ACE_TMAIN(int argc,
 #endif // #ifdef DATADIR
 
   bool dumpDictionary      = false;
+
   std::string monsterDictionaryFilename = base_data_path;
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename += RPG_MONSTER_DEF_DICTIONARY_FILE;
+#ifdef DATADIR
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
+  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+#endif
+  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+
   bool traceInformation    = false;
   bool printVersionAndExit = false;
   bool validateXML         = true;

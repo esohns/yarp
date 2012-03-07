@@ -43,7 +43,6 @@
 
 #define MAP_PARSER_DEF_DEBUG_SCANNER false
 #define MAP_PARSER_DEF_DEBUG_PARSER  false
-#define MAP_PARSER_DEF_MAP           ACE_TEXT_ALWAYS_CHAR("/var/tmp/default_plan.txt")
 
 void
 print_usage(const std::string& programName_in)
@@ -55,7 +54,15 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-m [FILE] : map (*.txt)") << ACE_TEXT(" [\"") << MAP_PARSER_DEF_MAP << ACE_TEXT("\"]") << std::endl;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  std::cout << ACE_TEXT("-m [FILE] : map (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-p        : debug parser") << ACE_TEXT(" [") << MAP_PARSER_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s        : debug scanner") << ACE_TEXT(" [") << MAP_PARSER_DEF_DEBUG_SCANNER << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
@@ -76,7 +83,16 @@ process_arguments(const int argc_in,
   // init results
   debugScanner_out = MAP_PARSER_DEF_DEBUG_SCANNER;
   debugParser_out = MAP_PARSER_DEF_DEBUG_PARSER;
-  mapFile_out = MAP_PARSER_DEF_MAP;
+
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  mapFile_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  mapFile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
@@ -235,7 +251,15 @@ ACE_TMAIN(int argc,
   // step1a set defaults
   bool debugScanner                = MAP_PARSER_DEF_DEBUG_SCANNER;
   bool debugParser                 = MAP_PARSER_DEF_DEBUG_PARSER;
-  std::string mapFile              = MAP_PARSER_DEF_MAP;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string mapFile              = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  std::string mapFile              = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  mapFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  mapFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
+  mapFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+
   bool traceInformation            = false;
   bool printVersionAndExit         = false;
 

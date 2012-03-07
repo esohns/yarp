@@ -150,6 +150,9 @@ class RPG_Map_Export RPG_Map_Common_Tools
   static void displayRooms(const unsigned long&,       // dimension x
                            const unsigned long&,       // dimension y
                            const RPG_Map_ZoneList_t&); // room(s)
+  static void displayRoom(const unsigned long&,   // dimension x
+                          const unsigned long&,   // dimension y
+                          const RPG_Map_Zone_t&); // room
 
   typedef RPG_Map_Direction ORIGIN;
   static const bool turn(const RPG_Map_Zone_t&,     // map

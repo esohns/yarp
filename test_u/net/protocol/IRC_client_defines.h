@@ -21,15 +21,15 @@
 #ifndef IRC_CLIENT_DEFINES_H
 #define IRC_CLIENT_DEFINES_H
 
-#define IRC_CLIENT_CNF_DEF_INI_FILE              ACE_TEXT("IRC_client.ini")
+#define IRC_CLIENT_CNF_DEF_INI_FILE              "IRC_client.ini"
 // ini section headers
-#define IRC_CLIENT_CNF_LOGIN_SECTION_HEADER      ACE_TEXT("login")
-#define IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER ACE_TEXT("connections")
+#define IRC_CLIENT_CNF_LOGIN_SECTION_HEADER      "login"
+#define IRC_CLIENT_CNF_CONNECTION_SECTION_HEADER "connections"
 
 // phonebook section headers
-#define IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER  ACE_TEXT("timestamp")
-#define IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER   ACE_TEXT("networks")
-#define IRC_CLIENT_CNF_SERVERS_SECTION_HEADER    ACE_TEXT("servers")
+#define IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER  "timestamp"
+#define IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER   "networks"
+#define IRC_CLIENT_CNF_SERVERS_SECTION_HEADER    "servers"
 
 #define IRC_CLIENT_DEF_CLIENT_USES_TP            false
 #define IRC_CLIENT_DEF_NUM_TP_THREADS            5
@@ -45,11 +45,11 @@
 // *NOTE*: hybrid-7.2.3 seems to have a bug: 0,4,8 --> +i
 // *TODO*: --> ./etc/ircd.conf ?
 #define IRC_CLIENT_DEF_IRC_USERMODE              0
-#define IRC_CLIENT_DEF_IRC_NICK                  ACE_TEXT_ALWAYS_CHAR("Wiz")
-#define IRC_CLIENT_DEF_IRC_CHANNEL               ACE_TEXT_ALWAYS_CHAR("#foobar")
-#define IRC_CLIENT_DEF_IRC_AWAY_MESSAGE          ACE_TEXT("...be back soon...")
-#define IRC_CLIENT_DEF_IRC_LEAVE_REASON          ACE_TEXT("quitting...")
-#define IRC_CLIENT_DEF_IRC_KICK_REASON           ACE_TEXT("come back later...")
+#define IRC_CLIENT_DEF_IRC_NICK                  "Wiz"
+#define IRC_CLIENT_DEF_IRC_CHANNEL               "#foobar"
+#define IRC_CLIENT_DEF_IRC_AWAY_MESSAGE          "...be back soon..."
+#define IRC_CLIENT_DEF_IRC_LEAVE_REASON          "quitting..."
+#define IRC_CLIENT_DEF_IRC_KICK_REASON           "come back later..."
 
 // *NOTE*: these conform to RFC1459, but servers may allow use different sizes
 // e.g. NICKLEN option, ...

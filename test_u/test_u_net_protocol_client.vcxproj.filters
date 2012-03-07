@@ -21,9 +21,6 @@
     <None Include="net\protocol\IRC_client.ini">
       <Filter>config</Filter>
     </None>
-    <None Include="net\protocol\servers.ini">
-      <Filter>config</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="net\protocol\IRC_client.cpp">

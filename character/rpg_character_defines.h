@@ -18,22 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_PLAYER_DEFINES_H
-#define RPG_PLAYER_DEFINES_H
+#ifndef RPG_CHARACTER_DEFINES_H
+#define RPG_CHARACTER_DEFINES_H
 
-#define RPG_PLAYER_START_MONEY           0
-#define RPG_PLAYER_ATTR_MIN_SUM          80
-
-// XML-specific
-#define RPG_PLAYER_SCHEMA_FILE           "rpg_player.xsd"
-#define RPG_PLAYER_PROFILE_EXT           ".xml"
-
-#define RPG_PLAYER_DEF_ENTITY            "default_player"
-
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-#define RPG_PLAYER_DEF_ENTITY_REPOSITORY "/var/tmp"
-#else
-#define RPG_PLAYER_DEF_ENTITY_REPOSITORY "TEMP" // environment
-#endif
+// DATADIR-specific
+#define RPG_CHARACTER_DEF_DATA_SUB "character"
 
 #endif

@@ -24,7 +24,6 @@
 // *** trace log ***
 // *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-//#define RPG_NET_DEF_LOG_DIRECTORY                 ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR("TEMP"))
 #define RPG_NET_DEF_LOG_DIRECTORY                 "TEMP"
 #else
 #define RPG_NET_DEF_LOG_DIRECTORY                 "/var/tmp"
@@ -32,6 +31,9 @@
 #define RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX    "net_server"
 #define RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX    "net_client"
 #define RPG_NET_DEF_LOG_FILENAME_SUFFIX           ".log"
+
+// DATADIR-specific
+#define RPG_NET_DEF_DATA_SUB                      "net"
 
 // - WARNING: current implementation cannot support numbers that have
 //   more than 7 digits !!!

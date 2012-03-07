@@ -73,9 +73,14 @@ print_usage(const std::string& programName_in)
 #else
   path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
+#ifndef DATADIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += IRC_CLIENT_CNF_DEF_INI_FILE;
-
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
@@ -106,10 +111,16 @@ process_arguments(const int argc_in,
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
 
-  // init results
-  configFile_out           = base_data_path;
-  configFile_out           += ACE_DIRECTORY_SEPARATOR_CHAR_A;;
-  configFile_out           += IRC_CLIENT_CNF_DEF_INI_FILE;
+  // init configuration
+#ifndef DATADIR
+  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile_out += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
+
   debugParser_out          = false;
   logToFile_out            = false;
   traceInformation_out     = false;
@@ -250,15 +261,22 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 #endif
 //   signals_inout.push_back(SIGILL);
 //   signals_inout.push_back(SIGTRAP);
-  signals_inout.push_back(SIGABRT);
 //   signals_inout.push_back(SIGBUS);
 //   signals_inout.push_back(SIGFPE);
 //   signals_inout.push_back(SIGKILL); // cannot catch this one...
   if (allowUserRuntimeConnect_in)
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     signals_inout.push_back(SIGUSR1);
+#else
+  signals_inout.push_back(SIGBREAK);
+#endif
 //   signals_inout.push_back(SIGSEGV);
   if (allowUserRuntimeConnect_in)
-    signals_inout.push_back(SIGUSR2); // if we allow SIGUSR1, we allow SIGUSR2
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+    signals_inout.push_back(SIGUSR2);
+#else
+  signals_inout.push_back(SIGABRT);
+#endif
 //   signals_inout.push_back(SIGPIPE);
 //   signals_inout.push_back(SIGALRM);
   signals_inout.push_back(SIGTERM);
@@ -268,9 +286,6 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 //   signals_inout.push_back(SIGSTOP); // cannot catch this one...
 //   signals_inout.push_back(SIGTSTP);
 //   signals_inout.push_back(SIGTTIN);
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  signals_inout.push_back(SIGBREAK);
-#endif
 //   signals_inout.push_back(SIGTTOU);
 //   signals_inout.push_back(SIGURG);
 //   signals_inout.push_back(SIGXCPU);
@@ -328,8 +343,7 @@ init_signalHandling(const std::vector<int>& signals_inout,
 
     // debug info
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered handler for \"%S\": %d (key: %d)...\n"),
-               *iter,
+               ACE_TEXT("registered handler for \"%S\" (key: %d)...\n"),
                *iter,
                sigkey));
   } // end FOR
@@ -563,8 +577,8 @@ do_parseConfigFile(const std::string& configFilename_in,
   RPG_TRACE(ACE_TEXT("::do_parseConfigFile"));
 
   // init return value(s)
-  serverHostname_out                           = IRC_CLIENT_DEF_SERVER_HOSTNAME;
-  serverPortNumber_out                         = IRC_CLIENT_DEF_SERVER_PORT;
+  serverHostname_out   = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_SERVER_HOSTNAME);
+  serverPortNumber_out = IRC_CLIENT_DEF_SERVER_PORT;
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -588,13 +602,13 @@ do_parseConfigFile(const std::string& configFilename_in,
   // find/open "login" section...
   ACE_Configuration_Section_Key section_key;
   if (config_heap.open_section(config_heap.root_section(),
-                               IRC_CLIENT_CNF_LOGIN_SECTION_HEADER,
+                               ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_LOGIN_SECTION_HEADER),
                                0, // MUST exist !
                                section_key) != 0)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-               IRC_CLIENT_CNF_LOGIN_SECTION_HEADER));
+               ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_LOGIN_SECTION_HEADER)));
 
     return;
   } // end IF
@@ -777,8 +791,15 @@ ACE_TMAIN(int argc,
 #endif // #ifdef DATADIR
 
   std::string configFile             = base_data_path;
-  configFile                         += ACE_DIRECTORY_SEPARATOR_CHAR_A;;
-  configFile                         += IRC_CLIENT_CNF_DEF_INI_FILE;
+#ifndef DATADIR
+  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
+
   bool debugParser                   = false;
   bool logToFile                     = false;
   bool traceInformation              = false;
@@ -851,7 +872,7 @@ ACE_TMAIN(int argc,
   RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule(std::string("IRCHandler"),
                                                              NULL);
   RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
-  IRChandler_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*> (IRChandlerModule.writer());
+  IRChandler_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*>(IRChandlerModule.writer());
   if (!IRChandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -895,7 +916,7 @@ ACE_TMAIN(int argc,
   } // end ELSE
   config.loginOptions.user.servername = ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME);
 //   config.loginOptions.user.realname = ;
-  config.loginOptions.channel = IRC_CLIENT_DEF_IRC_CHANNEL;
+  config.loginOptions.channel = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_IRC_CHANNEL);
   // ************ stream config data ****************
   config.module = &IRChandlerModule;
   config.crunchMessageBuffers = false;
@@ -919,7 +940,7 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1db: parse config file (if any)
-  std::string serverHostname      = IRC_CLIENT_DEF_SERVER_HOSTNAME;
+  std::string serverHostname      = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_SERVER_HOSTNAME);
   unsigned short serverPortNumber = IRC_CLIENT_DEF_SERVER_PORT;
   if (!configFile.empty())
     do_parseConfigFile(configFile,
@@ -935,6 +956,8 @@ ACE_TMAIN(int argc,
           serverPortNumber,
           useThreadPool,
           numThreadPoolThreads);
+  // clean up
+  IRChandlerModule.close();
   timer.stop();
 
   // debug info

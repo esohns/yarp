@@ -44,7 +44,7 @@
 
 #define PATH_FINDER_DEF_CORRIDORS    false
 #define PATH_FINDER_DEF_DEBUG_PARSER false
-#define PATH_FINDER_DEF_FLOOR_PLAN   ACE_TEXT_ALWAYS_CHAR("/var/tmp/test_plan.txt")
+#define PATH_FINDER_DEF_FLOOR_PLAN   "test_plan"
 
 void
 print_usage(const std::string& programName_in)
@@ -58,7 +58,15 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-b        : build corridors") << ACE_TEXT(" [") << PATH_FINDER_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-d        : debug parser") << ACE_TEXT(" [") << PATH_FINDER_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << PATH_FINDER_DEF_FLOOR_PLAN << ACE_TEXT("\"]") << std::endl;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
@@ -77,7 +85,16 @@ process_arguments(const int argc_in,
   // init results
   buildCorridors_out      = PATH_FINDER_DEF_CORRIDORS;
   debugParser_out         = PATH_FINDER_DEF_DEBUG_PARSER;
-  floorPlan_out           = PATH_FINDER_DEF_FLOOR_PLAN;
+
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  floorPlan_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  floorPlan_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+
   traceInformation_out    = false;
   printVersionAndExit_out = false;
 
@@ -385,7 +402,16 @@ ACE_TMAIN(int argc,
   // step1a set defaults
   bool buildCorridors      = PATH_FINDER_DEF_CORRIDORS;
   bool debugParser         = PATH_FINDER_DEF_DEBUG_PARSER;
-  std::string floorPlan    = PATH_FINDER_DEF_FLOOR_PLAN;
+
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string floorPlan = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  std::string floorPlan = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+
   bool traceInformation    = false;
   bool printVersionAndExit = false;
 

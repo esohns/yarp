@@ -71,7 +71,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="net\protocol\IRC_client.ini" />
-    <None Include="net\protocol\servers.ini" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="net\protocol\IRC_client.cpp" />

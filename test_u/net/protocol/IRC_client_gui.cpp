@@ -93,15 +93,27 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = base_data_path;
+#ifndef DATADIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += IRC_CLIENT_CNF_DEF_INI_FILE;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-d          : debug") << ACE_TEXT(" [") << IRC_CLIENT_DEF_TRACE_ENABLED << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]  : reporting interval (seconds: 0 --> OFF)") << ACE_TEXT(" [") << IRC_CLIENT_DEF_STATSINTERVAL << ACE_TEXT("]") << std::endl;
   path = base_data_path;
+#ifndef DATADIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += IRC_CLIENT_GUI_DEF_SERVERS_FILE;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_GUI_DEF_SERVERS_FILE);
   std::cout << ACE_TEXT("-s [FILE]   : server config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-u [DIR]    : UI file directory") << ACE_TEXT(" [\"") << base_data_path.c_str() << ACE_TEXT("\"]") << std::endl;
@@ -134,14 +146,29 @@ process_arguments(const int argc_in,
 
   // init results
   configFile_out           = base_data_path;
-  configFile_out           += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile_out           += IRC_CLIENT_CNF_DEF_INI_FILE;
+#ifndef DATADIR
+  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile_out += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
+
   debug_out                = IRC_CLIENT_DEF_TRACE_ENABLED;
   logToFile_out            = false;
   reportingInterval_out    = IRC_CLIENT_DEF_STATSINTERVAL;
+
   serverConfigFile_out     = base_data_path;
-  serverConfigFile_out     += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  serverConfigFile_out     += IRC_CLIENT_GUI_DEF_SERVERS_FILE;
+#ifndef DATADIR
+  serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  serverConfigFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  serverConfigFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  serverConfigFile_out += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_GUI_DEF_SERVERS_FILE);
+
   traceInformation_out     = false;
   UIFileDirectory_out      = base_data_path;
   printVersionAndExit_out  = false;
@@ -1231,14 +1258,29 @@ ACE_TMAIN(int argc,
 #endif // #ifdef DATADIR
 
   std::string configFile             = base_data_path;
-  configFile                         += ACE_DIRECTORY_SEPARATOR_CHAR_A;;
-  configFile                         += IRC_CLIENT_CNF_DEF_INI_FILE;
+#ifndef DATADIR
+  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  configFile += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
+
   bool debug                         = IRC_CLIENT_DEF_TRACE_ENABLED;
   bool logToFile                     = false;
   unsigned long reportingInterval    = IRC_CLIENT_DEF_STATSINTERVAL;
+
   std::string serverConfigFile       = base_data_path;
-  serverConfigFile                   += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  serverConfigFile                   += IRC_CLIENT_GUI_DEF_SERVERS_FILE;
+#ifndef DATADIR
+  serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  serverConfigFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  serverConfigFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+#endif
+  serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  serverConfigFile += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_GUI_DEF_SERVERS_FILE);
+
   bool traceInformation              = false;
   std::string UIFileDirectory        = base_data_path;
   bool printVersionAndExit           = false;

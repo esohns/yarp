@@ -86,8 +86,16 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+  std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-f [FILE]: player profile (*.xml)") << std::endl;
-  std::string path = base_data_path;
+  path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -122,7 +130,14 @@ process_arguments(const int argc_in,
 #endif // #ifdef DATADIR
 
   // init configuration
-  playerFilename_out.clear();
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  playerFilename_out = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+  playerFilename_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
+  playerFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  playerFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  playerFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   itemDictionaryFilename_out = base_data_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -333,7 +348,14 @@ ACE_TMAIN(int argc,
 #endif // #ifdef DATADIR
 
   // init configuration
-  std::string playerFilename;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string playerFilename = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+  std::string playerFilename = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
+  playerFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  playerFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  playerFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   std::string itemDictionaryFilename = base_data_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;

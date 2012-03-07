@@ -32,9 +32,15 @@
 
 #define RPG_MAP_EXT                ".txt"
 
+#define RPG_MAP_DEF_MAP            "default_map"
+
 #define RPG_MAP_NAME_MAX_LENGTH    30
 #define RPG_MAP_DEF_NAME           "default map"
 
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
 #define RPG_MAP_DEF_REPOSITORY     "/var/tmp"
+#else
+#define RPG_MAP_DEF_REPOSITORY     "TEMP" // environment
+#endif
 
 #endif

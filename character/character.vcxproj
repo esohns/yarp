@@ -85,6 +85,7 @@
     <ClInclude Include="rpg_character_class_common_tools.h" />
     <ClInclude Include="rpg_character_common.h" />
     <ClInclude Include="rpg_character_common_tools.h" />
+    <ClInclude Include="rpg_character_defines.h" />
     <ClInclude Include="rpg_character_equipmentslot.h" />
     <ClInclude Include="rpg_character_exports.h" />
     <ClInclude Include="rpg_character_feat.h" />

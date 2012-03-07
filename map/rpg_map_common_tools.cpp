@@ -560,15 +560,15 @@ RPG_Map_Common_Tools::print(const RPG_Map_t& map_in)
       // *TODO*: cannot draw seed points that are not "unmapped"/"floor" without
       // losing essential information...
       if (map_in.plan.unmapped.find(current_position) != map_in.plan.unmapped.end())
-        std::clog << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
+        std::clog << (is_seed ? '@' : ' '); // unmapped
       else if (map_in.plan.walls.find(current_position) != map_in.plan.walls.end())
-        std::clog << ACE_TEXT("#"); // wall
+        std::clog << '#'; // wall
       else if (map_in.plan.doors.find(current_position_door) != map_in.plan.doors.end())
-        std::clog << ACE_TEXT("="); // door
+        std::clog << '='; // door
       else
-        std::clog << (is_starting_position ? ACE_TEXT("X")
-                                           : (is_seed ? ACE_TEXT("@")
-                                                      : ACE_TEXT("."))); // floor
+        std::clog << (is_starting_position ? 'X'
+                                           : (is_seed ? '@'
+                                                      : '.')); // floor
     } // end FOR
     std::clog << std::endl;
   } // end FOR
@@ -753,7 +753,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
   unsigned long min = 0;
   unsigned long distance = 0;
   RPG_Map_Positions_t neighbours;
-  RPG_Map_Position_t current;
+  RPG_Map_Position_t current_position;
   RPG_Map_PositionsIterator_t nearest_neighbour;
   RPG_Dice_RollResult_t result;
   RPG_Map_PartitionIterator_t partition_iter;
@@ -765,7 +765,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
          x < dimensionX_in;
          x++)
     {
-      current = std::make_pair(x, y);
+      current_position = std::make_pair(x, y);
 
       min = std::numeric_limits<unsigned long>::max();
       neighbours.clear();
@@ -774,7 +774,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
            seed_iter++)
       {
         // find all "nearest neighbours"
-        distance = dist2Positions(current, *seed_iter);
+        distance = dist2Positions(current_position, *seed_iter);
         if (distance < min)
         {
           // new minimum
@@ -807,13 +807,11 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
         for (partition_iter = partition_out.begin();
              partition_iter != partition_out.end();
              partition_iter++)
-        {
           if ((*partition_iter).find(*neighbours.begin()) != (*partition_iter).end())
           {
-            (*partition_iter).insert(current);
+            (*partition_iter).insert(current_position);
             break;
           } // end IF
-        } // end FOR
       } // end IF
       else
       {
@@ -823,7 +821,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
 //                    neighbours.size()));
 
         // conflict
-        conflicts_out.insert(current);
+        conflicts_out.insert(current_position);
 
         // resolve by choosing a neighbour at random
         result.clear();
@@ -842,13 +840,11 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
         for (partition_iter = partition_out.begin();
              partition_iter != partition_out.end();
              partition_iter++)
-        {
           if ((*partition_iter).find(*nearest_neighbour) != (*partition_iter).end())
           {
-            (*partition_iter).insert(current);
+            (*partition_iter).insert(current_position);
             break;
           } // end IF
-        } // end FOR
       } // end ELSE
     } // end FOR
   } // end FOR
@@ -862,11 +858,9 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
   RPG_Map_Position_t current_seed;
   RPG_Map_PartitionIterator_t member_partition;
   RPG_Map_PartitionIterator_t neighbour_partition;
-  RPG_Map_PositionsIterator_t conflict_iter;
   bool found_seed = false;
   bool accounted_for = false;
   if (resolveConflicts_in)
-  {
     while (!conflicts_out.empty())
     {
   //     // debug info
@@ -876,180 +870,174 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
   //                      seed_points,
   //                      partition_out);
 
-      for (conflict_iter = conflicts_out.begin();
-           conflict_iter != conflicts_out.end();
-           conflict_iter++)
+      current_position = *conflicts_out.begin();
+      // find corresponding partition / seed
+      for (member_partition = partition_out.begin();
+           member_partition != partition_out.end();
+           member_partition++)
+        if ((*member_partition).find(*conflicts_out.begin()) != (*member_partition).end())
+          break;
+      // sanity check
+      ACE_ASSERT(member_partition != partition_out.end());
+      current_seed = std::make_pair(std::numeric_limits<unsigned long>::max(),
+                                    std::numeric_limits<unsigned long>::max());
+      for (seed_iter = seedPoints_out.begin();
+           seed_iter != seedPoints_out.end();
+           seed_iter++)
       {
-        current = *conflict_iter;
-        // find corresponding partition / seed
-        for (member_partition = partition_out.begin();
-             member_partition != partition_out.end();
-             member_partition++)
-          if ((*member_partition).find(*conflict_iter) != (*member_partition).end())
-            break;
-        // sanity check
-        ACE_ASSERT(member_partition != partition_out.end());
-        current_seed = std::make_pair(std::numeric_limits<unsigned long>::max(),
-                                      std::numeric_limits<unsigned long>::max());
-        for (seed_iter = seedPoints_out.begin();
-             seed_iter != seedPoints_out.end();
-             seed_iter++)
+        if ((*member_partition).find(*seed_iter) != (*member_partition).end())
         {
-          if ((*member_partition).find(*seed_iter) != (*member_partition).end())
-          {
-            current_seed = *seed_iter;
-            break;
-          } // end IF
-        } // end FOR
-        // sanity check
-        ACE_ASSERT(seed_iter != seedPoints_out.end());
-        ACE_ASSERT(seedPoints_out.find(current_seed) != seedPoints_out.end());
+          current_seed = *seed_iter;
+          break;
+        } // end IF
+      } // end FOR
+      // sanity check
+      ACE_ASSERT(seed_iter != seedPoints_out.end());
+      ACE_ASSERT(seedPoints_out.find(current_seed) != seedPoints_out.end());
 
-        // has it become an "island" ?
-        // --> iff the (compact) area has been cut off from the seed cell ("mainland")
+      // has it become an "island" ?
+      // --> iff the (compact) area has been cut off from the seed cell ("mainland")
 
-        // step1: "grow" the cell
-        current_island.clear();
-        current_island.push_back(current);
-        found_seed = false;
-        for (current_island_iter = current_island.begin();
-             current_island_iter != current_island.end();
-             current_island_iter++)
+      // step1: "grow" the cell
+      current_island.clear();
+      current_island.push_back(current_position);
+      found_seed = false;
+      for (current_island_iter = current_island.begin();
+           current_island_iter != current_island.end();
+           current_island_iter++)
+      {
+        // check four neighbouring cells (as long as they exist)
+        neighbour_cells.clear();
+        if ((*current_island_iter).first < (dimensionX_in - 1))
         {
-          // check four neighbouring cells (as long as they exist)
-          neighbour_cells.clear();
-          if ((*current_island_iter).first < (dimensionX_in - 1))
-          {
-            current_neighbour = *current_island_iter;
-            current_neighbour.first++; // east
-            neighbour_cells.insert(current_neighbour);
-          } // end IF
-          if ((*current_island_iter).first > 0)
-          {
-            current_neighbour = *current_island_iter;
-            current_neighbour.first--; // west
-            neighbour_cells.insert(current_neighbour);
-          } // end IF
-          if ((*current_island_iter).second < (dimensionY_in - 1))
-          {
-            current_neighbour = *current_island_iter;
-            current_neighbour.second++; // south
-            neighbour_cells.insert(current_neighbour);
-          } // end IF
-          if ((*current_island_iter).second > 0)
-          {
-            current_neighbour = *current_island_iter;
-            current_neighbour.second--; // north
-            neighbour_cells.insert(current_neighbour);
-          } // end IF
-          for (current_neighbour_iter = neighbour_cells.begin();
+          current_neighbour = *current_island_iter;
+          current_neighbour.first++; // east
+          neighbour_cells.insert(current_neighbour);
+        } // end IF
+        if ((*current_island_iter).first > 0)
+        {
+          current_neighbour = *current_island_iter;
+          current_neighbour.first--; // west
+          neighbour_cells.insert(current_neighbour);
+        } // end IF
+        if ((*current_island_iter).second < (dimensionY_in - 1))
+        {
+          current_neighbour = *current_island_iter;
+          current_neighbour.second++; // south
+          neighbour_cells.insert(current_neighbour);
+        } // end IF
+        if ((*current_island_iter).second > 0)
+        {
+          current_neighbour = *current_island_iter;
+          current_neighbour.second--; // north
+          neighbour_cells.insert(current_neighbour);
+        } // end IF
+        for (current_neighbour_iter = neighbour_cells.begin();
               current_neighbour_iter != neighbour_cells.end();
               current_neighbour_iter++)
+        {
+          // if this neighbour IS the seed point of the conflicting cell
+          // --> stop immediately
+          if ((*current_neighbour_iter) == current_seed)
           {
-            // if this neighbour IS the seed point of the conflicting cell
-            // --> stop immediately
-            if ((*current_neighbour_iter) == current_seed)
+            found_seed = true;
+            break;
+          } // end IF
+
+          // neighbour already accounted for (i.e. have we "come" this way ?)
+          // --> continue
+          accounted_for = false;
+          for (RPG_Map_PositionListIterator_t current_island_iter2 = current_island.begin();
+               current_island_iter2 != current_island.end();
+               current_island_iter2++)
+            if ((*current_island_iter2) == (*current_neighbour_iter))
             {
-              found_seed = true;
+              accounted_for = true;
               break;
             } // end IF
+          if (accounted_for)
+            continue; // try next neighbour
 
-            // neighbour already accounted for (i.e. have we "come" this way ?)
-            // --> continue
-            accounted_for = false;
-            for (RPG_Map_PositionListIterator_t current_island_iter2 = current_island.begin();
-                current_island_iter2 != current_island.end();
-                current_island_iter2++)
-              if ((*current_island_iter2) == (*current_neighbour_iter))
-              {
-                accounted_for = true;
-                break;
-              } // end IF
-            if (accounted_for)
-              continue; // try next neighbour
+          // find corresponding partition
+          for (neighbour_partition = partition_out.begin();
+              neighbour_partition != partition_out.end();
+              neighbour_partition++)
+            if ((*neighbour_partition).find(*current_neighbour_iter) != (*neighbour_partition).end())
+              break;
+          // sanity check
+          ACE_ASSERT(neighbour_partition != partition_out.end());
 
-            // find corresponding partition
-            for (neighbour_partition = partition_out.begin();
-                neighbour_partition != partition_out.end();
-                neighbour_partition++)
-              if ((*neighbour_partition).find(*current_neighbour_iter) != (*neighbour_partition).end())
-                break;
-            // sanity check
-            ACE_ASSERT(neighbour_partition != partition_out.end());
-
-            // part of the same "island" ?
-            if (member_partition == neighbour_partition)
-              current_island.push_back(*current_neighbour_iter);
-          } // end FOR
+          // part of the same "island" ?
+          if (member_partition == neighbour_partition)
+            current_island.push_back(*current_neighbour_iter);
         } // end FOR
+      } // end FOR
 
-        // step2: check whether the seed point was found
-        if (found_seed)
+      // step2: check whether the seed point was found
+      if (found_seed)
+      {
+        // NOT and island (any more) --> nothing to do
+        conflicts_out.erase(current_position);
+        continue;
+      } // end IF
+
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("(%u,%u) is an island...\n"),
+//                  current.first,
+//                  current.second));
+
+      // step3: (try to) dissolve this island
+      // --> simply assign it to one of the neighbours ? NO !
+      // *NOTE*: some neighbours may not qualify for "ownership"
+      // --> to progress, the cell is assigned a DIFFERENT partition
+      min = std::numeric_limits<unsigned long>::max();
+      neighbours.clear();
+      for (seed_iter = seedPoints_out.begin();
+          seed_iter != seedPoints_out.end();
+          seed_iter++)
+      {
+        // find all "nearest neighbours"
+        distance = dist2Positions(current_position, *seed_iter);
+        if (distance < min)
         {
-          // NOT and island (any more) --> nothing to do
-          conflicts_out.erase(current);
-          continue;
+          // new minimum
+          min = distance;
+          neighbours.clear();
+          neighbours.insert(*seed_iter);
         } // end IF
-
-  //       ACE_DEBUG((LM_DEBUG,
-  //                  ACE_TEXT("(%u,%u) is an island...\n"),
-  //                  current.first,
-  //                  current.second));
-
-        // step3: (try to) dissolve this island
-        // --> simply assign it to one of the neighbours ? NO !
-        // *NOTE*: some neighbours may not qualify for "ownership"
-        // --> to progress, the cell is assigned a DIFFERENT partition
-        min = std::numeric_limits<unsigned long>::max();
-        neighbours.clear();
-        for (seed_iter = seedPoints_out.begin();
-            seed_iter != seedPoints_out.end();
-            seed_iter++)
+        else if (distance == min)
         {
-          // find all "nearest neighbours"
-          distance = dist2Positions(current, *seed_iter);
-          if (distance < min)
-          {
-            // new minimum
-            min = distance;
-            neighbours.clear();
-            neighbours.insert(*seed_iter);
-          } // end IF
-          else if (distance == min)
-          {
-            // sanity check
-            ACE_ASSERT(!neighbours.empty());
+          // sanity check
+          ACE_ASSERT(!neighbours.empty());
 
-            // new neighbour
-            neighbours.insert(*seed_iter);
-          } // end IF
+          // new neighbour
+          neighbours.insert(*seed_iter);
+        } // end IF
+      } // end FOR
+      // sanity check
+      ACE_ASSERT(!neighbours.empty());
+      do
+      {
+        result.clear();
+        RPG_Dice::generateRandomNumbers(neighbours.size(),
+                                        1,
+                                        result);
+        nearest_neighbour = neighbours.begin();
+        std::advance(nearest_neighbour, result[0] - 1);
+        // find corresponding partition
+        for (partition_iter = partition_out.begin();
+              partition_iter != partition_out.end();
+              partition_iter++)
+        {
+          if ((*partition_iter).find(*nearest_neighbour) != (*partition_iter).end())
+            break;
         } // end FOR
         // sanity check
-        ACE_ASSERT(!neighbours.empty());
-        do
-        {
-          result.clear();
-          RPG_Dice::generateRandomNumbers(neighbours.size(),
-                                          1,
-                                          result);
-          nearest_neighbour = neighbours.begin();
-          std::advance(nearest_neighbour, result[0] - 1);
-          // find corresponding partition
-          for (partition_iter = partition_out.begin();
-               partition_iter != partition_out.end();
-               partition_iter++)
-          {
-            if ((*partition_iter).find(*nearest_neighbour) != (*partition_iter).end())
-              break;
-          } // end FOR
-          // sanity check
-          ACE_ASSERT(partition_iter != partition_out.end());
-        } while (partition_iter == member_partition);
-        (*member_partition).erase(current);
-        (*partition_iter).insert(current);
-      } // end FOR
+        ACE_ASSERT(partition_iter != partition_out.end());
+      } while (partition_iter == member_partition);
+      (*member_partition).erase(current_position);
+      (*partition_iter).insert(current_position);
     } // end WHILE
-  } // end IF
 
 //   displayPartition(dimensionX_in,
 //                    dimensionY_in,
@@ -1088,11 +1076,11 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
         current_position = std::make_pair(x, y);
 
         if (seedPositions_in.find(current_position) != seedPositions_in.end())
-          std::clog << ACE_TEXT("@");
+          std::clog << '@';
         else if (conflicts_in.find(current_position) != conflicts_in.end())
-          std::clog << ACE_TEXT("X");
+          std::clog << 'X';
         else
-          std::clog << ACE_TEXT(".");
+          std::clog << '.';
       } // end FOR
       std::clog << std::endl;
     } // end FOR
@@ -1121,7 +1109,7 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
           if ((*iter).find(current_position) != (*iter).end())
           {
             if (seedPositions_in.find(current_position) != seedPositions_in.end())
-              std::clog << ACE_TEXT("@");
+              std::clog << '@';
             else
             {
               converter.str(ACE_TEXT(""));
@@ -1322,6 +1310,12 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
       do
       {
         last_size = current_zone.size();
+
+        //// debug info
+        //displayRoom(dimensionX_in,
+        //            dimensionY_in,
+        //            current_zone);
+
         crop(current_zone);
       } while (last_size > current_zone.size());
 
@@ -1639,6 +1633,11 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
           } // end SWITCH
         } // end FOR
 
+        //// debug info
+        //displayRoom(dimensionX_in,
+        //            dimensionY_in,
+        //            *zones_iter);
+
         // (re-)crop the entire room...
 //         cropSquareBoundary(*zones_iter);
         crop(*zones_iter);
@@ -1794,7 +1793,33 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
       if (found_position)
         continue;
       // position not part of any room
-      std::clog << ACE_TEXT(".");
+      std::clog << '.';
+    } // end FOR
+    std::clog << std::endl;
+  } // end FOR
+}
+
+void
+RPG_Map_Common_Tools::displayRoom(const unsigned long& dimensionX_in,
+                                  const unsigned long& dimensionY_in,
+                                  const RPG_Map_Zone_t& room_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRoom"));
+
+  RPG_Map_ZoneConstIterator_t iterator = room_in.end();
+  for (unsigned long y = 0;
+       y < dimensionY_in;
+       y++)
+  {
+    for (unsigned long x = 0;
+         x < dimensionX_in;
+         x++)
+    {
+      iterator = room_in.find(std::make_pair(x, y));
+      if (iterator != room_in.end())
+        std::clog << '#';
+      else
+        std::clog << '.';
     } // end FOR
     std::clog << std::endl;
   } // end FOR
@@ -3015,18 +3040,18 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
   // and remove any sequences of less than 3 consecutive cells
   RPG_Map_ZoneConstIterator_t begin_sequence = room_inout.begin();
   RPG_Map_ZoneConstIterator_t line_iterator;
-  RPG_Map_ZoneConstIterator_t zone_iterator = room_inout.begin();
+  RPG_Map_ZoneConstIterator_t next_iterator = room_inout.begin();
   unsigned long next_x = 0;
   unsigned long count = 0;
 
   // step1
   while (true)
   {
-    if ((zone_iterator != room_inout.end()) &&
-        ((*zone_iterator).second == (*begin_sequence).second))
+    if ((next_iterator != room_inout.end()) &&
+        ((*next_iterator).second == (*begin_sequence).second))
     {
       // skip to next row/end
-      zone_iterator++;
+      next_iterator++;
       continue;
     } // end IF
 
@@ -3034,7 +3059,7 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
     next_x = (*begin_sequence).first;
     count = 0;
     line_iterator = begin_sequence;
-    while (line_iterator != zone_iterator) // maybe end
+    while (line_iterator != next_iterator) // maybe end
     {
       while ((line_iterator != room_inout.end()) &&
              ((*line_iterator).first == next_x))
@@ -3049,11 +3074,12 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
       if (count < 3)
       {
         // *NOTE*: std::set::erase removes [first, last) !
-//         end_sequence = line_iterator;
-//         end_sequence--;
-//         room_inout.erase(begin_sequence, end_sequence);
         room_inout.erase(begin_sequence, line_iterator);
       } // end IF
+      if (line_iterator == room_inout.end()) // done ?
+        continue;
+
+      // same line --> next sequence ?
       begin_sequence = line_iterator;
       next_x = (*begin_sequence).first;
       count = 0;
@@ -3061,7 +3087,7 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
 
     // finished ?
     if (room_inout.empty() ||
-        (zone_iterator == room_inout.end()))
+        (next_iterator == room_inout.end()))
       break;
   } // end WHILE
 
@@ -3072,23 +3098,23 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
   // step2
   // create alternate sorting
   RPG_Map_AltPositions_t alt_room;
-  for (zone_iterator = room_inout.begin();
-       zone_iterator != room_inout.end();
-       zone_iterator++)
-    alt_room.insert(*zone_iterator);
+  for (RPG_Map_ZoneConstIterator_t iterator = room_inout.begin();
+       iterator != room_inout.end();
+       iterator++)
+    alt_room.insert(*iterator);
 
   RPG_Map_AltPositionsConstIterator_t begin_alt_room = alt_room.begin();
   RPG_Map_AltPositionsConstIterator_t line_iterator_alt;
-  RPG_Map_AltPositionsConstIterator_t zone_iterator_alt = alt_room.begin();
+  RPG_Map_AltPositionsConstIterator_t next_iterator_alt = alt_room.begin();
   unsigned long next_y = 0;
   count = 0;
   while (true)
   {
-    if ((zone_iterator_alt != alt_room.end()) &&
-        ((*zone_iterator_alt).first == (*begin_alt_room).first))
+    if ((next_iterator_alt != alt_room.end()) &&
+        ((*next_iterator_alt).first == (*begin_alt_room).first))
     {
       // skip to next column/end
-      zone_iterator_alt++;
+      next_iterator_alt++;
       continue;
     } // end IF
 
@@ -3096,7 +3122,7 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
     next_y = (*begin_alt_room).second;
     count = 0;
     line_iterator_alt = begin_alt_room;
-    while (line_iterator_alt != zone_iterator_alt) // maybe end
+    while (line_iterator_alt != next_iterator_alt) // maybe end
     {
       while ((line_iterator_alt != alt_room.end()) &&
             ((*line_iterator_alt).second == next_y))
@@ -3111,11 +3137,12 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
       if (count < 3)
       {
         // *NOTE*: std::set::erase removes [first, last) !
-//         end_sequence = line_iterator;
-//         end_sequence--;
-//         alt_room.erase(begin_sequence, end_sequence);
         alt_room.erase(begin_alt_room, line_iterator_alt);
       } // end IF
+      if (line_iterator_alt == alt_room.end()) // done ?
+        continue;
+
+      // same line --> next sequence ?
       begin_alt_room = line_iterator_alt;
       next_y = (*begin_alt_room).second;
       count = 0;
@@ -3123,16 +3150,16 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
 
     // finished ?
     if (alt_room.empty() ||
-        (zone_iterator_alt == alt_room.end()))
+        (next_iterator_alt == alt_room.end()))
       break;
   } // end WHILE
 
   // return original sorting
   room_inout.clear();
-  for (zone_iterator_alt = alt_room.begin();
-       zone_iterator_alt != alt_room.end();
-       zone_iterator_alt++)
-    room_inout.insert(*zone_iterator_alt);
+  for (RPG_Map_AltPositionsConstIterator_t iterator = alt_room.begin();
+       iterator != alt_room.end();
+       iterator++)
+    room_inout.insert(*iterator);
 }
 
 // void

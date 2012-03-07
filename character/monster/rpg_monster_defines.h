@@ -23,4 +23,7 @@
 
 #define RPG_MONSTER_DEF_DICTIONARY_FILE "rpg_monster.xml"
 
+// DATADIR-specific
+#define RPG_MONSTER_DEF_DATA_SUB        "monster"
+
 #endif

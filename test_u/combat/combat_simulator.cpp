@@ -37,6 +37,7 @@
 #include <rpg_player_common.h>
 #include <rpg_player_common_tools.h>
 
+#include <rpg_character_defines.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 
@@ -92,15 +93,23 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-f [VALUE]: total number of foes")  << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_FOES << ACE_TEXT("]") << ACE_TEXT(" (0: random)") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]: number of players") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_PLAYERS << ACE_TEXT("]") << std::endl;
   path = base_data_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-s [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
@@ -136,15 +145,27 @@ process_arguments(const int argc_in,
   // init results
   numBattles_out = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
   numFoes_out = COMBAT_SIMULATOR_DEF_NUM_FOES;
+
   magicDictionaryFilename_out = base_data_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+  magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+
   itemDictionaryFilename_out = base_data_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+
   monsterDictionaryFilename_out = base_data_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+
   numMonsterTypes_out = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
   numPlayers_out = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
   traceInformation_out = false;
@@ -154,7 +175,6 @@ process_arguments(const int argc_in,
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
                              ACE_TEXT("b:f:i:m:n:p:s:tvx"));
-
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
@@ -585,16 +605,27 @@ ACE_TMAIN(int argc,
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
 
-  // init results
+  // init configuration
   std::string itemDictionaryFilename = base_data_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+
   std::string magicDictionaryFilename = base_data_path;
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+  magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+
   std::string monsterDictionaryFilename = base_data_path;
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+ 
   unsigned int numFoes = COMBAT_SIMULATOR_DEF_NUM_FOES;
   unsigned int numMonsterTypes = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
   unsigned int numPlayers = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;

@@ -190,11 +190,11 @@ connect_clicked_cb(GtkWidget* button_in,
   } // end IF
 
   RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
-  IRChandler_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*> (module->writer());
+  IRChandler_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*>(module->writer());
   if (!IRChandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler) failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler> failed, aborting\n")));
 
     // clean up
     delete module;
@@ -239,6 +239,7 @@ connect_clicked_cb(GtkWidget* button_in,
                exception.what()));
 
     // clean up
+    module->close();
     delete module;
 
     return;
@@ -249,6 +250,7 @@ connect_clicked_cb(GtkWidget* button_in,
                ACE_TEXT("failed to allocate IRC_Client_GUI_Connection, aborting\n")));
 
     // clean up
+    module->close();
     delete module;
 
     return;
@@ -259,6 +261,7 @@ connect_clicked_cb(GtkWidget* button_in,
                ACE_TEXT("failed to allocate IRC_Client_GUI_Connection, aborting\n")));
 
     // clean up
+    module->close();
     delete module;
 
     return;
@@ -315,8 +318,9 @@ connect_clicked_cb(GtkWidget* button_in,
                (*phonebook_iter).second.hostName.c_str()));
 
     // clean up
-    delete module;
     delete connection;
+    module->close();
+    delete module;
 
     return;
   } // end IF
