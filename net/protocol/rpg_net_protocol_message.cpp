@@ -212,10 +212,13 @@ RPG_Net_Protocol_Message::duplicate(void) const
   {
     // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
     // a "shallow" copy which just references our data block...
+    // *IMPORTANT NOTE*: cached allocators require the object size as argument to
+    // malloc() (instead of its internal "capacity()" !)
     // *TODO*: (depending on the allocator) we senselessly allocate a datablock
     // anyway, only to immediately release it again...
     ACE_NEW_MALLOC_RETURN(nb,
-                          static_cast<RPG_Net_Protocol_Message*> (message_block_allocator_->malloc(capacity())),
+//                          static_cast<RPG_Net_Protocol_Message*>(message_block_allocator_->malloc(capacity())),
+                          static_cast<RPG_Net_Protocol_Message*>(message_block_allocator_->malloc(sizeof(RPG_Net_Protocol_Message))),
                           RPG_Net_Protocol_Message(*this),
                           NULL);
   } // end ELSE
@@ -335,7 +338,7 @@ RPG_Net_Protocol_Message::commandType2String(const RPG_Net_Protocol_CommandType_
     default:
     {
       // try numeric conversion
-      result = RPG_Net_Protocol_Tools::IRCCode2String(static_cast<RPG_Net_Protocol_IRCNumeric_t> (commandType_in));
+      result = RPG_Net_Protocol_Tools::IRCCode2String(static_cast<RPG_Net_Protocol_IRCNumeric_t>(commandType_in));
 
       break;
     }

@@ -692,13 +692,13 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
   // step1: find/open "timestamp" section...
   ACE_Configuration_Section_Key section_key;
   if (config_heap.open_section(config_heap.root_section(),
-                               IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER,
+                               ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER),
                                0, // MUST exist !
                                section_key) != 0)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(\"%s\"), aborting\n"),
-               IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER));
+               ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_TIMESTAMP_SECTION_HEADER)));
 
     return;
   } // end IF
@@ -806,13 +806,13 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
 
   // step2: find/open "networks" section...
   if (config_heap.open_section(config_heap.root_section(),
-                               IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER,
+                               ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER),
                                0, // MUST exist !
                                section_key) != 0)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(\"%s\"), aborting\n"),
-               IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER));
+               ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER)));
 
     return;
   } // end IF
@@ -847,13 +847,13 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
 
   // step3: find/open "servers" section...
   if (config_heap.open_section(config_heap.root_section(),
-                               IRC_CLIENT_CNF_SERVERS_SECTION_HEADER,
+                               ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_SERVERS_SECTION_HEADER),
                                0, // MUST exist !
                                section_key) != 0)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(\"%s\"), aborting\n"),
-               IRC_CLIENT_CNF_SERVERS_SECTION_HEADER));
+               ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_SERVERS_SECTION_HEADER)));
 
     return;
   } // end IF
@@ -1364,7 +1364,7 @@ ACE_TMAIN(int argc,
   ACE_ASSERT(userData.builder);
 //   userData.phoneBook;
 //   userData.loginOptions.password = ;
-  userData.loginOptions.nick = IRC_CLIENT_DEF_IRC_NICK;
+  userData.loginOptions.nick = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_IRC_NICK);
 //   userData.loginOptions.user.username = ;
   std::string hostname = RPG_Common_Tools::getHostName();
   if (IRC_CLIENT_CNF_IRC_USERMSG_TRADITIONAL)
@@ -1379,8 +1379,9 @@ ACE_TMAIN(int argc,
     userData.loginOptions.user.hostname.mode = IRC_CLIENT_DEF_IRC_USERMODE;
   } // end ELSE
   userData.loginOptions.user.servername = ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME);
-//   userData.loginOptions.user.realname = ;
-  userData.loginOptions.channel = IRC_CLIENT_DEF_IRC_CHANNEL;
+//  userData.loginOptions.user.username = ;
+//  userData.loginOptions.user.realname = ;
+  userData.loginOptions.channel = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_IRC_CHANNEL);
   userData.connections.clear();
 
   // populate user/realname

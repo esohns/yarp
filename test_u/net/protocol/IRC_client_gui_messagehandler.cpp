@@ -40,7 +40,7 @@ update_display_cb(gpointer userData_in)
 
   // sanity check(s)
   ACE_ASSERT(userData_in);
-  IRC_Client_GUI_MessageHandler* messageHandler = static_cast<IRC_Client_GUI_MessageHandler*> (userData_in);
+  IRC_Client_GUI_MessageHandler* messageHandler = static_cast<IRC_Client_GUI_MessageHandler*>(userData_in);
   ACE_ASSERT(messageHandler);
 
   // *WARNING*: callbacks scheduled via g_idle_add need to be protected by
@@ -219,9 +219,10 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(IRC_Client_GUI_Conn
   gtk_notebook_set_tab_reorderable(myParent,
                                    GTK_WIDGET(channel_tab_vbox),
                                    TRUE);
-  // activate new page
-  gtk_notebook_set_current_page(myParent,
-                                page_num);
+  // activate new page (iff it's a channel tab !)
+  if (RPG_Net_Protocol_Tools::isValidIRCChannelName(myCBData.id))
+    gtk_notebook_set_current_page(myParent,
+                                  page_num);
 
   // clean up
   g_object_unref(channel_tab_label_hbox);

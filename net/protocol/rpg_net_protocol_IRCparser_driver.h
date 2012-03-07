@@ -45,6 +45,9 @@ RPG_Net_Protocol_IRCScanner_lex(yy::RPG_Net_Protocol_IRCParser::semantic_type* y
 // ... and declare it for the parser's sake
 YY_DECL;
 
+//void
+//yy::RPG_Net_Protocol_IRCParser::set(yyscan_t);
+
 class RPG_Net_Protocol_IRCParserDriver
 {
   // allow access to our internals (i.e. the current message)

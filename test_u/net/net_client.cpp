@@ -254,15 +254,22 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 #endif
 //   signals_inout.push_back(SIGILL);
 //   signals_inout.push_back(SIGTRAP);
-  signals_inout.push_back(SIGABRT);
 //   signals_inout.push_back(SIGBUS);
 //   signals_inout.push_back(SIGFPE);
 //   signals_inout.push_back(SIGKILL); // cannot catch this one...
   if (allowUserRuntimeConnect_in)
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     signals_inout.push_back(SIGUSR1);
+#else
+    signals_inout.push_back(SIGBREAK);
+#endif
 //   signals_inout.push_back(SIGSEGV);
   if (allowUserRuntimeConnect_in)
-    signals_inout.push_back(SIGUSR2); // if we allow SIGUSR1, we allow SIGUSR2
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+    signals_inout.push_back(SIGUSR2);
+#else
+    signals_inout.push_back(SIGABRT);
+#endif
 //   signals_inout.push_back(SIGPIPE);
 //   signals_inout.push_back(SIGALRM);
   signals_inout.push_back(SIGTERM);
@@ -272,9 +279,6 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 //   signals_inout.push_back(SIGSTOP); // cannot catch this one...
 //   signals_inout.push_back(SIGTSTP);
 //   signals_inout.push_back(SIGTTIN);
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  signals_inout.push_back(SIGBREAK);
-#endif
 //   signals_inout.push_back(SIGTTOU);
 //   signals_inout.push_back(SIGURG);
 //   signals_inout.push_back(SIGXCPU);
@@ -323,8 +327,7 @@ init_signalHandling(const std::vector<int>& signals_inout,
     if (sigkey == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%m\", aborting\n"),
-                 *iter,
+                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": \"%m\", aborting\n"),
                  *iter));
 
       return false;
@@ -332,8 +335,7 @@ init_signalHandling(const std::vector<int>& signals_inout,
 
     // debug info
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered handler for \"%S\": %d (key: %d)...\n"),
-               *iter,
+               ACE_TEXT("registered handler for \"%S\" (key: %d)...\n"),
                *iter,
                sigkey));
   } // end FOR
@@ -425,7 +427,7 @@ do_work(const std::string& serverHostname_in,
   ACE_Sig_Handlers signalHandlers;
   // *WARNING*: 'signals' appears to be a keyword in some contexts...
   std::vector<int> signalss;
-  init_signals((stressTestServer_in == 0),  // allow SIGUSR1 IF regular connections are off
+  init_signals((stressTestServer_in == 0),  // allow SIGUSR1/SIGBREAK IF regular connections are off
                signalss);
   if (!init_signalHandling(signalss,
                            signalEventHandler,

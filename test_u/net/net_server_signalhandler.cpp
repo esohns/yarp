@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_net_signalhandler.h"
+#include "net_server_signalhandler.h"
 
-#include "rpg_net_common_tools.h"
+#include <rpg_net_common_tools.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_icontrol.h>
@@ -30,31 +30,31 @@
 
 #include <sstream>
 
-RPG_Net_SignalHandler::RPG_Net_SignalHandler(RPG_Common_IControl* control_in,
-                                             RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* report_in)
+Net_Server_SignalHandler::Net_Server_SignalHandler(RPG_Common_IControl* control_in,
+                                                   RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* report_in)
  : inherited(ACE_Reactor::instance(),         // corresp. reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myControl(control_in),
    myReport(report_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::RPG_Net_SignalHandler"));
+  RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::Net_Server_SignalHandler"));
 
   // sanity check
   ACE_ASSERT(myControl);
 }
 
-RPG_Net_SignalHandler::~RPG_Net_SignalHandler()
+Net_Server_SignalHandler::~Net_Server_SignalHandler()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::~RPG_Net_SignalHandler"));
+  RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::~Net_Server_SignalHandler"));
 
 }
 
 int
-RPG_Net_SignalHandler::handle_signal(int signal_in,
-                                     siginfo_t* info_in,
-                                     ucontext_t* context_in)
+Net_Server_SignalHandler::handle_signal(int signal_in,
+                                        siginfo_t* info_in,
+                                        ucontext_t* context_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
+  RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::handle_signal"));
 
   // debug info
   if (info_in == NULL)
@@ -86,7 +86,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
   {
     case SIGINT:
     case SIGTERM:
-// *PORTABILITY*: this isn't portable: on Windows SIGQUIT and SIGHUP are not defined...
+    // *PORTABILITY*: this isn't portable: on Windows SIGQUIT and SIGHUP are not defined...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGHUP:
     case SIGQUIT:

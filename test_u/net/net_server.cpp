@@ -23,10 +23,11 @@
 #include <rpg_config.h>
 #endif
 
+#include "net_server_signalhandler.h"
+
 #include <rpg_net_defines.h>
 #include <rpg_net_listener.h>
 #include <rpg_net_connection_manager.h>
-#include <rpg_net_signalhandler.h>
 #include <rpg_net_common_tools.h>
 #include <rpg_net_stream_messageallocator.h>
 
@@ -67,7 +68,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval") << ACE_TEXT(" [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>")  << ACE_TEXT(" [") << RPG_NET_DEF_SERVER_USES_TP << ACE_TEXT(" : ") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>")  << ACE_TEXT(" [") << RPG_NET_DEF_SERVER_USES_TP << ACE_TEXT(":") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 const bool
@@ -224,9 +225,8 @@ init_fileLogging(std::ofstream& stream_in)
   if (!stream_in.is_open())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ofstream::open() file \"%s\": \"%s\", aborting\n"),
-               logfilename.c_str(),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to std::ofstream::open() file \"%s\": \"%m\", aborting\n"),
+               logfilename.c_str()));
 
     return false;
   } // end IF
@@ -257,8 +257,7 @@ init_coreDumping()
                         &core_limit) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
 
     return false;
   } // end IF
@@ -276,8 +275,7 @@ init_coreDumping()
                         &core_limit) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::setrlimit(RLIMIT_CORE): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_OS::setrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
 
     return false;
   } // end IF
@@ -287,8 +285,7 @@ init_coreDumping()
                         &core_limit) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
 
     return false;
   } // end IF
@@ -299,9 +296,9 @@ init_coreDumping()
              core_limit.rlim_cur,
              core_limit.rlim_max));
 #else
-   // *TODO*
-  ACE_DEBUG((LM_WARNING,
-             ACE_TEXT("corefile limits on Windows platforms has not been implemented (yet), continuing\n")));
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("corefile limits have not been implemented on this platform, continuing\n")));
 #endif
 
   return true;
@@ -353,7 +350,11 @@ init_signals(const bool& allowUserRuntimeStats_in,
 //   signals_inout.push_back(SIGFPE);
 //   signals_inout.push_back(SIGKILL); // cannot catch this one...
   if (allowUserRuntimeStats_in)
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     signals_inout.push_back(SIGUSR1);
+#else
+    signals_inout.push_back(SIGBREAK);
+#endif
 //   signals_inout.push_back(SIGSEGV);
 //   signals_inout.push_back(SIGUSR2);
 //   signals_inout.push_back(SIGPIPE);
@@ -365,9 +366,6 @@ init_signals(const bool& allowUserRuntimeStats_in,
 //   signals_inout.push_back(SIGSTOP); // cannot catch this one...
 //   signals_inout.push_back(SIGTSTP);
 //   signals_inout.push_back(SIGTTIN);
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  signals_inout.push_back(SIGBREAK);
-#endif
 //   signals_inout.push_back(SIGTTOU);
 //   signals_inout.push_back(SIGURG);
 //   signals_inout.push_back(SIGXCPU);
@@ -387,7 +385,7 @@ init_signals(const bool& allowUserRuntimeStats_in,
 
 const bool
 init_signalHandling(const std::vector<int>& signals_inout,
-                    RPG_Net_SignalHandler& eventHandler_in,
+                    Net_Server_SignalHandler& eventHandler_in,
                     ACE_Sig_Handlers& signalHandlers_in)
 {
   RPG_TRACE(ACE_TEXT("::init_signalHandling"));
@@ -416,8 +414,7 @@ init_signalHandling(const std::vector<int>& signals_inout,
     if (sigkey == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%m\", aborting\n"),
-                 *iter,
+                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": \"%m\", aborting\n"),
                  *iter));
 
       return false;
@@ -425,8 +422,7 @@ init_signalHandling(const std::vector<int>& signals_inout,
 
     // debug info
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered handler for \"%S\": %d (key: %d)...\n"),
-               *iter,
+               ACE_TEXT("registered handler for \"%S\" (key: %d)...\n"),
                *iter,
                sigkey));
   } // end FOR
@@ -547,12 +543,12 @@ do_work(const unsigned long& clientPingInterval_in,
 
   // step1a: signal handling
   // event handler for signals
-  RPG_Net_SignalHandler signalEventHandler(RPG_NET_LISTENER_SINGLETON::instance(),
-                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
+  Net_Server_SignalHandler signalEventHandler(RPG_NET_LISTENER_SINGLETON::instance(),
+                                              RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
   ACE_Sig_Handlers      signalHandlers;
   // *WARNING*: 'signals' appears to be a keyword in some contexts...
   std::vector<int>      signalss;
-  init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1 IF regular reporting is off
+  init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK IF regular reporting is off
                signalss);
   if (!init_signalHandling(signalss,
                            signalEventHandler,

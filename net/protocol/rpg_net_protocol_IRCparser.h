@@ -152,6 +152,8 @@ namespace yy {
     /// \returns  0 iff parsing succeeded.
     virtual int parse ();
 
+    void set(yyscan_t);
+
 #if YYDEBUG
     /// The current debugging stream.
     std::ostream& debug_stream () const;

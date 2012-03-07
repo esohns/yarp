@@ -1636,10 +1636,10 @@ RPG_Net_Common_Tools::retrieveSignalInfo(const int& signal_in,
   // under Windows(TM), we only have the handle(s)...
   ACE_UNUSED_ARG(signal_in);
 
-  information << ACE_TEXT(", signalled handle: ");
-  information << info_in.si_handle_;
-  information << ACE_TEXT(", array of signalled handle(s): ");
-  information << info_in.si_handles_;
+  //information << ACE_TEXT(", signalled handle: ");
+  //information << info_in.si_handle_;
+  //information << ACE_TEXT(", array of signalled handle(s): ");
+  //information << info_in.si_handles_;
 #endif
 
   // OK: set return value

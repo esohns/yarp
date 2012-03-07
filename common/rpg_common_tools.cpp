@@ -24,6 +24,10 @@
 #include "rpg_common_defines.h"
 #include "rpg_common_environment_incl.h"
 
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "Security.h"
+#endif
+
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
@@ -156,7 +160,7 @@ RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("DC: ");
   std::stringstream converter;
-  converter << static_cast<unsigned int> (save_in.difficultyClass);
+  converter << static_cast<unsigned int>(save_in.difficultyClass);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("reduction: ");
@@ -423,7 +427,7 @@ RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
              RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str(),
-             static_cast<int> (((size_in > SIZE_MEDIUM) ? -result : result))));
+             static_cast<int>(((size_in > SIZE_MEDIUM) ? -result : result))));
 
   return ((size_in > SIZE_MEDIUM) ? -result : result);
 }
@@ -561,7 +565,7 @@ RPG_Common_Tools::isLinux()
 //              name.version));
 
   std::string kernel(name.sysname);
-  return (kernel.find(ACE_TEXT("Linux"), 0) == 0);
+  return (kernel.find(ACE_TEXT_ALWAYS_CHAR("Linux"), 0) == 0);
 }
 
 const bool
@@ -592,7 +596,7 @@ RPG_Common_Tools::getUserName(std::string& username_out,
                          &pw_struct,
                          pw_buf,
                          sizeof(pw_buf),
-						 &result) ||
+						             &result) ||
 	  (result == NULL))
   {
     ACE_DEBUG((LM_ERROR,
@@ -601,6 +605,21 @@ RPG_Common_Tools::getUserName(std::string& username_out,
     return false;
   } // end IF
   realname_out = pw_struct.pw_gecos;
+#else
+  TCHAR infoBuf[BUFSIZ];
+  DWORD  bufCharCount = BUFSIZ;
+  if (!GetUserNameEx(NameDisplay,
+                     infoBuf,
+                     &bufCharCount))
+    if (GetLastError() == ERROR_NONE_MAPPED)
+      realname_out = username_out;
+    else
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to GetUserNameEx(): \"%m\", aborting\n")));
+
+      return false;
+    } // end IF
 #endif
 
   return true;

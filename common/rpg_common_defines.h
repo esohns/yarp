@@ -36,6 +36,10 @@
 #define RPG_COMMON_DEF_DATA_SUB                "data"
 #define RPG_COMMON_DEF_CONFIG_SUB              "config"
 
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
 #define RPG_COMMON_DUMP_DIR                    "/var/tmp"
+#else
+#define RPG_COMMON_DUMP_DIR                    "TEMP" // environment
+#endif
 
 #endif

@@ -52,6 +52,8 @@ RPG_Net_Protocol_IRCParserDriver::RPG_Net_Protocol_IRCParserDriver(const bool& t
   if (RPG_Net_Protocol_IRCscanner_lex_init_extra(this, &myCurrentScannerState))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to yylex_init_extra: \"%m\", continuing\n")));
+  ACE_ASSERT(myCurrentScannerState);
+  myParser.set(myCurrentScannerState);
 
   // trace ?
   RPG_Net_Protocol_IRCscanner_set_debug((traceScanning_in ? 1 : 0), myCurrentScannerState);

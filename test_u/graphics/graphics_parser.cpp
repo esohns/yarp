@@ -61,7 +61,11 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef DATADIR
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+#endif // #ifdef DATADIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
@@ -93,7 +97,11 @@ process_arguments(const int argc_in,
 
   filename_out = base_data_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef DATADIR
+  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
   filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+#endif // #ifdef DATADIR
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
@@ -286,7 +294,11 @@ ACE_TMAIN(int argc,
 
   std::string filename = base_data_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef DATADIR
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+#endif // #ifdef DATADIR
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 

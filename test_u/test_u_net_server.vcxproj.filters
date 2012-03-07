@@ -18,9 +18,15 @@
     <ClInclude Include="net\net_common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="net\net_server_signalhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="net\net_server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="net\net_server_signalhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

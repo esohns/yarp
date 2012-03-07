@@ -22,9 +22,6 @@
 #define NET_COMMON_H
 
 #include <rpg_net_sockethandler.h>
-// #include <rpg_net_client_sockethandler.h>
-// #include <rpg_net_stream_socket_base.h>
-// #include <rpg_net_stream.h>
 
 #include <ace/Connector.h>
 #include <ace/SOCK_Connector.h>

@@ -268,14 +268,14 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     signals_inout.push_back(SIGUSR1);
 #else
-  signals_inout.push_back(SIGBREAK);
+    signals_inout.push_back(SIGBREAK);
 #endif
 //   signals_inout.push_back(SIGSEGV);
   if (allowUserRuntimeConnect_in)
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     signals_inout.push_back(SIGUSR2);
 #else
-  signals_inout.push_back(SIGABRT);
+    signals_inout.push_back(SIGABRT);
 #endif
 //   signals_inout.push_back(SIGPIPE);
 //   signals_inout.push_back(SIGALRM);

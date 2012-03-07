@@ -351,7 +351,8 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
           // more data to scan...
 
           // *NOTE*: copy ctor shallow-copies the current data block
-          myCurrentMessage = dynamic_cast<RPG_Net_Protocol_Message*> (myCurrentBuffer->duplicate());
+          myCurrentMessage = dynamic_cast<RPG_Net_Protocol_Message*>(myCurrentBuffer->duplicate());
+          ACE_ASSERT(myCurrentMessage);
           // adjust wr_ptr (point to one-past-the-end of the current message)
           myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + scanned_bytes);
           ACE_ASSERT(myCurrentMessageLength == message->total_length());

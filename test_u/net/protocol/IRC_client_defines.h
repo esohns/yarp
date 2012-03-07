@@ -41,6 +41,7 @@
 
 // use traditional/modern USER message syntax for connections ?
 // *NOTE*: refer to RFC1459 Section 4.1.3 - RFC2812 Section 3.1.3
+// true ? --> rfc1459 : --> rfc2812
 #define IRC_CLIENT_CNF_IRC_USERMSG_TRADITIONAL   false
 // *NOTE*: hybrid-7.2.3 seems to have a bug: 0,4,8 --> +i
 // *TODO*: --> ./etc/ircd.conf ?

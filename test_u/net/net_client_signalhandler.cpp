@@ -103,7 +103,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR1:
 #else
-	case SIGBREAK:
+	  case SIGBREAK:
 #endif
     {
       // (try to) connect...
@@ -114,7 +114,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR2:
 #else
-	case SIGABRT:
+	  case SIGABRT:
 #endif
     {
       // (try to) abort oldest connection...

@@ -71,9 +71,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="net\net_common.h" />
+    <ClInclude Include="net\net_server_signalhandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="net\net_server.cpp" />
+    <ClCompile Include="net\net_server_signalhandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\common\common.vcxproj">

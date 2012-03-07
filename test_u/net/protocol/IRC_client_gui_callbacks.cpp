@@ -51,7 +51,7 @@ connect_clicked_cb(GtkWidget* button_in,
   //              ACE_TEXT("connect_clicked_cb...\n")));
 
   GtkButton* button = GTK_BUTTON(button_in);
-  main_cb_data_t* data = static_cast<main_cb_data_t*> (userData_in);
+  main_cb_data_t* data = static_cast<main_cb_data_t*>(userData_in);
 
   // sanity check(s)
   ACE_ASSERT(button);

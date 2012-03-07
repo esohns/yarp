@@ -10,8 +10,8 @@
 %defines          "rpg_net_protocol_IRCparser.h"
 %output           "rpg_net_protocol_IRCparser.cpp"
 /* %define           api.pure */
-/* %define api.push_pull */
-/* %define      parse.lac full */
+/* %define           api.push_pull */
+/* %define           parse.lac full */
 %define namespace "yy"
 %error-verbose
 %define parser_class_name "RPG_Net_Protocol_IRCParser"
@@ -138,4 +138,12 @@ yy::RPG_Net_Protocol_IRCParser::error(const location_type& location_in,
   ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParser::error"));
 
   driver->error(location_in, message_in);
+}
+
+void
+yy::RPG_Net_Protocol_IRCParser::set(yyscan_t context_in)
+{
+  ACE_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParser::set"));
+
+  yyscanner = context_in;
 }
