@@ -11,7 +11,7 @@
 "E:\ACE_wrappers\bin\generate_export_file.pl" -n RPG_Character > .\..\rpg_character_exports.h
 
 @rem C++ "glue code"
-"E:\XML2CppCode\Debug\XML2CppCode.exe" -d RPG_Character_Export -e -f ./../rpg_character.xsd -i -o .\.. -s -u -x RPG_Character
+"E:\XML2CppCode\Debug\XML2CppCode.exe" -d RPG_Character_Export -e -f .\..\rpg_character.xsd -i -o .\.. -s -u -x RPG_Character
 
 @rem XML Parser/Tree
 @rem generate "XMLSchema" namespace include file (rpg_character.xsd)

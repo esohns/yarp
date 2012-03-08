@@ -78,7 +78,7 @@ namespace yy {
     /// (column related) Advance to the COUNT next columns.
     inline void columns (int count = 1)
     {
-      column = std::max (1u, column + count);
+      column = std::max<unsigned int>(1u, column + count);
     }
     /** \} */
 

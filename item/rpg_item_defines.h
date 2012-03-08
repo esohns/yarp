@@ -23,7 +23,7 @@
 
 #define RPG_ITEM_DEF_DICTIONARY_FILE      "rpg_item.xml"
 
-// DATADIR-specific
-#define RPG_ITEM_DEF_DATA_SUB             "item"
+// CONFIGDIR-specific
+#define RPG_ITEM_DEF_CONFIG_SUB           "item"
 
 #endif

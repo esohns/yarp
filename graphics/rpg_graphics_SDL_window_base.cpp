@@ -106,11 +106,8 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
     myParent->removeChild(this);
 
   // free any children (front-to-back)
-  for (RPG_Graphics_WindowsRIterator_t iterator = myChildren.rbegin();
-       iterator != myChildren.rend();
-       iterator++)
-    delete *iterator; // *NOTE*: this will invoke removeChild() on us (see above !)
-  ACE_ASSERT(myChildren.empty());
+  while (!myChildren.empty())
+    delete myChildren.back(); // *NOTE*: this will invoke removeChild() on us (see above !)
 
 //   // free surface
 //   if (myBackGround)

@@ -89,31 +89,37 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-e        : generate entity") << ACE_TEXT(" [") << CHARACTER_GENERATOR_DEF_GENERATE_ENTITY << ACE_TEXT("]") << std::endl;
-  std::string path = base_data_path;
+  std::string path = config_path;
+#ifndef CONFIGDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
+#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE] : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  path = base_data_path;
+  path = config_path;
+#ifndef CONFIGDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  path = base_data_path;
+  path = config_path;
+#ifndef CONFIGDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
+#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
@@ -127,9 +133,9 @@ const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   bool& generateEntity_out,
-                  std::string& itemDictionaryFilename_out,
-                  std::string& magicDictionaryFilename_out,
-                  std::string& graphicsDictionaryFilename_out,
+                  std::string& itemDictionary_out,
+                  std::string& magicDictionary_out,
+                  std::string& graphicsDictionary_out,
                   unsigned int& generateParty_out,
                   bool& random_out,
                   bool& traceInformation_out,
@@ -137,33 +143,39 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   // init results
   generateEntity_out = CHARACTER_GENERATOR_DEF_GENERATE_ENTITY;
 
-  itemDictionaryFilename_out = base_data_path;
-  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
-  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  itemDictionary_out = config_path;
+#ifndef CONFIGDIR
+  itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+#endif
+  itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-  magicDictionaryFilename_out = base_data_path;
-  magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
-  magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+  magicDictionary_out = config_path;
+#ifndef CONFIGDIR
+  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
+#endif
+  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  graphicsDictionaryFilename_out = base_data_path;
-  graphicsDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphicsDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
-  graphicsDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphicsDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+  graphicsDictionary_out = config_path;
+#ifndef CONFIGDIR
+  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
+#endif
+  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   generateParty_out = CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
   random_out = CHARACTER_GENERATOR_DEF_RANDOM;
@@ -188,19 +200,19 @@ process_arguments(const int argc_in,
       }
       case 'g':
       {
-        graphicsDictionaryFilename_out = argumentParser.opt_arg();
+        graphicsDictionary_out = argumentParser.opt_arg();
 
         break;
       }
       case 'i':
       {
-        itemDictionaryFilename_out = argumentParser.opt_arg();
+        itemDictionary_out = argumentParser.opt_arg();
 
         break;
       }
       case 'm':
       {
-        magicDictionaryFilename_out = argumentParser.opt_arg();
+        magicDictionary_out = argumentParser.opt_arg();
 
         break;
       }
@@ -329,7 +341,7 @@ print_skills_table(RPG_Character_Skills_t& skills_in)
   } // end IF
   else
   {
-    skills_in.insert(std::make_pair(iterator->first, static_cast<unsigned char> (1)));
+    skills_in.insert(std::make_pair(iterator->first, static_cast<unsigned char>(1)));
   } // end ELSE
 
   return true;
@@ -735,12 +747,12 @@ generate_player()
     } // end FOR
 
     std::cout << ACE_TEXT("base attributes: ") << std::endl;
-    std::cout << ACE_TEXT("strength: ") << static_cast<int> (attributes.strength) << std::endl;
-    std::cout << ACE_TEXT("dexterity: ") << static_cast<int> (attributes.dexterity) << std::endl;
-    std::cout << ACE_TEXT("constitution: ") << static_cast<int> (attributes.constitution) << std::endl;
-    std::cout << ACE_TEXT("intelligence: ") << static_cast<int> (attributes.intelligence) << std::endl;
-    std::cout << ACE_TEXT("wisdom: ") << static_cast<int> (attributes.wisdom) << std::endl;
-    std::cout << ACE_TEXT("charisma: ") << static_cast<int> (attributes.charisma) << std::endl;
+    std::cout << ACE_TEXT("strength: ") << static_cast<int>(attributes.strength) << std::endl;
+    std::cout << ACE_TEXT("dexterity: ") << static_cast<int>(attributes.dexterity) << std::endl;
+    std::cout << ACE_TEXT("constitution: ") << static_cast<int>(attributes.constitution) << std::endl;
+    std::cout << ACE_TEXT("intelligence: ") << static_cast<int>(attributes.intelligence) << std::endl;
+    std::cout << ACE_TEXT("wisdom: ") << static_cast<int>(attributes.wisdom) << std::endl;
+    std::cout << ACE_TEXT("charisma: ") << static_cast<int>(attributes.charisma) << std::endl;
     std::cout << ACE_TEXT("[sum: ") << sum << ACE_TEXT("] --> OK ? (y/n): ");
     std::cin >> c;
   } while (c == 'n');
@@ -1306,6 +1318,12 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
+#else
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
   std::string base_data_path;
 #ifdef DATADIR
   base_data_path = DATADIR;
@@ -1316,34 +1334,38 @@ ACE_TMAIN(int argc,
   // init configuration
   bool generateEntity          = CHARACTER_GENERATOR_DEF_GENERATE_ENTITY;
 
-  std::string itemDictionaryFilename = base_data_path;
+  std::string itemDictionaryFilename = config_path;
+#ifndef CONFIGDIR
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+#endif
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-  std::string magicDictionaryFilename = base_data_path;
+  std::string magicDictionaryFilename = config_path;
+#ifndef CONFIGDIR
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
+#endif
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  std::string graphicsDictionaryFilename = base_data_path;
+  std::string graphicsDictionaryFilename = config_path;
+#ifndef CONFIGDIR
   graphicsDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphicsDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  graphicsDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
+#endif
   graphicsDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   std::string graphicsDirectory = base_data_path;
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined DATADIR
-  graphicsDirectory += ACE_TEXT(".."); // go back one...
-  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef DATADIR
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #else
-  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif

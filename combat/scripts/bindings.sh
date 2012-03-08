@@ -16,4 +16,4 @@
 /usr/bin/xsdcxx cxx-parser --char-type char --output-dir ./.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema_XML_types.xsd
 
 # generate include/implementation
-/usr/bin/xsdcxx cxx-parser --type-map ../rpg_combat.map --char-type char --output-dir ./.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ../rpg_combat.xsd
+/usr/bin/xsdcxx cxx-parser --type-map ../rpg_combat.map --char-type char --output-dir ./.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Combat_Export" --hxx-prologue "#include \"rpg_combat_exports.h\"" ../rpg_combat.xsd

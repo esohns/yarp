@@ -36,6 +36,7 @@
 
 // Begin prologue.
 //
+#include "rpg_magic_exports.h"
 //
 // End prologue.
 
@@ -103,7 +104,7 @@ class RPG_Magic_Dictionary_Type_pskel;
 
 #include "../character/rpg_character_XML_types.h"
 
-class RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -115,7 +116,7 @@ class RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Magic_School_Type () = 0;
 };
 
-class RPG_Magic_SubSchool_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_SubSchool_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -127,7 +128,7 @@ class RPG_Magic_SubSchool_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Magic_SubSchool_Type () = 0;
 };
 
-class RPG_Magic_Descriptor_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_Descriptor_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -139,7 +140,7 @@ class RPG_Magic_Descriptor_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Magic_Descriptor_Type () = 0;
 };
 
-class RPG_Magic_Domain_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_Domain_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -151,7 +152,7 @@ class RPG_Magic_Domain_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Magic_Domain_Type () = 0;
 };
 
-class RPG_Magic_SpellType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_SpellType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -163,7 +164,7 @@ class RPG_Magic_SpellType_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Magic_SpellType_Type () = 0;
 };
 
-class RPG_Magic_AbilityClass_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_AbilityClass_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -175,7 +176,7 @@ class RPG_Magic_AbilityClass_Type_pskel: public virtual ::xml_schema::string_psk
   post_RPG_Magic_AbilityClass_Type () = 0;
 };
 
-class RPG_Magic_AbilityType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_AbilityType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -187,7 +188,7 @@ class RPG_Magic_AbilityType_Type_pskel: public virtual ::xml_schema::string_pske
   post_RPG_Magic_AbilityType_Type () = 0;
 };
 
-class RPG_Magic_Spell_Type_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Spell_Type_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -266,7 +267,7 @@ class RPG_Magic_Spell_Type_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Magic_SpellType_Type_pskel* counterSpell_parser_;
 };
 
-class RPG_Magic_CasterClassUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Magic_Export RPG_Magic_CasterClassUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -281,7 +282,7 @@ class RPG_Magic_CasterClassUnion_Type_pskel: public ::xml_schema::simple_content
   post_RPG_Magic_CasterClassUnion_Type () = 0;
 };
 
-class RPG_Magic_Spell_Level_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Spell_Level_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -331,7 +332,7 @@ class RPG_Magic_Spell_Level_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_byte_pskel* level_parser_;
 };
 
-class RPG_Magic_Spell_CastingTime_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Spell_CastingTime_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -386,7 +387,7 @@ class RPG_Magic_Spell_CastingTime_Type_pskel: public ::xml_schema::complex_conte
   ::RPG_Common_ActionType_Type_pskel* action_parser_;
 };
 
-class RPG_Magic_Spell_RangeEffect_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_Spell_RangeEffect_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -398,7 +399,7 @@ class RPG_Magic_Spell_RangeEffect_Type_pskel: public virtual ::xml_schema::strin
   post_RPG_Magic_Spell_RangeEffect_Type () = 0;
 };
 
-class RPG_Magic_Spell_RangeProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Spell_RangeProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -461,7 +462,7 @@ class RPG_Magic_Spell_RangeProperties_Type_pskel: public ::xml_schema::complex_c
   ::RPG_Magic_Spell_RangeEffect_Type_pskel* effect_parser_;
 };
 
-class RPG_Magic_Spell_Target_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_Spell_Target_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -473,7 +474,7 @@ class RPG_Magic_Spell_Target_Type_pskel: public virtual ::xml_schema::string_psk
   post_RPG_Magic_Spell_Target_Type () = 0;
 };
 
-class RPG_Magic_Spell_AreaOfEffect_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_Spell_AreaOfEffect_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -485,7 +486,7 @@ class RPG_Magic_Spell_AreaOfEffect_Type_pskel: public virtual ::xml_schema::stri
   post_RPG_Magic_Spell_AreaOfEffect_Type () = 0;
 };
 
-class RPG_Magic_Spell_TargetProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Spell_TargetProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -612,7 +613,7 @@ class RPG_Magic_Spell_TargetProperties_Type_pskel: public ::xml_schema::complex_
   ::xml_schema::boolean_pskel* incrementIsReciprocal_parser_;
 };
 
-class RPG_Magic_Spell_Duration_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_Spell_Duration_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -624,7 +625,7 @@ class RPG_Magic_Spell_Duration_Type_pskel: public virtual ::xml_schema::string_p
   post_RPG_Magic_Spell_Duration_Type () = 0;
 };
 
-class RPG_Magic_Spell_DurationProperties_Type_pskel: public virtual ::RPG_Common_EffectDuration_Type_pskel
+class RPG_Magic_Export RPG_Magic_Spell_DurationProperties_Type_pskel: public virtual ::RPG_Common_EffectDuration_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -676,7 +677,7 @@ class RPG_Magic_Spell_DurationProperties_Type_pskel: public virtual ::RPG_Common
   ::xml_schema::boolean_pskel* dismissible_parser_;
 };
 
-class RPG_Magic_Spell_Precondition_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_Spell_Precondition_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -688,7 +689,7 @@ class RPG_Magic_Spell_Precondition_Type_pskel: public virtual ::xml_schema::stri
   post_RPG_Magic_Spell_Precondition_Type () = 0;
 };
 
-class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -823,7 +824,7 @@ class RPG_Magic_Spell_PreconditionProperties_Type_pskel: public ::xml_schema::co
   ::xml_schema::boolean_pskel* baseIsCasterLevel_parser_;
 };
 
-class RPG_Magic_Spell_Effect_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Magic_Export RPG_Magic_Spell_Effect_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -835,7 +836,7 @@ class RPG_Magic_Spell_Effect_Type_pskel: public virtual ::xml_schema::string_psk
   post_RPG_Magic_Spell_Effect_Type () = 0;
 };
 
-class RPG_Magic_Spell_DamageTypeUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Magic_Export RPG_Magic_Spell_DamageTypeUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -850,7 +851,7 @@ class RPG_Magic_Spell_DamageTypeUnion_Type_pskel: public ::xml_schema::simple_co
   post_RPG_Magic_Spell_DamageTypeUnion_Type () = 0;
 };
 
-class RPG_Magic_CheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Magic_Export RPG_Magic_CheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -865,7 +866,7 @@ class RPG_Magic_CheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
   post_RPG_Magic_CheckTypeUnion_Type () = 0;
 };
 
-class RPG_Magic_Check_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Check_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -944,7 +945,7 @@ class RPG_Magic_Check_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::boolean_pskel* baseIsCasterLevel_parser_;
 };
 
-class RPG_Magic_CounterMeasure_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_CounterMeasure_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1015,7 +1016,7 @@ class RPG_Magic_CounterMeasure_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Common_SaveReductionType_Type_pskel* reduction_parser_;
 };
 
-class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1174,7 +1175,7 @@ class RPG_Magic_Spell_EffectProperties_Type_pskel: public ::xml_schema::complex_
   ::xml_schema::boolean_pskel* incrementIsReciprocal_parser_;
 };
 
-class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1325,7 +1326,7 @@ class RPG_Magic_Spell_PropertiesXML_Type_pskel: public ::xml_schema::complex_con
   ::xml_schema::boolean_pskel* effectsAreInclusive_parser_;
 };
 
-class RPG_Magic_SpellLikeProperties_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_SpellLikeProperties_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -1391,7 +1392,7 @@ class RPG_Magic_SpellLikeProperties_Type_pskel: public ::xml_schema::complex_con
   ::RPG_Common_SavingThrowCheck_Type_pskel* save_parser_;
 };
 
-class RPG_Magic_Dictionary_Type_pskel: public ::xml_schema::complex_content
+class RPG_Magic_Export RPG_Magic_Dictionary_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.

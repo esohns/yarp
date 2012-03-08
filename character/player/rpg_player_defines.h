@@ -36,4 +36,7 @@
 #define RPG_PLAYER_DEF_ENTITY_REPOSITORY "TEMP" // environment
 #endif
 
+// CONFIGDIR-specific
+#define RPG_PLAYER_DEF_CONFIG_SUB        "player"
+
 #endif

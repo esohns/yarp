@@ -114,6 +114,8 @@ enum RPG_Magic_Spell_Effect
   RPG_MAGIC_SPELL_EFFECT_INVALID
 };
 
+#include "rpg_magic_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -122,7 +124,7 @@ enum RPG_Magic_Spell_Effect
 typedef std::map<RPG_Magic_Spell_Effect, std::string> RPG_Magic_Spell_EffectToStringTable_t;
 typedef RPG_Magic_Spell_EffectToStringTable_t::const_iterator RPG_Magic_Spell_EffectToStringTableIterator_t;
 
-class RPG_Magic_Spell_EffectHelper
+class RPG_Magic_Export RPG_Magic_Spell_EffectHelper
 {
  public:
   inline static void init()

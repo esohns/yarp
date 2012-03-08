@@ -214,7 +214,7 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   //} // end IF
   FILE* file_ptr = NULL;
   if ((file_ptr = ACE_OS::fopen(filename_in.c_str(),                  // filename
-	                            ACE_TEXT_ALWAYS_CHAR("rb"))) == NULL) // mode
+	                              ACE_TEXT_ALWAYS_CHAR("rb"))) == NULL) // mode
 
   {
     ACE_DEBUG((LM_ERROR,
@@ -229,7 +229,7 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
 
   // extract SDL surface from PNG
   result = RPG_Graphics_Surface::loadPNG(std::string(ACE::basename(filename_in.c_str())),
-	                                     file_ptr);
+	                                       file_ptr);
 //                                         srcbuf);
 //                                         alpha_in);
   if (!result)

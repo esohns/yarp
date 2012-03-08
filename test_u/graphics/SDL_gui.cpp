@@ -29,6 +29,7 @@
 
 #include <rpg_client_defines.h>
 
+#include <rpg_engine_defines.h>
 #include <rpg_engine_level.h>
 #include <rpg_engine_common_tools.h>
 
@@ -1302,7 +1303,11 @@ do_work(const mode_t& mode_in,
 #endif // #ifdef DATADIR
       std::string schemaRepository = base_data_path;
       schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef DATADIR
       schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
+      schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_DATA_SUB);
+#endif
       RPG_Engine_Entity entity;
       entity.actions.clear();
       entity.character = NULL;

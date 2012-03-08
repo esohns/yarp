@@ -71,6 +71,15 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT(":") << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   std::cout << ACE_TEXT("; 0:off]") << std::endl;
   std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE << ACE_TEXT("]") << std::endl;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  std::cout << ACE_TEXT("-o ([FILE]) : output file") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]  : #areas") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_NUM_AREAS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s          : square room(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_SQUARE_ROOMS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
@@ -86,6 +95,7 @@ process_arguments(const int argc_in,
                   bool& corridors_out,
                   unsigned long& maxNumDoorsPerRoom_out,
                   bool& maximizeRoomSize_out,
+                  std::string& outputFile_out,
                   unsigned long& numAreas_out,
                   bool& squareRooms_out,
                   bool& traceInformation_out,
@@ -100,6 +110,16 @@ process_arguments(const int argc_in,
   corridors_out = MAP_GENERATOR_DEF_CORRIDORS;
   maxNumDoorsPerRoom_out = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   maximizeRoomSize_out = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
+
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  outputFile_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  outputFile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
+  outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+
   numAreas_out = MAP_GENERATOR_DEF_NUM_AREAS;
   squareRooms_out = MAP_GENERATOR_DEF_SQUARE_ROOMS;
   traceInformation_out = false;
@@ -109,7 +129,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("a::cd::mr:stvx:y:"));
+                             ACE_TEXT("a::cd::mo:r:stvx:y:"));
 
   int option = 0;
   std::stringstream converter;
@@ -147,6 +167,12 @@ process_arguments(const int argc_in,
       case 'm':
       {
         maximizeRoomSize_out = true;
+
+        break;
+      }
+      case 'o':
+      {
+        outputFile_out = argumentParser.opt_arg();
 
         break;
       }
@@ -220,7 +246,8 @@ process_arguments(const int argc_in,
 
 void
 do_work(const std::string& name_in,
-        const RPG_Map_FloorPlan_Config_t& mapConfig_in)
+        const RPG_Map_FloorPlan_Config_t& mapConfig_in,
+        const std::string& outputFile_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -234,7 +261,19 @@ do_work(const std::string& name_in,
                                mapConfig_in,
                                map);
 
-  // step3: display the result
+  // step3: write output file (if any)
+  if (!outputFile_in.empty())
+    if (!RPG_Map_Common_Tools::save(outputFile_in,
+                                    map))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
+                 outputFile_in.c_str()));
+
+      return;
+    } // end IF
+
+  // step4: display the result
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
   bool is_starting_position = false;
@@ -345,6 +384,17 @@ ACE_TMAIN(int argc,
   bool corridors                   = MAP_GENERATOR_DEF_CORRIDORS;
   unsigned long maxNumDoorsPerRoom = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   bool maximizeRoomSize            = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
+
+  std::string outputFile;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  outputFile = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#else
+  outputFile = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+#endif
+  outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
+  outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+
   unsigned long numAreas           = MAP_GENERATOR_DEF_NUM_AREAS;
   bool squareRooms                 = MAP_GENERATOR_DEF_SQUARE_ROOMS;
   bool traceInformation            = false;
@@ -359,6 +409,7 @@ ACE_TMAIN(int argc,
                           corridors,
                           maxNumDoorsPerRoom,
                           maximizeRoomSize,
+                          outputFile,
                           numAreas,
                           squareRooms,
                           traceInformation,
@@ -438,7 +489,8 @@ ACE_TMAIN(int argc,
   config.num_areas = numAreas;
   config.square_rooms = squareRooms;
   do_work(name,
-          config);
+          config,
+          outputFile);
 
   timer.stop();
 

@@ -73,7 +73,8 @@
 #define RPG_GRAPHICS_DEF_DICTIONARY_FILE               "rpg_graphics.xml"
 // #define RPG_GRAPHICS_DEF_DUMP_DIR                      "/var/tmp"
 
-// DATADIR-specific
+// CONFIG/DATADIR-specific
+#define RPG_GRAPHICS_DEF_CONFIG_SUB                    "graphics"
 #define RPG_GRAPHICS_DEF_DATA_SUB                      "graphics"
 
 // buffer for printing keyboard events (debug info)

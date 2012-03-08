@@ -21,7 +21,7 @@
 #ifndef RPG_CHARACTER_DEFINES_H
 #define RPG_CHARACTER_DEFINES_H
 
-// DATADIR-specific
-#define RPG_CHARACTER_DEF_DATA_SUB "character"
+// CONFIGDIR-specific
+#define RPG_CHARACTER_DEF_CONFIG_SUB "character"
 
 #endif

@@ -25,7 +25,7 @@
 
 #define RPG_MAGIC_DEF_DICTIONARY_FILE          "rpg_magic.xml"
 
-// DATADIR-specific
-#define RPG_MAGIC_DEF_DATA_SUB                 "magic"
+// CONFIGDIR-specific
+#define RPG_MAGIC_DEF_CONFIG_SUB               "magic"
 
 #endif

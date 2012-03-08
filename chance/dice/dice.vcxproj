@@ -40,6 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -63,6 +64,15 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd .\scripts
+call .\bindings.bat
+popd</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>generating bindings...</Message>
+      <Outputs>rpg_dice_dietype.h;rpg_dice_exports.h;rpg_dice_incl.h;rpg_dice_roll.h;rpg_dice_XML_tree.h;rpg_dice_XML_types.h;rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_dice_XML_tree.cpp;rpg_dice_XML_types.cpp</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

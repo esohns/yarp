@@ -19,6 +19,8 @@ enum RPG_Character_MetaClass
   RPG_CHARACTER_METACLASS_INVALID
 };
 
+#include "rpg_character_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -27,7 +29,7 @@ enum RPG_Character_MetaClass
 typedef std::map<RPG_Character_MetaClass, std::string> RPG_Character_MetaClassToStringTable_t;
 typedef RPG_Character_MetaClassToStringTable_t::const_iterator RPG_Character_MetaClassToStringTableIterator_t;
 
-class RPG_Character_MetaClassHelper
+class RPG_Character_Export RPG_Character_MetaClassHelper
 {
  public:
   inline static void init()
