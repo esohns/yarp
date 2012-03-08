@@ -7,9 +7,7 @@
 #ifndef RPG_MONSTER_ATTACKACTION_H
 #define RPG_MONSTER_ATTACKACTION_H
 
-#include "rpg_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Monster_AttackAction
+struct RPG_Monster_AttackAction
 {
   RPG_Monster_WeaponTypeUnion weapon;
   std::vector<signed char> attackBonuses;

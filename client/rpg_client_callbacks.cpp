@@ -1661,7 +1661,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 
   // re-load profile data
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  unsigned long num_entries = ::load_files(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY,
+  unsigned long num_entries = ::load_files(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY),
 #else
   unsigned long num_entries = ::load_files(ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY)),
 #endif

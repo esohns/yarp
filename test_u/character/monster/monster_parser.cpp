@@ -40,6 +40,7 @@
 #include <rpg_dice.h>
 #include <rpg_dice_common_tools.h>
 
+#include <rpg_common_defines.h>
 #include <rpg_common_macros.h>
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>

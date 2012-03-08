@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_map_exports.h"
 //
 // End prologue.
 
@@ -77,7 +76,7 @@ class RPG_Map_Position_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-class RPG_Map_Export RPG_Map_Position_XMLTree_Type: public ::xml_schema::type
+class RPG_Map_Position_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // x
@@ -148,18 +147,15 @@ class RPG_Map_Export RPG_Map_Position_XMLTree_Type: public ::xml_schema::type
   ::xsd::cxx::tree::one< y_type > y_;
 };
 
-RPG_Map_Export
 bool
 operator== (const RPG_Map_Position_XMLTree_Type&, const RPG_Map_Position_XMLTree_Type&);
 
-RPG_Map_Export
 bool
 operator!= (const RPG_Map_Position_XMLTree_Type&, const RPG_Map_Position_XMLTree_Type&);
 
 
 #include <iosfwd>
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_Position_XMLTree_Type&);
 
@@ -177,11 +173,9 @@ operator<< (::std::ostream&, const RPG_Map_Position_XMLTree_Type&);
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Position_XMLTree_Type&);
 
-RPG_Map_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Map_Position_XMLTree_Type&);

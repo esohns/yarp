@@ -481,8 +481,12 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
   if (chopPrefix_in)
   {
     std::string::size_type underscore = result.find('_', 0);
-//    if (underscore != std::string::npos)
-	if (underscore != -1)
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+    if (underscore != -1)
+#else
+    if (underscore != std::string::npos)
+#endif
     {
       std::string::iterator last = result.begin();
       std::advance(last, underscore + 1); // *NOTE*: move one past '_'

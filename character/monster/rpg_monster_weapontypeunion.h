@@ -7,9 +7,7 @@
 #ifndef RPG_MONSTER_WEAPONTYPEUNION_H
 #define RPG_MONSTER_WEAPONTYPEUNION_H
 
-#include "rpg_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Monster_WeaponTypeUnion
+struct RPG_Monster_WeaponTypeUnion
 {
   union
   {

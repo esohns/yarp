@@ -21,6 +21,7 @@
 #ifndef RPG_DICE_XML_PARSER_H
 #define RPG_DICE_XML_PARSER_H
 
+#include "rpg_dice_exports.h"
 #include "rpg_dice_XML_types.h"
 
 /**

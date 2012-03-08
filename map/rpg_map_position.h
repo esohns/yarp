@@ -7,9 +7,7 @@
 #ifndef RPG_MAP_POSITION_H
 #define RPG_MAP_POSITION_H
 
-#include "rpg_map_exports.h"
-
-struct RPG_Map_Export RPG_Map_Position
+struct RPG_Map_Position
 {
   unsigned int x;
   unsigned int y;

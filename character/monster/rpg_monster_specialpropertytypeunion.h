@@ -7,9 +7,7 @@
 #ifndef RPG_MONSTER_SPECIALPROPERTYTYPEUNION_H
 #define RPG_MONSTER_SPECIALPROPERTYTYPEUNION_H
 
-#include "rpg_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Monster_SpecialPropertyTypeUnion
+struct RPG_Monster_SpecialPropertyTypeUnion
 {
   union
   {

@@ -724,11 +724,9 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
     return;
   } // end IF
   bool found_row = false;
-  gchar* matched_substring = NULL;
   do
   {
     current_value_string = NULL;
-    matched_substring = NULL;
 
     // retrieve value
 //     gtk_tree_model_get_value(GTK_TREE_MODEL(channel_liststore),

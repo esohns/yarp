@@ -36,7 +36,7 @@
 /* begin standard C headers. */
 /* %if-c-only */
 #include <stdio.h>
-#include <string>
+#include <string.h>
 #include <errno.h>
 #include <stdlib.h>
 /* %endif */
@@ -1306,7 +1306,7 @@ extern int RPG_Map_Scanner_lex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 105 "./map_scanner.l"
+#line 104 "./map_scanner.l"
 
 
 #line 1313 "rpg_map_scanner.h"

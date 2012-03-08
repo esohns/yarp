@@ -17,8 +17,6 @@ enum RPG_Character_OffHand
   RPG_CHARACTER_OFFHAND_INVALID
 };
 
-#include "rpg_character_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -27,7 +25,7 @@ enum RPG_Character_OffHand
 typedef std::map<RPG_Character_OffHand, std::string> RPG_Character_OffHandToStringTable_t;
 typedef RPG_Character_OffHandToStringTable_t::const_iterator RPG_Character_OffHandToStringTableIterator_t;
 
-class RPG_Character_Export RPG_Character_OffHandHelper
+class RPG_Character_OffHandHelper
 {
  public:
   inline static void init()

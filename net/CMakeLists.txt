@@ -1,13 +1,13 @@
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-
 cmake_minimum_required(VERSION 2.8)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../common
+                    ${CMAKE_CURRENT_SOURCE_DIR}/stream)
+
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 add_subdirectory(stream)
 add_subdirectory(protocol)
-
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../common")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/stream")
 
 ########### next target ###############
 set(RPG_Net_LIB_SRCS
@@ -22,6 +22,7 @@ set(RPG_Net_LIB_SRCS
     rpg_net_controller_base.cpp
     rpg_net_controller_base.h
     rpg_net_defines.h
+    rpg_net_exports.h
     rpg_net_iconnection.h
     rpg_net_iconnectionmanager.h
     rpg_net_icounter.h
@@ -78,8 +79,6 @@ add_dependencies(RPG_Net RPG_Stream)
 set_target_properties(RPG_Net PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 ########### install files ###############
-install(TARGETS RPG_Net LIBRARY
-        DESTINATION lib)
 install(FILES
         rpg_net_client_sockethandler.h
         rpg_net_common.h
@@ -88,6 +87,7 @@ install(FILES
         rpg_net_connection_manager.i
         rpg_net_controller_base.h
         rpg_net_defines.h
+        rpg_net_exports.h
         rpg_net_iconnection.h
         rpg_net_iconnectionmanager.h
         rpg_net_icounter.h
@@ -115,3 +115,4 @@ install(FILES
         rpg_net_stream_socket_base.h
         rpg_net_stream_socket_base.i
         DESTINATION include)
+install(TARGETS RPG_Net LIBRARY DESTINATION lib)

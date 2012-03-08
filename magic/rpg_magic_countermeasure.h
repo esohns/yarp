@@ -7,9 +7,7 @@
 #ifndef RPG_MAGIC_COUNTERMEASURE_H
 #define RPG_MAGIC_COUNTERMEASURE_H
 
-#include "rpg_magic_exports.h"
-
-struct RPG_Magic_Export RPG_Magic_CounterMeasure
+struct RPG_Magic_CounterMeasure
 {
   RPG_Common_CounterMeasure type;
   RPG_Magic_Check check;

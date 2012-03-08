@@ -7,9 +7,7 @@
 #ifndef RPG_CHARACTER_CHECK_H
 #define RPG_CHARACTER_CHECK_H
 
-#include "rpg_character_exports.h"
-
-struct RPG_Character_Export RPG_Character_Check
+struct RPG_Character_Check
 {
   RPG_Character_CheckTypeUnion type;
   unsigned char difficultyClass;

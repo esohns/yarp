@@ -1,8 +1,8 @@
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-
 cmake_minimum_required(VERSION 2.8)
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice)
+
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ########### next target ###############
 set(RPG_Common_LIB_SRCS
@@ -29,6 +29,7 @@ set(RPG_Common_LIB_SRCS
     rpg_common_creaturesubtype.h
     rpg_common_creaturetype.h
     rpg_common_defines.h
+    rpg_common_exports.h
     rpg_common_duration.h
     rpg_common_effectduration.h
     rpg_common_effecttype.h
@@ -72,14 +73,25 @@ set(RPG_Common_LIB_SRCS
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Common_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
+set_source_files_properties(${RPG_Common_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_COMMON_BUILD_DLL)
 
 add_library(RPG_Common SHARED ${RPG_Common_LIB_SRCS})
 
 # add_custom_target(common_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.xsd)
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_types.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_types.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_tree.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_tree.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment_XML_types.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment_XML_types.h
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_types.cpp
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_types.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_tree.cpp
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_tree.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment_XML_types.cpp
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment_XML_types.h
                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.xsd ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.map ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment.xsd ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment.map
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.xsd
+                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.map
+                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment.xsd
+                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment.map
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
                    COMMENT "generating XML <--> C++ bindings...")
 
@@ -88,8 +100,6 @@ add_dependencies(RPG_Common RPG_Dice)
 set_target_properties(RPG_Common PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 ########### install files ###############
-install(TARGETS RPG_Common LIBRARY
-        DESTINATION lib)
 install(FILES rpg_common.xsd rpg_common_environment.xsd
         DESTINATION share/RPG/config)
 install(FILES
@@ -113,6 +123,7 @@ install(FILES
         rpg_common_creaturesubtype.h
         rpg_common_creaturetype.h
         rpg_common_defines.h
+        rpg_common_exports.h
         rpg_common_duration.h
         rpg_common_effecttype.h
         rpg_common_effectduration.h
@@ -145,3 +156,4 @@ install(FILES
         rpg_common_usage.h
         rpg_common_xsderrorhandler.h
         DESTINATION include)
+install(TARGETS RPG_Common LIBRARY DESTINATION lib)

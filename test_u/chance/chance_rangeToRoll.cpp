@@ -87,8 +87,12 @@ process_arguments(const int argc_in,
       {
         std::string range = argumentParser.opt_arg();
         unsigned int separator = range.find_first_of(ACE_TEXT_ALWAYS_CHAR("-"), 0);
-//        if (separator == std::string::npos)
-		if (separator == -1)
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+        if (separator != -1)
+#else
+        if (separator != std::string::npos)
+#endif
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid range: \"%s\", aborting\n"),

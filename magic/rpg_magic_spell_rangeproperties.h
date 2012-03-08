@@ -7,9 +7,7 @@
 #ifndef RPG_MAGIC_SPELL_RANGEPROPERTIES_H
 #define RPG_MAGIC_SPELL_RANGEPROPERTIES_H
 
-#include "rpg_magic_exports.h"
-
-struct RPG_Magic_Export RPG_Magic_Spell_RangeProperties
+struct RPG_Magic_Spell_RangeProperties
 {
   unsigned int maximum;
   unsigned int increment;

@@ -16,8 +16,6 @@ enum RPG_Combat_SpecialAttack
   RPG_COMBAT_SPECIALATTACK_INVALID
 };
 
-#include "rpg_combat_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -26,7 +24,7 @@ enum RPG_Combat_SpecialAttack
 typedef std::map<RPG_Combat_SpecialAttack, std::string> RPG_Combat_SpecialAttackToStringTable_t;
 typedef RPG_Combat_SpecialAttackToStringTable_t::const_iterator RPG_Combat_SpecialAttackToStringTableIterator_t;
 
-class RPG_Combat_Export RPG_Combat_SpecialAttackHelper
+class RPG_Combat_SpecialAttackHelper
 {
  public:
   inline static void init()

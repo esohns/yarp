@@ -7,9 +7,7 @@
 #ifndef RPG_MAGIC_SPELL_LEVEL_H
 #define RPG_MAGIC_SPELL_LEVEL_H
 
-#include "rpg_magic_exports.h"
-
-struct RPG_Magic_Export RPG_Magic_Spell_Level
+struct RPG_Magic_Spell_Level
 {
   RPG_Magic_CasterClassUnion casterClass;
   unsigned char level;

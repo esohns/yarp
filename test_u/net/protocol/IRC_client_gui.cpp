@@ -737,7 +737,12 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
       std::string::size_type current_fwd_slash = 0;
       std::string::size_type last_fwd_slash = 0;
       current_fwd_slash = timestamp.find('/', 0);
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+      if (current_fwd_slash == -1)
+#else
       if (current_fwd_slash == std::string::npos)
+#endif
       {
         ACE_ERROR((LM_ERROR,
                    ACE_TEXT("\"%s\": failed to parse timestamp (was: \"%s\"), aborting\n"),
@@ -755,7 +760,12 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
       phoneBook_out.timestamp.day(day);
       last_fwd_slash = current_fwd_slash;
       current_fwd_slash = timestamp.find('/', current_fwd_slash + 1);
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+      if (current_fwd_slash == -1)
+#else
       if (current_fwd_slash == std::string::npos)
+#endif
       {
         ACE_ERROR((LM_ERROR,
                    ACE_TEXT("\"%s\": failed to parse timestamp (was: \"%s\"), aborting\n"),
@@ -773,7 +783,12 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
       phoneBook_out.timestamp.month(month);
       last_fwd_slash = current_fwd_slash;
       current_fwd_slash = timestamp.find('/', current_fwd_slash + 1);
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+      if (current_fwd_slash != -1)
+#else
       if (current_fwd_slash != std::string::npos)
+#endif
       {
         ACE_ERROR((LM_ERROR,
                    ACE_TEXT("\"%s\": failed to parse timestamp (was: \"%s\"), aborting\n"),
@@ -785,7 +800,12 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter.clear();
       converter << timestamp.substr(last_fwd_slash + 1,
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+                                    -1);
+#else
                                     std::string::npos);
+#endif
       long year = 0;
       converter >> year;
       phoneBook_out.timestamp.year(year);
@@ -891,9 +911,19 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
 
     // parse connection name
     std::string::size_type current_position = 0;
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+    std::string::size_type last_position = -1;
+#else
     std::string::size_type last_position = std::string::npos;
+#endif
     current_position = server_line_string.find(ACE_TEXT_ALWAYS_CHAR("SERVER:"), 0);
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+    if (current_position == -1)
+#else
     if (current_position == std::string::npos)
+#endif
     {
       ACE_ERROR((LM_ERROR,
                  ACE_TEXT("\"%s\": failed to parse server (was: \"%s\"), aborting\n"),
@@ -909,7 +939,12 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
 
     // parse hostname
     current_position = server_line_string.find(':', last_position + 1);
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+    if (current_position == -1)
+#else
     if (current_position == std::string::npos)
+#endif
     {
       ACE_ERROR((LM_ERROR,
                  ACE_TEXT("\"%s\": failed to parse server (was: \"%s\"), aborting\n"),
@@ -923,9 +958,19 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
     last_position = current_position;
 
     // parse (list of) port ranges
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+    std::string::size_type next_comma = -1;
+#else
     std::string::size_type next_comma = std::string::npos;
+#endif
     std::string::size_type group = server_line_string.find(ACE_TEXT_ALWAYS_CHAR("GROUP:"), current_position + 1);
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+    if (group == -1)
+#else
     if (group == std::string::npos)
+#endif
     {
       ACE_ERROR((LM_ERROR,
                  ACE_TEXT("\"%s\": failed to parse server (was: \"%s\"), aborting\n"),
@@ -944,7 +989,12 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
 
       // port range ?
       current_position = server_line_string.find('-', current_position + 1);
+// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+      if ((current_position == -1) ||
+#else
       if ((current_position == std::string::npos) ||
+#endif
           (current_position > next_comma))
         no_range = true;
       else

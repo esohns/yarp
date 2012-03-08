@@ -1,10 +1,10 @@
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-
 cmake_minimum_required(VERSION 2.8)
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../common")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../character")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../common
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../character)
+
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ########### next target ###############
 set(RPG_Magic_LIB_SRCS
@@ -26,6 +26,7 @@ set(RPG_Magic_LIB_SRCS
     rpg_magic_common_tools.h
     rpg_magic_countermeasure.h
     rpg_magic_defines.h
+    rpg_magic_exports.h
     rpg_magic_descriptor.h
     rpg_magic_dictionary.cpp
     rpg_magic_dictionary.h
@@ -61,9 +62,15 @@ add_library(RPG_Magic SHARED ${RPG_Magic_LIB_SRCS})
 
 # add_custom_target(magic_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.xsd)
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_tree.cpp ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_tree.h ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.cpp
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_tree.cpp
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_tree.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.xsd ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.map
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.xsd
+                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.map
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
                    COMMENT "generating XML <--> C++ bindings...")
 
@@ -72,9 +79,9 @@ add_dependencies(RPG_Magic RPG_Common)
 set_target_properties(RPG_Magic PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 ########### install files ###############
-install(TARGETS RPG_Magic LIBRARY
-        DESTINATION lib)
-install(FILES rpg_magic.xml rpg_magic.xsd
+install(FILES
+        rpg_magic.xml
+        rpg_magic.xsd
         DESTINATION share/RPG/config)
 install(FILES
         rpg_magic_XML_parser.h
@@ -89,6 +96,7 @@ install(FILES
         rpg_magic_common_tools.h
         rpg_magic_countermeasure.h
         rpg_magic_defines.h
+        rpg_magic_exports.h
         rpg_magic_descriptor.h
         rpg_magic_dictionary.h
         rpg_magic_domain.h
@@ -114,3 +122,4 @@ install(FILES
         rpg_magic_spelltype.h
         rpg_magic_subschool.h
         DESTINATION include)
+install(TARGETS RPG_Magic LIBRARY DESTINATION lib)
