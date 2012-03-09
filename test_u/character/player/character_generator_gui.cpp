@@ -562,7 +562,13 @@ do_work(const std::string& magicDictionary_in,
 
   // step2: setup event loops
   // - UI events --> GTK main loop
+  // *WARNING*: this doesn't really make any sense - still, it seems to be a
+  // requirement to somehow "initialize" the mutex from the "main" thread...
+  // IOW: without this, GDK_THREADS_ENTER(), when first invoked from a child thread,
+  // will block indefinetly (go on, try it !)
+  GDK_THREADS_ENTER();
   gtk_main();
+  GDK_THREADS_LEAVE();
 
   // done handling UI events
   ACE_DEBUG((LM_DEBUG,

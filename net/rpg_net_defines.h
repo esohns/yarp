@@ -32,8 +32,8 @@
 #define RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX    "net_client"
 #define RPG_NET_DEF_LOG_FILENAME_SUFFIX           ".log"
 
-// DATADIR-specific
-#define RPG_NET_DEF_DATA_SUB                      "net"
+// CONFIGDIR-specific
+#define RPG_NET_DEF_CONFIG_SUB                    "net"
 
 // - WARNING: current implementation cannot support numbers that have
 //   more than 7 digits !!!

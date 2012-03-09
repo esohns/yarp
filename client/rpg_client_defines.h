@@ -37,6 +37,9 @@
 #define RPG_CLIENT_DEF_GNOME_MAPBOX_NAME               "map_repository_combobox"
 #define RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME            "server_repository_combobox"
 
+// CONFIGDIR-specific
+#define RPG_CLIENT_DEF_CONFIG_SUB                      "client"
+
 #define RPG_CLIENT_DEF_INI_FILE                        "rpg_client.ini"
 #define RPG_CLIENT_CNF_CLIENT_SECTION_HEADER           "client"
 #define RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER       "connection"
