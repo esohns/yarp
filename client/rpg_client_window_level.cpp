@@ -455,8 +455,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   RPG_Client_Position_t current_map_position = std::make_pair(0, 0);
   RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
   RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
-  unsigned long floor_row = 0;
-  unsigned long floor_index = 0;
+  //unsigned long floor_row = 0;
+  unsigned long floor_column_index = 0;
 //   unsigned long x, y;
   RPG_Client_Position_t screen_position = std::make_pair(0, 0);
 //   // debug info
@@ -478,9 +478,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
     current_map_position.second = myView.second + i;
 
     // floor tile rotation
-    floor_row = (current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.rows));
     begin_row = myCurrentFloorSet.tiles.begin();
-    std::advance(begin_row, floor_row);
+    //std::advance(begin_row, (current_map_position.second % myCurrentFloorSet.rows) * myCurrentFloorSet.columns);
+    std::advance(begin_row, current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
 
     for (j = diff + i;
          (j + i) <= sum;
@@ -496,9 +496,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         continue;
 
       // floor tile rotation
-      floor_index = (current_map_position.first % myCurrentFloorSet.rows);
       floor_iterator = begin_row;
-      std::advance(floor_iterator, (myCurrentFloorSet.rows * floor_index));
+      //std::advance(floor_iterator, current_map_position.first % myCurrentFloorSet.columns);
+      std::advance(floor_iterator, (myCurrentFloorSet.rows * (current_map_position.first % myCurrentFloorSet.columns)));
 
       // map --> screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
@@ -524,7 +524,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 //             (current_map_position.first >= myLevelState.getDimensions().first))
 
         // advance floor iterator
-        std::advance(floor_iterator, myCurrentFloorSet.rows);
+        //std::advance(floor_iterator, myCurrentFloorSet.rows);
 
         continue;
       } // end IF
@@ -698,7 +698,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // advance floor iterator
-      std::advance(floor_iterator, myCurrentFloorSet.rows);
+      //std::advance(floor_iterator, myCurrentFloorSet.rows);
     } // end FOR
   } // end FOR
 

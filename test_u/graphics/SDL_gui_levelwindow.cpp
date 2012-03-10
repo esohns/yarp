@@ -382,9 +382,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
       // off-map ?
       if ((current_map_position.second < 0) ||
-          (current_map_position.second >= static_cast<int> (myLevelState->getDimensions().second)) ||
+          (current_map_position.second >= static_cast<int>(myLevelState->getDimensions().second)) ||
           (current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int> (myLevelState->getDimensions().first)))
+          (current_map_position.first >= static_cast<int>(myLevelState->getDimensions().first)))
         continue;
 
       // floor tile rotation
@@ -1581,7 +1581,7 @@ SDL_GUI_LevelWindow::initCeiling()
 
   SDL_Surface* shaded_ceiling = NULL;
   shaded_ceiling = RPG_Graphics_Surface::shade(*myCurrentCeilingTile,
-                                               static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                               static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
     ACE_DEBUG((LM_ERROR,

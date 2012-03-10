@@ -18,37 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef IRC_CLIENT_TOOLS_H
-#define IRC_CLIENT_TOOLS_H
+#ifndef RPG_CLIENT_UI_TOOLS_H
+#define RPG_CLIENT_UI_TOOLS_H
 
-#include <rpg_net_protocol_common.h>
+#include "rpg_client_exports.h"
 
 #include <gtk/gtk.h>
 
 #include <ace/Global_Macros.h>
 
-// forward declaration(s)
-class RPG_Stream_IAllocator;
-class RPG_Stream_Module;
+#include <string>
 
-class IRC_Client_Tools
+class RPG_Client_Export RPG_Client_UI_Tools
 {
  public:
-  static const bool connect(RPG_Stream_IAllocator*,                  // message allocator
-                            const RPG_Net_Protocol_IRCLoginOptions&, // login options
-                            const bool&,                             // debug scanner ?
-                            const bool&,                             // debug parser ?
-                            const unsigned long&,                    // statistics reporting interval (0: OFF)
-                            const std::string&,                      // hostname
-                            const unsigned short&,                   // port
-                            RPG_Stream_Module*);                     // final module
+  static const std::string UTF82Locale(const gchar*,   // string
+                                       const gssize&); // length in bytes (-1: \0-terminated)
+  // *IMPORTANT NOTE*: return value needs to be g_free()'d !
+  static gchar* Locale2UTF8(const std::string&); // string
 
  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~IRC_Client_Tools());
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_Tools(const IRC_Client_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_Tools& operator=(const IRC_Client_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_UI_Tools());
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Client_UI_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_UI_Tools(const RPG_Client_UI_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_UI_Tools& operator=(const RPG_Client_UI_Tools&));
 };
 
 #endif

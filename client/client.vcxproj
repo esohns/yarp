@@ -77,6 +77,7 @@
     <ClInclude Include="rpg_client_defines.h" />
     <ClInclude Include="rpg_client_engine.h" />
     <ClInclude Include="rpg_client_exports.h" />
+    <ClInclude Include="rpg_client_ui_tools.h" />
     <ClInclude Include="rpg_client_window_level.h" />
     <ClInclude Include="rpg_client_window_main.h" />
     <ClInclude Include="rpg_client_window_minimap.h" />
@@ -89,6 +90,7 @@
     <ClCompile Include="rpg_client_callbacks.cpp" />
     <ClCompile Include="rpg_client_common_tools.cpp" />
     <ClCompile Include="rpg_client_engine.cpp" />
+    <ClCompile Include="rpg_client_ui_tools.cpp" />
     <ClCompile Include="rpg_client_window_level.cpp" />
     <ClCompile Include="rpg_client_window_main.cpp" />
     <ClCompile Include="rpg_client_window_minimap.cpp" />

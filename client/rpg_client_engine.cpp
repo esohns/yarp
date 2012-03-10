@@ -23,6 +23,7 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_window_main.h"
 #include "rpg_client_window_level.h"
+#include "rpg_client_ui_tools.h"
 
 #include <rpg_engine_level.h>
 
@@ -200,8 +201,8 @@ RPG_Client_Engine::stop()
 
   myStop = true;
 
-  // signal the (waiting) worker thread...
-  myCondition.signal();
+  // wake up the (waiting) worker thread(s)
+  myCondition.broadcast();
 
   myLock.release();
 
@@ -333,8 +334,8 @@ RPG_Client_Engine::action(const RPG_Client_Action& action_in)
 
   myActions.push_back(action_in);
 
-  // wake up the (waiting) worker thread
-  myCondition.signal();
+  // wake up the (waiting) worker thread(s)
+  myCondition.broadcast();
 }
 
 void
@@ -549,8 +550,14 @@ RPG_Client_Engine::handleActions()
                        ACE_TEXT("failed to SDL_WM_IconifyWindow(): \"%s\", continuing\n"),
                        SDL_GetError()));
         } // end IF
-        SDL_WM_SetCaption(caption.c_str(),  // window caption
-                          caption.c_str()); // icon caption
+        gchar* caption_utf8 = RPG_Client_UI_Tools::Locale2UTF8(caption);
+// *TODO*: this will not return on VS2010...
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+        SDL_WM_SetCaption(caption_utf8,  // window caption
+                          caption_utf8); // icon caption
+#endif
+        // clean up
+        g_free(caption_utf8);
 
         refresh_window = true;
 

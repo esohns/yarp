@@ -1771,7 +1771,8 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
                                map);
 
   // step3: assign new map to level engine
-  data->level_engine->stop();
+  if (data->level_engine->isRunning())
+    data->level_engine->stop();
   data->level_engine->init(data->client_engine,
                            map);
   data->level_engine->start();
@@ -1880,7 +1881,8 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
                filename.c_str()));
   else
   {
-    data->level_engine->stop();
+    if (data->level_engine->isRunning())
+      data->level_engine->stop();
     data->level_engine->init(data->client_engine,
                              map);
     data->level_engine->start();
@@ -1921,7 +1923,11 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
   ACE_ASSERT(data->xml);
 
-  std::string filename = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
+#else
+  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
+#endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->level_engine->getName();
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
@@ -1974,7 +1980,11 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   g_value_unset(&value);
 
   // construct filename
-  std::string filename = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
+#else
+  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
+#endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
@@ -1988,7 +1998,8 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
                filename.c_str()));
   else
   {
-    data->level_engine->stop();
+    if (data->level_engine->isRunning())
+      data->level_engine->stop();
     data->level_engine->init(data->client_engine,
                              map);
     data->level_engine->start();

@@ -29,6 +29,7 @@
 #include <rpg_client_window_main.h>
 #include <rpg_client_engine.h>
 #include <rpg_client_common_tools.h>
+#include <rpg_client_ui_tools.h>
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_dictionary.h>
@@ -102,8 +103,8 @@ event_timer_SDL_cb(Uint32 interval_in,
   RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(argument_in);
   ACE_ASSERT(data);
 
-  SDL_Event event;
-  event.type = SDL_NOEVENT;
+  SDL_Event sdl_event;
+  sdl_event.type = SDL_NOEVENT;
 
   // synch access
   {
@@ -114,10 +115,10 @@ event_timer_SDL_cb(Uint32 interval_in,
     if (data->hover_time >= RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
     {
       // mouse is hovering --> trigger an event
-      event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
-      event.user.code = static_cast<int>(data->hover_time);
+      sdl_event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
+      sdl_event.user.code = static_cast<int>(data->hover_time);
 
-      if (SDL_PushEvent(&event))
+      if (SDL_PushEvent(&sdl_event))
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                    SDL_GetError()));
@@ -135,9 +136,9 @@ event_timer_SDL_cb(Uint32 interval_in,
   if (gtk_events_pending())
   {
     // there are pending GTK events --> trigger an event
-    event.type = RPG_CLIENT_SDL_GTKEVENT;
+    sdl_event.type = RPG_CLIENT_SDL_GTKEVENT;
 
-    if (SDL_PushEvent(&event))
+    if (SDL_PushEvent(&sdl_event))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                  SDL_GetError()));
@@ -145,9 +146,9 @@ event_timer_SDL_cb(Uint32 interval_in,
   GDK_THREADS_LEAVE();
 
   // trigger regular screen refreshes !
-  event.type = RPG_CLIENT_SDL_TIMEREVENT;
+  sdl_event.type = RPG_CLIENT_SDL_TIMEREVENT;
 
-  if (SDL_PushEvent(&event))
+  if (SDL_PushEvent(&sdl_event))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                SDL_GetError()));
@@ -163,17 +164,15 @@ input_timer_SDL_cb(Uint32 interval_in,
   RPG_TRACE(ACE_TEXT("::input_timer_SDL_cb"));
 
   // create a timer event
-  SDL_Event event;
-  event.type = RPG_CLIENT_SDL_TIMEREVENT;
-  event.user.data1 = argument_in;
+  SDL_Event sdl_event;
+  sdl_event.type = RPG_CLIENT_SDL_TIMEREVENT;
+  sdl_event.user.data1 = argument_in;
 
   // push it onto the event queue
-  if (SDL_PushEvent(&event))
-  {
+  if (SDL_PushEvent(&sdl_event))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                SDL_GetError()));
-  } // end IF
 
   // one-shot timer --> cancel
   return 0;
@@ -598,7 +597,7 @@ tp_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -630,7 +629,7 @@ reactor_worker_func(void* args_in)
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -729,8 +728,8 @@ do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
              ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %u\nchannels: %u\nCD [id, status]: \"%s\" [%d, %d]\n"),
              driver,
              obtained.frequency,
-             static_cast<unsigned long> (obtained.format),
-             static_cast<unsigned long> (obtained.channels),
+             static_cast<unsigned long>(obtained.format),
+             static_cast<unsigned long>(obtained.channels),
              SDL_CDName(0),
              cdrom->id,
              cdrom->status));
@@ -786,8 +785,11 @@ do_initGUI(const std::string& graphicsDirectory_in,
   caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
 //   caption += ACE_TEXT_ALWAYS_CHAR(" ");
 //   caption += RPG_VERSION;
+  gchar* caption_utf8 = RPG_Client_UI_Tools::Locale2UTF8(caption);
   SDL_WM_SetCaption(caption.c_str(),  // window caption
                     caption.c_str()); // icon caption
+  // clean up
+  g_free(caption_utf8);
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
@@ -1226,7 +1228,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
 //   // step6: use correct screen
 //   if (parentWidget_in)
 //     gtk_window_set_screen(GTK_WINDOW(dialog),
-//                           gtk_widget_get_screen(const_cast<GtkWidget*> (//                                                                parentWidget_in)));
+//                           gtk_widget_get_screen(const_cast<GtkWidget*> (//parentWidget_in)));
 
   // step6: draw main dialog
   gtk_widget_show_all(main_dialog);
@@ -1410,16 +1412,17 @@ do_work(const RPG_Client_Config& config_in,
   map_style.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
   // step5c: level engine
+  // *NOTE*: the level engine starts automatically as soon as a (new) map is loaded
 //   level_engine.init(&client_engine,
 //                     map);
-  level_engine.start();
-  if (!level_engine.isRunning())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start level engine, aborting\n")));
+  //level_engine.start();
+  //if (!level_engine.isRunning())
+  //{
+  //  ACE_DEBUG((LM_ERROR,
+  //             ACE_TEXT("failed to start level engine, aborting\n")));
 
-    return;
-  } // end IF
+  //  return;
+  //} // end IF
 
   // step5d: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;
@@ -1595,7 +1598,7 @@ do_work(const RPG_Client_Config& config_in,
 
   // step7: dispatch SDL (and GTK) events
 //   gtk_main();
-  SDL_Event event;
+  SDL_Event sdl_event;
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
   RPG_Graphics_IWindow* previous_window = NULL;
@@ -1605,7 +1608,7 @@ do_work(const RPG_Client_Config& config_in,
 //   bool refresh_screen = false;
   do
   {
-    event.type = SDL_NOEVENT;
+    sdl_event.type = SDL_NOEVENT;
     window = NULL;
     schedule_redraw = false;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
@@ -1625,7 +1628,7 @@ do_work(const RPG_Client_Config& config_in,
 //
 //       return;
 //     } // end IF
-    if (SDL_WaitEvent(&event) != 1)
+    if (SDL_WaitEvent(&sdl_event) != 1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
@@ -1639,9 +1642,9 @@ do_work(const RPG_Client_Config& config_in,
     } // end IF
 
     // if necessary, reset hover_time
-    if ((event.type != RPG_GRAPHICS_SDL_HOVEREVENT) &&
-        (event.type != RPG_CLIENT_SDL_GTKEVENT) &&
-        (event.type != RPG_CLIENT_SDL_TIMEREVENT))
+    if ((sdl_event.type != RPG_GRAPHICS_SDL_HOVEREVENT) &&
+        (sdl_event.type != RPG_CLIENT_SDL_GTKEVENT) &&
+        (sdl_event.type != RPG_CLIENT_SDL_TIMEREVENT))
     {
       // synch access
       ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
@@ -1649,11 +1652,11 @@ do_work(const RPG_Client_Config& config_in,
       userData.hover_time = 0;
     } // end IF
 
-    switch (event.type)
+    switch (sdl_event.type)
     {
       case SDL_KEYDOWN:
       {
-        switch (event.key.keysym.sym)
+        switch (sdl_event.key.keysym.sym)
         {
           case SDLK_q:
           {
@@ -1663,9 +1666,8 @@ do_work(const RPG_Client_Config& config_in,
             break;
           }
           default:
-          {
             break;
-          }
+
         } // end SWITCH
 
         if (done)
@@ -1678,14 +1680,14 @@ do_work(const RPG_Client_Config& config_in,
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
       {
         // find window
-        switch (event.type)
+        switch (sdl_event.type)
         {
           case SDL_MOUSEMOTION:
-            mouse_position = std::make_pair(event.motion.x,
-                                            event.motion.y); break;
+            mouse_position = std::make_pair(sdl_event.motion.x,
+                                            sdl_event.motion.y); break;
           case SDL_MOUSEBUTTONDOWN:
-            mouse_position = std::make_pair(event.button.x,
-                                            event.button.y); break;
+            mouse_position = std::make_pair(sdl_event.button.x,
+                                            sdl_event.button.y); break;
           default:
           {
             int x, y;
@@ -1699,17 +1701,17 @@ do_work(const RPG_Client_Config& config_in,
         ACE_ASSERT(window);
 
         // notify previously "active" window upon losing "focus"
-        if (event.type == SDL_MOUSEMOTION)
+        if (sdl_event.type == SDL_MOUSEMOTION)
         {
           if (previous_window &&
 //               (previous_window != mainWindow)
               (previous_window != window))
           {
-            event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
+            sdl_event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
             previous_redraw = false;
             try
             {
-              previous_window->handleEvent(event,
+              previous_window->handleEvent(sdl_event,
                                            previous_window,
                                            previous_redraw);
             }
@@ -1733,7 +1735,7 @@ do_work(const RPG_Client_Config& config_in,
               }
             } // end IF
 
-            event.type = SDL_MOUSEMOTION;
+            sdl_event.type = SDL_MOUSEMOTION;
           } // end IF
         } // end IF
         // remember last "active" window
@@ -1742,7 +1744,7 @@ do_work(const RPG_Client_Config& config_in,
         // notify "active" window
         try
         {
-          window->handleEvent(event,
+          window->handleEvent(sdl_event,
                               window,
                               schedule_redraw);
         }
@@ -1801,10 +1803,7 @@ do_work(const RPG_Client_Config& config_in,
       case SDL_VIDEORESIZE:
       case SDL_VIDEOEXPOSE:
       default:
-      {
-
         break;
-      }
     } // end SWITCH
 
     // redraw map ?
@@ -1816,7 +1815,7 @@ do_work(const RPG_Client_Config& config_in,
     } // end IF
 
     // redraw cursor ?
-    switch (event.type)
+    switch (sdl_event.type)
     {
       case SDL_KEYDOWN:
       case SDL_MOUSEBUTTONDOWN:
@@ -1840,9 +1839,7 @@ do_work(const RPG_Client_Config& config_in,
         break;
       }
       default:
-      {
         break;
-      }
     } // end SWITCH
 
 //     // enforce fixed FPS
