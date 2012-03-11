@@ -48,22 +48,22 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump item dictionary") << std::endl;
-  std::string path = base_data_path;
+  std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef CONFIGDIR
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
@@ -83,21 +83,21 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   dumpItemDictionary_out = false;
 
-  itemDictionaryFilename_out = base_data_path;
+  itemDictionaryFilename_out = config_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef CONFIGDIR
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
 #endif
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
@@ -260,21 +260,21 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   bool dumpItemDictionary  = false;
 
-  std::string itemDictionaryFilename = base_data_path;
+  std::string itemDictionaryFilename = config_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef CONFIGDIR
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
 #endif
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);

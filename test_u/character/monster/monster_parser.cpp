@@ -60,25 +60,25 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = DATADIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
-  std::string path = base_data_path;
+  std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef CONFIGDIR
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_CONFIG_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
@@ -99,25 +99,25 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  // init results
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = DATADIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
+  // init results
   dumpDictionary_out = false;
 
-  monsterDictionaryFilename_out = base_data_path;
+  monsterDictionaryFilename_out = config_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #ifdef DATADIR
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_CONFIG_SUB);
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
 #endif
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
@@ -291,24 +291,24 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   bool dumpDictionary      = false;
 
-  std::string monsterDictionaryFilename = base_data_path;
+  std::string monsterDictionaryFilename = config_path;
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef CONFIGDIR
   monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_DATA_SUB);
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_CONFIG_SUB);
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DATA_SUB);
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
 #endif
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);

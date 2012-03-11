@@ -27,6 +27,8 @@
 #include "IRC_client_gui_messagehandler.h"
 #include "IRC_client_tools.h"
 
+#include <rpg_client_ui_tools.h>
+
 #include <rpg_net_protocol_defines.h>
 #include <rpg_net_protocol_module_IRChandler.h>
 #include <rpg_net_protocol_tools.h>
@@ -142,7 +144,7 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
   gtk_widget_hide(GTK_WIDGET(main_entry_dialog));
-  loginOptions.nick = IRC_Client_Tools::UTF82Locale(gtk_entry_get_text(main_entry_entry), -1);
+  loginOptions.nick = RPG_Client_UI_Tools::UTF82Locale(gtk_entry_get_text(main_entry_entry), -1);
   // clean up
   gtk_entry_buffer_delete_text(gtk_entry_get_buffer(main_entry_entry),
                                0, -1);
@@ -442,8 +444,8 @@ send_clicked_cb(GtkWidget* button_in,
     return; // nothing to do...
 
   // retrieve textbuffer data
-  std::string message_string = IRC_Client_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
-                                                             gtk_entry_buffer_get_length(buffer)); // number of bytes
+  std::string message_string = RPG_Client_UI_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
+                                                                gtk_entry_buffer_get_length(buffer)); // number of bytes
   if (message_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
@@ -608,8 +610,8 @@ change_clicked_cb(GtkWidget* button_in,
     return; // nothing to do...
 
   // retrieve textbuffer data
-  std::string nick_string = IRC_Client_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
-                                                          gtk_entry_buffer_get_length(buffer)); // number of bytes
+  std::string nick_string = RPG_Client_UI_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
+                                                             gtk_entry_buffer_get_length(buffer)); // number of bytes
   if (nick_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
@@ -690,8 +692,8 @@ usersbox_changed_cb(GtkWidget* combobox_in,
 
   // convert UTF8 to locale
 //   user_string = g_value_get_string(&active_value);
-  std::string user_string = IRC_Client_Tools::UTF82Locale(user_value,
-                                                          g_utf8_strlen(user_value, -1));
+  std::string user_string = RPG_Client_UI_Tools::UTF82Locale(user_value,
+                                                             g_utf8_strlen(user_value, -1));
   if (user_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
@@ -814,8 +816,8 @@ join_clicked_cb(GtkWidget* button_in,
     return; // nothing to do...
 
   // retrieve textbuffer data
-  std::string channel_string = IRC_Client_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
-                                                             gtk_entry_buffer_get_length(buffer)); // number of bytes
+  std::string channel_string = RPG_Client_UI_Tools::UTF82Locale(gtk_entry_buffer_get_text(buffer),    // text
+                                                                gtk_entry_buffer_get_length(buffer)); // number of bytes
   if (channel_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
@@ -901,8 +903,8 @@ channelbox_changed_cb(GtkWidget* combobox_in,
 
   // convert UTF8 to locale
 //   channel_string = g_value_get_string(&active_value);
-  std::string channel_string = IRC_Client_Tools::UTF82Locale(channel_value,
-                                                             g_utf8_strlen(channel_value, -1));
+  std::string channel_string = RPG_Client_UI_Tools::UTF82Locale(channel_value,
+                                                                g_utf8_strlen(channel_value, -1));
   if (channel_string.empty())
   {
     ACE_DEBUG((LM_ERROR,
@@ -1177,7 +1179,8 @@ action_away_cb(GtkAction* action_in,
     } // end IF
     gtk_widget_hide(GTK_WIDGET(server_tab_entry_dialog));
 
-    away_message = IRC_Client_Tools::UTF82Locale(gtk_entry_get_text(server_tab_entry_dialog_entry), -1);
+    away_message = RPG_Client_UI_Tools::UTF82Locale(gtk_entry_get_text(server_tab_entry_dialog_entry),
+                                                    -1);
     // clean up
     gtk_entry_buffer_delete_text(gtk_entry_get_buffer(server_tab_entry_dialog_entry),
                                  0, -1);
@@ -1611,8 +1614,8 @@ members_clicked_cb(GtkWidget* widget_in,
                        0, &current_value,
                        -1);
     // *TODO*: check if these
-    data->parameters.push_back(IRC_Client_Tools::UTF82Locale(current_value,
-                                                             g_utf8_strlen(current_value, -1)));
+    data->parameters.push_back(RPG_Client_UI_Tools::UTF82Locale(current_value,
+                                                                g_utf8_strlen(current_value, -1)));
 
     // clean up
     g_free(current_value);
@@ -1789,7 +1792,8 @@ action_invite_cb(GtkAction* action_in,
   ACE_ASSERT(invite_channel_members_menu);
   GtkMenuItem* active_item = GTK_MENU_ITEM(gtk_menu_get_active(invite_channel_members_menu));
   ACE_ASSERT(active_item);
-  std::string channel_string = IRC_Client_Tools::UTF82Locale(gtk_menu_item_get_label(active_item), -1);
+  std::string channel_string = RPG_Client_UI_Tools::UTF82Locale(gtk_menu_item_get_label(active_item),
+                                                                -1);
   ACE_ASSERT(!channel_string.empty());
 
   for (string_list_const_iterator_t iterator = data->parameters.begin();

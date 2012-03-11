@@ -68,21 +68,22 @@ print_usage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string path;
-#ifdef DATADIR
-  path = DATADIR;
+#ifdef CONFIGDIR
+  path = CONFIGDIR;
 #else
   path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
-#ifndef DATADIR
+#endif // #ifdef CONFIGDIR
+
+  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT("currently available options:") << std::endl;
+#ifndef CONFIGDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CONFIG_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_CONFIG_SUB);
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -104,19 +105,20 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   // init configuration
-#ifndef DATADIR
+#ifndef CONFIGDIR
+  configFile_out = config_path;
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CONFIG_SUB);
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_CONFIG_SUB);
 #endif
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   configFile_out += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
@@ -783,19 +785,19 @@ ACE_TMAIN(int argc,
   // step1 init/validate configuration
 
   // step1a: process commandline arguments
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
-  std::string configFile             = base_data_path;
-#ifndef DATADIR
+  std::string configFile             = config_path;
+#ifndef CONFIGDIR
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_DATA_SUB);
+  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CONFIG_SUB);
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_DATA_SUB);
+  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_CONFIG_SUB);
 #endif
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   configFile += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);

@@ -44,7 +44,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>E:\Yarp\net\protocol;E:\Yarp\net;E:\Yarp\net\stream;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\3rd_party;E:\Gtk\lib\gtk-2.0\include;E:\Gtk\include\gtk-2.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\lib\glib-2.0\include;E:\Gtk\include\glib-2.0;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\net\protocol;E:\Yarp\net;E:\Yarp\net\stream;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\3rd_party;E:\Gtk\lib\gtk-2.0\include;E:\Gtk\include\gtk-2.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\lib\glib-2.0\include;E:\Gtk\include\glib-2.0;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -93,6 +93,9 @@
     <ClInclude Include="net\protocol\IRC_common.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\client\client.vcxproj">
+      <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\common\common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>

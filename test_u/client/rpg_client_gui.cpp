@@ -91,9 +91,6 @@
 #include <iostream>
 #include <sstream>
 
-// init statics
-// static GtkWidget* main_dialog = NULL;
-
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
                    void* argument_in)
@@ -2132,8 +2129,8 @@ ACE_TMAIN(int argc_in,
 //   RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init ACE
-  // *PORTABILITY*: on Windows, we need to init ACE...
-// #if defined (ACE_WIN32) || defined (ACE_WIN64)
+// *PORTABILITY*: on Windows, we need to init ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init() == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -2141,7 +2138,7 @@ ACE_TMAIN(int argc_in,
 
     return EXIT_FAILURE;
   } // end IF
-// #endif
+#endif
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
@@ -2233,7 +2230,7 @@ ACE_TMAIN(int argc_in,
   std::string schemaRepository = config_path;
 #ifndef CONFIGDIR
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_DATA_SUB);
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CONFIG_SUB);
 #endif
 
   // sanity check
@@ -2544,8 +2541,8 @@ ACE_TMAIN(int argc_in,
              system_time_string.c_str()));
 #endif
 
-  // *PORTABILITY*: on Windows, we must fini ACE...
-// #if defined (ACE_WIN32) || defined (ACE_WIN64)
+// *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini() == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -2553,7 +2550,7 @@ ACE_TMAIN(int argc_in,
 
     return EXIT_FAILURE;
   } // end IF
-// #endif
+#endif
 
   return EXIT_SUCCESS;
 } // end main

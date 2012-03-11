@@ -24,7 +24,7 @@
 #include "IRC_client_gui_connection.h"
 #include "IRC_client_gui_callbacks.h"
 
-#include "IRC_client_tools.h"
+#include <rpg_client_ui_tools.h>
 
 #include <rpg_net_protocol_tools.h>
 
@@ -477,7 +477,7 @@ IRC_Client_GUI_MessageHandler::update()
       return; // nothing to do...
 
     // step1: convert text
-    gchar* converted_text = IRC_Client_Tools::Locale2UTF8(myDisplayQueue.front());
+    gchar* converted_text = RPG_Client_UI_Tools::Locale2UTF8(myDisplayQueue.front());
     if (!converted_text)
     {
       ACE_DEBUG((LM_ERROR,
@@ -664,7 +664,7 @@ IRC_Client_GUI_MessageHandler::add(const std::string& nick_in)
 
   // step1: convert text
   GtkTreeIter iter;
-  gchar* converted_nick_string = IRC_Client_Tools::Locale2UTF8(nick_in);
+  gchar* converted_nick_string = RPG_Client_UI_Tools::Locale2UTF8(nick_in);
   if (!converted_nick_string)
   {
     ACE_DEBUG((LM_ERROR,
@@ -698,7 +698,7 @@ IRC_Client_GUI_MessageHandler::remove(const std::string& nick_in)
   ACE_ASSERT(channel_liststore);
 
   // step1: convert text
-  gchar* converted_nick_string = IRC_Client_Tools::Locale2UTF8(nick_in);
+  gchar* converted_nick_string = RPG_Client_UI_Tools::Locale2UTF8(nick_in);
   if (!converted_nick_string)
   {
     ACE_DEBUG((LM_ERROR,
@@ -791,7 +791,7 @@ IRC_Client_GUI_MessageHandler::members(const string_list_t& list_in)
        iterator++)
   {
     // step1: convert text
-    converted_nick_string = IRC_Client_Tools::Locale2UTF8(*iterator);
+    converted_nick_string = RPG_Client_UI_Tools::Locale2UTF8(*iterator);
     if (!converted_nick_string)
     {
       ACE_DEBUG((LM_ERROR,

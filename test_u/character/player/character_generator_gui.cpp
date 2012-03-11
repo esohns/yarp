@@ -678,7 +678,7 @@ ACE_TMAIN(int argc_in,
   std::string schemaRepository = config_path;
 #ifndef CONFIGDIR
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_DATA_SUB);
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CONFIG_SUB);
 #endif
 
   std::string graphicsDirectory = base_data_path;

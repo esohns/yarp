@@ -29,8 +29,8 @@
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE         "rpg_engine.xsd"
 
-// DATADIR-specific
-#define RPG_ENGINE_DEF_DATA_SUB        "engine"
+// CONFIGDIR-specific
+#define RPG_ENGINE_DEF_CONFIG_SUB      "engine"
 
 // engine-specific
 #define RPG_ENGINE_CENTER_ON_PLAYER    true

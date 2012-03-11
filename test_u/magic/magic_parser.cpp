@@ -50,23 +50,23 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump spell dictionary") << std::endl;
   std::cout << ACE_TEXT("-l       : group levels") << std::endl;
-  std::string path = base_data_path;
+  std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef CONFIGDIR
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
@@ -87,22 +87,22 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   dumpDictionary_out = false;
   groupLevels_out = false;
 
-  magicDictionaryFilename_out = base_data_path;
+  magicDictionaryFilename_out = config_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef CONFIGDIR
   magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
 #endif
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
@@ -273,22 +273,22 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   bool dumpDictionary = false;
   bool groupLevels = false;
 
-  std::string magicDictionaryFilename = base_data_path;
+  std::string magicDictionaryFilename = config_path;
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef CONFIGDIR
   magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
 #endif
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);

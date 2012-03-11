@@ -77,12 +77,12 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -95,16 +95,20 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-f [FILE]: player profile (*.xml)") << std::endl;
-  path = base_data_path;
+  path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+#ifdef CONFIGDIR
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  path = base_data_path;
+  path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+#ifdef CONFIGDIR
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]: magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
@@ -122,12 +126,12 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   // init configuration
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -139,16 +143,20 @@ process_arguments(const int argc_in,
   playerFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
   playerFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
-  itemDictionaryFilename_out = base_data_path;
+  itemDictionaryFilename_out = config_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+#ifdef CONFIGDIR
+  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-  magicDictionaryFilename_out = base_data_path;
+  magicDictionaryFilename_out = config_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+#ifdef CONFIGDIR
+  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   traceInformation_out = false;
@@ -340,12 +348,12 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
 #else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
 
   // init configuration
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -357,22 +365,33 @@ ACE_TMAIN(int argc,
   playerFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
   playerFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
-  std::string itemDictionaryFilename = base_data_path;
+  std::string itemDictionaryFilename = config_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DATA_SUB);
+#ifdef CONFIGDIR
+  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-  std::string magicDictionaryFilename = base_data_path;
+  std::string magicDictionaryFilename = config_path;
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DATA_SUB);
+#ifdef CONFIGDIR
+  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+
+  std::string base_data_path;
+#ifdef DATADIR
+  base_data_path = DATADIR;
+#else
+  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef DATADIR
 
   std::string schemaRepository = base_data_path;
 #ifndef DATADIR
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_DATA_SUB);
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CONFIG_SUB);
 #endif
 
   bool traceInformation    = false;
