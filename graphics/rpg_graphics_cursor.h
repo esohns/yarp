@@ -20,6 +20,8 @@ enum RPG_Graphics_Cursor
   CURSOR_SCROLL_UL,
   CURSOR_SCROLL_UR,
   CURSOR_STAIRS,
+  CURSOR_TARGET,
+  CURSOR_TRAVEL,
   CURSOR_WAIT,
   //
   RPG_GRAPHICS_CURSOR_MAX,
@@ -53,6 +55,8 @@ class RPG_Graphics_Export RPG_Graphics_CursorHelper
     myRPG_Graphics_CursorToStringTable.insert(std::make_pair(CURSOR_SCROLL_UL, ACE_TEXT_ALWAYS_CHAR("CURSOR_SCROLL_UL")));
     myRPG_Graphics_CursorToStringTable.insert(std::make_pair(CURSOR_SCROLL_UR, ACE_TEXT_ALWAYS_CHAR("CURSOR_SCROLL_UR")));
     myRPG_Graphics_CursorToStringTable.insert(std::make_pair(CURSOR_STAIRS, ACE_TEXT_ALWAYS_CHAR("CURSOR_STAIRS")));
+    myRPG_Graphics_CursorToStringTable.insert(std::make_pair(CURSOR_TARGET, ACE_TEXT_ALWAYS_CHAR("CURSOR_TARGET")));
+    myRPG_Graphics_CursorToStringTable.insert(std::make_pair(CURSOR_TRAVEL, ACE_TEXT_ALWAYS_CHAR("CURSOR_TRAVEL")));
     myRPG_Graphics_CursorToStringTable.insert(std::make_pair(CURSOR_WAIT, ACE_TEXT_ALWAYS_CHAR("CURSOR_WAIT")));
   };
 

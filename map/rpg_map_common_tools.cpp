@@ -1548,14 +1548,17 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
             {
               // erase rightmost column
               last = (*zones_iter).end(); last--;
-              unsigned long column_x = (*last).first;
+              unsigned int column_x = (*last).first;
+              std::vector<RPG_Map_ZoneIterator_t> positions;
               for (RPG_Map_ZoneIterator_t zone_iter2 = (*zones_iter).begin();
                    zone_iter2 != (*zones_iter).end();
                    zone_iter2++)
-              {
                 if ((*zone_iter2).first == column_x)
-                  (*zones_iter).erase(zone_iter2);
-              } // end FOR
+                  positions.push_back(zone_iter2);
+              for (std::vector<RPG_Map_ZoneIterator_t>::const_iterator iterator = positions.begin();
+                   iterator != positions.end();
+                   iterator++)
+                (*zones_iter).erase(*iterator);
 //               // create new rightmost column
 //               first = (*zones_iter).begin();
 //               last = (*zones_iter).end(); last--;
@@ -1598,14 +1601,17 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
             {
               // erase leftmost column
               first = (*zones_iter).begin();
-              unsigned long column_x = (*first).first;
+              unsigned int column_x = (*first).first;
+              std::vector<RPG_Map_ZoneIterator_t> positions;
               for (RPG_Map_ZoneIterator_t zone_iter2 = (*zones_iter).begin();
                    zone_iter2 != (*zones_iter).end();
                    zone_iter2++)
-              {
                 if ((*zone_iter2).first == column_x)
-                  (*zones_iter).erase(zone_iter2);
-              } // end FOR
+                  positions.push_back(zone_iter2);
+              for (std::vector<RPG_Map_ZoneIterator_t>::const_iterator iterator = positions.begin();
+                   iterator != positions.end();
+                   iterator++)
+                (*zones_iter).erase(*iterator);
 //               // create new leftmost column
 //               first = (*zones_iter).begin();
 //               last = (*zones_iter).end(); last--;

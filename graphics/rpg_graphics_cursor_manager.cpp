@@ -18,8 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+// *NOTE*: workaround quirky MSVC...
+#define NOMINMAX
+
 #include "rpg_graphics_cursor_manager.h"
 
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_iwindow.h"
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_common_tools.h"
@@ -30,14 +35,43 @@
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
+#include <limits>
+
 RPG_Graphics_Cursor_Manager::RPG_Graphics_Cursor_Manager()
  : myCurrentType(CURSOR_NORMAL),
    myCurrentGraphic(NULL),
-   myBGPosition(std::make_pair(0, 0)),
-   myBG(NULL)//,
-//    myCache()
+//   myCache(),
+   myBGPosition(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                               std::numeric_limits<unsigned int>::max())),
+   myBG(NULL),
+   myHighlightWindow(NULL),
+//   myHighlightBGCache(),
+   myHighlightTile(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::RPG_Graphics_Cursor_Manager"));
+
+  // init cursor highlighting
+  SDL_Surface* tile_highlight_bg = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+                                                                RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
+  if (!tile_highlight_bg)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
+               RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+               RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
+  myHighlightBGCache.push_back(std::make_pair(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                             std::numeric_limits<unsigned int>::max()),
+                                              tile_highlight_bg));
+
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
+  type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
+  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                           true,   // convert to display format
+                                                           false); // don't cache
+  if (!myHighlightTile)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
 }
 
@@ -53,6 +87,24 @@ RPG_Graphics_Cursor_Manager::~RPG_Graphics_Cursor_Manager()
        iterator != myCache.end();
        iterator++)
     SDL_FreeSurface((*iterator).second);
+
+  for (RPG_Graphics_TileCacheConstIterator_t iterator = myHighlightBGCache.begin();
+       iterator != myHighlightBGCache.end();
+       iterator++)
+    SDL_FreeSurface((*iterator).second);
+
+  if (myHighlightTile)
+    SDL_FreeSurface(myHighlightTile);
+}
+
+void
+RPG_Graphics_Cursor_Manager::init(RPG_Graphics_SDLWindowBase* window_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::init"));
+
+  ACE_ASSERT(window_in);
+
+  myHighlightWindow = window_in;
 }
 
 const RPG_Graphics_Cursor
@@ -61,6 +113,19 @@ RPG_Graphics_Cursor_Manager::type() const
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));
 
   return myCurrentType;
+}
+
+const RPG_Graphics_Position_t
+RPG_Graphics_Cursor_Manager::position() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));
+
+  int x, y;
+  SDL_GetMouseState(&x, &y);
+
+  RPG_Graphics_Position_t result = std::make_pair(static_cast<unsigned int>(x),
+                                                  static_cast<unsigned int>(y));
+  return result;
 }
 
 void
@@ -91,7 +156,8 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
 
       return;
     } // end IF
-    myBGPosition = std::make_pair(0, 0);
+    myBGPosition = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                  std::numeric_limits<unsigned int>::max());
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("set cursor to: \"%s\"\n"),
@@ -162,7 +228,8 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
 
     return;
   } // end IF
-  myBGPosition = std::make_pair(0, 0);
+  myBGPosition = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                std::numeric_limits<unsigned int>::max());
 
   myCurrentType = type_in;
 
@@ -183,8 +250,8 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
 // }
 
 void
-RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
-                                 const unsigned long& offsetY_in,
+RPG_Graphics_Cursor_Manager::put(const unsigned int& offsetX_in,
+                                 const unsigned int& offsetY_in,
                                  SDL_Surface* targetSurface_in,
                                  SDL_Rect& dirtyRegion_out)
 {
@@ -193,8 +260,8 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
   // sanity check(s)
   ACE_ASSERT(myCurrentGraphic);
   ACE_ASSERT(targetSurface_in);
-//   ACE_ASSERT(offsetX_in < static_cast<unsigned long> (targetSurface_in->w));
-//   ACE_ASSERT(offsetY_in < static_cast<unsigned long> (targetSurface_in->h));
+//   ACE_ASSERT(offsetX_in < static_cast<unsigned int>(targetSurface_in->w));
+//   ACE_ASSERT(offsetY_in < static_cast<unsigned int>(targetSurface_in->h));
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out,
@@ -206,8 +273,8 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
   ACE_OS::memset(&bgRect,
                  0,
                  sizeof(bgRect));
-  if (!((myBGPosition.first == 0) &&
-        (myBGPosition.second == 0)))
+  if ((myBGPosition.first  != std::numeric_limits<unsigned int>::max()) ||
+      (myBGPosition.second != std::numeric_limits<unsigned int>::max()))
   {
     // sanity check(s)
     ACE_ASSERT(myBG);
@@ -237,6 +304,9 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
     dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - targetSurface_in->h);
 
   // place cursor
+  SDL_Rect clipRect;
+  SDL_GetClipRect(targetSurface_in, &clipRect);
+  SDL_SetClipRect(targetSurface_in, NULL); // disable window-specific clipping here...
   if (SDL_BlitSurface(myCurrentGraphic,  // source
                       NULL,              // aspect (--> everything)
                       targetSurface_in,  // target
@@ -247,6 +317,7 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
                SDL_GetError()));
 
     // clean up
+    SDL_SetClipRect(targetSurface_in, &clipRect);
     if ((bgRect.w != 0) &&
         (bgRect.h != 0))
       dirtyRegion_out = bgRect;
@@ -260,6 +331,7 @@ RPG_Graphics_Cursor_Manager::put(const unsigned long& offsetX_in,
 
     return;
   } // end IF
+  SDL_SetClipRect(targetSurface_in, &clipRect);
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
   // --> reset them
@@ -296,6 +368,9 @@ RPG_Graphics_Cursor_Manager::restoreBG(SDL_Surface* targetSurface_in,
     dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - targetSurface_in->h);
 
   // restore/clear background
+  SDL_Rect clipRect;
+  SDL_GetClipRect(targetSurface_in, &clipRect);
+  SDL_SetClipRect(targetSurface_in, NULL); // disable window-specific clipping here...
   if (SDL_BlitSurface(myBG,              // source
                       NULL,              // aspect (--> everything)
                       targetSurface_in,  // target
@@ -305,15 +380,101 @@ RPG_Graphics_Cursor_Manager::restoreBG(SDL_Surface* targetSurface_in,
                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
                SDL_GetError()));
 
+    // clean up
+    SDL_SetClipRect(targetSurface_in, &clipRect);
+
     return;
   } // end IF
+  SDL_SetClipRect(targetSurface_in, &clipRect);
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
   // --> reset them
   dirtyRegion_out.w = myBG->w;
   dirtyRegion_out.h = myBG->h;
+}
 
-  RPG_Graphics_Surface::clear(myBG);
+void
+RPG_Graphics_Cursor_Manager::updateBG(SDL_Surface* sourceSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::updateBG"));
+
+  // sanity check
+  ACE_ASSERT(myBG);
+
+  // the map window has changed...
+  // --> update ONLY that bit of our background (if any)
+
+  // step1: retrieve clip area of the map (==highlight) window
+  SDL_Rect map_clip_rect;
+  myHighlightWindow->clip();
+  SDL_GetClipRect(sourceSurface_in, &map_clip_rect);
+  myHighlightWindow->unclip();
+
+  // step2: intersect with cached bg
+  SDL_Rect bg_rect;
+  bg_rect.x = static_cast<int16_t>(myBGPosition.first);
+  bg_rect.y = static_cast<int16_t>(myBGPosition.second);
+  bg_rect.w = myBG->w;
+  bg_rect.h = myBG->h;
+  SDL_Rect map_bit_rect;
+  ACE_OS::memset(&map_bit_rect,
+                 0,
+                 sizeof(SDL_Rect));
+  map_bit_rect = RPG_Graphics_SDL_Tools::intersect(map_clip_rect, bg_rect);
+  if ((map_bit_rect.w == 0) || // cached cursor bg fully outside of map
+      (map_bit_rect.h == 0) || // or cached cursor bg fully inside of map
+      ((map_bit_rect.w == bg_rect.w) && (map_bit_rect.h == bg_rect.h)))
+    return; // --> nothing to do...
+
+  // step3: adjust intersection coordinates (relative to cached bg surface)
+  map_bit_rect.x -= bg_rect.x;
+  map_bit_rect.y -= bg_rect.y;
+
+  // step4: get a fresh copy from that part of the map
+  SDL_Surface* new_bg = RPG_Graphics_Surface::create(static_cast<unsigned int>(myBG->w),
+                                                     static_cast<unsigned int>(myBG->h));
+  ACE_ASSERT(new_bg);
+  RPG_Graphics_Surface::get(myBGPosition.first,
+                            myBGPosition.second,
+                            true, // use (fast) blitting method
+                            *sourceSurface_in,
+                            *new_bg);
+
+  // step5: mask the map bit from the cached bg
+  if (SDL_FillRect(myBG,
+                   &map_bit_rect,
+                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A0)) // "transparency"
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+               SDL_GetError()));
+
+    // clean up
+    SDL_FreeSurface(new_bg);
+
+    return;
+  } // end IF
+
+  // step6: blit the cached bg onto the fresh copy
+  if (SDL_BlitSurface(myBG,   // source
+                      NULL,   // aspect (--> everything)
+                      new_bg, // target
+                      NULL))  // aspect (--> everything)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+               SDL_GetError()));
+
+    // clean up
+    SDL_FreeSurface(new_bg);
+
+    return;
+  } // end IF
+
+  // clean up
+  SDL_FreeSurface(myBG);
+
+  myBG = new_bg;
 }
 
 void
@@ -325,4 +486,122 @@ RPG_Graphics_Cursor_Manager::invalidateBG()
   ACE_ASSERT(myBG);
 
   RPG_Graphics_Surface::clear(myBG);
+}
+
+const RPG_Graphics_Position_t
+RPG_Graphics_Cursor_Manager::getHighlightBGPosition(const unsigned int& index_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::getHighlightBGPosition"));
+
+  // sanity check
+  ACE_ASSERT(myHighlightBGCache.size() > index_in);
+
+  return myHighlightBGCache[index_in].first;
+}
+
+void
+RPG_Graphics_Cursor_Manager::drawHighlight(const RPG_Graphics_Position_t& graphicsPosition_in,
+                                           SDL_Surface* targetSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::drawHighlight"));
+
+  // sanity check
+  ACE_ASSERT(myHighlightTile);
+  ACE_ASSERT(myHighlightWindow);
+  ACE_ASSERT(targetSurface_in);
+
+  SDL_Rect clipRect;
+  myHighlightWindow->clip();
+  SDL_GetClipRect(targetSurface_in, &clipRect);
+  RPG_Graphics_Surface::put(graphicsPosition_in.first,
+                            graphicsPosition_in.second,
+                            *myHighlightTile,
+                            targetSurface_in);
+  myHighlightWindow->unclip();
+
+  SDL_Rect dirtyRegion;
+  dirtyRegion.x = static_cast<int16_t>(graphicsPosition_in.first);
+  dirtyRegion.y = static_cast<int16_t>(graphicsPosition_in.second);
+  dirtyRegion.w = static_cast<uint16_t>(myHighlightTile->w);
+  dirtyRegion.h = static_cast<uint16_t>(myHighlightTile->h);
+
+//   invalidate(dirtyRegion);
+  // *NOTE*: updating straight away reduces ugly smears...
+  RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
+                               targetSurface_in);
+}
+
+void
+RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Graphics_Position_t& mapPosition_in,
+                                              const RPG_Graphics_Position_t& graphicsPosition_in,
+                                              const SDL_Surface* targetSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::storeHighlightBG"));
+
+  // sanity check
+  ACE_ASSERT(!myHighlightBGCache.empty());
+  ACE_ASSERT(myHighlightWindow);
+  ACE_ASSERT(targetSurface_in);
+
+  myHighlightWindow->clip();
+  RPG_Graphics_Surface::get(graphicsPosition_in.first,
+                            graphicsPosition_in.second,
+                            true, // use (fast) blitting method
+                            *targetSurface_in,
+                            *(myHighlightBGCache.front().second));
+  myHighlightWindow->unclip();
+
+  myHighlightBGCache.front().first = mapPosition_in;
+}
+
+void
+RPG_Graphics_Cursor_Manager::restoreHighlightBG(SDL_Surface* targetSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::restoreHighlightBG"));
+
+  // sanity check
+  ACE_ASSERT(myHighlightWindow);
+  ACE_ASSERT(!myHighlightBGCache.empty());
+  ACE_ASSERT(targetSurface_in);
+
+  RPG_Graphics_Position_t tile_position = RPG_Graphics_Common_Tools::map2Screen(myHighlightBGCache.front().first,
+                                                                                myHighlightWindow->getSize(),
+                                                                                myHighlightWindow->getView());
+  //// sanity check
+  //ACE_ASSERT((tile_position.first  < static_cast<unsigned int>(targetSurface_in->w)) &&
+  //           (tile_position.second < static_cast<unsigned int>(targetSurface_in->h)));
+
+  SDL_Rect clipRect;
+  myHighlightWindow->clip();
+  SDL_GetClipRect(targetSurface_in, &clipRect);
+  RPG_Graphics_Surface::put(tile_position.first,
+                            tile_position.second,
+                            *(myHighlightBGCache.front().second),
+                            targetSurface_in);
+  myHighlightWindow->unclip();
+
+  SDL_Rect dirtyRegion;
+  dirtyRegion.x = static_cast<int16_t>(tile_position.first);
+  dirtyRegion.y = static_cast<int16_t>(tile_position.second);
+  dirtyRegion.w = static_cast<uint16_t>(myHighlightBGCache.front().second->w);
+  dirtyRegion.h = static_cast<uint16_t>(myHighlightBGCache.front().second->h);
+
+  // *NOTE*: updating straight away reduces ugly smears...
+  RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
+                                targetSurface_in);
+}
+
+void
+RPG_Graphics_Cursor_Manager::resetHighlightBG(const RPG_Graphics_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::resetHighlightBG"));
+
+  // init/clear highlight BG cache
+  while (myHighlightBGCache.size() > 1)
+  {
+    SDL_FreeSurface(myHighlightBGCache.back().second);
+    myHighlightBGCache.pop_back();
+  } // end WHILE
+  myHighlightBGCache.front().first = position_in;
+  RPG_Graphics_Surface::clear(myHighlightBGCache.front().second);
 }

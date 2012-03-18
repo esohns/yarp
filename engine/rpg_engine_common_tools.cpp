@@ -73,6 +73,7 @@
 
 // init statics
 RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
+RPG_Engine_PlayerModeToStringTable_t RPG_Engine_PlayerModeHelper::myRPG_Engine_PlayerModeToStringTable;
 
 void
 RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
@@ -94,6 +95,7 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   RPG_Monster_Common_Tools::initStringConversionTables();
 
   RPG_Engine_CommandHelper::init();
+  RPG_Engine_PlayerModeHelper::init();
 
   // step1c: init dictionaries
   // step1ca: init magic dictionary
@@ -327,11 +329,15 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   result.character = RPG_Player_Common_Tools::playerXMLToPlayer(*player_p);
   ACE_ASSERT(result.character);
 
-  // step2: load player position/sprite ?
+  // step2: load player position/modes/sprite ?
   if (engine_player_p.get())
   {
     result.position = std::make_pair(engine_player_p->position().x(),
                                      engine_player_p->position().y());
+    for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator iterator = engine_player_p->mode().begin();
+         iterator != engine_player_p->mode().end();
+         iterator++)
+      result.modes.insert(RPG_Engine_PlayerModeHelper::stringToRPG_Engine_PlayerMode(*iterator));
     result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
   } // end IF
 
@@ -393,6 +399,12 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
   RPG_Map_Position_XMLTree_Type position(entity_in.position.first,
                                          entity_in.position.second);
   entity_model->position(position);
+  RPG_Engine_Player_XMLTree_Type::mode_sequence modes;
+  for (RPG_Engine_PlayerModeConstIterator_t iterator = entity_in.modes.begin();
+       iterator != entity_in.modes.end();
+       iterator++)
+    modes.push_back(RPG_Engine_PlayerMode_XMLTree_Type(static_cast<RPG_Engine_PlayerMode_XMLTree_Type::value>(*iterator)));
+  entity_model->mode(modes);
   entity_model->sprite(RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite));
 
   try

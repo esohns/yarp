@@ -26,6 +26,7 @@
 #include <rpg_client_defines.h>
 #include <rpg_client_common.h>
 #include <rpg_client_engine.h>
+#include <rpg_client_entity_manager.h>
 #include <rpg_client_window_main.h>
 #include <rpg_client_window_level.h>
 #include <rpg_client_common_tools.h>
@@ -35,6 +36,7 @@
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_dictionary.h>
+#include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
@@ -89,7 +91,8 @@ event_timer_SDL_cb(Uint32 interval_in,
 
     data->hover_time += interval_in;
     data->gtk_time += interval_in;
-    if (data->hover_time >= RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
+    if (data->do_hover &&
+        (data->hover_time >= RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY))
     {
       // mouse is hovering --> trigger an event
       sdl_event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
@@ -449,6 +452,7 @@ do_work(const RPG_Client_Config& config_in,
   RPG_Engine_Level level_engine;
   RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
+  userData.do_hover              = true;
   userData.hover_time            = 0;
   userData.gtk_time              = 0;
   userData.gtk_main_quit_invoked = false;
@@ -529,19 +533,50 @@ do_work(const RPG_Client_Config& config_in,
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
   std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
-  RPG_Client_WindowMain mainWindow(RPG_Graphics_WindowSize_t(userData.screen->w,
-                                                             userData.screen->h), // size
-                                   type,                                          // interface elements
-                                   title,                                         // title (== caption)
-                                   FONT_MAIN_LARGE);                              // title font
+  RPG_Client_WindowMain mainWindow(RPG_Graphics_Size_t(userData.screen->w,
+                                                       userData.screen->h), // size
+                                   type,                                    // interface elements
+                                   title,                                   // title (== caption)
+                                   FONT_MAIN_LARGE);                        // title font
   mainWindow.setScreen(userData.screen);
   mainWindow.init(&client_engine,
+                  RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL,
                   &level_engine,
                   map_style);
 
   // step5e: client engine
   client_engine.init(&level_engine,
                      mainWindow.getChild(WINDOW_MAP));
+
+  // step5f: trigger initial drawing
+  RPG_Client_Action client_action;
+  client_action.command = COMMAND_WINDOW_DRAW;
+  client_action.position = std::make_pair(0, 0);
+  client_action.window = &mainWindow;
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  client_engine.action(client_action);
+  client_action.command = COMMAND_WINDOW_REFRESH;
+  client_action.window = &mainWindow;
+  client_engine.action(client_action);
+
+  RPG_Client_WindowLevel* level_window = dynamic_cast<RPG_Client_WindowLevel*>(mainWindow.getChild(WINDOW_MAP));
+  ACE_ASSERT(level_window);
+
+  // activate the current character
+  RPG_Engine_EntityID_t id = level_engine.add(&(userData.entity));
+  level_engine.setActive(id);
+  // init/add entity to the graphics cache
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(level_window);
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(level_window);
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(id, userData.entity.graphic);
+
+  // center on character
+  client_action.command = COMMAND_SET_VIEW;
+  client_action.position = userData.entity.position;
+  client_action.window = level_window;
+  client_engine.action(client_action);
+
+  // start painting...
   client_engine.start();
   if (!client_engine.isRunning())
   {
@@ -553,25 +588,6 @@ do_work(const RPG_Client_Config& config_in,
 
     return;
   } // end IF
-
-  // step5f: trigger initial drawing
-  RPG_Client_Action client_action;
-  client_action.command = COMMAND_WINDOW_DRAW;
-  client_action.map_position = std::make_pair(0, 0);
-  client_action.graphics_position = std::make_pair(0, 0);
-  client_action.window = &mainWindow;
-  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  client_engine.action(client_action);
-  client_action.command = COMMAND_WINDOW_REFRESH;
-  client_action.window = &mainWindow;
-  client_engine.action(client_action);
-
-  // activate the current character
-  RPG_Engine_EntityID_t id = level_engine.add(&(userData.entity));
-  level_engine.setActive(id);
-
-  // center on character
-  client_engine.center(userData.entity.position);
 
   // step5g: start timer (triggers hover- and GTK events)
   userData.event_timer = NULL;
@@ -602,14 +618,14 @@ do_work(const RPG_Client_Config& config_in,
   bool previous_redraw = false;
   RPG_Graphics_Position_t mouse_position;
 //   bool refresh_screen = false;
+  RPG_Map_Position_t current_view = level_window->getView();
   do
   {
     sdl_event.type = SDL_NOEVENT;
     window = NULL;
     schedule_redraw = false;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
-    client_action.map_position = std::make_pair(0, 0);
-    client_action.graphics_position = std::make_pair(0, 0);
+    client_action.position = std::make_pair(0, 0);
     client_action.window = NULL;
     previous_redraw = false;
     mouse_position = std::make_pair(0, 0);
@@ -671,6 +687,33 @@ do_work(const RPG_Client_Config& config_in,
         // *WARNING*: falls through !
       }
       case SDL_ACTIVEEVENT:
+      {
+        // *NOTE*: when the mouse leaves the window, it's NOT hovering
+        // --> stop generating any hover events !
+        if (sdl_event.active.state & SDL_APPMOUSEFOCUS)
+        {
+          if (sdl_event.active.gain & SDL_APPMOUSEFOCUS)
+          {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("gained mouse coverage...\n")));
+
+            // synch access
+            ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
+
+            userData.do_hover = true;
+          } // end IF
+          else
+          {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("lost mouse coverage...\n")));
+
+            // synch access
+            ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
+
+            userData.do_hover = false;
+          } // end ELSE
+        } // end IF
+      }
       case SDL_MOUSEMOTION:
       case SDL_MOUSEBUTTONDOWN:
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
@@ -696,9 +739,17 @@ do_work(const RPG_Client_Config& config_in,
         window = mainWindow.getWindow(mouse_position);
         ACE_ASSERT(window);
 
-        // notify previously "active" window upon losing "focus"
+        // first steps on mouse motion:
+        // 0. restore cursor BG
+        // 1. notify previously "active" window upon losing "focus"
         if (sdl_event.type == SDL_MOUSEMOTION)
         {
+          // step0: restore cursor BG
+          client_action.command = COMMAND_CURSOR_RESTORE_BG;
+          client_action.window = (previous_window ? previous_window : window);
+          client_engine.action(client_action);
+
+          // step1: notify previous window (if any)
           if (previous_window &&
 //               (previous_window != mainWindow)
               (previous_window != window))
@@ -808,6 +859,28 @@ do_work(const RPG_Client_Config& config_in,
       client_action.command = COMMAND_WINDOW_DRAW;
       client_action.window = window;
       client_engine.action(client_action);
+
+      // view changed ? --> handle cursor/tile highlight(s)
+      if (current_view != level_window->getView())
+      {
+        // store/draw new active tile highlight/bg
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+        client_action.position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(static_cast<unsigned int>(x),
+                                                                                      static_cast<unsigned int>(y)),
+                                                                       level_engine.getDimensions(),
+                                                                       level_window->getSize(),
+                                                                       level_window->getView());
+        client_engine.action(client_action);
+
+        client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+        client_engine.action(client_action);
+
+        // invalidate the previous cursor BG...
+        client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+        client_engine.action(client_action);
+      } // end IF
     } // end IF
 
     // redraw cursor ?
@@ -828,7 +901,7 @@ do_work(const RPG_Client_Config& config_in,
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
         client_action.command = COMMAND_CURSOR_DRAW;
-        client_action.graphics_position = mouse_position;
+        client_action.position = mouse_position;
         client_action.window = window;
         client_engine.action(client_action);
 

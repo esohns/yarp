@@ -21,6 +21,8 @@
 #ifndef RPG_CLIENT_WINDOW_LEVEL_H
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
+#include "rpg_client_exports.h"
+
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
 
@@ -29,6 +31,9 @@
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
+#include <ace/Thread_Mutex.h>
+
+#include <vector>
 
 // forward declaration(s)
 class RPG_Engine_Level;
@@ -37,7 +42,7 @@ class RPG_Client_Engine;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_WindowLevel
+class RPG_Client_Export RPG_Client_WindowLevel
  : public RPG_Graphics_SDLWindowBase
 {
  public:
@@ -49,13 +54,11 @@ class RPG_Client_WindowLevel
   void setView(const RPG_Map_Position_t&); // view (map coordinates)
   void setView(const int&,
                const int&); // view (relative map coordinates)
+  // implement (part of) RPG_Graphics_IWindow 
+  virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
   void toggleMiniMap();
   void toggleDoor(const RPG_Map_Position_t&); // door position
-  void drawHighlight(const RPG_Graphics_Position_t&); // highlight position
-  void storeHighlightBG(const RPG_Map_Position_t&,       // map position
-                        const RPG_Graphics_Position_t&); // highlight position
-  void restoreHighlightBG();
 
   // init level properties
   void init(RPG_Client_Engine*,              // engine handle
@@ -64,9 +67,9 @@ class RPG_Client_WindowLevel
   void init();
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
-                    const unsigned long& = 0,  // offset x (top-left = [0,0])
-                    const unsigned long& = 0); // offset y (top-left = [0,0])
+  virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
+                    const unsigned int& = 0,  // offset x (top-left = [0,0])
+                    const unsigned int& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
@@ -106,13 +109,9 @@ class RPG_Client_WindowLevel
 
   SDL_Surface*                    myWallBlend;
 
+  mutable ACE_Thread_Mutex        myLock;
   // center of displayed area
   RPG_Map_Position_t              myView;
-
-  // cursor highlight
-  RPG_Map_Position_t              myHighlightBGPosition;
-  SDL_Surface*                    myHighlightBG;
-  SDL_Surface*                    myHighlightTile;
 };
 
 #endif

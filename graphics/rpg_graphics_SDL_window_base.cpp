@@ -29,7 +29,7 @@
 
 #include <ace/OS.h>
 
-RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t& size_in,
+RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Size_t& size_in,
                                                        const RPG_Graphics_WindowType& type_in,
                                                        const std::string& title_in)
 //                                                        SDL_Surface* backGround_in)
@@ -83,7 +83,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
                        myBorderRight,
                        false); // DON'T recurse
 
-  RPG_Graphics_WindowSize_t size_parent = myParent->getSize(true); // top-level
+  RPG_Graphics_Size_t size_parent = myParent->getSize(true); // top-level
   mySize.first = size_parent.first - myOffset.first - (myBorderLeft + myBorderRight);
   mySize.second = size_parent.second - myOffset.second - (myBorderTop + myBorderBottom);
 
@@ -115,10 +115,10 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
 }
 
 void
-RPG_Graphics_SDLWindowBase::getBorders(unsigned long& borderTop_out,
-                                       unsigned long& borderBottom_out,
-                                       unsigned long& borderLeft_out,
-                                       unsigned long& borderRight_out,
+RPG_Graphics_SDLWindowBase::getBorders(unsigned int& borderTop_out,
+                                       unsigned int& borderBottom_out,
+                                       unsigned int& borderLeft_out,
+                                       unsigned int& borderRight_out,
                                        const bool& recursive_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getBorders"));
@@ -132,10 +132,10 @@ RPG_Graphics_SDLWindowBase::getBorders(unsigned long& borderTop_out,
   // iterate over all parent(s) ?
   if (recursive_in)
   {
-    unsigned long borderTop;
-    unsigned long borderBottom;
-    unsigned long borderLeft;
-    unsigned long borderRight;
+    unsigned int borderTop;
+    unsigned int borderBottom;
+    unsigned int borderLeft;
+    unsigned int borderRight;
     for (const RPG_Graphics_SDLWindowBase* current = myParent;
          current != NULL;
          current = current->getParent())
@@ -215,7 +215,7 @@ RPG_Graphics_SDLWindowBase::setScreen(SDL_Surface* screen_in)
 }
 
 SDL_Surface*
-RPG_Graphics_SDLWindowBase::getScreen()
+RPG_Graphics_SDLWindowBase::getScreen() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getScreen"));
 
@@ -242,7 +242,7 @@ RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
   Sint32 height = (*myInvalidRegions.begin()).h;
 
   // find bounding box of dirty areas
-  unsigned long index = 0;
+  unsigned int index = 0;
   for (RPG_Graphics_InvalidRegionsConstIterator_t iterator = myInvalidRegions.begin();
        iterator != myInvalidRegions.end();
        iterator++, index++)
@@ -448,7 +448,7 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown event (was: %u)...\n"),
-                 static_cast<unsigned long>(event_in.type)));
+                 static_cast<unsigned int>(event_in.type)));
 
       break;
     }
@@ -476,7 +476,7 @@ RPG_Graphics_SDLWindowBase::getType() const
   return myType;
 }
 
-const RPG_Graphics_WindowSize_t
+const RPG_Graphics_Size_t
 RPG_Graphics_SDLWindowBase::getSize(const bool& topLevel_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getSize"));
@@ -540,8 +540,8 @@ RPG_Graphics_SDLWindowBase::getChild(const RPG_Graphics_WindowType& type_in)
 
 void
 RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
-                                 const unsigned long& offsetX_in,
-                                 const unsigned long& offsetY_in)
+                                 const unsigned int& offsetX_in,
+                                 const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clip"));
 
@@ -567,7 +567,7 @@ RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Graphics_SDLWindowBase::unclip(SDL_Surface* targetSurface_in)
+RPG_Graphics_SDLWindowBase::unclip(SDL_Surface* targetSurface_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::unclip"));
 

@@ -105,4 +105,12 @@
 #define RPG_CLIENT_DEF_MINIMAP_OFFSET_X                10
 #define RPG_CLIENT_DEF_MINIMAP_OFFSET_Y                10
 
+// player-specific
+#define RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER         false
+
+#define RPG_CLIENT_DEF_SCREENSHOT_PREFIX               "screenshot"
+#define RPG_CLIENT_DEF_SCREENSHOT_EXT                  ".png"
+
+#define RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL          false
+
 #endif

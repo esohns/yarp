@@ -77,23 +77,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CXX_Tree_Mapping_Rule Include="rpg_character_player.xsd">
-      <HeaderSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_XML_tree.h</HeaderSuffix>
-      <SourceSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_XML_tree.cpp</SourceSuffix>
-      <InlineSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </InlineSuffix>
-      <ForwardSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ForwardSuffix>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">--include-with-brackets --extern-xml-schema rpg_XMLSchema.h --force-overwrite --show-anonymous --show-sloc %(AdditionalOptions)</AdditionalOptions>
-      <GenSerialization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenSerialization>
-      <GenOstream Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenOstream>
-      <GenComparison Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenComparison>
-      <NamespaceMap Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">urn:rpg=</NamespaceMap>
-      <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">RPG_Player_Export</ExportSymbol>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </CXX_Tree_Mapping_Rule>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="scripts\bindings.bat" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +125,11 @@
     <ProjectReference Include="..\character.vcxproj">
       <Project>{d93f14b1-cfe8-45df-816d-06ab1ca74cd6}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="rpg_player.xsd">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </CXX_Tree_Mapping_Rule>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

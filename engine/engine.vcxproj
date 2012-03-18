@@ -46,7 +46,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>E:\Yarp\graphics;E:\Yarp\map;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\chance;E:\SDL-1.2.14;E:\Gtk\include\libpng14;E:\Gtk\include;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_PLAYER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_PLAYER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -99,6 +99,7 @@
     <ClInclude Include="rpg_engine_iwindow.h" />
     <ClInclude Include="rpg_engine_level.h" />
     <ClInclude Include="rpg_engine_messagequeue.h" />
+    <ClInclude Include="rpg_engine_playermode.h" />
     <ClInclude Include="rpg_engine_XML_tree.h" />
     <ClInclude Include="rpg_XMLSchema_XML_tree.h" />
     <ClInclude Include="rpg_XMLSchema_XML_types.h" />

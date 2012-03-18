@@ -48,7 +48,7 @@ class SDL_GUI_MainWindow
  : public RPG_Graphics_TopLevel
 {
  public:
-  SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t&,            // size
+  SDL_GUI_MainWindow(const RPG_Graphics_Size_t&,                  // size
                      const RPG_Graphics_GraphicTypeUnion&,        // (element) type
                      const std::string&,                          // title
                      const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
@@ -60,9 +60,9 @@ class SDL_GUI_MainWindow
             const RPG_Graphics_MapStyle_t&); // map style
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
-                    const unsigned long& = 0,  // offset x (top-left = [0,0])
-                    const unsigned long& = 0); // offset y (top-left = [0,0])
+  virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
+                    const unsigned int& = 0,  // offset x (top-left = [0,0])
+                    const unsigned int& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
@@ -80,17 +80,17 @@ class SDL_GUI_MainWindow
   void initScrollSpots();
   void initMap(RPG_Engine_Level*,               // level state handle
                const RPG_Graphics_MapStyle_t&); // map style
-  void drawBorder(SDL_Surface* = NULL,       // target surface (default: screen)
-                  const unsigned long& = 0,  // offset x (top-left = [0,0])
-                  const unsigned long& = 0); // offset y (top-left = [0,0])
+  void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
+                  const unsigned int& = 0,  // offset x (top-left = [0,0])
+                  const unsigned int& = 0); // offset y (top-left = [0,0])
   void drawTitle(const RPG_Graphics_Font&,  // font
                  const std::string&,        // text
                  SDL_Surface* = NULL);      // target surface (default: screen)
 
   // counter
-  unsigned long     myScreenshotIndex;
+  unsigned int      myScreenshotIndex;
 
-  unsigned long     myLastHoverTime;
+  unsigned int      myLastHoverTime;
   bool              myHaveMouseFocus;
 
   RPG_Graphics_Font myTitleFont;

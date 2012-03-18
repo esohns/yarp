@@ -10,7 +10,11 @@
 enum RPG_Graphics_Orientation
 {
   ORIENTATION_NORTH = 0,
+  ORIENTATION_NORTH_EAST,
+  ORIENTATION_NORTH_WEST,
   ORIENTATION_SOUTH,
+  ORIENTATION_SOUTH_EAST,
+  ORIENTATION_SOUTH_WEST,
   ORIENTATION_WEST,
   ORIENTATION_EAST,
   ORIENTATION_HORIZONTAL,
@@ -37,7 +41,11 @@ class RPG_Graphics_Export RPG_Graphics_OrientationHelper
   {
     myRPG_Graphics_OrientationToStringTable.clear();
     myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_NORTH, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_NORTH")));
+    myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_NORTH_EAST, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_NORTH_EAST")));
+    myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_NORTH_WEST, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_NORTH_WEST")));
     myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_SOUTH, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_SOUTH")));
+    myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_SOUTH_EAST, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_SOUTH_EAST")));
+    myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_SOUTH_WEST, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_SOUTH_WEST")));
     myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_WEST, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_WEST")));
     myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_EAST, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_EAST")));
     myRPG_Graphics_OrientationToStringTable.insert(std::make_pair(ORIENTATION_HORIZONTAL, ACE_TEXT_ALWAYS_CHAR("ORIENTATION_HORIZONTAL")));

@@ -23,6 +23,8 @@
 #include "SDL_gui_defines.h"
 #include "SDL_gui_levelwindow.h"
 
+#include <rpg_client_defines.h>
+
 #include <rpg_engine_level.h>
 
 #include <rpg_graphics_defines.h>
@@ -39,7 +41,7 @@
 
 #include <sstream>
 
-SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_WindowSize_t& size_in,
+SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_Size_t& size_in,
                                        const RPG_Graphics_GraphicTypeUnion& elementType_in,
                                        const std::string& title_in,
                                        const RPG_Graphics_Font& fontType_in)
@@ -78,8 +80,8 @@ SDL_GUI_MainWindow::init(RPG_Engine_Level* levelState_in,
 
 void
 SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
-                         const unsigned long& offsetX_in,
-                         const unsigned long& offsetY_in)
+                         const unsigned int& offsetX_in,
+                         const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
 
@@ -282,11 +284,16 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
           std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+#else
+          std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+#endif
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-          dump_path += ACE_TEXT("screenshot_");
+          dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_SCREENSHOT_PREFIX);
+          dump_path += ACE_TEXT_ALWAYS_CHAR("_");
           dump_path += converter.str();
-          dump_path += ACE_TEXT(".png");
+          dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_SCREENSHOT_EXT);
           RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
                                         dump_path,              // file
                                         false);                 // no alpha
@@ -798,8 +805,8 @@ SDL_GUI_MainWindow::initMap(RPG_Engine_Level* levelState_in,
 
 void
 SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
-                               const unsigned long& offsetX_in,
-                               const unsigned long& offsetY_in)
+                               const unsigned int& offsetX_in,
+                               const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::drawBorder"));
 
@@ -813,7 +820,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
   SDL_Rect prev_clipRect, clipRect;
-  unsigned long i = 0;
+  unsigned int i = 0;
 
   // step0: save previous clipRect
   SDL_GetClipRect(targetSurface, &prev_clipRect);
@@ -834,7 +841,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = offsetX_in + myBorderLeft;
-       i < (static_cast<unsigned long>(targetSurface->w) - myBorderRight);
+       i < (static_cast<unsigned int>(targetSurface->w) - myBorderRight);
        i += (*iterator).second->w)
     RPG_Graphics_Surface::put(i,
                               offsetY_in,
@@ -857,7 +864,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + myBorderTop);
-       i < (static_cast<unsigned long>(targetSurface->h) - myBorderBottom);
+       i < (static_cast<unsigned int>(targetSurface->h) - myBorderBottom);
        i += (*iterator).second->h)
     RPG_Graphics_Surface::put(offsetX_in,
                               i,
@@ -880,7 +887,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + myBorderTop);
-       i < (static_cast<unsigned long>(targetSurface->h) - myBorderBottom);
+       i < (static_cast<unsigned int>(targetSurface->h) - myBorderBottom);
        i += (*iterator).second->h)
     RPG_Graphics_Surface::put((targetSurface->w - myBorderRight),
                                i,

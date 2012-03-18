@@ -23,6 +23,7 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
 #include "rpg_client_common_tools.h"
+#include "rpg_client_entity_manager.h"
 #include "rpg_client_window_minimap.h"
 
 #include <rpg_engine_level.h>
@@ -48,25 +49,22 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
              parent_in,            // parent
              std::make_pair(0, 0), // offset
              std::string()),       // title
-//              NULL),                // background
+//             NULL),                // background
    myLevelState(NULL),
    myEngine(NULL),
    myDrawMinimap(RPG_CLIENT_DEF_MINIMAP_ISON),
-//    myCurrentMapStyle(mapStyle_in),
-//    myCurrentFloorSet(),
-//    myCurrentFloorEdgeSet(),
-//    myCurrentWallSet(),
+//   myCurrentMapStyle(mapStyle_in),
+//   myCurrentFloorSet(),
+//   myCurrentFloorEdgeSet(),
+//   myCurrentWallSet(),
    myCurrentCeilingTile(NULL),
-//    myCurrentDoorSet(),
+//   myCurrentDoorSet(),
    myCurrentOffMapTile(NULL),
-//    myFloorEdgeTiles(),
-//    myWallTiles(),
-//    myDoorTiles(),
+//   myFloorEdgeTiles(),
+//   myWallTiles(),
+//   myDoorTiles(),
    myWallBlend(NULL),
-   myView(std::make_pair(0, 0)),
-   myHighlightBGPosition(std::make_pair(0, 0)),
-   myHighlightBG(NULL),
-   myHighlightTile(NULL)
+   myView(std::make_pair(0, 0))
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::RPG_Client_WindowLevel"));
 
@@ -119,23 +117,6 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
                                                                true,   // convert to display format
                                                                false); // don't cache
   if (!myCurrentOffMapTile)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
-
-  // init cursor highlighting
-  myHighlightBG = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-                                               RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
-  if (!myHighlightBG)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
-               RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-               RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
-  type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
-  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                           true,   // convert to display format
-                                                           false); // don't cache
-  if (!myHighlightTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
                RPG_Graphics_Common_Tools::typeToString(type).c_str()));
@@ -204,17 +185,14 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
 
   if (myCurrentOffMapTile)
     SDL_FreeSurface(myCurrentOffMapTile);
-
-  if (myHighlightBG)
-    SDL_FreeSurface(myHighlightBG);
-  if (myHighlightTile)
-    SDL_FreeSurface(myHighlightTile);
 }
 
 void
 RPG_Client_WindowLevel::setView(const RPG_Map_Position_t& view_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::setView"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   myView = view_in;
 }
@@ -227,15 +205,17 @@ RPG_Client_WindowLevel::setView(const int& offsetX_in,
 
   RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
 
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
   // handle over-/underruns
   if ((offsetX_in < 0) &&
-      (static_cast<unsigned long>(-offsetX_in) > myView.first))
+      (static_cast<unsigned int>(-offsetX_in) > myView.first))
     myView.first = 0;
   else
     myView.first += offsetX_in;
 
   if ((offsetY_in < 0) &&
-      (static_cast<unsigned long>(-offsetY_in) > myView.second))
+      (static_cast<unsigned int>(-offsetY_in) > myView.second))
     myView.second = 0;
   else
     myView.second += offsetY_in;
@@ -246,10 +226,22 @@ RPG_Client_WindowLevel::setView(const int& offsetX_in,
     myView.second = (dimensions.second - 1);
 }
 
+const RPG_Graphics_Position_t
+RPG_Client_WindowLevel::getView() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getView"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  return myView;
+}
+
 void
 RPG_Client_WindowLevel::toggleMiniMap()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::toggleMiniMap"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   myDrawMinimap = !myDrawMinimap;
 }
@@ -266,14 +258,17 @@ RPG_Client_WindowLevel::toggleDoor(const RPG_Map_Position_t& position_in)
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
   orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
                                                             position_in);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
   switch (orientation)
   {
     case ORIENTATION_HORIZONTAL:
       myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.horizontal_open
-      : myCurrentDoorSet.horizontal_closed); break;
+                                               : myCurrentDoorSet.horizontal_closed); break;
     case ORIENTATION_VERTICAL:
       myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.vertical_open
-      : myCurrentDoorSet.vertical_closed); break;
+                                               : myCurrentDoorSet.vertical_closed); break;
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -320,19 +315,11 @@ RPG_Client_WindowLevel::init(RPG_Client_Engine* engine_in,
   // *NOTE*: fiddling with the view invalidates the cursor BG !
   RPG_Client_Action client_action;
   client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-  client_action.map_position = std::make_pair(0, 0);
-  client_action.graphics_position = std::make_pair(0, 0);
+  client_action.position = std::make_pair(0, 0);
+//  client_action.graphics_position = std::make_pair(0, 0);
   client_action.window = this;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   myEngine->action(client_action);
-
-  // clear highlight BG
-  RPG_Graphics_Surface::clear(myHighlightBG);
-
-  // init cursor highlighting
-  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
-  myHighlightBGPosition = std::make_pair(dimensions.first / 2,
-                                         dimensions.second / 2);
 
   // init minimap
   initMiniMap();
@@ -342,6 +329,8 @@ void
 RPG_Client_WindowLevel::init()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::init"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   // clean up
   myFloorEdgeTiles.clear();
@@ -364,13 +353,13 @@ RPG_Client_WindowLevel::init()
   RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
   RPG_Map_Position_t center_position = std::make_pair(dimensions.first / 2,
                                                       dimensions.second / 2);
-  setView(center_position);
+  myView = center_position;
 }
 
 void
 RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
-                             const unsigned long& offsetX_in,
-                             const unsigned long& offsetY_in)
+                             const unsigned int& offsetX_in,
+                             const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::draw"));
 
@@ -451,404 +440,388 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   //   7. south & east walls
   //   8. ceiling
 
-  int i, j;
-  RPG_Client_Position_t current_map_position = std::make_pair(0, 0);
-  RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
-  RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
-  //unsigned long floor_row = 0;
-  unsigned long floor_column_index = 0;
-//   unsigned long x, y;
-  RPG_Client_Position_t screen_position = std::make_pair(0, 0);
-//   // debug info
-//   SDL_Rect rect;
-//   std::ostringstream converter;
-//   std::string tile_text;
-//   RPG_Graphics_TextSize_t tile_text_size;
-//   RPG_Position_t map_position = std::make_pair(0, 0);
-  RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
-
-  // "clear" map "window"
-  clear();
-
-  // pass 1
-  for (i = -static_cast<int>(top_right.second);
-       i <= static_cast<int>(top_right.second);
-       i++)
   {
-    current_map_position.second = myView.second + i;
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    // floor tile rotation
-    begin_row = myCurrentFloorSet.tiles.begin();
-    //std::advance(begin_row, (current_map_position.second % myCurrentFloorSet.rows) * myCurrentFloorSet.columns);
-    std::advance(begin_row, current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
+    int i, j;
+    RPG_Client_SignedPosition_t current_map_position = std::make_pair(0, 0);
+    RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
+    RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
+    //unsigned long floor_row = 0;
+    unsigned int floor_column_index = 0;
+  //   unsigned long x, y;
+    RPG_Graphics_Position_t screen_position = std::make_pair(0, 0);
+  //   // debug info
+  //   SDL_Rect rect;
+  //   std::ostringstream converter;
+  //   std::string tile_text;
+  //   RPG_Graphics_TextSize_t tile_text_size;
+  //   RPG_Position_t map_position = std::make_pair(0, 0);
+    RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
 
-    for (j = diff + i;
-         (j + i) <= sum;
-         j++)
+    // "clear" map "window"
+    clear();
+
+    // pass 1
+    for (i = -static_cast<int>(top_right.second);
+         i <= static_cast<int>(top_right.second);
+         i++)
     {
-      current_map_position.first = myView.first + j;
-
-      // off-map ?
-      if ((current_map_position.second < 0) ||
-          (current_map_position.second >= static_cast<int>(myLevelState->getDimensions().second)) ||
-          (current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int>(myLevelState->getDimensions().first)))
-        continue;
+      current_map_position.second = myView.second + i;
 
       // floor tile rotation
-      floor_iterator = begin_row;
-      //std::advance(floor_iterator, current_map_position.first % myCurrentFloorSet.columns);
-      std::advance(floor_iterator, (myCurrentFloorSet.rows * (current_map_position.first % myCurrentFloorSet.columns)));
+      begin_row = myCurrentFloorSet.tiles.begin();
+      //std::advance(begin_row, (current_map_position.second % myCurrentFloorSet.rows) * myCurrentFloorSet.columns);
+      std::advance(begin_row, current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
 
-      // map --> screen coordinates
-//       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
-//       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = RPG_Client_Common_Tools::map2Screen(current_map_position,
-                                                            mySize,
-                                                            myView);
-
-      // step1: unmapped areas
-      if ((myLevelState->getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
-          // *NOTE*: walls are drawn together with the floor...
-          (myLevelState->getElement(current_map_position) == MAPELEMENT_WALL))
+      for (j = diff + i;
+           (j + i) <= sum;
+           j++)
       {
-        RPG_Graphics_Surface::put(screen_position.first,
-                                  screen_position.second,
-                                  *myCurrentOffMapTile,
-                                  targetSurface);
+        current_map_position.first = myView.first + j;
 
-//         // off the map ? --> continue
-//         if ((current_map_position.second < 0) ||
-//             (current_map_position.second >= myLevelState.getDimensions().second) ||
-//             (current_map_position.first < 0) ||
-//             (current_map_position.first >= myLevelState.getDimensions().first))
+        // off-map ?
+        if ((current_map_position.second < 0) ||
+            (current_map_position.second >= static_cast<int>(myLevelState->getDimensions().second)) ||
+            (current_map_position.first < 0) ||
+            (current_map_position.first >= static_cast<int>(myLevelState->getDimensions().first)))
+          continue;
+
+        // floor tile rotation
+        floor_iterator = begin_row;
+        //std::advance(floor_iterator, current_map_position.first % myCurrentFloorSet.columns);
+        std::advance(floor_iterator, (myCurrentFloorSet.rows * (current_map_position.first % myCurrentFloorSet.columns)));
+
+        // map --> screen coordinates
+  //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
+  //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
+        screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
+                                                                mySize,
+                                                                myView);
+
+        // step1: unmapped areas
+        if ((myLevelState->getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
+            // *NOTE*: walls are drawn together with the floor...
+            (myLevelState->getElement(current_map_position) == MAPELEMENT_WALL))
+        {
+          RPG_Graphics_Surface::put(screen_position.first,
+                                    screen_position.second,
+                                    *myCurrentOffMapTile,
+                                    targetSurface);
+
+  //         // off the map ? --> continue
+  //         if ((current_map_position.second < 0) ||
+  //             (current_map_position.second >= myLevelState.getDimensions().second) ||
+  //             (current_map_position.first < 0) ||
+  //             (current_map_position.first >= myLevelState.getDimensions().first))
+
+          // advance floor iterator
+          //std::advance(floor_iterator, myCurrentFloorSet.rows);
+
+          continue;
+        } // end IF
+
+        // step2: floor
+        if ((myLevelState->getElement(current_map_position) == MAPELEMENT_FLOOR) ||
+            (myLevelState->getElement(current_map_position) == MAPELEMENT_DOOR))
+        {
+          RPG_Graphics_Surface::put(screen_position.first,
+                                    screen_position.second,
+                                    *(*floor_iterator).surface,
+                                    targetSurface);
+
+  //         // debug info
+  //         rect.x = x;
+  //         rect.y = y;
+  //         rect.x = screen_position.first;
+  //         rect.y = screen_position.second;
+  //         rect.w = (*floor_iterator).surface->w;
+  //         rect.h = (*floor_iterator).surface->h;
+  //         RPG_Graphics_Surface::putRect(rect,                              // rectangle
+  //                                       RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR, // color
+  //                                       targetSurface);                    // target surface
+  //         converter.str(ACE_TEXT(""));
+  //         converter.clear();
+  //         tile_text = ACE_TEXT("[");
+  //         converter << current_map_position.first;
+  //         tile_text += converter.str();
+  //         tile_text += ACE_TEXT(",");
+  //         converter.str(ACE_TEXT(""));
+  //         converter.clear();
+  //         converter << current_map_position.second;
+  //         tile_text += converter.str();
+  //         tile_text += ACE_TEXT("]");
+  //         tile_text_size = RPG_Graphics_Common_Tools::textSize(TYPE_FONT_MAIN_SMALL,
+  //                                                              tile_text);
+  //         RPG_Graphics_Surface::putText(TYPE_FONT_MAIN_SMALL,
+  //                                       tile_text,
+  //                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
+  //                                                                               *targetSurface),
+  //                                       true, // add shade
+  //                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+  //                                                                               *targetSurface),
+  //                                       (rect.x + ((rect.w - tile_text_size.first) / 2)),
+  //                                       (rect.y + ((rect.h - tile_text_size.second) / 2)),
+  //                                       targetSurface);
+
+          // step3: floor edges
+          floor_edge_iterator = myFloorEdgeTiles.find(current_map_position);
+          if (floor_edge_iterator != myFloorEdgeTiles.end())
+          {
+            // straight edges
+            if ((*floor_edge_iterator).second.west.surface)
+              RPG_Graphics_Surface::put(screen_position.first +
+                                        (*floor_edge_iterator).second.west.offset_x,
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.west.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.west.offset_y),
+                                        *(myCurrentFloorEdgeSet.west.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.north.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                         (*floor_edge_iterator).second.north.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.north.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.north.offset_y),
+                                        *(myCurrentFloorEdgeSet.north.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.east.surface)
+              RPG_Graphics_Surface::put(screen_position.first +
+                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                        (*floor_edge_iterator).second.east.offset_x,
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.east.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.east.offset_y),
+                                        *(myCurrentFloorEdgeSet.east.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.south.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                        (*floor_edge_iterator).second.south.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.south.surface->h +
+                                          (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                          (*floor_edge_iterator).second.south.offset_y),
+                                        *(myCurrentFloorEdgeSet.south.surface),
+                                        targetSurface);
+            // corners
+            if ((*floor_edge_iterator).second.south_west.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (*floor_edge_iterator).second.south_west.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.south_west.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.south_west.offset_y),
+                                        *(myCurrentFloorEdgeSet.south_west.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.north_west.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                         (*floor_edge_iterator).second.north_west.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.north_west.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.north_west.offset_y),
+                                        *(myCurrentFloorEdgeSet.north_west.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.south_east.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                         (*floor_edge_iterator).second.south_east.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.south_east.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.south_east.offset_y),
+                                        *(myCurrentFloorEdgeSet.south_east.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.north_east.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                         (*floor_edge_iterator).second.north_east.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.north_east.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.north_east.offset_y),
+                                        *(myCurrentFloorEdgeSet.north_east.surface),
+                                        targetSurface);
+            // (square) corners
+            if ((*floor_edge_iterator).second.top.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (*floor_edge_iterator).second.top.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.top.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.top.offset_y),
+                                        *(myCurrentFloorEdgeSet.top.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.right.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                         (*floor_edge_iterator).second.right.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.right.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.right.offset_y),
+                                        *(myCurrentFloorEdgeSet.right.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.left.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (*floor_edge_iterator).second.left.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.left.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.left.offset_y),
+                                        *(myCurrentFloorEdgeSet.left.surface),
+                                        targetSurface);
+            if ((*floor_edge_iterator).second.bottom.surface)
+              RPG_Graphics_Surface::put((screen_position.first +
+                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                         (*floor_edge_iterator).second.bottom.offset_x),
+                                        (screen_position.second -
+                                         (*floor_edge_iterator).second.bottom.surface->h +
+                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                         (*floor_edge_iterator).second.bottom.offset_y),
+                                        *(myCurrentFloorEdgeSet.bottom.surface),
+                                        targetSurface);
+          } // end IF
+        } // end IF
 
         // advance floor iterator
         //std::advance(floor_iterator, myCurrentFloorSet.rows);
+      } // end FOR
+    } // end FOR
 
+    // pass 2
+    RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
+    RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
+    //RPG_Engine_EntityGraphics_t entity_graphics = myLevelState->getGraphics();
+    //RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
+    RPG_Engine_EntityID_t entity_id = 0;
+    for (i = -static_cast<int>(top_right.second);
+         i <= static_cast<int>(top_right.second);
+         i++)
+    {
+      current_map_position.second = myView.second + i;
+      // off the map ? --> continue
+      if ((current_map_position.second < 0) ||
+          (current_map_position.second >= static_cast<int>(myLevelState->getDimensions().second)))
         continue;
-      } // end IF
 
-      // step2: floor
-      if ((myLevelState->getElement(current_map_position) == MAPELEMENT_FLOOR) ||
-          (myLevelState->getElement(current_map_position) == MAPELEMENT_DOOR))
+      for (j = diff + i;
+           (j + i) <= sum;
+           j++)
       {
-        RPG_Graphics_Surface::put(screen_position.first,
-                                  screen_position.second,
-                                  *(*floor_iterator).surface,
-                                  targetSurface);
+        current_map_position.first = myView.first + j;
+        // off the map ? --> continue
+        if ((current_map_position.first < 0) ||
+            (current_map_position.first >= static_cast<int>(myLevelState->getDimensions().first)))
+          continue;
 
-//         // debug info
-//         rect.x = x;
-//         rect.y = y;
-//         rect.x = screen_position.first;
-//         rect.y = screen_position.second;
-//         rect.w = (*floor_iterator).surface->w;
-//         rect.h = (*floor_iterator).surface->h;
-//         RPG_Graphics_Surface::putRect(rect,                              // rectangle
-//                                       RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR, // color
-//                                       targetSurface);                    // target surface
-//         converter.str(ACE_TEXT(""));
-//         converter.clear();
-//         tile_text = ACE_TEXT("[");
-//         converter << current_map_position.first;
-//         tile_text += converter.str();
-//         tile_text += ACE_TEXT(",");
-//         converter.str(ACE_TEXT(""));
-//         converter.clear();
-//         converter << current_map_position.second;
-//         tile_text += converter.str();
-//         tile_text += ACE_TEXT("]");
-//         tile_text_size = RPG_Graphics_Common_Tools::textSize(TYPE_FONT_MAIN_SMALL,
-//                                                              tile_text);
-//         RPG_Graphics_Surface::putText(TYPE_FONT_MAIN_SMALL,
-//                                       tile_text,
-//                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-//                                                                               *targetSurface),
-//                                       true, // add shade
-//                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-//                                                                               *targetSurface),
-//                                       (rect.x + ((rect.w - tile_text_size.first) / 2)),
-//                                       (rect.y + ((rect.h - tile_text_size.second) / 2)),
-//                                       targetSurface);
+        // transform map coordinates into screen coordinates
+  //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
+  //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
+        screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
+                                                                mySize,
+                                                                myView);
 
-        // step3: floor edges
-        floor_edge_iterator = myFloorEdgeTiles.find(current_map_position);
-        if (floor_edge_iterator != myFloorEdgeTiles.end())
+        wall_iterator = myWallTiles.find(current_map_position);
+        door_iterator = myDoorTiles.find(current_map_position);
+
+        // step1: walls (west & north)
+        if (wall_iterator != myWallTiles.end())
         {
-          // straight edges
-          if ((*floor_edge_iterator).second.west.surface)
-            RPG_Graphics_Surface::put(screen_position.first +
-                                      (*floor_edge_iterator).second.west.offset_x,
+          if ((*wall_iterator).second.west.surface)
+            RPG_Graphics_Surface::put(screen_position.first,
                                       (screen_position.second -
-                                       (*floor_edge_iterator).second.west.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.west.offset_y),
-                                      *(myCurrentFloorEdgeSet.west.surface),
+                                       (*wall_iterator).second.west.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentWallSet.west.surface),
                                       targetSurface);
-          if ((*floor_edge_iterator).second.north.surface)
+          if ((*wall_iterator).second.north.surface)
             RPG_Graphics_Surface::put((screen_position.first +
-                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                       (*floor_edge_iterator).second.north.offset_x),
+                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
                                       (screen_position.second -
-                                       (*floor_edge_iterator).second.north.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.north.offset_y),
-                                      *(myCurrentFloorEdgeSet.north.surface),
-                                      targetSurface);
-          if ((*floor_edge_iterator).second.east.surface)
-            RPG_Graphics_Surface::put(screen_position.first +
-                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                      (*floor_edge_iterator).second.east.offset_x,
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.east.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.east.offset_y),
-                                      *(myCurrentFloorEdgeSet.east.surface),
-                                      targetSurface);
-          if ((*floor_edge_iterator).second.south.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                      (*floor_edge_iterator).second.south.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.south.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.south.offset_y),
-                                      *(myCurrentFloorEdgeSet.south.surface),
-                                      targetSurface);
-          // corners
-          if ((*floor_edge_iterator).second.south_west.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (*floor_edge_iterator).second.south_west.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.south_west.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.south_west.offset_y),
-                                      *(myCurrentFloorEdgeSet.south_west.surface),
-                                      targetSurface);
-          if ((*floor_edge_iterator).second.north_west.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                       (*floor_edge_iterator).second.north_west.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.north_west.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.north_west.offset_y),
-                                      *(myCurrentFloorEdgeSet.north_west.surface),
-                                      targetSurface);
-          if ((*floor_edge_iterator).second.south_east.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                       (*floor_edge_iterator).second.south_east.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.south_east.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.south_east.offset_y),
-                                      *(myCurrentFloorEdgeSet.south_east.surface),
-                                      targetSurface);
-          if ((*floor_edge_iterator).second.north_east.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                       (*floor_edge_iterator).second.north_east.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.north_east.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.north_east.offset_y),
-                                      *(myCurrentFloorEdgeSet.north_east.surface),
-                                      targetSurface);
-          // (square) corners
-          if ((*floor_edge_iterator).second.top.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (*floor_edge_iterator).second.top.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.top.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                      (*floor_edge_iterator).second.top.offset_y),
-                                      *(myCurrentFloorEdgeSet.top.surface),
-                                      targetSurface);
-          if ((*floor_edge_iterator).second.right.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                       (*floor_edge_iterator).second.right.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.right.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.right.offset_y),
-                                      *(myCurrentFloorEdgeSet.right.surface),
-                                      targetSurface);
-          if ((*floor_edge_iterator).second.left.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (*floor_edge_iterator).second.left.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.left.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.left.offset_y),
-                                      *(myCurrentFloorEdgeSet.left.surface),
-                                      targetSurface);
-          if ((*floor_edge_iterator).second.bottom.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                       (*floor_edge_iterator).second.bottom.offset_x),
-                                      (screen_position.second -
-                                       (*floor_edge_iterator).second.bottom.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                       (*floor_edge_iterator).second.bottom.offset_y),
-                                      *(myCurrentFloorEdgeSet.bottom.surface),
+                                       (*wall_iterator).second.north.surface->h +
+                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                      *(myCurrentWallSet.north.surface),
                                       targetSurface);
         } // end IF
-      } // end IF
 
-      // advance floor iterator
-      //std::advance(floor_iterator, myCurrentFloorSet.rows);
-    } // end FOR
-  } // end FOR
+        // step2: doors
+        if (door_iterator != myDoorTiles.end())
+        {
+          // *NOTE*: doors are drawn in the "middle" of the floor tile
+          RPG_Graphics_Surface::put((screen_position.first +
+                                     (*door_iterator).second.offset_x +
+                                     (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 4)),
+                                    (screen_position.second +
+                                     (*door_iterator).second.offset_y -
+                                     (*door_iterator).second.surface->h +
+                                     (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2) -
+                                     (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 4)),
+                                    *(*door_iterator).second.surface,
+                                    targetSurface);
+        } // end IF
 
-  // pass 2
-  RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
-  RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
-  RPG_Engine_EntityGraphics_t entity_graphics = myLevelState->getGraphics();
-  RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
-  for (i = -static_cast<int>(top_right.second);
-       i <= static_cast<int>(top_right.second);
-       i++)
-  {
-    current_map_position.second = myView.second + i;
-    // off the map ? --> continue
-    if ((current_map_position.second < 0) ||
-        (current_map_position.second >= static_cast<int>(myLevelState->getDimensions().second)))
-      continue;
+        // step3: furniture & traps
 
-    for (j = diff + i;
-         (j + i) <= sum;
-         j++)
-    {
-      current_map_position.first = myView.first + j;
-      // off the map ? --> continue
-      if ((current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int>(myLevelState->getDimensions().first)))
-        continue;
+        // step4: objects
 
-      // transform map coordinates into screen coordinates
-//       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
-//       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = RPG_Client_Common_Tools::map2Screen(current_map_position,
-                                                            mySize,
-                                                            myView);
+        // step5: creatures
+        entity_id = myLevelState->hasEntity(current_map_position);
+        if (entity_id)
+        {
+          // invalidate bg
+          RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->invalidateBG(entity_id);
 
-      wall_iterator = myWallTiles.find(current_map_position);
-      door_iterator = myDoorTiles.find(current_map_position);
+          // draw creature
+          SDL_Rect dirtyRegion;
+          RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(entity_id,
+                                                               screen_position,
+                                                               targetSurface,
+                                                               dirtyRegion);
+        } // end IF
 
-      // step1: walls (west & north)
-      if (wall_iterator != myWallTiles.end())
-      {
-        if ((*wall_iterator).second.west.surface)
+        // step6: effects
+
+        // step7: walls (south & east)
+        if (wall_iterator != myWallTiles.end())
+        {
+          if ((*wall_iterator).second.south.surface)
+            RPG_Graphics_Surface::put(screen_position.first,
+                                      (screen_position.second -
+                                       (*wall_iterator).second.south.surface->h +
+                                       RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
+                                      *(*wall_iterator).second.south.surface,
+                                      targetSurface);
+          if ((*wall_iterator).second.east.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                      (screen_position.second -
+                                       (*wall_iterator).second.east.surface->h +
+                                       RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
+                                      *(*wall_iterator).second.east.surface,
+                                      targetSurface);
+        } // end IF
+
+        // step8: ceiling
+        if (RPG_Engine_Common_Tools::hasCeiling(current_map_position,
+                                                *myLevelState))
+        {
           RPG_Graphics_Surface::put(screen_position.first,
                                     (screen_position.second -
-                                     (*wall_iterator).second.west.surface->h +
-                                     (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
-                                    *(myCurrentWallSet.west.surface),
+                                     (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
+                                                                          : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
+                                     (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8 : 2))),
+                                    *myCurrentCeilingTile,
                                     targetSurface);
-        if ((*wall_iterator).second.north.surface)
-          RPG_Graphics_Surface::put((screen_position.first +
-                                     (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
-                                    (screen_position.second -
-                                     (*wall_iterator).second.north.surface->h +
-                                     (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
-                                    *(myCurrentWallSet.north.surface),
-                                    targetSurface);
-      } // end IF
-
-      // step2: doors
-      if (door_iterator != myDoorTiles.end())
-      {
-        // *NOTE*: doors are drawn in the "middle" of the floor tile
-        RPG_Graphics_Surface::put((screen_position.first +
-                                   (*door_iterator).second.offset_x +
-                                   (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 4)),
-                                  (screen_position.second +
-                                   (*door_iterator).second.offset_y -
-                                   (*door_iterator).second.surface->h +
-                                   (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2) -
-                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 4)),
-                                  *(*door_iterator).second.surface,
-                                  targetSurface);
-      } // end IF
-
-      // step3: furniture & traps
-
-      // step4: objects
-
-      // step5: creatures
-      creature_iterator = entity_graphics.find(current_map_position);
-      if (creature_iterator != entity_graphics.end())
-      {
-        // sanity check
-        ACE_ASSERT((*creature_iterator).second);
-
-        // *NOTE*: creatures are drawn in the "middle" of the floor tile
-        RPG_Graphics_Surface::put((screen_position.first +
-                                   ((RPG_GRAPHICS_TILE_FLOOR_WIDTH - (*creature_iterator).second->w) / 2)),
-                                  (screen_position.second +
-                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
-                                   (*creature_iterator).second->h),
-                                  *((*creature_iterator).second),
-                                  targetSurface);
-      } // end IF
-
-      // step6: effects
-
-      // step7: walls (south & east)
-      if (wall_iterator != myWallTiles.end())
-      {
-        if ((*wall_iterator).second.south.surface)
-          RPG_Graphics_Surface::put(screen_position.first,
-                                    (screen_position.second -
-                                     (*wall_iterator).second.south.surface->h +
-                                     RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
-                                    *(*wall_iterator).second.south.surface,
-                                    targetSurface);
-        if ((*wall_iterator).second.east.surface)
-          RPG_Graphics_Surface::put((screen_position.first +
-                                     (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
-                                    (screen_position.second -
-                                     (*wall_iterator).second.east.surface->h +
-                                     RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
-                                    *(*wall_iterator).second.east.surface,
-                                    targetSurface);
-      } // end IF
-
-      // step8: ceiling
-      if (RPG_Engine_Common_Tools::hasCeiling(current_map_position,
-                                              *myLevelState))
-      {
-        RPG_Graphics_Surface::put(screen_position.first,
-                                  (screen_position.second -
-                                   (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
-                                                                        : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
-                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8 : 2))),
-                                  *myCurrentCeilingTile,
-                                  targetSurface);
-      } // end IF
+        } // end IF
+      } // end FOR
     } // end FOR
-  } // end FOR
-
-  // refresh cursor highlight
-  screen_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                        inherited::mySize,
-                                                        myView);
-  // grab BG
-  // sanity check for underruns
-  if ((screen_position.first < targetSurface->w) &&
-      (screen_position.second < targetSurface->h))
-    RPG_Graphics_Surface::get(screen_position.first,
-                              screen_position.second,
-                              true, // use (fast) blitting method
-                              *targetSurface,
-                              *myHighlightBG);
-
-  RPG_Graphics_Surface::put(screen_position.first,
-                            screen_position.second,
-                            *myHighlightTile,
-                            targetSurface);
+  } // end lock scope
 
   // realize any children
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
@@ -882,7 +855,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
   // remember position of last realization
   myLastAbsolutePosition = std::make_pair(offsetX_in + myBorderLeft + myOffset.first,
-                                          offsetY_in + myBorderTop + myOffset.second);
+                                          offsetY_in + myBorderTop  + myOffset.second);
 }
 
 void
@@ -900,16 +873,16 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
   RPG_Engine_Action player_action;
   player_action.command = RPG_ENGINE_COMMAND_INVALID;
-  player_action.direction = DIRECTION_INVALID;
-  player_action.position = std::make_pair(0, 0);
+  player_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max());
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
-  client_action.map_position = std::make_pair(0, 0);
-  client_action.graphics_position = std::make_pair(0, 0);
+  client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max());
   client_action.window = this;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  bool do_player_action = false;
   bool delegate_to_parent = false;
+  RPG_Engine_EntityID_t entity_id = 0;
   switch (event_in.type)
   {
     // *** keyboard ***
@@ -925,29 +898,21 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         // implement keypad navigation
         case SDLK_c:
         {
-          RPG_Map_Position_t position;
+          // step1: set view
+          client_action.command = COMMAND_SET_VIEW;
+          RPG_Engine_EntityID_t player_id = myLevelState->getActive();
           if ((event_in.key.keysym.mod & KMOD_SHIFT) ||
-              (myLevelState->getActive() == 0))
+              (player_id == 0))
           {
             // center view
             RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
-            position.first = dimensions.first / 2;
-            position.second = dimensions.second / 2;
+            client_action.position.first = dimensions.first / 2;
+            client_action.position.second = dimensions.second / 2;
           } // end IF
           else
-            position = myLevelState->getPosition(myLevelState->getActive());
+            client_action.position = myLevelState->getPosition(player_id);
 
-          setView(position);
-
-          // *NOTE*: fiddling with the view invalidates the cursor BG !
-          client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
           myEngine->action(client_action);
-
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          // need a redraw
-          redraw_out = true;
 
           break;
         }
@@ -955,7 +920,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         {
           toggleMiniMap();
 
-          // need a redraw
+          // --> need a redraw
           redraw_out = true;
 
           break;
@@ -963,16 +928,29 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         // implement (manual) refresh
         case SDLK_r:
         {
-          // need a redraw
+          // --> need a redraw
           redraw_out = true;
 
           break;
         }
+        case SDLK_t:
+        {
+          // set "travel" mode
+          if (myLevelState->hasMode(MODE_TRAVELLING))
+            myLevelState->clear(MODE_TRAVELLING);
+          else
+            myLevelState->mode(MODE_TRAVELLING);
+
+          break;
+        }
+        // implement keypad navigation
         case SDLK_UP:
         case SDLK_DOWN:
         case SDLK_LEFT:
         case SDLK_RIGHT:
         {
+          RPG_Map_Direction direction = DIRECTION_INVALID;
+          client_action.position = getView();
           switch (event_in.key.keysym.sym)
           {
 //             case SDLK_UP:
@@ -990,64 +968,124 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             case SDLK_UP:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
-                setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              {
+                client_action.position.first--;
+                client_action.position.second--;
+                //setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                //        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              } // end IF
               else
-                player_action.direction = DIRECTION_UP;
+                direction = DIRECTION_UP;
 
               break;
             }
             case SDLK_DOWN:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
-                setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              {
+                client_action.position.first++;
+                client_action.position.second++;
+                //setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                //        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              } // end IF
               else
-                player_action.direction = DIRECTION_DOWN;
+                direction = DIRECTION_DOWN;
 
               break;
             }
             case SDLK_LEFT:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
-                setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              {
+                client_action.position.first--;
+                client_action.position.second++;
+                //setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                //        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              } // end IF
               else
-                player_action.direction = DIRECTION_LEFT;
+                direction = DIRECTION_LEFT;
 
               break;
             }
             case SDLK_RIGHT:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
-                setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              {
+                client_action.position.first++;
+                client_action.position.second--;
+                //setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                //        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+              } // end IF
               else
-                player_action.direction = DIRECTION_RIGHT;
+                direction = DIRECTION_RIGHT;
 
               break;
             }
             default:
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("invalid key (was: %u), aborting\n"),
+                         event_in.key.keysym.sym));
+
               break;
+            }
           } // end SWITCH
 
-          if (!(event_in.key.keysym.mod & KMOD_SHIFT) &&
-              myLevelState->getActive())
+          if (!(event_in.key.keysym.mod & KMOD_SHIFT))
           {
-            player_action.command = COMMAND_STEP;
-            do_player_action = true;
+            entity_id = myLevelState->getActive();
+            if (entity_id == 0)
+              break; // nothing to do...
+
+            player_action.command = COMMAND_TRAVEL;
+            // compute target position
+            player_action.position = myLevelState->getPosition(entity_id);
+            switch (direction)
+            {
+              case DIRECTION_UP:
+                player_action.position.second--; break;
+              case DIRECTION_DOWN:
+                player_action.position.second++; break;
+              case DIRECTION_LEFT:
+                player_action.position.first--; break;
+              case DIRECTION_RIGHT:
+                player_action.position.first++; break;
+              default:
+              {
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
+                           RPG_Map_Common_Tools::direction2String(direction).c_str()));
+
+                break;
+              }
+            } // end SWITCH
+            // position valid ?
+            RPG_Map_Element element = myLevelState->getElement(player_action.position);
+            if ((element == MAPELEMENT_FLOOR) ||
+                (element == MAPELEMENT_DOOR))
+            {
+              if (element == MAPELEMENT_DOOR)
+              {
+                RPG_Map_Door_t door = myLevelState->getDoor(player_action.position);
+                if (!door.is_open)
+                  break;
+              } // end IF
+
+              myLevelState->action(entity_id, player_action);
+
+              // adjust view ?
+              if (myEngine->centerOnActive())
+              {
+                client_action.command = COMMAND_SET_VIEW;
+                client_action.position = player_action.position;
+                myEngine->action(client_action);
+              } // end IF
+            } // end IF
           } // end IF
           else
           {
-            // *NOTE*: fiddling with the view invalidates the cursor BG !
-            client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+            client_action.command = COMMAND_SET_VIEW;
             myEngine->action(client_action);
-
-            // clear highlight BG
-            RPG_Graphics_Surface::clear(myHighlightBG);
-
-            // need a redraw
-            redraw_out = true;
           } // end ELSE
 
           break;
@@ -1067,11 +1105,11 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
     case SDL_MOUSEMOTION:
     {
       // find map square
-      RPG_Graphics_Position_t map_position = RPG_Client_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
-                                                                                                event_in.motion.y),
-                                                                                 myLevelState->getDimensions(),
-                                                                                 mySize,
-                                                                                 myView);
+      RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
+                                                                                             event_in.motion.y),
+                                                                              myLevelState->getDimensions(),
+                                                                              getSize(),
+                                                                              getView());
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
 //                  event_in.button.x,
@@ -1079,44 +1117,51 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 //                  map_position.first,
 //                  map_position.second));
 
-      // (re-)draw "active" tile highlight ?
+      //// inside map ?
+      //if ((map_position.first  >= dimensions.first) ||
+      //    (map_position.second >= dimensions.second))
+      //{
+      //  // off the map --> remove "active" tile highlight
+      //  client_action.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+      //  myEngine->action(client_action);
 
-      // inside map ?
-      if (map_position == std::make_pair(std::numeric_limits<unsigned long>::max(),
-                                         std::numeric_limits<unsigned long>::max()))
-      {
-        // off the map --> remove "active" tile highlight
-        client_action.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
-        myEngine->action(client_action);
-
-        break;
-      } // end IF
+      //  break;
+      //} // end IF
 
       // change "active" tile ?
-      if (map_position != myHighlightBGPosition)
+      RPG_Map_Position_t previous_map_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition(0);
+      if (map_position != previous_map_position)
       {
-        // *NOTE*: restore cursor BG first
-        client_action.command = COMMAND_CURSOR_RESTORE_BG;
-        myEngine->action(client_action);
-
         // step1: restore/clear old tile highlight background
         client_action.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
         myEngine->action(client_action);
 
-        // step2: store current background
-        RPG_Graphics_Position_t tile_position = RPG_Client_Common_Tools::map2Screen(map_position,
-                                                            mySize,
-                                                            myView);
-        // sanity check for underruns
-        if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
-            (tile_position.second < static_cast<unsigned long>(myScreen->h)))
+        // *NOTE*: this MAY also invalidate the current cursor bg. As the cursor gets redrawn anyway,
+        // we can safely assume it to be so...
+        client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+        myEngine->action(client_action);
+
+        // step2: an entity may have moved to the previously active tile in the meantime
+        // --> it may need to be redrawn
+        entity_id = myLevelState->hasEntity(previous_map_position);
+        if (entity_id)
         {
+          client_action.command = COMMAND_ENTITY_DRAW;
+          client_action.position = previous_map_position;
+          client_action.entity_id = entity_id;
+          myEngine->action(client_action);
+        } // end IF
+
+        // still on the map ?
+        if ((map_position.first  != std::numeric_limits<unsigned int>::max()) &&
+            (map_position.second != std::numeric_limits<unsigned int>::max())) // --> on the map
+        {
+          // step3: store current background tile
           client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
-          client_action.graphics_position = tile_position;
-          client_action.map_position = map_position;
+          client_action.position = map_position;
           myEngine->action(client_action);
 
-          // step3: draw highlight
+          // step3: draw tile highlight
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("highlight @ (%u,%u) --> (%u,%u)\n"),
 //                      map_position.first,
@@ -1134,9 +1179,6 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                                                                            *myLevelState);
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
-        client_action.command = COMMAND_CURSOR_RESTORE_BG;
-        myEngine->action(client_action);
-
         client_action.command = COMMAND_CURSOR_SET;
         client_action.cursor = cursor_type;
         myEngine->action(client_action);
@@ -1151,24 +1193,26 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 //                  static_cast<unsigned long> (event_in.button.which),
 //                  static_cast<unsigned long> (event_in.button.button)));
 
-      if (event_in.button.button == 1) // left-click
-      {
-        RPG_Graphics_Position_t map_position = RPG_Client_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
-                                                                                                  event_in.button.y),
-                                                                                   myLevelState->getDimensions(),
-                                                                                   mySize,
-                                                                                   myView);
-
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("mouse position [%u,%u] --> map position [%u,%u]\n"),
-                   event_in.button.x,
-                   event_in.button.y,
-                   map_position.first,
-                   map_position.second));
-
-        if (myLevelState->getActive() == 0)
+      // any active player ?
+      RPG_Engine_EntityID_t player_id = myLevelState->getActive();
+      if (player_id == 0)
           break;
 
+      if (event_in.button.button == 1) // left-click
+      {
+        RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
+                                                                                                    event_in.button.y),
+                                                                                     myLevelState->getDimensions(),
+                                                                                     mySize,
+                                                                                     myView);
+
+        //ACE_DEBUG((LM_DEBUG,
+        //           ACE_TEXT("mouse position [%u,%u] --> map position [%u,%u]\n"),
+        //           event_in.button.x,
+        //           event_in.button.y,
+        //           map_position.first,
+        //           map_position.second));
+        
         // player standing next to door ?
         switch (myLevelState->getElement(map_position))
         {
@@ -1184,7 +1228,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
               player_action.command = (door.is_open ? COMMAND_DOOR_CLOSE
                                                     : COMMAND_DOOR_OPEN);
               player_action.position = map_position;
-              do_player_action = true;
+              myLevelState->action(player_id, player_action);
 
               break;
             } // end IF
@@ -1196,7 +1240,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             // (try to) travel to this position
             player_action.command = COMMAND_TRAVEL;
             player_action.position = map_position;
-            do_player_action = true;
+            myLevelState->action(player_id, player_action);
 
             break;
           }
@@ -1219,9 +1263,11 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
 
-      // restore/clear highlight BG
-      // *CONSIDER*: is this really useful/necessary ?
+      // restore/clear tile highlight BG
       client_action.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+      myEngine->action(client_action);
+
+      client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
       myEngine->action(client_action);
 
       break;
@@ -1246,9 +1292,6 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       break;
     }
   } // end SWITCH
-
-  if (do_player_action)
-    myLevelState->action(myLevelState->getActive(), player_action);
 
   if (delegate_to_parent)
     getParent()->handleEvent(event_in,
@@ -1632,88 +1675,4 @@ RPG_Client_WindowLevel::initMiniMap()
 
   minimap_window->init(myLevelState);
   minimap_window->setScreen(inherited::myScreen);
-}
-
-void
-RPG_Client_WindowLevel::drawHighlight(const RPG_Graphics_Position_t& graphicsPosition_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::drawHighlight"));
-
-  // sanity check
-  ACE_ASSERT(myHighlightTile);
-  ACE_ASSERT(myScreen);
-
-  clip();
-  RPG_Graphics_Surface::put(graphicsPosition_in.first,
-                            graphicsPosition_in.second,
-                            *myHighlightTile,
-                            myScreen);
-  unclip();
-
-  SDL_Rect dirtyRegion, clipRect;
-  dirtyRegion.x = static_cast<int16_t>(graphicsPosition_in.first);
-  dirtyRegion.y = static_cast<int16_t>(graphicsPosition_in.second);
-  dirtyRegion.w = static_cast<uint16_t>(myHighlightTile->w);
-  dirtyRegion.h = static_cast<uint16_t>(myHighlightTile->h);
-  SDL_GetClipRect(myScreen, &clipRect);
-
-//   invalidate(dirtyRegion);
-  // *NOTE*: updating straight away reduces ugly smears...
-  RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
-                               myScreen);
-}
-
-void
-RPG_Client_WindowLevel::storeHighlightBG(const RPG_Map_Position_t& mapPosition_in,
-                                         const RPG_Graphics_Position_t& graphicsPosition_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::storeHighlightBG"));
-
-  // sanity check
-  ACE_ASSERT(myScreen);
-  ACE_ASSERT(myHighlightBG);
-
-  RPG_Graphics_Surface::get(graphicsPosition_in.first,
-                            graphicsPosition_in.second,
-                            true, // use (fast) blitting method
-                            *myScreen,
-                            *myHighlightBG);
-  myHighlightBGPosition = mapPosition_in;
-}
-
-void
-RPG_Client_WindowLevel::restoreHighlightBG()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::restoreHighlightBG"));
-
-  // sanity check
-  ACE_ASSERT(myHighlightBG);
-  ACE_ASSERT(myScreen);
-
-  SDL_Rect dirtyRegion, clipRect;
-  RPG_Graphics_Position_t tile_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                                              mySize,
-                                                                              myView);
-  // sanity check for underruns
-  if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
-      (tile_position.second < static_cast<unsigned long>(myScreen->h)))
-  {
-    RPG_Graphics_Surface::put(tile_position.first,
-                              tile_position.second,
-                              *myHighlightBG,
-                              myScreen);
-
-    dirtyRegion.x = static_cast<int16_t>(tile_position.first);
-    dirtyRegion.y = static_cast<int16_t>(tile_position.second);
-    dirtyRegion.w = static_cast<uint16_t>(myHighlightBG->w);
-    dirtyRegion.h = static_cast<uint16_t>(myHighlightBG->h);
-    SDL_GetClipRect(myScreen, &clipRect);
-//       invalidate(dirtyRegion);
-    // *NOTE*: updating straight away reduces ugly smears...
-    RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
-                                 myScreen);
-  } // end IF
-
-  // clear highlight BG
-  RPG_Graphics_Surface::clear(myHighlightBG);
 }

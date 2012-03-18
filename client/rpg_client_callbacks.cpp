@@ -2098,7 +2098,7 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   data->level_engine->setActive(id);
 
   // center on character
-  data->client_engine->center(data->entity.position);
+  data->client_engine->setView(data->entity.position);
 
   // make join button INsensitive
   gtk_widget_set_sensitive(widget_in, FALSE);

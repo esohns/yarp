@@ -58,16 +58,6 @@ class RPG_Client_Export RPG_Client_Common_Tools
                           const RPG_Engine_Level&,           // state
                           RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
 
-  // coordinate transformations
-  static const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,   // position (absolute)
-                                                  const RPG_Map_Dimensions_t&,      // map size
-                                                  const RPG_Graphics_WindowSize_t&, // window size
-                                                  const RPG_Graphics_Position_t&);  // viewport
-  // *NOTE*: translates the center of the map square to screen coordinates
-  static const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&,   // position (map)
-                                                  const RPG_Graphics_WindowSize_t&, // window size
-                                                  const RPG_Graphics_Position_t&);  // viewport
-
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools());

@@ -29,22 +29,31 @@
     </xsd:documentation>
   </xsd:annotation>
 
- <xsd:simpleType name="RPG_Engine_Command_Type">
-   <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="COMMAND_ATTACK"/>
-     <xsd:enumeration value="COMMAND_DOOR_CLOSE"/>
-     <xsd:enumeration value="COMMAND_DOOR_OPEN"/>
-     <xsd:enumeration value="COMMAND_STEP"/>
-     <xsd:enumeration value="COMMAND_STOP"/>
-     <xsd:enumeration value="COMMAND_TRAVEL"/>
-   </xsd:restriction>
- </xsd:simpleType>
+  <xsd:simpleType name="RPG_Engine_Command_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COMMAND_ATTACK"/>
+      <xsd:enumeration value="COMMAND_DOOR_CLOSE"/>
+      <xsd:enumeration value="COMMAND_DOOR_OPEN"/>
+      <xsd:enumeration value="COMMAND_SEARCH"/>
+      <xsd:enumeration value="COMMAND_STOP"/>
+      <xsd:enumeration value="COMMAND_TRAVEL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
 
- <xsd:complexType name="RPG_Engine_Player_Type" id="skip0">
+  <xsd:simpleType name="RPG_Engine_PlayerMode_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="MODE_FIGHTING"/>
+      <xsd:enumeration value="MODE_SEARCHING"/>
+      <xsd:enumeration value="MODE_TRAVELLING"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Engine_Player_Type" id="skip0">
     <xsd:complexContent>
       <xsd:extension base="RPG_Player_PlayerXML_Type">
         <xsd:sequence>
           <xsd:element name="position" type="RPG_Map_Position_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="mode" type="RPG_Engine_PlayerMode_Type" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="sprite" type="RPG_Graphics_Sprite_Type" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>

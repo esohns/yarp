@@ -49,7 +49,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <AdditionalDependencies>SDL_ttf.lib;SDLmain.lib;SDL.lib;ACEd.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\SDL-1.2.14\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/FORCE:MULTIPLE /NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
@@ -89,6 +89,9 @@
     </ProjectReference>
     <ProjectReference Include="..\character\character.vcxproj">
       <Project>{d93f14b1-cfe8-45df-816d-06ab1ca74cd6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\character\player\player.vcxproj">
+      <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
     </ProjectReference>
     <ProjectReference Include="..\client\client.vcxproj">
       <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>

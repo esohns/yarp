@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_GRAPHICS_COMMON_H
 #define RPG_GRAPHICS_COMMON_H
 
@@ -114,12 +115,12 @@ struct RPG_Graphics_Font_t
 typedef std::vector<RPG_Graphics_Font_t> RPG_Graphics_Fonts_t;
 typedef RPG_Graphics_Fonts_t::const_iterator RPG_Graphics_FontsConstIterator_t;
 
-typedef std::pair<unsigned long, unsigned long> RPG_Graphics_TextSize_t;
+typedef std::pair<unsigned int, unsigned int> RPG_Graphics_TextSize_t;
 
-typedef std::pair<unsigned long, unsigned long> RPG_Graphics_Position_t;
+typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Position_t;
 typedef RPG_Graphics_Position_t RPG_Graphics_Offset_t;
 
-typedef std::pair<unsigned long, unsigned long> RPG_Graphics_WindowSize_t;
+typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Size_t;
 
 // a set of (floor-, wall-, door-, ...) tiles
 struct RPG_Graphics_Tile_t
@@ -133,8 +134,8 @@ typedef std::vector<RPG_Graphics_Tile_t> RPG_Graphics_FloorTiles_t;
 typedef RPG_Graphics_FloorTiles_t::const_iterator RPG_Graphics_FloorTilesConstIterator_t;
 struct RPG_Graphics_FloorTileSet_t
 {
-  unsigned long columns;
-  unsigned long rows;
+  unsigned int columns;
+  unsigned int rows;
   RPG_Graphics_FloorTiles_t tiles;
 };
 
@@ -156,6 +157,7 @@ struct RPG_Graphics_FloorEdgeTileSet_t
   RPG_Graphics_Tile_t left;
   RPG_Graphics_Tile_t bottom;
 };
+// *NOTE*: map coordinates !
 typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_FloorEdgeTileSet_t> RPG_Graphics_FloorEdgeTileMap_t;
 typedef RPG_Graphics_FloorEdgeTileMap_t::iterator RPG_Graphics_FloorEdgeTileMapIterator_t;
 
@@ -166,6 +168,7 @@ struct RPG_Graphics_WallTileSet_t
   RPG_Graphics_Tile_t east;
   RPG_Graphics_Tile_t south;
 };
+// *NOTE*: map coordinates !
 typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_WallTileSet_t> RPG_Graphics_WallTileMap_t;
 typedef RPG_Graphics_WallTileMap_t::iterator RPG_Graphics_WallTileMapIterator_t;
 
@@ -177,6 +180,7 @@ struct RPG_Graphics_DoorTileSet_t
   RPG_Graphics_Tile_t vertical_closed;
   RPG_Graphics_Tile_t broken;
 };
+// *NOTE*: map coordinates !
 typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_Tile_t> RPG_Graphics_DoorTileMap_t;
 typedef RPG_Graphics_DoorTileMap_t::iterator RPG_Graphics_DoorTileMapIterator_t;
 
@@ -190,5 +194,9 @@ struct RPG_Graphics_MapStyle_t
   bool half_height_walls;
   RPG_Graphics_DoorStyle door_style;
 };
+
+// *NOTE*: map coordinates !
+typedef std::vector<std::pair<RPG_Graphics_Position_t, SDL_Surface*> > RPG_Graphics_TileCache_t;
+typedef RPG_Graphics_TileCache_t::const_iterator RPG_Graphics_TileCacheConstIterator_t;
 
 #endif

@@ -48,6 +48,9 @@
     <ClInclude Include="rpg_client_ui_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_client_entity_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_client_callbacks.cpp">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_client_ui_tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_client_entity_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

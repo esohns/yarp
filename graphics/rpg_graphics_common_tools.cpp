@@ -18,6 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+// *NOTE*: workaround quirky MSVC...
+#define NOMINMAX
+
 #include "rpg_graphics_common_tools.h"
 
 #include "rpg_graphics_defines.h"
@@ -34,6 +37,7 @@
 #include <png.h>
 
 #include <sstream>
+#include <numeric>
 
 // init statics
 RPG_Graphics_CategoryToStringTable_t RPG_Graphics_CategoryHelper::myRPG_Graphics_CategoryToStringTable;
@@ -2076,4 +2080,73 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
 
     return;
   } // end IF
+}
+
+const RPG_Graphics_Position_t
+RPG_Graphics_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in,
+                                      const RPG_Graphics_Size_t& mapSize_in,
+                                      const RPG_Graphics_Size_t& windowSize_in,
+                                      const RPG_Graphics_Position_t& viewport_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::screen2Map"));
+
+  RPG_Graphics_Position_t offset, map_position;
+
+  offset.first = (position_in.first - (windowSize_in.first / 2) + ((viewport_in.first - viewport_in.second) * RPG_GRAPHICS_TILE_WIDTH_MOD));
+  offset.second = (position_in.second - (windowSize_in.second / 2) + ((viewport_in.first + viewport_in.second) * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+
+  map_position.first = ((RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
+  (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+  (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+  (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+  map_position.second = ((-RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
+  (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+  (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+  (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+
+  // sanity check: off-map position ?
+  if ((map_position.first  >= mapSize_in.first) ||
+      (map_position.second >= mapSize_in.second))
+  {
+    //ACE_DEBUG((LM_DEBUG,
+    //           ACE_TEXT("screen coords [%u,%u] --> [%u,%u] --> off-map, continuing\n"),
+    //           position_in.first, position_in.second,
+    //           map_position.first, map_position.second));
+
+    map_position.first = std::numeric_limits<unsigned int>::max();
+    map_position.second = std::numeric_limits<unsigned int>::max();
+  } // end IF
+
+  return map_position;
+}
+
+const RPG_Graphics_Position_t
+RPG_Graphics_Common_Tools::map2Screen(const RPG_Graphics_Position_t& position_in,
+                                      const RPG_Graphics_Size_t& windowSize_in,
+                                      const RPG_Graphics_Position_t& viewport_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::map2Screen"));
+
+  RPG_Graphics_Position_t map_center, screen_position;
+
+  map_center.first = windowSize_in.first / 2;
+  map_center.second = windowSize_in.second / 2;
+
+  screen_position.first = map_center.first +
+                          (RPG_GRAPHICS_TILE_WIDTH_MOD *
+                           (position_in.first - position_in.second + viewport_in.second - viewport_in.first));
+  screen_position.second = map_center.second +
+                           (RPG_GRAPHICS_TILE_HEIGHT_MOD *
+                            (position_in.first + position_in.second - viewport_in.second - viewport_in.first));
+
+  //// sanity check
+  //if ((screen_position.first >= windowSize_in.first) ||
+  //    (screen_position.second >= windowSize_in.second))
+  //  ACE_DEBUG((LM_WARNING,
+  //             ACE_TEXT("map coords [%u,%u] --> [%u,%u], continuing\n"),
+  //             position_in.first, position_in.second,
+  //             screen_position.first, screen_position.second));
+
+  // *TODO* fix underruns (why does this happen ?)
+  return screen_position;
 }

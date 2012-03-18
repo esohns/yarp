@@ -59,9 +59,9 @@ struct RPG_Map_FloorPlan_Config_t
   unsigned long map_size_y;
 };
 
-typedef std::pair<unsigned long, unsigned long> RPG_Map_Dimensions_t;
+typedef std::pair<unsigned int, unsigned int> RPG_Map_Dimensions_t;
 
-typedef std::pair<unsigned long, unsigned long> RPG_Map_Position_t;
+typedef std::pair<unsigned int, unsigned int> RPG_Map_Position_t;
 typedef std::set<RPG_Map_Position_t> RPG_Map_Positions_t;
 typedef RPG_Map_Positions_t::const_iterator RPG_Map_PositionsConstIterator_t;
 typedef RPG_Map_Positions_t::iterator RPG_Map_PositionsIterator_t;
@@ -114,8 +114,8 @@ typedef RPG_Map_Doors_t::iterator RPG_Map_DoorsIterator_t;
 
 struct RPG_Map_FloorPlan_t
 {
-  unsigned long size_x;
-  unsigned long size_y;
+  unsigned int size_x;
+  unsigned int size_y;
   RPG_Map_Positions_t unmapped; // (!floor)
   RPG_Map_Positions_t walls;
   RPG_Map_Doors_t doors;

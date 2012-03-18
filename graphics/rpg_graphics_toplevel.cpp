@@ -25,7 +25,7 @@
 
 #include <rpg_common_macros.h>
 
-RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t& size_in,
+RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_Size_t& size_in,
                                              const RPG_Graphics_GraphicTypeUnion& elementType_in,
                                              const std::string& title_in)
 //                                              SDL_Surface* backGround_in)
@@ -56,6 +56,16 @@ RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
        iterator != myElementGraphics.end();
        iterator++)
     SDL_FreeSurface((*iterator).second);
+}
+
+const RPG_Graphics_Position_t
+RPG_Graphics_TopLevel::getView() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::getView"));
+
+  ACE_ASSERT(false);
+
+  return std::make_pair(0, 0);
 }
 
 // void

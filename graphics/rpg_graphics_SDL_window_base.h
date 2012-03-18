@@ -41,29 +41,32 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual ~RPG_Graphics_SDLWindowBase();
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void setScreen(SDL_Surface*); // (default) screen
-  virtual SDL_Surface* getScreen(); // (default) screen
+  virtual void setScreen(SDL_Surface*);   // (default) screen
+  virtual SDL_Surface* getScreen() const; // (default) screen
+
   virtual const RPG_Graphics_WindowType getType() const;
+  virtual const RPG_Graphics_Size_t getSize(const bool& = false) const; // top-level ?
+
   virtual void refresh(SDL_Surface* = NULL); // target surface (default: screen)
+
+  virtual void clip(SDL_Surface* = NULL,      // target surface (default: screen)
+                    const unsigned int& = 0,  // offset x (top-left = [0,0])
+                    const unsigned int& = 0); // offset y (top-left = [0,0]));
+  virtual void unclip(SDL_Surface* = NULL) const; // target surface (default: screen)
+
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
   virtual void notify(const RPG_Graphics_Cursor&) const;
 
-  const RPG_Graphics_WindowSize_t getSize(const bool& = false) const; // top-level ?
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
   RPG_Graphics_IWindow* getChild(const RPG_Graphics_WindowType&); // type
 
-  void clip(SDL_Surface* = NULL,       // target surface (default: screen)
-            const unsigned long& = 0,  // offset x (top-left = [0,0])
-            const unsigned long& = 0); // offset y (top-left = [0,0]));
-  void unclip(SDL_Surface* = NULL); // target surface (default: screen)
-
  protected:
   // *NOTE*: window assumes responsibility for its background surface
-  RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowSize_t&, // size
-                             const RPG_Graphics_WindowType&,   // type
-                             const std::string&);              // title
+  RPG_Graphics_SDLWindowBase(const RPG_Graphics_Size_t&,     // size
+                             const RPG_Graphics_WindowType&, // type
+                             const std::string&);            // title
 //                              SDL_Surface* = NULL);             // background
   // embedded ("child") window(s)
   // *NOTE*: window assumes responsibility for its background surface
@@ -78,13 +81,13 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   SDL_Surface*                     myScreen;
 
   // absolute size
-  RPG_Graphics_WindowSize_t        mySize;
+  RPG_Graphics_Size_t              mySize;
 
   // border sizes
-  unsigned long                    myBorderTop;
-  unsigned long                    myBorderBottom;
-  unsigned long                    myBorderLeft;
-  unsigned long                    myBorderRight;
+  unsigned int                     myBorderTop;
+  unsigned int                     myBorderBottom;
+  unsigned int                     myBorderLeft;
+  unsigned int                     myBorderRight;
 
 //   // title sizes
 //   unsigned long                    myTitleWidth;
@@ -99,10 +102,10 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   typedef RPG_Graphics_Windows_t::const_reverse_iterator RPG_Graphics_WindowsRIterator_t;
 
   // helper methods
-  void getBorders(unsigned long&,            // return value: size (top)
-                  unsigned long&,            // return value: size (bottom)
-                  unsigned long&,            // return value: size (left)
-                  unsigned long&,            // return value: size (right)
+  void getBorders(unsigned int&,             // return value: size (top)
+                  unsigned int&,             // return value: size (bottom)
+                  unsigned int&,             // return value: size (left)
+                  unsigned int&,             // return value: size (right)
                   const bool& = true) const; // recursive ?
   RPG_Graphics_SDLWindowBase* getParent() const;
   void invalidate(const SDL_Rect&); // "dirty" area

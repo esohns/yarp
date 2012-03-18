@@ -846,6 +846,8 @@ do_UI(RPG_Engine_Entity& entity_in,
   bool need_redraw = false;
   bool force_redraw = false;
   RPG_Graphics_Position_t mouse_position;
+  unsigned int map_index = 1;
+  std::ostringstream converter;
   do
   {
     window = NULL;
@@ -881,9 +883,14 @@ do_UI(RPG_Engine_Entity& entity_in,
         {
           case SDLK_e:
           {
-            std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+            std::string dump_path = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+            std::string dump_path = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-            dump_path += ACE_TEXT("player.xml");
+            dump_path += entity_in.character->getName();
+            dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
             if (!RPG_Engine_Common_Tools::saveEntity(entity_in,
                                                      dump_path))
             {
@@ -964,9 +971,18 @@ do_UI(RPG_Engine_Entity& entity_in,
           }
           case SDLK_s:
           {
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
             std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+#else
+            std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+#endif
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-            dump_path += ACE_TEXT("map.txt");
+            dump_path += map_in.name;
+            dump_path += ACE_TEXT_ALWAYS_CHAR("_");
+            converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+            converter << map_index++;
+            dump_path += converter.str();
+            dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
             if (!RPG_Map_Common_Tools::save(dump_path,
                                             map_in))
             {
@@ -988,9 +1004,9 @@ do_UI(RPG_Engine_Entity& entity_in,
           }
           case SDLK_w:
           {
-            mapStyle_in.wall_style = static_cast<RPG_Graphics_WallStyle> (mapStyle_in.wall_style + 1);;
+            mapStyle_in.wall_style = static_cast<RPG_Graphics_WallStyle>(mapStyle_in.wall_style + 1);;
             if (mapStyle_in.wall_style == RPG_GRAPHICS_WALLSTYLE_MAX)
-              mapStyle_in.wall_style = static_cast<RPG_Graphics_WallStyle> (0);
+              mapStyle_in.wall_style = static_cast<RPG_Graphics_WallStyle>(0);
             RPG_Graphics_StyleUnion style;
             style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
             style.wallstyle = mapStyle_in.wall_style;
@@ -1241,8 +1257,8 @@ do_work(const mode_t& mode_in,
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
   std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
-  SDL_GUI_MainWindow mainWindow(RPG_Graphics_WindowSize_t(screen->w,
-                                                          screen->h), // size
+  SDL_GUI_MainWindow mainWindow(RPG_Graphics_Size_t(screen->w,
+                                                    screen->h), // size
                                 type,                                 // interface elements
                                 title,                                // title (== caption)
                                 FONT_MAIN_LARGE);                     // title font
@@ -1377,6 +1393,7 @@ do_work(const mode_t& mode_in,
       // --> but as we're not using the client engine, it doesn't redraw...
       level_engine.init(map_window,
                         map);
+      map_window->init(mapStyle);
       level_engine.start();
       RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity);
       // *NOTE*: triggers a center/draw...

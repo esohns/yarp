@@ -69,13 +69,17 @@ class RPG_Client_Export RPG_Client_Engine
   // *NOTE*: these are called by the level engine ONLY
   virtual void init();
   virtual void redraw();
+  // *NOTE*: this triggers a complete redraw !
+  virtual void setView(const RPG_Map_Position_t&);
   virtual void toggleDoor(const RPG_Map_Position_t&);
-  virtual void center(const RPG_Map_Position_t&);
+  virtual void updateEntity(const RPG_Engine_EntityID_t&);
 
   // *WARNING*: UI handle needs to be of WINDOW_MAP type !!!
   void init(RPG_Engine_Level*,      // level state
             RPG_Graphics_IWindow*); // UI handle
   void action(const RPG_Client_Action&); // action
+
+  const bool centerOnActive() const; // return value: keep active player centered ?
 
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
@@ -106,6 +110,9 @@ class RPG_Client_Export RPG_Client_Engine
   RPG_Graphics_IWindow*           myLevelWindow;
 
   RPG_Client_Actions_t            myActions;
+  bool                            myIsTravelling; // "travel mode" activated
+
+  bool                            myCenterOnActivePlayer;
 };
 
 #endif

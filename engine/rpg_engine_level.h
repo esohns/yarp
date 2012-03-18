@@ -78,12 +78,18 @@ class RPG_Engine_Export RPG_Engine_Level
 
   void setActive(const RPG_Engine_EntityID_t&); // id
   const RPG_Engine_EntityID_t getActive() const; // return value: id (if any)
+  void mode(const RPG_Engine_PlayerMode&); // add mode (to active entity)
+  void clear(const RPG_Engine_PlayerMode&); // clear mode (from active entity)
+  const bool hasMode(const RPG_Engine_PlayerMode&) const; // mode
+
+  const RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
+  const bool isMonster(const RPG_Engine_EntityID_t&) const;
 
   const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
+  const SDL_Surface* getGraphics(const RPG_Engine_EntityID_t&) const;
   const RPG_Engine_EntityGraphics_t getGraphics() const;
   const RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
   const RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
-  const bool hasMonster(const RPG_Map_Position_t&) const;
 
   using RPG_Map_Level::getStartPosition;
   using RPG_Map_Level::getSeedPoints;
@@ -106,11 +112,11 @@ class RPG_Engine_Export RPG_Engine_Level
   // helper methods
   void handleDoor(const RPG_Map_Position_t&, // position
                   const bool&,               // open ? : close
-                  bool&);                    // return value: schedule a redraw ?
-  void clearEntityActions();
+                  bool&);                    // return value: toggled ?
+  void clearEntityActions(const RPG_Engine_EntityID_t& = 0); // entity ID (default: ALL)
 
   // perform (one round of) actions
-  void handleEntities(bool&); // return value: schedule a redraw ?
+  void handleEntities();
 
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> myCurrentID;
@@ -127,8 +133,6 @@ class RPG_Engine_Export RPG_Engine_Level
   RPG_Engine_EntityID_t           myActivePlayer;
 
   RPG_Engine_IWindow*             myClient;
-
-  bool                            myCenterOnActivePlayer;
 };
 
 #endif

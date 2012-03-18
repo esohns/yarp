@@ -52,7 +52,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
  protected:
   // helper method(s)
   // *NOTE*: make sure setScreen has been invoked
-  void saveBG(const RPG_Graphics_WindowSize_t&);
+  void saveBG(const RPG_Graphics_Size_t&);
 
   bool         myBGHasBeenSaved;
 

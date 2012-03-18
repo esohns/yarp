@@ -42,11 +42,15 @@ class RPG_Graphics_Export RPG_Graphics_TopLevel
  : public RPG_Graphics_SDLWindowBase
 {
  public:
-  RPG_Graphics_TopLevel(const RPG_Graphics_WindowSize_t&,     // size
+  RPG_Graphics_TopLevel(const RPG_Graphics_Size_t&,           // size
                         const RPG_Graphics_GraphicTypeUnion&, // (element) type
                         const std::string&);                  // title
 //                         SDL_Surface* = NULL);                 // background
   virtual ~RPG_Graphics_TopLevel();
+
+  // implement (part of) RPG_Graphics_IWindow
+  // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
+  virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
 //   // realize child window
 //   void child(const RPG_Graphics_WindowSize_t&, // size

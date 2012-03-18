@@ -38,9 +38,12 @@ class RPG_Client_Window_MiniMap
   virtual ~RPG_Client_Window_MiniMap();
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
-                    const unsigned long& = 0,  // offset x (top-left = [0,0])
-                    const unsigned long& = 0); // offset y (top-left = [0,0])
+  // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
+  virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+
+  virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
+                    const unsigned int& = 0,  // offset x (top-left = [0,0])
+                    const unsigned int& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?

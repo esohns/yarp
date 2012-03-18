@@ -38,7 +38,7 @@
 
 #include <sstream>
 
-RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t& size_in,
+RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_Size_t& size_in,
                                              const RPG_Graphics_GraphicTypeUnion& elementType_in,
                                              const std::string& title_in,
                                              const RPG_Graphics_Font& font_in)
@@ -49,7 +49,7 @@ RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_WindowSize_t& si
    myEngine(NULL),
    myScreenshotIndex(1),
    myLastHoverTime(0),
-   myHaveMouseFocus(true), // *NOTE*: enforced with SDL_WarpMouse()
+   myAutoEdgeScroll(RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL),
    myTitleFont(font_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::RPG_Client_WindowMain"));
@@ -64,6 +64,7 @@ RPG_Client_WindowMain::~RPG_Client_WindowMain()
 
 void
 RPG_Client_WindowMain::init(RPG_Client_Engine* engine_in,
+                            const bool& doAutoEdgeScroll_in,
                             RPG_Engine_Level* levelState_in,
                             const RPG_Graphics_MapStyle_t& style_in)
 {
@@ -73,6 +74,7 @@ RPG_Client_WindowMain::init(RPG_Client_Engine* engine_in,
   ACE_ASSERT(engine_in);
 
   myEngine = engine_in;
+  myAutoEdgeScroll = doAutoEdgeScroll_in;
 
   // init scroll margins
   initScrollSpots();
@@ -85,8 +87,8 @@ RPG_Client_WindowMain::init(RPG_Client_Engine* engine_in,
 
 void
 RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
-                            const unsigned long& offsetX_in,
-                            const unsigned long& offsetY_in)
+                            const unsigned int& offsetX_in,
+                            const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::draw"));
 
@@ -129,10 +131,10 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_CENTER);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  for (unsigned long i = (offsetY_in + myBorderTop);
+  for (unsigned int i = (offsetY_in + myBorderTop);
        i < (targetSurface->h - myBorderBottom);
        i += (*iterator).second->h)
-    for (unsigned long j = (offsetX_in + myBorderLeft);
+    for (unsigned int j = (offsetX_in + myBorderLeft);
          j < (targetSurface->w - myBorderRight);
          j += (*iterator).second->w)
       RPG_Graphics_Surface::put(j,
@@ -233,10 +235,11 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
-  client_action.map_position = std::make_pair(0, 0);
-  client_action.graphics_position = std::make_pair(0, 0);
+  client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max());
   client_action.window = this;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  client_action.entity_id = 0;
   switch (event_in.type)
   {
     // *** visibility ***
@@ -249,27 +252,30 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("gained mouse coverage...\n")));
 
-          // *HACK*: prevents MOST "mouse trails" (NW borders)...
-          client_action.command = COMMAND_WINDOW_BORDER_DRAW;
-          myEngine->action(client_action);
-          client_action.command = COMMAND_WINDOW_REFRESH;
-          myEngine->action(client_action);
+          //// *HACK*: prevents MOST "mouse trails" (NW borders)...
+          //client_action.command = COMMAND_WINDOW_BORDER_DRAW;
+          //myEngine->action(client_action);
+          //client_action.command = COMMAND_WINDOW_REFRESH;
+          //myEngine->action(client_action);
 
-          myHaveMouseFocus = true;
+          //myHaveMouseFocus = true;
         } // end IF
         else
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("lost mouse coverage...\n")));
 
-
-          // *HACK*: prevents MOST "mouse trails" (NW borders)...
-          client_action.command = COMMAND_WINDOW_BORDER_DRAW;
-          myEngine->action(client_action);
-          client_action.command = COMMAND_WINDOW_REFRESH;
+          client_action.command = COMMAND_CURSOR_RESTORE_BG;
+          client_action.window = this;
           myEngine->action(client_action);
 
-          myHaveMouseFocus = false;
+          //// *HACK*: prevents MOST "mouse trails" (NW borders)...
+          //client_action.command = COMMAND_WINDOW_BORDER_DRAW;
+          //myEngine->action(client_action);
+          //client_action.command = COMMAND_WINDOW_REFRESH;
+          //myEngine->action(client_action);
+
+          //myHaveMouseFocus = false;
         } // end ELSE
       } // end IF
       if (event_in.active.state & SDL_APPINPUTFOCUS)
@@ -315,11 +321,15 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
           std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+#else
+          std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+#endif
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-          dump_path += ACE_TEXT("screenshot_");
+          dump_path += ACE_TEXT(RPG_CLIENT_DEF_SCREENSHOT_PREFIX);
           dump_path += converter.str();
-          dump_path += ACE_TEXT(".png");
+          dump_path += ACE_TEXT(RPG_CLIENT_DEF_SCREENSHOT_EXT);
           RPG_Graphics_Surface::savePNG(*myScreen, // image
                                         dump_path, // file
                                         false);    // no alpha
@@ -367,80 +377,99 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         ACE_ASSERT(hotspot);
 
         // retrieve map window handle
-        RPG_Graphics_WindowsConstIterator_t iterator = myChildren.begin();
-        for (;
-             iterator != myChildren.end();
-             iterator++)
-          if ((*iterator)->getType() == WINDOW_MAP)
-            break;
-        ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
-        RPG_Client_WindowLevel* levelWindow = NULL;
-        levelWindow = dynamic_cast<RPG_Client_WindowLevel*>(*iterator);
-        ACE_ASSERT(levelWindow);
+        RPG_Client_WindowLevel* level_window = dynamic_cast<RPG_Client_WindowLevel*>(getChild(WINDOW_MAP));
+        ACE_ASSERT(level_window);
 
+        client_action.command = COMMAND_SET_VIEW;
+        client_action.position = level_window->getView();
+        client_action.window = level_window;
         switch (hotspot->getCursorType())
         {
           case CURSOR_SCROLL_UL:
           {
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first--;
+            client_action.position.second--;
+            //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first--;
+            client_action.position.second++;
+            //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_U:
           {
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first--;
+            client_action.position.second--;
+            //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_UR:
           {
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first--;
+            client_action.position.second--;
+            //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first++;
+            client_action.position.second--;
+            //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_L:
           {
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first--;
+            client_action.position.second++;
+            //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_R:
           {
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first++;
+            client_action.position.second--;
+            //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_DL:
           {
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first++;
+            client_action.position.second++;
+            //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first--;
+            client_action.position.second++;
+            //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_D:
           {
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first++;
+            client_action.position.second++;
+            //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_DR:
           {
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first++;
+            client_action.position.second++;
+            //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            client_action.position.first++;
+            client_action.position.second--;
+            //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+            //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
@@ -453,23 +482,6 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
             return;
           }
         } // end SWITCH
-
-  //       ACE_DEBUG((LM_DEBUG,
-  //                  ACE_TEXT("scrolled map (%s)...\n"),
-  //                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
-
-        client_action.command = COMMAND_CURSOR_RESTORE_BG;
-        myEngine->action(client_action);
-
-        // *NOTE*: fiddling with the view invalidates the cursor BG !
-//         client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-//         myEngine->action(client_action);
-
-        // schedule redraw & refresh
-        client_action.window = levelWindow;
-        client_action.command = COMMAND_WINDOW_DRAW;
-        myEngine->action(client_action);
-        client_action.command = COMMAND_WINDOW_REFRESH;
         myEngine->action(client_action);
       } // end IF
 
@@ -530,13 +542,10 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 //                  ACE_TEXT("RPG_GRAPHICS_SDL_HOVEREVENT event (%d ms)...\n"),
 //                  event_in.user.code));
 
-      // don't hover if we've lost the mouse in the meantime...
-      if (!myHaveMouseFocus)
+      // hovering on a hotspot (edge) area may trigger a scroll of the viewport
+      if (!myAutoEdgeScroll ||                      // function is disabled
+          (window_in->getType() != WINDOW_HOTSPOT)) // not a hotspot
         break;
-
-      // hovering on a hotspot (edge) area triggers a scroll of the viewport
-      if (window_in->getType() != WINDOW_HOTSPOT)
-        break; // not a hotspot
 
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;
@@ -544,16 +553,8 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
       ACE_ASSERT(hotspot);
 
       // retrieve map window handle
-      RPG_Graphics_WindowsConstIterator_t iterator = myChildren.begin();
-      for (;
-           iterator != myChildren.end();
-           iterator++)
-        if ((*iterator)->getType() == WINDOW_MAP)
-          break;
-      ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
-      RPG_Client_WindowLevel* levelWindow = NULL;
-      levelWindow = dynamic_cast<RPG_Client_WindowLevel*>(*iterator);
-      ACE_ASSERT(levelWindow);
+      RPG_Client_WindowLevel* level_window = dynamic_cast<RPG_Client_WindowLevel*>(getChild(WINDOW_MAP));
+      ACE_ASSERT(level_window);
 
       if (myLastHoverTime)
       {
@@ -563,98 +564,109 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
       } // end ELSE
       myLastHoverTime = event_in.user.code;
 
+      // OK: scroll
+      client_action.command = COMMAND_SET_VIEW;
+      client_action.position = level_window->getView();
+      client_action.window = level_window;
       switch (hotspot->getCursorType())
       {
         case CURSOR_SCROLL_UL:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first--;
+          client_action.position.second--;
+          //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first--;
+          client_action.position.second++;
+          //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_U:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first--;
+          client_action.position.second--;
+          //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_UR:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first--;
+          client_action.position.second--;
+          //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first++;
+          client_action.position.second--;
+          //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_L:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first--;
+          client_action.position.second++;
+          //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_R:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first++;
+          client_action.position.second--;
+          //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_DL:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first++;
+          client_action.position.second++;
+          //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first--;
+          client_action.position.second++;
+          //level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_D:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first++;
+          client_action.position.second++;
+          //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_DR:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first++;
+          client_action.position.second++;
+          //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          client_action.position.first++;
+          client_action.position.second--;
+          //level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+          //                      -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         default:
         {
           ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
-                     RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str()));
+                      ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
+                      RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str()));
 
           return;
         }
       } // end SWITCH
-
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("scrolled map (%s)...\n"),
-//                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
-
-      client_action.command = COMMAND_CURSOR_RESTORE_BG;
-      myEngine->action(client_action);
-
-      // *NOTE*: fiddling with the view invalidates the cursor BG !
-//       client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-//       myEngine->action(client_action);
-
-      // schedule redraw & refresh
-      client_action.window = levelWindow;
-      client_action.command = COMMAND_WINDOW_DRAW;
-      myEngine->action(client_action);
-      client_action.command = COMMAND_WINDOW_REFRESH;
       myEngine->action(client_action);
 
       break;
@@ -663,9 +675,6 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
-
-      client_action.command = COMMAND_CURSOR_RESTORE_BG;
-      myEngine->action(client_action);
 
       break;
     }
@@ -691,8 +700,7 @@ RPG_Client_WindowMain::notify(const RPG_Graphics_Cursor& cursor_in) const
 
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
-  client_action.graphics_position = std::make_pair(0, 0);
-  client_action.map_position = std::make_pair(0, 0);
+  client_action.position = std::make_pair(0, 0);
   client_action.window = const_cast<RPG_Client_WindowMain*>(this);
   client_action.cursor = cursor_in;
   if (cursor_in == RPG_GRAPHICS_CURSOR_INVALID)
@@ -808,8 +816,8 @@ RPG_Client_WindowMain::initMap(RPG_Client_Engine* engine_in,
 
 void
 RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
-                                  const unsigned long& offsetX_in,
-                                  const unsigned long& offsetY_in)
+                                  const unsigned int& offsetX_in,
+                                  const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::drawBorder"));
 
@@ -857,7 +865,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   clipRect.y = static_cast<int16_t>(offsetY_in + myBorderTop);
   clipRect.w = static_cast<uint16_t>(myBorderLeft);
   clipRect.h = static_cast<uint16_t>(targetSurface->h -
-	                                 (myBorderTop + myBorderBottom));
+	                                   (myBorderTop + myBorderBottom));
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -869,7 +877,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + myBorderTop);
-       i < (static_cast<unsigned long> (targetSurface->h) - myBorderBottom);
+       i < (static_cast<unsigned int>(targetSurface->h) - myBorderBottom);
        i += (*iterator).second->h)
     RPG_Graphics_Surface::put(offsetX_in,
                               i,
@@ -881,7 +889,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   clipRect.y = static_cast<int16_t>(offsetY_in + myBorderTop);
   clipRect.w = static_cast<uint16_t>(myBorderRight);
   clipRect.h = static_cast<uint16_t>(targetSurface->h -
-	                                 (myBorderTop + myBorderBottom));
+	                                   (myBorderTop + myBorderBottom));
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -893,7 +901,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + myBorderTop);
-       i < (static_cast<unsigned long> (targetSurface->h) - myBorderBottom);
+       i < (static_cast<unsigned int> (targetSurface->h) - myBorderBottom);
        i += (*iterator).second->h)
     RPG_Graphics_Surface::put((targetSurface->w - myBorderRight),
                                i,

@@ -39,7 +39,11 @@
   <xsd:simpleType name="RPG_Graphics_Orientation_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ORIENTATION_NORTH"/>
+      <xsd:enumeration value="ORIENTATION_NORTH_EAST"/>
+      <xsd:enumeration value="ORIENTATION_NORTH_WEST"/>
       <xsd:enumeration value="ORIENTATION_SOUTH"/>
+      <xsd:enumeration value="ORIENTATION_SOUTH_EAST"/>
+      <xsd:enumeration value="ORIENTATION_SOUTH_WEST"/>
       <xsd:enumeration value="ORIENTATION_WEST"/>
       <xsd:enumeration value="ORIENTATION_EAST"/>
       <xsd:enumeration value="ORIENTATION_HORIZONTAL"/>
@@ -134,6 +138,8 @@
       <xsd:enumeration value="CURSOR_SCROLL_UL"/>
       <xsd:enumeration value="CURSOR_SCROLL_UR"/>
       <xsd:enumeration value="CURSOR_STAIRS"/>
+      <xsd:enumeration value="CURSOR_TARGET"/>
+      <xsd:enumeration value="CURSOR_TRAVEL"/>
       <xsd:enumeration value="CURSOR_WAIT"/>
     </xsd:restriction>
   </xsd:simpleType>

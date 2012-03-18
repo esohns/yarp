@@ -67,8 +67,9 @@ struct RPG_Client_GTK_CBData_t
  };
 
   ACE_Thread_Mutex           lock;
-  unsigned long              hover_time;
-  unsigned long              gtk_time;
+  bool                       do_hover;
+  unsigned int               hover_time;
+  unsigned int               gtk_time;
   bool                       gtk_main_quit_invoked;
   GladeXML*                  xml;
   GtkFileFilter*             entity_filter;
@@ -95,30 +96,30 @@ struct RPG_Client_SDL_AudioConfig_t
 // *NOTE* types as used by SDL
 struct RPG_Client_SDL_VideoConfig_t
 {
-  int    screen_width;
-  int    screen_height;
-  int    screen_colordepth; // bits/pixel
+  int  screen_width;
+  int  screen_height;
+  int  screen_colordepth; // bits/pixel
 //   Uint32 screen_flags;
-  bool   fullScreen;
-  bool   doubleBuffer;
+  bool fullScreen;
+  bool doubleBuffer;
 };
 
 struct RPG_Client_Config
 {
   // *** reactor ***
-  unsigned long                num_threadpool_threads; // 0: don't use threadpool
+  unsigned int                 num_threadpool_threads; // 0: don't use threadpool
   // *** UI ***
   std::string                  glade_file;
 //   GTK_cb_data_t      gtk_cb_data;
   // *** sound ***
   RPG_Client_SDL_AudioConfig_t audio_config;
   std::string                  sound_directory;
-  unsigned long                sound_cache_size;
+  unsigned int                 sound_cache_size;
   std::string                  sound_dictionary;
   // *** graphics ***
   RPG_Client_SDL_VideoConfig_t video_config;
   std::string                  graphics_directory;
-  unsigned long                graphics_cache_size;
+  unsigned int                 graphics_cache_size;
   std::string                  graphics_dictionary;
   // *** magic ***
   std::string                  magic_dictionary;
@@ -137,8 +138,10 @@ enum RPG_Client_Command
   COMMAND_CURSOR_INVALIDATE_BG,
   COMMAND_CURSOR_RESTORE_BG,
   COMMAND_CURSOR_SET,
+  COMMAND_ENTITY_DRAW,
   COMMAND_SET_VIEW,
   COMMAND_TILE_HIGHLIGHT_DRAW,
+  COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG,
   COMMAND_TILE_HIGHLIGHT_RESTORE_BG,
   COMMAND_TILE_HIGHLIGHT_STORE_BG,
   COMMAND_TOGGLE_DOOR,
@@ -150,15 +153,17 @@ enum RPG_Client_Command
   RPG_CLIENT_COMMAND_MAX,
   RPG_CLIENT_COMMAND_INVALID
 };
-typedef std::pair<int, int> RPG_Client_Position_t;
+typedef std::pair<int, int> RPG_Client_SignedPosition_t;
+typedef std::pair<unsigned int, unsigned int> RPG_Client_Position_t;
 
 struct RPG_Client_Action
 {
   RPG_Client_Command command;
-  RPG_Map_Position_t map_position;
-  RPG_Graphics_Position_t graphics_position;
+  // *NOTE*: depending on the scenario, these could be map or screen coordinates !
+  RPG_Client_Position_t position;
   RPG_Graphics_IWindow* window;
   RPG_Graphics_Cursor cursor;
+  RPG_Engine_EntityID_t entity_id;
 };
 typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
 typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;
@@ -170,6 +175,7 @@ enum RPG_Client_MiniMapTile
   MINIMAPTILE_FLOOR,
   MINIMAPTILE_MONSTER,
   MINIMAPTILE_PLAYER,
+  MINIMAPTILE_PLAYER_ACTIVE,
   MINIMAPTILE_STAIRS,
   //
   RPG_CLIENT_MINIMAPTILE_MAX,

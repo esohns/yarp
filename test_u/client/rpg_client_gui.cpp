@@ -1454,7 +1454,7 @@ do_work(const RPG_Client_Config& config_in,
   // step5f: trigger initial drawing
   RPG_Client_Action client_action;
   client_action.command = COMMAND_WINDOW_DRAW;
-  client_action.map_position = std::make_pair(0, 0);
+  client_action.position = std::make_pair(0, 0);
   client_action.graphics_position = std::make_pair(0, 0);
   client_action.window = &mainWindow;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
@@ -1609,7 +1609,7 @@ do_work(const RPG_Client_Config& config_in,
     window = NULL;
     schedule_redraw = false;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
-    client_action.map_position = std::make_pair(0, 0);
+    client_action.position = std::make_pair(0, 0);
     client_action.graphics_position = std::make_pair(0, 0);
     client_action.window = NULL;
     previous_redraw = false;

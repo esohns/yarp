@@ -12,6 +12,7 @@ enum RPG_Engine_Command
   COMMAND_ATTACK = 0,
   COMMAND_DOOR_CLOSE,
   COMMAND_DOOR_OPEN,
+  COMMAND_SEARCH,
   COMMAND_STEP,
   COMMAND_STOP,
   COMMAND_TRAVEL,
@@ -19,6 +20,8 @@ enum RPG_Engine_Command
   RPG_ENGINE_COMMAND_MAX,
   RPG_ENGINE_COMMAND_INVALID
 };
+
+#include "rpg_engine_exports.h"
 
 #include <ace/Global_Macros.h>
 
@@ -28,7 +31,7 @@ enum RPG_Engine_Command
 typedef std::map<RPG_Engine_Command, std::string> RPG_Engine_CommandToStringTable_t;
 typedef RPG_Engine_CommandToStringTable_t::const_iterator RPG_Engine_CommandToStringTableIterator_t;
 
-class RPG_Engine_CommandHelper
+class RPG_Engine_Export RPG_Engine_CommandHelper
 {
  public:
   inline static void init()
@@ -37,6 +40,7 @@ class RPG_Engine_CommandHelper
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_ATTACK, ACE_TEXT_ALWAYS_CHAR("COMMAND_ATTACK")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_DOOR_CLOSE, ACE_TEXT_ALWAYS_CHAR("COMMAND_DOOR_CLOSE")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_DOOR_OPEN, ACE_TEXT_ALWAYS_CHAR("COMMAND_DOOR_OPEN")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_SEARCH, ACE_TEXT_ALWAYS_CHAR("COMMAND_SEARCH")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_STEP, ACE_TEXT_ALWAYS_CHAR("COMMAND_STEP")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_STOP, ACE_TEXT_ALWAYS_CHAR("COMMAND_STOP")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_TRAVEL, ACE_TEXT_ALWAYS_CHAR("COMMAND_TRAVEL")));

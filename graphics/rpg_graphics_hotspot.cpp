@@ -28,7 +28,7 @@
 #include <rpg_common_macros.h>
 
 RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& parent_in,
-                                           const RPG_Graphics_WindowSize_t& size_in,
+                                           const RPG_Graphics_Size_t& size_in,
                                            // *NOTE*: offset doesn't include any border(s) !
                                            const RPG_Graphics_Offset_t& offset_in,
                                            const RPG_Graphics_Cursor& cursor_in)
@@ -59,6 +59,16 @@ RPG_Graphics_HotSpot::getCursorType() const
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getCursorType"));
 
   return myCursorType;
+}
+
+const RPG_Graphics_Position_t
+RPG_Graphics_HotSpot::getView() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getView"));
+
+  ACE_ASSERT(false);
+
+  return std::make_pair(0, 0);
 }
 
 void
@@ -143,8 +153,8 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 
 void
 RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
-                           const unsigned long& offsetX_in,
-                           const unsigned long& offsetY_in)
+                           const unsigned int& offsetX_in,
+                           const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
 
@@ -180,7 +190,7 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 
 void
 RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
-                           const RPG_Graphics_WindowSize_t& size_in,
+                           const RPG_Graphics_Size_t& size_in,
                            const RPG_Graphics_Offset_t& offset_in,
                            const RPG_Graphics_Cursor& cursor_in)
 {

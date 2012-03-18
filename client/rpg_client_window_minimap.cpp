@@ -81,6 +81,16 @@ RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
   SDL_FreeSurface(mySurface);
 }
 
+const RPG_Graphics_Position_t
+RPG_Client_Window_MiniMap::getView() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::getView"));
+
+  ACE_ASSERT(false);
+
+  return std::make_pair(0, 0);
+}
+
 void
 RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
                                        RPG_Graphics_IWindow* window_in,
@@ -146,8 +156,8 @@ RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
 
 void
 RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
-                                const unsigned long& offsetX_in,
-                                const unsigned long& offsetY_in)
+                                const unsigned int& offsetX_in,
+                                const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::draw"));
 
@@ -205,54 +215,53 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   Uint32 color = 0;
   SDL_Rect destrect = {0, 0, 3, 2};
   Uint32* pixels = NULL;
+  RPG_Engine_EntityID_t entity_id = 0;
   for (unsigned int y = 0;
        y < dimensions.second;
        y++)
-    for (unsigned int x = 1;
+    for (unsigned int x = 1; // *TODO*: ?
          x < dimensions.first;
          x++)
     {
       // step1: retrieve appropriate symbol
+      map_position = std::make_pair(x, y);
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      if (myLevelState->getActive())
+      entity_id = myLevelState->hasEntity(map_position);
+      
+      if (entity_id)
       {
-        map_position = myLevelState->getPosition(myLevelState->getActive());
-        if ((x == map_position.first) &&
-            (y == map_position.second))
+        if (entity_id == myLevelState->getActive())
+          tile = MINIMAPTILE_PLAYER_ACTIVE;
+        else if (!myLevelState->isMonster(entity_id))
           tile = MINIMAPTILE_PLAYER;
+        else
+          tile = MINIMAPTILE_MONSTER;
       } // end IF
       if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
       {
-        map_position.first = x;
-        map_position.second = y;
-        if (myLevelState->hasMonster(map_position))
-          tile = MINIMAPTILE_MONSTER;
-        else
+        switch (myLevelState->getElement(map_position))
         {
-          switch (myLevelState->getElement(map_position))
+          case MAPELEMENT_UNMAPPED:
+          case MAPELEMENT_WALL:
+            tile = MINIMAPTILE_NONE; break;
+          case MAPELEMENT_FLOOR:
+            tile = MINIMAPTILE_FLOOR; break;
+          case MAPELEMENT_STAIRS:
+            tile = MINIMAPTILE_STAIRS; break;
+          case MAPELEMENT_DOOR:
+            tile = MINIMAPTILE_DOOR; break;
+          default:
           {
-            case MAPELEMENT_UNMAPPED:
-            case MAPELEMENT_WALL:
-              tile = MINIMAPTILE_NONE; break;
-            case MAPELEMENT_FLOOR:
-              tile = MINIMAPTILE_FLOOR; break;
-            case MAPELEMENT_STAIRS:
-              tile = MINIMAPTILE_STAIRS; break;
-            case MAPELEMENT_DOOR:
-              tile = MINIMAPTILE_DOOR; break;
-            default:
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
-                         x,
-                         y,
-                         myLevelState->getElement(map_position)));
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
+                       x,
+                       y,
+                       myLevelState->getElement(map_position)));
 
-              return;
-            }
-          } // end SWITCH
-        } // end ELSE
-      } // end ELSE
+            return;
+          }
+        } // end SWITCH
+      } // end IF
 
       // step2: map symbol to color
       color = 0;

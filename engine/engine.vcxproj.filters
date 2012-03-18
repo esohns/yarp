@@ -57,6 +57,9 @@
     <ClInclude Include="rpg_XMLSchema_XML_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_engine_playermode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_engine_common_tools.cpp">

@@ -21,11 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CXX_Tree_Mapping_Rule Include="rpg_character_player.xsd">
-      <Filter>XML</Filter>
-    </CXX_Tree_Mapping_Rule>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="scripts\bindings.bat">
       <Filter>scripts</Filter>
     </None>
@@ -111,5 +106,10 @@
     <ClInclude Include="rpg_XMLSchema_XML_tree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="rpg_player.xsd">
+      <Filter>XML</Filter>
+    </CXX_Tree_Mapping_Rule>
   </ItemGroup>
 </Project>

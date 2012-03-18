@@ -1815,11 +1815,11 @@ _xsd_RPG_Graphics_Orientation_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_Orientation_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_Orientation_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_Orientation_XMLTree_Type_indexes_ + 6,
+                    _xsd_RPG_Graphics_Orientation_XMLTree_Type_indexes_ + 10,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_Orientation_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Graphics_Orientation_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_Orientation_XMLTree_Type_indexes_ + 10 || _xsd_RPG_Graphics_Orientation_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -1828,10 +1828,14 @@ _xsd_RPG_Graphics_Orientation_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_Orientation_XMLTree_Type::
-_xsd_RPG_Graphics_Orientation_XMLTree_Type_literals_[6] =
+_xsd_RPG_Graphics_Orientation_XMLTree_Type_literals_[10] =
 {
   "ORIENTATION_NORTH",
+  "ORIENTATION_NORTH_EAST",
+  "ORIENTATION_NORTH_WEST",
   "ORIENTATION_SOUTH",
+  "ORIENTATION_SOUTH_EAST",
+  "ORIENTATION_SOUTH_WEST",
   "ORIENTATION_WEST",
   "ORIENTATION_EAST",
   "ORIENTATION_HORIZONTAL",
@@ -1839,12 +1843,16 @@ _xsd_RPG_Graphics_Orientation_XMLTree_Type_literals_[6] =
 };
 
 const RPG_Graphics_Orientation_XMLTree_Type::value RPG_Graphics_Orientation_XMLTree_Type::
-_xsd_RPG_Graphics_Orientation_XMLTree_Type_indexes_[6] =
+_xsd_RPG_Graphics_Orientation_XMLTree_Type_indexes_[10] =
 {
   ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_EAST,
   ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_HORIZONTAL,
   ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_NORTH,
+  ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_NORTH_EAST,
+  ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_NORTH_WEST,
   ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_SOUTH,
+  ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_SOUTH_EAST,
+  ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_SOUTH_WEST,
   ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_VERTICAL,
   ::RPG_Graphics_Orientation_XMLTree_Type::ORIENTATION_WEST
 };
@@ -2499,11 +2507,11 @@ _xsd_RPG_Graphics_Cursor_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_ + 12,
+                    _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_ + 14,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_ + 12 || _xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_ + 14 || _xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2512,7 +2520,7 @@ _xsd_RPG_Graphics_Cursor_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_Cursor_XMLTree_Type::
-_xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[12] =
+_xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[14] =
 {
   "CURSOR_DOOR_OPEN",
   "CURSOR_NORMAL",
@@ -2525,11 +2533,13 @@ _xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[12] =
   "CURSOR_SCROLL_UL",
   "CURSOR_SCROLL_UR",
   "CURSOR_STAIRS",
+  "CURSOR_TARGET",
+  "CURSOR_TRAVEL",
   "CURSOR_WAIT"
 };
 
 const RPG_Graphics_Cursor_XMLTree_Type::value RPG_Graphics_Cursor_XMLTree_Type::
-_xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_[12] =
+_xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_[14] =
 {
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_DOOR_OPEN,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_NORMAL,
@@ -2542,6 +2552,8 @@ _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_[12] =
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_SCROLL_UL,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_SCROLL_UR,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_STAIRS,
+  ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_TARGET,
+  ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_TRAVEL,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_WAIT
 };
 
@@ -3023,11 +3035,11 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 64,
+                    _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 66,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 64 || _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 66 || _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -3036,7 +3048,7 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_GraphicTypeUnion_XMLTree_Type::
-_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[64] =
+_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[66] =
 {
   "CURSOR_DOOR_OPEN",
   "CURSOR_NORMAL",
@@ -3049,6 +3061,8 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[64] =
   "CURSOR_SCROLL_UL",
   "CURSOR_SCROLL_UR",
   "CURSOR_STAIRS",
+  "CURSOR_TARGET",
+  "CURSOR_TRAVEL",
   "CURSOR_WAIT",
   "FONT_MAIN_SMALL",
   "FONT_MAIN_NORMAL",
@@ -3105,7 +3119,7 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[64] =
 };
 
 const RPG_Graphics_GraphicTypeUnion_XMLTree_Type::value RPG_Graphics_GraphicTypeUnion_XMLTree_Type::
-_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[64] =
+_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[66] =
 {
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_DOOR_OPEN,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_NORMAL,
@@ -3118,6 +3132,8 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[64] =
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_SCROLL_UL,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_SCROLL_UR,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_STAIRS,
+  ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_TARGET,
+  ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_TRAVEL,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_WAIT,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::FONT_MAIN_LARGE,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::FONT_MAIN_NORMAL,

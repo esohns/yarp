@@ -24,6 +24,8 @@
 #include "rpg_graphics_exports.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
+#include "rpg_graphics_iwindow.h"
+#include "rpg_graphics_SDL_window_base.h"
 
 #include <SDL/SDL.h>
 
@@ -43,22 +45,36 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
                              ACE_Recursive_Thread_Mutex>;
 
  public:
+  // init (clipping of highlight tile)
+  void init(RPG_Graphics_SDLWindowBase*); // target window handle
+
   const RPG_Graphics_Cursor type() const;
+  const RPG_Graphics_Position_t position() const;
 
   void set(const RPG_Graphics_Cursor&); // cursor type
 //   SDL_Surface* get() const;
 
   // draw the cursor
-  void put(const unsigned long&, // offset x (top left == 0,0)
-           const unsigned long&, // offset y (top left == 0,0)
-           SDL_Surface*,         // target surface (e.g. screen)
-           SDL_Rect&);           // return value: "dirty" region
+  void put(const unsigned int&, // offset x (top left == 0,0)
+           const unsigned int&, // offset y (top left == 0,0)
+           SDL_Surface*,        // target surface (e.g. screen)
+           SDL_Rect&);          // return value: "dirty" region
 
   // restore the BG
   void restoreBG(SDL_Surface*, // target surface (e.g. screen)
                  SDL_Rect&);   // return value: "dirty" region
-  // clear the BG
+  // update/clear the BG
+  void updateBG(SDL_Surface*); // source surface (e.g. screen)
   void invalidateBG();
+
+  const RPG_Graphics_Position_t getHighlightBGPosition(const unsigned int& = 0) const;
+  void drawHighlight(const RPG_Graphics_Position_t&, // position (screen coords !)
+                     SDL_Surface*);                  // target surface (e.g. screen)
+  void storeHighlightBG(const RPG_Graphics_Position_t&, // map position (map coords !)
+                        const RPG_Graphics_Position_t&, // position (screen coords !)
+                        const SDL_Surface*);            // source surface (e.g. screen)
+  void restoreHighlightBG(SDL_Surface*); // target surface (e.g. screen)
+  void resetHighlightBG(const RPG_Graphics_Position_t&); // reset to (single) initial position (map coords !)
 
  private:
   // safety measures
@@ -73,12 +89,15 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
 
   RPG_Graphics_Cursor         myCurrentType;
   SDL_Surface*                myCurrentGraphic;
-
+  RPG_Graphics_Cursor_Cache_t myCache;
   // fast(er) updates
   RPG_Graphics_Position_t     myBGPosition;
   SDL_Surface*                myBG;
 
-  RPG_Graphics_Cursor_Cache_t myCache;
+  // tile highlight
+  RPG_Graphics_SDLWindowBase* myHighlightWindow;
+  RPG_Graphics_TileCache_t    myHighlightBGCache;
+  SDL_Surface*                myHighlightTile;
 };
 
 typedef ACE_Singleton<RPG_Graphics_Cursor_Manager,

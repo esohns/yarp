@@ -66,7 +66,7 @@ RPG_Graphics_SDLWindowSub::close()
 }
 
 void
-RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_WindowSize_t& size_in)
+RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_Size_t& size_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::saveBG"));
 

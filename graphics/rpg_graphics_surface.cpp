@@ -378,14 +378,14 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
 
   // (if neccessary,) strip out alpha bytes and reorder the image bytes to RGB
   Uint32* pixels = static_cast<Uint32*>(surface_in.pixels);
-  for (unsigned long j = 0;
-       j < static_cast<unsigned long> (surface_in.h);
+  for (unsigned int j = 0;
+       j < static_cast<unsigned int> (surface_in.h);
        j++)
   {
     image[j] = output;
 
-    for (unsigned long i = 0;
-         i < static_cast<unsigned long>(surface_in.w);
+    for (unsigned int i = 0;
+         i < static_cast<unsigned int>(surface_in.w);
          i++)
     {
       *output++ = (((*pixels) & surface_in.format->Rmask) >> surface_in.format->Rshift);   /* red   */
@@ -399,7 +399,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   } // end FOR
 
   if (SDL_MUSTLOCK((&surface_in)))
-    SDL_UnlockSurface(&const_cast<SDL_Surface&> (surface_in));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&>(surface_in));
 
   // open the file
   FILE* fp = NULL;
@@ -531,8 +531,8 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::create(const unsigned long& width_in,
-                             const unsigned long& height_in)
+RPG_Graphics_Surface::create(const unsigned int& width_in,
+                             const unsigned int& height_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::create"));
 
@@ -566,21 +566,21 @@ RPG_Graphics_Surface::create(const unsigned long& width_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
-                          const unsigned long& offsetY_in,
-                          const unsigned long& width_in,
-                          const unsigned long& height_in,
+RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
+                          const unsigned int& offsetY_in,
+                          const unsigned int& width_in,
+                          const unsigned int& height_in,
                           const SDL_Surface& source_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::get"));
 
   // sanity check(s)
-  ACE_ASSERT(width_in <= static_cast<unsigned long> (source_in.w));
+  ACE_ASSERT(width_in <= static_cast<unsigned int>(source_in.w));
 //   ACE_ASSERT((offsetX_in + width_in) <= (static_cast<unsigned long> (image_in.w) - 1));
-  ACE_ASSERT(height_in <= static_cast<unsigned long> (source_in.h));
+  ACE_ASSERT(height_in <= static_cast<unsigned int>(source_in.h));
 //   ACE_ASSERT((offsetY_in + height_in) <= (static_cast<unsigned long> (image_in.h) - 1));
   // clip where necessary...
-  unsigned long clipped_width, clipped_height;
+  unsigned int clipped_width, clipped_height;
   clipped_width = (source_in.w - offsetX_in); // available width
   clipped_width = ((clipped_width > width_in) ? width_in : clipped_width);
   clipped_height = (source_in.h - offsetY_in); // available height
@@ -624,7 +624,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
     return NULL;
   } // end IF
 
-  for (unsigned long i = 0;
+  for (unsigned int i = 0;
        i < clipped_height;
        i++)
   ::memcpy((static_cast<unsigned char*> (result->pixels) + (result->pitch * i)),
@@ -656,8 +656,8 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
 }
 
 void
-RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
-                          const unsigned long& offsetY_in,
+RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
+                          const unsigned int& offsetY_in,
                           const bool& blit_in,
                           const SDL_Surface& source_in,
                           SDL_Surface& target_inout)
@@ -669,11 +669,11 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
   ACE_ASSERT(target_inout.h <= source_in.h);
 
   // clip where necessary...
-  unsigned long clipped_width, clipped_height;
+  unsigned int clipped_width, clipped_height;
   clipped_width = (source_in.w - offsetX_in); // available width
-  clipped_width = ((clipped_width > static_cast<unsigned long>(target_inout.w)) ? target_inout.w : clipped_width);
+  clipped_width = ((clipped_width > static_cast<unsigned int>(target_inout.w)) ? target_inout.w : clipped_width);
   clipped_height = (source_in.h - offsetY_in); // available height
-  clipped_height = ((clipped_height > static_cast<unsigned long>(target_inout.h)) ? target_inout.h : clipped_height);
+  clipped_height = ((clipped_height > static_cast<unsigned int>(target_inout.h)) ? target_inout.h : clipped_height);
 
   // *NOTE*: blitting does not preserve the alpha channel...
   if (blit_in)
@@ -723,7 +723,7 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
       return;
     } // end IF
 
-  for (unsigned long i = 0;
+  for (unsigned int i = 0;
        i < clipped_height;
        i++)
     ::memcpy((static_cast<unsigned char*>(target_inout.pixels) + (target_inout.pitch * i)),
@@ -737,8 +737,8 @@ RPG_Graphics_Surface::get(const unsigned long& offsetX_in,
 }
 
 void
-RPG_Graphics_Surface::put(const unsigned long& offsetX_in,
-                          const unsigned long& offsetY_in,
+RPG_Graphics_Surface::put(const unsigned int& offsetX_in,
+                          const unsigned int& offsetY_in,
                           const SDL_Surface& image_in,
                           SDL_Surface* targetSurface_in)
 {
@@ -785,8 +785,8 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
                               const SDL_Color& color_in,
                               const bool& shade_in,
                               const SDL_Color& shadeColor_in,
-                              const unsigned long& offsetX_in,
-                              const unsigned long& offsetY_in,
+                              const unsigned int& offsetX_in,
+                              const unsigned int& offsetY_in,
                               SDL_Surface* targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::putText"));

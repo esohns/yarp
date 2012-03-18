@@ -208,14 +208,6 @@ SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
 }
 
 void
-SDL_GUI_LevelWindow::setView(const RPG_Graphics_Position_t& view_in)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
-
-  myView = view_in;
-}
-
-void
 SDL_GUI_LevelWindow::setView(const int& offsetX_in,
                              const int& offsetY_in)
 {
@@ -242,14 +234,12 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
     myView.second = (dimensions.second - 1);
 }
 
-void
-SDL_GUI_LevelWindow::centerView()
+const RPG_Graphics_Position_t
+SDL_GUI_LevelWindow::getView() const
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::centerView"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::getView"));
 
-  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
-  myView = std::make_pair(dimensions.first / 2,
-                          dimensions.second / 2);
+  return myView;
 }
 
 void
@@ -283,8 +273,8 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in)
 
 void
 SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
-                          const unsigned long& offsetX_in,
-                          const unsigned long& offsetY_in)
+                          const unsigned int& offsetX_in,
+                          const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::draw"));
 
@@ -395,9 +385,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // map --> screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = RPG_Client_Common_Tools::map2Screen(current_map_position,
-                                                            mySize,
-                                                            myView);
+      screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
+                                                              mySize,
+                                                              myView);
 
       // step1: unmapped areas
       if ((myLevelState->getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
@@ -622,9 +612,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // transform map coordinates into screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = RPG_Client_Common_Tools::map2Screen(current_map_position,
-                                                            mySize,
-                                                            myView);
+      screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
+                                                              mySize,
+                                                              myView);
 
       wall_iterator = myWallTiles.find(current_map_position);
       door_iterator = myDoorTiles.find(current_map_position);
@@ -725,12 +715,12 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   } // end FOR
 
   // refresh cursor highlight
-  screen_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                        inherited::mySize,
-                                                        myView);
+  screen_position = RPG_Graphics_Common_Tools::map2Screen(myHighlightBGPosition,
+                                                          inherited::mySize,
+                                                          myView);
   // grab BG
   // sanity check for underruns
-  if ((screen_position.first < targetSurface->w) &&
+  if ((screen_position.first  < targetSurface->w) &&
       (screen_position.second < targetSurface->h))
     RPG_Graphics_Surface::get(screen_position.first,
                               screen_position.second,
@@ -791,6 +781,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
   // init return value(s)
   redraw_out = false;
 
+  RPG_Engine_EntityID_t entity_id = 0;
   switch (event_in.type)
   {
     // *** keyboard ***
@@ -811,14 +802,19 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         case SDLK_RIGHT:
         {
           RPG_Map_Direction direction = DIRECTION_INVALID;
+          entity_id = myLevelState->getActive();
           switch (event_in.key.keysym.sym)
           {
             case SDLK_c:
             {
               if (myLevelState->getActive())
-                setView(myLevelState->getPosition(myLevelState->getActive()));
+                setView(myLevelState->getPosition(entity_id));
               else
-                centerView();
+              {
+                RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
+                setView((dimensions.first  / 2),
+                        (dimensions.second / 2));
+              } // end ELSE
 
               break;
             }
@@ -866,15 +862,50 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
               break;
           } // end SWITCH
 
-          if ((direction != DIRECTION_INVALID) &&
-              myLevelState->getActive())
+          if (!(event_in.key.keysym.mod & KMOD_SHIFT))
           {
-            RPG_Engine_Action action;
-            action.command = COMMAND_STEP;
-            action.direction = direction;
-            myLevelState->action(myLevelState->getActive(), action);
+            if (entity_id == 0)
+              break; // nothing to do...
 
-            setView(myLevelState->getPosition(myLevelState->getActive()));
+            RPG_Engine_Action player_action;
+            player_action.command = COMMAND_TRAVEL;
+            // compute target position
+            player_action.position = myLevelState->getPosition(entity_id);
+            switch (direction)
+            {
+              case DIRECTION_UP:
+                player_action.position.second--; break;
+              case DIRECTION_DOWN:
+                player_action.position.second++; break;
+              case DIRECTION_LEFT:
+                player_action.position.first--; break;
+              case DIRECTION_RIGHT:
+                player_action.position.first++; break;
+              default:
+              {
+                ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
+                           RPG_Map_Common_Tools::direction2String(direction).c_str()));
+
+                break;
+              }
+            } // end SWITCH
+            // position valid ?
+            RPG_Map_Element element = myLevelState->getElement(player_action.position);
+            if ((element == MAPELEMENT_FLOOR) ||
+                (element == MAPELEMENT_DOOR))
+            {
+              if (element == MAPELEMENT_DOOR)
+              {
+                RPG_Map_Door_t door = myLevelState->getDoor(player_action.position);
+                if (!door.is_open)
+                  break;
+              } // end IF
+
+              myLevelState->action(entity_id, player_action);
+
+              setView(myLevelState->getPosition(entity_id));
+            } // end IF
           } // end IF
 
           // *NOTE*: fiddling with the view invalidates the cursor BG !
@@ -959,11 +990,11 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
     case SDL_MOUSEMOTION:
     {
       // find map square
-      RPG_Graphics_Position_t map_position = RPG_Client_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
-                                                                                                event_in.motion.y),
-                                                                                 myLevelState->getDimensions(),
-                                                                                 mySize,
-                                                                                 myView);
+      RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
+                                                                                                  event_in.motion.y),
+                                                                                   myLevelState->getDimensions(),
+                                                                                   mySize,
+                                                                                   myView);
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
 //                  event_in.button.x,
@@ -976,8 +1007,8 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       RPG_Graphics_Position_t tile_position;
 
       // inside map ?
-      if (map_position == std::make_pair(std::numeric_limits<unsigned long>::max(),
-                                         std::numeric_limits<unsigned long>::max()))
+      if (map_position == std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                         std::numeric_limits<unsigned int>::max()))
       {
         // off the map --> remove "active" tile highlight
         restoreBG();
@@ -1000,12 +1031,12 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         restoreBG();
 
         // step2: store current background
-        tile_position = RPG_Client_Common_Tools::map2Screen(map_position,
-                                                            mySize,
-                                                            myView);
+        tile_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
+                                                              mySize,
+                                                              myView);
         // sanity check for underruns
-        if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
-            (tile_position.second < static_cast<unsigned long>(myScreen->h)))
+        if ((tile_position.first  < static_cast<unsigned int>(myScreen->w)) &&
+            (tile_position.second < static_cast<unsigned int>(myScreen->h)))
         {
           clip();
           RPG_Graphics_Surface::get(tile_position.first,
@@ -1065,11 +1096,11 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 
       if (event_in.button.button == 1) // left-click
       {
-        RPG_Graphics_Position_t map_position = RPG_Client_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
-                                                                                                  event_in.button.y),
-                                                                                   myLevelState->getDimensions(),
-                                                                                   mySize,
-                                                                                   myView);
+        RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
+                                                                                                    event_in.button.y),
+                                                                                     myLevelState->getDimensions(),
+                                                                                     mySize,
+                                                                                     myView);
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
@@ -1158,7 +1189,9 @@ SDL_GUI_LevelWindow::init()
                                      myDoorTiles);
 
   // init view
-  centerView();
+  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
+  setView((dimensions.first  / 2),
+          (dimensions.second / 2));
 
   // *NOTE*: fiddling with the view invalidates the cursor BG !
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
@@ -1173,6 +1206,14 @@ SDL_GUI_LevelWindow::redraw()
 
 //   draw();
 //   refresh();
+}
+
+void
+SDL_GUI_LevelWindow::setView(const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
+
+  myView = position_in;
 }
 
 void
@@ -1207,11 +1248,12 @@ SDL_GUI_LevelWindow::toggleDoor(const RPG_Map_Position_t& position_in)
 }
 
 void
-SDL_GUI_LevelWindow::center(const RPG_Map_Position_t& position_in)
+SDL_GUI_LevelWindow::updateEntity(const RPG_Engine_EntityID_t& id_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::center"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::updateEntity"));
 
-//   setView(position_in);
+//   draw();
+//   refresh();
 }
 
 void
@@ -1332,7 +1374,11 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       initWallBlend(myCurrentMapStyle.half_height_walls);
 
       // debug info
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
       std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+#else
+      std::string dump_path_base = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+#endif
       dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       std::string dump_path;
 
@@ -1694,12 +1740,12 @@ SDL_GUI_LevelWindow::restoreBG()
 
   if (myHighlightBG)
   {
-    tile_position = RPG_Client_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                        mySize,
-                                                        myView);
+    tile_position = RPG_Graphics_Common_Tools::map2Screen(myHighlightBGPosition,
+                                                          mySize,
+                                                          myView);
     // sanity check for underruns
-    if ((tile_position.first < static_cast<unsigned long>(myScreen->w)) &&
-        (tile_position.second < static_cast<unsigned long>(myScreen->h)))
+    if ((tile_position.first  < static_cast<unsigned int>(myScreen->w)) &&
+        (tile_position.second < static_cast<unsigned int>(myScreen->h)))
     {
       clip();
       RPG_Graphics_Surface::put(tile_position.first,

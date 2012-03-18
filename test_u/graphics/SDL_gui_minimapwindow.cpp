@@ -82,6 +82,16 @@ SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow()
   SDL_FreeSurface(mySurface);
 }
 
+const RPG_Graphics_Position_t
+SDL_GUI_MinimapWindow::getView() const
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::getView"));
+
+  ACE_ASSERT(false);
+
+  return std::make_pair(0, 0);
+}
+
 void
 SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
                                    RPG_Graphics_IWindow* window_in,
@@ -147,8 +157,8 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
 
 void
 SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
-                            const unsigned long& offsetX_in,
-                            const unsigned long& offsetY_in)
+                            const unsigned int& offsetX_in,
+                            const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::draw"));
 
@@ -162,7 +172,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   // save BG ?
   // *CONSIDER*: this doesn't really make sense...
   if (!inherited::myBGHasBeenSaved)
-    inherited::saveBG(RPG_Graphics_WindowSize_t(0, 0)); // save size of "this"
+    inherited::saveBG(RPG_Graphics_Size_t(0, 0)); // save size of "this"
 
   RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
 
@@ -207,7 +217,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   Uint32 color = 0;
   SDL_Rect destrect = {0, 0, 3, 2};
   Uint32* pixels = NULL;
-  RPG_Map_Position_t active_position = myLevelState->getPosition(myLevelState->getActive());
+  RPG_Engine_EntityID_t entity_id = 0;
   for (unsigned int y = 0;
        y < dimensions.second;
        y++)
@@ -216,15 +226,20 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
          x++)
     {
       // step1: retrieve appropriate symbol
-      map_position.first = x;
-      map_position.second = y;
+      map_position = std::make_pair(x, y);
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      if (myLevelState->getActive() &&
-          (map_position == active_position))
-        tile = MINIMAPTILE_PLAYER;
-      else if (myLevelState->hasMonster(map_position))
-        tile = MINIMAPTILE_MONSTER;
-      else
+      entity_id = myLevelState->hasEntity(map_position);
+      
+      if (entity_id)
+      {
+        if (entity_id == myLevelState->getActive())
+          tile = MINIMAPTILE_PLAYER_ACTIVE;
+        else if (!myLevelState->isMonster(entity_id))
+          tile = MINIMAPTILE_PLAYER;
+        else
+          tile = MINIMAPTILE_MONSTER;
+      } // end IF
+      if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
       {
         switch (myLevelState->getElement(map_position))
         {
@@ -248,7 +263,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
             return;
           }
         } // end SWITCH
-      } // end ELSE
+      } // end IF
 
       // step2: map symbol to color
       color = 0;

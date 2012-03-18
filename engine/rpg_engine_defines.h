@@ -32,7 +32,4 @@
 // CONFIGDIR-specific
 #define RPG_ENGINE_DEF_CONFIG_SUB      "engine"
 
-// engine-specific
-#define RPG_ENGINE_CENTER_ON_PLAYER    true
-
 #endif

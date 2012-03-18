@@ -85,6 +85,51 @@ operator= (value v)
 }
 
 
+// RPG_Engine_PlayerMode_XMLTree_Type
+// 
+
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (const RPG_Engine_PlayerMode_XMLTree_Type& v,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type& RPG_Engine_PlayerMode_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
 // RPG_Engine_Player_XMLTree_Type
 // 
 
@@ -110,6 +155,24 @@ void RPG_Engine_Player_XMLTree_Type::
 position (::std::auto_ptr< position_type > x)
 {
   this->position_.set (x);
+}
+
+const RPG_Engine_Player_XMLTree_Type::mode_sequence& RPG_Engine_Player_XMLTree_Type::
+mode () const
+{
+  return this->mode_;
+}
+
+RPG_Engine_Player_XMLTree_Type::mode_sequence& RPG_Engine_Player_XMLTree_Type::
+mode ()
+{
+  return this->mode_;
+}
+
+void RPG_Engine_Player_XMLTree_Type::
+mode (const mode_sequence& s)
+{
+  this->mode_ = s;
 }
 
 const RPG_Engine_Player_XMLTree_Type::sprite_type& RPG_Engine_Player_XMLTree_Type::
@@ -183,11 +246,11 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_Command_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Engine_Command_XMLTree_Type_indexes_,
-                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 6,
+                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 7,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 7 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -196,25 +259,99 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_literals_[6] =
+_xsd_RPG_Engine_Command_XMLTree_Type_literals_[7] =
 {
   "COMMAND_ATTACK",
   "COMMAND_DOOR_CLOSE",
   "COMMAND_DOOR_OPEN",
+  "COMMAND_SEARCH",
   "COMMAND_STEP",
   "COMMAND_STOP",
   "COMMAND_TRAVEL"
 };
 
 const RPG_Engine_Command_XMLTree_Type::value RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[6] =
+_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[7] =
 {
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_DOOR_CLOSE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_DOOR_OPEN,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_SEARCH,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_STEP,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_STOP,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_TRAVEL
+};
+
+// RPG_Engine_PlayerMode_XMLTree_Type
+//
+
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert ();
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert ();
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (const ::std::string& s,
+                                    const ::xercesc::DOMElement* e,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert ();
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type* RPG_Engine_PlayerMode_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Engine_PlayerMode_XMLTree_Type (*this, f, c);
+}
+
+RPG_Engine_PlayerMode_XMLTree_Type::value RPG_Engine_PlayerMode_XMLTree_Type::
+_xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_,
+                    _xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_ + 3,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_ + 3 || _xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Engine_PlayerMode_XMLTree_Type::
+_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[3] =
+{
+  "MODE_FIGHTING",
+  "MODE_SEARCHING",
+  "MODE_TRAVELLING"
+};
+
+const RPG_Engine_PlayerMode_XMLTree_Type::value RPG_Engine_PlayerMode_XMLTree_Type::
+_xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_[3] =
+{
+  ::RPG_Engine_PlayerMode_XMLTree_Type::MODE_FIGHTING,
+  ::RPG_Engine_PlayerMode_XMLTree_Type::MODE_SEARCHING,
+  ::RPG_Engine_PlayerMode_XMLTree_Type::MODE_TRAVELLING
 };
 
 // RPG_Engine_Player_XMLTree_Type
@@ -250,6 +387,7 @@ RPG_Engine_Player_XMLTree_Type (const name_type& name,
                                        classXML,
                                        offhand),
   position_ (position, ::xml_schema::flags (), this),
+  mode_ (::xml_schema::flags (), this),
   sprite_ (sprite, ::xml_schema::flags (), this)
 {
 }
@@ -284,6 +422,7 @@ RPG_Engine_Player_XMLTree_Type (const name_type& name,
                                        classXML,
                                        offhand),
   position_ (position, ::xml_schema::flags (), this),
+  mode_ (::xml_schema::flags (), this),
   sprite_ (sprite, ::xml_schema::flags (), this)
 {
 }
@@ -294,6 +433,7 @@ RPG_Engine_Player_XMLTree_Type (const RPG_Engine_Player_XMLTree_Type& x,
                                 ::xml_schema::container* c)
 : ::RPG_Player_PlayerXML_XMLTree_Type (x, f, c),
   position_ (x.position_, f, this),
+  mode_ (x.mode_, f, this),
   sprite_ (x.sprite_, f, this)
 {
 }
@@ -304,6 +444,7 @@ RPG_Engine_Player_XMLTree_Type (const ::xercesc::DOMElement& e,
                                 ::xml_schema::container* c)
 : ::RPG_Player_PlayerXML_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
   position_ (f, this),
+  mode_ (f, this),
   sprite_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -337,6 +478,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
         this->position_.set (r);
         continue;
       }
+    }
+
+    // mode
+    //
+    if (n.name () == "mode" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< mode_type > r (
+        mode_traits::create (i, f, this));
+
+      this->mode_.push_back (r);
+      continue;
     }
 
     // sprite
@@ -393,6 +545,9 @@ operator== (const RPG_Engine_Player_XMLTree_Type& x, const RPG_Engine_Player_XML
   if (!(x.position () == y.position ()))
     return false;
 
+  if (!(x.mode () == y.mode ()))
+    return false;
+
   if (!(x.sprite () == y.sprite ()))
     return false;
 
@@ -420,11 +575,30 @@ operator<< (::std::ostream& o, const RPG_Engine_Command_XMLTree_Type& i)
 }
 
 ::std::ostream&
+operator<< (::std::ostream& o, RPG_Engine_PlayerMode_XMLTree_Type::value i)
+{
+  return o << RPG_Engine_PlayerMode_XMLTree_Type::_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Engine_PlayerMode_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
 operator<< (::std::ostream& o, const RPG_Engine_Player_XMLTree_Type& i)
 {
   o << static_cast< const ::RPG_Player_PlayerXML_XMLTree_Type& > (i);
 
   o << ::std::endl << "position: " << i.position ();
+  for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator
+       b (i.mode ().begin ()), e (i.mode ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "mode: " << *b;
+  }
+
   o << ::std::endl << "sprite: " << i.sprite ();
   return o;
 }
@@ -737,6 +911,25 @@ operator<< (::xml_schema::list_stream& l,
 }
 
 void
+operator<< (::xercesc::DOMElement& e, const RPG_Engine_PlayerMode_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Engine_PlayerMode_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Engine_PlayerMode_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
 operator<< (::xercesc::DOMElement& e, const RPG_Engine_Player_XMLTree_Type& i)
 {
   e << static_cast< const ::RPG_Player_PlayerXML_XMLTree_Type& > (i);
@@ -751,6 +944,21 @@ operator<< (::xercesc::DOMElement& e, const RPG_Engine_Player_XMLTree_Type& i)
         e));
 
     s << i.position ();
+  }
+
+  // mode
+  //
+  for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator
+       b (i.mode ().begin ()), n (i.mode ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "mode",
+        "urn:rpg",
+        e));
+
+    s << *b;
   }
 
   // sprite
@@ -923,12 +1131,22 @@ RPG_Engine_Command_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   _xsd_RPG_Engine_Command_XMLTree_Type_convert ();
 }
 
+RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_PlayerMode_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert ();
+}
+
 RPG_Engine_Player_XMLTree_Type::
 RPG_Engine_Player_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                 ::xml_schema::flags f,
                                 ::xml_schema::container* c)
 : ::RPG_Player_PlayerXML_XMLTree_Type (s, f, c),
   position_ (f, this),
+  mode_ (f, this),
   sprite_ (f, this)
 {
   this->parse (s, f);
@@ -941,6 +1159,22 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   {
     ::std::auto_ptr< position_type > r (new position_type (s, f, this));
     this->position_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      mode_sequence& c (this->mode_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< mode_type > r (new mode_type (s, f, this));
+        c.push_back (r);
+      }
+    }
   }
 
   {
@@ -958,10 +1192,28 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Engine_PlayerMode_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Engine_Player_XMLTree_Type& x)
 {
   s << static_cast< const ::RPG_Player_PlayerXML_XMLTree_Type& > (x);
   s << x.position ();
+  {
+    const RPG_Engine_Player_XMLTree_Type::mode_sequence& c (x.mode ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
   s << x.sprite ();
   return s;
 }
