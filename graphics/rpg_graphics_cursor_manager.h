@@ -67,12 +67,18 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   void updateBG(SDL_Surface*); // source surface (e.g. screen)
   void invalidateBG();
 
-  const RPG_Graphics_Position_t getHighlightBGPosition(const unsigned int& = 0) const;
+  const RPG_Graphics_Position_t getHighlightBGPosition(const unsigned int& = std::numeric_limits<unsigned int>::max()) const;
   void drawHighlight(const RPG_Graphics_Position_t&, // position (screen coords !)
                      SDL_Surface*);                  // target surface (e.g. screen)
+  void drawHighlight(const RPG_Graphics_Positions_t&, // position(s) (screen coords !)
+                     SDL_Surface*);                   // source surface (e.g. screen)
   void storeHighlightBG(const RPG_Graphics_Position_t&, // map position (map coords !)
                         const RPG_Graphics_Position_t&, // position (screen coords !)
                         const SDL_Surface*);            // source surface (e.g. screen)
+  void storeHighlightBG(const RPG_Graphics_Positions_t&, // map position(s) (map coords !)
+                        const RPG_Graphics_Positions_t&, // position(s) (screen coords !)
+                        const SDL_Surface*);            // source surface (e.g. screen)
+
   void restoreHighlightBG(SDL_Surface*); // target surface (e.g. screen)
   void resetHighlightBG(const RPG_Graphics_Position_t&); // reset to (single) initial position (map coords !)
 

@@ -617,8 +617,6 @@ do_work(const RPG_Client_Config& config_in,
   bool schedule_redraw = false;
   bool previous_redraw = false;
   RPG_Graphics_Position_t mouse_position;
-//   bool refresh_screen = false;
-  RPG_Map_Position_t current_view = level_window->getView();
   do
   {
     sdl_event.type = SDL_NOEVENT;
@@ -729,9 +727,7 @@ do_work(const RPG_Client_Config& config_in,
                                             sdl_event.button.y); break;
           default:
           {
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            mouse_position = std::make_pair(x, y);
+            mouse_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
 
             break;
           }
@@ -860,27 +856,21 @@ do_work(const RPG_Client_Config& config_in,
       client_action.window = window;
       client_engine.action(client_action);
 
-      // view changed ? --> handle cursor/tile highlight(s)
-      if (current_view != level_window->getView())
-      {
-        // store/draw new active tile highlight/bg
-        int x, y;
-        SDL_GetMouseState(&x, &y);
-        client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
-        client_action.position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(static_cast<unsigned int>(x),
-                                                                                      static_cast<unsigned int>(y)),
-                                                                       level_engine.getDimensions(),
-                                                                       level_window->getSize(),
-                                                                       level_window->getView());
-        client_engine.action(client_action);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                                                         std::numeric_limits<unsigned int>::max()));
+      // --> store/draw the new tile highlight (BG)
+      client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+      client_action.position = RPG_Graphics_Common_Tools::screen2Map(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(),
+                                                                     level_engine.getSize(),
+                                                                     level_window->getSize(),
+                                                                     level_window->getView());
+      client_engine.action(client_action);
 
-        client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-        client_engine.action(client_action);
+      client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+      client_engine.action(client_action);
 
-        // invalidate the previous cursor BG...
-        client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-        client_engine.action(client_action);
-      } // end IF
+      // fiddling with the view (probably) invalidates (part of) the cursor BG
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(level_window->getScreen());
     } // end IF
 
     // redraw cursor ?

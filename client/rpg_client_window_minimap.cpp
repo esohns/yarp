@@ -43,7 +43,7 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
-   myLevelState(NULL),
+   myEngine(NULL),
    myBG(NULL),
    mySurface(NULL)
 {
@@ -168,10 +168,10 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(targetSurface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
-  ACE_ASSERT(myLevelState);
+  ACE_ASSERT(myEngine);
   ACE_ASSERT(mySurface);
 
-  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
+  RPG_Map_Size_t map_size = myEngine->getSize();
 
   // init clipping
   SDL_GetClipRect(targetSurface, &(inherited::myClipRect));
@@ -217,29 +217,29 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   Uint32* pixels = NULL;
   RPG_Engine_EntityID_t entity_id = 0;
   for (unsigned int y = 0;
-       y < dimensions.second;
+       y < map_size.second;
        y++)
-    for (unsigned int x = 1; // *TODO*: ?
-         x < dimensions.first;
+    for (unsigned int x = 1; // *TODO*: why ?
+         x < map_size.first;
          x++)
     {
       // step1: retrieve appropriate symbol
       map_position = std::make_pair(x, y);
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      entity_id = myLevelState->hasEntity(map_position);
+      entity_id = myEngine->hasEntity(map_position);
       
       if (entity_id)
       {
-        if (entity_id == myLevelState->getActive())
+        if (entity_id == myEngine->getActive())
           tile = MINIMAPTILE_PLAYER_ACTIVE;
-        else if (!myLevelState->isMonster(entity_id))
+        else if (!myEngine->isMonster(entity_id))
           tile = MINIMAPTILE_PLAYER;
         else
           tile = MINIMAPTILE_MONSTER;
       } // end IF
-      if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
+      else
       {
-        switch (myLevelState->getElement(map_position))
+        switch (myEngine->getElement(map_position))
         {
           case MAPELEMENT_UNMAPPED:
           case MAPELEMENT_WALL:
@@ -256,7 +256,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
                        ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
                        x,
                        y,
-                       myLevelState->getElement(map_position)));
+                       myEngine->getElement(map_position)));
 
             return;
           }
@@ -300,14 +300,14 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
       destrect.y = x + y;
       pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
                                          (mySurface->pitch * (destrect.y + 6)) +
-                                         ((destrect.x + 6) * 4));
+                                         ((destrect.x + 6) * mySurface->format->BytesPerPixel));
 //       pixels[0] = transparent -> dont write
       pixels[1] = color;
 //       pixels[2] = transparent -> dont write
       // step3b: row 2
       pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
                                          (mySurface->pitch * (destrect.y + 7)) +
-                                         ((destrect.x + 6) * 4));
+                                         ((destrect.x + 6) * mySurface->format->BytesPerPixel));
       pixels[0] = color;
       pixels[1] = color;
       pixels[2] = color;
@@ -361,5 +361,5 @@ RPG_Client_Window_MiniMap::init(RPG_Engine_Level* levelState_in)
   // sanity check(s)
   ACE_ASSERT(levelState_in);
 
-  myLevelState = levelState_in;
+  myEngine = levelState_in;
 }

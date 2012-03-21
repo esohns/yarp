@@ -543,11 +543,11 @@ RPG_Map_Common_Tools::print(const RPG_Map_t& map_in)
   RPG_Map_Door_t current_position_door;
   bool is_starting_position = false;
   bool is_seed = false;
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < map_in.plan.size_y;
        y++)
   {
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < map_in.plan.size_x;
          x++)
     {
@@ -2099,17 +2099,18 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
 
       // *NOTE*: determine the starting direction in order
       // to "leave" the room immediately...
-      if (!RPG_Map_Pathfinding_Tools::findPath(dimensionX_in,
-                                               dimensionY_in,
-                                               level_out.walls,
-                                               *doors_iter,
-                                               door2exitDirection(*rooms_iter,
-                                                                  *doors_iter),
-                                               *target_door,
-                                               current_path))
+      RPG_Map_Pathfinding_Tools::findPath(std::make_pair(dimensionX_in,
+                                                         dimensionY_in),
+                                          level_out.walls,
+                                          *doors_iter,
+                                          door2exitDirection(*rooms_iter,
+                                                             *doors_iter),
+                                          *target_door,
+                                          current_path);
+      if (current_path.size() < 2)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("cannot find path from (%u,%u) to (%u,%u), continuing\n"),
+                   ACE_TEXT("cannot find path [%u,%u] --> [%u,%u], continuing\n"),
                    (*doors_iter).first,
                    (*doors_iter).second,
                    (*target_door).first,

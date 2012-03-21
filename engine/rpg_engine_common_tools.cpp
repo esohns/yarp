@@ -1909,6 +1909,32 @@ RPG_Engine_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
   return false;
 }
 
+const bool
+RPG_Engine_Common_Tools::isValid(const RPG_Map_Position_t& position_in,
+                                 const RPG_Engine_Level& level_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isValid"));
+
+  RPG_Map_Element element = level_in.getElement(position_in);
+  switch (element)
+  {
+    case MAPELEMENT_FLOOR:
+      return true;
+    case MAPELEMENT_DOOR:
+    {
+      RPG_Map_Door_t current_door = level_in.getDoor(position_in);
+      if (current_door.is_open)
+        return true;
+
+      break;
+    }
+    default:
+      break;
+  } // end SWITCH
+
+  return false;
+}
+
 const RPG_Graphics_Orientation
 RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Engine_Level& level_in,
                                             const RPG_Map_Position_t& position_in)
@@ -1942,7 +1968,11 @@ RPG_Engine_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
   if (level_in.getElement(position_in) == MAPELEMENT_DOOR)
   {
     RPG_Map_Door_t door = level_in.getDoor(position_in);
-    if (!door.is_open)
+    RPG_Engine_EntityID_t entity_id = level_in.getActive();
+    if (!door.is_open &&
+        entity_id &&
+        (RPG_Map_Common_Tools::dist2Positions(level_in.getPosition(entity_id),
+                                              position_in) == 1))
       result = CURSOR_DOOR_OPEN;
   } // end IF
 

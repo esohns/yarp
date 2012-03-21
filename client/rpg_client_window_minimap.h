@@ -58,7 +58,7 @@ class RPG_Client_Window_MiniMap
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap(const RPG_Client_Window_MiniMap&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap& operator=(const RPG_Client_Window_MiniMap&));
 
-  RPG_Engine_Level* myLevelState;
+  RPG_Engine_Level* myEngine;
 
   SDL_Surface*      myBG;
   SDL_Surface*      mySurface;

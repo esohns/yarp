@@ -59,7 +59,7 @@ struct RPG_Map_FloorPlan_Config_t
   unsigned long map_size_y;
 };
 
-typedef std::pair<unsigned int, unsigned int> RPG_Map_Dimensions_t;
+typedef std::pair<unsigned int, unsigned int> RPG_Map_Size_t;
 
 typedef std::pair<unsigned int, unsigned int> RPG_Map_Position_t;
 typedef std::set<RPG_Map_Position_t> RPG_Map_Positions_t;

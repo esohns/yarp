@@ -74,10 +74,10 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
   static const SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
                                          const SDL_Surface&); // target surface
 
-  static const SDL_Rect boundingBox(const SDL_Rect&,  // rect 1
-                                    const SDL_Rect&); // rect 2
-  static const SDL_Rect intersect(const SDL_Rect&,  // rect 1
-                                  const SDL_Rect&); // rect 2
+  static SDL_Rect boundingBox(const SDL_Rect&,  // rect 1
+                              const SDL_Rect&); // rect 2
+  static SDL_Rect intersect(const SDL_Rect&,  // rect 1
+                            const SDL_Rect&); // rect 2
 
  private:
   // safety measures

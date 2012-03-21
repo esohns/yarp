@@ -66,7 +66,8 @@ SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 
 void
 SDL_GUI_MainWindow::init(RPG_Engine_Level* levelState_in,
-                         const RPG_Graphics_MapStyle_t& style_in)
+                         const RPG_Graphics_MapStyle_t& style_in,
+                         const bool& debugMode_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::init"));
 
@@ -75,7 +76,8 @@ SDL_GUI_MainWindow::init(RPG_Engine_Level* levelState_in,
 
   // init map
   initMap(levelState_in,
-          style_in);
+          style_in,
+          debugMode_in);
 }
 
 void
@@ -771,7 +773,8 @@ SDL_GUI_MainWindow::initScrollSpots()
 
 void
 SDL_GUI_MainWindow::initMap(RPG_Engine_Level* levelState_in,
-                            const RPG_Graphics_MapStyle_t& style_in)
+                            const RPG_Graphics_MapStyle_t& style_in,
+                            const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initMap"));
 
@@ -799,7 +802,7 @@ SDL_GUI_MainWindow::initMap(RPG_Engine_Level* levelState_in,
   } // end IF
 
   // init window
-  map_window->init(style_in);
+  map_window->init(style_in, debug_in);
   map_window->setScreen(myScreen);
 }
 

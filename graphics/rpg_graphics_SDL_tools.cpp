@@ -390,7 +390,7 @@ RPG_Graphics_SDL_Tools::initColors()
              ACE_TEXT("RPG_Graphics_SDL_Tools: initialized colors...\n")));
 }
 
-const SDL_Rect
+SDL_Rect
 RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
                                     const SDL_Rect& rect2_in)
 {
@@ -406,7 +406,7 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
   return result;
 }
 
-const SDL_Rect
+SDL_Rect
 RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
                                   const SDL_Rect& rect2_in)
 {

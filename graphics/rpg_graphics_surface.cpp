@@ -848,8 +848,13 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
-  if ((rectangle_in.x >= targetSurface_in->w) ||
-      (rectangle_in.y >= targetSurface_in->h))
+  SDL_Rect intersection;
+  ACE_OS::memset(&intersection,
+                 0,
+                 sizeof(SDL_Rect));
+  intersection = RPG_Graphics_SDL_Tools::intersect(rectangle_in,
+                                                   targetSurface_in->clip_rect);
+  if ((intersection.w == 0) || (intersection.h == 0))
     return; // rectangle is COMPLETELY outside of target surface...
 
   // lock surface during pixel access
@@ -1037,8 +1042,8 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
     return NULL;
   } // end IF
 
-  for (unsigned long i = 0;
-       i < static_cast<unsigned long>(sourceImage_in.h);
+  for (unsigned int i = 0;
+       i < static_cast<unsigned int>(sourceImage_in.h);
        i++)
     ::memcpy((static_cast<unsigned char*>(result->pixels) + (result->pitch * i)),
              (static_cast<unsigned char*>(sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
@@ -1056,24 +1061,20 @@ RPG_Graphics_Surface::update(const SDL_Rect& dirty_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::update"));
 
-  SDL_Rect updateRect = dirty_in;
+  // sanity check
+  ACE_ASSERT(targetSurface_in);
 
-  // sanity check: handle clipping
-  if ((updateRect.x >= targetSurface_in->w) ||
-      (updateRect.y >= targetSurface_in->h))
+  // handle clipping
+  SDL_Rect intersection = RPG_Graphics_SDL_Tools::intersect(targetSurface_in->clip_rect, dirty_in);
+  if ((intersection.w == 0) || (intersection.h == 0))
     return; // nothing to do...
-  else
-  {
-    // clip as necessary
-    if ((updateRect.x + updateRect.w) > targetSurface_in->w)
-      updateRect.w -= ((updateRect.x + updateRect.w) - targetSurface_in->w);
-    if ((updateRect.y + updateRect.h) > targetSurface_in->h)
-      updateRect.h -= ((updateRect.y + updateRect.h) - targetSurface_in->h);
-  } // end ELSE
 
-  SDL_UpdateRects(targetSurface_in,
-                  1,
-                  &updateRect);
+  //SDL_UpdateRects(targetSurface_in,
+  //                1,
+  //                &dirty_in);
+  SDL_UpdateRect(targetSurface_in,
+                 intersection.x, intersection.y,
+                 intersection.w, intersection.h);
 }
 
 SDL_Surface*

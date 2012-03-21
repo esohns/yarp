@@ -22,6 +22,7 @@
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
 #include "rpg_client_exports.h"
+#include "rpg_client_common.h"
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
@@ -90,8 +91,9 @@ class RPG_Client_Export RPG_Client_WindowLevel
   void initWallBlend(const bool&); // half-height walls ?
   void initMiniMap();
 
-  RPG_Engine_Level*               myLevelState;
-  RPG_Client_Engine*              myEngine;
+  RPG_Engine_Level*               myEngine;
+  RPG_Client_Engine*              myClient;
+  RPG_Client_Action               myClientAction;
   bool                            myDrawMinimap;
 
   RPG_Graphics_MapStyle_t         myCurrentMapStyle;

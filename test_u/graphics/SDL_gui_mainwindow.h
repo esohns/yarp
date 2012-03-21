@@ -56,8 +56,9 @@ class SDL_GUI_MainWindow
 
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  void init(RPG_Engine_Level*,               // level state handle
-            const RPG_Graphics_MapStyle_t&); // map style
+  void init(RPG_Engine_Level*,              // level state handle
+            const RPG_Graphics_MapStyle_t&, // map style
+            const bool&);                   // debug mode
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
@@ -78,8 +79,9 @@ class SDL_GUI_MainWindow
 
   // helper methods
   void initScrollSpots();
-  void initMap(RPG_Engine_Level*,               // level state handle
-               const RPG_Graphics_MapStyle_t&); // map style
+  void initMap(RPG_Engine_Level*,              // level state handle
+               const RPG_Graphics_MapStyle_t&, // map style
+               const bool&);                   // debug mode
   void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
                   const unsigned int& = 0,  // offset x (top-left = [0,0])
                   const unsigned int& = 0); // offset y (top-left = [0,0])

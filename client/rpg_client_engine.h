@@ -79,6 +79,10 @@ class RPG_Client_Export RPG_Client_Engine
             RPG_Graphics_IWindow*); // UI handle
   void action(const RPG_Client_Action&); // action
 
+  void mode(const RPG_Client_SelectionMode&); // set mode
+  //void clear(const RPG_Client_SelectionMode&); // clear mode
+  const bool hasMode(const RPG_Client_SelectionMode&) const; // mode
+
   const bool centerOnActive() const; // return value: keep active player centered ?
 
  private:
@@ -106,11 +110,11 @@ class RPG_Client_Export RPG_Client_Engine
 
   bool                            myStop;
 
-  RPG_Engine_Level*               myLevelState;
+  RPG_Engine_Level*               myEngine;
   RPG_Graphics_IWindow*           myLevelWindow;
 
   RPG_Client_Actions_t            myActions;
-  bool                            myIsTravelling; // "travel mode" activated
+  RPG_Client_SelectionMode        mySelectionMode;
 
   bool                            myCenterOnActivePlayer;
 };

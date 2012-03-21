@@ -89,6 +89,9 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
 
   static const bool hasCeiling(const RPG_Map_Position_t&,
                                const RPG_Engine_Level&);
+  // either floor or an open (!) door
+  static const bool isValid(const RPG_Map_Position_t&,
+                            const RPG_Engine_Level&);
 
   static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine_Level&,    // state
                                                            const RPG_Map_Position_t&); // door

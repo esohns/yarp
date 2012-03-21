@@ -21,6 +21,7 @@
 #include "rpg_engine_level.h"
 
 #include "rpg_engine_defines.h"
+#include "rpg_engine_common_tools.h"
 
 #include <rpg_map_common_tools.h>
 #include <rpg_map_pathfinding_tools.h>
@@ -376,22 +377,6 @@ RPG_Engine_Level::init(RPG_Engine_IWindow* client_in,
 
   myClient = client_in;
   inherited::init(map_in);
-
-  //if (myClient)
-  //{
-  //  try
-  //  {
-  //    myClient->init();
-  //    // *NOTE*: this automatically triggers a redraw !
-  //    myClient->setView(std::make_pair(map_in.plan.size_x / 2,
-  //                                     map_in.plan.size_y / 2));
-  //  }
-  //  catch (...)
-  //  {
-  //    ACE_DEBUG((LM_ERROR,
-  //               ACE_TEXT("caught exception in RPG_Engine_IWindow::init/setView(), continuing\n")));
-  //  }
-  //} // end IF
 }
 
 void
@@ -491,7 +476,7 @@ RPG_Engine_Level::setActive(const RPG_Engine_EntityID_t& id_in)
   myActivePlayer = id_in;
 }
 
-const RPG_Engine_EntityID_t
+RPG_Engine_EntityID_t
 RPG_Engine_Level::getActive() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getActive"));
@@ -564,7 +549,7 @@ RPG_Engine_Level::hasMode(const RPG_Engine_PlayerMode& mode_in) const
   return ((*iterator).second->modes.find(mode_in) != (*iterator).second->modes.end());
 }
 
-const RPG_Map_Element
+RPG_Map_Element
 RPG_Engine_Level::getElement(const RPG_Map_Position_t& position_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getElement"));
@@ -572,18 +557,11 @@ RPG_Engine_Level::getElement(const RPG_Map_Position_t& position_in) const
   // sanity check
   if ((position_in.first  == std::numeric_limits<unsigned int>::max()) ||
       (position_in.second == std::numeric_limits<unsigned int>::max()))
-  {
-    //ACE_DEBUG((LM_ERROR,
-    //           ACE_TEXT("invalid element position (was: [%u,%u]), aborting\n"),
-    //           position_in.first,
-    //           position_in.second));
-
     return MAPELEMENT_INVALID;
-  } // end IF
 
   // unmapped/off-map ?
-  if ((position_in.first  > (myMap.plan.size_x - 1)) ||
-      (position_in.second > (myMap.plan.size_y - 1)) ||
+  if ((position_in.first  >= myMap.plan.size_x) ||
+      (position_in.second >= myMap.plan.size_y) ||
       (myMap.plan.unmapped.find(position_in) != myMap.plan.unmapped.end()))
     return MAPELEMENT_UNMAPPED;
 
@@ -618,7 +596,7 @@ RPG_Engine_Level::getGraphics(const RPG_Engine_EntityID_t& id_in) const
   return (*iterator).second->graphic;
 }
 
-const RPG_Engine_EntityGraphics_t
+RPG_Engine_EntityGraphics_t
 RPG_Engine_Level::getGraphics() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getGraphics"));
@@ -635,7 +613,7 @@ RPG_Engine_Level::getGraphics() const
   return graphics;
 }
 
-const RPG_Map_Position_t
+RPG_Map_Position_t
 RPG_Engine_Level::getPosition(const RPG_Engine_EntityID_t& id_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getPosition"));
@@ -649,13 +627,14 @@ RPG_Engine_Level::getPosition(const RPG_Engine_EntityID_t& id_in) const
                ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
                id_in));
 
-    return std::make_pair(0, 0);
+    return std::make_pair(std::numeric_limits<unsigned int>::max(),
+                          std::numeric_limits<unsigned int>::max());
   } // end IF
 
   return (*iterator).second->position;
 }
 
-const RPG_Map_Door_t
+RPG_Map_Door_t
 RPG_Engine_Level::getDoor(const RPG_Map_Position_t& position_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getDoor"));
@@ -678,7 +657,8 @@ RPG_Engine_Level::getDoor(const RPG_Map_Position_t& position_in) const
                position_in.second));
 
     // what else can we do ?
-    dummy.position = std::make_pair(0, 0);
+    dummy.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                    std::numeric_limits<unsigned int>::max());
 
     return dummy;
   } // end IF
@@ -686,7 +666,39 @@ RPG_Engine_Level::getDoor(const RPG_Map_Position_t& position_in) const
   return *iterator;
 }
 
-const RPG_Engine_EntityID_t
+const bool
+RPG_Engine_Level::findPath(const RPG_Map_Position_t& start_in,
+                           const RPG_Map_Position_t& end_in,
+                           RPG_Map_Path_t& path_out) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::findPath"));
+
+  // init result
+  path_out.clear();
+
+  // sanity check
+  if (start_in == end_in)
+    return true;
+
+  RPG_Map_Positions_t obstacles = myMap.plan.walls;
+  for (RPG_Map_DoorsConstIterator_t door_iterator = myMap.plan.doors.begin();
+       door_iterator != myMap.plan.doors.end();
+       door_iterator++)
+    if (!(*door_iterator).is_open)
+      obstacles.insert((*door_iterator).position);
+  RPG_Map_Pathfinding_Tools::findPath(getSize(),
+                                      obstacles, // walls & closed doors
+                                      start_in,
+                                      DIRECTION_INVALID,
+                                      end_in,
+                                      path_out);
+
+  return (!path_out.empty() &&
+          (path_out.front().first == start_in) &&
+          (path_out.back().first == end_in));
+}
+
+RPG_Engine_EntityID_t
 RPG_Engine_Level::hasEntity(const RPG_Map_Position_t& position_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::hasEntity"));
@@ -814,7 +826,6 @@ RPG_Engine_Level::handleEntities()
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-  RPG_Engine_Action current_action;
   for (RPG_Engine_EntitiesIterator_t iterator = myEntities.begin();
        iterator != myEntities.end();
        iterator++)
@@ -823,7 +834,7 @@ RPG_Engine_Level::handleEntities()
       continue;
 
     action_complete = true;
-    current_action = (*iterator).second->actions.front();
+    RPG_Engine_Action& current_action = (*iterator).second->actions.front();
     switch (current_action.command)
     {
       case COMMAND_ATTACK:
@@ -886,52 +897,26 @@ RPG_Engine_Level::handleEntities()
       }
       case COMMAND_TRAVEL:
       {
-        // compute path ?
+        // sanity check
+        if (current_action.position == (*iterator).second->position)
+          break; // nothing to do...
+
+        // compute path first ?
         if (current_action.path.empty())
         {
-          // sanity check
-          if (current_action.position == (*iterator).second->position)
-            break; // nothing to do...
-
-          RPG_Map_Positions_t obstacles = myMap.plan.walls;
-          for (RPG_Map_DoorsConstIterator_t door_iterator = myMap.plan.doors.begin();
-               door_iterator != myMap.plan.doors.end();
-               door_iterator++)
-            if (!(*door_iterator).is_open)
-              obstacles.insert((*door_iterator).position);
-          if (!RPG_Map_Pathfinding_Tools::findPath(myMap.plan.size_x,
-                                                   myMap.plan.size_y,
-                                                   obstacles, // walls & closed doors
-                                                   (*iterator).second->position,
-                                                   RPG_Map_Pathfinding_Tools::getDirection((*iterator).second->position,
-                                                                                           current_action.position),
-                                                   current_action.position,
-                                                   current_action.path))
-          {
-            ACE_DEBUG((LM_DEBUG,
-                       ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
-                       (*iterator).second->position.first,
-                       (*iterator).second->position.second,
-                       current_action.position.first,
-                       current_action.position.second));
-
+          findPath((*iterator).second->position,
+                   current_action.position,
+                   current_action.path);
+          if (current_action.path.size() < 2)
             break; // stop & cancel path...
-          } // end IF
-
-          // sanity check
           ACE_ASSERT(current_action.path.front().first == (*iterator).second->position);
-          ACE_ASSERT(current_action.path.back().first == current_action.position);
+          //ACE_ASSERT(current_action.path.back().first == current_action.position);
 
-          mode(MODE_TRAVELLING);
+          current_action.path.pop_front();
         } // end IF
-
-        // sanity check
-        ACE_ASSERT(current_action.path.front().first == (*iterator).second->position);
-
-        current_action.path.pop_front();
-
-        // sanity check
         ACE_ASSERT(!current_action.path.empty());
+        
+        mode(MODE_TRAVELLING);
 
         // move to next adjacent position (if still (!) possible)
         RPG_Map_Element element = getElement(current_action.path.front().first);
@@ -940,18 +925,14 @@ RPG_Engine_Level::handleEntities()
         {
           RPG_Map_Door_t door = getDoor(current_action.path.front().first);
           if (!door.is_open)
-          {
-            // stop & cancel path...
-            action_complete = true;
-
-            break;
-          } // end IF
+            break; // stop & cancel path...
         } // end IF
 
         (*iterator).second->position = current_action.path.front().first;
+        current_action.path.pop_front();
 
         // done ?
-        action_complete = ((*iterator).second->position == current_action.position);
+        action_complete = current_action.path.empty();
         if (action_complete)
           clear(MODE_TRAVELLING);
 

@@ -37,7 +37,6 @@
 
 #define SDL_GUI_DEF_GRAPHICS_CACHESIZE         50
 #define SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE  IMAGE_INTERFACE_MAIN
-#define SDL_GUI_DEF_GRAPHICS_HIDE_WALLS        false
 #define SDL_GUI_DEF_GRAPHICS_MINIMAP_ISON      false
 #define SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_X  10 // from the right side
 #define SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_Y  10
@@ -54,5 +53,9 @@
 // *NOTE*: this defines the input resolution or "interactivity"
 // *WARNING*: apparently, the maximum SDL timer resolution is 10 ms
 #define SDL_GUI_SDL_EVENT_TIMEOUT              50 // ms
+
+#define SDL_GUI_DEF_DEBUG                      false
+#define SDL_GUI_DEF_TILE_FRAME_COLOR           RPG_Graphics_SDL_Tools::CLR32_BLACK_A70
+#define SDL_GUI_DEF_TILE_INDEX_COLOR           RPG_Graphics_SDL_Tools::CLR32_RED
 
 #endif

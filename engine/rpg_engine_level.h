@@ -77,24 +77,27 @@ class RPG_Engine_Export RPG_Engine_Level
               const RPG_Engine_Action&);    // action
 
   void setActive(const RPG_Engine_EntityID_t&); // id
-  const RPG_Engine_EntityID_t getActive() const; // return value: id (if any)
+  RPG_Engine_EntityID_t getActive() const; // return value: id (if any)
   void mode(const RPG_Engine_PlayerMode&); // add mode (to active entity)
   void clear(const RPG_Engine_PlayerMode&); // clear mode (from active entity)
   const bool hasMode(const RPG_Engine_PlayerMode&) const; // mode
 
-  const RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
+  RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
   const bool isMonster(const RPG_Engine_EntityID_t&) const;
 
-  const RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
+  RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
   const SDL_Surface* getGraphics(const RPG_Engine_EntityID_t&) const;
-  const RPG_Engine_EntityGraphics_t getGraphics() const;
-  const RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
-  const RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
+  RPG_Engine_EntityGraphics_t getGraphics() const;
+  RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
+  RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
+  const bool findPath(const RPG_Map_Position_t&, // start position
+                      const RPG_Map_Position_t&, // end position
+                      RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
 
   using RPG_Map_Level::getStartPosition;
   using RPG_Map_Level::getSeedPoints;
   using RPG_Map_Level::getFloorPlan;
-  using RPG_Map_Level::getDimensions;
+  using RPG_Map_Level::getSize;
 
  private:
   typedef RPG_Map_Level inherited;

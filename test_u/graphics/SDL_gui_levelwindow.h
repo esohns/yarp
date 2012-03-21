@@ -56,7 +56,8 @@ class SDL_GUI_LevelWindow
   virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
   // set level properties
-  void init(const RPG_Graphics_MapStyle_t&); // map style
+  void init(const RPG_Graphics_MapStyle_t&, // map style
+            const bool&);                   // debug: show floor/map tile indexes
   void setStyle(const RPG_Graphics_StyleUnion&);
 
   // implement (part of) RPG_Graphics_IWindow
@@ -95,6 +96,7 @@ class SDL_GUI_LevelWindow
   void restoreBG();
 
   RPG_Engine_Level*               myLevelState;
+  bool                            myDebug;
 
   RPG_Graphics_MapStyle_t         myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
@@ -110,6 +112,7 @@ class SDL_GUI_LevelWindow
   // wall tiles / position
   RPG_Graphics_WallTileMap_t      myWallTiles;
 
+  bool                            myHideFloor;
   bool                            myHideWalls;
 
   SDL_Surface*                    myWallBlend;

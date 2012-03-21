@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "rpg_map_pathfinding_tools.h"
 
 #include "rpg_map_common_tools.h"
@@ -25,10 +26,11 @@
 
 #include <ace/Log_Msg.h>
 
-const bool
-RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
-                                    const unsigned long& dimensionY_in,
-                                    const RPG_Map_Positions_t& obstacles_in, // walls
+#include <iostream>
+
+void
+RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
+                                    const RPG_Map_Positions_t& obstacles_in, // walls / closed doors
                                     const RPG_Map_Position_t& start_in, // start position
                                     const RPG_Map_Direction& startDirection_in, // initial direction
                                     const RPG_Map_Position_t& end_in, // end position
@@ -41,7 +43,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
 
   // sanity check
   if (start_in == end_in)
-    return true;
+    return; // nothing to do...
 
   RPG_Map_AStar_ClosedPath_t closedPath;
   RPG_Map_AStar_OpenPath_t openPath;
@@ -73,10 +75,10 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
     up.first.position.second -= ((up.first.position.second == 0) ? 0 : 1);
     right.first = (*openPath.begin()).first;
     right.first.last_position = (*openPath.begin()).first.position;
-    right.first.position.first += ((right.first.position.first == (dimensionX_in - 1)) ? 0 : 1);
+    right.first.position.first += ((right.first.position.first == (size_in.first - 1)) ? 0 : 1);
     down.first = (*openPath.begin()).first;
     down.first.last_position = (*openPath.begin()).first.position;
-    down.first.position.second += ((down.first.position.second == (dimensionY_in - 1)) ? 0 : 1);
+    down.first.position.second += ((down.first.position.second == (size_in.second - 1)) ? 0 : 1);
     left.first = (*openPath.begin()).first;
     left.first.last_position = (*openPath.begin()).first.position;
     left.first.position.first -= ((left.first.position.first == 0) ? 0 : 1);
@@ -183,7 +185,7 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("open path[%u node(s)]:\n"),
 //                openPath.size()));
-//     unsigned long index = 0;
+//     unsigned int index = 0;
 //     for (RPG_Map_AStar_NodesConstIterator_t iterator = openPath.begin();
 //          iterator != openPath.end();
 //          iterator++, index++)
@@ -221,11 +223,20 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
   {
     ACE_ASSERT(closedPath.front().first.position == start_in);
 
-    // must be locked in by obstacles --> no trail
-    return false;
+    // --> must be locked in by obstacles, no trail
+
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], returning\n"),
+               start_in.first,
+               start_in.second,
+               end_in.first,
+               end_in.second));
+
+    return;
   } // end IF
 
-  unsigned long index = 0;
+  unsigned int index = 0;
   RPG_Map_Direction direction = DIRECTION_INVALID;
   // start at the end
   RPG_Map_AStar_NodeListConstIterator_t current_node = closedPath.end();
@@ -277,7 +288,14 @@ RPG_Map_Pathfinding_Tools::findPath(const unsigned long& dimensionX_in,
   } // end FOR
 //   path_out.push_front(std::make_pair((*current_node).first.position, direction));
 
-  return (closedPath.back().first.position == end_in);
+  // debug info
+  if (closedPath.back().first.position != end_in)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
+               start_in.first,
+               start_in.second,
+               end_in.first,
+               end_in.second));
 }
 
 const RPG_Map_Direction
@@ -314,4 +332,66 @@ RPG_Map_Pathfinding_Tools::getDirection(const RPG_Map_Position_t& startPosition_
     return DIRECTION_RIGHT;
 
   return (distance_x >= distance_y ? DIRECTION_RIGHT : DIRECTION_DOWN);
+}
+
+void
+RPG_Map_Pathfinding_Tools::print(const RPG_Map_Path_t& path_in,
+                                 const RPG_Map_FloorPlan_t& plan_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::print"));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("path\n[%u,%u] --> [%u,%u]: %u steps\n"),
+             path_in.front().first.first, path_in.front().first.second,
+             path_in.back().first.first, path_in.back().first.second,
+             path_in.size() - 1));
+
+  RPG_Map_PathConstIterator_t path_iterator;
+  RPG_Map_Position_t current_position;
+  RPG_Map_Door_t current_position_door;
+  bool done = false;
+  for (unsigned int y = 0;
+       y < plan_in.size_y;
+       y++)
+  {
+    for (unsigned int x = 0;
+         x < plan_in.size_x;
+         x++)
+    {
+      current_position = std::make_pair(x, y);
+      current_position_door.position = current_position;
+      done = false;
+
+      // part of the path ?
+      for (path_iterator = path_in.begin();
+           path_iterator != path_in.end();
+           path_iterator++)
+        if ((*path_iterator).first == current_position)
+        {
+          if ((*path_iterator).first == path_in.front().first)
+            std::clog << 'A'; // start position
+          else if ((*path_iterator).first == path_in.back().first)
+            std::clog << 'B'; // end position
+          else
+            std::clog << 'x'; // path step
+
+          done = true;
+
+          break;
+        } // end IF
+      if (done)
+        continue;
+
+      // unmapped, floor, wall, or door ?
+      if (plan_in.unmapped.find(current_position) != plan_in.unmapped.end())
+        std::clog << ' '; // unmapped
+      else if (plan_in.walls.find(current_position) != plan_in.walls.end())
+        std::clog << '#'; // wall
+      else if (plan_in.doors.find(current_position_door) != plan_in.doors.end())
+        std::clog << '='; // door
+      else
+        std::clog << '.'; // floor
+    } // end FOR
+    std::clog << std::endl;
+  } // end FOR
 }

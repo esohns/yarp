@@ -3,5 +3,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>-c$(TEMP)\default_player.xml -d $(ProjectDir)..\graphics\data -g $(ProjectDir)..\graphics\rpg_graphics.xml -i $(ProjectDir)..\item\rpg_item.xml -m $(ProjectDir)..\magic\rpg_magic.xml -p$(TEMP)\default_map.txt -t</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

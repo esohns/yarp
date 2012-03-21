@@ -56,7 +56,7 @@ RPG_Map_Level::init(const RPG_Map_t& map_in)
   myMap = map_in;
 }
 
-const std::string
+const std::string&
 RPG_Map_Level::getName() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::getName"));
@@ -64,7 +64,7 @@ RPG_Map_Level::getName() const
   return myMap.name;
 }
 
-const RPG_Map_Position_t
+const RPG_Map_Position_t&
 RPG_Map_Level::getStartPosition() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::getStartPosition"));
@@ -72,7 +72,7 @@ RPG_Map_Level::getStartPosition() const
   return myMap.start;
 }
 
-const RPG_Map_Positions_t
+const RPG_Map_Positions_t&
 RPG_Map_Level::getSeedPoints() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::getSeedPoints"));
@@ -80,7 +80,7 @@ RPG_Map_Level::getSeedPoints() const
   return myMap.seeds;
 }
 
-const RPG_Map_FloorPlan_t
+const RPG_Map_FloorPlan_t&
 RPG_Map_Level::getFloorPlan() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::getFloorPlan"));
@@ -88,12 +88,10 @@ RPG_Map_Level::getFloorPlan() const
   return myMap.plan;
 }
 
-const RPG_Map_Dimensions_t
-RPG_Map_Level::getDimensions() const
+RPG_Map_Size_t
+RPG_Map_Level::getSize() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getDimensions"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getSize"));
 
-  RPG_Map_Dimensions_t result = std::make_pair(myMap.plan.size_x, myMap.plan.size_y);
-
-  return result;
+  return std::make_pair(myMap.plan.size_x, myMap.plan.size_y);
 }

@@ -41,10 +41,10 @@ RPG_Client_Engine::RPG_Client_Engine()
 //  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
  : myCondition(myLock),
    myStop(false),
-   myLevelState(NULL),
+   myEngine(NULL),
    myLevelWindow(NULL),
 //   myActions(),
-   myIsTravelling(false),
+   mySelectionMode(SELECTIONMODE_NORMAL),
    myCenterOnActivePlayer(RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::RPG_Client_Engine"));
@@ -58,10 +58,10 @@ RPG_Client_Engine::RPG_Client_Engine(RPG_Engine_Level* levelState_in,
 //  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
  : myCondition(myLock),
    myStop(false),
-   myLevelState(levelState_in),
+   myEngine(levelState_in),
    myLevelWindow(window_in),
 //   myActions(),
-   myIsTravelling(false),
+   mySelectionMode(SELECTIONMODE_NORMAL),
    myCenterOnActivePlayer(RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::RPG_Client_Engine"));
@@ -334,7 +334,7 @@ RPG_Client_Engine::updateEntity(const RPG_Engine_EntityID_t& id_in)
 
   RPG_Client_Action new_action;
   new_action.command = COMMAND_ENTITY_DRAW;
-  new_action.position = myLevelState->getPosition(id_in);
+  new_action.position = myEngine->getPosition(id_in);
   new_action.window = myLevelWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = id_in;
@@ -352,7 +352,7 @@ RPG_Client_Engine::init(RPG_Engine_Level* levelState_in,
   ACE_ASSERT(levelState_in);
   ACE_ASSERT(window_in);
 
-  myLevelState = levelState_in;
+  myEngine = levelState_in;
   myLevelWindow = window_in;
 }
 
@@ -367,6 +367,30 @@ RPG_Client_Engine::action(const RPG_Client_Action& action_in)
 
   // wake up the (waiting) worker thread(s)
   myCondition.broadcast();
+}
+
+void
+RPG_Client_Engine::mode(const RPG_Client_SelectionMode& mode_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::mode"));
+
+  mySelectionMode = mode_in;
+}
+
+//void
+//RPG_Client_Engine::clear(const RPG_Client_SelectionMode& mode_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::clear"));
+//
+//  mySelectionMode = SELECTIONMODE_NORMAL;
+//}
+
+const bool
+RPG_Client_Engine::hasMode(const RPG_Client_SelectionMode& mode_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::hasMode"));
+
+  return (mySelectionMode == mode_in);
 }
 
 const bool
@@ -406,12 +430,6 @@ RPG_Client_Engine::handleActions()
 
         break;
       }
-      case COMMAND_CURSOR_SET:
-      {
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set((*iterator).cursor);
-
-        break;
-      }
       case COMMAND_CURSOR_INVALIDATE_BG:
       {
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
@@ -427,6 +445,12 @@ RPG_Client_Engine::handleActions()
                                                                      dirtyRegion);
         RPG_Graphics_Surface::update(dirtyRegion,
                                      (*iterator).window->getScreen());
+
+        break;
+      }
+      case COMMAND_CURSOR_SET:
+      {
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set((*iterator).cursor);
 
         break;
       }
@@ -472,8 +496,9 @@ RPG_Client_Engine::handleActions()
         // fiddling with the view invalidates the tile highlight BG
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
         // --> store/draw the new tile highlight (BG)
-        RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(),
-                                                                                myLevelState->getDimensions(),
+        RPG_Map_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+        RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
+                                                                                myEngine->getSize(),
                                                                                 (*iterator).window->getSize(),
                                                                                 (*iterator).window->getView());
         RPG_Map_Position_t screen_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
@@ -487,6 +512,13 @@ RPG_Client_Engine::handleActions()
 
         // fiddling with the view (probably) invalidates (part of) the cursor BG
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG((*iterator).window->getScreen());
+        SDL_Rect dirty_region = {0, 0, 0, 0};
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(cursor_position.first,
+                                                               cursor_position.second,
+                                                               (*iterator).window->getScreen(),
+                                                               dirty_region);
+        //RPG_Graphics_Surface::update(dirtyRegion,
+        //                             (*iterator).window->getScreen());
 
         refresh_window = true;
 
@@ -497,10 +529,25 @@ RPG_Client_Engine::handleActions()
         // sanity check
         ACE_ASSERT((*iterator).window);
 
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
-                                                                                                               (*iterator).window->getSize(false),
-                                                                                                               (*iterator).window->getView()),
-                                                                         (*iterator).window->getScreen());
+        RPG_Graphics_Size_t size = (*iterator).window->getSize(false);
+        RPG_Graphics_Position_t view = (*iterator).window->getView();
+        if ((*iterator).path.empty())
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
+                                                                                                                 size,
+                                                                                                                 view),
+                                                                           (*iterator).window->getScreen());
+        else
+        {
+          RPG_Graphics_Positions_t graphics_positions;
+          for (RPG_Map_PathConstIterator_t iterator2 = (*iterator).path.begin();
+               iterator2 != (*iterator).path.end();
+               iterator2++)
+            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
+                                                                               size,
+                                                                               view));
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(graphics_positions,
+                                                                           (*iterator).window->getScreen());
+        } // end ELSE
 
         break;
       }
@@ -524,11 +571,30 @@ RPG_Client_Engine::handleActions()
         // sanity check
         ACE_ASSERT((*iterator).window);
 
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG((*iterator).position,
-                                                                            RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
-                                                                                                                  (*iterator).window->getSize(false),
-                                                                                                                  (*iterator).window->getView()),
-                                                                            (*iterator).window->getScreen());
+        RPG_Graphics_Size_t size = (*iterator).window->getSize(false);
+        RPG_Graphics_Position_t view = (*iterator).window->getView();
+        if ((*iterator).path.empty())
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG((*iterator).position,
+                                                                              RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
+                                                                                                                    size,
+                                                                                                                    view),
+                                                                              (*iterator).window->getScreen());
+        else
+        {
+          RPG_Graphics_Positions_t map_positions, graphics_positions;
+          for (RPG_Map_PathConstIterator_t iterator2 = (*iterator).path.begin();
+               iterator2 != (*iterator).path.end();
+               iterator2++)
+          {
+            map_positions.push_back((*iterator2).first);
+            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
+                                                                               size,
+                                                                               view));
+          }
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_positions,
+                                                                              graphics_positions,
+                                                                              (*iterator).window->getScreen());
+        } // end ELSE
 
         break;
       }
@@ -608,10 +674,10 @@ RPG_Client_Engine::handleActions()
 
         // step2: (re)set level window title caption/iconify
         std::string caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
-        if (!myLevelState->getName().empty())
+        if (!myEngine->getName().empty())
         {
           caption = ACE_TEXT_ALWAYS_CHAR("* ");
-          caption += myLevelState->getName();
+          caption += myEngine->getName();
           caption += ACE_TEXT_ALWAYS_CHAR(" *");
         } // end IF
         else

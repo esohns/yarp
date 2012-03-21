@@ -52,6 +52,7 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
              std::string()),       // title
 //              NULL),                // background
    myLevelState(levelState_in),
+   myDebug(SDL_GUI_DEF_DEBUG),
 //    myCurrentMapStyle(),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
@@ -60,7 +61,8 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
    myCurrentOffMapTile(NULL),
 //    myFloorEdgeTiles(),
 //    myWallTiles(),
-   myHideWalls(SDL_GUI_DEF_GRAPHICS_HIDE_WALLS),
+   myHideFloor(false),
+   myHideWalls(false),
    myWallBlend(NULL),
    myView(std::make_pair(myLevelState->getFloorPlan().size_x / 2,
                          myLevelState->getFloorPlan().size_y / 2)),
@@ -243,7 +245,8 @@ SDL_GUI_LevelWindow::getView() const
 }
 
 void
-SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in)
+SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
+                          const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
 
@@ -261,6 +264,8 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in)
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
   style.doorstyle = mapStyle_in.door_style;
   setStyle(style);
+
+  myDebug = debug_in;
 
   // init edge, floor, door tiles
   init();
@@ -337,16 +342,15 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   RPG_Position_t current_map_position = std::make_pair(0, 0);
   RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
   RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
-  unsigned long floor_row = 0;
-  unsigned long floor_index = 0;
-//   unsigned long x, y;
+  unsigned int floor_row = 0;
+  unsigned int floor_index = 0;
   RPG_Position_t screen_position = std::make_pair(0, 0);
-//   // debug info
-//   SDL_Rect rect;
-//   std::ostringstream converter;
-//   std::string tile_text;
-//   RPG_Graphics_TextSize_t tile_text_size;
-//   RPG_Position_t map_position = std::make_pair(0, 0);
+  // debug info
+  SDL_Rect rect;
+  std::ostringstream converter;
+  std::string tile_text;
+  RPG_Graphics_TextSize_t tile_text_size;
+  RPG_Position_t map_position = std::make_pair(0, 0);
   RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
 
   // "clear" map "window"
@@ -415,48 +419,51 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       if ((myLevelState->getElement(current_map_position) == MAPELEMENT_FLOOR) ||
           (myLevelState->getElement(current_map_position) == MAPELEMENT_DOOR))
       {
-        RPG_Graphics_Surface::put(screen_position.first,
-                                  screen_position.second,
-                                  *(*floor_iterator).surface,
-                                  targetSurface);
+        if (!myHideFloor)
+          RPG_Graphics_Surface::put(screen_position.first,
+                                    screen_position.second,
+                                    *(*floor_iterator).surface,
+                                    targetSurface);
 
-//         // debug info
-//         rect.x = x;
-//         rect.y = y;
-//         rect.x = screen_position.first;
-//         rect.y = screen_position.second;
-//         rect.w = (*floor_iterator).surface->w;
-//         rect.h = (*floor_iterator).surface->h;
-//         RPG_Graphics_Surface::putRect(rect,                              // rectangle
-//                                       RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR, // color
-//                                       targetSurface);                    // target surface
-//         converter.str(ACE_TEXT(""));
-//         converter.clear();
-//         tile_text = ACE_TEXT("[");
-//         converter << current_map_position.first;
-//         tile_text += converter.str();
-//         tile_text += ACE_TEXT(",");
-//         converter.str(ACE_TEXT(""));
-//         converter.clear();
-//         converter << current_map_position.second;
-//         tile_text += converter.str();
-//         tile_text += ACE_TEXT("]");
-//         tile_text_size = RPG_Graphics_Common_Tools::textSize(TYPE_FONT_MAIN_SMALL,
-//                                                              tile_text);
-//         RPG_Graphics_Surface::putText(TYPE_FONT_MAIN_SMALL,
-//                                       tile_text,
-//                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-//                                                                               *targetSurface),
-//                                       true, // add shade
-//                                       RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-//                                                                               *targetSurface),
-//                                       (rect.x + ((rect.w - tile_text_size.first) / 2)),
-//                                       (rect.y + ((rect.h - tile_text_size.second) / 2)),
-//                                       targetSurface);
+        if (myDebug)
+        {
+          // highlight floor tile indexes
+          rect.x = screen_position.first;
+          rect.y = screen_position.second;
+          rect.w = (*floor_iterator).surface->w;
+          rect.h = (*floor_iterator).surface->h;
+          RPG_Graphics_Surface::putRect(rect,                         // rectangle
+                                        SDL_GUI_DEF_TILE_FRAME_COLOR, // color
+                                        targetSurface);               // target surface
+          converter.str(ACE_TEXT(""));
+          converter.clear();
+          tile_text = ACE_TEXT("[");
+          converter << current_map_position.first;
+          tile_text += converter.str();
+          tile_text += ACE_TEXT(",");
+          converter.str(ACE_TEXT(""));
+          converter.clear();
+          converter << current_map_position.second;
+          tile_text += converter.str();
+          tile_text += ACE_TEXT("]");
+          tile_text_size = RPG_Graphics_Common_Tools::textSize(FONT_MAIN_NORMAL,
+                                                               tile_text);
+          RPG_Graphics_Surface::putText(FONT_MAIN_NORMAL,
+                                        tile_text,
+                                        RPG_Graphics_SDL_Tools::colorToSDLColor(SDL_GUI_DEF_TILE_INDEX_COLOR,
+                                                                                *targetSurface),
+                                        true, // add shade
+                                        RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                *targetSurface),
+                                        (rect.x + ((rect.w - tile_text_size.first) / 2)),
+                                        (rect.y + ((rect.h - tile_text_size.second) / 2)),
+                                        targetSurface);
+        } // end IF
 
         // step3: floor edges
         floor_edge_iterator = myFloorEdgeTiles.find(current_map_position);
-        if (floor_edge_iterator != myFloorEdgeTiles.end())
+        if ((floor_edge_iterator != myFloorEdgeTiles.end()) &&
+            !myHideFloor)
         {
           // straight edges
           if ((*floor_edge_iterator).second.west.surface)
@@ -919,6 +926,54 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           // done with this event
           return;
         }
+        case SDLK_d:
+        {
+          myDebug = !myDebug;
+
+          // need a redraw
+          redraw_out = true;
+
+          // done with this event
+          return;
+        }
+        case SDLK_f:
+        {
+          if (event_in.key.keysym.mod & KMOD_SHIFT)
+          {
+            // toggle setting
+            myHideFloor = !myHideFloor;
+
+            // *NOTE*: fiddling with the style invalidates the cursor BG !
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+            // clear highlight BG
+            RPG_Graphics_Surface::clear(myHighlightBG);
+
+            // need a redraw
+            redraw_out = true;
+
+            // done with this event
+            return;
+          } // end IF
+
+          myCurrentMapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle>(myCurrentMapStyle.floor_style + 1);
+          if (myCurrentMapStyle.floor_style == RPG_GRAPHICS_FLOORSTYLE_MAX)
+            myCurrentMapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle>(0);
+          RPG_Graphics_StyleUnion style;
+          style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
+          style.floorstyle = myCurrentMapStyle.floor_style;
+          setStyle(style);
+
+          // *NOTE*: fiddling with the style invalidates the cursor BG !
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+          // clear highlight BG
+          RPG_Graphics_Surface::clear(myHighlightBG);
+
+          // need a redraw
+          redraw_out = true;
+
+          // done with this event
+          return;
+        }
         case SDLK_h:
         {
           // toggle setting
@@ -973,12 +1028,28 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             // done with this event
             return;
           } // end IF
+
+          myCurrentMapStyle.wall_style = static_cast<RPG_Graphics_WallStyle>(myCurrentMapStyle.wall_style + 1);;
+          if (myCurrentMapStyle.wall_style == RPG_GRAPHICS_WALLSTYLE_MAX)
+            myCurrentMapStyle.wall_style = static_cast<RPG_Graphics_WallStyle>(0);
+          RPG_Graphics_StyleUnion style;
+          style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+          style.wallstyle = myCurrentMapStyle.wall_style;
+          setStyle(style);
+
+          // *NOTE*: fiddling with the style invalidates the cursor BG !
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+          // clear highlight BG
+          RPG_Graphics_Surface::clear(myHighlightBG);
+
+          // need a redraw
+          redraw_out = true;
+
+          // done with this event
+          return;
         }
         default:
-        {
-
           break;
-        }
       } // end SWITCH
 
       // delegate all other keypresses to the parent...

@@ -38,12 +38,12 @@ class RPG_Map_Export RPG_Map_Level
 
   void init(const RPG_Map_t&); // map
 
-  const std::string getName() const;
-  const RPG_Map_Position_t getStartPosition() const;
-  const RPG_Map_Positions_t getSeedPoints() const;
-  const RPG_Map_FloorPlan_t getFloorPlan() const;
+  const std::string& getName() const;
+  const RPG_Map_Position_t& getStartPosition() const;
+  const RPG_Map_Positions_t& getSeedPoints() const;
+  const RPG_Map_FloorPlan_t& getFloorPlan() const;
 
-  const RPG_Map_Dimensions_t getDimensions() const;
+  RPG_Map_Size_t getSize() const;
 
  protected:
   RPG_Map_t myMap;

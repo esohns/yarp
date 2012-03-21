@@ -36,16 +36,19 @@ class RPG_Map_Export RPG_Map_Pathfinding_Tools
 {
  public:
   // "classic" A* algorithm
-  static const bool findPath(const unsigned long&,       // dimension x
-                             const unsigned long&,       // dimension y
-                             const RPG_Map_Positions_t&, // obstacles
-                             const RPG_Map_Position_t&,  // start position
-                             const RPG_Map_Direction&,   // starting direction
-                             const RPG_Map_Position_t&,  // end position
-                             RPG_Map_Path_t&);           // return value: path
+  static void findPath(const RPG_Map_Size_t&,      // dimension x/y
+                       const RPG_Map_Positions_t&, // obstacles
+                       const RPG_Map_Position_t&,  // start position
+                       const RPG_Map_Direction&,   // optional: starting direction
+                       const RPG_Map_Position_t&,  // end position
+                       RPG_Map_Path_t&);           // return value: path
 
+  // *NOTE*: returns a ("best-guess") estimate of the relative direction from A to B
   static const RPG_Map_Direction getDirection(const RPG_Map_Position_t&,  // start position
                                               const RPG_Map_Position_t&); // end position
+
+  static void print(const RPG_Map_Path_t&,       // path
+                    const RPG_Map_FloorPlan_t&); // floor plan
 
   // *NOTE*: these must be public (required by operator==, see below)
   struct RPG_Map_AStar_Position_t

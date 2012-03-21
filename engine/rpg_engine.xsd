@@ -42,9 +42,9 @@
 
   <xsd:simpleType name="RPG_Engine_PlayerMode_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="MODE_FIGHTING"/>
-      <xsd:enumeration value="MODE_SEARCHING"/>
-      <xsd:enumeration value="MODE_TRAVELLING"/>
+      <xsd:enumeration value="PLAYERMODE_FIGHTING"/>
+      <xsd:enumeration value="PLAYERMODE_SEARCHING"/>
+      <xsd:enumeration value="PLAYERMODE_TRAVELLING"/>
     </xsd:restriction>
   </xsd:simpleType>
 

@@ -118,7 +118,10 @@ typedef RPG_Graphics_Fonts_t::const_iterator RPG_Graphics_FontsConstIterator_t;
 typedef std::pair<unsigned int, unsigned int> RPG_Graphics_TextSize_t;
 
 typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Position_t;
-typedef RPG_Graphics_Position_t RPG_Graphics_Offset_t;
+typedef std::vector<RPG_Graphics_Position_t> RPG_Graphics_Positions_t;
+typedef RPG_Graphics_Positions_t::const_iterator RPG_Graphics_PositionsConstIterator_t;
+
+typedef std::pair<int, int> RPG_Graphics_Offset_t;
 
 typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Size_t;
 
@@ -198,5 +201,6 @@ struct RPG_Graphics_MapStyle_t
 // *NOTE*: map coordinates !
 typedef std::vector<std::pair<RPG_Graphics_Position_t, SDL_Surface*> > RPG_Graphics_TileCache_t;
 typedef RPG_Graphics_TileCache_t::const_iterator RPG_Graphics_TileCacheConstIterator_t;
+typedef RPG_Graphics_TileCache_t::iterator RPG_Graphics_TileCacheIterator_t;
 
 #endif
