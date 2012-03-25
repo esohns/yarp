@@ -9,9 +9,9 @@
 
 enum RPG_Engine_PlayerMode
 {
-  MODE_FIGHTING = 0,
-  MODE_SEARCHING,
-  MODE_TRAVELLING,
+  PLAYERMODE_FIGHTING = 0,
+  PLAYERMODE_SEARCHING,
+  PLAYERMODE_TRAVELLING,
   //
   RPG_ENGINE_PLAYERMODE_MAX,
   RPG_ENGINE_PLAYERMODE_INVALID
@@ -33,9 +33,9 @@ class RPG_Engine_Export RPG_Engine_PlayerModeHelper
   inline static void init()
   {
     myRPG_Engine_PlayerModeToStringTable.clear();
-    myRPG_Engine_PlayerModeToStringTable.insert(std::make_pair(MODE_FIGHTING, ACE_TEXT_ALWAYS_CHAR("MODE_FIGHTING")));
-    myRPG_Engine_PlayerModeToStringTable.insert(std::make_pair(MODE_SEARCHING, ACE_TEXT_ALWAYS_CHAR("MODE_SEARCHING")));
-    myRPG_Engine_PlayerModeToStringTable.insert(std::make_pair(MODE_TRAVELLING, ACE_TEXT_ALWAYS_CHAR("MODE_TRAVELLING")));
+    myRPG_Engine_PlayerModeToStringTable.insert(std::make_pair(PLAYERMODE_FIGHTING, ACE_TEXT_ALWAYS_CHAR("PLAYERMODE_FIGHTING")));
+    myRPG_Engine_PlayerModeToStringTable.insert(std::make_pair(PLAYERMODE_SEARCHING, ACE_TEXT_ALWAYS_CHAR("PLAYERMODE_SEARCHING")));
+    myRPG_Engine_PlayerModeToStringTable.insert(std::make_pair(PLAYERMODE_TRAVELLING, ACE_TEXT_ALWAYS_CHAR("PLAYERMODE_TRAVELLING")));
   };
 
   inline static std::string RPG_Engine_PlayerModeToString(const RPG_Engine_PlayerMode& element_in)

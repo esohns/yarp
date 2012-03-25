@@ -21,12 +21,18 @@
     <ClCompile Include="rpg_chance_common_tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rpg_chance_common_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_chance_exports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

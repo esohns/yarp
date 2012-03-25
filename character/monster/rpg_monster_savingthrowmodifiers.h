@@ -7,7 +7,9 @@
 #ifndef RPG_MONSTER_SAVINGTHROWMODIFIERS_H
 #define RPG_MONSTER_SAVINGTHROWMODIFIERS_H
 
-struct RPG_Monster_SavingThrowModifiers
+#include "rpg_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Monster_SavingThrowModifiers
 {
   signed char fortitude;
   signed char reflex;

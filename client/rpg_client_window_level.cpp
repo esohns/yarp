@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "rpg_client_window_level.h"
 
@@ -351,19 +352,19 @@ RPG_Client_WindowLevel::init()
                                      myCurrentDoorSet,
                                      myDoorTiles);
 
-  // init view (--> center)
-  RPG_Map_Size_t size = myEngine->getSize();
-  myView = myEngine->getSize();
-  myView.first >>= 1;
-  myView.second >>= 1;
+  //// init view (--> center)
+  //RPG_Map_Size_t size = myEngine->getSize();
+  //myView = myEngine->getSize();
+  //myView.first >>= 1;
+  //myView.second >>= 1;
 
-  // *NOTE*: fiddling with the view invalidates the cursor/highlight BG !
-  myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-  myClient->action(myClientAction);
-  myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-  myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                           std::numeric_limits<unsigned int>::max());
-  myClient->action(myClientAction);
+  //// *NOTE*: fiddling with the view invalidates the cursor/highlight BG !
+  //myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
+  //myClient->action(myClientAction);
+  //myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+  //myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+  //                                         std::numeric_limits<unsigned int>::max());
+  //myClient->action(myClientAction);
 }
 
 void

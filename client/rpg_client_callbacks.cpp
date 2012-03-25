@@ -17,12 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "rpg_client_callbacks.h"
 
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
+#include "rpg_client_entity_manager.h"
 
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
@@ -1204,7 +1206,8 @@ load_files(const std::string& repository_in,
                            0, &value);
   text = g_value_get_string(&value);
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("profile[0]: %s\n"),
+             (loadPlayerProfiles_in ? ACE_TEXT("profile[0]: %s\n")
+                                    : ACE_TEXT("map[0]: %s\n")),
              std::string(text).c_str()));
   g_value_unset(&value);
   for (unsigned int i = 1;
@@ -1221,7 +1224,8 @@ load_files(const std::string& repository_in,
                              0, &value);
     text = g_value_get_string(&value);
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("profile[%u]: %s\n"),
+               (loadPlayerProfiles_in ? ACE_TEXT("profile[%u]: %s\n")
+                                      : ACE_TEXT("map[%u]: %s\n")),
                i,
                std::string(text).c_str()));
 
@@ -1617,7 +1621,14 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
                                                      data->schemaRepository,
                                                      true);
-  ACE_ASSERT(data->entity.character);
+  if (!data->entity.character)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to load entity profile: \"%s\", aborting\n"),
+               filename.c_str()));
+
+    return FALSE;
+  } // end IF
 
   // update entity profile widgets
   ::update_entity_profile(data->entity,
@@ -1991,19 +2002,21 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 
   // load map
   RPG_Map_t map;
-  if (!RPG_Map_Common_Tools::load(filename,
-                                  map))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), continuing\n"),
-               filename.c_str()));
-  else
+  if (!RPG_Map_Common_Tools::load(filename, map))
   {
-    if (data->level_engine->isRunning())
-      data->level_engine->stop();
-    data->level_engine->init(data->client_engine,
-                             map);
-    data->level_engine->start();
-  } // end ELSE
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
+               filename.c_str()));
+
+    return FALSE;
+  } // end IF
+
+  if (data->level_engine->isRunning())
+    data->level_engine->stop();
+  data->level_engine->init(data->client_engine,
+                           map);
+  data->level_engine->start();
+  data->client_engine->initMap();
 
   // make map_create button insensitive (if it's not already)
   GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
@@ -2096,6 +2109,7 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   // activate the current character
   RPG_Engine_EntityID_t id = data->level_engine->add(&(data->entity));
   data->level_engine->setActive(id);
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(id, data->entity.graphic);
 
   // center on character
   data->client_engine->setView(data->entity.position);

@@ -7,7 +7,9 @@
 #ifndef RPG_MONSTER_ADVANCEMENTSTEP_H
 #define RPG_MONSTER_ADVANCEMENTSTEP_H
 
-struct RPG_Monster_AdvancementStep
+#include "rpg_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Monster_AdvancementStep
 {
   RPG_Common_Size size;
   RPG_Dice_ValueRange range;

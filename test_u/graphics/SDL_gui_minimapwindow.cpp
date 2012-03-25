@@ -15,6 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "stdafx.h"
 
 #include "SDL_gui_minimapwindow.h"
 
@@ -174,8 +175,6 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   if (!inherited::myBGHasBeenSaved)
     inherited::saveBG(RPG_Graphics_Size_t(0, 0)); // save size of "this"
 
-  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
-
   // init clipping
   SDL_GetClipRect(targetSurface_in, &(inherited::myClipRect));
   SDL_Rect clipRect;
@@ -212,6 +211,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       return;
     } // end IF
 
+  RPG_Map_Size_t size = myLevelState->getSize();
   RPG_Map_Position_t map_position = std::make_pair(0, 0);
   RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
   Uint32 color = 0;
@@ -219,10 +219,10 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   Uint32* pixels = NULL;
   RPG_Engine_EntityID_t entity_id = 0;
   for (unsigned int y = 0;
-       y < dimensions.second;
+       y < size.second;
        y++)
     for (unsigned int x = 0;
-         x < dimensions.first;
+         x < size.first;
          x++)
     {
       // step1: retrieve appropriate symbol

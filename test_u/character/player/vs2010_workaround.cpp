@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include <string>
 
 template std::string::size_type std::string::npos;

@@ -46,6 +46,8 @@
       <AdditionalIncludeDirectories>E:\Yarp\net;E:\Yarp\net\stream;E:\Yarp\common;E:\Yarp\3rd_party\flex\include;E:\Yarp\3rd_party;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_PROTOCOL_BUILD_DLL;RPG_NET_HAS_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -62,6 +64,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -103,6 +107,7 @@
     <ClInclude Include="rpg_net_protocol_sockethandler.h" />
     <ClInclude Include="rpg_net_protocol_stream.h" />
     <ClInclude Include="rpg_net_protocol_tools.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_net_protocol_IRCbisect.cpp" />
@@ -120,6 +125,10 @@
     <ClCompile Include="rpg_net_protocol_sockethandler.cpp" />
     <ClCompile Include="rpg_net_protocol_stream.cpp" />
     <ClCompile Include="rpg_net_protocol_tools.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\chance\dice\dice.vcxproj">

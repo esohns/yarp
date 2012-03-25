@@ -4,6 +4,8 @@ switching buffers, backing-up and the like. In this sense, it is optimized for
 speed and efficiency */
 
 %{
+#include "stdafx.h"
+
 #include <stdlib.h>
 
 #include <string>

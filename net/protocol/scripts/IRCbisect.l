@@ -1,4 +1,6 @@
 %{
+#include "stdafx.h"
+
 #include <ace/Log_Msg.h>
 %}
 

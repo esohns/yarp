@@ -17,14 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "rpg_monster_XML_parser.h"
 
 #include "rpg_monster_naturalweapon.h"
 #include "rpg_monster_advancement.h"
-
-//#include <rpg_character_incl.h>
-//#include <rpg_combat_incl.h>
 
 #include <rpg_common_macros.h>
 

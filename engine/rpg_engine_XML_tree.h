@@ -94,7 +94,6 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
     COMMAND_DOOR_CLOSE,
     COMMAND_DOOR_OPEN,
     COMMAND_SEARCH,
-    COMMAND_STEP,
     COMMAND_STOP,
     COMMAND_TRAVEL
   };
@@ -146,8 +145,8 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
   _xsd_RPG_Engine_Command_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[7];
-  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[7];
+  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[6];
+  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[6];
 };
 
 class RPG_Engine_Export RPG_Engine_PlayerMode_XMLTree_Type: public ::xml_schema::string
@@ -155,9 +154,9 @@ class RPG_Engine_Export RPG_Engine_PlayerMode_XMLTree_Type: public ::xml_schema:
   public:
   enum value
   {
-    MODE_FIGHTING,
-    MODE_SEARCHING,
-    MODE_TRAVELLING
+    PLAYERMODE_FIGHTING,
+    PLAYERMODE_SEARCHING,
+    PLAYERMODE_TRAVELLING
   };
 
   RPG_Engine_PlayerMode_XMLTree_Type (value v);

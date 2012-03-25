@@ -53,6 +53,9 @@
     <ClCompile Include="net\protocol\IRC_client_tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="net\protocol\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="net\protocol\IRC_client_gui_callbacks.h">
@@ -74,6 +77,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="net\protocol\IRC_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="net\protocol\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

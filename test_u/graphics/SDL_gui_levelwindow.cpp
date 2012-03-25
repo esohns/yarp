@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "SDL_gui_levelwindow.h"
 
@@ -215,7 +216,7 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
 
-  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
+  RPG_Map_Size_t size = myLevelState->getSize();
 
   // handle over-/underruns
   if ((offsetX_in < 0) &&
@@ -230,10 +231,10 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
   else
     myView.second += offsetY_in;
 
-  if (myView.first >= dimensions.first)
-    myView.first = (dimensions.first - 1);
-  if (myView.second >= dimensions.second)
-    myView.second = (dimensions.second - 1);
+  if (myView.first >= size.first)
+    myView.first = (size.first - 1);
+  if (myView.second >= size.second)
+    myView.second = (size.second - 1);
 }
 
 const RPG_Graphics_Position_t
@@ -271,9 +272,9 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   init();
 
   // init cursor highlighting
-  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
-  myHighlightBGPosition = std::make_pair(dimensions.first / 2,
-                                         dimensions.second / 2);
+  RPG_Map_Size_t size = myLevelState->getSize();
+  myHighlightBGPosition = std::make_pair(size.first / 2,
+                                         size.second / 2);
 }
 
 void
@@ -357,6 +358,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   clear();
 
   // pass 1
+  RPG_Map_Size_t size = myLevelState->getSize();
   for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
        i++)
@@ -376,9 +378,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
       // off-map ?
       if ((current_map_position.second < 0) ||
-          (current_map_position.second >= static_cast<int>(myLevelState->getDimensions().second)) ||
+          (current_map_position.second >= static_cast<int>(size.second)) ||
           (current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int>(myLevelState->getDimensions().first)))
+          (current_map_position.first >= static_cast<int>(size.first)))
         continue;
 
       // floor tile rotation
@@ -603,7 +605,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
     current_map_position.second = myView.second + i;
     // off the map ? --> continue
     if ((current_map_position.second < 0) ||
-        (current_map_position.second >= static_cast<int>(myLevelState->getDimensions().second)))
+        (current_map_position.second >= static_cast<int>(size.second)))
       continue;
 
     for (j = diff + i;
@@ -613,7 +615,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
       // off the map ? --> continue
       if ((current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int>(myLevelState->getDimensions().first)))
+          (current_map_position.first >= static_cast<int>(size.first)))
         continue;
 
       // transform map coordinates into screen coordinates
@@ -818,9 +820,9 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                 setView(myLevelState->getPosition(entity_id));
               else
               {
-                RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
-                setView((dimensions.first  / 2),
-                        (dimensions.second / 2));
+                RPG_Map_Size_t size = myLevelState->getSize();
+                setView((size.first  / 2),
+                        (size.second / 2));
               } // end ELSE
 
               break;
@@ -1063,7 +1065,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       // find map square
       RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
                                                                                                   event_in.motion.y),
-                                                                                   myLevelState->getDimensions(),
+                                                                                   myLevelState->getSize(),
                                                                                    mySize,
                                                                                    myView);
 //       ACE_DEBUG((LM_DEBUG,
@@ -1169,7 +1171,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       {
         RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
                                                                                                     event_in.button.y),
-                                                                                     myLevelState->getDimensions(),
+                                                                                     myLevelState->getSize(),
                                                                                      mySize,
                                                                                      myView);
 
@@ -1260,9 +1262,9 @@ SDL_GUI_LevelWindow::init()
                                      myDoorTiles);
 
   // init view
-  RPG_Map_Dimensions_t dimensions = myLevelState->getDimensions();
-  setView((dimensions.first  / 2),
-          (dimensions.second / 2));
+  RPG_Map_Size_t size = myLevelState->getSize();
+  setView((size.first  / 2),
+          (size.second / 2));
 
   // *NOTE*: fiddling with the view invalidates the cursor BG !
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();

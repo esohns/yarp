@@ -52,9 +52,9 @@ class RPG_Client_Export RPG_Client_Engine
 {
  public:
   RPG_Client_Engine();
-  // *WARNING*: UI handle needs to be of WINDOW_MAP type !!!
+  // *WARNING*: window handle needs to be of WINDOW_MAP type
   RPG_Client_Engine(RPG_Engine_Level*,      // level state
-                    RPG_Graphics_IWindow*); // UI handle
+                    RPG_Graphics_IWindow*); // window handle
   virtual ~RPG_Client_Engine();
 
   // implement RPG_Common_IControl
@@ -66,17 +66,17 @@ class RPG_Client_Export RPG_Client_Engine
   virtual void dump_state() const;
 
   // implement RPG_Engine_IWindow
-  // *NOTE*: these are called by the level engine ONLY
-  virtual void init();
+  // *NOTE*: these are to be called by the level engine ONLY
   virtual void redraw();
   // *NOTE*: this triggers a complete redraw !
   virtual void setView(const RPG_Map_Position_t&);
   virtual void toggleDoor(const RPG_Map_Position_t&);
   virtual void updateEntity(const RPG_Engine_EntityID_t&);
 
-  // *WARNING*: UI handle needs to be of WINDOW_MAP type !!!
+  void initMap();
+  // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
   void init(RPG_Engine_Level*,      // level state
-            RPG_Graphics_IWindow*); // UI handle
+            RPG_Graphics_IWindow*); // window handle
   void action(const RPG_Client_Action&); // action
 
   void mode(const RPG_Client_SelectionMode&); // set mode

@@ -15,6 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "stdafx.h"
 
 #include "rpg_client_window_minimap.h"
 
@@ -301,9 +302,9 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
       pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
                                          (mySurface->pitch * (destrect.y + 6)) +
                                          ((destrect.x + 6) * mySurface->format->BytesPerPixel));
-//       pixels[0] = transparent -> dont write
+//       pixels[0] = transparent -> don't write
       pixels[1] = color;
-//       pixels[2] = transparent -> dont write
+//       pixels[2] = transparent -> don't write
       // step3b: row 2
       pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
                                          (mySurface->pitch * (destrect.y + 7)) +

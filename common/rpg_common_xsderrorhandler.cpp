@@ -17,10 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
+
 #include "rpg_common_xsderrorhandler.h"
 
 #include "rpg_common_macros.h"
-
 #include "rpg_XMLSchema_XML_tree.h"
 
 #include <ace/Log_Msg.h>

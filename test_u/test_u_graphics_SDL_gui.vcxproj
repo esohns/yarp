@@ -46,6 +46,8 @@
       <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\graphics;E:\Yarp\engine;E:\Yarp\map;E:\Yarp\character\player;E:\Yarp\character\monster;E:\Yarp\character;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\common;E:\Yarp\chance\dice;E:\libglade-dev_2.6.4-1_win32\include\libglade-2.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\lib\gtk-2.0\include;E:\Gtk\include\gtk-2.0;E:\Gtk\lib\glib-2.0\include;E:\Gtk\include\glib-2.0;E:\SDL-1.2.14;E:\lpng157;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -64,6 +66,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -76,12 +80,17 @@
     <ClInclude Include="graphics\SDL_gui_levelwindow.h" />
     <ClInclude Include="graphics\SDL_gui_mainwindow.h" />
     <ClInclude Include="graphics\SDL_gui_minimapwindow.h" />
+    <ClInclude Include="graphics\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="graphics\SDL_gui.cpp" />
     <ClCompile Include="graphics\SDL_gui_levelwindow.cpp" />
     <ClCompile Include="graphics\SDL_gui_mainwindow.cpp" />
     <ClCompile Include="graphics\SDL_gui_minimapwindow.cpp" />
+    <ClCompile Include="graphics\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\chance\dice\dice.vcxproj">

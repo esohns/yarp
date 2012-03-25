@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "rpg_client_engine.h"
 
@@ -249,9 +250,9 @@ RPG_Client_Engine::dump_state() const
 }
 
 void
-RPG_Client_Engine::init()
+RPG_Client_Engine::initMap()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::initMap"));
 
   // sanity check
   ACE_ASSERT(myLevelWindow);
@@ -655,18 +656,23 @@ RPG_Client_Engine::handleActions()
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
 
+        RPG_Map_Position_t center = myEngine->getSize();
+        center.first >>= 1;
+        center.second >>= 1;
+
         // step1: init/redraw level map
         RPG_Client_WindowLevel* window = dynamic_cast<RPG_Client_WindowLevel*>((*iterator).window);
         ACE_ASSERT(window);
         try
         {
           window->init();
+          window->setView(center);
           window->draw();
         }
         catch (...)
         {
           ACE_DEBUG((LM_CRITICAL,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_WindowMain::init/draw(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_WindowMain::init/setView/draw(), aborting\n"),
                      window));
 
           return;

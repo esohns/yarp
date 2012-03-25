@@ -13,6 +13,10 @@
   <ItemGroup>
     <ClCompile Include="character\player\character_generator_gui.cpp" />
     <ClCompile Include="character\player\character_generator_gui_callbacks.cpp" />
+    <ClCompile Include="character\player\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="character\player\character_generator_gui.glade" />
@@ -20,6 +24,7 @@
   <ItemGroup>
     <ClInclude Include="character\player\character_generator_gui_callbacks.h" />
     <ClInclude Include="character\player\character_generator_gui_common.h" />
+    <ClInclude Include="character\player\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\chance\dice\dice.vcxproj">
@@ -87,6 +92,8 @@
       <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\engine;E:\Yarp\graphics;E:\Yarp\map;E:\Yarp\character\player;E:\Yarp\character\monster;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\3rd_party;E:\libgnomeui-dev-2.22.1\include\libgnomeui-2.0;E:\gnome-vfs-dev_2.24.1-1_win32\include\gnome-vfs-2.0;E:\libbonoboui-dev_2.24.0-1_win32\include\libbonoboui-2.0;E:\libbonobo-dev_2.24.0-1_win32\include\libbonobo-2.0;E:\libgnomecanvas-dev_2.30.1-1_win32\include\libgnomecanvas-2.0;E:\libart-lgpl-dev_2.3.21-1_win32\include\libart-2.0;E:\libgnome-dev_2.24.1-1_win32\include\libgnome-2.0;E:\libglade-dev_2.6.4-1_win32\include\libglade-2.0;E:\Gtk\include\cairo;E:\Gtk\include\pango-1.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gtk-2.0;E:\Gtk\lib\gtk-2.0\include;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\glib-2.0;E:\Gtk\lib\glib-2.0\include;E:\Yarp\3rd_party\glib;E:\SDL-1.2.14;E:\Gtk\include\libpng14;E:\Gtk\include;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_CLIENT_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;GNOME_DISABLE_DEPRECATED;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -105,6 +112,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -33,6 +33,7 @@
 
 // Begin prologue.
 //
+#include "stdafx.h"
 //
 // End prologue.
 
@@ -246,11 +247,11 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_Command_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Engine_Command_XMLTree_Type_indexes_,
-                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 7,
+                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 6,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 7 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -259,25 +260,23 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_literals_[7] =
+_xsd_RPG_Engine_Command_XMLTree_Type_literals_[6] =
 {
   "COMMAND_ATTACK",
   "COMMAND_DOOR_CLOSE",
   "COMMAND_DOOR_OPEN",
   "COMMAND_SEARCH",
-  "COMMAND_STEP",
   "COMMAND_STOP",
   "COMMAND_TRAVEL"
 };
 
 const RPG_Engine_Command_XMLTree_Type::value RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[7] =
+_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[6] =
 {
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_DOOR_CLOSE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_DOOR_OPEN,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_SEARCH,
-  ::RPG_Engine_Command_XMLTree_Type::COMMAND_STEP,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_STOP,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_TRAVEL
 };
@@ -341,17 +340,17 @@ _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert () const
 const char* const RPG_Engine_PlayerMode_XMLTree_Type::
 _xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[3] =
 {
-  "MODE_FIGHTING",
-  "MODE_SEARCHING",
-  "MODE_TRAVELLING"
+  "PLAYERMODE_FIGHTING",
+  "PLAYERMODE_SEARCHING",
+  "PLAYERMODE_TRAVELLING"
 };
 
 const RPG_Engine_PlayerMode_XMLTree_Type::value RPG_Engine_PlayerMode_XMLTree_Type::
 _xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_[3] =
 {
-  ::RPG_Engine_PlayerMode_XMLTree_Type::MODE_FIGHTING,
-  ::RPG_Engine_PlayerMode_XMLTree_Type::MODE_SEARCHING,
-  ::RPG_Engine_PlayerMode_XMLTree_Type::MODE_TRAVELLING
+  ::RPG_Engine_PlayerMode_XMLTree_Type::PLAYERMODE_FIGHTING,
+  ::RPG_Engine_PlayerMode_XMLTree_Type::PLAYERMODE_SEARCHING,
+  ::RPG_Engine_PlayerMode_XMLTree_Type::PLAYERMODE_TRAVELLING
 };
 
 // RPG_Engine_Player_XMLTree_Type

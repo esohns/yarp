@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
@@ -27,7 +28,9 @@
 #include <rpg_client_common.h>
 #include <rpg_client_callbacks.h>
 #include <rpg_client_window_main.h>
+#include <rpg_client_window_level.h>
 #include <rpg_client_engine.h>
+#include <rpg_client_entity_manager.h>
 #include <rpg_client_common_tools.h>
 #include <rpg_client_ui_tools.h>
 
@@ -1408,37 +1411,44 @@ do_work(const RPG_Client_Config& config_in,
   map_style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
   map_style.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
-  // step5c: level engine
-  // *NOTE*: the level engine starts automatically as soon as a (new) map is loaded
-//   level_engine.init(&client_engine,
-//                     map);
-  //level_engine.start();
-  //if (!level_engine.isRunning())
-  //{
-  //  ACE_DEBUG((LM_ERROR,
-  //             ACE_TEXT("failed to start level engine, aborting\n")));
-
-  //  return;
-  //} // end IF
-
-  // step5d: setup main "window"
+  // step5c: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
   std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
-  RPG_Client_WindowMain mainWindow(RPG_Graphics_WindowSize_t(userData.screen->w,
-                                                             userData.screen->h), // size
-                                   type,                                          // interface elements
-                                   title,                                         // title (== caption)
-                                   FONT_MAIN_LARGE);                              // title font
+  RPG_Client_WindowMain mainWindow(RPG_Graphics_Size_t(userData.screen->w,
+                                                       userData.screen->h), // size
+                                   type,                                    // interface elements
+                                   title,                                   // title (== caption)
+                                   FONT_MAIN_LARGE);                        // title font
   mainWindow.setScreen(userData.screen);
   mainWindow.init(&client_engine,
+                  RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL,
                   &level_engine,
                   map_style);
 
-  // step5e: client engine
+  // step5d: client engine
   client_engine.init(&level_engine,
                      mainWindow.getChild(WINDOW_MAP));
+
+  // step5e: queue initial drawing
+  RPG_Client_Action client_action;
+  client_action.command = COMMAND_WINDOW_DRAW;
+  client_action.position = std::make_pair(0, 0);
+  client_action.window = &mainWindow;
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  client_action.entity_id = 0;
+  client_engine.action(client_action);
+  client_action.command = COMMAND_WINDOW_REFRESH;
+  client_engine.action(client_action);
+
+  RPG_Client_WindowLevel* level_window = dynamic_cast<RPG_Client_WindowLevel*>(mainWindow.getChild(WINDOW_MAP));
+  ACE_ASSERT(level_window);
+  // init/add entity to the graphics cache
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(level_window);
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(level_window);
+
+  // start painting...
   client_engine.start();
   if (!client_engine.isRunning())
   {
@@ -1451,19 +1461,7 @@ do_work(const RPG_Client_Config& config_in,
     return;
   } // end IF
 
-  // step5f: trigger initial drawing
-  RPG_Client_Action client_action;
-  client_action.command = COMMAND_WINDOW_DRAW;
-  client_action.position = std::make_pair(0, 0);
-  client_action.graphics_position = std::make_pair(0, 0);
-  client_action.window = &mainWindow;
-  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  client_engine.action(client_action);
-  client_action.command = COMMAND_WINDOW_REFRESH;
-  client_action.window = &mainWindow;
-  client_engine.action(client_action);
-
-  // step5g: start timer (triggers hover- and GTK events)
+  // step5f: start timer (triggers hover- and GTK events)
   userData.event_timer = NULL;
   userData.event_timer = SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
                                       event_timer_SDL_cb,           // event timer callback
@@ -1610,8 +1608,10 @@ do_work(const RPG_Client_Config& config_in,
     schedule_redraw = false;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
     client_action.position = std::make_pair(0, 0);
-    client_action.graphics_position = std::make_pair(0, 0);
     client_action.window = NULL;
+    client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+    client_action.entity_id = 0;
+    client_action.path.clear();
     previous_redraw = false;
     mouse_position = std::make_pair(0, 0);
 //     refresh_screen = false;
@@ -1829,7 +1829,7 @@ do_work(const RPG_Client_Config& config_in,
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
         client_action.command = COMMAND_CURSOR_DRAW;
-        client_action.graphics_position = mouse_position;
+        client_action.position = mouse_position;
         client_action.window = window;
         client_engine.action(client_action);
 

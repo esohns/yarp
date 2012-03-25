@@ -7,7 +7,9 @@
 #ifndef RPG_MONSTER_ACTIONTRIGGER_H
 #define RPG_MONSTER_ACTIONTRIGGER_H
 
-struct RPG_Monster_ActionTrigger
+#include "rpg_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Monster_ActionTrigger
 {
   RPG_Monster_WeaponTypeUnion weapon;
   unsigned char numHits;

@@ -46,6 +46,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\net\protocol;E:\Yarp\net;E:\Yarp\net\stream;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\3rd_party;E:\Gtk\lib\gtk-2.0\include;E:\Gtk\include\gtk-2.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\lib\glib-2.0\include;E:\Gtk\include\glib-2.0;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -62,6 +64,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -82,6 +86,10 @@
     <ClCompile Include="net\protocol\IRC_client_gui_connection.cpp" />
     <ClCompile Include="net\protocol\IRC_client_gui_messagehandler.cpp" />
     <ClCompile Include="net\protocol\IRC_client_tools.cpp" />
+    <ClCompile Include="net\protocol\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="net\protocol\IRC_client_gui_callbacks.h" />
@@ -91,6 +99,7 @@
     <ClInclude Include="net\protocol\IRC_client_gui_messagehandler.h" />
     <ClInclude Include="net\protocol\IRC_client_tools.h" />
     <ClInclude Include="net\protocol\IRC_common.h" />
+    <ClInclude Include="net\protocol\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\client\client.vcxproj">

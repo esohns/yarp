@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "rpg_engine_level.h"
 
@@ -843,7 +844,7 @@ RPG_Engine_Level::handleEntities()
                    ACE_TEXT("[%u] attacking...\n"),
                    (*iterator).first));
 
-        mode(MODE_FIGHTING);
+        mode(PLAYERMODE_FIGHTING);
 
         break;
       }
@@ -879,7 +880,7 @@ RPG_Engine_Level::handleEntities()
                    ACE_TEXT("[%u] searching...\n"),
                    (*iterator).first));
 
-        mode(MODE_SEARCHING);
+        mode(PLAYERMODE_SEARCHING);
 
         break;
       }
@@ -916,7 +917,7 @@ RPG_Engine_Level::handleEntities()
         } // end IF
         ACE_ASSERT(!current_action.path.empty());
         
-        mode(MODE_TRAVELLING);
+        mode(PLAYERMODE_TRAVELLING);
 
         // move to next adjacent position (if still (!) possible)
         RPG_Map_Element element = getElement(current_action.path.front().first);
@@ -934,7 +935,7 @@ RPG_Engine_Level::handleEntities()
         // done ?
         action_complete = current_action.path.empty();
         if (action_complete)
-          clear(MODE_TRAVELLING);
+          clear(PLAYERMODE_TRAVELLING);
 
         // notify client window
         try

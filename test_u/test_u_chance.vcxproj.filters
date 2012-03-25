@@ -18,5 +18,13 @@
     <ClCompile Include="chance\chance_dice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="chance\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="chance\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
