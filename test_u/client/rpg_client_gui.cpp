@@ -332,8 +332,8 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << RPG_CLIENT_DEF_ACE_USES_TP  << ACE_TEXT(" : ") << RPG_CLIENT_DEF_ACE_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
-process_arguments(const int argc_in,
+bool
+process_arguments(const int& argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& iniFile_out,
                   std::string& monsterDictionary_out,
@@ -346,7 +346,7 @@ process_arguments(const int argc_in,
                   bool& traceInformation_out,
                   std::string& UIfile_out,
                   bool& printVersionAndExit_out,
-                  unsigned long& numThreadPoolThreads_out)
+                  unsigned int& numThreadPoolThreads_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -569,7 +569,7 @@ process_arguments(const int argc_in,
   return true;
 }
 
-const bool
+bool
 init_threadPool()
 {
   RPG_TRACE(ACE_TEXT("::init_threadPool"));
@@ -654,7 +654,7 @@ reactor_worker_func(void* args_in)
   return 0;
 }
 
-const bool
+bool
 do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
 {
   RPG_TRACE(ACE_TEXT("::do_initAudio"));
@@ -730,8 +730,8 @@ do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
              ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %u\nchannels: %u\nCD [id, status]: \"%s\" [%d, %d]\n"),
              driver,
              obtained.frequency,
-             static_cast<unsigned long>(obtained.format),
-             static_cast<unsigned long>(obtained.channels),
+             static_cast<unsigned int>(obtained.format),
+             static_cast<unsigned int>(obtained.channels),
              SDL_CDName(0),
              cdrom->id,
              cdrom->status));
@@ -739,9 +739,9 @@ do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
   return true;
 }
 
-const bool
+bool
 do_initGUI(const std::string& graphicsDirectory_in,
-           const unsigned long& graphicsCacheSize_in,
+           const unsigned int& graphicsCacheSize_in,
            const std::string& UIfile_in,
            RPG_Client_GTK_CBData_t& userData_in,
            const RPG_Client_SDL_VideoConfig_t& videoConfig_in)
@@ -1238,7 +1238,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   return true;
 }
 
-const bool
+bool
 do_runIntro(SDL_Surface* screen_in)
 {
   RPG_TRACE(ACE_TEXT("::do_runIntro"));
@@ -1371,6 +1371,7 @@ do_work(const RPG_Client_Config& config_in,
   userData.entity.graphic = NULL;
   userData.level_engine = &level_engine;
   userData.map_config = config_in.map_config;
+  userData.ai_spawn_timer_id = -1;
 
   GDK_THREADS_ENTER();
   if (!do_initGUI(config_in.graphics_directory,  // graphics directory
@@ -2286,10 +2287,10 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   std::string floorPlan;
-  bool logToFile                     = false;
-  bool traceInformation              = false;
-  bool printVersionAndExit           = false;
-  unsigned long numThreadPoolThreads = (RPG_CLIENT_DEF_ACE_USES_TP ? RPG_CLIENT_DEF_ACE_NUM_TP_THREADS : 0);
+  bool logToFile                    = false;
+  bool traceInformation             = false;
+  bool printVersionAndExit          = false;
+  unsigned int numThreadPoolThreads = (RPG_CLIENT_DEF_ACE_USES_TP ? RPG_CLIENT_DEF_ACE_NUM_TP_THREADS : 0);
   if (!(process_arguments(argc_in,
                           argv_in,
                           iniFile,

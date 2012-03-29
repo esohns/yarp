@@ -50,8 +50,8 @@ class RPG_Monster_Export RPG_Monster_Dictionary
   // init dictionary
   void init(const std::string&,  // (XML) dictionary filename
             const bool& = true); // validate XML ?
-  const RPG_Monster_Properties getProperties(const std::string&) const; // name of monster
-  const unsigned long numEntries() const;
+  const RPG_Monster_Properties& getProperties(const std::string&) const; // name of monster
+  unsigned int numEntries() const;
   void find(const RPG_Character_Alignment&,       // alignment
             const RPG_Common_Environment&,        // environment
             const RPG_Monster_OrganizationSet_t&, // organization(s)

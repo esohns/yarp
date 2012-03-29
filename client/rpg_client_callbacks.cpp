@@ -24,7 +24,6 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
-//#include "rpg_client_entity_manager.h"
 
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
@@ -2185,6 +2184,17 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_Engine_EntityID_t id = data->level_engine->add(&(data->entity));
   data->level_engine->setActive(id);
 
+  // start AI (monster spawning)
+  RPG_Engine_Event spawn_event;
+  spawn_event.type        = EVENT_SPAWN_MONSTER;
+  spawn_event.monster     = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_AI_SPAWN_TYPE);
+  spawn_event.probability = RPG_CLIENT_DEF_AI_SPAWN_PROBABILITY;
+  ACE_ASSERT(data->ai_spawn_timer_id == -1);
+  data->ai_spawn_timer_id = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
+                                                                                     ACE_Time_Value(RPG_CLIENT_DEF_AI_SPAWN_TIMER_SEC, 0),
+                                                                                     false);
+  ACE_ASSERT(data->ai_spawn_timer_id != -1);
+
   // center on character
   data->client_engine->setView(data->entity.position);
 
@@ -2283,12 +2293,40 @@ part_game_clicked_GTK_cb(GtkWidget* widget_in,
   data->level_engine->setActive(0);
   data->level_engine->remove(id);
 
+  // stop AI (monster spawning)
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(data->ai_spawn_timer_id);
+  data->ai_spawn_timer_id = -1;
+
   // make part button insensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
 
   // make join button sensitive
   GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
                                                       ACE_TEXT_ALWAYS_CHAR("join")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make create button sensitive
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("create")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make load button sensitive
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("load")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make map create button sensitive
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("map_create_button")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make map load button sensitive
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("map_load_button")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 

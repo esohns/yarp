@@ -24,6 +24,7 @@
 
 #include "rpg_dice.h"
 
+#include "rpg_dice_defines.h"
 #include "rpg_dice_common_tools.h"
 
 #include <rpg_common_macros.h>
@@ -139,7 +140,9 @@ RPG_Dice::probability(const float& probability_in)
   // step1: convert decimal to a fraction
   // *TODO*: make this more flexible...
   std::pair<unsigned int, unsigned int> fraction = std::make_pair(0, 0);
-  fraction = RPG_Dice::farey(probability_in, 0.001F, 1000);
+  fraction = RPG_Dice::farey(probability_in,
+                             RPG_DICE_DEF_FAREY_EPSILON,
+                             RPG_DICE_DEF_FAREY_MAX_NOMINATOR);
 
   // step2: generate randomness
   RPG_Dice_RollResult_t random_number;
@@ -329,7 +332,7 @@ RPG_Dice::farey(const float& decimal_in,
   unsigned int b = 1;
   unsigned int c = 1;
   unsigned int d = 1;
-  float mediant = 0.0;
+  float mediant = 0.0F;
 
   while ((b <= maxNominator_in) && (d <= maxNominator_in))
   {

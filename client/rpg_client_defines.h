@@ -113,4 +113,9 @@
 
 #define RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL          false
 
+// AI configuration
+#define RPG_CLIENT_DEF_AI_SPAWN_TIMER_SEC              10
+#define RPG_CLIENT_DEF_AI_SPAWN_TYPE                   "Bugbear"
+#define RPG_CLIENT_DEF_AI_SPAWN_PROBABILITY            0.3F // [0.0 - 1.0] --> 0.5 = 50%
+
 #endif

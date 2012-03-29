@@ -99,6 +99,7 @@ popd</Command>
     <ClInclude Include="rpg_dice.h" />
     <ClInclude Include="rpg_dice_common.h" />
     <ClInclude Include="rpg_dice_common_tools.h" />
+    <ClInclude Include="rpg_dice_defines.h" />
     <ClInclude Include="rpg_dice_dietype.h" />
     <ClInclude Include="rpg_dice_exports.h" />
     <ClInclude Include="rpg_dice_incl.h" />

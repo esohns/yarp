@@ -1148,6 +1148,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                 break;
               }
             } // end SWITCH
+            player_action.path.clear();
+            player_action.target = 0;
 
             if (RPG_Engine_Common_Tools::isValid(player_action.position, *myEngine))
             {
@@ -1334,6 +1336,11 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         // player standing next to door ?
         myClientAction.entity_id = myEngine->getActive();
         RPG_Engine_Action player_action;
+        player_action.command = RPG_ENGINE_COMMAND_INVALID;
+        player_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                std::numeric_limits<unsigned int>::max());
+        player_action.path.clear();
+        player_action.target = 0;
         switch (myEngine->getElement(map_position))
         {
           case MAPELEMENT_DOOR:

@@ -422,12 +422,24 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
       if (RPG_Dice::probability(event_handle->probability))
       {
         // OK: spawn an instance
-        RPG_Engine_Entity entity = RPG_Engine_Common_Tools::createEntity(event_handle->monster);
-        ACE_ASSERT(entity.character && entity.graphic);
-        if (!entity.character || !entity.graphic)
+        RPG_Engine_Entity* entity = NULL;
+        entity = new(std::nothrow) RPG_Engine_Entity;
+        if (!entity)
+        {
+          ACE_DEBUG((LM_CRITICAL,
+                     ACE_TEXT("unable to allocate memory, aborting\n")));
+
+          return;
+        } // end IF
+        *entity = RPG_Engine_Common_Tools::createEntity(event_handle->monster);
+        ACE_ASSERT(entity->character && entity->graphic);
+        if (!entity->character || !entity->graphic)
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity, aborting\n")));
+
+          // clean up
+          delete entity;
 
           return;
         } // end IF
@@ -441,9 +453,15 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
                                         random_number);
         RPG_Map_PositionsConstIterator_t iterator = seed_points.begin();
         std::advance(iterator, random_number.front() - 1);
-        entity.position = *iterator;
+        entity->position = *iterator;
 
-        RPG_Engine_EntityID_t id = myEngine->add(&entity);
+        RPG_Engine_EntityID_t id = myEngine->add(entity);
+
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("spawned a %s [id: %u]...\n"),
+                   entity->character->getName().c_str(),
+                   id));
       } // end IF
 
       break;
@@ -472,7 +490,7 @@ RPG_Engine_Event_Manager::handleEntities()
   next_action.command = RPG_ENGINE_COMMAND_INVALID;
   next_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                         std::numeric_limits<unsigned int>::max());
-  //next_action.path;
+  next_action.path.clear();
   next_action.target = 0;
   for (RPG_Engine_EntitiesConstIterator_t iterator = myEngine->myEntities.begin();
        iterator != myEngine->myEntities.end();

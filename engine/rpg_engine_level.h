@@ -75,7 +75,7 @@ class RPG_Engine_Export RPG_Engine_Level
             const RPG_Map_t&);   // map
   void save(const std::string&) const; // FQ filename
 
-  // *WARNING*: fire&forget API, added entities are controlled by the engine !
+  // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
   RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
   void action(const RPG_Engine_EntityID_t&, // id
@@ -85,19 +85,19 @@ class RPG_Engine_Export RPG_Engine_Level
   RPG_Engine_EntityID_t getActive() const; // return value: id (if any)
   void mode(const RPG_Engine_EntityMode&); // add mode (to active entity)
   void clear(const RPG_Engine_EntityMode&); // clear mode (from active entity)
-  const bool hasMode(const RPG_Engine_EntityMode&) const; // mode
+  bool hasMode(const RPG_Engine_EntityMode&) const; // mode
 
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
-  const bool isMonster(const RPG_Engine_EntityID_t&) const;
+  bool isMonster(const RPG_Engine_EntityID_t&) const;
 
   RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
   const SDL_Surface* getGraphics(const RPG_Engine_EntityID_t&) const;
   RPG_Engine_EntityGraphics_t getGraphics() const;
   RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
   RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
-  const bool findPath(const RPG_Map_Position_t&, // start position
-                      const RPG_Map_Position_t&, // end position
-                      RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
+  bool findPath(const RPG_Map_Position_t&, // start position
+                const RPG_Map_Position_t&, // end position
+                RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
 
   using RPG_Map_Level::getStartPosition;
   using RPG_Map_Level::getSeedPoints;

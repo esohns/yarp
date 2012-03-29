@@ -399,7 +399,7 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
 //              filename_in.c_str()));
 }
 
-const RPG_Monster_Properties
+const RPG_Monster_Properties&
 RPG_Monster_Dictionary::getProperties(const std::string& name_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::getProperties"));
@@ -417,7 +417,7 @@ RPG_Monster_Dictionary::getProperties(const std::string& name_in) const
   return iterator->second;
 }
 
-const unsigned long
+unsigned int
 RPG_Monster_Dictionary::numEntries() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::numEntries"));

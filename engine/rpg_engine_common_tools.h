@@ -68,8 +68,9 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                                       const bool&);       // load sprite graphic ?
   static const bool saveEntity(const RPG_Engine_Entity&, // entity
                                const std::string&);      // FQ filename
-  // *NOTE*: return value entity.character must be deleted() by the caller !
-  static RPG_Engine_Entity createEntity(const bool&); // load sprite graphic ?
+  // *NOTE*: return value entity.character must be delete()d by the caller !
+  // *NOTE*: return value entity.graphic must be SDL_FreeSurface()d by the caller !
+  static RPG_Engine_Entity createEntity(const bool& = true); // load sprite graphic ?
   static RPG_Engine_Entity createEntity(const std::string&); // creature type
   static std::string info(const RPG_Engine_Entity&); // entity
 

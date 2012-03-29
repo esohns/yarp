@@ -76,6 +76,19 @@ RPG_Engine_Level::~RPG_Engine_Level()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::~RPG_Engine_Level"));
 
+  // clean up
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    for (RPG_Engine_EntitiesIterator_t iterator = myEntities.begin();
+         iterator != myEntities.end();
+         iterator++)
+      if (!(*iterator).second->character->isPlayerCharacter())
+      {
+        // clean up NPC entities...
+        delete (*iterator).second->character;
+        delete (*iterator).second;
+      } // end IF
+  } // end lock scope
 }
 
 int
@@ -399,7 +412,7 @@ RPG_Engine_Level::add(RPG_Engine_Entity* entity_in)
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   RPG_Engine_EntityID_t id = myCurrentID++;
-  myEntities.insert(std::make_pair(id, entity_in));
+  myEntities[id] = entity_in;
 
   // notify client / window
   try
@@ -434,6 +447,12 @@ RPG_Engine_Level::remove(const RPG_Engine_EntityID_t& id_in)
                id_in));
 
     return;
+  } // end IF
+  if (!(*iterator).second->character->isPlayerCharacter())
+  {
+    // clean up NPC entities...
+    delete (*iterator).second->character;
+    delete (*iterator).second;
   } // end IF
   myEntities.erase(iterator);
 
@@ -551,7 +570,7 @@ RPG_Engine_Level::clear(const RPG_Engine_EntityMode& mode_in)
   (*iterator).second->modes.erase(mode_in);
 }
 
-const bool
+bool
 RPG_Engine_Level::hasMode(const RPG_Engine_EntityMode& mode_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::hasMode"));
@@ -685,7 +704,7 @@ RPG_Engine_Level::getDoor(const RPG_Map_Position_t& position_in) const
   return *iterator;
 }
 
-const bool
+bool
 RPG_Engine_Level::findPath(const RPG_Map_Position_t& start_in,
                            const RPG_Map_Position_t& end_in,
                            RPG_Map_Path_t& path_out) const
@@ -733,10 +752,10 @@ RPG_Engine_Level::hasEntity(const RPG_Map_Position_t& position_in) const
   return 0;
 }
 
-const bool
+bool
 RPG_Engine_Level::isMonster(const RPG_Engine_EntityID_t& id_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::hasEntity"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::isMonster"));
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -992,6 +1011,7 @@ RPG_Engine_Level::handleEntities()
 
         (*iterator).second->position = current_action.path.front().first;
         current_action.path.pop_front();
+        action_complete = false;
 
         // notify client window
         try

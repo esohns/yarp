@@ -46,6 +46,7 @@ struct RPG_Client_GTK_CBData_t
 {
  inline RPG_Client_GTK_CBData_t()
   : lock(NULL, NULL),
+    do_hover(true),
     hover_time(0),
     gtk_time(0),
     gtk_main_quit_invoked(false),
@@ -55,9 +56,11 @@ struct RPG_Client_GTK_CBData_t
     screen(NULL),
     event_timer(NULL),
     client_engine(NULL),
+//    schemaRepository(),
 //     entity(),
-    level_engine(NULL)//,
+    level_engine(NULL),
 //     map_config()
+    ai_spawn_timer_id(-1)
  {
 //    entity.character = NULL;
 //    entity.position = std::make_pair(0, 0);
@@ -81,6 +84,7 @@ struct RPG_Client_GTK_CBData_t
   RPG_Engine_Entity          entity;
   RPG_Engine_Level*          level_engine;
   RPG_Map_FloorPlan_Config_t map_config;
+  int                        ai_spawn_timer_id;
 };
 
 // *NOTE* types as used by SDL
