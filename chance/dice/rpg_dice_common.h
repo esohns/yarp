@@ -32,7 +32,7 @@
 typedef std::vector<RPG_Dice_Roll> RPG_Dice_Rolls_t;
 typedef RPG_Dice_Rolls_t::const_iterator RPG_Dice_RollsIterator_t;
 
-typedef std::vector<int> RPG_Dice_RollResult_t;
+typedef std::vector<unsigned int> RPG_Dice_RollResult_t;
 typedef RPG_Dice_RollResult_t::const_iterator RPG_Dice_RollResultIterator_t;
 
 // enum RPG_Dice_DieType

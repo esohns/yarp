@@ -98,12 +98,14 @@
     <ClInclude Include="rpg_engine_common.h" />
     <ClInclude Include="rpg_engine_common_tools.h" />
     <ClInclude Include="rpg_engine_defines.h" />
+    <ClInclude Include="rpg_engine_entitymode.h" />
+    <ClInclude Include="rpg_engine_event_common.h" />
+    <ClInclude Include="rpg_engine_event_manager.h" />
     <ClInclude Include="rpg_engine_exports.h" />
     <ClInclude Include="rpg_engine_incl.h" />
     <ClInclude Include="rpg_engine_iwindow.h" />
     <ClInclude Include="rpg_engine_level.h" />
     <ClInclude Include="rpg_engine_messagequeue.h" />
-    <ClInclude Include="rpg_engine_playermode.h" />
     <ClInclude Include="rpg_engine_XML_tree.h" />
     <ClInclude Include="rpg_XMLSchema_XML_tree.h" />
     <ClInclude Include="rpg_XMLSchema_XML_types.h" />
@@ -111,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_engine_common_tools.cpp" />
+    <ClCompile Include="rpg_engine_event_manager.cpp" />
     <ClCompile Include="rpg_engine_level.cpp" />
     <ClCompile Include="rpg_engine_messagequeue.cpp" />
     <ClCompile Include="rpg_engine_XML_tree.cpp" />

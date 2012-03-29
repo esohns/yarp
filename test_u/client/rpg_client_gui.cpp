@@ -51,6 +51,7 @@
 #include <rpg_map_level.h>
 
 #include <rpg_engine_defines.h>
+#include <rpg_engine_event_manager.h>
 #include <rpg_engine_common_tools.h>
 
 #include <rpg_monster_defines.h>
@@ -112,7 +113,8 @@ event_timer_SDL_cb(Uint32 interval_in,
 
     data->hover_time += interval_in;
     data->gtk_time += interval_in;
-    if (data->hover_time >= RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
+    if (data->do_hover &&
+        (data->hover_time >= RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY))
     {
       // mouse is hovering --> trigger an event
       sdl_event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
@@ -180,7 +182,7 @@ input_timer_SDL_cb(Uint32 interval_in,
 
 // wait for an input event; stop after timeout_in second(s) (0: wait forever)
 void
-do_SDL_waitForInput(const unsigned long& timeout_in,
+do_SDL_waitForInput(const unsigned int& timeout_in,
                     SDL_Event& event_out)
 {
   RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
@@ -1351,6 +1353,7 @@ do_work(const RPG_Client_Config& config_in,
   RPG_Engine_Level level_engine;
   RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
+  userData.do_hover              = true;
   userData.hover_time            = 0;
   userData.gtk_time              = 0;
   userData.gtk_main_quit_invoked = false;
@@ -1430,6 +1433,7 @@ do_work(const RPG_Client_Config& config_in,
   // step5d: client engine
   client_engine.init(&level_engine,
                      mainWindow.getChild(WINDOW_MAP));
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(&level_engine);
 
   // step5e: queue initial drawing
   RPG_Client_Action client_action;
@@ -1672,6 +1676,35 @@ do_work(const RPG_Client_Config& config_in,
         // *WARNING*: falls through !
       }
       case SDL_ACTIVEEVENT:
+      {
+        // *NOTE*: when the mouse leaves the window, it's NOT hovering
+        // --> stop generating any hover events !
+        if (sdl_event.active.state & SDL_APPMOUSEFOCUS)
+        {
+          if (sdl_event.active.gain & SDL_APPMOUSEFOCUS)
+          {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("gained mouse coverage...\n")));
+
+            // synch access
+            ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
+
+            userData.do_hover = true;
+          } // end IF
+          else
+          {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("lost mouse coverage...\n")));
+
+            // synch access
+            ACE_Guard<ACE_Thread_Mutex> aGuard(userData.lock);
+
+            userData.do_hover = false;
+          } // end ELSE
+        } // end IF
+
+        // *WARNING*: falls through !
+      }
       case SDL_MOUSEMOTION:
       case SDL_MOUSEBUTTONDOWN:
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
@@ -1697,9 +1730,17 @@ do_work(const RPG_Client_Config& config_in,
         window = mainWindow.getWindow(mouse_position);
         ACE_ASSERT(window);
 
-        // notify previously "active" window upon losing "focus"
+        // first steps on mouse motion:
+        // 0. restore cursor BG
+        // 1. notify previously "active" window upon losing "focus"
         if (sdl_event.type == SDL_MOUSEMOTION)
         {
+          // step0: restore cursor BG
+          client_action.command = COMMAND_CURSOR_RESTORE_BG;
+          client_action.window = (previous_window ? previous_window : window);
+          client_engine.action(client_action);
+
+          // step1: notify previous window (if any)
           if (previous_window &&
 //               (previous_window != mainWindow)
               (previous_window != window))

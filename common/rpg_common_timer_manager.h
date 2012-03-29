@@ -22,7 +22,6 @@
 #define RPG_COMMON_TIMER_MANAGER_H
 
 #include "rpg_common_exports.h"
-#include "rpg_common_timerhandler.h"
 #include "rpg_common_idumpstate.h"
 
 #include <ace/Singleton.h>
@@ -47,10 +46,12 @@ class RPG_Common_Export RPG_Common_Timer_Manager
                              ACE_Recursive_Thread_Mutex>;
 
  public:
-  const bool scheduleTimer(const ACE_Event_Handler&, // timer dispatch handler
-                           const ACE_Time_Value&,    // period (starting NOW)
-                           const bool&,              // reschedule interval ?
-                           int&);                    // return value: timer ID
+  // *IMPORTANT NOTE*: this is a fire-and-forget API (assumes resp. for the event handler)...
+  bool scheduleTimer(ACE_Event_Handler*,    // timer dispatch handler
+                     const void*,           // act (== dispatch argument)
+                     const ACE_Time_Value&, // period (starting NOW)
+                     const bool&,           // reschedule interval ?
+                     int&);                 // return value: timer ID
   void cancelTimer(const int&); // timer ID
 
   // implement RPG_Common_IDumpState
@@ -71,6 +72,7 @@ class RPG_Common_Export RPG_Common_Timer_Manager
   typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> RPG_Common_TimerQueue_t;
 
   // helper methods
+  // *WARNING*: needs to be called with myLock held !
   void fini_timers();
 
   // make API re-entrant
@@ -82,5 +84,8 @@ class RPG_Common_Export RPG_Common_Timer_Manager
 
 typedef ACE_Singleton<RPG_Common_Timer_Manager,
                       ACE_Recursive_Thread_Mutex> RPG_COMMON_TIMERMANAGER_SINGLETON;
+RPG_COMMON_SINGLETON_DECLARE(ACE_Singleton,
+                             RPG_Common_Timer_Manager,
+                             ACE_Recursive_Thread_Mutex);
 
 #endif

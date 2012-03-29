@@ -1343,8 +1343,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             // closed --> (try to) open it
             if (myClientAction.entity_id &&
                 (!door.is_open) &&
-                (RPG_Map_Common_Tools::dist2Positions(myEngine->getPosition(myClientAction.entity_id),
-                                                      map_position) == 1))
+                RPG_Map_Common_Tools::isAdjacent(myEngine->getPosition(myClientAction.entity_id),
+                                                 map_position))
             {
               player_action.command = (door.is_open ? COMMAND_DOOR_CLOSE
                                                     : COMMAND_DOOR_OPEN);

@@ -60,7 +60,7 @@ class RPG_Client_Export RPG_Client_Engine
   // implement RPG_Common_IControl
   virtual void start();
   virtual void stop();
-  virtual const bool isRunning();
+  virtual bool isRunning();
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -71,6 +71,9 @@ class RPG_Client_Export RPG_Client_Engine
   // *NOTE*: this triggers a complete redraw !
   virtual void setView(const RPG_Map_Position_t&);
   virtual void toggleDoor(const RPG_Map_Position_t&);
+  virtual void addEntity(const RPG_Engine_EntityID_t&,
+                         const SDL_Surface*);
+  virtual void removeEntity(const RPG_Engine_EntityID_t&);
   virtual void updateEntity(const RPG_Engine_EntityID_t&);
 
   void initMap();

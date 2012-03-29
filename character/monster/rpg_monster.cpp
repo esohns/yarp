@@ -99,7 +99,7 @@ RPG_Monster::~RPG_Monster()
 //   return *this;
 // }
 
-const RPG_Common_CreatureType
+const RPG_Common_CreatureType&
 RPG_Monster::getType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getType"));
@@ -107,7 +107,7 @@ RPG_Monster::getType() const
   return myType;
 }
 
-const bool
+bool
 RPG_Monster::isSummoned() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::isSummoned"));
@@ -115,7 +115,7 @@ RPG_Monster::isSummoned() const
   return myIsSummoned;
 }
 
-const signed char
+signed char
 RPG_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getArmorClass"));
@@ -168,7 +168,7 @@ RPG_Monster::gainExperience(const unsigned int& XP_in)
   ACE_ASSERT(false);
 }
 
-const bool
+bool
 RPG_Monster::isPlayerCharacter() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::isPlayerCharacter"));
@@ -188,7 +188,7 @@ RPG_Monster::dump() const
   inherited::dump();
 }
 
-const RPG_Character_BaseAttackBonus_t
+RPG_Character_BaseAttackBonus_t
 RPG_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
                             const RPG_Combat_AttackSituation& attackSituation_in) const
 {
@@ -205,7 +205,7 @@ RPG_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
   return result;
 }
 
-const signed char
+signed char
 RPG_Monster::getShieldBonus() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getShieldBonus"));

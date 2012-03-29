@@ -65,6 +65,7 @@ RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
   RPG_TRACE(ACE_TEXT("RPG_Dice::generateRandomNumbers"));
 
   ACE_ASSERT(range_in);
+  ACE_ASSERT(range_in <= RAND_MAX);
 
   // init result(s)
   results_out.clear();
@@ -123,6 +124,31 @@ RPG_Dice::simulateRoll(const RPG_Dice_Roll& rollSpecs_in,
 
     results_out.push_back(tempResult + rollSpecs_in.modifier);
   } // end FOR
+}
+
+bool
+RPG_Dice::probability(const float& probability_in)
+{
+  // sanity checks
+  ACE_ASSERT((probability_in >= 0.0) && (probability_in <= 1.0));
+  if (probability_in == 0.0)
+    return false;
+  else if (probability_in == 1.0)
+    return true;
+
+  // step1: convert decimal to a fraction
+  // *TODO*: make this more flexible...
+  std::pair<unsigned int, unsigned int> fraction = std::make_pair(0, 0);
+  fraction = RPG_Dice::farey(probability_in, 0.001F, 1000);
+
+  // step2: generate randomness
+  RPG_Dice_RollResult_t random_number;
+  RPG_Dice::generateRandomNumbers(fraction.second,
+                                  1,
+                                  random_number);
+
+  // step3: test for hit/miss
+  return (random_number.front() <= fraction.first);
 }
 
 void
@@ -282,7 +308,7 @@ RPG_Dice::rangeToRoll(const RPG_Dice_ValueRange& valueRange_in,
   } // end IF
 }
 
-const unsigned int
+unsigned int
 RPG_Dice::distanceRangeToRange(const RPG_Dice_ValueRange& rangeA_in,
                                const RPG_Dice_ValueRange& rangeB_in)
 {
@@ -290,4 +316,47 @@ RPG_Dice::distanceRangeToRange(const RPG_Dice_ValueRange& rangeA_in,
 
   return (::abs(rangeA_in.begin - rangeB_in.begin) +
           ::abs(rangeA_in.end - rangeB_in.end));
+}
+
+std::pair<unsigned int, unsigned int>
+RPG_Dice::farey(const float& decimal_in,
+                const float& epsilon_in,
+                const unsigned int& maxNominator_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Dice::farey"));
+
+  unsigned int a = 0;
+  unsigned int b = 1;
+  unsigned int c = 1;
+  unsigned int d = 1;
+  float mediant = 0.0;
+
+  while ((b <= maxNominator_in) && (d <= maxNominator_in))
+  {
+    mediant = static_cast<float>(a + c)/static_cast<float>(b + d);
+    if (std::abs(decimal_in - mediant) < epsilon_in)
+    {
+      if (b + d <= maxNominator_in)
+        return std::make_pair(a + c, b + d);
+      else if (d > b)
+        return std::make_pair(c, d);
+      else
+        return std::make_pair(a, b);
+    } // end IF
+    else if (decimal_in > mediant)
+    {
+      a = a + c;
+      b = b + d;
+    } // end ELSEIF
+    else
+    {
+      c = a + c;
+      d = b + d;
+    } // end ELSE
+  } // end WHILE
+
+  if (b > maxNominator_in)
+    return std::make_pair(c, d);
+
+  return std::make_pair(a, b);
 }

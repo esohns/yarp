@@ -229,7 +229,7 @@ RPG_Client_Engine::stop()
              ACE_TEXT("worker thread has joined...\n")));
 }
 
-const bool
+bool
 RPG_Client_Engine::isRunning()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::isRunning"));
@@ -323,6 +323,23 @@ RPG_Client_Engine::toggleDoor(const RPG_Map_Position_t& position_in)
   new_action.entity_id = 0;
 
   action(new_action);
+}
+
+void
+RPG_Client_Engine::addEntity(const RPG_Engine_EntityID_t& id_in,
+                             const SDL_Surface* graphic_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::addEntity"));
+
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(id_in, graphic_in);
+}
+
+void
+RPG_Client_Engine::removeEntity(const RPG_Engine_EntityID_t& id_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::removeEntity"));
+
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(id_in);
 }
 
 void

@@ -323,7 +323,7 @@ do_battle(RPG_Player_Party_t& party_in,
       try
       {
         monster_p = new RPG_Monster(// base attributes
-                                    (iterator->first).c_str(),
+                                    iterator->first,
                                     properties.type,
                                     properties.alignment,
                                     properties.attributes,

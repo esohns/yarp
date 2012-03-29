@@ -8,6 +8,6 @@
 #define RPG_ENGINE_INCL_H
 
 #include "rpg_engine_command.h"
-#include "rpg_engine_playermode.h"
+#include "rpg_engine_entitymode.h"
 
 #endif

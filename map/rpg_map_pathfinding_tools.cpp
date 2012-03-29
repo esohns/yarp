@@ -54,7 +54,7 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
   start.position = start_in;
   start.last_position = start_in;
   openPath.insert(std::make_pair(start,
-                                 RPG_Map_Common_Tools::dist2Positions(start_in, end_in)));
+                                 RPG_Map_Common_Tools::distance(start_in, end_in)));
 
   RPG_Map_AStar_Node_t up, right, down, left;
   RPG_Map_AStar_NodeList_t neighbours;
@@ -84,10 +84,10 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
     left.first.last_position = (*openPath.begin()).first.position;
     left.first.position.first -= ((left.first.position.first == 0) ? 0 : 1);
     // ...and costs
-    up.second = RPG_Map_Common_Tools::dist2Positions(up.first.position, end_in);
-    right.second = RPG_Map_Common_Tools::dist2Positions(right.first.position, end_in);
-    down.second = RPG_Map_Common_Tools::dist2Positions(down.first.position, end_in);
-    left.second = RPG_Map_Common_Tools::dist2Positions(left.first.position, end_in);
+    up.second = RPG_Map_Common_Tools::distance(up.first.position, end_in);
+    right.second = RPG_Map_Common_Tools::distance(right.first.position, end_in);
+    down.second = RPG_Map_Common_Tools::distance(down.first.position, end_in);
+    left.second = RPG_Map_Common_Tools::distance(left.first.position, end_in);
     // *NOTE*: enforce the constraint of an "initial" starting direction
     // --> "leave" a room to find another door
     // start position ?

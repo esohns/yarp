@@ -74,7 +74,7 @@
 
 // init statics
 RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
-RPG_Engine_PlayerModeToStringTable_t RPG_Engine_PlayerModeHelper::myRPG_Engine_PlayerModeToStringTable;
+RPG_Engine_EntityModeToStringTable_t RPG_Engine_EntityModeHelper::myRPG_Engine_EntityModeToStringTable;
 
 void
 RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
@@ -96,7 +96,7 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   RPG_Monster_Common_Tools::initStringConversionTables();
 
   RPG_Engine_CommandHelper::init();
-  RPG_Engine_PlayerModeHelper::init();
+  RPG_Engine_EntityModeHelper::init();
 
   // step1c: init dictionaries
   // step1ca: init magic dictionary
@@ -338,7 +338,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator iterator = engine_player_p->mode().begin();
          iterator != engine_player_p->mode().end();
          iterator++)
-      result.modes.insert(RPG_Engine_PlayerModeHelper::stringToRPG_Engine_PlayerMode(*iterator));
+      result.modes.insert(RPG_Engine_EntityModeHelper::stringToRPG_Engine_EntityMode(*iterator));
     result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
   } // end IF
 
@@ -401,10 +401,10 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
                                          entity_in.position.second);
   entity_model->position(position);
   RPG_Engine_Player_XMLTree_Type::mode_sequence modes;
-  for (RPG_Engine_PlayerModeConstIterator_t iterator = entity_in.modes.begin();
+  for (RPG_Engine_EntityModeConstIterator_t iterator = entity_in.modes.begin();
        iterator != entity_in.modes.end();
        iterator++)
-    modes.push_back(RPG_Engine_PlayerMode_XMLTree_Type(static_cast<RPG_Engine_PlayerMode_XMLTree_Type::value>(*iterator)));
+    modes.push_back(RPG_Engine_EntityMode_XMLTree_Type(static_cast<RPG_Engine_EntityMode_XMLTree_Type::value>(*iterator)));
   entity_model->mode(modes);
   entity_model->sprite(RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite));
 
@@ -481,9 +481,12 @@ RPG_Engine_Common_Tools::createEntity(const bool& loadImage_in)
 
   RPG_Engine_Entity result;
   result.character = NULL;
-  result.graphic = NULL;
-  result.position = std::make_pair(0, 0);
+  result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                   std::numeric_limits<unsigned int>::max());
+  //result.modes();
+  //result.actions();
   result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  result.graphic = NULL;
 
   // step1: generate player
   RPG_Player* player_p = RPG_Player_Common_Tools::generatePlayer();
@@ -503,6 +506,75 @@ RPG_Engine_Common_Tools::createEntity(const bool& loadImage_in)
                                                             false); // don't cache
     ACE_ASSERT(result.graphic);
   } // end IF
+
+  return result;
+}
+
+RPG_Engine_Entity
+RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
+
+  RPG_Engine_Entity result;
+  result.character = NULL;
+  result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                   std::numeric_limits<unsigned int>::max());
+  //result.modes();
+  //result.actions();
+  result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  result.graphic = NULL;
+
+  RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
+  // compute individual hitpoints
+  RPG_Dice_RollResult_t result_values;
+  RPG_Dice::simulateRoll(properties.hitDice,
+                         1,
+                         result_values);
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL);
+  // *TODO*: define monster abilities, spells, wealth, inventory (i.e. treasure)...
+  RPG_Character_Abilities_t abilities;
+  RPG_Magic_SpellTypes_t known_spells;
+  unsigned int wealth = 0;
+  RPG_Magic_Spells_t spells;
+  RPG_Item_List_t items;
+
+  result.character = new(std::nothrow) RPG_Monster(// base attributes
+                                                   type_in,
+                                                   properties.type,
+                                                   properties.alignment,
+                                                   properties.attributes,
+                                                   properties.skills,
+                                                   properties.feats,
+                                                   abilities,
+                                                   properties.size,
+                                                   result_values.front(),
+                                                   known_spells,
+                                                   // current status
+                                                   condition,
+                                                   result_values.front(),
+                                                   wealth,
+                                                   spells,
+                                                   items,
+                                                   false);
+  if (!result.character)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate RPG_Monster, aborting\n")));
+
+    return result;
+  } // end IF
+
+  // generate/load player sprite
+  result.sprite = RPG_Engine_Common_Tools::monster2Sprite(type_in);
+  ACE_ASSERT(result.sprite != RPG_GRAPHICS_SPRITE_INVALID);
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  type.sprite = result.sprite;
+  result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                          true,   // convert to display format
+                                                          false); // don't cache
+  ACE_ASSERT(result.graphic);
 
   return result;
 }
@@ -1226,7 +1298,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Player_Base* const attacker_in,
 //     } // end FOR
 
     // --> check primary weapon
-    weapon_type = player_base->getEquipment()->getPrimaryWeapon(player_base->getOffHand());
+    weapon_type = player_base->getEquipment().getPrimaryWeapon(player_base->getOffHand());
     weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
     // consider range penalty...
     if (weapon_properties.rangeIncrement)
@@ -1325,7 +1397,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Player_Base* const attacker_in,
       else if (is_threat)
       {
         // check for critical
-        if ((result.front() + currentAttackBonus) >= targetArmorClass)
+        if ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass)
           is_critical_hit = true;
       } // end ELSE
 
@@ -1679,7 +1751,7 @@ monster_perform_single_action:
       else if (is_threat)
       {
         // check for critical
-        if ((result.front() + currentAttackBonus) >= targetArmorClass)
+        if ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass)
           is_critical_hit = true;
       } // end ELSE
 
@@ -1972,8 +2044,8 @@ RPG_Engine_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
     RPG_Engine_EntityID_t entity_id = level_in.getActive();
     if (!door.is_open &&
         entity_id &&
-        (RPG_Map_Common_Tools::dist2Positions(level_in.getPosition(entity_id),
-                                              position_in) == 1))
+        (RPG_Map_Common_Tools::distance(level_in.getPosition(entity_id),
+                                        position_in) == 1))
       result = CURSOR_DOOR_OPEN;
   } // end IF
 
@@ -2028,6 +2100,15 @@ RPG_Engine_Common_Tools::isCorner(const RPG_Map_Position_t& position_in,
             (level_in.getElement(south) == MAPELEMENT_WALL)) &&
            ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
             (level_in.getElement(west) == MAPELEMENT_WALL)))); // NE
+}
+
+const RPG_Graphics_Sprite
+RPG_Engine_Common_Tools::monster2Sprite(const std::string& type_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::monster2Sprite"));
+
+  // *TODO*: 
+  return SPRITE_GOBLIN;
 }
 
 RPG_Engine_Player_XMLTree_Type*

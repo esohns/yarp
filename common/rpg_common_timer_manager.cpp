@@ -67,18 +67,26 @@ RPG_Common_Timer_Manager::fini_timers()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::fini_timers"));
 
-//   if (myTimerQueue.cancel(myResetTimeoutHandlerID) == -1)
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to cancel() timer: \"%m\", continuing\n")));
+  TIMERHEAPITERATOR_TYPE iterator(*myTimerQueue.timer_queue());
+  for (iterator.first();
+       !iterator.isdone();
+       iterator.next())
+    if (myTimerQueue.cancel(iterator.item()->get_timer_id(), NULL) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to cancel() timer (ID: %u): \"%m\", continuing\n"),
+                 iterator.item()->get_timer_id()));
 }
 
-const bool
-RPG_Common_Timer_Manager::scheduleTimer(const ACE_Event_Handler& handler_in,
+bool
+RPG_Common_Timer_Manager::scheduleTimer(ACE_Event_Handler* handler_in,
+                                        const void* act_in,
                                         const ACE_Time_Value& wakeup_in,
                                         const bool& isOneShot_in,
                                         int& timerID_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::scheduleTimer"));
+
+  ACE_ASSERT(handler_in);
 
   // init return value(s)
   timerID_out = 0;
@@ -88,8 +96,8 @@ RPG_Common_Timer_Manager::scheduleTimer(const ACE_Event_Handler& handler_in,
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     // schedule a new timer
-    timerID_out = myTimerQueue.schedule(&const_cast<ACE_Event_Handler&> (handler_in),     // handler
-                                        NULL,                                                // argument
+    timerID_out = myTimerQueue.schedule(handler_in,                                          // handler
+                                        act_in,                                              // argument
                                         ACE_OS::gettimeofday () + wakeup_in,                 // wakeup time
                                         (!isOneShot_in ? wakeup_in : ACE_Time_Value::zero)); // interval ?
     if (timerID_out == -1)
@@ -122,7 +130,7 @@ RPG_Common_Timer_Manager::cancelTimer(const int& timerID_in)
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    if (myTimerQueue.cancel(timerID_in) == -1)
+    if (myTimerQueue.cancel(timerID_in, NULL) == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to cancel() timer (ID: %u): \"%m\", returning\n"),
@@ -148,20 +156,4 @@ RPG_Common_Timer_Manager::dump_state() const
 
   // *TODO*: print some meaningful data
   ACE_ASSERT(false);
-
-//   for (CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
-//        iter != myConnections.end();
-//        iter++)
-//   {
-//     // dump connection information
-//     try
-//     {
-//       (*iter)->dump_state();
-//     }
-//     catch (...)
-//     {
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("caught exception in RPG_Net_IConnection::dump_state(), continuing")));
-//     }
-//   } // end FOR
 }

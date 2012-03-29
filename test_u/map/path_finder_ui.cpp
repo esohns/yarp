@@ -712,6 +712,8 @@ do_work(const RPG_Client_Config& config_in,
             userData.do_hover = false;
           } // end ELSE
         } // end IF
+
+        // *WARNING*: falls through !
       }
       case SDL_MOUSEMOTION:
       case SDL_MOUSEBUTTONDOWN:

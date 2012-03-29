@@ -66,44 +66,44 @@ class RPG_Player_Export RPG_Player_Base
   virtual ~RPG_Player_Base();
 
   // retrieve basic character data
-  const std::string getName() const;
-  const RPG_Character_Alignment getAlignment() const;
+  const std::string& getName() const;
+  const RPG_Character_Alignment& getAlignment() const;
 
-  const RPG_Character_Conditions_t getCondition() const;
+  const RPG_Character_Conditions_t& getCondition() const;
 
   // retrieve base attributes
-  const unsigned char getAttribute(const RPG_Common_Attribute&) const;
+  unsigned char getAttribute(const RPG_Common_Attribute&) const;
 
-  const RPG_Character_Feats_t getFeats() const;
-  const RPG_Character_Abilities_t getAbilities() const;
-  const RPG_Character_Skills_t getSkills() const;
+  const RPG_Character_Feats_t& getFeats() const;
+  const RPG_Character_Abilities_t& getAbilities() const;
+  const RPG_Character_Skills_t& getSkills() const;
 
   // retrieve skill value (if any)
   void getSkillRank(const RPG_Common_Skill&, // skill
                     unsigned char&) const;   // result: value (0: doesn't exist)
 
-  const bool hasFeat(const RPG_Character_Feat&) const; // feat
-  const bool hasAbility(const RPG_Character_Ability&) const; // ability
-  const bool hasCondition(const RPG_Common_Condition&) const; // condition
+  bool hasFeat(const RPG_Character_Feat&) const; // feat
+  bool hasAbility(const RPG_Character_Ability&) const; // ability
+  bool hasCondition(const RPG_Common_Condition&) const; // condition
 
-  const unsigned short int getNumTotalHitPoints() const;
-  const short int getNumHitPoints() const;
+  unsigned short int getNumTotalHitPoints() const;
+  short int getNumHitPoints() const;
 
-  const unsigned int getWealth() const;
-  const RPG_Common_Size getSize() const;
+  unsigned int getWealth() const;
+  RPG_Common_Size getSize() const;
 
-  const RPG_Magic_SpellTypes_t getKnownSpells() const;
-  const RPG_Magic_Spells_t getSpells() const;
+  const RPG_Magic_SpellTypes_t& getKnownSpells() const;
+  const RPG_Magic_Spells_t& getSpells() const;
 
-  RPG_Player_Inventory getInventory() const;
+  const RPG_Player_Inventory& getInventory() const;
 //   const RPG_Character_Equipment getEquipment() const;
 
-  virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
-                                                               const RPG_Combat_AttackSituation&) const = 0;
-  virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
+  virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
+                                                         const RPG_Combat_AttackSituation&) const = 0;
+  virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
 
   // get a hint if this is a PC/NPC
-  virtual const bool isPlayerCharacter() const = 0;
+  virtual bool isPlayerCharacter() const = 0;
   // sustain some damage (melee, magic, ...)
   void sustainDamage(const RPG_Combat_Damage&); // damage
   // we just got wiser...
@@ -150,7 +150,7 @@ class RPG_Player_Export RPG_Player_Base
             const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
             const RPG_Item_List_t&);           // list of (carried) items
 
-  virtual const signed char getShieldBonus() const = 0;
+  virtual signed char getShieldBonus() const = 0;
 
   unsigned int               myWealth;
   RPG_Common_Size            mySize;

@@ -60,26 +60,26 @@ class RPG_Player_Export RPG_Player_Player_Base
   virtual ~RPG_Player_Player_Base();
 
   // retrieve basic player character data
-  const RPG_Character_Gender getGender() const;
-  const RPG_Character_Race_t getRace() const;
-  const RPG_Character_Class getClass() const;
-  const RPG_Character_OffHand getOffHand() const;
+  RPG_Character_Gender getGender() const;
+  const RPG_Character_Race_t& getRace() const;
+  const RPG_Character_Class& getClass() const;
+  RPG_Character_OffHand getOffHand() const;
 
-  const unsigned int getExperience() const;
+  unsigned int getExperience() const;
   // compute dynamically from class/XP
-  const unsigned char getLevel(const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
+  unsigned char getLevel(const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
 
   // access current equipment
-  const RPG_Player_Equipment* getEquipment() const;
+  const RPG_Player_Equipment& getEquipment() const;
 
-  virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
-                                                               const RPG_Combat_AttackSituation&) const;
-  virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
+  virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
+                                                         const RPG_Combat_AttackSituation&) const;
+  virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
 
-  virtual const bool isPlayerCharacter() const;
+  virtual bool isPlayerCharacter() const;
   virtual void gainExperience(const unsigned int&); // XP
-  const unsigned int rest(const RPG_Common_Camp&, // type of rest
-                          const unsigned int&);   // hours
+  unsigned int rest(const RPG_Common_Camp&, // type of rest
+                    const unsigned int&);   // hours
 
   virtual void status() const;
 
@@ -130,7 +130,7 @@ class RPG_Player_Export RPG_Player_Player_Base
             const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
             const RPG_Item_List_t&);           // list of (carried) items
 
-  virtual const signed char getShieldBonus() const;
+  virtual signed char getShieldBonus() const;
 
   RPG_Character_Gender  myGender;
   RPG_Character_Race_t  myRace;

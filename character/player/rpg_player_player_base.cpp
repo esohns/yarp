@@ -165,7 +165,7 @@ RPG_Player_Player_Base::init(// base attributes
   myExperience = experience_in;
 }
 
-const RPG_Character_Gender
+RPG_Character_Gender
 RPG_Player_Player_Base::getGender() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getGender"));
@@ -173,7 +173,7 @@ RPG_Player_Player_Base::getGender() const
   return myGender;
 }
 
-const RPG_Character_Race_t
+const RPG_Character_Race_t&
 RPG_Player_Player_Base::getRace() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getRace"));
@@ -181,7 +181,7 @@ RPG_Player_Player_Base::getRace() const
   return myRace;
 }
 
-const RPG_Character_Class
+const RPG_Character_Class&
 RPG_Player_Player_Base::getClass() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getClass"));
@@ -189,7 +189,7 @@ RPG_Player_Player_Base::getClass() const
   return myClass;
 }
 
-const RPG_Character_OffHand
+RPG_Character_OffHand
 RPG_Player_Player_Base::getOffHand() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getOffHand"));
@@ -197,7 +197,7 @@ RPG_Player_Player_Base::getOffHand() const
   return myOffHand;
 }
 
-const unsigned char
+unsigned char
 RPG_Player_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getLevel"));
@@ -212,7 +212,7 @@ RPG_Player_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
   return result;
 }
 
-const unsigned int
+unsigned int
 RPG_Player_Player_Base::getExperience() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getExperience"));
@@ -220,15 +220,15 @@ RPG_Player_Player_Base::getExperience() const
   return myExperience;
 }
 
-const RPG_Player_Equipment*
+const RPG_Player_Equipment&
 RPG_Player_Player_Base::getEquipment() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getEquipment"));
 
-  return &(inherited::myEquipment);
+  return inherited::myEquipment;
 }
 
-const RPG_Character_BaseAttackBonus_t
+RPG_Character_BaseAttackBonus_t
 RPG_Player_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
                                        const RPG_Combat_AttackSituation& attackSituation_in) const
 {
@@ -272,7 +272,7 @@ RPG_Player_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
   return result;
 }
 
-const signed char
+signed char
 RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getArmorClass"));
@@ -306,7 +306,7 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
   return result;
 }
 
-const bool
+bool
 RPG_Player_Player_Base::isPlayerCharacter() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::isPlayerCharacter"));
@@ -334,7 +334,7 @@ RPG_Player_Player_Base::gainExperience(const unsigned int& XP_in)
   } // end IF
 }
 
-const unsigned int
+unsigned int
 RPG_Player_Player_Base::rest(const RPG_Common_Camp& type_in,
                              const unsigned int& hours_in)
 {
@@ -420,7 +420,7 @@ RPG_Player_Player_Base::dump() const
              RPG_Magic_Common_Tools::spellsToString(mySpells).c_str()));
 }
 
-const signed char
+signed char
 RPG_Player_Player_Base::getShieldBonus() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getShieldBonus"));

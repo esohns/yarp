@@ -30,6 +30,7 @@
 #include <ace/Global_Macros.h>
 
 #include <set>
+#include <utility>
 
 /**
 emulate rolling an n-sided die
@@ -43,12 +44,14 @@ class RPG_Dice_Export RPG_Dice
   static void init();
 
   // *TODO*: make these thread-safe !
+  // *WARNING*: range cannot exceed [1..(RAND_MAX + 1)] !
   static void generateRandomNumbers(const unsigned int&,     // range [1..max]
                                     const unsigned int&,     // number of rolls
                                     RPG_Dice_RollResult_t&); // result(s)
   static void simulateRoll(const RPG_Dice_Roll&,    // specifics (number of dice, type, modifier)
                            const unsigned int&,     // number of rolls
                            RPG_Dice_RollResult_t&); // result(s)
+  static bool probability(const float&); // probability (0 - 1.0)
 
   static void rollToRange(const RPG_Dice_Roll&,  // roll specifics
                           RPG_Dice_ValueRange&); // result
@@ -63,8 +66,12 @@ class RPG_Dice_Export RPG_Dice
   ACE_UNIMPLEMENTED_FUNC(RPG_Dice& operator=(const RPG_Dice&));
 
   // helper methods
-  static const unsigned int distanceRangeToRange(const RPG_Dice_ValueRange&,
-                                                 const RPG_Dice_ValueRange&);
+  static unsigned int distanceRangeToRange(const RPG_Dice_ValueRange&,
+                                           const RPG_Dice_ValueRange&);
+  static std::pair<unsigned int,
+                   unsigned int> farey(const float&,         // decimal
+                                       const float&,         // epsilon (== precision)
+                                       const unsigned int&); // max. nominator
 
   // helper types
   struct rangeToRollElement

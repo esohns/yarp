@@ -30,7 +30,7 @@ class RPG_Common_IControl
   // exposed interface
   virtual void start() = 0;
   virtual void stop() = 0;
-  virtual const bool isRunning() = 0;
+  virtual bool isRunning() = 0;
 };
 
 #endif

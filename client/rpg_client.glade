@@ -10,12 +10,9 @@
     <property name="icon">../data/graphic/images/image_icon.png</property>
     <property name="type_hint">normal</property>
     <property name="deletable">False</property>
-    <property name="has_separator">True</property>
-    <property name="create_folders">False</property>
     <property name="local_only">False</property>
     <property name="preview_widget_active">False</property>
     <property name="use_preview_label">False</property>
-    <signal name="response" handler="gtk_widget_hide"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="filechooser_vbox">
         <property name="visible">True</property>
@@ -80,7 +77,6 @@
     <property name="icon">../data/graphic/images/image_icon.png</property>
     <property name="type_hint">normal</property>
     <property name="deletable">False</property>
-    <property name="has_separator">True</property>
     <property name="program_name">Yarp GUI client</property>
     <property name="version">0.1</property>
     <property name="copyright" translatable="yes">Copyright (C) 2009 by Erik Sohns</property>
@@ -108,7 +104,6 @@
  ***************************************************************************/
 </property>
     <property name="authors">Erik Sohns</property>
-    <signal name="response" handler="gtk_widget_hide"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="about_vbox">
         <property name="visible">True</property>
@@ -139,8 +134,6 @@
     <property name="destroy_with_parent">True</property>
     <property name="icon">../data/graphic/images/image_icon.png</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">True</property>
-    <signal name="delete_event" handler="quit_activated_GTK_cb"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
@@ -175,7 +168,6 @@
                               <widget class="GtkButton" id="create">
                                 <property name="label" translatable="yes">_Create</property>
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
@@ -208,6 +200,23 @@
                               </packing>
                             </child>
                             <child>
+                              <widget class="GtkButton" id="load">
+                                <property name="label" translatable="yes">_Load</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="load_character_clicked_GTK_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
                               <widget class="GtkButton" id="save">
                                 <property name="label" translatable="yes">_Save</property>
                                 <property name="visible">True</property>
@@ -218,24 +227,6 @@
                                 <property name="use_underline">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="save_character_clicked_GTK_cb"/>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkButton" id="load">
-                                <property name="label" translatable="yes">_Load</property>
-                                <property name="visible">True</property>
-                                <property name="sensitive">False</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="relief">half</property>
-                                <property name="use_underline">True</property>
-                                <property name="focus_on_click">False</property>
-                                <signal name="clicked" handler="load_character_clicked_GTK_cb"/>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -346,7 +337,6 @@
                                   <widget class="GtkButton" id="map_create_button">
                                     <property name="label" translatable="yes">_Create</property>
                                     <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="relief">half</property>
@@ -382,7 +372,6 @@
                                   <widget class="GtkButton" id="map_load_button">
                                     <property name="label" translatable="yes">_Load</property>
                                     <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="relief">half</property>
@@ -1467,7 +1456,6 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">&lt;b&gt;Player&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
-                    <property name="track_visited_links">False</property>
                   </widget>
                   <packing>
                     <property name="type">label_item</property>
@@ -1553,8 +1541,6 @@
     <property name="icon">../data/graphic/images/image_icon.png</property>
     <property name="type_hint">normal</property>
     <property name="deletable">False</property>
-    <property name="has_separator">True</property>
-    <signal name="response" handler="gtk_widget_hide"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="main_entry_dialog_vbox">
         <property name="visible">True</property>

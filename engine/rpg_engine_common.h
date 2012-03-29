@@ -22,7 +22,7 @@
 #define RPG_ENGINE_COMMON_H
 
 #include "rpg_engine_command.h"
-#include "rpg_engine_playermode.h"
+#include "rpg_engine_entitymode.h"
 
 #include <rpg_graphics_sprite.h>
 
@@ -38,14 +38,17 @@
 #include <map>
 #include <deque>
 
-typedef std::set<RPG_Engine_PlayerMode> RPG_Engine_PlayerMode_t;
-typedef RPG_Engine_PlayerMode_t::const_iterator RPG_Engine_PlayerModeConstIterator_t;
+typedef std::set<RPG_Engine_EntityMode> RPG_Engine_EntityMode_t;
+typedef RPG_Engine_EntityMode_t::const_iterator RPG_Engine_EntityModeConstIterator_t;
+
+typedef unsigned int RPG_Engine_EntityID_t;
 
 struct RPG_Engine_Action
 {
-  RPG_Engine_Command command;
-  RPG_Map_Position_t position;
-  RPG_Map_Path_t     path;
+  RPG_Engine_Command    command;
+  RPG_Map_Position_t    position;
+  RPG_Map_Path_t        path;
+  RPG_Engine_EntityID_t target;
 };
 typedef std::deque<RPG_Engine_Action> RPG_Engine_Actions_t;
 typedef RPG_Engine_Actions_t::const_iterator RPG_Engine_ActionsConstIterator_t;
@@ -54,12 +57,11 @@ struct RPG_Engine_Entity
 {
   RPG_Player_Base*        character;
   RPG_Map_Position_t      position;
-  RPG_Engine_PlayerMode_t modes;
+  RPG_Engine_EntityMode_t modes;
   RPG_Engine_Actions_t    actions;
   RPG_Graphics_Sprite     sprite;
   SDL_Surface*            graphic;
 };
-typedef unsigned int RPG_Engine_EntityID_t;
 typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
 typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t;

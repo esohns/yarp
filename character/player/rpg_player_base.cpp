@@ -167,7 +167,7 @@ RPG_Player_Base::~RPG_Player_Base()
 
 }
 
-const std::string
+const std::string&
 RPG_Player_Base::getName() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getName"));
@@ -175,7 +175,7 @@ RPG_Player_Base::getName() const
   return myName;
 }
 
-const RPG_Character_Alignment
+const RPG_Character_Alignment&
 RPG_Player_Base::getAlignment() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getAlignment"));
@@ -183,7 +183,7 @@ RPG_Player_Base::getAlignment() const
   return myAlignment;
 }
 
-const RPG_Character_Conditions_t
+const RPG_Character_Conditions_t&
 RPG_Player_Base::getCondition() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getCondition"));
@@ -191,7 +191,7 @@ RPG_Player_Base::getCondition() const
   return myCondition;
 }
 
-const unsigned char
+unsigned char
 RPG_Player_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getAttribute"));
@@ -235,7 +235,7 @@ RPG_Player_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
   return 0;
 }
 
-const RPG_Character_Feats_t
+const RPG_Character_Feats_t&
 RPG_Player_Base::getFeats() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getFeats"));
@@ -243,7 +243,7 @@ RPG_Player_Base::getFeats() const
   return myFeats;
 }
 
-const RPG_Character_Abilities_t
+const RPG_Character_Abilities_t&
 RPG_Player_Base::getAbilities() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getAbilities"));
@@ -251,7 +251,7 @@ RPG_Player_Base::getAbilities() const
   return myAbilities;
 }
 
-const RPG_Character_Skills_t
+const RPG_Character_Skills_t&
 RPG_Player_Base::getSkills() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getSkills"));
@@ -275,7 +275,7 @@ RPG_Player_Base::getSkillRank(const RPG_Common_Skill& skill_in,
   } // end IF
 }
 
-const bool
+bool
 RPG_Player_Base::hasFeat(const RPG_Character_Feat& feat_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasFeat"));
@@ -283,7 +283,7 @@ RPG_Player_Base::hasFeat(const RPG_Character_Feat& feat_in) const
   return (myFeats.find(feat_in) != myFeats.end());
 }
 
-const bool
+bool
 RPG_Player_Base::hasAbility(const RPG_Character_Ability& ability_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasAbility"));
@@ -291,7 +291,7 @@ RPG_Player_Base::hasAbility(const RPG_Character_Ability& ability_in) const
   return (myAbilities.find(ability_in) != myAbilities.end());
 }
 
-const RPG_Common_Size
+RPG_Common_Size
 RPG_Player_Base::getSize() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getSize"));
@@ -299,7 +299,7 @@ RPG_Player_Base::getSize() const
   return mySize;
 }
 
-const RPG_Magic_SpellTypes_t
+const RPG_Magic_SpellTypes_t&
 RPG_Player_Base::getKnownSpells() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getKnownSpells"));
@@ -307,7 +307,7 @@ RPG_Player_Base::getKnownSpells() const
   return myKnownSpells;
 }
 
-const RPG_Magic_Spells_t
+const RPG_Magic_Spells_t&
 RPG_Player_Base::getSpells() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getSpells"));
@@ -315,7 +315,7 @@ RPG_Player_Base::getSpells() const
   return mySpells;
 }
 
-RPG_Player_Inventory
+const RPG_Player_Inventory&
 RPG_Player_Base::getInventory() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getInventory"));
@@ -331,7 +331,7 @@ RPG_Player_Base::getInventory() const
 //   return myEquipment;
 // }
 
-const unsigned short int
+unsigned short int
 RPG_Player_Base::getNumTotalHitPoints() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getNumTotalHitPoints"));
@@ -339,7 +339,7 @@ RPG_Player_Base::getNumTotalHitPoints() const
   return myNumTotalHitPoints;
 }
 
-const short int
+short int
 RPG_Player_Base::getNumHitPoints() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getNumHitPoints"));
@@ -347,7 +347,7 @@ RPG_Player_Base::getNumHitPoints() const
   return myNumHitPoints;
 }
 
-const unsigned int
+unsigned int
 RPG_Player_Base::getWealth() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getWealth"));
@@ -355,7 +355,7 @@ RPG_Player_Base::getWealth() const
   return myWealth;
 }
 
-const bool
+bool
 RPG_Player_Base::hasCondition(const RPG_Common_Condition& condition_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasCondition"));

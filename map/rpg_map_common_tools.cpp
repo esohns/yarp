@@ -43,7 +43,7 @@
 #include <iostream>
 #include <stack>
 
-const bool
+bool
 RPG_Map_Common_Tools::load(const std::string& filename_in,
                            RPG_Map_t& map_out,
                            const bool& traceScanning_in,
@@ -82,7 +82,7 @@ RPG_Map_Common_Tools::load(const std::string& filename_in,
   return true;
 }
 
-const bool
+bool
 RPG_Map_Common_Tools::save(const std::string& filename_in,
                            const RPG_Map_t& map_in)
 {
@@ -178,12 +178,12 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
   sent_bytes = 0;
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < map_in.plan.size_y;
        y++)
   {
     row.clear();
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < map_in.plan.size_x;
          x++)
     {
@@ -322,7 +322,7 @@ RPG_Map_Common_Tools::save(const std::string& filename_in,
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("wrote TXT file \"%s\" (%u byte(s))...\n"),
                filename_in.c_str(),
-               static_cast<unsigned long>(info.size_)));
+               static_cast<unsigned int>(info.size_)));
   } // end ELSE
 
   return true;
@@ -383,16 +383,16 @@ RPG_Map_Common_Tools::create(const std::string& name_in,
 }
 
 void
-RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
-                                      const unsigned long& dimensionY_in,
-                                      const unsigned long& numAreas_in,
+RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
+                                      const unsigned int& dimensionY_in,
+                                      const unsigned int& numAreas_in,
                                       const bool& wantSquareRooms_in,
                                       const bool& maximizeRooms_in,
-                                      const unsigned long& minRoomArea_in,
+                                      const unsigned int& minRoomArea_in,
                                       const bool& wantDoors_in,
                                       const bool& wantCorridors_in,
                                       const bool& doorFillsPosition_in,
-                                      const unsigned long& maxDoorsPerRoom_in,
+                                      const unsigned int& maxDoorsPerRoom_in,
                                       RPG_Map_Positions_t& seedPositions_out,
                                       RPG_Map_FloorPlan_t& floorPlan_out)
 {
@@ -411,7 +411,7 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned long& dimensionX_in,
   RPG_Map_ZoneList_t boundaries, rooms, doors;
   bool some_rooms_empty = true;
   bool no_rooms_empty = false;
-  unsigned long index = 1;
+  unsigned int index = 1;
   do
   {
     partition.clear();
@@ -670,9 +670,9 @@ RPG_Map_Common_Tools::info(const RPG_Map_t& map_in)
 }
 
 void
-RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
-                                    const unsigned long& dimensionY_in,
-                                    const unsigned long& numRooms_in,
+RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
+                                    const unsigned int& dimensionY_in,
+                                    const unsigned int& numRooms_in,
                                     const bool& resolveConflicts_in,
                                     RPG_Map_Positions_t& conflicts_out,
                                     RPG_Map_Positions_t& seedPoints_out,
@@ -697,7 +697,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
     RPG_Dice::generateRandomNumbers(dimensionY_in,
                                     numRooms_in,
                                     result_y);
-    for (unsigned long i = 0;
+    for (unsigned int i = 0;
          i < numRooms_in;
          i++)
     {
@@ -729,7 +729,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
   // --> in "discrete" space, things get (even) trickier...
 
   // init partition (with "seed" points)
-  unsigned long index = 0;
+  unsigned int index = 0;
   RPG_Map_PositionsIterator_t seed_iter;
   RPG_Map_Zone_t zone;
   for (seed_iter = seedPoints_out.begin();
@@ -751,31 +751,31 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
   // each cell
   // --> in case of a conflict, chance decides (fair, isn't it ?)
   // *NOTE*: "conflict" cells can generate segregated "islands"
-  unsigned long min = 0;
-  unsigned long distance = 0;
+  unsigned int min = 0;
+  unsigned int distance = 0;
   RPG_Map_Positions_t neighbours;
   RPG_Map_Position_t current_position;
   RPG_Map_PositionsIterator_t nearest_neighbour;
   RPG_Dice_RollResult_t result;
   RPG_Map_PartitionIterator_t partition_iter;
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < dimensionY_in;
        y++)
   {
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < dimensionX_in;
          x++)
     {
       current_position = std::make_pair(x, y);
 
-      min = std::numeric_limits<unsigned long>::max();
+      min = std::numeric_limits<unsigned int>::max();
       neighbours.clear();
       for (seed_iter = seedPoints_out.begin();
            seed_iter != seedPoints_out.end();
            seed_iter++)
       {
         // find all "nearest neighbours"
-        distance = dist2Positions(current_position, *seed_iter);
+        distance = RPG_Map_Common_Tools::distance(current_position, *seed_iter);
         if (distance < min)
         {
           // new minimum
@@ -880,8 +880,8 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
           break;
       // sanity check
       ACE_ASSERT(member_partition != partition_out.end());
-      current_seed = std::make_pair(std::numeric_limits<unsigned long>::max(),
-                                    std::numeric_limits<unsigned long>::max());
+      current_seed = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                    std::numeric_limits<unsigned int>::max());
       for (seed_iter = seedPoints_out.begin();
            seed_iter != seedPoints_out.end();
            seed_iter++)
@@ -998,7 +998,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
           seed_iter++)
       {
         // find all "nearest neighbours"
-        distance = dist2Positions(current_position, *seed_iter);
+        distance = RPG_Map_Common_Tools::distance(current_position, *seed_iter);
         if (distance < min)
         {
           // new minimum
@@ -1048,8 +1048,8 @@ RPG_Map_Common_Tools::makePartition(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
-                                       const unsigned long& dimensionY_in,
+RPG_Map_Common_Tools::displayPartition(const unsigned int& dimensionX_in,
+                                       const unsigned int& dimensionY_in,
                                        const RPG_Map_Positions_t& conflicts_in,
                                        const RPG_Map_Positions_t& seedPositions_in,
                                        const RPG_Map_Partition_t& partition_in)
@@ -1066,11 +1066,11 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
                ACE_TEXT("partition (%u conflict(s))...\n"),
                conflicts_in.size()));
 
-    for (unsigned long y = 0;
+    for (unsigned int y = 0;
          y < dimensionY_in;
          y++)
     {
-      for (unsigned long x = 0;
+      for (unsigned int x = 0;
            x < dimensionX_in;
            x++)
       {
@@ -1091,13 +1091,13 @@ RPG_Map_Common_Tools::displayPartition(const unsigned long& dimensionX_in,
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("partition...\n")));
 
-    unsigned long index = 0;
+    unsigned int index = 0;
     std::ostringstream converter;
-    for (unsigned long y = 0;
+    for (unsigned int y = 0;
          y < dimensionY_in;
          y++)
     {
-      for (unsigned long x = 0;
+      for (unsigned int x = 0;
            x < dimensionX_in;
            x++)
       {
@@ -1138,11 +1138,11 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
   maxSquare_out.lr = std::make_pair(0, 0);
 
   RPG_Map_ZoneConstIterator_t pointer;
-  unsigned long maxArea = 0;
-  unsigned long current_area = 0;
-  unsigned long max_breadth = 0;
-  unsigned long current_row = 0;
-  unsigned long running_x = 0;
+  unsigned int maxArea = 0;
+  unsigned int current_area = 0;
+  unsigned int max_breadth = 0;
+  unsigned int current_row = 0;
+  unsigned int running_x = 0;
   for (RPG_Map_ZoneConstIterator_t zone_iterator = room_in.begin();
        zone_iterator != room_in.end();
        zone_iterator++)
@@ -1269,14 +1269,14 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Zone_t& room_in,
 }
 
 void
-RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
-                                const unsigned long& dimensionY_in,
+RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
+                                const unsigned int& dimensionY_in,
                                 const RPG_Map_Partition_t& partition_in,
                                 const bool& wantSquareRooms_in,
                                 const bool& wantRoomSeparation_in,
                                 const bool& cropAreas_in,
                                 const bool& maximizeRooms_in,
-                                const unsigned long& minRoomArea_in,
+                                const unsigned int& minRoomArea_in,
                                 RPG_Map_ZoneList_t& rooms_out,
                                 RPG_Map_ZoneList_t& boundaries_out)
 {
@@ -1287,7 +1287,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
   boundaries_out.clear();
 
   // place a room into every partition...
-  unsigned long index = 0;
+  unsigned int index = 0;
   RPG_Map_Zone_t current_zone;
 
   // step0: make some preparations...
@@ -1295,7 +1295,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
   {
     // --> remove any cruft from the perimeter
     index = 0;
-    unsigned long last_size = 0;
+    unsigned int last_size = 0;
     for (RPG_Map_PartitionConstIterator_t partition_iter = partition_in.begin();
          partition_iter != partition_in.end();
          partition_iter++, index++)
@@ -1391,9 +1391,9 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
       index = 0;
       RPG_Map_SquareListConstIterator_t squares_iter = maxSquares.begin();
       for (zones_iter = (cropAreas_in ? rooms_out.begin()
-                                      : const_cast<RPG_Map_Partition_t&> (partition_in).begin());
+                                      : const_cast<RPG_Map_Partition_t&>(partition_in).begin());
            zones_iter != (cropAreas_in ? rooms_out.end()
-                                       : const_cast<RPG_Map_Partition_t&> (partition_in).end());
+                                       : const_cast<RPG_Map_Partition_t&>(partition_in).end());
            zones_iter++, squares_iter++, index++)
       {
         current_zone.clear();
@@ -1759,8 +1759,8 @@ RPG_Map_Common_Tools::makeRooms(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
-                                   const unsigned long& dimensionY_in,
+RPG_Map_Common_Tools::displayRooms(const unsigned int& dimensionX_in,
+                                   const unsigned int& dimensionY_in,
                                    const RPG_Map_ZoneList_t& rooms_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRooms"));
@@ -1770,14 +1770,14 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
 
   RPG_Map_Position_t current_position;
 
-  unsigned long index = 0;
+  unsigned int index = 0;
   std::ostringstream converter;
   bool found_position = false;
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < dimensionY_in;
        y++)
   {
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < dimensionX_in;
          x++)
     {
@@ -1807,18 +1807,18 @@ RPG_Map_Common_Tools::displayRooms(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayRoom(const unsigned long& dimensionX_in,
-                                  const unsigned long& dimensionY_in,
+RPG_Map_Common_Tools::displayRoom(const unsigned int& dimensionX_in,
+                                  const unsigned int& dimensionY_in,
                                   const RPG_Map_Zone_t& room_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRoom"));
 
   RPG_Map_ZoneConstIterator_t iterator = room_in.end();
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < dimensionY_in;
        y++)
   {
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < dimensionX_in;
          x++)
     {
@@ -1833,11 +1833,11 @@ RPG_Map_Common_Tools::displayRoom(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::makeDoors(const unsigned long& dimensionX_in,
-                                const unsigned long& dimensionY_in,
+RPG_Map_Common_Tools::makeDoors(const unsigned int& dimensionX_in,
+                                const unsigned int& dimensionY_in,
                                 const RPG_Map_ZoneList_t& boundaries_in,
                                 const bool& doorFillsPosition_in,
-                                const unsigned long& maxDoorsPerRoom_in,
+                                const unsigned int& maxDoorsPerRoom_in,
                                 RPG_Map_ZoneList_t& doors_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makeDoors"));
@@ -1850,11 +1850,11 @@ RPG_Map_Common_Tools::makeDoors(const unsigned long& dimensionX_in,
   // *NOTE*: doors cannot be situated on the boundary of the level
   // *NOTE*: doors can connect rooms directly (i.e. without a corridor)
   // *NOTE*: to ensure connectivity for n rooms, we need at least (n-1)*2 doors...
-  unsigned long total_doors = 0;
-  unsigned long index = 0;
+  unsigned int total_doors = 0;
+  unsigned int index = 0;
 
   RPG_Map_Zone_t current_doors;
-  unsigned long num_doors = 0;
+  unsigned int num_doors = 0;
   RPG_Dice_RollResult_t result;
   RPG_Map_PositionList_t doorPositions;
   RPG_Map_PositionListIterator_t doorPosition_iterator;
@@ -1916,7 +1916,7 @@ RPG_Map_Common_Tools::makeDoors(const unsigned long& dimensionX_in,
 
       // step2: generate (random) number of doors
       result.clear();
-      if (maxDoorsPerRoom_in == std::numeric_limits<unsigned long>::max())
+      if (maxDoorsPerRoom_in == std::numeric_limits<unsigned int>::max())
       {
         // for debugging purposes...
         num_doors = doorPositions.size();
@@ -1956,8 +1956,8 @@ RPG_Map_Common_Tools::makeDoors(const unsigned long& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
-                                   const unsigned long& dimensionY_in,
+RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
+                                   const unsigned int& dimensionY_in,
                                    const RPG_Map_ZoneList_t& boundaries_in,
                                    const RPG_Map_ZoneList_t& doors_in,
                                    const RPG_Map_ZoneList_t& rooms_in,
@@ -2208,10 +2208,10 @@ RPG_Map_Common_Tools::connectRooms(const unsigned long& dimensionX_in,
   // step6: compute unmapped areas
   RPG_Map_Position_t current_position;
   bool done = false;
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < dimensionY_in;
        y++)
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < dimensionX_in;
          x++)
     {
@@ -2402,7 +2402,7 @@ RPG_Map_Common_Tools::dump(const RPG_Map_Zone_t& zone_in)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("zone (%u position(s)):\n"),
              zone_in.size()));
-  unsigned long index = 0;
+  unsigned int index = 0;
   for (RPG_Map_ZoneConstIterator_t zone_iterator = zone_in.begin();
        zone_iterator != zone_in.end();
        zone_iterator++, index++)
@@ -2415,27 +2415,27 @@ RPG_Map_Common_Tools::dump(const RPG_Map_Zone_t& zone_in)
   } // end FOR
 }
 
-const unsigned long
-RPG_Map_Common_Tools::dist2Positions(const RPG_Map_Position_t& position1_in,
-                                     const RPG_Map_Position_t& position2_in)
+unsigned int
+RPG_Map_Common_Tools::distance(const RPG_Map_Position_t& position1_in,
+                               const RPG_Map_Position_t& position2_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dist2Positions"));
 
-  return (::abs(static_cast<long>(position1_in.first - position2_in.first)) +
-          ::abs(static_cast<long>(position1_in.second - position2_in.second)));
+  return (::abs(static_cast<int>(position1_in.first - position2_in.first)) +
+          ::abs(static_cast<int>(position1_in.second - position2_in.second)));
 }
 
-const bool
+bool
 RPG_Map_Common_Tools::isAdjacent(const RPG_Map_Position_t& position1_in,
                                  const RPG_Map_Position_t& position2_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isAdjacent"));
 
-  return (dist2Positions(position1_in,
-                         position2_in) == 1);
+  return ((::abs(static_cast<int>(position1_in.first - position2_in.first)) +
+           ::abs(static_cast<int>(position1_in.second - position2_in.second))) == 1);
 }
 
-const std::string
+std::string
 RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::direction2String"));
@@ -2469,7 +2469,7 @@ RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
   return std::string("DIRECTION_INVALID");
 }
 
-const std::string
+std::string
 RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::orientation2String"));
@@ -2499,7 +2499,7 @@ RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_
   return std::string("MAP_ORIENTATION_INVALID");
 }
 
-const RPG_Map_Direction
+RPG_Map_Direction
 RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, // door
                                          const RPG_Map_FloorPlan_t& floorPlan_in)
 {
@@ -2570,7 +2570,7 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
   return DIRECTION_INVALID;
 }
 
-const bool
+bool
 RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
                               const RPG_Map_FloorPlan_t& floorPlan_in)
 {
@@ -2583,7 +2583,7 @@ RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
           (floorPlan_in.unmapped.find(position_in) == floorPlan_in.unmapped.end()));
 }
 
-const bool
+bool
 RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
                                    const RPG_Map_FloorPlan_t& floorPlan_in)
 {
@@ -2821,17 +2821,17 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
   return (area.find(current) != area.end());
 }
 
-const unsigned long
+unsigned int
 RPG_Map_Common_Tools::area2Positions(const RPG_Map_Position_t& position1_in,
                                      const RPG_Map_Position_t& position2_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::area2Positions"));
 
-  return ((::abs(static_cast<long>(position1_in.first - position2_in.first)) + 1) *
-          (::abs(static_cast<long>(position1_in.second - position2_in.second)) + 1));
+  return ((::abs(static_cast<int>(position1_in.first - position2_in.first)) + 1) *
+          (::abs(static_cast<int>(position1_in.second - position2_in.second)) + 1));
 }
 
-const bool
+bool
 RPG_Map_Common_Tools::positionInSquare(const RPG_Map_Position_t& position_in,
                                        const RPG_Map_Square_t& square_in)
 {
@@ -2843,7 +2843,7 @@ RPG_Map_Common_Tools::positionInSquare(const RPG_Map_Position_t& position_in,
           (position_in.second <= square_in.lr.second));
 }
 
-const bool
+bool
 RPG_Map_Common_Tools::intersect(const RPG_Map_Zone_t& map_in,
                                 const RPG_Map_Position_t& position_in,
                                 const ORIGIN& origin_in,
@@ -3049,8 +3049,8 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
   RPG_Map_ZoneConstIterator_t begin_sequence = room_inout.begin();
   RPG_Map_ZoneConstIterator_t line_iterator;
   RPG_Map_ZoneConstIterator_t next_iterator = room_inout.begin();
-  unsigned long next_x = 0;
-  unsigned long count = 0;
+  unsigned int next_x = 0;
+  unsigned int count = 0;
 
   // step1
   while (true)
@@ -3114,7 +3114,7 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
   RPG_Map_AltPositionsConstIterator_t begin_alt_room = alt_room.begin();
   RPG_Map_AltPositionsConstIterator_t line_iterator_alt;
   RPG_Map_AltPositionsConstIterator_t next_iterator_alt = alt_room.begin();
-  unsigned long next_y = 0;
+  unsigned int next_y = 0;
   count = 0;
   while (true)
   {
@@ -3332,7 +3332,7 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
 //     room_inout.clear();
 // }
 
-const bool
+bool
 RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
                            const RPG_Map_Position_t& position_in,
                            const ORIGIN& origin_in,
@@ -3754,7 +3754,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
   } // end ELSE
 }
 
-const RPG_Map_Direction
+RPG_Map_Direction
 RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Zone_t& room_in,
                                          const RPG_Map_Position_t& door_in)
 {
@@ -3781,8 +3781,8 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Zone_t& room_in,
 }
 
 void
-RPG_Map_Common_Tools::displayCorridors(const unsigned long& dimensionX_in,
-                                       const unsigned long& dimensionY_in,
+RPG_Map_Common_Tools::displayCorridors(const unsigned int& dimensionX_in,
+                                       const unsigned int& dimensionY_in,
                                        const RPG_Map_ZoneList_t& rooms_in,
                                        const RPG_Map_ZoneList_t& doors_in,
                                        const RPG_Map_ZoneList_t& corridors_in)
@@ -3790,21 +3790,21 @@ RPG_Map_Common_Tools::displayCorridors(const unsigned long& dimensionX_in,
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayCorridors"));
 
   RPG_Map_Position_t current_position;
-  unsigned long index = 0;
+  unsigned int index = 0;
   bool shared_path = false;
-  unsigned long first_index = 0;
+  unsigned int first_index = 0;
   RPG_Map_ZoneListConstIterator_t iterator;
   bool done = false;
   std::ostringstream converter;
   std::string corridor_glyphs("0123456789^°!\"§$%&/()ß?'`+*~-_:,;{}[]<>|");
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < dimensionY_in;
        y++)
   {
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
     converter.clear();
 
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < dimensionX_in;
          x++)
     {

@@ -39,9 +39,9 @@ RPG_Client_Export void reset_entity_profile(GladeXML*);
 // int dirent_selector_maps(const dirent*);
 // int dirent_comparator(const dirent**,
 //                       const dirent**);
-RPG_Client_Export const unsigned long load_files(const std::string&, // directory
-                                                 const bool&,        // load player profiles ? : maps
-                                                 GtkListStore*);     // target liststore
+RPG_Client_Export unsigned int load_files(const std::string&, // directory
+                                          const bool&,        // load player profiles ? : maps
+                                          GtkListStore*);     // target liststore
 
 #ifdef __cplusplus
 extern "C"

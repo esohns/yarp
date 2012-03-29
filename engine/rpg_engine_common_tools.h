@@ -70,6 +70,7 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                                const std::string&);      // FQ filename
   // *NOTE*: return value entity.character must be deleted() by the caller !
   static RPG_Engine_Entity createEntity(const bool&); // load sprite graphic ?
+  static RPG_Engine_Entity createEntity(const std::string&); // creature type
   static std::string info(const RPG_Engine_Entity&); // entity
 
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
@@ -128,6 +129,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
 
   static const bool isCorner(const RPG_Map_Position_t&,
                              const RPG_Engine_Level&);
+
+  static const RPG_Graphics_Sprite monster2Sprite(const std::string&);
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Engine_Player_XMLTree_Type* playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree_Type&);

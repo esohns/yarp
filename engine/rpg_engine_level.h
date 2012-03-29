@@ -25,6 +25,8 @@
 #include "rpg_engine_common.h"
 #include "rpg_engine_iwindow.h"
 #include "rpg_engine_messagequeue.h"
+#include "rpg_engine_entitymode.h"
+#include "rpg_engine_event_manager.h"
 
 #include <rpg_map_common.h>
 #include <rpg_map_level.h>
@@ -49,6 +51,9 @@ class RPG_Engine_Export RPG_Engine_Level
    public RPG_Common_IControl,
    public RPG_Common_IDumpState
 {
+  // AI thread(s) require access to level state
+  friend class RPG_Engine_Event_Manager;
+
  public:
   RPG_Engine_Level();
   RPG_Engine_Level(RPG_Engine_IWindow*, // UI handle
@@ -58,7 +63,7 @@ class RPG_Engine_Export RPG_Engine_Level
   // implement RPG_Common_IControl
   virtual void start();
   virtual void stop();
-  virtual const bool isRunning();
+  virtual bool isRunning();
 
   static void wait_all();
 
@@ -71,16 +76,16 @@ class RPG_Engine_Export RPG_Engine_Level
   void save(const std::string&) const; // FQ filename
 
   // *WARNING*: fire&forget API, added entities are controlled by the engine !
-  const RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
+  RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
   void action(const RPG_Engine_EntityID_t&, // id
               const RPG_Engine_Action&);    // action
 
   void setActive(const RPG_Engine_EntityID_t&); // id
   RPG_Engine_EntityID_t getActive() const; // return value: id (if any)
-  void mode(const RPG_Engine_PlayerMode&); // add mode (to active entity)
-  void clear(const RPG_Engine_PlayerMode&); // clear mode (from active entity)
-  const bool hasMode(const RPG_Engine_PlayerMode&) const; // mode
+  void mode(const RPG_Engine_EntityMode&); // add mode (to active entity)
+  void clear(const RPG_Engine_EntityMode&); // clear mode (from active entity)
+  const bool hasMode(const RPG_Engine_EntityMode&) const; // mode
 
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
   const bool isMonster(const RPG_Engine_EntityID_t&) const;

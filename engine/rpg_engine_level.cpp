@@ -85,14 +85,14 @@ RPG_Engine_Level::open(void* args_in)
 
   ACE_UNUSED_ARG(args_in);
 
-  // *IMPORTANT NOTE*: the first time 'round, our queue will have been open()ed
+  // *IMPORTANT NOTE*: the first time around, the queue will have been open()ed
   // from within the default ctor; this sets it into an ACTIVATED state, which
-  // is what we want.
-  // If we come here a second time (i.e. we have been stopped/started, our queue
-  // will have been deactivated in the process, and getq() (see svc()) will fail
-  // miserably (ESHUTDOWN) --> (re-)activate() our queue !
-  // step1: (re-)activate() our queue
-  if (myQueue.activate() == -1)
+  // is expected.
+  // Subsequently (i.e. after stop()ping/start()ing, the queue
+  // will have been deactivate()d in the process, and getq() (see svc()) will fail
+  // (ESHUTDOWN) --> (re-)activate() the queue !
+  // step1: (re-)activate() the queue
+  if (inherited2::msg_queue()->activate() == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Message_Queue::activate(): \"%m\", aborting\n")));
@@ -106,7 +106,7 @@ RPG_Engine_Level::open(void* args_in)
   }
   catch (...)
   {
-    ACE_DEBUG((LM_CRITICAL,
+    ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in start() method, aborting\n")));
 
     // what else can we do here ?
@@ -252,6 +252,9 @@ RPG_Engine_Level::start()
                ACE_TEXT("(state engine) started worker thread (group: %d, id: %u)...\n"),
                inherited2::grp_id(),
                thread_ids[0]));
+
+  // start AI
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->start();
 }
 
 void
@@ -263,30 +266,22 @@ RPG_Engine_Level::stop()
   if (!isRunning())
     return;
 
+  // stop AI
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->stop();
+
   // drop control message into the queue...
   ACE_Message_Block* stop_mb = NULL;
-  try
-  {
-    stop_mb = new ACE_Message_Block(0,                                  // size
-                                    ACE_Message_Block::MB_STOP,         // type
-                                    NULL,                               // continuation
-                                    NULL,                               // data
-                                    NULL,                               // buffer allocator
-                                    NULL,                               // locking strategy
-                                    ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-                                    ACE_Time_Value::zero,               // execution time
-                                    ACE_Time_Value::max_time,           // deadline time
-                                    NULL,                               // data block allocator
-                                    NULL);                              // message allocator
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("caught exception in new, returning\n")));
-
-    // *TODO*: what else can we do ?
-    return;
-  }
+  stop_mb = new(std::nothrow) ACE_Message_Block(0,                                  // size
+                                                ACE_Message_Block::MB_STOP,         // type
+                                                NULL,                               // continuation
+                                                NULL,                               // data
+                                                NULL,                               // buffer allocator
+                                                NULL,                               // locking strategy
+                                                ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+                                                ACE_Time_Value::zero,               // execution time
+                                                ACE_Time_Value::max_time,           // deadline time
+                                                NULL,                               // data block allocator
+                                                NULL);                              // message allocator
   if (!stop_mb)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -299,7 +294,7 @@ RPG_Engine_Level::stop()
   // block, if necessary
   if (inherited2::putq(stop_mb, NULL) == -1)
   {
-    ACE_DEBUG((LM_CRITICAL,
+    ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task::putq(): \"%m\", returning\n")));
 
     // clean up, what else can we do ?
@@ -311,7 +306,7 @@ RPG_Engine_Level::stop()
   // ... and wait for the worker thread to join
   if (inherited2::wait() == -1)
   {
-    ACE_DEBUG((LM_CRITICAL,
+    ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", returning\n")));
 
     return;
@@ -323,7 +318,7 @@ RPG_Engine_Level::stop()
   clearEntityActions(0);
 }
 
-const bool
+bool
 RPG_Engine_Level::isRunning()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::isRunning"));
@@ -392,19 +387,31 @@ RPG_Engine_Level::save(const std::string& filename_in) const
                filename_in.c_str()));
 }
 
-const RPG_Engine_EntityID_t
+RPG_Engine_EntityID_t
 RPG_Engine_Level::add(RPG_Engine_Entity* entity_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::add"));
 
   // sanity check
   ACE_ASSERT(entity_in);
+  ACE_ASSERT(myClient);
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   RPG_Engine_EntityID_t id = myCurrentID++;
-
   myEntities.insert(std::make_pair(id, entity_in));
+
+  // notify client / window
+  try
+  {
+    myClient->addEntity(id, entity_in->graphic);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Engine_IWindow::addEntity(%u), continuing\n"),
+               id));
+  }
 
   return id;
 }
@@ -428,8 +435,19 @@ RPG_Engine_Level::remove(const RPG_Engine_EntityID_t& id_in)
 
     return;
   } // end IF
-
   myEntities.erase(iterator);
+
+  // notify client / window
+  try
+  {
+    myClient->removeEntity(id_in);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Engine_IWindow::removeEntity(%u), continuing\n"),
+               id_in));
+  }
 }
 
 void
@@ -494,7 +512,7 @@ RPG_Engine_Level::getActive() const
 }
 
 void
-RPG_Engine_Level::mode(const RPG_Engine_PlayerMode& mode_in)
+RPG_Engine_Level::mode(const RPG_Engine_EntityMode& mode_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::mode"));
 
@@ -514,7 +532,7 @@ RPG_Engine_Level::mode(const RPG_Engine_PlayerMode& mode_in)
 }
 
 void
-RPG_Engine_Level::clear(const RPG_Engine_PlayerMode& mode_in)
+RPG_Engine_Level::clear(const RPG_Engine_EntityMode& mode_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::clear"));
 
@@ -534,7 +552,7 @@ RPG_Engine_Level::clear(const RPG_Engine_PlayerMode& mode_in)
 }
 
 const bool
-RPG_Engine_Level::hasMode(const RPG_Engine_PlayerMode& mode_in) const
+RPG_Engine_Level::hasMode(const RPG_Engine_EntityMode& mode_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::hasMode"));
 
@@ -831,6 +849,7 @@ RPG_Engine_Level::handleEntities()
        iterator != myEntities.end();
        iterator++)
   {
+    // *TODO*: check for actions/round limit
     if ((*iterator).second->actions.empty())
       continue;
 
@@ -840,11 +859,21 @@ RPG_Engine_Level::handleEntities()
     {
       case COMMAND_ATTACK:
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("[%u] attacking...\n"),
-                   (*iterator).first));
+        ACE_ASSERT(current_action.target);
+        RPG_Engine_EntitiesConstIterator_t target = myEntities.find(current_action.target);
+        if ((target == myEntities.end()) ||
+            !RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
+                                              (*target).second->position))
+          break; // nothing to do...
 
-        mode(PLAYERMODE_FIGHTING);
+        action_complete = false;
+        (*iterator).second->modes.insert(ENTITYMODE_FIGHTING);
+
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("\"%s\" attacks \"%s\"...\n"),
+                   (*iterator).second->character->getName().c_str(),
+                   (*target).second->character->getName().c_str()));
 
         break;
       }
@@ -876,40 +905,72 @@ RPG_Engine_Level::handleEntities()
       }
       case COMMAND_SEARCH:
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("[%u] searching...\n"),
-                   (*iterator).first));
+        (*iterator).second->modes.insert(ENTITYMODE_SEARCHING);
 
-        mode(PLAYERMODE_SEARCHING);
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("\"%s\" is searching...\n"),
+                   (*iterator).second->character->getName().c_str()));
 
         break;
       }
       case COMMAND_STOP:
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("[%u] stopped...\n"),
-                   (*iterator).first));
+        (*iterator).second->modes.clear();
 
-        clear(RPG_ENGINE_PLAYERMODE_MAX);
-        // *TODO*: need to clear all activities !
-        //(*iterator).second->actions.clear();
+        // debug info
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("\"%s\" stopped...\n"),
+                   (*iterator).second->character->getName().c_str()));
+
+        // *TODO*: stop ALL activities !
 
         break;
       }
       case COMMAND_TRAVEL:
       {
         // sanity check
-        if (current_action.position == (*iterator).second->position)
+        if ((current_action.target == 0) && // no target...
+            (current_action.position == (*iterator).second->position))
+        {
+          (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+
           break; // nothing to do...
+        } // end IF
 
         // compute path first ?
-        if (current_action.path.empty())
+        if (current_action.target || // pursuit mode...
+            current_action.path.empty())
         {
-          findPath((*iterator).second->position,
-                   current_action.position,
-                   current_action.path);
+          RPG_Map_Position_t target_position = current_action.position;
+          if (current_action.target)
+          {
+            // retrieve current target position
+            RPG_Engine_EntitiesConstIterator_t target = myEntities.find(current_action.target);
+            if ((target == myEntities.end()) ||
+                RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
+                                                 (*target).second->position))
+            {
+              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+
+              break; // nothing (more) to do...
+            } // end IF
+
+            target_position = (*target).second->position;
+          } // end IF
+          if (current_action.path.empty() ||
+              (current_action.path.back().first != target_position)) // target has moved...
+            findPath((*iterator).second->position,
+                     target_position,
+                     current_action.path);
           if (current_action.path.size() < 2)
+          {
+            // *NOTE*: --> no/invalid path, cannot proceed...
+
+            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+
             break; // stop & cancel path...
+          } // end IF
           ACE_ASSERT(current_action.path.front().first == (*iterator).second->position);
           //ACE_ASSERT(current_action.path.back().first == current_action.position);
 
@@ -917,7 +978,7 @@ RPG_Engine_Level::handleEntities()
         } // end IF
         ACE_ASSERT(!current_action.path.empty());
         
-        mode(PLAYERMODE_TRAVELLING);
+        (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
 
         // move to next adjacent position (if still (!) possible)
         RPG_Map_Element element = getElement(current_action.path.front().first);
@@ -931,11 +992,6 @@ RPG_Engine_Level::handleEntities()
 
         (*iterator).second->position = current_action.path.front().first;
         current_action.path.pop_front();
-
-        // done ?
-        action_complete = current_action.path.empty();
-        if (action_complete)
-          clear(PLAYERMODE_TRAVELLING);
 
         // notify client window
         try

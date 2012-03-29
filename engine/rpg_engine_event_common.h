@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -18,19 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_ENGINE_DEFINES_H
-#define RPG_ENGINE_DEFINES_H
+#ifndef RPG_ENGINE_EVENT_COMMON_H
+#define RPG_ENGINE_EVENT_COMMON_H
 
-// task-specific
-#define RPG_ENGINE_DEF_TASK_GROUP_ID    1
-#define RPG_ENGINE_DEF_AI_TASK_GROUP_ID 2
-#define RPG_ENGINE_MAX_QUEUE_SLOTS      100
-#define RPG_ENGINE_EVENT_PEEK_INTERVAL  50 // ms
+#include <string>
 
-// XML-specific
-#define RPG_ENGINE_SCHEMA_FILE          "rpg_engine.xsd"
+class RPG_Engine_IEvent;
 
-// CONFIGDIR-specific
-#define RPG_ENGINE_DEF_CONFIG_SUB       "engine"
+enum RPG_Engine_EventType
+{
+  EVENT_SPAWN_MONSTER = 0,
+  //
+  RPG_ENGINE_EVENT_MAX,
+  RPG_ENGINE_EVENT_INVALID
+};
+
+struct RPG_Engine_Event
+{
+  RPG_Engine_EventType type;
+  std::string          monster;
+  float                probability;
+};
 
 #endif

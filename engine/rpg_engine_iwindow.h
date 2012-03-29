@@ -23,6 +23,8 @@
 
 #include <rpg_map_common.h>
 
+#include <SDL/SDL.h>
+
 class RPG_Engine_IWindow
 {
  public:
@@ -34,6 +36,9 @@ class RPG_Engine_IWindow
   virtual void redraw() = 0;
   virtual void setView(const RPG_Map_Position_t&) = 0;
   virtual void toggleDoor(const RPG_Map_Position_t&) = 0;
+  virtual void addEntity(const RPG_Engine_EntityID_t&,
+                         const SDL_Surface*) = 0;
+  virtual void removeEntity(const RPG_Engine_EntityID_t&) = 0;
   virtual void updateEntity(const RPG_Engine_EntityID_t&) = 0;
 };
 

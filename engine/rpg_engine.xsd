@@ -40,11 +40,11 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="RPG_Engine_PlayerMode_Type">
+  <xsd:simpleType name="RPG_Engine_EntityMode_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="PLAYERMODE_FIGHTING"/>
-      <xsd:enumeration value="PLAYERMODE_SEARCHING"/>
-      <xsd:enumeration value="PLAYERMODE_TRAVELLING"/>
+      <xsd:enumeration value="ENTITYMODE_FIGHTING"/>
+      <xsd:enumeration value="ENTITYMODE_SEARCHING"/>
+      <xsd:enumeration value="ENTITYMODE_TRAVELLING"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -53,7 +53,7 @@
       <xsd:extension base="RPG_Player_PlayerXML_Type">
         <xsd:sequence>
           <xsd:element name="position" type="RPG_Map_Position_Type" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="mode" type="RPG_Engine_PlayerMode_Type" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="mode" type="RPG_Engine_EntityMode_Type" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="sprite" type="RPG_Graphics_Sprite_Type" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>

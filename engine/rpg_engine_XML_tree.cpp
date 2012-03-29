@@ -86,46 +86,46 @@ operator= (value v)
 }
 
 
-// RPG_Engine_PlayerMode_XMLTree_Type
+// RPG_Engine_EntityMode_XMLTree_Type
 // 
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (value v)
-: ::xml_schema::string (_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[v])
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Engine_EntityMode_XMLTree_Type_literals_[v])
 {
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (const char* v)
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (const char* v)
 : ::xml_schema::string (v)
 {
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (const ::std::string& v)
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (const ::std::string& v)
 : ::xml_schema::string (v)
 {
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (const ::xml_schema::string& v)
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (const ::xml_schema::string& v)
 : ::xml_schema::string (v)
 {
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (const RPG_Engine_PlayerMode_XMLTree_Type& v,
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (const RPG_Engine_EntityMode_XMLTree_Type& v,
                                     ::xml_schema::flags f,
                                     ::xml_schema::container* c)
 : ::xml_schema::string (v, f, c)
 {
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type& RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type& RPG_Engine_EntityMode_XMLTree_Type::
 operator= (value v)
 {
   static_cast< ::xml_schema::string& > (*this) = 
-  ::xml_schema::string (_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[v]);
+  ::xml_schema::string (_xsd_RPG_Engine_EntityMode_XMLTree_Type_literals_[v]);
 
   return *this;
 }
@@ -281,55 +281,55 @@ _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[6] =
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_TRAVEL
 };
 
-// RPG_Engine_PlayerMode_XMLTree_Type
+// RPG_Engine_EntityMode_XMLTree_Type
 //
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (const ::xercesc::DOMElement& e,
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (const ::xercesc::DOMElement& e,
                                     ::xml_schema::flags f,
                                     ::xml_schema::container* c)
 : ::xml_schema::string (e, f, c)
 {
-  _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert ();
+  _xsd_RPG_Engine_EntityMode_XMLTree_Type_convert ();
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (const ::xercesc::DOMAttr& a,
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (const ::xercesc::DOMAttr& a,
                                     ::xml_schema::flags f,
                                     ::xml_schema::container* c)
 : ::xml_schema::string (a, f, c)
 {
-  _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert ();
+  _xsd_RPG_Engine_EntityMode_XMLTree_Type_convert ();
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (const ::std::string& s,
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (const ::std::string& s,
                                     const ::xercesc::DOMElement* e,
                                     ::xml_schema::flags f,
                                     ::xml_schema::container* c)
 : ::xml_schema::string (s, e, f, c)
 {
-  _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert ();
+  _xsd_RPG_Engine_EntityMode_XMLTree_Type_convert ();
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type* RPG_Engine_PlayerMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type* RPG_Engine_EntityMode_XMLTree_Type::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class RPG_Engine_PlayerMode_XMLTree_Type (*this, f, c);
+  return new class RPG_Engine_EntityMode_XMLTree_Type (*this, f, c);
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type::value RPG_Engine_PlayerMode_XMLTree_Type::
-_xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert () const
+RPG_Engine_EntityMode_XMLTree_Type::value RPG_Engine_EntityMode_XMLTree_Type::
+_xsd_RPG_Engine_EntityMode_XMLTree_Type_convert () const
 {
-  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_);
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_EntityMode_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
-                    _xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_,
-                    _xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_ + 3,
+                    _xsd_RPG_Engine_EntityMode_XMLTree_Type_indexes_,
+                    _xsd_RPG_Engine_EntityMode_XMLTree_Type_indexes_ + 3,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_ + 3 || _xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Engine_EntityMode_XMLTree_Type_indexes_ + 3 || _xsd_RPG_Engine_EntityMode_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -337,20 +337,20 @@ _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert () const
   return *i;
 }
 
-const char* const RPG_Engine_PlayerMode_XMLTree_Type::
-_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[3] =
+const char* const RPG_Engine_EntityMode_XMLTree_Type::
+_xsd_RPG_Engine_EntityMode_XMLTree_Type_literals_[3] =
 {
-  "PLAYERMODE_FIGHTING",
-  "PLAYERMODE_SEARCHING",
-  "PLAYERMODE_TRAVELLING"
+  "ENTITYMODE_FIGHTING",
+  "ENTITYMODE_SEARCHING",
+  "ENTITYMODE_TRAVELLING"
 };
 
-const RPG_Engine_PlayerMode_XMLTree_Type::value RPG_Engine_PlayerMode_XMLTree_Type::
-_xsd_RPG_Engine_PlayerMode_XMLTree_Type_indexes_[3] =
+const RPG_Engine_EntityMode_XMLTree_Type::value RPG_Engine_EntityMode_XMLTree_Type::
+_xsd_RPG_Engine_EntityMode_XMLTree_Type_indexes_[3] =
 {
-  ::RPG_Engine_PlayerMode_XMLTree_Type::PLAYERMODE_FIGHTING,
-  ::RPG_Engine_PlayerMode_XMLTree_Type::PLAYERMODE_SEARCHING,
-  ::RPG_Engine_PlayerMode_XMLTree_Type::PLAYERMODE_TRAVELLING
+  ::RPG_Engine_EntityMode_XMLTree_Type::ENTITYMODE_FIGHTING,
+  ::RPG_Engine_EntityMode_XMLTree_Type::ENTITYMODE_SEARCHING,
+  ::RPG_Engine_EntityMode_XMLTree_Type::ENTITYMODE_TRAVELLING
 };
 
 // RPG_Engine_Player_XMLTree_Type
@@ -574,13 +574,13 @@ operator<< (::std::ostream& o, const RPG_Engine_Command_XMLTree_Type& i)
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, RPG_Engine_PlayerMode_XMLTree_Type::value i)
+operator<< (::std::ostream& o, RPG_Engine_EntityMode_XMLTree_Type::value i)
 {
-  return o << RPG_Engine_PlayerMode_XMLTree_Type::_xsd_RPG_Engine_PlayerMode_XMLTree_Type_literals_[i];
+  return o << RPG_Engine_EntityMode_XMLTree_Type::_xsd_RPG_Engine_EntityMode_XMLTree_Type_literals_[i];
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, const RPG_Engine_PlayerMode_XMLTree_Type& i)
+operator<< (::std::ostream& o, const RPG_Engine_EntityMode_XMLTree_Type& i)
 {
   return o << static_cast< const ::xml_schema::string& > (i);
 }
@@ -910,20 +910,20 @@ operator<< (::xml_schema::list_stream& l,
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const RPG_Engine_PlayerMode_XMLTree_Type& i)
+operator<< (::xercesc::DOMElement& e, const RPG_Engine_EntityMode_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::string& > (i);
 }
 
 void
-operator<< (::xercesc::DOMAttr& a, const RPG_Engine_PlayerMode_XMLTree_Type& i)
+operator<< (::xercesc::DOMAttr& a, const RPG_Engine_EntityMode_XMLTree_Type& i)
 {
   a << static_cast< const ::xml_schema::string& > (i);
 }
 
 void
 operator<< (::xml_schema::list_stream& l,
-            const RPG_Engine_PlayerMode_XMLTree_Type& i)
+            const RPG_Engine_EntityMode_XMLTree_Type& i)
 {
   l << static_cast< const ::xml_schema::string& > (i);
 }
@@ -1130,13 +1130,13 @@ RPG_Engine_Command_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   _xsd_RPG_Engine_Command_XMLTree_Type_convert ();
 }
 
-RPG_Engine_PlayerMode_XMLTree_Type::
-RPG_Engine_PlayerMode_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                     ::xml_schema::flags f,
                                     ::xml_schema::container* c)
 : ::xml_schema::string (s, f, c)
 {
-  _xsd_RPG_Engine_PlayerMode_XMLTree_Type_convert ();
+  _xsd_RPG_Engine_EntityMode_XMLTree_Type_convert ();
 }
 
 RPG_Engine_Player_XMLTree_Type::
@@ -1191,7 +1191,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
-            const RPG_Engine_PlayerMode_XMLTree_Type& x)
+            const RPG_Engine_EntityMode_XMLTree_Type& x)
 {
   return s << static_cast< const ::xml_schema::string& > (x);
 }

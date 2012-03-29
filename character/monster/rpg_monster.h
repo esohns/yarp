@@ -70,14 +70,14 @@ class RPG_Monster_Export RPG_Monster
   virtual ~RPG_Monster();
 //   RPG_Monster& operator=(const RPG_Monster&);
 
-  const RPG_Common_CreatureType getType() const;
-  const bool isSummoned() const;
+  const RPG_Common_CreatureType& getType() const;
+  bool isSummoned() const;
 
-  virtual const signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
+  virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
 
   virtual void gainExperience(const unsigned int&); // XP
 
-  virtual const bool isPlayerCharacter() const;
+  virtual bool isPlayerCharacter() const;
 
   virtual void dump() const;
 
@@ -88,9 +88,9 @@ class RPG_Monster_Export RPG_Monster
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster());
 
   // helper methods
-  virtual const RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
-                                                               const RPG_Combat_AttackSituation&) const;
-  virtual const signed char getShieldBonus() const;
+  virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
+                                                         const RPG_Combat_AttackSituation&) const;
+  virtual signed char getShieldBonus() const;
 
   RPG_Common_CreatureType myType;
   bool                    myIsSummoned;
