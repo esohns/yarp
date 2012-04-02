@@ -61,6 +61,7 @@ struct RPG_Engine_Entity
   RPG_Engine_Actions_t    actions;
   RPG_Graphics_Sprite     sprite;
   SDL_Surface*            graphic;
+  bool                    is_spawned;
 };
 typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
@@ -177,5 +178,9 @@ typedef std::set<RPG_Engine_CombatantSequenceElement,
 typedef RPG_Engine_CombatantSequence_t::iterator RPG_Engine_CombatantSequenceIterator_t;
 typedef RPG_Engine_CombatantSequence_t::const_iterator RPG_Engine_CombatantSequenceConstIterator_t;
 // typedef RPG_Engine_CombatantSequence_t::const_reverse_iterator RPG_Engine_CombatantSequenceRIterator_t;
+
+// *TODO*: this interface is too generic...
+typedef std::vector<void*> RPG_Engine_ClientParameters_t;
+typedef RPG_Engine_ClientParameters_t::const_iterator RPG_Engine_ClientParametersConstIterator_t;
 
 #endif

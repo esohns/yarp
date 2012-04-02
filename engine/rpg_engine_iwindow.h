@@ -33,13 +33,15 @@ class RPG_Engine_IWindow
 
   // exposed interface
 //  virtual void init() = 0;
-  virtual void redraw() = 0;
-  virtual void setView(const RPG_Map_Position_t&) = 0;
-  virtual void toggleDoor(const RPG_Map_Position_t&) = 0;
-  virtual void addEntity(const RPG_Engine_EntityID_t&,
-                         const SDL_Surface*) = 0;
-  virtual void removeEntity(const RPG_Engine_EntityID_t&) = 0;
-  virtual void updateEntity(const RPG_Engine_EntityID_t&) = 0;
+  //virtual void redraw() = 0;
+  //virtual void setView(const RPG_Map_Position_t&) = 0;
+  //virtual void toggleDoor(const RPG_Map_Position_t&) = 0;
+  //virtual void addEntity(const RPG_Engine_EntityID_t&,
+  //                       const SDL_Surface*) = 0;
+  //virtual void removeEntity(const RPG_Engine_EntityID_t&) = 0;
+  //virtual void updateEntity(const RPG_Engine_EntityID_t&) = 0;
+  virtual void notify(const RPG_Engine_Command&,
+                      const RPG_Engine_ClientParameters_t&) = 0;
 };
 
 #endif // RPG_ENGINE_IWINDOW_H

@@ -53,7 +53,8 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
                              ACE_Recursive_Thread_Mutex>;
 
  public:
-  void init(RPG_Engine_Level*); // level engine
+  void init(const unsigned int&, // max # spawned entities (consecutive)
+            RPG_Engine_Level*);  // level engine
 
   // manage event sources
   int schedule(const RPG_Engine_Event&, // event
@@ -93,6 +94,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   void handleEntities();
 
   RPG_Engine_Level*          myEngine;
+  unsigned int               myMaxNumSpawnedEntities;
 
   // helper types
   typedef std::map<int, RPG_Engine_Event*> RPG_Engine_EventTimerIDs_t;

@@ -38,7 +38,8 @@
 #include <ace/Log_Msg.h>
 
 RPG_Engine_Event_Manager::RPG_Engine_Event_Manager()
- : myEngine(NULL)//,
+ : myEngine(NULL),
+   myMaxNumSpawnedEntities(RPG_ENGINE_DEF_MAX_NUM_SPAWNED)//,
 //   myTimers()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::RPG_Engine_Event_Manager"));
@@ -316,16 +317,19 @@ RPG_Engine_Event_Manager::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::dump_state"));
 
+  ACE_ASSERT(false);
 }
 
 void
-RPG_Engine_Event_Manager::init(RPG_Engine_Level* engine_in)
+RPG_Engine_Event_Manager::init(const unsigned int& maxNumSpawnedEntities_in,
+                               RPG_Engine_Level* engine_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::init"));
 
   ACE_ASSERT(engine_in);
 
   myEngine = engine_in;
+  myMaxNumSpawnedEntities = maxNumSpawnedEntities_in;
 }
 
 int
@@ -419,50 +423,52 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
   {
     case EVENT_SPAWN_MONSTER:
     {
-      if (RPG_Dice::probability(event_handle->probability))
+      if ((myEngine->numSpawned() >= myMaxNumSpawnedEntities) ||
+          !RPG_Dice::probability(event_handle->probability))
+        break; // not this time...
+
+      // OK: spawn an instance
+      RPG_Engine_Entity* entity = NULL;
+      entity = new(std::nothrow) RPG_Engine_Entity;
+      if (!entity)
       {
-        // OK: spawn an instance
-        RPG_Engine_Entity* entity = NULL;
-        entity = new(std::nothrow) RPG_Engine_Entity;
-        if (!entity)
-        {
-          ACE_DEBUG((LM_CRITICAL,
-                     ACE_TEXT("unable to allocate memory, aborting\n")));
+        ACE_DEBUG((LM_CRITICAL,
+                   ACE_TEXT("unable to allocate memory, aborting\n")));
 
-          return;
-        } // end IF
-        *entity = RPG_Engine_Common_Tools::createEntity(event_handle->monster);
-        ACE_ASSERT(entity->character && entity->graphic);
-        if (!entity->character || !entity->graphic)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity, aborting\n")));
-
-          // clean up
-          delete entity;
-
-          return;
-        } // end IF
-
-        // choose random entry point
-        const RPG_Map_Positions_t& seed_points = myEngine->getSeedPoints();
-        ACE_ASSERT(!seed_points.empty());
-        RPG_Dice_RollResult_t random_number;
-        RPG_Dice::generateRandomNumbers(seed_points.size(),
-                                        1,
-                                        random_number);
-        RPG_Map_PositionsConstIterator_t iterator = seed_points.begin();
-        std::advance(iterator, random_number.front() - 1);
-        entity->position = *iterator;
-
-        RPG_Engine_EntityID_t id = myEngine->add(entity);
-
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("spawned a %s [id: %u]...\n"),
-                   entity->character->getName().c_str(),
-                   id));
+        return;
       } // end IF
+      *entity = RPG_Engine_Common_Tools::createEntity(event_handle->monster);
+      entity->is_spawned = true;
+      ACE_ASSERT(entity->character && entity->graphic);
+      if (!entity->character || !entity->graphic)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity, aborting\n")));
+
+        // clean up
+        delete entity;
+
+        return;
+      } // end IF
+
+      // choose random entry point
+      const RPG_Map_Positions_t& seed_points = myEngine->getSeedPoints();
+      ACE_ASSERT(!seed_points.empty());
+      RPG_Dice_RollResult_t random_number;
+      RPG_Dice::generateRandomNumbers(seed_points.size(),
+                                      1,
+                                      random_number);
+      RPG_Map_PositionsConstIterator_t iterator = seed_points.begin();
+      std::advance(iterator, random_number.front() - 1);
+      entity->position = *iterator;
+
+      RPG_Engine_EntityID_t id = myEngine->add(entity);
+
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("spawned a %s [id: %u]...\n"),
+                 entity->character->getName().c_str(),
+                 id));
 
       break;
     }
@@ -484,66 +490,70 @@ RPG_Engine_Event_Manager::handleEntities()
 
   ACE_ASSERT(myEngine);
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myEngine->myLock);
-
   RPG_Engine_Action next_action;
   next_action.command = RPG_ENGINE_COMMAND_INVALID;
   next_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                         std::numeric_limits<unsigned int>::max());
   next_action.path.clear();
   next_action.target = 0;
-  for (RPG_Engine_EntitiesConstIterator_t iterator = myEngine->myEntities.begin();
-       iterator != myEngine->myEntities.end();
-       iterator++)
+
   {
-    // do not control player characters...
-    if ((*iterator).second->character->isPlayerCharacter())
-      continue;
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myEngine->myLock);
 
-    // idle ? --> do something !
-    if ((*iterator).second->actions.empty())
+    for (RPG_Engine_EntitiesConstIterator_t iterator = myEngine->myEntities.begin();
+         iterator != myEngine->myEntities.end();
+         iterator++)
     {
-      // find closest target (if any)
-      // *TODO*: implement strategy here (strongest/weakest target, ...)
-      unsigned int distance, closest_distance = std::numeric_limits<unsigned int>::max();
-      RPG_Engine_EntitiesConstIterator_t closest_target = myEngine->myEntities.end();
-      for (RPG_Engine_EntitiesConstIterator_t iterator2 = myEngine->myEntities.begin();
-           iterator2 != myEngine->myEntities.end();
-           iterator2++)
-      {
-        if (!(*iterator2).second->character->isPlayerCharacter())
-          continue;
+      // do not control player characters...
+      if ((*iterator).second->character->isPlayerCharacter())
+        continue;
 
-        distance = RPG_Map_Common_Tools::distance((*iterator).second->position,
-                                                  (*iterator2).second->position);
-        if (distance < closest_distance)
+      // idle ? --> do something !
+      if ((*iterator).second->actions.empty())
+      {
+        // find closest target (if any)
+        // *TODO*: implement strategy here (strongest/weakest target, ...)
+        unsigned int distance, closest_distance = std::numeric_limits<unsigned int>::max();
+        RPG_Engine_EntitiesConstIterator_t closest_target = myEngine->myEntities.end();
+        for (RPG_Engine_EntitiesConstIterator_t iterator2 = myEngine->myEntities.begin();
+             iterator2 != myEngine->myEntities.end();
+             iterator2++)
         {
-          closest_distance = distance;
-          closest_target = iterator2;
-        } // end IF
-      } // end FOR
-      ACE_ASSERT(closest_target != myEngine->myEntities.end());
-      if (closest_target == myEngine->myEntities.end())
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("no target, continuing\n")));
+          if (!(*iterator2).second->character->isPlayerCharacter())
+            continue;
 
-        break;
+          distance = RPG_Map_Common_Tools::distance((*iterator).second->position,
+                                                    (*iterator2).second->position);
+          if (distance < closest_distance)
+          {
+            closest_distance = distance;
+            closest_target = iterator2;
+          } // end IF
+        } // end FOR
+        ACE_ASSERT(closest_target != myEngine->myEntities.end());
+        if (closest_target == myEngine->myEntities.end())
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("no target, continuing\n")));
+
+          break;
+        } // end IF
+        next_action.target = (*closest_target).first;
+        // *TODO*: check reach instead
+        if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
+                                             (*closest_target).second->position))
+        {
+          // start attacking right away...
+          next_action.command = COMMAND_ATTACK;
+        } // end IF
+        else
+        {
+          // start pursuing...
+          next_action.command = COMMAND_TRAVEL;
+        } // end ELSE
+
+        (*iterator).second->actions.push_back(next_action);
       } // end IF
-      next_action.target = (*closest_target).first;
-      // *TODO*: check reach instead
-      if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
-                                           (*closest_target).second->position))
-      {
-        // start attacking right away...
-        next_action.command = COMMAND_ATTACK;
-      } // end IF
-      else
-      {
-        // start pursuing...
-        next_action.command = COMMAND_TRAVEL;
-      } // end ELSE
-      myEngine->action((*iterator).first, next_action);
-    } // end IF
-  } // end FOR
+    } // end FOR
+  } // end lock scope
 }

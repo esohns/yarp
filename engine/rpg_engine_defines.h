@@ -27,6 +27,8 @@
 #define RPG_ENGINE_MAX_QUEUE_SLOTS      100
 #define RPG_ENGINE_EVENT_PEEK_INTERVAL  50 // ms
 
+#define RPG_ENGINE_DEF_MAX_NUM_SPAWNED  3
+
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE          "rpg_engine.xsd"
 

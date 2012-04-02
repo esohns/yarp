@@ -51,9 +51,10 @@ RPG_Client_Entity_Manager::~RPG_Client_Entity_Manager()
   for (RPG_Client_EntityCacheConstIterator_t iterator = myCache.begin();
        iterator != myCache.end();
        iterator++)
+  {
+    SDL_FreeSurface((*iterator).second.graphic);
     SDL_FreeSurface((*iterator).second.bg);
-
-  myCache.clear();
+  } // end FOR
 }
 
 void
@@ -68,14 +69,24 @@ RPG_Client_Entity_Manager::init(RPG_Graphics_SDLWindowBase* window_in)
 
 void
 RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
-                               const SDL_Surface* surface_in)
+                               SDL_Surface* surface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::add"));
 
   // sanity checks
   ACE_ASSERT(surface_in);
-  if (myCache.find(id_in) != myCache.end())
-    return; // nothing to do...
+  ACE_ASSERT(myCache.find(id_in) == myCache.end());
+  //if (myCache.find(id_in) != myCache.end())
+  //{
+  //  ACE_DEBUG((LM_WARNING,
+  //             ACE_TEXT("entity ID %u already cached, returning\n"),
+  //             id_in));
+
+  //  // clean up
+  //  SDL_FreeSurface(surface_in);
+
+  //  return;
+  //} // end IF
 
   RPG_Client_EntityCacheEntry_t new_entry;
   new_entry.graphic = surface_in;
@@ -103,15 +114,22 @@ RPG_Client_Entity_Manager::remove(const RPG_Engine_EntityID_t& id_in)
 
   RPG_Client_EntityCacheConstIterator_t iterator = myCache.find(id_in);
   if (iterator == myCache.end())
-    return; // nothing to do...
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+               id_in));
+
+    return;
+  } // end IF
 
   // clean up
+  SDL_FreeSurface((*iterator).second.graphic);
   SDL_FreeSurface((*iterator).second.bg);
 
   myCache.erase(iterator);
 }
 
-const bool
+bool
 RPG_Client_Entity_Manager::cached(const RPG_Engine_EntityID_t& id_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::cached"));

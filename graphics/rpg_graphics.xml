@@ -62,6 +62,16 @@
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
+    <type>CURSOR_TARGET</type>
+    <file>cursor_target_red.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
+    <type>CURSOR_TRAVEL</type>
+    <file>cursor_target_green.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
     <type>CURSOR_WAIT</type>
     <file>cursor_hourglass.png</file>
   </graphic>

@@ -1434,7 +1434,8 @@ do_work(const RPG_Client_Config& config_in,
   // step5d: client engine
   client_engine.init(&level_engine,
                      mainWindow.getChild(WINDOW_MAP));
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(&level_engine);
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(RPG_ENGINE_DEF_MAX_NUM_SPAWNED,
+                                                       &level_engine);
 
   // step5e: queue initial drawing
   RPG_Client_Action client_action;

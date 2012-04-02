@@ -65,16 +65,22 @@ class RPG_Client_Export RPG_Client_Engine
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
+  void redraw();
+  // *NOTE*: this triggers a complete redraw !
+  void setView(const RPG_Map_Position_t&);
+
   // implement RPG_Engine_IWindow
   // *NOTE*: these are to be called by the level engine ONLY
-  virtual void redraw();
-  // *NOTE*: this triggers a complete redraw !
-  virtual void setView(const RPG_Map_Position_t&);
-  virtual void toggleDoor(const RPG_Map_Position_t&);
-  virtual void addEntity(const RPG_Engine_EntityID_t&,
-                         const SDL_Surface*);
-  virtual void removeEntity(const RPG_Engine_EntityID_t&);
-  virtual void updateEntity(const RPG_Engine_EntityID_t&);
+  //virtual void redraw();
+  //// *NOTE*: this triggers a complete redraw !
+  //virtual void setView(const RPG_Map_Position_t&);
+  //virtual void toggleDoor(const RPG_Map_Position_t&);
+  //virtual void addEntity(const RPG_Engine_EntityID_t&,
+  //                       const SDL_Surface*);
+  //virtual void removeEntity(const RPG_Engine_EntityID_t&);
+  //virtual void updateEntity(const RPG_Engine_EntityID_t&);
+  virtual void notify(const RPG_Engine_Command&,
+                      const RPG_Engine_ClientParameters_t&);
 
   void initMap();
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
@@ -84,9 +90,10 @@ class RPG_Client_Export RPG_Client_Engine
 
   void mode(const RPG_Client_SelectionMode&); // set mode
   //void clear(const RPG_Client_SelectionMode&); // clear mode
-  const bool hasMode(const RPG_Client_SelectionMode&) const; // mode
+  bool hasMode(const RPG_Client_SelectionMode&) const; // mode
 
-  const bool centerOnActive() const; // return value: keep active player centered ?
+  void centerOnActive(const bool&); // keep active player centered ?
+  bool getCenterOnActive() const; // return value: keep active player centered ?
 
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;

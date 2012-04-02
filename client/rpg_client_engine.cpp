@@ -103,7 +103,7 @@ RPG_Client_Engine::close(u_long arg_in)
     }
     case 1:
     {
-      ACE_DEBUG((LM_CRITICAL,
+      ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("should never get here, returning\n")));
 
       ACE_ASSERT(false);
@@ -113,7 +113,7 @@ RPG_Client_Engine::close(u_long arg_in)
     }
     default:
     {
-      ACE_DEBUG((LM_CRITICAL,
+      ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid argument: %u, returning\n"),
                  arg_in));
 
@@ -307,57 +307,135 @@ RPG_Client_Engine::setView(const RPG_Map_Position_t& position_in)
   action(new_action);
 }
 
+//void
+//RPG_Client_Engine::toggleDoor(const RPG_Map_Position_t& position_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::toggleDoor"));
+//
+//  // sanity check
+//  ACE_ASSERT(myLevelWindow);
+//
+//  RPG_Client_Action new_action;
+//  new_action.command = COMMAND_TOGGLE_DOOR;
+//  new_action.position = position_in;
+//  new_action.window = myLevelWindow;
+//  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+//  new_action.entity_id = 0;
+//
+//  action(new_action);
+//}
+//
+//void
+//RPG_Client_Engine::addEntity(const RPG_Engine_EntityID_t& id_in,
+//                             const SDL_Surface* graphic_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::addEntity"));
+//
+//  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(id_in, graphic_in);
+//}
+//
+//void
+//RPG_Client_Engine::removeEntity(const RPG_Engine_EntityID_t& id_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::removeEntity"));
+//
+//  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(id_in);
+//}
+//
+//void
+//RPG_Client_Engine::updateEntity(const RPG_Engine_EntityID_t& id_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::updateEntity"));
+//
+//  // sanity check
+//  ACE_ASSERT(myLevelWindow);
+//
+//  RPG_Client_Action new_action;
+//  new_action.command = COMMAND_ENTITY_DRAW;
+//  new_action.position = myEngine->getPosition(id_in);
+//  new_action.window = myLevelWindow;
+//  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+//  new_action.entity_id = id_in;
+//
+//  action(new_action);
+//}
+
 void
-RPG_Client_Engine::toggleDoor(const RPG_Map_Position_t& position_in)
+RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
+                          const RPG_Engine_ClientParameters_t& parameters_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::toggleDoor"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::notify"));
 
-  // sanity check
-  ACE_ASSERT(myLevelWindow);
+  RPG_Client_Action client_action;
+  client_action.command = RPG_CLIENT_COMMAND_INVALID;
+  client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max());
+  client_action.window = NULL;
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  client_action.entity_id = 0;
+  switch (command_in)
+  {
+    case COMMAND_ATTACK:
+      return;
+    case COMMAND_DOOR_CLOSE:
+    case COMMAND_DOOR_OPEN:
+    {
+      ACE_ASSERT(parameters_in.size() == 1);
+      client_action.command = COMMAND_TOGGLE_DOOR;
+      client_action.position = *static_cast<RPG_Map_Position_t*>(parameters_in.front());
+      client_action.window = myLevelWindow;
 
-  RPG_Client_Action new_action;
-  new_action.command = COMMAND_TOGGLE_DOOR;
-  new_action.position = position_in;
-  new_action.window = myLevelWindow;
-  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  new_action.entity_id = 0;
+      break;
+    }
+    case COMMAND_SEARCH:
+    case COMMAND_STOP:
+    case COMMAND_TRAVEL:
+      return;
+    case COMMAND_ENTITY_ADD:
+    {
+      ACE_ASSERT(parameters_in.size() == 2);
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()),
+                                                           static_cast<SDL_Surface*>(parameters_in.back()));
 
-  action(new_action);
-}
+      return;
+    }
+    case COMMAND_ENTITY_REMOVE:
+    {
+      ACE_ASSERT(parameters_in.size() == 1);
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()));
 
-void
-RPG_Client_Engine::addEntity(const RPG_Engine_EntityID_t& id_in,
-                             const SDL_Surface* graphic_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::addEntity"));
+      return;
+    }
+    case COMMAND_ENTITY_UPDATE:
+    {
+      ACE_ASSERT(parameters_in.size() == 2);
+      client_action.command = COMMAND_ENTITY_DRAW;
+      client_action.position = *static_cast<RPG_Map_Position_t*>(parameters_in.back());
+      client_action.window = myLevelWindow;
+      client_action.entity_id = *static_cast<RPG_Engine_EntityID_t*>(parameters_in.front());
 
-  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(id_in, graphic_in);
-}
+      // adjust view ?
+      if (getCenterOnActive() &&
+          (client_action.entity_id == myEngine->getActive()))
+      {
+        action(client_action);
 
-void
-RPG_Client_Engine::removeEntity(const RPG_Engine_EntityID_t& id_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::removeEntity"));
+        client_action.command = COMMAND_SET_VIEW;
+      } // end IF
 
-  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(id_in);
-}
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid command (was: \"%s\", aborting\n"),
+                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str()));
 
-void
-RPG_Client_Engine::updateEntity(const RPG_Engine_EntityID_t& id_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::updateEntity"));
+      return;
+    }
+  } // end SWITCH
 
-  // sanity check
-  ACE_ASSERT(myLevelWindow);
-
-  RPG_Client_Action new_action;
-  new_action.command = COMMAND_ENTITY_DRAW;
-  new_action.position = myEngine->getPosition(id_in);
-  new_action.window = myLevelWindow;
-  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  new_action.entity_id = id_in;
-
-  action(new_action);
+  action(client_action);
 }
 
 void
@@ -403,7 +481,7 @@ RPG_Client_Engine::mode(const RPG_Client_SelectionMode& mode_in)
 //  mySelectionMode = SELECTIONMODE_NORMAL;
 //}
 
-const bool
+bool
 RPG_Client_Engine::hasMode(const RPG_Client_SelectionMode& mode_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::hasMode"));
@@ -411,12 +489,29 @@ RPG_Client_Engine::hasMode(const RPG_Client_SelectionMode& mode_in) const
   return (mySelectionMode == mode_in);
 }
 
-const bool
-RPG_Client_Engine::centerOnActive() const
+void
+RPG_Client_Engine::centerOnActive(const bool& centerOnActive_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::centerOnActive"));
 
-  return myCenterOnActivePlayer;
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  myCenterOnActivePlayer = centerOnActive_in;
+}
+
+bool
+RPG_Client_Engine::getCenterOnActive() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::getCenterOnActive"));
+
+  bool result;
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    result = myCenterOnActivePlayer;
+  } // end lock scope
+
+  return result;
 }
 
 void
@@ -502,7 +597,7 @@ RPG_Client_Engine::handleActions()
         }
         catch (...)
         {
-          ACE_DEBUG((LM_CRITICAL,
+          ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in [%@]: RPG_Client_WindowLevel::setView([%u,%u])/draw(), aborting\n"),
                      window,
                      (*iterator).position.first,
@@ -631,7 +726,7 @@ RPG_Client_Engine::handleActions()
         }
         catch (...)
         {
-          ACE_DEBUG((LM_CRITICAL,
+          ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in [%@]: RPG_Client_WindowMain::drawBorder(), aborting\n"),
                      window));
 
@@ -688,7 +783,7 @@ RPG_Client_Engine::handleActions()
         }
         catch (...)
         {
-          ACE_DEBUG((LM_CRITICAL,
+          ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in [%@]: RPG_Client_WindowMain::init/setView/draw(), aborting\n"),
                      window));
 
@@ -735,7 +830,7 @@ RPG_Client_Engine::handleActions()
         }
         catch (...)
         {
-          ACE_DEBUG((LM_CRITICAL,
+          ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::refresh(), aborting\n"),
                      (*iterator).window));
 
@@ -758,7 +853,7 @@ RPG_Client_Engine::handleActions()
         }
         catch (...)
         {
-          ACE_DEBUG((LM_CRITICAL,
+          ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in [%@]: RPG_Client_WindowLevel::toggleDoor/draw(), aborting\n"),
                      window));
 

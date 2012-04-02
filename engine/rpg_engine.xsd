@@ -37,6 +37,10 @@
       <xsd:enumeration value="COMMAND_SEARCH"/>
       <xsd:enumeration value="COMMAND_STOP"/>
       <xsd:enumeration value="COMMAND_TRAVEL"/>
+      <!--   ENGINE to CLIENT protocol ONLY ! -->
+      <xsd:enumeration value="COMMAND_ENTITY_ADD"/>
+      <xsd:enumeration value="COMMAND_ENTITY_REMOVE"/>
+      <xsd:enumeration value="COMMAND_ENTITY_UPDATE"/>
     </xsd:restriction>
   </xsd:simpleType>
 

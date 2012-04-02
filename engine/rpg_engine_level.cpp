@@ -36,7 +36,7 @@ ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> RPG_Engine_Level::myCurre
 
 RPG_Engine_Level::RPG_Engine_Level()
  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
-   myCondition(myLock),
+//   myCondition(myLock),
 //    myEntities(),
    myActivePlayer(0),
    myClient(NULL)
@@ -57,7 +57,7 @@ RPG_Engine_Level::RPG_Engine_Level(RPG_Engine_IWindow* client_in,
                                    const RPG_Map_t& map_in)
  : inherited(map_in),
    myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
-   myCondition(myLock),
+//   myCondition(myLock),
    myClient(client_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Engine_Level"));
@@ -407,23 +407,30 @@ RPG_Engine_Level::add(RPG_Engine_Entity* entity_in)
 
   // sanity check
   ACE_ASSERT(entity_in);
+  ACE_ASSERT(entity_in->graphic);
   ACE_ASSERT(myClient);
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
   RPG_Engine_EntityID_t id = myCurrentID++;
-  myEntities[id] = entity_in;
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    myEntities[id] = entity_in;
+  } // end lock scope
 
   // notify client / window
+  RPG_Engine_ClientParameters_t parameters;
+  parameters.push_back(&id);
+  parameters.push_back(entity_in->graphic);
   try
   {
-    myClient->addEntity(id, entity_in->graphic);
+    myClient->notify(COMMAND_ENTITY_ADD,
+                     parameters);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Engine_IWindow::addEntity(%u), continuing\n"),
-               id));
+               ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_ENTITY_ADD).c_str()));
   }
 
   return id;
@@ -437,35 +444,40 @@ RPG_Engine_Level::remove(const RPG_Engine_EntityID_t& id_in)
   // sanity check
   ACE_ASSERT(id_in);
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-  RPG_Engine_EntitiesIterator_t iterator = myEntities.find(id_in);
-  if (iterator == myEntities.end())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
-               id_in));
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    return;
-  } // end IF
-  if (!(*iterator).second->character->isPlayerCharacter())
-  {
-    // clean up NPC entities...
-    delete (*iterator).second->character;
-    delete (*iterator).second;
-  } // end IF
-  myEntities.erase(iterator);
+    RPG_Engine_EntitiesIterator_t iterator = myEntities.find(id_in);
+    if (iterator == myEntities.end())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+                 id_in));
+
+      return;
+    } // end IF
+    if (!(*iterator).second->character->isPlayerCharacter())
+    {
+      // clean up NPC entities...
+      delete (*iterator).second->character;
+      delete (*iterator).second;
+    } // end IF
+    myEntities.erase(iterator);
+  } // end lock scope
 
   // notify client / window
+  RPG_Engine_ClientParameters_t parameters;
+  parameters.push_back(&const_cast<RPG_Engine_EntityID_t&>(id_in));
   try
   {
-    myClient->removeEntity(id_in);
+    myClient->notify(COMMAND_ENTITY_REMOVE,
+                     parameters);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Engine_IWindow::removeEntity(%u), continuing\n"),
-               id_in));
+               ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_ENTITY_REMOVE).c_str()));
   }
 }
 
@@ -672,34 +684,23 @@ RPG_Engine_Level::getPosition(const RPG_Engine_EntityID_t& id_in) const
   return (*iterator).second->position;
 }
 
-RPG_Map_Door_t
+const RPG_Map_Door_t&
 RPG_Engine_Level::getDoor(const RPG_Map_Position_t& position_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getDoor"));
 
-  RPG_Map_Door_t dummy;
-  dummy.position = position_in;
-  dummy.outside = DIRECTION_INVALID;
-  dummy.is_open = false;
-  dummy.is_locked = false;
-  dummy.is_broken = false;
+  ACE_ASSERT(!myMap.plan.doors.empty());
 
+  RPG_Map_Door_t position_door;
+  position_door.position = position_in;
+  position_door.outside = DIRECTION_INVALID;
+  position_door.is_open = false;
+  position_door.is_locked = false;
+  position_door.is_broken = false;
+
+  RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.find(position_door);
   // sanity check
-  dummy.position = position_in;
-  RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.find(dummy);
-  if (iterator == myMap.plan.doors.end())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid door position (was: [%u,%u]), aborting\n"),
-               position_in.first,
-               position_in.second));
-
-    // what else can we do ?
-    dummy.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                    std::numeric_limits<unsigned int>::max());
-
-    return dummy;
-  } // end IF
+  ACE_ASSERT(iterator != myMap.plan.doors.end());
 
   return *iterator;
 }
@@ -718,6 +719,9 @@ RPG_Engine_Level::findPath(const RPG_Map_Position_t& start_in,
   if (start_in == end_in)
     return true;
 
+  // add obstacles:
+  // - walls
+  // - (closed) doors
   RPG_Map_Positions_t obstacles = myMap.plan.walls;
   for (RPG_Map_DoorsConstIterator_t door_iterator = myMap.plan.doors.begin();
        door_iterator != myMap.plan.doors.end();
@@ -731,7 +735,7 @@ RPG_Engine_Level::findPath(const RPG_Map_Position_t& start_in,
                                       end_in,
                                       path_out);
 
-  return (!path_out.empty() &&
+  return ((path_out.size() >= 2) &&
           (path_out.front().first == start_in) &&
           (path_out.back().first == end_in));
 }
@@ -765,6 +769,24 @@ RPG_Engine_Level::isMonster(const RPG_Engine_EntityID_t& id_in) const
   return !(*iterator).second->character->isPlayerCharacter();
 }
 
+unsigned int
+RPG_Engine_Level::numSpawned() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::numSpawned"));
+
+  unsigned int result = 0;
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
+       iterator != myEntities.end();
+       iterator++)
+    if ((*iterator).second->is_spawned)
+      result++;
+
+  return result;
+}
+
 void
 RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
                              const bool& open_in,
@@ -777,17 +799,14 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
+  position_door.outside = DIRECTION_INVALID;
+  position_door.is_open = false;
+  position_door.is_locked = false;
+  position_door.is_broken = false;
 
   RPG_Map_DoorsIterator_t iterator = myMap.plan.doors.find(position_door);
-  if (iterator == myMap.plan.doors.end())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid door position (was: [%u,%u]), aborting\n"),
-               position_in.first,
-               position_in.second));
-
-    return;
-  } // end IF
+  // sanity check
+  ACE_ASSERT(iterator != myMap.plan.doors.end());
 
   if (open_in)
   {
@@ -855,190 +874,286 @@ RPG_Engine_Level::clearEntityActions(const RPG_Engine_EntityID_t& id_in)
       (*iterator).second->actions.clear();
 }
 
+bool
+RPG_Engine_Level::findPath(const RPG_Map_Position_t& start_in,
+                           const RPG_Map_Position_t& end_in,
+                           const RPG_Map_Positions_t& obstacles_in,
+                           RPG_Map_Path_t& path_out) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::findPath"));
+
+  // init result
+  path_out.clear();
+
+  // sanity check
+  if (start_in == end_in)
+    return true;
+
+  RPG_Map_Pathfinding_Tools::findPath(getSize(),
+                                      obstacles_in,
+                                      start_in,
+                                      DIRECTION_INVALID,
+                                      end_in,
+                                      path_out);
+
+  return ((path_out.size() >= 2) &&
+          (path_out.front().first == start_in) &&
+          (path_out.back().first == end_in));
+}
+
+bool
+RPG_Engine_Level::isBlocked(const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::isBlocked"));
+
+  // blocked by walls, closed doors, entities, ... ?
+
+  RPG_Map_Element element = getElement(position_in);
+  switch (element)
+  {
+    case MAPELEMENT_FLOOR:
+      break;
+    case MAPELEMENT_DOOR:
+    {
+      if (!getDoor(position_in).is_open)
+        return true;
+
+      break;
+    }
+    default:
+      return true;
+  } // end SWITCH
+
+  for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
+       iterator != myEntities.end();
+       iterator++)
+    if ((*iterator).second->position == position_in)
+      return true;
+
+  return false;
+}
+
 void
 RPG_Engine_Level::handleEntities()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::handleEntities"));
 
   bool action_complete = true;
+  bool do_notify = false;
+  RPG_Engine_EntityID_t entity_id = 0;
+  RPG_Map_Position_t position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                               std::numeric_limits<unsigned int>::max());
+  RPG_Engine_ClientParameters_t parameters;
+  RPG_Engine_ClientNotifications_t notifications;
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-  for (RPG_Engine_EntitiesIterator_t iterator = myEntities.begin();
-       iterator != myEntities.end();
-       iterator++)
   {
-    // *TODO*: check for actions/round limit
-    if ((*iterator).second->actions.empty())
-      continue;
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    action_complete = true;
-    RPG_Engine_Action& current_action = (*iterator).second->actions.front();
-    switch (current_action.command)
+    for (RPG_Engine_EntitiesIterator_t iterator = myEntities.begin();
+         iterator != myEntities.end();
+         iterator++)
     {
-      case COMMAND_ATTACK:
+      parameters.clear();
+
+      // *TODO*: check for actions/round limit
+      if ((*iterator).second->actions.empty())
+        continue;
+
+      action_complete = true;
+      RPG_Engine_Action& current_action = (*iterator).second->actions.front();
+      switch (current_action.command)
       {
-        ACE_ASSERT(current_action.target);
-        RPG_Engine_EntitiesConstIterator_t target = myEntities.find(current_action.target);
-        if ((target == myEntities.end()) ||
-            !RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
-                                              (*target).second->position))
-          break; // nothing to do...
-
-        action_complete = false;
-        (*iterator).second->modes.insert(ENTITYMODE_FIGHTING);
-
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("\"%s\" attacks \"%s\"...\n"),
-                   (*iterator).second->character->getName().c_str(),
-                   (*target).second->character->getName().c_str()));
-
-        break;
-      }
-      case COMMAND_DOOR_CLOSE:
-      case COMMAND_DOOR_OPEN:
-      {
-        bool toggled = false;
-        handleDoor(current_action.position,
-                   (current_action.command == COMMAND_DOOR_OPEN),
-                   toggled);
-
-        // notify client window
-        if (toggled)
+        case COMMAND_ATTACK:
         {
-          try
+          ACE_ASSERT(current_action.target);
+          RPG_Engine_EntitiesConstIterator_t target = myEntities.find(current_action.target);
+          if ((target == myEntities.end()) ||
+              !RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
+                                                (*target).second->position))
+            break; // nothing to do...
+
+          action_complete = false;
+          (*iterator).second->modes.insert(ENTITYMODE_FIGHTING);
+
+          //// debug info
+          //ACE_DEBUG((LM_DEBUG,
+          //           ACE_TEXT("\"%s\" attacks \"%s\"...\n"),
+          //           (*iterator).second->character->getName().c_str(),
+          //           (*target).second->character->getName().c_str()));
+
+          break;
+        }
+        case COMMAND_DOOR_CLOSE:
+        case COMMAND_DOOR_OPEN:
+        {
+          bool toggled = false;
+          handleDoor(current_action.position,
+                     (current_action.command == COMMAND_DOOR_OPEN),
+                     toggled);
+
+          // notify client window
+          if (toggled)
           {
-            myClient->toggleDoor(current_action.position);
-          }
-          catch (...)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception in RPG_Engine_IWindow::toggleDoor([%u,%u]), continuing\n"),
-                       current_action.position.first,
-                       current_action.position.second));
-          }
-        } // end IF
+            position = current_action.position;
+            parameters.push_back(&position);
+            notifications.push_back(std::make_pair(current_action.command, parameters));
 
-        break;
-      }
-      case COMMAND_SEARCH:
-      {
-        (*iterator).second->modes.insert(ENTITYMODE_SEARCHING);
+            do_notify = true;
+          } // end IF
 
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("\"%s\" is searching...\n"),
-                   (*iterator).second->character->getName().c_str()));
-
-        break;
-      }
-      case COMMAND_STOP:
-      {
-        (*iterator).second->modes.clear();
-
-        // debug info
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("\"%s\" stopped...\n"),
-                   (*iterator).second->character->getName().c_str()));
-
-        // *TODO*: stop ALL activities !
-
-        break;
-      }
-      case COMMAND_TRAVEL:
-      {
-        // sanity check
-        if ((current_action.target == 0) && // no target...
-            (current_action.position == (*iterator).second->position))
+          break;
+        }
+        case COMMAND_SEARCH:
         {
-          (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+          (*iterator).second->modes.insert(ENTITYMODE_SEARCHING);
 
-          break; // nothing to do...
-        } // end IF
+          // debug info
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("\"%s\" is searching...\n"),
+                     (*iterator).second->character->getName().c_str()));
 
-        // compute path first ?
-        if (current_action.target || // pursuit mode...
-            current_action.path.empty())
+          break;
+        }
+        case COMMAND_STOP:
         {
+          (*iterator).second->modes.clear();
+
+          // debug info
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("\"%s\" stopped...\n"),
+                     (*iterator).second->character->getName().c_str()));
+
+          // *TODO*: stop ALL activities !
+
+          break;
+        }
+        case COMMAND_TRAVEL:
+        {
+          // reached travel destination ?
           RPG_Map_Position_t target_position = current_action.position;
+          RPG_Engine_EntitiesConstIterator_t target = myEntities.end();
+          bool done = false;
           if (current_action.target)
           {
-            // retrieve current target position
-            RPG_Engine_EntitiesConstIterator_t target = myEntities.find(current_action.target);
-            if ((target == myEntities.end()) ||
-                RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
-                                                 (*target).second->position))
+            // determine target position
+            target = myEntities.find(current_action.target);
+            if (target == myEntities.end())
             {
+              // *NOTE*: --> target has gone...
+
               (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
 
               break; // nothing (more) to do...
             } // end IF
 
             target_position = (*target).second->position;
+            if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
+                                                 target_position))
+              done = true;
           } // end IF
-          if (current_action.path.empty() ||
-              (current_action.path.back().first != target_position)) // target has moved...
-            findPath((*iterator).second->position,
-                     target_position,
-                     current_action.path);
-          if (current_action.path.size() < 2)
+          else if (current_action.position == (*iterator).second->position) // no target...
+            done = true;
+          if (done)
           {
-            // *NOTE*: --> no/invalid path, cannot proceed...
-
             (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
 
-            break; // stop & cancel path...
+            break; // nothing (more) to do...
+          } // end IF
+
+          // compute path first/again ?
+          if (current_action.path.empty() ||
+              (current_action.path.back().first != target_position)) // pursuit mode...
+          {
+            RPG_Map_Positions_t obstacles = myMap.plan.walls;
+            for (RPG_Map_DoorsConstIterator_t door_iterator = myMap.plan.doors.begin();
+                  door_iterator != myMap.plan.doors.end();
+                  door_iterator++)
+              if (!(*door_iterator).is_open)
+                obstacles.insert((*door_iterator).position);
+            for (RPG_Engine_EntitiesConstIterator_t entity_iterator = myEntities.begin();
+                  entity_iterator != myEntities.end();
+                  entity_iterator++)
+            {
+              if (((*entity_iterator).first == (*iterator).first) || // actor is not an obstacle
+                  ((*entity_iterator).first == current_action.target)) // target (if any) is not an obstacle
+                continue;
+
+              obstacles.insert((*entity_iterator).second->position);
+            } // end FOR
+            if (!findPath((*iterator).second->position,
+                          target_position,
+                          obstacles,
+                          current_action.path))
+            {
+              // *NOTE*: --> no/invalid path, cannot proceed...
+
+              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+
+              break; // stop & cancel path...
+            } // end IF
+
+            (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
           } // end IF
           ACE_ASSERT(current_action.path.front().first == (*iterator).second->position);
           //ACE_ASSERT(current_action.path.back().first == current_action.position);
-
           current_action.path.pop_front();
-        } // end IF
-        ACE_ASSERT(!current_action.path.empty());
-        
-        (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
+          ACE_ASSERT(!current_action.path.empty());
 
-        // move to next adjacent position (if still (!) possible)
-        RPG_Map_Element element = getElement(current_action.path.front().first);
-        ACE_ASSERT((element == MAPELEMENT_FLOOR) || (element == MAPELEMENT_DOOR));
-        if (element == MAPELEMENT_DOOR)
-        {
-          RPG_Map_Door_t door = getDoor(current_action.path.front().first);
-          if (!door.is_open)
+          // move to next adjacent position (if still (!) possible)
+          target_position = current_action.path.front().first;
+          if (isBlocked(target_position))
+          {
+            // *NOTE*: --> path is blocked, cannot proceed...
+
             break; // stop & cancel path...
-        } // end IF
+          } // end IF
 
-        (*iterator).second->position = current_action.path.front().first;
-        current_action.path.pop_front();
-        action_complete = false;
+          (*iterator).second->position = target_position;
+          action_complete = false;
 
-        // notify client window
-        try
-        {
-          myClient->updateEntity((*iterator).first);
+          // notify client window
+          entity_id = (*iterator).first;
+          parameters.push_back(&entity_id);
+          position = (*iterator).second->position;
+          parameters.push_back(&position);
+          notifications.push_back(std::make_pair(COMMAND_ENTITY_UPDATE, parameters));
+          do_notify = true;
+
+          break;
         }
-        catch (...)
+        default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Engine_IWindow::updateEntity(%u), continuing\n"),
-                     (*iterator).first));
+                     ACE_TEXT("invalid action (ID: %u, was: \"%s\"), continuing\n"),
+                     (*iterator).first,
+                     RPG_Engine_CommandHelper::RPG_Engine_CommandToString(current_action.command).c_str()));
+
+          break;
         }
+      } // end SWITCH
 
+      if (action_complete)
+        (*iterator).second->actions.pop_front();
+
+      if (do_notify)
         break;
-      }
-      default:
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid action (ID: %u, was: \"%s\"), continuing\n"),
-                   (*iterator).first,
-                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString(current_action.command).c_str()));
+    } // end FOR
+  } // end lock scope
 
-        break;
-      }
-    } // end SWITCH
-
-    if (action_complete)
-      (*iterator).second->actions.pop_front();
+  // notify client / window
+  for (RPG_Engine_ClientNotificationsConstIterator_t iterator = notifications.begin();
+       iterator != notifications.end();
+       iterator++)
+  {
+    try
+    {
+      myClient->notify((*iterator).first, (*iterator).second);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).first).c_str()));
+    }
   } // end FOR
 }

@@ -161,6 +161,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
 //   result.actions.clear();
   result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   result.graphic = NULL;
+  result.is_spawned = false;
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isReadable(filename_in))
@@ -358,7 +359,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   return result;
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
                                     const std::string& filename_in)
 {
@@ -487,6 +488,7 @@ RPG_Engine_Common_Tools::createEntity(const bool& loadImage_in)
   //result.actions();
   result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   result.graphic = NULL;
+  result.is_spawned = false;
 
   // step1: generate player
   RPG_Player* player_p = RPG_Player_Common_Tools::generatePlayer();
@@ -523,6 +525,7 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
   //result.actions();
   result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   result.graphic = NULL;
+  result.is_spawned = false;
 
   RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
   // compute individual hitpoints
@@ -598,7 +601,7 @@ RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
   converter << entity_in.actions.size();
   result += converter.str();
   result += ACE_TEXT("]:\n");
-  unsigned long index = 0;
+  unsigned int index = 0;
   for (RPG_Engine_ActionsConstIterator_t iterator = entity_in.actions.begin();
        iterator != entity_in.actions.end();
        iterator++, index++)
@@ -805,7 +808,7 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
   return result;
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::isPartyHelpless(const RPG_Player_Party_t& party_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isPartyHelpless"));
@@ -824,7 +827,7 @@ RPG_Engine_Common_Tools::isPartyHelpless(const RPG_Player_Party_t& party_in)
   return (numDeadOrHelpless == party_in.size());
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::areMonstersHelpless(const RPG_Monster_Groups_t& monsters_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::areMonstersHelpless"));
@@ -1072,7 +1075,7 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
   } // end FOR
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Monster_Group_t& groupInstance_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isMonsterGroupHelpless"));
@@ -1087,7 +1090,7 @@ RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Monster_Group_t& group
   return (numHelplessMonsters == groupInstance_in.size());
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::isCharacterHelpless(const RPG_Player_Base* const character_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCharacterHelpless"));
@@ -1107,7 +1110,7 @@ RPG_Engine_Common_Tools::isCharacterHelpless(const RPG_Player_Base* const charac
   return false;
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::isValidFoeAvailable(const bool& isMonsterAvailable_in,
                                              const RPG_Engine_CombatantSequence_t& battleSequence_in)
 {
@@ -1129,7 +1132,7 @@ RPG_Engine_Common_Tools::isValidFoeAvailable(const bool& isMonsterAvailable_in,
   return false;
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::isCharacterDisabled(const RPG_Player_Base* const character_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCharacterDisabled"));
@@ -1148,7 +1151,7 @@ RPG_Engine_Common_Tools::isCharacterDisabled(const RPG_Player_Base* const charac
   return false;
 }
 
-const unsigned int
+unsigned int
 RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm& attackForm_in,
                                                            const RPG_Monster_AttackActions_t& actions_in)
 {
@@ -1200,7 +1203,7 @@ RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_Atta
   return result;
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm& attackForm_in,
                                                          const RPG_Monster_AttackAction& action_in)
 {
@@ -1870,7 +1873,7 @@ monster_advance_attack_iterator:
   } // end ELSE
 }
 
-const RPG_Graphics_Sprite
+RPG_Graphics_Sprite
 RPG_Engine_Common_Tools::class2Sprite(const RPG_Character_Class& class_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::class2Sprite"));
@@ -1886,7 +1889,7 @@ RPG_Engine_Common_Tools::class2Sprite(const RPG_Character_Class& class_in)
   return SPRITE_HUMAN;
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
                                     const RPG_Engine_Level& level_in)
 {
@@ -1982,7 +1985,7 @@ RPG_Engine_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
   return false;
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::isValid(const RPG_Map_Position_t& position_in,
                                  const RPG_Engine_Level& level_in)
 {
@@ -2008,7 +2011,7 @@ RPG_Engine_Common_Tools::isValid(const RPG_Map_Position_t& position_in,
   return false;
 }
 
-const RPG_Graphics_Orientation
+RPG_Graphics_Orientation
 RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Engine_Level& level_in,
                                             const RPG_Map_Position_t& position_in)
 {
@@ -2029,13 +2032,25 @@ RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Engine_Level& level_in,
   return ORIENTATION_VERTICAL;
 }
 
-const RPG_Graphics_Cursor
+RPG_Graphics_Cursor
 RPG_Engine_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
                                    const RPG_Engine_Level& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getCursor"));
 
   RPG_Graphics_Cursor result = CURSOR_NORMAL;
+
+  // monster ?
+  RPG_Engine_EntityID_t entity_id = level_in.hasEntity(position_in);
+  if (entity_id &&
+      level_in.isMonster(entity_id))
+  {
+    // && in reach ?
+    entity_id = level_in.getActive();
+    if (entity_id &&
+        RPG_Map_Common_Tools::isAdjacent(level_in.getPosition(entity_id), position_in))
+      return CURSOR_TARGET;
+  } // end IF
 
   // (closed) door ?
   if (level_in.getElement(position_in) == MAPELEMENT_DOOR)
@@ -2052,7 +2067,7 @@ RPG_Engine_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
   return result;
 }
 
-const bool
+bool
 RPG_Engine_Common_Tools::isCorner(const RPG_Map_Position_t& position_in,
                                   const RPG_Engine_Level& level_in)
 {
@@ -2102,7 +2117,7 @@ RPG_Engine_Common_Tools::isCorner(const RPG_Map_Position_t& position_in,
             (level_in.getElement(west) == MAPELEMENT_WALL)))); // NE
 }
 
-const RPG_Graphics_Sprite
+RPG_Graphics_Sprite
 RPG_Engine_Common_Tools::monster2Sprite(const std::string& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::monster2Sprite"));

@@ -66,8 +66,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static RPG_Engine_Entity loadEntity(const std::string&, // FQ filename
                                       const std::string&, // schema repository (directory)
                                       const bool&);       // load sprite graphic ?
-  static const bool saveEntity(const RPG_Engine_Entity&, // entity
-                               const std::string&);      // FQ filename
+  static bool saveEntity(const RPG_Engine_Entity&, // entity
+                         const std::string&);      // FQ filename
   // *NOTE*: return value entity.character must be delete()d by the caller !
   // *NOTE*: return value entity.graphic must be SDL_FreeSurface()d by the caller !
   static RPG_Engine_Entity createEntity(const bool& = true); // load sprite graphic ?
@@ -77,8 +77,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
 
   // ***** combat-related *****
-  static const bool isPartyHelpless(const RPG_Player_Party_t&); // party
-  static const bool areMonstersHelpless(const RPG_Monster_Groups_t&); // monsters
+  static bool isPartyHelpless(const RPG_Player_Party_t&); // party
+  static bool areMonstersHelpless(const RPG_Monster_Groups_t&); // monsters
   static void getCombatantSequence(const RPG_Player_Party_t&,        // party
                                    const RPG_Monster_Groups_t&,      // monsters
                                    RPG_Engine_CombatantSequence_t&); // battle sequence
@@ -87,18 +87,18 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
 
   // ***** map/graphics-related *****
-  static const RPG_Graphics_Sprite class2Sprite(const RPG_Character_Class&);
+  static RPG_Graphics_Sprite class2Sprite(const RPG_Character_Class&);
 
-  static const bool hasCeiling(const RPG_Map_Position_t&,
-                               const RPG_Engine_Level&);
+  static bool hasCeiling(const RPG_Map_Position_t&,
+                         const RPG_Engine_Level&);
   // either floor or an open (!) door
-  static const bool isValid(const RPG_Map_Position_t&,
-                            const RPG_Engine_Level&);
+  static bool isValid(const RPG_Map_Position_t&,
+                      const RPG_Engine_Level&);
 
-  static const RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine_Level&,    // state
-                                                           const RPG_Map_Position_t&); // door
-  static const RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
-                                             const RPG_Engine_Level&);  // state
+  static RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine_Level&,    // state
+                                                     const RPG_Map_Position_t&); // door
+  static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
+                                       const RPG_Engine_Level&);  // state
 
  private:
   // safety measures
@@ -111,16 +111,16 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   typedef std::deque<RPG_Engine_CombatantSequenceElement> RPG_Engine_CombatSequenceList_t;
   typedef RPG_Engine_CombatSequenceList_t::iterator RPG_Engine_CombatSequenceListIterator_t;
 
-  static const bool isMonsterGroupHelpless(const RPG_Monster_Group_t&); // group instance
-  static const bool isCharacterHelpless(const RPG_Player_Base* const); // character handle
-  static const bool isValidFoeAvailable(const bool&,                            // monsters ? : players
-                                        const RPG_Engine_CombatantSequence_t&); // battle sequence
-  static const bool isCharacterDisabled(const RPG_Player_Base* const); // character handle
+  static bool isMonsterGroupHelpless(const RPG_Monster_Group_t&); // group instance
+  static bool isCharacterHelpless(const RPG_Player_Base* const); // character handle
+  static bool isValidFoeAvailable(const bool&,                            // monsters ? : players
+                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
+  static bool isCharacterDisabled(const RPG_Player_Base* const); // character handle
 
-  static const unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
-                                                              const RPG_Monster_AttackActions_t&);
-  static const bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
-                                                    const RPG_Monster_AttackAction&);
+  static unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
+                                                        const RPG_Monster_AttackActions_t&);
+  static bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
+                                              const RPG_Monster_AttackAction&);
   static void attackFoe(const RPG_Player_Base* const,       // attacker
                         RPG_Player_Base* const,             // target
                         const RPG_Combat_AttackSituation&,  // attacker situation
@@ -128,10 +128,10 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                         const bool&,                        // is this a Full-Round Action ?
                         const unsigned short&);             // distance (feet)
 
-  static const bool isCorner(const RPG_Map_Position_t&,
-                             const RPG_Engine_Level&);
+  static bool isCorner(const RPG_Map_Position_t&,
+                       const RPG_Engine_Level&);
 
-  static const RPG_Graphics_Sprite monster2Sprite(const std::string&);
+  static RPG_Graphics_Sprite monster2Sprite(const std::string&);
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Engine_Player_XMLTree_Type* playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree_Type&);

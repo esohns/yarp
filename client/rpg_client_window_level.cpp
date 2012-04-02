@@ -263,7 +263,9 @@ RPG_Client_WindowLevel::toggleDoor(const RPG_Map_Position_t& position_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::toggleDoor"));
 
-  RPG_Map_Door_t door = myEngine->getDoor(position_in);
+  ACE_ASSERT(myEngine);
+
+  const RPG_Map_Door_t& door = myEngine->getDoor(position_in);
   ACE_ASSERT(door.position == position_in);
 
   // change tile accordingly
@@ -893,6 +895,22 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
       switch (event_in.key.keysym.sym)
       {
+        case SDLK_a:
+        {
+          myClient->centerOnActive(!myClient->getCenterOnActive());
+
+          // adjust view ?
+          RPG_Engine_EntityID_t entity_id = myEngine->getActive();
+          if (myClient->getCenterOnActive() &&
+              entity_id)
+          {
+            myClientAction.command = COMMAND_SET_VIEW;
+            myClientAction.position = myEngine->getPosition(entity_id);
+            myClient->action(myClientAction);
+          } // end IF
+
+          break;
+        }
         // implement keypad navigation
         case SDLK_c:
         {
@@ -1156,7 +1174,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
               myEngine->action(myClientAction.entity_id, player_action);
 
               // adjust view ?
-              if (myClient->centerOnActive())
+              if (myClient->getCenterOnActive())
               {
                 myClientAction.command = COMMAND_SET_VIEW;
                 myClientAction.position = player_action.position;
@@ -1217,6 +1235,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // change "active" tile ?
+      RPG_Map_Position_t current_position = myClientAction.position;
       if (myClientAction.position != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition(std::numeric_limits<unsigned int>::max()))
       {
         // step1: restore/clear old tile highlight background
@@ -1234,7 +1253,6 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
         // step3: an entity may have moved to a previously active tile in the meantime
         // --> it may need to be redrawn
-        RPG_Map_Position_t current_position;
         for (unsigned int i = 0;
              ;
              i++)
@@ -1244,7 +1262,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
               (current_position.second == std::numeric_limits<unsigned int>::max()))
             break; // done
 
-          if (myEngine->hasEntity(current_position))
+          myClientAction.entity_id = myEngine->hasEntity(current_position);
+          if (myClientAction.entity_id)
           {
             myClientAction.command = COMMAND_ENTITY_DRAW;
             myClientAction.position = current_position;
@@ -1302,6 +1321,11 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       // set an appropriate cursor
       RPG_Graphics_Cursor cursor_type = RPG_Engine_Common_Tools::getCursor(myClientAction.position,
                                                                            *myEngine);
+      if ((cursor_type == CURSOR_NORMAL) &&
+          myClientAction.entity_id &&
+          myClient->hasMode(SELECTIONMODE_PATH) &&
+          (current_position != myClientAction.position))
+        cursor_type = CURSOR_TRAVEL;
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         myClientAction.command = COMMAND_CURSOR_SET;
@@ -1345,7 +1369,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         {
           case MAPELEMENT_DOOR:
           {
-            RPG_Map_Door_t door = myEngine->getDoor(map_position);
+            const RPG_Map_Door_t& door = myEngine->getDoor(map_position);
 
             // closed --> (try to) open it
             if (myClientAction.entity_id &&
@@ -1368,6 +1392,21 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             if (myClientAction.entity_id &&
                 RPG_Engine_Common_Tools::isValid(map_position, *myEngine))
             {
+              // monster ?
+              player_action.target = myEngine->hasEntity(map_position);
+              if (player_action.target &&
+                  myEngine->isMonster(player_action.target) &&
+                  RPG_Map_Common_Tools::isAdjacent(myEngine->getPosition(myClientAction.entity_id),
+                                                   map_position))
+              {
+                // --> attack monster
+                player_action.command = COMMAND_ATTACK;
+                player_action.position = map_position;
+                myEngine->action(myClientAction.entity_id, player_action);
+
+                break;
+              } // end IF
+
               // (try to) travel to this position
               player_action.command = COMMAND_TRAVEL;
               player_action.position = map_position;

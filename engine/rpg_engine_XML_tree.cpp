@@ -247,11 +247,11 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_Command_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Engine_Command_XMLTree_Type_indexes_,
-                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 6,
+                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 9,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 9 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -260,22 +260,28 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_literals_[6] =
+_xsd_RPG_Engine_Command_XMLTree_Type_literals_[9] =
 {
   "COMMAND_ATTACK",
   "COMMAND_DOOR_CLOSE",
   "COMMAND_DOOR_OPEN",
   "COMMAND_SEARCH",
   "COMMAND_STOP",
-  "COMMAND_TRAVEL"
+  "COMMAND_TRAVEL",
+  "COMMAND_ENTITY_ADD",
+  "COMMAND_ENTITY_REMOVE",
+  "COMMAND_ENTITY_UPDATE"
 };
 
 const RPG_Engine_Command_XMLTree_Type::value RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[6] =
+_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[9] =
 {
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_DOOR_CLOSE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_DOOR_OPEN,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_ENTITY_ADD,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_ENTITY_REMOVE,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_ENTITY_UPDATE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_SEARCH,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_STOP,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_TRAVEL

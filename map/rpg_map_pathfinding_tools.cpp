@@ -289,14 +289,14 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
   } // end FOR
 //   path_out.push_front(std::make_pair((*current_node).first.position, direction));
 
-  // debug info
-  if (closedPath.back().first.position != end_in)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
-               start_in.first,
-               start_in.second,
-               end_in.first,
-               end_in.second));
+  //// debug info
+  //if (closedPath.back().first.position != end_in)
+  //  ACE_DEBUG((LM_DEBUG,
+  //             ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
+  //             start_in.first,
+  //             start_in.second,
+  //             end_in.first,
+  //             end_in.second));
 }
 
 const RPG_Map_Direction

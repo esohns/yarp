@@ -37,7 +37,7 @@
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
 #include <ace/Atomic_Op_T.h>
-#include <ace/Condition_T.h>
+//#include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
 #include <string>
@@ -89,12 +89,13 @@ class RPG_Engine_Export RPG_Engine_Level
 
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
   bool isMonster(const RPG_Engine_EntityID_t&) const;
+  unsigned int numSpawned() const;
 
   RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
   const SDL_Surface* getGraphics(const RPG_Engine_EntityID_t&) const;
   RPG_Engine_EntityGraphics_t getGraphics() const;
   RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
-  RPG_Map_Door_t getDoor(const RPG_Map_Position_t&) const;
+  const RPG_Map_Door_t& getDoor(const RPG_Map_Position_t&) const;
   bool findPath(const RPG_Map_Position_t&, // start position
                 const RPG_Map_Position_t&, // end position
                 RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
@@ -122,25 +123,35 @@ class RPG_Engine_Export RPG_Engine_Level
                   const bool&,               // open ? : close
                   bool&);                    // return value: toggled ?
   void clearEntityActions(const RPG_Engine_EntityID_t& = 0); // entity ID (default: ALL)
+  bool findPath(const RPG_Map_Position_t&,  // start position
+                const RPG_Map_Position_t&,  // end position
+                const RPG_Map_Positions_t&, // obstacles
+                RPG_Map_Path_t&) const;     // return value: (partial) path A --> B
+  bool isBlocked(const RPG_Map_Position_t&);
 
   // perform (one round of) actions
   void handleEntities();
 
+  // helper types
+  typedef std::vector<std::pair<RPG_Engine_Command, RPG_Engine_ClientParameters_t> > RPG_Engine_ClientNotifications_t;
+  typedef RPG_Engine_ClientNotifications_t::const_iterator RPG_Engine_ClientNotificationsConstIterator_t;
+
   // atomic ID generator
-  static ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> myCurrentID;
+  static ACE_Atomic_Op<ACE_Thread_Mutex,
+                       RPG_Engine_EntityID_t> myCurrentID;
 
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
-  RPG_Engine_MessageQueue         myQueue;
+  RPG_Engine_MessageQueue                     myQueue;
 
   // make our API re-entrant
-  mutable ACE_Thread_Mutex        myLock;
-  // implement blocking wait...
-  ACE_Condition<ACE_Thread_Mutex> myCondition;
+  mutable ACE_Thread_Mutex                    myLock;
+  //// implement blocking wait...
+  //ACE_Condition<ACE_Recursive_Thread_Mutex>   myCondition;
 
-  RPG_Engine_Entities_t           myEntities;
-  RPG_Engine_EntityID_t           myActivePlayer;
+  RPG_Engine_Entities_t                       myEntities;
+  RPG_Engine_EntityID_t                       myActivePlayer;
 
-  RPG_Engine_IWindow*             myClient;
+  RPG_Engine_IWindow*                         myClient;
 };
 
 #endif
