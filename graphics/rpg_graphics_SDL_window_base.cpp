@@ -469,7 +469,7 @@ RPG_Graphics_SDLWindowBase::notify(const RPG_Graphics_Cursor& cursor_in) const
   ACE_ASSERT(false);
 }
 
-const RPG_Graphics_WindowType
+RPG_Graphics_WindowType
 RPG_Graphics_SDLWindowBase::getType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getType"));
@@ -477,7 +477,7 @@ RPG_Graphics_SDLWindowBase::getType() const
   return myType;
 }
 
-const RPG_Graphics_Size_t
+RPG_Graphics_Size_t
 RPG_Graphics_SDLWindowBase::getSize(const bool& topLevel_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getSize"));

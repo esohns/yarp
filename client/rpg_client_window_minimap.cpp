@@ -82,7 +82,7 @@ RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
   SDL_FreeSurface(mySurface);
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Client_Window_MiniMap::getView() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::getView"));

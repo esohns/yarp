@@ -1,9 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.2.  */
 
 /* Positions for Bison parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+      Copyright (C) 2002-2007, 2009-2010 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -79,7 +78,7 @@ namespace yy {
     /// (column related) Advance to the COUNT next columns.
     inline void columns (int count = 1)
     {
-      column = std::max<unsigned int>(1u, column + count);
+      column = std::max (1u, column + count);
     }
     /** \} */
 
@@ -126,10 +125,11 @@ namespace yy {
   inline bool
   operator== (const position& pos1, const position& pos2)
   {
-    return
-      (pos1.filename == pos2.filename
-       || pos1.filename && pos2.filename && *pos1.filename == *pos2.filename)
-      && pos1.line == pos2.line && pos1.column == pos2.column;
+    return (pos1.line == pos2.line
+            && pos1.column == pos2.column
+            && (pos1.filename == pos2.filename
+                || (pos1.filename && pos2.filename
+                    && *pos1.filename == *pos2.filename)));
   }
 
   /// Compare two position objects.

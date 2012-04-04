@@ -40,6 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -50,6 +51,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -59,6 +61,16 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd .\scripts
+call .\bindings.bat
+call .\scanner.bat
+call .\parser.bat
+popd</Command>
+      <Message>generating bindings and parser...</Message>
+      <Inputs>rpg_map.xsd;.\scripts\map_scanner.l;.\scripts\map_parser.y</Inputs>
+      <Outputs>location.hh;position.hh;rpg_map_XML_tree.h;rpg_map_XML_tree.cpp;rpg_XMLSchema_XML_tree.h;rpg_map_position.h;rpg_map_incl.h;rpg_map_exports.h;rpg_map_parser.cpp;rpg_map_parser.h;rpg_map_scanner.cpp;rpg_map_scanner.h;stack.hh;%(Outputs)</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

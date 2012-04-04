@@ -69,12 +69,14 @@ class SDL_GUI_LevelWindow
                            bool&);                // return value: redraw ?
 
   // implement RPG_Engine_IWindow
-  virtual void init();
-  virtual void redraw();
-  // *NOTE*: this triggers a complete redraw !
-  virtual void setView(const RPG_Map_Position_t&);
-  virtual void toggleDoor(const RPG_Map_Position_t&);
-  virtual void updateEntity(const RPG_Engine_EntityID_t&);
+  //virtual void init();
+  //virtual void redraw();
+  //// *NOTE*: this triggers a complete redraw !
+  //virtual void setView(const RPG_Map_Position_t&);
+  //virtual void toggleDoor(const RPG_Map_Position_t&);
+  //virtual void updateEntity(const RPG_Engine_EntityID_t&);
+  virtual void notify(const RPG_Engine_Command&,
+                      const RPG_Engine_ClientParameters_t&) = 0;
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;

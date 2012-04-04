@@ -40,7 +40,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -51,6 +53,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -74,6 +77,7 @@ popd</Command>
     <CustomBuildStep>
       <Message>generating bindings...</Message>
       <Outputs>rpg_dice_dietype.h;rpg_dice_exports.h;rpg_dice_incl.h;rpg_dice_roll.h;rpg_dice_XML_tree.h;rpg_dice_XML_types.h;rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_dice_XML_tree.cpp;rpg_dice_XML_types.cpp</Outputs>
+      <Inputs>rpg_dice.xsd</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -138,12 +142,13 @@ popd</Command>
       <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">__declspec(dllexport)</ExportSymbol>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">--include-with-brackets --extern-xml-schema rpg_XMLSchema.h --force-overwrite --show-anonymous --show-sloc</AdditionalOptions>
       <NamespaceMap Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">urn:rpg=</NamespaceMap>
-      <FileType>XSD</FileType>
       <GenValidation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenValidation>
       <TypeMap Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">rpg_dice.map</TypeMap>
       <SkelFileSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_XML_types</SkelFileSuffix>
       <SkelTypeSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </SkelTypeSuffix>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <FileType>XSD</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </CXX_Parser_Mapping_Rule>
   </ItemGroup>

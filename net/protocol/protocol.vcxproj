@@ -38,6 +38,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -48,6 +49,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -57,6 +59,16 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd .\scripts
+call .\exports.bat
+call .\scanner.bat
+call .\parser.bat
+popd</Command>
+      <Message>generating exports macros and parser...</Message>
+      <Outputs>location.hh;position.hh;rpg_net_protocol_IRCparser.cpp;rpg_net_protocol_IRCparser.h;rpg_net_protocol_IRCbisect.cpp;rpg_net_protocol_IRCbisect.h;rpg_net_protocol_IRCscanner.cpp;rpg_net_protocol_IRCscanner.h;rpg_net_protocol_exports.h;stack.hh;%(Outputs)</Outputs>
+      <Inputs>.\scripts\IRCbisect.l;.\scripts\IRCscanner.l;.\scripts\IRCparser.y;%(Inputs)</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

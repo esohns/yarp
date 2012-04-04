@@ -60,7 +60,7 @@ RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
     SDL_FreeSurface((*iterator).second);
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Graphics_TopLevel::getView() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::getView"));
@@ -80,7 +80,7 @@ RPG_Graphics_TopLevel::getView() const
 //
 // }
 
-const bool
+bool
 RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::loadGraphics"));

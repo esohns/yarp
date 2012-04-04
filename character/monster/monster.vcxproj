@@ -40,6 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -48,8 +49,7 @@
       <AdditionalIncludeDirectories>E:\Yarp\combat;E:\Yarp\character\player;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_MONSTER_BUILD_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ShowIncludes>
-      </ShowIncludes>
+      <ShowIncludes>false</ShowIncludes>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -62,6 +62,14 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd .\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Inputs>rpg_monster.xsd</Inputs>
+      <Outputs>rpg_XMLSchema_XML_types.h;rpg_monster_XML_types.cpp;rpg_monster_XML_types.h;rpg_monster_actiontrigger.h;rpg_monster_advancement.h;rpg_monster_advancementstep.h;rpg_monster_attack.h;rpg_monster_attackaction.h;rpg_monster_defenseaction.h;rpg_monster_exports.h;rpg_monster_incl.h;rpg_monster_naturalarmorclass.h;rpg_monster_naturalweapon.h;rpg_monster_organization.h;rpg_monster_organizations.h;rpg_monster_organizationslaverstep.h;rpg_monster_organizationstep.h;rpg_monster_propertiesxml.h;rpg_monster_savingthrowmodifiers.h;rpg_monster_specialabilityprecondition.h;rpg_monster_specialabilityproperties.h;rpg_monster_specialattackprecondition.h;rpg_monster_specialattackproperties.h;rpg_monster_specialbaseproperties.h;rpg_monster_specialdefenseprecondition.h;rpg_monster_specialdefenseproperties.h;rpg_monster_specialpropertytypeunion.h;rpg_monster_summonmonster.h;rpg_monster_weapontypeunion.h;%(Outputs)</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

@@ -50,7 +50,7 @@ class RPG_Graphics_Export RPG_Graphics_TopLevel
 
   // implement (part of) RPG_Graphics_IWindow
   // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
 //   // realize child window
 //   void child(const RPG_Graphics_WindowSize_t&, // size
@@ -73,7 +73,7 @@ class RPG_Graphics_Export RPG_Graphics_TopLevel
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel& operator=(const RPG_Graphics_TopLevel&));
 
   // helper methods
-  const bool loadGraphics(const RPG_Graphics_GraphicTypeUnion&); // (element) type
+  bool loadGraphics(const RPG_Graphics_GraphicTypeUnion&); // (element) type
 };
 
 #endif

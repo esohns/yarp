@@ -60,7 +60,7 @@ class RPG_Stream_Base
   // *NOTE*: delegate these calls to the head module which also implements that API...
   virtual void start();
   virtual void stop();
-  virtual const bool isRunning();
+  virtual bool isRunning() const;
   virtual void pause();
   virtual void rewind();
   virtual void waitForCompletion();
@@ -68,7 +68,7 @@ class RPG_Stream_Base
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
-  const bool isInitialized() const;
+  bool isInitialized() const;
 
  protected:
 //   // define convenient (iterator) types
@@ -87,14 +87,14 @@ class RPG_Stream_Base
   // *WARNING*: NEVER call this while isRunning() == true, otherwise you'll block
   // until the stream finishes (because close() of a module waits for its worker
   // thread to die...)
-  const bool reset();
+  bool reset();
 
   // *NOTE*: children MUST call this in their dtor !
   void shutdown();
 
   // *NOTE*: children need to set this IF their initialization succeeded; otherwise,
   // the dtor will NOT stop all worker threads before close()ing the modules...
-  bool                  myIsInitialized;
+  bool                      myIsInitialized;
 
   // *NOTE*: children need to add handles to ALL of their modules to this container !
 //   MODULE_CONTAINER_TYPE myAvailableModules;
@@ -123,8 +123,8 @@ class RPG_Stream_Base
 
   // helper methods
   // wrap inherited::open/close() calls
-  const bool init();
-  const bool fini();
+  bool init();
+  bool fini();
   void deactivateModules();
 };
 

@@ -32,8 +32,8 @@ class RPG_Net_IConnectionManager
   // -Wno-non-virtual-dtor in the project settings...
 
   // API
-  virtual const bool registerConnection(RPG_Net_IConnection<ConfigType,
-                                                            StatisticsContainerType>*) = 0; // connection
+  virtual bool registerConnection(RPG_Net_IConnection<ConfigType,
+                                                      StatisticsContainerType>*) = 0; // connection
   virtual void deregisterConnection(const RPG_Net_IConnection<ConfigType,
                                                               StatisticsContainerType>*) = 0; // connection
 };

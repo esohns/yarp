@@ -69,13 +69,13 @@ class RPG_Net_Protocol_IRCParserDriver
   // --> buffers need two trailing '\0's BEYOND their data
   //    (at positions length() + 1, length() + 2)
   // --> indicated by the second argument
-  const bool parse(ACE_Message_Block*,   // data
-                   const bool& = false); // is data prepared for yy_scan_buffer ?
+  bool parse(ACE_Message_Block*,   // data
+             const bool& = false); // is data prepared for yy_scan_buffer ?
 
   // invoked by the scanner ONLY !!!
-  const bool switchBuffer();
-  const bool moreData();
-  const bool getDebugScanner() const;
+  bool switchBuffer();
+  bool moreData();
+  bool getDebugScanner() const;
 
   // error-handling
   void error(const yy::location&, // location
@@ -92,7 +92,7 @@ class RPG_Net_Protocol_IRCParserDriver
 //   void reset();
 
   // helper methods
-  const bool scan_begin(const bool&); // use yy_scan_buffer : yy_scan_bytes
+  bool scan_begin(const bool&); // use yy_scan_buffer : yy_scan_bytes
   void scan_end();
 
   // context

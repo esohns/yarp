@@ -25,6 +25,7 @@
 #include "SDL_gui_minimapwindow.h"
 
 #include <rpg_client_defines.h>
+#include <rpg_client_entity_manager.h>
 #include <rpg_client_common_tools.h>
 
 #include <rpg_engine_level.h>
@@ -220,13 +221,13 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
 
   // handle over-/underruns
   if ((offsetX_in < 0) &&
-      (static_cast<unsigned long>(-offsetX_in) > myView.first))
+      (static_cast<unsigned int>(-offsetX_in) > myView.first))
     myView.first = 0;
   else
     myView.first += offsetX_in;
 
   if ((offsetY_in < 0) &&
-      (static_cast<unsigned long>(-offsetY_in) > myView.second))
+      (static_cast<unsigned int>(-offsetY_in) > myView.second))
     myView.second = 0;
   else
     myView.second += offsetY_in;
@@ -237,7 +238,7 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
     myView.second = (size.second - 1);
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 SDL_GUI_LevelWindow::getView() const
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::getView"));
@@ -1239,94 +1240,184 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
   } // end SWITCH
 }
 
+//void
+//SDL_GUI_LevelWindow::init()
+//{
+//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
+//
+//  // clean up
+//  myFloorEdgeTiles.clear();
+//  myWallTiles.clear();
+//  myDoorTiles.clear();
+//
+//  // init tiles / position
+//  RPG_Client_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
+//                                          myCurrentFloorEdgeSet,
+//                                          myFloorEdgeTiles);
+//  RPG_Client_Common_Tools::initWalls(myLevelState->getFloorPlan(),
+//                                     myCurrentWallSet,
+//                                     myWallTiles);
+//  RPG_Client_Common_Tools::initDoors(myLevelState->getFloorPlan(),
+//                                     *myLevelState,
+//                                     myCurrentDoorSet,
+//                                     myDoorTiles);
+//
+//  // init view
+//  RPG_Map_Size_t size = myLevelState->getSize();
+//  setView((size.first  / 2),
+//          (size.second / 2));
+//
+//  // *NOTE*: fiddling with the view invalidates the cursor BG !
+//  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+//  // clear highlight BG
+//  RPG_Graphics_Surface::clear(myHighlightBG);
+//}
+//
+//void
+//SDL_GUI_LevelWindow::redraw()
+//{
+//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::redraw"));
+//
+////   draw();
+////   refresh();
+//}
+//
+//void
+//SDL_GUI_LevelWindow::setView(const RPG_Map_Position_t& position_in)
+//{
+//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
+//
+//  myView = position_in;
+//}
+//
+//void
+//SDL_GUI_LevelWindow::toggleDoor(const RPG_Map_Position_t& position_in)
+//{
+//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::toggleDoor"));
+//
+//  RPG_Map_Door_t door = myLevelState->getDoor(position_in);
+//  ACE_ASSERT(door.position == position_in);
+//
+//  // change tile accordingly
+//  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+//  orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
+//                                                            position_in);
+//  switch (orientation)
+//  {
+//    case ORIENTATION_HORIZONTAL:
+//      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.horizontal_open
+//      : myCurrentDoorSet.horizontal_closed); break;
+//    case ORIENTATION_VERTICAL:
+//      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.vertical_open
+//      : myCurrentDoorSet.vertical_closed); break;
+//    default:
+//    {
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
+//                 RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+//
+//      return;
+//    }
+//  } // end SWITCH
+//}
+//
+//void
+//SDL_GUI_LevelWindow::updateEntity(const RPG_Engine_EntityID_t& id_in)
+//{
+//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::updateEntity"));
+//
+////   draw();
+////   refresh();
+//}
+
 void
-SDL_GUI_LevelWindow::init()
+SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
+                            const RPG_Engine_ClientParameters_t& parameters_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::notify"));
 
-  // clean up
-  myFloorEdgeTiles.clear();
-  myWallTiles.clear();
-  myDoorTiles.clear();
-
-  // init tiles / position
-  RPG_Client_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
-                                          myCurrentFloorEdgeSet,
-                                          myFloorEdgeTiles);
-  RPG_Client_Common_Tools::initWalls(myLevelState->getFloorPlan(),
-                                     myCurrentWallSet,
-                                     myWallTiles);
-  RPG_Client_Common_Tools::initDoors(myLevelState->getFloorPlan(),
-                                     *myLevelState,
-                                     myCurrentDoorSet,
-                                     myDoorTiles);
-
-  // init view
-  RPG_Map_Size_t size = myLevelState->getSize();
-  setView((size.first  / 2),
-          (size.second / 2));
-
-  // *NOTE*: fiddling with the view invalidates the cursor BG !
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-  // clear highlight BG
-  RPG_Graphics_Surface::clear(myHighlightBG);
-}
-
-void
-SDL_GUI_LevelWindow::redraw()
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::redraw"));
-
-//   draw();
-//   refresh();
-}
-
-void
-SDL_GUI_LevelWindow::setView(const RPG_Map_Position_t& position_in)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
-
-  myView = position_in;
-}
-
-void
-SDL_GUI_LevelWindow::toggleDoor(const RPG_Map_Position_t& position_in)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::toggleDoor"));
-
-  RPG_Map_Door_t door = myLevelState->getDoor(position_in);
-  ACE_ASSERT(door.position == position_in);
-
-  // change tile accordingly
-  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
-                                                            position_in);
-  switch (orientation)
+  switch (command_in)
   {
-    case ORIENTATION_HORIZONTAL:
-      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.horizontal_open
-      : myCurrentDoorSet.horizontal_closed); break;
-    case ORIENTATION_VERTICAL:
-      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.vertical_open
-      : myCurrentDoorSet.vertical_closed); break;
+    case COMMAND_ATTACK:
+      return;
+    case COMMAND_DOOR_CLOSE:
+    case COMMAND_DOOR_OPEN:
+    {
+      ACE_ASSERT(parameters_in.size() == 1);
+
+      RPG_Map_Position_t position = *static_cast<RPG_Map_Position_t*>(parameters_in.front());
+      const RPG_Map_Door_t& door = myLevelState->getDoor(position);
+      ACE_ASSERT(door.position == position);
+
+      // change tile accordingly
+      RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+      orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myLevelState,
+                                                                position);
+      switch (orientation)
+      {
+        case ORIENTATION_HORIZONTAL:
+          myDoorTiles[position] = (door.is_open ? myCurrentDoorSet.horizontal_open
+          : myCurrentDoorSet.horizontal_closed); break;
+        case ORIENTATION_VERTICAL:
+          myDoorTiles[position] = (door.is_open ? myCurrentDoorSet.vertical_open
+          : myCurrentDoorSet.vertical_closed); break;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
+                     RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+
+          return;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case COMMAND_SEARCH:
+    case COMMAND_STOP:
+    case COMMAND_TRAVEL:
+      return;
+    case COMMAND_ENTITY_ADD:
+    {
+      ACE_ASSERT(parameters_in.size() == 2);
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()),
+                                                           static_cast<SDL_Surface*>(parameters_in.back()));
+
+      return;
+    }
+    case COMMAND_ENTITY_REMOVE:
+    {
+      ACE_ASSERT(parameters_in.size() == 1);
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()));
+
+      return;
+    }
+    case COMMAND_ENTITY_UPDATE:
+    {
+      ACE_ASSERT(parameters_in.size() == 2);
+
+      SDL_Rect dirtyRegion = {0, 0, 0, 0};
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()),
+                                                           RPG_Graphics_Common_Tools::map2Screen(*static_cast<RPG_Map_Position_t*>(parameters_in.back()),
+                                                                                                 getSize(false),
+                                                                                                 getView()),
+                                                           getScreen(),
+                                                           dirtyRegion);
+
+      RPG_Graphics_Surface::update(dirtyRegion,
+                                   getScreen());
+
+      break;
+    }
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
-                 RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+                 ACE_TEXT("invalid command (was: \"%s\", aborting\n"),
+                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str()));
 
       return;
     }
   } // end SWITCH
-}
-
-void
-SDL_GUI_LevelWindow::updateEntity(const RPG_Engine_EntityID_t& id_in)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::updateEntity"));
-
-//   draw();
-//   refresh();
 }
 
 void

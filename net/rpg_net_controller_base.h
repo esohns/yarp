@@ -35,7 +35,7 @@ class RPG_Net_Controller_Base
   // implement RPG_Common_IControl
   virtual void start();
   virtual void stop();
-  virtual const bool isRunning();
+  virtual bool isRunning() const;
 
  private:
   typedef RPG_Common_IControl inherited;

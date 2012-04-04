@@ -334,7 +334,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
 
 template <typename ConfigType,
           typename StatisticsContainerType>
-const unsigned long
+unsigned int
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::getID() const
 {
@@ -345,7 +345,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
   return get_handle();
 #else
   // *TODO*: clean this up !
-  return reinterpret_cast<unsigned long> (get_handle());
+  return reinterpret_cast<unsigned int>(get_handle());
 #endif
 }
 

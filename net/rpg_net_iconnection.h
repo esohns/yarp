@@ -40,7 +40,7 @@ class RPG_Net_IConnection
   // *TODO*: this clashes with Event_Handler::close()...
   //virtual void close(void) = 0;
   virtual void abort() = 0;
-  virtual const unsigned long getID() const = 0;
+  virtual unsigned int getID() const = 0;
 };
 
 #endif

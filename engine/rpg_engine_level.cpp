@@ -332,7 +332,7 @@ RPG_Engine_Level::stop()
 }
 
 bool
-RPG_Engine_Level::isRunning()
+RPG_Engine_Level::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::isRunning"));
 
@@ -346,7 +346,7 @@ RPG_Engine_Level::wait_all()
 
   // ... wait for ALL worker(s) to join
   if (ACE_Thread_Manager::instance()->wait_grp(RPG_ENGINE_DEF_TASK_GROUP_ID) == -1)
-    ACE_DEBUG((LM_CRITICAL,
+    ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(): \"%m\", returning\n")));
 }
 

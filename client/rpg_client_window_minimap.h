@@ -39,7 +39,7 @@ class RPG_Client_Window_MiniMap
 
   // implement (part of) RPG_Graphics_IWindow
   // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])

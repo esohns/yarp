@@ -391,7 +391,7 @@ RPG_Net_StreamSocketBase<ConfigType,
 template <typename ConfigType,
           typename StatisticsContainerType,
           typename StreamType>
-const bool
+bool
 RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::collect(StatisticsContainerType& data_out) const
@@ -438,7 +438,7 @@ template <typename ConfigType,
 ACE_Message_Block*
 RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
-                         StreamType>::allocateMessage(const unsigned long& requestedSize_in)
+                         StreamType>::allocateMessage(const unsigned int& requestedSize_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::allocateMessage"));
 

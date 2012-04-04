@@ -92,7 +92,7 @@ RPG_Net_Protocol_IRCParserDriver::init(RPG_Net_Protocol_IRCMessage& message_in,
   myIsInitialized = true;
 }
 
-const bool
+bool
 RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in,
                                         const bool& useYYScanBuffer_in)
 {
@@ -152,7 +152,7 @@ RPG_Net_Protocol_IRCParserDriver::parse(ACE_Message_Block* data_in,
   return (result == 0);
 }
 
-const bool
+bool
 RPG_Net_Protocol_IRCParserDriver::switchBuffer()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::switchBuffer"));
@@ -194,7 +194,7 @@ RPG_Net_Protocol_IRCParserDriver::switchBuffer()
   return true;
 }
 
-const bool
+bool
 RPG_Net_Protocol_IRCParserDriver::moreData()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::moreData"));
@@ -202,7 +202,7 @@ RPG_Net_Protocol_IRCParserDriver::moreData()
   return (myCurrentFragment->cont() != NULL);
 }
 
-const bool
+bool
 RPG_Net_Protocol_IRCParserDriver::getDebugScanner() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::getDebugScanner"));
@@ -267,7 +267,7 @@ RPG_Net_Protocol_IRCParserDriver::error(const std::string& message_in)
 //   std::clog << message_in << std::endl;
 }
 
-const bool
+bool
 RPG_Net_Protocol_IRCParserDriver::scan_begin(const bool& useYYScanBuffer_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_IRCParserDriver::scan_begin"));

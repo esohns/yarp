@@ -56,7 +56,7 @@ class RPG_Net_StreamSocketBase
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate these to our stream
-  virtual const bool collect(StatisticsContainerType&) const; // return value: statistic data
+  virtual bool collect(StatisticsContainerType&) const; // return value: statistic data
   virtual void report() const;
 
  protected:
@@ -67,7 +67,7 @@ class RPG_Net_StreamSocketBase
   ACE_Message_Block* myCurrentWriteBuffer;
 
   // helper method(s)
-  ACE_Message_Block* allocateMessage(const unsigned long&); // requested size
+  ACE_Message_Block* allocateMessage(const unsigned int&); // requested size
 
  private:
   typedef RPG_Net_SocketHandlerBase<ConfigType,

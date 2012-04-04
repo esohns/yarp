@@ -2130,10 +2130,6 @@ int RPG_Net_Protocol_IRCscanner_get_lineno (yyscan_t yyscanner );
 
 void RPG_Net_Protocol_IRCscanner_set_lineno (int line_number ,yyscan_t yyscanner );
 
-int RPG_Net_Protocol_IRCscanner_get_column  (yyscan_t yyscanner );
-
-void RPG_Net_Protocol_IRCscanner_set_column (int column_no ,yyscan_t yyscanner );
-
 /* %if-bison-bridge */
 /* %endif */
 
@@ -2226,9 +2222,9 @@ extern int RPG_Net_Protocol_IRCscanner_lex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 221 "./IRCscanner.l"
+#line 223 "./IRCscanner.l"
 
 
-#line 2233 "rpg_net_protocol_IRCscanner.h"
+#line 2229 "rpg_net_protocol_IRCscanner.h"
 #undef RPG_Net_Protocol_IRCscanner_IN_HEADER
 #endif /* RPG_Net_Protocol_IRCscanner_HEADER_H */

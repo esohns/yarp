@@ -40,6 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -61,6 +62,14 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd .\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Inputs>rpg_item.xsd</Inputs>
+      <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_item_XML_tree.cpp;rpg_item_XML_tree.h;rpg_item_XML_types.cpp;rpg_item_XML_types.h;rpg_item_armorcategory.h;rpg_item_armorpropertiesbase.h;rpg_item_armorpropertiesxml.h;rpg_item_armortype.h;rpg_item_baseproperties.h;rpg_item_creationcost.h;rpg_item_criticalhitproperties.h;rpg_item_exports.h;rpg_item_magicalprerequisites.h;rpg_item_propertiesbase.h;rpg_item_storeprice.h;rpg_item_weaponcategory.h;rpg_item_weaponclass.h;rpg_item_weaponpropertiesbase.h;rpg_item_weaponpropertiesxml.h;rpg_item_weapontype.h;%(Outputs)</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

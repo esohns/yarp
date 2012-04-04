@@ -31,7 +31,7 @@ class RPG_Common_IStatistic
   // exposed interface
   // *NOTE*: the argument MAY act both as input/output,
   // this depends on the implementation...
-  virtual const bool collect(StatisticsInfoContainer_Type&) const = 0;
+  virtual bool collect(StatisticsInfoContainer_Type&) const = 0;
   virtual void report() const = 0;
 };
 

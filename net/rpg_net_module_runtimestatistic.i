@@ -57,7 +57,8 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
   // schedule the second-granularity timer
   ACE_Time_Value second_interval(1, 0); // one second interval
-  if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myResetTimeoutHandler,    // handler
+  if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myResetTimeoutHandler,   // handler
+                                                                    NULL,                     // act
                                                                     second_interval,          // interval
                                                                     false,                    // one-shot ?
                                                                     myResetTimeoutHandlerID)) // return value: timer ID
@@ -93,11 +94,11 @@ template <typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
-const bool
+bool
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
                                 ProtocolCommandType,
-                                StatisticsContainerType>::init(const unsigned long& reportingInterval_in,
+                                StatisticsContainerType>::init(const unsigned int& reportingInterval_in,
                                                                const RPG_Stream_IAllocator* allocator_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::init"));
@@ -137,7 +138,8 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
   {
     // schedule the reporting interval timer
     ACE_Time_Value reporting_interval(reportingInterval_in, 0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myLocalReportingHandler,    // handler
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myLocalReportingHandler,   // handler
+                                                                      NULL,                       // act
                                                                       reporting_interval,         // interval
                                                                       false,                      // one-shot ?
                                                                       myLocalReportingHandlerID)) // return value: timer ID
@@ -319,7 +321,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
-const bool
+bool
 RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 ProtocolMessageType,
                                 ProtocolCommandType,

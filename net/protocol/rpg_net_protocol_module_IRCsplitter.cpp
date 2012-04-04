@@ -71,10 +71,10 @@ RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
     myCurrentMessage->release();
 }
 
-const bool
+bool
 RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
                                           const bool& crunchMessages_in,
-                                          const unsigned long& statisticsCollectionInterval_in,
+                                          const unsigned int& statisticsCollectionInterval_in,
                                           const bool& traceScanning_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::init"));
@@ -115,7 +115,8 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
   {
     // schedule regular statistics collection...
     ACE_Time_Value collecting_interval(statisticsCollectionInterval_in, 0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myStatCollectHandler,    // handler
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myStatCollectHandler,   // handler
+                                                                      NULL,                    // act
                                                                       collecting_interval,     // interval
                                                                       false,                   // one-shot ?
                                                                       myStatCollectHandlerID)) // return value: id
@@ -460,7 +461,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_Sessi
   } // end SWITCH
 }
 
-const bool
+bool
 RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::collect"));
@@ -505,7 +506,7 @@ RPG_Net_Protocol_Module_IRCSplitter::report() const
   ACE_ASSERT(false);
 }
 
-const bool
+bool
 RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_Protocol_RuntimeStatistic& info_in,
                                                           const ACE_Time_Value& collectionTime_in) const
 {
@@ -540,7 +541,7 @@ RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_Protocol
                                       inherited::myAllocator);
 }
 
-const bool
+bool
 RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
                                                 const size_t& length_in)
 {

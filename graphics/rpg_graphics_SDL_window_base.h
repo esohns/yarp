@@ -44,8 +44,8 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual void setScreen(SDL_Surface*);   // (default) screen
   virtual SDL_Surface* getScreen() const; // (default) screen
 
-  virtual const RPG_Graphics_WindowType getType() const;
-  virtual const RPG_Graphics_Size_t getSize(const bool& = false) const; // top-level ?
+  virtual RPG_Graphics_WindowType getType() const;
+  virtual RPG_Graphics_Size_t getSize(const bool& = false) const; // top-level ?
 
   virtual void refresh(SDL_Surface* = NULL); // target surface (default: screen)
 

@@ -59,7 +59,7 @@ class RPG_Net_SocketHandlerBase
   virtual void init(const ConfigType&);
 //   virtual const bool isRegistered() const;
   virtual void abort();
-  virtual const unsigned long getID() const;
+  virtual unsigned int getID() const;
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -82,7 +82,7 @@ class RPG_Net_SocketHandlerBase
 
   // *NOTE*: we save this so we can de-register even when our "handle"
   // (getID()) has gone stale...
-  unsigned long                     myID;
+  unsigned int                      myID;
   bool                              myIsRegistered;
   MANAGER_t*                        myManager;
 };

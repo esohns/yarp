@@ -40,6 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -50,6 +51,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -60,6 +62,14 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd .\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Inputs>rpg_magic.xsd</Inputs>
+      <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_magic_XML_tree.cpp;rpg_magic_XML_tree.h;rpg_magic_XML_types.cpp;rpg_magic_XML_types.h;rpg_magic_abilityclass.h;rpg_magic_abilitytype.h;rpg_magic_casterclassunion.h;rpg_magic_check.h;rpg_magic_checktypeunion.h;rpg_magic_countermeasure.h;rpg_magic_exports.h;rpg_magic_descriptor.h;rpg_magic_domain.h;rpg_magic_incl.h;rpg_magic_school.h;rpg_magic_spell_castingtime.h;rpg_magic_spell_damagetypeunion.h;rpg_magic_spell_duration.h;rpg_magic_spell_durationproperties.h;rpg_magic_spell_effect.h;rpg_magic_spell_effectproperties.h;rpg_magic_spell_level.h;rpg_magic_spell_precondition.h;rpg_magic_spell_preconditionproperties.h;rpg_magic_spell_propertiesxml.h;rpg_magic_spell_rangeeffect.h;rpg_magic_spell_rangeproperties.h;rpg_magic_spell_target.h;rpg_magic_spell_areaofeffect.h;rpg_magic_spell_targetproperties.h;rpg_magic_spell_type.h;rpg_magic_spelllikeproperties.h;rpg_magic_spelltype.h;rpg_magic_subschool.h;%(Outputs)</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

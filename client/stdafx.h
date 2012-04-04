@@ -12,15 +12,39 @@
 #include <windows.h>
 
 // System Library Header Files
-#include <glade/glade.h>
-#include <gtk/gtk.h>
-#include <SDL/SDL.h>
 #include <ace/OS.h>
+#include <ace/ACE.h>
+#include <ace/Synch.h>
+#include <ace/Task.h>
 #include <ace/Log_Msg.h>
+#include <ace/Singleton.h>
 
 // C RunTime Header Files
 #include <string>
+#include <map>
+#include <vector>
+#include <set>
+#include <list>
+#include <functional>
+#include <deque>
+#include <iterator>
 #include <iostream>
 
+// Local Library Header Files
+#include <glade/glade.h>
+#include <gtk/gtk.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
+#include <xsd/cxx/config.hxx>
+#include <xsd/cxx/pre.hxx>
+
 // Local Header Files
+#include <rpg_dice_incl.h>
 #include <rpg_common_macros.h>
+#include <rpg_common_incl.h>
+#include <rpg_common_environment_incl.h>
+#include <rpg_character_incl.h>
+#include <rpg_magic_incl.h>
+#include <rpg_item_incl.h>
+#include <rpg_combat_incl.h>
+#include <rpg_graphics_incl.h>

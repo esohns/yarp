@@ -66,7 +66,7 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_Connection_Manager<ConfigType,
-                           StatisticsContainerType>::init(const unsigned long& maxNumConnections_in)
+                           StatisticsContainerType>::init(const unsigned int& maxNumConnections_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::init"));
 
@@ -92,7 +92,7 @@ RPG_Net_Connection_Manager<ConfigType,
 
 template <typename ConfigType,
           typename StatisticsContainerType>
-const bool
+bool
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::registerConnection(CONNECTION_TYPE* connection_in)
 {
@@ -283,7 +283,7 @@ RPG_Net_Connection_Manager<ConfigType,
 
 template <typename ConfigType,
           typename StatisticsContainerType>
-const unsigned long
+unsigned int
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::numConnections() const
 {
@@ -339,7 +339,7 @@ RPG_Net_Connection_Manager<ConfigType,
 
 template <typename ConfigType,
           typename StatisticsContainerType>
-const bool
+bool
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::collect(StatisticsContainerType& data_out) const
 {

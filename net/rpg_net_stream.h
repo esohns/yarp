@@ -55,11 +55,11 @@ class RPG_Net_Export RPG_Net_Stream
   typedef RPG_Common_IStatistic<RPG_Net_RuntimeStatistic> StatisticsInterface_Type;
 
   // init stream
-  const bool init(const RPG_Net_ConfigPOD&); // stream/module configuration
+  bool init(const RPG_Net_ConfigPOD&); // stream/module configuration
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate this to myRuntimeStatistic
-  virtual const bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data
+  virtual bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data
   // this is just a dummy (use statisticsReportingInterval instead)
   virtual void report() const;
 
@@ -76,7 +76,7 @@ class RPG_Net_Export RPG_Net_Stream
 
   // fini stream
   // *NOTE*: need this to clean up queued modules if something goes wrong during init() !
-  const bool fini(const RPG_Net_ConfigPOD&); // configuration
+  bool fini(const RPG_Net_ConfigPOD&); // configuration
 
   // modules
   RPG_Net_Module_SocketHandler_Module    mySocketHandler;

@@ -184,8 +184,8 @@ RPG_Net_Listener::stop()
   } // end ELSE
 }
 
-const bool
-RPG_Net_Listener::isRunning()
+bool
+RPG_Net_Listener::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Listener::isRunning"));
 

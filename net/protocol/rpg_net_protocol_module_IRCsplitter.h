@@ -55,16 +55,16 @@ class RPG_Net_Protocol_Module_IRCSplitter
   virtual ~RPG_Net_Protocol_Module_IRCSplitter();
 
   // configuration / initialization
-  const bool init(// *** base class initializers ***
-                  RPG_Stream_IAllocator*,   // message allocator
-                  // *** base class initializers END ***
-                  // *NOTE*: this option may be useful for (downstream) parsers that
-                  // only work on one CONTIGUOUS buffer (i.e. cannot parse unaligned bits and pieces)
-                  // *WARNING*: will NOT work with multithreaded stream processing --> USE WITH CAUTION !
-                  const bool& = false,      // "crunch" completed messages ?
-                  const unsigned long& = 0, // statistics collecting interval (second(s))
-                                            // 0 --> DON'T collect statistics
-                  const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING); // trace scanning ?
+  bool init(// *** base class initializers ***
+            RPG_Stream_IAllocator*,  // message allocator
+            // *** base class initializers END ***
+            // *NOTE*: this option may be useful for (downstream) parsers that
+            // only work on one CONTIGUOUS buffer (i.e. cannot parse unaligned bits and pieces)
+            // *WARNING*: will NOT work with multithreaded stream processing --> USE WITH CAUTION !
+            const bool& = false,     // "crunch" completed messages ?
+            const unsigned int& = 0, // statistics collecting interval (second(s))
+                                      // 0 --> DON'T collect statistics
+            const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING); // trace scanning ?
 
   // implement (part of) RPG_Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
@@ -76,7 +76,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
 
   // implement RPG_Common_IStatistic
   // *NOTE*: we reuse the interface for our own purposes (to implement timer-based data collection)
-  virtual const bool collect(RPG_Net_Protocol_RuntimeStatistic&) const; // return value: (currently unused !)
+  virtual bool collect(RPG_Net_Protocol_RuntimeStatistic&) const; // return value: (currently unused !)
   virtual void report() const;
 
  private:
@@ -94,11 +94,11 @@ class RPG_Net_Protocol_Module_IRCSplitter
   typedef RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> SESSIONCONFIG_TYPE;
 
   // helper methods
-  const bool putStatisticsMessage(const RPG_Net_Protocol_RuntimeStatistic&, // statistics info
-                                  const ACE_Time_Value&) const;             // statistics generation time
+  bool putStatisticsMessage(const RPG_Net_Protocol_RuntimeStatistic&, // statistics info
+                            const ACE_Time_Value&) const;             // statistics generation time
   // helper methods (to drive the scanner)
-  const bool scan_begin(char*,          // base address
-                        const size_t&); // length of data block
+  bool scan_begin(char*,          // base address
+                  const size_t&); // length of data block
   void scan_end();
 
   bool                      myCrunchMessages;

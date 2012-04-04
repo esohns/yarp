@@ -56,7 +56,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
   void setView(const int&,
                const int&); // view (relative map coordinates)
   // implement (part of) RPG_Graphics_IWindow 
-  virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
   void toggleMiniMap();
   void toggleDoor(const RPG_Map_Position_t&); // door position

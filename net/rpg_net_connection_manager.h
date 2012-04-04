@@ -52,7 +52,7 @@ class RPG_Net_Connection_Manager
 
  public:
   // configuration / initialization
-  void init(const unsigned long&); // maximum number of concurrent connections
+  void init(const unsigned int&); // maximum number of concurrent connections
   // *NOTE*: argument is passed in init() to EVERY new connection during registration
   void set(const ConfigType&); // (user) data
 
@@ -63,7 +63,7 @@ class RPG_Net_Connection_Manager
   //          reactor) this cannot happen).
   void abortConnections();
   void waitConnections() const;
-  const unsigned long numConnections() const;
+  unsigned int numConnections() const;
 
   // *WARNING*: to be used for testing ONLY !
   void abortOldestConnection();
@@ -83,12 +83,12 @@ class RPG_Net_Connection_Manager
   typedef ACE_DLList_Iterator<CONNECTION_TYPE> CONNECTIONLIST_ITERATOR_TYPE;
 
   // *NOTE*: these are used by RPG_Net_SocketHandler_Base
-  virtual const bool registerConnection(CONNECTION_TYPE*); // connection
+  virtual bool registerConnection(CONNECTION_TYPE*); // connection
   virtual void deregisterConnection(const CONNECTION_TYPE*); // connection
 
   // implement RPG_Common_IStatistic
   // *WARNING*: this assumes we're holding our lock !
-  virtual const bool collect(StatisticsContainerType&) const; // return value: statistic data
+  virtual bool collect(StatisticsContainerType&) const; // return value: statistic data
 
   // safety measures
   RPG_Net_Connection_Manager();
@@ -103,7 +103,7 @@ class RPG_Net_Connection_Manager
   // *TODO*: fix ACE to use ACE_Thread_Condition ?
   mutable ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 
-  unsigned long                                     myMaxNumConnections;
+  unsigned int                                      myMaxNumConnections;
 //   CONNECTIONLIST_TYPE                               myConnections;
   ACE_DLList<CONNECTION_TYPE>                       myConnections;
 

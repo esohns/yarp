@@ -736,10 +736,6 @@ int RPG_Net_Protocol_IRCBisect_get_lineno (yyscan_t yyscanner );
 
 void RPG_Net_Protocol_IRCBisect_set_lineno (int line_number ,yyscan_t yyscanner );
 
-int RPG_Net_Protocol_IRCBisect_get_column  (yyscan_t yyscanner );
-
-void RPG_Net_Protocol_IRCBisect_set_column (int column_no ,yyscan_t yyscanner );
-
 /* %if-bison-bridge */
 /* %endif */
 
@@ -832,9 +828,9 @@ extern int RPG_Net_Protocol_IRCBisect_lex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 37 "./IRCbisect.l"
+#line 39 "./IRCbisect.l"
 
 
-#line 839 "rpg_net_protocol_IRCbisect.h"
+#line 835 "rpg_net_protocol_IRCbisect.h"
 #undef RPG_Net_Protocol_IRCBisect_IN_HEADER
 #endif /* RPG_Net_Protocol_IRCBisect_HEADER_H */

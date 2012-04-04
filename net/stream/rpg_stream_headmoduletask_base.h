@@ -71,7 +71,7 @@ class RPG_Stream_HeadModuleTaskBase
   virtual void pause();
   virtual void rewind();
   virtual void waitForCompletion();
-  virtual const bool isRunning();
+  virtual bool isRunning() const;
 
  protected:
   // needs to be subclassed...
@@ -85,17 +85,17 @@ class RPG_Stream_HeadModuleTaskBase
 
   // convenience methods to send (session-specific) notifications downstream
   // *WARNING*: - handle with care -
-  const bool putSessionMessage(const unsigned long&,                         // session ID
-                               const RPG_Stream_SessionMessageType&,             // session message type
-                               const DataType&,                              // data
-                               const ACE_Time_Value& = ACE_Time_Value::zero, // start of session
-                               const bool& = false) const;                   // user abort ?
+  bool putSessionMessage(const unsigned int&,                          // session ID
+                         const RPG_Stream_SessionMessageType&,         // session message type
+                         const DataType&,                              // data
+                         const ACE_Time_Value& = ACE_Time_Value::zero, // start of session
+                         const bool& = false) const;                   // user abort ?
   // *NOTE*: session message assumes lifetime responsibility for data
   // --> method implements a "fire-and-forget" strategy !
-  const bool putSessionMessage(const unsigned long&,             // session ID
-                               const RPG_Stream_SessionMessageType&, // session message type
-                               SessionConfigType*&,              // config data
-                               RPG_Stream_IAllocator* = NULL) const; // allocator (NULL ? --> use "new")
+  bool putSessionMessage(const unsigned int&,                  // session ID
+                         const RPG_Stream_SessionMessageType&, // session message type
+                         SessionConfigType*&,                  // config data
+                         RPG_Stream_IAllocator* = NULL) const; // allocator (NULL ? --> use "new")
 
   // implement state machine callback
   // *NOTE*: this method is threadsafe
@@ -111,8 +111,8 @@ class RPG_Stream_HeadModuleTaskBase
   virtual void finished();
 
   // *WARNING*: children need to set this during initialization !
-  RPG_Stream_IAllocator*                        myAllocator;
-  unsigned long                             mySessionID;
+  RPG_Stream_IAllocator*                    myAllocator;
+  unsigned int                              mySessionID;
 
  private:
   typedef RPG_Stream_TaskBase<SessionMessageType,
@@ -136,7 +136,7 @@ class RPG_Stream_HeadModuleTaskBase
   ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
   ACE_Recursive_Thread_Mutex                myLock;
   bool                                      myIsFinished;
-  RPG_Stream_MessageQueue                       myQueue;
+  RPG_Stream_MessageQueue                   myQueue;
   bool                                      myAutoStart;
   DataType                                  myUserData;
 };

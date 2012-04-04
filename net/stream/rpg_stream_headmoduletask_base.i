@@ -26,9 +26,9 @@ template <typename DataType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::RPG_Stream_HeadModuleTaskBase(const bool autoStart_in)
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::RPG_Stream_HeadModuleTaskBase(const bool autoStart_in)
  : myAllocator(NULL),
    mySessionID(0),
    myCondition(myLock),
@@ -57,9 +57,9 @@ template <typename DataType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::~RPG_Stream_HeadModuleTaskBase()
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::~RPG_Stream_HeadModuleTaskBase()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::~RPG_Stream_HeadModuleTaskBase"));
 
@@ -87,10 +87,10 @@ template <typename DataType,
           typename ProtocolMessageType>
 int
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::put(ACE_Message_Block* mb_in,
-                                                   ACE_Time_Value* tv_in)
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::put(ACE_Message_Block* mb_in,
+                                                        ACE_Time_Value* tv_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::put"));
 
@@ -105,9 +105,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 int
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::open(void* args_in)
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::open(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::open"));
 
@@ -174,9 +174,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 int
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::close(u_long arg_in)
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::close(u_long arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::close"));
 
@@ -235,9 +235,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 int
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::module_closed(void)
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::module_closed(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::module_closed"));
 
@@ -285,9 +285,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 int
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::svc(void)
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::svc(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::svc"));
 
@@ -357,8 +357,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 
   // debug info
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("worker thread (ID: %t) failed to ACE_Task::getq(): \"%s\", aborting\n"),
-             ACE_OS::strerror(errno)));
+             ACE_TEXT("worker thread (ID: %t) failed to ACE_Task::getq(): \"%m\", aborting\n")));
 
   // step3: send final session message downstream...
   if (!putSessionMessage(mySessionID,
@@ -402,11 +401,11 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::handleControlMessage(ACE_Message_Block* controlMessage_in,
-                                                                    bool& stopProcessing_out,
-                                                                    bool& passMessageDownstream_out)
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::handleControlMessage(ACE_Message_Block* controlMessage_in,
+                                                                         bool& stopProcessing_out,
+                                                                         bool& passMessageDownstream_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::handleControlMessage"));
 
@@ -451,9 +450,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::start()
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::start()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::start"));
 
@@ -468,9 +467,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::stop()
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::stop()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::stop"));
 
@@ -488,9 +487,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::pause()
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::pause()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::pause"));
 
@@ -504,9 +503,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::rewind()
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::rewind()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::rewind"));
 
@@ -520,9 +519,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::waitForCompletion()
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::waitForCompletion()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::waitForCompletion"));
 
@@ -543,11 +542,11 @@ template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-const bool
+bool
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::isRunning()
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::isRunning"));
 
@@ -560,9 +559,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::finished()
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::finished()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::finished"));
 
@@ -579,9 +578,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::onStateChange(const Control_StateType& newState_in)
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::onStateChange(const Control_StateType& newState_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::onStateChange"));
 
@@ -637,8 +636,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
       if (ret == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to activate(): \"%s\", aborting\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to activate(): \"%m\", aborting\n")));
 
         // finished !
         break;
@@ -691,8 +689,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
       if (!stop_mb)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to allocate ACE_Message_Block: \"%s\", aborting\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
         // what else can we do ?
         break;
@@ -701,8 +698,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
       if (inherited::putq(stop_mb, NULL) == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to putq(): \"%s\", continuing\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to putq(): \"%m\", continuing\n")));
 
         // clean up
         stop_mb->release();
@@ -736,8 +732,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
       if (inherited::suspend() == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to suspend(): \"%s\", continuing\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to suspend(): \"%m\", continuing\n")));
       } // end IF
 
       break;
@@ -767,14 +762,14 @@ template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-const bool
+bool
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::putSessionMessage(const unsigned long& sessionID_in,
-                                                                 const RPG_Stream_SessionMessageType& messageType_in,
-                                                                 SessionConfigType*& config_inout,
-                                                                 RPG_Stream_IAllocator* allocator_in) const
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::putSessionMessage(const unsigned int& sessionID_in,
+                                                                      const RPG_Stream_SessionMessageType& messageType_in,
+                                                                      SessionConfigType*& config_inout,
+                                                                      RPG_Stream_IAllocator* allocator_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::putSessionMessage"));
 
@@ -784,7 +779,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   {
     try
     {
-      message = static_cast<SessionMessageType*> (allocator_in->malloc(0)); // we want a session message !
+      message = static_cast<SessionMessageType*>(allocator_in->malloc(0)); // we want a session message !
     }
     catch (...)
     {
@@ -809,8 +804,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   if (!message)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate SessionMessageType: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to allocate SessionMessageType: \"%m\", aborting\n")));
 
     // clean up
     config_inout->decrease();
@@ -829,8 +823,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   if (const_cast<own_type*> (this)->put_next(message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to put_next(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to put_next(): \"%m\", aborting\n")));
 
     // clean up
     message->release();
@@ -849,15 +842,15 @@ template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-const bool
+bool
 RPG_Stream_HeadModuleTaskBase<DataType,
-                          SessionConfigType,
-                          SessionMessageType,
-                          ProtocolMessageType>::putSessionMessage(const unsigned long& sessionID_in,
-                                                                 const RPG_Stream_SessionMessageType& messageType_in,
-                                                                 const DataType& userData_in,
-                                                                 const ACE_Time_Value& startOfSession_in,
-                                                                 const bool& userAbort_in) const
+                              SessionConfigType,
+                              SessionMessageType,
+                              ProtocolMessageType>::putSessionMessage(const unsigned int& sessionID_in,
+                                                                      const RPG_Stream_SessionMessageType& messageType_in,
+                                                                      const DataType& userData_in,
+                                                                      const ACE_Time_Value& startOfSession_in,
+                                                                      const bool& userAbort_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::putSessionMessage"));
 
@@ -878,8 +871,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
       if (!config)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to allocate SessionConfigType: \"%s\", aborting\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to allocate SessionConfigType: \"%m\", aborting\n")));
 
         // what else can we do ?
         return false;

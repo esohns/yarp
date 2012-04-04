@@ -55,8 +55,8 @@ RPG_Net_Controller_Base::stop()
              ACE_TEXT("%D: stopping...\n")));
 }
 
-const bool
-RPG_Net_Controller_Base::isRunning()
+bool
+RPG_Net_Controller_Base::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Controller_Base::isRunning"));
 

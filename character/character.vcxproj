@@ -40,6 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -50,6 +51,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -60,6 +62,14 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd .\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Inputs>rpg_character.xsd</Inputs>
+      <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_character_XML_tree.cpp;rpg_character_XML_tree.h;rpg_character_XML_types.cpp;rpg_character_XML_types.h;rpg_character_ability.h;rpg_character_skillvalue.h;rpg_character_skills.h;rpg_character_feats.h;rpg_character_alignment.h;rpg_character_alignmentcivic.h;rpg_character_alignmentethic.h;rpg_character_attributes.h;rpg_character_exports.h;rpg_character_check.h;rpg_character_checktypeunion.h;rpg_character_classxml.h;rpg_character_feat.h;rpg_character_gender.h;rpg_character_incl.h;rpg_character_equipmentslot.h;rpg_character_metaclass.h;rpg_character_offhand.h;rpg_character_race.h;%(Outputs)</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

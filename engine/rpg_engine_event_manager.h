@@ -65,7 +65,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   // implement RPG_Common_IControl
   virtual void start();
   virtual void stop();
-  virtual bool isRunning();
+  virtual bool isRunning() const;
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;

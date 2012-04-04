@@ -230,7 +230,7 @@ RPG_Client_Engine::stop()
 }
 
 bool
-RPG_Client_Engine::isRunning()
+RPG_Client_Engine::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::isRunning"));
 
@@ -520,7 +520,7 @@ RPG_Client_Engine::handleActions()
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::handleActions"));
 
   bool refresh_window = false;
-  SDL_Rect dirtyRegion;
+  SDL_Rect dirtyRegion = {0, 0, 0, 0};
   for (RPG_Client_ActionsIterator_t iterator = myActions.begin();
        iterator != myActions.end();
        iterator++)

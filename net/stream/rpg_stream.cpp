@@ -44,7 +44,7 @@ RPG_Stream::~RPG_Stream()
 
 }
 
-const bool
+bool
 RPG_Stream::reset()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream::reset"));
@@ -73,7 +73,7 @@ RPG_Stream::reset()
   return init();
 }
 
-const bool
+bool
 RPG_Stream::init()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream::init"));
@@ -117,7 +117,7 @@ RPG_Stream::init()
   return (ret == 0);
 }
 
-const bool
+bool
 RPG_Stream::fini()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream::fini"));
@@ -299,7 +299,7 @@ RPG_Stream::pause()
   } // end IF
 
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -357,7 +357,7 @@ RPG_Stream::rewind()
   } // end IF
 
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -431,7 +431,7 @@ RPG_Stream::waitForCompletion()
 
   // need to downcast
   RPG_Stream_HeadModuleTask* head_task = NULL;
-  head_task = dynamic_cast<RPG_Stream_HeadModuleTask*> (const_cast<RPG_Stream_Module::MODULE_TYPE*> (module)->writer());
+  head_task = dynamic_cast<RPG_Stream_HeadModuleTask*>(const_cast<RPG_Stream_Module::MODULE_TYPE*>(module)->writer());
   if (!head_task)
   {
     ACE_DEBUG((LM_ERROR,
@@ -485,7 +485,7 @@ RPG_Stream::waitForCompletion()
 //                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     // OK: we've got a handle... wait
-    const_cast<RPG_Stream_Module::MODULE_TYPE*> (module)->writer()->wait();
+    const_cast<RPG_Stream_Module::MODULE_TYPE*>(module)->writer()->wait();
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("waiting for module (\"%s\") to finish processing...DONE\n"),
@@ -499,14 +499,14 @@ RPG_Stream::waitForCompletion()
 //              ACE_TEXT("waiting for stream to flush...DONE\n")));
 }
 
-const bool
-RPG_Stream::isRunning()
+bool
+RPG_Stream::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream::isRunning"));
 
   // delegate to the head module
   RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  if (top(module))
+  if (const_cast<RPG_Stream*>(this)->top(module))
   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("no head module found, aborting\n")));
@@ -515,7 +515,7 @@ RPG_Stream::isRunning()
   } // end IF
 
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
-  if (module == tail())
+  if (module == const_cast<RPG_Stream*>(this)->tail())
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
@@ -524,7 +524,7 @@ RPG_Stream::isRunning()
   } // end IF
 
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -561,8 +561,8 @@ RPG_Stream::dump_state() const
        iter.advance())
   {
     // silently ignore ACE head/tail modules...
-    if ((module == const_cast<RPG_Stream*> (this)->tail()) ||
-        (module == const_cast<RPG_Stream*> (this)->head()))
+    if ((module == const_cast<RPG_Stream*>(this)->tail()) ||
+        (module == const_cast<RPG_Stream*>(this)->head()))
     {
       continue;
     } // end IF
@@ -570,8 +570,8 @@ RPG_Stream::dump_state() const
     stream_layout.append(ACE_TEXT_ALWAYS_CHAR(module->name()));
 
     // avoid trailing "-->"...
-    if (const_cast<RPG_Stream_Module::MODULE_TYPE*> (module)->next() !=
-        const_cast<RPG_Stream*> (this)->tail())
+    if (const_cast<RPG_Stream_Module::MODULE_TYPE*>(module)->next() !=
+        const_cast<RPG_Stream*>(this)->tail())
     {
       stream_layout += ACE_TEXT_ALWAYS_CHAR(" --> ");
     } // end IF
@@ -584,7 +584,7 @@ RPG_Stream::dump_state() const
              stream_layout.c_str()));
 }
 
-const bool
+bool
 RPG_Stream::isInitialized() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream::isInitialized"));
@@ -678,7 +678,8 @@ RPG_Stream::shutdown()
 //              ACE_TEXT("shutting down stream...FINISHED\n")));
 }
 
-void RPG_Stream::deactivateModules()
+void
+RPG_Stream::deactivateModules()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream::deactivateModules"));
 
@@ -700,7 +701,7 @@ void RPG_Stream::deactivateModules()
   {
     try
     {
-      message = static_cast<RPG_Stream_SessionMessage*> (myAllocator->malloc(0)); // we want a session message !
+      message = static_cast<RPG_Stream_SessionMessage*>(myAllocator->malloc(0)); // we want a session message !
     }
     catch (...)
     {

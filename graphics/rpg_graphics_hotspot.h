@@ -44,11 +44,11 @@ class RPG_Graphics_Export RPG_Graphics_HotSpot
                        const RPG_Graphics_Cursor&);       // (hover) cursor graphic
   virtual ~RPG_Graphics_HotSpot();
 
-  const RPG_Graphics_Cursor getCursorType() const;
+  RPG_Graphics_Cursor getCursorType() const;
 
   // implement (part of) RPG_Graphics_IWindow
   // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])

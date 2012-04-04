@@ -223,13 +223,14 @@ do_work(const bool& buildCorridors_in,
     } while ((target_door == iterator) ||
              (used_positions.find((*target_door).position) != used_positions.end()));
 
-    if (!RPG_Map_Pathfinding_Tools::findPath(map.plan.size_x,
-                                             map.plan.size_y,
-                                             map.plan.walls,
-                                             (*iterator).position,
-                                             (*iterator).outside,
-                                             (*target_door).position,
-                                             current_path))
+    RPG_Map_Pathfinding_Tools::findPath(std::make_pair(map.plan.size_x,
+                                                       map.plan.size_y),
+                                        map.plan.walls,
+                                        (*iterator).position,
+                                        (*iterator).outside,
+                                        (*target_door).position,
+                                        current_path);
+    if (current_path.empty())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing...\n"),

@@ -35,8 +35,8 @@ class RPG_Stream_StreamModule
  : public RPG_Stream_Module
 {
  public:
-  RPG_Stream_StreamModule(const std::string&, // name
-                      RPG_Stream_IRefCount*); // object counter
+  RPG_Stream_StreamModule(const std::string&,     // name
+                          RPG_Stream_IRefCount*); // object counter
   virtual ~RPG_Stream_StreamModule();
 
  protected:
@@ -58,6 +58,5 @@ class RPG_Stream_StreamModule
 // *NOTE*: use this macro to instantiate the module definitions
 // --> saves some typing...
 #define DATASTREAM_MODULE(TASKTYPE) typedef RPG_Stream_StreamModule<TASKTYPE> TASKTYPE##_Module
-#define DATASTREAM_MODULE_T(TASKTYPE,\
-                            NAME) typedef RPG_Stream_StreamModule<TASKTYPE > NAME##_Module
+#define DATASTREAM_MODULE_T(TASKTYPE, NAME) typedef RPG_Stream_StreamModule<TASKTYPE > NAME##_Module
 #endif

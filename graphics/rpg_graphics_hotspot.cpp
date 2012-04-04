@@ -54,7 +54,7 @@ RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
 
 }
 
-const RPG_Graphics_Cursor
+RPG_Graphics_Cursor
 RPG_Graphics_HotSpot::getCursorType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getCursorType"));
@@ -62,7 +62,7 @@ RPG_Graphics_HotSpot::getCursorType() const
   return myCursorType;
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Graphics_HotSpot::getView() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getView"));

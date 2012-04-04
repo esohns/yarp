@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.2.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2010 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -149,11 +147,11 @@ namespace yy {
     RPG_Net_Protocol_IRCParser (RPG_Net_Protocol_IRCParserDriver* driver_yyarg, unsigned int* messageCount_yyarg, yyscan_t yyscanner_yyarg);
     virtual ~RPG_Net_Protocol_IRCParser ();
 
-    void set(yyscan_t);
-
     /// Parse.
     /// \returns  0 iff parsing succeeded.
     virtual int parse ();
+
+    void set(yyscan_t);
 
 #if YYDEBUG
     /// The current debugging stream.

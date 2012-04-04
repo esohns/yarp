@@ -29,9 +29,9 @@ template <typename DataType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::RPG_Stream_Base()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::RPG_Stream_Base()
 // *TODO*: use default ctor and rely on init/fini() ?
  : inherited(NULL,    // argument to module open()
              NULL,    // no head module --> allocate !
@@ -48,9 +48,9 @@ template <typename DataType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::~RPG_Stream_Base()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::~RPG_Stream_Base()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::~RPG_Stream_Base"));
 
@@ -60,11 +60,11 @@ template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-const bool
+bool
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::reset()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::reset()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::reset"));
 
@@ -96,11 +96,11 @@ template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-const bool
+bool
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::init()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::init()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::init"));
 
@@ -151,11 +151,11 @@ template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-const bool
+bool
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::fini()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::fini()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::fini"));
 
@@ -189,9 +189,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::start()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::start()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::start"));
 
@@ -266,9 +266,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::stop()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::stop()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::stop"));
 
@@ -344,9 +344,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::pause()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::pause()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::pause"));
 
@@ -422,9 +422,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::rewind()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::rewind()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::rewind"));
 
@@ -501,9 +501,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::waitForCompletion()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::waitForCompletion()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::waitForCompletion"));
 
@@ -626,17 +626,17 @@ template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-const bool
+bool
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::isRunning()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::isRunning"));
 
   // delegate to the head module
   ACE_Module<ACE_MT_SYNCH>* module = NULL;
-  module = head();
+  module = const_cast<RPG_Stream_Base*>(this)->head();
   if (!module)
   {
     ACE_DEBUG((LM_ERROR,
@@ -656,7 +656,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
-  if (module == tail())
+  if (module == const_cast<RPG_Stream_Base*>(this)->tail())
   {
     // debug info
 //     ACE_DEBUG((LM_DEBUG,
@@ -666,7 +666,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -696,9 +696,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::dump_state() const
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::dump_state"));
 
@@ -737,11 +737,11 @@ template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-const bool
+bool
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::isInitialized() const
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::isInitialized() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::isInitialized"));
 
@@ -754,9 +754,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::shutdown()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::shutdown()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::shutdown"));
 
@@ -849,9 +849,9 @@ template <typename DataType,
           typename ProtocolMessageType>
 void
 RPG_Stream_Base<DataType,
-            SessionConfigType,
-            SessionMessageType,
-            ProtocolMessageType>::deactivateModules()
+                SessionConfigType,
+                SessionMessageType,
+                ProtocolMessageType>::deactivateModules()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::deactivateModules"));
 
@@ -880,7 +880,7 @@ RPG_Stream_Base<DataType,
   {
     try
     {
-      message = static_cast<SessionMessageType*> (myAllocator->malloc(0)); // we want a session message !
+      message = static_cast<SessionMessageType*>(myAllocator->malloc(0)); // we want a session message !
     }
     catch (...)
     {

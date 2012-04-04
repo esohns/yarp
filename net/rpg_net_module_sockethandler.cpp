@@ -57,10 +57,10 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
     myCurrentMessage->release();
 }
 
-const bool
+bool
 RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
 //                                    const unsigned long& connectionID_in,
-                                   const unsigned long& statisticsCollectionInterval_in)
+                                   const unsigned int& statisticsCollectionInterval_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
 
@@ -89,7 +89,8 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
     // schedule regular statistics collection...
     ACE_Time_Value collecting_interval(statisticsCollectionInterval_in,
                                        0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myStatCollectHandler,
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myStatCollectHandler,
+                                                                      NULL,
                                                                       collecting_interval,
                                                                       true,
                                                                       myStatCollectHandlerID))
@@ -198,7 +199,7 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
   } // end SWITCH
 }
 
-const bool
+bool
 RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::collect"));
@@ -243,7 +244,7 @@ RPG_Net_Module_SocketHandler::report() const
   ACE_ASSERT(false);
 }
 
-const bool
+bool
 RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::bisectMessages"));
@@ -289,9 +290,9 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
       return false;
     } // end IF
 
-    RPG_Net_Remote_Comm::MessageHeader* message_header = reinterpret_cast<RPG_Net_Remote_Comm::MessageHeader*> (myCurrentMessage->rd_ptr());
+    RPG_Net_Remote_Comm::MessageHeader* message_header = reinterpret_cast<RPG_Net_Remote_Comm::MessageHeader*>(myCurrentMessage->rd_ptr());
     // *TODO*: *PORTABILITY*: handle endianness && type issues !
-    myCurrentMessageLength = message_header->messageLength + sizeof(unsigned long);
+    myCurrentMessageLength = message_header->messageLength + sizeof(unsigned int);
   } // end IF
 
 //   // debug info
@@ -322,7 +323,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 
     // adjust write pointer of our current buffer so (total_-)length()
     // reflects the proper size...
-    unsigned long offset = myCurrentMessageLength;
+    unsigned int offset = myCurrentMessageLength;
     // in order to find the correct offset in myCurrentBuffer, we MAY need to
     // count the total size of the preceding continuation... :-(
     ACE_Message_Block* current = myCurrentMessage;
@@ -359,7 +360,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //     } // end IF
 
     // [instead], use copy ctor and just reference the same data block...
-    RPG_Net_Message* new_head = dynamic_cast<RPG_Net_Message*> (myCurrentBuffer->duplicate());
+    RPG_Net_Message* new_head = dynamic_cast<RPG_Net_Message*>(myCurrentBuffer->duplicate());
 
     // adjust wr_ptr to make length() work...
     myCurrentBuffer->wr_ptr(myCurrentBuffer->rd_ptr() + offset);
@@ -414,7 +415,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //   return message_out;
 // }
 
-const bool
+bool
 RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatistic& info_in,
                                                    const ACE_Time_Value& collectionTime_in) const
 {

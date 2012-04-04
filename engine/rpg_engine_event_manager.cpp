@@ -294,7 +294,7 @@ RPG_Engine_Event_Manager::stop()
 }
 
 bool
-RPG_Engine_Event_Manager::isRunning()
+RPG_Engine_Event_Manager::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::isRunning"));
 
@@ -455,14 +455,23 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
       const RPG_Map_Positions_t& seed_points = myEngine->getSeedPoints();
       ACE_ASSERT(!seed_points.empty());
       RPG_Dice_RollResult_t random_number;
-      RPG_Dice::generateRandomNumbers(seed_points.size(),
-                                      1,
-                                      random_number);
       RPG_Map_PositionsConstIterator_t iterator = seed_points.begin();
-      std::advance(iterator, random_number.front() - 1);
-      entity->position = *iterator;
-
-      RPG_Engine_EntityID_t id = myEngine->add(entity);
+      RPG_Engine_EntityID_t id = 0;
+      while (true)
+      {
+        RPG_Dice::generateRandomNumbers(seed_points.size(),
+                                        1,
+                                        random_number);
+        iterator = seed_points.begin();
+        std::advance(iterator, random_number.front() - 1);
+        id = myEngine->hasEntity(*iterator);
+        if (id == 0)
+        {
+          entity->position = *iterator;
+          break;
+        } // end IF
+      } // end WHILE
+      id = myEngine->add(entity);
 
       // debug info
       ACE_DEBUG((LM_DEBUG,
@@ -530,11 +539,12 @@ RPG_Engine_Event_Manager::handleEntities()
             closest_target = iterator2;
           } // end IF
         } // end FOR
-        ACE_ASSERT(closest_target != myEngine->myEntities.end());
+        //ACE_ASSERT(closest_target != myEngine->myEntities.end());
         if (closest_target == myEngine->myEntities.end())
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("no target, continuing\n")));
+          // --> no active player(s)...
+          //ACE_DEBUG((LM_DEBUG,
+          //           ACE_TEXT("no target, continuing\n")));
 
           break;
         } // end IF

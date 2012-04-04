@@ -55,8 +55,8 @@ class RPG_Net_Module_RuntimeStatistic
   virtual ~RPG_Net_Module_RuntimeStatistic();
 
   // initialization
-  const bool init(const unsigned long& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
-                  const RPG_Stream_IAllocator* = NULL);                             // report cache usage ?
+  bool init(const unsigned int& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
+            const RPG_Stream_IAllocator* = NULL);                            // report cache usage ?
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(ProtocolMessageType*&, // data message handle
@@ -70,7 +70,7 @@ class RPG_Net_Module_RuntimeStatistic
   virtual void reset();
 
   // implement RPG_Common_IStatistic
-  virtual const bool collect(StatisticsContainerType&) const; // return value: info
+  virtual bool collect(StatisticsContainerType&) const; // return value: info
   // *NOTE*: this also implements locally triggered reporting !
   virtual void report() const;
 
@@ -110,22 +110,22 @@ class RPG_Net_Module_RuntimeStatistic
 
   // *GENERIC STATS*
   mutable ACE_Thread_Mutex           myLock;
-  unsigned long                      mySessionID;
+  unsigned int                       mySessionID;
 
   // *NOTE*: data messages == (myNumTotalMessages - myNumSessionMessages)
-  unsigned long                      myNumInboundMessages;
-  unsigned long                      myNumOutboundMessages;
-  unsigned long                      myNumSessionMessages;
+  unsigned int                       myNumInboundMessages;
+  unsigned int                       myNumOutboundMessages;
+  unsigned int                       myNumSessionMessages;
   // used to compute message throughput...
-  unsigned long                      myMessageCounter;
+  unsigned int                       myMessageCounter;
   // *NOTE: support asynchronous collecting/reporting of data...
-  unsigned long                      myLastMessagesPerSecondCount;
+  unsigned int                       myLastMessagesPerSecondCount;
 
   double                             myNumInboundBytes;
   // used to compute data throughput...
-  unsigned long                      myByteCounter;
+  unsigned int                       myByteCounter;
   // *NOTE: support asynchronous collecting/reporting of data...
-  unsigned long                      myLastBytesPerSecondCount;
+  unsigned int                       myLastBytesPerSecondCount;
 
   // *MESSAGE TYPE STATS*
   MESSAGETYPE2COUNT_TYPE             myMessageTypeStatistics;

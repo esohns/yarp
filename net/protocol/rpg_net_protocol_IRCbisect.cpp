@@ -860,7 +860,7 @@ static yyconst yy_state_type yy_NUL_trans[12] =
 
 static yyconst flex_int16_t yy_rule_linenum[6] =
     {   0,
-       20,   21,   22,   30,   33
+       22,   23,   24,   32,   35
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -872,12 +872,14 @@ static yyconst flex_int16_t yy_rule_linenum[6] =
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "./IRCbisect.l"
 #line 2 "./IRCbisect.l"
+#include "stdafx.h"
+
 #include <ace/Log_Msg.h>
 #define YY_NO_UNISTD_H 1
 /* %option c++ yyclass="RPG_Net_Protocol_IRCBisect" stack noline bison-bridge bison-locations */
 /* *NOTE*: "\r\n" is (ANSI-C) implementation-dependent --> use ASCII codes directly */
 
-#line 879 "rpg_net_protocol_IRCbisect.cpp"
+#line 881 "rpg_net_protocol_IRCbisect.cpp"
 
 #define INITIAL 0
 #define end_of_frame 1
@@ -980,10 +982,6 @@ int RPG_Net_Protocol_IRCBisect_get_lineno (yyscan_t yyscanner );
 
 void RPG_Net_Protocol_IRCBisect_set_lineno (int line_number ,yyscan_t yyscanner );
 
-int RPG_Net_Protocol_IRCBisect_get_column  (yyscan_t yyscanner );
-
-void RPG_Net_Protocol_IRCBisect_set_column (int column_no ,yyscan_t yyscanner );
-
 /* %if-bison-bridge */
 /* %endif */
 
@@ -1042,7 +1040,7 @@ static int input (yyscan_t yyscanner );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO do { if (fwrite( yytext, yyleng, 1, yyout )) {} } while (0)
+#define ECHO fwrite( yytext, yyleng, 1, yyout )
 /* %endif */
 /* %if-c++-only C++ definition */
 /* %endif */
@@ -1149,9 +1147,9 @@ YY_DECL
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
-#line 18 "./IRCbisect.l"
+#line 20 "./IRCbisect.l"
 
-#line 1153 "rpg_net_protocol_IRCbisect.cpp"
+#line 1151 "rpg_net_protocol_IRCbisect.cpp"
 
 	if ( !yyg->yy_init )
 		{
@@ -1259,17 +1257,17 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "./IRCbisect.l"
+#line 22 "./IRCbisect.l"
 { BEGIN(end_of_frame); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 21 "./IRCbisect.l"
+#line 23 "./IRCbisect.l"
 { return yyleng; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 22 "./IRCbisect.l"
+#line 24 "./IRCbisect.l"
 {
                          ACE_DEBUG((LM_ERROR,
                                     ACE_TEXT("ignoring invalid character: \"%c\" (%d)\n"),
@@ -1282,29 +1280,29 @@ YY_RULE_SETUP
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 30 "./IRCbisect.l"
+#line 32 "./IRCbisect.l"
 { BEGIN(INITIAL);
                          /* (*yyextra)++; */
                          return -1; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 33 "./IRCbisect.l"
+#line 35 "./IRCbisect.l"
 { BEGIN(INITIAL);
                          yymore(); }
 	YY_BREAK
 // end <end_of_frame>
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(end_of_frame):
-#line 36 "./IRCbisect.l"
+#line 38 "./IRCbisect.l"
 { return 0; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 37 "./IRCbisect.l"
+#line 39 "./IRCbisect.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1306 "rpg_net_protocol_IRCbisect.cpp"
+#line 1304 "rpg_net_protocol_IRCbisect.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2535,7 +2533,7 @@ void RPG_Net_Protocol_IRCBisect_free (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 37 "./IRCbisect.l"
+#line 39 "./IRCbisect.l"
 
 
 

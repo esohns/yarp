@@ -68,7 +68,7 @@ RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream()
   inherited::shutdown();
 }
 
-const bool
+bool
 RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::init"));
@@ -223,13 +223,13 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
   return true;
 }
 
-const bool
+bool
 RPG_Net_Protocol_Stream::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::collect"));
 
   RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl = dynamic_cast<RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*> (const_cast<RPG_Net_Protocol_Module_RuntimeStatistic_Module&> (myRuntimeStatistic).writer());
+  runtimeStatistic_impl = dynamic_cast<RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*>(const_cast<RPG_Net_Protocol_Module_RuntimeStatistic_Module&>(myRuntimeStatistic).writer());
   if (!runtimeStatistic_impl)
   {
     ACE_DEBUG((LM_ERROR,

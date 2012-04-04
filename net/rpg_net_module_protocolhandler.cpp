@@ -90,7 +90,8 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
   {
     // schedule ourselves...
     ACE_Time_Value clientPing_interval(clientPingInterval_in, 0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(myClientPingHandler,  // handler
+    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myClientPingHandler, // handler
+                                                                      NULL,                 // act
                                                                       clientPing_interval,  // interval
                                                                       false,                // recurrent
                                                                       myClientPingTimerID)) // return value: timer ID

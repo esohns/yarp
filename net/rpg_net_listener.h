@@ -56,7 +56,7 @@ class RPG_Net_Export RPG_Net_Listener
   // *WARNING*: this API is NOT re-entrant !
   virtual void start();
   virtual void stop();
-  virtual const bool isRunning();
+  virtual bool isRunning() const;
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -72,10 +72,10 @@ class RPG_Net_Export RPG_Net_Listener
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Listener& operator=(const RPG_Net_Listener&));
   virtual ~RPG_Net_Listener();
 
-  bool              myIsInitialized;
-  bool              myIsListening;
-  bool              myIsOpen;
-  unsigned short    myListeningPort;
+  bool           myIsInitialized;
+  bool           myIsListening;
+  bool           myIsOpen;
+  unsigned short myListeningPort;
 };
 
 typedef ACE_Singleton<RPG_Net_Listener,

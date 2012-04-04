@@ -238,14 +238,19 @@ RPG_Client_WindowLevel::setView(const int& offsetX_in,
     myView.second = (size.second - 1);
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Client_WindowLevel::getView() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getView"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  RPG_Graphics_Position_t result;
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-  return myView;
+    result = myView;
+  } // end lock scope
+
+  return result;
 }
 
 void

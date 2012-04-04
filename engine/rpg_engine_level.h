@@ -63,7 +63,7 @@ class RPG_Engine_Export RPG_Engine_Level
   // implement RPG_Common_IControl
   virtual void start();
   virtual void stop();
-  virtual bool isRunning();
+  virtual bool isRunning() const;
 
   static void wait_all();
 

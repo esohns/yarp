@@ -1347,7 +1347,7 @@ static yyconst flex_int16_t yy_rule_linenum[11] =
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "./map_scanner.l"
 #line 2 "./map_scanner.l"
-// #include <stdlib.h>
+#include "stdafx.h"
 
 #include <string>
 
@@ -1479,10 +1479,6 @@ int RPG_Map_Scanner_get_lineno (yyscan_t yyscanner );
 
 void RPG_Map_Scanner_set_lineno (int line_number ,yyscan_t yyscanner );
 
-int RPG_Map_Scanner_get_column  (yyscan_t yyscanner );
-
-void RPG_Map_Scanner_set_column (int column_no ,yyscan_t yyscanner );
-
 /* %if-bison-bridge */
 /* %endif */
 
@@ -1541,7 +1537,7 @@ static int input (yyscan_t yyscanner );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO do { if (fwrite( yytext, yyleng, 1, yyout )) {} } while (0)
+#define ECHO fwrite( yytext, yyleng, 1, yyout )
 /* %endif */
 /* %if-c++-only C++ definition */
 /* %endif */
@@ -1655,7 +1651,7 @@ YY_DECL
   yy_flex_debug = driver->getDebugScanner();
 
 
-#line 1657 "rpg_map_scanner.cpp"
+#line 1653 "rpg_map_scanner.cpp"
 
 	if ( !yyg->yy_init )
 		{
@@ -1881,7 +1877,7 @@ YY_RULE_SETUP
 #line 104 "./map_scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1883 "rpg_map_scanner.cpp"
+#line 1879 "rpg_map_scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{

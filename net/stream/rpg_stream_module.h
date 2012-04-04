@@ -40,10 +40,10 @@ class RPG_Stream_Export RPG_Stream_Module
   typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
   typedef ACE_Task<ACE_MT_SYNCH> TASK_TYPE;
 
-  RPG_Stream_Module(const std::string&, // name
-                TASK_TYPE*,         // handle to writer task
-                TASK_TYPE*,         // handle to reader task
-                RPG_Stream_IRefCount*); // object counter
+  RPG_Stream_Module(const std::string&,     // name
+                    TASK_TYPE*,             // handle to writer task
+                    TASK_TYPE*,             // handle to reader task
+                    RPG_Stream_IRefCount*); // object counter
   virtual ~RPG_Stream_Module();
 
   // *NOTE*: streams may call this to reset writer/reader tasks
