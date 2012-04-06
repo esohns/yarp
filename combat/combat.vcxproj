@@ -99,6 +99,7 @@ popd</Command>
     <ClInclude Include="rpg_combat_damagereductiontype.h" />
     <ClInclude Include="rpg_combat_damagetypeunion.h" />
     <ClInclude Include="rpg_combat_defensesituation.h" />
+    <ClInclude Include="rpg_combat_defines.h" />
     <ClInclude Include="rpg_combat_exports.h" />
     <ClInclude Include="rpg_combat_incl.h" />
     <ClInclude Include="rpg_combat_otherdamage.h" />

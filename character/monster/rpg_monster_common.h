@@ -46,6 +46,8 @@ typedef RPG_Dice_Roll RPG_Monster_HitDice;
 
 typedef std::vector<RPG_Monster_AttackAction> RPG_Monster_AttackActions_t;
 typedef RPG_Monster_AttackActions_t::const_iterator RPG_Monster_AttackActionsIterator_t;
+typedef std::vector<RPG_Monster_SpecialAttackProperties> RPG_Monster_SpecialAttackActions_t;
+typedef RPG_Monster_SpecialAttackActions_t::const_iterator RPG_Monster_SpecialAttackActionsIterator_t;
 
 typedef std::vector<RPG_Monster_OrganizationStep> RPG_Monster_Organizations_t;
 typedef RPG_Monster_Organizations_t::const_iterator RPG_Monster_OrganizationsIterator_t;

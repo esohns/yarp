@@ -27,6 +27,7 @@
 #include <rpg_item_dictionary.h>
 
 #include <rpg_character_common_tools.h>
+#include <rpg_character_race_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
 
 #include <rpg_magic_common_tools.h>
@@ -40,32 +41,32 @@
 #include <algorithm>
 
 RPG_Player_Player_Base::RPG_Player_Player_Base(// base attributes
-											   const std::string& name_in,
-											   const RPG_Character_Gender& gender_in,
-											   const RPG_Character_Race_t& race_in,
-											   const RPG_Character_Class& class_in,
-											   const RPG_Character_Alignment& alignment_in,
-											   const RPG_Character_Attributes& attributes_in,
-											   const RPG_Character_Skills_t& skills_in,
-											   const RPG_Character_Feats_t& feats_in,
-											   const RPG_Character_Abilities_t& abilities_in,
-											   const RPG_Character_OffHand& offHand_in,
-											   const unsigned short int& maxHitPoints_in,
-											   const RPG_Magic_SpellTypes_t& knownSpells_in,
-											   // current status
-											   const RPG_Character_Conditions_t& condition_in,
-											   const short int& hitpoints_in,
-											   const unsigned int& experience_in,
-											   const unsigned int& wealth_in,
-											   const RPG_Magic_Spells_t& spells_in,
-											   const RPG_Item_List_t& inventory_in)
+											                         const std::string& name_in,
+											                         const RPG_Character_Gender& gender_in,
+											                         const RPG_Character_Race_t& race_in,
+											                         const RPG_Character_Class& class_in,
+											                         const RPG_Character_Alignment& alignment_in,
+											                         const RPG_Character_Attributes& attributes_in,
+											                         const RPG_Character_Skills_t& skills_in,
+											                         const RPG_Character_Feats_t& feats_in,
+											                         const RPG_Character_Abilities_t& abilities_in,
+											                         const RPG_Character_OffHand& offHand_in,
+											                         const unsigned short int& maxHitPoints_in,
+											                         const RPG_Magic_SpellTypes_t& knownSpells_in,
+											                         // current status
+											                         const RPG_Character_Conditions_t& condition_in,
+											                         const short int& hitpoints_in,
+											                         const unsigned int& experience_in,
+											                         const unsigned int& wealth_in,
+											                         const RPG_Magic_Spells_t& spells_in,
+											                         const RPG_Item_List_t& inventory_in)
  : inherited(name_in,
              alignment_in,
              attributes_in,
              skills_in,
              feats_in,
              abilities_in,
-             SIZE_MEDIUM, // standard PCs are all medium-sized
+             RPG_Character_Race_Common_Tools::race2Size(race_in),
              maxHitPoints_in,
              knownSpells_in,
              condition_in,
@@ -118,25 +119,25 @@ RPG_Player_Player_Base::~RPG_Player_Player_Base()
 
 void
 RPG_Player_Player_Base::init(// base attributes
-							 const std::string& name_in,
-							 const RPG_Character_Gender& gender_in,
-							 const RPG_Character_Race_t& race_in,
-							 const RPG_Character_Class& class_in,
-							 const RPG_Character_Alignment& alignment_in,
-							 const RPG_Character_Attributes& attributes_in,
-							 const RPG_Character_Skills_t& skills_in,
-							 const RPG_Character_Feats_t& feats_in,
-							 const RPG_Character_Abilities_t& abilities_in,
-							 const RPG_Character_OffHand& offHand_in,
-							 const unsigned short int& maxHitPoints_in,
-							 const RPG_Magic_SpellTypes_t& knownSpells_in,
-							 // current status
-							 const RPG_Character_Conditions_t& condition_in,
-							 const short int& hitpoints_in,
-							 const unsigned int& experience_in,
-							 const unsigned int& wealth_in,
-							 const RPG_Magic_Spells_t& spells_in,
-							 const RPG_Item_List_t& inventory_in)
+							               const std::string& name_in,
+							               const RPG_Character_Gender& gender_in,
+							               const RPG_Character_Race_t& race_in,
+							               const RPG_Character_Class& class_in,
+							               const RPG_Character_Alignment& alignment_in,
+							               const RPG_Character_Attributes& attributes_in,
+							               const RPG_Character_Skills_t& skills_in,
+							               const RPG_Character_Feats_t& feats_in,
+							               const RPG_Character_Abilities_t& abilities_in,
+							               const RPG_Character_OffHand& offHand_in,
+							               const unsigned short int& maxHitPoints_in,
+							               const RPG_Magic_SpellTypes_t& knownSpells_in,
+							               // current status
+							               const RPG_Character_Conditions_t& condition_in,
+							               const short int& hitpoints_in,
+							               const unsigned int& experience_in,
+							               const unsigned int& wealth_in,
+							               const RPG_Magic_Spells_t& spells_in,
+							               const RPG_Item_List_t& inventory_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::init"));
 
@@ -148,7 +149,7 @@ RPG_Player_Player_Base::init(// base attributes
                   skills_in,
                   feats_in,
                   abilities_in,
-                  SIZE_MEDIUM, // standard PCs are all medium-sized
+                  RPG_Character_Race_Common_Tools::race2Size(race_in),
                   maxHitPoints_in,
                   knownSpells_in,
                   // current status
@@ -286,7 +287,7 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
   if (type != ARMOR_NONE)
   {
     properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
-    result += properties.baseArmorBonus;
+    result += properties.baseBonus;
   } // end IF
   result += getShieldBonus();
 
@@ -304,6 +305,64 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
   result += RPG_Common_Tools::getSizeModifier(getSize());
 
   return result;
+}
+
+unsigned char
+RPG_Player_Player_Base::getSpeed() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSpeed"));
+
+  unsigned char result = 0;
+
+  // step1: retrieve base speed (race)
+  unsigned char base_speed = 0;
+  unsigned int race_index = 1;
+  for (unsigned int index = 0;
+       index < myRace.size();
+       index++, race_index++)
+    if (myRace.test(index))
+    {
+      base_speed = RPG_Character_Race_Common_Tools::race2Speed(static_cast<RPG_Character_Race>(race_index));
+      if (base_speed > result)
+        result = base_speed;
+    } // end IF
+
+  // step2: test encumbrance (race)
+  // *TODO*: test load (inventory)
+  RPG_Item_ArmorType armor_type = getEquipment().getBodyArmor();
+  // *NOTE*: dwarves move at the base speed with any armor...
+  if ((armor_type == ARMOR_NONE) ||
+      RPG_Character_Race_Common_Tools::hasRace(myRace,
+                                               RACE_DWARF))
+    return result;
+
+  const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
+  switch (properties.category)
+  {
+    case ARMORCATEGORY_LIGHT:
+      return result;
+    case ARMORCATEGORY_MEDIUM:
+    case ARMORCATEGORY_HEAVY:
+    {
+      if (RPG_Character_Race_Common_Tools::hasRace(myRace,
+                                                   RACE_GNOME) ||
+          RPG_Character_Race_Common_Tools::hasRace(myRace,
+                                                   RACE_HALFLING))
+        return 15;
+
+      return 20;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid armor category (was \"%s\"), aborting\n"),
+                 RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return 0;
 }
 
 bool
@@ -330,7 +389,7 @@ RPG_Player_Player_Base::gainExperience(const unsigned int& XP_in)
                ACE_TEXT("player: \"%s\" (XP: %d) has gained a level (%d)...\n"),
                getName().c_str(),
                myExperience,
-               static_cast<int> (getLevel(*myClass.subClasses.begin()))));
+               static_cast<int>(getLevel(*myClass.subClasses.begin()))));
   } // end IF
 }
 
@@ -386,10 +445,10 @@ RPG_Player_Player_Base::status() const
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::status"));
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("name: \"%s\" (XP: %d (%d))\n"),
+             ACE_TEXT("name: \"%s\" (XP: %d (%u))\n"),
              getName().c_str(),
              myExperience,
-             static_cast<int> (getLevel())));
+             static_cast<unsigned int>(getLevel())));
 
   inherited::status();
 }
@@ -430,6 +489,6 @@ RPG_Player_Player_Base::getShieldBonus() const
   if (type == ARMOR_NONE)
     return 0;
 
-  RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
-  return properties.baseArmorBonus;
+  const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+  return properties.baseBonus;
 }

@@ -192,7 +192,7 @@
       <xsd:extension base="RPG_Item_PropertiesBase_Type">
         <xsd:sequence>
           <xsd:element name="weaponType" type="RPG_Item_WeaponType_Type" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="weaponCategory" type="RPG_Item_WeaponCategory_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="category" type="RPG_Item_WeaponCategory_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="weaponClass" type="RPG_Item_WeaponClass_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="baseDamage" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="criticalHit" type="RPG_Item_CriticalHitProperties_Type" minOccurs="1" maxOccurs="1"/>
@@ -254,12 +254,12 @@
       <xsd:extension base="RPG_Item_PropertiesBase_Type">
         <xsd:sequence>
           <xsd:element name="armorType" type="RPG_Item_ArmorType_Type" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="armorCategory" type="RPG_Item_ArmorCategory_Type" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="baseArmorBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="category" type="RPG_Item_ArmorCategory_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="baseBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="maxDexterityBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="armorCheckPenalty" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="checkPenalty" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="arcaneSpellFailure" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="baseSpeed" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="baseSpeed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>

@@ -57,10 +57,10 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
             RPG_Engine_Level*);  // level engine
 
   // manage event sources
-  int schedule(const RPG_Engine_Event&, // event
-               const ACE_Time_Value&,   // interval (or delay)
-               const bool& = false);    // one-shot ?
-  void remove(const int&); // id
+  long schedule(const RPG_Engine_Event&, // event
+                const ACE_Time_Value&,   // interval (or delay)
+                const bool& = false);    // one-shot ?
+  void remove(const long&); // id
 
   // implement RPG_Common_IControl
   virtual void start();
@@ -97,7 +97,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   unsigned int               myMaxNumSpawnedEntities;
 
   // helper types
-  typedef std::map<int, RPG_Engine_Event*> RPG_Engine_EventTimerIDs_t;
+  typedef std::map<long, RPG_Engine_Event*> RPG_Engine_EventTimerIDs_t;
   typedef RPG_Engine_EventTimerIDs_t::const_iterator RPG_Engine_EventTimerIDsConstIterator_t;
 
   ACE_Thread_Mutex           myLock;

@@ -32,6 +32,8 @@
 #include <rpg_common_icontrol.h>
 #include <rpg_common_idumpstate.h>
 
+#include <glade/glade.h>
+
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
 #include <ace/Atomic_Op_T.h>
@@ -52,9 +54,9 @@ class RPG_Client_Export RPG_Client_Engine
 {
  public:
   RPG_Client_Engine();
-  // *WARNING*: window handle needs to be of WINDOW_MAP type
-  RPG_Client_Engine(RPG_Engine_Level*,      // level state
-                    RPG_Graphics_IWindow*); // window handle
+  //// *WARNING*: window handle needs to be of WINDOW_MAP type
+  //RPG_Client_Engine(RPG_Engine_Level*,      // level state
+  //                  RPG_Graphics_IWindow*); // window handle
   virtual ~RPG_Client_Engine();
 
   // implement RPG_Common_IControl
@@ -84,8 +86,9 @@ class RPG_Client_Export RPG_Client_Engine
 
   void initMap();
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
-  void init(RPG_Engine_Level*,      // level state
-            RPG_Graphics_IWindow*); // window handle
+  void init(RPG_Engine_Level*,     // level state
+            RPG_Graphics_IWindow*, // window handle
+            GladeXML*);            // widget tree handle
   void action(const RPG_Client_Action&); // action
 
   void mode(const RPG_Client_SelectionMode&); // set mode
@@ -121,7 +124,8 @@ class RPG_Client_Export RPG_Client_Engine
   bool                            myStop;
 
   RPG_Engine_Level*               myEngine;
-  RPG_Graphics_IWindow*           myLevelWindow;
+  RPG_Graphics_IWindow*           myWindow;
+  GladeXML*                       myWidgets;
 
   RPG_Client_Actions_t            myActions;
   RPG_Client_SelectionMode        mySelectionMode;

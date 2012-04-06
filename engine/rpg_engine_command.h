@@ -15,9 +15,10 @@ enum RPG_Engine_Command
   COMMAND_SEARCH,
   COMMAND_STOP,
   COMMAND_TRAVEL,
-  COMMAND_ENTITY_ADD,
-  COMMAND_ENTITY_REMOVE,
-  COMMAND_ENTITY_UPDATE,
+  COMMAND_E2C_ENTITY_ADD,
+  COMMAND_E2C_ENTITY_REMOVE,
+  COMMAND_E2C_ENTITY_UPDATE,
+  COMMAND_E2C_QUIT,
   //
   RPG_ENGINE_COMMAND_MAX,
   RPG_ENGINE_COMMAND_INVALID
@@ -45,9 +46,10 @@ class RPG_Engine_Export RPG_Engine_CommandHelper
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_SEARCH, ACE_TEXT_ALWAYS_CHAR("COMMAND_SEARCH")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_STOP, ACE_TEXT_ALWAYS_CHAR("COMMAND_STOP")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_TRAVEL, ACE_TEXT_ALWAYS_CHAR("COMMAND_TRAVEL")));
-    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_ENTITY_ADD, ACE_TEXT_ALWAYS_CHAR("COMMAND_ENTITY_ADD")));
-    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_ENTITY_REMOVE, ACE_TEXT_ALWAYS_CHAR("COMMAND_ENTITY_REMOVE")));
-    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_ENTITY_UPDATE, ACE_TEXT_ALWAYS_CHAR("COMMAND_ENTITY_UPDATE")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_ADD, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_ADD")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_REMOVE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_REMOVE")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_UPDATE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_UPDATE")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_QUIT, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_QUIT")));
   };
 
   inline static std::string RPG_Engine_CommandToString(const RPG_Engine_Command& element_in)

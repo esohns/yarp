@@ -1031,22 +1031,22 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_I
   void
   weaponType (::std::auto_ptr< weaponType_type > p);
 
-  // weaponCategory
+  // category
   // 
-  typedef ::RPG_Item_WeaponCategory_XMLTree_Type weaponCategory_type;
-  typedef ::xsd::cxx::tree::traits< weaponCategory_type, char > weaponCategory_traits;
+  typedef ::RPG_Item_WeaponCategory_XMLTree_Type category_type;
+  typedef ::xsd::cxx::tree::traits< category_type, char > category_traits;
 
-  const weaponCategory_type&
-  weaponCategory () const;
+  const category_type&
+  category () const;
 
-  weaponCategory_type&
-  weaponCategory ();
-
-  void
-  weaponCategory (const weaponCategory_type& x);
+  category_type&
+  category ();
 
   void
-  weaponCategory (::std::auto_ptr< weaponCategory_type > p);
+  category (const category_type& x);
+
+  void
+  category (::std::auto_ptr< category_type > p);
 
   // weaponClass
   // 
@@ -1190,7 +1190,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_I
   RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                               const baseStorePrice_type&,
                                               const weaponType_type&,
-                                              const weaponCategory_type&,
+                                              const category_type&,
                                               const weaponClass_type&,
                                               const baseDamage_type&,
                                               const criticalHit_type&);
@@ -1198,7 +1198,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_I
   RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                               ::std::auto_ptr< baseStorePrice_type >&,
                                               const weaponType_type&,
-                                              const weaponCategory_type&,
+                                              const category_type&,
                                               const weaponClass_type&,
                                               ::std::auto_ptr< baseDamage_type >&,
                                               ::std::auto_ptr< criticalHit_type >&);
@@ -1235,7 +1235,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_I
          ::xml_schema::flags);
 
   ::xsd::cxx::tree::one< weaponType_type > weaponType_;
-  ::xsd::cxx::tree::one< weaponCategory_type > weaponCategory_;
+  ::xsd::cxx::tree::one< category_type > category_;
   ::xsd::cxx::tree::one< weaponClass_type > weaponClass_;
   ::xsd::cxx::tree::one< baseDamage_type > baseDamage_;
   ::xsd::cxx::tree::one< criticalHit_type > criticalHit_;
@@ -1281,7 +1281,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_XMLTree_Type: public ::RPG_It
   RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type&,
                                              const baseStorePrice_type&,
                                              const weaponType_type&,
-                                             const weaponCategory_type&,
+                                             const category_type&,
                                              const weaponClass_type&,
                                              const baseDamage_type&,
                                              const criticalHit_type&);
@@ -1289,7 +1289,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_XMLTree_Type: public ::RPG_It
   RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type&,
                                              ::std::auto_ptr< baseStorePrice_type >&,
                                              const weaponType_type&,
-                                             const weaponCategory_type&,
+                                             const category_type&,
                                              const weaponClass_type&,
                                              ::std::auto_ptr< baseDamage_type >&,
                                              ::std::auto_ptr< criticalHit_type >&);
@@ -1496,36 +1496,36 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
   void
   armorType (::std::auto_ptr< armorType_type > p);
 
-  // armorCategory
+  // category
   // 
-  typedef ::RPG_Item_ArmorCategory_XMLTree_Type armorCategory_type;
-  typedef ::xsd::cxx::tree::traits< armorCategory_type, char > armorCategory_traits;
+  typedef ::RPG_Item_ArmorCategory_XMLTree_Type category_type;
+  typedef ::xsd::cxx::tree::traits< category_type, char > category_traits;
 
-  const armorCategory_type&
-  armorCategory () const;
+  const category_type&
+  category () const;
 
-  armorCategory_type&
-  armorCategory ();
-
-  void
-  armorCategory (const armorCategory_type& x);
+  category_type&
+  category ();
 
   void
-  armorCategory (::std::auto_ptr< armorCategory_type > p);
+  category (const category_type& x);
 
-  // baseArmorBonus
+  void
+  category (::std::auto_ptr< category_type > p);
+
+  // baseBonus
   // 
-  typedef ::xml_schema::unsigned_byte baseArmorBonus_type;
-  typedef ::xsd::cxx::tree::traits< baseArmorBonus_type, char > baseArmorBonus_traits;
+  typedef ::xml_schema::unsigned_byte baseBonus_type;
+  typedef ::xsd::cxx::tree::traits< baseBonus_type, char > baseBonus_traits;
 
-  const baseArmorBonus_type&
-  baseArmorBonus () const;
+  const baseBonus_type&
+  baseBonus () const;
 
-  baseArmorBonus_type&
-  baseArmorBonus ();
+  baseBonus_type&
+  baseBonus ();
 
   void
-  baseArmorBonus (const baseArmorBonus_type& x);
+  baseBonus (const baseBonus_type& x);
 
   // maxDexterityBonus
   // 
@@ -1541,19 +1541,19 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
   void
   maxDexterityBonus (const maxDexterityBonus_type& x);
 
-  // armorCheckPenalty
+  // checkPenalty
   // 
-  typedef ::xml_schema::byte armorCheckPenalty_type;
-  typedef ::xsd::cxx::tree::traits< armorCheckPenalty_type, char > armorCheckPenalty_traits;
+  typedef ::xml_schema::byte checkPenalty_type;
+  typedef ::xsd::cxx::tree::traits< checkPenalty_type, char > checkPenalty_traits;
 
-  const armorCheckPenalty_type&
-  armorCheckPenalty () const;
+  const checkPenalty_type&
+  checkPenalty () const;
 
-  armorCheckPenalty_type&
-  armorCheckPenalty ();
+  checkPenalty_type&
+  checkPenalty ();
 
   void
-  armorCheckPenalty (const armorCheckPenalty_type& x);
+  checkPenalty (const checkPenalty_type& x);
 
   // arcaneSpellFailure
   // 
@@ -1571,7 +1571,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
 
   // baseSpeed
   // 
-  typedef ::xml_schema::unsigned_short baseSpeed_type;
+  typedef ::xml_schema::unsigned_byte baseSpeed_type;
   typedef ::xsd::cxx::tree::traits< baseSpeed_type, char > baseSpeed_traits;
 
   const baseSpeed_type&
@@ -1588,20 +1588,20 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
   RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                              const baseStorePrice_type&,
                                              const armorType_type&,
-                                             const armorCategory_type&,
-                                             const baseArmorBonus_type&,
+                                             const category_type&,
+                                             const baseBonus_type&,
                                              const maxDexterityBonus_type&,
-                                             const armorCheckPenalty_type&,
+                                             const checkPenalty_type&,
                                              const arcaneSpellFailure_type&,
                                              const baseSpeed_type&);
 
   RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                              ::std::auto_ptr< baseStorePrice_type >&,
                                              const armorType_type&,
-                                             const armorCategory_type&,
-                                             const baseArmorBonus_type&,
+                                             const category_type&,
+                                             const baseBonus_type&,
                                              const maxDexterityBonus_type&,
-                                             const armorCheckPenalty_type&,
+                                             const checkPenalty_type&,
                                              const arcaneSpellFailure_type&,
                                              const baseSpeed_type&);
 
@@ -1637,10 +1637,10 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
          ::xml_schema::flags);
 
   ::xsd::cxx::tree::one< armorType_type > armorType_;
-  ::xsd::cxx::tree::one< armorCategory_type > armorCategory_;
-  ::xsd::cxx::tree::one< baseArmorBonus_type > baseArmorBonus_;
+  ::xsd::cxx::tree::one< category_type > category_;
+  ::xsd::cxx::tree::one< baseBonus_type > baseBonus_;
   ::xsd::cxx::tree::one< maxDexterityBonus_type > maxDexterityBonus_;
-  ::xsd::cxx::tree::one< armorCheckPenalty_type > armorCheckPenalty_;
+  ::xsd::cxx::tree::one< checkPenalty_type > checkPenalty_;
   ::xsd::cxx::tree::one< arcaneSpellFailure_type > arcaneSpellFailure_;
   ::xsd::cxx::tree::one< baseSpeed_type > baseSpeed_;
 };
@@ -1680,20 +1680,20 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_XMLTree_Type: public ::RPG_Ite
   RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type&,
                                             const baseStorePrice_type&,
                                             const armorType_type&,
-                                            const armorCategory_type&,
-                                            const baseArmorBonus_type&,
+                                            const category_type&,
+                                            const baseBonus_type&,
                                             const maxDexterityBonus_type&,
-                                            const armorCheckPenalty_type&,
+                                            const checkPenalty_type&,
                                             const arcaneSpellFailure_type&,
                                             const baseSpeed_type&);
 
   RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type&,
                                             ::std::auto_ptr< baseStorePrice_type >&,
                                             const armorType_type&,
-                                            const armorCategory_type&,
-                                            const baseArmorBonus_type&,
+                                            const category_type&,
+                                            const baseBonus_type&,
                                             const maxDexterityBonus_type&,
-                                            const armorCheckPenalty_type&,
+                                            const checkPenalty_type&,
                                             const arcaneSpellFailure_type&,
                                             const baseSpeed_type&);
 

@@ -54,11 +54,17 @@ RPG_Engine_Event_Manager::~RPG_Engine_Event_Manager()
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
+  const void* act = NULL;
   for (RPG_Engine_EventTimerIDsConstIterator_t iterator = myTimers.begin();
        iterator != myTimers.end();
        iterator++)
   {
-    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer((*iterator).first);
+    act = NULL;
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel((*iterator).first, &act) <= 0)
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                 (*iterator).first));
+    //ACE_ASSERT(act == (*iterator).second);
     delete (*iterator).second;
   } // end FOR
 }
@@ -332,7 +338,7 @@ RPG_Engine_Event_Manager::init(const unsigned int& maxNumSpawnedEntities_in,
   myMaxNumSpawnedEntities = maxNumSpawnedEntities_in;
 }
 
-int
+long
 RPG_Engine_Event_Manager::schedule(const RPG_Engine_Event& event_in,
                                    const ACE_Time_Value& interval_in,
                                    const bool& isOneShot_in)
@@ -363,13 +369,14 @@ RPG_Engine_Event_Manager::schedule(const RPG_Engine_Event& event_in,
   } // end IF
   *event_handle = event_in;
 
-  int timer_id = -1;
+  long timer_id = -1;
   // *NOTE*: this is a fire-and-forget API (assumes resp. for timer_handler)...
-  if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(timer_handler,
-                                                                    event_handle,
-                                                                    interval_in,
-                                                                    isOneShot_in,
-                                                                    timer_id))
+  timer_id = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,
+                                                                     event_handle,
+                                                                     ACE_OS::gettimeofday () + interval_in,
+                                                                     (isOneShot_in ? ACE_Time_Value::zero
+                                                                                   : interval_in));
+  if (timer_id == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to schedule timer, aborting\n")));
@@ -389,7 +396,7 @@ RPG_Engine_Event_Manager::schedule(const RPG_Engine_Event& event_in,
 }
 
 void
-RPG_Engine_Event_Manager::remove(const int& id_in)
+RPG_Engine_Event_Manager::remove(const long& id_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::remove"));
 
@@ -405,7 +412,12 @@ RPG_Engine_Event_Manager::remove(const int& id_in)
     return;
   } // end IF
 
-  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(id_in);
+  const void* act = NULL;
+  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(id_in, &act) <= 0)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+               id_in));
+  //ACE_ASSERT(act == (*iterator).second);
   delete (*iterator).second;
   myTimers.erase(iterator);
 }
@@ -423,7 +435,8 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
   {
     case EVENT_SPAWN_MONSTER:
     {
-      if ((myEngine->numSpawned() >= myMaxNumSpawnedEntities) ||
+      if ((myEngine->getActive() == 0)                        ||
+          (myEngine->numSpawned() >= myMaxNumSpawnedEntities) ||
           !RPG_Dice::probability(event_handle->probability))
         break; // not this time...
 

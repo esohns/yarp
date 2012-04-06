@@ -60,7 +60,7 @@
 #define RPG_CLIENT_DEF_AUDIO_FREQUENCY                 44100
 #define RPG_CLIENT_DEF_AUDIO_FORMAT                    AUDIO_S16SYS
 #define RPG_CLIENT_DEF_AUDIO_CHANNELS                  2
-#define RPG_CLIENT_DEF_AUDIO_SAMPLES                   4096
+#define RPG_CLIENT_DEF_AUDIO_SAMPLES                   1024
 
 #define RPG_CLIENT_DEF_VIDEO_W                         1024
 #define RPG_CLIENT_DEF_VIDEO_H                         786
@@ -112,10 +112,5 @@
 #define RPG_CLIENT_DEF_SCREENSHOT_EXT                  ".png"
 
 #define RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL          false
-
-// AI configuration
-#define RPG_CLIENT_DEF_AI_SPAWN_TIMER_SEC              10
-#define RPG_CLIENT_DEF_AI_SPAWN_TYPE                   "Bugbear"
-#define RPG_CLIENT_DEF_AI_SPAWN_PROBABILITY            0.3F // [0.0 - 1.0] --> 0.5 = 50%
 
 #endif

@@ -124,7 +124,7 @@ RPG_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_i
   signed char result = 0;
 
   // *TODO*: consider any (additional, equipped) armor...
-  RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
+  const RPG_Monster_Properties& properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
   switch (defenseSituation_in)
   {
     default:
@@ -157,6 +157,16 @@ RPG_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_i
 //   result += getShieldBonus();
 
   return result;
+}
+
+unsigned char
+RPG_Monster::getSpeed() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster::getSpeed"));
+
+  const RPG_Monster_Properties& properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
+
+  return properties.speed;
 }
 
 void

@@ -24,6 +24,12 @@
 #include "rpg_common_physicaldamagetype.h"
 #include "rpg_common_terrain.h"
 
+// timer queue
+#include <ace/Event_Handler_Handle_Timeout_Upcall.h>
+#include <ace/Timer_Queue_T.h>
+#include <ace/Timer_Heap_T.h>
+#include <ace/Timer_Queue_Adapters.h>
+
 #include <set>
 
 /**
@@ -34,5 +40,16 @@ typedef RPG_Common_PhysicalDamageList_t::const_iterator RPG_Common_PhysicalDamag
 
 typedef std::set<RPG_Common_Terrain> RPG_Common_Terrains_t;
 typedef RPG_Common_Terrains_t::const_iterator RPG_Common_TerrainsIterator_t;
+
+// these typedefs ensure that we use the minimal amount of locking necessary
+typedef ACE_Event_Handler_Handle_Timeout_Upcall RPG_Common_TimeoutUpcall_t;
+typedef ACE_Timer_Heap_T<ACE_Event_Handler*,
+                         RPG_Common_TimeoutUpcall_t,
+                         ACE_Null_Mutex> RPG_Common_TimerHeap_t;
+typedef ACE_Timer_Heap_Iterator_T<ACE_Event_Handler*,
+                                  RPG_Common_TimeoutUpcall_t,
+                                  ACE_Null_Mutex> RPG_Common_TimerHeapIterator_t;
+typedef ACE_Thread_Timer_Queue_Adapter<RPG_Common_TimerHeap_t,
+                                       ACE_Event_Handler*> RPG_Common_TimerQueue_t;
 
 #endif

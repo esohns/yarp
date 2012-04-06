@@ -13,12 +13,12 @@ struct RPG_Item_Export RPG_Item_ArmorPropertiesBase
  : public RPG_Item_PropertiesBase
 {
   RPG_Item_ArmorType armorType;
-  RPG_Item_ArmorCategory armorCategory;
-  unsigned char baseArmorBonus;
+  RPG_Item_ArmorCategory category;
+  unsigned char baseBonus;
   unsigned char maxDexterityBonus;
-  signed char armorCheckPenalty;
+  signed char checkPenalty;
   unsigned char arcaneSpellFailure;
-  unsigned short int baseSpeed;
+  unsigned char baseSpeed;
 };
 
 #endif

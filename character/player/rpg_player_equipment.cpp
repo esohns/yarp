@@ -103,7 +103,7 @@ RPG_Player_Equipment::strip()
 //              ACE_TEXT("unequipped ALL\n")));
 }
 
-const RPG_Item_WeaponType
+RPG_Item_WeaponType
 RPG_Player_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::getPrimaryWeapon"));
@@ -143,13 +143,13 @@ RPG_Player_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) 
     return RPG_ITEM_WEAPONTYPE_INVALID;
   } // end IF
 
-  RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*> (handle);
+  RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
   ACE_ASSERT(weapon);
 
   return weapon->getWeaponType();
 }
 
-const RPG_Item_ArmorType
+RPG_Item_ArmorType
 RPG_Player_Equipment::getBodyArmor() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::getBodyArmor"));
@@ -186,13 +186,13 @@ RPG_Player_Equipment::getBodyArmor() const
     return ARMOR_NONE;
   } // end IF
 
-  RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*> (handle);
+  RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
   ACE_ASSERT(armor);
 
   return armor->getArmorType();
 }
 
-const RPG_Item_ArmorType
+RPG_Item_ArmorType
 RPG_Player_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::getShield"));
@@ -227,7 +227,7 @@ RPG_Player_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
     return ARMOR_NONE;
   } // end IF
 
-  RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*> (handle);
+  RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
   ACE_ASSERT(armor);
 
   // sanity check
@@ -246,7 +246,7 @@ RPG_Player_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
   return armor->getArmorType();
 }
 
-const bool
+bool
 RPG_Player_Equipment::isEquipped(const RPG_Item_ID_t& itemID_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::isEquipped"));

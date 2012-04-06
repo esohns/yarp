@@ -37,6 +37,10 @@
 #include <rpg_player_common.h>
 #include <rpg_player_XML_tree.h>
 
+#include <rpg_combat_defines.h>
+#include <rpg_combat_attacksituation.h>
+#include <rpg_combat_defensesituation.h>
+
 #include <rpg_character_class_common.h>
 
 #include <rpg_item_instance_common.h>
@@ -77,6 +81,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
 
   // ***** combat-related *****
+  static bool isCharacterHelpless(const RPG_Player_Base* const); // character handle
+  static bool isCharacterDisabled(const RPG_Player_Base* const); // character handle
   static bool isPartyHelpless(const RPG_Player_Party_t&); // party
   static bool areMonstersHelpless(const RPG_Monster_Groups_t&); // monsters
   static void getCombatantSequence(const RPG_Player_Party_t&,        // party
@@ -85,6 +91,12 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static void performCombatRound(const RPG_Combat_AttackSituation&,      // attack situation
                                  const RPG_Combat_DefenseSituation&,     // defense situation
                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
+  static void attack(const RPG_Player_Base*,                                    // attacker
+                     RPG_Player_Base*,                                          // defender
+                     const RPG_Combat_AttackSituation& = ATTACK_NORMAL,         // attack situation
+                     const RPG_Combat_DefenseSituation& = DEFENSE_NORMAL,       // defense situation
+                     const bool& = true,                                        // full-round action ?
+                     const unsigned short& = RPG_COMBAT_DEF_ADJACENT_DISTANCE); // distance (feet)
 
   // ***** map/graphics-related *****
   static RPG_Graphics_Sprite class2Sprite(const RPG_Character_Class&);
@@ -112,21 +124,13 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   typedef RPG_Engine_CombatSequenceList_t::iterator RPG_Engine_CombatSequenceListIterator_t;
 
   static bool isMonsterGroupHelpless(const RPG_Monster_Group_t&); // group instance
-  static bool isCharacterHelpless(const RPG_Player_Base* const); // character handle
   static bool isValidFoeAvailable(const bool&,                            // monsters ? : players
                                   const RPG_Engine_CombatantSequence_t&); // battle sequence
-  static bool isCharacterDisabled(const RPG_Player_Base* const); // character handle
 
   static unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
                                                         const RPG_Monster_AttackActions_t&);
   static bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
                                               const RPG_Monster_AttackAction&);
-  static void attackFoe(const RPG_Player_Base* const,       // attacker
-                        RPG_Player_Base* const,             // target
-                        const RPG_Combat_AttackSituation&,  // attacker situation
-                        const RPG_Combat_DefenseSituation&, // defender situation
-                        const bool&,                        // is this a Full-Round Action ?
-                        const unsigned short&);             // distance (feet)
 
   static bool isCorner(const RPG_Map_Position_t&,
                        const RPG_Engine_Level&);

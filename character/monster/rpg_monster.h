@@ -74,6 +74,7 @@ class RPG_Monster_Export RPG_Monster
   bool isSummoned() const;
 
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
+  virtual unsigned char getSpeed() const;
 
   virtual void gainExperience(const unsigned int&); // XP
 

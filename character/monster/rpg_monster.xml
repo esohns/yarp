@@ -5900,7 +5900,7 @@
       <touch>11</touch>
       <flatFooted>16</flatFooted>
     </armorClass>
-    <attack>
+    <attack actionsAreInclusive="false">
       <baseAttackBonus>2</baseAttackBonus>
       <grappleBonus>4</grappleBonus>
       <standardAttackAction>

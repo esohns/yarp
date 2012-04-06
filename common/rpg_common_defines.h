@@ -26,6 +26,7 @@
 
 // general stuff
 #define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH 64
+#define RPG_COMMON_DEF_TASK_GROUP_ID           0
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details

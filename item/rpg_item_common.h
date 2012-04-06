@@ -43,7 +43,7 @@ struct RPG_Item_WeaponProperties
   signed char toHitModifier;
   // RPG_Item_WeaponPropertiesBase //
 //   RPG_Item_WeaponType weaponType;
-  RPG_Item_WeaponCategory weaponCategory;
+  RPG_Item_WeaponCategory category;
   RPG_Item_WeaponClass weaponClass;
   RPG_Dice_Roll baseDamage;
   RPG_Item_CriticalHitProperties criticalHit;
@@ -67,12 +67,12 @@ struct RPG_Item_ArmorProperties
   signed char defenseModifier;
   // RPG_Item_ArmorPropertiesBase //
 //   RPG_Item_ArmorType armorType;
-  RPG_Item_ArmorCategory armorCategory;
-  unsigned char baseArmorBonus;
+  RPG_Item_ArmorCategory category;
+  unsigned char baseBonus;
   unsigned char maxDexterityBonus;
-  signed char armorCheckPenalty;
+  signed char checkPenalty;
   unsigned char arcaneSpellFailure;
-  unsigned short int baseSpeed;
+  unsigned char baseSpeed;
   // RPG_Item_PropertiesBase //
   RPG_Magic_School aura;
   RPG_Item_MagicalPrerequisites prerequisites;

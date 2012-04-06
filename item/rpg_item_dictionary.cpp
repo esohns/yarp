@@ -116,7 +116,7 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
                                unsigned_byte_p,
                                byte_p,
                                unsigned_byte_p,
-                               unsigned_short_p,
+                               unsigned_byte_p,
                                byte_p);
   RPG_Item_Dictionary_Type                itemDictionary_p(&myWeaponDictionary,
                                                            &myArmorDictionary);
@@ -167,7 +167,7 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
 //              filename_in.c_str()));
 }
 
-const RPG_Item_WeaponProperties
+const RPG_Item_WeaponProperties&
 RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));
@@ -186,7 +186,7 @@ RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_i
   return iterator->second;
 }
 
-const RPG_Item_ArmorProperties
+const RPG_Item_ArmorProperties&
 RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
@@ -286,7 +286,7 @@ RPG_Item_Dictionary::dump() const
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Item: Weapon\nType: %s\nCategory: %s\nClass: %s\nPrice: %d GP, %d SP\nDamage: %s\ncritical: %d, x%d\nRange: %d\nWeight: %d\nDamage Type: %s\n"),
                RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString((*iterator).first).c_str(),
-               RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString((*iterator).second.weaponCategory).c_str(),
+               RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString((*iterator).second.category).c_str(),
                RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString((*iterator).second.weaponClass).c_str(),
                (*iterator).second.baseStorePrice.numGoldPieces,
                (*iterator).second.baseStorePrice.numSilverPieces,
@@ -308,12 +308,12 @@ RPG_Item_Dictionary::dump() const
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Item: Armor\nType: %s\nCategory: %s\nPrice: %d GP, %d SP\nAC Bonus: %d\nmax Dex Bonus: %d\nPenalty: %d\nSpell Failure: %d%%\nSpeed: %d\nWeight: %d\n"),
                RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString((*iterator).first).c_str(),
-               RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString((*iterator).second.armorCategory).c_str(),
+               RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString((*iterator).second.category).c_str(),
                (*iterator).second.baseStorePrice.numGoldPieces,
                (*iterator).second.baseStorePrice.numSilverPieces,
-               (*iterator).second.baseArmorBonus,
+               (*iterator).second.baseBonus,
                (*iterator).second.maxDexterityBonus,
-               (*iterator).second.armorCheckPenalty,
+               (*iterator).second.checkPenalty,
                (*iterator).second.arcaneSpellFailure,
                (*iterator).second.baseSpeed,
                (*iterator).second.baseWeight));

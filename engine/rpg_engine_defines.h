@@ -22,17 +22,22 @@
 #define RPG_ENGINE_DEFINES_H
 
 // task-specific
-#define RPG_ENGINE_DEF_TASK_GROUP_ID    1
-#define RPG_ENGINE_DEF_AI_TASK_GROUP_ID 2
-#define RPG_ENGINE_MAX_QUEUE_SLOTS      100
-#define RPG_ENGINE_EVENT_PEEK_INTERVAL  50 // ms
+#define RPG_ENGINE_DEF_TASK_GROUP_ID        1
+#define RPG_ENGINE_DEF_AI_TASK_GROUP_ID     2
+#define RPG_ENGINE_MAX_QUEUE_SLOTS          100
+#define RPG_ENGINE_EVENT_PEEK_INTERVAL      50 // ms
 
-#define RPG_ENGINE_DEF_MAX_NUM_SPAWNED  3
+#define RPG_ENGINE_DEF_MAX_NUM_SPAWNED      3
 
 // XML-specific
-#define RPG_ENGINE_SCHEMA_FILE          "rpg_engine.xsd"
+#define RPG_ENGINE_SCHEMA_FILE              "rpg_engine.xsd"
 
 // CONFIGDIR-specific
-#define RPG_ENGINE_DEF_CONFIG_SUB       "engine"
+#define RPG_ENGINE_DEF_CONFIG_SUB           "engine"
+
+// AI configuration
+#define RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC   10
+#define RPG_ENGINE_DEF_AI_SPAWN_TYPE        "Bugbear"
+#define RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY 0.3F // [0.0 - 1.0] --> 0.5 = 50%
 
 #endif

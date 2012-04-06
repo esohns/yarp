@@ -81,11 +81,11 @@ class RPG_Item_DictionaryXML_Type_pskel;
 
 #include "rpg_XMLSchema_XML_types.h"
 
+#include <rpg_magic_incl.h>
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 #include <rpg_common_environment_incl.h>
 #include <rpg_character_incl.h>
-#include <rpg_magic_incl.h>
 #include "rpg_item_incl.h"
 #include "rpg_item_common.h"
 
@@ -470,7 +470,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual :
   weaponType (const RPG_Item_WeaponType&);
 
   virtual void
-  weaponCategory (const RPG_Item_WeaponCategory&);
+  category (const RPG_Item_WeaponCategory&);
 
   virtual void
   weaponClass (const RPG_Item_WeaponClass&);
@@ -505,7 +505,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual :
   weaponType_parser (::RPG_Item_WeaponType_Type_pskel&);
 
   void
-  weaponCategory_parser (::RPG_Item_WeaponCategory_Type_pskel&);
+  category_parser (::RPG_Item_WeaponCategory_Type_pskel&);
 
   void
   weaponClass_parser (::RPG_Item_WeaponClass_Type_pskel&);
@@ -538,7 +538,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual :
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
            ::RPG_Item_WeaponType_Type_pskel& /* weaponType */,
-           ::RPG_Item_WeaponCategory_Type_pskel& /* weaponCategory */,
+           ::RPG_Item_WeaponCategory_Type_pskel& /* category */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
            ::RPG_Item_CriticalHitProperties_Type_pskel& /* criticalHit */,
@@ -571,7 +571,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual :
 
   protected:
   ::RPG_Item_WeaponType_Type_pskel* weaponType_parser_;
-  ::RPG_Item_WeaponCategory_Type_pskel* weaponCategory_parser_;
+  ::RPG_Item_WeaponCategory_Type_pskel* category_parser_;
   ::RPG_Item_WeaponClass_Type_pskel* weaponClass_parser_;
   ::RPG_Dice_Roll_Type_pskel* baseDamage_parser_;
   ::RPG_Item_CriticalHitProperties_Type_pskel* criticalHit_parser_;
@@ -608,7 +608,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
            ::RPG_Item_WeaponType_Type_pskel& /* weaponType */,
-           ::RPG_Item_WeaponCategory_Type_pskel& /* weaponCategory */,
+           ::RPG_Item_WeaponCategory_Type_pskel& /* category */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
            ::RPG_Item_CriticalHitProperties_Type_pskel& /* criticalHit */,
@@ -675,22 +675,22 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::
   armorType (const RPG_Item_ArmorType&);
 
   virtual void
-  armorCategory (const RPG_Item_ArmorCategory&);
+  category (const RPG_Item_ArmorCategory&);
 
   virtual void
-  baseArmorBonus (unsigned char);
+  baseBonus (unsigned char);
 
   virtual void
   maxDexterityBonus (unsigned char);
 
   virtual void
-  armorCheckPenalty (signed char);
+  checkPenalty (signed char);
 
   virtual void
   arcaneSpellFailure (unsigned char);
 
   virtual void
-  baseSpeed (unsigned short);
+  baseSpeed (unsigned char);
 
   virtual RPG_Item_ArmorPropertiesBase
   post_RPG_Item_ArmorPropertiesBase_Type () = 0;
@@ -701,22 +701,22 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::
   armorType_parser (::RPG_Item_ArmorType_Type_pskel&);
 
   void
-  armorCategory_parser (::RPG_Item_ArmorCategory_Type_pskel&);
+  category_parser (::RPG_Item_ArmorCategory_Type_pskel&);
 
   void
-  baseArmorBonus_parser (::xml_schema::unsigned_byte_pskel&);
+  baseBonus_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
   maxDexterityBonus_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  armorCheckPenalty_parser (::xml_schema::byte_pskel&);
+  checkPenalty_parser (::xml_schema::byte_pskel&);
 
   void
   arcaneSpellFailure_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  baseSpeed_parser (::xml_schema::unsigned_short_pskel&);
+  baseSpeed_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
   parsers (::xml_schema::unsigned_short_pskel& /* baseWeight */,
@@ -725,12 +725,12 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
            ::RPG_Item_ArmorType_Type_pskel& /* armorType */,
-           ::RPG_Item_ArmorCategory_Type_pskel& /* armorCategory */,
-           ::xml_schema::unsigned_byte_pskel& /* baseArmorBonus */,
+           ::RPG_Item_ArmorCategory_Type_pskel& /* category */,
+           ::xml_schema::unsigned_byte_pskel& /* baseBonus */,
            ::xml_schema::unsigned_byte_pskel& /* maxDexterityBonus */,
-           ::xml_schema::byte_pskel& /* armorCheckPenalty */,
+           ::xml_schema::byte_pskel& /* checkPenalty */,
            ::xml_schema::unsigned_byte_pskel& /* arcaneSpellFailure */,
-           ::xml_schema::unsigned_short_pskel& /* baseSpeed */);
+           ::xml_schema::unsigned_byte_pskel& /* baseSpeed */);
 
   // Constructor.
   //
@@ -750,12 +750,12 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::
 
   protected:
   ::RPG_Item_ArmorType_Type_pskel* armorType_parser_;
-  ::RPG_Item_ArmorCategory_Type_pskel* armorCategory_parser_;
-  ::xml_schema::unsigned_byte_pskel* baseArmorBonus_parser_;
+  ::RPG_Item_ArmorCategory_Type_pskel* category_parser_;
+  ::xml_schema::unsigned_byte_pskel* baseBonus_parser_;
   ::xml_schema::unsigned_byte_pskel* maxDexterityBonus_parser_;
-  ::xml_schema::byte_pskel* armorCheckPenalty_parser_;
+  ::xml_schema::byte_pskel* checkPenalty_parser_;
   ::xml_schema::unsigned_byte_pskel* arcaneSpellFailure_parser_;
-  ::xml_schema::unsigned_short_pskel* baseSpeed_parser_;
+  ::xml_schema::unsigned_byte_pskel* baseSpeed_parser_;
 };
 
 class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type_pskel: public virtual ::RPG_Item_ArmorPropertiesBase_Type_pskel
@@ -784,12 +784,12 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type_pskel: public virtual ::R
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
            ::RPG_Item_ArmorType_Type_pskel& /* armorType */,
-           ::RPG_Item_ArmorCategory_Type_pskel& /* armorCategory */,
-           ::xml_schema::unsigned_byte_pskel& /* baseArmorBonus */,
+           ::RPG_Item_ArmorCategory_Type_pskel& /* category */,
+           ::xml_schema::unsigned_byte_pskel& /* baseBonus */,
            ::xml_schema::unsigned_byte_pskel& /* maxDexterityBonus */,
-           ::xml_schema::byte_pskel& /* armorCheckPenalty */,
+           ::xml_schema::byte_pskel& /* checkPenalty */,
            ::xml_schema::unsigned_byte_pskel& /* arcaneSpellFailure */,
-           ::xml_schema::unsigned_short_pskel& /* baseSpeed */,
+           ::xml_schema::unsigned_byte_pskel& /* baseSpeed */,
            ::xml_schema::byte_pskel& /* defenseModifier */);
 
   // Constructor.

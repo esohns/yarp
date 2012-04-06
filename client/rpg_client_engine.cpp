@@ -43,7 +43,8 @@ RPG_Client_Engine::RPG_Client_Engine()
  : myCondition(myLock),
    myStop(false),
    myEngine(NULL),
-   myLevelWindow(NULL),
+   myWindow(NULL),
+   myWidgets(NULL),
 //   myActions(),
    mySelectionMode(SELECTIONMODE_NORMAL),
    myCenterOnActivePlayer(RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)
@@ -54,26 +55,27 @@ RPG_Client_Engine::RPG_Client_Engine()
 //   inherited::msg_queue(&myQueue);
 }
 
-RPG_Client_Engine::RPG_Client_Engine(RPG_Engine_Level* levelState_in,
-                                     RPG_Graphics_IWindow* window_in)
-//  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
- : myCondition(myLock),
-   myStop(false),
-   myEngine(levelState_in),
-   myLevelWindow(window_in),
-//   myActions(),
-   mySelectionMode(SELECTIONMODE_NORMAL),
-   myCenterOnActivePlayer(RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::RPG_Client_Engine"));
-
-  // sanity check(s)
-  ACE_ASSERT(levelState_in);
-  ACE_ASSERT(window_in);
-
-  // use member message queue...
-//   inherited::msg_queue(&myQueue);
-}
+//RPG_Client_Engine::RPG_Client_Engine(RPG_Engine_Level* levelState_in,
+//                                     RPG_Graphics_IWindow* window_in)
+////  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
+// : myCondition(myLock),
+//   myStop(false),
+//   myEngine(levelState_in),
+//   myWindow(window_in),
+//   myWidgets(NULL),
+////   myActions(),
+//   mySelectionMode(SELECTIONMODE_NORMAL),
+//   myCenterOnActivePlayer(RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::RPG_Client_Engine"));
+//
+//  // sanity check(s)
+//  ACE_ASSERT(levelState_in);
+//  ACE_ASSERT(window_in);
+//
+//  // use member message queue...
+////   inherited::msg_queue(&myQueue);
+//}
 
 RPG_Client_Engine::~RPG_Client_Engine()
 {
@@ -255,12 +257,12 @@ RPG_Client_Engine::initMap()
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::initMap"));
 
   // sanity check
-  ACE_ASSERT(myLevelWindow);
+  ACE_ASSERT(myWindow);
 
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_INIT;
   new_action.position = std::make_pair(0, 0);
-  new_action.window = myLevelWindow;
+  new_action.window = myWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
 
@@ -273,13 +275,13 @@ RPG_Client_Engine::redraw()
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::redraw"));
 
   // sanity check
-  ACE_ASSERT(myLevelWindow);
+  ACE_ASSERT(myWindow);
 
   // step1: draw map window
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_DRAW;
   new_action.position = std::make_pair(0, 0);
-  new_action.window = myLevelWindow;
+  new_action.window = myWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
   action(new_action);
@@ -295,12 +297,12 @@ RPG_Client_Engine::setView(const RPG_Map_Position_t& position_in)
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::setView"));
 
   // sanity check
-  ACE_ASSERT(myLevelWindow);
+  ACE_ASSERT(myWindow);
 
   RPG_Client_Action new_action;
   new_action.command = COMMAND_SET_VIEW;
   new_action.position = position_in;
-  new_action.window = myLevelWindow;
+  new_action.window = myWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
 
@@ -313,12 +315,12 @@ RPG_Client_Engine::setView(const RPG_Map_Position_t& position_in)
 //  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::toggleDoor"));
 //
 //  // sanity check
-//  ACE_ASSERT(myLevelWindow);
+//  ACE_ASSERT(myWindow);
 //
 //  RPG_Client_Action new_action;
 //  new_action.command = COMMAND_TOGGLE_DOOR;
 //  new_action.position = position_in;
-//  new_action.window = myLevelWindow;
+//  new_action.window = myWindow;
 //  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
 //  new_action.entity_id = 0;
 //
@@ -348,12 +350,12 @@ RPG_Client_Engine::setView(const RPG_Map_Position_t& position_in)
 //  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::updateEntity"));
 //
 //  // sanity check
-//  ACE_ASSERT(myLevelWindow);
+//  ACE_ASSERT(myWindow);
 //
 //  RPG_Client_Action new_action;
 //  new_action.command = COMMAND_ENTITY_DRAW;
 //  new_action.position = myEngine->getPosition(id_in);
-//  new_action.window = myLevelWindow;
+//  new_action.window = myWindow;
 //  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
 //  new_action.entity_id = id_in;
 //
@@ -365,6 +367,8 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
                           const RPG_Engine_ClientParameters_t& parameters_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::notify"));
+
+  ACE_ASSERT(myEngine);
 
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
@@ -383,7 +387,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       ACE_ASSERT(parameters_in.size() == 1);
       client_action.command = COMMAND_TOGGLE_DOOR;
       client_action.position = *static_cast<RPG_Map_Position_t*>(parameters_in.front());
-      client_action.window = myLevelWindow;
+      client_action.window = myWindow;
 
       break;
     }
@@ -391,27 +395,29 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     case COMMAND_STOP:
     case COMMAND_TRAVEL:
       return;
-    case COMMAND_ENTITY_ADD:
+    case COMMAND_E2C_ENTITY_ADD:
     {
       ACE_ASSERT(parameters_in.size() == 2);
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()),
-                                                           static_cast<SDL_Surface*>(parameters_in.back()));
+      RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t*>(parameters_in.front());
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(entity_id,
+                                                           static_cast<SDL_Surface*>(parameters_in.back()),
+                                                           myEngine->isMonster(entity_id));
 
       return;
     }
-    case COMMAND_ENTITY_REMOVE:
+    case COMMAND_E2C_ENTITY_REMOVE:
     {
       ACE_ASSERT(parameters_in.size() == 1);
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()));
 
       return;
     }
-    case COMMAND_ENTITY_UPDATE:
+    case COMMAND_E2C_ENTITY_UPDATE:
     {
       ACE_ASSERT(parameters_in.size() == 2);
       client_action.command = COMMAND_ENTITY_DRAW;
       client_action.position = *static_cast<RPG_Map_Position_t*>(parameters_in.back());
-      client_action.window = myLevelWindow;
+      client_action.window = myWindow;
       client_action.entity_id = *static_cast<RPG_Engine_EntityID_t*>(parameters_in.front());
 
       // adjust view ?
@@ -424,6 +430,26 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       } // end IF
 
       break;
+    }
+    case COMMAND_E2C_QUIT:
+    {
+      // sanity check
+      ACE_ASSERT(parameters_in.empty());
+      ACE_ASSERT(myWidgets);
+
+      GDK_THREADS_ENTER();
+      GtkWidget* widget = glade_xml_get_widget(myWidgets,
+                                               ACE_TEXT_ALWAYS_CHAR("part"));
+      ACE_ASSERT(widget);
+      // raise dialog window
+      GdkWindow* toplevel = gtk_widget_get_parent_window(widget);
+      ACE_ASSERT(toplevel);
+      gdk_window_deiconify(toplevel);
+      // emit a signal...
+      gtk_button_clicked(GTK_BUTTON(widget));
+      GDK_THREADS_LEAVE();
+
+      return;
     }
     default:
     {
@@ -440,16 +466,19 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
 void
 RPG_Client_Engine::init(RPG_Engine_Level* levelState_in,
-                        RPG_Graphics_IWindow* window_in)
+                        RPG_Graphics_IWindow* window_in,
+                        GladeXML* widgets_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::init"));
 
   // sanity check(s)
   ACE_ASSERT(levelState_in);
   ACE_ASSERT(window_in);
+  ACE_ASSERT(widgets_in);
 
   myEngine = levelState_in;
-  myLevelWindow = window_in;
+  myWindow = window_in;
+  myWidgets = widgets_in;
 }
 
 void

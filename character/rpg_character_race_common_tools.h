@@ -23,12 +23,19 @@
 
 #include "rpg_character_exports.h"
 #include "rpg_character_race_common.h"
+#include "rpg_character_race.h"
+
+#include <rpg_common_size.h>
 
 #include <ace/Global_Macros.h>
 
 class RPG_Character_Export RPG_Character_Race_Common_Tools
 {
  public:
+  static RPG_Common_Size race2Size(const RPG_Character_Race_t&); // (player) race(s)
+  static unsigned char race2Speed(const RPG_Character_Race&);
+  static bool hasRace(const RPG_Character_Race_t&, // (player) race(s)
+                      const RPG_Character_Race&);  // specific race
 
   private:
   // safety measures
@@ -36,6 +43,9 @@ class RPG_Character_Export RPG_Character_Race_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Race_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools(const RPG_Character_Race_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools& operator=(const RPG_Character_Race_Common_Tools&));
+
+  // helper method(s)
+  static RPG_Common_Size race2Size(const RPG_Character_Race&); // race
 };
 
 #endif

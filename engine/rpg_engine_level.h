@@ -37,7 +37,6 @@
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
 #include <ace/Atomic_Op_T.h>
-//#include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
 #include <string>
@@ -56,8 +55,8 @@ class RPG_Engine_Export RPG_Engine_Level
 
  public:
   RPG_Engine_Level();
-  RPG_Engine_Level(RPG_Engine_IWindow*, // UI handle
-                   const RPG_Map_t&);   // map
+  //RPG_Engine_Level(RPG_Engine_IWindow*, // UI handle
+  //                 const RPG_Map_t&);   // map
   virtual ~RPG_Engine_Level();
 
   // implement RPG_Common_IControl
@@ -133,7 +132,7 @@ class RPG_Engine_Export RPG_Engine_Level
   void handleEntities();
 
   // helper types
-  typedef std::vector<std::pair<RPG_Engine_Command, RPG_Engine_ClientParameters_t> > RPG_Engine_ClientNotifications_t;
+  typedef std::vector<std::pair<RPG_Engine_Command, RPG_Engine_ClientParameters_t*> > RPG_Engine_ClientNotifications_t;
   typedef RPG_Engine_ClientNotifications_t::const_iterator RPG_Engine_ClientNotificationsConstIterator_t;
 
   // atomic ID generator
@@ -150,6 +149,7 @@ class RPG_Engine_Export RPG_Engine_Level
 
   RPG_Engine_Entities_t                       myEntities;
   RPG_Engine_EntityID_t                       myActivePlayer;
+  int                                         mySpawnTimerID;
 
   RPG_Engine_IWindow*                         myClient;
 };

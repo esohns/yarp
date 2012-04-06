@@ -152,7 +152,7 @@ struct RPG_Engine_CombatantSequenceElement
     return !operator==(rhs_in);
   }
 
-  char                   initiative;
+  signed char            initiative;
   short int              DEXModifier;
   const RPG_Player_Base* handle;
 };

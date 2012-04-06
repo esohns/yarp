@@ -51,7 +51,6 @@
 #include <rpg_map_level.h>
 
 #include <rpg_engine_defines.h>
-#include <rpg_engine_event_manager.h>
 #include <rpg_engine_common_tools.h>
 
 #include <rpg_monster_defines.h>
@@ -1371,7 +1370,6 @@ do_work(const RPG_Client_Config& config_in,
   userData.entity.graphic = NULL;
   userData.level_engine = &level_engine;
   userData.map_config = config_in.map_config;
-  userData.ai_spawn_timer_id = -1;
 
   GDK_THREADS_ENTER();
   if (!do_initGUI(config_in.graphics_directory,  // graphics directory
@@ -1433,9 +1431,8 @@ do_work(const RPG_Client_Config& config_in,
 
   // step5d: client engine
   client_engine.init(&level_engine,
-                     mainWindow.getChild(WINDOW_MAP));
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(RPG_ENGINE_DEF_MAX_NUM_SPAWNED,
-                                                       &level_engine);
+                     mainWindow.getChild(WINDOW_MAP),
+                     userData.xml);
 
   // step5e: queue initial drawing
   RPG_Client_Action client_action;

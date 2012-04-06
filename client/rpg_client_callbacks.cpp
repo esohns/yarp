@@ -1684,12 +1684,12 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
-
-  // make join button sensitive (if it's not already)
+  // make join button sensitive IFF player is not disabled
   GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
                                                       ACE_TEXT_ALWAYS_CHAR("join")));
   ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  if (!RPG_Engine_Common_Tools::isCharacterDisabled(data->entity.character))
+    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   return FALSE;
 }
@@ -2184,17 +2184,6 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_Engine_EntityID_t id = data->level_engine->add(&(data->entity));
   data->level_engine->setActive(id);
 
-  // start AI (monster spawning)
-  RPG_Engine_Event spawn_event;
-  spawn_event.type        = EVENT_SPAWN_MONSTER;
-  spawn_event.monster     = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_AI_SPAWN_TYPE);
-  spawn_event.probability = RPG_CLIENT_DEF_AI_SPAWN_PROBABILITY;
-  ACE_ASSERT(data->ai_spawn_timer_id == -1);
-  data->ai_spawn_timer_id = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
-                                                                                     ACE_Time_Value(RPG_CLIENT_DEF_AI_SPAWN_TIMER_SEC, 0),
-                                                                                     false);
-  ACE_ASSERT(data->ai_spawn_timer_id != -1);
-
   // center on character
   data->client_engine->setView(data->entity.position);
 
@@ -2290,31 +2279,35 @@ part_game_clicked_GTK_cb(GtkWidget* widget_in,
 
   // deactivate the current character
   RPG_Engine_EntityID_t id = data->level_engine->getActive();
-  data->level_engine->setActive(0);
-  data->level_engine->remove(id);
+  if (id)
+  {
+    data->level_engine->setActive(0);
+    data->level_engine->remove(id);
+  } // end IF
 
-  // stop AI (monster spawning)
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(data->ai_spawn_timer_id);
-  data->ai_spawn_timer_id = -1;
+  // update entity profile widgets
+  ::update_entity_profile(data->entity,
+                          data->xml);
 
   // make part button insensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
 
-  // make join button sensitive
+  // make join button sensitive IFF player is not disabled
   GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->xml,
                                                       ACE_TEXT_ALWAYS_CHAR("join")));
   ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  if (!RPG_Engine_Common_Tools::isCharacterDisabled(data->entity.character))
+    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
-  // make create button sensitive
+  // make drop button sensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR("create")));
+                                           ACE_TEXT_ALWAYS_CHAR("drop")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
-  // make load button sensitive
+  // make save button sensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR("load")));
+                                           ACE_TEXT_ALWAYS_CHAR("save")));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 

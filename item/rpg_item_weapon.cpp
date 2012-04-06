@@ -65,7 +65,7 @@ RPG_Item_Weapon::dump() const
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Item: Weapon\nType: %s\nCategory: %s\nClass: %s\nPrice: %d GP, %d SP\nDamage: %s\ncritical: %d, x%d\nRange: %d\nWeight: %d\nDamage Type: %s\n"),
              RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(myWeaponType).c_str(),
-             RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(properties.weaponCategory).c_str(),
+             RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(properties.category).c_str(),
              RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(properties.weaponClass).c_str(),
              properties.baseStorePrice.numGoldPieces,
              properties.baseStorePrice.numSilverPieces,

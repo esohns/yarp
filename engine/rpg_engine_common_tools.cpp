@@ -877,7 +877,8 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
   // step1: go through the list and compute initiatives
   RPG_Engine_CombatSequenceList_t preliminarySequence;
    // make sure there are enough SLOTS for large armies !
-   // ruleset says it should be a D_20, but if there are more than 20 combatants - just as in RL - the conflict resolution algorithm could potentially run forever...
+   // ruleset says it should be a D_20, but if there are more than 20 combatants...
+  // --> just as in RL - the conflict resolution algorithm could potentially run forever...
   RPG_Dice_DieType checkDie = D_20;
   bool num_slots_too_small = (listOfCombatants.size() > D_100);
   if (!num_slots_too_small)
@@ -1066,12 +1067,12 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
 //                (*foeFinder).handle->getNumTotalHitPoints()));
 
     // *TODO*: for now, we ignore range and movement
-    attackFoe((*iterator).handle,
-              const_cast<RPG_Player_Base*>((*foeFinder).handle),
-              attackSituation_in,
-              defenseSituation_in,
-              true,
-              5);
+    attack((*iterator).handle,
+           const_cast<RPG_Player_Base*>((*foeFinder).handle),
+           attackSituation_in,
+           defenseSituation_in,
+           true,
+           RPG_COMBAT_DEF_ADJACENT_DISTANCE);
   } // end FOR
 }
 
@@ -1098,14 +1099,12 @@ RPG_Engine_Common_Tools::isCharacterHelpless(const RPG_Player_Base* const charac
   ACE_ASSERT(character_in);
 
   if ((character_in->hasCondition(CONDITION_PARALYZED)) || // spell, ...
-      (character_in->hasCondition(CONDITION_HELD)) ||      // bound as per spell, ...
-      (character_in->hasCondition(CONDITION_BOUND)) ||     // bound ase per rope, ...
-      (character_in->hasCondition(CONDITION_SLEEPING)) ||  // natural, spell, ...
+      (character_in->hasCondition(CONDITION_HELD))      || // bound as per spell, ...
+      (character_in->hasCondition(CONDITION_BOUND))     || // bound ase per rope, ...
+      (character_in->hasCondition(CONDITION_SLEEPING))  || // natural, spell, ...
       (character_in->hasCondition(CONDITION_PETRIFIED)) || // turned to stone
       isCharacterDisabled(character_in))                   // disabled
-  {
     return true;
-  } // end IF
 
   return false;
 }
@@ -1139,14 +1138,12 @@ RPG_Engine_Common_Tools::isCharacterDisabled(const RPG_Player_Base* const charac
 
   ACE_ASSERT(character_in);
 
-  if ((character_in->hasCondition(CONDITION_DEAD)) ||        // HP<-10
-      (character_in->hasCondition(CONDITION_DYING)) ||       // -10<HP<0
-      (character_in->hasCondition(CONDITION_STABLE)) ||      // -10<HP<0 && !DYING
+  if ((character_in->hasCondition(CONDITION_DEAD))        || // HP<-10
+      (character_in->hasCondition(CONDITION_DYING))       || // -10<HP<0
+      (character_in->hasCondition(CONDITION_STABLE))      || // -10<HP<0 && !DYING
       (character_in->hasCondition(CONDITION_UNCONSCIOUS)) || // -10<HP<0 && (DYING || STABLE)
       (character_in->hasCondition(CONDITION_DISABLED)))      // (HP==0) || (STABLE && !UNCONSCIOUS)
-  {
     return true;
-  } // end IF
 
   return false;
 }
@@ -1239,12 +1236,12 @@ RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_Attack
 }
 
 void
-RPG_Engine_Common_Tools::attackFoe(const RPG_Player_Base* const attacker_in,
-                                   RPG_Player_Base* const target_inout,
-                                   const RPG_Combat_AttackSituation& attackSituation_in,
-                                   const RPG_Combat_DefenseSituation& defenseSituation_in,
-                                   const bool& isFullRoundAction_in,
-                                   const unsigned short& distance_in)
+RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
+                                RPG_Player_Base* const target_inout,
+                                const RPG_Combat_AttackSituation& attackSituation_in,
+                                const RPG_Combat_DefenseSituation& defenseSituation_in,
+                                const bool& isFullRoundAction_in,
+                                const unsigned short& distance_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::attackFoe"));
 
@@ -1274,7 +1271,7 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Player_Base* const attacker_in,
     // attack roll: D_20 + attack bonus + other modifiers
     // step1: compute attack bonus(ses) --> number of attacks
     // *TODO*: consider multi-weapon/offhand attacks...
-    const RPG_Player_Player_Base* player_base = dynamic_cast<const RPG_Player_Player_Base*>(attacker_in);
+    const RPG_Player_Player_Base* const player_base = dynamic_cast<const RPG_Player_Player_Base* const>(attacker_in);
     ACE_ASSERT(player_base);
     // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
     // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE may use its DEX modifier for melee attacks...
@@ -1316,8 +1313,8 @@ RPG_Engine_Common_Tools::attackFoe(const RPG_Player_Base* const attacker_in,
 
     // step2: compute target AC
     // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size modifier [+ other modifiers]
-    RPG_Monster* monster = NULL;
-    monster = dynamic_cast<RPG_Monster*>(target_inout);
+    const RPG_Monster* monster = NULL;
+    monster = dynamic_cast<const RPG_Monster*>(target_inout);
     ACE_ASSERT(monster);
     targetArmorClass = monster->getArmorClass(defenseSituation_in);
     // *TODO*: consider other modifiers:
@@ -1503,14 +1500,13 @@ is_player_miss:
   {
     // if the attacker is a "regular" monster, we have a specific description of its weapons/abilities
     // step1a: get monster properties
-    const RPG_Monster* monster = dynamic_cast<const RPG_Monster*>(attacker_in);
+    const RPG_Monster* const monster = dynamic_cast<const RPG_Monster* const>(attacker_in);
     ACE_ASSERT(monster);
-    RPG_Monster_Properties monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(monster->getName());
+    const RPG_Monster_Properties& monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(monster->getName());
 
     // step1b: compute target AC
     // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+ other modifiers]
-    RPG_Player_Base* player_base = NULL;
-    player_base = dynamic_cast<RPG_Player_Base*>(target_inout);
+    RPG_Player_Base* const player_base = dynamic_cast<RPG_Player_Base* const>(target_inout);
     ACE_ASSERT(player_base);
     targetArmorClass = player_base->getArmorClass(defenseSituation_in);
     // *TODO*: consider other modifiers:
@@ -1528,8 +1524,8 @@ is_player_miss:
     // current (non-)strategy: melee/ranged --> special attack
     bool is_special_attack = false;
     unsigned int numberOfPossibleAttackActions = 0;
-    std::vector<RPG_Monster_AttackAction>::const_iterator iterator;
-    std::vector<RPG_Monster_SpecialAttackProperties>::const_iterator special_iterator;
+    RPG_Monster_AttackActionsIterator_t attack_iterator;
+    RPG_Monster_SpecialAttackActionsIterator_t special_iterator;
     const RPG_Monster_AttackAction* current_action = NULL;
     int randomPossibleIndex = 0;
     int possibleIndex = 0;
@@ -1542,13 +1538,13 @@ is_player_miss:
           (numberOfPossibleAttackActions == 0))
         goto init_monster_standard_actions;
 
-      iterator = monster_properties.attack.fullAttackActions.begin();
+      attack_iterator = monster_properties.attack.fullAttackActions.begin();
       if (!monster_properties.attack.actionsAreInclusive)
       {
         // choose any single appropriate (i.e. possible) (set of) full action(s)
         // step1: count the number of available sets
         int numberOfPossibleSets = 0;
-        std::vector<RPG_Monster_AttackAction>::const_iterator iterator2 = monster_properties.attack.fullAttackActions.begin();
+        RPG_Monster_AttackActionsIterator_t iterator2 = monster_properties.attack.fullAttackActions.begin();
         do
         {
           if (isCompatibleMonsterAttackAction(attackForm,
@@ -1574,7 +1570,7 @@ is_player_miss:
         {
           // is this a possible set ?
           if (isCompatibleMonsterAttackAction(attackForm,
-                                              *iterator))
+                                              *attack_iterator))
           {
             // maybe we have found our set...
             if (possibleIndex == randomPossibleIndex)
@@ -1584,24 +1580,24 @@ is_player_miss:
           } // end IF
 
           // skip to next set...
-          while ((*iterator).fullAttackIncludesNextAction)
-            iterator++;
+          while ((*attack_iterator).fullAttackIncludesNextAction)
+            attack_iterator++;
         } while (true);
       } // end IF
 
-      current_action = &*iterator;
+      current_action = &*attack_iterator;
       goto monster_perform_single_action;
     } // end IF
 
 init_monster_standard_actions:
     // sanity check
     numberOfPossibleAttackActions = numCompatibleMonsterAttackActions(attackForm,
-    monster_properties.attack.standardAttackActions);
+                                                                      monster_properties.attack.standardAttackActions);
     if (monster_properties.attack.standardAttackActions.empty() ||
         (numberOfPossibleAttackActions == 0))
       goto init_monster_special_attack;
 
-    iterator = monster_properties.attack.standardAttackActions.begin();
+    attack_iterator = monster_properties.attack.standardAttackActions.begin();
     // if the attack actions are not inclusive, we need to choose a single (set of) (suitable) one(s)...
     if (!monster_properties.attack.actionsAreInclusive)
     {
@@ -1616,7 +1612,7 @@ init_monster_standard_actions:
       {
           // is this a possible set ?
         if (isCompatibleMonsterAttackAction(attackForm,
-                                            *iterator))
+                                            *attack_iterator))
         {
             // maybe we have found our action...
           if (possibleIndex == randomPossibleIndex)
@@ -1626,17 +1622,17 @@ init_monster_standard_actions:
         } // end IF
 
         // skip to next action...
-        while ((*iterator).fullAttackIncludesNextAction)
-          iterator++;
+        while ((*attack_iterator).fullAttackIncludesNextAction)
+          attack_iterator++;
       } while (true);
     } // end IF
 
-    current_action = &*iterator;
+    current_action = &*attack_iterator;
     goto monster_perform_single_action;
 
 init_monster_special_attack:
     // sanity check
-        for (std::vector<RPG_Monster_SpecialAttackProperties>::const_iterator iterator2 = monster_properties.specialAttacks.begin();
+    for (RPG_Monster_SpecialAttackActionsIterator_t iterator2 = monster_properties.specialAttacks.begin();
          iterator2 != monster_properties.specialAttacks.end();
          iterator2++)
     {
@@ -1647,7 +1643,7 @@ init_monster_special_attack:
     if (numberOfPossibleAttackActions == 0)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("found no suitable attack for monster \"%s\", returning\n"),
+                 ACE_TEXT("found no suitable special attack for monster \"%s\", aborting\n"),
                  monster->getName().c_str()));
 
       // what else can we do ?
@@ -1704,7 +1700,7 @@ monster_perform_single_action:
     } // end ELSE
 
     // run attack(s)
-    for (int i = 0;
+    for (unsigned char i = 0;
          i < current_action->numAttacksPerRound;
          i++)
     {
@@ -1857,15 +1853,16 @@ monster_advance_attack_iterator:
     if (!is_special_attack)
     {
       if (monster_properties.attack.actionsAreInclusive ||
-          (isFullRoundAction_in && (*iterator).fullAttackIncludesNextAction))
+          (isFullRoundAction_in && (*attack_iterator).fullAttackIncludesNextAction))
       {
-        iterator++;
+        attack_iterator++;
 
         // run next attack, if appropriate
-        if ((iterator != monster_properties.attack.standardAttackActions.end()) &&
-            (iterator != monster_properties.attack.fullAttackActions.end()))
+        if (attack_iterator != ((isFullRoundAction_in &&
+                                 !monster_properties.attack.fullAttackActions.empty()) ? monster_properties.attack.fullAttackActions.end()
+                                                                                       : monster_properties.attack.standardAttackActions.end()))
         {
-          current_action = &*iterator;
+          current_action = &*attack_iterator;
           goto monster_perform_single_action;
         } // end IF
       } // end IF

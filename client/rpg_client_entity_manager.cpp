@@ -52,7 +52,8 @@ RPG_Client_Entity_Manager::~RPG_Client_Entity_Manager()
        iterator != myCache.end();
        iterator++)
   {
-    SDL_FreeSurface((*iterator).second.graphic);
+    if ((*iterator).second.free_graphic_on_removal)
+      SDL_FreeSurface((*iterator).second.graphic);
     SDL_FreeSurface((*iterator).second.bg);
   } // end FOR
 }
@@ -69,7 +70,8 @@ RPG_Client_Entity_Manager::init(RPG_Graphics_SDLWindowBase* window_in)
 
 void
 RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
-                               SDL_Surface* surface_in)
+                               SDL_Surface* surface_in,
+                               const bool& freeOnRemoval_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::add"));
 
@@ -90,6 +92,7 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
 
   RPG_Client_EntityCacheEntry_t new_entry;
   new_entry.graphic = surface_in;
+  new_entry.free_graphic_on_removal = freeOnRemoval_in;
   new_entry.bg_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                          std::numeric_limits<unsigned int>::max());
   new_entry.bg = RPG_Graphics_Surface::create(surface_in->w,
@@ -123,7 +126,8 @@ RPG_Client_Entity_Manager::remove(const RPG_Engine_EntityID_t& id_in)
   } // end IF
 
   // clean up
-  SDL_FreeSurface((*iterator).second.graphic);
+  if ((*iterator).second.free_graphic_on_removal)
+    SDL_FreeSurface((*iterator).second.graphic);
   SDL_FreeSurface((*iterator).second.bg);
 
   myCache.erase(iterator);

@@ -52,11 +52,11 @@ class RPG_Item_Export RPG_Item_Dictionary
   // init item dictionary
   void init(const std::string&,  // filename
             const bool& = true); // validate XML ?
-  const RPG_Item_WeaponProperties getWeaponProperties(const RPG_Item_WeaponType&) const;
-  const RPG_Item_ArmorProperties getArmorProperties(const RPG_Item_ArmorType&) const;
+  const RPG_Item_WeaponProperties& getWeaponProperties(const RPG_Item_WeaponType&) const;
+  const RPG_Item_ArmorProperties& getArmorProperties(const RPG_Item_ArmorType&) const;
 
- // debug info
- void dump() const;
+  // debug info
+  void dump() const;
 
  private:
   // safety measures

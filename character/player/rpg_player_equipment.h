@@ -49,13 +49,13 @@ class RPG_Player_Export RPG_Player_Equipment
   void strip();
 
   // weapon in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
-  const RPG_Item_WeaponType getPrimaryWeapon(const RPG_Character_OffHand&) const;
+  RPG_Item_WeaponType getPrimaryWeapon(const RPG_Character_OffHand&) const;
   // armor in EQUIPMENTSLOT_BODY/TORSO
-  const RPG_Item_ArmorType getBodyArmor() const;
+  RPG_Item_ArmorType getBodyArmor() const;
   // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR
-  const RPG_Item_ArmorType getShield(const RPG_Character_OffHand&) const;
+  RPG_Item_ArmorType getShield(const RPG_Character_OffHand&) const;
 
-  const bool isEquipped(const RPG_Item_ID_t&) const; // item ID
+  bool isEquipped(const RPG_Item_ID_t&) const; // item ID
 
   // dump equipment
   void dump() const;

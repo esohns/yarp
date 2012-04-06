@@ -154,7 +154,7 @@ class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
 //
 // //   virtual void pre();
 //   virtual void weaponType(const RPG_Item_WeaponType&);
-//   virtual void weaponCategory(const RPG_Item_WeaponCategory&);
+//   virtual void category(const RPG_Item_WeaponCategory&);
 //   virtual void weaponClass(const RPG_Item_WeaponClass&);
 //   virtual void baseDamage(const RPG_Item_Damage&);
 //   virtual void criticalHit(const RPG_Item_CriticalHitProperties&);
@@ -186,7 +186,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_Type
   virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
   // ------------------------------------------------------------
   virtual void weaponType(const RPG_Item_WeaponType&);
-  virtual void weaponCategory(const RPG_Item_WeaponCategory&);
+  virtual void category(const RPG_Item_WeaponCategory&);
   virtual void weaponClass(const RPG_Item_WeaponClass&);
   virtual void baseDamage(const RPG_Item_Damage&);
   virtual void criticalHit(const RPG_Item_CriticalHitProperties&);
@@ -230,12 +230,12 @@ class RPG_Item_Export RPG_Item_ArmorType_Type
 //
 // //   virtual void pre();
 //   virtual void armorType(const RPG_Item_ArmorType&);
-//   virtual void armorCategory(const RPG_Item_ArmorCategory&);
-//   virtual void baseArmorBonus(unsigned char);
+//   virtual void category(const RPG_Item_ArmorCategory&);
+//   virtual void baseBonus(unsigned char);
 //   virtual void maxDexterityBonus(unsigned char);
-//   virtual void armorCheckPenalty(signed char);
+//   virtual void checkPenalty(signed char);
 //   virtual void arcaneSpellFailure(unsigned char);
-//   virtual void baseSpeed(unsigned short);
+//   virtual void baseSpeed(unsigned char);
 //   virtual RPG_Item_ArmorPropertiesBase post_RPG_Item_ArmorPropertiesBase_Type();
 //
 //  private:
@@ -259,12 +259,12 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type
   virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
   // ------------------------------------------------------------
   virtual void armorType(const RPG_Item_ArmorType&);
-  virtual void armorCategory(const RPG_Item_ArmorCategory&);
-  virtual void baseArmorBonus(unsigned char);
+  virtual void category(const RPG_Item_ArmorCategory&);
+  virtual void baseBonus(unsigned char);
   virtual void maxDexterityBonus(unsigned char);
-  virtual void armorCheckPenalty(signed char);
+  virtual void checkPenalty(signed char);
   virtual void arcaneSpellFailure(unsigned char);
-  virtual void baseSpeed(unsigned short);
+  virtual void baseSpeed(unsigned char);
   virtual RPG_Item_ArmorPropertiesBase post_RPG_Item_ArmorPropertiesBase_Type();
   // ------------------------------------------------------------
   virtual void defenseModifier(signed char);

@@ -38,9 +38,10 @@
       <xsd:enumeration value="COMMAND_STOP"/>
       <xsd:enumeration value="COMMAND_TRAVEL"/>
       <!--   ENGINE to CLIENT protocol ONLY ! -->
-      <xsd:enumeration value="COMMAND_ENTITY_ADD"/>
-      <xsd:enumeration value="COMMAND_ENTITY_REMOVE"/>
-      <xsd:enumeration value="COMMAND_ENTITY_UPDATE"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_ADD"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_REMOVE"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_UPDATE"/>
+      <xsd:enumeration value="COMMAND_E2C_QUIT"/>
     </xsd:restriction>
   </xsd:simpleType>
 

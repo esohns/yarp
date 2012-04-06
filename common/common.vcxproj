@@ -90,6 +90,7 @@ popd</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="rpg_common.h" />
     <ClInclude Include="rpg_common_actiontype.h" />
     <ClInclude Include="rpg_common_amount.h" />
     <ClInclude Include="rpg_common_areaofeffect.h" />

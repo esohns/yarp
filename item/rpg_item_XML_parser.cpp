@@ -57,7 +57,7 @@ void RPG_Item_Dictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& weapon
 
   RPG_Item_WeaponProperties prop;
   prop.toHitModifier = weapon_in.toHitModifier;
-  prop.weaponCategory = weapon_in.weaponCategory;
+  prop.category = weapon_in.category;
   prop.weaponClass = weapon_in.weaponClass;
   prop.baseDamage = weapon_in.baseDamage;
   prop.criticalHit = weapon_in.criticalHit;
@@ -95,10 +95,10 @@ void RPG_Item_Dictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& armor_in
 
   RPG_Item_ArmorProperties prop;
   prop.defenseModifier = armor_in.defenseModifier;
-  prop.armorCategory = armor_in.armorCategory;
-  prop.baseArmorBonus = armor_in.baseArmorBonus;
+  prop.category = armor_in.category;
+  prop.baseBonus = armor_in.baseBonus;
   prop.maxDexterityBonus = armor_in.maxDexterityBonus;
-  prop.armorCheckPenalty = armor_in.armorCheckPenalty;
+  prop.checkPenalty = armor_in.checkPenalty;
   prop.arcaneSpellFailure = armor_in.arcaneSpellFailure;
   prop.baseSpeed = armor_in.baseSpeed;
   prop.aura = armor_in.aura;
@@ -338,7 +338,7 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
   myCurrentWeaponProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
   myCurrentWeaponProperties.weaponType = RPG_ITEM_WEAPONTYPE_INVALID;
-  myCurrentWeaponProperties.weaponCategory = RPG_ITEM_WEAPONCATEGORY_INVALID;
+  myCurrentWeaponProperties.category = RPG_ITEM_WEAPONCATEGORY_INVALID;
   myCurrentWeaponProperties.weaponClass = RPG_ITEM_WEAPONCLASS_INVALID;
   myCurrentWeaponProperties.baseStorePrice.numGoldPieces = 0;
   myCurrentWeaponProperties.baseStorePrice.numSilverPieces = 0;
@@ -423,11 +423,11 @@ void RPG_Item_WeaponPropertiesXML_Type::weaponType(const RPG_Item_WeaponType& we
   myCurrentWeaponProperties.weaponType = weaponType_in;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type::weaponCategory(const RPG_Item_WeaponCategory& weaponCategory_in)
+void RPG_Item_WeaponPropertiesXML_Type::category(const RPG_Item_WeaponCategory& category_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::weaponCategory"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::category"));
 
-  myCurrentWeaponProperties.weaponCategory = weaponCategory_in;
+  myCurrentWeaponProperties.category = category_in;
 }
 
 void RPG_Item_WeaponPropertiesXML_Type::weaponClass(const RPG_Item_WeaponClass& weaponClass_in)
@@ -519,7 +519,7 @@ RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_We
   myCurrentWeaponProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
   myCurrentWeaponProperties.weaponType = RPG_ITEM_WEAPONTYPE_INVALID;
-  myCurrentWeaponProperties.weaponCategory = RPG_ITEM_WEAPONCATEGORY_INVALID;
+  myCurrentWeaponProperties.category = RPG_ITEM_WEAPONCATEGORY_INVALID;
   myCurrentWeaponProperties.weaponClass = RPG_ITEM_WEAPONCLASS_INVALID;
   myCurrentWeaponProperties.baseStorePrice.numGoldPieces = 0;
   myCurrentWeaponProperties.baseStorePrice.numSilverPieces = 0;
@@ -581,12 +581,12 @@ RPG_Item_ArmorPropertiesXML_Type::RPG_Item_ArmorPropertiesXML_Type()
   myCurrentArmorProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
   myCurrentArmorProperties.armorType = RPG_ITEM_ARMORTYPE_INVALID;
-  myCurrentArmorProperties.armorCategory = RPG_ITEM_ARMORCATEGORY_INVALID;
+  myCurrentArmorProperties.category = RPG_ITEM_ARMORCATEGORY_INVALID;
   myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
   myCurrentArmorProperties.baseStorePrice.numSilverPieces = 0;
-  myCurrentArmorProperties.baseArmorBonus = 0;
+  myCurrentArmorProperties.baseBonus = 0;
   myCurrentArmorProperties.maxDexterityBonus = 0;
-  myCurrentArmorProperties.armorCheckPenalty = 0;
+  myCurrentArmorProperties.checkPenalty = 0;
   myCurrentArmorProperties.arcaneSpellFailure = 0;
   myCurrentArmorProperties.baseSpeed = 0;
   myCurrentArmorProperties.baseWeight = 0;
@@ -660,18 +660,18 @@ void RPG_Item_ArmorPropertiesXML_Type::armorType(const RPG_Item_ArmorType& armor
   myCurrentArmorProperties.armorType = armorType_in;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type::armorCategory(const RPG_Item_ArmorCategory& armorCategory_in)
+void RPG_Item_ArmorPropertiesXML_Type::category(const RPG_Item_ArmorCategory& category_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::armorCategory"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::category"));
 
-  myCurrentArmorProperties.armorCategory = armorCategory_in;
+  myCurrentArmorProperties.category = category_in;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type::baseArmorBonus(unsigned char baseArmorBonus_in)
+void RPG_Item_ArmorPropertiesXML_Type::baseBonus(unsigned char baseBonus_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::baseArmorBonus"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::baseBonus"));
 
-  myCurrentArmorProperties.baseArmorBonus = baseArmorBonus_in;
+  myCurrentArmorProperties.baseBonus = baseBonus_in;
 }
 
 void RPG_Item_ArmorPropertiesXML_Type::maxDexterityBonus(unsigned char maxDexterityBonus_in)
@@ -681,11 +681,11 @@ void RPG_Item_ArmorPropertiesXML_Type::maxDexterityBonus(unsigned char maxDexter
   myCurrentArmorProperties.maxDexterityBonus = maxDexterityBonus_in;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type::armorCheckPenalty(signed char armorCheckPenalty_in)
+void RPG_Item_ArmorPropertiesXML_Type::checkPenalty(signed char checkPenalty_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::armorCheckPenalty"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::checkPenalty"));
 
-  myCurrentArmorProperties.armorCheckPenalty = armorCheckPenalty_in;
+  myCurrentArmorProperties.checkPenalty = checkPenalty_in;
 }
 
 void RPG_Item_ArmorPropertiesXML_Type::arcaneSpellFailure(unsigned char arcaneSpellFailure_in)
@@ -695,7 +695,7 @@ void RPG_Item_ArmorPropertiesXML_Type::arcaneSpellFailure(unsigned char arcaneSp
   myCurrentArmorProperties.arcaneSpellFailure = arcaneSpellFailure_in;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type::baseSpeed(unsigned short baseSpeed_in)
+void RPG_Item_ArmorPropertiesXML_Type::baseSpeed(unsigned char baseSpeed_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::baseSpeed"));
 
@@ -735,12 +735,12 @@ RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_Armo
   myCurrentArmorProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
   myCurrentArmorProperties.armorType = RPG_ITEM_ARMORTYPE_INVALID;
-  myCurrentArmorProperties.armorCategory = RPG_ITEM_ARMORCATEGORY_INVALID;
+  myCurrentArmorProperties.category = RPG_ITEM_ARMORCATEGORY_INVALID;
   myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
   myCurrentArmorProperties.baseStorePrice.numSilverPieces = 0;
-  myCurrentArmorProperties.baseArmorBonus = 0;
+  myCurrentArmorProperties.baseBonus = 0;
   myCurrentArmorProperties.maxDexterityBonus = 0;
-  myCurrentArmorProperties.armorCheckPenalty = 0;
+  myCurrentArmorProperties.checkPenalty = 0;
   myCurrentArmorProperties.arcaneSpellFailure = 0;
   myCurrentArmorProperties.baseSpeed = 0;
   myCurrentArmorProperties.baseWeight = 0;

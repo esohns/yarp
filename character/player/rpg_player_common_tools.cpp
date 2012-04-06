@@ -987,10 +987,10 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_properties_xml(armor_properties.baseWeight,
                                                                       store_price,
                                                                       RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()),
-                                                                      RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(armor_properties.armorCategory),
-                                                                      armor_properties.baseArmorBonus,
+                                                                      RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(armor_properties.category),
+                                                                      armor_properties.baseBonus,
                                                                       armor_properties.maxDexterityBonus,
-                                                                      armor_properties.armorCheckPenalty,
+                                                                      armor_properties.checkPenalty,
                                                                       armor_properties.arcaneSpellFailure,
                                                                       armor_properties.baseSpeed);
         if (armor_properties.defenseModifier)
@@ -1051,7 +1051,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_properties_xml(weapon_properties.baseWeight,
                                                                         store_price,
                                                                         RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()),
-                                                                        RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(weapon_properties.weaponCategory),
+                                                                        RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(weapon_properties.category),
                                                                         RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(weapon_properties.weaponClass),
                                                                         base_damage,
                                                                         critical_hit_properties);

@@ -116,7 +116,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   std::ostringstream converter;
   result = RPG_Common_AttributeHelper::RPG_Common_AttributeToString(ATTRIBUTE_STRENGTH);
   result += ACE_TEXT_ALWAYS_CHAR(": ");
-  converter << static_cast<unsigned int> (attributes_in.strength);
+  converter << static_cast<unsigned int>(attributes_in.strength);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -124,7 +124,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << static_cast<unsigned int> (attributes_in.dexterity);
+  converter << static_cast<unsigned int>(attributes_in.dexterity);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -132,7 +132,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << static_cast<unsigned int> (attributes_in.constitution);
+  converter << static_cast<unsigned int>(attributes_in.constitution);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -140,7 +140,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << static_cast<unsigned int> (attributes_in.intelligence);
+  converter << static_cast<unsigned int>(attributes_in.intelligence);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -148,7 +148,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << static_cast<unsigned int> (attributes_in.wisdom);
+  converter << static_cast<unsigned int>(attributes_in.wisdom);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -156,7 +156,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   result += ACE_TEXT_ALWAYS_CHAR(": ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << static_cast<unsigned int> (attributes_in.charisma);
+  converter << static_cast<unsigned int>(attributes_in.charisma);
   result += converter.str();
   result += ACE_TEXT_ALWAYS_CHAR("\n");
 
@@ -164,35 +164,35 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
 }
 
 const std::string
-RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& race_in)
+RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& races_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::raceToString"));
 
   std::string result;
 
-  if (race_in.count() == 0)
+  if (races_in.none())
   {
     result += RPG_Character_RaceHelper::RPG_Character_RaceToString(RACE_NONE);
 
     // done
     return result;
   } // end IF
-  else if (race_in.count() > 1)
+  else if (races_in.count() > 1)
     result += ACE_TEXT_ALWAYS_CHAR("(");
 
   unsigned int race_index = 1;
   for (unsigned int index = 0;
-       index < race_in.size();
+       index < races_in.size();
        index++, race_index++)
   {
-    if (race_in.test(index))
+    if (races_in.test(index))
     {
       result += RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race>(race_index));
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end IF
   } // end FOR
   result.erase(--result.end());
-  if (race_in.count() > 1)
+  if (races_in.count() > 1)
     result += ACE_TEXT_ALWAYS_CHAR(")");
 
   return result;

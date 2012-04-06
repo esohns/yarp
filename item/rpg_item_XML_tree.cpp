@@ -605,28 +605,28 @@ weaponType (::std::auto_ptr< weaponType_type > x)
   this->weaponType_.set (x);
 }
 
-const RPG_Item_WeaponPropertiesBase_XMLTree_Type::weaponCategory_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
-weaponCategory () const
+const RPG_Item_WeaponPropertiesBase_XMLTree_Type::category_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+category () const
 {
-  return this->weaponCategory_.get ();
+  return this->category_.get ();
 }
 
-RPG_Item_WeaponPropertiesBase_XMLTree_Type::weaponCategory_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
-weaponCategory ()
+RPG_Item_WeaponPropertiesBase_XMLTree_Type::category_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+category ()
 {
-  return this->weaponCategory_.get ();
-}
-
-void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
-weaponCategory (const weaponCategory_type& x)
-{
-  this->weaponCategory_.set (x);
+  return this->category_.get ();
 }
 
 void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
-weaponCategory (::std::auto_ptr< weaponCategory_type > x)
+category (const category_type& x)
 {
-  this->weaponCategory_.set (x);
+  this->category_.set (x);
+}
+
+void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+category (::std::auto_ptr< category_type > x)
+{
+  this->category_.set (x);
 }
 
 const RPG_Item_WeaponPropertiesBase_XMLTree_Type::weaponClass_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
@@ -961,46 +961,46 @@ armorType (::std::auto_ptr< armorType_type > x)
   this->armorType_.set (x);
 }
 
-const RPG_Item_ArmorPropertiesBase_XMLTree_Type::armorCategory_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorCategory () const
+const RPG_Item_ArmorPropertiesBase_XMLTree_Type::category_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+category () const
 {
-  return this->armorCategory_.get ();
+  return this->category_.get ();
 }
 
-RPG_Item_ArmorPropertiesBase_XMLTree_Type::armorCategory_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorCategory ()
+RPG_Item_ArmorPropertiesBase_XMLTree_Type::category_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+category ()
 {
-  return this->armorCategory_.get ();
-}
-
-void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorCategory (const armorCategory_type& x)
-{
-  this->armorCategory_.set (x);
+  return this->category_.get ();
 }
 
 void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorCategory (::std::auto_ptr< armorCategory_type > x)
+category (const category_type& x)
 {
-  this->armorCategory_.set (x);
-}
-
-const RPG_Item_ArmorPropertiesBase_XMLTree_Type::baseArmorBonus_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-baseArmorBonus () const
-{
-  return this->baseArmorBonus_.get ();
-}
-
-RPG_Item_ArmorPropertiesBase_XMLTree_Type::baseArmorBonus_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-baseArmorBonus ()
-{
-  return this->baseArmorBonus_.get ();
+  this->category_.set (x);
 }
 
 void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-baseArmorBonus (const baseArmorBonus_type& x)
+category (::std::auto_ptr< category_type > x)
 {
-  this->baseArmorBonus_.set (x);
+  this->category_.set (x);
+}
+
+const RPG_Item_ArmorPropertiesBase_XMLTree_Type::baseBonus_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+baseBonus () const
+{
+  return this->baseBonus_.get ();
+}
+
+RPG_Item_ArmorPropertiesBase_XMLTree_Type::baseBonus_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+baseBonus ()
+{
+  return this->baseBonus_.get ();
+}
+
+void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+baseBonus (const baseBonus_type& x)
+{
+  this->baseBonus_.set (x);
 }
 
 const RPG_Item_ArmorPropertiesBase_XMLTree_Type::maxDexterityBonus_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
@@ -1021,22 +1021,22 @@ maxDexterityBonus (const maxDexterityBonus_type& x)
   this->maxDexterityBonus_.set (x);
 }
 
-const RPG_Item_ArmorPropertiesBase_XMLTree_Type::armorCheckPenalty_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorCheckPenalty () const
+const RPG_Item_ArmorPropertiesBase_XMLTree_Type::checkPenalty_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+checkPenalty () const
 {
-  return this->armorCheckPenalty_.get ();
+  return this->checkPenalty_.get ();
 }
 
-RPG_Item_ArmorPropertiesBase_XMLTree_Type::armorCheckPenalty_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorCheckPenalty ()
+RPG_Item_ArmorPropertiesBase_XMLTree_Type::checkPenalty_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+checkPenalty ()
 {
-  return this->armorCheckPenalty_.get ();
+  return this->checkPenalty_.get ();
 }
 
 void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorCheckPenalty (const armorCheckPenalty_type& x)
+checkPenalty (const checkPenalty_type& x)
 {
-  this->armorCheckPenalty_.set (x);
+  this->checkPenalty_.set (x);
 }
 
 const RPG_Item_ArmorPropertiesBase_XMLTree_Type::arcaneSpellFailure_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
@@ -2459,14 +2459,14 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type::
 RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                             const baseStorePrice_type& baseStorePrice,
                                             const weaponType_type& weaponType,
-                                            const weaponCategory_type& weaponCategory,
+                                            const category_type& category,
                                             const weaponClass_type& weaponClass,
                                             const baseDamage_type& baseDamage,
                                             const criticalHit_type& criticalHit)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
   weaponType_ (weaponType, ::xml_schema::flags (), this),
-  weaponCategory_ (weaponCategory, ::xml_schema::flags (), this),
+  category_ (category, ::xml_schema::flags (), this),
   weaponClass_ (weaponClass, ::xml_schema::flags (), this),
   baseDamage_ (baseDamage, ::xml_schema::flags (), this),
   criticalHit_ (criticalHit, ::xml_schema::flags (), this),
@@ -2482,14 +2482,14 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type::
 RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                             ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
                                             const weaponType_type& weaponType,
-                                            const weaponCategory_type& weaponCategory,
+                                            const category_type& category,
                                             const weaponClass_type& weaponClass,
                                             ::std::auto_ptr< baseDamage_type >& baseDamage,
                                             ::std::auto_ptr< criticalHit_type >& criticalHit)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
   weaponType_ (weaponType, ::xml_schema::flags (), this),
-  weaponCategory_ (weaponCategory, ::xml_schema::flags (), this),
+  category_ (category, ::xml_schema::flags (), this),
   weaponClass_ (weaponClass, ::xml_schema::flags (), this),
   baseDamage_ (baseDamage, ::xml_schema::flags (), this),
   criticalHit_ (criticalHit, ::xml_schema::flags (), this),
@@ -2507,7 +2507,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const RPG_Item_WeaponPropertiesBase_
                                             ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (x, f, c),
   weaponType_ (x.weaponType_, f, this),
-  weaponCategory_ (x.weaponCategory_, f, this),
+  category_ (x.category_, f, this),
   weaponClass_ (x.weaponClass_, f, this),
   baseDamage_ (x.baseDamage_, f, this),
   criticalHit_ (x.criticalHit_, f, this),
@@ -2525,7 +2525,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const ::xercesc::DOMElement& e,
                                             ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
   weaponType_ (f, this),
-  weaponCategory_ (f, this),
+  category_ (f, this),
   weaponClass_ (f, this),
   baseDamage_ (f, this),
   criticalHit_ (f, this),
@@ -2568,16 +2568,16 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // weaponCategory
+    // category
     //
-    if (n.name () == "weaponCategory" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "category" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< weaponCategory_type > r (
-        weaponCategory_traits::create (i, f, this));
+      ::std::auto_ptr< category_type > r (
+        category_traits::create (i, f, this));
 
-      if (!weaponCategory_.present ())
+      if (!category_.present ())
       {
-        this->weaponCategory_.set (r);
+        this->category_.set (r);
         continue;
       }
     }
@@ -2656,10 +2656,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "urn:rpg");
   }
 
-  if (!weaponCategory_.present ())
+  if (!category_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "weaponCategory",
+      "category",
       "urn:rpg");
   }
 
@@ -2747,7 +2747,7 @@ operator== (const RPG_Item_WeaponPropertiesBase_XMLTree_Type& x, const RPG_Item_
   if (!(x.weaponType () == y.weaponType ()))
     return false;
 
-  if (!(x.weaponCategory () == y.weaponCategory ()))
+  if (!(x.category () == y.category ()))
     return false;
 
   if (!(x.weaponClass () == y.weaponClass ()))
@@ -2790,14 +2790,14 @@ RPG_Item_WeaponPropertiesXML_XMLTree_Type::
 RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                            const baseStorePrice_type& baseStorePrice,
                                            const weaponType_type& weaponType,
-                                           const weaponCategory_type& weaponCategory,
+                                           const category_type& category,
                                            const weaponClass_type& weaponClass,
                                            const baseDamage_type& baseDamage,
                                            const criticalHit_type& criticalHit)
 : ::RPG_Item_WeaponPropertiesBase_XMLTree_Type (baseWeight,
                                                 baseStorePrice,
                                                 weaponType,
-                                                weaponCategory,
+                                                category,
                                                 weaponClass,
                                                 baseDamage,
                                                 criticalHit),
@@ -2809,14 +2809,14 @@ RPG_Item_WeaponPropertiesXML_XMLTree_Type::
 RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                            ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
                                            const weaponType_type& weaponType,
-                                           const weaponCategory_type& weaponCategory,
+                                           const category_type& category,
                                            const weaponClass_type& weaponClass,
                                            ::std::auto_ptr< baseDamage_type >& baseDamage,
                                            ::std::auto_ptr< criticalHit_type >& criticalHit)
 : ::RPG_Item_WeaponPropertiesBase_XMLTree_Type (baseWeight,
                                                 baseStorePrice,
                                                 weaponType,
-                                                weaponCategory,
+                                                category,
                                                 weaponClass,
                                                 baseDamage,
                                                 criticalHit),
@@ -3090,19 +3090,19 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type::
 RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                            const baseStorePrice_type& baseStorePrice,
                                            const armorType_type& armorType,
-                                           const armorCategory_type& armorCategory,
-                                           const baseArmorBonus_type& baseArmorBonus,
+                                           const category_type& category,
+                                           const baseBonus_type& baseBonus,
                                            const maxDexterityBonus_type& maxDexterityBonus,
-                                           const armorCheckPenalty_type& armorCheckPenalty,
+                                           const checkPenalty_type& checkPenalty,
                                            const arcaneSpellFailure_type& arcaneSpellFailure,
                                            const baseSpeed_type& baseSpeed)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
   armorType_ (armorType, ::xml_schema::flags (), this),
-  armorCategory_ (armorCategory, ::xml_schema::flags (), this),
-  baseArmorBonus_ (baseArmorBonus, ::xml_schema::flags (), this),
+  category_ (category, ::xml_schema::flags (), this),
+  baseBonus_ (baseBonus, ::xml_schema::flags (), this),
   maxDexterityBonus_ (maxDexterityBonus, ::xml_schema::flags (), this),
-  armorCheckPenalty_ (armorCheckPenalty, ::xml_schema::flags (), this),
+  checkPenalty_ (checkPenalty, ::xml_schema::flags (), this),
   arcaneSpellFailure_ (arcaneSpellFailure, ::xml_schema::flags (), this),
   baseSpeed_ (baseSpeed, ::xml_schema::flags (), this)
 {
@@ -3112,19 +3112,19 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type::
 RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                            ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
                                            const armorType_type& armorType,
-                                           const armorCategory_type& armorCategory,
-                                           const baseArmorBonus_type& baseArmorBonus,
+                                           const category_type& category,
+                                           const baseBonus_type& baseBonus,
                                            const maxDexterityBonus_type& maxDexterityBonus,
-                                           const armorCheckPenalty_type& armorCheckPenalty,
+                                           const checkPenalty_type& checkPenalty,
                                            const arcaneSpellFailure_type& arcaneSpellFailure,
                                            const baseSpeed_type& baseSpeed)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
   armorType_ (armorType, ::xml_schema::flags (), this),
-  armorCategory_ (armorCategory, ::xml_schema::flags (), this),
-  baseArmorBonus_ (baseArmorBonus, ::xml_schema::flags (), this),
+  category_ (category, ::xml_schema::flags (), this),
+  baseBonus_ (baseBonus, ::xml_schema::flags (), this),
   maxDexterityBonus_ (maxDexterityBonus, ::xml_schema::flags (), this),
-  armorCheckPenalty_ (armorCheckPenalty, ::xml_schema::flags (), this),
+  checkPenalty_ (checkPenalty, ::xml_schema::flags (), this),
   arcaneSpellFailure_ (arcaneSpellFailure, ::xml_schema::flags (), this),
   baseSpeed_ (baseSpeed, ::xml_schema::flags (), this)
 {
@@ -3136,10 +3136,10 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (const RPG_Item_ArmorPropertiesBase_XM
                                            ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (x, f, c),
   armorType_ (x.armorType_, f, this),
-  armorCategory_ (x.armorCategory_, f, this),
-  baseArmorBonus_ (x.baseArmorBonus_, f, this),
+  category_ (x.category_, f, this),
+  baseBonus_ (x.baseBonus_, f, this),
   maxDexterityBonus_ (x.maxDexterityBonus_, f, this),
-  armorCheckPenalty_ (x.armorCheckPenalty_, f, this),
+  checkPenalty_ (x.checkPenalty_, f, this),
   arcaneSpellFailure_ (x.arcaneSpellFailure_, f, this),
   baseSpeed_ (x.baseSpeed_, f, this)
 {
@@ -3151,10 +3151,10 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (const ::xercesc::DOMElement& e,
                                            ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
   armorType_ (f, this),
-  armorCategory_ (f, this),
-  baseArmorBonus_ (f, this),
+  category_ (f, this),
+  baseBonus_ (f, this),
   maxDexterityBonus_ (f, this),
-  armorCheckPenalty_ (f, this),
+  checkPenalty_ (f, this),
   arcaneSpellFailure_ (f, this),
   baseSpeed_ (f, this)
 {
@@ -3191,27 +3191,27 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // armorCategory
+    // category
     //
-    if (n.name () == "armorCategory" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "category" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< armorCategory_type > r (
-        armorCategory_traits::create (i, f, this));
+      ::std::auto_ptr< category_type > r (
+        category_traits::create (i, f, this));
 
-      if (!armorCategory_.present ())
+      if (!category_.present ())
       {
-        this->armorCategory_.set (r);
+        this->category_.set (r);
         continue;
       }
     }
 
-    // baseArmorBonus
+    // baseBonus
     //
-    if (n.name () == "baseArmorBonus" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "baseBonus" && n.namespace_ () == "urn:rpg")
     {
-      if (!baseArmorBonus_.present ())
+      if (!baseBonus_.present ())
       {
-        this->baseArmorBonus_.set (baseArmorBonus_traits::create (i, f, this));
+        this->baseBonus_.set (baseBonus_traits::create (i, f, this));
         continue;
       }
     }
@@ -3227,13 +3227,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // armorCheckPenalty
+    // checkPenalty
     //
-    if (n.name () == "armorCheckPenalty" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "checkPenalty" && n.namespace_ () == "urn:rpg")
     {
-      if (!armorCheckPenalty_.present ())
+      if (!checkPenalty_.present ())
       {
-        this->armorCheckPenalty_.set (armorCheckPenalty_traits::create (i, f, this));
+        this->checkPenalty_.set (checkPenalty_traits::create (i, f, this));
         continue;
       }
     }
@@ -3270,17 +3270,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "urn:rpg");
   }
 
-  if (!armorCategory_.present ())
+  if (!category_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "armorCategory",
+      "category",
       "urn:rpg");
   }
 
-  if (!baseArmorBonus_.present ())
+  if (!baseBonus_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "baseArmorBonus",
+      "baseBonus",
       "urn:rpg");
   }
 
@@ -3291,10 +3291,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "urn:rpg");
   }
 
-  if (!armorCheckPenalty_.present ())
+  if (!checkPenalty_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "armorCheckPenalty",
+      "checkPenalty",
       "urn:rpg");
   }
 
@@ -3335,16 +3335,16 @@ operator== (const RPG_Item_ArmorPropertiesBase_XMLTree_Type& x, const RPG_Item_A
   if (!(x.armorType () == y.armorType ()))
     return false;
 
-  if (!(x.armorCategory () == y.armorCategory ()))
+  if (!(x.category () == y.category ()))
     return false;
 
-  if (!(x.baseArmorBonus () == y.baseArmorBonus ()))
+  if (!(x.baseBonus () == y.baseBonus ()))
     return false;
 
   if (!(x.maxDexterityBonus () == y.maxDexterityBonus ()))
     return false;
 
-  if (!(x.armorCheckPenalty () == y.armorCheckPenalty ()))
+  if (!(x.checkPenalty () == y.checkPenalty ()))
     return false;
 
   if (!(x.arcaneSpellFailure () == y.arcaneSpellFailure ()))
@@ -3369,19 +3369,19 @@ RPG_Item_ArmorPropertiesXML_XMLTree_Type::
 RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                           const baseStorePrice_type& baseStorePrice,
                                           const armorType_type& armorType,
-                                          const armorCategory_type& armorCategory,
-                                          const baseArmorBonus_type& baseArmorBonus,
+                                          const category_type& category,
+                                          const baseBonus_type& baseBonus,
                                           const maxDexterityBonus_type& maxDexterityBonus,
-                                          const armorCheckPenalty_type& armorCheckPenalty,
+                                          const checkPenalty_type& checkPenalty,
                                           const arcaneSpellFailure_type& arcaneSpellFailure,
                                           const baseSpeed_type& baseSpeed)
 : ::RPG_Item_ArmorPropertiesBase_XMLTree_Type (baseWeight,
                                                baseStorePrice,
                                                armorType,
-                                               armorCategory,
-                                               baseArmorBonus,
+                                               category,
+                                               baseBonus,
                                                maxDexterityBonus,
-                                               armorCheckPenalty,
+                                               checkPenalty,
                                                arcaneSpellFailure,
                                                baseSpeed),
   defenseModifier_ (::xml_schema::flags (), this)
@@ -3392,19 +3392,19 @@ RPG_Item_ArmorPropertiesXML_XMLTree_Type::
 RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                           ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
                                           const armorType_type& armorType,
-                                          const armorCategory_type& armorCategory,
-                                          const baseArmorBonus_type& baseArmorBonus,
+                                          const category_type& category,
+                                          const baseBonus_type& baseBonus,
                                           const maxDexterityBonus_type& maxDexterityBonus,
-                                          const armorCheckPenalty_type& armorCheckPenalty,
+                                          const checkPenalty_type& checkPenalty,
                                           const arcaneSpellFailure_type& arcaneSpellFailure,
                                           const baseSpeed_type& baseSpeed)
 : ::RPG_Item_ArmorPropertiesBase_XMLTree_Type (baseWeight,
                                                baseStorePrice,
                                                armorType,
-                                               armorCategory,
-                                               baseArmorBonus,
+                                               category,
+                                               baseBonus,
                                                maxDexterityBonus,
-                                               armorCheckPenalty,
+                                               checkPenalty,
                                                arcaneSpellFailure,
                                                baseSpeed),
   defenseModifier_ (::xml_schema::flags (), this)
@@ -3964,7 +3964,7 @@ operator<< (::std::ostream& o, const RPG_Item_WeaponPropertiesBase_XMLTree_Type&
   o << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
 
   o << ::std::endl << "weaponType: " << i.weaponType ();
-  o << ::std::endl << "weaponCategory: " << i.weaponCategory ();
+  o << ::std::endl << "category: " << i.category ();
   o << ::std::endl << "weaponClass: " << i.weaponClass ();
   o << ::std::endl << "baseDamage: " << i.baseDamage ();
   o << ::std::endl << "criticalHit: " << i.criticalHit ();
@@ -4029,10 +4029,10 @@ operator<< (::std::ostream& o, const RPG_Item_ArmorPropertiesBase_XMLTree_Type& 
   o << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
 
   o << ::std::endl << "armorType: " << i.armorType ();
-  o << ::std::endl << "armorCategory: " << i.armorCategory ();
-  o << ::std::endl << "baseArmorBonus: " << i.baseArmorBonus ();
+  o << ::std::endl << "category: " << i.category ();
+  o << ::std::endl << "baseBonus: " << i.baseBonus ();
   o << ::std::endl << "maxDexterityBonus: " << i.maxDexterityBonus ();
-  o << ::std::endl << "armorCheckPenalty: " << i.armorCheckPenalty ();
+  o << ::std::endl << "checkPenalty: " << i.checkPenalty ();
   o << ::std::endl << "arcaneSpellFailure: " << i.arcaneSpellFailure ();
   o << ::std::endl << "baseSpeed: " << i.baseSpeed ();
   return o;
@@ -4409,16 +4409,16 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_WeaponPropertiesBase_XMLTre
     s << i.weaponType ();
   }
 
-  // weaponCategory
+  // category
   //
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "weaponCategory",
+        "category",
         "urn:rpg",
         e));
 
-    s << i.weaponCategory ();
+    s << i.category ();
   }
 
   // weaponClass
@@ -4593,28 +4593,28 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_ArmorPropertiesBase_XMLTree
     s << i.armorType ();
   }
 
-  // armorCategory
+  // category
   //
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "armorCategory",
+        "category",
         "urn:rpg",
         e));
 
-    s << i.armorCategory ();
+    s << i.category ();
   }
 
-  // baseArmorBonus
+  // baseBonus
   //
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "baseArmorBonus",
+        "baseBonus",
         "urn:rpg",
         e));
 
-    s << i.baseArmorBonus ();
+    s << i.baseBonus ();
   }
 
   // maxDexterityBonus
@@ -4629,16 +4629,16 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_ArmorPropertiesBase_XMLTree
     s << i.maxDexterityBonus ();
   }
 
-  // armorCheckPenalty
+  // checkPenalty
   //
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "armorCheckPenalty",
+        "checkPenalty",
         "urn:rpg",
         e));
 
-    s << i.armorCheckPenalty ();
+    s << i.checkPenalty ();
   }
 
   // arcaneSpellFailure
@@ -5041,7 +5041,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR 
                                             ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
   weaponType_ (f, this),
-  weaponCategory_ (f, this),
+  category_ (f, this),
   weaponClass_ (f, this),
   baseDamage_ (f, this),
   criticalHit_ (f, this),
@@ -5064,8 +5064,8 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    ::std::auto_ptr< weaponCategory_type > r (new weaponCategory_type (s, f, this));
-    this->weaponCategory_.set (r);
+    ::std::auto_ptr< category_type > r (new category_type (s, f, this));
+    this->category_.set (r);
   }
 
   {
@@ -5179,10 +5179,10 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >
                                            ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
   armorType_ (f, this),
-  armorCategory_ (f, this),
-  baseArmorBonus_ (f, this),
+  category_ (f, this),
+  baseBonus_ (f, this),
   maxDexterityBonus_ (f, this),
-  armorCheckPenalty_ (f, this),
+  checkPenalty_ (f, this),
   arcaneSpellFailure_ (f, this),
   baseSpeed_ (f, this)
 {
@@ -5199,14 +5199,14 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    ::std::auto_ptr< armorCategory_type > r (new armorCategory_type (s, f, this));
-    this->armorCategory_.set (r);
+    ::std::auto_ptr< category_type > r (new category_type (s, f, this));
+    this->category_.set (r);
   }
 
   {
-    baseArmorBonus_type r;
+    baseBonus_type r;
     s >> r;
-    this->baseArmorBonus_.set (r);
+    this->baseBonus_.set (r);
   }
 
   {
@@ -5216,9 +5216,9 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    armorCheckPenalty_type r;
+    checkPenalty_type r;
     s >> r;
-    this->armorCheckPenalty_.set (r);
+    this->checkPenalty_.set (r);
   }
 
   {
@@ -5525,7 +5525,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 {
   s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
   s << x.weaponType ();
-  s << x.weaponCategory ();
+  s << x.category ();
   s << x.weaponClass ();
   s << x.baseDamage ();
   s << x.criticalHit ();
@@ -5588,10 +5588,10 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 {
   s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
   s << x.armorType ();
-  s << x.armorCategory ();
-  s << x.baseArmorBonus ();
+  s << x.category ();
+  s << x.baseBonus ();
   s << x.maxDexterityBonus ();
-  s << x.armorCheckPenalty ();
+  s << x.checkPenalty ();
   s << x.arcaneSpellFailure ();
   s << x.baseSpeed ();
   return s;

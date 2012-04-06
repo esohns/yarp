@@ -22,64 +22,44 @@
 #define RPG_COMMON_TIMER_MANAGER_H
 
 #include "rpg_common_exports.h"
+#include "rpg_common.h"
 #include "rpg_common_idumpstate.h"
 
 #include <ace/Singleton.h>
-#include <ace/Synch.h>
 #include <ace/Event_Handler.h>
 #include <ace/Time_Value.h>
 
-// timer queue
-#include <ace/Event_Handler_Handle_Timeout_Upcall.h>
-#include <ace/Timer_Queue_T.h>
-#include <ace/Timer_Heap_T.h>
-#include <ace/Timer_Queue_Adapters.h>
-
-// forward declarations
-class RPG_Common_ITimer;
-
 class RPG_Common_Export RPG_Common_Timer_Manager
- : public RPG_Common_IDumpState
+ : public RPG_Common_TimerQueue_t,
+   public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors
   friend class ACE_Singleton<RPG_Common_Timer_Manager,
                              ACE_Recursive_Thread_Mutex>;
 
  public:
-  // *IMPORTANT NOTE*: this is a fire-and-forget API (assumes resp. for the event handler)...
-  bool scheduleTimer(ACE_Event_Handler*,    // timer dispatch handler
-                     const void*,           // act (== dispatch argument)
-                     const ACE_Time_Value&, // period (starting NOW)
-                     const bool&,           // reschedule interval ?
-                     int&);                 // return value: timer ID
-  void cancelTimer(const int&); // timer ID
+  //// *IMPORTANT NOTE*: this is a fire-and-forget API (assumes resp. for the event handler)...
+  //bool scheduleTimer(ACE_Event_Handler*,    // timer dispatch handler
+  //                   const void*,           // act (== dispatch argument)
+  //                   const ACE_Time_Value&, // period (starting NOW)
+  //                   const bool&,           // reschedule interval ?
+  //                   int&);                 // return value: timer ID
+  //void cancelTimer(const int&); // timer ID
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  private:
+  typedef RPG_Common_TimerQueue_t inherited;
+
   // safety measures
   RPG_Common_Timer_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Timer_Manager(const RPG_Common_Timer_Manager&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Timer_Manager& operator=(const RPG_Common_Timer_Manager&));
   virtual ~RPG_Common_Timer_Manager();
 
-  // these typedefs ensure that we use the minimal amount of locking necessary
-  typedef ACE_Event_Handler_Handle_Timeout_Upcall UPCALL_TYPE;
-  typedef ACE_Timer_Heap_T<ACE_Event_Handler*, UPCALL_TYPE, ACE_Null_Mutex> TIMERHEAP_TYPE;
-  typedef ACE_Timer_Heap_Iterator_T<ACE_Event_Handler*, UPCALL_TYPE, ACE_Null_Mutex> TIMERHEAPITERATOR_TYPE;
-// typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> TIMERQUEUE_TYPE;
-  typedef ACE_Thread_Timer_Queue_Adapter<TIMERHEAP_TYPE> RPG_Common_TimerQueue_t;
-
   // helper methods
-  // *WARNING*: needs to be called with myLock held !
   void fini_timers();
-
-  // make API re-entrant
-  mutable ACE_Thread_Mutex myLock;
-
-  // timer queue
-  RPG_Common_TimerQueue_t  myTimerQueue;
 };
 
 typedef ACE_Singleton<RPG_Common_Timer_Manager,

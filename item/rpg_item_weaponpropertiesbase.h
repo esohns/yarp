@@ -13,7 +13,7 @@ struct RPG_Item_Export RPG_Item_WeaponPropertiesBase
  : public RPG_Item_PropertiesBase
 {
   RPG_Item_WeaponType weaponType;
-  RPG_Item_WeaponCategory weaponCategory;
+  RPG_Item_WeaponCategory category;
   RPG_Item_WeaponClass weaponClass;
   RPG_Dice_Roll baseDamage;
   RPG_Item_CriticalHitProperties criticalHit;

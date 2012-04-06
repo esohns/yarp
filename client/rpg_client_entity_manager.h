@@ -50,9 +50,9 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   void init(RPG_Graphics_SDLWindowBase*); // target window handle
 
   // manage entities
-  // *NOTE*: this is a fire-and-forget API with regard to the second parameter !
   void add(const RPG_Engine_EntityID_t&, // id
-           SDL_Surface*);                // graphic handle
+           SDL_Surface*,                 // graphic handle
+           const bool& = true);          // assume responsibility for graphic ?
   void remove(const RPG_Engine_EntityID_t&); // id
   bool cached(const RPG_Engine_EntityID_t&) const; // id
 
@@ -80,6 +80,7 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   struct RPG_Client_EntityCacheEntry_t
   {
     SDL_Surface*            graphic;
+    bool                    free_graphic_on_removal;
     RPG_Graphics_Position_t bg_position;
     SDL_Surface*            bg;
   };

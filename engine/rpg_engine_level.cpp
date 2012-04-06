@@ -22,6 +22,7 @@
 #include "rpg_engine_level.h"
 
 #include "rpg_engine_defines.h"
+#include "rpg_engine_event_manager.h"
 #include "rpg_engine_common_tools.h"
 
 #include <rpg_map_common_tools.h>
@@ -36,9 +37,9 @@ ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> RPG_Engine_Level::myCurre
 
 RPG_Engine_Level::RPG_Engine_Level()
  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
-//   myCondition(myLock),
 //    myEntities(),
    myActivePlayer(0),
+   mySpawnTimerID(-1),
    myClient(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Engine_Level"));
@@ -53,24 +54,23 @@ RPG_Engine_Level::RPG_Engine_Level()
   inherited::myMap.plan.size_y = 0;
 }
 
-RPG_Engine_Level::RPG_Engine_Level(RPG_Engine_IWindow* client_in,
-                                   const RPG_Map_t& map_in)
- : inherited(map_in),
-   myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
-//   myCondition(myLock),
-   myClient(client_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Engine_Level"));
-
-  // sanity check
-  ACE_ASSERT(client_in);
-
-  // use member message queue...
-  inherited2::msg_queue(&myQueue);
-
-  // set group ID for worker thread(s)
-  inherited2::grp_id(RPG_ENGINE_DEF_TASK_GROUP_ID);
-}
+//RPG_Engine_Level::RPG_Engine_Level(RPG_Engine_IWindow* client_in,
+//                                   const RPG_Map_t& map_in)
+// : inherited(map_in),
+//   myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
+//   myClient(client_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Engine_Level"));
+//
+//  // sanity check
+//  ACE_ASSERT(client_in);
+//
+//  // use member message queue...
+//  inherited2::msg_queue(&myQueue);
+//
+//  // set group ID for worker thread(s)
+//  inherited2::grp_id(RPG_ENGINE_DEF_TASK_GROUP_ID);
+//}
 
 RPG_Engine_Level::~RPG_Engine_Level()
 {
@@ -266,8 +266,17 @@ RPG_Engine_Level::start()
                inherited2::grp_id(),
                thread_ids[0]));
 
-  // start AI
+  // start AI (&& monster spawning)
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->start();
+  RPG_Engine_Event spawn_event;
+  spawn_event.type        = EVENT_SPAWN_MONSTER;
+  spawn_event.monster     = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE);
+  spawn_event.probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+  ACE_ASSERT(mySpawnTimerID == -1);
+  mySpawnTimerID = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
+                                                                            ACE_Time_Value(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0),
+                                                                            false);
+  ACE_ASSERT(mySpawnTimerID != -1);
 }
 
 void
@@ -279,7 +288,10 @@ RPG_Engine_Level::stop()
   if (!isRunning())
     return;
 
-  // stop AI
+  // stop AI (&& monster spawning)
+  ACE_ASSERT(mySpawnTimerID != -1);
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(mySpawnTimerID);
+  mySpawnTimerID = -1;
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->stop();
 
   // drop control message into the queue...
@@ -386,6 +398,9 @@ RPG_Engine_Level::init(RPG_Engine_IWindow* client_in,
 
   myClient = client_in;
   inherited::init(map_in);
+
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(RPG_ENGINE_DEF_MAX_NUM_SPAWNED,
+                                                       this);
 }
 
 void
@@ -418,19 +433,20 @@ RPG_Engine_Level::add(RPG_Engine_Entity* entity_in)
   } // end lock scope
 
   // notify client / window
+  RPG_Engine_Command command = COMMAND_E2C_ENTITY_ADD;
   RPG_Engine_ClientParameters_t parameters;
   parameters.push_back(&id);
   parameters.push_back(entity_in->graphic);
   try
   {
-    myClient->notify(COMMAND_ENTITY_ADD,
+    myClient->notify(command,
                      parameters);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_ENTITY_ADD).c_str()));
+               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command).c_str()));
   }
 
   return id;
@@ -466,18 +482,19 @@ RPG_Engine_Level::remove(const RPG_Engine_EntityID_t& id_in)
   } // end lock scope
 
   // notify client / window
+  RPG_Engine_Command command = COMMAND_E2C_ENTITY_REMOVE;
   RPG_Engine_ClientParameters_t parameters;
   parameters.push_back(&const_cast<RPG_Engine_EntityID_t&>(id_in));
   try
   {
-    myClient->notify(COMMAND_ENTITY_REMOVE,
+    myClient->notify(command,
                      parameters);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_ENTITY_REMOVE).c_str()));
+               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command).c_str()));
   }
 }
 
@@ -939,11 +956,6 @@ RPG_Engine_Level::handleEntities()
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::handleEntities"));
 
   bool action_complete = true;
-  bool do_notify = false;
-  RPG_Engine_EntityID_t entity_id = 0;
-  RPG_Map_Position_t position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                               std::numeric_limits<unsigned int>::max());
-  RPG_Engine_ClientParameters_t parameters;
   RPG_Engine_ClientNotifications_t notifications;
 
   {
@@ -953,8 +965,6 @@ RPG_Engine_Level::handleEntities()
          iterator != myEntities.end();
          iterator++)
     {
-      parameters.clear();
-
       // *TODO*: check for actions/round limit
       if ((*iterator).second->actions.empty())
         continue;
@@ -970,16 +980,81 @@ RPG_Engine_Level::handleEntities()
           if ((target == myEntities.end()) ||
               !RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
                                                 (*target).second->position))
+          {
+            (*iterator).second->modes.erase(ENTITYMODE_FIGHTING);
+
             break; // nothing to do...
+          } // end IF
 
           action_complete = false;
           (*iterator).second->modes.insert(ENTITYMODE_FIGHTING);
 
-          //// debug info
-          //ACE_DEBUG((LM_DEBUG,
-          //           ACE_TEXT("\"%s\" attacks \"%s\"...\n"),
-          //           (*iterator).second->character->getName().c_str(),
-          //           (*target).second->character->getName().c_str()));
+          // *TODO*: implement combat sitautions, in-turn-movement, reach
+          RPG_Engine_Common_Tools::attack((*iterator).second->character,
+                                          (*target).second->character,
+                                          ATTACK_NORMAL,
+                                          DEFENSE_NORMAL,
+                                          true,
+                                          RPG_COMBAT_DEF_ADJACENT_DISTANCE);
+
+          // target helpless ?
+          if (RPG_Engine_Common_Tools::isCharacterHelpless((*target).second->character))
+            action_complete = true; // --> done fighting
+
+          // target disabled ?
+          if (RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character))
+          {
+            // notify client window
+            RPG_Engine_ClientParameters_t* parameters = NULL;
+            parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
+            if (!parameters)
+            {
+              ACE_DEBUG((LM_CRITICAL,
+                         ACE_TEXT("unable to allocate memory, aborting\n")));
+
+              return;
+            } // end IF
+            RPG_Engine_EntityID_t* entity_id = NULL;
+            entity_id = new(std::nothrow) RPG_Engine_EntityID_t;
+            if (!entity_id)
+            {
+              ACE_DEBUG((LM_CRITICAL,
+                         ACE_TEXT("unable to allocate memory, aborting\n")));
+
+              // clean up
+              delete parameters;
+
+              return;
+            } // end IF
+            *entity_id = (*target).first;
+            parameters->push_back(entity_id);
+            notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_REMOVE, parameters));
+
+            // remove entity
+            if (!(*target).second->character->isPlayerCharacter())
+            {
+              // clean up NPC (!) entities...
+              delete (*target).second->character;
+              delete (*target).second;
+            }
+            else if ((*target).first == myActivePlayer)
+            {
+              myActivePlayer = 0;
+
+              // notify client window
+              RPG_Engine_ClientParameters_t* parameters = NULL;
+              parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
+              if (!parameters)
+              {
+                ACE_DEBUG((LM_CRITICAL,
+                           ACE_TEXT("unable to allocate memory, aborting\n")));
+
+                return;
+              } // end IF
+              notifications.push_back(std::make_pair(COMMAND_E2C_QUIT, parameters));
+            } // end ELSEIF
+            myEntities.erase(target);
+          } // end IF
 
           break;
         }
@@ -991,14 +1066,33 @@ RPG_Engine_Level::handleEntities()
                      (current_action.command == COMMAND_DOOR_OPEN),
                      toggled);
 
-          // notify client window
+          // notify client window ?
           if (toggled)
           {
-            position = current_action.position;
-            parameters.push_back(&position);
-            notifications.push_back(std::make_pair(current_action.command, parameters));
+            RPG_Engine_ClientParameters_t* parameters = NULL;
+            parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
+            if (!parameters)
+            {
+              ACE_DEBUG((LM_CRITICAL,
+                         ACE_TEXT("unable to allocate memory, aborting\n")));
 
-            do_notify = true;
+              return;
+            } // end IF
+            RPG_Map_Position_t* position = NULL;
+            position = new(std::nothrow) RPG_Map_Position_t;
+            if (!position)
+            {
+              ACE_DEBUG((LM_CRITICAL,
+                         ACE_TEXT("unable to allocate memory, aborting\n")));
+
+              // clean up
+              delete parameters;
+
+              return;
+            } // end IF
+            *position = current_action.position;
+            parameters->push_back(position);
+            notifications.push_back(std::make_pair(current_action.command, parameters));
           } // end IF
 
           break;
@@ -1112,12 +1206,45 @@ RPG_Engine_Level::handleEntities()
           action_complete = false;
 
           // notify client window
-          entity_id = (*iterator).first;
-          parameters.push_back(&entity_id);
-          position = (*iterator).second->position;
-          parameters.push_back(&position);
-          notifications.push_back(std::make_pair(COMMAND_ENTITY_UPDATE, parameters));
-          do_notify = true;
+          RPG_Engine_ClientParameters_t* parameters = NULL;
+          parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
+          if (!parameters)
+          {
+            ACE_DEBUG((LM_CRITICAL,
+                        ACE_TEXT("unable to allocate memory, aborting\n")));
+
+            return;
+          } // end IF
+          RPG_Engine_EntityID_t* entity_id = NULL;
+          entity_id = new(std::nothrow) RPG_Engine_EntityID_t;
+          if (!entity_id)
+          {
+            ACE_DEBUG((LM_CRITICAL,
+                        ACE_TEXT("unable to allocate memory, aborting\n")));
+
+            // clean up
+            delete parameters;
+
+            return;
+          } // end IF
+          *entity_id = (*iterator).first;
+          parameters->push_back(entity_id);
+          RPG_Map_Position_t* position = NULL;
+          position = new(std::nothrow) RPG_Map_Position_t;
+          if (!position)
+          {
+            ACE_DEBUG((LM_CRITICAL,
+                        ACE_TEXT("unable to allocate memory, aborting\n")));
+
+            // clean up
+            delete entity_id;
+            delete parameters;
+
+            return;
+          } // end IF
+          *position = (*iterator).second->position;
+          parameters->push_back(position);
+          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_UPDATE, parameters));
 
           break;
         }
@@ -1134,9 +1261,6 @@ RPG_Engine_Level::handleEntities()
 
       if (action_complete)
         (*iterator).second->actions.pop_front();
-
-      if (do_notify)
-        break;
     } // end FOR
   } // end lock scope
 
@@ -1147,7 +1271,7 @@ RPG_Engine_Level::handleEntities()
   {
     try
     {
-      myClient->notify((*iterator).first, (*iterator).second);
+      myClient->notify((*iterator).first, *(*iterator).second);
     }
     catch (...)
     {
@@ -1156,4 +1280,17 @@ RPG_Engine_Level::handleEntities()
                  RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).first).c_str()));
     }
   } // end FOR
+  // clean up
+  for (RPG_Engine_ClientNotificationsConstIterator_t iterator = notifications.begin();
+       iterator != notifications.end();
+       iterator++)
+    if ((*iterator).second)
+    {
+      for (RPG_Engine_ClientParametersConstIterator_t iterator2 = (*iterator).second->begin();
+           iterator2 != (*iterator).second->end();
+           iterator2++)
+        delete (*iterator2);
+
+      delete (*iterator).second;
+    } // end IF
 }
