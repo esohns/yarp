@@ -43,9 +43,14 @@ class RPG_Map_Export RPG_Map_Pathfinding_Tools
                        const RPG_Map_Position_t&,  // end position
                        RPG_Map_Path_t&);           // return value: path
 
+  // "classic" raytrace algorithm (aka "line-of-sight" / "field-of-view")
+  static void findPath(const RPG_Map_Position_t&, // start position
+                       const RPG_Map_Position_t&, // end position
+                       RPG_Map_PositionList_t&);  // return value: path
+
   // *NOTE*: returns a ("best-guess") estimate of the relative direction from A to B
-  static const RPG_Map_Direction getDirection(const RPG_Map_Position_t&,  // start position
-                                              const RPG_Map_Position_t&); // end position
+  static RPG_Map_Direction getDirection(const RPG_Map_Position_t&,  // start position
+                                        const RPG_Map_Position_t&); // end position
 
   static void print(const RPG_Map_Path_t&,       // path
                     const RPG_Map_FloorPlan_t&); // floor plan

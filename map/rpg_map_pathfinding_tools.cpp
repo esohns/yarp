@@ -299,7 +299,47 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
   //             end_in.second));
 }
 
-const RPG_Map_Direction
+void
+RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Position_t& start_in,
+                                    const RPG_Map_Position_t& end_in,
+                                    RPG_Map_PositionList_t& path_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::findPath"));
+
+  // init return value(s)
+  path_out.clear();
+
+  int dx    = ::abs(static_cast<int>(end_in.first - start_in.first));
+  int dy    = ::abs(static_cast<int>(end_in.second - start_in.second));
+  int x     = start_in.first;
+  int y     = start_in.second;
+  int n     = 1 + dx + dy;
+  int x_inc = (end_in.first  > start_in.first)  ? 1 : -1;
+  int y_inc = (end_in.second > start_in.second) ? 1 : -1;
+  int error = dx - dy;
+  dx       *= 2;
+  dy       *= 2;
+
+  for (;
+       n > 0;
+       --n)
+  {
+    path_out.push_back(std::make_pair(x, y));
+
+    if (error > 0)
+    {
+      x     += x_inc;
+      error -= dy;
+    } // end IF
+    else
+    {
+      y     += y_inc;
+      error += dx;
+    } // end ELSE
+  } // end FOR
+}
+
+RPG_Map_Direction
 RPG_Map_Pathfinding_Tools::getDirection(const RPG_Map_Position_t& startPosition_in,
                                         const RPG_Map_Position_t& endPosition_in)
 {

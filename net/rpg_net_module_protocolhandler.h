@@ -45,10 +45,10 @@ class RPG_Net_Module_ProtocolHandler
   virtual ~RPG_Net_Module_ProtocolHandler();
 
   // initialization
-  const bool init(RPG_Stream_IAllocator*,   // message allocator
-                  const unsigned long& = 0, // client "ping" interval (server) [0 --> OFF]
-                  const bool& = false,      // automatically answer "ping" messages (client)
-                  const bool& = false);     // print dot ('.') for every answered PING to stderr (client)
+  bool init(RPG_Stream_IAllocator*,  // message allocator
+            const unsigned int& = 0, // client "ping" interval (server) [0 --> OFF]
+            const bool& = false,     // automatically answer "ping" messages (client)
+            const bool& = false);    // print dot ('.') for every answered PING to stderr (client)
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
@@ -71,18 +71,18 @@ class RPG_Net_Module_ProtocolHandler
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler& operator=(const RPG_Net_Module_ProtocolHandler&));
 
   // helper methods
-  RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
+  RPG_Net_Message* allocateMessage(const unsigned int&); // requested size
 
   // timer stuff
   RPG_Common_TimerHandler myClientPingHandler;
-  int                     myClientPingTimerID;
+  long                    myClientPingTimerID;
 
   RPG_Stream_IAllocator*  myAllocator;
-  unsigned long           myCounter;
+  unsigned int            myCounter;
   bool                    myAutomaticPong;
   bool                    myPrintPongDot;
   bool                    myIsInitialized;
-//   unsigned long      mySessionID;
+//  unsigned int            mySessionID;
 };
 
 // declare module

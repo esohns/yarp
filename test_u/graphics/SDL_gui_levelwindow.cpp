@@ -1240,39 +1240,39 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
   } // end SWITCH
 }
 
-//void
-//SDL_GUI_LevelWindow::init()
-//{
-//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
-//
-//  // clean up
-//  myFloorEdgeTiles.clear();
-//  myWallTiles.clear();
-//  myDoorTiles.clear();
-//
-//  // init tiles / position
-//  RPG_Client_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
-//                                          myCurrentFloorEdgeSet,
-//                                          myFloorEdgeTiles);
-//  RPG_Client_Common_Tools::initWalls(myLevelState->getFloorPlan(),
-//                                     myCurrentWallSet,
-//                                     myWallTiles);
-//  RPG_Client_Common_Tools::initDoors(myLevelState->getFloorPlan(),
-//                                     *myLevelState,
-//                                     myCurrentDoorSet,
-//                                     myDoorTiles);
-//
-//  // init view
-//  RPG_Map_Size_t size = myLevelState->getSize();
-//  setView((size.first  / 2),
-//          (size.second / 2));
-//
-//  // *NOTE*: fiddling with the view invalidates the cursor BG !
-//  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-//  // clear highlight BG
-//  RPG_Graphics_Surface::clear(myHighlightBG);
-//}
-//
+void
+SDL_GUI_LevelWindow::init()
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
+
+  // clean up
+  myFloorEdgeTiles.clear();
+  myWallTiles.clear();
+  myDoorTiles.clear();
+
+  // init tiles / position
+  RPG_Client_Common_Tools::initFloorEdges(myLevelState->getFloorPlan(),
+                                          myCurrentFloorEdgeSet,
+                                          myFloorEdgeTiles);
+  RPG_Client_Common_Tools::initWalls(myLevelState->getFloorPlan(),
+                                     myCurrentWallSet,
+                                     myWallTiles);
+  RPG_Client_Common_Tools::initDoors(myLevelState->getFloorPlan(),
+                                     *myLevelState,
+                                     myCurrentDoorSet,
+                                     myDoorTiles);
+
+  // init view
+  RPG_Map_Size_t size = myLevelState->getSize();
+  setView((size.first  / 2),
+          (size.second / 2));
+
+  // *NOTE*: fiddling with the view invalidates the cursor BG !
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
+  // clear highlight BG
+  RPG_Graphics_Surface::clear(myHighlightBG);
+}
+
 //void
 //SDL_GUI_LevelWindow::redraw()
 //{
@@ -1281,15 +1281,15 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 ////   draw();
 ////   refresh();
 //}
-//
-//void
-//SDL_GUI_LevelWindow::setView(const RPG_Map_Position_t& position_in)
-//{
-//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
-//
-//  myView = position_in;
-//}
-//
+
+void
+SDL_GUI_LevelWindow::setView(const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
+
+  myView = position_in;
+}
+
 //void
 //SDL_GUI_LevelWindow::toggleDoor(const RPG_Map_Position_t& position_in)
 //{
@@ -1377,7 +1377,7 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
     case COMMAND_STOP:
     case COMMAND_TRAVEL:
       return;
-    case COMMAND_ENTITY_ADD:
+    case COMMAND_E2C_ENTITY_ADD:
     {
       ACE_ASSERT(parameters_in.size() == 2);
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()),
@@ -1385,14 +1385,14 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
 
       return;
     }
-    case COMMAND_ENTITY_REMOVE:
+    case COMMAND_E2C_ENTITY_REMOVE:
     {
       ACE_ASSERT(parameters_in.size() == 1);
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()));
 
       return;
     }
-    case COMMAND_ENTITY_UPDATE:
+    case COMMAND_E2C_ENTITY_UPDATE:
     {
       ACE_ASSERT(parameters_in.size() == 2);
 
@@ -1408,6 +1408,12 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
                                    getScreen());
 
       break;
+    }
+    case COMMAND_E2C_QUIT:
+    {
+      ACE_ASSERT(parameters_in.empty());
+
+      return;
     }
     default:
     {

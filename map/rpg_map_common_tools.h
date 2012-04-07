@@ -66,6 +66,10 @@ class RPG_Map_Export RPG_Map_Common_Tools
   static bool isInsideRoom(const RPG_Map_Position_t&,
                            const RPG_Map_FloorPlan_t&);
 
+  static bool hasLineOfSight(const RPG_Map_Position_t&,   // start position
+                             const RPG_Map_Position_t&,   // end position
+                             const RPG_Map_Positions_t&); // obstacles
+
   static void buildCorridor(const RPG_Map_Path_t&, // path
                             RPG_Map_Positions_t&); // return value: corridor
 
@@ -218,6 +222,12 @@ class RPG_Map_Export RPG_Map_Common_Tools
                               const unsigned int&,   // max. #doors/room
                               RPG_Map_Positions_t&,  // return value: seed positions
                               RPG_Map_FloorPlan_t&); // return value: floor plan
+
+  static bool isSquare(const RPG_Map_Positions_t&); // area
+  static void perimeter(const RPG_Map_Zone_t&, // room
+                        RPG_Map_Zone_t&);      // return value: perimeter
+  static unsigned int countAdjacentDoors(const RPG_Map_Positions_t&,  // area
+                                         const RPG_Map_FloorPlan_t&); // floor plan
 };
 
 #endif

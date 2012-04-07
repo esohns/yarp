@@ -97,7 +97,7 @@ class RPG_Net_Module_SocketHandler
 
   // timer stuff
   STATISTICHANDLER_TYPE myStatCollectHandler;
-  int                   myStatCollectHandlerID;
+  long                  myStatCollectHandlerID;
 
   // protocol stuff
   unsigned int          myCurrentMessageLength;

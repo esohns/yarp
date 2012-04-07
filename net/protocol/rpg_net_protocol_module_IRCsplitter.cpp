@@ -35,7 +35,7 @@ RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
    mySessionID(0),
    myStatCollectHandler(this,
                         STATISTICHANDLER_TYPE::ACTION_COLLECT),
-   myStatCollectHandlerID(0),
+   myStatCollectHandlerID(-1),
    myScannerContext(NULL),
    myCurrentBufferState(NULL),
    myCurrentNumFrames(0),
@@ -59,8 +59,11 @@ RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter"));
 
   // clean up timer if necessary
-  if (myStatCollectHandlerID)
-    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
+  if (myStatCollectHandlerID != -1)
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                 myStatCollectHandlerID));
 
   // fini scanner context
   if (myScannerContext)
@@ -90,9 +93,12 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
     // clean up
     myCrunchMessages = false;
     mySessionID = 0;
-    if (myStatCollectHandlerID)
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
-    myStatCollectHandlerID = 0;
+    if (myStatCollectHandlerID != -1)
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                   myStatCollectHandlerID));
+    myStatCollectHandlerID = -1;
     myCurrentNumFrames = 0;
     if (myCurrentBufferState)
       RPG_Net_Protocol_IRCBisect__delete_buffer(myCurrentBufferState, myScannerContext);
@@ -115,15 +121,15 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
   {
     // schedule regular statistics collection...
     ACE_Time_Value collecting_interval(statisticsCollectionInterval_in, 0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myStatCollectHandler,   // handler
-                                                                      NULL,                    // act
-                                                                      collecting_interval,     // interval
-                                                                      false,                   // one-shot ?
-                                                                      myStatCollectHandlerID)) // return value: id
+    ACE_ASSERT(myStatCollectHandlerID == -1);
+    myStatCollectHandlerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,                         // handler
+                                                                                     NULL,                                          // act
+                                                                                     ACE_OS::gettimeofday () + collecting_interval, // wakeup time
+                                                                                     collecting_interval);                          // interval
+    if (myStatCollectHandlerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
-                 statisticsCollectionInterval_in));
+                 ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
       // what else can we do ?
       return false;

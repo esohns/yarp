@@ -52,10 +52,12 @@ class SDL_GUI_LevelWindow
   // adjust viewport
   void setView(const int&,
                const int&); // view (relative map coordinates)
+  void setView(const RPG_Map_Position_t&);
   // implement (part of) RPG_Graphics_IWindow 
-  virtual const RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
   // set level properties
+  void init();
   void init(const RPG_Graphics_MapStyle_t&, // map style
             const bool&);                   // debug: show floor/map tile indexes
   void setStyle(const RPG_Graphics_StyleUnion&);
@@ -69,14 +71,12 @@ class SDL_GUI_LevelWindow
                            bool&);                // return value: redraw ?
 
   // implement RPG_Engine_IWindow
-  //virtual void init();
   //virtual void redraw();
   //// *NOTE*: this triggers a complete redraw !
-  //virtual void setView(const RPG_Map_Position_t&);
   //virtual void toggleDoor(const RPG_Map_Position_t&);
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify(const RPG_Engine_Command&,
-                      const RPG_Engine_ClientParameters_t&) = 0;
+                      const RPG_Engine_ClientParameters_t&);
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;

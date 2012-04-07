@@ -119,12 +119,13 @@ struct RPG_Map_FloorPlan_t
   RPG_Map_Positions_t unmapped; // (!floor)
   RPG_Map_Positions_t walls;
   RPG_Map_Doors_t doors;
+  bool rooms_are_square;
 };
 
 struct RPG_Map_t
 {
-  std::string name;          // name
-  RPG_Map_Position_t start;  // starting position
+  std::string         name;  // name
+  RPG_Map_Position_t  start; // starting position
   RPG_Map_Positions_t seeds; // seed points
   RPG_Map_FloorPlan_t plan;  // floor plan
 };

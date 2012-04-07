@@ -40,9 +40,9 @@ class RPG_Net_Remote_Comm
   struct MessageHeader
   {
     // *NOTE*: messageLength is (currently) defined as:
-    // *PORTABILITY*: total message length - sizeof(unsigned long) !
-    unsigned long messageLength;
-    MessageType   messageType;
+    // *PORTABILITY*: total message length - sizeof(unsigned int) !
+    unsigned int messageLength;
+    MessageType  messageType;
 #ifdef __GNUC__
   } __attribute__ ((__packed__));
 #else
@@ -53,7 +53,7 @@ class RPG_Net_Remote_Comm
   struct PingMessage
   {
     MessageHeader messageHeader;
-    unsigned long counter;
+    unsigned int counter;
 #ifdef __GNUC__
   } __attribute__ ((__packed__));
 #else

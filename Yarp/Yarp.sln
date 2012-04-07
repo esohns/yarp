@@ -92,6 +92,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_sound_parser", "..\t
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_path_finder_gui", "..\test_u\test_u_path_finder_gui.vcxproj", "{10A14AEB-4BBD-4C77-9D12-424125C4428C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_vision", "..\test_u\map_vision.vcxproj", "{837B8F9A-A2FC-4B60-A716-C6EB6FCEAE40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -250,6 +252,10 @@ Global
 		{10A14AEB-4BBD-4C77-9D12-424125C4428C}.Debug|Win32.Build.0 = Debug|Win32
 		{10A14AEB-4BBD-4C77-9D12-424125C4428C}.Release|Win32.ActiveCfg = Release|Win32
 		{10A14AEB-4BBD-4C77-9D12-424125C4428C}.Release|Win32.Build.0 = Release|Win32
+		{837B8F9A-A2FC-4B60-A716-C6EB6FCEAE40}.Debug|Win32.ActiveCfg = Debug|Win32
+		{837B8F9A-A2FC-4B60-A716-C6EB6FCEAE40}.Debug|Win32.Build.0 = Debug|Win32
+		{837B8F9A-A2FC-4B60-A716-C6EB6FCEAE40}.Release|Win32.ActiveCfg = Release|Win32
+		{837B8F9A-A2FC-4B60-A716-C6EB6FCEAE40}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

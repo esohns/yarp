@@ -35,7 +35,7 @@ RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
  : //inherited(),
    myClientPingHandler(this,   // dispatch ourselves
                        false), // ping client at REGULAR intervals...
-   myClientPingTimerID(0),
+   myClientPingTimerID(-1),
    myAllocator(NULL),
    myCounter(1),
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
@@ -52,13 +52,16 @@ RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler"));
 
   // clean up timer if necessary
-  if (myClientPingTimerID)
-    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myClientPingTimerID);
+  if (myClientPingTimerID != -1)
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myClientPingTimerID) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                 myClientPingTimerID));
 }
 
-const bool
+bool
 RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
-                                     const unsigned long& clientPingInterval_in,
+                                     const unsigned int& clientPingInterval_in,
                                      const bool& autoAnswerPings_in,
                                      const bool& printPongDot_in)
 {
@@ -74,8 +77,11 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
 
     // reset state
     if (myClientPingTimerID != -1)
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myClientPingTimerID);
-    myClientPingTimerID = 0;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myClientPingTimerID) == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                   myClientPingTimerID));
+    myClientPingTimerID = -1;
     myAllocator = NULL;
     myCounter = 1;
     myAutomaticPong = false;
@@ -90,15 +96,15 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
   {
     // schedule ourselves...
     ACE_Time_Value clientPing_interval(clientPingInterval_in, 0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myClientPingHandler, // handler
-                                                                      NULL,                 // act
-                                                                      clientPing_interval,  // interval
-                                                                      false,                // recurrent
-                                                                      myClientPingTimerID)) // return value: timer ID
+    ACE_ASSERT(myClientPingTimerID == -1);
+    myClientPingTimerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myClientPingHandler,                          // handler
+                                                                                  NULL,                                          // act
+                                                                                  ACE_OS::gettimeofday () + clientPing_interval, // wakeup time
+                                                                                  clientPing_interval);                          // interval
+    if (myClientPingTimerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
-                 clientPingInterval_in));
+                 ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
       return false;
     } // end IF
@@ -130,7 +136,7 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
   // retrieve type of message and other details...
-  RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*> (message_inout->rd_ptr());
+  RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*>(message_inout->rd_ptr());
   switch (message_header->messageType)
   {
     case RPG_Net_Remote_Comm::RPG_NET_PING:
@@ -152,11 +158,11 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
           return;
         } // end IF
         // step1: init reply
-        RPG_Net_Remote_Comm::PongMessage* reply_struct = reinterpret_cast<RPG_Net_Remote_Comm::PongMessage*> (reply_message->wr_ptr());
+        RPG_Net_Remote_Comm::PongMessage* reply_struct = reinterpret_cast<RPG_Net_Remote_Comm::PongMessage*>(reply_message->wr_ptr());
         ACE_OS::memset(reply_struct,
                        0,
                        sizeof(RPG_Net_Remote_Comm::PongMessage));
-        reply_struct->messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::PongMessage) - sizeof(unsigned long);
+        reply_struct->messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::PongMessage) - sizeof(unsigned int);
         reply_struct->messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
         reply_message->wr_ptr(sizeof(RPG_Net_Remote_Comm::PongMessage));
         // step2: send it upstream
@@ -253,12 +259,12 @@ RPG_Net_Module_ProtocolHandler::handleTimeout(const void* arg_in)
 
   // step1: init ping data
   // *TODO*: clean this up and handle endianness consistently !
-  RPG_Net_Remote_Comm::PingMessage* ping_struct = reinterpret_cast<RPG_Net_Remote_Comm::PingMessage*> (ping_message->wr_ptr());
+  RPG_Net_Remote_Comm::PingMessage* ping_struct = reinterpret_cast<RPG_Net_Remote_Comm::PingMessage*>(ping_message->wr_ptr());
   ACE_OS::memset(ping_struct,
                  0,
                  sizeof(RPG_Net_Remote_Comm::PingMessage));
   ping_struct->messageHeader.messageLength = (sizeof(RPG_Net_Remote_Comm::PingMessage) -
-                                              sizeof(unsigned long));
+                                              sizeof(unsigned int));
   ping_struct->messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PING;
   ping_struct->counter = myCounter++;
   ping_message->wr_ptr(sizeof(RPG_Net_Remote_Comm::PingMessage));
@@ -292,7 +298,7 @@ RPG_Net_Module_ProtocolHandler::dump_state() const
 }
 
 RPG_Net_Message*
-RPG_Net_Module_ProtocolHandler::allocateMessage(const unsigned long& requestedSize_in)
+RPG_Net_Module_ProtocolHandler::allocateMessage(const unsigned int& requestedSize_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::allocateMessage"));
 
@@ -301,7 +307,7 @@ RPG_Net_Module_ProtocolHandler::allocateMessage(const unsigned long& requestedSi
 
   try
   {
-    message_out = static_cast<RPG_Net_Message*> (myAllocator->malloc(requestedSize_in));
+    message_out = static_cast<RPG_Net_Message*>(myAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {

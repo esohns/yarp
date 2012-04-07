@@ -104,9 +104,9 @@ class RPG_Net_Module_RuntimeStatistic
   // timer stuff
 //   RPG_Net_TimerQueue_t               myTimerQueue;
   RPG_Net_ResetCounterHandler        myResetTimeoutHandler;
-  int                                myResetTimeoutHandlerID;
+  long                               myResetTimeoutHandlerID;
   STATISTICHANDLER_TYPE              myLocalReportingHandler;
-  int                                myLocalReportingHandlerID;
+  long                               myLocalReportingHandlerID;
 
   // *GENERIC STATS*
   mutable ACE_Thread_Mutex           myLock;

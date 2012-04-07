@@ -83,7 +83,7 @@ SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow()
   SDL_FreeSurface(mySurface);
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 SDL_GUI_MinimapWindow::getView() const
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::getView"));

@@ -37,10 +37,10 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                                 StatisticsContainerType>::RPG_Net_Module_RuntimeStatistic()
  : myIsInitialized(false),
    myResetTimeoutHandler(this),
-   myResetTimeoutHandlerID(0),
+   myResetTimeoutHandlerID(-1),
    myLocalReportingHandler(this,
                            STATISTICHANDLER_TYPE::ACTION_REPORT),
-   myLocalReportingHandlerID(0),
+   myLocalReportingHandlerID(-1),
    mySessionID(0),
    myNumInboundMessages(0),
    myNumOutboundMessages(0),
@@ -57,15 +57,14 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
   // schedule the second-granularity timer
   ACE_Time_Value second_interval(1, 0); // one second interval
-  if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myResetTimeoutHandler,   // handler
-                                                                    NULL,                     // act
-                                                                    second_interval,          // interval
-                                                                    false,                    // one-shot ?
-                                                                    myResetTimeoutHandlerID)) // return value: timer ID
+  myResetTimeoutHandlerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myResetTimeoutHandler,                    // handler
+                                                                                    NULL,                                      // act
+                                                                                    ACE_OS::gettimeofday () + second_interval, // wakeup time
+                                                                                    second_interval);                          // interval
+  if (myResetTimeoutHandlerID == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
-               1));
+               ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
     // what else can we do ?
     return;
@@ -138,15 +137,15 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
   {
     // schedule the reporting interval timer
     ACE_Time_Value reporting_interval(reportingInterval_in, 0);
-    if (!RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->scheduleTimer(&myLocalReportingHandler,   // handler
-                                                                      NULL,                       // act
-                                                                      reporting_interval,         // interval
-                                                                      false,                      // one-shot ?
-                                                                      myLocalReportingHandlerID)) // return value: timer ID
+    ACE_ASSERT(myLocalReportingHandlerID == -1);
+    myLocalReportingHandlerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myLocalReportingHandler,                     // handler
+                                                                                        NULL,                                         // act
+                                                                                        ACE_OS::gettimeofday () + reporting_interval, // wakeup time
+                                                                                        reporting_interval);                          // interval
+    if (myLocalReportingHandlerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_Timer_Manager::scheduleTimer(%u), aborting\n"),
-                 reportingInterval_in));
+                 ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
       // what else can we do ?
       return false;
@@ -216,7 +215,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
   // add message to statistic...
   // --> increment corresponding counter
-  myMessageTypeStatistics[static_cast<ProtocolCommandType> (message_inout->getCommand())]++;
+  myMessageTypeStatistics[static_cast<ProtocolCommandType>(message_inout->getCommand())]++;
 }
 
 template <typename SessionMessageType,
@@ -428,7 +427,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
                    ACE_TEXT("\"%s\": %u --> %.2f %%\n"),
                    ProtocolMessageType::commandType2String(iter->first).c_str(),
                    iter->second,
-                   static_cast<double> (((iter->second * 100.0) / (myNumInboundMessages - myNumSessionMessages)))));
+                   static_cast<double>(((iter->second * 100.0) / (myNumInboundMessages - myNumSessionMessages)))));
       } // end FOR
     } // end IF
 
@@ -457,16 +456,22 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 
   if (cancelAllTimers_in)
   {
-    if (myResetTimeoutHandlerID)
+    if (myResetTimeoutHandlerID != -1)
     {
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myResetTimeoutHandlerID);
-      myResetTimeoutHandlerID = 0;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myResetTimeoutHandlerID) == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                   myResetTimeoutHandlerID));
+      myResetTimeoutHandlerID = -1;
     } // end IF
   } // end IF
 
-  if (myLocalReportingHandlerID)
+  if (myLocalReportingHandlerID != -1)
   {
-    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myLocalReportingHandlerID);
-    myLocalReportingHandlerID = 0;
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myLocalReportingHandlerID) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                 myLocalReportingHandlerID));
+    myLocalReportingHandlerID = -1;
   } // end IF
 }

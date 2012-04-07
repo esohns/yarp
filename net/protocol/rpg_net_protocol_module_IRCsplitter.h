@@ -106,7 +106,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
 
   // timer stuff
   STATISTICHANDLER_TYPE     myStatCollectHandler;
-  int                       myStatCollectHandlerID;
+  long                      myStatCollectHandlerID;
 
   // scanner
   yyscan_t                  myScannerContext;

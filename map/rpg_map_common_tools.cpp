@@ -42,6 +42,7 @@
 #include <sstream>
 #include <iostream>
 #include <stack>
+#include <iterator>
 
 bool
 RPG_Map_Common_Tools::load(const std::string& filename_in,
@@ -405,6 +406,7 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
   floorPlan_out.unmapped.clear();
   floorPlan_out.walls.clear();
   floorPlan_out.doors.clear();
+  floorPlan_out.rooms_are_square = wantSquareRooms_in;
 
   RPG_Map_Partition_t partition;
   RPG_Map_Positions_t conflicts;
@@ -1666,94 +1668,13 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
     } // end FOR
   } // end IF
 
-  // step3: compute the boundary
-  RPG_Map_ZoneConstIterator_t last;
-  RPG_Map_Position_t upper_left;
-  RPG_Map_Position_t upper_right;
-  RPG_Map_Position_t lower_right;
-  RPG_Map_Position_t lower_left;
-  RPG_Map_PositionList_t trail;
-  RPG_Map_PositionListConstIterator_t trail_iter;
-  index = 0;
+  // step3: compute the perimeter
   for (zones_iter = rooms_out.begin();
        zones_iter != rooms_out.end();
-       zones_iter++, index++)
+       zones_iter++)
   {
     current_zone.clear();
-
-    // step0: sanity check
-    if ((*zones_iter).empty())
-      continue; // nothing to do...
-
-    zone_iter = (*zones_iter).begin();
-    last = (*zones_iter).end(); last--;
-    // step1: compute the 4 corners
-    // upper left == first element
-    upper_left = *zone_iter;
-    // upper right == last element of the first row
-    while ((zone_iter != (*zones_iter).end()) &&
-           ((*zone_iter).second == upper_left.second))
-      zone_iter++;
-    zone_iter--;
-    upper_right = *zone_iter;
-    // lower_right == last element
-    lower_right = *last;
-    // lower_left == first element of the last row
-    if (upper_left.second == lower_right.second)
-      lower_left = upper_left;
-    else
-    {
-      // there's more than one row
-      zone_iter = last;
-      while ((*zone_iter).second == lower_right.second)
-        zone_iter--;
-      zone_iter++;
-      lower_left = *zone_iter;
-    } // end ELSE
-
-    // step2: start at top left position and go around clockwise
-    trail.clear();
-    crawlToPosition(*zones_iter,
-                    upper_left,
-                    upper_right,
-                    DIRECTION_DOWN,
-                    trail);
-    for (trail_iter = trail.begin();
-         trail_iter != trail.end();
-         trail_iter++)
-      current_zone.insert(*trail_iter);
-    trail.clear();
-    crawlToPosition(*zones_iter,
-                    upper_right,
-                    lower_right,
-                    DIRECTION_LEFT,
-                    trail);
-    for (trail_iter = trail.begin();
-         trail_iter != trail.end();
-         trail_iter++)
-      current_zone.insert(*trail_iter);
-    trail.clear();
-    crawlToPosition(*zones_iter,
-                    lower_right,
-                    lower_left,
-                    DIRECTION_UP,
-                    trail);
-    for (trail_iter = trail.begin();
-         trail_iter != trail.end();
-         trail_iter++)
-      current_zone.insert(*trail_iter);
-    trail.clear();
-    crawlToPosition(*zones_iter,
-                    lower_left,
-                    upper_left,
-                    DIRECTION_RIGHT,
-                    trail);
-    for (trail_iter = trail.begin();
-         trail_iter != trail.end();
-         trail_iter++)
-      current_zone.insert(*trail_iter);
-
-//     *zones_iter = current_zone; // do in-place editing...
+    perimeter(*zones_iter, current_zone);
     boundaries_out.push_back(current_zone);
   } // end FOR
 }
@@ -2506,7 +2427,17 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
   // *NOTE*: algorithm is as follows:
   // - perform two "flood-fill"s just beyond the given position - one INSIDE
   //   and one OUTSIDE
-  // --> the smaller area determines INSIDE
+  // - iff (!) this floor plan has SQUARE rooms:
+  //   - if either (!) area is NON-SQUARE, it's OUTSIDE
+  //   --> both areas are SQUARE/NON-SQUARE: the SMALLER area determines INSIDE
+  // --> else, this floor plan MAY have NON-SQUARE rooms:
+  //   - compare # of adjacent doors of both resulting areas (i.e. >= 1)
+  //   - iff (!) either (!) area has only a SINGLE DOOR, it's INSIDE
+  //   --> BOTH areas have more than a SINGLE DOOR:
+  //   [--> *NOTE*: at this point, we start guessing !]
+  //     - if one area is SQUARE and the other is NON-SQUARE, the NON-SQUARE one is OUTSIDE
+  //     - else (BOTH areas are SQUARE-SHAPED or NON-SQUARE-SHAPED):
+  //     --> the SMALLER area is INSIDE
 
   // sanity check(s)
   RPG_Map_Door_t position_door;
@@ -2535,10 +2466,11 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
       position_1.first--; position_2.first++; break;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
+      ACE_DEBUG((LM_CRITICAL,
                  ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
                  RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
-
+      ACE_ASSERT(false);
+      
       return DIRECTION_INVALID;
     }
   } // end SWITCH
@@ -2550,22 +2482,88 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
   RPG_Map_Common_Tools::floodFill(position_2,
                                   floorPlan_in,
                                   area_2);
-
-  switch (orientation)
+  bool area_1_is_square, area_2_is_square;
+  area_1_is_square = RPG_Map_Common_Tools::isSquare(area_1);
+  area_2_is_square = RPG_Map_Common_Tools::isSquare(area_2);
+  if (floorPlan_in.rooms_are_square)
   {
-    case MAP_ORIENTATION_HORIZONTAL:
-      return (area_1.size() <= area_2.size() ? DIRECTION_DOWN : DIRECTION_UP);
-    case MAP_ORIENTATION_VERTICAL:
-      return (area_1.size() <= area_2.size() ? DIRECTION_RIGHT : DIRECTION_LEFT);
-    default:
+    if ((!area_1_is_square && area_2_is_square) ||
+        (area_1_is_square && !area_2_is_square))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                 RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+compare_shape:
+      switch (orientation)
+      {
+        case MAP_ORIENTATION_HORIZONTAL:
+          return (area_1_is_square ? DIRECTION_DOWN : DIRECTION_UP);
+        case MAP_ORIENTATION_VERTICAL:
+          return (area_1_is_square ? DIRECTION_RIGHT : DIRECTION_LEFT);
+        default:
+        {
+          ACE_DEBUG((LM_CRITICAL,
+                     ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
+                     RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+          ACE_ASSERT(false);
 
-      break;
-    }
-  } // end SWITCH
+          return DIRECTION_INVALID;
+        }
+      } // end SWITCH
+    } // end IF
+
+compare_size:
+    switch (orientation)
+    {
+      case MAP_ORIENTATION_HORIZONTAL:
+        return (area_1.size() <= area_2.size() ? DIRECTION_DOWN : DIRECTION_UP);
+      case MAP_ORIENTATION_VERTICAL:
+        return (area_1.size() <= area_2.size() ? DIRECTION_RIGHT : DIRECTION_LEFT);
+      default:
+      {
+        ACE_DEBUG((LM_CRITICAL,
+                   ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
+                   RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+        ACE_ASSERT(false);
+
+        return DIRECTION_INVALID;
+      }
+    } // end SWITCH
+  } // end IF
+
+  // --> this floor plan MAY have NON-SQUARE rooms: (see above)
+  unsigned int area_1_num_doors, area_2_num_doors;
+  area_1_num_doors = RPG_Map_Common_Tools::countAdjacentDoors(area_1,
+                                                              floorPlan_in);
+  area_2_num_doors = RPG_Map_Common_Tools::countAdjacentDoors(area_2,
+                                                              floorPlan_in);
+  ACE_ASSERT(area_1_num_doors && area_2_num_doors);
+  if ((area_1_num_doors == 1) ||
+      (area_2_num_doors == 1))
+  {
+    switch (orientation)
+    {
+      case MAP_ORIENTATION_HORIZONTAL:
+        return ((area_1_num_doors == 1) ? DIRECTION_DOWN : DIRECTION_UP);
+      case MAP_ORIENTATION_VERTICAL:
+        return ((area_1_num_doors == 1) ? DIRECTION_RIGHT : DIRECTION_LEFT);
+      default:
+      {
+        ACE_DEBUG((LM_CRITICAL,
+                   ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
+                   RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+        ACE_ASSERT(false);
+
+        return DIRECTION_INVALID;
+      }
+    } // end SWITCH
+  } // end IF
+
+  if ((!area_1_is_square && area_2_is_square) ||
+      (area_1_is_square && !area_2_is_square))
+    goto compare_shape;
+
+  goto compare_size;
+
+  ACE_NOTREACHED(ACE_TEXT("not reached"));
+  ACE_ASSERT(false);
 
   return DIRECTION_INVALID;
 }
@@ -2821,14 +2819,37 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
   return (area.find(current) != area.end());
 }
 
+bool
+RPG_Map_Common_Tools::hasLineOfSight(const RPG_Map_Position_t& start_in,
+                                     const RPG_Map_Position_t& end_in,
+                                     const RPG_Map_Positions_t& obstacles_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::hasLineOfSight"));
+
+  // step1: compute shortest path (== line-of-sight)
+  RPG_Map_PositionList_t path;
+  RPG_Map_Pathfinding_Tools::findPath(start_in,
+                                      end_in,
+                                      path);
+
+  // step2: path blocked at some point ?
+  RPG_Map_Positions_t line_of_sight, blocked;
+  line_of_sight.insert(path.begin(), path.end());
+  std::set_intersection(obstacles_in.begin(), obstacles_in.end(),
+                        line_of_sight.begin(), line_of_sight.end(),
+                        std::inserter(blocked, blocked.begin()));
+
+  return blocked.empty();
+}
+
 unsigned int
 RPG_Map_Common_Tools::area2Positions(const RPG_Map_Position_t& position1_in,
                                      const RPG_Map_Position_t& position2_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::area2Positions"));
 
-  return ((::abs(static_cast<int>(position1_in.first - position2_in.first)) + 1) *
-          (::abs(static_cast<int>(position1_in.second - position2_in.second)) + 1));
+  return ((::abs(static_cast<int>(position1_in.first)  - static_cast<int>(position2_in.first))  + 1) *
+          (::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second)) + 1));
 }
 
 bool
@@ -2837,8 +2858,8 @@ RPG_Map_Common_Tools::positionInSquare(const RPG_Map_Position_t& position_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::positionInSquare"));
 
-  return ((position_in.first >= square_in.ul.first) &&
-          (position_in.first <= square_in.lr.first) &&
+  return ((position_in.first  >= square_in.ul.first)  &&
+          (position_in.first  <= square_in.lr.first)  &&
           (position_in.second >= square_in.ul.second) &&
           (position_in.second <= square_in.lr.second));
 }
@@ -2887,9 +2908,7 @@ RPG_Map_Common_Tools::intersect(const RPG_Map_Zone_t& map_in,
       // fall through !
     }
     case 0:
-    {
       return false;
-    }
     default:
       break;
   } // end IF
@@ -3164,10 +3183,7 @@ RPG_Map_Common_Tools::crop(RPG_Map_Zone_t& room_inout)
 
   // return original sorting
   room_inout.clear();
-  for (RPG_Map_AltPositionsConstIterator_t iterator = alt_room.begin();
-       iterator != alt_room.end();
-       iterator++)
-    room_inout.insert(*iterator);
+  room_inout.insert(alt_room.begin(), alt_room.end());
 }
 
 // void
@@ -3385,7 +3401,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
     case DIRECTION_UP:
     {
       if ((directions.find(DIRECTION_DOWN) == directions.end()) || // corner
-           (directions.find((clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT)) != directions.end())) // intersection
+          (directions.find((clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT)) != directions.end())) // intersection
       {
         // determine next direction
         if (directions.find((clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT)) != directions.end())
@@ -3405,7 +3421,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
     case DIRECTION_RIGHT:
     {
       if ((directions.find(DIRECTION_LEFT) == directions.end()) || // corner
-           (directions.find((clockwise_in ? DIRECTION_DOWN : DIRECTION_UP)) != directions.end())) // intersection
+          (directions.find((clockwise_in ? DIRECTION_DOWN : DIRECTION_UP)) != directions.end())) // intersection
       {
         // determine next direction
         if (directions.find((clockwise_in ? DIRECTION_DOWN : DIRECTION_UP)) != directions.end())
@@ -3425,7 +3441,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
     case DIRECTION_DOWN:
     {
       if ((directions.find(DIRECTION_UP) == directions.end()) || // corner
-           (directions.find((clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT)) != directions.end())) // intersection
+          (directions.find((clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT)) != directions.end())) // intersection
       {
         // determine next direction
         if (directions.find((clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT)) != directions.end())
@@ -3445,7 +3461,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
     case DIRECTION_LEFT:
     {
       if ((directions.find(DIRECTION_RIGHT) == directions.end()) || // corner
-           (directions.find((clockwise_in ? DIRECTION_UP : DIRECTION_DOWN)) != directions.end())) // intersection
+          (directions.find((clockwise_in ? DIRECTION_UP : DIRECTION_DOWN)) != directions.end())) // intersection
       {
         // determine next direction
         if (directions.find((clockwise_in ? DIRECTION_UP : DIRECTION_DOWN)) != directions.end())
@@ -3464,10 +3480,9 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Zone_t& map_in,
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
+      ACE_DEBUG((LM_CRITICAL,
                  ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
                  RPG_Map_Common_Tools::direction2String(origin_in).c_str()));
-
       ACE_ASSERT(false);
 
       break;
@@ -3743,14 +3758,12 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Zone_t& room_in,
 
     // step2: enforce separation, i.e. spare every (RPG_MAP_DOOR_SEPARATION + 1)
     // element
-    unsigned long count = 0;
+    unsigned int count = 0;
     for (RPG_Map_PositionListIterator_t list_iterator = doorPositions_out.begin();
          list_iterator != doorPositions_out.end();
          list_iterator++, count++)
-    {
       if (count % (RPG_MAP_DOOR_SEPARATION + 1))
         doorPositions_out.erase(list_iterator);
-    } // end FOR
   } // end ELSE
 }
 
@@ -3950,4 +3963,199 @@ RPG_Map_Common_Tools::floodFill(const RPG_Map_Position_t& position_in,
       if (area_out.insert(br).second)
         position_stack.push(br);
   } // end WHILE
+}
+
+bool
+RPG_Map_Common_Tools::isSquare(const RPG_Map_Positions_t& area_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isSquare"));
+
+  // sanity checks
+  if (area_in.empty())
+    return false; // nothing to do...
+  if (area_in.size() < 3)
+    return true; // nothing to do...
+
+  //RPG_Map_Position_t upper_left  = std::make_pair(0, 0);
+  //RPG_Map_Position_t lower_right = std::make_pair(std::numeric_limits<unsigned int>::max(),
+  //                                                std::numeric_limits<unsigned int>::max());
+  RPG_Map_Position_t upper_left  = *area_in.begin();
+  RPG_Map_PositionsConstIterator_t last = area_in.end(); last--;
+  RPG_Map_Position_t lower_right = *last;
+
+  for (unsigned int x = upper_left.first;
+       x <= lower_right.first;
+       x++)
+    for (unsigned int y = upper_left.second;
+         y <= lower_right.second;
+         y++)
+      if (area_in.find(std::make_pair(x, y)) == area_in.end())
+        return false;
+
+  return true;
+}
+
+void
+RPG_Map_Common_Tools::perimeter(const RPG_Map_Zone_t& room_in,
+                                RPG_Map_Zone_t& perimeter_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::perimeter"));
+
+  // init return value(s)
+  perimeter_out.clear();
+
+  if (room_in.empty())
+    return; // nothing to do...
+
+  RPG_Map_Position_t upper_left, upper_right, lower_left, lower_right;
+  RPG_Map_ZoneConstIterator_t current = room_in.begin();
+  RPG_Map_ZoneConstIterator_t last = room_in.end(); last--;
+  // step1: compute the 4 corners
+  // upper left == first element
+  upper_left = *current;
+  // upper right == last element of the first row
+  while ((current != room_in.end()) &&
+         ((*current).second == upper_left.second))
+    current++;
+  current--;
+  upper_right = *current;
+  // lower_right == last element
+  lower_right = *last;
+  // lower_left == first element of the last row
+  if (upper_left.second == lower_right.second)
+    lower_left = upper_left;
+  else
+  {
+    // there's more than one row
+    current = last;
+    while ((*current).second == lower_right.second)
+      current--;
+    current++;
+    lower_left = *current;
+  } // end ELSE
+
+  // step2: start at top left position and go around clockwise
+  RPG_Map_PositionList_t trail;
+  crawlToPosition(room_in,
+                  upper_left,
+                  upper_right,
+                  DIRECTION_DOWN,
+                  trail);
+  perimeter_out.insert(trail.begin(), trail.end());
+  trail.clear();
+  crawlToPosition(room_in,
+                  upper_right,
+                  lower_right,
+                  DIRECTION_LEFT,
+                  trail);
+  perimeter_out.insert(trail.begin(), trail.end());
+  trail.clear();
+  crawlToPosition(room_in,
+                  lower_right,
+                  lower_left,
+                  DIRECTION_UP,
+                  trail);
+  perimeter_out.insert(trail.begin(), trail.end());
+  trail.clear();
+  crawlToPosition(room_in,
+                  lower_left,
+                  upper_left,
+                  DIRECTION_RIGHT,
+                  trail);
+  perimeter_out.insert(trail.begin(), trail.end());
+}
+
+unsigned int
+RPG_Map_Common_Tools::countAdjacentDoors(const RPG_Map_Positions_t& area_in,
+                                         const RPG_Map_FloorPlan_t& floorPlan_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::countAdjacentDoors"));
+
+  // init return value(s)
+  unsigned int result = 0;
+
+  // sanity check
+  if (area_in.empty())
+    return 0; // nothing to do...
+
+  // step1: find a trail along the perimeter
+  RPG_Map_PositionList_t perimeter_trail;
+  RPG_Map_Zone_t zone;
+  zone.insert(area_in.begin(), area_in.end());
+  RPG_Map_Position_t upper_left, upper_right, lower_left, lower_right;
+  RPG_Map_ZoneConstIterator_t current = zone.begin();
+  RPG_Map_ZoneConstIterator_t last = zone.end(); last--;
+  // step1a: compute the 4 corners
+  // upper left == first element
+  upper_left = *current;
+  // upper right == last element of the first row
+  while ((current != zone.end()) &&
+         ((*current).second == upper_left.second))
+    current++;
+  current--;
+  upper_right = *current;
+  // lower_right == last element
+  lower_right = *last;
+  // lower_left == first element of the last row
+  if (upper_left.second == lower_right.second)
+    lower_left = upper_left;
+  else
+  {
+    // there's more than one row
+    current = last;
+    while ((*current).second == lower_right.second)
+      current--;
+    current++;
+    lower_left = *current;
+  } // end ELSE
+  // step1b: start at top left position and go around clockwise
+  RPG_Map_PositionList_t trail;
+  crawlToPosition(zone,
+                  upper_left,
+                  upper_right,
+                  DIRECTION_DOWN,
+                  trail);
+  perimeter_trail.insert(perimeter_trail.end(), trail.begin(), trail.end());
+  trail.clear();
+  crawlToPosition(zone,
+                  upper_right,
+                  lower_right,
+                  DIRECTION_LEFT,
+                  trail);
+  perimeter_trail.insert(perimeter_trail.end(), trail.begin(), trail.end());
+  trail.clear();
+  crawlToPosition(zone,
+                  lower_right,
+                  lower_left,
+                  DIRECTION_UP,
+                  trail);
+  perimeter_trail.insert(perimeter_trail.end(), trail.begin(), trail.end());
+  trail.clear();
+  crawlToPosition(zone,
+                  lower_left,
+                  upper_left,
+                  DIRECTION_RIGHT,
+                  trail);
+  perimeter_trail.insert(perimeter_trail.end(), trail.begin(), trail.end());
+
+  // step2: walk the perimeter and find any adjacent doors
+  RPG_Map_Positions_t door_positions;
+  for (RPG_Map_DoorsConstIterator_t iterator = floorPlan_in.doors.begin();
+       iterator != floorPlan_in.doors.end();
+       iterator++)
+    door_positions.insert((*iterator).position);
+  RPG_Map_PositionsConstIterator_t door_iterator;
+  for (RPG_Map_PositionListConstIterator_t iterator = perimeter_trail.begin();
+       iterator != perimeter_trail.end();
+       iterator++)
+    for (door_iterator = door_positions.begin();
+         door_iterator != door_positions.end();
+         door_iterator++)
+      if (isAdjacent(*iterator, *door_iterator))
+      {
+        result++;
+        continue;
+      } // end IF
+
+  return result;
 }

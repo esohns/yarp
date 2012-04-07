@@ -43,9 +43,8 @@
 #include <sstream>
 #include <iostream>
 
-#define PATH_FINDER_DEF_CORRIDORS    false
-#define PATH_FINDER_DEF_DEBUG_PARSER false
-#define PATH_FINDER_DEF_FLOOR_PLAN   "test_plan"
+#define MAP_VISION_DEF_DEBUG_PARSER false
+#define MAP_VISION_DEF_FLOOR_PLAN   "test_plan"
 
 void
 print_usage(const std::string& programName_in)
@@ -57,15 +56,14 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-b        : build corridors") << ACE_TEXT(" [") << PATH_FINDER_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-d        : debug parser") << ACE_TEXT(" [") << PATH_FINDER_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-d        : debug parser") << ACE_TEXT(" [") << MAP_VISION_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
 #else
   std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
+  path += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
   std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
@@ -75,7 +73,6 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-                  bool& buildCorridors_out,
                   bool& debugParser_out,
                   std::string& floorPlan_out,
                   bool& traceInformation_out,
@@ -84,8 +81,7 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  buildCorridors_out      = PATH_FINDER_DEF_CORRIDORS;
-  debugParser_out         = PATH_FINDER_DEF_DEBUG_PARSER;
+  debugParser_out         = MAP_VISION_DEF_DEBUG_PARSER;
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   floorPlan_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
@@ -93,7 +89,7 @@ process_arguments(const int argc_in,
   floorPlan_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
 
   traceInformation_out    = false;
@@ -101,19 +97,13 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("bdp:tv"));
+                             ACE_TEXT("dp:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
     {
-      case 'b':
-      {
-        buildCorridors_out = true;
-
-        break;
-      }
       case 'd':
       {
         debugParser_out = true;
@@ -162,8 +152,7 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const bool& buildCorridors_in,
-        const bool& debugParser_in,
+do_work(const bool& debugParser_in,
         const std::string& filename_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
@@ -185,114 +174,58 @@ do_work(const bool& buildCorridors_in,
              filename_in.c_str(),
              RPG_Map_Common_Tools::info(map).c_str()));
 
-  // step2: process doors
-  RPG_Map_Positions_t door_positions;
-  for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin();
-       iterator != map.plan.doors.end();
-       iterator++)
+  // step2: find source / target positions (just use any two seed positions...)
+  if (map.seeds.size() < 2)
   {
-    // *WARNING*: set iterators are CONST for a good reason !
-    // --> (but we know what we're doing)...
-    const_cast<RPG_Map_Door_t&>(*iterator).outside = RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
-                                                                                              map.plan);
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("cannot proceed (need >= 2 seed positions, had: %d), aborting\n"),
+               map.seeds.size()));
 
-    door_positions.insert((*iterator).position);
-  } // end FOR
-
-  // step3: find paths between doors
-  RPG_Map_PathList_t paths;
-  RPG_Map_Path_t current_path;
-  RPG_Map_Positions_t used_positions;
+    return;
+  } // end IF
+  RPG_Map_Position_t source, target;
+  RPG_Map_PositionsConstIterator_t iterator;
   RPG_Dice_RollResult_t result;
-  RPG_Map_DoorsConstIterator_t target_door = map.plan.doors.end();
-  unsigned int index = 1;
-  for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin();
-       iterator != map.plan.doors.end();
-       iterator++)
+  do
   {
-    // find target door:
-    // - ignore source door
-    // - ignore doors that are already connected
-    do
-    {
-      target_door = map.plan.doors.begin();
-      result.clear();
-      RPG_Dice::generateRandomNumbers(map.plan.doors.size(),
-                                      1,
-                                      result);
-      std::advance(target_door, result.front() - 1);
-    } while ((target_door == iterator) ||
-             (used_positions.find((*target_door).position) != used_positions.end()));
+    result.clear();
+    RPG_Dice::generateRandomNumbers(map.seeds.size(),
+                                    2,
+                                    result);
+  } while (result.front() == result.back());
+  iterator = map.seeds.begin();
+  std::advance(iterator, result.front() - 1);
+  source = *iterator;
+  iterator = map.seeds.begin();
+  std::advance(iterator, result.back() - 1);
+  target = *iterator;
 
-    RPG_Map_Pathfinding_Tools::findPath(std::make_pair(map.plan.size_x,
-                                                       map.plan.size_y),
-                                        map.plan.walls,
-                                        (*iterator).position,
-                                        (*iterator).outside,
-                                        (*target_door).position,
-                                        current_path);
-    if (current_path.empty())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
-                 (*iterator).position.first,
-                 (*iterator).position.second,
-                 (*target_door).position.first,
-                 (*target_door).position.second));
-
-      continue;
-    } // end IF
-    ACE_ASSERT((current_path.front().first == (*iterator).position) &&
-               (current_path.back().first  == (*target_door).position));
-
-    // print path
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("path [%u, %u step(s)]: [%u,%u] --> [%u,%u]: "),
-               index++,
-               current_path.size(),
-               (*iterator).position.first, (*iterator).position.second,
-               (*target_door).position.first, (*target_door).position.second));
-    for (RPG_Map_PathConstIterator_t path_iterator = current_path.begin();
-         path_iterator != current_path.end();
-         path_iterator++)
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("[%u,%u] "),
-                 (*path_iterator).first.first,
-                 (*path_iterator).first.second));
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("\n")));
-
-    // remember connected positions
-    used_positions.insert((*iterator).position);
-    used_positions.insert((*target_door).position);
-
-    paths.push_back(current_path);
-
-    // minimum connectivity reached ?
-    if (used_positions == door_positions)
-      break; // done
-  } // end FOR
-
-  // step4: build corridors ?
-  if (buildCorridors_in)
+  // step3: compute shortest route (== line-of-sight)
+  RPG_Map_PositionList_t line_of_sight;
+  RPG_Map_Pathfinding_Tools::findPath(source,
+                                      target,
+                                      line_of_sight);
+  if (line_of_sight.empty())
   {
-    for (RPG_Map_PathListConstIterator_t iterator = paths.begin();
-         iterator != paths.end();
-         iterator++)
-    {
-      used_positions.clear();
-      RPG_Map_Common_Tools::buildCorridor(*iterator,
-                                           used_positions);
-      if (!used_positions.empty())
-        map.plan.walls.insert(used_positions.begin(), used_positions.end());
-    } // end FOR
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Map_Pathfinding_Tools::findPath([%u,%u] --> [%u,%u]), aborting\n"),
+               source.first, source.second,
+               target.first, target.second));
+
+    return;
   } // end IF
 
-  // step5: display the result
+  // step4: display the result
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("line of sight: [%u,%u] --> [%u,%u]\n"),
+             source.first, source.second,
+             target.first, target.second));
+
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
   std::ostringstream converter;
   bool done = false;
+  RPG_Map_PositionListConstIterator_t line_of_sight_iterator;
   for (unsigned int y = 0;
        y < map.plan.size_y;
        y++)
@@ -313,26 +246,28 @@ do_work(const bool& buildCorridors_in,
         converter << ACE_TEXT("="); // door
       else
       {
-        // floor or path ?
-        done = false;
-        for (RPG_Map_PathListConstIterator_t iterator2 = paths.begin();
-             iterator2 != paths.end();
-             iterator2++)
+        // floor or line-of-sight ?
+        if (current_position == line_of_sight.front())
         {
-          for (RPG_Map_PathConstIterator_t iterator3 = (*iterator2).begin();
-               iterator3 != (*iterator2).end();
-               iterator3++)
-            if ((*iterator3).first == current_position)
-            {
-              converter << ACE_TEXT("x"); // path
-              done = true;
+           converter << ACE_TEXT("A"); // source
+           continue;
+        } // end IF
+        else if (current_position == line_of_sight.back())
+        {
+           converter << ACE_TEXT("B"); // target
+           continue;
+        } // end IF
+        done = false;
+        for (line_of_sight_iterator = line_of_sight.begin();
+             line_of_sight_iterator != line_of_sight.end();
+             line_of_sight_iterator++)
+          if ((*line_of_sight_iterator) == current_position)
+          {
+            converter << ACE_TEXT("x"); // ray
+            done = true;
 
-              break;
-            } // end IF
-
-          if (done)
             break;
-        } // end FOR
+          } // end IF
 
         if (!done)
           converter << ACE_TEXT("."); // floor
@@ -411,8 +346,7 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  bool buildCorridors      = PATH_FINDER_DEF_CORRIDORS;
-  bool debugParser         = PATH_FINDER_DEF_DEBUG_PARSER;
+  bool debugParser         = MAP_VISION_DEF_DEBUG_PARSER;
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   std::string floorPlan = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
@@ -420,7 +354,7 @@ ACE_TMAIN(int argc,
   std::string floorPlan = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
   floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
 
   bool traceInformation    = false;
@@ -429,7 +363,6 @@ ACE_TMAIN(int argc,
   // step1ba: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
-                          buildCorridors,
                           debugParser,
                           floorPlan,
                           traceInformation,
@@ -490,8 +423,7 @@ ACE_TMAIN(int argc,
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(buildCorridors,
-          debugParser,
+  do_work(debugParser,
           floorPlan);
   timer.stop();
 
