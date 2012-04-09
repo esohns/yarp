@@ -32,6 +32,8 @@
 #include <rpg_graphics_common_tools.h>
 #include <rpg_graphics_SDL_tools.h>
 
+#include <rpg_engine.h>
+
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 
@@ -64,25 +66,25 @@ RPG_Client_WindowMain::~RPG_Client_WindowMain()
 }
 
 void
-RPG_Client_WindowMain::init(RPG_Client_Engine* engine_in,
+RPG_Client_WindowMain::init(RPG_Client_Engine* clientEngine_in,
                             const bool& doAutoEdgeScroll_in,
-                            RPG_Engine_Level* levelState_in,
+                            RPG_Engine* engine_in,
                             const RPG_Graphics_MapStyle_t& style_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::init"));
 
   // sanity checks
-  ACE_ASSERT(engine_in);
+  ACE_ASSERT(clientEngine_in);
 
-  myEngine = engine_in;
+  myEngine = clientEngine_in;
   myAutoEdgeScroll = doAutoEdgeScroll_in;
 
   // init scroll margins
   initScrollSpots();
 
   // init map
-  initMap(engine_in,
-          levelState_in,
+  initMap(clientEngine_in,
+          engine_in,
           style_in);
 }
 
@@ -780,8 +782,8 @@ RPG_Client_WindowMain::initScrollSpots()
 }
 
 void
-RPG_Client_WindowMain::initMap(RPG_Client_Engine* engine_in,
-                               RPG_Engine_Level* levelState_in,
+RPG_Client_WindowMain::initMap(RPG_Client_Engine* clientEngine_in,
+                               RPG_Engine* engine_in,
                                const RPG_Graphics_MapStyle_t& style_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::initMap"));
@@ -809,8 +811,8 @@ RPG_Client_WindowMain::initMap(RPG_Client_Engine* engine_in,
   } // end IF
 
   // init window
-  map_window->init(engine_in,
-                   levelState_in,
+  map_window->init(clientEngine_in,
+                   engine_in,
                    style_in);
   map_window->setScreen(myScreen);
 }

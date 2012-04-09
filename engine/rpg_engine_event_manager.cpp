@@ -23,7 +23,7 @@
 
 #include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
-#include "rpg_engine_level.h"
+#include "rpg_engine.h"
 #include "rpg_engine_common_tools.h"
 
 #include <rpg_map_common_tools.h>
@@ -328,7 +328,7 @@ RPG_Engine_Event_Manager::dump_state() const
 
 void
 RPG_Engine_Event_Manager::init(const unsigned int& maxNumSpawnedEntities_in,
-                               RPG_Engine_Level* engine_in)
+                               RPG_Engine* engine_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::init"));
 
@@ -452,8 +452,8 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
       } // end IF
       *entity = RPG_Engine_Common_Tools::createEntity(event_handle->monster);
       entity->is_spawned = true;
-      ACE_ASSERT(entity->character && entity->graphic);
-      if (!entity->character || !entity->graphic)
+      ACE_ASSERT(entity->character);
+      if (!entity->character)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity, aborting\n")));
@@ -469,22 +469,29 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
       ACE_ASSERT(!seed_points.empty());
       RPG_Dice_RollResult_t random_number;
       RPG_Map_PositionsConstIterator_t iterator = seed_points.begin();
-      RPG_Engine_EntityID_t id = 0;
-      while (true)
+      RPG_Dice::generateRandomNumbers(seed_points.size(),
+                                      1,
+                                      random_number);
+      iterator = seed_points.begin();
+      std::advance(iterator, random_number.front() - 1);
+      entity->position = myEngine->getValid(*iterator,
+                                            RPG_ENGINE_DEF_MAX_RAD_SPAWNED);
+      ACE_ASSERT(entity->position != std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                    std::numeric_limits<unsigned int>::max()));
+      if (entity->position == std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                             std::numeric_limits<unsigned int>::max()))
       {
-        RPG_Dice::generateRandomNumbers(seed_points.size(),
-                                        1,
-                                        random_number);
-        iterator = seed_points.begin();
-        std::advance(iterator, random_number.front() - 1);
-        id = myEngine->hasEntity(*iterator);
-        if (id == 0)
-        {
-          entity->position = *iterator;
-          break;
-        } // end IF
-      } // end WHILE
-      id = myEngine->add(entity);
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Engine::findValid([%u,%u], %u), aborting\n"),
+                   (*iterator).first, (*iterator).second,
+                   RPG_ENGINE_DEF_MAX_RAD_SPAWNED));
+
+        // clean up
+        delete entity;
+
+        return;
+      } // end IF
+      RPG_Engine_EntityID_t id = myEngine->add(entity);
 
       // debug info
       ACE_DEBUG((LM_DEBUG,

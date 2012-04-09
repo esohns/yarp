@@ -40,7 +40,7 @@
 
 // forward declaration(s)
 class RPG_Client_Engine;
-class RPG_Engine_Level;
+class RPG_Engine;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -63,7 +63,7 @@ class RPG_Client_Export RPG_Client_WindowMain
   // *WARNING*: call this AFTER setScreen() !
   void init(RPG_Client_Engine*,              // engine handle
             const bool&,                     // do automatic edge scroll ?
-            RPG_Engine_Level*,               // level state handle
+            RPG_Engine*,                     // (level) state handle
             const RPG_Graphics_MapStyle_t&); // map style
 
   // implement (part of) RPG_Graphics_IWindow
@@ -86,7 +86,7 @@ class RPG_Client_Export RPG_Client_WindowMain
   // helper methods
   void initScrollSpots();
   void initMap(RPG_Client_Engine*,              // engine handle
-               RPG_Engine_Level*,               // level state handle
+               RPG_Engine*,                     // (level) state handle
                const RPG_Graphics_MapStyle_t&); // map style
 
   RPG_Client_Engine* myEngine;

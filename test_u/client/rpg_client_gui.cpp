@@ -51,6 +51,7 @@
 #include <rpg_map_level.h>
 
 #include <rpg_engine_defines.h>
+#include <rpg_engine.h>
 #include <rpg_engine_common_tools.h>
 
 #include <rpg_monster_defines.h>
@@ -1349,7 +1350,7 @@ do_work(const RPG_Client_Config& config_in,
   }
 
   RPG_Client_Engine client_engine;
-  RPG_Engine_Level level_engine;
+  RPG_Engine level_engine;
   RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
   userData.do_hover              = true;
@@ -1366,8 +1367,9 @@ do_work(const RPG_Client_Config& config_in,
   userData.entity.character = NULL;
   userData.entity.position = std::make_pair(0, 0);
 //   userData.entity.actions();
-  userData.entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-  userData.entity.graphic = NULL;
+//   userData.entity.modes();
+//  userData.entity.sprite();
+  userData.entity.is_spawned = false;
   userData.level_engine = &level_engine;
   userData.map_config = config_in.map_config;
 

@@ -104,6 +104,7 @@ popd</Command>
     </CXX_Tree_Mapping_Rule>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="rpg_engine.h" />
     <ClInclude Include="rpg_engine_command.h" />
     <ClInclude Include="rpg_engine_common.h" />
     <ClInclude Include="rpg_engine_common_tools.h" />
@@ -122,6 +123,7 @@ popd</Command>
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="rpg_engine.cpp" />
     <ClCompile Include="rpg_engine_common_tools.cpp" />
     <ClCompile Include="rpg_engine_event_manager.cpp" />
     <ClCompile Include="rpg_engine_level.cpp" />

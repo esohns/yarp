@@ -23,7 +23,7 @@
 #include <rpg_client_defines.h>
 #include <rpg_client_engine.h>
 
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_defines.h>
@@ -45,7 +45,7 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
-   myLevelState(levelState_in),
+   myEngine(levelState_in),
    myBG(NULL),
    mySurface(NULL)
 {
@@ -167,7 +167,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(targetSurface_in);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
-  ACE_ASSERT(myLevelState);
+  ACE_ASSERT(myEngine);
   ACE_ASSERT(mySurface);
 
   // save BG ?
@@ -211,7 +211,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       return;
     } // end IF
 
-  RPG_Map_Size_t size = myLevelState->getSize();
+  RPG_Map_Size_t size = myEngine->getSize();
   RPG_Map_Position_t map_position = std::make_pair(0, 0);
   RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
   Uint32 color = 0;
@@ -228,20 +228,20 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       // step1: retrieve appropriate symbol
       map_position = std::make_pair(x, y);
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      entity_id = myLevelState->hasEntity(map_position);
+      entity_id = myEngine->hasEntity(map_position);
       
       if (entity_id)
       {
-        if (entity_id == myLevelState->getActive())
+        if (entity_id == myEngine->getActive())
           tile = MINIMAPTILE_PLAYER_ACTIVE;
-        else if (!myLevelState->isMonster(entity_id))
+        else if (!myEngine->isMonster(entity_id))
           tile = MINIMAPTILE_PLAYER;
         else
           tile = MINIMAPTILE_MONSTER;
       } // end IF
       if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
       {
-        switch (myLevelState->getElement(map_position))
+        switch (myEngine->getElement(map_position))
         {
           case MAPELEMENT_UNMAPPED:
           case MAPELEMENT_WALL:
@@ -258,7 +258,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
                        ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
                        x,
                        y,
-                       myLevelState->getElement(map_position)));
+                       myEngine->getElement(map_position)));
 
             return;
           }

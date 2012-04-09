@@ -40,8 +40,8 @@
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
-// forward declarations
-class RPG_Engine_Level;
+// forward declaration(s)
+class RPG_Engine;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -54,9 +54,6 @@ class RPG_Client_Export RPG_Client_Engine
 {
  public:
   RPG_Client_Engine();
-  //// *WARNING*: window handle needs to be of WINDOW_MAP type
-  //RPG_Client_Engine(RPG_Engine_Level*,      // level state
-  //                  RPG_Graphics_IWindow*); // window handle
   virtual ~RPG_Client_Engine();
 
   // implement RPG_Common_IControl
@@ -86,7 +83,7 @@ class RPG_Client_Export RPG_Client_Engine
 
   void initMap();
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
-  void init(RPG_Engine_Level*,     // level state
+  void init(RPG_Engine*,           // (level) state
             RPG_Graphics_IWindow*, // window handle
             GladeXML*);            // widget tree handle
   void action(const RPG_Client_Action&); // action
@@ -123,7 +120,7 @@ class RPG_Client_Export RPG_Client_Engine
 
   bool                            myStop;
 
-  RPG_Engine_Level*               myEngine;
+  RPG_Engine*                     myEngine;
   RPG_Graphics_IWindow*           myWindow;
   GladeXML*                       myWidgets;
 

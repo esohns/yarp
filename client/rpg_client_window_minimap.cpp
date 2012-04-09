@@ -23,7 +23,7 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
 
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_defines.h>
@@ -355,12 +355,12 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_Window_MiniMap::init(RPG_Engine_Level* levelState_in)
+RPG_Client_Window_MiniMap::init(RPG_Engine* engine_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::init"));
 
   // sanity check(s)
-  ACE_ASSERT(levelState_in);
+  ACE_ASSERT(engine_in);
 
-  myEngine = levelState_in;
+  myEngine = engine_in;
 }

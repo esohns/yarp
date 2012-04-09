@@ -28,6 +28,9 @@
 #define RPG_ENGINE_EVENT_PEEK_INTERVAL      50 // ms
 
 #define RPG_ENGINE_DEF_MAX_NUM_SPAWNED      3
+#define RPG_ENGINE_DEF_MAX_RAD_SPAWNED      5
+#define RPG_ENGINE_DEF_ENTITY_SPRITE_FILE   "human.png"
+#define RPG_ENGINE_DEF_CREATURE_SPRITE_FILE "goblin.png"
 
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE              "rpg_engine.xsd"

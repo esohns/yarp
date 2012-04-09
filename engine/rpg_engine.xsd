@@ -14,8 +14,6 @@
   <xsd:include schemaLocation="../character/player/rpg_player.xsd"/>
 <!-- include map schema -->
   <xsd:include schemaLocation="../map/rpg_map.xsd"/>
-<!-- include graphics schema -->
-  <xsd:include schemaLocation="../graphics/rpg_graphics.xsd"/>
 
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
@@ -59,7 +57,7 @@
         <xsd:sequence>
           <xsd:element name="position" type="RPG_Map_Position_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="mode" type="RPG_Engine_EntityMode_Type" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:element name="sprite" type="RPG_Graphics_Sprite_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="sprite" type="xsd:string" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>

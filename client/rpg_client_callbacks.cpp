@@ -789,21 +789,27 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
   ::update_character_profile(*player, xml_in);
 
   // step2: update image (if available)
-  std::string filename;
   // retrieve image widget
   GtkImage* image = GTK_IMAGE(glade_xml_get_widget(xml_in,
                                                    ACE_TEXT_ALWAYS_CHAR("image_sprite")));
   ACE_ASSERT(image);
-  if (entity_in.sprite != RPG_GRAPHICS_SPRITE_INVALID)
+  std::string filename;
+  if (!entity_in.sprite.empty())
   {
-    RPG_Graphics_GraphicTypeUnion type;
-    type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-    type.sprite = entity_in.sprite;
-    RPG_Graphics_t graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-    ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
-               (graphic.type.sprite == type.sprite));
-    // assemble path
-    RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+    filename = RPG_Graphics_Common_Tools::getGraphicsDirectory();
+    filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_CREATURES_SUB);
+    filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    filename += entity_in.sprite;
+    // sanity check(s)
+    if (!RPG_Common_File_Tools::isReadable(filename))
+    {
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+                  filename.c_str()));
+
+      return;
+    } // end IF
   } // end IF
   if (!filename.empty())
     gtk_image_set_from_file(image, filename.c_str());
@@ -1322,14 +1328,10 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
                                          std::numeric_limits<unsigned int>::max());
   data->entity.modes.clear();
   data->entity.actions.clear();
-  data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-  if (data->entity.graphic)
-  {
-    SDL_FreeSurface(data->entity.graphic);
-    data->entity.graphic = NULL;
-  } // end IF
+  data->entity.sprite.clear();
+  data->entity.is_spawned = false;
 
-  data->entity = RPG_Engine_Common_Tools::createEntity(true);
+  data->entity = RPG_Engine_Common_Tools::createEntity();
   ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
@@ -1337,8 +1339,8 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
                           data->xml);
 
   // if necessary, update starting position
-  if ((data->entity.position.first == 0) &&
-      (data->entity.position.second == 0))
+  if (data->entity.position == std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                              std::numeric_limits<unsigned int>::max()))
     data->entity.position = data->level_engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
@@ -1397,13 +1399,14 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
   // clean up
   if (data->entity.character)
   {
-    data->entity.actions.clear();
     delete data->entity.character;
     data->entity.character = NULL;
-    SDL_FreeSurface(data->entity.graphic);
-    data->entity.graphic = NULL;
-    data->entity.position = std::make_pair(0, 0);
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                           std::numeric_limits<unsigned int>::max());
+    data->entity.modes.clear();
+    data->entity.actions.clear();
+    data->entity.sprite.clear();
+    data->entity.is_spawned = false;
   } // end IF
 
   // reset profile widgets
@@ -1483,19 +1486,19 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
   // clean up
   if (data->entity.character)
   {
-    data->entity.actions.clear();
     delete data->entity.character;
     data->entity.character = NULL;
-    SDL_FreeSurface(data->entity.graphic);
-    data->entity.graphic = NULL;
-    data->entity.position = std::make_pair(0, 0);
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                           std::numeric_limits<unsigned int>::max());
+    data->entity.modes.clear();
+    data->entity.actions.clear();
+    data->entity.sprite.clear();
+    data->entity.is_spawned = false;
   } // end IF
 
   // load player profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schemaRepository,
-                                                     true);
+                                                     data->schemaRepository);
   ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
@@ -1503,8 +1506,8 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
                           data->xml);
 
   // if necessary, update starting position
-  if ((data->entity.position.first == 0) &&
-      (data->entity.position.second == 0))
+  if (data->entity.position == std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                              std::numeric_limits<unsigned int>::max()))
     data->entity.position = data->level_engine->getStartPosition();
 
   // make character display frame sensitive (if it's not already)
@@ -1642,13 +1645,14 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   // clean up
   if (data->entity.character)
   {
-    data->entity.actions.clear();
     delete data->entity.character;
     data->entity.character = NULL;
-    SDL_FreeSurface(data->entity.graphic);
-    data->entity.graphic = NULL;
-    data->entity.position = std::make_pair(0, 0);
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                           std::numeric_limits<unsigned int>::max());
+    data->entity.modes.clear();
+    data->entity.actions.clear();
+    data->entity.sprite.clear();
+    data->entity.is_spawned = false;
   } // end IF
 
   // construct filename
@@ -1663,8 +1667,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 
   // load player profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schemaRepository,
-                                                     true);
+                                                     data->schemaRepository);
   if (!data->entity.character)
   {
     ACE_DEBUG((LM_ERROR,
@@ -2176,8 +2179,8 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->level_engine);
 
   // set start position, if necessary
-  if ((data->entity.position.first == std::numeric_limits<unsigned int>::max()) &&
-      (data->entity.position.second == std::numeric_limits<unsigned int>::max()))
+  if (data->entity.position == std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                              std::numeric_limits<unsigned int>::max()))
     data->entity.position = data->level_engine->getStartPosition();
 
   // activate the current character

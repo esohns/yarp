@@ -46,6 +46,7 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                    const unsigned long&, // cache size
                    const bool& = true);  // init SDL ?
   static void fini();
+  static std::string getGraphicsDirectory();
   static const std::string typeToString(const RPG_Graphics_GraphicTypeUnion&);
   static const std::string styleToString(const RPG_Graphics_StyleUnion&);
   static const std::string tileToString(const RPG_Graphics_Tile&);

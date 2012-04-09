@@ -22,7 +22,7 @@
 #define RPG_CLIENT_COMMON_H
 
 #include <rpg_engine_common.h>
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_iwindow.h>
@@ -81,7 +81,7 @@ struct RPG_Client_GTK_CBData_t
   RPG_Client_Engine*         client_engine;
   std::string                schemaRepository;
   RPG_Engine_Entity          entity;
-  RPG_Engine_Level*          level_engine;
+  RPG_Engine*                level_engine;
   RPG_Map_FloorPlan_Config_t map_config;
 };
 

@@ -33,7 +33,7 @@
 #include <string>
 
 // forward declarations
-class RPG_Engine_Level;
+class RPG_Engine;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -46,7 +46,7 @@ class SDL_GUI_LevelWindow
   SDL_GUI_LevelWindow(// *** SDL window ***
                       const RPG_Graphics_SDLWindowBase&, // parent
                       // *** level properties ***
-                      RPG_Engine_Level*);                // level state handle
+                      RPG_Engine*);                      // (level) state handle
   virtual ~SDL_GUI_LevelWindow();
 
   // adjust viewport
@@ -97,7 +97,7 @@ class SDL_GUI_LevelWindow
   void initMiniMap(RPG_Engine_Level*); // level state handle
   void restoreBG();
 
-  RPG_Engine_Level*               myLevelState;
+  RPG_Engine*                     myEngine;
   bool                            myDebug;
 
   RPG_Graphics_MapStyle_t         myCurrentMapStyle;

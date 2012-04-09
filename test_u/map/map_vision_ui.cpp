@@ -42,6 +42,7 @@
 #include <rpg_graphics_SDL_tools.h>
 
 #include <rpg_engine_defines.h>
+#include <rpg_engine.h>
 #include <rpg_engine_common_tools.h>
 
 #include <rpg_map_defines.h>
@@ -72,7 +73,7 @@
 #include <sstream>
 #include <iostream>
 
-#define PATH_FINDER_UI_DEF_FLOOR_PLAN "test_plan"
+#define MAP_VISION_UI_DEF_FLOOR_PLAN "test_plan"
 
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
@@ -181,7 +182,7 @@ print_usage(const std::string& programName_in)
   path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_UI_DEF_FLOOR_PLAN);
+  path += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
   std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
@@ -233,7 +234,7 @@ process_arguments(const int argc_in,
   floorPlan_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_UI_DEF_FLOOR_PLAN);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
 
   traceInformation_out    = false;
@@ -450,7 +451,7 @@ do_work(const RPG_Client_Config& config_in,
 
   // step2: init client / engine / gtk cb user data
   RPG_Client_Engine client_engine;
-  RPG_Engine_Level level_engine;
+  RPG_Engine        level_engine;
   RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
   userData.do_hover              = true;
@@ -483,8 +484,7 @@ do_work(const RPG_Client_Config& config_in,
   //ACE_ASSERT(userData.xml);
 
   userData.entity                = RPG_Engine_Common_Tools::loadEntity(playerProfile_in,
-                                                                       schemaRepository_in,
-                                                                       true);
+                                                                       schemaRepository_in);
   ACE_ASSERT(userData.entity.character);
   userData.entity.position = map.start;
 //   userData.entity.actions();
@@ -547,7 +547,8 @@ do_work(const RPG_Client_Config& config_in,
 
   // step5e: client engine
   client_engine.init(&level_engine,
-                     mainWindow.getChild(WINDOW_MAP));
+                     mainWindow.getChild(WINDOW_MAP),
+                     userData.xml);
 
   // step5f: trigger initial drawing
   RPG_Client_Action client_action;
@@ -1041,7 +1042,7 @@ ACE_TMAIN(int argc_in,
   std::string floorPlan = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_UI_DEF_FLOOR_PLAN);
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
   floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)

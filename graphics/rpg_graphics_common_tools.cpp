@@ -149,6 +149,17 @@ RPG_Graphics_Common_Tools::fini()
   myInitialized = false;
 }
 
+std::string
+RPG_Graphics_Common_Tools::getGraphicsDirectory()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::getGraphicsDirectory"));
+
+  // sanity check
+  ACE_ASSERT(!myGraphicsDirectory.empty());
+
+  return myGraphicsDirectory;
+}
+
 const std::string
 RPG_Graphics_Common_Tools::styleToString(const RPG_Graphics_StyleUnion& style_in)
 {

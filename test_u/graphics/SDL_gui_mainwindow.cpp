@@ -26,7 +26,7 @@
 
 #include <rpg_client_defines.h>
 
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>

@@ -150,17 +150,16 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
 
 RPG_Engine_Entity
 RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
-                                    const std::string& schemaRepository_in,
-                                    const bool& loadImage_in)
+                                    const std::string& schemaRepository_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::loadEntity"));
 
   RPG_Engine_Entity result;
   result.character = NULL;
-  result.position = std::make_pair(0, 0);
-//   result.actions.clear();
-  result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-  result.graphic = NULL;
+  result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                   std::numeric_limits<unsigned int>::max());
+//  result.actions.clear();
+//  result.sprite.clear();
   result.is_spawned = false;
 
   // sanity check(s)
@@ -340,20 +339,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
          iterator != engine_player_p->mode().end();
          iterator++)
       result.modes.insert(RPG_Engine_EntityModeHelper::stringToRPG_Engine_EntityMode(*iterator));
-    result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
-  } // end IF
-
-  // step3: load player sprite graphic ?
-  if (loadImage_in &&
-      (result.sprite != RPG_GRAPHICS_SPRITE_INVALID))
-  {
-    RPG_Graphics_GraphicTypeUnion type;
-    type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-    type.sprite = result.sprite;
-    result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
-                                                            true,   // convert to display format
-                                                            false); // don't cache
-    ACE_ASSERT(result.graphic);
+    result.sprite = engine_player_p->sprite();
   } // end IF
 
   return result;
@@ -407,7 +393,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
        iterator++)
     modes.push_back(RPG_Engine_EntityMode_XMLTree_Type(static_cast<RPG_Engine_EntityMode_XMLTree_Type::value>(*iterator)));
   entity_model->mode(modes);
-  entity_model->sprite(RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite));
+  entity_model->sprite(entity_in.sprite);
 
   try
   {
@@ -476,7 +462,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
 }
 
 RPG_Engine_Entity
-RPG_Engine_Common_Tools::createEntity(const bool& loadImage_in)
+RPG_Engine_Common_Tools::createEntity()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 
@@ -486,28 +472,13 @@ RPG_Engine_Common_Tools::createEntity(const bool& loadImage_in)
                                    std::numeric_limits<unsigned int>::max());
   //result.modes();
   //result.actions();
-  result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-  result.graphic = NULL;
+  result.sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_ENTITY_SPRITE_FILE);
   result.is_spawned = false;
 
-  // step1: generate player
+  // generate player
   RPG_Player* player_p = RPG_Player_Common_Tools::generatePlayer();
   ACE_ASSERT(player_p);
   result.character = player_p;
-
-  // step2: generate/load player sprite
-  result.sprite = RPG_Engine_Common_Tools::class2Sprite(player_p->getClass());
-  ACE_ASSERT(result.sprite != RPG_GRAPHICS_SPRITE_INVALID);
-  if (loadImage_in)
-  {
-    RPG_Graphics_GraphicTypeUnion type;
-    type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-    type.sprite = result.sprite;
-    result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
-                                                            true,   // convert to display format
-                                                            false); // don't cache
-    ACE_ASSERT(result.graphic);
-  } // end IF
 
   return result;
 }
@@ -523,8 +494,7 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
                                    std::numeric_limits<unsigned int>::max());
   //result.modes();
   //result.actions();
-  result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-  result.graphic = NULL;
+  result.sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CREATURE_SPRITE_FILE);
   result.is_spawned = false;
 
   RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
@@ -563,21 +533,10 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
   if (!result.character)
   {
     ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate RPG_Monster, aborting\n")));
+               ACE_TEXT("failed to allocate memory, aborting\n")));
 
     return result;
   } // end IF
-
-  // generate/load player sprite
-  result.sprite = RPG_Engine_Common_Tools::monster2Sprite(type_in);
-  ACE_ASSERT(result.sprite != RPG_GRAPHICS_SPRITE_INVALID);
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  type.sprite = result.sprite;
-  result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
-                                                          true,   // convert to display format
-                                                          false); // don't cache
-  ACE_ASSERT(result.graphic);
 
   return result;
 }
@@ -596,12 +555,43 @@ RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
   result += entity_in.character->getName();
   result += ACE_TEXT("\n===============\n");
 
-  result += ACE_TEXT("actions [");
   std::ostringstream converter;
-  converter << entity_in.actions.size();
+  result += ACE_TEXT("position: [");
+  converter.str(ACE_TEXT(""));
+  converter << entity_in.position.first;
+  result += converter.str();
+  result += ACE_TEXT(",");
+  converter.str(ACE_TEXT(""));
+  converter << entity_in.position.second;
+  result += converter.str();
+  result += ACE_TEXT("]\n");
+
+  result += ACE_TEXT("mode(s) [");
+  converter.str(ACE_TEXT(""));
+  converter << entity_in.modes.size();
   result += converter.str();
   result += ACE_TEXT("]:\n");
   unsigned int index = 0;
+  for (RPG_Engine_EntityModeConstIterator_t iterator = entity_in.modes.begin();
+       iterator != entity_in.modes.end();
+       iterator++, index++)
+  {
+    result += ACE_TEXT("[");
+    converter.str(ACE_TEXT(""));
+    converter << index;
+    result += converter.str();
+    result += ACE_TEXT("]: ");
+    result += RPG_Engine_EntityModeHelper::RPG_Engine_EntityModeToString(*iterator);
+    result += ACE_TEXT("\n");
+  } // end FOR
+  result += ACE_TEXT("\\end mode(s)\n");
+
+  result += ACE_TEXT("action(s) [");
+  converter.str(ACE_TEXT(""));
+  converter << entity_in.actions.size();
+  result += converter.str();
+  result += ACE_TEXT("]:\n");
+  index = 0;
   for (RPG_Engine_ActionsConstIterator_t iterator = entity_in.actions.begin();
        iterator != entity_in.actions.end();
        iterator++, index++)
@@ -614,20 +604,15 @@ RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
     result += RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).command);
     result += ACE_TEXT("\n");
   } // end FOR
-  result += ACE_TEXT("\\end actions\n");
+  result += ACE_TEXT("\\end action(s)\n");
 
-  result += ACE_TEXT("position: [");
-  converter.str(ACE_TEXT(""));
-  converter << entity_in.position.first;
-  result += converter.str();
-  result += ACE_TEXT(",");
-  converter.str(ACE_TEXT(""));
-  converter << entity_in.position.second;
-  result += converter.str();
-  result += ACE_TEXT("]\n");
+  result += ACE_TEXT("sprite: \"");
+  result += entity_in.sprite;
+  result += ACE_TEXT("\"\n");
+  result += ACE_TEXT("\\end Entity\n");
 
-  result += ACE_TEXT("sprite: ");
-  result += RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite);
+  result += ACE_TEXT("spawned: ");
+  result += (entity_in.is_spawned ? ACE_TEXT("yes") : ACE_TEXT("no"));
   result += ACE_TEXT("\n");
   result += ACE_TEXT("\\end Entity\n");
 
@@ -1870,266 +1855,13 @@ monster_advance_attack_iterator:
   } // end ELSE
 }
 
-RPG_Graphics_Sprite
-RPG_Engine_Common_Tools::class2Sprite(const RPG_Character_Class& class_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::class2Sprite"));
-
-  switch (class_in.metaClass)
-  {
-    case METACLASS_PRIEST:
-      return SPRITE_PRIEST;
-    default:
-      break;
-  } // end SWITCH
-
-  return SPRITE_HUMAN;
-}
-
-bool
-RPG_Engine_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
-                                    const RPG_Engine_Level& level_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::hasCeiling"));
-
-  // shortcut: floors, doors never get a ceiling
-  if ((level_in.getElement(position_in) == MAPELEMENT_FLOOR) ||
-      (level_in.getElement(position_in) == MAPELEMENT_DOOR))
-    return false;
-
-  RPG_Map_Position_t east, west, south, north;
-  east = position_in;
-  east.first++;
-  west = position_in;
-  west.first--;
-  north = position_in;
-  north.second--;
-  south = position_in;
-  south.second++;
-
-  // *NOTE*: walls should get a ceiling if they're either:
-  // - "internal" (e.g. (single) strength room/corridor walls)
-  // - "outer" walls get a (single strength) ceiling "margin"
-
-  // "corridors"
-  // vertical
-  if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(west) == MAPELEMENT_DOOR)))
-    return true;
-  // horizontal
-  if (((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(south) == MAPELEMENT_DOOR)))
-    return true;
-
-  // (internal) "corners"
-  // SW
-  if (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
-       (level_in.getElement(north) == MAPELEMENT_WALL)) &&
-      ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
-       (level_in.getElement(east) == MAPELEMENT_WALL)))
-    return (RPG_Engine_Common_Tools::isCorner(north, level_in) ||
-            RPG_Engine_Common_Tools::isCorner(east, level_in) ||
-            RPG_Engine_Common_Tools::hasCeiling(north, level_in) ||
-            RPG_Engine_Common_Tools::hasCeiling(east, level_in));
-  // SE
-  if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
-       (level_in.getElement(north) == MAPELEMENT_WALL)) &&
-      ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
-       (level_in.getElement(west) == MAPELEMENT_WALL)))
-    return (RPG_Engine_Common_Tools::isCorner(north, level_in) ||
-            RPG_Engine_Common_Tools::isCorner(west, level_in) ||
-            RPG_Engine_Common_Tools::hasCeiling(north, level_in) ||
-            RPG_Engine_Common_Tools::hasCeiling(west, level_in));
-  // NW
-  if (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
-       (level_in.getElement(south) == MAPELEMENT_WALL)) &&
-      ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
-       (level_in.getElement(east) == MAPELEMENT_WALL)))
-    return (RPG_Engine_Common_Tools::isCorner(south, level_in) ||
-            RPG_Engine_Common_Tools::isCorner(east, level_in) ||
-            RPG_Engine_Common_Tools::hasCeiling(south, level_in) ||
-            RPG_Engine_Common_Tools::hasCeiling(east, level_in));
-  // NE
-  if (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
-       (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
-      ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
-       (level_in.getElement(south) == MAPELEMENT_WALL)) &&
-      ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
-       (level_in.getElement(west) == MAPELEMENT_WALL)))
-    return (RPG_Engine_Common_Tools::isCorner(south, level_in) ||
-            RPG_Engine_Common_Tools::isCorner(west, level_in) ||
-            RPG_Engine_Common_Tools::hasCeiling(south, level_in) ||
-            RPG_Engine_Common_Tools::hasCeiling(west, level_in));
-
-  return false;
-}
-
-bool
-RPG_Engine_Common_Tools::isValid(const RPG_Map_Position_t& position_in,
-                                 const RPG_Engine_Level& level_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isValid"));
-
-  RPG_Map_Element element = level_in.getElement(position_in);
-  switch (element)
-  {
-    case MAPELEMENT_FLOOR:
-      return true;
-    case MAPELEMENT_DOOR:
-    {
-      RPG_Map_Door_t current_door = level_in.getDoor(position_in);
-      if (current_door.is_open)
-        return true;
-
-      break;
-    }
-    default:
-      break;
-  } // end SWITCH
-
-  return false;
-}
-
-RPG_Graphics_Orientation
-RPG_Engine_Common_Tools::getDoorOrientation(const RPG_Engine_Level& level_in,
-                                            const RPG_Map_Position_t& position_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getDoorOrientation"));
-
-  RPG_Map_Position_t east;//, south;
-  east = position_in;
-  east.first++;
-//   south = position_in;
-//   south.second++;
-
-  if (level_in.getElement(east) == MAPELEMENT_WALL) // &&
-//     (level_in.getElement(west) == MAPELEMENT_WALL))
-  {
-    return ORIENTATION_HORIZONTAL;
-  } // end IF
-
-  return ORIENTATION_VERTICAL;
-}
-
-RPG_Graphics_Cursor
-RPG_Engine_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
-                                   const RPG_Engine_Level& level_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getCursor"));
-
-  RPG_Graphics_Cursor result = CURSOR_NORMAL;
-
-  // monster ?
-  RPG_Engine_EntityID_t entity_id = level_in.hasEntity(position_in);
-  if (entity_id &&
-      level_in.isMonster(entity_id))
-  {
-    // && in reach ?
-    entity_id = level_in.getActive();
-    if (entity_id &&
-        RPG_Map_Common_Tools::isAdjacent(level_in.getPosition(entity_id), position_in))
-      return CURSOR_TARGET;
-  } // end IF
-
-  // (closed) door ?
-  if (level_in.getElement(position_in) == MAPELEMENT_DOOR)
-  {
-    RPG_Map_Door_t door = level_in.getDoor(position_in);
-    RPG_Engine_EntityID_t entity_id = level_in.getActive();
-    if (!door.is_open &&
-        entity_id &&
-        (RPG_Map_Common_Tools::distance(level_in.getPosition(entity_id),
-                                        position_in) == 1))
-      result = CURSOR_DOOR_OPEN;
-  } // end IF
-
-  return result;
-}
-
-bool
-RPG_Engine_Common_Tools::isCorner(const RPG_Map_Position_t& position_in,
-                                  const RPG_Engine_Level& level_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCorner"));
-
-  RPG_Map_Position_t east, west, south, north;
-  east = position_in;
-  east.first++;
-  west = position_in;
-  west.first--;
-  north = position_in;
-  north.second--;
-  south = position_in;
-  south.second++;
-
-  return ((((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
-            (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
-           ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
-            (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
-           ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
-            (level_in.getElement(north) == MAPELEMENT_WALL)) &&
-           ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
-            (level_in.getElement(east) == MAPELEMENT_WALL))) || // SW
-          (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
-            (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
-           ((level_in.getElement(south) == MAPELEMENT_FLOOR) ||
-            (level_in.getElement(south) == MAPELEMENT_DOOR)) &&
-           ((level_in.getElement(north) == MAPELEMENT_UNMAPPED) ||
-            (level_in.getElement(north) == MAPELEMENT_WALL)) &&
-           ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
-            (level_in.getElement(west) == MAPELEMENT_WALL))) || // SE
-          (((level_in.getElement(west) == MAPELEMENT_FLOOR) ||
-            (level_in.getElement(west) == MAPELEMENT_DOOR)) &&
-           ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
-            (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
-           ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
-            (level_in.getElement(south) == MAPELEMENT_WALL)) &&
-           ((level_in.getElement(east) == MAPELEMENT_UNMAPPED) ||
-            (level_in.getElement(east) == MAPELEMENT_WALL))) || // NW
-          (((level_in.getElement(east) == MAPELEMENT_FLOOR) ||
-            (level_in.getElement(east) == MAPELEMENT_DOOR)) &&
-           ((level_in.getElement(north) == MAPELEMENT_FLOOR) ||
-            (level_in.getElement(north) == MAPELEMENT_DOOR)) &&
-           ((level_in.getElement(south) == MAPELEMENT_UNMAPPED) ||
-            (level_in.getElement(south) == MAPELEMENT_WALL)) &&
-           ((level_in.getElement(west) == MAPELEMENT_UNMAPPED) ||
-            (level_in.getElement(west) == MAPELEMENT_WALL)))); // NE
-}
-
-RPG_Graphics_Sprite
-RPG_Engine_Common_Tools::monster2Sprite(const std::string& type_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::monster2Sprite"));
-
-  // *TODO*: 
-  return SPRITE_GOBLIN;
-}
-
 RPG_Engine_Player_XMLTree_Type*
 RPG_Engine_Common_Tools::playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree_Type& player_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::playerXMLToEntityXML"));
 
   RPG_Map_Position_XMLTree_Type position(0, 0);
-  RPG_Graphics_Sprite_XMLTree_Type sprite(RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(RPG_GRAPHICS_DEF_SPRITE));
+  std::string sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_ENTITY_SPRITE_FILE);
 
   RPG_Engine_Player_XMLTree_Type* entity_p = NULL;
   try

@@ -39,7 +39,7 @@
 #include <string>
 
 // forward declarations
-class RPG_Engine_Level;
+class RPG_Engine;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -56,7 +56,7 @@ class SDL_GUI_MainWindow
 
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  void init(RPG_Engine_Level*,              // level state handle
+  void init(RPG_Engine*,                    // (level) state handle
             const RPG_Graphics_MapStyle_t&, // map style
             const bool&);                   // debug mode
 

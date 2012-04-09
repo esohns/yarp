@@ -28,13 +28,15 @@
 #include "rpg_client_ui_tools.h"
 #include "rpg_client_entity_manager.h"
 
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 
+#include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_common_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_file_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -54,28 +56,6 @@ RPG_Client_Engine::RPG_Client_Engine()
   // use member message queue...
 //   inherited::msg_queue(&myQueue);
 }
-
-//RPG_Client_Engine::RPG_Client_Engine(RPG_Engine_Level* levelState_in,
-//                                     RPG_Graphics_IWindow* window_in)
-////  : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
-// : myCondition(myLock),
-//   myStop(false),
-//   myEngine(levelState_in),
-//   myWindow(window_in),
-//   myWidgets(NULL),
-////   myActions(),
-//   mySelectionMode(SELECTIONMODE_NORMAL),
-//   myCenterOnActivePlayer(RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::RPG_Client_Engine"));
-//
-//  // sanity check(s)
-//  ACE_ASSERT(levelState_in);
-//  ACE_ASSERT(window_in);
-//
-//  // use member message queue...
-////   inherited::msg_queue(&myQueue);
-//}
 
 RPG_Client_Engine::~RPG_Client_Engine()
 {
@@ -397,11 +377,49 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       return;
     case COMMAND_E2C_ENTITY_ADD:
     {
-      ACE_ASSERT(parameters_in.size() == 2);
+      ACE_ASSERT(parameters_in.size() == 1);
       RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t*>(parameters_in.front());
+      // load sprite graphics
+      SDL_Surface* sprite_graphic = NULL;
+      if (!myEngine->isMonster(entity_id))
+      {
+        std::string filename = RPG_Graphics_Common_Tools::getGraphicsDirectory();
+        filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+        filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_CREATURES_SUB);
+        filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+        filename += myEngine->getSprite(entity_id);
+        // sanity check(s)
+        if (!RPG_Common_File_Tools::isReadable(filename))
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+                     filename.c_str()));
+
+          return;
+        } // end IF
+        sprite_graphic = RPG_Graphics_Surface::load(filename, // file
+                                                    true);    // convert to display format
+        if (!sprite_graphic)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                     filename.c_str()));
+
+          return;
+        } // end IF
+      } // end IF
+      else
+      {
+        RPG_Graphics_GraphicTypeUnion type;
+        type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+        type.sprite = RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(entity_id));
+        sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                                true,   // convert to display format
+                                                                false); // don't cache
+      } // end ELSE
+      ACE_ASSERT(sprite_graphic);
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(entity_id,
-                                                           static_cast<SDL_Surface*>(parameters_in.back()),
-                                                           myEngine->isMonster(entity_id));
+                                                           sprite_graphic);
 
       return;
     }
@@ -465,18 +483,18 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 }
 
 void
-RPG_Client_Engine::init(RPG_Engine_Level* levelState_in,
+RPG_Client_Engine::init(RPG_Engine* engine_in,
                         RPG_Graphics_IWindow* window_in,
                         GladeXML* widgets_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::init"));
 
   // sanity check(s)
-  ACE_ASSERT(levelState_in);
+  ACE_ASSERT(engine_in);
   ACE_ASSERT(window_in);
-  ACE_ASSERT(widgets_in);
+  //ACE_ASSERT(widgets_in);
 
-  myEngine = levelState_in;
+  myEngine = engine_in;
   myWindow = window_in;
   myWidgets = widgets_in;
 }
@@ -821,10 +839,11 @@ RPG_Client_Engine::handleActions()
 
         // step2: (re)set level window title caption/iconify
         std::string caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
-        if (!myEngine->getName().empty())
+        const std::string& level_name = myEngine->getName();
+        if (!level_name.empty())
         {
           caption = ACE_TEXT_ALWAYS_CHAR("* ");
-          caption += myEngine->getName();
+          caption += level_name;
           caption += ACE_TEXT_ALWAYS_CHAR(" *");
         } // end IF
         else

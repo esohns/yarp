@@ -37,7 +37,7 @@
 #include <vector>
 
 // forward declaration(s)
-class RPG_Engine_Level;
+class RPG_Engine;
 class RPG_Client_Engine;
 
 /**
@@ -63,7 +63,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
 
   // init level properties
   void init(RPG_Client_Engine*,              // engine handle
-            RPG_Engine_Level*,               // level state handle
+            RPG_Engine*,                     // (level) state handle
             const RPG_Graphics_MapStyle_t&); // map style
   void init();
 
@@ -91,7 +91,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
   void initWallBlend(const bool&); // half-height walls ?
   void initMiniMap();
 
-  RPG_Engine_Level*               myEngine;
+  RPG_Engine*                     myEngine;
   RPG_Client_Engine*              myClient;
   RPG_Client_Action               myClientAction;
   bool                            myDrawMinimap;

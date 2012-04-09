@@ -67,14 +67,12 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
   // *NOTE*: entity.character must be deleted() by the caller !
-  static RPG_Engine_Entity loadEntity(const std::string&, // FQ filename
-                                      const std::string&, // schema repository (directory)
-                                      const bool&);       // load sprite graphic ?
+  static RPG_Engine_Entity loadEntity(const std::string&,  // FQ filename
+                                      const std::string&); // schema repository (directory)
   static bool saveEntity(const RPG_Engine_Entity&, // entity
                          const std::string&);      // FQ filename
   // *NOTE*: return value entity.character must be delete()d by the caller !
-  // *NOTE*: return value entity.graphic must be SDL_FreeSurface()d by the caller !
-  static RPG_Engine_Entity createEntity(const bool& = true); // load sprite graphic ?
+  static RPG_Engine_Entity createEntity();
   static RPG_Engine_Entity createEntity(const std::string&); // creature type
   static std::string info(const RPG_Engine_Entity&); // entity
 
@@ -98,20 +96,6 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                      const bool& = true,                                        // full-round action ?
                      const unsigned short& = RPG_COMBAT_DEF_ADJACENT_DISTANCE); // distance (feet)
 
-  // ***** map/graphics-related *****
-  static RPG_Graphics_Sprite class2Sprite(const RPG_Character_Class&);
-
-  static bool hasCeiling(const RPG_Map_Position_t&,
-                         const RPG_Engine_Level&);
-  // either floor or an open (!) door
-  static bool isValid(const RPG_Map_Position_t&,
-                      const RPG_Engine_Level&);
-
-  static RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine_Level&,    // state
-                                                     const RPG_Map_Position_t&); // door
-  static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
-                                       const RPG_Engine_Level&);  // state
-
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools());
@@ -131,11 +115,6 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                                                         const RPG_Monster_AttackActions_t&);
   static bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
                                               const RPG_Monster_AttackAction&);
-
-  static bool isCorner(const RPG_Map_Position_t&,
-                       const RPG_Engine_Level&);
-
-  static RPG_Graphics_Sprite monster2Sprite(const std::string&);
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Engine_Player_XMLTree_Type* playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree_Type&);

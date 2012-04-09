@@ -72,6 +72,11 @@ class RPG_Map_Export RPG_Map_Common_Tools
 
   static void buildCorridor(const RPG_Map_Path_t&, // path
                             RPG_Map_Positions_t&); // return value: corridor
+  static void buildSquare(const RPG_Map_Position_t&, // center
+                          const RPG_Map_Size_t&,     // size
+                          const unsigned int&,       // radius
+                          const bool&,               // fill area ?
+                          RPG_Map_Positions_t&);     // return value: area
 
  private:
   // safety measures

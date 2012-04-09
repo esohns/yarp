@@ -24,6 +24,8 @@
 #include "rpg_map_exports.h"
 #include "rpg_map_common.h"
 
+#include <ace/Global_Macros.h>
+
 #include <string>
 
 /**
@@ -32,11 +34,11 @@
 class RPG_Map_Export RPG_Map_Level
 {
  public:
-  RPG_Map_Level();
   RPG_Map_Level(const RPG_Map_t&); // map
   virtual ~RPG_Map_Level();
 
   void init(const RPG_Map_t&); // map
+  void save(const std::string&) const; // FQ filename
 
   const std::string& getName() const;
   const RPG_Map_Position_t& getStartPosition() const;
@@ -45,8 +47,27 @@ class RPG_Map_Export RPG_Map_Level
 
   RPG_Map_Size_t getSize() const;
 
+  // either floor or an open (!) door ?
+  bool isValid(const RPG_Map_Position_t&) const;
+  bool isCorner(const RPG_Map_Position_t&)const;
+  RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
+  const RPG_Map_Door_t& getDoor(const RPG_Map_Position_t&) const;
+  bool findPath(const RPG_Map_Position_t&, // start position
+                const RPG_Map_Position_t&, // end position
+                RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
+  void findValid(const RPG_Map_Position_t&,   // center
+                 const unsigned int&,         // max (square !) radius
+                 RPG_Map_Positions_t&) const; // return value: area
+
  protected:
+  RPG_Map_Level();
+
   RPG_Map_t myMap;
+
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level(const RPG_Map_Level&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level& operator=(const RPG_Map_Level&));
 };
 
 #endif

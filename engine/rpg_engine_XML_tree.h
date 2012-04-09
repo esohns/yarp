@@ -83,8 +83,6 @@ class RPG_Engine_Player_XMLTree_Type;
 
 #include "../map/rpg_map_XML_tree.h"
 
-#include "../graphics/rpg_graphics_XML_tree.h"
-
 class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
 {
   public:
@@ -253,7 +251,7 @@ class RPG_Engine_Export RPG_Engine_Player_XMLTree_Type: public ::RPG_Player_Play
 
   // sprite
   // 
-  typedef ::RPG_Graphics_Sprite_XMLTree_Type sprite_type;
+  typedef ::xml_schema::string sprite_type;
   typedef ::xsd::cxx::tree::traits< sprite_type, char > sprite_traits;
 
   const sprite_type&

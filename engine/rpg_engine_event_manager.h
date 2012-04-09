@@ -37,7 +37,7 @@
 #include <map>
 
 // forward declaration(s)
-class RPG_Engine_Level;
+class RPG_Engine;
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
@@ -54,7 +54,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
 
  public:
   void init(const unsigned int&, // max # spawned entities (consecutive)
-            RPG_Engine_Level*);  // level engine
+            RPG_Engine*);        // (level) engine
 
   // manage event sources
   long schedule(const RPG_Engine_Event&, // event
@@ -93,7 +93,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   // trigger (one round of) entity actions
   void handleEntities();
 
-  RPG_Engine_Level*          myEngine;
+  RPG_Engine*                myEngine;
   unsigned int               myMaxNumSpawnedEntities;
 
   // helper types

@@ -61,22 +61,34 @@ update_sprite_gallery(GTK_cb_data_t& CBData_in)
 {
   RPG_TRACE(ACE_TEXT("::update_sprite_gallery"));
 
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  RPG_Graphics_t graphic;
+  std::string filename;
   for (CBData_in.current_sprite = CBData_in.sprite_gallery.begin();
        CBData_in.current_sprite != CBData_in.sprite_gallery.end();
        CBData_in.current_sprite++)
-    if ((*CBData_in.current_sprite) == CBData_in.entity.sprite)
+  {
+    type.sprite = *CBData_in.current_sprite;
+    graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+    ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
+               (graphic.type.sprite == type.sprite));
+    // assemble path
+    RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+    if (filename == CBData_in.entity.sprite)
       break;
+  } // end FOR
 
   // sanity check
-  if ((*CBData_in.current_sprite) != CBData_in.entity.sprite)
+  if (filename != CBData_in.entity.sprite)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("sprite (was: \"%s\") not in gallery (%u entrie(s)), aborting\n"),
-               RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(CBData_in.entity.sprite).c_str(),
+               ACE_TEXT("sprite (was: \"%s\") not in gallery (%u entries), aborting\n"),
+               CBData_in.entity.sprite.c_str(),
                CBData_in.sprite_gallery.size()));
 }
 
 void
-set_current_image(const RPG_Graphics_Sprite& sprite_in,
+set_current_image(const std::string& filename_in,
                   GladeXML* xml_in)
 {
   RPG_TRACE(ACE_TEXT("::set_current_image"));
@@ -86,19 +98,8 @@ set_current_image(const RPG_Graphics_Sprite& sprite_in,
   ACE_ASSERT(image);
   gtk_image_clear(image);
 
-  // retrieve graphic
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  type.sprite = sprite_in;
-  RPG_Graphics_t graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
-             (graphic.type.sprite == type.sprite));
-  // assemble path
-  std::string filename;
-  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
-
-  if (!filename.empty())
-    gtk_image_set_from_file(image, filename.c_str());
+  if (!filename_in.empty())
+    gtk_image_set_from_file(image, filename_in.c_str());
   else
     gtk_image_clear(image);
 }
@@ -215,13 +216,14 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
   // clean up
   if (data->entity.character)
   {
-    data->entity.actions.clear();
     delete data->entity.character;
     data->entity.character = NULL;
-    SDL_FreeSurface(data->entity.graphic);
-    data->entity.graphic = NULL;
-    data->entity.position = std::make_pair(0, 0);
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                           std::numeric_limits<unsigned int>::max());
+    data->entity.modes.clear();
+    data->entity.actions.clear();
+    data->entity.sprite.clear();
+    data->entity.is_spawned = false;
   } // end IF
 
   // reset profile widgets
@@ -321,21 +323,21 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   // clean up
   if (data->entity.character)
   {
-    data->entity.actions.clear();
     delete data->entity.character;
     data->entity.character = NULL;
-    SDL_FreeSurface(data->entity.graphic);
-    data->entity.graphic = NULL;
-    data->entity.position = std::make_pair(0, 0);
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                           std::numeric_limits<unsigned int>::max());
+    data->entity.modes.clear();
+    data->entity.actions.clear();
+    data->entity.sprite.clear();
+    data->entity.is_spawned = false;
   } // end IF
 
   // retrieve selected filename
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
 
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schemaRepository,
-                                                     false);
+                                                     data->schemaRepository);
   ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
@@ -455,13 +457,14 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   // clean up
   if (data->entity.character)
   {
-    data->entity.actions.clear();
     delete data->entity.character;
     data->entity.character = NULL;
-    SDL_FreeSurface(data->entity.graphic);
-    data->entity.graphic = NULL;
-    data->entity.position = std::make_pair(0, 0);
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+    data->entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                           std::numeric_limits<unsigned int>::max());
+    data->entity.modes.clear();
+    data->entity.actions.clear();
+    data->entity.sprite.clear();
+    data->entity.is_spawned = false;
   } // end IF
 
   // construct filename
@@ -476,8 +479,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 
   // load entity profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schemaRepository,
-                                                     false);
+                                                     data->schemaRepository);
   ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets
@@ -596,7 +598,16 @@ prev_image_clicked_GTK_cb(GtkWidget* widget_in,
     data->current_sprite = data->sprite_gallery.end();
   data->current_sprite--;
 
-  ::set_current_image(*(data->current_sprite),
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  type.sprite = *(data->current_sprite);
+  RPG_Graphics_t graphic;
+  // retrieve properties from the dictionary
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  // assemble path
+  std::string filename;
+  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+  ::set_current_image(filename,
                       data->xml);
 
   // make character save button sensitive (if it's not already)
@@ -625,7 +636,16 @@ next_image_clicked_GTK_cb(GtkWidget* widget_in,
   if (data->current_sprite == data->sprite_gallery.end())
     data->current_sprite = data->sprite_gallery.begin();
 
-  ::set_current_image(*(data->current_sprite),
+  RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+  type.sprite = *(data->current_sprite);
+  RPG_Graphics_t graphic;
+  // retrieve properties from the dictionary
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+  // assemble path
+  std::string filename;
+  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+  ::set_current_image(filename,
                       data->xml);
 
   // make character save button sensitive (if it's not already)

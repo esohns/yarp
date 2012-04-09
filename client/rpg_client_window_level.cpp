@@ -27,7 +27,7 @@
 #include "rpg_client_entity_manager.h"
 #include "rpg_client_window_minimap.h"
 
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 #include <rpg_engine_command.h>
 #include <rpg_engine_common_tools.h>
 
@@ -275,7 +275,7 @@ RPG_Client_WindowLevel::toggleDoor(const RPG_Map_Position_t& position_in)
 
   // change tile accordingly
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myEngine,
+  orientation = RPG_Client_Common_Tools::getDoorOrientation(*myEngine,
                                                             position_in);
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
@@ -300,18 +300,18 @@ RPG_Client_WindowLevel::toggleDoor(const RPG_Map_Position_t& position_in)
 }
 
 void
-RPG_Client_WindowLevel::init(RPG_Client_Engine* engine_in,
-                             RPG_Engine_Level* levelState_in,
+RPG_Client_WindowLevel::init(RPG_Client_Engine* clientEngine_in,
+                             RPG_Engine* engine_in,
                              const RPG_Graphics_MapStyle_t& mapStyle_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::init"));
 
   // sanity checks
+  ACE_ASSERT(clientEngine_in);
   ACE_ASSERT(engine_in);
-  ACE_ASSERT(levelState_in);
 
-  myClient = engine_in;
-  myEngine = levelState_in;
+  myClient = clientEngine_in;
+  myEngine = engine_in;
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -824,7 +824,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         } // end IF
 
         // step8: ceiling
-        if (RPG_Engine_Common_Tools::hasCeiling(current_map_position,
+        if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
                                                 *myEngine))
         {
           RPG_Graphics_Surface::put(screen_position.first,
@@ -999,7 +999,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             myClientAction.entity_id = myEngine->getActive();
             if (myClientAction.entity_id)
             {
-              if (RPG_Engine_Common_Tools::isValid(myClientAction.position, *myEngine))
+              if (myEngine->isValid(myClientAction.position))
               {
                 RPG_Graphics_Position_t current_position = myEngine->getPosition(myClientAction.entity_id);
                 if (current_position != myClientAction.position)
@@ -1015,7 +1015,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                     //           myClientAction.position.first,
                     //           myClientAction.position.second));
 
-                    // pointing at an invalid (==unreachable) position (still on the map)
+                    // pointing at an unreachable position (still on the map)
                     // --> erase cached path (and tile highlights)
                     myClientAction.path.clear();
                   } // end IF
@@ -1174,7 +1174,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             player_action.path.clear();
             player_action.target = 0;
 
-            if (RPG_Engine_Common_Tools::isValid(player_action.position, *myEngine))
+            if (myEngine->isValid(player_action.position))
             {
               myEngine->action(myClientAction.entity_id, player_action);
 
@@ -1282,7 +1282,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         if (myClientAction.entity_id &&
             myClient->hasMode(SELECTIONMODE_PATH))
         {
-          if (RPG_Engine_Common_Tools::isValid(myClientAction.position, *myEngine))
+          if (myEngine->isValid(myClientAction.position))
           {
             current_position = myEngine->getPosition(myClientAction.entity_id);
             if (current_position != myClientAction.position)
@@ -1324,7 +1324,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // set an appropriate cursor
-      RPG_Graphics_Cursor cursor_type = RPG_Engine_Common_Tools::getCursor(myClientAction.position,
+      RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
                                                                            *myEngine);
       if ((cursor_type == CURSOR_NORMAL) &&
           myClientAction.entity_id &&
@@ -1395,7 +1395,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           case MAPELEMENT_FLOOR:
           {
             if (myClientAction.entity_id &&
-                RPG_Engine_Common_Tools::isValid(map_position, *myEngine))
+                myEngine->isValid(map_position))
             {
               // monster ?
               player_action.target = myEngine->hasEntity(map_position);

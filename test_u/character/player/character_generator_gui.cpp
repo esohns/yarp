@@ -536,9 +536,13 @@ do_work(const std::string& magicDictionary_in,
   userData.xml              = NULL;
   userData.schemaRepository = schemaRepository_in;
   userData.entity.character = NULL;
-  userData.entity.position  = std::make_pair(0, 0);
-  userData.entity.sprite    = RPG_GRAPHICS_SPRITE_INVALID;
-  userData.entity.graphic   = NULL;
+  userData.entity.position  = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                             std::numeric_limits<unsigned int>::max());
+  userData.entity.modes.clear();
+  userData.entity.actions.clear();
+  userData.entity.sprite.clear();
+  userData.entity.is_spawned = false;
+
   // init sprite gallery
   for (int index = 0;
        index < RPG_GRAPHICS_SPRITE_MAX;

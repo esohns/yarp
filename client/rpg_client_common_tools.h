@@ -23,13 +23,15 @@
 
 #include "rpg_client_exports.h"
 
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 
 #include <rpg_graphics_common.h>
 
 #include <rpg_map_common.h>
 
 #include <ace/Global_Macros.h>
+
+#include <string>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -51,12 +53,21 @@ class RPG_Client_Export RPG_Client_Common_Tools
   static void updateWalls(const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
                           RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
   static void initDoors(const RPG_Map_FloorPlan_t&,        // floor plan
-                        const RPG_Engine_Level&,           // state
+                        const RPG_Engine&,                 // state / engine
                         const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
                         RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
   static void updateDoors(const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
-                          const RPG_Engine_Level&,           // state
+                          const RPG_Engine&,                 // state / engine
                           RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
+
+  static RPG_Graphics_Sprite class2Sprite(const RPG_Character_Class&);
+  static RPG_Graphics_Sprite monster2Sprite(const std::string&);
+  static bool hasCeiling(const RPG_Map_Position_t&, // position
+                         const RPG_Engine&);        // state / engine
+  static RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine&,          // state / engine
+                                                     const RPG_Map_Position_t&); // door
+  static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
+                                       const RPG_Engine&);        // state / engine
 
  private:
   // safety measures

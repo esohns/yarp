@@ -24,8 +24,6 @@
 #include "rpg_engine_command.h"
 #include "rpg_engine_entitymode.h"
 
-#include <rpg_graphics_sprite.h>
-
 #include <rpg_map_common.h>
 
 #include <rpg_player_base.h>
@@ -35,8 +33,9 @@
 #include <ace/Log_Msg.h>
 
 #include <set>
-#include <map>
 #include <deque>
+#include <string>
+#include <map>
 
 typedef std::set<RPG_Engine_EntityMode> RPG_Engine_EntityMode_t;
 typedef RPG_Engine_EntityMode_t::const_iterator RPG_Engine_EntityModeConstIterator_t;
@@ -59,8 +58,7 @@ struct RPG_Engine_Entity
   RPG_Map_Position_t      position;
   RPG_Engine_EntityMode_t modes;
   RPG_Engine_Actions_t    actions;
-  RPG_Graphics_Sprite     sprite;
-  SDL_Surface*            graphic;
+  std::string             sprite;
   bool                    is_spawned;
 };
 typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_t;
