@@ -26,10 +26,13 @@
 
 #include <rpg_map_common.h>
 
+#include <rpg_monster_common.h>
+
 #include <rpg_player_base.h>
 
 #include <SDL/SDL.h>
 
+#include <ace/Time_Value.h>
 #include <ace/Log_Msg.h>
 
 #include <set>
@@ -64,6 +67,20 @@ struct RPG_Engine_Entity
 typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
 typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t;
+
+struct RPG_Engine_LevelMeta_t
+{
+  // roaming monsters
+  // *TODO*: define "toughness"/environment
+  RPG_Monster_List_t monsters;
+  ACE_Time_Value     spawn_interval;
+  float              probability;
+};
+struct RPG_Engine_Level_t
+{
+  RPG_Engine_LevelMeta_t level_meta;
+  RPG_Map_t              map;
+};
 
 typedef std::map<RPG_Map_Position_t, SDL_Surface*> RPG_Engine_EntityGraphics_t;
 typedef RPG_Engine_EntityGraphics_t::const_iterator RPG_Engine_EntityGraphicsConstIterator_t;

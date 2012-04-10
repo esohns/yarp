@@ -70,6 +70,7 @@ class RPG_Common_SaveReductionType_Type_pskel;
 class RPG_Common_SavingThrowCheck_Type_pskel;
 class RPG_Common_Amount_Type_pskel;
 class RPG_Common_Usage_Type_pskel;
+class RPG_Common_FixedPeriod_Type_pskel;
 class RPG_Common_Duration_Type_pskel;
 class RPG_Common_EffectDuration_Type_pskel;
 class RPG_Common_Camp_Type_pskel;
@@ -511,6 +512,56 @@ class RPG_Common_Export RPG_Common_Usage_Type_pskel: public ::xml_schema::comple
   ::xml_schema::unsigned_byte_pskel* numUses_parser_;
   ::xml_schema::unsigned_int_pskel* period_parser_;
   ::RPG_Dice_Roll_Type_pskel* interval_parser_;
+};
+
+class RPG_Common_Export RPG_Common_FixedPeriod_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  seconds (unsigned int);
+
+  virtual void
+  u_seconds (unsigned int);
+
+  virtual RPG_Common_FixedPeriod
+  post_RPG_Common_FixedPeriod_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  seconds_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  u_seconds_parser (::xml_schema::unsigned_int_pskel&);
+
+  void
+  parsers (::xml_schema::unsigned_int_pskel& /* seconds */,
+           ::xml_schema::unsigned_int_pskel& /* u_seconds */);
+
+  // Constructor.
+  //
+  RPG_Common_FixedPeriod_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::xml_schema::unsigned_int_pskel* seconds_parser_;
+  ::xml_schema::unsigned_int_pskel* u_seconds_parser_;
 };
 
 class RPG_Common_Export RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content

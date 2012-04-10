@@ -242,6 +242,21 @@ class RPG_Common_Export RPG_Common_Usage_Type
   RPG_Common_Usage myCurrentUsage;
 };
 
+class RPG_Common_Export RPG_Common_FixedPeriod_Type
+ : public RPG_Common_FixedPeriod_Type_pskel
+{
+ public:
+  RPG_Common_FixedPeriod_Type();
+
+//   virtual void pre();
+  virtual void seconds(unsigned int);
+  virtual void u_seconds(unsigned int);
+  virtual RPG_Common_FixedPeriod post_RPG_Common_FixedPeriod_Type();
+
+ private:
+  RPG_Common_FixedPeriod myCurrentFixedPeriod;
+};
+
 class RPG_Common_Export RPG_Common_Duration_Type
  : public RPG_Common_Duration_Type_pskel
 {

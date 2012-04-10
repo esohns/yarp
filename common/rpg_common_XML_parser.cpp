@@ -347,6 +347,41 @@ RPG_Common_Usage RPG_Common_Usage_Type::post_RPG_Common_Usage_Type()
   return result;
 }
 
+RPG_Common_FixedPeriod_Type::RPG_Common_FixedPeriod_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_FixedPeriod_Type::RPG_Common_FixedPeriod_Type"));
+
+  myCurrentFixedPeriod.seconds = 0;
+  myCurrentFixedPeriod.u_seconds = 0;
+}
+
+void RPG_Common_FixedPeriod_Type::seconds(unsigned int seconds_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_FixedPeriod_Type::seconds"));
+
+  myCurrentFixedPeriod.seconds = seconds_in;
+}
+
+void RPG_Common_FixedPeriod_Type::u_seconds(unsigned int u_seconds_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_FixedPeriod_Type::u_seconds"));
+
+  myCurrentFixedPeriod.u_seconds = u_seconds_in;
+}
+
+RPG_Common_FixedPeriod RPG_Common_FixedPeriod_Type::post_RPG_Common_FixedPeriod_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_FixedPeriod_Type::post_RPG_Common_FixedPeriod_Type"));
+
+  RPG_Common_FixedPeriod result = myCurrentFixedPeriod;
+
+  // clear structure
+  myCurrentFixedPeriod.seconds = 0;
+  myCurrentFixedPeriod.u_seconds = 0;
+
+  return result;
+}
+
 RPG_Common_Duration_Type::RPG_Common_Duration_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Duration_Type::RPG_Common_Duration_Type"));

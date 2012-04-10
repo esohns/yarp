@@ -26,7 +26,7 @@
 
 #include <ace/Log_Msg.h>
 
-const bool
+bool
 RPG_Character_Class_Common_Tools::hasSubClass(const RPG_Character_Class& class_in,
                                               const RPG_Common_SubClass& subClass_in)
 {
@@ -41,7 +41,7 @@ RPG_Character_Class_Common_Tools::hasSubClass(const RPG_Character_Class& class_i
   return false;
 }
 
-const RPG_Character_MetaClass
+RPG_Character_MetaClass
 RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass& subClass_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassToMetaClass"));
@@ -77,49 +77,6 @@ RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass&
   } // end SWITCH
 
   return RPG_CHARACTER_METACLASS_INVALID;
-}
-
-const bool
-RPG_Character_Class_Common_Tools::hasCasterClass(const RPG_Character_Class& class_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::hasCasterClass"));
-
-  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
-       iterator != class_in.subClasses.end();
-       iterator++)
-    if (RPG_Common_Tools::isCasterClass(*iterator))
-      return true;
-
-  return false;
-}
-
-const bool
-RPG_Character_Class_Common_Tools::hasDivineCasterClass(const RPG_Character_Class& class_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::hasDivineCasterClass"));
-
-  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
-       iterator != class_in.subClasses.end();
-       iterator++)
-    if (RPG_Common_Tools::isDivineCasterClass(*iterator))
-      return true;
-
-  return false;
-}
-
-const bool
-RPG_Character_Class_Common_Tools::hasArcaneCasterClass(const RPG_Character_Class& class_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::hasArcaneCasterClass"));
-
-  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
-       iterator != class_in.subClasses.end();
-       iterator++)
-    if ((RPG_Common_Tools::isCasterClass(*iterator)) &&
-        (!RPG_Common_Tools::isDivineCasterClass(*iterator)))
-      return true;
-
-  return false;
 }
 
 RPG_Character_Class

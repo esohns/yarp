@@ -34,6 +34,7 @@
 
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE              "rpg_engine.xsd"
+#define RPG_ENGINE_LEVEL_EXT                ".xml"
 
 // CONFIGDIR-specific
 #define RPG_ENGINE_DEF_CONFIG_SUB           "engine"

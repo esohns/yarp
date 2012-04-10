@@ -29,8 +29,6 @@
 #include <rpg_common_environment_incl.h>
 #include <rpg_character_incl.h>
 
-#include <xsd/cxx/xml/error-handler.hxx>
-
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -55,6 +53,7 @@ class RPG_Monster_Export RPG_Monster_Dictionary
   void find(const RPG_Character_Alignment&,       // alignment
             const RPG_Common_Environment&,        // environment
             const RPG_Monster_OrganizationSet_t&, // organization(s)
+            const RPG_Monster_HitDice&,           // HD
             RPG_Monster_List_t&) const;           // return value: compatible types
 
   // debug info
@@ -67,23 +66,10 @@ class RPG_Monster_Export RPG_Monster_Dictionary
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary(const RPG_Monster_Dictionary&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary& operator=(const RPG_Monster_Dictionary&));
 
-  // private error handler
-  class XSD_Error_Handler
-   : public ::xsd::cxx::xml::error_handler<char>
-  {
-   public:
-    virtual bool handle(const std::string&,                             // id
-                        unsigned long,                                  // line
-                        unsigned long,                                  // column
-                        ::xsd::cxx::xml::error_handler<char>::severity, // severity
-                        const std::string&);                            // message
-  };
-
   // helper types
   typedef RPG_Monster_Dictionary_t::const_iterator RPG_Monster_DictionaryConstIterator_t;
 
   RPG_Monster_Dictionary_t myMonsterDictionary;
-  XSD_Error_Handler        myXSDErrorHandler;
 };
 
 typedef ACE_Singleton<RPG_Monster_Dictionary,

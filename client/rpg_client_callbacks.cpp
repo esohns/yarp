@@ -38,11 +38,12 @@
 #include <rpg_map_common_tools.h>
 
 #include <rpg_player_defines.h>
-#include <rpg_character_class_common_tools.h>
 
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
+
+#include <rpg_magic_common_tools.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
@@ -570,7 +571,7 @@ update_character_profile(const RPG_Player& player_in,
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("spells_frame")));
   ACE_ASSERT(current);
-  if (!RPG_Character_Class_Common_Tools::hasCasterClass(player_class))
+  if (!RPG_Magic_Common_Tools::hasCasterClass(player_class))
     gtk_widget_hide_all(current);
   else
     gtk_widget_show_all(current);
@@ -579,7 +580,7 @@ update_character_profile(const RPG_Player& player_in,
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("known_spells_frame")));
   ACE_ASSERT(current);
-  if (!RPG_Character_Class_Common_Tools::hasArcaneCasterClass(player_class))
+  if (!RPG_Magic_Common_Tools::hasArcaneCasterClass(player_class))
     gtk_widget_hide_all(current);
   else
     gtk_widget_show_all(current);
@@ -1823,15 +1824,16 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   g_free(converted_text);
 
   // step2: create new (random) map
-  RPG_Map_t map;
-  RPG_Map_Common_Tools::create(map_name,
-                               data->map_config,
-                               map);
+  RPG_Engine_Level_t level;
+  RPG_Engine_Common_Tools::createLevel(data->level_meta_data,
+                                       map_name,
+                                       data->map_config,
+                                       level);
 
   // step3: assign new map to level engine
   if (data->level_engine->isRunning())
     data->level_engine->stop();
-  data->level_engine->init(data->client_engine, map);
+  data->level_engine->init(data->client_engine, level);
   data->client_engine->initMap();
   data->level_engine->start();
 
@@ -1884,14 +1886,22 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->level_engine);
   ACE_ASSERT(data->client_engine);
 
-  RPG_Map_t map;
-  map.start = std::make_pair(0, 0);
-  map.plan.size_x = 0;
-  map.plan.size_y = 0;
+  RPG_Engine_Level_t level;
+  level.level_meta = data->level_meta_data;
+  level.map.name.clear();
+  level.map.start = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                   std::numeric_limits<unsigned int>::max());
+  level.map.seeds.clear();
+  level.map.plan.size_x = 0;
+  level.map.plan.size_y = 0;
+  level.map.plan.unmapped.clear();
+  level.map.plan.walls.clear();
+  level.map.plan.doors.clear();
+  level.map.plan.rooms_are_square = false;
   data->level_engine->stop();
   // assign empty map to level engine
   data->level_engine->init(data->client_engine,
-                           map);
+                           level);
   data->client_engine->initMap();
 
   // make "this" insensitive
@@ -1949,21 +1959,12 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   // retrieve selected filename
   std::string filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog));
 
-  // load map
-  RPG_Map_t map;
-  if (!RPG_Map_Common_Tools::load(filename,
-                                  map))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
-               filename.c_str()));
-
-    return FALSE;
-  } // end IF
-
+  // load level
+  RPG_Engine_Level_t level = RPG_Engine_Common_Tools::loadLevel(filename,
+                                                                data->schemaRepository);
   if (data->level_engine->isRunning())
     data->level_engine->stop();
-  data->level_engine->init(data->client_engine, map);
+  data->level_engine->init(data->client_engine, level);
   data->client_engine->initMap();
   data->level_engine->start();
 
@@ -2092,20 +2093,12 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
 
-  // load map
-  RPG_Map_t map;
-  if (!RPG_Map_Common_Tools::load(filename, map))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
-               filename.c_str()));
-
-    return FALSE;
-  } // end IF
-
+  // load level
+  RPG_Engine_Level_t level = RPG_Engine_Common_Tools::loadLevel(filename,
+                                                                data->schemaRepository);
   if (data->level_engine->isRunning())
     data->level_engine->stop();
-  data->level_engine->init(data->client_engine, map);
+  data->level_engine->init(data->client_engine, level);
   data->client_engine->initMap();
   data->level_engine->start();
 
@@ -2387,8 +2380,7 @@ server_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 //
 //   // load player profile
 //   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-//                                                              data->schemaRepository,
-//                                                              true);
+//                                                      data->schemaRepository);
 //   ACE_ASSERT(data->entity.character);
 //
 //   // update entity profile widgets

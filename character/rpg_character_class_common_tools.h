@@ -31,13 +31,9 @@
 class RPG_Character_Export RPG_Character_Class_Common_Tools
 {
  public:
-  static const bool hasSubClass(const RPG_Character_Class&,  // class(es)
-                                const RPG_Common_SubClass&); // subclass
-  static const RPG_Character_MetaClass subClassToMetaClass(const RPG_Common_SubClass&); // subclass
-
-  static const bool hasCasterClass(const RPG_Character_Class&); // class(es)
-  static const bool hasDivineCasterClass(const RPG_Character_Class&); // class(es)
-  static const bool hasArcaneCasterClass(const RPG_Character_Class&); // class(es)
+  static bool hasSubClass(const RPG_Character_Class&,  // class(es)
+                          const RPG_Common_SubClass&); // subclass
+  static RPG_Character_MetaClass subClassToMetaClass(const RPG_Common_SubClass&); // subclass
 
   static RPG_Character_Class classXMLTreeToClass(const RPG_Character_ClassXML_XMLTree_Type&); // class (XML format)
 

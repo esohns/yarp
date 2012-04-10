@@ -114,6 +114,7 @@ popd</Command>
     <ClInclude Include="rpg_common_environment_XML_types.h" />
     <ClInclude Include="rpg_common_exports.h" />
     <ClInclude Include="rpg_common_file_tools.h" />
+    <ClInclude Include="rpg_common_fixedperiod.h" />
     <ClInclude Include="rpg_common_icontrol.h" />
     <ClInclude Include="rpg_common_idumpstate.h" />
     <ClInclude Include="rpg_common_incl.h" />

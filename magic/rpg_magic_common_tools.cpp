@@ -1021,7 +1021,7 @@ RPG_Magic_Common_Tools::init()
   initSpellsTables();
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::spellToName(const RPG_Magic_SpellType& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellToName"));
@@ -1035,7 +1035,7 @@ RPG_Magic_Common_Tools::spellToName(const RPG_Magic_SpellType& type_in)
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::spellTypeToString(const RPG_Magic_Spell_Type& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTypeToString"));
@@ -1065,7 +1065,7 @@ RPG_Magic_Common_Tools::spellTypeToString(const RPG_Magic_Spell_Type& type_in)
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_SpellLevels_t& levels_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellLevelsToString"));
@@ -1111,7 +1111,7 @@ RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_SpellLevels_t& level
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << static_cast<unsigned int> ((*iterator).level);
+    converter << static_cast<unsigned int>((*iterator).level);
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
   } // end FOR
@@ -1119,7 +1119,7 @@ RPG_Magic_Common_Tools::spellLevelsToString(const RPG_Magic_SpellLevels_t& level
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spell_RangeProperties& range_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellRangeToString"));
@@ -1174,7 +1174,7 @@ RPG_Magic_Common_Tools::spellRangeToString(const RPG_Magic_Spell_RangeProperties
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::spellTargetsToString(const RPG_Magic_Spell_Targets_t& targets_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellTargetsToString"));
@@ -1223,7 +1223,7 @@ RPG_Magic_Common_Tools::spellTargetsToString(const RPG_Magic_Spell_Targets_t& ta
       case TARGET_AREA:
       {
         if ((*iterator).effect != RPG_MAGIC_SPELL_AREAOFEFFECT_INVALID)
-        {
+       {
           result += ACE_TEXT_ALWAYS_CHAR("effect: ");
           result += RPG_Magic_Spell_AreaOfEffectHelper::RPG_Magic_Spell_AreaOfEffectToString((*iterator).effect);
           result += ACE_TEXT_ALWAYS_CHAR("\n");
@@ -1269,7 +1269,7 @@ RPG_Magic_Common_Tools::spellTargetsToString(const RPG_Magic_Spell_Targets_t& ta
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_Spell_DurationProperties& duration_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellDurationToString"));
@@ -1346,7 +1346,7 @@ RPG_Magic_Common_Tools::spellDurationToString(const RPG_Magic_Spell_DurationProp
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Preconditions_t& preconditions_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::preconditionsToString"));
@@ -1426,7 +1426,7 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
             result += ACE_TEXT_ALWAYS_CHAR("/");
             converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-            converter << static_cast<unsigned int> ((*iterator).levelIncrement);
+            converter << static_cast<unsigned int>((*iterator).levelIncrement);
             result += converter.str();
           } // end IF
           result += ACE_TEXT_ALWAYS_CHAR("]");
@@ -1470,7 +1470,7 @@ RPG_Magic_Common_Tools::preconditionsToString(const RPG_Magic_Spell_Precondition
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_Effects_t& effects_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::effectsToString"));
@@ -1496,7 +1496,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_Effects_t& effects
           result += ACE_TEXT_ALWAYS_CHAR("+");
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << static_cast<int> ((*iterator).base.value);
+        converter << static_cast<int>((*iterator).base.value);
         result += converter.str();
       } // end IF
       else
@@ -1566,7 +1566,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_Effects_t& effects
       result += ACE_TEXT_ALWAYS_CHAR("range: ");
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-      converter << static_cast<unsigned int> ((*iterator).maxRange);
+      converter << static_cast<unsigned int>((*iterator).maxRange);
       result += converter.str();
       result += ACE_TEXT_ALWAYS_CHAR(" ft\n");
     } // end IF
@@ -1639,7 +1639,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_Effects_t& effects
             result += ACE_TEXT_ALWAYS_CHAR(" (DC: ");
             converter.clear();
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-            converter << static_cast<unsigned int> ((*iterator2).check.difficultyClass);
+            converter << static_cast<unsigned int>((*iterator2).check.difficultyClass);
             result += converter.str();
             result += ACE_TEXT_ALWAYS_CHAR(")");
           } // end IF
@@ -1684,7 +1684,7 @@ RPG_Magic_Common_Tools::effectsToString(const RPG_Magic_Spell_Effects_t& effects
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMeasures_t& counterMeasures_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::counterMeasuresToString"));
@@ -1829,7 +1829,7 @@ RPG_Magic_Common_Tools::counterMeasuresToString(const RPG_Magic_Spell_CounterMea
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellTypes_t& knownSpells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
@@ -1847,7 +1847,7 @@ RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_SpellTypes_t& knownSpells
   return result;
 }
 
-const std::string
+std::string
 RPG_Magic_Common_Tools::spellsToString(const RPG_Magic_Spells_t& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::spellsToString"));
@@ -1955,7 +1955,94 @@ RPG_Magic_Common_Tools::updateSpellRange(RPG_Magic_Spell_RangeProperties& range_
   } // end SWITCH
 }
 
-const unsigned int
+bool
+RPG_Magic_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::isCasterClass"));
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_BARD:
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_DRUID:
+//     case SUBCLASS_INVOKER:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_RANGER:
+//     case SUBCLASS_SHAMAN:
+    case SUBCLASS_SORCERER:
+//     case SUBCLASS_WARLOCK:
+    case SUBCLASS_WIZARD:
+      return true;
+    default:
+      break;
+  } // end SWITCH
+
+  return false;
+}
+
+bool
+RPG_Magic_Common_Tools::isDivineCasterClass(const RPG_Common_SubClass& subClass_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::isDivineCasterClass"));
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_DRUID:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_RANGER:
+      return true;
+    default:
+      break;
+  } // end SWITCH
+
+  return false;
+}
+
+bool
+RPG_Magic_Common_Tools::hasCasterClass(const RPG_Character_Class& class_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::hasCasterClass"));
+
+  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
+       iterator != class_in.subClasses.end();
+       iterator++)
+    if (RPG_Magic_Common_Tools::isCasterClass(*iterator))
+      return true;
+
+  return false;
+}
+
+bool
+RPG_Magic_Common_Tools::hasDivineCasterClass(const RPG_Character_Class& class_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::hasDivineCasterClass"));
+
+  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
+       iterator != class_in.subClasses.end();
+       iterator++)
+    if (RPG_Magic_Common_Tools::isDivineCasterClass(*iterator))
+      return true;
+
+  return false;
+}
+
+bool
+RPG_Magic_Common_Tools::hasArcaneCasterClass(const RPG_Character_Class& class_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Magic_Common_Tools::hasArcaneCasterClass"));
+
+  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
+       iterator != class_in.subClasses.end();
+       iterator++)
+    if ((RPG_Magic_Common_Tools::isCasterClass(*iterator)) &&
+        (!RPG_Magic_Common_Tools::isDivineCasterClass(*iterator)))
+      return true;
+
+  return false;
+}
+
+unsigned int
 RPG_Magic_Common_Tools::getNumKnownSpells(const RPG_Common_SubClass& subClass_in,
                                           const unsigned char& classLevel_in,
                                           const unsigned char& spellLevel_in)
@@ -1964,7 +2051,7 @@ RPG_Magic_Common_Tools::getNumKnownSpells(const RPG_Common_SubClass& subClass_in
 
   // sanity check(s)
   ACE_ASSERT(classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
-  if (!RPG_Common_Tools::isCasterClass(subClass_in))
+  if (!RPG_Magic_Common_Tools::isCasterClass(subClass_in))
     return 0;
 
   switch (subClass_in)
@@ -1995,7 +2082,7 @@ RPG_Magic_Common_Tools::getNumKnownSpells(const RPG_Common_SubClass& subClass_in
   return (RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL * classLevel_in);
 }
 
-const unsigned int
+unsigned int
 RPG_Magic_Common_Tools::getNumSpells(const RPG_Common_SubClass& subClass_in,
                                      const unsigned char& classLevel_in,
                                      const unsigned char& spellLevel_in)
@@ -2004,7 +2091,7 @@ RPG_Magic_Common_Tools::getNumSpells(const RPG_Common_SubClass& subClass_in,
 
   // sanity check(s)
   ACE_ASSERT(classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
-  if (!RPG_Common_Tools::isCasterClass(subClass_in))
+  if (!RPG_Magic_Common_Tools::isCasterClass(subClass_in))
     return 0;
 
   unsigned int result = 0;

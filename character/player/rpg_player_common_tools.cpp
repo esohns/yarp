@@ -349,7 +349,7 @@ RPG_Player_Common_Tools::generatePlayer()
        iterator != player_class.subClasses.end();
        iterator++)
   {
-    if (!RPG_Common_Tools::isCasterClass(*iterator))
+    if (!RPG_Magic_Common_Tools::isCasterClass(*iterator))
       continue;
 
     casterClass.subclass = *iterator;
@@ -448,8 +448,8 @@ RPG_Player_Common_Tools::generatePlayer()
             break; // done
 
           result.clear();
-          RPG_Dice::generateRandomNumbers((RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.size()
-                                                                                            : knownSpells.size()),
+          RPG_Dice::generateRandomNumbers((RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available.size()
+                                                                                                  : knownSpells.size()),
                                           numSpells,
                                           result);
           int index = 0;
@@ -457,8 +457,8 @@ RPG_Player_Common_Tools::generatePlayer()
                iterator2 != result.end();
                iterator2++, index++)
           {
-            available_iterator = (RPG_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
-                                                                                   : knownSpells.begin());
+            available_iterator = (RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
+                                                                                         : knownSpells.begin());
             std::advance(available_iterator, *iterator2 - 1);
 
             ACE_DEBUG((LM_DEBUG,

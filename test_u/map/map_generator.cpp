@@ -27,6 +27,11 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_engine_defines.h>
+#include <rpg_engine_common.h>
+#include <rpg_engine_common_tools.h>
+
+#include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
 
 #include <rpg_dice.h>
@@ -47,6 +52,7 @@
 #define MAP_GENERATOR_DEF_MIN_ROOMSIZE          0
 #define MAP_GENERATOR_DEF_DOORS                 true
 #define MAP_GENERATOR_DEF_CORRIDORS             true
+#define MAP_GENERATOR_DEF_LEVEL                 false
 #define MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM 3
 #define MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE     true
 #define MAP_GENERATOR_DEF_NUM_AREAS             5
@@ -64,13 +70,10 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-a<[VALUE]> : enforce (minimum) room-size") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MIN_ROOMSIZE != 0);
-  std::cout << ACE_TEXT(":") << MAP_GENERATOR_DEF_MIN_ROOMSIZE;
-  std::cout << ACE_TEXT("; 0:off]") << std::endl;
+  std::cout << ACE_TEXT("-a<[VALUE]> : enforce (minimum) room-size") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MIN_ROOMSIZE != 0) << ACE_TEXT(":") << MAP_GENERATOR_DEF_MIN_ROOMSIZE << ACE_TEXT("; 0:off]") << std::endl;
   std::cout << ACE_TEXT("-c          : corridor(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-d<[VALUE]> : enforce maximum #doors/room") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM != 0);
-  std::cout << ACE_TEXT(":") << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
-  std::cout << ACE_TEXT("; 0:off]") << std::endl;
+  std::cout << ACE_TEXT("-d<[VALUE]> : enforce maximum #doors/room") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM != 0) << ACE_TEXT(":") << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM << ACE_TEXT("; 0:off]") << std::endl;
+  std::cout << ACE_TEXT("-l          : generate level") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_LEVEL << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE << ACE_TEXT("]") << std::endl;
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
@@ -89,26 +92,28 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-y [VALUE]  : #rows") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_DIMENSION_Y << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-                  unsigned long& minRoomSize_out,
+                  unsigned int& minRoomSize_out,
                   bool& corridors_out,
-                  unsigned long& maxNumDoorsPerRoom_out,
+                  unsigned int& maxNumDoorsPerRoom_out,
+                  bool& level_out,
                   bool& maximizeRoomSize_out,
                   std::string& outputFile_out,
-                  unsigned long& numAreas_out,
+                  unsigned int& numAreas_out,
                   bool& squareRooms_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
-                  unsigned long& dimensionX_out,
-                  unsigned long& dimensionY_out)
+                  unsigned int& dimensionX_out,
+                  unsigned int& dimensionY_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
   minRoomSize_out = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
   corridors_out = MAP_GENERATOR_DEF_CORRIDORS;
+  level_out = MAP_GENERATOR_DEF_LEVEL;
   maxNumDoorsPerRoom_out = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   maximizeRoomSize_out = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
 
@@ -130,7 +135,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("a::cd::mo:r:stvx:y:"));
+                             ACE_TEXT("a::cd::lmo:r:stvx:y:"));
 
   int option = 0;
   std::stringstream converter;
@@ -162,6 +167,12 @@ process_arguments(const int argc_in,
         converter >> temp;
         if (temp == -1)
           maxNumDoorsPerRoom_out = std::numeric_limits<unsigned long>::max();
+
+        break;
+      }
+      case 'l':
+      {
+        level_out = true;
 
         break;
       }
@@ -248,6 +259,7 @@ process_arguments(const int argc_in,
 void
 do_work(const std::string& name_in,
         const RPG_Map_FloorPlan_Config_t& mapConfig_in,
+        const bool& generateLevel_in,
         const std::string& outputFile_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
@@ -262,10 +274,33 @@ do_work(const std::string& name_in,
                                mapConfig_in,
                                map);
 
+  // step2: generate level data
+  RPG_Engine_Level_t level;
+  if (generateLevel_in)
+  {
+    level.level_meta.monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
+    level.level_meta.probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+    level.level_meta.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
+    level.map = map;
+  } // end IF
+
   // step3: write output file (if any)
   if (!outputFile_in.empty())
-    if (!RPG_Map_Common_Tools::save(outputFile_in,
-                                    map))
+  {
+    if (generateLevel_in)
+    {
+      if (!RPG_Engine_Common_Tools::saveLevel(level,
+                                              outputFile_in))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Engine_Common_Tools::saveLevel(\"%s\"), aborting\n"),
+                   outputFile_in.c_str()));
+
+        return;
+      } // end IF
+    } // end IF
+    else if (!RPG_Map_Common_Tools::save(outputFile_in,
+                                         map))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
@@ -273,45 +308,13 @@ do_work(const std::string& name_in,
 
       return;
     } // end IF
+  } // end IF
 
   // step4: display the result
-  RPG_Map_Position_t current_position;
-  RPG_Map_Door_t current_position_door;
-  bool is_starting_position = false;
-  bool is_seed = false;
-  std::cout << ACE_TEXT_ALWAYS_CHAR("[")
-            << name_in
-            << ACE_TEXT_ALWAYS_CHAR("]")
-            << std::endl;
-  for (unsigned long y = 0;
-       y < map.plan.size_y;
-       y++)
-  {
-    for (unsigned long x = 0;
-         x < map.plan.size_x;
-         x++)
-    {
-      current_position = std::make_pair(x, y);
-      current_position_door.position = current_position;
-      is_starting_position = (current_position == map.start);
-      is_seed = map.seeds.find(current_position) != map.seeds.end();
-
-      // unmapped, floor, wall, or door ?
-      // *TODO*: cannot draw seed points that are not "unmapped"/"floor" without
-      // losing essential information...
-      if (map.plan.unmapped.find(current_position) != map.plan.unmapped.end())
-        std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
-      else if (map.plan.walls.find(current_position) != map.plan.walls.end())
-        std::cout << ACE_TEXT("#"); // wall
-      else if (map.plan.doors.find(current_position_door) != map.plan.doors.end())
-        std::cout << ACE_TEXT("="); // door
-      else
-        std::cout << (is_starting_position ? ACE_TEXT("X")
-                                           : (is_seed ? ACE_TEXT("@")
-                                                      : ACE_TEXT("."))); // floor
-    } // end FOR
-    std::cout << std::endl;
-  } // end FOR
+  if (generateLevel_in)
+    RPG_Engine_Common_Tools::dump(level);
+  else
+    RPG_Map_Common_Tools::dump(map);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -380,11 +383,12 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  unsigned long minRoomSize        = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
-  bool doors                       = MAP_GENERATOR_DEF_DOORS;
-  bool corridors                   = MAP_GENERATOR_DEF_CORRIDORS;
-  unsigned long maxNumDoorsPerRoom = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
-  bool maximizeRoomSize            = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
+  unsigned int minRoomSize        = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
+  bool doors                      = MAP_GENERATOR_DEF_DOORS;
+  bool corridors                  = MAP_GENERATOR_DEF_CORRIDORS;
+  unsigned int maxNumDoorsPerRoom = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
+  bool generateLevel              = MAP_GENERATOR_DEF_LEVEL;
+  bool maximizeRoomSize           = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
 
   std::string outputFile;
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -394,14 +398,14 @@ ACE_TMAIN(int argc,
 #endif
   outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  std::string default_output_file = outputFile;
 
-  unsigned long numAreas           = MAP_GENERATOR_DEF_NUM_AREAS;
-  bool squareRooms                 = MAP_GENERATOR_DEF_SQUARE_ROOMS;
-  bool traceInformation            = false;
-  bool printVersionAndExit         = false;
-  unsigned long dimension_X        = MAP_GENERATOR_DEF_DIMENSION_X;
-  unsigned long dimension_Y        = MAP_GENERATOR_DEF_DIMENSION_Y;
+  unsigned int numAreas           = MAP_GENERATOR_DEF_NUM_AREAS;
+  bool squareRooms                = MAP_GENERATOR_DEF_SQUARE_ROOMS;
+  bool traceInformation           = false;
+  bool printVersionAndExit        = false;
+  unsigned int dimension_X        = MAP_GENERATOR_DEF_DIMENSION_X;
+  unsigned int dimension_Y        = MAP_GENERATOR_DEF_DIMENSION_Y;
 
   // step1ba: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -409,6 +413,7 @@ ACE_TMAIN(int argc,
                           minRoomSize,
                           corridors,
                           maxNumDoorsPerRoom,
+                          generateLevel,
                           maximizeRoomSize,
                           outputFile,
                           numAreas,
@@ -440,13 +445,18 @@ ACE_TMAIN(int argc,
     return EXIT_FAILURE;
   } // end IF
 
+  // handle extension
+  if (outputFile == default_output_file)
+    outputFile += (generateLevel ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_EXT)
+                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT));
+
   // step1c: set correct trace level
   //ACE_Trace::start_tracing();
   if (!traceInformation)
   {
     u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_INFO |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
+                                    //LM_TRACE
+                                    //LM_DEBUG | // <-- DISABLE trace messages !
                                     LM_INFO |
                                     LM_NOTICE |
                                     LM_WARNING |
@@ -491,6 +501,7 @@ ACE_TMAIN(int argc,
   config.square_rooms = squareRooms;
   do_work(name,
           config,
+          generateLevel,
           outputFile);
 
   timer.stop();

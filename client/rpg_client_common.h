@@ -82,6 +82,7 @@ struct RPG_Client_GTK_CBData_t
   std::string                schemaRepository;
   RPG_Engine_Entity          entity;
   RPG_Engine*                level_engine;
+  RPG_Engine_LevelMeta_t     level_meta_data;
   RPG_Map_FloorPlan_Config_t map_config;
 };
 

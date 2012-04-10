@@ -90,7 +90,7 @@ RPG_Common_Tools::initStringConversionTables()
              ACE_TEXT("RPG_Common_Tools: initialized string conversion tables...\n")));
 }
 
-const std::string
+std::string
 RPG_Common_Tools::creatureTypeToString(const RPG_Common_CreatureType& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::creatureTypeToString"));
@@ -113,7 +113,7 @@ RPG_Common_Tools::creatureTypeToString(const RPG_Common_CreatureType& type_in)
   return result;
 }
 
-const RPG_Common_Attribute
+RPG_Common_Attribute
 RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToAttribute"));
@@ -146,7 +146,7 @@ RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
   return RPG_COMMON_ATTRIBUTE_INVALID;
 }
 
-const std::string
+std::string
 RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToString"));
@@ -171,7 +171,7 @@ RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in
   return result;
 }
 
-const std::string
+std::string
 RPG_Common_Tools::environmentToString(const RPG_Common_Environment& environment_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environmentToString"));
@@ -188,7 +188,7 @@ RPG_Common_Tools::environmentToString(const RPG_Common_Environment& environment_
   return result;
 }
 
-const RPG_Common_Plane
+RPG_Common_Plane
 RPG_Common_Tools::terrainToPlane(const RPG_Common_Terrain& terrain_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::terrainToPlane"));
@@ -251,7 +251,7 @@ RPG_Common_Tools::terrainToPlane(const RPG_Common_Terrain& terrain_in)
   return RPG_COMMON_PLANE_INVALID;
 }
 
-const bool
+bool
 RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
                         const RPG_Common_Environment& environmentB_in)
 {
@@ -360,51 +360,7 @@ RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
   return false;
 }
 
-const bool
-RPG_Common_Tools::isCasterClass(const RPG_Common_SubClass& subClass_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::isCasterClass"));
-
-  switch (subClass_in)
-  {
-    case SUBCLASS_BARD:
-    case SUBCLASS_CLERIC:
-    case SUBCLASS_DRUID:
-//     case SUBCLASS_INVOKER:
-    case SUBCLASS_PALADIN:
-    case SUBCLASS_RANGER:
-//     case SUBCLASS_SHAMAN:
-    case SUBCLASS_SORCERER:
-//     case SUBCLASS_WARLOCK:
-    case SUBCLASS_WIZARD:
-      return true;
-    default:
-      break;
-  } // end SWITCH
-
-  return false;
-}
-
-const bool
-RPG_Common_Tools::isDivineCasterClass(const RPG_Common_SubClass& subClass_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::isDivineCasterClass"));
-
-  switch (subClass_in)
-  {
-    case SUBCLASS_CLERIC:
-    case SUBCLASS_DRUID:
-    case SUBCLASS_PALADIN:
-    case SUBCLASS_RANGER:
-      return true;
-    default:
-      break;
-  } // end SWITCH
-
-  return false;
-}
-
-const signed char
+signed char
 RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getSizeModifier"));
@@ -433,7 +389,7 @@ RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
   return ((size_in > SIZE_MEDIUM) ? -result : result);
 }
 
-const unsigned char
+unsigned char
 RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sizeToReach"));
@@ -468,7 +424,7 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
   return 0;
 }
 
-const std::string
+std::string
 RPG_Common_Tools::enumToString(const std::string& enumString_in,
                                const bool& chopPrefix_in)
 {
@@ -508,7 +464,7 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
   return result;
 }
 
-const bool
+bool
 RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
                                 std::string& timeString_out)
 {
@@ -546,7 +502,7 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
   return true;
 }
 
-const bool
+bool
 RPG_Common_Tools::isLinux()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::isLinux"));
@@ -573,7 +529,7 @@ RPG_Common_Tools::isLinux()
   return (kernel.find(ACE_TEXT_ALWAYS_CHAR("Linux"), 0) == 0);
 }
 
-const bool
+bool
 RPG_Common_Tools::getUserName(std::string& username_out,
                               std::string& realname_out)
 {
@@ -630,7 +586,7 @@ RPG_Common_Tools::getUserName(std::string& username_out,
   return true;
 }
 
-const std::string
+std::string
 RPG_Common_Tools::getHostName()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getHostName"));

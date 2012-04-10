@@ -41,7 +41,7 @@ class RPG_Engine_Export RPG_Engine_Level
   RPG_Engine_Level();
   virtual ~RPG_Engine_Level();
 
-  void init(const RPG_Map_t&); // map
+  void init(const RPG_Engine_Level_t&); // level
   void save(const std::string&) const; // FQ filename
 
  protected:
@@ -59,5 +59,7 @@ class RPG_Engine_Export RPG_Engine_Level
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level(const RPG_Engine_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level& operator=(const RPG_Engine_Level&));
+
+  RPG_Engine_LevelMeta_t myLevelMeta;
 };
 #endif

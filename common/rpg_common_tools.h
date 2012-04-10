@@ -40,36 +40,33 @@ class RPG_Common_Export RPG_Common_Tools
  public:
   static void initStringConversionTables();
 
-  static const RPG_Common_Attribute savingThrowToAttribute(const RPG_Common_SavingThrow&); // save
-  static const std::string creatureTypeToString(const RPG_Common_CreatureType&); // type
-  static const std::string savingThrowToString(const RPG_Common_SavingThrowCheck&); // save
-  static const std::string environmentToString(const RPG_Common_Environment&); // environment
+  static RPG_Common_Attribute savingThrowToAttribute(const RPG_Common_SavingThrow&); // save
+  static std::string creatureTypeToString(const RPG_Common_CreatureType&); // type
+  static std::string savingThrowToString(const RPG_Common_SavingThrowCheck&); // save
+  static std::string environmentToString(const RPG_Common_Environment&); // environment
 
-  static const RPG_Common_Plane terrainToPlane(const RPG_Common_Terrain&);
-  static const bool match(const RPG_Common_Environment&,  // a
-                          const RPG_Common_Environment&); // b
+  static RPG_Common_Plane terrainToPlane(const RPG_Common_Terrain&);
+  static bool match(const RPG_Common_Environment&,  // a
+                    const RPG_Common_Environment&); // b
 
-  static const bool isCasterClass(const RPG_Common_SubClass&); // subClass
-  static const bool isDivineCasterClass(const RPG_Common_SubClass&); // subClass
-
-  static const signed char getSizeModifier(const RPG_Common_Size&);
-  static const unsigned char sizeToReach(const RPG_Common_Size&);
+  static signed char getSizeModifier(const RPG_Common_Size&);
+  static unsigned char sizeToReach(const RPG_Common_Size&);
 
   // use this to "pretty-print" enumerated (i.e. XML-) values
   // e.g. "SUBCLASS_MONK" --> "Monk"
-  static const std::string enumToString(const std::string&,  // string representation
-                                        const bool& = true); // chop prefix ?
+  static std::string enumToString(const std::string&,  // string representation
+                                  const bool& = true); // chop prefix ?
 
   // use this to generate a "condensed" period string
   // - uses snprintf internally: "%H:%M:%S.usec"
-  static const bool period2String(const ACE_Time_Value&, // period
-                                  std::string&);         // return value: corresp. string
+  static bool period2String(const ACE_Time_Value&, // period
+                            std::string&);         // return value: corresp. string
 
-  static const bool isLinux();
+  static bool isLinux();
 
-  static const bool getUserName(std::string&,  // return value: username
-                                std::string&); // return value: "real" name
-  static const std::string getHostName(); // return value: hostname
+  static bool getUserName(std::string&,  // return value: username
+                          std::string&); // return value: "real" name
+  static std::string getHostName(); // return value: hostname
 
  private:
   // safety measures

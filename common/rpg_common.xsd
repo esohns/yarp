@@ -329,10 +329,6 @@
     <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVEREDUCTION_NEGATES"/>
   </xsd:complexType>
 
-<!--  <xsd:simpleType name="RPG_Common_Amount_Type">
-    <xsd:union memberTypes="xsd:byte RPG_Dice_Roll_Type"/>
-  </xsd:simpleType>-->
-
   <xsd:complexType name="RPG_Common_Amount_Type">
     <xsd:sequence>
       <xsd:element name="value" type="xsd:short" minOccurs="0" maxOccurs="1"/>
@@ -345,6 +341,13 @@
       <xsd:element name="numUses" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="period" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="interval" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Common_FixedPeriod_Type">
+    <xsd:sequence>
+      <xsd:element name="seconds" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="u_seconds" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 

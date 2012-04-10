@@ -21,6 +21,7 @@
 #ifndef RPG_MAP_PARSER_DRIVER_H
 #define RPG_MAP_PARSER_DRIVER_H
 
+#include "rpg_map_exports.h"
 #include "rpg_map_defines.h"
 #include "rpg_map_common.h"
 #include "rpg_map_parser.h"
@@ -45,7 +46,7 @@ RPG_Map_Scanner_lex(yy::RPG_Map_Parser::semantic_type* yylval, \
 // ... and declare it for the parser's sake
 YY_DECL;
 
-class RPG_Map_ParserDriver
+class RPG_Map_Export RPG_Map_ParserDriver
 {
   // allow access to our internals (i.e. the current plan, seed points)
   friend class yy::RPG_Map_Parser;
@@ -64,13 +65,15 @@ class RPG_Map_ParserDriver
             RPG_Map_FloorPlan_t*, // target data: floor plan
             const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
             const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
-  // *WARNING*: the argument needs to have been prepared for usage by flex:
+  // *WARNING*: IFF the argument IS then buffer, it needs to have been prepared for
+  // usage by flex:
   // --> buffers need two trailing '\0's BEYOND their data
   //    (at positions length() + 1, length() + 2)
-  const bool parse(const std::string&); // FQ filename
+  bool parse(const std::string&,   // FQ filename OR buffer
+             const bool& = false); // argument IS the buffer ?
 
   // invoked by the scanner ONLY !!!
-  const bool getDebugScanner() const;
+  bool getDebugScanner() const;
 
   // error-handling
   void error(const yy::RPG_Map_Parser::location_type&, // location
@@ -88,7 +91,8 @@ class RPG_Map_ParserDriver
 
   // helper methods
   //const bool scan_begin(std::istream*); // file handle
-  const bool scan_begin(FILE*); // file handle
+  bool scan_begin(FILE*); // file handle
+  bool scan_begin(const std::string&); // buffer
   void scan_end();
 
   // context

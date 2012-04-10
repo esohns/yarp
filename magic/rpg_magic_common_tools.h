@@ -31,6 +31,8 @@
 #include "rpg_magic_common.h"
 #include "rpg_magic_dictionary.h"
 
+#include <rpg_character_class_common.h>
+
 #include <ace/Global_Macros.h>
 
 /**
@@ -45,18 +47,23 @@ class RPG_Magic_Export RPG_Magic_Common_Tools
   // init string conversion (and other) tables
   static void init();
 
-  static const std::string spellToName(const RPG_Magic_SpellType&); // type
+  static std::string spellToName(const RPG_Magic_SpellType&); // type
 
   // debug info
-  static const std::string spellsToString(const RPG_Magic_Spells_t&); // spells
-  static const std::string spellsToString(const RPG_Magic_SpellTypes_t&); // spells
+  static std::string spellsToString(const RPG_Magic_Spells_t&); // spells
+  static std::string spellsToString(const RPG_Magic_SpellTypes_t&); // spells
 
-  static const unsigned int getNumKnownSpells(const RPG_Common_SubClass&, // subclass
-                                              const unsigned char&,       // class level
-                                              const unsigned char&);      // spell level (Bard/Sorcerer)
-  static const unsigned int getNumSpells(const RPG_Common_SubClass&, // subclass
-                                         const unsigned char&,       // class level
-                                         const unsigned char&);      // spell level (== 0xFF ? total # spell slots)
+  static bool isCasterClass(const RPG_Common_SubClass&); // subClass
+  static bool isDivineCasterClass(const RPG_Common_SubClass&); // subClass
+  static bool hasCasterClass(const RPG_Character_Class&); // class(es)
+  static bool hasDivineCasterClass(const RPG_Character_Class&); // class(es)
+  static bool hasArcaneCasterClass(const RPG_Character_Class&); // class(es)
+  static unsigned int getNumKnownSpells(const RPG_Common_SubClass&, // subclass
+                                        const unsigned char&,       // class level
+                                        const unsigned char&);      // spell level (Bard/Sorcerer)
+  static unsigned int getNumSpells(const RPG_Common_SubClass&, // subclass
+                                   const unsigned char&,       // class level
+                                   const unsigned char&);      // spell level (== 0xFF ? total # spell slots)
 
  private:
   // safety measures
@@ -66,14 +73,14 @@ class RPG_Magic_Export RPG_Magic_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Common_Tools& operator=(const RPG_Magic_Common_Tools&));
 
   // helper methods
-  static const std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
-  static const std::string spellLevelsToString(const RPG_Magic_SpellLevels_t&); // levels
-  static const std::string spellRangeToString(const RPG_Magic_Spell_RangeProperties&); // range
-  static const std::string spellTargetsToString(const RPG_Magic_Spell_Targets_t&); // targets
-  static const std::string spellDurationToString(const RPG_Magic_Spell_DurationProperties&); // duration
-  static const std::string preconditionsToString(const RPG_Magic_Spell_Preconditions_t&); // preconditions
-  static const std::string effectsToString(const RPG_Magic_Spell_Effects_t&); // effects
-  static const std::string counterMeasuresToString(const RPG_Magic_Spell_CounterMeasures_t&); // counterMeasures
+  static std::string spellTypeToString(const RPG_Magic_Spell_Type&); // type
+  static std::string spellLevelsToString(const RPG_Magic_SpellLevels_t&); // levels
+  static std::string spellRangeToString(const RPG_Magic_Spell_RangeProperties&); // range
+  static std::string spellTargetsToString(const RPG_Magic_Spell_Targets_t&); // targets
+  static std::string spellDurationToString(const RPG_Magic_Spell_DurationProperties&); // duration
+  static std::string preconditionsToString(const RPG_Magic_Spell_Preconditions_t&); // preconditions
+  static std::string effectsToString(const RPG_Magic_Spell_Effects_t&); // effects
+  static std::string counterMeasuresToString(const RPG_Magic_Spell_CounterMeasures_t&); // counterMeasures
 
   // (internal) helper methods
   static void initStringConversionTables();

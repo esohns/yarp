@@ -40,11 +40,12 @@ RPG_Engine_Level::~RPG_Engine_Level()
 }
 
 void
-RPG_Engine_Level::init(const RPG_Map_t& map_in)
+RPG_Engine_Level::init(const RPG_Engine_Level_t& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::init"));
 
-  inherited::init(map_in);
+  myLevelMeta = level_in.level_meta;
+  inherited::init(level_in.map);
 }
 
 void

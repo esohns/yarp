@@ -43,20 +43,20 @@ class RPG_Character_Export RPG_Character_Common_Tools
   // init string conversion (and other) tables
   static void init();
 
-  static const std::string raceToString(const RPG_Character_Race_t&); // race(es)
-  static const std::string classToString(const RPG_Character_Class&); // class(es)
-  static const std::string alignmentToString(const RPG_Character_Alignment&); // alignment
-  static const std::string attributesToString(const RPG_Character_Attributes&); // attributes
-  static const std::string conditionToString(const RPG_Character_Conditions_t&); // condition
+  static std::string raceToString(const RPG_Character_Race_t&); // race(es)
+  static std::string classToString(const RPG_Character_Class&); // class(es)
+  static std::string alignmentToString(const RPG_Character_Alignment&); // alignment
+  static std::string attributesToString(const RPG_Character_Attributes&); // attributes
+  static std::string conditionToString(const RPG_Character_Conditions_t&); // condition
 
-  static const bool match(const RPG_Character_Alignment&,  // a
-                          const RPG_Character_Alignment&); // b
+  static bool match(const RPG_Character_Alignment&,  // a
+                    const RPG_Character_Alignment&); // b
 
-  static const signed char getAttributeAbilityModifier(const unsigned char&); // attribute ability score
-  static const bool getAttributeCheck(const unsigned char&); // attribute ability score
-  static const RPG_Dice_DieType getHitDie(const RPG_Common_SubClass&); // subclass
-  static const RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Common_SubClass&, // subClass
-                                                                  const unsigned char&);      // class level
+  static signed char getAttributeAbilityModifier(const unsigned char&); // attribute ability score
+  static bool getAttributeCheck(const unsigned char&); // attribute ability score
+  static RPG_Dice_DieType getHitDie(const RPG_Common_SubClass&); // subclass
+  static RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Common_SubClass&, // subClass
+                                                            const unsigned char&);      // class level
 
  private:
   // safety measures

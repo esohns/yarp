@@ -1047,6 +1047,52 @@ interval (::std::auto_ptr< interval_type > x)
 }
 
 
+// RPG_Common_FixedPeriod_XMLTree_Type
+// 
+
+const RPG_Common_FixedPeriod_XMLTree_Type::seconds_type& RPG_Common_FixedPeriod_XMLTree_Type::
+seconds () const
+{
+  return this->seconds_.get ();
+}
+
+RPG_Common_FixedPeriod_XMLTree_Type::seconds_type& RPG_Common_FixedPeriod_XMLTree_Type::
+seconds ()
+{
+  return this->seconds_.get ();
+}
+
+void RPG_Common_FixedPeriod_XMLTree_Type::
+seconds (const seconds_type& x)
+{
+  this->seconds_.set (x);
+}
+
+const RPG_Common_FixedPeriod_XMLTree_Type::u_seconds_optional& RPG_Common_FixedPeriod_XMLTree_Type::
+u_seconds () const
+{
+  return this->u_seconds_;
+}
+
+RPG_Common_FixedPeriod_XMLTree_Type::u_seconds_optional& RPG_Common_FixedPeriod_XMLTree_Type::
+u_seconds ()
+{
+  return this->u_seconds_;
+}
+
+void RPG_Common_FixedPeriod_XMLTree_Type::
+u_seconds (const u_seconds_type& x)
+{
+  this->u_seconds_.set (x);
+}
+
+void RPG_Common_FixedPeriod_XMLTree_Type::
+u_seconds (const u_seconds_optional& x)
+{
+  this->u_seconds_ = x;
+}
+
+
 // RPG_Common_Duration_XMLTree_Type
 // 
 
@@ -3312,6 +3358,115 @@ operator!= (const RPG_Common_Usage_XMLTree_Type& x, const RPG_Common_Usage_XMLTr
   return !(x == y);
 }
 
+// RPG_Common_FixedPeriod_XMLTree_Type
+//
+
+RPG_Common_FixedPeriod_XMLTree_Type::
+RPG_Common_FixedPeriod_XMLTree_Type (const seconds_type& seconds)
+: ::xml_schema::type (),
+  seconds_ (seconds, ::xml_schema::flags (), this),
+  u_seconds_ (::xml_schema::flags (), this)
+{
+}
+
+RPG_Common_FixedPeriod_XMLTree_Type::
+RPG_Common_FixedPeriod_XMLTree_Type (const RPG_Common_FixedPeriod_XMLTree_Type& x,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  seconds_ (x.seconds_, f, this),
+  u_seconds_ (x.u_seconds_, f, this)
+{
+}
+
+RPG_Common_FixedPeriod_XMLTree_Type::
+RPG_Common_FixedPeriod_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  seconds_ (f, this),
+  u_seconds_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Common_FixedPeriod_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // seconds
+    //
+    if (n.name () == "seconds" && n.namespace_ () == "urn:rpg")
+    {
+      if (!seconds_.present ())
+      {
+        this->seconds_.set (seconds_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // u_seconds
+    //
+    if (n.name () == "u_seconds" && n.namespace_ () == "urn:rpg")
+    {
+      if (!this->u_seconds_)
+      {
+        this->u_seconds_.set (u_seconds_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!seconds_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "seconds",
+      "urn:rpg");
+  }
+}
+
+RPG_Common_FixedPeriod_XMLTree_Type* RPG_Common_FixedPeriod_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Common_FixedPeriod_XMLTree_Type (*this, f, c);
+}
+
+RPG_Common_FixedPeriod_XMLTree_Type::
+~RPG_Common_FixedPeriod_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Common_FixedPeriod_XMLTree_Type& x, const RPG_Common_FixedPeriod_XMLTree_Type& y)
+{
+  if (!(x.seconds () == y.seconds ()))
+    return false;
+
+  if (!(x.u_seconds () == y.u_seconds ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Common_FixedPeriod_XMLTree_Type& x, const RPG_Common_FixedPeriod_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
 // RPG_Common_Duration_XMLTree_Type
 //
 
@@ -3937,6 +4092,18 @@ operator<< (::std::ostream& o, const RPG_Common_Usage_XMLTree_Type& i)
 }
 
 ::std::ostream&
+operator<< (::std::ostream& o, const RPG_Common_FixedPeriod_XMLTree_Type& i)
+{
+  o << ::std::endl << "seconds: " << i.seconds ();
+  if (i.u_seconds ())
+  {
+    o << ::std::endl << "u_seconds: " << *i.u_seconds ();
+  }
+
+  return o;
+}
+
+::std::ostream&
 operator<< (::std::ostream& o, const RPG_Common_Duration_XMLTree_Type& i)
 {
   if (i.activation ())
@@ -4469,6 +4636,37 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_Usage_XMLTree_Type& i)
 }
 
 void
+operator<< (::xercesc::DOMElement& e, const RPG_Common_FixedPeriod_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // seconds
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "seconds",
+        "urn:rpg",
+        e));
+
+    s << i.seconds ();
+  }
+
+  // u_seconds
+  //
+  if (i.u_seconds ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "u_seconds",
+        "urn:rpg",
+        e));
+
+    s << *i.u_seconds ();
+  }
+}
+
+void
 operator<< (::xercesc::DOMElement& e, const RPG_Common_Duration_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
@@ -4916,6 +5114,39 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 }
 
+RPG_Common_FixedPeriod_XMLTree_Type::
+RPG_Common_FixedPeriod_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  seconds_ (f, this),
+  u_seconds_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_FixedPeriod_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    seconds_type r;
+    s >> r;
+    this->seconds_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      u_seconds_type r;
+      s >> r;
+      this->u_seconds_.set (r);
+    }
+  }
+}
+
 RPG_Common_Duration_XMLTree_Type::
 RPG_Common_Duration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                   ::xml_schema::flags f,
@@ -5231,6 +5462,21 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
     s << p;
     if (p)
       s << *x.interval ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_FixedPeriod_XMLTree_Type& x)
+{
+  s << x.seconds ();
+  {
+    bool p (x.u_seconds ());
+    s << p;
+    if (p)
+      s << *x.u_seconds ();
   }
 
   return s;

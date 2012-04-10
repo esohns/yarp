@@ -68,8 +68,8 @@ class RPG_Engine_Export RPG_Engine
   virtual void dump_state() const;
 
   // *WARNING*: DO NOT USE this while the engine is running !
-  void init(RPG_Engine_IWindow*, // UI handle
-            const RPG_Map_t&);   // map
+  void init(RPG_Engine_IWindow*,        // UI handle
+            const RPG_Engine_Level_t&); // level
 
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
   RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity

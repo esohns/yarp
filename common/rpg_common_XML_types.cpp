@@ -186,6 +186,36 @@ RPG_Common_Usage_Type_pskel ()
 {
 }
 
+// RPG_Common_FixedPeriod_Type_pskel
+//
+
+void RPG_Common_FixedPeriod_Type_pskel::
+seconds_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->seconds_parser_ = &p;
+}
+
+void RPG_Common_FixedPeriod_Type_pskel::
+u_seconds_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->u_seconds_parser_ = &p;
+}
+
+void RPG_Common_FixedPeriod_Type_pskel::
+parsers (::xml_schema::unsigned_int_pskel& seconds,
+         ::xml_schema::unsigned_int_pskel& u_seconds)
+{
+  this->seconds_parser_ = &seconds;
+  this->u_seconds_parser_ = &u_seconds;
+}
+
+RPG_Common_FixedPeriod_Type_pskel::
+RPG_Common_FixedPeriod_Type_pskel ()
+: seconds_parser_ (0),
+  u_seconds_parser_ (0)
+{
+}
+
 // RPG_Common_Duration_Type_pskel
 //
 
@@ -648,6 +678,78 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->interval_parser_)
       this->interval (this->interval_parser_->post_RPG_Dice_Roll_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Common_FixedPeriod_Type_pskel
+//
+
+void RPG_Common_FixedPeriod_Type_pskel::
+seconds (unsigned int)
+{
+}
+
+void RPG_Common_FixedPeriod_Type_pskel::
+u_seconds (unsigned int)
+{
+}
+
+bool RPG_Common_FixedPeriod_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "seconds" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->seconds_parser_;
+
+    if (this->seconds_parser_)
+      this->seconds_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "u_seconds" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->u_seconds_parser_;
+
+    if (this->u_seconds_parser_)
+      this->u_seconds_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Common_FixedPeriod_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "seconds" && ns == "urn:rpg")
+  {
+    if (this->seconds_parser_)
+      this->seconds (this->seconds_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "u_seconds" && ns == "urn:rpg")
+  {
+    if (this->u_seconds_parser_)
+      this->u_seconds (this->u_seconds_parser_->post_unsigned_int ());
 
     return true;
   }

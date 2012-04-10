@@ -26,10 +26,6 @@
 #include "rpg_engine_level.h"
 #include "rpg_engine_XML_tree.h"
 
-#include <rpg_graphics_orientation.h>
-#include <rpg_graphics_cursor.h>
-#include <rpg_graphics_sprite.h>
-
 #include <rpg_map_common.h>
 
 #include <rpg_monster_common.h>
@@ -66,6 +62,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static void init(const std::string&,  // magic dictionary file
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
+
+  // ***** entity-related *****
   // *NOTE*: entity.character must be deleted() by the caller !
   static RPG_Engine_Entity loadEntity(const std::string&,  // FQ filename
                                       const std::string&); // schema repository (directory)
@@ -75,8 +73,18 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static RPG_Engine_Entity createEntity();
   static RPG_Engine_Entity createEntity(const std::string&); // creature type
   static std::string info(const RPG_Engine_Entity&); // entity
-
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
+
+  // ***** level-related *****
+  static void createLevel(const RPG_Engine_LevelMeta_t&,     // level meta data
+                          const std::string&,                // name
+                          const RPG_Map_FloorPlan_Config_t&, // floor plan config
+                          RPG_Engine_Level_t&);              // return value: level
+  static RPG_Engine_Level_t loadLevel(const std::string&,  // FQ filename
+                                      const std::string&); // schema repository (directory)
+  static bool saveLevel(const RPG_Engine_Level_t&, // level
+                        const std::string&);       // FQ filename
+  static void dump(const RPG_Engine_Level_t&); // level
 
   // ***** combat-related *****
   static bool isCharacterHelpless(const RPG_Player_Base* const); // character handle
@@ -118,6 +126,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Engine_Player_XMLTree_Type* playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree_Type&);
+  static RPG_Engine_Level_XMLTree_Type* levelToLevelXML(const RPG_Engine_Level_t&);
+  static RPG_Engine_Level_t levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
 };
 
 #endif

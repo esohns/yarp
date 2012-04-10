@@ -85,7 +85,7 @@ RPG_Character_Common_Tools::initStringConversionTables()
              ACE_TEXT("RPG_Character_Common_Tools: initialized string conversion tables...\n")));
 }
 
-const std::string
+std::string
 RPG_Character_Common_Tools::alignmentToString(const RPG_Character_Alignment& alignment_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::alignmentToString"));
@@ -106,7 +106,7 @@ RPG_Character_Common_Tools::alignmentToString(const RPG_Character_Alignment& ali
   return result;
 }
 
-const std::string
+std::string
 RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& attributes_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::attributesToString"));
@@ -163,7 +163,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
   return result;
 }
 
-const std::string
+std::string
 RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& races_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::raceToString"));
@@ -198,7 +198,7 @@ RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& races_in)
   return result;
 }
 
-const std::string
+std::string
 RPG_Character_Common_Tools::classToString(const RPG_Character_Class& class_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::classToString"));
@@ -224,7 +224,7 @@ RPG_Character_Common_Tools::classToString(const RPG_Character_Class& class_in)
   return result;
 }
 
-const std::string
+std::string
 RPG_Character_Common_Tools::conditionToString(const RPG_Character_Conditions_t& condition_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::conditionToString"));
@@ -248,7 +248,7 @@ RPG_Character_Common_Tools::conditionToString(const RPG_Character_Conditions_t& 
   return result;
 }
 
-const bool
+bool
 RPG_Character_Common_Tools::match(const RPG_Character_Alignment& alignmentA_in,
                                   const RPG_Character_Alignment& alignmentB_in)
 {
@@ -315,7 +315,7 @@ RPG_Character_Common_Tools::match(const RPG_Character_Alignment& alignmentA_in,
   return true;
 }
 
-const signed char
+signed char
 RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& attributeAbility_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
@@ -327,7 +327,7 @@ RPG_Character_Common_Tools::getAttributeAbilityModifier(const unsigned char& att
   return baseValue;
 }
 
-const bool
+bool
 RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& attributeAbilityScore_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getAttributeCheck"));
@@ -337,7 +337,7 @@ RPG_Character_Common_Tools::getAttributeCheck(const unsigned char& attributeAbil
   return (result >= attributeAbilityScore_in);
 }
 
-const RPG_Dice_DieType
+RPG_Dice_DieType
 RPG_Character_Common_Tools::getHitDie(const RPG_Common_SubClass& subClass_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getHitDie"));
@@ -388,7 +388,7 @@ RPG_Character_Common_Tools::getHitDie(const RPG_Common_SubClass& subClass_in)
   return RPG_DICE_DIETYPE_INVALID;
 }
 
-const RPG_Character_BaseAttackBonus_t
+RPG_Character_BaseAttackBonus_t
 RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subClass_in,
                                                const unsigned char& classLevel_in)
 {

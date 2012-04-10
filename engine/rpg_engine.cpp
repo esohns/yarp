@@ -377,12 +377,12 @@ RPG_Engine::dump_state() const
 
 void
 RPG_Engine::init(RPG_Engine_IWindow* client_in,
-                 const RPG_Map_t& map_in)
+                 const RPG_Engine_Level_t& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::init"));
 
   myClient = client_in;
-  inherited2::init(map_in);
+  inherited2::init(level_in);
 
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(RPG_ENGINE_DEF_MAX_NUM_SPAWNED,
                                                        this);

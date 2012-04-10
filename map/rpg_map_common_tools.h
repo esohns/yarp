@@ -48,6 +48,7 @@ class RPG_Map_Export RPG_Map_Common_Tools
                    const RPG_Map_t&);  // map
   static void print(const RPG_Map_t&); // map
   static std::string info(const RPG_Map_t&); // map
+  static void dump(const RPG_Map_t&); // map
 
   static unsigned int distance(const RPG_Map_Position_t&,  // position 1
                                const RPG_Map_Position_t&); // position 2
@@ -55,6 +56,7 @@ class RPG_Map_Export RPG_Map_Common_Tools
                          const RPG_Map_Position_t&); // position 2
   static std::string direction2String(const RPG_Map_Direction&);
   static std::string orientation2String(const RPG_Map_Orientation&);
+  static std::string map2String(const RPG_Map_t&);
 
   // *TODO*: relies on the size of the room in relation to its' surrounding space
   // --> results may be wrong for small enclosures

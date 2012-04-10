@@ -28,6 +28,7 @@
 #include "rpg_common_savingthrowcheck.h"
 #include "rpg_common_amount.h"
 #include "rpg_common_usage.h"
+#include "rpg_common_fixedperiod.h"
 #include "rpg_common_duration.h"
 #include "rpg_common_effectduration.h"
 #include "rpg_common_camp.h"

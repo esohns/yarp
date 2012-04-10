@@ -24,20 +24,20 @@
 #include "rpg_monster_common_tools.h"
 
 #include <rpg_dice_XML_parser.h>
-#include <rpg_dice_common_tools.h>
-
 #include <rpg_common_XML_parser.h>
-#include <rpg_common_tools.h>
-
 #include <rpg_character_XML_parser.h>
-#include <rpg_character_common_tools.h>
-#include <rpg_character_skills_common_tools.h>
-
 #include <rpg_magic_XML_parser.h>
 #include <rpg_combat_XML_parser.h>
 #include "rpg_monster_XML_parser.h"
 
+#include <rpg_character_common_tools.h>
+#include <rpg_character_skills_common_tools.h>
+
 #include <rpg_common_macros.h>
+#include <rpg_common_xsderrorhandler.h>
+#include <rpg_common_tools.h>
+
+#include <rpg_dice_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -370,7 +370,7 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
   try
   {
     doc_p.parse(filename_in,
-                myXSDErrorHandler,
+                RPG_XSDErrorHandler,
                 flags);
   }
   catch (const ::xml_schema::parsing& exception)
@@ -429,6 +429,7 @@ void
 RPG_Monster_Dictionary::find(const RPG_Character_Alignment& alignment_in,
                              const RPG_Common_Environment& environment_in,
                              const RPG_Monster_OrganizationSet_t& organizations_in,
+                             const RPG_Monster_HitDice& hitDice_in,
                              RPG_Monster_List_t& list_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::find"));
@@ -437,108 +438,46 @@ RPG_Monster_Dictionary::find(const RPG_Character_Alignment& alignment_in,
   list_out.clear();
 
   RPG_Monster_OrganizationSet_t possible_organizations;
+  std::vector<RPG_Monster_Organization> intersection;
   for (RPG_Monster_DictionaryConstIterator_t iterator = myMonsterDictionary.begin();
        iterator != myMonsterDictionary.end();
        iterator++)
   {
     // check if environment is compatible
-    if (RPG_Common_Tools::match(environment_in,
-                                iterator->second.environment))
+    if (!RPG_Common_Tools::match(environment_in,
+                                 iterator->second.environment))
+      continue;
+
+    // check if alignment is compatible
+    if (!RPG_Character_Common_Tools::match(alignment_in,
+                                           iterator->second.alignment))
+      continue;
+
+    // check if organizations are compatible
+    if (organizations_in.find(ORGANIZATION_ANY) == organizations_in.end())
     {
-      // check if alignment is compatible
-      if (RPG_Character_Common_Tools::match(alignment_in,
-                                            iterator->second.alignment))
-      {
-        // check if organizations are compatible
-        possible_organizations.clear();
-        for (RPG_Monster_OrganizationsIterator_t iterator2 = iterator->second.organizations.begin();
-             iterator2 != iterator->second.organizations.end();
-             iterator2++)
-        {
-          possible_organizations.insert((*iterator2).type);
-        } // end FOR
-        std::vector<RPG_Monster_Organization> intersection;
-        std::set_intersection(organizations_in.begin(),
-                              organizations_in.end(),
-                              possible_organizations.begin(),
-                              possible_organizations.end(),
-                              intersection.begin());
-        if ((organizations_in.find(ORGANIZATION_ANY) != organizations_in.end()) ||
-            !intersection.empty())
-        {
-          list_out.push_back(iterator->first);
-        } // end IF
-      } // end IF
+      possible_organizations.clear();
+      for (RPG_Monster_OrganizationsIterator_t iterator2 = iterator->second.organizations.begin();
+           iterator2 != iterator->second.organizations.end();
+           iterator2++)
+        possible_organizations.insert((*iterator2).type);
+      intersection.clear();
+      std::set_intersection(organizations_in.begin(),
+                            organizations_in.end(),
+                            possible_organizations.begin(),
+                            possible_organizations.end(),
+                            intersection.begin());
+      if (intersection.empty())
+        continue;
     } // end IF
+
+    // check if HD is compatible
+    if (!RPG_Monster_Common_Tools::match((*iterator).second.hitDice,
+                                         hitDice_in))
+      continue;
+
+    list_out.push_back(iterator->first);
   } // end FOR
-}
-
-bool
-RPG_Monster_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
-                                                  unsigned long line_in,
-                                                  unsigned long column_in,
-                                                  ::xsd::cxx::xml::error_handler<char>::severity severity_in,
-                                                  const std::string& message_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::XSD_Error_Handler::handle"));
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\" --> check implementation !, continuing\n"),
-//              id_in.c_str(),
-//              line_in,
-//              column_in,
-//              message_in.c_str()));
-
-  switch (severity_in)
-  {
-    case ::xml_schema::error_handler::severity::warning:
-    {
-      ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    case ::xml_schema::error_handler::severity::error:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    case ::xml_schema::error_handler::severity::fatal:
-    {
-      ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-  } // end SWITCH
-
-  // try to continue anyway...
-  return true;
 }
 
 void

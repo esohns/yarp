@@ -125,7 +125,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-x        : stress-test") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_STRESS_TEST << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   unsigned int& numBattles_out,
@@ -283,7 +283,7 @@ process_arguments(const int argc_in,
   return true;
 }
 
-const unsigned int
+unsigned int
 do_battle(RPG_Player_Party_t& party_in,
           const RPG_Monster_Encounter_t& encounter_in)
 {
@@ -291,71 +291,38 @@ do_battle(RPG_Player_Party_t& party_in,
 
   // step1: instantiate monster(s)
   RPG_Monster_Groups_t monsters;
-  RPG_Character_Conditions_t condition;
-  condition.insert(CONDITION_NORMAL);
-  // *TODO*: define monster abilities, spells, wealth, inventory (i.e. treasure)...
-  RPG_Character_Abilities_t abilities;
-  RPG_Magic_SpellTypes_t knownSpells;
-  unsigned int wealth = 0;
-  RPG_Magic_Spells_t spells;
-  RPG_Item_List_t items;
-
   RPG_Monster_Group_t groupInstance;
-  RPG_Monster_Properties properties;
   RPG_Monster* monster_p = NULL;
+  RPG_Engine_Entity entity;
+  entity.character = NULL;
+  entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                   std::numeric_limits<unsigned int>::max());
+  //entity.modes();
+  //entity.actions();
+  entity.sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CREATURE_SPRITE_FILE);
+  entity.is_spawned = true;
   for (RPG_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
        iterator++)
   {
     groupInstance.clear();
-    properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(iterator->first);
-
-    // compute individual hitpoints
-    RPG_Dice_RollResult_t results;
-    RPG_Dice::simulateRoll(properties.hitDice,
-                           iterator->second,
-                           results);
-    for (RPG_Dice_RollResultIterator_t iterator2 = results.begin();
-         iterator2 != results.end();
-         iterator2++)
+    for (unsigned int i = 0;
+         i < (*iterator).second;
+         i++)
     {
       monster_p = NULL;
-      try
-      {
-        monster_p = new RPG_Monster(// base attributes
-                                    iterator->first,
-                                    properties.type,
-                                    properties.alignment,
-                                    properties.attributes,
-                                    properties.skills,
-                                    properties.feats,
-                                    abilities,
-                                    properties.size,
-                                    (*iterator2),
-                                    knownSpells,
-                                    // current status
-                                    condition,
-                                    (*iterator2),
-                                    wealth,
-                                    spells,
-                                    items,
-                                    false);
-      }
-      catch (const std::bad_alloc& exception)
+      entity->character = NULL;
+      entity = RPG_Engine_Common_Tools::createEntity((*iterator).first);
+      ACE_ASSERT(entity->character);
+      if (!result.character)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("RPG_Monster(): exception occurred: \"%s\", aborting\n"),
-                   exception.what()));
+                   ACE_TEXT("failed to create entity \"%s\", aborting\n"),
+                   (*iterator).first.c_str()));
 
-        throw exception;
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("RPG_Monster(): exception occurred, aborting\n")));
-
-        throw;
-      }
+        break;
+      } // end IF
+      monster_p = dynamic_cast<RPG_Monster*>(entity->character);
       ACE_ASSERT(monster_p);
 
 //       // debug info

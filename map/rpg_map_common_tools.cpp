@@ -672,6 +672,50 @@ RPG_Map_Common_Tools::info(const RPG_Map_t& map_in)
 }
 
 void
+RPG_Map_Common_Tools::dump(const RPG_Map_t& map_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dump"));
+
+  RPG_Map_Position_t current_position;
+  RPG_Map_Door_t current_position_door;
+  bool is_starting_position = false;
+  bool is_seed = false;
+  std::cout << ACE_TEXT_ALWAYS_CHAR("[")
+            << map_in.name
+            << ACE_TEXT_ALWAYS_CHAR("]")
+            << std::endl;
+  for (unsigned int y = 0;
+       y < map_in.plan.size_y;
+       y++)
+  {
+    for (unsigned int x = 0;
+         x < map_in.plan.size_x;
+         x++)
+    {
+      current_position = std::make_pair(x, y);
+      current_position_door.position = current_position;
+      is_starting_position = (current_position == map_in.start);
+      is_seed = map_in.seeds.find(current_position) != map_in.seeds.end();
+
+      // unmapped, floor, wall, or door ?
+      // *TODO*: cannot draw seed points that are not "unmapped"/"floor" without
+      // losing essential information...
+      if (map_in.plan.unmapped.find(current_position) != map_in.plan.unmapped.end())
+        std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT(" ")); // unmapped
+      else if (map_in.plan.walls.find(current_position) != map_in.plan.walls.end())
+        std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT("#")); // wall
+      else if (map_in.plan.doors.find(current_position_door) != map_in.plan.doors.end())
+        std::cout << (is_seed ? ACE_TEXT("@") : ACE_TEXT("=")); // door
+      else
+        std::cout << (is_starting_position ? ACE_TEXT("X")
+                                           : (is_seed ? ACE_TEXT("@")
+                                                      : ACE_TEXT("."))); // floor
+    } // end FOR
+    std::cout << std::endl;
+  } // end FOR
+}
+
+void
 RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
                                     const unsigned int& dimensionY_in,
                                     const unsigned int& numRooms_in,
@@ -2518,6 +2562,48 @@ RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_
   } // end SWITCH
 
   return std::string("MAP_ORIENTATION_INVALID");
+}
+
+std::string
+RPG_Map_Common_Tools::map2String(const RPG_Map_t& map_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::map2String"));
+
+  std::string result;
+
+  RPG_Map_PositionsConstIterator_t iterator;
+  RPG_Map_Position_t current_position;
+  RPG_Map_Door_t door_dummy;
+  for (unsigned int y = 0;
+       y < map_in.plan.size_y;
+       y++)
+  {
+    for (unsigned int x = 0;
+         x < map_in.plan.size_x;
+         x++)
+    {
+      current_position = std::make_pair(x, y);
+      if (map_in.start == current_position)
+        result += 'X';
+      else if (map_in.seeds.find(current_position) != map_in.seeds.end())
+        result += '@';
+      else if (map_in.plan.unmapped.find(current_position) != map_in.plan.unmapped.end())
+        result += ' ';
+      else if (map_in.plan.walls.find(current_position) != map_in.plan.walls.end())
+        result += '#';
+      else
+      {
+        door_dummy.position = current_position;
+        if (map_in.plan.doors.find(door_dummy) != map_in.plan.doors.end())
+          result += '=';
+        else
+          result += '.';
+      } // end ELSE
+    } // end FOR
+    result += '\n';
+  } // end FOR
+
+  return result;
 }
 
 RPG_Map_Direction

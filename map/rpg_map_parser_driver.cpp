@@ -120,24 +120,29 @@ RPG_Map_ParserDriver::init(std::string* name_in,
   myIsInitialized = true;
 }
 
-const bool
-RPG_Map_ParserDriver::parse(const std::string& filename_in)
+bool
+RPG_Map_ParserDriver::parse(const std::string& argument_in,
+                            const bool& argumentIsBuffer_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::parse"));
 
   // sanity check(s)
   ACE_ASSERT(myIsInitialized);
-  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  if (!argumentIsBuffer_in &&
+      !RPG_Common_File_Tools::isReadable(argument_in))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               filename_in.c_str()));
+               argument_in.c_str()));
 
     return false;
   } // end IF
 
-  // open file
 //   std::ifstream file;
+  FILE* fp = NULL;
+  if (!argumentIsBuffer_in)
+  {
+  // open file
 //   file.open(filename_in.c_str(), std::ios_base::in);
 //   if (file.fail())
 //   {
@@ -147,24 +152,28 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
 //
 //     return false;
 //   } // end IF
-  FILE* fp = NULL;
-  fp = ACE_OS::fopen(filename_in.c_str(),
-                     ACE_TEXT_ALWAYS_CHAR("rb"));
-  if (!fp)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
-               filename_in.c_str()));
+    fp = ACE_OS::fopen(argument_in.c_str(),
+                       ACE_TEXT_ALWAYS_CHAR("rb"));
+    if (!fp)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
+                 argument_in.c_str()));
 
-    return false;
+      return false;
+    } // end IF
   } // end IF
 
   // init scan buffer
-  if (!scan_begin(fp))
+  bool success = false;
+  if (!argumentIsBuffer_in)
+    success = scan_begin(fp);
+  else
+    success = scan_begin(argument_in);
+  if (!success)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to parse map file \"%s\", aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT("failed to setup scan buffer, aborting\n")));
 
     // clean up
 //     file.close();
@@ -172,16 +181,18 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to close file \"%s\", aborting\n"),
 //                  filename_in.c_str()));
-    if (ACE_OS::fclose(fp))
+    if (!argumentIsBuffer_in &&
+        ACE_OS::fclose(fp))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
-                 filename_in.c_str()));
+                 argument_in.c_str()));
 
     return false;
   } // end IF
 
   // parse file
-  myCurrentFilename = filename_in;
+  if (!argumentIsBuffer_in)
+    myCurrentFilename = argument_in;
   int result = -1;
   yy::RPG_Map_Parser parser(this,                   // driver
                             &myCurrentNumLines,     // number of lines
@@ -191,8 +202,7 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   if (result)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to parse map file \"%s\", aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT("failed to parse map, aborting\n")));
 
     // clean up
     scan_end();
@@ -201,10 +211,11 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to close file \"%s\", aborting\n"),
 //                  filename_in.c_str()));
-    if (ACE_OS::fclose(fp))
+    if (!argumentIsBuffer_in &&
+        ACE_OS::fclose(fp))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
-                 filename_in.c_str()));
+                 argument_in.c_str()));
 
     return false;
   } // end IF
@@ -217,16 +228,18 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   scan_end();
 
   // clean up
-  myCurrentFilename.clear();
+  if (!argumentIsBuffer_in)
+    myCurrentFilename.clear();
 //   file.close();
 //   if (file.fail())
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to close file \"%s\", aborting\n"),
 //                filename_in.c_str()));
-  if (ACE_OS::fclose(fp))
+  if (!argumentIsBuffer_in &&
+      ACE_OS::fclose(fp))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
-               filename_in.c_str()));
+               argument_in.c_str()));
 
 //   if (myParser.debug_level())
 //     RPG_Map_Common_Tools::displayFloorPlan(*myCurrentPlan);
@@ -237,7 +250,7 @@ RPG_Map_ParserDriver::parse(const std::string& filename_in)
   return true;
 }
 
-const bool
+bool
 RPG_Map_ParserDriver::getDebugScanner() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::getDebugScanner"));
@@ -273,7 +286,7 @@ RPG_Map_ParserDriver::error(const std::string& message_in)
              message_in.c_str()));
 }
 
-const bool
+bool
 //RPG_Map_ParserDriver::scan_begin(std::istream* file_in)
 RPG_Map_ParserDriver::scan_begin(FILE* file_in)
 {
@@ -286,12 +299,12 @@ RPG_Map_ParserDriver::scan_begin(FILE* file_in)
 //  myCurrentBufferState = myScanner.yy_create_buffer(file_in,
 //                                                    RPG_MAP_SCANNER_BUFSIZE);
   myCurrentBufferState = RPG_Map_Scanner__create_buffer(file_in,
-                                                        YY_BUF_SIZE,
+                                                        RPG_MAP_SCANNER_BUFSIZE,
                                                         myCurrentScannerState);
   if (myCurrentBufferState == NULL)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to yy_create_buffer(%@, %d), aborting\n"),
+               ACE_TEXT("failed to RPG_Map_Scanner__create_buffer(%@, %d), aborting\n"),
                file_in,
                RPG_MAP_SCANNER_BUFSIZE));
 
@@ -300,6 +313,28 @@ RPG_Map_ParserDriver::scan_begin(FILE* file_in)
   //myScanner.yy_switch_to_buffer(myCurrentBufferState);
   RPG_Map_Scanner__switch_to_buffer(myCurrentBufferState,
                                     myCurrentScannerState);
+
+  return true;
+}
+
+bool
+RPG_Map_ParserDriver::scan_begin(const std::string& buffer_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_ParserDriver::scan_begin"));
+
+  // sanity check(s)
+  ACE_ASSERT(myCurrentBufferState == NULL);
+
+  myCurrentBufferState = RPG_Map_Scanner__scan_bytes(buffer_in.c_str(),
+                                                     buffer_in.size(),
+                                                     myCurrentScannerState);
+  if (myCurrentBufferState == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Map_Scanner__scan_bytes(), aborting\n")));
+
+    return false;
+  } // end IF
 
   return true;
 }

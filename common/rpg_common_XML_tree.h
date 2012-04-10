@@ -80,6 +80,7 @@ class RPG_Common_SaveReductionType_XMLTree_Type;
 class RPG_Common_SavingThrowCheck_XMLTree_Type;
 class RPG_Common_Amount_XMLTree_Type;
 class RPG_Common_Usage_XMLTree_Type;
+class RPG_Common_FixedPeriod_XMLTree_Type;
 class RPG_Common_Duration_XMLTree_Type;
 class RPG_Common_EffectDuration_XMLTree_Type;
 class RPG_Common_Camp_XMLTree_Type;
@@ -1644,6 +1645,89 @@ bool
 operator!= (const RPG_Common_Usage_XMLTree_Type&, const RPG_Common_Usage_XMLTree_Type&);
 
 
+class RPG_Common_Export RPG_Common_FixedPeriod_XMLTree_Type: public ::xml_schema::type
+{
+  public:
+  // seconds
+  // 
+  typedef ::xml_schema::unsigned_int seconds_type;
+  typedef ::xsd::cxx::tree::traits< seconds_type, char > seconds_traits;
+
+  const seconds_type&
+  seconds () const;
+
+  seconds_type&
+  seconds ();
+
+  void
+  seconds (const seconds_type& x);
+
+  // u_seconds
+  // 
+  typedef ::xml_schema::unsigned_int u_seconds_type;
+  typedef ::xsd::cxx::tree::optional< u_seconds_type > u_seconds_optional;
+  typedef ::xsd::cxx::tree::traits< u_seconds_type, char > u_seconds_traits;
+
+  const u_seconds_optional&
+  u_seconds () const;
+
+  u_seconds_optional&
+  u_seconds ();
+
+  void
+  u_seconds (const u_seconds_type& x);
+
+  void
+  u_seconds (const u_seconds_optional& x);
+
+  // Constructors.
+  //
+  RPG_Common_FixedPeriod_XMLTree_Type (const seconds_type&);
+
+  RPG_Common_FixedPeriod_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
+  RPG_Common_FixedPeriod_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
+  RPG_Common_FixedPeriod_XMLTree_Type (const RPG_Common_FixedPeriod_XMLTree_Type& x,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
+  virtual RPG_Common_FixedPeriod_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  virtual 
+  ~RPG_Common_FixedPeriod_XMLTree_Type ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
+  ::xsd::cxx::tree::one< seconds_type > seconds_;
+  u_seconds_optional u_seconds_;
+};
+
+RPG_Common_Export
+bool
+operator== (const RPG_Common_FixedPeriod_XMLTree_Type&, const RPG_Common_FixedPeriod_XMLTree_Type&);
+
+RPG_Common_Export
+bool
+operator!= (const RPG_Common_FixedPeriod_XMLTree_Type&, const RPG_Common_FixedPeriod_XMLTree_Type&);
+
+
 class RPG_Common_Export RPG_Common_Duration_XMLTree_Type: public ::xml_schema::type
 {
   public:
@@ -2121,6 +2205,10 @@ operator<< (::std::ostream&, const RPG_Common_Usage_XMLTree_Type&);
 
 RPG_Common_Export
 ::std::ostream&
+operator<< (::std::ostream&, const RPG_Common_FixedPeriod_XMLTree_Type&);
+
+RPG_Common_Export
+::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Duration_XMLTree_Type&);
 
 RPG_Common_Export
@@ -2375,6 +2463,10 @@ operator<< (::xercesc::DOMElement&, const RPG_Common_Usage_XMLTree_Type&);
 
 RPG_Common_Export
 void
+operator<< (::xercesc::DOMElement&, const RPG_Common_FixedPeriod_XMLTree_Type&);
+
+RPG_Common_Export
+void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Duration_XMLTree_Type&);
 
 RPG_Common_Export
@@ -2493,6 +2585,11 @@ RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Usage_XMLTree_Type&);
+
+RPG_Common_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Common_FixedPeriod_XMLTree_Type&);
 
 RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&

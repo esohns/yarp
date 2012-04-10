@@ -53,7 +53,7 @@ RPG_Monster_Common_Tools::initStringConversionTables()
              ACE_TEXT("RPG_Monster_Common_Tools: initialized string conversion tables...\n")));
 }
 
-const std::string
+std::string
 RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& weaponType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::weaponTypeToString"));
@@ -91,7 +91,7 @@ RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& 
   return result;
 }
 
-const std::string
+std::string
 RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& attackAction_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackActionToString"));
@@ -134,7 +134,7 @@ RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& a
   return result;
 }
 
-const std::string
+std::string
 RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackToString"));
@@ -184,7 +184,7 @@ RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
   return result;
 }
 
-const std::string
+std::string
 RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_OrganizationSet_t& organizations_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
@@ -206,7 +206,7 @@ RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_OrganizationSe
   return result;
 }
 
-const std::string
+std::string
 RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_t& organizations_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
@@ -227,7 +227,7 @@ RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_
   return result;
 }
 
-const std::string
+std::string
 RPG_Monster_Common_Tools::advancementToString(const RPG_Monster_Advancement_t& advancement_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::advancementToString"));
@@ -246,7 +246,7 @@ RPG_Monster_Common_Tools::advancementToString(const RPG_Monster_Advancement_t& a
   return result;
 }
 
-const RPG_Common_PhysicalDamageList_t
+RPG_Common_PhysicalDamageList_t
 RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon& naturalWeapon_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType"));
@@ -303,12 +303,35 @@ RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(const RPG_Monster_Na
   return result;
 }
 
+bool
+RPG_Monster_Common_Tools::match(const RPG_Monster_HitDice& hitDice1_in,
+                                const RPG_Monster_HitDice& hitDice2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::match"));
+
+  // compare type of dice
+  if ((hitDice1_in.typeDice != RPG_DICE_DIETYPE_INVALID) &&
+      (hitDice2_in.typeDice != RPG_DICE_DIETYPE_INVALID) && // either == "RPG_DICE_DIETYPE_INVALID" --> don't care...
+      (hitDice1_in.typeDice != hitDice2_in.typeDice))
+    return false;
+
+  // compare number of dice
+  if (hitDice1_in.numDice &&
+      hitDice2_in.numDice && // either == "0" --> don't care...
+      (hitDice1_in.numDice != hitDice2_in.numDice))
+    return false;
+
+  // *NOTE* always ignore the modifier...
+  return true;
+}
+
 void
 RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDifferentMonsterTypes_in,
                                                   const unsigned int& numMonsters_in,
                                                   const RPG_Character_Alignment& alignment_in,
                                                   const RPG_Common_Environment& environment_in,
                                                   const RPG_Monster_OrganizationSet_t& organizations_in,
+                                                  const RPG_Monster_HitDice& hitDice_in,
                                                   RPG_Monster_Encounter_t& encounter_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::generateRandomEncounter"));
@@ -327,15 +350,17 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
   RPG_MONSTER_DICTIONARY_SINGLETON::instance()->find(alignment_in,
                                                      environment_in,
                                                      organizations_in,
+                                                     hitDice_in,
                                                      list);
   if (list.empty())
   {
     // nothing found in database...
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("found no appropriate monster types (alignment: \"%s\", environment \"%s\", organizations: \"%s\" in dictionary (%u entries), returning\n"),
+               ACE_TEXT("found no appropriate monster types (alignment: \"%s\", environment \"%s\", organizations: \"%s\", HD: \"%s\" in dictionary (%u entries), returning\n"),
                RPG_Character_Common_Tools::alignmentToString(alignment_in).c_str(),
                RPG_Common_Tools::environmentToString(environment_in).c_str(),
                RPG_Monster_Common_Tools::organizationsToString(organizations_in).c_str(),
+               RPG_Dice_Common_Tools::rollToString(hitDice_in).c_str(),
                RPG_MONSTER_DICTIONARY_SINGLETON::instance()->numEntries()));
 
     return;
@@ -369,9 +394,7 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
     for (RPG_Monster_OrganizationsIterator_t iterator2 = properties.organizations.begin();
          iterator2 != properties.organizations.end();
          iterator2++)
-    {
       possible_organizations.insert((*iterator2).type);
-    } // end FOR
     if (organizations_in.find(ORGANIZATION_ANY) == organizations_in.end())
     {
       // compute intersection
@@ -425,7 +448,7 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
       numCurrentFoes += (*iterator).second;
     } // end FOR
     RPG_Monster_EncounterIterator_t iterator;
-    int diff = static_cast<int>(::abs(static_cast<long>(numCurrentFoes - numMonsters_in)));
+    int diff = ::abs(static_cast<int>(numCurrentFoes) - static_cast<const int&>(numMonsters_in));
     while (diff)
     {
       iterator = encounter_out.begin();
