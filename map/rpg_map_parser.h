@@ -38,8 +38,6 @@
 /* "%code requires" blocks.  */
 
 
-#include <string>
-
 class RPG_Map_ParserDriver;
 typedef void* yyscan_t;
 
@@ -114,7 +112,6 @@ namespace yy {
 
 
   char         cval;
-  std::string* sval;
 
 
 
@@ -130,9 +127,8 @@ namespace yy {
       /* Tokens.  */
    enum yytokentype {
      END = 0,
-     NAME = 258,
-     GLYPH = 259,
-     END_OF_ROW = 260
+     GLYPH = 258,
+     END_OF_ROW = 259
    };
 
     };

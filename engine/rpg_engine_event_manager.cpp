@@ -435,9 +435,12 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
   {
     case EVENT_SPAWN_MONSTER:
     {
-      if ((myEngine->getActive() == 0)                        ||
+      const RPG_Engine_LevelMeta_t& level_meta = myEngine->getMeta();
+
+      if (level_meta.monsters.empty()                         ||
+          (myEngine->getActive() == 0)                        ||
           (myEngine->numSpawned() >= myMaxNumSpawnedEntities) ||
-          !RPG_Dice::probability(event_handle->probability))
+          !RPG_Dice::probability(level_meta.probability))
         break; // not this time...
 
       // OK: spawn an instance
@@ -450,7 +453,23 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
 
         return;
       } // end IF
-      *entity = RPG_Engine_Common_Tools::createEntity(event_handle->monster);
+
+      RPG_Dice_RollResult_t roll_result;
+      std::string monster_type;
+      if (level_meta.monsters.size() == 1)
+        monster_type = level_meta.monsters.front();
+      else
+      {
+        // choose a random type
+        RPG_Monster_ListConstIterator_t iterator = level_meta.monsters.begin();
+        RPG_Dice::generateRandomNumbers(level_meta.monsters.size(),
+                                        1,
+                                        roll_result);
+        std::advance(iterator, roll_result.front() - 1);
+        monster_type = *iterator;
+      } // end ELSE
+
+      *entity = RPG_Engine_Common_Tools::createEntity(monster_type);
       entity->is_spawned = true;
       ACE_ASSERT(entity->character);
       if (!entity->character)
@@ -467,13 +486,12 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
       // choose random entry point
       const RPG_Map_Positions_t& seed_points = myEngine->getSeedPoints();
       ACE_ASSERT(!seed_points.empty());
-      RPG_Dice_RollResult_t random_number;
       RPG_Map_PositionsConstIterator_t iterator = seed_points.begin();
+      roll_result.clear();
       RPG_Dice::generateRandomNumbers(seed_points.size(),
                                       1,
-                                      random_number);
-      iterator = seed_points.begin();
-      std::advance(iterator, random_number.front() - 1);
+                                      roll_result);
+      std::advance(iterator, roll_result.front() - 1);
       entity->position = myEngine->getValid(*iterator,
                                             RPG_ENGINE_DEF_MAX_RAD_SPAWNED);
       ACE_ASSERT(entity->position != std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -491,12 +509,13 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
 
         return;
       } // end IF
+
       RPG_Engine_EntityID_t id = myEngine->add(entity);
 
       // debug info
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("spawned a %s [id: %u]...\n"),
-                 entity->character->getName().c_str(),
+                 monster_type.c_str(),
                  id));
 
       break;

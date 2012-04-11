@@ -26,7 +26,7 @@
 
 // XML-specific
 #define RPG_PLAYER_SCHEMA_FILE           "rpg_player.xsd"
-#define RPG_PLAYER_PROFILE_EXT           ".xml"
+#define RPG_PLAYER_PROFILE_EXT           ".player"
 
 #define RPG_PLAYER_DEF_ENTITY            "default_player"
 

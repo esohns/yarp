@@ -27,11 +27,42 @@
   <xsd:simpleType name="RPG_Item_Type_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ITEM_ARMOR"/>
-      <xsd:enumeration value="ITEM_GOODS"/>
+      <xsd:enumeration value="ITEM_COMMODITY"/>
       <xsd:enumeration value="ITEM_OTHER"/>
       <xsd:enumeration value="ITEM_VALUABLE"/>
       <xsd:enumeration value="ITEM_WEAPON"/>
     </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_CommodityType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COMMODITY_BEVERAGE"/>
+      <xsd:enumeration value="COMMODITY_FOOD"/>
+      <xsd:enumeration value="COMMODITY_LIGHT"/>
+      <xsd:enumeration value="COMMODITY_OTHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_CommodityBeverage_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COMMODITY_BEVERAGE_BEER"/>
+      <xsd:enumeration value="COMMODITY_BEVERAGE_WATER"/>
+      <xsd:enumeration value="COMMODITY_BEVERAGE_WINE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_CommodityLight_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COMMODITY_LIGHT_CANDLE"/>
+      <xsd:enumeration value="COMMODITY_LIGHT_LAMP"/>
+      <xsd:enumeration value="COMMODITY_LIGHT_LANTERN_BULLSEYE"/>
+      <xsd:enumeration value="COMMODITY_LIGHT_LANTERN_HOODED"/>
+      <xsd:enumeration value="COMMODITY_LIGHT_TORCH"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_CommodityUnion_Type">
+    <xsd:union memberTypes="RPG_Item_CommodityBeverage_Type RPG_Item_CommodityLight_Type"/>
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Item_Money_Type">
@@ -187,11 +218,22 @@
     </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="RPG_Item_CommodityPropertiesBase_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Item_PropertiesBase_Type">
+        <xsd:sequence>
+          <xsd:element name="type" type="RPG_Item_CommodityType_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="subtype" type="RPG_Item_CommodityUnion_Type" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
   <xsd:complexType name="RPG_Item_WeaponPropertiesBase_Type">
     <xsd:complexContent>
       <xsd:extension base="RPG_Item_PropertiesBase_Type">
         <xsd:sequence>
-          <xsd:element name="weaponType" type="RPG_Item_WeaponType_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="type" type="RPG_Item_WeaponType_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="category" type="RPG_Item_WeaponCategory_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="weaponClass" type="RPG_Item_WeaponClass_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="baseDamage" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
@@ -253,7 +295,7 @@
     <xsd:complexContent>
       <xsd:extension base="RPG_Item_PropertiesBase_Type">
         <xsd:sequence>
-          <xsd:element name="armorType" type="RPG_Item_ArmorType_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="type" type="RPG_Item_ArmorType_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="category" type="RPG_Item_ArmorCategory_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="baseBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="maxDexterityBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
@@ -278,8 +320,9 @@
  <xsd:complexType name="RPG_Item_XML_Type" id="skip0">
    <xsd:sequence>
      <xsd:element name="type" type="RPG_Item_Type_Type" minOccurs="1" maxOccurs="1"/>
-     <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="1"/>
      <xsd:element name="armor" type="RPG_Item_ArmorPropertiesXML_Type" minOccurs="0" maxOccurs="1"/>
+     <xsd:element name="commodity" type="RPG_Item_CommodityPropertiesBase_Type" minOccurs="0" maxOccurs="1"/>
+     <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="1"/>
    </xsd:sequence>
  </xsd:complexType>
 
@@ -291,8 +334,9 @@
 
   <xsd:complexType name="RPG_Item_DictionaryXML_Type" id="skip2">
     <xsd:sequence>
-      <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="armor" type="RPG_Item_ArmorPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="commodity" type="RPG_Item_CommodityPropertiesBase_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 

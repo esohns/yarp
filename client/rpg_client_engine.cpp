@@ -48,6 +48,7 @@ RPG_Client_Engine::RPG_Client_Engine()
    myWindow(NULL),
    myWidgets(NULL),
 //   myActions(),
+//   mySeenPositions(),
    mySelectionMode(SELECTIONMODE_NORMAL),
    myCenterOnActivePlayer(RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)
 {
@@ -365,8 +366,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     case COMMAND_DOOR_OPEN:
     {
       ACE_ASSERT(parameters_in.size() == 1);
+
       client_action.command = COMMAND_TOGGLE_DOOR;
-      client_action.position = *static_cast<RPG_Map_Position_t*>(parameters_in.front());
+      client_action.position = *static_cast<RPG_Map_Position_t* const>(parameters_in.front());
       client_action.window = myWindow;
 
       break;
@@ -378,8 +380,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     case COMMAND_E2C_ENTITY_ADD:
     {
       ACE_ASSERT(parameters_in.size() == 1);
-      RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t*>(parameters_in.front());
-      // load sprite graphics
+      RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
+      ACE_ASSERT(entity_id);
+
+      // step1: load sprite graphics
       SDL_Surface* sprite_graphic = NULL;
       if (!myEngine->isMonster(entity_id))
       {
@@ -421,12 +425,32 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(entity_id,
                                                            sprite_graphic);
 
+      // step2: init seen positions
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+        ACE_ASSERT(mySeenPositions.find(entity_id) == mySeenPositions.end());
+        mySeenPositions.insert(std::make_pair(entity_id, RPG_Map_Positions_t()));
+      } // end lock scope
+
       return;
     }
     case COMMAND_E2C_ENTITY_REMOVE:
     {
       ACE_ASSERT(parameters_in.size() == 1);
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()));
+      RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
+      ACE_ASSERT(entity_id);
+
+      // step1: unload sprite graphics
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(entity_id);
+
+      // step2: fini seen positions
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+        ACE_ASSERT(mySeenPositions.find(entity_id) != mySeenPositions.end());
+        mySeenPositions.erase(entity_id);
+      } // end lock scope
 
       return;
     }
@@ -434,9 +458,17 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     {
       ACE_ASSERT(parameters_in.size() == 2);
       client_action.command = COMMAND_ENTITY_DRAW;
-      client_action.position = *static_cast<RPG_Map_Position_t*>(parameters_in.back());
+      client_action.position = *static_cast<const RPG_Map_Position_t* const>(parameters_in.back());
       client_action.window = myWindow;
-      client_action.entity_id = *static_cast<RPG_Engine_EntityID_t*>(parameters_in.front());
+      client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(parameters_in.front());
+
+      // update seen positions
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) != mySeenPositions.end());
+        mySeenPositions[client_action.entity_id].insert(positions_p->begin(), positions_p->end());
+      } // end lock scope
 
       // adjust view ?
       if (getCenterOnActive() &&
@@ -534,6 +566,21 @@ RPG_Client_Engine::hasMode(const RPG_Client_SelectionMode& mode_in) const
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::hasMode"));
 
   return (mySelectionMode == mode_in);
+}
+
+bool
+RPG_Client_Engine::hasSeen(const RPG_Engine_EntityID_t& id_in,
+                           const RPG_Map_Position_t& position_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::hasSeen"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  RPG_Client_SeenPositionsConstIterator_t iterator = mySeenPositions.find(id_in);
+  if (iterator == mySeenPositions.end())
+    return false;
+
+  return ((*iterator).second.find(position_in) != (*iterator).second.end());
 }
 
 void
@@ -839,7 +886,7 @@ RPG_Client_Engine::handleActions()
 
         // step2: (re)set level window title caption/iconify
         std::string caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
-        const std::string& level_name = myEngine->getName();
+        const std::string& level_name = myEngine->getMeta().name;
         if (!level_name.empty())
         {
           caption = ACE_TEXT_ALWAYS_CHAR("* ");

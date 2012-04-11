@@ -44,7 +44,6 @@ RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
    myCurrentPlan(NULL),
    myCurrentSeedPoints(NULL),
    myCurrentStartPosition(NULL),
-   myCurrentName(NULL),
    myCurrentSizeX(0),
    myCurrentPosition(std::make_pair(0, 0)),
 //   myCurrentFilename(),
@@ -73,8 +72,7 @@ RPG_Map_ParserDriver::~RPG_Map_ParserDriver ()
 }
 
 void
-RPG_Map_ParserDriver::init(std::string* name_in,
-                           RPG_Map_Position_t* startPosition_in,
+RPG_Map_ParserDriver::init(RPG_Map_Position_t* startPosition_in,
                            RPG_Map_Positions_t* seedPoints_in,
                            RPG_Map_FloorPlan_t* plan_in,
                            const bool& traceScanning_in,
@@ -84,7 +82,6 @@ RPG_Map_ParserDriver::init(std::string* name_in,
 
   // sanity check(s)
   ACE_ASSERT(!myIsInitialized);
-  ACE_ASSERT(name_in);
   ACE_ASSERT(startPosition_in);
   ACE_ASSERT(seedPoints_in);
   ACE_ASSERT(plan_in);
@@ -99,19 +96,19 @@ RPG_Map_ParserDriver::init(std::string* name_in,
   myCurrentSizeX = 0;
 
   // set parse target data
-  myCurrentName = name_in;
   myCurrentStartPosition = startPosition_in;
   myCurrentSeedPoints = seedPoints_in;
   myCurrentPlan = plan_in;
   // init target structures
-  myCurrentName->clear();
-  *myCurrentStartPosition = std::make_pair(0, 0);
+  *myCurrentStartPosition = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                           std::numeric_limits<unsigned int>::max());
   myCurrentSeedPoints->clear();
   myCurrentPlan->size_x = 0;
   myCurrentPlan->size_y = 0;
   myCurrentPlan->unmapped.clear();
   myCurrentPlan->walls.clear();
   myCurrentPlan->doors.clear();
+  myCurrentPlan->rooms_are_square = false;
 
   // trace ?
   RPG_Map_Scanner_set_debug((traceScanning_in ? 1 : 0), myCurrentScannerState);

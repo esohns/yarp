@@ -43,7 +43,7 @@ RPG_Item_Armor::~RPG_Item_Armor()
 
 }
 
-const RPG_Item_ArmorType
+const RPG_Item_ArmorType&
 RPG_Item_Armor::getArmorType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Armor::getArmorType"));

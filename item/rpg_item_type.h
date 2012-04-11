@@ -10,7 +10,7 @@
 enum RPG_Item_Type
 {
   ITEM_ARMOR = 0,
-  ITEM_GOODS,
+  ITEM_COMMODITY,
   ITEM_OTHER,
   ITEM_VALUABLE,
   ITEM_WEAPON,
@@ -36,7 +36,7 @@ class RPG_Item_Export RPG_Item_TypeHelper
   {
     myRPG_Item_TypeToStringTable.clear();
     myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_ARMOR, ACE_TEXT_ALWAYS_CHAR("ITEM_ARMOR")));
-    myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_GOODS, ACE_TEXT_ALWAYS_CHAR("ITEM_GOODS")));
+    myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_COMMODITY, ACE_TEXT_ALWAYS_CHAR("ITEM_COMMODITY")));
     myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_OTHER, ACE_TEXT_ALWAYS_CHAR("ITEM_OTHER")));
     myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_VALUABLE, ACE_TEXT_ALWAYS_CHAR("ITEM_VALUABLE")));
     myRPG_Item_TypeToStringTable.insert(std::make_pair(ITEM_WEAPON, ACE_TEXT_ALWAYS_CHAR("ITEM_WEAPON")));

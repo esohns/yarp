@@ -25,6 +25,7 @@
 #include <rpg_dice_XML_parser.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_xsderrorhandler.h>
 #include <rpg_common_XML_parser.h>
 
 #include <rpg_magic_XML_parser.h>
@@ -58,17 +59,51 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
   // Construct the parser.
   //
   ::xml_schema::unsigned_short_pimpl      unsigned_short_p;
+
   ::xml_schema::unsigned_int_pimpl        unsigned_int_p;
   RPG_Item_StorePrice_Type                baseStorePrice_p;
   baseStorePrice_p.parsers(unsigned_int_p,
                            unsigned_int_p);
+
   RPG_Item_CreationCost_Type              creationCost_p;
   creationCost_p.parsers(unsigned_int_p,
                          unsigned_int_p);
+
   RPG_Magic_School_Type                   school_p;
+
   ::xml_schema::unsigned_byte_pimpl       unsigned_byte_p;
   RPG_Item_MagicalPrerequisites_Type      magicalPreRequisites_p;
   magicalPreRequisites_p.parsers(unsigned_byte_p);
+
+  RPG_Item_ArmorType_Type                 armorType_p;
+  RPG_Item_ArmorCategory_Type             armorCategory_p;
+  ::xml_schema::byte_pimpl                byte_p;
+  RPG_Item_ArmorPropertiesXML_Type        armorPropertiesXML_p;
+  armorPropertiesXML_p.parsers(unsigned_short_p,
+                               baseStorePrice_p,
+                               creationCost_p,
+                               school_p,
+                               magicalPreRequisites_p,
+                               armorType_p,
+                               armorCategory_p,
+                               unsigned_byte_p,
+                               unsigned_byte_p,
+                               byte_p,
+                               unsigned_byte_p,
+                               unsigned_byte_p,
+                               byte_p);
+
+  RPG_Item_CommodityType_Type           commodityType_p;
+  RPG_Item_CommodityUnion_Type          commodityUnion_p;
+  RPG_Item_CommodityPropertiesBase_Type commodityPropertiesBase_p;
+  commodityPropertiesBase_p.parsers(unsigned_short_p,
+                                    baseStorePrice_p,
+                                    creationCost_p,
+                                    school_p,
+                                    magicalPreRequisites_p,
+                                    commodityType_p,
+                                    commodityUnion_p);
+
   RPG_Item_WeaponType_Type                weaponType_p;
   RPG_Item_WeaponCategory_Type            weaponCategory_p;
   RPG_Item_WeaponClass_Type               weaponClass_p;
@@ -84,7 +119,6 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
 //   unsigned_byte_pimpl                       rangeIncrement_p;
   RPG_Common_PhysicalDamageType_Type      damageType_p;
   ::xml_schema::boolean_pimpl             bool_p;
-  ::xml_schema::byte_pimpl                byte_p;
   RPG_Item_WeaponPropertiesXML_Type       weaponPropertiesXML_p;
   weaponPropertiesXML_p.parsers(unsigned_short_p,
                                 baseStorePrice_p,
@@ -102,26 +136,11 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
                                 bool_p,
                                 bool_p,
                                 byte_p);
-  RPG_Item_ArmorType_Type                 armorType_p;
-  RPG_Item_ArmorCategory_Type             armorCategory_p;
-  RPG_Item_ArmorPropertiesXML_Type        armorPropertiesXML_p;
-  armorPropertiesXML_p.parsers(unsigned_short_p,
-                               baseStorePrice_p,
-                               creationCost_p,
-                               school_p,
-                               magicalPreRequisites_p,
-                               armorType_p,
-                               armorCategory_p,
-                               unsigned_byte_p,
-                               unsigned_byte_p,
-                               byte_p,
-                               unsigned_byte_p,
-                               unsigned_byte_p,
-                               byte_p);
   RPG_Item_Dictionary_Type                itemDictionary_p(&myWeaponDictionary,
                                                            &myArmorDictionary);
-  itemDictionary_p.parsers(weaponPropertiesXML_p,
-                           armorPropertiesXML_p);
+  itemDictionary_p.parsers(armorPropertiesXML_p,
+                           commodityPropertiesBase_p,
+                           weaponPropertiesXML_p);
 
   // Parse the document to obtain the object model.
   //
@@ -138,7 +157,7 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
   try
   {
     doc_p.parse(filename_in,
-                myXSDErrorHandler,
+                RPG_XSDErrorHandler,
                 flags);
   }
   catch (const ::xml_schema::parsing& exception)
@@ -205,72 +224,55 @@ RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) 
   return iterator->second;
 }
 
-bool
-RPG_Item_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
-                                               unsigned long line_in,
-                                               unsigned long column_in,
-                                               ::xsd::cxx::xml::error_handler<char>::severity severity_in,
-                                               const std::string& message_in)
+const RPG_Item_CommodityProperties&
+RPG_Item_Dictionary::getCommodityProperties(const RPG_Item_CommodityUnion& commoditySubType_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::XSD_Error_Handler::handle"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getCommodityProperties"));
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-//              id_in.c_str(),
-//              line_in,
-//              column_in,
-//              message_in.c_str()));
-
-  switch (severity_in)
+  switch (commoditySubType_in.discriminator)
   {
-    case ::xml_schema::error_handler::severity::warning:
+    case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
     {
-      ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
+      RPG_Item_CommodityBeverageDictionaryIterator_t iterator = myCommodityBeverageDictionary.find(commoditySubType_in.commoditybeverage);
+      if (iterator == myCommodityBeverageDictionary.end())
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("invalid commodity beverage type \"%s\", aborting\n"),
+                   RPG_Item_CommodityBeverageHelper::RPG_Item_CommodityBeverageToString(commoditySubType_in.commoditybeverage).c_str()));
 
-      break;
+        ACE_ASSERT(false);
+      } // end IF
+
+      return (*iterator).second;
     }
-    case ::xml_schema::error_handler::severity::error:
+    case RPG_Item_CommodityUnion::COMMODITYLIGHT:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
+      RPG_Item_CommodityLightDictionaryIterator_t iterator = myCommodityLightDictionary.find(commoditySubType_in.commoditylight);
+      if (iterator == myCommodityLightDictionary.end())
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("invalid commodity light type \"%s\", aborting\n"),
+                   RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString(commoditySubType_in.commoditylight).c_str()));
 
-      break;
-    }
-    case ::xml_schema::error_handler::severity::fatal:
-    {
-      ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
+        ACE_ASSERT(false);
+      } // end IF
 
-      break;
+      return (*iterator).second;
     }
     default:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
+                 ACE_TEXT("invalid commodity type (was: %d), aborting\n"),
+                 commoditySubType_in.discriminator));
+
+      ACE_ASSERT(false);
 
       break;
     }
   } // end SWITCH
 
-  // try to continue anyway...
-  return true;
+  RPG_Item_CommodityProperties dummy;
+  return dummy;
 }
 
 void

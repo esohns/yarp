@@ -25,6 +25,7 @@
 
 #include "rpg_item_exports.h"
 #include "rpg_item_common.h"
+#include "rpg_item_commoditylight.h"
 
 #include <ace/Global_Macros.h>
 
@@ -36,17 +37,21 @@ class RPG_Item_Export RPG_Item_Common_Tools
  public:
   static void initStringConversionTables();
 
-  static const std::string weaponDamageTypeToString(const RPG_Item_WeaponDamageType&); // weapon damage
-  static const RPG_Common_PhysicalDamageList_t weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType&); // weapon damage
-  static const std::string damageToString(const RPG_Item_Damage&); // damage
+  static std::string weaponDamageTypeToString(const RPG_Item_WeaponDamageType&); // weapon damage
+  static RPG_Common_PhysicalDamageList_t weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType&); // weapon damage
+  static std::string damageToString(const RPG_Item_Damage&); // damage
+  static std::string commoditySubTypeToXMLString(const RPG_Item_CommodityUnion&); // subtype
 
-  static const bool isThrownWeapon(const RPG_Item_WeaponType&); // weapon type
-  static const bool isProjectileWeapon(const RPG_Item_WeaponType&); // weapon type
-  static const bool isRangedWeapon(const RPG_Item_WeaponType&); // weapon type
-  static const bool isTwoHandedWeapon(const RPG_Item_WeaponType&); // weapon type
-  static const bool isMeleeWeapon(const RPG_Item_WeaponType&); // weapon type
+  static bool isThrownWeapon(const RPG_Item_WeaponType&); // weapon type
+  static bool isProjectileWeapon(const RPG_Item_WeaponType&); // weapon type
+  static bool isRangedWeapon(const RPG_Item_WeaponType&); // weapon type
+  static bool isTwoHandedWeapon(const RPG_Item_WeaponType&); // weapon type
+  static bool isMeleeWeapon(const RPG_Item_WeaponType&); // weapon type
 
-  static const bool isShield(const RPG_Item_ArmorType&); // armor type
+  static bool isShield(const RPG_Item_ArmorType&); // armor type
+
+  static unsigned char lightingItem2Radius(const RPG_Item_CommodityLight&); // lighting item type
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools());

@@ -11,9 +11,11 @@
 
 struct RPG_Common_Export RPG_Common_Environment
 {
+  RPG_Common_Plane plane;
   RPG_Common_Terrain terrain;
   RPG_Common_Climate climate;
   RPG_Common_TimeOfDay time;
+  RPG_Common_AmbientLighting lighting;
   bool outdoors;
 };
 

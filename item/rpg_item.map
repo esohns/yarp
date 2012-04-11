@@ -9,24 +9,32 @@ namespace urn:rpg
   include <rpg_character_incl.h>;
   include <rpg_magic_incl.h>;
 
-  RPG_Dice_Roll_Type                     RPG_Item_Damage;
+  RPG_Item_Type_Type                     RPG_Item_Type;
+  RPG_Item_CommodityType_Type            RPG_Item_CommodityType;
+  RPG_Item_CommodityBeverage_Type        RPG_Item_CommodityBeverage;
+  RPG_Item_CommodityLight_Type           RPG_Item_CommodityLight;
+  RPG_Item_CommodityUnion_Type           RPG_Item_CommodityUnion;
 
-  RPG_Common_PhysicalDamageType_Type     RPG_Common_PhysicalDamageType;
-
-  RPG_Magic_School_Type                  RPG_Magic_School;
-
-  RPG_Item_BaseProperties_Type           RPG_Item_BaseProperties;
-
-  RPG_Item_MagicalPrerequisites_Type     RPG_Item_MagicalPrerequisites;
-  RPG_Item_PropertiesBase_Type           RPG_Item_PropertiesBase;
+  RPG_Item_Money_Type                    RPG_Item_Money;
 
   RPG_Item_WeaponCategory_Type           RPG_Item_WeaponCategory;
   RPG_Item_WeaponClass_Type              RPG_Item_WeaponClass;
   RPG_Item_WeaponType_Type               RPG_Item_WeaponType;
+
   RPG_Item_StorePrice_Type               RPG_Item_StorePrice;
+
   RPG_Item_CriticalHitProperties_Type    RPG_Item_CriticalHitProperties;
   RPG_Item_CreationCost_Type             RPG_Item_CreationCost;
 
+  RPG_Item_BaseProperties_Type           RPG_Item_BaseProperties;
+  RPG_Magic_School_Type                  RPG_Magic_School;
+  RPG_Item_MagicalPrerequisites_Type     RPG_Item_MagicalPrerequisites;
+  RPG_Item_PropertiesBase_Type           RPG_Item_PropertiesBase;
+
+  RPG_Item_CommodityPropertiesBase_Type  RPG_Item_CommodityPropertiesBase;
+
+  RPG_Dice_Roll_Type                     RPG_Item_Damage;
+  RPG_Common_PhysicalDamageType_Type     RPG_Common_PhysicalDamageType;
   RPG_Item_WeaponPropertiesBase_Type     RPG_Item_WeaponPropertiesBase;
   RPG_Item_WeaponPropertiesXML_Type      RPG_Item_WeaponPropertiesXML;
 

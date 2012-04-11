@@ -339,6 +339,15 @@ class RPG_Common_Export RPG_Common_TimeOfDay_Type
   virtual RPG_Common_TimeOfDay post_RPG_Common_TimeOfDay_Type();
 };
 
+class RPG_Common_Export RPG_Common_AmbientLighting_Type
+ : public RPG_Common_AmbientLighting_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+  // virtual void pre();
+  virtual RPG_Common_AmbientLighting post_RPG_Common_AmbientLighting_Type();
+};
+
 class RPG_Common_Export RPG_Common_Environment_Type
  : public RPG_Common_Environment_Type_pskel
 {
@@ -346,9 +355,11 @@ class RPG_Common_Export RPG_Common_Environment_Type
   RPG_Common_Environment_Type();
 
 //   virtual void pre();
+  virtual void plane(const RPG_Common_Plane&);
   virtual void terrain(const RPG_Common_Terrain&);
   virtual void climate(const RPG_Common_Climate&);
   virtual void time(const RPG_Common_TimeOfDay&);
+  virtual void lighting(const RPG_Common_AmbientLighting&);
   virtual void outdoors(bool);
   virtual RPG_Common_Environment post_RPG_Common_Environment_Type();
 

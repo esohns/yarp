@@ -86,6 +86,186 @@ operator= (value v)
 }
 
 
+// RPG_Item_CommodityType_XMLTree_Type
+// 
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Item_CommodityType_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (const RPG_Item_CommodityType_XMLTree_Type& v,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Item_CommodityType_XMLTree_Type& RPG_Item_CommodityType_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Item_CommodityType_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
+// RPG_Item_CommodityBeverage_XMLTree_Type
+// 
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Item_CommodityBeverage_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (const RPG_Item_CommodityBeverage_XMLTree_Type& v,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type& RPG_Item_CommodityBeverage_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Item_CommodityBeverage_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
+// RPG_Item_CommodityLight_XMLTree_Type
+// 
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Item_CommodityLight_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (const RPG_Item_CommodityLight_XMLTree_Type& v,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Item_CommodityLight_XMLTree_Type& RPG_Item_CommodityLight_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Item_CommodityLight_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
+// RPG_Item_CommodityUnion_XMLTree_Type
+// 
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Item_CommodityUnion_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (const RPG_Item_CommodityUnion_XMLTree_Type& v,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type& RPG_Item_CommodityUnion_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Item_CommodityUnion_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
 // RPG_Item_Money_XMLTree_Type
 // 
 
@@ -578,31 +758,83 @@ prerequisites (::std::auto_ptr< prerequisites_type > x)
 }
 
 
+// RPG_Item_CommodityPropertiesBase_XMLTree_Type
+// 
+
+const RPG_Item_CommodityPropertiesBase_XMLTree_Type::type_type& RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+type () const
+{
+  return this->type_.get ();
+}
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::type_type& RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+type ()
+{
+  return this->type_.get ();
+}
+
+void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+type (const type_type& x)
+{
+  this->type_.set (x);
+}
+
+void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+type (::std::auto_ptr< type_type > x)
+{
+  this->type_.set (x);
+}
+
+const RPG_Item_CommodityPropertiesBase_XMLTree_Type::subtype_type& RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+subtype () const
+{
+  return this->subtype_.get ();
+}
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::subtype_type& RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+subtype ()
+{
+  return this->subtype_.get ();
+}
+
+void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+subtype (const subtype_type& x)
+{
+  this->subtype_.set (x);
+}
+
+void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+subtype (::std::auto_ptr< subtype_type > x)
+{
+  this->subtype_.set (x);
+}
+
+
 // RPG_Item_WeaponPropertiesBase_XMLTree_Type
 // 
 
-const RPG_Item_WeaponPropertiesBase_XMLTree_Type::weaponType_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
-weaponType () const
+const RPG_Item_WeaponPropertiesBase_XMLTree_Type::type_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+type () const
 {
-  return this->weaponType_.get ();
+  return this->type_.get ();
 }
 
-RPG_Item_WeaponPropertiesBase_XMLTree_Type::weaponType_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
-weaponType ()
+RPG_Item_WeaponPropertiesBase_XMLTree_Type::type_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+type ()
 {
-  return this->weaponType_.get ();
-}
-
-void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
-weaponType (const weaponType_type& x)
-{
-  this->weaponType_.set (x);
+  return this->type_.get ();
 }
 
 void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
-weaponType (::std::auto_ptr< weaponType_type > x)
+type (const type_type& x)
 {
-  this->weaponType_.set (x);
+  this->type_.set (x);
+}
+
+void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+type (::std::auto_ptr< type_type > x)
+{
+  this->type_.set (x);
 }
 
 const RPG_Item_WeaponPropertiesBase_XMLTree_Type::category_type& RPG_Item_WeaponPropertiesBase_XMLTree_Type::
@@ -937,28 +1169,28 @@ operator= (value v)
 // RPG_Item_ArmorPropertiesBase_XMLTree_Type
 // 
 
-const RPG_Item_ArmorPropertiesBase_XMLTree_Type::armorType_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorType () const
+const RPG_Item_ArmorPropertiesBase_XMLTree_Type::type_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+type () const
 {
-  return this->armorType_.get ();
+  return this->type_.get ();
 }
 
-RPG_Item_ArmorPropertiesBase_XMLTree_Type::armorType_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorType ()
+RPG_Item_ArmorPropertiesBase_XMLTree_Type::type_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+type ()
 {
-  return this->armorType_.get ();
-}
-
-void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorType (const armorType_type& x)
-{
-  this->armorType_.set (x);
+  return this->type_.get ();
 }
 
 void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
-armorType (::std::auto_ptr< armorType_type > x)
+type (const type_type& x)
 {
-  this->armorType_.set (x);
+  this->type_.set (x);
+}
+
+void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+type (::std::auto_ptr< type_type > x)
+{
+  this->type_.set (x);
 }
 
 const RPG_Item_ArmorPropertiesBase_XMLTree_Type::category_type& RPG_Item_ArmorPropertiesBase_XMLTree_Type::
@@ -1131,36 +1363,6 @@ type (::std::auto_ptr< type_type > x)
   this->type_.set (x);
 }
 
-const RPG_Item_XML_XMLTree_Type::weapon_optional& RPG_Item_XML_XMLTree_Type::
-weapon () const
-{
-  return this->weapon_;
-}
-
-RPG_Item_XML_XMLTree_Type::weapon_optional& RPG_Item_XML_XMLTree_Type::
-weapon ()
-{
-  return this->weapon_;
-}
-
-void RPG_Item_XML_XMLTree_Type::
-weapon (const weapon_type& x)
-{
-  this->weapon_.set (x);
-}
-
-void RPG_Item_XML_XMLTree_Type::
-weapon (const weapon_optional& x)
-{
-  this->weapon_ = x;
-}
-
-void RPG_Item_XML_XMLTree_Type::
-weapon (::std::auto_ptr< weapon_type > x)
-{
-  this->weapon_.set (x);
-}
-
 const RPG_Item_XML_XMLTree_Type::armor_optional& RPG_Item_XML_XMLTree_Type::
 armor () const
 {
@@ -1191,6 +1393,66 @@ armor (::std::auto_ptr< armor_type > x)
   this->armor_.set (x);
 }
 
+const RPG_Item_XML_XMLTree_Type::commodity_optional& RPG_Item_XML_XMLTree_Type::
+commodity () const
+{
+  return this->commodity_;
+}
+
+RPG_Item_XML_XMLTree_Type::commodity_optional& RPG_Item_XML_XMLTree_Type::
+commodity ()
+{
+  return this->commodity_;
+}
+
+void RPG_Item_XML_XMLTree_Type::
+commodity (const commodity_type& x)
+{
+  this->commodity_.set (x);
+}
+
+void RPG_Item_XML_XMLTree_Type::
+commodity (const commodity_optional& x)
+{
+  this->commodity_ = x;
+}
+
+void RPG_Item_XML_XMLTree_Type::
+commodity (::std::auto_ptr< commodity_type > x)
+{
+  this->commodity_.set (x);
+}
+
+const RPG_Item_XML_XMLTree_Type::weapon_optional& RPG_Item_XML_XMLTree_Type::
+weapon () const
+{
+  return this->weapon_;
+}
+
+RPG_Item_XML_XMLTree_Type::weapon_optional& RPG_Item_XML_XMLTree_Type::
+weapon ()
+{
+  return this->weapon_;
+}
+
+void RPG_Item_XML_XMLTree_Type::
+weapon (const weapon_type& x)
+{
+  this->weapon_.set (x);
+}
+
+void RPG_Item_XML_XMLTree_Type::
+weapon (const weapon_optional& x)
+{
+  this->weapon_ = x;
+}
+
+void RPG_Item_XML_XMLTree_Type::
+weapon (::std::auto_ptr< weapon_type > x)
+{
+  this->weapon_.set (x);
+}
+
 
 // RPG_Item_InventoryXML_XMLTree_Type
 // 
@@ -1217,24 +1479,6 @@ item (const item_sequence& s)
 // RPG_Item_DictionaryXML_XMLTree_Type
 // 
 
-const RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
-weapon () const
-{
-  return this->weapon_;
-}
-
-RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
-weapon ()
-{
-  return this->weapon_;
-}
-
-void RPG_Item_DictionaryXML_XMLTree_Type::
-weapon (const weapon_sequence& s)
-{
-  this->weapon_ = s;
-}
-
 const RPG_Item_DictionaryXML_XMLTree_Type::armor_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
 armor () const
 {
@@ -1251,6 +1495,42 @@ void RPG_Item_DictionaryXML_XMLTree_Type::
 armor (const armor_sequence& s)
 {
   this->armor_ = s;
+}
+
+const RPG_Item_DictionaryXML_XMLTree_Type::commodity_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
+commodity () const
+{
+  return this->commodity_;
+}
+
+RPG_Item_DictionaryXML_XMLTree_Type::commodity_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
+commodity ()
+{
+  return this->commodity_;
+}
+
+void RPG_Item_DictionaryXML_XMLTree_Type::
+commodity (const commodity_sequence& s)
+{
+  this->commodity_ = s;
+}
+
+const RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
+weapon () const
+{
+  return this->weapon_;
+}
+
+RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& RPG_Item_DictionaryXML_XMLTree_Type::
+weapon ()
+{
+  return this->weapon_;
+}
+
+void RPG_Item_DictionaryXML_XMLTree_Type::
+weapon (const weapon_sequence& s)
+{
+  this->weapon_ = s;
 }
 
 
@@ -1316,7 +1596,7 @@ const char* const RPG_Item_Type_XMLTree_Type::
 _xsd_RPG_Item_Type_XMLTree_Type_literals_[5] =
 {
   "ITEM_ARMOR",
-  "ITEM_GOODS",
+  "ITEM_COMMODITY",
   "ITEM_OTHER",
   "ITEM_VALUABLE",
   "ITEM_WEAPON"
@@ -1326,10 +1606,314 @@ const RPG_Item_Type_XMLTree_Type::value RPG_Item_Type_XMLTree_Type::
 _xsd_RPG_Item_Type_XMLTree_Type_indexes_[5] =
 {
   ::RPG_Item_Type_XMLTree_Type::ITEM_ARMOR,
-  ::RPG_Item_Type_XMLTree_Type::ITEM_GOODS,
+  ::RPG_Item_Type_XMLTree_Type::ITEM_COMMODITY,
   ::RPG_Item_Type_XMLTree_Type::ITEM_OTHER,
   ::RPG_Item_Type_XMLTree_Type::ITEM_VALUABLE,
   ::RPG_Item_Type_XMLTree_Type::ITEM_WEAPON
+};
+
+// RPG_Item_CommodityType_XMLTree_Type
+//
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Item_CommodityType_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Item_CommodityType_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (const ::std::string& s,
+                                     const ::xercesc::DOMElement* e,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Item_CommodityType_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityType_XMLTree_Type* RPG_Item_CommodityType_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Item_CommodityType_XMLTree_Type (*this, f, c);
+}
+
+RPG_Item_CommodityType_XMLTree_Type::value RPG_Item_CommodityType_XMLTree_Type::
+_xsd_RPG_Item_CommodityType_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Item_CommodityType_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Item_CommodityType_XMLTree_Type_indexes_,
+                    _xsd_RPG_Item_CommodityType_XMLTree_Type_indexes_ + 4,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Item_CommodityType_XMLTree_Type_indexes_ + 4 || _xsd_RPG_Item_CommodityType_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Item_CommodityType_XMLTree_Type::
+_xsd_RPG_Item_CommodityType_XMLTree_Type_literals_[4] =
+{
+  "COMMODITY_BEVERAGE",
+  "COMMODITY_FOOD",
+  "COMMODITY_LIGHT",
+  "COMMODITY_OTHER"
+};
+
+const RPG_Item_CommodityType_XMLTree_Type::value RPG_Item_CommodityType_XMLTree_Type::
+_xsd_RPG_Item_CommodityType_XMLTree_Type_indexes_[4] =
+{
+  ::RPG_Item_CommodityType_XMLTree_Type::COMMODITY_BEVERAGE,
+  ::RPG_Item_CommodityType_XMLTree_Type::COMMODITY_FOOD,
+  ::RPG_Item_CommodityType_XMLTree_Type::COMMODITY_LIGHT,
+  ::RPG_Item_CommodityType_XMLTree_Type::COMMODITY_OTHER
+};
+
+// RPG_Item_CommodityBeverage_XMLTree_Type
+//
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (const ::std::string& s,
+                                         const ::xercesc::DOMElement* e,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type* RPG_Item_CommodityBeverage_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Item_CommodityBeverage_XMLTree_Type (*this, f, c);
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::value RPG_Item_CommodityBeverage_XMLTree_Type::
+_xsd_RPG_Item_CommodityBeverage_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Item_CommodityBeverage_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_indexes_,
+                    _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_indexes_ + 3,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_indexes_ + 3 || _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Item_CommodityBeverage_XMLTree_Type::
+_xsd_RPG_Item_CommodityBeverage_XMLTree_Type_literals_[3] =
+{
+  "COMMODITY_BEVERAGE_BEER",
+  "COMMODITY_BEVERAGE_WATER",
+  "COMMODITY_BEVERAGE_WINE"
+};
+
+const RPG_Item_CommodityBeverage_XMLTree_Type::value RPG_Item_CommodityBeverage_XMLTree_Type::
+_xsd_RPG_Item_CommodityBeverage_XMLTree_Type_indexes_[3] =
+{
+  ::RPG_Item_CommodityBeverage_XMLTree_Type::COMMODITY_BEVERAGE_BEER,
+  ::RPG_Item_CommodityBeverage_XMLTree_Type::COMMODITY_BEVERAGE_WATER,
+  ::RPG_Item_CommodityBeverage_XMLTree_Type::COMMODITY_BEVERAGE_WINE
+};
+
+// RPG_Item_CommodityLight_XMLTree_Type
+//
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Item_CommodityLight_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Item_CommodityLight_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (const ::std::string& s,
+                                      const ::xercesc::DOMElement* e,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Item_CommodityLight_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityLight_XMLTree_Type* RPG_Item_CommodityLight_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Item_CommodityLight_XMLTree_Type (*this, f, c);
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::value RPG_Item_CommodityLight_XMLTree_Type::
+_xsd_RPG_Item_CommodityLight_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Item_CommodityLight_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Item_CommodityLight_XMLTree_Type_indexes_,
+                    _xsd_RPG_Item_CommodityLight_XMLTree_Type_indexes_ + 5,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Item_CommodityLight_XMLTree_Type_indexes_ + 5 || _xsd_RPG_Item_CommodityLight_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Item_CommodityLight_XMLTree_Type::
+_xsd_RPG_Item_CommodityLight_XMLTree_Type_literals_[5] =
+{
+  "COMMODITY_LIGHT_CANDLE",
+  "COMMODITY_LIGHT_LAMP",
+  "COMMODITY_LIGHT_LANTERN_BULLSEYE",
+  "COMMODITY_LIGHT_LANTERN_HOODED",
+  "COMMODITY_LIGHT_TORCH"
+};
+
+const RPG_Item_CommodityLight_XMLTree_Type::value RPG_Item_CommodityLight_XMLTree_Type::
+_xsd_RPG_Item_CommodityLight_XMLTree_Type_indexes_[5] =
+{
+  ::RPG_Item_CommodityLight_XMLTree_Type::COMMODITY_LIGHT_CANDLE,
+  ::RPG_Item_CommodityLight_XMLTree_Type::COMMODITY_LIGHT_LAMP,
+  ::RPG_Item_CommodityLight_XMLTree_Type::COMMODITY_LIGHT_LANTERN_BULLSEYE,
+  ::RPG_Item_CommodityLight_XMLTree_Type::COMMODITY_LIGHT_LANTERN_HOODED,
+  ::RPG_Item_CommodityLight_XMLTree_Type::COMMODITY_LIGHT_TORCH
+};
+
+// RPG_Item_CommodityUnion_XMLTree_Type
+//
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Item_CommodityUnion_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Item_CommodityUnion_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (const ::std::string& s,
+                                      const ::xercesc::DOMElement* e,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Item_CommodityUnion_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type* RPG_Item_CommodityUnion_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Item_CommodityUnion_XMLTree_Type (*this, f, c);
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::value RPG_Item_CommodityUnion_XMLTree_Type::
+_xsd_RPG_Item_CommodityUnion_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Item_CommodityUnion_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Item_CommodityUnion_XMLTree_Type_indexes_,
+                    _xsd_RPG_Item_CommodityUnion_XMLTree_Type_indexes_ + 8,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Item_CommodityUnion_XMLTree_Type_indexes_ + 8 || _xsd_RPG_Item_CommodityUnion_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Item_CommodityUnion_XMLTree_Type::
+_xsd_RPG_Item_CommodityUnion_XMLTree_Type_literals_[8] =
+{
+  "COMMODITY_BEVERAGE_BEER",
+  "COMMODITY_BEVERAGE_WATER",
+  "COMMODITY_BEVERAGE_WINE",
+  "COMMODITY_LIGHT_CANDLE",
+  "COMMODITY_LIGHT_LAMP",
+  "COMMODITY_LIGHT_LANTERN_BULLSEYE",
+  "COMMODITY_LIGHT_LANTERN_HOODED",
+  "COMMODITY_LIGHT_TORCH"
+};
+
+const RPG_Item_CommodityUnion_XMLTree_Type::value RPG_Item_CommodityUnion_XMLTree_Type::
+_xsd_RPG_Item_CommodityUnion_XMLTree_Type_indexes_[8] =
+{
+  ::RPG_Item_CommodityUnion_XMLTree_Type::COMMODITY_BEVERAGE_BEER,
+  ::RPG_Item_CommodityUnion_XMLTree_Type::COMMODITY_BEVERAGE_WATER,
+  ::RPG_Item_CommodityUnion_XMLTree_Type::COMMODITY_BEVERAGE_WINE,
+  ::RPG_Item_CommodityUnion_XMLTree_Type::COMMODITY_LIGHT_CANDLE,
+  ::RPG_Item_CommodityUnion_XMLTree_Type::COMMODITY_LIGHT_LAMP,
+  ::RPG_Item_CommodityUnion_XMLTree_Type::COMMODITY_LIGHT_LANTERN_BULLSEYE,
+  ::RPG_Item_CommodityUnion_XMLTree_Type::COMMODITY_LIGHT_LANTERN_HOODED,
+  ::RPG_Item_CommodityUnion_XMLTree_Type::COMMODITY_LIGHT_TORCH
 };
 
 // RPG_Item_Money_XMLTree_Type
@@ -2452,20 +3036,164 @@ operator!= (const RPG_Item_PropertiesBase_XMLTree_Type& x, const RPG_Item_Proper
   return !(x == y);
 }
 
+// RPG_Item_CommodityPropertiesBase_XMLTree_Type
+//
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+RPG_Item_CommodityPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
+                                               const baseStorePrice_type& baseStorePrice,
+                                               const type_type& type,
+                                               const subtype_type& subtype)
+: ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
+                                          baseStorePrice),
+  type_ (type, ::xml_schema::flags (), this),
+  subtype_ (subtype, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+RPG_Item_CommodityPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
+                                               ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
+                                               const type_type& type,
+                                               const subtype_type& subtype)
+: ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
+                                          baseStorePrice),
+  type_ (type, ::xml_schema::flags (), this),
+  subtype_ (subtype, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+RPG_Item_CommodityPropertiesBase_XMLTree_Type (const RPG_Item_CommodityPropertiesBase_XMLTree_Type& x,
+                                               ::xml_schema::flags f,
+                                               ::xml_schema::container* c)
+: ::RPG_Item_PropertiesBase_XMLTree_Type (x, f, c),
+  type_ (x.type_, f, this),
+  subtype_ (x.subtype_, f, this)
+{
+}
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+RPG_Item_CommodityPropertiesBase_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                               ::xml_schema::flags f,
+                                               ::xml_schema::container* c)
+: ::RPG_Item_PropertiesBase_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
+  type_ (f, this),
+  subtype_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  this->::RPG_Item_PropertiesBase_XMLTree_Type::parse (p, f);
+
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // type
+    //
+    if (n.name () == "type" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< type_type > r (
+        type_traits::create (i, f, this));
+
+      if (!type_.present ())
+      {
+        this->type_.set (r);
+        continue;
+      }
+    }
+
+    // subtype
+    //
+    if (n.name () == "subtype" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< subtype_type > r (
+        subtype_traits::create (i, f, this));
+
+      if (!subtype_.present ())
+      {
+        this->subtype_.set (r);
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!type_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "type",
+      "urn:rpg");
+  }
+
+  if (!subtype_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "subtype",
+      "urn:rpg");
+  }
+}
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type* RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Item_CommodityPropertiesBase_XMLTree_Type (*this, f, c);
+}
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+~RPG_Item_CommodityPropertiesBase_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Item_CommodityPropertiesBase_XMLTree_Type& x, const RPG_Item_CommodityPropertiesBase_XMLTree_Type& y)
+{
+  if (!(static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x) ==
+        static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (y)))
+    return false;
+
+  if (!(x.type () == y.type ()))
+    return false;
+
+  if (!(x.subtype () == y.subtype ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Item_CommodityPropertiesBase_XMLTree_Type& x, const RPG_Item_CommodityPropertiesBase_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
 // RPG_Item_WeaponPropertiesBase_XMLTree_Type
 //
 
 RPG_Item_WeaponPropertiesBase_XMLTree_Type::
 RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                             const baseStorePrice_type& baseStorePrice,
-                                            const weaponType_type& weaponType,
+                                            const type_type& type,
                                             const category_type& category,
                                             const weaponClass_type& weaponClass,
                                             const baseDamage_type& baseDamage,
                                             const criticalHit_type& criticalHit)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
-  weaponType_ (weaponType, ::xml_schema::flags (), this),
+  type_ (type, ::xml_schema::flags (), this),
   category_ (category, ::xml_schema::flags (), this),
   weaponClass_ (weaponClass, ::xml_schema::flags (), this),
   baseDamage_ (baseDamage, ::xml_schema::flags (), this),
@@ -2481,14 +3209,14 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
 RPG_Item_WeaponPropertiesBase_XMLTree_Type::
 RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                             ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
-                                            const weaponType_type& weaponType,
+                                            const type_type& type,
                                             const category_type& category,
                                             const weaponClass_type& weaponClass,
                                             ::std::auto_ptr< baseDamage_type >& baseDamage,
                                             ::std::auto_ptr< criticalHit_type >& criticalHit)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
-  weaponType_ (weaponType, ::xml_schema::flags (), this),
+  type_ (type, ::xml_schema::flags (), this),
   category_ (category, ::xml_schema::flags (), this),
   weaponClass_ (weaponClass, ::xml_schema::flags (), this),
   baseDamage_ (baseDamage, ::xml_schema::flags (), this),
@@ -2506,7 +3234,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const RPG_Item_WeaponPropertiesBase_
                                             ::xml_schema::flags f,
                                             ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (x, f, c),
-  weaponType_ (x.weaponType_, f, this),
+  type_ (x.type_, f, this),
   category_ (x.category_, f, this),
   weaponClass_ (x.weaponClass_, f, this),
   baseDamage_ (x.baseDamage_, f, this),
@@ -2524,7 +3252,7 @@ RPG_Item_WeaponPropertiesBase_XMLTree_Type (const ::xercesc::DOMElement& e,
                                             ::xml_schema::flags f,
                                             ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
-  weaponType_ (f, this),
+  type_ (f, this),
   category_ (f, this),
   weaponClass_ (f, this),
   baseDamage_ (f, this),
@@ -2554,16 +3282,16 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
-    // weaponType
+    // type
     //
-    if (n.name () == "weaponType" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "type" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< weaponType_type > r (
-        weaponType_traits::create (i, f, this));
+      ::std::auto_ptr< type_type > r (
+        type_traits::create (i, f, this));
 
-      if (!weaponType_.present ())
+      if (!type_.present ())
       {
-        this->weaponType_.set (r);
+        this->type_.set (r);
         continue;
       }
     }
@@ -2649,10 +3377,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
-  if (!weaponType_.present ())
+  if (!type_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "weaponType",
+      "type",
       "urn:rpg");
   }
 
@@ -2744,7 +3472,7 @@ operator== (const RPG_Item_WeaponPropertiesBase_XMLTree_Type& x, const RPG_Item_
         static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (y)))
     return false;
 
-  if (!(x.weaponType () == y.weaponType ()))
+  if (!(x.type () == y.type ()))
     return false;
 
   if (!(x.category () == y.category ()))
@@ -2789,14 +3517,14 @@ operator!= (const RPG_Item_WeaponPropertiesBase_XMLTree_Type& x, const RPG_Item_
 RPG_Item_WeaponPropertiesXML_XMLTree_Type::
 RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                            const baseStorePrice_type& baseStorePrice,
-                                           const weaponType_type& weaponType,
+                                           const type_type& type,
                                            const category_type& category,
                                            const weaponClass_type& weaponClass,
                                            const baseDamage_type& baseDamage,
                                            const criticalHit_type& criticalHit)
 : ::RPG_Item_WeaponPropertiesBase_XMLTree_Type (baseWeight,
                                                 baseStorePrice,
-                                                weaponType,
+                                                type,
                                                 category,
                                                 weaponClass,
                                                 baseDamage,
@@ -2808,14 +3536,14 @@ RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
 RPG_Item_WeaponPropertiesXML_XMLTree_Type::
 RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                            ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
-                                           const weaponType_type& weaponType,
+                                           const type_type& type,
                                            const category_type& category,
                                            const weaponClass_type& weaponClass,
                                            ::std::auto_ptr< baseDamage_type >& baseDamage,
                                            ::std::auto_ptr< criticalHit_type >& criticalHit)
 : ::RPG_Item_WeaponPropertiesBase_XMLTree_Type (baseWeight,
                                                 baseStorePrice,
-                                                weaponType,
+                                                type,
                                                 category,
                                                 weaponClass,
                                                 baseDamage,
@@ -3089,7 +3817,7 @@ _xsd_RPG_Item_ArmorType_XMLTree_Type_indexes_[19] =
 RPG_Item_ArmorPropertiesBase_XMLTree_Type::
 RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                            const baseStorePrice_type& baseStorePrice,
-                                           const armorType_type& armorType,
+                                           const type_type& type,
                                            const category_type& category,
                                            const baseBonus_type& baseBonus,
                                            const maxDexterityBonus_type& maxDexterityBonus,
@@ -3098,7 +3826,7 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                            const baseSpeed_type& baseSpeed)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
-  armorType_ (armorType, ::xml_schema::flags (), this),
+  type_ (type, ::xml_schema::flags (), this),
   category_ (category, ::xml_schema::flags (), this),
   baseBonus_ (baseBonus, ::xml_schema::flags (), this),
   maxDexterityBonus_ (maxDexterityBonus, ::xml_schema::flags (), this),
@@ -3111,7 +3839,7 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
 RPG_Item_ArmorPropertiesBase_XMLTree_Type::
 RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                            ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
-                                           const armorType_type& armorType,
+                                           const type_type& type,
                                            const category_type& category,
                                            const baseBonus_type& baseBonus,
                                            const maxDexterityBonus_type& maxDexterityBonus,
@@ -3120,7 +3848,7 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                            const baseSpeed_type& baseSpeed)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
-  armorType_ (armorType, ::xml_schema::flags (), this),
+  type_ (type, ::xml_schema::flags (), this),
   category_ (category, ::xml_schema::flags (), this),
   baseBonus_ (baseBonus, ::xml_schema::flags (), this),
   maxDexterityBonus_ (maxDexterityBonus, ::xml_schema::flags (), this),
@@ -3135,7 +3863,7 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (const RPG_Item_ArmorPropertiesBase_XM
                                            ::xml_schema::flags f,
                                            ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (x, f, c),
-  armorType_ (x.armorType_, f, this),
+  type_ (x.type_, f, this),
   category_ (x.category_, f, this),
   baseBonus_ (x.baseBonus_, f, this),
   maxDexterityBonus_ (x.maxDexterityBonus_, f, this),
@@ -3150,7 +3878,7 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (const ::xercesc::DOMElement& e,
                                            ::xml_schema::flags f,
                                            ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
-  armorType_ (f, this),
+  type_ (f, this),
   category_ (f, this),
   baseBonus_ (f, this),
   maxDexterityBonus_ (f, this),
@@ -3177,16 +3905,16 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
-    // armorType
+    // type
     //
-    if (n.name () == "armorType" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "type" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< armorType_type > r (
-        armorType_traits::create (i, f, this));
+      ::std::auto_ptr< type_type > r (
+        type_traits::create (i, f, this));
 
-      if (!armorType_.present ())
+      if (!type_.present ())
       {
-        this->armorType_.set (r);
+        this->type_.set (r);
         continue;
       }
     }
@@ -3263,10 +3991,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
-  if (!armorType_.present ())
+  if (!type_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "armorType",
+      "type",
       "urn:rpg");
   }
 
@@ -3332,7 +4060,7 @@ operator== (const RPG_Item_ArmorPropertiesBase_XMLTree_Type& x, const RPG_Item_A
         static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (y)))
     return false;
 
-  if (!(x.armorType () == y.armorType ()))
+  if (!(x.type () == y.type ()))
     return false;
 
   if (!(x.category () == y.category ()))
@@ -3368,7 +4096,7 @@ operator!= (const RPG_Item_ArmorPropertiesBase_XMLTree_Type& x, const RPG_Item_A
 RPG_Item_ArmorPropertiesXML_XMLTree_Type::
 RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                           const baseStorePrice_type& baseStorePrice,
-                                          const armorType_type& armorType,
+                                          const type_type& type,
                                           const category_type& category,
                                           const baseBonus_type& baseBonus,
                                           const maxDexterityBonus_type& maxDexterityBonus,
@@ -3377,7 +4105,7 @@ RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                           const baseSpeed_type& baseSpeed)
 : ::RPG_Item_ArmorPropertiesBase_XMLTree_Type (baseWeight,
                                                baseStorePrice,
-                                               armorType,
+                                               type,
                                                category,
                                                baseBonus,
                                                maxDexterityBonus,
@@ -3391,7 +4119,7 @@ RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
 RPG_Item_ArmorPropertiesXML_XMLTree_Type::
 RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                           ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
-                                          const armorType_type& armorType,
+                                          const type_type& type,
                                           const category_type& category,
                                           const baseBonus_type& baseBonus,
                                           const maxDexterityBonus_type& maxDexterityBonus,
@@ -3400,7 +4128,7 @@ RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type& baseWeight,
                                           const baseSpeed_type& baseSpeed)
 : ::RPG_Item_ArmorPropertiesBase_XMLTree_Type (baseWeight,
                                                baseStorePrice,
-                                               armorType,
+                                               type,
                                                category,
                                                baseBonus,
                                                maxDexterityBonus,
@@ -3499,8 +4227,9 @@ RPG_Item_XML_XMLTree_Type::
 RPG_Item_XML_XMLTree_Type (const type_type& type)
 : ::xml_schema::type (),
   type_ (type, ::xml_schema::flags (), this),
-  weapon_ (::xml_schema::flags (), this),
-  armor_ (::xml_schema::flags (), this)
+  armor_ (::xml_schema::flags (), this),
+  commodity_ (::xml_schema::flags (), this),
+  weapon_ (::xml_schema::flags (), this)
 {
 }
 
@@ -3510,8 +4239,9 @@ RPG_Item_XML_XMLTree_Type (const RPG_Item_XML_XMLTree_Type& x,
                            ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   type_ (x.type_, f, this),
-  weapon_ (x.weapon_, f, this),
-  armor_ (x.armor_, f, this)
+  armor_ (x.armor_, f, this),
+  commodity_ (x.commodity_, f, this),
+  weapon_ (x.weapon_, f, this)
 {
 }
 
@@ -3521,8 +4251,9 @@ RPG_Item_XML_XMLTree_Type (const ::xercesc::DOMElement& e,
                            ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   type_ (f, this),
-  weapon_ (f, this),
-  armor_ (f, this)
+  armor_ (f, this),
+  commodity_ (f, this),
+  weapon_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -3555,20 +4286,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // weapon
-    //
-    if (n.name () == "weapon" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< weapon_type > r (
-        weapon_traits::create (i, f, this));
-
-      if (!this->weapon_)
-      {
-        this->weapon_.set (r);
-        continue;
-      }
-    }
-
     // armor
     //
     if (n.name () == "armor" && n.namespace_ () == "urn:rpg")
@@ -3579,6 +4296,34 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!this->armor_)
       {
         this->armor_.set (r);
+        continue;
+      }
+    }
+
+    // commodity
+    //
+    if (n.name () == "commodity" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< commodity_type > r (
+        commodity_traits::create (i, f, this));
+
+      if (!this->commodity_)
+      {
+        this->commodity_.set (r);
+        continue;
+      }
+    }
+
+    // weapon
+    //
+    if (n.name () == "weapon" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< weapon_type > r (
+        weapon_traits::create (i, f, this));
+
+      if (!this->weapon_)
+      {
+        this->weapon_.set (r);
         continue;
       }
     }
@@ -3612,10 +4357,13 @@ operator== (const RPG_Item_XML_XMLTree_Type& x, const RPG_Item_XML_XMLTree_Type&
   if (!(x.type () == y.type ()))
     return false;
 
-  if (!(x.weapon () == y.weapon ()))
+  if (!(x.armor () == y.armor ()))
     return false;
 
-  if (!(x.armor () == y.armor ()))
+  if (!(x.commodity () == y.commodity ()))
+    return false;
+
+  if (!(x.weapon () == y.weapon ()))
     return false;
 
   return true;
@@ -3718,8 +4466,9 @@ operator!= (const RPG_Item_InventoryXML_XMLTree_Type& x, const RPG_Item_Inventor
 RPG_Item_DictionaryXML_XMLTree_Type::
 RPG_Item_DictionaryXML_XMLTree_Type ()
 : ::xml_schema::type (),
-  weapon_ (::xml_schema::flags (), this),
-  armor_ (::xml_schema::flags (), this)
+  armor_ (::xml_schema::flags (), this),
+  commodity_ (::xml_schema::flags (), this),
+  weapon_ (::xml_schema::flags (), this)
 {
 }
 
@@ -3728,8 +4477,9 @@ RPG_Item_DictionaryXML_XMLTree_Type (const RPG_Item_DictionaryXML_XMLTree_Type& 
                                      ::xml_schema::flags f,
                                      ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  weapon_ (x.weapon_, f, this),
-  armor_ (x.armor_, f, this)
+  armor_ (x.armor_, f, this),
+  commodity_ (x.commodity_, f, this),
+  weapon_ (x.weapon_, f, this)
 {
 }
 
@@ -3738,8 +4488,9 @@ RPG_Item_DictionaryXML_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f,
                                      ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  weapon_ (f, this),
-  armor_ (f, this)
+  armor_ (f, this),
+  commodity_ (f, this),
+  weapon_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -3758,17 +4509,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
-    // weapon
-    //
-    if (n.name () == "weapon" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< weapon_type > r (
-        weapon_traits::create (i, f, this));
-
-      this->weapon_.push_back (r);
-      continue;
-    }
-
     // armor
     //
     if (n.name () == "armor" && n.namespace_ () == "urn:rpg")
@@ -3777,6 +4517,28 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
         armor_traits::create (i, f, this));
 
       this->armor_.push_back (r);
+      continue;
+    }
+
+    // commodity
+    //
+    if (n.name () == "commodity" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< commodity_type > r (
+        commodity_traits::create (i, f, this));
+
+      this->commodity_.push_back (r);
+      continue;
+    }
+
+    // weapon
+    //
+    if (n.name () == "weapon" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< weapon_type > r (
+        weapon_traits::create (i, f, this));
+
+      this->weapon_.push_back (r);
       continue;
     }
 
@@ -3799,10 +4561,13 @@ RPG_Item_DictionaryXML_XMLTree_Type::
 bool
 operator== (const RPG_Item_DictionaryXML_XMLTree_Type& x, const RPG_Item_DictionaryXML_XMLTree_Type& y)
 {
-  if (!(x.weapon () == y.weapon ()))
+  if (!(x.armor () == y.armor ()))
     return false;
 
-  if (!(x.armor () == y.armor ()))
+  if (!(x.commodity () == y.commodity ()))
+    return false;
+
+  if (!(x.weapon () == y.weapon ()))
     return false;
 
   return true;
@@ -3824,6 +4589,54 @@ operator<< (::std::ostream& o, RPG_Item_Type_XMLTree_Type::value i)
 
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Item_Type_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, RPG_Item_CommodityType_XMLTree_Type::value i)
+{
+  return o << RPG_Item_CommodityType_XMLTree_Type::_xsd_RPG_Item_CommodityType_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Item_CommodityType_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, RPG_Item_CommodityBeverage_XMLTree_Type::value i)
+{
+  return o << RPG_Item_CommodityBeverage_XMLTree_Type::_xsd_RPG_Item_CommodityBeverage_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Item_CommodityBeverage_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, RPG_Item_CommodityLight_XMLTree_Type::value i)
+{
+  return o << RPG_Item_CommodityLight_XMLTree_Type::_xsd_RPG_Item_CommodityLight_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Item_CommodityLight_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, RPG_Item_CommodityUnion_XMLTree_Type::value i)
+{
+  return o << RPG_Item_CommodityUnion_XMLTree_Type::_xsd_RPG_Item_CommodityUnion_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Item_CommodityUnion_XMLTree_Type& i)
 {
   return o << static_cast< const ::xml_schema::string& > (i);
 }
@@ -3959,11 +4772,21 @@ operator<< (::std::ostream& o, const RPG_Item_PropertiesBase_XMLTree_Type& i)
 }
 
 ::std::ostream&
+operator<< (::std::ostream& o, const RPG_Item_CommodityPropertiesBase_XMLTree_Type& i)
+{
+  o << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
+
+  o << ::std::endl << "type: " << i.type ();
+  o << ::std::endl << "subtype: " << i.subtype ();
+  return o;
+}
+
+::std::ostream&
 operator<< (::std::ostream& o, const RPG_Item_WeaponPropertiesBase_XMLTree_Type& i)
 {
   o << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
 
-  o << ::std::endl << "weaponType: " << i.weaponType ();
+  o << ::std::endl << "type: " << i.type ();
   o << ::std::endl << "category: " << i.category ();
   o << ::std::endl << "weaponClass: " << i.weaponClass ();
   o << ::std::endl << "baseDamage: " << i.baseDamage ();
@@ -4028,7 +4851,7 @@ operator<< (::std::ostream& o, const RPG_Item_ArmorPropertiesBase_XMLTree_Type& 
 {
   o << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
 
-  o << ::std::endl << "armorType: " << i.armorType ();
+  o << ::std::endl << "type: " << i.type ();
   o << ::std::endl << "category: " << i.category ();
   o << ::std::endl << "baseBonus: " << i.baseBonus ();
   o << ::std::endl << "maxDexterityBonus: " << i.maxDexterityBonus ();
@@ -4055,14 +4878,19 @@ operator<< (::std::ostream& o, const RPG_Item_ArmorPropertiesXML_XMLTree_Type& i
 operator<< (::std::ostream& o, const RPG_Item_XML_XMLTree_Type& i)
 {
   o << ::std::endl << "type: " << i.type ();
-  if (i.weapon ())
-  {
-    o << ::std::endl << "weapon: " << *i.weapon ();
-  }
-
   if (i.armor ())
   {
     o << ::std::endl << "armor: " << *i.armor ();
+  }
+
+  if (i.commodity ())
+  {
+    o << ::std::endl << "commodity: " << *i.commodity ();
+  }
+
+  if (i.weapon ())
+  {
+    o << ::std::endl << "weapon: " << *i.weapon ();
   }
 
   return o;
@@ -4084,18 +4912,25 @@ operator<< (::std::ostream& o, const RPG_Item_InventoryXML_XMLTree_Type& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Item_DictionaryXML_XMLTree_Type& i)
 {
-  for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
-       b (i.weapon ().begin ()), e (i.weapon ().end ());
-       b != e; ++b)
-  {
-    o << ::std::endl << "weapon: " << *b;
-  }
-
   for (RPG_Item_DictionaryXML_XMLTree_Type::armor_const_iterator
        b (i.armor ().begin ()), e (i.armor ().end ());
        b != e; ++b)
   {
     o << ::std::endl << "armor: " << *b;
+  }
+
+  for (RPG_Item_DictionaryXML_XMLTree_Type::commodity_const_iterator
+       b (i.commodity ().begin ()), e (i.commodity ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "commodity: " << *b;
+  }
+
+  for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
+       b (i.weapon ().begin ()), e (i.weapon ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "weapon: " << *b;
   }
 
   return o;
@@ -4124,6 +4959,82 @@ operator<< (::xercesc::DOMAttr& a, const RPG_Item_Type_XMLTree_Type& i)
 void
 operator<< (::xml_schema::list_stream& l,
             const RPG_Item_Type_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Item_CommodityType_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Item_CommodityType_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Item_CommodityType_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Item_CommodityBeverage_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Item_CommodityBeverage_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Item_CommodityBeverage_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Item_CommodityLight_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Item_CommodityLight_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Item_CommodityLight_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Item_CommodityUnion_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Item_CommodityUnion_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Item_CommodityUnion_XMLTree_Type& i)
 {
   l << static_cast< const ::xml_schema::string& > (i);
 }
@@ -4393,20 +5304,50 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_PropertiesBase_XMLTree_Type
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const RPG_Item_WeaponPropertiesBase_XMLTree_Type& i)
+operator<< (::xercesc::DOMElement& e, const RPG_Item_CommodityPropertiesBase_XMLTree_Type& i)
 {
   e << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
 
-  // weaponType
+  // type
   //
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "weaponType",
+        "type",
         "urn:rpg",
         e));
 
-    s << i.weaponType ();
+    s << i.type ();
+  }
+
+  // subtype
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "subtype",
+        "urn:rpg",
+        e));
+
+    s << i.subtype ();
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Item_WeaponPropertiesBase_XMLTree_Type& i)
+{
+  e << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
+
+  // type
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "type",
+        "urn:rpg",
+        e));
+
+    s << i.type ();
   }
 
   // category
@@ -4581,16 +5522,16 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_ArmorPropertiesBase_XMLTree
 {
   e << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
 
-  // armorType
+  // type
   //
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "armorType",
+        "type",
         "urn:rpg",
         e));
 
-    s << i.armorType ();
+    s << i.type ();
   }
 
   // category
@@ -4702,19 +5643,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_XML_XMLTree_Type& i)
     s << i.type ();
   }
 
-  // weapon
-  //
-  if (i.weapon ())
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "weapon",
-        "urn:rpg",
-        e));
-
-    s << *i.weapon ();
-  }
-
   // armor
   //
   if (i.armor ())
@@ -4726,6 +5654,32 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_XML_XMLTree_Type& i)
         e));
 
     s << *i.armor ();
+  }
+
+  // commodity
+  //
+  if (i.commodity ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "commodity",
+        "urn:rpg",
+        e));
+
+    s << *i.commodity ();
+  }
+
+  // weapon
+  //
+  if (i.weapon ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "weapon",
+        "urn:rpg",
+        e));
+
+    s << *i.weapon ();
   }
 }
 
@@ -4755,21 +5709,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_DictionaryXML_XMLTree_Type&
 {
   e << static_cast< const ::xml_schema::type& > (i);
 
-  // weapon
-  //
-  for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
-       b (i.weapon ().begin ()), n (i.weapon ().end ());
-       b != n; ++b)
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "weapon",
-        "urn:rpg",
-        e));
-
-    s << *b;
-  }
-
   // armor
   //
   for (RPG_Item_DictionaryXML_XMLTree_Type::armor_const_iterator
@@ -4784,6 +5723,36 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_DictionaryXML_XMLTree_Type&
 
     s << *b;
   }
+
+  // commodity
+  //
+  for (RPG_Item_DictionaryXML_XMLTree_Type::commodity_const_iterator
+       b (i.commodity ().begin ()), n (i.commodity ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "commodity",
+        "urn:rpg",
+        e));
+
+    s << *b;
+  }
+
+  // weapon
+  //
+  for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
+       b (i.weapon ().begin ()), n (i.weapon ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "weapon",
+        "urn:rpg",
+        e));
+
+    s << *b;
+  }
 }
 
 RPG_Item_Type_XMLTree_Type::
@@ -4793,6 +5762,42 @@ RPG_Item_Type_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
 : ::xml_schema::string (s, f, c)
 {
   _xsd_RPG_Item_Type_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_CommodityType_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_CommodityLight_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_CommodityUnion_XMLTree_Type_convert ();
 }
 
 RPG_Item_Money_XMLTree_Type::
@@ -5035,12 +6040,38 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 }
 
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+RPG_Item_CommodityPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                               ::xml_schema::flags f,
+                                               ::xml_schema::container* c)
+: ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
+  type_ (f, this),
+  subtype_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< subtype_type > r (new subtype_type (s, f, this));
+    this->subtype_.set (r);
+  }
+}
+
 RPG_Item_WeaponPropertiesBase_XMLTree_Type::
 RPG_Item_WeaponPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                             ::xml_schema::flags f,
                                             ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
-  weaponType_ (f, this),
+  type_ (f, this),
   category_ (f, this),
   weaponClass_ (f, this),
   baseDamage_ (f, this),
@@ -5059,8 +6090,8 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
   {
-    ::std::auto_ptr< weaponType_type > r (new weaponType_type (s, f, this));
-    this->weaponType_.set (r);
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
   }
 
   {
@@ -5178,7 +6209,7 @@ RPG_Item_ArmorPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >
                                            ::xml_schema::flags f,
                                            ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
-  armorType_ (f, this),
+  type_ (f, this),
   category_ (f, this),
   baseBonus_ (f, this),
   maxDexterityBonus_ (f, this),
@@ -5194,8 +6225,8 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
   {
-    ::std::auto_ptr< armorType_type > r (new armorType_type (s, f, this));
-    this->armorType_.set (r);
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
   }
 
   {
@@ -5266,8 +6297,9 @@ RPG_Item_XML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                            ::xml_schema::container* c)
 : ::xml_schema::type (s, f, c),
   type_ (f, this),
-  weapon_ (f, this),
-  armor_ (f, this)
+  armor_ (f, this),
+  commodity_ (f, this),
+  weapon_ (f, this)
 {
   this->parse (s, f);
 }
@@ -5286,8 +6318,8 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     s >> p;
     if (p)
     {
-      ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
-      this->weapon_.set (r);
+      ::std::auto_ptr< armor_type > r (new armor_type (s, f, this));
+      this->armor_.set (r);
     }
   }
 
@@ -5296,8 +6328,18 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     s >> p;
     if (p)
     {
-      ::std::auto_ptr< armor_type > r (new armor_type (s, f, this));
-      this->armor_.set (r);
+      ::std::auto_ptr< commodity_type > r (new commodity_type (s, f, this));
+      this->commodity_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
+      this->weapon_.set (r);
     }
   }
 }
@@ -5338,8 +6380,9 @@ RPG_Item_DictionaryXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                      ::xml_schema::flags f,
                                      ::xml_schema::container* c)
 : ::xml_schema::type (s, f, c),
-  weapon_ (f, this),
-  armor_ (f, this)
+  armor_ (f, this),
+  commodity_ (f, this),
+  weapon_ (f, this)
 {
   this->parse (s, f);
 }
@@ -5348,22 +6391,6 @@ void RPG_Item_DictionaryXML_XMLTree_Type::
 parse (::xml_schema::istream< ACE_InputCDR >& s,
        ::xml_schema::flags f)
 {
-  {
-    ::std::size_t n;
-    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
-    s >> as;
-    if (n > 0)
-    {
-      weapon_sequence& c (this->weapon_);
-      c.reserve (n);
-      while (n--)
-      {
-        ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
-        c.push_back (r);
-      }
-    }
-  }
-
   {
     ::std::size_t n;
     ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
@@ -5379,11 +6406,71 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
       }
     }
   }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      commodity_sequence& c (this->commodity_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< commodity_type > r (new commodity_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      weapon_sequence& c (this->weapon_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
 }
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Item_Type_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityBeverage_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityLight_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityUnion_XMLTree_Type& x)
 {
   return s << static_cast< const ::xml_schema::string& > (x);
 }
@@ -5521,10 +6608,20 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityPropertiesBase_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
+  s << x.type ();
+  s << x.subtype ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Item_WeaponPropertiesBase_XMLTree_Type& x)
 {
   s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
-  s << x.weaponType ();
+  s << x.type ();
   s << x.category ();
   s << x.weaponClass ();
   s << x.baseDamage ();
@@ -5587,7 +6684,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Item_ArmorPropertiesBase_XMLTree_Type& x)
 {
   s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
-  s << x.armorType ();
+  s << x.type ();
   s << x.category ();
   s << x.baseBonus ();
   s << x.maxDexterityBonus ();
@@ -5618,17 +6715,24 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 {
   s << x.type ();
   {
-    bool p (x.weapon ());
-    s << p;
-    if (p)
-      s << *x.weapon ();
-  }
-
-  {
     bool p (x.armor ());
     s << p;
     if (p)
       s << *x.armor ();
+  }
+
+  {
+    bool p (x.commodity ());
+    s << p;
+    if (p)
+      s << *x.commodity ();
+  }
+
+  {
+    bool p (x.weapon ());
+    s << p;
+    if (p)
+      s << *x.weapon ();
   }
 
   return s;
@@ -5657,9 +6761,9 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Item_DictionaryXML_XMLTree_Type& x)
 {
   {
-    const RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& c (x.weapon ());
+    const RPG_Item_DictionaryXML_XMLTree_Type::armor_sequence& c (x.armor ());
     s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
+    for (RPG_Item_DictionaryXML_XMLTree_Type::armor_const_iterator
          i (c.begin ()), e (c.end ());
          i != e; ++i)
     {
@@ -5668,9 +6772,20 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
   }
 
   {
-    const RPG_Item_DictionaryXML_XMLTree_Type::armor_sequence& c (x.armor ());
+    const RPG_Item_DictionaryXML_XMLTree_Type::commodity_sequence& c (x.commodity ());
     s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
-    for (RPG_Item_DictionaryXML_XMLTree_Type::armor_const_iterator
+    for (RPG_Item_DictionaryXML_XMLTree_Type::commodity_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& c (x.weapon ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
          i (c.begin ()), e (c.end ());
          i != e; ++i)
     {

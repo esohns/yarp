@@ -3,6 +3,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-g $(ProjectDir)..\graphics\rpg_graphics.xml -p $(TEMP)\test_map.txt -t</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-g $(ProjectDir)..\graphics\rpg_graphics.xml -m $(TEMP)\test_map.level -t</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

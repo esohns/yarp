@@ -46,8 +46,8 @@ class RPG_Item_Export RPG_Item_Instance_Manager
  public:
   RPG_Item_Instance_Base* create(const RPG_Item_Type&, // type of item
                                  const unsigned int&); // specific (sub)type
-  const bool get(const RPG_Item_ID_t&,   // id
-                 RPG_Item_Base*&) const; // return value: handle
+  bool get(const RPG_Item_ID_t&,   // id
+           RPG_Item_Base*&) const; // return value: handle
 
   RPG_Item_List_t instantiate(const RPG_Item_InventoryXML_XMLTree_Type&);
 
@@ -67,6 +67,7 @@ class RPG_Item_Export RPG_Item_Instance_Manager
                             RPG_Item_Base*);      // handle
   virtual void deregisterItem(RPG_Item_Base*); // handle
 
+  mutable ACE_Thread_Mutex myLock;
   RPG_Item_InstanceTable_t myInstanceTable;
 };
 

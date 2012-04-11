@@ -547,14 +547,30 @@ RPG_Common_TimeOfDay RPG_Common_TimeOfDay_Type::post_RPG_Common_TimeOfDay_Type()
   return RPG_Common_TimeOfDayHelper::stringToRPG_Common_TimeOfDay(post_string());
 }
 
+RPG_Common_AmbientLighting RPG_Common_AmbientLighting_Type::post_RPG_Common_AmbientLighting_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_AmbientLighting_Type::post_RPG_Common_AmbientLighting_Type"));
+
+  return RPG_Common_AmbientLightingHelper::stringToRPG_Common_AmbientLighting(post_string());
+}
+
 RPG_Common_Environment_Type::RPG_Common_Environment_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::RPG_Common_Environment_Type"));
 
+  myCurrentEnvironment.plane = RPG_COMMON_PLANE_INVALID;
   myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
   myCurrentEnvironment.time = RPG_COMMON_TIMEOFDAY_INVALID;
+  myCurrentEnvironment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
   myCurrentEnvironment.outdoors = true;
+}
+
+void RPG_Common_Environment_Type::plane(const RPG_Common_Plane& plane_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::plane"));
+
+  myCurrentEnvironment.plane = plane_in;
 }
 
 void RPG_Common_Environment_Type::terrain(const RPG_Common_Terrain& terrain_in)
@@ -578,6 +594,13 @@ void RPG_Common_Environment_Type::time(const RPG_Common_TimeOfDay& timeOfDay_in)
   myCurrentEnvironment.time = timeOfDay_in;
 }
 
+void RPG_Common_Environment_Type::lighting(const RPG_Common_AmbientLighting& lighting_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::lighting"));
+
+  myCurrentEnvironment.lighting = lighting_in;
+}
+
 void RPG_Common_Environment_Type::outdoors(bool outdoors_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Environment_Type::outdoors"));
@@ -592,9 +615,11 @@ RPG_Common_Environment RPG_Common_Environment_Type::post_RPG_Common_Environment_
   RPG_Common_Environment result = myCurrentEnvironment;
 
   // clear structure
+  myCurrentEnvironment.plane = RPG_COMMON_PLANE_INVALID;
   myCurrentEnvironment.terrain = RPG_COMMON_TERRAIN_INVALID;
   myCurrentEnvironment.climate = RPG_COMMON_CLIMATE_INVALID;
   myCurrentEnvironment.time = RPG_COMMON_TIMEOFDAY_INVALID;
+  myCurrentEnvironment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
   myCurrentEnvironment.outdoors = true;
 
   return result;

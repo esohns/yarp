@@ -183,8 +183,8 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-  std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT("-m [FILE] : level map (*") << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
@@ -194,7 +194,7 @@ process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& graphicsDictionary_out,
                   std::string& itemDictionary_out,
-                  std::string& floorPlan_out,
+                  std::string& levelMap_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
 {
@@ -229,20 +229,20 @@ process_arguments(const int argc_in,
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  floorPlan_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+  levelMap_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
 #else
-  floorPlan_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+  levelMap_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
-  floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  levelMap_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  levelMap_out += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
+  levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("g:i:p:tv"));
+                             ACE_TEXT("g:i:m:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -261,9 +261,9 @@ process_arguments(const int argc_in,
 
         break;
       }
-      case 'p':
+      case 'm':
       {
-        floorPlan_out = argumentParser.opt_arg();
+        levelMap_out = argumentParser.opt_arg();
 
         break;
       }
@@ -398,7 +398,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
 void
 do_work(const RPG_Client_Config& config_in,
         const std::string& schemaRepository_in,
-        const std::string& mapFilename_in,
+        const std::string& levelFilename_in,
         const std::string& playerProfile_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
@@ -423,28 +423,24 @@ do_work(const RPG_Client_Config& config_in,
     return;
   }
 
-  // step1: load floor plan
-  RPG_Map_t map;
-  RPG_Map_Common_Tools::load(mapFilename_in,
-                             map,
-                             false,
-                             false);
-
+  // step1: load level map
+  RPG_Engine_Level_t level = RPG_Engine_Level::load(levelFilename_in,
+                                                    schemaRepository_in);
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded floor plan %s\n"),
-             mapFilename_in.c_str(),
-             RPG_Map_Common_Tools::info(map).c_str()));
+             ACE_TEXT("loaded level map: \"%s\"\n%s\n"),
+             levelFilename_in.c_str(),
+             RPG_Map_Level::info(level.map).c_str()));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
-  for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin();
-       iterator != map.plan.doors.end();
+  for (RPG_Map_DoorsConstIterator_t iterator = level.map.plan.doors.begin();
+       iterator != level.map.plan.doors.end();
        iterator++)
   {
     // *WARNING*: set iterators are CONST for a good reason !
     // --> (but we know what we're doing)...
     const_cast<RPG_Map_Door_t&>(*iterator).outside = RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
-                                                                                              map.plan);
+                                                                                              level.map.plan);
 
     door_positions.insert((*iterator).position);
   } // end FOR
@@ -486,7 +482,7 @@ do_work(const RPG_Client_Config& config_in,
   userData.entity                = RPG_Engine_Common_Tools::loadEntity(playerProfile_in,
                                                                        schemaRepository_in);
   ACE_ASSERT(userData.entity.character);
-  userData.entity.position = map.start;
+  userData.entity.position = level.map.start;
 //   userData.entity.actions();
   //userData.entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   //userData.entity.graphic = NULL;
@@ -519,7 +515,7 @@ do_work(const RPG_Client_Config& config_in,
 
   // step5c: level engine
   level_engine.init(&client_engine,
-                    map);
+                    level);
   level_engine.start();
   if (!level_engine.isRunning())
   {
@@ -578,6 +574,7 @@ do_work(const RPG_Client_Config& config_in,
   client_engine.action(client_action);
 
   // start painting...
+  client_engine.centerOnActive(true);
   client_engine.start();
   if (!client_engine.isRunning())
   {
@@ -1037,13 +1034,13 @@ ACE_TMAIN(int argc_in,
   itemDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string floorPlan = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
+  std::string levelMap = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
 #else
-  std::string floorPlan = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+  std::string levelMap = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
-  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  levelMap += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  levelMap += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
+  levelMap += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   std::string playerProfile = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
@@ -1072,7 +1069,7 @@ ACE_TMAIN(int argc_in,
                           argv_in,
                           graphicsDictionary,
                           itemDictionary,
-                          floorPlan,
+                          levelMap,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -1084,7 +1081,7 @@ ACE_TMAIN(int argc_in,
 
   // step1bb: validate arguments
   if (!RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
-      !RPG_Common_File_Tools::isReadable(floorPlan))
+      !RPG_Common_File_Tools::isReadable(levelMap))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid argument(s), aborting\n")));
@@ -1221,7 +1218,7 @@ ACE_TMAIN(int argc_in,
   config.map_config.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
   config.map_config.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
   config.map_config.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
-  config.map_file                          = floorPlan;
+  config.map_file                          = levelMap;
 
 //   // step1dc: populate config object with default/collected data
 //   // ************ connection config data ************
@@ -1277,7 +1274,7 @@ ACE_TMAIN(int argc_in,
   // step2: do actual work
   do_work(config,
           schemaRepository,
-          floorPlan,
+          levelMap,
           playerProfile);
   timer.stop();
 

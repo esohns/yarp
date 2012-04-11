@@ -34,14 +34,17 @@
 
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE              "rpg_engine.xsd"
-#define RPG_ENGINE_LEVEL_EXT                ".xml"
+#define RPG_ENGINE_LEVEL_NAME_MAX_LENGTH    30
+#define RPG_ENGINE_DEF_LEVEL_NAME           "default level"
+#define RPG_ENGINE_DEF_LEVEL_FILE           "default_level"
+#define RPG_ENGINE_LEVEL_FILE_EXT           ".level"
 
 // CONFIGDIR-specific
 #define RPG_ENGINE_DEF_CONFIG_SUB           "engine"
 
 // AI configuration
 #define RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC   10
-#define RPG_ENGINE_DEF_AI_SPAWN_TYPE        "Bugbear"
+//#define RPG_ENGINE_DEF_AI_SPAWN_TYPE        "Bugbear"
 #define RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY 0.3F // [0.0 - 1.0] --> 0.5 = 50%
 
 #endif

@@ -36,8 +36,6 @@ enum RPG_Engine_EventType
 struct RPG_Engine_Event
 {
   RPG_Engine_EventType type;
-  std::string          monster;
-  float                probability;
 };
 
 #endif

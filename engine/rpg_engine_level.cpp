@@ -21,22 +21,224 @@
 
 #include "rpg_engine_level.h"
 
+#include "rpg_engine_defines.h"
+
+#include <rpg_map_parser_driver.h>
+#include <rpg_map_common_tools.h>
 #include <rpg_map_pathfinding_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
+#include <rpg_common_xsderrorhandler.h>
+#include <rpg_common_file_tools.h>
 
 #include <ace/Log_Msg.h>
 
 RPG_Engine_Level::RPG_Engine_Level()
+// : myLevelMeta()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Engine_Level"));
 
+  myLevelMeta.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
+//  myLevelMeta.monsters();
+  myLevelMeta.probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+  myLevelMeta.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
 }
 
 RPG_Engine_Level::~RPG_Engine_Level()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::~RPG_Engine_Level"));
 
+}
+
+void
+RPG_Engine_Level::create(const RPG_Map_FloorPlan_Config_t& mapConfig_in,
+                         RPG_Engine_Level_t& level_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::create"));
+
+  level_out.level_meta.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
+  level_out.level_meta.monsters.clear();
+  level_out.level_meta.probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+  level_out.level_meta.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
+  RPG_Map_Level::create(mapConfig_in,
+                        level_out.map);
+}
+
+RPG_Engine_Level_t
+RPG_Engine_Level::load(const std::string& filename_in,
+                       const std::string& schemaRepository_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::load"));
+
+  RPG_Engine_Level_t result;
+  result.level_meta.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
+  result.level_meta.monsters.clear();
+  result.level_meta.probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+  result.level_meta.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
+  result.map.start = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                    std::numeric_limits<unsigned int>::max());
+  result.map.seeds.clear();
+  result.map.plan.size_x = 0;
+  result.map.plan.size_y = 0;
+  result.map.plan.unmapped.clear();
+  result.map.plan.walls.clear();
+  result.map.plan.doors.clear();
+  result.map.plan.rooms_are_square = false;
+
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               filename_in.c_str()));
+
+    return result;
+  } // end IF
+
+  // step1: load player character
+  std::ifstream ifs;
+  ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+//   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
+  ::xml_schema::flags flags = 0;
+  ::xml_schema::properties props;
+  std::string base_path;
+  // *NOTE*: use the working directory as a fallback...
+  if (schemaRepository_in.empty())
+    base_path = RPG_Common_File_Tools::getWorkingDirectory();
+  else
+  {
+    // sanity check(s)
+    if (!RPG_Common_File_Tools::isDirectory(schemaRepository_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
+                 schemaRepository_in.c_str()));
+
+      return result;
+    } // end IF
+
+    base_path = schemaRepository_in;
+  } // end ELSE
+  std::string schemaFile = base_path;
+  schemaFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schemaFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(schemaFile))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               schemaFile.c_str()));
+
+    return result;
+  } // end IF
+
+  props.schema_location(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
+                        schemaFile);
+//   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
+//   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
+
+  std::auto_ptr<RPG_Engine_Level_XMLTree_Type> engine_level_p;
+  bool is_level = true;
+  try
+  {
+    ifs.open(filename_in.c_str(),
+             std::ios_base::in);
+
+    engine_level_p = ::engine_level_t(ifs,
+                                      RPG_XSDErrorHandler,
+                                      flags,
+                                      props);
+
+    ifs.close();
+  }
+  catch (std::ifstream::failure const& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadLevel(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               exception.what()));
+
+    return result;
+  }
+  catch (::xml_schema::parsing const& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadLevel(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               converter.str().c_str()));
+
+    return result;
+  }
+  catch (::xml_schema::exception const& exception)
+  {
+    ACE_UNUSED_ARG(exception);
+
+    // *NOTE*: maybe this was a MAP file (expected LEVEL file)
+    // --> try parsing that instead...
+    RPG_Map_ParserDriver parser_driver(false, false);
+    parser_driver.init(&result.map.start,
+                       &result.map.seeds,
+                       &result.map.plan,
+                       false, false);
+    if (!parser_driver.parse(filename_in, false))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Map_ParserDriver::parse(\"%s\"), aborting\n"),
+                 filename_in.c_str()));
+
+      return result;
+    } // end IF
+
+    // OK ! --> proceed
+    is_level = false;
+    ifs.close();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::loadLevel(\"%s\"): exception occurred, aborting\n"),
+               filename_in.c_str()));
+
+    return result;
+  }
+  if (is_level)
+  {
+    ACE_ASSERT(engine_level_p.get());
+    RPG_Engine_Level_XMLTree_Type* level_p = engine_level_p.get();
+    ACE_ASSERT(level_p);
+
+    result = RPG_Engine_Level::levelXMLToLevel(*level_p);
+  } // end IF
+  result.map.plan.rooms_are_square = RPG_Map_Common_Tools::roomsAreSquare(result.map);
+
+  return result;
+}
+
+void
+RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::print"));
+
+  RPG_Map_Level::print(level_in.map);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("roaming monsters:\n")));
+  for (RPG_Monster_ListConstIterator_t iterator = level_in.level_meta.monsters.begin();
+       iterator != level_in.level_meta.monsters.end();
+       iterator++)
+     ACE_DEBUG((LM_DEBUG,
+                ACE_TEXT("%s\n"),
+                (*iterator).c_str()));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("spawn interval (sec,usec): %:,%d\n"),
+             level_in.level_meta.spawn_interval.sec(),
+             level_in.level_meta.spawn_interval.usec()));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("spawn probability (%%): %f\n"),
+             level_in.level_meta.probability));
 }
 
 void
@@ -53,6 +255,98 @@ RPG_Engine_Level::save(const std::string& filename_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::save"));
 
+  // sanity check(s)
+  if (RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    // *TODO*: warn user ?
+//     if (!RPG_Common_File_Tools::deleteFile(filename_in))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
+//                  filename_in.c_str()));
+    //
+//       return false;
+//     } // end IF
+  } // end IF
+
+  std::ofstream ofs;
+  ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  ::xml_schema::namespace_infomap map;
+  map[""].name = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
+  map[""].schema = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+  std::string character_set(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_CHARSET));
+  //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
+  ::xml_schema::flags flags = 0;
+
+  RPG_Engine_Level_XMLTree_Type* level_xml_p = toLevelXML();
+  ACE_ASSERT(level_xml_p);
+
+  try
+  {
+    ofs.open(filename_in.c_str(),
+             (std::ios_base::out | std::ios_base::trunc));
+
+    ::engine_level_t(ofs,
+                     *level_xml_p,
+                     map,
+                     character_set,
+                     flags);
+
+    ofs.close();
+  }
+  catch (const std::ofstream::failure& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("\"%s\": unable to open or write error, aborting\n"),
+               filename_in.c_str()));
+
+    // clean up
+    delete level_xml_p;
+
+    throw exception;
+  }
+  catch (const ::xml_schema::serialization& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::saveLevel(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               filename_in.c_str(),
+               text.c_str()));
+
+    // clean up
+    delete level_xml_p;
+
+    throw exception;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Engine_Common_Tools::saveLevel(\"%s\"): exception occurred, aborting\n"),
+               filename_in.c_str()));
+
+    // clean up
+    delete level_xml_p;
+
+    throw;
+  }
+
+  // clean up
+  delete level_xml_p;
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("saved level \"%s\" to file: \"%s\"\n"),
+             myLevelMeta.name.c_str(),
+             filename_in.c_str()));
+}
+
+const RPG_Engine_LevelMeta_t&
+RPG_Engine_Level::getMeta() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getMeta"));
+
+  return myLevelMeta;
 }
 
 void
@@ -146,4 +440,66 @@ RPG_Engine_Level::findPath(const RPG_Map_Position_t& start_in,
   return ((path_out.size() >= 2) &&
           (path_out.front().first == start_in) &&
           (path_out.back().first == end_in));
+}
+
+RPG_Engine_Level_XMLTree_Type*
+RPG_Engine_Level::toLevelXML() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::toLevelXML"));
+
+  RPG_Common_FixedPeriod_XMLTree_Type spawn_interval(static_cast<unsigned int>(myLevelMeta.spawn_interval.sec()),
+                                                     static_cast<unsigned int>(myLevelMeta.spawn_interval.usec()));
+  std::string map_string = RPG_Map_Common_Tools::map2String(inherited::myMap);
+
+  RPG_Engine_Level_XMLTree_Type* level_p = NULL;
+  level_p = new(std::nothrow) RPG_Engine_Level_XMLTree_Type(myLevelMeta.name,
+                                                            spawn_interval,
+                                                            myLevelMeta.probability,
+                                                            map_string);
+  ACE_ASSERT(level_p);
+  if (!level_p)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory, aborting\n")));
+
+    return NULL;
+  }
+
+  // *NOTE*: add monster sequence "manually"
+  for (RPG_Monster_ListConstIterator_t iterator = myLevelMeta.monsters.begin();
+       iterator != myLevelMeta.monsters.end();
+       iterator++)
+    level_p->monster().push_back(*iterator);
+
+  return level_p;
+}
+
+RPG_Engine_Level_t
+RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::levelXMLToLevel"));
+
+  RPG_Engine_Level_t result;
+  result.level_meta.name = level_in.name();
+  for (RPG_Engine_Level_XMLTree_Type::monster_const_iterator iterator = level_in.monster().begin();
+       iterator != level_in.monster().end();
+       iterator++)
+    result.level_meta.monsters.push_back(*iterator);
+  //result.level_meta.monsters.insert(level_in.monster().begin(), level_in.monster().end());
+  result.level_meta.probability = level_in.probability();
+  unsigned int u_seconds = 0;
+  if (level_in.spawn_interval().u_seconds().present())
+    u_seconds = level_in.spawn_interval().u_seconds().get();
+  result.level_meta.spawn_interval.set(level_in.spawn_interval().seconds(),
+                                       u_seconds);
+  RPG_Map_ParserDriver parser_driver(false, false);
+  parser_driver.init(&result.map.start,
+                     &result.map.seeds,
+                     &result.map.plan,
+                     false, false);
+  if (!parser_driver.parse(level_in.map(), true))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to parse map, continuing\n")));
+
+  return result;
 }

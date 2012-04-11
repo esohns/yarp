@@ -51,6 +51,10 @@
 // Forward declarations
 //
 class RPG_Item_Type_Type_pskel;
+class RPG_Item_CommodityType_Type_pskel;
+class RPG_Item_CommodityBeverage_Type_pskel;
+class RPG_Item_CommodityLight_Type_pskel;
+class RPG_Item_CommodityUnion_Type_pskel;
 class RPG_Item_Money_Type_pskel;
 class RPG_Item_WeaponCategory_Type_pskel;
 class RPG_Item_WeaponClass_Type_pskel;
@@ -61,6 +65,7 @@ class RPG_Item_CreationCost_Type_pskel;
 class RPG_Item_BaseProperties_Type_pskel;
 class RPG_Item_MagicalPrerequisites_Type_pskel;
 class RPG_Item_PropertiesBase_Type_pskel;
+class RPG_Item_CommodityPropertiesBase_Type_pskel;
 class RPG_Item_WeaponPropertiesBase_Type_pskel;
 class RPG_Item_WeaponPropertiesXML_Type_pskel;
 class RPG_Item_ArmorCategory_Type_pskel;
@@ -103,8 +108,59 @@ class RPG_Item_Export RPG_Item_Type_Type_pskel: public virtual ::xml_schema::str
   // virtual void
   // pre ();
 
-  virtual void
-  post_RPG_Item_Type_Type ();
+  virtual RPG_Item_Type
+  post_RPG_Item_Type_Type () = 0;
+};
+
+class RPG_Item_Export RPG_Item_CommodityType_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Item_CommodityType
+  post_RPG_Item_CommodityType_Type () = 0;
+};
+
+class RPG_Item_Export RPG_Item_CommodityBeverage_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Item_CommodityBeverage
+  post_RPG_Item_CommodityBeverage_Type () = 0;
+};
+
+class RPG_Item_Export RPG_Item_CommodityLight_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Item_CommodityLight
+  post_RPG_Item_CommodityLight_Type () = 0;
+};
+
+class RPG_Item_Export RPG_Item_CommodityUnion_Type_pskel: public ::xml_schema::simple_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+  //
+  // virtual void
+  // _characters (const ::xml_schema::ro_string&);
+
+  virtual RPG_Item_CommodityUnion
+  post_RPG_Item_CommodityUnion_Type () = 0;
 };
 
 class RPG_Item_Export RPG_Item_Money_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -115,8 +171,8 @@ class RPG_Item_Export RPG_Item_Money_Type_pskel: public virtual ::xml_schema::st
   // virtual void
   // pre ();
 
-  virtual void
-  post_RPG_Item_Money_Type ();
+  virtual RPG_Item_Money
+  post_RPG_Item_Money_Type () = 0;
 };
 
 class RPG_Item_Export RPG_Item_WeaponCategory_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -458,6 +514,61 @@ class RPG_Item_Export RPG_Item_PropertiesBase_Type_pskel: public virtual ::RPG_I
   ::RPG_Item_MagicalPrerequisites_Type_pskel* prerequisites_parser_;
 };
 
+class RPG_Item_Export RPG_Item_CommodityPropertiesBase_Type_pskel: public virtual ::RPG_Item_PropertiesBase_Type_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  type (const RPG_Item_CommodityType&);
+
+  virtual void
+  subtype (const RPG_Item_CommodityUnion&);
+
+  virtual RPG_Item_CommodityPropertiesBase
+  post_RPG_Item_CommodityPropertiesBase_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  type_parser (::RPG_Item_CommodityType_Type_pskel&);
+
+  void
+  subtype_parser (::RPG_Item_CommodityUnion_Type_pskel&);
+
+  void
+  parsers (::xml_schema::unsigned_short_pskel& /* baseWeight */,
+           ::RPG_Item_StorePrice_Type_pskel& /* baseStorePrice */,
+           ::RPG_Item_CreationCost_Type_pskel& /* costToCreate */,
+           ::RPG_Magic_School_Type_pskel& /* aura */,
+           ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
+           ::RPG_Item_CommodityType_Type_pskel& /* type */,
+           ::RPG_Item_CommodityUnion_Type_pskel& /* subtype */);
+
+  // Constructor.
+  //
+  RPG_Item_CommodityPropertiesBase_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Item_CommodityType_Type_pskel* type_parser_;
+  ::RPG_Item_CommodityUnion_Type_pskel* subtype_parser_;
+};
+
 class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual ::RPG_Item_PropertiesBase_Type_pskel
 {
   public:
@@ -467,7 +578,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual :
   // pre ();
 
   virtual void
-  weaponType (const RPG_Item_WeaponType&);
+  type (const RPG_Item_WeaponType&);
 
   virtual void
   category (const RPG_Item_WeaponCategory&);
@@ -502,7 +613,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual :
   // Parser construction API.
   //
   void
-  weaponType_parser (::RPG_Item_WeaponType_Type_pskel&);
+  type_parser (::RPG_Item_WeaponType_Type_pskel&);
 
   void
   category_parser (::RPG_Item_WeaponCategory_Type_pskel&);
@@ -537,7 +648,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual :
            ::RPG_Item_CreationCost_Type_pskel& /* costToCreate */,
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
-           ::RPG_Item_WeaponType_Type_pskel& /* weaponType */,
+           ::RPG_Item_WeaponType_Type_pskel& /* type */,
            ::RPG_Item_WeaponCategory_Type_pskel& /* category */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
@@ -570,7 +681,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual :
                    const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_WeaponType_Type_pskel* weaponType_parser_;
+  ::RPG_Item_WeaponType_Type_pskel* type_parser_;
   ::RPG_Item_WeaponCategory_Type_pskel* category_parser_;
   ::RPG_Item_WeaponClass_Type_pskel* weaponClass_parser_;
   ::RPG_Dice_Roll_Type_pskel* baseDamage_parser_;
@@ -607,7 +718,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_Type_pskel: public virtual ::
            ::RPG_Item_CreationCost_Type_pskel& /* costToCreate */,
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
-           ::RPG_Item_WeaponType_Type_pskel& /* weaponType */,
+           ::RPG_Item_WeaponType_Type_pskel& /* type */,
            ::RPG_Item_WeaponCategory_Type_pskel& /* category */,
            ::RPG_Item_WeaponClass_Type_pskel& /* weaponClass */,
            ::RPG_Dice_Roll_Type_pskel& /* baseDamage */,
@@ -672,7 +783,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::
   // pre ();
 
   virtual void
-  armorType (const RPG_Item_ArmorType&);
+  type (const RPG_Item_ArmorType&);
 
   virtual void
   category (const RPG_Item_ArmorCategory&);
@@ -698,7 +809,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::
   // Parser construction API.
   //
   void
-  armorType_parser (::RPG_Item_ArmorType_Type_pskel&);
+  type_parser (::RPG_Item_ArmorType_Type_pskel&);
 
   void
   category_parser (::RPG_Item_ArmorCategory_Type_pskel&);
@@ -724,7 +835,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::
            ::RPG_Item_CreationCost_Type_pskel& /* costToCreate */,
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
-           ::RPG_Item_ArmorType_Type_pskel& /* armorType */,
+           ::RPG_Item_ArmorType_Type_pskel& /* type */,
            ::RPG_Item_ArmorCategory_Type_pskel& /* category */,
            ::xml_schema::unsigned_byte_pskel& /* baseBonus */,
            ::xml_schema::unsigned_byte_pskel& /* maxDexterityBonus */,
@@ -749,7 +860,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type_pskel: public virtual ::
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_ArmorType_Type_pskel* armorType_parser_;
+  ::RPG_Item_ArmorType_Type_pskel* type_parser_;
   ::RPG_Item_ArmorCategory_Type_pskel* category_parser_;
   ::xml_schema::unsigned_byte_pskel* baseBonus_parser_;
   ::xml_schema::unsigned_byte_pskel* maxDexterityBonus_parser_;
@@ -783,7 +894,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type_pskel: public virtual ::R
            ::RPG_Item_CreationCost_Type_pskel& /* costToCreate */,
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
-           ::RPG_Item_ArmorType_Type_pskel& /* armorType */,
+           ::RPG_Item_ArmorType_Type_pskel& /* type */,
            ::RPG_Item_ArmorCategory_Type_pskel& /* category */,
            ::xml_schema::unsigned_byte_pskel& /* baseBonus */,
            ::xml_schema::unsigned_byte_pskel& /* maxDexterityBonus */,
@@ -821,13 +932,16 @@ class RPG_Item_Export RPG_Item_XML_Type_pskel: public ::xml_schema::complex_cont
   // pre ();
 
   virtual void
-  type ();
-
-  virtual void
-  weapon (const RPG_Item_WeaponPropertiesXML&);
+  type (const RPG_Item_Type&);
 
   virtual void
   armor (const RPG_Item_ArmorPropertiesXML&);
+
+  virtual void
+  commodity (const RPG_Item_CommodityPropertiesBase&);
+
+  virtual void
+  weapon (const RPG_Item_WeaponPropertiesXML&);
 
   virtual void
   post_RPG_Item_XML_Type ();
@@ -838,15 +952,19 @@ class RPG_Item_Export RPG_Item_XML_Type_pskel: public ::xml_schema::complex_cont
   type_parser (::RPG_Item_Type_Type_pskel&);
 
   void
-  weapon_parser (::RPG_Item_WeaponPropertiesXML_Type_pskel&);
-
-  void
   armor_parser (::RPG_Item_ArmorPropertiesXML_Type_pskel&);
 
   void
+  commodity_parser (::RPG_Item_CommodityPropertiesBase_Type_pskel&);
+
+  void
+  weapon_parser (::RPG_Item_WeaponPropertiesXML_Type_pskel&);
+
+  void
   parsers (::RPG_Item_Type_Type_pskel& /* type */,
-           ::RPG_Item_WeaponPropertiesXML_Type_pskel& /* weapon */,
-           ::RPG_Item_ArmorPropertiesXML_Type_pskel& /* armor */);
+           ::RPG_Item_ArmorPropertiesXML_Type_pskel& /* armor */,
+           ::RPG_Item_CommodityPropertiesBase_Type_pskel& /* commodity */,
+           ::RPG_Item_WeaponPropertiesXML_Type_pskel& /* weapon */);
 
   // Constructor.
   //
@@ -866,8 +984,9 @@ class RPG_Item_Export RPG_Item_XML_Type_pskel: public ::xml_schema::complex_cont
 
   protected:
   ::RPG_Item_Type_Type_pskel* type_parser_;
-  ::RPG_Item_WeaponPropertiesXML_Type_pskel* weapon_parser_;
   ::RPG_Item_ArmorPropertiesXML_Type_pskel* armor_parser_;
+  ::RPG_Item_CommodityPropertiesBase_Type_pskel* commodity_parser_;
+  ::RPG_Item_WeaponPropertiesXML_Type_pskel* weapon_parser_;
 };
 
 class RPG_Item_Export RPG_Item_InventoryXML_Type_pskel: public ::xml_schema::complex_content
@@ -921,10 +1040,13 @@ class RPG_Item_Export RPG_Item_DictionaryXML_Type_pskel: public ::xml_schema::co
   // pre ();
 
   virtual void
-  weapon (const RPG_Item_WeaponPropertiesXML&);
+  armor (const RPG_Item_ArmorPropertiesXML&);
 
   virtual void
-  armor (const RPG_Item_ArmorPropertiesXML&);
+  commodity (const RPG_Item_CommodityPropertiesBase&);
+
+  virtual void
+  weapon (const RPG_Item_WeaponPropertiesXML&);
 
   virtual void
   post_RPG_Item_DictionaryXML_Type ();
@@ -932,14 +1054,18 @@ class RPG_Item_Export RPG_Item_DictionaryXML_Type_pskel: public ::xml_schema::co
   // Parser construction API.
   //
   void
-  weapon_parser (::RPG_Item_WeaponPropertiesXML_Type_pskel&);
-
-  void
   armor_parser (::RPG_Item_ArmorPropertiesXML_Type_pskel&);
 
   void
-  parsers (::RPG_Item_WeaponPropertiesXML_Type_pskel& /* weapon */,
-           ::RPG_Item_ArmorPropertiesXML_Type_pskel& /* armor */);
+  commodity_parser (::RPG_Item_CommodityPropertiesBase_Type_pskel&);
+
+  void
+  weapon_parser (::RPG_Item_WeaponPropertiesXML_Type_pskel&);
+
+  void
+  parsers (::RPG_Item_ArmorPropertiesXML_Type_pskel& /* armor */,
+           ::RPG_Item_CommodityPropertiesBase_Type_pskel& /* commodity */,
+           ::RPG_Item_WeaponPropertiesXML_Type_pskel& /* weapon */);
 
   // Constructor.
   //
@@ -958,8 +1084,9 @@ class RPG_Item_Export RPG_Item_DictionaryXML_Type_pskel: public ::xml_schema::co
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_WeaponPropertiesXML_Type_pskel* weapon_parser_;
   ::RPG_Item_ArmorPropertiesXML_Type_pskel* armor_parser_;
+  ::RPG_Item_CommodityPropertiesBase_Type_pskel* commodity_parser_;
+  ::RPG_Item_WeaponPropertiesXML_Type_pskel* weapon_parser_;
 };
 
 #include <xsd/cxx/post.hxx>

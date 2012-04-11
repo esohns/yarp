@@ -64,6 +64,7 @@ class RPG_Common_Plane_XMLTree_Type;
 class RPG_Common_Terrain_XMLTree_Type;
 class RPG_Common_Climate_XMLTree_Type;
 class RPG_Common_TimeOfDay_XMLTree_Type;
+class RPG_Common_AmbientLighting_XMLTree_Type;
 class RPG_Common_Environment_XMLTree_Type;
 
 #include <memory>    // std::auto_ptr
@@ -359,9 +360,91 @@ class RPG_Common_Export RPG_Common_TimeOfDay_XMLTree_Type: public ::xml_schema::
   static const value _xsd_RPG_Common_TimeOfDay_XMLTree_Type_indexes_[3];
 };
 
+class RPG_Common_Export RPG_Common_AmbientLighting_XMLTree_Type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    AMBIENCE_BRIGHT,
+    AMBIENCE_SHADOWY,
+    AMBIENCE_DARKNESS
+  };
+
+  RPG_Common_AmbientLighting_XMLTree_Type (value v);
+
+  RPG_Common_AmbientLighting_XMLTree_Type (const char* v);
+
+  RPG_Common_AmbientLighting_XMLTree_Type (const ::std::string& v);
+
+  RPG_Common_AmbientLighting_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Common_AmbientLighting_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  RPG_Common_AmbientLighting_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  RPG_Common_AmbientLighting_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  RPG_Common_AmbientLighting_XMLTree_Type (const ::std::string& s,
+                                           const ::xercesc::DOMElement* e,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  RPG_Common_AmbientLighting_XMLTree_Type (const RPG_Common_AmbientLighting_XMLTree_Type& x,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  virtual RPG_Common_AmbientLighting_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  RPG_Common_AmbientLighting_XMLTree_Type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_RPG_Common_AmbientLighting_XMLTree_Type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_RPG_Common_AmbientLighting_XMLTree_Type_convert () const;
+
+  public:
+  static const char* const _xsd_RPG_Common_AmbientLighting_XMLTree_Type_literals_[3];
+  static const value _xsd_RPG_Common_AmbientLighting_XMLTree_Type_indexes_[3];
+};
+
 class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema::type
 {
   public:
+  // plane
+  // 
+  typedef ::RPG_Common_Plane_XMLTree_Type plane_type;
+  typedef ::xsd::cxx::tree::optional< plane_type > plane_optional;
+  typedef ::xsd::cxx::tree::traits< plane_type, char > plane_traits;
+
+  const plane_optional&
+  plane () const;
+
+  plane_optional&
+  plane ();
+
+  void
+  plane (const plane_type& x);
+
+  void
+  plane (const plane_optional& x);
+
+  void
+  plane (::std::auto_ptr< plane_type > p);
+
   // terrain
   // 
   typedef ::RPG_Common_Terrain_XMLTree_Type terrain_type;
@@ -425,6 +508,27 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   void
   time (::std::auto_ptr< time_type > p);
 
+  // lighting
+  // 
+  typedef ::RPG_Common_AmbientLighting_XMLTree_Type lighting_type;
+  typedef ::xsd::cxx::tree::optional< lighting_type > lighting_optional;
+  typedef ::xsd::cxx::tree::traits< lighting_type, char > lighting_traits;
+
+  const lighting_optional&
+  lighting () const;
+
+  lighting_optional&
+  lighting ();
+
+  void
+  lighting (const lighting_type& x);
+
+  void
+  lighting (const lighting_optional& x);
+
+  void
+  lighting (::std::auto_ptr< lighting_type > p);
+
   // outdoors
   // 
   typedef ::xml_schema::boolean outdoors_type;
@@ -477,9 +581,11 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
+  plane_optional plane_;
   terrain_optional terrain_;
   climate_optional climate_;
   time_optional time_;
+  lighting_optional lighting_;
   ::xsd::cxx::tree::one< outdoors_type > outdoors_;
 };
 
@@ -525,6 +631,14 @@ operator<< (::std::ostream&, RPG_Common_TimeOfDay_XMLTree_Type::value);
 RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_TimeOfDay_XMLTree_Type&);
+
+RPG_Common_Export
+::std::ostream&
+operator<< (::std::ostream&, RPG_Common_AmbientLighting_XMLTree_Type::value);
+
+RPG_Common_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Common_AmbientLighting_XMLTree_Type&);
 
 RPG_Common_Export
 ::std::ostream&
@@ -598,6 +712,19 @@ operator<< (::xml_schema::list_stream&,
 
 RPG_Common_Export
 void
+operator<< (::xercesc::DOMElement&, const RPG_Common_AmbientLighting_XMLTree_Type&);
+
+RPG_Common_Export
+void
+operator<< (::xercesc::DOMAttr&, const RPG_Common_AmbientLighting_XMLTree_Type&);
+
+RPG_Common_Export
+void
+operator<< (::xml_schema::list_stream&,
+            const RPG_Common_AmbientLighting_XMLTree_Type&);
+
+RPG_Common_Export
+void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Environment_XMLTree_Type&);
 
 RPG_Common_Export
@@ -619,6 +746,11 @@ RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_TimeOfDay_XMLTree_Type&);
+
+RPG_Common_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Common_AmbientLighting_XMLTree_Type&);
 
 RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&

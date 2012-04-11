@@ -61,6 +61,10 @@
 // Forward declarations.
 //
 class RPG_Item_Type_XMLTree_Type;
+class RPG_Item_CommodityType_XMLTree_Type;
+class RPG_Item_CommodityBeverage_XMLTree_Type;
+class RPG_Item_CommodityLight_XMLTree_Type;
+class RPG_Item_CommodityUnion_XMLTree_Type;
 class RPG_Item_Money_XMLTree_Type;
 class RPG_Item_WeaponCategory_XMLTree_Type;
 class RPG_Item_WeaponClass_XMLTree_Type;
@@ -71,6 +75,7 @@ class RPG_Item_CreationCost_XMLTree_Type;
 class RPG_Item_BaseProperties_XMLTree_Type;
 class RPG_Item_MagicalPrerequisites_XMLTree_Type;
 class RPG_Item_PropertiesBase_XMLTree_Type;
+class RPG_Item_CommodityPropertiesBase_XMLTree_Type;
 class RPG_Item_WeaponPropertiesBase_XMLTree_Type;
 class RPG_Item_WeaponPropertiesXML_XMLTree_Type;
 class RPG_Item_ArmorCategory_XMLTree_Type;
@@ -108,7 +113,7 @@ class RPG_Item_Export RPG_Item_Type_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     ITEM_ARMOR,
-    ITEM_GOODS,
+    ITEM_COMMODITY,
     ITEM_OTHER,
     ITEM_VALUABLE,
     ITEM_WEAPON
@@ -163,6 +168,258 @@ class RPG_Item_Export RPG_Item_Type_XMLTree_Type: public ::xml_schema::string
   public:
   static const char* const _xsd_RPG_Item_Type_XMLTree_Type_literals_[5];
   static const value _xsd_RPG_Item_Type_XMLTree_Type_indexes_[5];
+};
+
+class RPG_Item_Export RPG_Item_CommodityType_XMLTree_Type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    COMMODITY_BEVERAGE,
+    COMMODITY_FOOD,
+    COMMODITY_LIGHT,
+    COMMODITY_OTHER
+  };
+
+  RPG_Item_CommodityType_XMLTree_Type (value v);
+
+  RPG_Item_CommodityType_XMLTree_Type (const char* v);
+
+  RPG_Item_CommodityType_XMLTree_Type (const ::std::string& v);
+
+  RPG_Item_CommodityType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Item_CommodityType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityType_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityType_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityType_XMLTree_Type (const ::std::string& s,
+                                       const ::xercesc::DOMElement* e,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityType_XMLTree_Type (const RPG_Item_CommodityType_XMLTree_Type& x,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
+  virtual RPG_Item_CommodityType_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  RPG_Item_CommodityType_XMLTree_Type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_RPG_Item_CommodityType_XMLTree_Type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_RPG_Item_CommodityType_XMLTree_Type_convert () const;
+
+  public:
+  static const char* const _xsd_RPG_Item_CommodityType_XMLTree_Type_literals_[4];
+  static const value _xsd_RPG_Item_CommodityType_XMLTree_Type_indexes_[4];
+};
+
+class RPG_Item_Export RPG_Item_CommodityBeverage_XMLTree_Type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    COMMODITY_BEVERAGE_BEER,
+    COMMODITY_BEVERAGE_WATER,
+    COMMODITY_BEVERAGE_WINE
+  };
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (value v);
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (const char* v);
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (const ::std::string& v);
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (const ::std::string& s,
+                                           const ::xercesc::DOMElement* e,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityBeverage_XMLTree_Type (const RPG_Item_CommodityBeverage_XMLTree_Type& x,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
+
+  virtual RPG_Item_CommodityBeverage_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  RPG_Item_CommodityBeverage_XMLTree_Type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_convert () const;
+
+  public:
+  static const char* const _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_literals_[3];
+  static const value _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_indexes_[3];
+};
+
+class RPG_Item_Export RPG_Item_CommodityLight_XMLTree_Type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    COMMODITY_LIGHT_CANDLE,
+    COMMODITY_LIGHT_LAMP,
+    COMMODITY_LIGHT_LANTERN_BULLSEYE,
+    COMMODITY_LIGHT_LANTERN_HOODED,
+    COMMODITY_LIGHT_TORCH
+  };
+
+  RPG_Item_CommodityLight_XMLTree_Type (value v);
+
+  RPG_Item_CommodityLight_XMLTree_Type (const char* v);
+
+  RPG_Item_CommodityLight_XMLTree_Type (const ::std::string& v);
+
+  RPG_Item_CommodityLight_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Item_CommodityLight_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityLight_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityLight_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityLight_XMLTree_Type (const ::std::string& s,
+                                        const ::xercesc::DOMElement* e,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityLight_XMLTree_Type (const RPG_Item_CommodityLight_XMLTree_Type& x,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  virtual RPG_Item_CommodityLight_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  RPG_Item_CommodityLight_XMLTree_Type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_RPG_Item_CommodityLight_XMLTree_Type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_RPG_Item_CommodityLight_XMLTree_Type_convert () const;
+
+  public:
+  static const char* const _xsd_RPG_Item_CommodityLight_XMLTree_Type_literals_[5];
+  static const value _xsd_RPG_Item_CommodityLight_XMLTree_Type_indexes_[5];
+};
+
+class RPG_Item_Export RPG_Item_CommodityUnion_XMLTree_Type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    COMMODITY_BEVERAGE_BEER,
+    COMMODITY_BEVERAGE_WATER,
+    COMMODITY_BEVERAGE_WINE,
+    COMMODITY_LIGHT_CANDLE,
+    COMMODITY_LIGHT_LAMP,
+    COMMODITY_LIGHT_LANTERN_BULLSEYE,
+    COMMODITY_LIGHT_LANTERN_HOODED,
+    COMMODITY_LIGHT_TORCH
+  };
+
+  RPG_Item_CommodityUnion_XMLTree_Type (value v);
+
+  RPG_Item_CommodityUnion_XMLTree_Type (const char* v);
+
+  RPG_Item_CommodityUnion_XMLTree_Type (const ::std::string& v);
+
+  RPG_Item_CommodityUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Item_CommodityUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityUnion_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityUnion_XMLTree_Type (const ::std::string& s,
+                                        const ::xercesc::DOMElement* e,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityUnion_XMLTree_Type (const RPG_Item_CommodityUnion_XMLTree_Type& x,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
+  virtual RPG_Item_CommodityUnion_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  RPG_Item_CommodityUnion_XMLTree_Type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_RPG_Item_CommodityUnion_XMLTree_Type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_RPG_Item_CommodityUnion_XMLTree_Type_convert () const;
+
+  public:
+  static const char* const _xsd_RPG_Item_CommodityUnion_XMLTree_Type_literals_[8];
+  static const value _xsd_RPG_Item_CommodityUnion_XMLTree_Type_indexes_[8];
 };
 
 class RPG_Item_Export RPG_Item_Money_XMLTree_Type: public ::xml_schema::string
@@ -1011,25 +1268,118 @@ bool
 operator!= (const RPG_Item_PropertiesBase_XMLTree_Type&, const RPG_Item_PropertiesBase_XMLTree_Type&);
 
 
+class RPG_Item_Export RPG_Item_CommodityPropertiesBase_XMLTree_Type: public ::RPG_Item_PropertiesBase_XMLTree_Type
+{
+  public:
+  // type
+  // 
+  typedef ::RPG_Item_CommodityType_XMLTree_Type type_type;
+  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
+
+  const type_type&
+  type () const;
+
+  type_type&
+  type ();
+
+  void
+  type (const type_type& x);
+
+  void
+  type (::std::auto_ptr< type_type > p);
+
+  // subtype
+  // 
+  typedef ::RPG_Item_CommodityUnion_XMLTree_Type subtype_type;
+  typedef ::xsd::cxx::tree::traits< subtype_type, char > subtype_traits;
+
+  const subtype_type&
+  subtype () const;
+
+  subtype_type&
+  subtype ();
+
+  void
+  subtype (const subtype_type& x);
+
+  void
+  subtype (::std::auto_ptr< subtype_type > p);
+
+  // Constructors.
+  //
+  RPG_Item_CommodityPropertiesBase_XMLTree_Type (const baseWeight_type&,
+                                                 const baseStorePrice_type&,
+                                                 const type_type&,
+                                                 const subtype_type&);
+
+  RPG_Item_CommodityPropertiesBase_XMLTree_Type (const baseWeight_type&,
+                                                 ::std::auto_ptr< baseStorePrice_type >&,
+                                                 const type_type&,
+                                                 const subtype_type&);
+
+  RPG_Item_CommodityPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                 ::xml_schema::flags f = 0,
+                                                 ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityPropertiesBase_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                                 ::xml_schema::flags f = 0,
+                                                 ::xml_schema::container* c = 0);
+
+  RPG_Item_CommodityPropertiesBase_XMLTree_Type (const RPG_Item_CommodityPropertiesBase_XMLTree_Type& x,
+                                                 ::xml_schema::flags f = 0,
+                                                 ::xml_schema::container* c = 0);
+
+  virtual RPG_Item_CommodityPropertiesBase_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  virtual 
+  ~RPG_Item_CommodityPropertiesBase_XMLTree_Type ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
+  ::xsd::cxx::tree::one< type_type > type_;
+  ::xsd::cxx::tree::one< subtype_type > subtype_;
+};
+
+RPG_Item_Export
+bool
+operator== (const RPG_Item_CommodityPropertiesBase_XMLTree_Type&, const RPG_Item_CommodityPropertiesBase_XMLTree_Type&);
+
+RPG_Item_Export
+bool
+operator!= (const RPG_Item_CommodityPropertiesBase_XMLTree_Type&, const RPG_Item_CommodityPropertiesBase_XMLTree_Type&);
+
+
 class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_Item_PropertiesBase_XMLTree_Type
 {
   public:
-  // weaponType
+  // type
   // 
-  typedef ::RPG_Item_WeaponType_XMLTree_Type weaponType_type;
-  typedef ::xsd::cxx::tree::traits< weaponType_type, char > weaponType_traits;
+  typedef ::RPG_Item_WeaponType_XMLTree_Type type_type;
+  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
 
-  const weaponType_type&
-  weaponType () const;
+  const type_type&
+  type () const;
 
-  weaponType_type&
-  weaponType ();
-
-  void
-  weaponType (const weaponType_type& x);
+  type_type&
+  type ();
 
   void
-  weaponType (::std::auto_ptr< weaponType_type > p);
+  type (const type_type& x);
+
+  void
+  type (::std::auto_ptr< type_type > p);
 
   // category
   // 
@@ -1189,7 +1539,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_I
   //
   RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                               const baseStorePrice_type&,
-                                              const weaponType_type&,
+                                              const type_type&,
                                               const category_type&,
                                               const weaponClass_type&,
                                               const baseDamage_type&,
@@ -1197,7 +1547,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_I
 
   RPG_Item_WeaponPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                               ::std::auto_ptr< baseStorePrice_type >&,
-                                              const weaponType_type&,
+                                              const type_type&,
                                               const category_type&,
                                               const weaponClass_type&,
                                               ::std::auto_ptr< baseDamage_type >&,
@@ -1234,7 +1584,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesBase_XMLTree_Type: public ::RPG_I
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
-  ::xsd::cxx::tree::one< weaponType_type > weaponType_;
+  ::xsd::cxx::tree::one< type_type > type_;
   ::xsd::cxx::tree::one< category_type > category_;
   ::xsd::cxx::tree::one< weaponClass_type > weaponClass_;
   ::xsd::cxx::tree::one< baseDamage_type > baseDamage_;
@@ -1280,7 +1630,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_XMLTree_Type: public ::RPG_It
   //
   RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type&,
                                              const baseStorePrice_type&,
-                                             const weaponType_type&,
+                                             const type_type&,
                                              const category_type&,
                                              const weaponClass_type&,
                                              const baseDamage_type&,
@@ -1288,7 +1638,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_XMLTree_Type: public ::RPG_It
 
   RPG_Item_WeaponPropertiesXML_XMLTree_Type (const baseWeight_type&,
                                              ::std::auto_ptr< baseStorePrice_type >&,
-                                             const weaponType_type&,
+                                             const type_type&,
                                              const category_type&,
                                              const weaponClass_type&,
                                              ::std::auto_ptr< baseDamage_type >&,
@@ -1479,22 +1829,22 @@ class RPG_Item_Export RPG_Item_ArmorType_XMLTree_Type: public ::xml_schema::stri
 class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_Item_PropertiesBase_XMLTree_Type
 {
   public:
-  // armorType
+  // type
   // 
-  typedef ::RPG_Item_ArmorType_XMLTree_Type armorType_type;
-  typedef ::xsd::cxx::tree::traits< armorType_type, char > armorType_traits;
+  typedef ::RPG_Item_ArmorType_XMLTree_Type type_type;
+  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
 
-  const armorType_type&
-  armorType () const;
+  const type_type&
+  type () const;
 
-  armorType_type&
-  armorType ();
-
-  void
-  armorType (const armorType_type& x);
+  type_type&
+  type ();
 
   void
-  armorType (::std::auto_ptr< armorType_type > p);
+  type (const type_type& x);
+
+  void
+  type (::std::auto_ptr< type_type > p);
 
   // category
   // 
@@ -1587,7 +1937,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
   //
   RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                              const baseStorePrice_type&,
-                                             const armorType_type&,
+                                             const type_type&,
                                              const category_type&,
                                              const baseBonus_type&,
                                              const maxDexterityBonus_type&,
@@ -1597,7 +1947,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
 
   RPG_Item_ArmorPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                              ::std::auto_ptr< baseStorePrice_type >&,
-                                             const armorType_type&,
+                                             const type_type&,
                                              const category_type&,
                                              const baseBonus_type&,
                                              const maxDexterityBonus_type&,
@@ -1636,7 +1986,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesBase_XMLTree_Type: public ::RPG_It
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
-  ::xsd::cxx::tree::one< armorType_type > armorType_;
+  ::xsd::cxx::tree::one< type_type > type_;
   ::xsd::cxx::tree::one< category_type > category_;
   ::xsd::cxx::tree::one< baseBonus_type > baseBonus_;
   ::xsd::cxx::tree::one< maxDexterityBonus_type > maxDexterityBonus_;
@@ -1679,7 +2029,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_XMLTree_Type: public ::RPG_Ite
   //
   RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type&,
                                             const baseStorePrice_type&,
-                                            const armorType_type&,
+                                            const type_type&,
                                             const category_type&,
                                             const baseBonus_type&,
                                             const maxDexterityBonus_type&,
@@ -1689,7 +2039,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_XMLTree_Type: public ::RPG_Ite
 
   RPG_Item_ArmorPropertiesXML_XMLTree_Type (const baseWeight_type&,
                                             ::std::auto_ptr< baseStorePrice_type >&,
-                                            const armorType_type&,
+                                            const type_type&,
                                             const category_type&,
                                             const baseBonus_type&,
                                             const maxDexterityBonus_type&,
@@ -1760,27 +2110,6 @@ class RPG_Item_Export RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
   void
   type (::std::auto_ptr< type_type > p);
 
-  // weapon
-  // 
-  typedef ::RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_type;
-  typedef ::xsd::cxx::tree::optional< weapon_type > weapon_optional;
-  typedef ::xsd::cxx::tree::traits< weapon_type, char > weapon_traits;
-
-  const weapon_optional&
-  weapon () const;
-
-  weapon_optional&
-  weapon ();
-
-  void
-  weapon (const weapon_type& x);
-
-  void
-  weapon (const weapon_optional& x);
-
-  void
-  weapon (::std::auto_ptr< weapon_type > p);
-
   // armor
   // 
   typedef ::RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_type;
@@ -1801,6 +2130,48 @@ class RPG_Item_Export RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
 
   void
   armor (::std::auto_ptr< armor_type > p);
+
+  // commodity
+  // 
+  typedef ::RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_type;
+  typedef ::xsd::cxx::tree::optional< commodity_type > commodity_optional;
+  typedef ::xsd::cxx::tree::traits< commodity_type, char > commodity_traits;
+
+  const commodity_optional&
+  commodity () const;
+
+  commodity_optional&
+  commodity ();
+
+  void
+  commodity (const commodity_type& x);
+
+  void
+  commodity (const commodity_optional& x);
+
+  void
+  commodity (::std::auto_ptr< commodity_type > p);
+
+  // weapon
+  // 
+  typedef ::RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_type;
+  typedef ::xsd::cxx::tree::optional< weapon_type > weapon_optional;
+  typedef ::xsd::cxx::tree::traits< weapon_type, char > weapon_traits;
+
+  const weapon_optional&
+  weapon () const;
+
+  weapon_optional&
+  weapon ();
+
+  void
+  weapon (const weapon_type& x);
+
+  void
+  weapon (const weapon_optional& x);
+
+  void
+  weapon (::std::auto_ptr< weapon_type > p);
 
   // Constructors.
   //
@@ -1838,8 +2209,9 @@ class RPG_Item_Export RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
          ::xml_schema::flags);
 
   ::xsd::cxx::tree::one< type_type > type_;
-  weapon_optional weapon_;
   armor_optional armor_;
+  commodity_optional commodity_;
+  weapon_optional weapon_;
 };
 
 RPG_Item_Export
@@ -1921,23 +2293,6 @@ operator!= (const RPG_Item_InventoryXML_XMLTree_Type&, const RPG_Item_InventoryX
 class RPG_Item_Export RPG_Item_DictionaryXML_XMLTree_Type: public ::xml_schema::type
 {
   public:
-  // weapon
-  // 
-  typedef ::RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_type;
-  typedef ::xsd::cxx::tree::sequence< weapon_type > weapon_sequence;
-  typedef weapon_sequence::iterator weapon_iterator;
-  typedef weapon_sequence::const_iterator weapon_const_iterator;
-  typedef ::xsd::cxx::tree::traits< weapon_type, char > weapon_traits;
-
-  const weapon_sequence&
-  weapon () const;
-
-  weapon_sequence&
-  weapon ();
-
-  void
-  weapon (const weapon_sequence& s);
-
   // armor
   // 
   typedef ::RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_type;
@@ -1954,6 +2309,40 @@ class RPG_Item_Export RPG_Item_DictionaryXML_XMLTree_Type: public ::xml_schema::
 
   void
   armor (const armor_sequence& s);
+
+  // commodity
+  // 
+  typedef ::RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_type;
+  typedef ::xsd::cxx::tree::sequence< commodity_type > commodity_sequence;
+  typedef commodity_sequence::iterator commodity_iterator;
+  typedef commodity_sequence::const_iterator commodity_const_iterator;
+  typedef ::xsd::cxx::tree::traits< commodity_type, char > commodity_traits;
+
+  const commodity_sequence&
+  commodity () const;
+
+  commodity_sequence&
+  commodity ();
+
+  void
+  commodity (const commodity_sequence& s);
+
+  // weapon
+  // 
+  typedef ::RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_type;
+  typedef ::xsd::cxx::tree::sequence< weapon_type > weapon_sequence;
+  typedef weapon_sequence::iterator weapon_iterator;
+  typedef weapon_sequence::const_iterator weapon_const_iterator;
+  typedef ::xsd::cxx::tree::traits< weapon_type, char > weapon_traits;
+
+  const weapon_sequence&
+  weapon () const;
+
+  weapon_sequence&
+  weapon ();
+
+  void
+  weapon (const weapon_sequence& s);
 
   // Constructors.
   //
@@ -1990,8 +2379,9 @@ class RPG_Item_Export RPG_Item_DictionaryXML_XMLTree_Type: public ::xml_schema::
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
-  weapon_sequence weapon_;
   armor_sequence armor_;
+  commodity_sequence commodity_;
+  weapon_sequence weapon_;
 };
 
 RPG_Item_Export
@@ -2012,6 +2402,38 @@ operator<< (::std::ostream&, RPG_Item_Type_XMLTree_Type::value);
 RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_Type_XMLTree_Type&);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, RPG_Item_CommodityType_XMLTree_Type::value);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Item_CommodityType_XMLTree_Type&);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, RPG_Item_CommodityBeverage_XMLTree_Type::value);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Item_CommodityBeverage_XMLTree_Type&);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, RPG_Item_CommodityLight_XMLTree_Type::value);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Item_CommodityLight_XMLTree_Type&);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, RPG_Item_CommodityUnion_XMLTree_Type::value);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Item_CommodityUnion_XMLTree_Type&);
 
 RPG_Item_Export
 ::std::ostream&
@@ -2068,6 +2490,10 @@ operator<< (::std::ostream&, const RPG_Item_MagicalPrerequisites_XMLTree_Type&);
 RPG_Item_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Item_PropertiesBase_XMLTree_Type&);
+
+RPG_Item_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Item_CommodityPropertiesBase_XMLTree_Type&);
 
 RPG_Item_Export
 ::std::ostream&
@@ -2139,6 +2565,58 @@ RPG_Item_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Item_Type_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xercesc::DOMElement&, const RPG_Item_CommodityType_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xercesc::DOMAttr&, const RPG_Item_CommodityType_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xml_schema::list_stream&,
+            const RPG_Item_CommodityType_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xercesc::DOMElement&, const RPG_Item_CommodityBeverage_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xercesc::DOMAttr&, const RPG_Item_CommodityBeverage_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xml_schema::list_stream&,
+            const RPG_Item_CommodityBeverage_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xercesc::DOMElement&, const RPG_Item_CommodityLight_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xercesc::DOMAttr&, const RPG_Item_CommodityLight_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xml_schema::list_stream&,
+            const RPG_Item_CommodityLight_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xercesc::DOMElement&, const RPG_Item_CommodityUnion_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xercesc::DOMAttr&, const RPG_Item_CommodityUnion_XMLTree_Type&);
+
+RPG_Item_Export
+void
+operator<< (::xml_schema::list_stream&,
+            const RPG_Item_CommodityUnion_XMLTree_Type&);
 
 RPG_Item_Export
 void
@@ -2218,6 +2696,10 @@ operator<< (::xercesc::DOMElement&, const RPG_Item_PropertiesBase_XMLTree_Type&)
 
 RPG_Item_Export
 void
+operator<< (::xercesc::DOMElement&, const RPG_Item_CommodityPropertiesBase_XMLTree_Type&);
+
+RPG_Item_Export
+void
 operator<< (::xercesc::DOMElement&, const RPG_Item_WeaponPropertiesBase_XMLTree_Type&);
 
 RPG_Item_Export
@@ -2278,6 +2760,26 @@ operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
 RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Item_CommodityType_XMLTree_Type&);
+
+RPG_Item_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Item_CommodityBeverage_XMLTree_Type&);
+
+RPG_Item_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Item_CommodityLight_XMLTree_Type&);
+
+RPG_Item_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Item_CommodityUnion_XMLTree_Type&);
+
+RPG_Item_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_Money_XMLTree_Type&);
 
 RPG_Item_Export
@@ -2324,6 +2826,11 @@ RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Item_PropertiesBase_XMLTree_Type&);
+
+RPG_Item_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Item_CommodityPropertiesBase_XMLTree_Type&);
 
 RPG_Item_Export
 ::xml_schema::ostream< ACE_OutputCDR >&

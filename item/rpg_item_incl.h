@@ -9,6 +9,10 @@
 
 #include <vector>
 #include "rpg_item_type.h"
+#include "rpg_item_commoditytype.h"
+#include "rpg_item_commoditybeverage.h"
+#include "rpg_item_commoditylight.h"
+#include "rpg_item_commodityunion.h"
 #include "rpg_item_money.h"
 #include "rpg_item_weaponcategory.h"
 #include "rpg_item_weaponclass.h"
@@ -19,6 +23,7 @@
 #include "rpg_item_baseproperties.h"
 #include "rpg_item_magicalprerequisites.h"
 #include "rpg_item_propertiesbase.h"
+#include "rpg_item_commoditypropertiesbase.h"
 #include "rpg_item_weaponpropertiesbase.h"
 #include "rpg_item_weaponpropertiesxml.h"
 #include "rpg_item_armorcategory.h"

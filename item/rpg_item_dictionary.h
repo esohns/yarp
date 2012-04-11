@@ -31,8 +31,6 @@
 #include "rpg_item_exports.h"
 #include "rpg_item_common.h"
 
-#include <xsd/cxx/xml/error-handler.hxx>
-
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -52,8 +50,10 @@ class RPG_Item_Export RPG_Item_Dictionary
   // init item dictionary
   void init(const std::string&,  // filename
             const bool& = true); // validate XML ?
-  const RPG_Item_WeaponProperties& getWeaponProperties(const RPG_Item_WeaponType&) const;
+
   const RPG_Item_ArmorProperties& getArmorProperties(const RPG_Item_ArmorType&) const;
+  const RPG_Item_CommodityProperties& getCommodityProperties(const RPG_Item_CommodityUnion&) const;
+  const RPG_Item_WeaponProperties& getWeaponProperties(const RPG_Item_WeaponType&) const;
 
   // debug info
   void dump() const;
@@ -65,21 +65,10 @@ class RPG_Item_Export RPG_Item_Dictionary
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary(const RPG_Item_Dictionary&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary& operator=(const RPG_Item_Dictionary&));
 
-  // private error handler
-  class XSD_Error_Handler
-   : public ::xsd::cxx::xml::error_handler<char>
-  {
-   public:
-    virtual bool handle(const std::string&,                             // id
-                        unsigned long,                                  // line
-                        unsigned long,                                  // column
-                        ::xsd::cxx::xml::error_handler<char>::severity, // severity
-                        const std::string&);                            // message
-  };
-
-  RPG_Item_WeaponDictionary_t myWeaponDictionary;
-  RPG_Item_ArmorDictionary_t  myArmorDictionary;
-  XSD_Error_Handler           myXSDErrorHandler;
+  RPG_Item_ArmorDictionary_t             myArmorDictionary;
+  RPG_Item_CommodityBeverageDictionary_t myCommodityBeverageDictionary;
+  RPG_Item_CommodityLightDictionary_t    myCommodityLightDictionary;
+  RPG_Item_WeaponDictionary_t            myWeaponDictionary;
 };
 
 typedef ACE_Singleton<RPG_Item_Dictionary,

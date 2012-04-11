@@ -86,18 +86,19 @@ class RPG_Engine_Export RPG_Engine
   RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
   RPG_Map_Position_t getValid(const RPG_Map_Position_t&,  // center
                               const unsigned int&) const; // max (square !) radius
-  bool isBlocked(const RPG_Map_Position_t&);
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
   bool isMonster(const RPG_Engine_EntityID_t&) const;
-  std::string getSprite(const RPG_Engine_EntityID_t&) const;
+  //std::string getSprite(const RPG_Engine_EntityID_t&) const;
   std::string getName(const RPG_Engine_EntityID_t&) const;
+  void getVisiblePositions(const RPG_Engine_EntityID_t&, // id
+                           RPG_Map_Positions_t&) const;  // return value: (currently) seen positions
   unsigned int numSpawned() const;
 
   bool findPath(const RPG_Map_Position_t&, // start position
                 const RPG_Map_Position_t&, // end position
                 RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
 
-  using RPG_Map_Level::getName;
+  using RPG_Engine_Level::getMeta;
 
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
@@ -113,6 +114,8 @@ class RPG_Engine_Export RPG_Engine
   virtual int svc(void);
 
   // helper methods
+  // *WARNING*: this needs myLock to be held !
+  bool isBlocked(const RPG_Map_Position_t&);
   void clearEntityActions(const RPG_Engine_EntityID_t& = 0); // entity ID (default: ALL)
   // perform (one round of) actions
   void handleEntities();

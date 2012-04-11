@@ -2,9 +2,10 @@ namespace urn:rpg
 {
   include "rpg_common_environment_incl.h";
 
-  RPG_Common_Plane_Type       RPG_Common_Plane;
-  RPG_Common_Terrain_Type     RPG_Common_Terrain;
-  RPG_Common_Climate_Type     RPG_Common_Climate;
-  RPG_Common_TimeOfDay_Type   RPG_Common_TimeOfDay;
-  RPG_Common_Environment_Type RPG_Common_Environment;
+  RPG_Common_Plane_Type           RPG_Common_Plane;
+  RPG_Common_Terrain_Type         RPG_Common_Terrain;
+  RPG_Common_Climate_Type         RPG_Common_Climate;
+  RPG_Common_TimeOfDay_Type       RPG_Common_TimeOfDay;
+  RPG_Common_AmbientLighting_Type RPG_Common_AmbientLighting;
+  RPG_Common_Environment_Type     RPG_Common_Environment;
 }

@@ -22,6 +22,7 @@
 #define RPG_MAP_LEVEL_H
 
 #include "rpg_map_exports.h"
+#include "rpg_map_defines.h"
 #include "rpg_map_common.h"
 
 #include <ace/Global_Macros.h>
@@ -37,10 +38,19 @@ class RPG_Map_Export RPG_Map_Level
   RPG_Map_Level(const RPG_Map_t&); // map
   virtual ~RPG_Map_Level();
 
+  // static functionality
+  static void create(const RPG_Map_FloorPlan_Config_t&, // floor plan config
+                     RPG_Map_t&);                       // return value: map
+  static bool load(const std::string&, // FQ filename
+                   RPG_Map_t&,         // return value: map
+                   const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
+                   const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
+  static void print(const RPG_Map_t&); // map
+  static std::string info(const RPG_Map_t&); // map
+
   void init(const RPG_Map_t&); // map
   void save(const std::string&) const; // FQ filename
 
-  const std::string& getName() const;
   const RPG_Map_Position_t& getStartPosition() const;
   const RPG_Map_Positions_t& getSeedPoints() const;
   const RPG_Map_FloorPlan_t& getFloorPlan() const;

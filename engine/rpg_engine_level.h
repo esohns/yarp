@@ -23,6 +23,7 @@
 
 #include "rpg_engine_exports.h"
 #include "rpg_engine_common.h"
+#include "rpg_engine_XML_tree.h"
 
 #include <rpg_map_common.h>
 #include <rpg_map_level.h>
@@ -41,8 +42,17 @@ class RPG_Engine_Export RPG_Engine_Level
   RPG_Engine_Level();
   virtual ~RPG_Engine_Level();
 
+  // static functionality
+  static void create(const RPG_Map_FloorPlan_Config_t&, // floor plan config
+                     RPG_Engine_Level_t&);              // return value: level
+  static RPG_Engine_Level_t load(const std::string&,  // FQ filename
+                                 const std::string&); // schema repository (directory)
+  static void print(const RPG_Engine_Level_t&); // level
+
   void init(const RPG_Engine_Level_t&); // level
   void save(const std::string&) const; // FQ filename
+
+  const RPG_Engine_LevelMeta_t& getMeta() const;
 
  protected:
   void handleDoor(const RPG_Map_Position_t&, // position
@@ -59,6 +69,11 @@ class RPG_Engine_Export RPG_Engine_Level
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level(const RPG_Engine_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level& operator=(const RPG_Engine_Level&));
+
+  // helper methods
+  // *WARNING*: result needs to be delete()d !
+  RPG_Engine_Level_XMLTree_Type* toLevelXML() const;
+  static RPG_Engine_Level_t levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
 
   RPG_Engine_LevelMeta_t myLevelMeta;
 };

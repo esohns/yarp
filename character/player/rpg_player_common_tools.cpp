@@ -23,10 +23,12 @@
 
 #include "rpg_player_defines.h"
 
-#include <rpg_item_instance_manager.h>
-#include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
+#include <rpg_item_commodity.h>
+#include <rpg_item_weapon.h>
 #include <rpg_item_dictionary.h>
+#include <rpg_item_instance_manager.h>
+#include <rpg_item_common_tools.h>
 
 #include <rpg_magic_defines.h>
 #include <rpg_magic_common_tools.h>
@@ -969,6 +971,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
     RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
                                                          item_base);
     ACE_ASSERT(item_base);
+    RPG_Item_XML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()));
     switch (item_base->getType())
     {
       case ITEM_ARMOR:
@@ -978,7 +981,6 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
 
         RPG_Item_ArmorProperties armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->getArmorType());
 
-        RPG_Item_XML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()));
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (armor_properties.baseStorePrice.numGoldPieces)
           store_price.numGoldPieces(armor_properties.baseStorePrice.numGoldPieces);
@@ -1019,7 +1021,46 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
 
         break;
       }
-      case ITEM_GOODS:
+      case ITEM_COMMODITY:
+      {
+        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(item_base);
+        ACE_ASSERT(commodity);
+
+        RPG_Item_CommodityProperties commodity_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
+
+        RPG_Item_StorePrice_XMLTree_Type store_price;
+        if (commodity_properties.baseStorePrice.numGoldPieces)
+          store_price.numGoldPieces(commodity_properties.baseStorePrice.numGoldPieces);
+        if (commodity_properties.baseStorePrice.numSilverPieces)
+          store_price.numSilverPieces(commodity_properties.baseStorePrice.numSilverPieces);
+        RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_properties_xml(commodity_properties.baseWeight,
+                                                                               store_price,
+                                                                               RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->getCommodityType()),
+                                                                               RPG_Item_Common_Tools::commoditySubTypeToXMLString(commodity->getCommoditySubType()));
+        if (commodity_properties.aura != RPG_MAGIC_SCHOOL_INVALID)
+          commodity_properties_xml.aura(RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString(commodity_properties.aura));
+        if (commodity_properties.prerequisites.minCasterLevel)
+        {
+          RPG_Item_MagicalPrerequisites_XMLTree_Type magical_prerequisites;
+          magical_prerequisites.minCasterLevel(commodity_properties.prerequisites.minCasterLevel);
+          commodity_properties_xml.prerequisites(magical_prerequisites);
+        } // end IF
+        if (commodity_properties.costToCreate.numGoldPieces ||
+            commodity_properties.costToCreate.numExperiencePoints)
+        {
+          RPG_Item_CreationCost_XMLTree_Type costs_to_create;
+          if (commodity_properties.costToCreate.numGoldPieces)
+            costs_to_create.numGoldPieces(commodity_properties.costToCreate.numGoldPieces);
+          if (commodity_properties.costToCreate.numExperiencePoints)
+            costs_to_create.numExperiencePoints(commodity_properties.costToCreate.numExperiencePoints);
+          commodity_properties_xml.costToCreate(costs_to_create);
+        } // end IF
+
+        item.commodity(commodity_properties_xml);
+        inventory.item().push_back(item);
+
+        break;
+      }
       case ITEM_OTHER:
       case ITEM_VALUABLE:
       {

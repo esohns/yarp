@@ -70,19 +70,29 @@
     </xsd:restriction>
   </xsd:simpleType>
 
- <xsd:simpleType name="RPG_Common_TimeOfDay_Type">
-   <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="TIMEOFDAY_DAYTIME"/>
-     <xsd:enumeration value="TIMEOFDAY_NIGHTTIME"/>
-     <xsd:enumeration value="TIMEOFDAY_ANY"/>
-   </xsd:restriction>
- </xsd:simpleType>
+  <xsd:simpleType name="RPG_Common_TimeOfDay_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TIMEOFDAY_DAYTIME"/>
+      <xsd:enumeration value="TIMEOFDAY_NIGHTTIME"/>
+      <xsd:enumeration value="TIMEOFDAY_ANY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_AmbientLighting_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AMBIENCE_BRIGHT"/>
+      <xsd:enumeration value="AMBIENCE_SHADOWY"/>
+      <xsd:enumeration value="AMBIENCE_DARKNESS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
 
   <xsd:complexType name="RPG_Common_Environment_Type">
     <xsd:sequence>
+      <xsd:element name="plane" type="RPG_Common_Plane_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="terrain" type="RPG_Common_Terrain_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="climate" type="RPG_Common_Climate_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="time" type="RPG_Common_TimeOfDay_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="lighting" type="RPG_Common_AmbientLighting_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="outdoors" type="xsd:boolean" use="optional" default="true"/>
   </xsd:complexType>

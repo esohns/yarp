@@ -54,6 +54,7 @@ class RPG_Common_Plane_Type_pskel;
 class RPG_Common_Terrain_Type_pskel;
 class RPG_Common_Climate_Type_pskel;
 class RPG_Common_TimeOfDay_Type_pskel;
+class RPG_Common_AmbientLighting_Type_pskel;
 class RPG_Common_Environment_Type_pskel;
 
 #ifndef XSD_USE_CHAR
@@ -116,6 +117,18 @@ class RPG_Common_Export RPG_Common_TimeOfDay_Type_pskel: public virtual ::xml_sc
   post_RPG_Common_TimeOfDay_Type () = 0;
 };
 
+class RPG_Common_Export RPG_Common_AmbientLighting_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_AmbientLighting
+  post_RPG_Common_AmbientLighting_Type () = 0;
+};
+
 class RPG_Common_Export RPG_Common_Environment_Type_pskel: public ::xml_schema::complex_content
 {
   public:
@@ -123,6 +136,9 @@ class RPG_Common_Export RPG_Common_Environment_Type_pskel: public ::xml_schema::
   //
   // virtual void
   // pre ();
+
+  virtual void
+  plane (const RPG_Common_Plane&);
 
   virtual void
   terrain (const RPG_Common_Terrain&);
@@ -134,6 +150,9 @@ class RPG_Common_Export RPG_Common_Environment_Type_pskel: public ::xml_schema::
   time (const RPG_Common_TimeOfDay&);
 
   virtual void
+  lighting (const RPG_Common_AmbientLighting&);
+
+  virtual void
   outdoors (bool);
 
   virtual RPG_Common_Environment
@@ -141,6 +160,9 @@ class RPG_Common_Export RPG_Common_Environment_Type_pskel: public ::xml_schema::
 
   // Parser construction API.
   //
+  void
+  plane_parser (::RPG_Common_Plane_Type_pskel&);
+
   void
   terrain_parser (::RPG_Common_Terrain_Type_pskel&);
 
@@ -151,12 +173,17 @@ class RPG_Common_Export RPG_Common_Environment_Type_pskel: public ::xml_schema::
   time_parser (::RPG_Common_TimeOfDay_Type_pskel&);
 
   void
+  lighting_parser (::RPG_Common_AmbientLighting_Type_pskel&);
+
+  void
   outdoors_parser (::xml_schema::boolean_pskel&);
 
   void
-  parsers (::RPG_Common_Terrain_Type_pskel& /* terrain */,
+  parsers (::RPG_Common_Plane_Type_pskel& /* plane */,
+           ::RPG_Common_Terrain_Type_pskel& /* terrain */,
            ::RPG_Common_Climate_Type_pskel& /* climate */,
            ::RPG_Common_TimeOfDay_Type_pskel& /* time */,
+           ::RPG_Common_AmbientLighting_Type_pskel& /* lighting */,
            ::xml_schema::boolean_pskel& /* outdoors */);
 
   // Constructor.
@@ -181,9 +208,11 @@ class RPG_Common_Export RPG_Common_Environment_Type_pskel: public ::xml_schema::
                    const ::xml_schema::ro_string&);
 
   protected:
+  ::RPG_Common_Plane_Type_pskel* plane_parser_;
   ::RPG_Common_Terrain_Type_pskel* terrain_parser_;
   ::RPG_Common_Climate_Type_pskel* climate_parser_;
   ::RPG_Common_TimeOfDay_Type_pskel* time_parser_;
+  ::RPG_Common_AmbientLighting_Type_pskel* lighting_parser_;
   ::xml_schema::boolean_pskel* outdoors_parser_;
 };
 

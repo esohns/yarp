@@ -12,7 +12,7 @@
 struct RPG_Item_Export RPG_Item_ArmorPropertiesBase
  : public RPG_Item_PropertiesBase
 {
-  RPG_Item_ArmorType armorType;
+  RPG_Item_ArmorType type;
   RPG_Item_ArmorCategory category;
   unsigned char baseBonus;
   unsigned char maxDexterityBonus;

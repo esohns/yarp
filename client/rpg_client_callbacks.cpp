@@ -25,6 +25,7 @@
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
 
+#include <rpg_engine_defines.h>
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
@@ -1107,7 +1108,7 @@ dirent_selector_maps(const dirent* entry_in)
 
   // *NOTE*: select maps
   std::string filename(entry_in->d_name);
-  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT));
+  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT));
   if (filename.rfind(extension,
 //                     std::string::npos) != (filename.size() - extension.size()))
                      -1) != (filename.size() - extension.size()))
@@ -1173,7 +1174,7 @@ load_files(const std::string& repository_in,
   // iterate over entries
   std::string entry;
   std::string extension = (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT)
-                                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT));
+                                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
   GtkTreeIter iter;
   for (unsigned int i = 0;
        i < static_cast<unsigned int>(entries.length());
@@ -1783,11 +1784,11 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
                                0, -1);
   // enforce sane values
   gtk_entry_set_max_length(main_entry_dialog_entry,
-                           RPG_MAP_NAME_MAX_LENGTH);
+                           RPG_ENGINE_LEVEL_NAME_MAX_LENGTH);
 //   gtk_entry_set_width_chars(main_entry_dialog_entry,
 //                             -1); // reset to default
   gtk_entry_set_text(main_entry_dialog_entry,
-                     ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME));
+                     ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME));
   gtk_editable_select_region(GTK_EDITABLE(main_entry_dialog_entry),
                              0, -1);
   // step1b: retrieve entry dialog handle
@@ -1825,10 +1826,10 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
 
   // step2: create new (random) map
   RPG_Engine_Level_t level;
-  RPG_Engine_Common_Tools::createLevel(data->level_meta_data,
-                                       map_name,
-                                       data->map_config,
-                                       level);
+  RPG_Engine_Level::create(data->map_config,
+                           level);
+  level.level_meta = data->level_meta_data;
+  level.level_meta.name = map_name;
 
   // step3: assign new map to level engine
   if (data->level_engine->isRunning())
@@ -1888,7 +1889,6 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
 
   RPG_Engine_Level_t level;
   level.level_meta = data->level_meta_data;
-  level.map.name.clear();
   level.map.start = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                    std::numeric_limits<unsigned int>::max());
   level.map.seeds.clear();
@@ -1898,6 +1898,7 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
   level.map.plan.walls.clear();
   level.map.plan.doors.clear();
   level.map.plan.rooms_are_square = false;
+
   data->level_engine->stop();
   // assign empty map to level engine
   data->level_engine->init(data->client_engine,
@@ -1960,8 +1961,8 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   std::string filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog));
 
   // load level
-  RPG_Engine_Level_t level = RPG_Engine_Common_Tools::loadLevel(filename,
-                                                                data->schemaRepository);
+  RPG_Engine_Level_t level = RPG_Engine_Level::load(filename,
+                                                    data->schemaRepository);
   if (data->level_engine->isRunning())
     data->level_engine->stop();
   data->level_engine->init(data->client_engine, level);
@@ -2021,8 +2022,8 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
 #endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += data->level_engine->getName();
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  filename += data->level_engine->getMeta().name;
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   data->level_engine->save(filename);
 
   // make create button sensitive (if it's not already)
@@ -2091,11 +2092,11 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 #endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   // load level
-  RPG_Engine_Level_t level = RPG_Engine_Common_Tools::loadLevel(filename,
-                                                                data->schemaRepository);
+  RPG_Engine_Level_t level = RPG_Engine_Level::load(filename,
+                                                    data->schemaRepository);
   if (data->level_engine->isRunning())
     data->level_engine->stop();
   data->level_engine->init(data->client_engine, level);

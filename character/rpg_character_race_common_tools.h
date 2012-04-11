@@ -34,6 +34,7 @@ class RPG_Character_Export RPG_Character_Race_Common_Tools
  public:
   static RPG_Common_Size race2Size(const RPG_Character_Race_t&); // (player) race(s)
   static unsigned char race2Speed(const RPG_Character_Race&);
+
   static bool hasRace(const RPG_Character_Race_t&, // (player) race(s)
                       const RPG_Character_Race&);  // specific race
 

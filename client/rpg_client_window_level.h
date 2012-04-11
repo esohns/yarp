@@ -100,9 +100,10 @@ class RPG_Client_Export RPG_Client_WindowLevel
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
   RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
   RPG_Graphics_WallTileSet_t      myCurrentWallSet;
-  SDL_Surface*                    myCurrentCeilingTile;
+  SDL_Surface*                    myCeilingTile;
   RPG_Graphics_DoorTileSet_t      myCurrentDoorSet;
-  SDL_Surface*                    myCurrentOffMapTile;
+  SDL_Surface*                    myOffMapTile;
+  SDL_Surface*                    myInvisibleTile;
 
   // tiles / position
   RPG_Graphics_FloorEdgeTileMap_t myFloorEdgeTiles;

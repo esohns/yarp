@@ -30,6 +30,80 @@
 
 #include <ace/Log_Msg.h>
 
+RPG_Item_Type RPG_Item_Type_Type::post_RPG_Item_Type_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_Type_Type::post_RPG_Item_Type_Type"));
+
+  return RPG_Item_TypeHelper::stringToRPG_Item_Type(post_string());
+}
+
+RPG_Item_CommodityType RPG_Item_CommodityType_Type::post_RPG_Item_CommodityType_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityType_Type::post_RPG_Item_CommodityType_Type"));
+
+  return RPG_Item_CommodityTypeHelper::stringToRPG_Item_CommodityType(post_string());
+}
+
+RPG_Item_CommodityBeverage RPG_Item_CommodityBeverage_Type::post_RPG_Item_CommodityBeverage_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityBeverage_Type::post_RPG_Item_CommodityBeverage_Type"));
+
+  return RPG_Item_CommodityBeverageHelper::stringToRPG_Item_CommodityBeverage(post_string());
+}
+
+RPG_Item_CommodityLight RPG_Item_CommodityLight_Type::post_RPG_Item_CommodityLight_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityLight_Type::post_RPG_Item_CommodityLight_Type"));
+
+  return RPG_Item_CommodityLightHelper::stringToRPG_Item_CommodityLight(post_string());
+}
+
+RPG_Item_CommodityUnion_Type::RPG_Item_CommodityUnion_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityUnion_Type::RPG_Item_CommodityUnion_Type"));
+
+  myCurrentCommodityUnion.discriminator = RPG_Item_CommodityUnion::INVALID;
+  myCurrentCommodityUnion.commoditybeverage = RPG_ITEM_COMMODITYBEVERAGE_INVALID;
+}
+
+void RPG_Item_CommodityUnion_Type::_characters(const ::xml_schema::ro_string& commodity_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityUnion_Type::_characters"));
+
+  // can be either:
+  // - RPG_Item_CommodityBeverage --> "COMMODITY_BEVERAGE_xxx"
+  // - RPG_Item_CommodityLight    --> "COMMODITY_LIGHT_xxx"
+  std::string type = commodity_in;
+  if (type.find(ACE_TEXT_ALWAYS_CHAR("COMMODITY_BEVERAGE_")) == 0)
+  {
+    myCurrentCommodityUnion.commoditybeverage = RPG_Item_CommodityBeverageHelper::stringToRPG_Item_CommodityBeverage(commodity_in);
+    myCurrentCommodityUnion.discriminator = RPG_Item_CommodityUnion::COMMODITYBEVERAGE;
+  } // end IF
+  else if (type.find(ACE_TEXT_ALWAYS_CHAR("COMMODITY_LIGHT_")) == 0)
+  {
+    myCurrentCommodityUnion.commoditylight = RPG_Item_CommodityLightHelper::stringToRPG_Item_CommodityLight(commodity_in);
+    myCurrentCommodityUnion.discriminator = RPG_Item_CommodityUnion::COMMODITYLIGHT;
+  } // end IF
+  else
+  {
+    // *TODO*
+    ACE_ASSERT(false);
+  } // end ELSE
+}
+
+RPG_Item_CommodityUnion RPG_Item_CommodityUnion_Type::post_RPG_Item_CommodityUnion_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityUnion_Type::post_RPG_Item_CommodityUnion_Type"));
+
+  RPG_Item_CommodityUnion result = myCurrentCommodityUnion;
+
+  // clear structure
+  myCurrentCommodityUnion.discriminator = RPG_Item_CommodityUnion::INVALID;
+  myCurrentCommodityUnion.commoditylight = RPG_ITEM_COMMODITYLIGHT_INVALID;
+
+  return result;
+}
+
 RPG_Item_Dictionary_Type::RPG_Item_Dictionary_Type(RPG_Item_WeaponDictionary_t* weaponDictionary_in,
                                                    RPG_Item_ArmorDictionary_t* armorDictionary_in)
  : myWeaponDictionary(weaponDictionary_in),
@@ -86,7 +160,7 @@ void RPG_Item_Dictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& weapon
   prop.baseStorePrice = weapon_in.baseStorePrice;
   prop.costToCreate = weapon_in.costToCreate;
 
-  myWeaponDictionary->insert(std::make_pair(weapon_in.weaponType, prop));
+  myWeaponDictionary->insert(std::make_pair(weapon_in.type, prop));
 }
 
 void RPG_Item_Dictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& armor_in)
@@ -107,7 +181,7 @@ void RPG_Item_Dictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& armor_in
   prop.baseStorePrice = armor_in.baseStorePrice;
   prop.costToCreate = armor_in.costToCreate;
 
-  myArmorDictionary->insert(std::make_pair(armor_in.armorType, prop));
+  myArmorDictionary->insert(std::make_pair(armor_in.type, prop));
 }
 
 void RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type()
@@ -323,6 +397,120 @@ RPG_Item_MagicalPrerequisites RPG_Item_MagicalPrerequisites_Type::post_RPG_Item_
   return result;
 }
 
+RPG_Item_CommodityPropertiesBase_Type::RPG_Item_CommodityPropertiesBase_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::RPG_Item_CommodityPropertiesBase_Type"));
+
+  // reset current properties
+  myCurrentProperties.baseWeight = 0;
+  myCurrentProperties.baseStorePrice.numGoldPieces = 0;
+  myCurrentProperties.baseStorePrice.numSilverPieces = 0;
+  myCurrentProperties.costToCreate.numGoldPieces = 0;
+  myCurrentProperties.costToCreate.numExperiencePoints = 0;
+  // -------------------------------------------------------------
+  myCurrentProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentProperties.prerequisites.minCasterLevel = 0;
+  // -------------------------------------------------------------
+  myCurrentProperties.type = RPG_ITEM_COMMODITYTYPE_INVALID;
+  myCurrentProperties.subtype.discriminator = RPG_Item_CommodityUnion::INVALID;
+  myCurrentProperties.subtype.commoditybeverage = RPG_ITEM_COMMODITYBEVERAGE_INVALID;
+}
+
+// void RPG_Item_CommodityPropertiesBase_Type::pre()
+// {
+//   RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::pre"));
+//
+// }
+
+void RPG_Item_CommodityPropertiesBase_Type::baseWeight(unsigned short baseWeight_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::baseWeight"));
+
+  myCurrentProperties.baseWeight = baseWeight_in;
+}
+
+void RPG_Item_CommodityPropertiesBase_Type::baseStorePrice(const RPG_Item_StorePrice& baseStorePrice_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::baseStorePrice"));
+
+  myCurrentProperties.baseStorePrice = baseStorePrice_in;
+}
+
+void RPG_Item_CommodityPropertiesBase_Type::costToCreate(const RPG_Item_CreationCost& creationCost_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::costToCreate"));
+
+  myCurrentProperties.costToCreate = creationCost_in;
+}
+
+RPG_Item_BaseProperties RPG_Item_CommodityPropertiesBase_Type::post_RPG_Item_BaseProperties_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::post_RPG_Item_BaseProperties_Type"));
+
+  RPG_Item_BaseProperties result = myCurrentProperties;
+
+  return result;
+}
+
+void RPG_Item_CommodityPropertiesBase_Type::aura(const RPG_Magic_School& school_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::aura"));
+
+  myCurrentProperties.aura = school_in;
+}
+
+void RPG_Item_CommodityPropertiesBase_Type::prerequisites(const RPG_Item_MagicalPrerequisites& prerequisites_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::prerequisites"));
+
+  myCurrentProperties.prerequisites = prerequisites_in;
+}
+
+RPG_Item_PropertiesBase RPG_Item_CommodityPropertiesBase_Type::post_RPG_Item_PropertiesBase_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::post_RPG_Item_PropertiesBase_Type"));
+
+  RPG_Item_PropertiesBase result = myCurrentProperties;
+
+  return result;
+}
+
+void RPG_Item_CommodityPropertiesBase_Type::type(const RPG_Item_CommodityType& commodityType_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::type"));
+
+  myCurrentProperties.type = commodityType_in;
+}
+
+void RPG_Item_CommodityPropertiesBase_Type::subtype(const RPG_Item_CommodityUnion& commoditySubType_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::subtype"));
+
+  myCurrentProperties.subtype = commoditySubType_in;
+}
+
+RPG_Item_CommodityPropertiesBase RPG_Item_CommodityPropertiesBase_Type::post_RPG_Item_CommodityPropertiesBase_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::RPG_Item_CommodityPropertiesBase_Type"));
+
+  RPG_Item_CommodityPropertiesBase result = myCurrentProperties;
+
+  myCurrentProperties.baseWeight = 0;
+  myCurrentProperties.baseStorePrice.numGoldPieces = 0;
+  myCurrentProperties.baseStorePrice.numSilverPieces = 0;
+  myCurrentProperties.costToCreate.numGoldPieces = 0;
+  myCurrentProperties.costToCreate.numExperiencePoints = 0;
+  // -------------------------------------------------------------
+  myCurrentProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
+  myCurrentProperties.prerequisites.minCasterLevel = 0;
+  // -------------------------------------------------------------
+  myCurrentProperties.type = RPG_ITEM_COMMODITYTYPE_INVALID;
+  myCurrentProperties.subtype.discriminator = RPG_Item_CommodityUnion::INVALID;
+  myCurrentProperties.subtype.commoditybeverage = RPG_ITEM_COMMODITYBEVERAGE_INVALID;
+
+  return result;
+}
+
 RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type"));
@@ -337,7 +525,7 @@ RPG_Item_WeaponPropertiesXML_Type::RPG_Item_WeaponPropertiesXML_Type()
   myCurrentWeaponProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
   myCurrentWeaponProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
-  myCurrentWeaponProperties.weaponType = RPG_ITEM_WEAPONTYPE_INVALID;
+  myCurrentWeaponProperties.type = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentWeaponProperties.category = RPG_ITEM_WEAPONCATEGORY_INVALID;
   myCurrentWeaponProperties.weaponClass = RPG_ITEM_WEAPONCLASS_INVALID;
   myCurrentWeaponProperties.baseStorePrice.numGoldPieces = 0;
@@ -416,11 +604,11 @@ RPG_Item_PropertiesBase RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_Propert
   return result;
 }
 
-void RPG_Item_WeaponPropertiesXML_Type::weaponType(const RPG_Item_WeaponType& weaponType_in)
+void RPG_Item_WeaponPropertiesXML_Type::type(const RPG_Item_WeaponType& weaponType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::weaponType"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_WeaponPropertiesXML_Type::type"));
 
-  myCurrentWeaponProperties.weaponType = weaponType_in;
+  myCurrentWeaponProperties.type = weaponType_in;
 }
 
 void RPG_Item_WeaponPropertiesXML_Type::category(const RPG_Item_WeaponCategory& category_in)
@@ -518,7 +706,7 @@ RPG_Item_WeaponPropertiesXML RPG_Item_WeaponPropertiesXML_Type::post_RPG_Item_We
   myCurrentWeaponProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
   myCurrentWeaponProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
-  myCurrentWeaponProperties.weaponType = RPG_ITEM_WEAPONTYPE_INVALID;
+  myCurrentWeaponProperties.type = RPG_ITEM_WEAPONTYPE_INVALID;
   myCurrentWeaponProperties.category = RPG_ITEM_WEAPONCATEGORY_INVALID;
   myCurrentWeaponProperties.weaponClass = RPG_ITEM_WEAPONCLASS_INVALID;
   myCurrentWeaponProperties.baseStorePrice.numGoldPieces = 0;
@@ -580,7 +768,7 @@ RPG_Item_ArmorPropertiesXML_Type::RPG_Item_ArmorPropertiesXML_Type()
   myCurrentArmorProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
   myCurrentArmorProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
-  myCurrentArmorProperties.armorType = RPG_ITEM_ARMORTYPE_INVALID;
+  myCurrentArmorProperties.type = RPG_ITEM_ARMORTYPE_INVALID;
   myCurrentArmorProperties.category = RPG_ITEM_ARMORCATEGORY_INVALID;
   myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
   myCurrentArmorProperties.baseStorePrice.numSilverPieces = 0;
@@ -653,11 +841,11 @@ RPG_Item_PropertiesBase RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_Properti
   return result;
 }
 
-void RPG_Item_ArmorPropertiesXML_Type::armorType(const RPG_Item_ArmorType& armorType_in)
+void RPG_Item_ArmorPropertiesXML_Type::type(const RPG_Item_ArmorType& armorType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::armorType"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_ArmorPropertiesXML_Type::type"));
 
-  myCurrentArmorProperties.armorType = armorType_in;
+  myCurrentArmorProperties.type = armorType_in;
 }
 
 void RPG_Item_ArmorPropertiesXML_Type::category(const RPG_Item_ArmorCategory& category_in)
@@ -734,7 +922,7 @@ RPG_Item_ArmorPropertiesXML RPG_Item_ArmorPropertiesXML_Type::post_RPG_Item_Armo
   myCurrentArmorProperties.aura = RPG_MAGIC_SCHOOL_INVALID;
   myCurrentArmorProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
-  myCurrentArmorProperties.armorType = RPG_ITEM_ARMORTYPE_INVALID;
+  myCurrentArmorProperties.type = RPG_ITEM_ARMORTYPE_INVALID;
   myCurrentArmorProperties.category = RPG_ITEM_ARMORCATEGORY_INVALID;
   myCurrentArmorProperties.baseStorePrice.numGoldPieces = 0;
   myCurrentArmorProperties.baseStorePrice.numSilverPieces = 0;

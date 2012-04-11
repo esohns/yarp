@@ -59,8 +59,7 @@ class RPG_Map_Export RPG_Map_ParserDriver
   virtual ~RPG_Map_ParserDriver();
 
   // target data, needs to be set PRIOR to invoking parse() !
-  void init(std::string*,         // target data: name
-            RPG_Map_Position_t*,  // target data: start position
+  void init(RPG_Map_Position_t*,  // target data: start position
             RPG_Map_Positions_t*, // target data: seed points
             RPG_Map_FloorPlan_t*, // target data: floor plan
             const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
@@ -107,7 +106,6 @@ class RPG_Map_Export RPG_Map_ParserDriver
   RPG_Map_FloorPlan_t* myCurrentPlan;
   RPG_Map_Positions_t* myCurrentSeedPoints;
   RPG_Map_Position_t*  myCurrentStartPosition;
-  std::string*         myCurrentName;
 
   // state
   unsigned int         myCurrentSizeX;

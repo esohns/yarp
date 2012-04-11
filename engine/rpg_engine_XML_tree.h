@@ -349,6 +349,23 @@ operator!= (const RPG_Engine_Player_XMLTree_Type&, const RPG_Engine_Player_XMLTr
 class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
 {
   public:
+  // name
+  // 
+  typedef ::xml_schema::string name_type;
+  typedef ::xsd::cxx::tree::traits< name_type, char > name_traits;
+
+  const name_type&
+  name () const;
+
+  name_type&
+  name ();
+
+  void
+  name (const name_type& x);
+
+  void
+  name (::std::auto_ptr< name_type > p);
+
   // monster
   // 
   typedef ::xml_schema::string monster_type;
@@ -416,11 +433,13 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
 
   // Constructors.
   //
-  RPG_Engine_Level_XMLTree_Type (const spawn_interval_type&,
+  RPG_Engine_Level_XMLTree_Type (const name_type&,
+                                 const spawn_interval_type&,
                                  const probability_type&,
                                  const map_type&);
 
-  RPG_Engine_Level_XMLTree_Type (::std::auto_ptr< spawn_interval_type >&,
+  RPG_Engine_Level_XMLTree_Type (const name_type&,
+                                 ::std::auto_ptr< spawn_interval_type >&,
                                  const probability_type&,
                                  const map_type&);
 
@@ -455,6 +474,7 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   parse (::xml_schema::istream< ACE_InputCDR >&,
          ::xml_schema::flags);
 
+  ::xsd::cxx::tree::one< name_type > name_;
   monster_sequence monster_;
   ::xsd::cxx::tree::one< spawn_interval_type > spawn_interval_;
   ::xsd::cxx::tree::one< probability_type > probability_;

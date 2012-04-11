@@ -10,5 +10,5 @@
 @rem # generate a scanner for map (text) files
 "E:\cygwin\bin\flex.exe" ./map_scanner.l
 
-move /Y rpg_map_scanner.cpp .\..
-move /Y rpg_map_scanner.h .\..
+@move /Y rpg_map_scanner.cpp .\..
+@move /Y rpg_map_scanner.h .\..

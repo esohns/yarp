@@ -30,6 +30,8 @@
 
 #include <rpg_player_base.h>
 
+#include <rpg_common_environment.h>
+
 #include <SDL/SDL.h>
 
 #include <ace/Time_Value.h>
@@ -70,11 +72,14 @@ typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t
 
 struct RPG_Engine_LevelMeta_t
 {
+  std::string            name;
+  RPG_Common_Environment environment;
+
   // roaming monsters
   // *TODO*: define "toughness"/environment
-  RPG_Monster_List_t monsters;
-  ACE_Time_Value     spawn_interval;
-  float              probability;
+  RPG_Monster_List_t     monsters;
+  ACE_Time_Value         spawn_interval;
+  float                  probability;
 };
 struct RPG_Engine_Level_t
 {

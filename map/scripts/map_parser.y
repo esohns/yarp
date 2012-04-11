@@ -17,8 +17,6 @@
 %define parser_class_name "RPG_Map_Parser"
 
 %code requires {
-#include <string>
-
 class RPG_Map_ParserDriver;
 typedef void* yyscan_t;
 }
@@ -38,14 +36,12 @@ typedef void* yyscan_t;
 
   // initialize the token value container
   $$.cval = 0;
-  $$.sval = NULL;
 }
 
 // symbols
 %union
 {
   char         cval;
-  std::string* sval;
 }
 
 %code {
@@ -60,24 +56,19 @@ typedef void* yyscan_t;
 #include <string>
 }
 
-%token <sval> NAME       "name"
 %token <cval> GLYPH      "glyph"
 %token <cval> END_OF_ROW "end_of_row"
 %token END 0             "end_of_file"
 
 %printer    { debug_stream() << $$; } <cval>
-%destructor { $$ = 0; } <cval>
-%printer    { debug_stream() << *$$; } <sval>
-%destructor { delete $$; $$ = NULL; } <sval>
+%destructor { $$ = 0; }               <cval>
 
 %%
 %start map;
-%nonassoc NAME END END_OF_ROW;
+%nonassoc END END_OF_ROW;
 %left GLYPH;
 
-map:    name glyphs "end_of_file" /* default */
-name:   "name"                    { *(driver->myCurrentName) = *$1;
-                                  };
+map:    glyphs "end_of_file"      /* default */
 glyphs:                           /* empty */
         | glyphs "glyph"          { switch ($2)
                                     {

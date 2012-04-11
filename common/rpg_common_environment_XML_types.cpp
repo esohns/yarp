@@ -43,6 +43,12 @@
 //
 
 void RPG_Common_Environment_Type_pskel::
+plane_parser (::RPG_Common_Plane_Type_pskel& p)
+{
+  this->plane_parser_ = &p;
+}
+
+void RPG_Common_Environment_Type_pskel::
 terrain_parser (::RPG_Common_Terrain_Type_pskel& p)
 {
   this->terrain_parser_ = &p;
@@ -61,34 +67,51 @@ time_parser (::RPG_Common_TimeOfDay_Type_pskel& p)
 }
 
 void RPG_Common_Environment_Type_pskel::
+lighting_parser (::RPG_Common_AmbientLighting_Type_pskel& p)
+{
+  this->lighting_parser_ = &p;
+}
+
+void RPG_Common_Environment_Type_pskel::
 outdoors_parser (::xml_schema::boolean_pskel& p)
 {
   this->outdoors_parser_ = &p;
 }
 
 void RPG_Common_Environment_Type_pskel::
-parsers (::RPG_Common_Terrain_Type_pskel& terrain,
+parsers (::RPG_Common_Plane_Type_pskel& plane,
+         ::RPG_Common_Terrain_Type_pskel& terrain,
          ::RPG_Common_Climate_Type_pskel& climate,
          ::RPG_Common_TimeOfDay_Type_pskel& time,
+         ::RPG_Common_AmbientLighting_Type_pskel& lighting,
          ::xml_schema::boolean_pskel& outdoors)
 {
+  this->plane_parser_ = &plane;
   this->terrain_parser_ = &terrain;
   this->climate_parser_ = &climate;
   this->time_parser_ = &time;
+  this->lighting_parser_ = &lighting;
   this->outdoors_parser_ = &outdoors;
 }
 
 RPG_Common_Environment_Type_pskel::
 RPG_Common_Environment_Type_pskel ()
-: terrain_parser_ (0),
+: plane_parser_ (0),
+  terrain_parser_ (0),
   climate_parser_ (0),
   time_parser_ (0),
+  lighting_parser_ (0),
   outdoors_parser_ (0)
 {
 }
 
 // RPG_Common_Environment_Type_pskel
 //
+
+void RPG_Common_Environment_Type_pskel::
+plane (const RPG_Common_Plane&)
+{
+}
 
 void RPG_Common_Environment_Type_pskel::
 terrain (const RPG_Common_Terrain&)
@@ -106,6 +129,11 @@ time (const RPG_Common_TimeOfDay&)
 }
 
 void RPG_Common_Environment_Type_pskel::
+lighting (const RPG_Common_AmbientLighting&)
+{
+}
+
+void RPG_Common_Environment_Type_pskel::
 outdoors (bool)
 {
 }
@@ -119,6 +147,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
   if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
     return true;
+
+  if (n == "plane" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->plane_parser_;
+
+    if (this->plane_parser_)
+      this->plane_parser_->pre ();
+
+    return true;
+  }
 
   if (n == "terrain" && ns == "urn:rpg")
   {
@@ -150,6 +188,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "lighting" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->lighting_parser_;
+
+    if (this->lighting_parser_)
+      this->lighting_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -159,6 +207,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 {
   if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
     return true;
+
+  if (n == "plane" && ns == "urn:rpg")
+  {
+    if (this->plane_parser_)
+      this->plane (this->plane_parser_->post_RPG_Common_Plane_Type ());
+
+    return true;
+  }
 
   if (n == "terrain" && ns == "urn:rpg")
   {
@@ -180,6 +236,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->time_parser_)
       this->time (this->time_parser_->post_RPG_Common_TimeOfDay_Type ());
+
+    return true;
+  }
+
+  if (n == "lighting" && ns == "urn:rpg")
+  {
+    if (this->lighting_parser_)
+      this->lighting (this->lighting_parser_->post_RPG_Common_AmbientLighting_Type ());
 
     return true;
   }

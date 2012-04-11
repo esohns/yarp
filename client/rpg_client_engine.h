@@ -91,6 +91,8 @@ class RPG_Client_Export RPG_Client_Engine
   void mode(const RPG_Client_SelectionMode&); // set mode
   //void clear(const RPG_Client_SelectionMode&); // clear mode
   bool hasMode(const RPG_Client_SelectionMode&) const; // mode
+  bool hasSeen(const RPG_Engine_EntityID_t&,     // entity
+               const RPG_Map_Position_t&) const; // position
 
   void centerOnActive(const bool&); // keep active player centered ?
   bool getCenterOnActive() const; // return value: keep active player centered ?
@@ -125,8 +127,9 @@ class RPG_Client_Export RPG_Client_Engine
   GladeXML*                       myWidgets;
 
   RPG_Client_Actions_t            myActions;
-  RPG_Client_SelectionMode        mySelectionMode;
 
+  RPG_Client_SelectionMode        mySelectionMode;
+  RPG_Client_SeenPositions_t      mySeenPositions;
   bool                            myCenterOnActivePlayer;
 };
 

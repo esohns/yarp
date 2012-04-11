@@ -37,19 +37,6 @@
 class RPG_Map_Export RPG_Map_Common_Tools
 {
  public:
-  static void create(const std::string&,                // name
-                     const RPG_Map_FloorPlan_Config_t&, // floor plan config
-                     RPG_Map_t&);                       // return value: map
-  static bool load(const std::string&, // FQ filename
-                   RPG_Map_t&,         // return value: map
-                   const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
-                   const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
-  static bool save(const std::string&, // FQ filename
-                   const RPG_Map_t&);  // map
-  static void print(const RPG_Map_t&); // map
-  static std::string info(const RPG_Map_t&); // map
-  static void dump(const RPG_Map_t&); // map
-
   static unsigned int distance(const RPG_Map_Position_t&,  // position 1
                                const RPG_Map_Position_t&); // position 2
   static bool isAdjacent(const RPG_Map_Position_t&,  // position 1
@@ -64,14 +51,28 @@ class RPG_Map_Export RPG_Map_Common_Tools
                                               const RPG_Map_FloorPlan_t&);
   static bool isFloor(const RPG_Map_Position_t&,
                       const RPG_Map_FloorPlan_t&);
+
   // *NOTE*: relies on a consistent notion of "outside" set for all doors !
   static bool isInsideRoom(const RPG_Map_Position_t&,
                            const RPG_Map_FloorPlan_t&);
+  static bool roomsAreSquare(const RPG_Map_t&); // map
 
   static bool hasLineOfSight(const RPG_Map_Position_t&,   // start position
                              const RPG_Map_Position_t&,   // end position
                              const RPG_Map_Positions_t&); // obstacles
 
+  static void createFloorPlan(const unsigned int&,   // map dimension x
+                              const unsigned int&,   // map dimension y
+                              const unsigned int&,   // #areas (==> "rooms")
+                              const bool&,           // rooms to be square ?
+                              const bool&,           // maximize rooms ?
+                              const unsigned int&,   // min. room area (0: don't care)
+                              const bool&,           // want doors (==> "rooms") ?
+                              const bool&,           // want corridors (between rooms) ?
+                              const bool&,           // doors to fill positions ?
+                              const unsigned int&,   // max. #doors/room
+                              RPG_Map_Positions_t&,  // return value: seed positions
+                              RPG_Map_FloorPlan_t&); // return value: floor plan
   static void buildCorridor(const RPG_Map_Path_t&, // path
                             RPG_Map_Positions_t&); // return value: corridor
   static void buildSquare(const RPG_Map_Position_t&, // center
@@ -110,10 +111,15 @@ class RPG_Map_Export RPG_Map_Common_Tools
       (!(__y.second < __x.second) && (__x.first < __y.first)));
     }
   };
-  typedef std::set<RPG_Map_Position_t, position_compare> RPG_Map_Zone_t;
-  typedef RPG_Map_Zone_t::const_iterator RPG_Map_ZoneConstIterator_t;
-  typedef RPG_Map_Zone_t::iterator RPG_Map_ZoneIterator_t;
-  static void dump(const RPG_Map_Zone_t&); // zone
+  typedef std::set<RPG_Map_Position_t, position_compare> RPG_Map_Area_t;
+  typedef RPG_Map_Area_t::const_iterator RPG_Map_AreaConstIterator_t;
+  typedef RPG_Map_Area_t::iterator RPG_Map_AreaIterator_t;
+  struct RPG_Map_Zone_t
+  {
+    RPG_Map_Area_t area;
+    RPG_Map_Position_t seed;
+  };
+  static void dump(const RPG_Map_Area_t&); // zone
   typedef std::list<RPG_Map_Zone_t> RPG_Map_Partition_t;
   typedef RPG_Map_Partition_t::const_iterator RPG_Map_PartitionConstIterator_t;
   typedef RPG_Map_Partition_t::iterator RPG_Map_PartitionIterator_t;
@@ -122,7 +128,6 @@ class RPG_Map_Export RPG_Map_Common_Tools
                             const unsigned int&,   // #partitions
                             const bool&,           // resolve conflicts ?
                             RPG_Map_Positions_t&,  // return value: conflicts
-                            RPG_Map_Positions_t&,  // return value: seed points
                             RPG_Map_Partition_t&); // return value: partition
   static void displayPartition(const unsigned int&,         // dimension x
                                const unsigned int&,         // dimension y
@@ -130,9 +135,9 @@ class RPG_Map_Export RPG_Map_Common_Tools
                                const RPG_Map_Positions_t&,  // seed points
                                const RPG_Map_Partition_t&); // partition
 
-  typedef std::list<RPG_Map_Zone_t> RPG_Map_ZoneList_t;
-  typedef RPG_Map_ZoneList_t::const_iterator RPG_Map_ZoneListConstIterator_t;
-  typedef RPG_Map_ZoneList_t::iterator RPG_Map_ZoneListIterator_t;
+  typedef std::list<RPG_Map_Area_t> RPG_Map_AreaList_t;
+  typedef RPG_Map_AreaList_t::const_iterator RPG_Map_AreaListConstIterator_t;
+  typedef RPG_Map_AreaList_t::iterator RPG_Map_AreaListIterator_t;
   typedef std::list<RPG_Map_Positions_t> RPG_Map_PositionsList_t;
   typedef RPG_Map_PositionsList_t::iterator RPG_Map_PositionsListIterator_t;
   struct RPG_Map_Square_t
@@ -146,7 +151,7 @@ class RPG_Map_Export RPG_Map_Common_Tools
                                      const RPG_Map_Position_t&); // position 2
   static bool positionInSquare(const RPG_Map_Position_t&, // position
                                const RPG_Map_Square_t&);  // square
-  static void findMaxSquare(const RPG_Map_Zone_t&, // room
+  static void findMaxSquare(const RPG_Map_Area_t&, // room
                             RPG_Map_Square_t&);    // return value: max square
   static void makeRooms(const unsigned int&,        // dimension x
                         const unsigned int&,        // dimension y
@@ -156,39 +161,39 @@ class RPG_Map_Export RPG_Map_Common_Tools
                         const bool&,                // crop areas ?
                         const bool&,                // maximize rooms ?
                         const unsigned int&,        // min. room area (0: don't care)
-                        RPG_Map_ZoneList_t&,        // return value: room(s)
-                        RPG_Map_ZoneList_t&);       // return value: boundary(s)
+                        RPG_Map_AreaList_t&,        // return value: room(s)
+                        RPG_Map_AreaList_t&);       // return value: boundary(s)
   static void displayRooms(const unsigned int&,        // dimension x
                            const unsigned int&,        // dimension y
-                           const RPG_Map_ZoneList_t&); // room(s)
+                           const RPG_Map_AreaList_t&); // room(s)
   static void displayRoom(const unsigned int&,    // dimension x
                           const unsigned int&,    // dimension y
-                          const RPG_Map_Zone_t&); // room
+                          const RPG_Map_Area_t&); // room
 
   typedef RPG_Map_Direction ORIGIN;
-  static bool turn(const RPG_Map_Zone_t&,     // map
+  static bool turn(const RPG_Map_Area_t&,     // map
                    const RPG_Map_Position_t&, // position
                    const ORIGIN&,             // origin
                    const bool&,               // turn clockwise ?
                    bool&,                     // return value: is corner ? (else intersection)
                    RPG_Map_Direction&);       // return value: next direction
-  static void findDoorPositions(const RPG_Map_Zone_t&,    // room (shell !)
+  static void findDoorPositions(const RPG_Map_Area_t&,    // room (shell !)
                                 const bool&,              // doors to fill positions ?
                                 RPG_Map_PositionList_t&); // suitable position(s)
   static void makeDoors(const unsigned int&,       // dimension x
                         const unsigned int&,       // dimension y
-                        const RPG_Map_ZoneList_t&, // room boundary(s)
+                        const RPG_Map_AreaList_t&, // room boundary(s)
                         const bool&,               // doors to fill positions ?
                         const unsigned int&,       // max. #doors/room
-                        RPG_Map_ZoneList_t&);      // return value: doors
+                        RPG_Map_AreaList_t&);      // return value: doors
 
-  static bool intersect(const RPG_Map_Zone_t&,     // map
+  static bool intersect(const RPG_Map_Area_t&,     // map
                         const RPG_Map_Position_t&, // position
                         const ORIGIN&,             // origin
                         RPG_Map_Directions_t&,     // possible direction(s)
                         RPG_Map_Direction&);       // next direction, if NOT an intersection
   // *NOTE*: proceeds in clockwise direction
-  static void crawlToPosition(const RPG_Map_Zone_t&,     // map
+  static void crawlToPosition(const RPG_Map_Area_t&,     // map
                               const RPG_Map_Position_t&, // origin
                               const RPG_Map_Position_t&, // target
                               const ORIGIN&,             // starting origin
@@ -197,42 +202,29 @@ class RPG_Map_Export RPG_Map_Common_Tools
   // --> (0,0), (0,1), ..., (0,dimy-1), (1,0), ..., (1,dimy-1), ..., (dimx-1,dimy-1)
   typedef std::set<RPG_Map_Position_t> RPG_Map_AltPositions_t;
   typedef RPG_Map_AltPositions_t::const_iterator RPG_Map_AltPositionsConstIterator_t;
-  static void crop(RPG_Map_Zone_t&); // room
+  static void crop(RPG_Map_Area_t&); // room
 //   static void cropSquareBoundary(RPG_Map_Zone_t&); // room
-  static RPG_Map_Direction door2exitDirection(const RPG_Map_Zone_t&,      // room
+  static RPG_Map_Direction door2exitDirection(const RPG_Map_Area_t&,      // room
                                               const RPG_Map_Position_t&); // door
   static void connectRooms(const unsigned int&,       // dimension x
                            const unsigned int&,       // dimension y
-                           const RPG_Map_ZoneList_t&, // boundary(s)
-                           const RPG_Map_ZoneList_t&, // doors
-                           const RPG_Map_ZoneList_t&, // room(s) // *TODO*: faster in/out tests ?
+                           const RPG_Map_AreaList_t&, // boundary(s)
+                           const RPG_Map_AreaList_t&, // doors
+                           const RPG_Map_AreaList_t&, // room(s) // *TODO*: faster in/out tests ?
                            RPG_Map_FloorPlan_t&);     // return value: doors & walls
   static void displayCorridors(const unsigned int&,        // dimension x
                                const unsigned int&,        // dimension y
-                               const RPG_Map_ZoneList_t&,  // rooms
-                               const RPG_Map_ZoneList_t&,  // doors
-                               const RPG_Map_ZoneList_t&); // corridors
+                               const RPG_Map_AreaList_t&,  // rooms
+                               const RPG_Map_AreaList_t&,  // doors
+                               const RPG_Map_AreaList_t&); // corridors
 
   static void floodFill(const RPG_Map_Position_t&,  // position
                         const RPG_Map_FloorPlan_t&, // floor plan
                         RPG_Map_Positions_t&);      // return value: (filled) area
 
-  static void createFloorPlan(const unsigned int&,   // map dimension x
-                              const unsigned int&,   // map dimension y
-                              const unsigned int&,   // #areas (==> "rooms")
-                              const bool&,           // rooms to be square ?
-                              const bool&,           // maximize rooms ?
-                              const unsigned int&,   // min. room area (0: don't care)
-                              const bool&,           // want doors (==> "rooms") ?
-                              const bool&,           // want corridors (between rooms) ?
-                              const bool&,           // doors to fill positions ?
-                              const unsigned int&,   // max. #doors/room
-                              RPG_Map_Positions_t&,  // return value: seed positions
-                              RPG_Map_FloorPlan_t&); // return value: floor plan
-
   static bool isSquare(const RPG_Map_Positions_t&); // area
-  static void perimeter(const RPG_Map_Zone_t&, // room
-                        RPG_Map_Zone_t&);      // return value: perimeter
+  static void perimeter(const RPG_Map_Area_t&, // room
+                        RPG_Map_Area_t&);      // return value: perimeter
   static unsigned int countAdjacentDoors(const RPG_Map_Positions_t&,  // area
                                          const RPG_Map_FloorPlan_t&); // floor plan
 };

@@ -22,7 +22,6 @@
 %option full backup perf-report verbose
 %option outfile="rpg_map_scanner.cpp" header-file="rpg_map_scanner.h" prefix="RPG_Map_Scanner_"
 
-NAME          [[:print:]]
 /* currently supported glyphs:
 ' ': unmapped
 '.': floor
@@ -39,7 +38,6 @@ SEED           [@]
 START          [X]
 GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 
-%s             name
 %s             row
 %s             last_row
 
@@ -54,8 +52,6 @@ GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 %}
 
 <INITIAL>{
-"["{NAME}*/"]\n"           { BEGIN(name);
-                             yyless(0); }
 {GLYPH}+/\n                { BEGIN(row);
                              yyless(0); }
 {GLYPH}*                   { BEGIN(last_row);
@@ -63,17 +59,6 @@ GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
 \n                         { yylloc->step();
                              (*line_count)++; }
 } // end <INITIAL>
-<name>{
-"["{NAME}*/"]"             { yylloc->step();
-                             ACE_NEW_NORETURN(yylval->sval,
-                                              std::string);
-                             yylval->sval->append(yytext, yyleng);
-                             yylval->sval->erase(0, 1);
-                             return yy::RPG_Map_Parser::token::NAME; }
-"]\n"                      { yylloc->step();
-                             BEGIN(row);
-                             (*line_count)++; }
-} // end <name>
 <row>{
 {GLYPH}                    { yylloc->step();
                              yylval->cval = yytext[0];

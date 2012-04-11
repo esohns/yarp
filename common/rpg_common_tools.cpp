@@ -58,6 +58,7 @@ RPG_Common_PlaneToStringTable_t RPG_Common_PlaneHelper::myRPG_Common_PlaneToStri
 RPG_Common_TerrainToStringTable_t RPG_Common_TerrainHelper::myRPG_Common_TerrainToStringTable;
 RPG_Common_ClimateToStringTable_t RPG_Common_ClimateHelper::myRPG_Common_ClimateToStringTable;
 RPG_Common_TimeOfDayToStringTable_t RPG_Common_TimeOfDayHelper::myRPG_Common_TimeOfDayToStringTable;
+RPG_Common_AmbientLightingToStringTable_t RPG_Common_AmbientLightingHelper::myRPG_Common_AmbientLightingToStringTable;
 
 void
 RPG_Common_Tools::initStringConversionTables()
@@ -85,6 +86,7 @@ RPG_Common_Tools::initStringConversionTables()
   RPG_Common_TerrainHelper::init();
   RPG_Common_ClimateHelper::init();
   RPG_Common_TimeOfDayHelper::init();
+  RPG_Common_AmbientLightingHelper::init();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Common_Tools: initialized string conversion tables...\n")));

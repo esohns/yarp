@@ -29,6 +29,56 @@
 /**
   @author Erik Sohns <erik.sohns@web.de>
 */
+class RPG_Item_Export RPG_Item_Type_Type
+ : public RPG_Item_Type_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Item_Type post_RPG_Item_Type_Type();
+};
+
+class RPG_Item_Export RPG_Item_CommodityType_Type
+ : public RPG_Item_CommodityType_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Item_CommodityType post_RPG_Item_CommodityType_Type();
+};
+
+class RPG_Item_Export RPG_Item_CommodityBeverage_Type
+ : public RPG_Item_CommodityBeverage_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Item_CommodityBeverage post_RPG_Item_CommodityBeverage_Type();
+};
+
+class RPG_Item_Export RPG_Item_CommodityLight_Type
+ : public RPG_Item_CommodityLight_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+//   virtual void pre();
+  virtual RPG_Item_CommodityLight post_RPG_Item_CommodityLight_Type();
+};
+
+class RPG_Item_Export RPG_Item_CommodityUnion_Type
+  : public RPG_Item_CommodityUnion_Type_pskel
+{
+  public:
+    RPG_Item_CommodityUnion_Type();
+
+//   virtual void pre();
+    virtual void _characters(const ::xml_schema::ro_string&);
+    virtual RPG_Item_CommodityUnion post_RPG_Item_CommodityUnion_Type();
+
+  private:
+    RPG_Item_CommodityUnion myCurrentCommodityUnion;
+};
+
 class RPG_Item_Export RPG_Item_WeaponCategory_Type
  : public RPG_Item_WeaponCategory_Type_pskel,
    public ::xml_schema::string_pimpl
@@ -117,6 +167,20 @@ class RPG_Item_Export RPG_Item_CreationCost_Type
 //   RPG_Item_BaseProperties myBaseProperties;
 // };
 
+class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
+ : public RPG_Item_MagicalPrerequisites_Type_pskel
+{
+ public:
+  RPG_Item_MagicalPrerequisites_Type();
+
+//   virtual void pre();
+  virtual void minCasterLevel(unsigned char);
+  virtual RPG_Item_MagicalPrerequisites post_RPG_Item_MagicalPrerequisites_Type();
+
+ private:
+  RPG_Item_MagicalPrerequisites myCurrentPrerequisites;
+};
+
 // class RPG_Item_PropertiesBase_Type
 //  : public RPG_Item_PropertiesBase_Type_pskel
 // {
@@ -132,19 +196,30 @@ class RPG_Item_Export RPG_Item_CreationCost_Type
 //   RPG_Item_PropertiesBase myPropertiesBase;
 // };
 
-class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
- : public RPG_Item_MagicalPrerequisites_Type_pskel
-{
- public:
-  RPG_Item_MagicalPrerequisites_Type();
+ class RPG_Item_Export RPG_Item_CommodityPropertiesBase_Type
+  : public RPG_Item_CommodityPropertiesBase_Type_pskel
+ {
+  public:
+   RPG_Item_CommodityPropertiesBase_Type();
 
+ //   virtual void pre();
 //   virtual void pre();
-  virtual void minCasterLevel(unsigned char);
-  virtual RPG_Item_MagicalPrerequisites post_RPG_Item_MagicalPrerequisites_Type();
+  virtual void baseWeight(unsigned short);
+  virtual void baseStorePrice(const RPG_Item_StorePrice&);
+  virtual void costToCreate(const RPG_Item_CreationCost&);
+  virtual RPG_Item_BaseProperties post_RPG_Item_BaseProperties_Type();
+  // ------------------------------------------------------------
+  virtual void aura(const RPG_Magic_School&);
+  virtual void prerequisites(const RPG_Item_MagicalPrerequisites&);
+  virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
+  // ------------------------------------------------------------
+   virtual void type(const RPG_Item_CommodityType&);
+   virtual void subtype(const RPG_Item_CommodityUnion&);
+   virtual RPG_Item_CommodityPropertiesBase post_RPG_Item_CommodityPropertiesBase_Type();
 
- private:
-  RPG_Item_MagicalPrerequisites myCurrentPrerequisites;
-};
+  private:
+   RPG_Item_CommodityPropertiesBase myCurrentProperties;
+ };
 
 // class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type
 //  : public RPG_Item_WeaponPropertiesBase_Type_pskel
@@ -153,7 +228,7 @@ class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
 //   RPG_Item_WeaponPropertiesBase_Type();
 //
 // //   virtual void pre();
-//   virtual void weaponType(const RPG_Item_WeaponType&);
+//   virtual void type(const RPG_Item_WeaponType&);
 //   virtual void category(const RPG_Item_WeaponCategory&);
 //   virtual void weaponClass(const RPG_Item_WeaponClass&);
 //   virtual void baseDamage(const RPG_Item_Damage&);
@@ -185,7 +260,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_Type
   virtual void prerequisites(const RPG_Item_MagicalPrerequisites&);
   virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
   // ------------------------------------------------------------
-  virtual void weaponType(const RPG_Item_WeaponType&);
+  virtual void type(const RPG_Item_WeaponType&);
   virtual void category(const RPG_Item_WeaponCategory&);
   virtual void weaponClass(const RPG_Item_WeaponClass&);
   virtual void baseDamage(const RPG_Item_Damage&);
@@ -229,7 +304,7 @@ class RPG_Item_Export RPG_Item_ArmorType_Type
 //   RPG_Item_ArmorPropertiesBase_Type();
 //
 // //   virtual void pre();
-//   virtual void armorType(const RPG_Item_ArmorType&);
+//   virtual void type(const RPG_Item_ArmorType&);
 //   virtual void category(const RPG_Item_ArmorCategory&);
 //   virtual void baseBonus(unsigned char);
 //   virtual void maxDexterityBonus(unsigned char);
@@ -258,7 +333,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type
   virtual void prerequisites(const RPG_Item_MagicalPrerequisites&);
   virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
   // ------------------------------------------------------------
-  virtual void armorType(const RPG_Item_ArmorType&);
+  virtual void type(const RPG_Item_ArmorType&);
   virtual void category(const RPG_Item_ArmorCategory&);
   virtual void baseBonus(unsigned char);
   virtual void maxDexterityBonus(unsigned char);

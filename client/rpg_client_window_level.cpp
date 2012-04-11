@@ -60,9 +60,10 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
 //   myCurrentFloorSet(),
 //   myCurrentFloorEdgeSet(),
 //   myCurrentWallSet(),
-   myCurrentCeilingTile(NULL),
+   myCeilingTile(NULL),
 //   myCurrentDoorSet(),
-   myCurrentOffMapTile(NULL),
+   myOffMapTile(NULL),
+   myInvisibleTile(NULL),
 //   myFloorEdgeTiles(),
 //   myWallTiles(),
 //   myDoorTiles(),
@@ -125,10 +126,20 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_OFF_MAP;
-  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                               true,   // convert to display format
-                                                               false); // don't cache
-  if (!myCurrentOffMapTile)
+  myOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                        true,   // convert to display format
+                                                        false); // don't cache
+  if (!myOffMapTile)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+
+  // load tile for invisible areas
+  type.tilegraphic = TILE_FLOOR_INVISIBLE;
+  myInvisibleTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                           true,   // convert to display format
+                                                           false); // don't cache
+  if (!myInvisibleTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
                RPG_Graphics_Common_Tools::typeToString(type).c_str()));
@@ -192,11 +203,14 @@ RPG_Client_WindowLevel::~RPG_Client_WindowLevel()
   if (myCurrentDoorSet.broken.surface)
     SDL_FreeSurface(myCurrentDoorSet.broken.surface);
 
-  if (myCurrentCeilingTile)
-    SDL_FreeSurface(myCurrentCeilingTile);
+  if (myCeilingTile)
+    SDL_FreeSurface(myCeilingTile);
 
-  if (myCurrentOffMapTile)
-    SDL_FreeSurface(myCurrentOffMapTile);
+  if (myOffMapTile)
+    SDL_FreeSurface(myOffMapTile);
+
+  if (myInvisibleTile)
+    SDL_FreeSurface(myInvisibleTile);
 }
 
 void
@@ -385,8 +399,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
 
   // sanity check(s)
-  ACE_ASSERT(myCurrentOffMapTile);
-  ACE_ASSERT(myCurrentCeilingTile);
+  ACE_ASSERT(myCeilingTile);
+  ACE_ASSERT(myOffMapTile);
+  ACE_ASSERT(myInvisibleTile);
   ACE_ASSERT(targetSurface);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
@@ -468,6 +483,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
     unsigned int floor_column_index = 0;
     RPG_Graphics_Position_t screen_position = std::make_pair(0, 0);
     RPG_Map_Size_t map_size = myEngine->getSize();
+    RPG_Map_Element current_element;
   //   // debug info
   //   SDL_Rect rect;
   //   std::ostringstream converter;
@@ -500,15 +516,13 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
            j++)
       {
         current_map_position.first = myView.first + j;
-        // off the map ? --> continue
+        // step0: off the map ? --> continue
         if ((current_map_position.first < 0) ||
             (current_map_position.first >= static_cast<int>(map_size.first)))
           continue;
 
-        // floor tile rotation
-        floor_iterator = begin_row;
-        //std::advance(floor_iterator, current_map_position.first % myCurrentFloorSet.columns);
-        std::advance(floor_iterator, (myCurrentFloorSet.rows * (current_map_position.first % myCurrentFloorSet.columns)));
+        current_element = myEngine->getElement(current_map_position);
+        ACE_ASSERT(current_element != MAPELEMENT_INVALID);
 
         // map --> screen coordinates
   //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
@@ -518,13 +532,13 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                                                 myView);
 
         // step1: unmapped areas
-        if ((myEngine->getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
+        if ((current_element == MAPELEMENT_UNMAPPED) ||
             // *NOTE*: walls are drawn together with the floor...
-            (myEngine->getElement(current_map_position) == MAPELEMENT_WALL))
+            (current_element == MAPELEMENT_WALL))
         {
           RPG_Graphics_Surface::put(screen_position.first,
                                     screen_position.second,
-                                    *myCurrentOffMapTile,
+                                    *myOffMapTile,
                                     targetSurface);
 
   //         // off the map ? --> continue
@@ -540,8 +554,13 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         } // end IF
 
         // step2: floor
-        if ((myEngine->getElement(current_map_position) == MAPELEMENT_FLOOR) ||
-            (myEngine->getElement(current_map_position) == MAPELEMENT_DOOR))
+        // floor tile rotation
+        floor_iterator = begin_row;
+        //std::advance(floor_iterator, current_map_position.first % myCurrentFloorSet.columns);
+        std::advance(floor_iterator, (myCurrentFloorSet.rows * (current_map_position.first % myCurrentFloorSet.columns)));
+
+        if ((current_element == MAPELEMENT_FLOOR) ||
+            (current_element == MAPELEMENT_DOOR))
         {
           RPG_Graphics_Surface::put(screen_position.first,
                                     screen_position.second,
@@ -824,6 +843,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         } // end IF
 
         // step8: ceiling
+        // *TODO*: this is static information: compute once / level and use a lookup-table here...
         if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
                                                 *myEngine))
         {
@@ -832,7 +852,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                      (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
                                                                           : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8 : 2))),
-                                    *myCurrentCeilingTile,
+                                    *myCeilingTile,
                                     targetSurface);
         } // end IF
       } // end FOR
@@ -1394,47 +1414,49 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           }
           case MAPELEMENT_FLOOR:
           {
-            if (myClientAction.entity_id &&
-                myEngine->isValid(map_position))
+            if ((myClientAction.entity_id == 0) ||
+                !myEngine->isValid(map_position))
+              break;
+
+            player_action.target = myEngine->hasEntity(map_position);
+            // self ?
+            if (player_action.target == myClientAction.entity_id)
+              break;
+
+            // monster ?
+            if (player_action.target &&
+                myEngine->isMonster(player_action.target) &&
+                RPG_Map_Common_Tools::isAdjacent(myEngine->getPosition(myClientAction.entity_id),
+                                                  map_position))
             {
-              // monster ?
-              player_action.target = myEngine->hasEntity(map_position);
-              if (player_action.target &&
-                  myEngine->isMonster(player_action.target) &&
-                  RPG_Map_Common_Tools::isAdjacent(myEngine->getPosition(myClientAction.entity_id),
-                                                   map_position))
-              {
-                // --> attack monster
-                player_action.command = COMMAND_ATTACK;
-                player_action.position = map_position;
-                myEngine->action(myClientAction.entity_id, player_action);
-
-                break;
-              } // end IF
-
-              // (try to) travel to this position
-              player_action.command = COMMAND_TRAVEL;
+              // --> attack monster
+              player_action.command = COMMAND_ATTACK;
               player_action.position = map_position;
-              if (myClient->hasMode(SELECTIONMODE_PATH) &&
-                  !myClientAction.path.empty())
-              {
-                // sanity checks
-                ACE_ASSERT(myClientAction.path.front().first == myEngine->getPosition(myClientAction.entity_id));
-                ACE_ASSERT(myClientAction.path.back().first == player_action.position);
-
-                // path exists --> reuse it
-                player_action.path = myClientAction.path;
-                player_action.path.pop_front();
-              } // end IF
               myEngine->action(myClientAction.entity_id, player_action);
 
-              if (myClient->hasMode(SELECTIONMODE_PATH))
-              {
-                // restore/clear old tile highlight background
-                myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
-                myClient->action(myClientAction);
-              } // end IF
+              break;
             } // end IF
+
+            // (try to) travel to this position
+            player_action.command = COMMAND_TRAVEL;
+            player_action.position = map_position;
+            if (myClient->hasMode(SELECTIONMODE_PATH) &&
+                !myClientAction.path.empty())
+            {
+              // sanity checks
+              ACE_ASSERT(myClientAction.path.front().first == myEngine->getPosition(myClientAction.entity_id));
+              ACE_ASSERT(myClientAction.path.back().first == player_action.position);
+
+              // path exists --> reuse it
+              player_action.path = myClientAction.path;
+              player_action.path.pop_front();
+
+              // restore/clear old tile highlight background
+              myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+              myClient->action(myClientAction);
+            } // end IF
+            player_action.target = 0;
+            myEngine->action(myClientAction.entity_id, player_action);
 
             break;
           }
@@ -1743,20 +1765,20 @@ RPG_Client_WindowLevel::initCeiling()
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::initCeiling"));
 
   // sanity check
-  if (myCurrentCeilingTile)
+  if (myCeilingTile)
   {
-    SDL_FreeSurface(myCurrentCeilingTile);
-    myCurrentCeilingTile = NULL;
+    SDL_FreeSurface(myCeilingTile);
+    myCeilingTile = NULL;
   } // end IF
 
   // load tile for ceiling
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_CEILING;
-  myCurrentCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                                true,   // convert to display format
-                                                                false); // don't cache
-  if (!myCurrentCeilingTile)
+  myCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                                         true,   // convert to display format
+                                                         false); // don't cache
+  if (!myCeilingTile)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
@@ -1766,7 +1788,7 @@ RPG_Client_WindowLevel::initCeiling()
   } // end IF
 
   SDL_Surface* shaded_ceiling = NULL;
-  shaded_ceiling = RPG_Graphics_Surface::shade(*myCurrentCeilingTile,
+  shaded_ceiling = RPG_Graphics_Surface::shade(*myCeilingTile,
                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
@@ -1775,14 +1797,14 @@ RPG_Client_WindowLevel::initCeiling()
                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
     // clean up
-    SDL_FreeSurface(myCurrentCeilingTile);
-    myCurrentCeilingTile = NULL;
+    SDL_FreeSurface(myCeilingTile);
+    myCeilingTile = NULL;
 
     return;
   } // end IF
 
-  SDL_FreeSurface(myCurrentCeilingTile);
-  myCurrentCeilingTile = shaded_ceiling;
+  SDL_FreeSurface(myCeilingTile);
+  myCeilingTile = shaded_ceiling;
 }
 
 void

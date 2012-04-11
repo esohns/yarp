@@ -100,6 +100,12 @@ popd</Command>
     <ClInclude Include="rpg_item_armortype.h" />
     <ClInclude Include="rpg_item_base.h" />
     <ClInclude Include="rpg_item_baseproperties.h" />
+    <ClInclude Include="rpg_item_commodity.h" />
+    <ClInclude Include="rpg_item_commoditybeverage.h" />
+    <ClInclude Include="rpg_item_commoditylight.h" />
+    <ClInclude Include="rpg_item_commoditypropertiesbase.h" />
+    <ClInclude Include="rpg_item_commoditytype.h" />
+    <ClInclude Include="rpg_item_commodityunion.h" />
     <ClInclude Include="rpg_item_common.h" />
     <ClInclude Include="rpg_item_common_tools.h" />
     <ClInclude Include="rpg_item_creationcost.h" />
@@ -143,6 +149,7 @@ popd</Command>
     </ClCompile>
     <ClCompile Include="rpg_item_armor.cpp" />
     <ClCompile Include="rpg_item_base.cpp" />
+    <ClCompile Include="rpg_item_commodity.cpp" />
     <ClCompile Include="rpg_item_common_tools.cpp" />
     <ClCompile Include="rpg_item_dictionary.cpp" />
     <ClCompile Include="rpg_item_instance_base.cpp" />
