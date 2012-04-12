@@ -40,7 +40,10 @@ class RPG_Item_Export RPG_Item_Common_Tools
   static std::string weaponDamageTypeToString(const RPG_Item_WeaponDamageType&); // weapon damage
   static RPG_Common_PhysicalDamageList_t weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType&); // weapon damage
   static std::string damageToString(const RPG_Item_Damage&); // damage
+
+  // XML-specifics
   static std::string commoditySubTypeToXMLString(const RPG_Item_CommodityUnion&); // subtype
+  static RPG_Item_CommodityUnion XMLStringToCommoditySubType(const std::string&); // subtype (XML string)
 
   static bool isThrownWeapon(const RPG_Item_WeaponType&); // weapon type
   static bool isProjectileWeapon(const RPG_Item_WeaponType&); // weapon type

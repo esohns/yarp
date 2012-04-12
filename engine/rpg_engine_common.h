@@ -63,8 +63,11 @@ struct RPG_Engine_Entity
   RPG_Map_Position_t      position;
   RPG_Engine_EntityMode_t modes;
   RPG_Engine_Actions_t    actions;
+  // *TODO*: get rid of this, it does not belong here...
   std::string             sprite;
+  // monster - onlies
   bool                    is_spawned;
+  long                    activation_timer;
 };
 typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
@@ -76,10 +79,13 @@ struct RPG_Engine_LevelMeta_t
   RPG_Common_Environment environment;
 
   // roaming monsters
-  // *TODO*: define "toughness"/environment
-  RPG_Monster_List_t     monsters;
-  ACE_Time_Value         spawn_interval;
-  float                  probability;
+  // *TODO*: rather, define "toughness" (HD)
+  RPG_Monster_List_t     roaming_monsters;
+  ACE_Time_Value         spawn_interval; // == rate
+  float                  spawn_probability; // % [0.0 - 1.0]
+  // *NOTE*: # concurrent (!) instances
+  unsigned int           max_spawned; // 0: don't auto-spawn
+  long                   spawn_timer;
 };
 struct RPG_Engine_Level_t
 {

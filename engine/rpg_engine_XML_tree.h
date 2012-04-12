@@ -80,6 +80,8 @@ class RPG_Engine_Level_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
+#include "../common/rpg_common_environment_XML_tree.h"
+
 #include "../character/player/rpg_player_XML_tree.h"
 
 #include "../map/rpg_map_XML_tree.h"
@@ -90,9 +92,12 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
   enum value
   {
     COMMAND_ATTACK,
+    COMMAND_ATTACK_FULL,
+    COMMAND_ATTACK_STANDARD,
     COMMAND_DOOR_CLOSE,
     COMMAND_DOOR_OPEN,
     COMMAND_SEARCH,
+    COMMAND_STEP,
     COMMAND_STOP,
     COMMAND_TRAVEL,
     COMMAND_E2C_ENTITY_ADD,
@@ -148,8 +153,8 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
   _xsd_RPG_Engine_Command_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[10];
-  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[10];
+  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[13];
+  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[13];
 };
 
 class RPG_Engine_Export RPG_Engine_EntityMode_XMLTree_Type: public ::xml_schema::string
@@ -366,6 +371,23 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   void
   name (::std::auto_ptr< name_type > p);
 
+  // environment
+  // 
+  typedef ::RPG_Common_Environment_XMLTree_Type environment_type;
+  typedef ::xsd::cxx::tree::traits< environment_type, char > environment_traits;
+
+  const environment_type&
+  environment () const;
+
+  environment_type&
+  environment ();
+
+  void
+  environment (const environment_type& x);
+
+  void
+  environment (::std::auto_ptr< environment_type > p);
+
   // monster
   // 
   typedef ::xml_schema::string monster_type;
@@ -400,19 +422,33 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   void
   spawn_interval (::std::auto_ptr< spawn_interval_type > p);
 
-  // probability
+  // spawn_probability
   // 
-  typedef ::xml_schema::float_ probability_type;
-  typedef ::xsd::cxx::tree::traits< probability_type, char > probability_traits;
+  typedef ::xml_schema::float_ spawn_probability_type;
+  typedef ::xsd::cxx::tree::traits< spawn_probability_type, char > spawn_probability_traits;
 
-  const probability_type&
-  probability () const;
+  const spawn_probability_type&
+  spawn_probability () const;
 
-  probability_type&
-  probability ();
+  spawn_probability_type&
+  spawn_probability ();
 
   void
-  probability (const probability_type& x);
+  spawn_probability (const spawn_probability_type& x);
+
+  // max_spawned
+  // 
+  typedef ::xml_schema::unsigned_int max_spawned_type;
+  typedef ::xsd::cxx::tree::traits< max_spawned_type, char > max_spawned_traits;
+
+  const max_spawned_type&
+  max_spawned () const;
+
+  max_spawned_type&
+  max_spawned ();
+
+  void
+  max_spawned (const max_spawned_type& x);
 
   // map
   // 
@@ -434,13 +470,17 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   // Constructors.
   //
   RPG_Engine_Level_XMLTree_Type (const name_type&,
+                                 const environment_type&,
                                  const spawn_interval_type&,
-                                 const probability_type&,
+                                 const spawn_probability_type&,
+                                 const max_spawned_type&,
                                  const map_type&);
 
   RPG_Engine_Level_XMLTree_Type (const name_type&,
+                                 ::std::auto_ptr< environment_type >&,
                                  ::std::auto_ptr< spawn_interval_type >&,
-                                 const probability_type&,
+                                 const spawn_probability_type&,
+                                 const max_spawned_type&,
                                  const map_type&);
 
   RPG_Engine_Level_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
@@ -475,9 +515,11 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
          ::xml_schema::flags);
 
   ::xsd::cxx::tree::one< name_type > name_;
+  ::xsd::cxx::tree::one< environment_type > environment_;
   monster_sequence monster_;
   ::xsd::cxx::tree::one< spawn_interval_type > spawn_interval_;
-  ::xsd::cxx::tree::one< probability_type > probability_;
+  ::xsd::cxx::tree::one< spawn_probability_type > spawn_probability_;
+  ::xsd::cxx::tree::one< max_spawned_type > max_spawned_;
   ::xsd::cxx::tree::one< map_type > map_;
 };
 

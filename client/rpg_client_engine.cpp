@@ -379,9 +379,12 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       return;
     case COMMAND_E2C_ENTITY_ADD:
     {
-      ACE_ASSERT(parameters_in.size() == 1);
+      ACE_ASSERT(parameters_in.size() == 2);
+
       RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
       ACE_ASSERT(entity_id);
+      std::string* sprite_file = static_cast<std::string* const>(parameters_in.back());
+      ACE_ASSERT(sprite_file);
 
       // step1: load sprite graphics
       SDL_Surface* sprite_graphic = NULL;
@@ -391,7 +394,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
         filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_CREATURES_SUB);
         filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-        filename += myEngine->getSprite(entity_id);
+        filename += *sprite_file;
         // sanity check(s)
         if (!RPG_Common_File_Tools::isReadable(filename))
         {
@@ -463,11 +466,14 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(parameters_in.front());
 
       // update seen positions
+      RPG_Map_Positions_t seen_positions;
+      myEngine->getVisiblePositions(client_action.entity_id,
+                                    seen_positions);
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
         ACE_ASSERT(mySeenPositions.find(client_action.entity_id) != mySeenPositions.end());
-        mySeenPositions[client_action.entity_id].insert(positions_p->begin(), positions_p->end());
+        mySeenPositions[client_action.entity_id].insert(seen_positions.begin(), seen_positions.end());
       } // end lock scope
 
       // adjust view ?

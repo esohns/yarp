@@ -39,7 +39,6 @@ class RPG_Engine_Export RPG_Engine_Level
  : public RPG_Map_Level
 {
  public:
-  RPG_Engine_Level();
   virtual ~RPG_Engine_Level();
 
   // static functionality
@@ -55,6 +54,8 @@ class RPG_Engine_Export RPG_Engine_Level
   const RPG_Engine_LevelMeta_t& getMeta() const;
 
  protected:
+  RPG_Engine_Level();
+
   void handleDoor(const RPG_Map_Position_t&, // position
                   const bool&,               // open ? : close
                   bool&);                    // return value: toggled ?
@@ -62,6 +63,8 @@ class RPG_Engine_Export RPG_Engine_Level
                 const RPG_Map_Position_t&,  // end position
                 const RPG_Map_Positions_t&, // obstacles
                 RPG_Map_Path_t&) const;     // return value: (partial) path A --> B
+
+  RPG_Engine_LevelMeta_t myLevelMeta;
 
  private:
   typedef RPG_Map_Level inherited;
@@ -74,7 +77,5 @@ class RPG_Engine_Export RPG_Engine_Level
   // *WARNING*: result needs to be delete()d !
   RPG_Engine_Level_XMLTree_Type* toLevelXML() const;
   static RPG_Engine_Level_t levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
-
-  RPG_Engine_LevelMeta_t myLevelMeta;
 };
 #endif

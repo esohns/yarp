@@ -39,6 +39,7 @@ typedef RPG_Dice_Roll RPG_Item_Damage;
 
 // typedef RPG_Item_WeaponPropertiesXML RPG_Item_WeaponProperties;
 struct RPG_Item_WeaponProperties
+ : public RPG_Item_PropertiesBase
 {
   signed char toHitModifier;
   // RPG_Item_WeaponPropertiesBase //
@@ -52,32 +53,34 @@ struct RPG_Item_WeaponProperties
   bool isNonLethal;
   bool isReachWeapon;
   bool isDoubleWeapon;
-  // RPG_Item_PropertiesBase //
-  RPG_Magic_School aura;
-  RPG_Item_MagicalPrerequisites prerequisites;
-  // RPG_Item_BaseProperties //
-  unsigned short int baseWeight;
-  RPG_Item_StorePrice baseStorePrice;
-  RPG_Item_CreationCost costToCreate;
+  //// RPG_Item_PropertiesBase //
+  //RPG_Magic_School aura;
+  //RPG_Item_MagicalPrerequisites prerequisites;
+  //// RPG_Item_BaseProperties //
+  //unsigned short int baseWeight;
+  //RPG_Item_StorePrice baseStorePrice;
+  //RPG_Item_CreationCost costToCreate;
 };
 
 // typedef RPG_Item_CommodityPropertiesBase RPG_Item_CommodityProperties;
 struct RPG_Item_CommodityProperties
+ : public RPG_Item_PropertiesBase
 {
   // RPG_Item_CommodityPropertiesBase //
 // RPG_Item_CommodityType type;
 //  RPG_Item_CommodityUnion subtype;
-  // RPG_Item_PropertiesBase //
-  RPG_Magic_School aura;
-  RPG_Item_MagicalPrerequisites prerequisites;
-  // RPG_Item_BaseProperties //
-  unsigned short int baseWeight;
-  RPG_Item_StorePrice baseStorePrice;
-  RPG_Item_CreationCost costToCreate;
+  //// RPG_Item_PropertiesBase //
+  //RPG_Magic_School aura;
+  //RPG_Item_MagicalPrerequisites prerequisites;
+  //// RPG_Item_BaseProperties //
+  //unsigned short int baseWeight;
+  //RPG_Item_StorePrice baseStorePrice;
+  //RPG_Item_CreationCost costToCreate;
 };
 
 // typedef RPG_Item_ArmorPropertiesXML RPG_Item_ArmorProperties;
 struct RPG_Item_ArmorProperties
+ : public RPG_Item_PropertiesBase
 {
   signed char defenseModifier;
   // RPG_Item_ArmorPropertiesBase //
@@ -88,13 +91,13 @@ struct RPG_Item_ArmorProperties
   signed char checkPenalty;
   unsigned char arcaneSpellFailure;
   unsigned char baseSpeed;
-  // RPG_Item_PropertiesBase //
-  RPG_Magic_School aura;
-  RPG_Item_MagicalPrerequisites prerequisites;
-  // RPG_Item_BaseProperties //
-  unsigned short int baseWeight;
-  RPG_Item_StorePrice baseStorePrice;
-  RPG_Item_CreationCost costToCreate;
+  //// RPG_Item_PropertiesBase //
+  //RPG_Magic_School aura;
+  //RPG_Item_MagicalPrerequisites prerequisites;
+  //// RPG_Item_BaseProperties //
+  //unsigned short int baseWeight;
+  //RPG_Item_StorePrice baseStorePrice;
+  //RPG_Item_CreationCost costToCreate;
 };
 
 // useful types

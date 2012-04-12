@@ -328,41 +328,38 @@ RPG_Player_Player_Base::getSpeed() const
     } // end IF
 
   // step2: test encumbrance (race)
-  // *TODO*: test load (inventory)
-  RPG_Item_ArmorType armor_type = getEquipment().getBodyArmor();
+  const RPG_Item_ArmorType& armor_type = getEquipment().getBodyArmor();
   // *NOTE*: dwarves move at the base speed with any armor...
-  if ((armor_type == ARMOR_NONE) ||
-      RPG_Character_Race_Common_Tools::hasRace(myRace,
-                                               RACE_DWARF))
-    return result;
-
-  const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
-  switch (properties.category)
+  if ((armor_type != ARMOR_NONE) &&
+      RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_DWARF))
   {
-    case ARMORCATEGORY_LIGHT:
-      return result;
-    case ARMORCATEGORY_MEDIUM:
-    case ARMORCATEGORY_HEAVY:
+    const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
+    switch (properties.category)
     {
-      if (RPG_Character_Race_Common_Tools::hasRace(myRace,
-                                                   RACE_GNOME) ||
-          RPG_Character_Race_Common_Tools::hasRace(myRace,
-                                                   RACE_HALFLING))
-        return 15;
+      case ARMORCATEGORY_LIGHT:
+        break;
+      case ARMORCATEGORY_MEDIUM:
+      case ARMORCATEGORY_HEAVY:
+      {
+        if (RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_GNOME) ||
+            RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_HALFLING))
+          result = 15;
 
-      return 20;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid armor category (was \"%s\"), aborting\n"),
-                 RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str()));
+        result = 20;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid armor category (was \"%s\"), aborting\n"),
+                   RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str()));
 
-      break;
-    }
-  } // end SWITCH
+        return 0;
+      }
+    } // end SWITCH
+  } // end IF
 
-  return 0;
+  // *TODO*: test load (inventory) and other (spell, ...) effects
+  return result;
 }
 
 bool

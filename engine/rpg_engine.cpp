@@ -39,10 +39,9 @@
 ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> RPG_Engine::myCurrentID = 1;
 
 RPG_Engine::RPG_Engine()
- : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
+ : myQueue(RPG_ENGINE_DEF_MAX_QUEUE_SLOTS),
 //    myEntities(),
    myActivePlayer(0),
-   mySpawnTimerID(-1),
    myClient(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::RPG_Engine"));
@@ -161,7 +160,7 @@ RPG_Engine::svc(void)
   RPG_TRACE(ACE_TEXT("RPG_Engine::svc"));
 
   ACE_Message_Block* ace_mb          = NULL;
-  ACE_Time_Value     peek_delay(0, (RPG_ENGINE_EVENT_PEEK_INTERVAL * 1000));
+  ACE_Time_Value     peek_delay(0, (RPG_ENGINE_DEF_EVENT_PEEK_INTERVAL * 1000));
   ACE_Time_Value     delay;
   bool               stop_processing = false;
 
@@ -248,18 +247,19 @@ RPG_Engine::start()
                inherited::grp_id(),
                thread_ids[0]));
 
-  // start AI (&& monster spawning)
+  // start AI...
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->start();
+  // ...spawn roaming monsters
   RPG_Engine_Event spawn_event;
-  spawn_event.type = EVENT_SPAWN_MONSTER;
-  ACE_ASSERT(mySpawnTimerID == -1);
-  mySpawnTimerID = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
-                                                                            ACE_Time_Value(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0),
-                                                                            false);
-  ACE_ASSERT(mySpawnTimerID != -1);
-  if (mySpawnTimerID == -1)
+  spawn_event.type = EVENT_ENTITY_SPAWN;
+  ACE_ASSERT(inherited2::myLevelMeta.spawn_timer == -1);
+  inherited2::myLevelMeta.spawn_timer = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
+                                                                                                 inherited2::myLevelMeta.spawn_interval,
+                                                                                                 false);
+  ACE_ASSERT(inherited2::myLevelMeta.spawn_timer != -1);
+  if (inherited2::myLevelMeta.spawn_timer == -1)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to schedule timer, continuing\n")));
+               ACE_TEXT("failed to schedule spawn timer, continuing\n")));
 }
 
 void
@@ -272,9 +272,9 @@ RPG_Engine::stop()
     return;
 
   // stop AI (&& monster spawning)
-  ACE_ASSERT(mySpawnTimerID != -1);
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(mySpawnTimerID);
-  mySpawnTimerID = -1;
+  ACE_ASSERT(inherited2::myLevelMeta.spawn_timer != -1);
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(inherited2::myLevelMeta.spawn_timer);
+  inherited2::myLevelMeta.spawn_timer = -1;
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->stop();
 
   // drop control message into the queue...
@@ -382,8 +382,7 @@ RPG_Engine::init(RPG_Engine_IWindow* client_in,
   myClient = client_in;
   inherited2::init(level_in);
 
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(RPG_ENGINE_DEF_MAX_NUM_SPAWNED,
-                                                       this);
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(this);
 }
 
 RPG_Engine_EntityID_t
@@ -403,10 +402,19 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
     myEntities[id] = entity_in;
   } // end lock scope
 
+  // notify AI
+  float steps_per_round = static_cast<float>(entity_in->character->getSpeed()) / static_cast<float>(RPG_ENGINE_FEET_PER_SQUARE);
+  steps_per_round /= static_cast<float>(RPG_ENGINE_ROUND_INTERVAL);
+  float fracional = ::modf(steps_per_round, &steps_per_round);
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->add(id,
+                                                      ACE_Time_Value(static_cast<time_t>(steps_per_round),
+                                                                     static_cast<suseconds_t>(fracional * 1000000)));
+
   // notify client / window
   RPG_Engine_Command command = COMMAND_E2C_ENTITY_ADD;
   RPG_Engine_ClientParameters_t parameters;
   parameters.push_back(&id);
+  parameters.push_back(&entity_in->sprite);
   try
   {
     myClient->notify(command,
@@ -645,10 +653,10 @@ RPG_Engine::getPosition(const RPG_Engine_EntityID_t& id_in) const
 }
 
 RPG_Map_Position_t
-RPG_Engine::getValid(const RPG_Map_Position_t& center_in,
-                     const unsigned int& radius_in) const
+RPG_Engine::findValid(const RPG_Map_Position_t& center_in,
+                      const unsigned int& radius_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine::getValid"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine::findValid"));
 
   // init return value(s)
   RPG_Map_Position_t result = std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -760,25 +768,6 @@ RPG_Engine::isMonster(const RPG_Engine_EntityID_t& id_in) const
 
   return !(*iterator).second->character->isPlayerCharacter();
 }
-
-//std::string
-//RPG_Engine::getSprite(const RPG_Engine_EntityID_t& id_in) const
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Engine::getSprite"));
-//
-//  std::string result;
-//
-//  {
-//    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-//
-//    RPG_Engine_EntitiesConstIterator_t iterator = myEntities.find(id_in);
-//    ACE_ASSERT(iterator != myEntities.end());
-//
-//    result = (*iterator).second->sprite;
-//  } // end lock scope
-//
-//  return result;
-//}
 
 std::string
 RPG_Engine::getName(const RPG_Engine_EntityID_t& id_in) const
@@ -929,6 +918,13 @@ RPG_Engine::handleEntities()
       {
         case COMMAND_ATTACK:
         {
+          action_complete = false; // *NOTE*: handled by the AI
+
+          break;
+        }
+        case COMMAND_ATTACK_FULL:
+        case COMMAND_ATTACK_STANDARD:
+        {
           ACE_ASSERT(current_action.target);
           RPG_Engine_EntitiesConstIterator_t target = myEntities.find(current_action.target);
           if ((target == myEntities.end()) ||
@@ -943,12 +939,12 @@ RPG_Engine::handleEntities()
           action_complete = false;
           (*iterator).second->modes.insert(ENTITYMODE_FIGHTING);
 
-          // *TODO*: implement combat sitautions, in-turn-movement, reach
+          // *TODO*: implement combat situations, in-turn-movement, reach
           RPG_Engine_Common_Tools::attack((*iterator).second->character,
                                           (*target).second->character,
                                           ATTACK_NORMAL,
                                           DEFENSE_NORMAL,
-                                          true,
+                                          (current_action.command == COMMAND_ATTACK_FULL),
                                           RPG_COMBAT_DEF_ADJACENT_DISTANCE);
 
           // target helpless ?
@@ -1062,6 +1058,70 @@ RPG_Engine::handleEntities()
 
           break;
         }
+        case COMMAND_STEP:
+        {
+          // position blocked ?
+          if (isBlocked(current_action.position))
+          {
+            // *NOTE*: --> no/invalid path, cannot proceed...
+            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+
+            // remove all queued steps + travel action
+            while ((*iterator).second->actions.front().command == COMMAND_STEP)
+              (*iterator).second->actions.pop_front();
+            ACE_ASSERT((*iterator).second->actions.front().command == COMMAND_TRAVEL);
+            (*iterator).second->actions.pop_front();
+            action_complete = false;
+
+            break;
+          } // end IF
+
+          // OK: take a step...
+          (*iterator).second->position = current_action.position;
+
+          // notify client window
+          RPG_Engine_ClientParameters_t* parameters = NULL;
+          parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
+          if (!parameters)
+          {
+            ACE_DEBUG((LM_CRITICAL,
+                       ACE_TEXT("unable to allocate memory, aborting\n")));
+
+            return;
+          } // end IF
+          RPG_Engine_EntityID_t* entity_id = NULL;
+          entity_id = new(std::nothrow) RPG_Engine_EntityID_t;
+          if (!entity_id)
+          {
+            ACE_DEBUG((LM_CRITICAL,
+                       ACE_TEXT("unable to allocate memory, aborting\n")));
+
+            // clean up
+            delete parameters;
+
+            return;
+          } // end IF
+          *entity_id = (*iterator).first;
+          parameters->push_back(entity_id);
+          RPG_Map_Position_t* position = NULL;
+          position = new(std::nothrow) RPG_Map_Position_t;
+          if (!position)
+          {
+            ACE_DEBUG((LM_CRITICAL,
+                       ACE_TEXT("unable to allocate memory, aborting\n")));
+
+            // clean up
+            delete entity_id;
+            delete parameters;
+
+            return;
+          } // end IF
+          *position = (*iterator).second->position;
+          parameters->push_back(position);
+          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_UPDATE, parameters));
+
+          break;
+        }
         case COMMAND_STOP:
         {
           (*iterator).second->modes.clear();
@@ -1077,134 +1137,7 @@ RPG_Engine::handleEntities()
         }
         case COMMAND_TRAVEL:
         {
-          // step0: chasing a target ?
-          if (current_action.target)
-          {
-            // determine target position
-            RPG_Engine_EntitiesConstIterator_t target = myEntities.end();
-            target = myEntities.find(current_action.target);
-            if (target == myEntities.end())
-            {
-              // *NOTE*: --> target has gone...
-              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-              break; // nothing (more) to do...
-            } // end IF
-
-            current_action.position = (*target).second->position;
-
-            if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
-                                                 current_action.position))
-            {
-              // *NOTE*: --> reached target...
-              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-              break; // nothing (more) to do...
-            } // end IF
-          } // end IF
-          ACE_ASSERT(current_action.position != (*iterator).second->position);
-
-          // step1: compute path first/again ?
-          if (current_action.path.empty() ||
-              (current_action.path.back().first != current_action.position)) // pursuit mode...
-          {
-            current_action.path.clear();
-
-            // obstacles:
-            // - walls
-            // - (closed, locked) doors
-            RPG_Map_Positions_t obstacles = myMap.plan.walls;
-            for (RPG_Map_DoorsConstIterator_t door_iterator = inherited2::myMap.plan.doors.begin();
-                 door_iterator != myMap.plan.doors.end();
-                 door_iterator++)
-              if (!(*door_iterator).is_open)
-                obstacles.insert((*door_iterator).position);
-            // - entities
-            for (RPG_Engine_EntitiesConstIterator_t entity_iterator = myEntities.begin();
-                 entity_iterator != myEntities.end();
-                 entity_iterator++)
-              obstacles.insert((*entity_iterator).second->position);
-            // - start, end positions never are obstacles...
-            obstacles.erase((*iterator).second->position);
-            obstacles.erase(current_action.position);
-
-            if (!inherited2::findPath((*iterator).second->position,
-                                      current_action.position,
-                                      obstacles,
-                                      current_action.path))
-            {
-              // *NOTE*: --> no/invalid path, cannot proceed...
-              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-              break; // stop & cancel path...
-            } // end IF
-            ACE_ASSERT(!current_action.path.empty());
-            ACE_ASSERT((current_action.path.front().first == (*iterator).second->position) &&
-                       (current_action.path.back().first == current_action.position));
-            current_action.path.pop_front();
-
-            (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
-          } // end IF
-          ACE_ASSERT(!current_action.path.empty());
-
-          // step2: move to next adjacent position (if still possible)
-          RPG_Map_Position_t next_position = current_action.path.front().first;
-          if (isBlocked(next_position))
-          {
-            // *NOTE*: --> path is blocked, cannot proceed...
-            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-            break; // stop & cancel path...
-          } // end IF
-          (*iterator).second->position = next_position;
-
-          // step3: check: done ?
-          current_action.path.pop_front();
-          action_complete = current_action.path.empty();
-          if (action_complete)
-          {
-            ACE_ASSERT((*iterator).second->position == current_action.position);
-
-            // *NOTE*: --> reached target...
-            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-          } // end IF
-
-          // notify client window
-          RPG_Engine_ClientParameters_t* parameters = NULL;
-          parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
-          if (!parameters)
-          {
-            ACE_DEBUG((LM_CRITICAL,
-                        ACE_TEXT("unable to allocate memory, aborting\n")));
-
-            return;
-          } // end IF
-          RPG_Engine_EntityID_t* entity_id = NULL;
-          entity_id = new(std::nothrow) RPG_Engine_EntityID_t;
-          if (!entity_id)
-          {
-            ACE_DEBUG((LM_CRITICAL,
-                        ACE_TEXT("unable to allocate memory, aborting\n")));
-
-            // clean up
-            delete parameters;
-
-            return;
-          } // end IF
-          *entity_id = (*iterator).first;
-          parameters->push_back(entity_id);
-          RPG_Map_Position_t* position = NULL;
-          position = new(std::nothrow) RPG_Map_Position_t;
-          if (!position)
-          {
-            ACE_DEBUG((LM_CRITICAL,
-                        ACE_TEXT("unable to allocate memory, aborting\n")));
-
-            // clean up
-            delete entity_id;
-            delete parameters;
-
-            return;
-          } // end IF
-          *position = (*iterator).second->position;
-          parameters->push_back(position);
-          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_UPDATE, parameters));
+          action_complete = false; // *NOTE*: handled by the AI
 
           break;
         }

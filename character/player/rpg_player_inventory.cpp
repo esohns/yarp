@@ -242,6 +242,36 @@ RPG_Player_Inventory::drop(const RPG_Item_ID_t& itemID_in)
   myItems.erase(itemID_in);
 }
 
+unsigned int
+RPG_Player_Inventory::getTotalWeight() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Inventory::getTotalWeight"));
+
+  unsigned int result = 0;
+
+  RPG_Item_Base* base = NULL;
+  for (RPG_Item_ListIterator_t iterator = myItems.begin();
+       iterator != myItems.end();
+       iterator++)
+  {
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              base))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+
+
+
+    result += base->;
+  } // end FOR
+
+  return result;
+}
+
 void
 RPG_Player_Inventory::dump() const
 {

@@ -186,42 +186,29 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
 //              filename_in.c_str()));
 }
 
-const RPG_Item_WeaponProperties&
-RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
+const RPG_Item_PropertiesBase&
+RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getProperties"));
 
-  RPG_Item_WeaponDictionaryIterator_t iterator = myWeaponDictionary.find(weaponType_in);
-  if (iterator == myWeaponDictionary.end())
+  ACE_ASSERT(item_in);
+
+  switch (item_in->getType())
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid weapon type \"%s\", aborting\n"),
-               RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in).c_str()));
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid type (was: %d), aborting\n"),
+                 RPG_Item_Type.discriminator));
 
-    // *TODO*: what else can we do ?
-    ACE_ASSERT(false);
-  } // end IF
+      ACE_ASSERT(false);
 
-  return iterator->second;
-}
+      break;
+    }
+  } // end SWITCH
 
-const RPG_Item_ArmorProperties&
-RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
-
-  RPG_Item_ArmorDictionaryIterator_t iterator = myArmorDictionary.find(armorType_in);
-  if (iterator == myArmorDictionary.end())
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid armor type \"%s\", aborting\n"),
-               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armorType_in).c_str()));
-
-    // *TODO*: what else can we do ?
-    ACE_ASSERT(false);
-  } // end IF
-
-  return iterator->second;
+  RPG_Item_PropertiesBase dummy;
+  return dummy;
 }
 
 const RPG_Item_CommodityProperties&
@@ -273,6 +260,44 @@ RPG_Item_Dictionary::getCommodityProperties(const RPG_Item_CommodityUnion& commo
 
   RPG_Item_CommodityProperties dummy;
   return dummy;
+}
+
+const RPG_Item_ArmorProperties&
+RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
+
+  RPG_Item_ArmorDictionaryIterator_t iterator = myArmorDictionary.find(armorType_in);
+  if (iterator == myArmorDictionary.end())
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("invalid armor type \"%s\", aborting\n"),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armorType_in).c_str()));
+
+    // *TODO*: what else can we do ?
+    ACE_ASSERT(false);
+  } // end IF
+
+  return iterator->second;
+}
+
+const RPG_Item_WeaponProperties&
+RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));
+
+  RPG_Item_WeaponDictionaryIterator_t iterator = myWeaponDictionary.find(weaponType_in);
+  if (iterator == myWeaponDictionary.end())
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("invalid weapon type \"%s\", aborting\n"),
+               RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_in).c_str()));
+
+    // *TODO*: what else can we do ?
+    ACE_ASSERT(false);
+  } // end IF
+
+  return iterator->second;
 }
 
 void

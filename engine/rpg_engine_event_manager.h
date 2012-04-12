@@ -22,6 +22,7 @@
 #define RPG_ENGINE_EVENT_MANAGER_H
 
 #include "rpg_engine_exports.h"
+#include "rpg_engine_common.h"
 #include "rpg_engine_event_common.h"
 
 #include <rpg_common_icontrol.h>
@@ -53,14 +54,18 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
                              ACE_Recursive_Thread_Mutex>;
 
  public:
-  void init(const unsigned int&, // max # spawned entities (consecutive)
-            RPG_Engine*);        // (level) engine
+  void init(RPG_Engine*); // (level) engine
 
-  // manage event sources
+  // manage generic event sources
   long schedule(const RPG_Engine_Event&, // event
                 const ACE_Time_Value&,   // interval (or delay)
                 const bool& = false);    // one-shot ?
   void remove(const long&); // id
+
+  // manage entities
+  void add(const RPG_Engine_EntityID_t&, // id
+           const ACE_Time_Value&);       // activation interval
+  void remove(const RPG_Engine_EntityID_t&); // id
 
   // implement RPG_Common_IControl
   virtual void start();
@@ -90,18 +95,22 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
 
   static void wait_all();
 
-  // trigger (one round of) entity actions
-  void handleEntities();
+  //// trigger (one round of) entity actions
+  //void handleEntities();
 
-  RPG_Engine*                myEngine;
-  unsigned int               myMaxNumSpawnedEntities;
+  RPG_Engine*               myEngine;
 
   // helper types
-  typedef std::map<long, RPG_Engine_Event*> RPG_Engine_EventTimerIDs_t;
-  typedef RPG_Engine_EventTimerIDs_t::const_iterator RPG_Engine_EventTimerIDsConstIterator_t;
+  typedef std::map<long, RPG_Engine_Event*> RPG_Engine_EventTimers_t;
+  typedef RPG_Engine_EventTimers_t::const_iterator RPG_Engine_EventTimersConstIterator_t;
+  typedef std::map<RPG_Engine_EntityID_t, long> RPG_Engine_EntityTimers_t;
+  typedef RPG_Engine_EntityTimers_t::const_iterator RPG_Engine_EntityTimersConstIterator_t;
 
-  ACE_Thread_Mutex           myLock;
-  RPG_Engine_EventTimerIDs_t myTimers;
+  ACE_Thread_Mutex          myLock;
+  ACE_Time_Value            myGameClockStart;
+
+  RPG_Engine_EventTimers_t  myTimers;
+  RPG_Engine_EntityTimers_t myEntityTimers;
 };
 
 typedef ACE_Singleton<RPG_Engine_Event_Manager,

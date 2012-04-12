@@ -29,7 +29,7 @@
 #include "rpg_item_armor.h"
 #include "rpg_item_commodity.h"
 #include "rpg_item_weapon.h"
-#include "rpg_item_XML_parser.h"
+#include "rpg_item_common_tools.h"
 
 #include <rpg_common_macros.h>
 
@@ -233,9 +233,7 @@ RPG_Item_Instance_Manager::instantiate(const RPG_Item_InventoryXML_XMLTree_Type&
         RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_properties_xml = (*iterator).commodity().get();
 
         unsigned int type = (RPG_Item_CommodityTypeHelper::stringToRPG_Item_CommodityType(commodity_properties_xml.type()) << (sizeof(unsigned int) * 4));
-        RPG_Item_CommodityUnion_Type union_type_xml;
-        union_type_xml._characters(commodity_properties_xml.subtype());
-        RPG_Item_CommodityUnion union_type = union_type_xml.post_RPG_Item_CommodityUnion_Type();
+        RPG_Item_CommodityUnion union_type = RPG_Item_Common_Tools::XMLStringToCommoditySubType(commodity_properties_xml.subtype());
         switch (union_type.discriminator)
         {
           case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:

@@ -24,10 +24,13 @@
 // task-specific
 #define RPG_ENGINE_DEF_TASK_GROUP_ID        1
 #define RPG_ENGINE_DEF_AI_TASK_GROUP_ID     2
-#define RPG_ENGINE_MAX_QUEUE_SLOTS          100
-#define RPG_ENGINE_EVENT_PEEK_INTERVAL      50 // ms
+#define RPG_ENGINE_DEF_MAX_QUEUE_SLOTS      100
+#define RPG_ENGINE_DEF_EVENT_PEEK_INTERVAL  50 // ms
 
-#define RPG_ENGINE_DEF_MAX_NUM_SPAWNED      3
+#define RPG_ENGINE_ROUND_INTERVAL           6 // s
+#define RPG_ENGINE_FEET_PER_SQUARE          5
+
+#define RPG_ENGINE_DEF_MAX_NUM_SPAWNED      0 // don't auto-spawn
 #define RPG_ENGINE_DEF_MAX_RAD_SPAWNED      5
 #define RPG_ENGINE_DEF_ENTITY_SPRITE_FILE   "human.png"
 #define RPG_ENGINE_DEF_CREATURE_SPRITE_FILE "goblin.png"
@@ -41,10 +44,5 @@
 
 // CONFIGDIR-specific
 #define RPG_ENGINE_DEF_CONFIG_SUB           "engine"
-
-// AI configuration
-#define RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC   10
-//#define RPG_ENGINE_DEF_AI_SPAWN_TYPE        "Bugbear"
-#define RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY 0.3F // [0.0 - 1.0] --> 0.5 = 50%
 
 #endif

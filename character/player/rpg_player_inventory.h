@@ -42,6 +42,8 @@ class RPG_Player_Export RPG_Player_Inventory
   void pickUp(const RPG_Item_ID_t&); // item ID
   void drop(const RPG_Item_ID_t&); // item ID
 
+  unsigned int getTotalWeight() const; 
+
   void dump() const;
 
   // *WARNING*: do NOT insert/remove elements directly (use the API instead)

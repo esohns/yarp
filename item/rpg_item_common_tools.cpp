@@ -23,6 +23,7 @@
 
 #include "rpg_item_incl.h"
 #include "rpg_item_dictionary.h"
+#include "rpg_item_XML_parser.h"
 
 #include <rpg_common_environment_incl.h>
 #include <rpg_character_incl.h>
@@ -194,6 +195,18 @@ RPG_Item_Common_Tools::commoditySubTypeToXMLString(const RPG_Item_CommodityUnion
   } // end SWITCH
 
   return result;
+}
+
+RPG_Item_CommodityUnion
+RPG_Item_Common_Tools::XMLStringToCommoditySubType(const std::string& string_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::XMLStringToCommoditySubType"));
+
+  // *NOTE*: re-use the cxx-parser functionality...
+  RPG_Item_CommodityUnion_Type union_type_xml;
+  union_type_xml._characters(string_in);
+  
+  return union_type_xml.post_RPG_Item_CommodityUnion_Type();
 }
 
 bool

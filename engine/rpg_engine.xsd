@@ -8,8 +8,8 @@
 
 <!-- include chance_dice schema -->
 <!--   <xsd:include schemaLocation="rpg_dice.xsd"/> -->
-<!-- include common schema -->
-<!--   <xsd:include schemaLocation="rpg_common.xsd"/> -->
+<!-- include common environment schema -->
+  <xsd:include schemaLocation="../common/rpg_common_environment.xsd"/>
 <!-- include character player schema -->
   <xsd:include schemaLocation="../character/player/rpg_player.xsd"/>
 <!-- include map schema -->
@@ -30,9 +30,12 @@
   <xsd:simpleType name="RPG_Engine_Command_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="COMMAND_ATTACK"/>
+      <xsd:enumeration value="COMMAND_ATTACK_FULL"/>
+      <xsd:enumeration value="COMMAND_ATTACK_STANDARD"/>
       <xsd:enumeration value="COMMAND_DOOR_CLOSE"/>
       <xsd:enumeration value="COMMAND_DOOR_OPEN"/>
       <xsd:enumeration value="COMMAND_SEARCH"/>
+      <xsd:enumeration value="COMMAND_STEP"/>
       <xsd:enumeration value="COMMAND_STOP"/>
       <xsd:enumeration value="COMMAND_TRAVEL"/>
       <!--   ENGINE to CLIENT protocol ONLY ! -->
@@ -66,9 +69,11 @@
   <xsd:complexType name="RPG_Engine_Level_Type" id="skip1">
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="environment" type="RPG_Common_Environment_Type" minOccurs="1" maxOccurs="1"/>      
       <xsd:element name="monster" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="spawn_interval" type="RPG_Common_FixedPeriod_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="spawn_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="max_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="map" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

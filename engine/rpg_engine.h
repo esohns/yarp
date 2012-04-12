@@ -50,7 +50,7 @@ class RPG_Engine_Export RPG_Engine
    public RPG_Common_IDumpState,
    public RPG_Engine_Level
 {
-  // AI thread(s) require access to level state
+  // AI thread(s) require access to the entity action queues...
   friend class RPG_Engine_Event_Manager;
 
  public:
@@ -84,8 +84,8 @@ class RPG_Engine_Export RPG_Engine
   bool hasMode(const RPG_Engine_EntityMode&) const; // mode
 
   RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
-  RPG_Map_Position_t getValid(const RPG_Map_Position_t&,  // center
-                              const unsigned int&) const; // max (square !) radius
+  RPG_Map_Position_t findValid(const RPG_Map_Position_t&,  // center
+                               const unsigned int&) const; // max (square !) radius
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
   bool isMonster(const RPG_Engine_EntityID_t&) const;
   //std::string getSprite(const RPG_Engine_EntityID_t&) const;
@@ -98,11 +98,13 @@ class RPG_Engine_Export RPG_Engine
                 const RPG_Map_Position_t&, // end position
                 RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
 
-  using RPG_Engine_Level::getMeta;
+  //using RPG_Engine_Level::getMeta;
 
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
   typedef RPG_Engine_Level inherited2;
+
+  using RPG_Engine_Level::findPath;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine(const RPG_Engine&));
@@ -138,7 +140,6 @@ class RPG_Engine_Export RPG_Engine
 
   RPG_Engine_Entities_t                       myEntities;
   RPG_Engine_EntityID_t                       myActivePlayer;
-  long                                        mySpawnTimerID;
 
   RPG_Engine_IWindow*                         myClient;
 };
