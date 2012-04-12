@@ -49,8 +49,13 @@ class RPG_Common_Export RPG_Common_Tools
   static bool match(const RPG_Common_Environment&,  // a
                     const RPG_Common_Environment&); // b
 
+  // *NOTE*: use for attack bonus / armor class
   static signed char getSizeModifier(const RPG_Common_Size&);
+  // *NOTE*: use for encumbrance
+  static float getSizeModifierLoad(const RPG_Common_Size&,
+                                   const bool& = true); // is biped ?
   static unsigned char sizeToReach(const RPG_Common_Size&);
+  static unsigned char environment2Radius(const RPG_Common_Environment&);
 
   // use this to "pretty-print" enumerated (i.e. XML-) values
   // e.g. "SUBCLASS_MONK" --> "Monk"

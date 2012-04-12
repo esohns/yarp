@@ -33,9 +33,7 @@
 class RPG_Player_Export RPG_Player_Common_Tools
 {
  public:
-  // *WARNING*: result needs to be delete()d !
-  static RPG_Player* generatePlayer(); // return value: (random) player
-  static const unsigned int restParty(RPG_Player_Party_t&); // party of players
+  static unsigned int restParty(RPG_Player_Party_t&); // party of players
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Player* playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type&);

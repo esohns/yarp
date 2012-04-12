@@ -477,7 +477,7 @@ RPG_Engine_Common_Tools::createEntity()
   result.is_spawned = false;
 
   // generate player
-  RPG_Player* player_p = RPG_Player_Common_Tools::generatePlayer();
+  RPG_Player* player_p = RPG_Player::create();
   ACE_ASSERT(player_p);
   result.character = player_p;
 

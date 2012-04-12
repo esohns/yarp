@@ -22,6 +22,7 @@
 #include "rpg_player_inventory.h"
 
 #include <rpg_item_base.h>
+#include <rpg_item_dictionary.h>
 #include <rpg_item_instance_manager.h>
 
 #include <rpg_common_macros.h>
@@ -242,12 +243,12 @@ RPG_Player_Inventory::drop(const RPG_Item_ID_t& itemID_in)
   myItems.erase(itemID_in);
 }
 
-unsigned int
+unsigned short
 RPG_Player_Inventory::getTotalWeight() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Inventory::getTotalWeight"));
 
-  unsigned int result = 0;
+  unsigned short result = 0;
 
   RPG_Item_Base* base = NULL;
   for (RPG_Item_ListIterator_t iterator = myItems.begin();
@@ -263,10 +264,10 @@ RPG_Player_Inventory::getTotalWeight() const
 
       continue;
     } // end IF
+    ACE_ASSERT(base);
 
-
-
-    result += base->;
+    const RPG_Item_PropertiesBase& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getProperties(base);
+    result += properties.baseWeight;
   } // end FOR
 
   return result;

@@ -52,8 +52,10 @@ class RPG_Player_Export RPG_Player_Equipment
   RPG_Item_WeaponType getPrimaryWeapon(const RPG_Character_OffHand&) const;
   // armor in EQUIPMENTSLOT_BODY/TORSO
   RPG_Item_ArmorType getBodyArmor() const;
-  // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR
+  // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR (!)
   RPG_Item_ArmorType getShield(const RPG_Character_OffHand&) const;
+  // light source in EQUIPMENTSLOT_LEFT/RIGHT_HAND, if any
+  RPG_Item_CommodityLight getLightSource() const;
 
   bool isEquipped(const RPG_Item_ID_t&) const; // item ID
 

@@ -311,10 +311,10 @@ do_battle(RPG_Player_Party_t& party_in,
          i++)
     {
       monster_p = NULL;
-      entity->character = NULL;
+      entity.character = NULL;
       entity = RPG_Engine_Common_Tools::createEntity((*iterator).first);
-      ACE_ASSERT(entity->character);
-      if (!result.character)
+      ACE_ASSERT(entity.character);
+      if (!entity.character)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to create entity \"%s\", aborting\n"),

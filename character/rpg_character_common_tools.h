@@ -27,6 +27,7 @@
 
 #include "rpg_character_exports.h"
 #include "rpg_character_common.h"
+#include "rpg_character_encumbrance.h"
 #include "rpg_character_race_common.h"
 #include "rpg_character_class_common.h"
 
@@ -57,6 +58,17 @@ class RPG_Character_Export RPG_Character_Common_Tools
   static RPG_Dice_DieType getHitDie(const RPG_Common_SubClass&); // subclass
   static RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Common_SubClass&, // subClass
                                                             const unsigned char&);      // class level
+  static RPG_Character_Encumbrance getEncumbrance(const unsigned char&,   // strength
+                                                  const RPG_Common_Size&, // size
+                                                  const unsigned short&,  // (carried) weight
+                                                  const bool& = true);    // is biped ?
+  static void getLoadModifiers(const RPG_Character_Encumbrance&, // encumbrance
+                               const unsigned char&,             // (base) speed
+                               signed char&,                     // max Dex modifier (AC)
+                               signed char&,                     // (armor) check penalty
+                               unsigned char&,                   // (reduced) speed
+                               unsigned char&);                  // run modifier
+  static unsigned char getReducedSpeed(const unsigned char&); // (base) speed
 
  private:
   // safety measures
@@ -66,6 +78,18 @@ class RPG_Character_Export RPG_Character_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator=(const RPG_Character_Common_Tools&));
 
   static void initStringConversionTables();
+  static void initEncumbranceTable();
+
+  struct RPG_Character_EncumbranceEntry_t
+  {
+    unsigned short light;
+    unsigned short medium;
+    unsigned short heavy;
+  };
+  typedef std::map<unsigned char, RPG_Character_EncumbranceEntry_t> RPG_Character_EncumbranceTable_t;
+  typedef RPG_Character_EncumbranceTable_t::const_iterator RPG_Character_EncumbranceTableConstIterator_t;
+
+  static RPG_Character_EncumbranceTable_t myEncumbranceTable;
 };
 
 #endif

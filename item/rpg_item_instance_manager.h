@@ -24,7 +24,6 @@
 #include "rpg_item_exports.h"
 #include "rpg_item_instance_base.h"
 #include "rpg_item_base.h"
-#include "rpg_item_XML_tree.h"
 
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -48,8 +47,6 @@ class RPG_Item_Export RPG_Item_Instance_Manager
                                  const unsigned int&); // specific (sub)type
   bool get(const RPG_Item_ID_t&,   // id
            RPG_Item_Base*&) const; // return value: handle
-
-  RPG_Item_List_t instantiate(const RPG_Item_InventoryXML_XMLTree_Type&);
 
  private:
   typedef std::map<RPG_Item_ID_t, RPG_Item_Base*> RPG_Item_InstanceTable_t;

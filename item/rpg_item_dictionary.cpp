@@ -31,6 +31,10 @@
 #include <rpg_magic_XML_parser.h>
 
 #include "rpg_item_common.h"
+#include "rpg_item_base.h"
+#include "rpg_item_armor.h"
+#include "rpg_item_commodity.h"
+#include "rpg_item_weapon.h"
 #include "rpg_item_common_tools.h"
 #include "rpg_item_XML_parser.h"
 
@@ -195,17 +199,47 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
 
   switch (item_in->getType())
   {
-    default:
+    case ITEM_ARMOR:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("invalid type (was: %d), aborting\n"),
-                 RPG_Item_Type.discriminator));
+      const RPG_Item_Armor* armor = dynamic_cast<const RPG_Item_Armor*>(item_in);
+      ACE_ASSERT(armor);
 
+      return getArmorProperties(armor->getArmorType());
+    }
+    case ITEM_COMMODITY:
+    {
+      const RPG_Item_Commodity* commodity = dynamic_cast<const RPG_Item_Commodity*>(item_in);
+      ACE_ASSERT(commodity);
+
+      return getCommodityProperties(commodity->getCommoditySubType());
+    }
+    case ITEM_OTHER:
+    case ITEM_VALUABLE:
+    {
+      // *TODO*
       ACE_ASSERT(false);
 
       break;
     }
+    case ITEM_WEAPON:
+    {
+      const RPG_Item_Weapon* weapon = dynamic_cast<const RPG_Item_Weapon*>(item_in);
+      ACE_ASSERT(weapon);
+
+      return getWeaponProperties(weapon->getWeaponType());
+    }
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
+                 RPG_Item_TypeHelper::RPG_Item_TypeToString(item_in->getType()).c_str()));
+
+      break;
+    }
   } // end SWITCH
+
+  ACE_ASSERT(false);
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
 
   RPG_Item_PropertiesBase dummy;
   return dummy;

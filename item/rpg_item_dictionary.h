@@ -37,6 +37,9 @@
 
 #include <string>
 
+// forward declarations
+class RPG_Item_Base;
+
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */

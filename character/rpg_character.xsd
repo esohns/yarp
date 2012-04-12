@@ -362,6 +362,14 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Character_Encumbrance_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="LOAD_LIGHT"/>
+      <xsd:enumeration value="LOAD_MEDIUM"/>
+      <xsd:enumeration value="LOAD_HEAVY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
  <xsd:simpleType name="RPG_Character_CheckTypeUnion_Type">
    <xsd:union memberTypes="RPG_Common_Attribute_Type RPG_Common_Skill_Type"/>
  </xsd:simpleType>

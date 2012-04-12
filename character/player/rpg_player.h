@@ -57,7 +57,8 @@ class RPG_Player_Export RPG_Player
 
 //   RPG_Player& operator=(const RPG_Player&);
 
-  // load/save player from/to an XML file
+  // *WARNING*: result needs to be delete()d !
+  static RPG_Player* create(); // return value: (random) player
   // *WARNING*: result needs to be deleted(d) !
   static RPG_Player* load(const std::string&,  // FQ filename
                           const std::string&); // schema repository (directory)

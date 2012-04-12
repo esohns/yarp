@@ -28,7 +28,12 @@
 #include <rpg_map_common_tools.h>
 #include <rpg_map_pathfinding_tools.h>
 
+#include <rpg_item_common_tools.h>
+
+#include <rpg_character_race_common_tools.h>
+
 #include <rpg_common_macros.h>
+#include <rpg_common_tools.h>
 
 #include <rpg_dice_common.h>
 #include <rpg_dice.h>
@@ -403,7 +408,8 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
   } // end lock scope
 
   // notify AI
-  float steps_per_round = static_cast<float>(entity_in->character->getSpeed()) / static_cast<float>(RPG_ENGINE_FEET_PER_SQUARE);
+  float steps_per_round = static_cast<float>(entity_in->character->getSpeed(inherited2::myLevelMeta.environment.lighting)) /
+                          static_cast<float>(RPG_ENGINE_FEET_PER_SQUARE);
   steps_per_round /= static_cast<float>(RPG_ENGINE_ROUND_INTERVAL);
   float fracional = ::modf(steps_per_round, &steps_per_round);
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->add(id,
@@ -797,7 +803,14 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
   // init return value(s)
   positions_out.clear();
 
+  // step1: retrieve:
+  // - race (if any)
+  // - center position
+  // - equiped light source (if any)
   RPG_Character_Race_t race(0);
+  RPG_Map_Position_t center = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                             std::numeric_limits<unsigned int>::max());
+  RPG_Item_CommodityLight equipped_light_source = RPG_ITEM_COMMODITYLIGHT_INVALID;
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -806,19 +819,53 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
 
     if ((*iterator).second->character->isPlayerCharacter())
     {
-      // step1: retrieve race
       RPG_Player_Player_Base* player_base = NULL;
       player_base = dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
       ACE_ASSERT(player_base);
-      race = player_base->getRace();
 
-      // *TODO*: retrieve best equipment modifier (candle, lantern, torch, ...)
+      race = player_base->getRace();
+      equipped_light_source = player_base->getEquipment().getLightSource();
     } // end IF
+    else
+    {
+      RPG_Monster* monster = NULL;
+      monster = dynamic_cast<RPG_Monster*>((*iterator).second->character);
+      ACE_ASSERT(monster);
+
+      equipped_light_source = monster->getEquipment().getLightSource();
+    } // end ELSE
+
+    center = (*iterator).second->position;
   } // end lock scope
 
-  unsigned int visible_radius = 0;
-  bool has_darkvision = false;
+  // step2: consider environment / ambient lighting
+  unsigned char environment_radius = RPG_Common_Tools::environment2Radius(inherited2::myLevelMeta.environment);
 
+  // step3: consider equipment (ambient lighting conditions)
+  unsigned char lit_radius = RPG_Item_Common_Tools::lightingItem2Radius(equipped_light_source,
+                                                                        (inherited2::myLevelMeta.environment.lighting == AMBIENCE_BRIGHT));
+
+  // step4: consider low-light vision
+  if (RPG_Character_Race_Common_Tools::hasRace(race, RACE_ELF) ||
+      RPG_Character_Race_Common_Tools::hasRace(race, RACE_GNOME))
+    lit_radius *= 2;
+
+  unsigned char effective_radius = ((environment_radius > lit_radius) ? environment_radius
+                                                                      : lit_radius);
+
+  // step5: consider darkvision
+  if ((RPG_Character_Race_Common_Tools::hasRace(race, RACE_DWARF) ||
+       RPG_Character_Race_Common_Tools::hasRace(race, RACE_ORC)) &&
+      (effective_radius < 60))
+    effective_radius = 60;
+
+  // OK: got the visible radius
+  // --> compute involved positions
+  RPG_Map_Common_Tools::buildCircle(center,
+                                    getSize(),
+                                    (static_cast<unsigned int>(effective_radius) / RPG_ENGINE_FEET_PER_SQUARE),
+                                    true,
+                                    positions_out);
 }
 
 unsigned int

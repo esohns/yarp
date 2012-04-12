@@ -75,7 +75,7 @@ class RPG_Player_Export RPG_Player_Player_Base
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                          const RPG_Combat_AttackSituation&) const;
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
-  virtual unsigned char getSpeed() const;
+  virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
 
   virtual bool isPlayerCharacter() const;
   virtual void gainExperience(const unsigned int&); // XP
@@ -143,6 +143,7 @@ class RPG_Player_Export RPG_Player_Player_Base
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Player_Base());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Player_Base& operator=(const RPG_Player_Player_Base&));
 
   unsigned int          myExperience;
 //  unsigned short int       mySize; // cm

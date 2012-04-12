@@ -746,6 +746,51 @@ operator= (value v)
 }
 
 
+// RPG_Character_Encumbrance_XMLTree_Type
+// 
+
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Character_Encumbrance_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (const RPG_Character_Encumbrance_XMLTree_Type& v,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Character_Encumbrance_XMLTree_Type& RPG_Character_Encumbrance_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Character_Encumbrance_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
 // RPG_Character_CheckTypeUnion_XMLTree_Type
 // 
 
@@ -2663,6 +2708,78 @@ _xsd_RPG_Character_OffHand_XMLTree_Type_indexes_[3] =
   ::RPG_Character_OffHand_XMLTree_Type::OFFHAND_RIGHT
 };
 
+// RPG_Character_Encumbrance_XMLTree_Type
+//
+
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Character_Encumbrance_XMLTree_Type_convert ();
+}
+
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Character_Encumbrance_XMLTree_Type_convert ();
+}
+
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (const ::std::string& s,
+                                        const ::xercesc::DOMElement* e,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Character_Encumbrance_XMLTree_Type_convert ();
+}
+
+RPG_Character_Encumbrance_XMLTree_Type* RPG_Character_Encumbrance_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Character_Encumbrance_XMLTree_Type (*this, f, c);
+}
+
+RPG_Character_Encumbrance_XMLTree_Type::value RPG_Character_Encumbrance_XMLTree_Type::
+_xsd_RPG_Character_Encumbrance_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Character_Encumbrance_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Character_Encumbrance_XMLTree_Type_indexes_,
+                    _xsd_RPG_Character_Encumbrance_XMLTree_Type_indexes_ + 3,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Character_Encumbrance_XMLTree_Type_indexes_ + 3 || _xsd_RPG_Character_Encumbrance_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Character_Encumbrance_XMLTree_Type::
+_xsd_RPG_Character_Encumbrance_XMLTree_Type_literals_[3] =
+{
+  "LOAD_LIGHT",
+  "LOAD_MEDIUM",
+  "LOAD_HEAVY"
+};
+
+const RPG_Character_Encumbrance_XMLTree_Type::value RPG_Character_Encumbrance_XMLTree_Type::
+_xsd_RPG_Character_Encumbrance_XMLTree_Type_indexes_[3] =
+{
+  ::RPG_Character_Encumbrance_XMLTree_Type::LOAD_HEAVY,
+  ::RPG_Character_Encumbrance_XMLTree_Type::LOAD_LIGHT,
+  ::RPG_Character_Encumbrance_XMLTree_Type::LOAD_MEDIUM
+};
+
 // RPG_Character_CheckTypeUnion_XMLTree_Type
 //
 
@@ -3154,6 +3271,18 @@ operator<< (::std::ostream& o, const RPG_Character_OffHand_XMLTree_Type& i)
 }
 
 ::std::ostream&
+operator<< (::std::ostream& o, RPG_Character_Encumbrance_XMLTree_Type::value i)
+{
+  return o << RPG_Character_Encumbrance_XMLTree_Type::_xsd_RPG_Character_Encumbrance_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Character_Encumbrance_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
 operator<< (::std::ostream& o, RPG_Character_CheckTypeUnion_XMLTree_Type::value i)
 {
   return o << RPG_Character_CheckTypeUnion_XMLTree_Type::_xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_literals_[i];
@@ -3566,6 +3695,25 @@ operator<< (::xml_schema::list_stream& l,
 }
 
 void
+operator<< (::xercesc::DOMElement& e, const RPG_Character_Encumbrance_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Character_Encumbrance_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Character_Encumbrance_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
 operator<< (::xercesc::DOMElement& e, const RPG_Character_CheckTypeUnion_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::string& > (i);
@@ -3903,6 +4051,15 @@ RPG_Character_OffHand_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   _xsd_RPG_Character_OffHand_XMLTree_Type_convert ();
 }
 
+RPG_Character_Encumbrance_XMLTree_Type::
+RPG_Character_Encumbrance_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Character_Encumbrance_XMLTree_Type_convert ();
+}
+
 RPG_Character_CheckTypeUnion_XMLTree_Type::
 RPG_Character_CheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                            ::xml_schema::flags f,
@@ -4084,6 +4241,13 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Character_OffHand_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Character_Encumbrance_XMLTree_Type& x)
 {
   return s << static_cast< const ::xml_schema::string& > (x);
 }

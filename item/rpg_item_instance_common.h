@@ -27,6 +27,7 @@
 
 // useful types
 typedef unsigned int RPG_Item_ID_t;
+
 typedef std::set<RPG_Item_ID_t> RPG_Item_List_t;
 typedef RPG_Item_List_t::const_iterator RPG_Item_ListIterator_t;
 

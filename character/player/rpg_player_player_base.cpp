@@ -26,6 +26,7 @@
 #include <rpg_item_common.h>
 #include <rpg_item_dictionary.h>
 
+#include <rpg_character_defines.h>
 #include <rpg_character_common_tools.h>
 #include <rpg_character_race_common_tools.h>
 #include <rpg_character_skills_common_tools.h>
@@ -308,9 +309,12 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
 }
 
 unsigned char
-RPG_Player_Player_Base::getSpeed() const
+RPG_Player_Player_Base::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSpeed"));
+
+  // sanity check(s)
+  ACE_ASSERT(lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
 
   unsigned char result = 0;
 
@@ -326,39 +330,57 @@ RPG_Player_Player_Base::getSpeed() const
       if (base_speed > result)
         result = base_speed;
     } // end IF
+  ACE_ASSERT(base_speed);
 
-  // step2: test encumbrance (race)
+  // step2: consider encumbrance (armor / load)
+  RPG_Character_Encumbrance encumbrance_by_armor = LOAD_LIGHT;
   const RPG_Item_ArmorType& armor_type = getEquipment().getBodyArmor();
-  // *NOTE*: dwarves move at the base speed with any armor...
-  if ((armor_type != ARMOR_NONE) &&
-      RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_DWARF))
+  if (armor_type != ARMOR_NONE)
   {
     const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
     switch (properties.category)
     {
       case ARMORCATEGORY_LIGHT:
-        break;
+        encumbrance_by_armor = LOAD_LIGHT; break;
       case ARMORCATEGORY_MEDIUM:
+        encumbrance_by_armor = LOAD_MEDIUM; break;
       case ARMORCATEGORY_HEAVY:
-      {
-        if (RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_GNOME) ||
-            RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_HALFLING))
-          result = 15;
-
-        result = 20;
-      }
+        encumbrance_by_armor = LOAD_HEAVY; break;
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid armor category (was \"%s\"), aborting\n"),
+                   ACE_TEXT("invalid (body) armor category (was \"%s\"), aborting\n"),
                    RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str()));
 
         return 0;
       }
     } // end SWITCH
   } // end IF
+  // *NOTE*: dwarves move at the base speed with any armor...
+  if (RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_DWARF))
+    encumbrance_by_armor = LOAD_LIGHT;
+  // *TODO*: consider non-bipeds...
+  RPG_Character_Encumbrance encumbrance_by_load = RPG_Character_Common_Tools::getEncumbrance(getAttribute(ATTRIBUTE_STRENGTH),
+                                                                                             getSize(),
+                                                                                             getInventory().getTotalWeight(),
+                                                                                             true);
+  signed char maxDexModifierAC = std::numeric_limits<signed char>::max();
+  signed char armorCheckPenalty = 0;
+  unsigned char runModifier = RPG_CHARACTER_DEF_RUN_MODIFIER_MEDIUM;
+  RPG_Character_Common_Tools::getLoadModifiers(((encumbrance_by_armor > encumbrance_by_load) ? encumbrance_by_armor
+                                                                                             : encumbrance_by_load),
+                                               base_speed,
+                                               maxDexModifierAC,
+                                               armorCheckPenalty,
+                                               result,
+                                               runModifier);
 
-  // *TODO*: test load (inventory) and other (spell, ...) effects
+  // step3: consider vision [equipment / ambient lighting]
+  if ((getEquipment().getLightSource() == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
+      (lighting_in == AMBIENCE_DARKNESS))
+    result /= 2;
+
+  // *TODO*: consider other (spell, ...) effects
   return result;
 }
 

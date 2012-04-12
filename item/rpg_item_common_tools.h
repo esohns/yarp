@@ -21,11 +21,13 @@
 #ifndef RPG_ITEM_COMMON_TOOLS_H
 #define RPG_ITEM_COMMON_TOOLS_H
 
-#include <rpg_common.h>
-
 #include "rpg_item_exports.h"
 #include "rpg_item_common.h"
+#include "rpg_item_commoditybeverage.h"
 #include "rpg_item_commoditylight.h"
+#include "rpg_item_commodityunion.h"
+
+#include <rpg_common.h>
 
 #include <ace/Global_Macros.h>
 
@@ -53,7 +55,9 @@ class RPG_Item_Export RPG_Item_Common_Tools
 
   static bool isShield(const RPG_Item_ArmorType&); // armor type
 
-  static unsigned char lightingItem2Radius(const RPG_Item_CommodityLight&); // lighting item type
+  // *TODO*: consider shape of the light
+  static unsigned char lightingItem2Radius(const RPG_Item_CommodityLight&, // lighting item type
+                                           const bool& = true);            // ambience is "bright" ?
 
  private:
   // safety measures

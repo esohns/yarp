@@ -245,6 +245,15 @@ class RPG_Character_Export RPG_Character_OffHand_Type
     virtual RPG_Character_OffHand post_RPG_Character_OffHand_Type();
 };
 
+class RPG_Character_Export RPG_Character_Encumbrance_Type
+ : public RPG_Character_Encumbrance_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+  public:
+//   virtual void pre();
+    virtual RPG_Character_Encumbrance post_RPG_Character_Encumbrance_Type();
+};
+
 // class RPG_Character_Export RPG_Character_BaseXML_Type
 //  : public RPG_Character_BaseXML_Type_pskel
 // {

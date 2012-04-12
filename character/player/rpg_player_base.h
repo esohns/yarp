@@ -50,6 +50,7 @@
 #include <rpg_common_skill.h>
 #include <rpg_common_condition.h>
 #include <rpg_common_size.h>
+#include <rpg_common_ambientlighting.h>
 
 #include <ace/Global_Macros.h>
 
@@ -101,7 +102,7 @@ class RPG_Player_Export RPG_Player_Base
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                          const RPG_Combat_AttackSituation&) const = 0;
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
-  virtual unsigned char getSpeed() const = 0;
+  virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const = 0; // environment
 
   // get a hint if this is a PC/NPC
   virtual bool isPlayerCharacter() const = 0;
@@ -173,6 +174,7 @@ class RPG_Player_Export RPG_Player_Base
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Base());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Base& operator=(const RPG_Player_Base&));
 
   std::string                myName;
   RPG_Character_Alignment    myAlignment;

@@ -422,6 +422,13 @@ RPG_Character_OffHand RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Typ
   return RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(post_string());
 }
 
+RPG_Character_Encumbrance RPG_Character_Encumbrance_Type::post_RPG_Character_Encumbrance_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Encumbrance_Type::post_RPG_Character_Encumbrance_Type"));
+
+  return RPG_Character_EncumbranceHelper::stringToRPG_Character_Encumbrance(post_string());
+}
+
 // RPG_Character_BaseXML_Type::RPG_Character_BaseXML_Type()
 // {
 //   RPG_TRACE(ACE_TEXT("RPG_Character_BaseXML_Type::RPG_Character_BaseXML_Type"));

@@ -868,7 +868,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
     return false;
   } // end IF
   std::string pattern = ACE_TEXT_ALWAYS_CHAR("*");
-  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   gtk_file_filter_add_pattern(userData_in.map_filter, pattern.c_str());
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.map_filter);
   g_object_unref(G_OBJECT(userData_in.map_filter));
@@ -907,7 +907,7 @@ do_initGUI(const std::string& graphicsDirectory_in,
   GtkEntry* entry = GTK_ENTRY(glade_xml_get_widget(userData_in.xml,
                                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME)));
   ACE_ASSERT(entry);
-  GtkEntryBuffer* entry_buffer = gtk_entry_buffer_new(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME), // text
+  GtkEntryBuffer* entry_buffer = gtk_entry_buffer_new(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME), // text
                                                       -1);              // length in bytes (-1: \0-terminated)
   if (!entry_buffer)
   {

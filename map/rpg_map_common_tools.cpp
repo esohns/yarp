@@ -1947,6 +1947,106 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
 }
 
 void
+RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
+                                  const RPG_Map_Size_t& size_in,
+                                  const unsigned int& radius_in,
+                                  const bool& fillArea_in,
+                                  RPG_Map_Positions_t& area_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::buildCircle"));
+
+  // init result(s)
+  area_out.clear();
+
+  delta;
+  bool done;
+  for (unsigned int r = 0;
+       r <= radius_in;
+       r++)
+  {
+    delta = 0;
+    if (!fillArea_in &&
+        (r != radius_in))
+      continue;
+
+    if (radius_in == 0)
+    {
+      area_out.insert(center_in);
+      continue;
+    } // end IF
+
+    // compute leftmost x
+    x = center_in.first;
+    if (x < r)
+      delta = r - x;
+    x -= ((x == 0) ? 0 : (delta ? delta : r));
+    // --> up
+    done = false;
+    for (delta = 0, y = center_in.second;
+         delta <= r;
+         delta++, y--)
+    {
+      if (y == 0)
+        done = true;
+      
+      area_out.insert(std::make_pair(x, y));
+
+      if (done)
+        break;
+    } // end FOR
+    // --> right
+    done = false;
+    for (delta = 0, x++;
+         delta < (2 * r);
+         delta++, x++)
+    {
+      if (x == (size_in.first - 1))
+        done = true;
+      
+      area_out.insert(std::make_pair(x, y));
+
+      if (done)
+        break;
+    } // end FOR
+    // --> down
+    done = false;
+    for (delta = 0, y++;
+         delta < (2 * r);
+         delta++, y++)
+    {
+      if (y == (size_in.second - 1))
+        done = true;
+      
+      area_out.insert(std::make_pair(x, y));
+
+      if (done)
+        break;
+    } // end FOR
+    // --> left
+    done = false;
+    for (delta = 0, x--;
+         delta < (2 * r);
+         delta++, x--)
+    {
+      if (x == 0)
+        done = true;
+      
+      area_out.insert(std::make_pair(x, y));
+
+      if (done)
+        break;
+    } // end FOR
+    // --> up
+    done = false;
+    for (delta = 0, y--;
+         delta < (r - 1);
+         delta++, y--)
+      area_out.insert(std::make_pair(x, y));
+    ACE_ASSERT(y == (center_in.second - 1));
+  } // end FOR
+}
+
+void
 RPG_Map_Common_Tools::dump(const RPG_Map_Area_t& zone_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dump"));

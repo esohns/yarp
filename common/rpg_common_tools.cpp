@@ -391,6 +391,54 @@ RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
   return ((size_in > SIZE_MEDIUM) ? -result : result);
 }
 
+float
+RPG_Common_Tools::getSizeModifierLoad(const RPG_Common_Size& size_in,
+                                      const bool& isBiped_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getSizeModifierLoad"));
+
+  // SIZE_FINE:       1/8 | 1/4
+  // SIZE_DIMINUTIVE: 1/4 | 1/2
+  // SIZE_TINY:       1/2 | 3/4
+  // SIZE_SMALL:      3/4 | 1
+  // SIZE_MEDIUM:     1   | 3/2
+  // SIZE_LARGE:      2   | 3
+  // SIZE_HUGE:       4   | 6
+  // SIZE_GARGANTUAN: 8   | 12
+  // SIZE_COLOSSAL:   16  | 24
+  switch (size_in)
+  {
+    case SIZE_FINE:
+      return (isBiped_in ? 0.125F : 0.25F);
+    case SIZE_DIMINUTIVE:
+      return (isBiped_in ? 0.25F  : 0.5F);
+    case SIZE_TINY:
+      return (isBiped_in ? 0.5F   : 0.75F);
+    case SIZE_SMALL:
+      return (isBiped_in ? 0.75F  : 1.0F);
+    case SIZE_MEDIUM:
+      return (isBiped_in ? 1.0F   : 1.5F);
+    case SIZE_LARGE:
+      return (isBiped_in ? 2.0F   : 3.0F);
+    case SIZE_HUGE:
+      return (isBiped_in ? 4.0F   : 6.0F);
+    case SIZE_GARGANTUAN:
+      return (isBiped_in ? 8.0F   : 12.0F);
+    case SIZE_COLOSSAL:
+      return (isBiped_in ? 16.0F  : 24.0F);
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid size (was: \"%s\"), aborting\n"),
+                 RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return 0.0F;
+}
+
 unsigned char
 RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
 {
@@ -418,6 +466,40 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid size: \"%s\", aborting\n"),
                  RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return 0;
+}
+
+unsigned char
+RPG_Common_Tools::environment2Radius(const RPG_Common_Environment& environment_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environment2Radius"));
+
+  if (environment_in.outdoors)
+  {
+    // consider time of day...
+    if (environment_in.time == TIMEOFDAY_DAYTIME)
+      return 120;
+  } // end IF
+
+  // indoors &&/|| nighttime
+  // consider ambient lighting...
+  switch (environment_in.lighting)
+  {
+    case AMBIENCE_BRIGHT:
+      return 120;
+    case AMBIENCE_SHADOWY:
+    case AMBIENCE_DARKNESS:
+      break; // --> depends on other factors...
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid (ambient) lighting: \"%s\", aborting\n"),
+                 RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString(environment_in.lighting).c_str()));
 
       break;
     }

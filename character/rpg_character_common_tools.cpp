@@ -21,6 +21,7 @@
 
 #include "rpg_character_common_tools.h"
 
+#include "rpg_character_defines.h"
 #include "rpg_character_race_common.h"
 #include "rpg_character_class_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
@@ -35,6 +36,7 @@
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 #include <rpg_common_camp.h>
+#include <rpg_common_tools.h>
 
 #include <rpg_dice.h>
 #include <rpg_chance_common_tools.h>
@@ -56,6 +58,9 @@ RPG_Character_AlignmentCivicToStringTable_t RPG_Character_AlignmentCivicHelper::
 RPG_Character_AlignmentEthicToStringTable_t RPG_Character_AlignmentEthicHelper::myRPG_Character_AlignmentEthicToStringTable;
 RPG_Character_EquipmentSlotToStringTable_t RPG_Character_EquipmentSlotHelper::myRPG_Character_EquipmentSlotToStringTable;
 RPG_Character_OffHandToStringTable_t RPG_Character_OffHandHelper::myRPG_Character_OffHandToStringTable;
+RPG_Character_EncumbranceToStringTable_t RPG_Character_EncumbranceHelper::myRPG_Character_EncumbranceToStringTable;
+
+RPG_Character_Common_Tools::RPG_Character_EncumbranceTable_t RPG_Character_Common_Tools::myEncumbranceTable;
 
 void
 RPG_Character_Common_Tools::init()
@@ -63,6 +68,7 @@ RPG_Character_Common_Tools::init()
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::init"));
 
   initStringConversionTables();
+  initEncumbranceTable();
   RPG_Character_Skills_Common_Tools::init();
 }
 
@@ -80,9 +86,139 @@ RPG_Character_Common_Tools::initStringConversionTables()
   RPG_Character_AlignmentEthicHelper::init();
   RPG_Character_EquipmentSlotHelper::init();
   RPG_Character_OffHandHelper::init();
+  RPG_Character_EncumbranceHelper::init();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Character_Common_Tools: initialized string conversion tables...\n")));
+}
+
+void
+RPG_Character_Common_Tools::initEncumbranceTable()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::initEncumbranceTable"));
+
+  RPG_Character_Common_Tools::myEncumbranceTable.clear();
+
+  RPG_Character_EncumbranceEntry_t entry;
+  entry.light  = 3;
+  entry.medium = 6;
+  entry.heavy  = 10;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(1, entry));
+  entry.light  = 6;
+  entry.medium = 13;
+  entry.heavy  = 20;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(2, entry));
+  entry.light  = 10;
+  entry.medium = 20;
+  entry.heavy  = 30;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(3, entry));
+  entry.light  = 13;
+  entry.medium = 26;
+  entry.heavy  = 40;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(4, entry));
+  entry.light  = 16;
+  entry.medium = 33;
+  entry.heavy  = 50;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(5, entry));
+  entry.light  = 20;
+  entry.medium = 40;
+  entry.heavy  = 60;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(6, entry));
+  entry.light  = 23;
+  entry.medium = 46;
+  entry.heavy  = 70;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(7, entry));
+  entry.light  = 26;
+  entry.medium = 53;
+  entry.heavy  = 80;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(8, entry));
+  entry.light  = 30;
+  entry.medium = 60;
+  entry.heavy  = 90;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(9, entry));
+  entry.light  = 33;
+  entry.medium = 66;
+  entry.heavy  = 100;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(10, entry));
+  entry.light  = 38;
+  entry.medium = 76;
+  entry.heavy  = 115;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(11, entry));
+  entry.light  = 43;
+  entry.medium = 86;
+  entry.heavy  = 130;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(12, entry));
+  entry.light  = 50;
+  entry.medium = 100;
+  entry.heavy  = 150;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(13, entry));
+  entry.light  = 58;
+  entry.medium = 116;
+  entry.heavy  = 175;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(14, entry));
+  entry.light  = 66;
+  entry.medium = 133;
+  entry.heavy  = 200;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(15, entry));
+  entry.light  = 76;
+  entry.medium = 153;
+  entry.heavy  = 230;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(16, entry));
+  entry.light  = 86;
+  entry.medium = 173;
+  entry.heavy  = 260;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(17, entry));
+  entry.light  = 100;
+  entry.medium = 200;
+  entry.heavy  = 300;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(18, entry));
+  entry.light  = 116;
+  entry.medium = 233;
+  entry.heavy  = 350;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(19, entry));
+  entry.light  = 133;
+  entry.medium = 266;
+  entry.heavy  = 400;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(20, entry));
+  entry.light  = 153;
+  entry.medium = 306;
+  entry.heavy  = 460;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(21, entry));
+  entry.light  = 173;
+  entry.medium = 346;
+  entry.heavy  = 520;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(22, entry));
+  entry.light  = 200;
+  entry.medium = 400;
+  entry.heavy  = 600;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(23, entry));
+  entry.light  = 233;
+  entry.medium = 466;
+  entry.heavy  = 700;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(24, entry));
+  entry.light  = 266;
+  entry.medium = 533;
+  entry.heavy  = 800;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(25, entry));
+  entry.light  = 306;
+  entry.medium = 613;
+  entry.heavy  = 920;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(26, entry));
+  entry.light  = 346;
+  entry.medium = 693;
+  entry.heavy  = 1040;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(27, entry));
+  entry.light  = 400;
+  entry.medium = 800;
+  entry.heavy  = 1200;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(28, entry));
+  entry.light  = 466;
+  entry.medium = 933;
+  entry.heavy  = 1400;
+  RPG_Character_Common_Tools::myEncumbranceTable.insert(std::make_pair(29, entry));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Character_Common_Tools: initialized encumbrance table...\n")));
 }
 
 std::string
@@ -452,4 +588,119 @@ RPG_Character_Common_Tools::getBaseAttackBonus(const RPG_Common_SubClass& subCla
   } // end WHILE
 
   return result;
+}
+
+RPG_Character_Encumbrance
+RPG_Character_Common_Tools::getEncumbrance(const unsigned char& strength_in,
+                                           const RPG_Common_Size& size_in,
+                                           const unsigned short& weight_in,
+                                           const bool& isBiped_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getEncumbrance"));
+
+  // step1: find corresponding (base) table entry
+  RPG_Character_EncumbranceTableConstIterator_t iterator;
+  bool tremendous_strength = false;
+  if (strength_in > myEncumbranceTable.size())
+  {
+    tremendous_strength = true;
+    iterator = myEncumbranceTable.find(20);
+    ACE_ASSERT(iterator != myEncumbranceTable.end());
+    std::advance(iterator, static_cast<unsigned int>(strength_in) % 10);
+  } // end IF
+  else
+    iterator = myEncumbranceTable.find(strength_in);
+
+  // step2: consider size
+  float relative_weight = RPG_Common_Tools::getSizeModifierLoad(size_in,
+                                                                isBiped_in);
+  relative_weight *= static_cast<float>(weight_in);
+
+  // step3: consider tremendous strength
+  if (tremendous_strength)
+    relative_weight /= (4.0F * static_cast<float>(static_cast<unsigned int>(strength_in) / 10));
+
+  // step4: determine load
+  if (relative_weight <= (*iterator).second.light)
+    return LOAD_LIGHT;
+  else if (relative_weight <= (*iterator).second.medium)
+    return LOAD_MEDIUM;
+
+  return LOAD_HEAVY;
+}
+
+void
+RPG_Character_Common_Tools::getLoadModifiers(const RPG_Character_Encumbrance& encumbrance_in,
+                                             const unsigned char& baseSpeed_in,
+                                             signed char& maxDexModifierAC_out,
+                                             signed char& armorCheckPenalty_out,
+                                             unsigned char& speed_out,
+                                             unsigned char& runModifier_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getLoadModifiers"));
+
+  // init return value(s)
+  maxDexModifierAC_out = std::numeric_limits<signed char>::max();
+  armorCheckPenalty_out = 0;
+  speed_out = baseSpeed_in;
+  runModifier_out = RPG_CHARACTER_DEF_RUN_MODIFIER_MEDIUM;
+
+  switch (encumbrance_in)
+  {
+    case LOAD_MEDIUM:
+    {
+      maxDexModifierAC_out = 3;
+      armorCheckPenalty_out = -3;
+      speed_out = getReducedSpeed(baseSpeed_in);
+
+      break;
+    }
+    case LOAD_HEAVY:
+    {
+      maxDexModifierAC_out = 1;
+      armorCheckPenalty_out = -6;
+      speed_out = getReducedSpeed(baseSpeed_in);
+      runModifier_out = RPG_CHARACTER_DEF_RUN_MODIFIER_HEAVY;
+
+      break;
+    }
+  } // end SWITCH
+}
+
+unsigned char
+RPG_Character_Common_Tools::getReducedSpeed(const unsigned char& baseSpeed_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::getReducedSpeed"));
+
+  switch (baseSpeed_in)
+  {
+    case 20:
+      return 15;
+    case 30:
+      return 20;
+    case 40:
+      return 30;
+    case 50:
+      return 35;
+    case 60:
+      return 40;
+    case 70:
+      return 50;
+    case 80:
+      return 55;
+    case 90:
+      return 60;
+    case 100:
+      return 70;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid (base) speed (was: %u), aborting\n"),
+                 static_cast<unsigned int>(baseSpeed_in)));
+
+      break;
+    }
+  } // end SWITCH
+
+  return 0;
 }

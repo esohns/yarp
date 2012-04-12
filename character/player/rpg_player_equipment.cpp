@@ -24,8 +24,9 @@
 #include "rpg_player_equipment_common.h"
 
 #include <rpg_item_base.h>
-#include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
+#include <rpg_item_commodity.h>
+#include <rpg_item_weapon.h>
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_common_tools.h>
 
@@ -114,10 +115,7 @@ RPG_Player_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) 
   // *TODO*; consider ambidexterity, etc...
   RPG_Player_EquipmentConstIterator_t iterator = myEquipment.find(slot);
   if (iterator == myEquipment.end())
-  {
-    // nothing equipped --> default is the bare fist...
-    return UNARMED_WEAPON_STRIKE;
-  } // end IF
+    return UNARMED_WEAPON_STRIKE; // nothing equipped --> default is the bare fist...
 
   // find item type
   RPG_Item_Base* handle = NULL;
@@ -161,10 +159,7 @@ RPG_Player_Equipment::getBodyArmor() const
     // nothing equipped on body --> check torso
     iterator = myEquipment.find(EQUIPMENTSLOT_TORSO);
     if (iterator == myEquipment.end())
-    {
-      // nothing equipped --> default is "nakedness"...
-      return ARMOR_NONE;
-    } // end IF
+      return ARMOR_NONE; // nothing equipped --> default is "nakedness"...
   } // end IF
 
   // find item type
@@ -181,10 +176,7 @@ RPG_Player_Equipment::getBodyArmor() const
 
   // armor ?
   if (handle->getType() != ITEM_ARMOR)
-  {
-    // item is not an armor...
-    return ARMOR_NONE;
-  } // end IF
+    return ARMOR_NONE; // item is not an armor...
 
   RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
   ACE_ASSERT(armor);
@@ -203,10 +195,7 @@ RPG_Player_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
   // *TODO*; consider case where shield is in the primary hand, etc...
   RPG_Player_EquipmentConstIterator_t iterator = myEquipment.find(slot);
   if (iterator == myEquipment.end())
-  {
-    // nothing equipped...
-    return ARMOR_NONE;
-  } // end IF
+    return ARMOR_NONE; // nothing equipped...
 
   // find item type
   RPG_Item_Base* handle = NULL;
@@ -222,10 +211,7 @@ RPG_Player_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
 
   // armor ?
   if (handle->getType() != ITEM_ARMOR)
-  {
-    // item is not an armor...
-    return ARMOR_NONE;
-  } // end IF
+    return ARMOR_NONE; // item is not an armor...
 
   RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
   ACE_ASSERT(armor);
@@ -244,6 +230,87 @@ RPG_Player_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
   } // end IF
 
   return armor->getArmorType();
+}
+
+RPG_Item_CommodityLight
+RPG_Player_Equipment::getLightSource() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::getLightSource"));
+
+  RPG_Item_CommodityLight lightsource_1 = RPG_ITEM_COMMODITYLIGHT_INVALID;
+  RPG_Item_CommodityLight lightsource_2 = RPG_ITEM_COMMODITYLIGHT_INVALID;
+  RPG_Item_Base* handle = NULL;
+  RPG_Item_Commodity* commodity_handle = NULL;
+  RPG_Item_CommodityUnion commodity_union;
+  RPG_Player_EquipmentConstIterator_t iterator = myEquipment.find(EQUIPMENTSLOT_HAND_LEFT);
+  if (iterator != myEquipment.end())
+  {
+    // find item type
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get((*iterator).second,
+                                                              handle))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), aborting\n"),
+                 (*iterator).second));
+
+      ACE_ASSERT(false);
+
+      return RPG_ITEM_COMMODITYLIGHT_INVALID;
+    } // end IF
+
+    // commodity ?
+    if (handle->getType() == ITEM_COMMODITY)
+    {
+      commodity_handle = NULL;
+      commodity_handle = dynamic_cast<RPG_Item_Commodity*>(handle);
+      ACE_ASSERT(commodity_handle);
+      commodity_union = commodity_handle->getCommoditySubType();
+
+      // light ?
+      if (commodity_union.discriminator == RPG_Item_CommodityUnion::COMMODITYLIGHT)
+        lightsource_1 = commodity_union.commoditylight;
+    } // end IF
+  } // end IF
+  iterator = myEquipment.find(EQUIPMENTSLOT_HAND_RIGHT);
+  if (iterator != myEquipment.end())
+  {
+    // find item type
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get((*iterator).second,
+                                                              handle))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), aborting\n"),
+                 (*iterator).second));
+
+      ACE_ASSERT(false);
+
+      return RPG_ITEM_COMMODITYLIGHT_INVALID;
+    } // end IF
+
+    // commodity ?
+    if (handle->getType() == ITEM_COMMODITY)
+    {
+      commodity_handle = NULL;
+      commodity_handle = dynamic_cast<RPG_Item_Commodity*>(handle);
+      ACE_ASSERT(commodity_handle);
+      commodity_union = commodity_handle->getCommoditySubType();
+
+      // light ?
+      if (commodity_union.discriminator == RPG_Item_CommodityUnion::COMMODITYLIGHT)
+        lightsource_2 = commodity_union.commoditylight;
+    } // end IF
+  } // end IF
+
+  if (lightsource_1 == RPG_ITEM_COMMODITYLIGHT_INVALID)
+    return lightsource_2;
+  else if (lightsource_2 == RPG_ITEM_COMMODITYLIGHT_INVALID)
+    return lightsource_1;
+
+  // return the brighter lightsource...
+  unsigned char brightness_1 = RPG_Item_Common_Tools::lightingItem2Radius(lightsource_1);
+  unsigned char brightness_2 = RPG_Item_Common_Tools::lightingItem2Radius(lightsource_2);
+
+  return ((brightness_1 > brightness_2) ? lightsource_1 : lightsource_2);
 }
 
 bool

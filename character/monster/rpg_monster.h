@@ -73,8 +73,11 @@ class RPG_Monster_Export RPG_Monster
   const RPG_Common_CreatureType& getType() const;
   bool isSummoned() const;
 
+  // access current equipment (if any)
+  const RPG_Player_Equipment& getEquipment() const;
+
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
-  virtual unsigned char getSpeed() const;
+  virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
 
   virtual void gainExperience(const unsigned int&); // XP
 

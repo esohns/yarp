@@ -34,6 +34,7 @@ namespace urn:rpg
   RPG_Character_Alignment_Type      RPG_Character_Alignment;
   RPG_Character_EquipmentSlot_Type  RPG_Character_EquipmentSlot;
   RPG_Character_OffHand_Type        RPG_Character_OffHand;
+  RPG_Character_Encumbrance_Type    RPG_Character_Encumbrance;
 
 #  RPG_Character_BaseXML_Type        RPG_Character_BaseXML;
 #  RPG_Character_PlayerXML_Type      RPG_Character_PlayerXML;

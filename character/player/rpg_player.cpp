@@ -25,9 +25,6 @@
 #include "rpg_player_common_tools.h"
 #include "rpg_player_XML_tree.h"
 
-#include <rpg_character_race_common_tools.h>
-#include <rpg_character_class_common_tools.h>
-
 #include <rpg_item_instance_common.h>
 #include <rpg_item_instance_manager.h>
 #include <rpg_item_base.h>
@@ -36,14 +33,27 @@
 #include <rpg_item_common_tools.h>
 #include <rpg_item_dictionary.h>
 
+#include <rpg_magic_defines.h>
+#include <rpg_magic_dictionary.h>
+#include <rpg_magic_common_tools.h>
+
+#include <rpg_character_common_tools.h>
+#include <rpg_character_race_common_tools.h>
+#include <rpg_character_class_common_tools.h>
+#include <rpg_character_skills_common_tools.h>
+
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
 #include <rpg_common_file_tools.h>
 #include <rpg_common_xsderrorhandler.h>
 
+#include <rpg_dice_common.h>
+#include <rpg_dice.h>
+
 #include <ace/Log_Msg.h>
 
 #include <fstream>
+#include <numeric>
 
 RPG_Player::RPG_Player(// base attributes
                        const std::string& name_in,
@@ -104,6 +114,678 @@ RPG_Player::~RPG_Player()
 {
   RPG_TRACE(ACE_TEXT("RPG_Player::~RPG_Player"));
 
+}
+
+RPG_Player*
+RPG_Player::create()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player::create"));
+
+  // step1: name
+  std::string name;
+  // generate a string of (random ASCII alphabet, printable) characters
+  int length = 0;
+  RPG_Dice_RollResult_t result;
+  RPG_Dice::generateRandomNumbers(10, // maximum length
+                                  1,
+                                  result);
+  length = result.front();
+  result.clear();
+  RPG_Dice::generateRandomNumbers(26, // characters in (ASCII) alphabet
+                                  (2 * length), // first half are characters, last half interpreted as boolean (upper/lower)
+                                  result);
+  bool lowercase = false;
+  for (int i = 0;
+       i < length;
+       i++)
+  {
+    // upper/lower ?
+    if (result[length + i] > 13)
+      lowercase = false;
+    else
+      lowercase = true;
+
+    name += static_cast<char>((lowercase ? 96 : 64) + result[i]); // 97 == 'a', 65 == 'A'
+  } // end FOR
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("generated name: \"%s\"\n"),
+//              name.c_str()));
+
+  // step2: gender
+  RPG_Character_Gender gender = RPG_CHARACTER_GENDER_INVALID;
+  result.clear();
+  RPG_Dice::generateRandomNumbers((RPG_CHARACTER_GENDER_MAX - 2),
+                                  1,
+                                  result);
+  gender = static_cast<RPG_Character_Gender> (result.front());
+
+  // step3: race
+  RPG_Character_Race_t player_race(0);
+  // *TODO*: consider allowing multi-race like Half-Elf etc.
+  RPG_Character_Race race = RPG_CHARACTER_RACE_INVALID;
+  result.clear();
+  RPG_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
+                                  1,
+                                  result);
+  race = static_cast<RPG_Character_Race>(result.front());
+  player_race.flip(race - 1);
+
+  // step4: class
+  RPG_Character_Class player_class;
+  player_class.metaClass = RPG_CHARACTER_METACLASS_INVALID;
+  RPG_Common_SubClass player_subclass = RPG_COMMON_SUBCLASS_INVALID;
+  result.clear();
+  RPG_Dice::generateRandomNumbers((RPG_COMMON_SUBCLASS_MAX - 1),
+                                  1,
+                                  result);
+  player_subclass = static_cast<RPG_Common_SubClass>(result.front());
+  player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
+  player_class.subClasses.insert(player_subclass);
+//   player_class.subClasses.push_back(player_subclass);
+
+  // step5: alignment
+  RPG_Character_Alignment alignment;
+  alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
+  alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
+  result.clear();
+  RPG_Dice::generateRandomNumbers((RPG_CHARACTER_ALIGNMENTCIVIC_MAX - 2),
+                                  2,
+                                  result);
+  alignment.civic = static_cast<RPG_Character_AlignmentCivic>(result.front());
+  alignment.ethic = static_cast<RPG_Character_AlignmentEthic>(result.back());
+
+  // step6: attributes
+  RPG_Character_Attributes attributes;
+  ACE_OS::memset(&attributes, 0, sizeof(RPG_Character_Attributes));
+  unsigned char* p = &(attributes.strength);
+  RPG_Dice_Roll roll;
+  roll.numDice = 2;
+  roll.typeDice = D_10;
+  roll.modifier = -2; // interval: 0-18
+  // make sure the result is somewhat balanced (average == 6 * 9 ?)...
+  // *NOTE*: INT must be > 2 (smaller values are reserved for animals...)
+  int sum = 0;
+  do
+  {
+    sum = 0;
+    result.clear();
+    RPG_Dice::simulateRoll(roll,
+                           6,
+                           result);
+    sum = std::accumulate(result.begin(),
+                          result.end(),
+                          0);
+  } while ((sum <= RPG_PLAYER_ATTR_MIN_SUM) ||
+           (*(std::min_element(result.begin(),
+                               result.end())) <= 9) ||
+           (result[3] < 3)); // Note: this is already covered by the last case...
+  for (int i = 0;
+       i < 6;
+       i++, p++)
+  {
+    // add +1 if result is 0 --> stats interval 1-18
+    *p = (result[i] == 0 ? 1 : result[i]);
+  } // end FOR
+
+  // step7: (initial) skills
+  RPG_Character_Skills_t skills;
+  unsigned int initialSkillPoints = 0;
+  RPG_Character_Skills_Common_Tools::getSkillPoints(player_subclass,
+                                                    RPG_Character_Common_Tools::getAttributeAbilityModifier(attributes.intelligence),
+                                                    initialSkillPoints);
+  RPG_Character_SkillsIterator_t iterator;
+  RPG_Common_Skill skill = RPG_COMMON_SKILL_INVALID;
+  for (unsigned int i = 0;
+       i < initialSkillPoints;
+       i++)
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_COMMON_SKILL_MAX,
+                                    1,
+                                    result);
+    skill = static_cast<RPG_Common_Skill>((result.front() - 1));
+    iterator = skills.find(skill);
+    if (iterator != skills.end())
+      (iterator->second)++;
+    else
+      skills.insert(std::make_pair(skill,
+                                   static_cast<char>(1)));
+  } // end FOR
+
+  // step8: (initial) feats & abilities
+  RPG_Character_Feats_t feats;
+  unsigned int initialFeats = 0;
+  RPG_Character_Abilities_t abilities;
+  RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(race,
+                                                          player_subclass,
+                                                          1,
+                                                          feats,
+                                                          initialFeats,
+                                                          abilities);
+  RPG_Character_FeatsIterator_t iterator2;
+  RPG_Character_Feat feat = RPG_CHARACTER_FEAT_INVALID;
+  do
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_CHARACTER_FEAT_MAX,
+                                    1,
+                                    result);
+    feat = static_cast<RPG_Character_Feat>((result.front() - 1));
+
+    // check prerequisites
+    if (!RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(feat,
+                                                                   player_subclass,
+                                                                   1,
+                                                                   attributes,
+                                                                   skills,
+                                                                   feats,
+                                                                   abilities))
+    {
+      // try again
+      continue;
+    } // end IF
+
+    iterator2 = feats.find(feat);
+    if (iterator2 != feats.end())
+    {
+      // try again
+      continue;
+    } // end IF
+
+    feats.insert(feat);
+  } while (feats.size() < initialFeats);
+
+  // step9: off-hand
+  RPG_Character_OffHand offHand = OFFHAND_LEFT;
+  roll.numDice = 1;
+  roll.typeDice = D_100;
+  roll.modifier = 0;
+  // *TODO*: 10% (?) of people are "lefties"...
+  result.clear();
+  RPG_Dice::simulateRoll(roll,
+                         1,
+                         result);
+  if (result.front() <= 10)
+    offHand = OFFHAND_RIGHT;
+
+  // step10: (initial) Hit Points
+  unsigned short int hitpoints = 0;
+//   roll.numDice = 1;
+//   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
+//   roll.modifier = 0;
+//   result.clear();
+//   RPG_Dice::simulateRoll(roll,
+//                          1,
+//                          result);
+//   hitpoints = result.front();
+  // *NOTE*: players start with maxed HP...
+  hitpoints = RPG_Character_Common_Tools::getHitDie(player_subclass);
+
+  // step11: (initial) set of spells
+  unsigned int numKnownSpells = 0;
+  unsigned int numSpells = 0;
+  RPG_Magic_SpellTypes_t knownSpells;
+  RPG_Magic_Spells_t spells;
+  unsigned int numChosen = 0;
+  RPG_Magic_SpellTypes_t available;
+  RPG_Magic_SpellTypesIterator_t available_iterator;
+  RPG_Magic_CasterClassUnion casterClass;
+  casterClass.discriminator = RPG_Magic_CasterClassUnion::SUBCLASS;
+  for (RPG_Character_SubClassesIterator_t iterator = player_class.subClasses.begin();
+       iterator != player_class.subClasses.end();
+       iterator++)
+  {
+    if (!RPG_Magic_Common_Tools::isCasterClass(*iterator))
+      continue;
+
+    casterClass.subclass = *iterator;
+
+    switch (*iterator)
+    {
+      case SUBCLASS_BARD:
+      case SUBCLASS_SORCERER:
+      {
+        for (unsigned char i = 0;
+             i <= RPG_COMMON_MAX_SPELL_LEVEL;
+             i++)
+        {
+          numKnownSpells = 0;
+
+          // step1: get list of available spells
+          available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                            i);
+
+          // step2: compute # known spells
+          numKnownSpells = RPG_Magic_Common_Tools::getNumKnownSpells(*iterator,
+                                                                     1,
+                                                                     i);
+
+          //         ACE_DEBUG((LM_DEBUG,
+          //                    ACE_TEXT("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+          //                    i,
+          //                    RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+          //                    numKnownSpells));
+
+          // make sure we have enough variety...
+          ACE_ASSERT(numKnownSpells <= available.size());
+
+          // step3: choose known spells
+          if (numKnownSpells == 0)
+            break; // done
+
+          numChosen = 0;
+          while (numChosen < numKnownSpells)
+          {
+            result.clear();
+            RPG_Dice::generateRandomNumbers(available.size(),
+                                            (numKnownSpells - numChosen),
+                                            result);
+
+            for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
+                 iterator2 != result.end();
+                 iterator2++)
+            {
+              available_iterator = available.begin();
+              std::advance(available_iterator, *iterator2 - 1);
+              if (knownSpells.find(*available_iterator) != knownSpells.end())
+                continue; // try again
+
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("chose known spell #%d: \"%s\"\n"),
+                         numChosen + 1,
+                         RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
+              knownSpells.insert(*available_iterator);
+              numChosen++;
+            } // end FOR
+          } // end WHILE
+        } // end FOR
+
+        // *WARNING*: falls through !
+      }
+      case SUBCLASS_CLERIC:
+      case SUBCLASS_DRUID:
+      case SUBCLASS_PALADIN:
+      case SUBCLASS_RANGER:
+      {
+        for (unsigned char i = 0;
+             i <= RPG_COMMON_MAX_SPELL_LEVEL;
+             i++)
+        {
+          numSpells = 0;
+
+          // step1: get list of available spells
+          available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                            i);
+
+          // step2: compute # prepared spells
+          numSpells = RPG_Magic_Common_Tools::getNumSpells(*iterator,
+                                                           1,
+                                                           i);
+
+    //       ACE_DEBUG((LM_DEBUG,
+    //                  ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
+    //                  i,
+    //                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+    //                  numSpells));
+
+          // step3: choose prepared spells
+          if (numSpells == 0)
+            break; // done
+
+          result.clear();
+          RPG_Dice::generateRandomNumbers((RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available.size()
+                                                                                                  : knownSpells.size()),
+                                          numSpells,
+                                          result);
+          int index = 0;
+          for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
+               iterator2 != result.end();
+               iterator2++, index++)
+          {
+            available_iterator = (RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
+                                                                                         : knownSpells.begin());
+            std::advance(available_iterator, *iterator2 - 1);
+
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("chose prepared spell #%d: \"%s\"\n"),
+                       index + 1,
+                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
+            spells.push_back(*available_iterator);
+          } // end FOR
+        } // end FOR
+
+        break;
+      }
+      case SUBCLASS_WIZARD:
+      {
+        numKnownSpells = RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL;
+
+        // step1: collect list of available spells
+        RPG_Magic_SpellTypes_t current;
+        char i = 0;
+        for (;
+             i <= RPG_COMMON_MAX_SPELL_LEVEL;
+             i++)
+        {
+          if (RPG_Magic_Common_Tools::getNumSpells(*iterator,
+                                                   1,
+                                                   i) == 0)
+          {
+            i--;
+
+            break; // done
+          } // end FOR
+
+          current = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                          i);
+          available.insert(current.begin(), current.end());
+        } // end FOR
+
+        // step2: chose # known spells
+        numChosen = 0;
+        while (numChosen < numKnownSpells)
+        {
+          result.clear();
+          RPG_Dice::generateRandomNumbers(available.size(),
+                                          (numKnownSpells - numChosen),
+                                          result);
+
+          for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
+               iterator2 != result.end();
+               iterator2++)
+          {
+            available_iterator = available.begin();
+            std::advance(available_iterator, *iterator2 - 1);
+            if (knownSpells.find(*available_iterator) != knownSpells.end())
+              continue; // try again
+
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("chose known spell #%d: \"%s\"\n"),
+                       numChosen + 1,
+                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
+            knownSpells.insert(*available_iterator);
+            numChosen++;
+          } // end FOR
+        } // end WHILE
+
+        // step3: chose # prepared spells
+        for (char j = i;
+             j >= 0;
+             j--)
+        {
+          numSpells += RPG_Magic_Common_Tools::getNumSpells(*iterator,
+                                                            1,
+                                                            j);
+          ACE_ASSERT(numSpells);
+
+          current = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                          j);
+          available.clear();
+          for (RPG_Magic_SpellTypesIterator_t iterator2 = current.begin();
+               iterator2 != current.end();
+               iterator2++)
+            if (knownSpells.find(*iterator2) != knownSpells.end())
+              available.insert(*iterator2);
+//           std::set_intersection(current.begin(),
+//                                 current.end(),
+//                                 knownSpells.begin(),
+//                                 knownSpells.end(),
+//                                 available.begin());
+          if (available.empty())
+            continue; // done
+
+          result.clear();
+          RPG_Dice::generateRandomNumbers(available.size(),
+                                          numSpells,
+                                          result);
+          int index = 0;
+          for (RPG_Dice_RollResultIterator_t iterator2 = result.begin();
+               iterator2 != result.end();
+               iterator2++, index++)
+          {
+            available_iterator = available.begin();
+            std::advance(available_iterator, *iterator2 - 1);
+
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("chose prepared spell #%d: \"%s\"\n"),
+                       index + 1,
+                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+
+            spells.push_back(*available_iterator);
+          } // end FOR
+
+          numSpells = 0;
+        } // end FOR
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid class (was: %s), aborting\n"),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+  } // end FOR
+
+  // step12: initialize condition
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL); // start "normal"
+
+  // step13: (initial) set of items
+  // *TODO*: somehow generate these at random too ?
+  RPG_Item_List_t items;
+  RPG_Item_Instance_Base* current = NULL;
+  try
+  {
+    switch (player_subclass)
+    {
+      case SUBCLASS_FIGHTER:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_MAIL_SPLINT);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_SHIELD_HEAVY_WOODEN);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+
+        break;
+      }
+      case SUBCLASS_PALADIN:
+//       case SUBCLASS_WARLORD:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_PLATE_FULL);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_SHIELD_HEAVY_STEEL);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+
+        break;
+      }
+      case SUBCLASS_RANGER:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                          RANGED_WEAPON_BOW_LONG);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_HIDE);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+
+        // *TODO*: no arrows ?
+
+        break;
+      }
+//       case SUBCLASS_BARBARIAN:
+//       {
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+//             ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+//         ACE_ASSERT(current);
+//         items.insert(current->getID());
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+//             ARMOR_HIDE);
+//         ACE_ASSERT(current);
+//         items.insert(current->getID());
+//
+//         break;
+//       }
+      case SUBCLASS_WIZARD:
+      case SUBCLASS_SORCERER:
+//       case SUBCLASS_WARLOCK:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                          TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+
+        break;
+      }
+      case SUBCLASS_CLERIC:
+//       case SUBCLASS_AVENGER:
+//       case SUBCLASS_INVOKER:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                          ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_MAIL_CHAIN);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_SHIELD_HEAVY_WOODEN);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+
+        break;
+      }
+      case SUBCLASS_DRUID:
+//       case SUBCLASS_SHAMAN:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                          LIGHT_MELEE_WEAPON_SICKLE);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_HIDE);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_SHIELD_LIGHT_WOODEN);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+
+        break;
+      }
+//       case SUBCLASS_MONK:
+//       {
+//         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+//             TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+//         ACE_ASSERT(current);
+//         items.insert(current->getID());
+//
+//         break;
+//       }
+      case SUBCLASS_THIEF:
+      case SUBCLASS_BARD:
+      {
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                          LIGHT_MELEE_WEAPON_SWORD_SHORT);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_LEATHER);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                          ARMOR_SHIELD_LIGHT_STEEL);
+        ACE_ASSERT(current);
+        items.insert(current->getID());
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid subclass \"%s\", aborting\n"),
+                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Player_Common_Tools::generatePlayerCharacter(): caught exception: \"%s\", continuing\n"),
+               exception.what()));
+  }
+
+  // step14: instantiate player character
+  RPG_Player* player_p = NULL;
+  try
+  {
+    player_p = new RPG_Player(name,
+                              gender,
+                              player_race,
+							                player_class,
+                              alignment,
+                              attributes,
+                              skills,
+                              feats,
+                              abilities,
+                              offHand,
+                              hitpoints,
+                              knownSpells,
+                              condition,
+                              hitpoints, // start healthy
+                              0,
+                              RPG_PLAYER_START_MONEY,
+                              spells,
+                              items);
+  }
+  catch (const std::bad_alloc& exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Player_Common_Tools::generatePlayerCharacter(): exception occurred: \"%s\", aborting\n"),
+               exception.what()));
+
+    return player_p;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("RPG_Player_Common_Tools::generatePlayerCharacter(): exception occurred, aborting\n")));
+
+    return player_p;
+  }
+  ACE_ASSERT(player_p);
+
+  return player_p;
 }
 
 RPG_Player*

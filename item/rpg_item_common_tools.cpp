@@ -235,33 +235,36 @@ RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_in)
 }
 
 unsigned char
-RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_in)
+RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_in,
+                                           const bool& ambienceIsBright_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::lightingItem2Radius"));
+
+  unsigned char result = 0;
 
   switch (type_in)
   {
     case COMMODITY_LIGHT_CANDLE:
       break; // 0
     case COMMODITY_LIGHT_LAMP:
-      return 15;
+      result = 15; break;
     case COMMODITY_LIGHT_LANTERN_BULLSEYE:
-      return 60;
+      result = 60; break;
     case COMMODITY_LIGHT_LANTERN_HOODED:
-      return 30;
+      result = 30; break;
     case COMMODITY_LIGHT_TORCH:
-      return 20;
+      result = 20; break;
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
+                 ACE_TEXT("invalid (lighting) item type (was: \"%s\"), aborting\n"),
                  RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString(type_in).c_str()));
 
-      break;
+      return 0;
     }
   } // end SWITCH
 
-  return 0;
+  return (ambienceIsBright_in ? result : (result * 2));
 }
 
 bool

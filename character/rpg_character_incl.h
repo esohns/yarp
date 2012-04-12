@@ -23,6 +23,7 @@
 #include "rpg_character_alignment.h"
 #include "rpg_character_equipmentslot.h"
 #include "rpg_character_offhand.h"
+#include "rpg_character_encumbrance.h"
 #include "rpg_character_checktypeunion.h"
 #include "rpg_character_check.h"
 
