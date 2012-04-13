@@ -13,7 +13,7 @@ struct RPG_Item_Export RPG_Item_CommodityPropertiesBase
  : public RPG_Item_PropertiesBase
 {
   RPG_Item_CommodityType type;
-  RPG_Item_CommodityUnion subtype;
+  RPG_Item_CommodityUnion subType;
 };
 
 #endif

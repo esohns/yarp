@@ -24,7 +24,12 @@
 #include <rpg_combat_common_tools.h>
 
 #include <rpg_item_common.h>
+#include <rpg_item_armor.h>
+#include <rpg_item_commodity.h>
+#include <rpg_item_weapon.h>
 #include <rpg_item_dictionary.h>
+#include <rpg_item_instance_manager.h>
+#include <rpg_item_common_tools.h>
 
 #include <rpg_character_defines.h>
 #include <rpg_character_common_tools.h>
@@ -222,8 +227,8 @@ RPG_Player_Player_Base::getExperience() const
   return myExperience;
 }
 
-const RPG_Player_Equipment&
-RPG_Player_Player_Base::getEquipment() const
+RPG_Player_Equipment&
+RPG_Player_Player_Base::getEquipment()
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getEquipment"));
 
@@ -334,7 +339,7 @@ RPG_Player_Player_Base::getSpeed(const RPG_Common_AmbientLighting& lighting_in) 
 
   // step2: consider encumbrance (armor / load)
   RPG_Character_Encumbrance encumbrance_by_armor = LOAD_LIGHT;
-  const RPG_Item_ArmorType& armor_type = getEquipment().getBodyArmor();
+  RPG_Item_ArmorType armor_type = const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getBodyArmor();
   if (armor_type != ARMOR_NONE)
   {
     const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
@@ -376,7 +381,7 @@ RPG_Player_Player_Base::getSpeed(const RPG_Common_AmbientLighting& lighting_in) 
                                                runModifier);
 
   // step3: consider vision [equipment / ambient lighting]
-  if ((getEquipment().getLightSource() == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
+  if ((const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getLightSource() == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
       (lighting_in == AMBIENCE_DARKNESS))
     result /= 2;
 
@@ -456,6 +461,84 @@ RPG_Player_Player_Base::rest(const RPG_Common_Camp& type_in,
   } // end IF
 
   return (restedPeriod * 24);
+}
+
+void
+RPG_Player_Player_Base::defaultEquip()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::defaultEquip"));
+
+  // remove everything
+  inherited::myEquipment.strip();
+
+  RPG_Character_EquipmentSlot slot;
+  RPG_Item_Base* handle = NULL;
+  for (RPG_Item_ListIterator_t iterator = inherited::myInventory.myItems.begin();
+       iterator != inherited::myInventory.myItems.end();
+       iterator++)
+  {
+    handle = NULL;
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              handle))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item ID: %d, aborting\n"),
+                 *iterator));
+
+      return;
+    } // end IF
+    ACE_ASSERT(handle);
+
+    switch (handle->getType())
+    {
+      case ITEM_ARMOR:
+      {
+        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
+        ACE_ASSERT(armor);
+//         RPG_Item_ArmorProperties armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
+        // shield or (body) armor ?
+        // *TODO*: what about other types of armor ?
+        slot = EQUIPMENTSLOT_BODY;
+        if (RPG_Item_Common_Tools::isShield(armor->getArmorType()))
+          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                 : EQUIPMENTSLOT_HAND_RIGHT);
+        myEquipment.equip(*iterator, slot);
+
+        break;
+      }
+      case ITEM_WEAPON:
+      {
+        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
+        ACE_ASSERT(weapon);
+//         RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
+        // - by default, equip melee weapons only
+        // *TODO*: what about other types of weapons ?
+        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->getWeaponType()))
+          break;
+
+        slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                               : EQUIPMENTSLOT_HAND_LEFT);
+        myEquipment.equip(*iterator, slot);
+        if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon->getWeaponType()))
+        {
+          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                 : EQUIPMENTSLOT_HAND_RIGHT);
+          myEquipment.equip(*iterator, slot);
+        } // end IF
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("item ID %d: invalid type: \"%s\", continuing\n"),
+                   *iterator,
+                   RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+  } // end FOR
 }
 
 void

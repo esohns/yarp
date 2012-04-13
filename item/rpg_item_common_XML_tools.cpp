@@ -73,7 +73,7 @@ RPG_Item_Common_XML_Tools::instantiate(const RPG_Item_InventoryXML_XMLTree_Type&
         RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_properties_xml = (*iterator).commodity().get();
 
         unsigned int type = (RPG_Item_CommodityTypeHelper::stringToRPG_Item_CommodityType(commodity_properties_xml.type()) << (sizeof(unsigned int) * 4));
-        RPG_Item_CommodityUnion union_type = RPG_Item_Common_Tools::XMLStringToCommoditySubType(commodity_properties_xml.subtype());
+        RPG_Item_CommodityUnion union_type = RPG_Item_Common_Tools::XMLStringToCommoditySubType(commodity_properties_xml.subType());
         switch (union_type.discriminator)
         {
           case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:

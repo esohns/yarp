@@ -70,7 +70,7 @@ class RPG_Player_Export RPG_Player_Player_Base
   unsigned char getLevel(const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
 
   // access current equipment
-  const RPG_Player_Equipment& getEquipment() const;
+  RPG_Player_Equipment& getEquipment();
 
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                          const RPG_Combat_AttackSituation&) const;
@@ -81,6 +81,7 @@ class RPG_Player_Export RPG_Player_Player_Base
   virtual void gainExperience(const unsigned int&); // XP
   unsigned int rest(const RPG_Common_Camp&, // type of rest
                     const unsigned int&);   // hours
+  void defaultEquip();
 
   virtual void status() const;
 

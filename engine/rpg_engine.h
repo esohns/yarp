@@ -90,9 +90,11 @@ class RPG_Engine_Export RPG_Engine
   bool isMonster(const RPG_Engine_EntityID_t&) const;
   //std::string getSprite(const RPG_Engine_EntityID_t&) const;
   std::string getName(const RPG_Engine_EntityID_t&) const;
+  unsigned int numSpawned() const;
+
+  // vision
   void getVisiblePositions(const RPG_Engine_EntityID_t&, // id
                            RPG_Map_Positions_t&) const;  // return value: (currently) seen positions
-  unsigned int numSpawned() const;
 
   bool findPath(const RPG_Map_Position_t&, // start position
                 const RPG_Map_Position_t&, // end position

@@ -82,8 +82,8 @@ print_usage(const std::string& programName_in)
   std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-o ([FILE]) : output file") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p          : print (==dump) result") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_DUMP << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]  : #areas") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_NUM_AREAS << ACE_TEXT("]") << std::endl;
@@ -126,7 +126,7 @@ process_arguments(const int argc_in,
   outputFile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
+  outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
 
   numAreas_out = MAP_GENERATOR_DEF_NUM_AREAS;
   dump_out = MAP_GENERATOR_DEF_DUMP;
@@ -277,56 +277,51 @@ do_work(const std::string& name_in,
   // step1: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Common_Tools::initStringConversionTables();
 
   // step2: generate random map
   RPG_Map_t map;
-  RPG_Map_Common_Tools::create(name_in,
-                               mapConfig_in,
-                               map);
+  RPG_Map_Level::create(mapConfig_in,
+                        map);
 
   // step2: generate level data
   RPG_Engine_Level_t level;
   if (generateLevel_in)
   {
-    level.level_meta.monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
-    level.level_meta.probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+    level.level_meta.name = name_in;
+    level.level_meta.environment.plane = RPG_ENGINE_DEF_PLANE;
+    level.level_meta.environment.terrain = RPG_ENGINE_DEF_TERRAIN;
+    level.level_meta.environment.climate = RPG_ENGINE_DEF_CLIMATE;
+    level.level_meta.environment.time = RPG_ENGINE_DEF_TIMEOFDAY;
+    level.level_meta.environment.lighting = RPG_ENGINE_DEF_LIGHTING;
+    level.level_meta.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
     level.level_meta.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
+    level.level_meta.spawn_probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+    level.level_meta.max_spawned = RPG_ENGINE_DEF_AI_MAX_SPAWNED;
+    level.level_meta.spawn_timer = -1;
+
     level.map = map;
   } // end IF
 
   // step3: write output file (if any)
+  RPG_Engine_Level engine_level;
+  engine_level.init(level);
+  RPG_Map_Level map_level(map);
   if (!outputFile_in.empty())
   {
     if (generateLevel_in)
-    {
-      if (!RPG_Engine_Common_Tools::saveLevel(level,
-                                              outputFile_in))
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Engine_Common_Tools::saveLevel(\"%s\"), aborting\n"),
-                   outputFile_in.c_str()));
-
-        return;
-      } // end IF
-    } // end IF
-    else if (!RPG_Map_Common_Tools::save(outputFile_in,
-                                         map))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
-                 outputFile_in.c_str()));
-
-      return;
-    } // end IF
+      engine_level.save(outputFile_in);
+    else
+      map_level.save(outputFile_in);
   } // end IF
 
   // step4: display the result
   if (dump_in)
   {
     if (generateLevel_in)
-      RPG_Engine_Common_Tools::print(level);
+      engine_level.print(level);
     else
-      RPG_Map_Common_Tools::print(map);
+      map_level.print(map);
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
@@ -411,7 +406,7 @@ ACE_TMAIN(int argc,
   outputFile = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
+  outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   std::string default_output_file = outputFile;
 
   bool dumpResult                 = MAP_GENERATOR_DEF_DUMP;
@@ -462,8 +457,8 @@ ACE_TMAIN(int argc,
 
   // handle extension
   if (outputFile == default_output_file)
-    outputFile += (generateLevel ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_EXT)
-                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT));
+    outputFile += (generateLevel ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
+                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
 
   // step1c: set correct trace level
   //ACE_Trace::start_tracing();
@@ -503,7 +498,7 @@ ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  std::string name = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME);
+  std::string name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
   RPG_Map_FloorPlan_Config_t config;
   config.corridors = corridors;
   config.doors = doors;

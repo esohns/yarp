@@ -235,9 +235,9 @@ type_parser (::RPG_Item_CommodityType_Type_pskel& p)
 }
 
 void RPG_Item_CommodityPropertiesBase_Type_pskel::
-subtype_parser (::RPG_Item_CommodityUnion_Type_pskel& p)
+subType_parser (::RPG_Item_CommodityUnion_Type_pskel& p)
 {
-  this->subtype_parser_ = &p;
+  this->subType_parser_ = &p;
 }
 
 void RPG_Item_CommodityPropertiesBase_Type_pskel::
@@ -247,7 +247,7 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
          ::RPG_Magic_School_Type_pskel& aura,
          ::RPG_Item_MagicalPrerequisites_Type_pskel& prerequisites,
          ::RPG_Item_CommodityType_Type_pskel& type,
-         ::RPG_Item_CommodityUnion_Type_pskel& subtype)
+         ::RPG_Item_CommodityUnion_Type_pskel& subType)
 {
   this->baseWeight_parser_ = &baseWeight;
   this->baseStorePrice_parser_ = &baseStorePrice;
@@ -255,13 +255,13 @@ parsers (::xml_schema::unsigned_short_pskel& baseWeight,
   this->aura_parser_ = &aura;
   this->prerequisites_parser_ = &prerequisites;
   this->type_parser_ = &type;
-  this->subtype_parser_ = &subtype;
+  this->subType_parser_ = &subType;
 }
 
 RPG_Item_CommodityPropertiesBase_Type_pskel::
 RPG_Item_CommodityPropertiesBase_Type_pskel ()
 : type_parser_ (0),
-  subtype_parser_ (0)
+  subType_parser_ (0)
 {
 }
 
@@ -1107,7 +1107,7 @@ type (const RPG_Item_CommodityType&)
 }
 
 void RPG_Item_CommodityPropertiesBase_Type_pskel::
-subtype (const RPG_Item_CommodityUnion&)
+subType (const RPG_Item_CommodityUnion&)
 {
 }
 
@@ -1131,12 +1131,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "subtype" && ns == "urn:rpg")
+  if (n == "subType" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->subtype_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->subType_parser_;
 
-    if (this->subtype_parser_)
-      this->subtype_parser_->pre ();
+    if (this->subType_parser_)
+      this->subType_parser_->pre ();
 
     return true;
   }
@@ -1159,10 +1159,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "subtype" && ns == "urn:rpg")
+  if (n == "subType" && ns == "urn:rpg")
   {
-    if (this->subtype_parser_)
-      this->subtype (this->subtype_parser_->post_RPG_Item_CommodityUnion_Type ());
+    if (this->subType_parser_)
+      this->subType (this->subType_parser_->post_RPG_Item_CommodityUnion_Type ());
 
     return true;
   }

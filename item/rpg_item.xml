@@ -5,6 +5,309 @@
 <itemDictionary xmlns="urn:rpg"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="urn:rpg rpg_item.xsd">
+<!-- ********** ARMOR ********** -->
+  <armor>
+    <baseWeight>10</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>5</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_PADDED</type>
+    <category>ARMORCATEGORY_LIGHT</category>
+    <baseBonus>1</baseBonus>
+    <maxDexterityBonus>8</maxDexterityBonus>
+    <checkPenalty>0</checkPenalty>
+    <arcaneSpellFailure>5</arcaneSpellFailure>
+    <baseSpeed>30</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>15</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>10</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_LEATHER</type>
+    <category>ARMORCATEGORY_LIGHT</category>
+    <baseBonus>2</baseBonus>
+    <maxDexterityBonus>6</maxDexterityBonus>
+    <checkPenalty>0</checkPenalty>
+    <arcaneSpellFailure>10</arcaneSpellFailure>
+    <baseSpeed>30</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>20</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>25</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_LEATHER_STUDDED</type>
+    <category>ARMORCATEGORY_LIGHT</category>
+    <baseBonus>3</baseBonus>
+    <maxDexterityBonus>5</maxDexterityBonus>
+    <checkPenalty>-1</checkPenalty>
+    <arcaneSpellFailure>15</arcaneSpellFailure>
+    <baseSpeed>30</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>25</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>100</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_CHAIN_SHIRT</type>
+    <category>ARMORCATEGORY_LIGHT</category>
+    <baseBonus>4</baseBonus>
+    <maxDexterityBonus>4</maxDexterityBonus>
+    <checkPenalty>-2</checkPenalty>
+    <arcaneSpellFailure>20</arcaneSpellFailure>
+    <baseSpeed>30</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>25</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>15</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_HIDE</type>
+    <category>ARMORCATEGORY_MEDIUM</category>
+    <baseBonus>3</baseBonus>
+    <maxDexterityBonus>4</maxDexterityBonus>
+    <checkPenalty>-3</checkPenalty>
+    <arcaneSpellFailure>20</arcaneSpellFailure>
+    <baseSpeed>20</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>30</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>50</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_MAIL_SCALE</type>
+    <category>ARMORCATEGORY_MEDIUM</category>
+    <baseBonus>4</baseBonus>
+    <maxDexterityBonus>3</maxDexterityBonus>
+    <checkPenalty>-4</checkPenalty>
+    <arcaneSpellFailure>25</arcaneSpellFailure>
+    <baseSpeed>20</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>40</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>150</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_MAIL_CHAIN</type>
+    <category>ARMORCATEGORY_MEDIUM</category>
+    <baseBonus>5</baseBonus>
+    <maxDexterityBonus>2</maxDexterityBonus>
+    <checkPenalty>-5</checkPenalty>
+    <arcaneSpellFailure>30</arcaneSpellFailure>
+    <baseSpeed>20</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>30</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>200</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_PLATE_BREAST</type>
+    <category>ARMORCATEGORY_MEDIUM</category>
+    <baseBonus>5</baseBonus>
+    <maxDexterityBonus>3</maxDexterityBonus>
+    <checkPenalty>-4</checkPenalty>
+    <arcaneSpellFailure>25</arcaneSpellFailure>
+    <baseSpeed>20</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>45</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>200</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_MAIL_SPLINT</type>
+    <category>ARMORCATEGORY_HEAVY</category>
+    <baseBonus>6</baseBonus>
+    <maxDexterityBonus>0</maxDexterityBonus>
+    <checkPenalty>-7</checkPenalty>
+    <arcaneSpellFailure>40</arcaneSpellFailure>
+    <baseSpeed>20</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>35</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>250</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_MAIL_BANDED</type>
+    <category>ARMORCATEGORY_HEAVY</category>
+    <baseBonus>6</baseBonus>
+    <maxDexterityBonus>1</maxDexterityBonus>
+    <checkPenalty>-6</checkPenalty>
+    <arcaneSpellFailure>35</arcaneSpellFailure>
+    <baseSpeed>20</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>50</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>600</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_PLATE_HALF</type>
+    <category>ARMORCATEGORY_HEAVY</category>
+    <baseBonus>7</baseBonus>
+    <maxDexterityBonus>0</maxDexterityBonus>
+    <checkPenalty>-7</checkPenalty>
+    <arcaneSpellFailure>40</arcaneSpellFailure>
+    <baseSpeed>20</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>50</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>1500</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_PLATE_FULL</type>
+    <category>ARMORCATEGORY_HEAVY</category>
+    <baseBonus>8</baseBonus>
+    <maxDexterityBonus>1</maxDexterityBonus>
+    <checkPenalty>-6</checkPenalty>
+    <arcaneSpellFailure>35</arcaneSpellFailure>
+    <baseSpeed>20</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>5</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>15</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_BUCKLER</type>
+    <category>ARMORCATEGORY_SHIELD</category>
+    <baseBonus>1</baseBonus>
+    <maxDexterityBonus>0</maxDexterityBonus>
+    <checkPenalty>-1</checkPenalty>
+    <arcaneSpellFailure>5</arcaneSpellFailure>
+    <baseSpeed>0</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>5</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>3</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_SHIELD_LIGHT_WOODEN</type>
+    <category>ARMORCATEGORY_SHIELD</category>
+    <baseBonus>1</baseBonus>
+    <maxDexterityBonus>0</maxDexterityBonus>
+    <checkPenalty>-1</checkPenalty>
+    <arcaneSpellFailure>5</arcaneSpellFailure>
+    <baseSpeed>0</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>6</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>9</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_SHIELD_LIGHT_STEEL</type>
+    <category>ARMORCATEGORY_SHIELD</category>
+    <baseBonus>1</baseBonus>
+    <maxDexterityBonus>0</maxDexterityBonus>
+    <checkPenalty>-1</checkPenalty>
+    <arcaneSpellFailure>5</arcaneSpellFailure>
+    <baseSpeed>0</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>10</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>7</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_SHIELD_HEAVY_WOODEN</type>
+    <category>ARMORCATEGORY_SHIELD</category>
+    <baseBonus>2</baseBonus>
+    <maxDexterityBonus>0</maxDexterityBonus>
+    <checkPenalty>-2</checkPenalty>
+    <arcaneSpellFailure>15</arcaneSpellFailure>
+    <baseSpeed>0</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>15</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>20</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_SHIELD_HEAVY_STEEL</type>
+    <category>ARMORCATEGORY_SHIELD</category>
+    <baseBonus>2</baseBonus>
+    <maxDexterityBonus>0</maxDexterityBonus>
+    <checkPenalty>-2</checkPenalty>
+    <arcaneSpellFailure>15</arcaneSpellFailure>
+    <baseSpeed>0</baseSpeed>
+  </armor>
+  <armor>
+    <baseWeight>45</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>30</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>ARMOR_SHIELD_TOWER</type>
+    <category>ARMORCATEGORY_SHIELD</category>
+    <baseBonus>4</baseBonus>
+    <maxDexterityBonus>2</maxDexterityBonus>
+    <checkPenalty>-10</checkPenalty>
+    <arcaneSpellFailure>50</arcaneSpellFailure>
+    <baseSpeed>0</baseSpeed>
+  </armor>
+<!-- ********** /ARMOR ********** -->
+
+<!-- ********** COMMODITIES ********** -->
+  <commodity>
+    <baseWeight>0</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>0</numGoldPieces>
+      <numSilverPieces>1</numSilverPieces>
+    </baseStorePrice>
+    <type>COMMODITY_LIGHT</type>
+    <subType>COMMODITY_LIGHT_CANDLE</subType>
+  </commodity>
+  <commodity>
+    <baseWeight>1</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>0</numGoldPieces>
+      <numSilverPieces>1</numSilverPieces>
+    </baseStorePrice>
+    <type>COMMODITY_LIGHT</type>
+    <subType>COMMODITY_LIGHT_LAMP</subType>
+  </commodity>
+  <commodity>
+    <baseWeight>3</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>12</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>COMMODITY_LIGHT</type>
+    <subType>COMMODITY_LIGHT_LANTERN_BULLSEYE</subType>
+  </commodity>
+  <commodity>
+    <baseWeight>2</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>7</numGoldPieces>
+      <numSilverPieces>0</numSilverPieces>
+    </baseStorePrice>
+    <type>COMMODITY_LIGHT</type>
+    <subType>COMMODITY_LIGHT_LANTERN_HOODED</subType>
+  </commodity>
+  <commodity>
+    <baseWeight>1</baseWeight>
+    <baseStorePrice>
+      <numGoldPieces>0</numGoldPieces>
+      <numSilverPieces>1</numSilverPieces>
+    </baseStorePrice>
+    <type>COMMODITY_LIGHT</type>
+    <subType>COMMODITY_LIGHT_TORCH</subType>
+  </commodity>
+<!-- ********** /COMMODITIES ********** -->
+  
 <!-- ********** WEAPON ********** -->
   <weapon isNonLethal="true">
     <baseWeight>1</baseWeight>
@@ -12,7 +315,7 @@
       <numGoldPieces>2</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>UNARMED_WEAPON_GAUNTLET</weaponType>
+    <type>UNARMED_WEAPON_GAUNTLET</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_UNARMED</weaponClass>
     <baseDamage>
@@ -33,7 +336,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>UNARMED_WEAPON_STRIKE</weaponType>
+    <type>UNARMED_WEAPON_STRIKE</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_UNARMED</weaponClass>
     <baseDamage>
@@ -54,7 +357,7 @@
       <numGoldPieces>2</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_DAGGER</weaponType>
+    <type>LIGHT_MELEE_WEAPON_DAGGER</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -76,7 +379,7 @@
       <numGoldPieces>2</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_DAGGER_PUNCHING</weaponType>
+    <type>LIGHT_MELEE_WEAPON_DAGGER_PUNCHING</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -98,7 +401,7 @@
       <numGoldPieces>5</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_GAUNTLET_SPIKED</weaponType>
+    <type>LIGHT_MELEE_WEAPON_GAUNTLET_SPIKED</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -120,7 +423,7 @@
       <numGoldPieces>5</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_MACE_LIGHT</weaponType>
+    <type>LIGHT_MELEE_WEAPON_MACE_LIGHT</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -141,7 +444,7 @@
       <numGoldPieces>6</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_SICKLE</weaponType>
+    <type>LIGHT_MELEE_WEAPON_SICKLE</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -162,7 +465,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_CLUB</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_CLUB</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -183,7 +486,7 @@
       <numGoldPieces>12</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_MACE_HEAVY</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_MACE_HEAVY</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -204,7 +507,7 @@
       <numGoldPieces>8</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_MORNINGSTAR</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_MORNINGSTAR</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -226,7 +529,7 @@
       <numGoldPieces>1</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_SHORTSPEAR</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_SHORTSPEAR</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -247,7 +550,7 @@
       <numGoldPieces>5</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_LONGSPEAR</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_LONGSPEAR</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -268,7 +571,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -289,7 +592,7 @@
       <numGoldPieces>2</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_SPEAR</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_SPEAR</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -310,7 +613,7 @@
       <numGoldPieces>35</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_CROSSBOW_LIGHT</weaponType>
+    <type>RANGED_WEAPON_CROSSBOW_LIGHT</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -331,7 +634,7 @@
       <numGoldPieces>50</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_CROSSBOW_HEAVY</weaponType>
+    <type>RANGED_WEAPON_CROSSBOW_HEAVY</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -352,7 +655,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>5</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_DART</weaponType>
+    <type>RANGED_WEAPON_DART</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -373,7 +676,7 @@
       <numGoldPieces>1</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_JAVELIN</weaponType>
+    <type>RANGED_WEAPON_JAVELIN</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -394,7 +697,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_SLING</weaponType>
+    <type>RANGED_WEAPON_SLING</type>
     <category>WEAPONCATEGORY_SIMPLE</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -415,7 +718,7 @@
       <numGoldPieces>8</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_AXE_THROWING</weaponType>
+    <type>LIGHT_MELEE_WEAPON_AXE_THROWING</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -436,7 +739,7 @@
       <numGoldPieces>1</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_HAMMER_LIGHT</weaponType>
+    <type>LIGHT_MELEE_WEAPON_HAMMER_LIGHT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -457,7 +760,7 @@
       <numGoldPieces>6</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_AXE_HAND</weaponType>
+    <type>LIGHT_MELEE_WEAPON_AXE_HAND</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -478,7 +781,7 @@
       <numGoldPieces>8</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_KUKRI</weaponType>
+    <type>LIGHT_MELEE_WEAPON_KUKRI</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -499,7 +802,7 @@
       <numGoldPieces>4</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_PICK_LIGHT</weaponType>
+    <type>LIGHT_MELEE_WEAPON_PICK_LIGHT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -520,7 +823,7 @@
       <numGoldPieces>1</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_SAP</weaponType>
+    <type>LIGHT_MELEE_WEAPON_SAP</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -541,7 +844,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_SHIELD_LIGHT</weaponType>
+    <type>LIGHT_MELEE_WEAPON_SHIELD_LIGHT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -562,7 +865,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_ARMOR_SPIKED</weaponType>
+    <type>LIGHT_MELEE_WEAPON_ARMOR_SPIKED</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -583,7 +886,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_SHIELD_LIGHT_SPIKED</weaponType>
+    <type>LIGHT_MELEE_WEAPON_SHIELD_LIGHT_SPIKED</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -604,7 +907,7 @@
       <numGoldPieces>10</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_SWORD_SHORT</weaponType>
+    <type>LIGHT_MELEE_WEAPON_SWORD_SHORT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -625,7 +928,7 @@
       <numGoldPieces>10</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_AXE_BATTLE</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_AXE_BATTLE</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -646,7 +949,7 @@
       <numGoldPieces>8</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_FLAIL_LIGHT</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_FLAIL_LIGHT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -667,7 +970,7 @@
       <numGoldPieces>15</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_SWORD_LONG</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_SWORD_LONG</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -688,7 +991,7 @@
       <numGoldPieces>8</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_PICK_HEAVY</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_PICK_HEAVY</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -709,7 +1012,7 @@
       <numGoldPieces>20</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_RAPIER</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_RAPIER</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -730,7 +1033,7 @@
       <numGoldPieces>15</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_SCIMITAR</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_SCIMITAR</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -751,7 +1054,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -772,7 +1075,7 @@
       <numGoldPieces>0</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY_SPIKED</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY_SPIKED</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -793,7 +1096,7 @@
       <numGoldPieces>15</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_TRIDENT</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_TRIDENT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -814,7 +1117,7 @@
       <numGoldPieces>12</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_HAMMER_WAR</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_HAMMER_WAR</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -835,7 +1138,7 @@
       <numGoldPieces>75</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_FALCHION</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_FALCHION</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -856,7 +1159,7 @@
       <numGoldPieces>8</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_GLAIVE</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_GLAIVE</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -877,7 +1180,7 @@
       <numGoldPieces>20</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_AXE_GREAT</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_AXE_GREAT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -898,7 +1201,7 @@
       <numGoldPieces>5</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_CLUB_GREAT</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_CLUB_GREAT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -919,7 +1222,7 @@
       <numGoldPieces>15</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_FLAIL_HEAVY</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_FLAIL_HEAVY</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -940,7 +1243,7 @@
       <numGoldPieces>50</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_SWORD_GREAT</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_SWORD_GREAT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -961,7 +1264,7 @@
       <numGoldPieces>9</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_GUISARME</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_GUISARME</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -982,7 +1285,7 @@
       <numGoldPieces>10</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_HALBERD</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_HALBERD</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1004,7 +1307,7 @@
       <numGoldPieces>10</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_LANCE</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_LANCE</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1025,7 +1328,7 @@
       <numGoldPieces>10</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_RANSEUR</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_RANSEUR</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1046,7 +1349,7 @@
       <numGoldPieces>18</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_SCYTHE</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_SCYTHE</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1068,7 +1371,7 @@
       <numGoldPieces>30</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_BOW_SHORT</weaponType>
+    <type>RANGED_WEAPON_BOW_SHORT</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1089,7 +1392,7 @@
       <numGoldPieces>75</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_BOW_SHORT_COMPOSITE</weaponType>
+    <type>RANGED_WEAPON_BOW_SHORT_COMPOSITE</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1110,7 +1413,7 @@
       <numGoldPieces>75</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_BOW_LONG</weaponType>
+    <type>RANGED_WEAPON_BOW_LONG</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1131,7 +1434,7 @@
       <numGoldPieces>100</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_BOW_LONG_COMPOSITE</weaponType>
+    <type>RANGED_WEAPON_BOW_LONG_COMPOSITE</type>
     <category>WEAPONCATEGORY_MARTIAL</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1152,7 +1455,7 @@
       <numGoldPieces>2</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_KAMA</weaponType>
+    <type>LIGHT_MELEE_WEAPON_KAMA</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -1173,7 +1476,7 @@
       <numGoldPieces>2</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_NUNCHAKU</weaponType>
+    <type>LIGHT_MELEE_WEAPON_NUNCHAKU</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -1194,7 +1497,7 @@
       <numGoldPieces>1</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_SAI</weaponType>
+    <type>LIGHT_MELEE_WEAPON_SAI</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -1215,7 +1518,7 @@
       <numGoldPieces>3</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>LIGHT_MELEE_WEAPON_SIANGHAM</weaponType>
+    <type>LIGHT_MELEE_WEAPON_SIANGHAM</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
     <baseDamage>
@@ -1236,7 +1539,7 @@
       <numGoldPieces>35</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_SWORD_BASTARD</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_SWORD_BASTARD</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1257,7 +1560,7 @@
       <numGoldPieces>30</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_AXE_WAR_DWARVEN</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_AXE_WAR_DWARVEN</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1278,7 +1581,7 @@
       <numGoldPieces>1</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>ONE_HANDED_MELEE_WEAPON_WHIP</weaponType>
+    <type>ONE_HANDED_MELEE_WEAPON_WHIP</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1299,7 +1602,7 @@
       <numGoldPieces>60</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_AXE_ORC_DOUBLE</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_AXE_ORC_DOUBLE</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1320,7 +1623,7 @@
       <numGoldPieces>25</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1341,7 +1644,7 @@
       <numGoldPieces>90</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_FLAIL_DIRE</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_FLAIL_DIRE</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1362,7 +1665,7 @@
       <numGoldPieces>20</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1384,7 +1687,7 @@
       <numGoldPieces>100</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1405,7 +1708,7 @@
       <numGoldPieces>50</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN</weaponType>
+    <type>TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_TWO_HANDED_MELEE</weaponClass>
     <baseDamage>
@@ -1427,7 +1730,7 @@
       <numGoldPieces>5</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_BOLAS</weaponType>
+    <type>RANGED_WEAPON_BOLAS</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1448,7 +1751,7 @@
       <numGoldPieces>100</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_CROSSBOW_HAND</weaponType>
+    <type>RANGED_WEAPON_CROSSBOW_HAND</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1469,7 +1772,7 @@
       <numGoldPieces>250</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT</weaponType>
+    <type>RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1490,7 +1793,7 @@
       <numGoldPieces>400</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY</weaponType>
+    <type>RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1511,7 +1814,7 @@
       <numGoldPieces>20</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_NET</weaponType>
+    <type>RANGED_WEAPON_NET</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1532,7 +1835,7 @@
       <numGoldPieces>1</numGoldPieces>
       <numSilverPieces>0</numSilverPieces>
     </baseStorePrice>
-    <weaponType>RANGED_WEAPON_SHURIKEN</weaponType>
+    <type>RANGED_WEAPON_SHURIKEN</type>
     <category>WEAPONCATEGORY_EXOTIC</category>
     <weaponClass>WEAPONCLASS_RANGED</weaponClass>
     <baseDamage>
@@ -1548,260 +1851,5 @@
     <typeOfDamage>PHYSICALDAMAGE_PIERCING</typeOfDamage>
   </weapon>
 <!-- ********** /WEAPON ********** -->
-
-<!-- ********** ARMOR ********** -->
-  <armor>
-    <baseWeight>10</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>5</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_PADDED</armorType>
-    <category>ARMORCATEGORY_LIGHT</category>
-    <baseBonus>1</baseBonus>
-    <maxDexterityBonus>8</maxDexterityBonus>
-    <checkPenalty>0</checkPenalty>
-    <arcaneSpellFailure>5</arcaneSpellFailure>
-    <baseSpeed>30</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>15</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>10</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_LEATHER</armorType>
-    <category>ARMORCATEGORY_LIGHT</category>
-    <baseBonus>2</baseBonus>
-    <maxDexterityBonus>6</maxDexterityBonus>
-    <checkPenalty>0</checkPenalty>
-    <arcaneSpellFailure>10</arcaneSpellFailure>
-    <baseSpeed>30</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>20</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>25</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_LEATHER_STUDDED</armorType>
-    <category>ARMORCATEGORY_LIGHT</category>
-    <baseBonus>3</baseBonus>
-    <maxDexterityBonus>5</maxDexterityBonus>
-    <checkPenalty>-1</checkPenalty>
-    <arcaneSpellFailure>15</arcaneSpellFailure>
-    <baseSpeed>30</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>25</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>100</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_CHAIN_SHIRT</armorType>
-    <category>ARMORCATEGORY_LIGHT</category>
-    <baseBonus>4</baseBonus>
-    <maxDexterityBonus>4</maxDexterityBonus>
-    <checkPenalty>-2</checkPenalty>
-    <arcaneSpellFailure>20</arcaneSpellFailure>
-    <baseSpeed>30</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>25</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>15</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_HIDE</armorType>
-    <category>ARMORCATEGORY_MEDIUM</category>
-    <baseBonus>3</baseBonus>
-    <maxDexterityBonus>4</maxDexterityBonus>
-    <checkPenalty>-3</checkPenalty>
-    <arcaneSpellFailure>20</arcaneSpellFailure>
-    <baseSpeed>20</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>30</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>50</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_MAIL_SCALE</armorType>
-    <category>ARMORCATEGORY_MEDIUM</category>
-    <baseBonus>4</baseBonus>
-    <maxDexterityBonus>3</maxDexterityBonus>
-    <checkPenalty>-4</checkPenalty>
-    <arcaneSpellFailure>25</arcaneSpellFailure>
-    <baseSpeed>20</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>40</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>150</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_MAIL_CHAIN</armorType>
-    <category>ARMORCATEGORY_MEDIUM</category>
-    <baseBonus>5</baseBonus>
-    <maxDexterityBonus>2</maxDexterityBonus>
-    <checkPenalty>-5</checkPenalty>
-    <arcaneSpellFailure>30</arcaneSpellFailure>
-    <baseSpeed>20</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>30</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>200</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_PLATE_BREAST</armorType>
-    <category>ARMORCATEGORY_MEDIUM</category>
-    <baseBonus>5</baseBonus>
-    <maxDexterityBonus>3</maxDexterityBonus>
-    <checkPenalty>-4</checkPenalty>
-    <arcaneSpellFailure>25</arcaneSpellFailure>
-    <baseSpeed>20</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>45</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>200</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_MAIL_SPLINT</armorType>
-    <category>ARMORCATEGORY_HEAVY</category>
-    <baseBonus>6</baseBonus>
-    <maxDexterityBonus>0</maxDexterityBonus>
-    <checkPenalty>-7</checkPenalty>
-    <arcaneSpellFailure>40</arcaneSpellFailure>
-    <baseSpeed>20</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>35</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>250</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_MAIL_BANDED</armorType>
-    <category>ARMORCATEGORY_HEAVY</category>
-    <baseBonus>6</baseBonus>
-    <maxDexterityBonus>1</maxDexterityBonus>
-    <checkPenalty>-6</checkPenalty>
-    <arcaneSpellFailure>35</arcaneSpellFailure>
-    <baseSpeed>20</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>50</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>600</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_PLATE_HALF</armorType>
-    <category>ARMORCATEGORY_HEAVY</category>
-    <baseBonus>7</baseBonus>
-    <maxDexterityBonus>0</maxDexterityBonus>
-    <checkPenalty>-7</checkPenalty>
-    <arcaneSpellFailure>40</arcaneSpellFailure>
-    <baseSpeed>20</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>50</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>1500</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_PLATE_FULL</armorType>
-    <category>ARMORCATEGORY_HEAVY</category>
-    <baseBonus>8</baseBonus>
-    <maxDexterityBonus>1</maxDexterityBonus>
-    <checkPenalty>-6</checkPenalty>
-    <arcaneSpellFailure>35</arcaneSpellFailure>
-    <baseSpeed>20</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>5</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>15</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_BUCKLER</armorType>
-    <category>ARMORCATEGORY_SHIELD</category>
-    <baseBonus>1</baseBonus>
-    <maxDexterityBonus>0</maxDexterityBonus>
-    <checkPenalty>-1</checkPenalty>
-    <arcaneSpellFailure>5</arcaneSpellFailure>
-    <baseSpeed>0</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>5</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>3</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_SHIELD_LIGHT_WOODEN</armorType>
-    <category>ARMORCATEGORY_SHIELD</category>
-    <baseBonus>1</baseBonus>
-    <maxDexterityBonus>0</maxDexterityBonus>
-    <checkPenalty>-1</checkPenalty>
-    <arcaneSpellFailure>5</arcaneSpellFailure>
-    <baseSpeed>0</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>6</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>9</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_SHIELD_LIGHT_STEEL</armorType>
-    <category>ARMORCATEGORY_SHIELD</category>
-    <baseBonus>1</baseBonus>
-    <maxDexterityBonus>0</maxDexterityBonus>
-    <checkPenalty>-1</checkPenalty>
-    <arcaneSpellFailure>5</arcaneSpellFailure>
-    <baseSpeed>0</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>10</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>7</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_SHIELD_HEAVY_WOODEN</armorType>
-    <category>ARMORCATEGORY_SHIELD</category>
-    <baseBonus>2</baseBonus>
-    <maxDexterityBonus>0</maxDexterityBonus>
-    <checkPenalty>-2</checkPenalty>
-    <arcaneSpellFailure>15</arcaneSpellFailure>
-    <baseSpeed>0</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>15</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>20</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_SHIELD_HEAVY_STEEL</armorType>
-    <category>ARMORCATEGORY_SHIELD</category>
-    <baseBonus>2</baseBonus>
-    <maxDexterityBonus>0</maxDexterityBonus>
-    <checkPenalty>-2</checkPenalty>
-    <arcaneSpellFailure>15</arcaneSpellFailure>
-    <baseSpeed>0</baseSpeed>
-  </armor>
-  <armor>
-    <baseWeight>45</baseWeight>
-    <baseStorePrice>
-      <numGoldPieces>30</numGoldPieces>
-      <numSilverPieces>0</numSilverPieces>
-    </baseStorePrice>
-    <armorType>ARMOR_SHIELD_TOWER</armorType>
-    <category>ARMORCATEGORY_SHIELD</category>
-    <baseBonus>4</baseBonus>
-    <maxDexterityBonus>2</maxDexterityBonus>
-    <checkPenalty>-10</checkPenalty>
-    <arcaneSpellFailure>50</arcaneSpellFailure>
-    <baseSpeed>0</baseSpeed>
-  </armor>
-<!-- ********** /ARMOR ********** -->
 
 </itemDictionary>

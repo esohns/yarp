@@ -261,8 +261,8 @@ update_character_profile(const RPG_Player& player_in,
                      text.c_str());
 
   // step6: HP
-  unsigned short int total_hp = player_in.getNumTotalHitPoints();
-  short int hp = player_in.getNumHitPoints();
+  unsigned short total_hp = player_in.getNumTotalHitPoints();
+  short hp = player_in.getNumHitPoints();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
   converter << hp;
@@ -280,11 +280,11 @@ update_character_profile(const RPG_Player& player_in,
   signed char armor_class_flatfooted = player_in.getArmorClass(DEFENSE_FLATFOOTED);
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-  converter << static_cast<int> (armor_class_normal);
+  converter << static_cast<int>(armor_class_normal);
   converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-  converter << static_cast<int> (armor_class_touch);
+  converter << static_cast<int>(armor_class_touch);
   converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-  converter << static_cast<int> (armor_class_flatfooted);
+  converter << static_cast<int>(armor_class_flatfooted);
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("armorclass")));
   ACE_ASSERT(current);
@@ -759,7 +759,7 @@ update_character_profile(const RPG_Player& player_in,
     } // end SWITCH
 
     // equipped ? --> add '*'
-    if (player_in.getEquipment().isEquipped(*iterator))
+    if (const_cast<RPG_Player&>(player_in).getEquipment().isEquipped(*iterator))
       text += ACE_TEXT_ALWAYS_CHAR(" *");
 
     label = NULL;

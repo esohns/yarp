@@ -24,6 +24,7 @@
 
 #include "rpg_map_common_tools.h"
 
+#include "rpg_map_data.h"
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_pathfinding_tools.h"
 
@@ -1958,92 +1959,115 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
   // init result(s)
   area_out.clear();
 
-  delta;
-  bool done;
-  for (unsigned int r = 0;
-       r <= radius_in;
-       r++)
+  // sanity check(s)
+  if (radius_in == 0)
   {
-    delta = 0;
-    if (!fillArea_in &&
-        (r != radius_in))
-      continue;
+    area_out.insert(center_in);
 
-    if (radius_in == 0)
-    {
-      area_out.insert(center_in);
-      continue;
-    } // end IF
+    return;
+  } // end IF
+  else if (radius_in > RPG_MAP_CIRCLE_MAX_RAD)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid radius (was: %u), aborting\n"),
+               radius_in));
+    ACE_ASSERT(false);
 
-    // compute leftmost x
-    x = center_in.first;
-    if (x < r)
-      delta = r - x;
-    x -= ((x == 0) ? 0 : (delta ? delta : r));
-    // --> up
-    done = false;
-    for (delta = 0, y = center_in.second;
-         delta <= r;
-         delta++, y--)
-    {
-      if (y == 0)
-        done = true;
-      
-      area_out.insert(std::make_pair(x, y));
+    return;
+  } // end IF
 
-      if (done)
-        break;
-    } // end FOR
-    // --> right
-    done = false;
-    for (delta = 0, x++;
-         delta < (2 * r);
-         delta++, x++)
-    {
-      if (x == (size_in.first - 1))
-        done = true;
-      
-      area_out.insert(std::make_pair(x, y));
+  // *CONSIDER*: calculating the positions by mirroring the positions of
+  // just one quadrant...
 
-      if (done)
-        break;
-    } // end FOR
-    // --> down
-    done = false;
-    for (delta = 0, y++;
-         delta < (2 * r);
-         delta++, y++)
-    {
-      if (y == (size_in.second - 1))
-        done = true;
-      
-      area_out.insert(std::make_pair(x, y));
-
-      if (done)
-        break;
-    } // end FOR
-    // --> left
-    done = false;
-    for (delta = 0, x--;
-         delta < (2 * r);
-         delta++, x--)
-    {
-      if (x == 0)
-        done = true;
-      
-      area_out.insert(std::make_pair(x, y));
-
-      if (done)
-        break;
-    } // end FOR
-    // --> up
-    done = false;
-    for (delta = 0, y--;
-         delta < (r - 1);
-         delta++, y--)
-      area_out.insert(std::make_pair(x, y));
-    ACE_ASSERT(y == (center_in.second - 1));
+  unsigned char* circle_radius_p = RPG_Map_CircleData + RPG_Map_CircleStart[radius_in];
+  unsigned int i, j, current_y = center_in.second;
+  // *WARNING*: no bounds are checked right-/downwards...
+  // first quadrant (CCW)
+  for (i = 0;
+       ((i <= radius_in) && (current_y != std::numeric_limits<unsigned int>::max()));
+       i++, current_y--)
+  {
+    if (fillArea_in)
+      for (j = 0;
+           j < *(circle_radius_p + i);
+           j++)
+        area_out.insert(std::make_pair(center_in.first + j, current_y));
+    area_out.insert(std::make_pair(center_in.first + *(circle_radius_p + i), current_y));
   } // end FOR
+  // bounds check
+  if (current_y == std::numeric_limits<unsigned int>::max())
+  {
+    // rollback one (decrease y)
+    i--;
+    current_y++;
+    ACE_ASSERT(current_y == 0);
+  } // end IF
+  if (!fillArea_in)
+    for (j = *(circle_radius_p + i) - 1;
+         j >= 0;
+         j--)
+      area_out.insert(std::make_pair(center_in.first + j, current_y));
+  // second quadrant (CCW)
+  if (!fillArea_in)
+    for (j = 1;
+         ((j < *(circle_radius_p + i)) && ((center_in.first - j) != std::numeric_limits<unsigned int>::max()));
+         j++)
+      area_out.insert(std::make_pair(center_in.first - j, current_y));
+  for (;
+       i >= 0;
+       i--, current_y++)
+  {
+    if (fillArea_in)
+      for (j = 1;
+           ((j < *(circle_radius_p + i)) && ((center_in.first - j) != std::numeric_limits<unsigned int>::max()));
+           j++)
+        area_out.insert(std::make_pair(center_in.first - j, current_y));
+    // *NOTE*: edge-clamp (left) here
+    area_out.insert(std::make_pair((*(circle_radius_p + i) <= center_in.first) ? (center_in.first - *(circle_radius_p + i))
+                                                                               : 0,
+                                   current_y));
+  } // end FOR
+  ACE_ASSERT(current_y == center_in.second);
+  // third quadrant (CCW)
+  for (i = 1;
+       i <= radius_in;
+       i++, current_y++)
+  {
+    if (fillArea_in)
+      for (j = 1;
+           ((j < *(circle_radius_p + i)) && ((center_in.first - j) != std::numeric_limits<unsigned int>::max()));
+           j++)
+        area_out.insert(std::make_pair(center_in.first - j, current_y));
+    // *NOTE*: edge-clamp (left) here
+    area_out.insert(std::make_pair((*(circle_radius_p + i) <= center_in.first) ? (center_in.first - *(circle_radius_p + i))
+                                                                               : 0,
+                                   current_y));
+  } // end FOR
+  if (!fillArea_in)
+    for (j = ((*(circle_radius_p + i) <= center_in.first) ? (center_in.first - *(circle_radius_p + i))
+                                                          : 0);
+         j <= static_cast<unsigned int>(*(circle_radius_p + i) - 1);
+         j++)
+      area_out.insert(std::make_pair(center_in.first - j, current_y));
+  ACE_ASSERT(current_y == (center_in.second + radius_in));
+  // fourth quadrant (CCW)
+  if (!fillArea_in)
+    for (j = 0;
+         j < *(circle_radius_p + i);
+         j++)
+      area_out.insert(std::make_pair(center_in.first + j, current_y));
+  for (;
+       i > 0;
+       i--, current_y++)
+  {
+    if (fillArea_in)
+      for (j = 0;
+           j < *(circle_radius_p + i);
+           j++)
+        area_out.insert(std::make_pair(center_in.first + j, current_y));
+    area_out.insert(std::make_pair(center_in.first + *(circle_radius_p + i), current_y));
+  } // end FOR
+  ACE_ASSERT((current_y - 1) == center_in.second);
 }
 
 void

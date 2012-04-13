@@ -579,7 +579,7 @@ RPG_Player::create()
   condition.insert(CONDITION_NORMAL); // start "normal"
 
   // step13: (initial) set of items
-  // *TODO*: somehow generate these at random too ?
+  // *TODO*: somehow generate these at random as well ?
   RPG_Item_List_t items;
   RPG_Item_Instance_Base* current = NULL;
   try
@@ -592,10 +592,12 @@ RPG_Player::create()
                                                                           ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_MAIL_SPLINT);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
@@ -610,10 +612,12 @@ RPG_Player::create()
                                                                           ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_PLATE_FULL);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_SHIELD_HEAVY_STEEL);
         ACE_ASSERT(current);
@@ -627,10 +631,12 @@ RPG_Player::create()
                                                                           ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                           RANGED_WEAPON_BOW_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_HIDE);
         ACE_ASSERT(current);
@@ -646,6 +652,7 @@ RPG_Player::create()
 //             ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
 //         ACE_ASSERT(current);
 //         items.insert(current->getID());
+//
 //         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
 //             ARMOR_HIDE);
 //         ACE_ASSERT(current);
@@ -672,10 +679,12 @@ RPG_Player::create()
                                                                           ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_MAIL_CHAIN);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
@@ -690,10 +699,12 @@ RPG_Player::create()
                                                                           LIGHT_MELEE_WEAPON_SICKLE);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_HIDE);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_SHIELD_LIGHT_WOODEN);
         ACE_ASSERT(current);
@@ -717,10 +728,12 @@ RPG_Player::create()
                                                                           LIGHT_MELEE_WEAPON_SWORD_SHORT);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_LEATHER);
         ACE_ASSERT(current);
         items.insert(current->getID());
+
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                           ARMOR_SHIELD_LIGHT_STEEL);
         ACE_ASSERT(current);
@@ -737,6 +750,14 @@ RPG_Player::create()
         break;
       }
     } // end SWITCH
+
+    // ...and everybody gets a torch
+    unsigned int subtype = (0 | (COMMODITY_LIGHT << (sizeof(unsigned int) * 4)));
+    subtype |= COMMODITY_LIGHT_TORCH;
+    current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_COMMODITY,
+                                                                      subtype);
+    ACE_ASSERT(current);
+    items.insert(current->getID());
   }
   catch (const std::bad_alloc& exception)
   {
@@ -1021,7 +1042,7 @@ RPG_Player::dummy()
                               GENDER_NONE,
                               RACE_NONE,
                               player_class,
-							  alignment,
+							                alignment,
                               attributes,
                               skills,
                               feats,
@@ -1055,80 +1076,4 @@ RPG_Player::dummy()
   ACE_ASSERT(player_p);
 
   return player_p;
-}
-
-void
-RPG_Player::defaultEquip()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player::operator="));
-
-  RPG_Item_Base* handle = NULL;
-  for (RPG_Item_ListIterator_t iterator = myInventory.myItems.begin();
-       iterator != myInventory.myItems.end();
-       iterator++)
-  {
-    handle = NULL;
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
-                                                              handle))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item ID: %d, aborting\n"),
-                 *iterator));
-
-      return;
-    } // end IF
-    ACE_ASSERT(handle);
-
-    switch (handle->getType())
-    {
-      case ITEM_ARMOR:
-      {
-        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
-        ACE_ASSERT(armor);
-//         RPG_Item_ArmorProperties armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
-        // shield or (body) armor ?
-        // *TODO*: what about other types of armor ?
-        RPG_Character_EquipmentSlot slot = EQUIPMENTSLOT_BODY;
-        if (RPG_Item_Common_Tools::isShield(armor->getArmorType()))
-        {
-          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                                 : EQUIPMENTSLOT_HAND_RIGHT);
-        } // end IF
-        myEquipment.equip(*iterator, slot);
-
-        break;
-      }
-      case ITEM_WEAPON:
-      {
-        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
-        ACE_ASSERT(weapon);
-//         RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
-        // - by default, equip melee weapons only
-        // *TODO*: what about other types of weapons ?
-        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->getWeaponType()))
-          break;
-
-        RPG_Character_EquipmentSlot slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
-                                                                           : EQUIPMENTSLOT_HAND_LEFT);
-        myEquipment.equip(*iterator, slot);
-        if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon->getWeaponType()))
-        {
-          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                                 : EQUIPMENTSLOT_HAND_RIGHT);
-          myEquipment.equip(*iterator, slot);
-        } // end IF
-
-        break;
-      }
-      default:
-      {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("item ID %d: invalid type: \"%s\", continuing\n"),
-                   *iterator,
-                   RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str()));
-
-        break;
-      }
-    } // end SWITCH
-  } // end FOR
 }

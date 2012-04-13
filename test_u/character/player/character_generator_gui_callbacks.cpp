@@ -165,7 +165,7 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
   ACE_ASSERT(data->entity.character == NULL);
 
-  data->entity = RPG_Engine_Common_Tools::createEntity(false); // DON'T load sprite graphic
+  data->entity = RPG_Engine_Common_Tools::createEntity();
   ACE_ASSERT(data->entity.character);
 
   // update entity profile widgets

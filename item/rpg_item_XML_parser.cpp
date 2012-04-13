@@ -104,10 +104,14 @@ RPG_Item_CommodityUnion RPG_Item_CommodityUnion_Type::post_RPG_Item_CommodityUni
   return result;
 }
 
-RPG_Item_Dictionary_Type::RPG_Item_Dictionary_Type(RPG_Item_WeaponDictionary_t* weaponDictionary_in,
-                                                   RPG_Item_ArmorDictionary_t* armorDictionary_in)
- : myWeaponDictionary(weaponDictionary_in),
-   myArmorDictionary(armorDictionary_in)
+RPG_Item_Dictionary_Type::RPG_Item_Dictionary_Type(RPG_Item_ArmorDictionary_t* armorDictionary_in,
+                                                   RPG_Item_CommodityBeverageDictionary_t* commodityBeverageDictionary_in,
+                                                   RPG_Item_CommodityLightDictionary_t* commodityLightDictionary_in,
+                                                   RPG_Item_WeaponDictionary_t* weaponDictionary_in)
+ : myArmorDictionary(armorDictionary_in),
+   myCommodityBeverageDictionary(commodityBeverageDictionary_in),
+   myCommodityLightDictionary(commodityLightDictionary_in),
+   myWeaponDictionary(weaponDictionary_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::RPG_Item_Dictionary_Type"));
 
@@ -124,6 +128,55 @@ RPG_Item_Dictionary_Type::~RPG_Item_Dictionary_Type()
 //   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::pre"));
 //
 // }
+
+void RPG_Item_Dictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& armor_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::armor"));
+
+  RPG_Item_ArmorProperties prop;
+  prop.defenseModifier = armor_in.defenseModifier;
+  prop.category = armor_in.category;
+  prop.baseBonus = armor_in.baseBonus;
+  prop.maxDexterityBonus = armor_in.maxDexterityBonus;
+  prop.checkPenalty = armor_in.checkPenalty;
+  prop.arcaneSpellFailure = armor_in.arcaneSpellFailure;
+  prop.baseSpeed = armor_in.baseSpeed;
+  prop.aura = armor_in.aura;
+  prop.prerequisites = armor_in.prerequisites;
+  prop.baseWeight = armor_in.baseWeight;
+  prop.baseStorePrice = armor_in.baseStorePrice;
+  prop.costToCreate = armor_in.costToCreate;
+
+  myArmorDictionary->insert(std::make_pair(armor_in.type, prop));
+}
+
+void RPG_Item_Dictionary_Type::commodity(const RPG_Item_CommodityPropertiesBase& commodity_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::commodity"));
+
+  RPG_Item_CommodityProperties prop;
+  prop.aura = commodity_in.aura;
+  prop.prerequisites = commodity_in.prerequisites;
+  prop.baseWeight = commodity_in.baseWeight;
+  prop.baseStorePrice = commodity_in.baseStorePrice;
+  prop.costToCreate = commodity_in.costToCreate;
+
+  switch (commodity_in.subType.discriminator)
+  {
+    case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
+      myCommodityBeverageDictionary->insert(std::make_pair(commodity_in.subType.commoditybeverage, prop)); break;
+    case RPG_Item_CommodityUnion::COMMODITYLIGHT:
+      myCommodityLightDictionary->insert(std::make_pair(commodity_in.subType.commoditylight, prop)); break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid commodity subtype (was: %d), aborting\n"),
+                 commodity_in.subType.discriminator));
+
+      break;
+    }
+  } // end SWITCH
+}
 
 void RPG_Item_Dictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& weapon_in)
 {
@@ -163,35 +216,16 @@ void RPG_Item_Dictionary_Type::weapon(const RPG_Item_WeaponPropertiesXML& weapon
   myWeaponDictionary->insert(std::make_pair(weapon_in.type, prop));
 }
 
-void RPG_Item_Dictionary_Type::armor(const RPG_Item_ArmorPropertiesXML& armor_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::armor"));
-
-  RPG_Item_ArmorProperties prop;
-  prop.defenseModifier = armor_in.defenseModifier;
-  prop.category = armor_in.category;
-  prop.baseBonus = armor_in.baseBonus;
-  prop.maxDexterityBonus = armor_in.maxDexterityBonus;
-  prop.checkPenalty = armor_in.checkPenalty;
-  prop.arcaneSpellFailure = armor_in.arcaneSpellFailure;
-  prop.baseSpeed = armor_in.baseSpeed;
-  prop.aura = armor_in.aura;
-  prop.prerequisites = armor_in.prerequisites;
-  prop.baseWeight = armor_in.baseWeight;
-  prop.baseStorePrice = armor_in.baseStorePrice;
-  prop.costToCreate = armor_in.costToCreate;
-
-  myArmorDictionary->insert(std::make_pair(armor_in.type, prop));
-}
-
 void RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary_Type::post_RPG_Item_Dictionary_Type"));
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished parsing item dictionary, retrieved %d weapon and %d armor types...\n"),
-             myWeaponDictionary->size(),
-             myArmorDictionary->size()));
+             ACE_TEXT("finished parsing item dictionary, retrieved %d armor, %d commodity and %d weapon types...\n"),
+             myArmorDictionary->size(),
+             (myCommodityBeverageDictionary->size() +
+              myCommodityLightDictionary->size()),
+             myWeaponDictionary->size()));
 }
 
 RPG_Item_WeaponCategory RPG_Item_WeaponCategory_Type::post_RPG_Item_WeaponCategory_Type()
@@ -412,8 +446,8 @@ RPG_Item_CommodityPropertiesBase_Type::RPG_Item_CommodityPropertiesBase_Type()
   myCurrentProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
   myCurrentProperties.type = RPG_ITEM_COMMODITYTYPE_INVALID;
-  myCurrentProperties.subtype.discriminator = RPG_Item_CommodityUnion::INVALID;
-  myCurrentProperties.subtype.commoditybeverage = RPG_ITEM_COMMODITYBEVERAGE_INVALID;
+  myCurrentProperties.subType.discriminator = RPG_Item_CommodityUnion::INVALID;
+  myCurrentProperties.subType.commoditybeverage = RPG_ITEM_COMMODITYBEVERAGE_INVALID;
 }
 
 // void RPG_Item_CommodityPropertiesBase_Type::pre()
@@ -482,11 +516,11 @@ void RPG_Item_CommodityPropertiesBase_Type::type(const RPG_Item_CommodityType& c
   myCurrentProperties.type = commodityType_in;
 }
 
-void RPG_Item_CommodityPropertiesBase_Type::subtype(const RPG_Item_CommodityUnion& commoditySubType_in)
+void RPG_Item_CommodityPropertiesBase_Type::subType(const RPG_Item_CommodityUnion& commoditySubType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::subtype"));
+  RPG_TRACE(ACE_TEXT("RPG_Item_CommodityPropertiesBase_Type::subType"));
 
-  myCurrentProperties.subtype = commoditySubType_in;
+  myCurrentProperties.subType = commoditySubType_in;
 }
 
 RPG_Item_CommodityPropertiesBase RPG_Item_CommodityPropertiesBase_Type::post_RPG_Item_CommodityPropertiesBase_Type()
@@ -505,8 +539,8 @@ RPG_Item_CommodityPropertiesBase RPG_Item_CommodityPropertiesBase_Type::post_RPG
   myCurrentProperties.prerequisites.minCasterLevel = 0;
   // -------------------------------------------------------------
   myCurrentProperties.type = RPG_ITEM_COMMODITYTYPE_INVALID;
-  myCurrentProperties.subtype.discriminator = RPG_Item_CommodityUnion::INVALID;
-  myCurrentProperties.subtype.commoditybeverage = RPG_ITEM_COMMODITYBEVERAGE_INVALID;
+  myCurrentProperties.subType.discriminator = RPG_Item_CommodityUnion::INVALID;
+  myCurrentProperties.subType.commoditybeverage = RPG_ITEM_COMMODITYBEVERAGE_INVALID;
 
   return result;
 }

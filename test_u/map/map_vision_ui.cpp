@@ -53,6 +53,8 @@
 #include <rpg_player_defines.h>
 
 #include <rpg_item_defines.h>
+#include <rpg_item_commodity.h>
+#include <rpg_item_instance_manager.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
@@ -615,6 +617,7 @@ do_work(const RPG_Client_Config& config_in,
   bool schedule_redraw = false;
   bool previous_redraw = false;
   RPG_Graphics_Position_t mouse_position;
+  bool equipped_lightsource = false;
   do
   {
     sdl_event.type = SDL_NOEVENT;
@@ -666,6 +669,57 @@ do_work(const RPG_Client_Config& config_in,
       {
         switch (sdl_event.key.keysym.sym)
         {
+          case SDLK_l:
+          {
+            equipped_lightsource = !equipped_lightsource;
+
+            RPG_Player_Player_Base* player_base = NULL;
+            player_base = dynamic_cast<RPG_Player_Player_Base*>(userData.entity.character);
+            ACE_ASSERT(player_base);
+            if (equipped_lightsource)
+            {
+              // equip a light and see what happens...
+              RPG_Character_EquipmentSlot slot = ((player_base->getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                                                              : EQUIPMENTSLOT_HAND_RIGHT);
+              RPG_Item_Base* handle = NULL;
+              for (RPG_Item_ListIterator_t iterator = player_base->getInventory().myItems.begin();
+                   iterator != player_base->getInventory().myItems.end();
+                   iterator++)
+              {
+                handle = NULL;
+                if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                                          handle))
+                {
+                  ACE_DEBUG((LM_ERROR,
+                             ACE_TEXT("invalid item ID: %d, aborting\n"),
+                             *iterator));
+
+                  return;
+                } // end IF
+                ACE_ASSERT(handle);
+
+                if (handle->getType() != ITEM_COMMODITY)
+                  continue;
+
+                RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(handle);
+                ACE_ASSERT(commodity);
+                RPG_Item_CommodityUnion commodity_type = commodity->getCommoditySubType();
+                if (commodity_type.discriminator != RPG_Item_CommodityUnion::COMMODITYLIGHT)
+                  continue;
+
+                // OK: equip this item (into the off-hand)
+                player_base->getEquipment().equip(*iterator, slot);
+
+                break;
+              } // end FOR
+            } // end IF
+            else
+              player_base->defaultEquip();
+
+            schedule_redraw = true;
+
+            break;
+          }
           case SDLK_q:
           {
             // finished event processing

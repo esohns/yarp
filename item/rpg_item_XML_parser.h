@@ -214,7 +214,7 @@ class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
   virtual RPG_Item_PropertiesBase post_RPG_Item_PropertiesBase_Type();
   // ------------------------------------------------------------
    virtual void type(const RPG_Item_CommodityType&);
-   virtual void subtype(const RPG_Item_CommodityUnion&);
+   virtual void subType(const RPG_Item_CommodityUnion&);
    virtual RPG_Item_CommodityPropertiesBase post_RPG_Item_CommodityPropertiesBase_Type();
 
   private:
@@ -353,13 +353,16 @@ class RPG_Item_Export RPG_Item_Dictionary_Type
  : public RPG_Item_DictionaryXML_Type_pskel
 {
  public:
-  RPG_Item_Dictionary_Type(RPG_Item_WeaponDictionary_t*, // weapon dictionary
-                           RPG_Item_ArmorDictionary_t*); // armor dictionary
+  RPG_Item_Dictionary_Type(RPG_Item_ArmorDictionary_t*,             // armor dictionary
+                           RPG_Item_CommodityBeverageDictionary_t*, // commodity dictionary (beverages)
+                           RPG_Item_CommodityLightDictionary_t*,    // commodity dictionary (light)
+                           RPG_Item_WeaponDictionary_t*);           // weapon dictionary
   virtual ~RPG_Item_Dictionary_Type();
 
 //   virtual void pre();
-  virtual void weapon(const RPG_Item_WeaponPropertiesXML&);
   virtual void armor(const RPG_Item_ArmorPropertiesXML&);
+  virtual void commodity(const RPG_Item_CommodityPropertiesBase&);
+  virtual void weapon(const RPG_Item_WeaponPropertiesXML&);
   virtual void post_RPG_Item_Dictionary_Type();
 
  private:
@@ -368,8 +371,10 @@ class RPG_Item_Export RPG_Item_Dictionary_Type
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Type(const RPG_Item_Dictionary_Type&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary_Type& operator=(const RPG_Item_Dictionary_Type&));
 
-  RPG_Item_WeaponDictionary_t* myWeaponDictionary;
-  RPG_Item_ArmorDictionary_t*  myArmorDictionary;
+  RPG_Item_ArmorDictionary_t*             myArmorDictionary;
+  RPG_Item_CommodityBeverageDictionary_t* myCommodityBeverageDictionary;
+  RPG_Item_CommodityLightDictionary_t*    myCommodityLightDictionary;
+  RPG_Item_WeaponDictionary_t*            myWeaponDictionary;
 };
 
 #endif

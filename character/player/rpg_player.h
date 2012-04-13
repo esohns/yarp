@@ -55,18 +55,14 @@ class RPG_Player_Export RPG_Player
   RPG_Player(const RPG_Player&);
   virtual ~RPG_Player();
 
-//   RPG_Player& operator=(const RPG_Player&);
-
   // *WARNING*: result needs to be delete()d !
   static RPG_Player* create(); // return value: (random) player
+  // *WARNING*: result needs to be deleted(d) !
+  static RPG_Player* dummy();
   // *WARNING*: result needs to be deleted(d) !
   static RPG_Player* load(const std::string&,  // FQ filename
                           const std::string&); // schema repository (directory)
   const bool save(const std::string&) const; // FQ filename
-
-  // "empty" player
-  // *WARNING*: result needs to be deleted(d) !
-  static RPG_Player* dummy();
 
  private:
   typedef RPG_Player_Player_Base inherited;
@@ -74,9 +70,6 @@ class RPG_Player_Export RPG_Player
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Player());
   ACE_UNIMPLEMENTED_FUNC(RPG_Player& operator=(const RPG_Player&));
-
-  // helper methods
-  void defaultEquip();
 };
 
 #endif

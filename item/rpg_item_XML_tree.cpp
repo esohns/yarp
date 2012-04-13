@@ -785,28 +785,28 @@ type (::std::auto_ptr< type_type > x)
   this->type_.set (x);
 }
 
-const RPG_Item_CommodityPropertiesBase_XMLTree_Type::subtype_type& RPG_Item_CommodityPropertiesBase_XMLTree_Type::
-subtype () const
+const RPG_Item_CommodityPropertiesBase_XMLTree_Type::subType_type& RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+subType () const
 {
-  return this->subtype_.get ();
+  return this->subType_.get ();
 }
 
-RPG_Item_CommodityPropertiesBase_XMLTree_Type::subtype_type& RPG_Item_CommodityPropertiesBase_XMLTree_Type::
-subtype ()
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::subType_type& RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+subType ()
 {
-  return this->subtype_.get ();
-}
-
-void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
-subtype (const subtype_type& x)
-{
-  this->subtype_.set (x);
+  return this->subType_.get ();
 }
 
 void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
-subtype (::std::auto_ptr< subtype_type > x)
+subType (const subType_type& x)
 {
-  this->subtype_.set (x);
+  this->subType_.set (x);
+}
+
+void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+subType (::std::auto_ptr< subType_type > x)
+{
+  this->subType_.set (x);
 }
 
 
@@ -3043,11 +3043,11 @@ RPG_Item_CommodityPropertiesBase_XMLTree_Type::
 RPG_Item_CommodityPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                                const baseStorePrice_type& baseStorePrice,
                                                const type_type& type,
-                                               const subtype_type& subtype)
+                                               const subType_type& subType)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
   type_ (type, ::xml_schema::flags (), this),
-  subtype_ (subtype, ::xml_schema::flags (), this)
+  subType_ (subType, ::xml_schema::flags (), this)
 {
 }
 
@@ -3055,11 +3055,11 @@ RPG_Item_CommodityPropertiesBase_XMLTree_Type::
 RPG_Item_CommodityPropertiesBase_XMLTree_Type (const baseWeight_type& baseWeight,
                                                ::std::auto_ptr< baseStorePrice_type >& baseStorePrice,
                                                const type_type& type,
-                                               const subtype_type& subtype)
+                                               const subType_type& subType)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (baseWeight,
                                           baseStorePrice),
   type_ (type, ::xml_schema::flags (), this),
-  subtype_ (subtype, ::xml_schema::flags (), this)
+  subType_ (subType, ::xml_schema::flags (), this)
 {
 }
 
@@ -3069,7 +3069,7 @@ RPG_Item_CommodityPropertiesBase_XMLTree_Type (const RPG_Item_CommodityPropertie
                                                ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (x, f, c),
   type_ (x.type_, f, this),
-  subtype_ (x.subtype_, f, this)
+  subType_ (x.subType_, f, this)
 {
 }
 
@@ -3079,7 +3079,7 @@ RPG_Item_CommodityPropertiesBase_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
   type_ (f, this),
-  subtype_ (f, this)
+  subType_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -3114,16 +3114,16 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // subtype
+    // subType
     //
-    if (n.name () == "subtype" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "subType" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< subtype_type > r (
-        subtype_traits::create (i, f, this));
+      ::std::auto_ptr< subType_type > r (
+        subType_traits::create (i, f, this));
 
-      if (!subtype_.present ())
+      if (!subType_.present ())
       {
-        this->subtype_.set (r);
+        this->subType_.set (r);
         continue;
       }
     }
@@ -3138,10 +3138,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "urn:rpg");
   }
 
-  if (!subtype_.present ())
+  if (!subType_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "subtype",
+      "subType",
       "urn:rpg");
   }
 }
@@ -3168,7 +3168,7 @@ operator== (const RPG_Item_CommodityPropertiesBase_XMLTree_Type& x, const RPG_It
   if (!(x.type () == y.type ()))
     return false;
 
-  if (!(x.subtype () == y.subtype ()))
+  if (!(x.subType () == y.subType ()))
     return false;
 
   return true;
@@ -4777,7 +4777,7 @@ operator<< (::std::ostream& o, const RPG_Item_CommodityPropertiesBase_XMLTree_Ty
   o << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (i);
 
   o << ::std::endl << "type: " << i.type ();
-  o << ::std::endl << "subtype: " << i.subtype ();
+  o << ::std::endl << "subType: " << i.subType ();
   return o;
 }
 
@@ -5320,16 +5320,16 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_CommodityPropertiesBase_XML
     s << i.type ();
   }
 
-  // subtype
+  // subType
   //
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "subtype",
+        "subType",
         "urn:rpg",
         e));
 
-    s << i.subtype ();
+    s << i.subType ();
   }
 }
 
@@ -6046,7 +6046,7 @@ RPG_Item_CommodityPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputC
                                                ::xml_schema::container* c)
 : ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
   type_ (f, this),
-  subtype_ (f, this)
+  subType_ (f, this)
 {
   this->parse (s, f);
 }
@@ -6061,8 +6061,8 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
   }
 
   {
-    ::std::auto_ptr< subtype_type > r (new subtype_type (s, f, this));
-    this->subtype_.set (r);
+    ::std::auto_ptr< subType_type > r (new subType_type (s, f, this));
+    this->subType_.set (r);
   }
 }
 
@@ -6612,7 +6612,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 {
   s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
   s << x.type ();
-  s << x.subtype ();
+  s << x.subType ();
   return s;
 }
 

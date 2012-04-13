@@ -526,7 +526,7 @@ class RPG_Item_Export RPG_Item_CommodityPropertiesBase_Type_pskel: public virtua
   type (const RPG_Item_CommodityType&);
 
   virtual void
-  subtype (const RPG_Item_CommodityUnion&);
+  subType (const RPG_Item_CommodityUnion&);
 
   virtual RPG_Item_CommodityPropertiesBase
   post_RPG_Item_CommodityPropertiesBase_Type () = 0;
@@ -537,7 +537,7 @@ class RPG_Item_Export RPG_Item_CommodityPropertiesBase_Type_pskel: public virtua
   type_parser (::RPG_Item_CommodityType_Type_pskel&);
 
   void
-  subtype_parser (::RPG_Item_CommodityUnion_Type_pskel&);
+  subType_parser (::RPG_Item_CommodityUnion_Type_pskel&);
 
   void
   parsers (::xml_schema::unsigned_short_pskel& /* baseWeight */,
@@ -546,7 +546,7 @@ class RPG_Item_Export RPG_Item_CommodityPropertiesBase_Type_pskel: public virtua
            ::RPG_Magic_School_Type_pskel& /* aura */,
            ::RPG_Item_MagicalPrerequisites_Type_pskel& /* prerequisites */,
            ::RPG_Item_CommodityType_Type_pskel& /* type */,
-           ::RPG_Item_CommodityUnion_Type_pskel& /* subtype */);
+           ::RPG_Item_CommodityUnion_Type_pskel& /* subType */);
 
   // Constructor.
   //
@@ -566,7 +566,7 @@ class RPG_Item_Export RPG_Item_CommodityPropertiesBase_Type_pskel: public virtua
 
   protected:
   ::RPG_Item_CommodityType_Type_pskel* type_parser_;
-  ::RPG_Item_CommodityUnion_Type_pskel* subtype_parser_;
+  ::RPG_Item_CommodityUnion_Type_pskel* subType_parser_;
 };
 
 class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type_pskel: public virtual ::RPG_Item_PropertiesBase_Type_pskel

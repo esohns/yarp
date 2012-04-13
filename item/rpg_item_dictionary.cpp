@@ -140,8 +140,10 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
                                 bool_p,
                                 bool_p,
                                 byte_p);
-  RPG_Item_Dictionary_Type                itemDictionary_p(&myWeaponDictionary,
-                                                           &myArmorDictionary);
+  RPG_Item_Dictionary_Type                itemDictionary_p(&myArmorDictionary,
+                                                           &myCommodityBeverageDictionary,
+                                                           &myCommodityLightDictionary,
+                                                           &myWeaponDictionary);
   itemDictionary_p.parsers(armorPropertiesXML_p,
                            commodityPropertiesBase_p,
                            weaponPropertiesXML_p);

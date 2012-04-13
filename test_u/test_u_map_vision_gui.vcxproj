@@ -91,6 +91,9 @@
     <ProjectReference Include="..\chance\dice\dice.vcxproj">
       <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\character\player\player.vcxproj">
+      <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\client\client.vcxproj">
       <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
     </ProjectReference>
@@ -102,6 +105,9 @@
     </ProjectReference>
     <ProjectReference Include="..\graphics\graphics.vcxproj">
       <Project>{dc39b751-377f-4093-9f76-4821f97f4de5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\item\item.vcxproj">
+      <Project>{63173994-11a3-40d3-b835-63a0e9a8bfe3}</Project>
     </ProjectReference>
     <ProjectReference Include="..\map\map.vcxproj">
       <Project>{e1b4aac5-f8c0-469f-9be3-e3a93b01ed84}</Project>

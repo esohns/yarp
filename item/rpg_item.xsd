@@ -223,7 +223,7 @@
       <xsd:extension base="RPG_Item_PropertiesBase_Type">
         <xsd:sequence>
           <xsd:element name="type" type="RPG_Item_CommodityType_Type" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="subtype" type="RPG_Item_CommodityUnion_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="subType" type="RPG_Item_CommodityUnion_Type" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>

@@ -1284,7 +1284,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 //     } // end FOR
 
     // --> check primary weapon
-    weapon_type = player_base->getEquipment().getPrimaryWeapon(player_base->getOffHand());
+    weapon_type = const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getPrimaryWeapon(player_base->getOffHand());
     weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
     // consider range penalty...
     if (weapon_properties.rangeIncrement)

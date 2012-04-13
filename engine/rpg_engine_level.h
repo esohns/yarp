@@ -39,6 +39,7 @@ class RPG_Engine_Export RPG_Engine_Level
  : public RPG_Map_Level
 {
  public:
+  RPG_Engine_Level();
   virtual ~RPG_Engine_Level();
 
   // static functionality
@@ -54,8 +55,6 @@ class RPG_Engine_Export RPG_Engine_Level
   const RPG_Engine_LevelMeta_t& getMeta() const;
 
  protected:
-  RPG_Engine_Level();
-
   void handleDoor(const RPG_Map_Position_t&, // position
                   const bool&,               // open ? : close
                   bool&);                    // return value: toggled ?

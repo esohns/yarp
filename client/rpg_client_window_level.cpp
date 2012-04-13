@@ -456,7 +456,13 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   int diff = top_right.first - top_right.second - 1;
   int sum = top_right.first + top_right.second + 1;
 
-  // draw tiles
+  // *NOTE*: draw (visible !) tiles order according to the painter's algorithm
+  // --> "back-to-front"
+  RPG_Engine_EntityID_t entity_id = myEngine->getActive();
+  RPG_Map_Positions_t visible_positions;
+  if (entity_id)
+    myEngine->getVisiblePositions(entity_id, visible_positions);
+
   // pass 1:
   //   1. off-map & unmapped areas
   //   2. floor
@@ -484,6 +490,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
     RPG_Graphics_Position_t screen_position = std::make_pair(0, 0);
     RPG_Map_Size_t map_size = myEngine->getSize();
     RPG_Map_Element current_element;
+    bool is_visible;
   //   // debug info
   //   SDL_Rect rect;
   //   std::ostringstream converter;
@@ -516,11 +523,13 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
            j++)
       {
         current_map_position.first = myView.first + j;
+
         // step0: off the map ? --> continue
         if ((current_map_position.first < 0) ||
             (current_map_position.first >= static_cast<int>(map_size.first)))
           continue;
 
+        is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
         current_element = myEngine->getElement(current_map_position);
         ACE_ASSERT(current_element != MAPELEMENT_INVALID);
 
@@ -538,7 +547,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         {
           RPG_Graphics_Surface::put(screen_position.first,
                                     screen_position.second,
-                                    *myOffMapTile,
+                                    (is_visible ? *myOffMapTile : *myInvisibleTile),
                                     targetSurface);
 
   //         // off the map ? --> continue
@@ -564,7 +573,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         {
           RPG_Graphics_Surface::put(screen_position.first,
                                     screen_position.second,
-                                    *(*floor_iterator).surface,
+                                    (is_visible ? *(*floor_iterator).surface : *myInvisibleTile),
                                     targetSurface);
 
   //         // debug info
@@ -603,7 +612,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
           // step3: floor edges
           floor_edge_iterator = myFloorEdgeTiles.find(current_map_position);
-          if (floor_edge_iterator != myFloorEdgeTiles.end())
+          if ((floor_edge_iterator != myFloorEdgeTiles.end()) &&
+              is_visible)
           {
             // straight edges
             if ((*floor_edge_iterator).second.west.surface)
@@ -755,6 +765,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
             (current_map_position.first >= static_cast<int>(map_size.first)))
           continue;
 
+        is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
+
         // transform map coordinates into screen coordinates
   //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
   //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
@@ -766,7 +778,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         door_iterator = myDoorTiles.find(current_map_position);
 
         // step1: walls (west & north)
-        if (wall_iterator != myWallTiles.end())
+        if ((wall_iterator != myWallTiles.end()) &&
+            is_visible)
         {
           if ((*wall_iterator).second.west.surface)
             RPG_Graphics_Surface::put(screen_position.first,
@@ -786,7 +799,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         } // end IF
 
         // step2: doors
-        if (door_iterator != myDoorTiles.end())
+        if ((door_iterator != myDoorTiles.end()) &&
+            is_visible)
         {
           // *NOTE*: doors are drawn in the "middle" of the floor tile
           RPG_Graphics_Surface::put((screen_position.first +
@@ -807,7 +821,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
         // step5: creatures
         entity_id = myEngine->hasEntity(current_map_position);
-        if (entity_id)
+        if (entity_id && is_visible)
         {
           // invalidate bg
           RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->invalidateBG(entity_id);
@@ -823,7 +837,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         // step6: effects
 
         // step7: walls (south & east)
-        if (wall_iterator != myWallTiles.end())
+        if ((wall_iterator != myWallTiles.end()) &&
+            is_visible)
         {
           if ((*wall_iterator).second.south.surface)
             RPG_Graphics_Surface::put(screen_position.first,
@@ -845,7 +860,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         // step8: ceiling
         // *TODO*: this is static information: compute once / level and use a lookup-table here...
         if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
-                                                *myEngine))
+                                                *myEngine) &&
+            is_visible)
         {
           RPG_Graphics_Surface::put(screen_position.first,
                                     (screen_position.second -

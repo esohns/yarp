@@ -1288,34 +1288,34 @@ class RPG_Item_Export RPG_Item_CommodityPropertiesBase_XMLTree_Type: public ::RP
   void
   type (::std::auto_ptr< type_type > p);
 
-  // subtype
+  // subType
   // 
-  typedef ::RPG_Item_CommodityUnion_XMLTree_Type subtype_type;
-  typedef ::xsd::cxx::tree::traits< subtype_type, char > subtype_traits;
+  typedef ::RPG_Item_CommodityUnion_XMLTree_Type subType_type;
+  typedef ::xsd::cxx::tree::traits< subType_type, char > subType_traits;
 
-  const subtype_type&
-  subtype () const;
+  const subType_type&
+  subType () const;
 
-  subtype_type&
-  subtype ();
-
-  void
-  subtype (const subtype_type& x);
+  subType_type&
+  subType ();
 
   void
-  subtype (::std::auto_ptr< subtype_type > p);
+  subType (const subType_type& x);
+
+  void
+  subType (::std::auto_ptr< subType_type > p);
 
   // Constructors.
   //
   RPG_Item_CommodityPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                                  const baseStorePrice_type&,
                                                  const type_type&,
-                                                 const subtype_type&);
+                                                 const subType_type&);
 
   RPG_Item_CommodityPropertiesBase_XMLTree_Type (const baseWeight_type&,
                                                  ::std::auto_ptr< baseStorePrice_type >&,
                                                  const type_type&,
-                                                 const subtype_type&);
+                                                 const subType_type&);
 
   RPG_Item_CommodityPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                                  ::xml_schema::flags f = 0,
@@ -1349,7 +1349,7 @@ class RPG_Item_Export RPG_Item_CommodityPropertiesBase_XMLTree_Type: public ::RP
          ::xml_schema::flags);
 
   ::xsd::cxx::tree::one< type_type > type_;
-  ::xsd::cxx::tree::one< subtype_type > subtype_;
+  ::xsd::cxx::tree::one< subType_type > subType_;
 };
 
 RPG_Item_Export

@@ -100,6 +100,7 @@ popd</Command>
   <ItemGroup>
     <ClInclude Include="rpg_map_common.h" />
     <ClInclude Include="rpg_map_common_tools.h" />
+    <ClInclude Include="rpg_map_data.h" />
     <ClInclude Include="rpg_map_defines.h" />
     <ClInclude Include="rpg_map_exports.h" />
     <ClInclude Include="rpg_map_incl.h" />
