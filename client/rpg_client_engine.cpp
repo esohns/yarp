@@ -383,47 +383,19 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
       RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
       ACE_ASSERT(entity_id);
-      std::string* sprite_file = static_cast<std::string* const>(parameters_in.back());
-      ACE_ASSERT(sprite_file);
+      RPG_Graphics_Sprite sprite = *static_cast<RPG_Graphics_Sprite* const>(parameters_in.back());
 
       // step1: load sprite graphics
       SDL_Surface* sprite_graphic = NULL;
+      RPG_Graphics_GraphicTypeUnion type;
+      type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
       if (!myEngine->isMonster(entity_id))
-      {
-        std::string filename = RPG_Graphics_Common_Tools::getGraphicsDirectory();
-        filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-        filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_CREATURES_SUB);
-        filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-        filename += *sprite_file;
-        // sanity check(s)
-        if (!RPG_Common_File_Tools::isReadable(filename))
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-                     filename.c_str()));
-
-          return;
-        } // end IF
-        sprite_graphic = RPG_Graphics_Surface::load(filename, // file
-                                                    true);    // convert to display format
-        if (!sprite_graphic)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-                     filename.c_str()));
-
-          return;
-        } // end IF
-      } // end IF
+        type.sprite = sprite;
       else
-      {
-        RPG_Graphics_GraphicTypeUnion type;
-        type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
         type.sprite = RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(entity_id));
-        sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
-                                                                true,   // convert to display format
-                                                                false); // don't cache
-      } // end ELSE
+      sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                              true,   // convert to display format
+                                                              false); // don't cache
       ACE_ASSERT(sprite_graphic);
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(entity_id,
                                                            sprite_graphic);
@@ -491,19 +463,21 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     {
       // sanity check
       ACE_ASSERT(parameters_in.empty());
-      ACE_ASSERT(myWidgets);
 
-      GDK_THREADS_ENTER();
-      GtkWidget* widget = glade_xml_get_widget(myWidgets,
-                                               ACE_TEXT_ALWAYS_CHAR("part"));
-      ACE_ASSERT(widget);
-      // raise dialog window
-      GdkWindow* toplevel = gtk_widget_get_parent_window(widget);
-      ACE_ASSERT(toplevel);
-      gdk_window_deiconify(toplevel);
-      // emit a signal...
-      gtk_button_clicked(GTK_BUTTON(widget));
-      GDK_THREADS_LEAVE();
+      if (myWidgets)
+      {
+        GDK_THREADS_ENTER();
+        GtkWidget* widget = glade_xml_get_widget(myWidgets,
+                                                 ACE_TEXT_ALWAYS_CHAR("part"));
+        ACE_ASSERT(widget);
+        // raise dialog window
+        GdkWindow* toplevel = gtk_widget_get_parent_window(widget);
+        ACE_ASSERT(toplevel);
+        gdk_window_deiconify(toplevel);
+        // emit a signal...
+        gtk_button_clicked(GTK_BUTTON(widget));
+        GDK_THREADS_LEAVE();
+      } // end IF
 
       return;
     }

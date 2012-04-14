@@ -530,10 +530,10 @@ RPG_Player_Player_Base::defaultEquip()
       }
       default:
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("item ID %d: invalid type: \"%s\", continuing\n"),
-                   *iterator,
-                   RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str()));
+        //ACE_DEBUG((LM_DEBUG,
+        //           ACE_TEXT("item ID %d: invalid type: \"%s\", continuing\n"),
+        //           *iterator,
+        //           RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str()));
 
         break;
       }

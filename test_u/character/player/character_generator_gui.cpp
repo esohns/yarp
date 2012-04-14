@@ -128,7 +128,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& graphicsDictionary_out,
@@ -284,7 +284,7 @@ process_arguments(const int argc_in,
   return true;
 }
 
-const bool
+bool
 do_initGUI(const std::string& graphicsDirectory_in,
            const std::string& UIfile_in,
            GTK_cb_data_t& userData_in)
@@ -504,7 +504,7 @@ do_work(const std::string& magicDictionary_in,
         const std::string& schemaRepository_in,
         const std::string& graphicsDirectory_in,
         const std::string& UIFile_in,
-        const unsigned long& graphicsCacheSize_in)
+        const unsigned int& graphicsCacheSize_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -540,7 +540,7 @@ do_work(const std::string& magicDictionary_in,
                                              std::numeric_limits<unsigned int>::max());
   userData.entity.modes.clear();
   userData.entity.actions.clear();
-  userData.entity.sprite.clear();
+  userData.entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   userData.entity.is_spawned = false;
 
   // init sprite gallery

@@ -444,6 +444,9 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
   // sanity check
   ACE_ASSERT(id_in);
 
+  // notify AI
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(id_in);
+
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -502,19 +505,63 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
 
   switch (action_in.command)
   {
+    case COMMAND_ATTACK:
+    {
+      // if the entity is currently attacking, change the previous target
+      if ((*iterator).second->modes.find(ENTITYMODE_FIGHTING) != (*iterator).second->modes.end())
+      {
+        if ((*iterator).second->modes.find(ENTITYMODE_TRAVELLING) != (*iterator).second->modes.end())
+        {
+          // stop moving
+          while ((*iterator).second->actions.front().command == COMMAND_STEP)
+            (*iterator).second->actions.pop_front();
+
+          ACE_ASSERT((*iterator).second->actions.front().command == COMMAND_TRAVEL);
+          (*iterator).second->actions.pop_front();
+
+          (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+        } // end IF
+        
+        ACE_ASSERT((*iterator).second->actions.front().command == COMMAND_ATTACK);
+        (*iterator).second->actions.pop_front();
+        (*iterator).second->actions.push_front(action_in);
+
+        // done
+        return;
+      } // end IF
+
+      break;
+    }
     case COMMAND_STOP:
     {
       (*iterator).second->actions.clear();
 
+      // done
       return;
     }
-    default:
+    case COMMAND_TRAVEL:
     {
-      (*iterator).second->actions.push_back(action_in);
+      // if the entity is currently travelling, change the previous destination
+      if ((*iterator).second->modes.find(ENTITYMODE_TRAVELLING) != (*iterator).second->modes.end())
+      {
+        while ((*iterator).second->actions.front().command == COMMAND_STEP)
+          (*iterator).second->actions.pop_front();
+
+        ACE_ASSERT((*iterator).second->actions.front().command == COMMAND_TRAVEL);
+        (*iterator).second->actions.pop_front();
+        (*iterator).second->actions.push_front(action_in);
+
+        // done
+        return;
+      } // end IF
 
       break;
     }
+    default:
+      break;
   } // end SWITCH
+
+  (*iterator).second->actions.push_back(action_in);
 }
 
 void
@@ -842,8 +889,10 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
   unsigned char environment_radius = RPG_Common_Tools::environment2Radius(inherited2::myLevelMeta.environment);
 
   // step3: consider equipment (ambient lighting conditions)
-  unsigned char lit_radius = RPG_Item_Common_Tools::lightingItem2Radius(equipped_light_source,
-                                                                        (inherited2::myLevelMeta.environment.lighting == AMBIENCE_BRIGHT));
+  unsigned char lit_radius = 0;
+  if (equipped_light_source != RPG_ITEM_COMMODITYLIGHT_INVALID)
+    lit_radius = RPG_Item_Common_Tools::lightingItem2Radius(equipped_light_source,
+                                                            (inherited2::myLevelMeta.environment.lighting == AMBIENCE_BRIGHT));
 
   // step4: consider low-light vision
   if (RPG_Character_Race_Common_Tools::hasRace(race, RACE_ELF) ||
@@ -946,6 +995,8 @@ RPG_Engine::handleEntities()
   RPG_TRACE(ACE_TEXT("RPG_Engine::handleEntities"));
 
   bool action_complete = true;
+  bool do_remove = false;
+  RPG_Engine_EntityID_t entity_id = 0;
   RPG_Engine_ClientNotifications_t notifications;
 
   {
@@ -1001,40 +1052,11 @@ RPG_Engine::handleEntities()
           // target disabled ?
           if (RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character))
           {
-            // notify client window
-            RPG_Engine_ClientParameters_t* parameters = NULL;
-            parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
-            if (!parameters)
-            {
-              ACE_DEBUG((LM_CRITICAL,
-                         ACE_TEXT("unable to allocate memory, aborting\n")));
-
-              return;
-            } // end IF
-            RPG_Engine_EntityID_t* entity_id = NULL;
-            entity_id = new(std::nothrow) RPG_Engine_EntityID_t;
-            if (!entity_id)
-            {
-              ACE_DEBUG((LM_CRITICAL,
-                         ACE_TEXT("unable to allocate memory, aborting\n")));
-
-              // clean up
-              delete parameters;
-
-              return;
-            } // end IF
-            *entity_id = (*target).first;
-            parameters->push_back(entity_id);
-            notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_REMOVE, parameters));
-
             // remove entity
-            if (!(*target).second->character->isPlayerCharacter())
-            {
-              // clean up NPC (!) entities...
-              delete (*target).second->character;
-              delete (*target).second;
-            }
-            else if ((*target).first == myActivePlayer)
+            do_remove = true;
+            entity_id = (*target).first;
+
+            if ((*target).first == myActivePlayer)
             {
               myActivePlayer = 0;
 
@@ -1050,7 +1072,6 @@ RPG_Engine::handleEntities()
               } // end IF
               notifications.push_back(std::make_pair(COMMAND_E2C_QUIT, parameters));
             } // end ELSEIF
-            myEntities.erase(target);
           } // end IF
 
           break;
@@ -1203,6 +1224,13 @@ RPG_Engine::handleEntities()
         (*iterator).second->actions.pop_front();
     } // end FOR
   } // end lock scope
+
+  // remove entity ?
+  if (do_remove)
+  {
+    ACE_ASSERT(entity_id);
+    remove(entity_id);
+  } // end IF
 
   // notify client / window
   for (RPG_Engine_ClientNotificationsConstIterator_t iterator = notifications.begin();

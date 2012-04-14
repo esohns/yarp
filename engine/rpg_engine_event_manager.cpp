@@ -637,6 +637,14 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
           {
             // --> (try to) take the first/next step along a path...
 
+            // sanity check
+            if (current_action.position == (*iterator).second->position)
+            {
+              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+              done_current_action = true;
+              break; // nothing (more) to do...
+            } // end IF
+
             // step0: chasing a target ?
             if (current_action.target)
             {
@@ -717,7 +725,7 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
             done_current_action = current_action.path.empty();
             if (done_current_action)
             {
-              ACE_ASSERT((*iterator).second->position == current_action.position);
+              ACE_ASSERT(next_action.position == current_action.position);
 
               // *NOTE*: --> reached target...
               (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);

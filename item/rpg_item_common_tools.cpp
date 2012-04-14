@@ -264,7 +264,9 @@ RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_i
     }
   } // end SWITCH
 
-  return (ambienceIsBright_in ? result : (result * 2));
+  // *TODO*: consider ambient lighting as well...
+  //return (ambienceIsBright_in ? result : (result * 2));
+  return result;
 }
 
 bool

@@ -24,6 +24,8 @@
 #include "rpg_engine_command.h"
 #include "rpg_engine_entitymode.h"
 
+#include <rpg_graphics_sprite.h>
+
 #include <rpg_map_common.h>
 
 #include <rpg_monster_common.h>
@@ -63,8 +65,8 @@ struct RPG_Engine_Entity
   RPG_Map_Position_t      position;
   RPG_Engine_EntityMode_t modes;
   RPG_Engine_Actions_t    actions;
-  // *TODO*: get rid of this, it does not belong here...
-  std::string             sprite;
+  // *TODO*: this does not really belong here...
+  RPG_Graphics_Sprite     sprite;
   // monster - onlies
   bool                    is_spawned;
   long                    activation_timer;

@@ -340,7 +340,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
          iterator != engine_player_p->mode().end();
          iterator++)
       result.modes.insert(RPG_Engine_EntityModeHelper::stringToRPG_Engine_EntityMode(*iterator));
-    result.sprite = engine_player_p->sprite();
+    result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
   } // end IF
 
   return result;
@@ -394,7 +394,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
        iterator++)
     modes.push_back(RPG_Engine_EntityMode_XMLTree_Type(static_cast<RPG_Engine_EntityMode_XMLTree_Type::value>(*iterator)));
   entity_model->mode(modes);
-  entity_model->sprite(entity_in.sprite);
+  entity_model->sprite(RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite));
 
   try
   {
@@ -473,7 +473,7 @@ RPG_Engine_Common_Tools::createEntity()
                                    std::numeric_limits<unsigned int>::max());
   //result.modes();
   //result.actions();
-  result.sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_ENTITY_SPRITE_FILE);
+  result.sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
   result.is_spawned = false;
 
   // generate player
@@ -495,7 +495,7 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
                                    std::numeric_limits<unsigned int>::max());
   //result.modes();
   //result.actions();
-  result.sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CREATURE_SPRITE_FILE);
+  result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   result.is_spawned = false;
 
   RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
@@ -1862,43 +1862,32 @@ RPG_Engine_Common_Tools::playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::playerXMLToEntityXML"));
 
   RPG_Map_Position_XMLTree_Type position(0, 0);
-  std::string sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_ENTITY_SPRITE_FILE);
+  RPG_Graphics_Sprite sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
 
   RPG_Engine_Player_XMLTree_Type* entity_p = NULL;
-  try
-  {
-    entity_p = new RPG_Engine_Player_XMLTree_Type(player_in.name(),
-                                                  player_in.alignment(),
-                                                  player_in.attributes(),
-                                                  player_in.defaultSize(),
-                                                  player_in.maxHP(),
-                                                  player_in.conditions(),
-                                                  player_in.HP(),
-                                                  player_in.XP(),
-                                                  player_in.gold(),
-                                                  player_in.inventory(),
-                                                  player_in.gender(),
-                                                  player_in.classXML(),
-                                                  player_in.offhand(),
-                                                  position,
-                                                  sprite);
-  }
-  catch (const std::bad_alloc& exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::playerXMLToEntityXML(): exception occurred: \"%s\", aborting\n"),
-               exception.what()));
-
-    return entity_p;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::playerXMLToEntityXML(): exception occurred, aborting\n")));
-
-    return entity_p;
-  }
+  entity_p = new(std::nothrow) RPG_Engine_Player_XMLTree_Type(player_in.name(),
+                                                              player_in.alignment(),
+                                                              player_in.attributes(),
+                                                              player_in.defaultSize(),
+                                                              player_in.maxHP(),
+                                                              player_in.conditions(),
+                                                              player_in.HP(),
+                                                              player_in.XP(),
+                                                              player_in.gold(),
+                                                              player_in.inventory(),
+                                                              player_in.gender(),
+                                                              player_in.classXML(),
+                                                              player_in.offhand(),
+                                                              position,
+                                                              RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(sprite));
   ACE_ASSERT(entity_p);
+  if (!entity_p)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory, aborting\n")));
+
+    return NULL;
+  }
 
   // *NOTE*: add race, skills, feats, abilities, known spells, prepared spells sequences "manually"
   entity_p->race(player_in.race());

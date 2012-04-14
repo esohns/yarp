@@ -91,6 +91,9 @@
     <ProjectReference Include="..\chance\dice\dice.vcxproj">
       <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\character\monster\monster.vcxproj">
+      <Project>{f306a4b7-0d19-4322-b891-11e528ebd50c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\character\player\player.vcxproj">
       <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
     </ProjectReference>

@@ -40,9 +40,10 @@
 
 #include <rpg_player_defines.h>
 
-#include <rpg_item_instance_manager.h>
-#include <rpg_item_weapon.h>
 #include <rpg_item_armor.h>
+#include <rpg_item_commodity.h>
+#include <rpg_item_weapon.h>
+#include <rpg_item_instance_manager.h>
 
 #include <rpg_magic_common_tools.h>
 
@@ -731,6 +732,47 @@ update_character_profile(const RPG_Player& player_in,
 
     switch (item->getType())
     {
+      case ITEM_ARMOR:
+      {
+        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item);
+        ACE_ASSERT(armor);
+
+        text = RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
+
+        break;
+      }
+      case ITEM_COMMODITY:
+      {
+        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(item);
+        ACE_ASSERT(commodity);
+
+        RPG_Item_CommodityUnion commodity_type = commodity->getCommoditySubType();
+        switch (commodity_type.discriminator)
+        {
+          case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
+          {
+            text = RPG_Common_Tools::enumToString(RPG_Item_CommodityBeverageHelper::RPG_Item_CommodityBeverageToString(commodity_type.commoditybeverage));
+
+            break;
+          }
+          case RPG_Item_CommodityUnion::COMMODITYLIGHT:
+          {
+            text = RPG_Common_Tools::enumToString(RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString(commodity_type.commoditylight));
+
+            break;
+          }
+          default:
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid commodity subtype (was: %d), aborting\n"),
+                       commodity_type.discriminator));
+
+            break;
+          }
+        } // end SWITCH
+
+        break;
+      }
       case ITEM_WEAPON:
       {
         RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(item);
@@ -741,18 +783,11 @@ update_character_profile(const RPG_Player& player_in,
 
         break;
       }
-      case ITEM_ARMOR:
-      {
-        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item);
-        ACE_ASSERT(armor);
-
-        text = RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
-
-        break;
-      }
       default:
       {
-        // *TODO*: pretty-print this string
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
+                   RPG_Item_TypeHelper::RPG_Item_TypeToString(item->getType()).c_str()));
 
         break;
       }
@@ -796,13 +831,32 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
                                                    ACE_TEXT_ALWAYS_CHAR("image_sprite")));
   ACE_ASSERT(image);
   std::string filename;
-  if (!entity_in.sprite.empty())
+  if (entity_in.sprite != RPG_GRAPHICS_SPRITE_INVALID)
   {
-    filename = RPG_Graphics_Common_Tools::getGraphicsDirectory();
-    filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_CREATURES_SUB);
-    filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    filename += entity_in.sprite;
+    RPG_Graphics_GraphicTypeUnion type;
+    type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+    type.sprite = entity_in.sprite;
+    RPG_Graphics_t graphic;
+    graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+    graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+    // retrieve properties from the dictionary
+    graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+    ACE_ASSERT((graphic.type.sprite == entity_in.sprite) &&
+               (graphic.type.discriminator == RPG_Graphics_GraphicTypeUnion::SPRITE));
+    // sanity check
+    if (graphic.category != CATEGORY_SPRITE)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid category (was: \"%s\"), not a sprite type, aborting\n"),
+                 RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+
+      return;
+    } // end IF
+
+    // assemble path
+    std::string filename;
+    RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+    ACE_ASSERT(!filename.empty());
     // sanity check(s)
     if (!RPG_Common_File_Tools::isReadable(filename))
     {
@@ -1330,7 +1384,7 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
                                          std::numeric_limits<unsigned int>::max());
   data->entity.modes.clear();
   data->entity.actions.clear();
-  data->entity.sprite.clear();
+  data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   data->entity.is_spawned = false;
 
   data->entity = RPG_Engine_Common_Tools::createEntity();
@@ -1407,7 +1461,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
                                            std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite.clear();
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -1494,7 +1548,7 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
                                            std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite.clear();
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -1653,7 +1707,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
                                            std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite.clear();
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 

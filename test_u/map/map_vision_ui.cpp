@@ -50,11 +50,16 @@
 #include <rpg_map_common_tools.h>
 #include <rpg_map_pathfinding_tools.h>
 
+#include <rpg_monster_defines.h>
+#include <rpg_monster_dictionary.h>
+
 #include <rpg_player_defines.h>
 
 #include <rpg_item_defines.h>
 #include <rpg_item_commodity.h>
 #include <rpg_item_instance_manager.h>
+
+#include <rpg_character_defines.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_defines.h>
@@ -186,7 +191,20 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT("-m [FILE] : level map (*") << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-l [FILE] : level map (*") << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef CONFIGDIR
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_CONFIG_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += RPG_MONSTER_DEF_DICTIONARY_FILE;
+  std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
@@ -197,6 +215,7 @@ process_arguments(const int argc_in,
                   std::string& graphicsDictionary_out,
                   std::string& itemDictionary_out,
                   std::string& levelMap_out,
+                  std::string& monsterDictionary_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
 {
@@ -239,12 +258,25 @@ process_arguments(const int argc_in,
   levelMap_out += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
   levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
+  monsterDictionary_out = config_path;
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef CONFIGDIR
+  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_CONFIG_SUB);
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
+#endif
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionary_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
+
   traceInformation_out    = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("g:i:m:tv"));
+                             ACE_TEXT("g:i:l:m:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -263,9 +295,15 @@ process_arguments(const int argc_in,
 
         break;
       }
-      case 'm':
+      case 'l':
       {
         levelMap_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'm':
+      {
+        monsterDictionary_out = argumentParser.opt_arg();
 
         break;
       }
@@ -411,6 +449,19 @@ do_work(const RPG_Client_Config& config_in,
                                 config_in.item_dictionary,
                                 dummy);
   RPG_Graphics_Common_Tools::initStringConversionTables();
+
+  // init monster dictionary
+  try
+  {
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(config_in.monster_dictionary);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Monster_Dictionary::init, returning\n")));
+
+    return;
+  }
 
   // init graphics dictionary
   try
@@ -1067,16 +1118,6 @@ ACE_TMAIN(int argc_in,
 
   // step1: init
   // step1a set defaults
-  std::string graphicsDictionary = config_path;
-  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
-#endif
-  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
-
   std::string itemDictionary = config_path;
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #ifdef CONFIGDIR
@@ -1086,6 +1127,26 @@ ACE_TMAIN(int argc_in,
 #endif
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+
+  std::string monsterDictionary = config_path;
+  monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef CONFIGDIR
+  monsterDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
+  monsterDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
+#endif
+  monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+
+  std::string graphicsDictionary = config_path;
+  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifdef CONFIGDIR
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
+#else
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
+#endif
+  graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   std::string levelMap = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
@@ -1124,6 +1185,7 @@ ACE_TMAIN(int argc_in,
                           graphicsDictionary,
                           itemDictionary,
                           levelMap,
+                          monsterDictionary,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -1134,7 +1196,9 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step1bb: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
+  if (!RPG_Common_File_Tools::isReadable(itemDictionary)     ||
+      !RPG_Common_File_Tools::isReadable(monsterDictionary)  ||
+      !RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
       !RPG_Common_File_Tools::isReadable(levelMap))
   {
     ACE_DEBUG((LM_DEBUG,
@@ -1260,7 +1324,7 @@ ACE_TMAIN(int argc_in,
   config.item_dictionary                   = itemDictionary;
 
   // *** monster ***
-  config.monster_dictionary.clear();
+  config.monster_dictionary                = monsterDictionary;
 
   // *** map ***
   config.map_config.min_room_size          = RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;

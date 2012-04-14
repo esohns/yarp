@@ -383,10 +383,10 @@ RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
   signed char result = 1;
   result <<= ::abs(SIZE_MEDIUM - size_in - 1);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
-             RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str(),
-             static_cast<int>(((size_in > SIZE_MEDIUM) ? -result : result))));
+  //ACE_DEBUG((LM_DEBUG,
+  //           ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
+  //           RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str(),
+  //           static_cast<int>(((size_in > SIZE_MEDIUM) ? -result : result))));
 
   return ((size_in > SIZE_MEDIUM) ? -result : result);
 }

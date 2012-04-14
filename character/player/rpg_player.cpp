@@ -158,7 +158,7 @@ RPG_Player::create()
   RPG_Dice::generateRandomNumbers((RPG_CHARACTER_GENDER_MAX - 2),
                                   1,
                                   result);
-  gender = static_cast<RPG_Character_Gender> (result.front());
+  gender = static_cast<RPG_Character_Gender>(result.front());
 
   // step3: race
   RPG_Character_Race_t player_race(0);
@@ -762,49 +762,38 @@ RPG_Player::create()
   catch (const std::bad_alloc& exception)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player_Common_Tools::generatePlayerCharacter(): caught exception: \"%s\", continuing\n"),
+               ACE_TEXT("RPG_Player::create(): caught exception: \"%s\", continuing\n"),
                exception.what()));
   }
 
   // step14: instantiate player character
   RPG_Player* player_p = NULL;
-  try
-  {
-    player_p = new RPG_Player(name,
-                              gender,
-                              player_race,
-							                player_class,
-                              alignment,
-                              attributes,
-                              skills,
-                              feats,
-                              abilities,
-                              offHand,
-                              hitpoints,
-                              knownSpells,
-                              condition,
-                              hitpoints, // start healthy
-                              0,
-                              RPG_PLAYER_START_MONEY,
-                              spells,
-                              items);
-  }
-  catch (const std::bad_alloc& exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player_Common_Tools::generatePlayerCharacter(): exception occurred: \"%s\", aborting\n"),
-               exception.what()));
-
-    return player_p;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player_Common_Tools::generatePlayerCharacter(): exception occurred, aborting\n")));
-
-    return player_p;
-  }
+  player_p = new(std::nothrow) RPG_Player(name,
+                                          gender,
+                                          player_race,
+							                            player_class,
+                                          alignment,
+                                          attributes,
+                                          skills,
+                                          feats,
+                                          abilities,
+                                          offHand,
+                                          hitpoints,
+                                          knownSpells,
+                                          condition,
+                                          hitpoints, // start healthy
+                                          0,
+                                          RPG_PLAYER_START_MONEY,
+                                          spells,
+                                          items);
   ACE_ASSERT(player_p);
+  if (!player_p)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory, aborting\n")));
+
+    return NULL;
+  }
 
   return player_p;
 }

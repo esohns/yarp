@@ -26,7 +26,7 @@
 #include <gtk/gtk.h>
 
 void update_sprite_gallery(GTK_cb_data_t&);
-void set_current_image(const std::string&,
+void set_current_image(const RPG_Graphics_Sprite&,
                        GladeXML*);
 
 #ifdef __cplusplus

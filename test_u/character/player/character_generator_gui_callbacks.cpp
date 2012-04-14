@@ -61,34 +61,22 @@ update_sprite_gallery(GTK_cb_data_t& CBData_in)
 {
   RPG_TRACE(ACE_TEXT("::update_sprite_gallery"));
 
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  RPG_Graphics_t graphic;
-  std::string filename;
   for (CBData_in.current_sprite = CBData_in.sprite_gallery.begin();
        CBData_in.current_sprite != CBData_in.sprite_gallery.end();
        CBData_in.current_sprite++)
-  {
-    type.sprite = *CBData_in.current_sprite;
-    graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-    ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
-               (graphic.type.sprite == type.sprite));
-    // assemble path
-    RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
-    if (filename == CBData_in.entity.sprite)
+    if (*CBData_in.current_sprite == CBData_in.entity.sprite)
       break;
-  } // end FOR
 
   // sanity check
-  if (filename != CBData_in.entity.sprite)
+  if (*CBData_in.current_sprite != CBData_in.entity.sprite)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("sprite (was: \"%s\") not in gallery (%u entries), aborting\n"),
-               CBData_in.entity.sprite.c_str(),
+               RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(CBData_in.entity.sprite).c_str(),
                CBData_in.sprite_gallery.size()));
 }
 
 void
-set_current_image(const std::string& filename_in,
+set_current_image(const RPG_Graphics_Sprite& sprite_in,
                   GladeXML* xml_in)
 {
   RPG_TRACE(ACE_TEXT("::set_current_image"));
@@ -98,8 +86,34 @@ set_current_image(const std::string& filename_in,
   ACE_ASSERT(image);
   gtk_image_clear(image);
 
-  if (!filename_in.empty())
-    gtk_image_set_from_file(image, filename_in.c_str());
+  if (sprite_in != RPG_GRAPHICS_SPRITE_INVALID)
+  {
+    RPG_Graphics_GraphicTypeUnion type;
+    type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+    type.sprite = sprite_in;
+    RPG_Graphics_t graphic;
+    graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+    graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+    // retrieve properties from the dictionary
+    graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+    ACE_ASSERT((graphic.type.sprite == sprite_in) &&
+               (graphic.type.discriminator == RPG_Graphics_GraphicTypeUnion::SPRITE));
+    // sanity check
+    if (graphic.category != CATEGORY_SPRITE)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid category (was: \"%s\"), not a sprite type, aborting\n"),
+                 RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+
+      return;
+    } // end IF
+
+    // assemble path
+    std::string filename;
+    RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+    ACE_ASSERT(!filename.empty());
+    gtk_image_set_from_file(image, filename.c_str());
+  } // end IF
   else
     gtk_image_clear(image);
 }
@@ -115,7 +129,7 @@ about_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::about_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
   ACE_ASSERT(data);
 
   // sanity check(s)
@@ -222,7 +236,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
                                            std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite.clear();
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -329,7 +343,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
                                            std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite.clear();
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -463,7 +477,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
                                            std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite.clear();
+    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -598,16 +612,7 @@ prev_image_clicked_GTK_cb(GtkWidget* widget_in,
     data->current_sprite = data->sprite_gallery.end();
   data->current_sprite--;
 
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  type.sprite = *(data->current_sprite);
-  RPG_Graphics_t graphic;
-  // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  // assemble path
-  std::string filename;
-  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
-  ::set_current_image(filename,
+  ::set_current_image(*(data->current_sprite),
                       data->xml);
 
   // make character save button sensitive (if it's not already)
@@ -636,16 +641,7 @@ next_image_clicked_GTK_cb(GtkWidget* widget_in,
   if (data->current_sprite == data->sprite_gallery.end())
     data->current_sprite = data->sprite_gallery.begin();
 
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-  type.sprite = *(data->current_sprite);
-  RPG_Graphics_t graphic;
-  // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  // assemble path
-  std::string filename;
-  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
-  ::set_current_image(filename,
+  ::set_current_image(*(data->current_sprite),
                       data->xml);
 
   // make character save button sensitive (if it's not already)
