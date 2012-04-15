@@ -2096,7 +2096,7 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
 
 const RPG_Graphics_Position_t
 RPG_Graphics_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in,
-                                      const RPG_Graphics_Size_t& mapSize_in,
+                                      const RPG_Map_Size_t& mapSize_in,
                                       const RPG_Graphics_Size_t& windowSize_in,
                                       const RPG_Graphics_Position_t& viewport_in)
 {

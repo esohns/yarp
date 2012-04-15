@@ -39,6 +39,8 @@ class RPG_Map_Export RPG_Map_Common_Tools
  public:
   static unsigned int distance(const RPG_Map_Position_t&,  // position 1
                                const RPG_Map_Position_t&); // position 2
+  static unsigned int distanceMax(const RPG_Map_Position_t&,  // position 1
+                                  const RPG_Map_Position_t&); // position 2
   static bool isAdjacent(const RPG_Map_Position_t&,  // position 1
                          const RPG_Map_Position_t&); // position 2
   static std::string direction2String(const RPG_Map_Direction&);

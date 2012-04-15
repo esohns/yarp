@@ -74,12 +74,17 @@ RPG_Client_WindowLevel::RPG_Client_WindowLevel(const RPG_Graphics_SDLWindowBase&
 
   // init client action
   myClientAction.command = RPG_CLIENT_COMMAND_INVALID;
+  myClientAction.previous = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                           std::numeric_limits<unsigned int>::max());
   myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                            std::numeric_limits<unsigned int>::max());
   myClientAction.window = this;
   myClientAction.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   myClientAction.entity_id = 0;
   myClientAction.path.clear();
+  myClientAction.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                         std::numeric_limits<unsigned int>::max());
+  myClientAction.positions.clear();
 
   // init style
   myCurrentMapStyle.door_style = RPG_GRAPHICS_DOORSTYLE_INVALID;
@@ -1008,7 +1013,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                                                                           getView());
 
           // toggle path selection mode
-          if (myClient->hasMode(SELECTIONMODE_PATH))
+          if (myClient->mode() == SELECTIONMODE_PATH)
           {
             // --> switch off path selection
 
@@ -1087,6 +1092,80 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           myClientAction.command = COMMAND_CURSOR_DRAW;
           myClientAction.position = cursor_position;
           myClient->action(myClientAction);
+
+          break;
+        }
+        case SDLK_x:
+        {
+          // step0: restore/clear old tile highlight background
+          myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+          myClient->action(myClientAction);
+
+          // *NOTE*: this MAY also invalidate the current cursor bg...
+          myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
+          myClient->action(myClientAction);
+
+          // step1: store current background tile(s)
+          myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+          RPG_Graphics_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+          myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
+                                                                          myEngine->getSize(),
+                                                                          getSize(),
+                                                                          getView());
+
+          // toggle path selection mode
+          if (myClient->mode() == SELECTIONMODE_AIM_CIRCLE)
+          {
+            // --> switch off aim selection
+
+            // clear cached positions
+            myClientAction.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                   std::numeric_limits<unsigned int>::max());
+            myClientAction.positions.clear();
+
+            // on the map ?
+            if ((myClientAction.position.first  != std::numeric_limits<unsigned int>::max()) &&
+                (myClientAction.position.second != std::numeric_limits<unsigned int>::max()))
+            {
+              myClient->action(myClientAction);
+
+              // step2: draw tile highlight
+              myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+              myClient->action(myClientAction);
+
+              // step3: draw cursor highlight
+              myClientAction.command = COMMAND_CURSOR_DRAW;
+              myClientAction.position = cursor_position;
+              myClient->action(myClientAction);
+            } // end IF
+
+            myClient->mode(SELECTIONMODE_NORMAL);
+          } // end IF
+          else
+          {
+            // --> switch on aim selection
+
+            // clear any cached positions (may transition from SELECTIONMODE_PATH)...
+            myClientAction.path.clear();
+
+            // retain source position
+            myClientAction.source = myClientAction.position;
+
+            myClientAction.positions.insert(myClientAction.position);
+
+            // on the map ?
+            if ((myClientAction.position.first  != std::numeric_limits<unsigned int>::max()) &&
+                (myClientAction.position.second != std::numeric_limits<unsigned int>::max()))
+            {
+              myClient->action(myClientAction);
+
+              // draw tile highlight(s)
+              myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+              myClient->action(myClientAction);
+            } // end IF
+
+            myClient->mode(SELECTIONMODE_AIM_CIRCLE);
+          } // end ELSE
 
           break;
         }
@@ -1277,7 +1356,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
       // change "active" tile ?
       RPG_Map_Position_t current_position = myClientAction.position;
-      if (myClientAction.position != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition(std::numeric_limits<unsigned int>::max()))
+      if (myClientAction.position != myClientAction.previous)
       {
         // step1: restore/clear old tile highlight background
         myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
@@ -1314,44 +1393,106 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
         // step4: store current background tile(s)
         myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
-        myClientAction.entity_id = myEngine->getActive();
-        if (myClientAction.entity_id &&
-            myClient->hasMode(SELECTIONMODE_PATH))
+        switch (myClient->mode())
         {
-          if (myEngine->isValid(myClientAction.position))
+          case SELECTIONMODE_AIM_CIRCLE:
           {
-            current_position = myEngine->getPosition(myClientAction.entity_id);
-            if (current_position != myClientAction.position)
-            {
-              if (!myEngine->findPath(current_position,
-                                      myClientAction.position,
-                                      myClientAction.path))
-              {
-                //ACE_DEBUG((LM_DEBUG,
-                //           ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], aborting\n"),
-                //           current_position.first,
-                //           current_position.second,
-                //           myClientAction.position.first,
-                //           myClientAction.position.second));
+            // step1: build circle with given radius
+            unsigned int circle_radius = RPG_Map_Common_Tools::distanceMax(myClientAction.source,
+                                                                           myClientAction.position);
+            if (circle_radius > RPG_MAP_CIRCLE_MAX_RADIUS)
+              circle_radius = RPG_MAP_CIRCLE_MAX_RADIUS;
 
-                // pointing at an invalid (==unreachable) position (still on the map)
-                // --> erase cached path (and tile highlights)
-                myClientAction.path.clear();
-              } // end IF
-              //else
-              //{
-              //  ACE_ASSERT(myClientAction.path.front().first == current_position);
-              //  ACE_ASSERT(myClientAction.path.back().first  == myClientAction.position);
-              //}
-            } // end IF
-          } // end IF
-          else
+            //RPG_Map_Positions_t circle;
+            //RPG_Map_Common_Tools::buildCircle(myClientAction.source,
+            //                                  myEngine->getSize(),
+            //                                  RPG_Map_Common_Tools::distanceMax(myClientAction.source,
+            //                                                                    myClientAction.position),
+            //                                  false, // don't fill
+            //                                  circle);
+
+            //// step2: remove invalid positions
+            //RPG_Map_Positions_t invalid;
+            //for (RPG_Map_PositionsConstIterator_t iterator = circle.begin();
+            //     iterator != circle.end();
+            //     iterator++)
+            //  if (!myEngine->isValid(*iterator))
+            //    invalid.insert(*iterator);
+            //std::set_difference(circle.begin, circle.end(),
+            //                    invalid.begin(), invalid.end(),
+            //                    myClientAction.positions.begin());
+
+            RPG_Map_Common_Tools::buildCircle(myClientAction.source,
+                                              myEngine->getSize(),
+                                              circle_radius,
+                                              false, // don't fill
+                                              myClientAction.positions);
+
+            // step2: remove invalid positions
+            RPG_Map_PositionsIterator_t iterator = myClientAction.positions.begin();
+            while (iterator != myClientAction.positions.end())
+            {
+              if (!myEngine->isValid(*iterator))
+                myClientAction.positions.erase(iterator++);
+              else
+                iterator++;
+            } // end WHILE
+
+            break;
+          }
+          case SELECTIONMODE_NORMAL:
+            break;
+          case SELECTIONMODE_PATH:
           {
-            // pointing at an invalid (==unreachable) position (still on the map)
-            // --> erase cached path (and tile highlights)
-            myClientAction.path.clear();
-          } // end ELSE
-        } // end IF
+            myClientAction.entity_id = myEngine->getActive();
+            if (myEngine->isValid(myClientAction.position))
+            {
+              current_position = myEngine->getPosition(myClientAction.entity_id);
+              if (current_position != myClientAction.position)
+              {
+                if (!myEngine->findPath(current_position,
+                                        myClientAction.position,
+                                        myClientAction.path))
+                {
+                  //ACE_DEBUG((LM_DEBUG,
+                  //           ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], aborting\n"),
+                  //           current_position.first,
+                  //           current_position.second,
+                  //           myClientAction.position.first,
+                  //           myClientAction.position.second));
+
+                  // pointing at an invalid (==unreachable) position (still on the map)
+                  // --> erase cached path (and tile highlights)
+                  myClientAction.path.clear();
+                } // end IF
+                //else
+                //{
+                //  ACE_ASSERT(myClientAction.path.front().first == current_position);
+                //  ACE_ASSERT(myClientAction.path.back().first  == myClientAction.position);
+                //}
+              } // end IF
+            } // end IF
+            else
+            {
+              // pointing at an invalid (==unreachable) position (still on the map)
+              // --> erase cached path (and tile highlights)
+              myClientAction.path.clear();
+            } // end ELSE
+
+            break;
+          }
+          default:
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid selection mode (was: %d), aborting\n"),
+                       myClient->mode()));
+
+            myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                     std::numeric_limits<unsigned int>::max());
+
+            break;
+          }
+        } // end SWITCH
         myClient->action(myClientAction);
 
         // step5: draw tile highlight(s)
@@ -1362,17 +1503,27 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       // set an appropriate cursor
       RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
                                                                            *myEngine);
-      if ((cursor_type == CURSOR_NORMAL) &&
-          myClientAction.entity_id &&
-          myClient->hasMode(SELECTIONMODE_PATH) &&
-          (current_position != myClientAction.position))
-        cursor_type = CURSOR_TRAVEL;
+      RPG_Client_SelectionMode current_mode = myClient->mode();
+      if (cursor_type == CURSOR_NORMAL)
+      {
+        if (current_mode == SELECTIONMODE_PATH)
+        {
+          if (myClientAction.entity_id &&
+              (myClientAction.position != current_position))
+            cursor_type = CURSOR_TRAVEL;
+        }
+        else if (current_mode == SELECTIONMODE_AIM_CIRCLE)
+          cursor_type = CURSOR_TARGET;
+      } // end IF
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         myClientAction.command = COMMAND_CURSOR_SET;
         myClientAction.cursor = cursor_type;
         myClient->action(myClientAction);
       } // end IF
+
+      if (myClientAction.position != myClientAction.previous)
+        myClientAction.previous = myClientAction.position;
 
       break;
     }
@@ -1456,7 +1607,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             // (try to) travel to this position
             player_action.command = COMMAND_TRAVEL;
             player_action.position = map_position;
-            if (myClient->hasMode(SELECTIONMODE_PATH) &&
+            if ((myClient->mode() == SELECTIONMODE_PATH) &&
                 !myClientAction.path.empty())
             {
               // sanity checks

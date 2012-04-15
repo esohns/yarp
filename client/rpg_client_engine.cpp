@@ -540,12 +540,12 @@ RPG_Client_Engine::mode(const RPG_Client_SelectionMode& mode_in)
 //  mySelectionMode = SELECTIONMODE_NORMAL;
 //}
 
-bool
-RPG_Client_Engine::hasMode(const RPG_Client_SelectionMode& mode_in) const
+RPG_Client_SelectionMode
+RPG_Client_Engine::mode() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::hasMode"));
 
-  return (mySelectionMode == mode_in);
+  return mySelectionMode;
 }
 
 bool
@@ -718,18 +718,35 @@ RPG_Client_Engine::handleActions()
 
         RPG_Graphics_Size_t size = (*iterator).window->getSize(false);
         RPG_Graphics_Position_t view = (*iterator).window->getView();
-        if ((*iterator).path.empty())
+        if ((*iterator).path.empty() &&
+            (*iterator).positions.empty())
+        {
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
                                                                                                                  size,
                                                                                                                  view),
                                                                            (*iterator).window->getScreen());
-        else
+        } // end IF
+        else if (!(*iterator).path.empty())
         {
+          ACE_ASSERT((*iterator).positions.empty());
           RPG_Graphics_Positions_t graphics_positions;
           for (RPG_Map_PathConstIterator_t iterator2 = (*iterator).path.begin();
                iterator2 != (*iterator).path.end();
                iterator2++)
             graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
+                                                                               size,
+                                                                               view));
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(graphics_positions,
+                                                                           (*iterator).window->getScreen());
+        } // end ELSE
+        else
+        {
+          ACE_ASSERT((*iterator).path.empty());
+          RPG_Graphics_Positions_t graphics_positions;
+          for (RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).positions.begin();
+               iterator2 != (*iterator).positions.end();
+               iterator2++)
+            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator2,
                                                                                size,
                                                                                view));
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(graphics_positions,
@@ -760,15 +777,20 @@ RPG_Client_Engine::handleActions()
 
         RPG_Graphics_Size_t size = (*iterator).window->getSize(false);
         RPG_Graphics_Position_t view = (*iterator).window->getView();
-        if ((*iterator).path.empty())
+        if ((*iterator).path.empty() &&
+            (*iterator).positions.empty())
+        {
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG((*iterator).position,
                                                                               RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
                                                                                                                     size,
                                                                                                                     view),
                                                                               (*iterator).window->getScreen());
-        else
+        }
+        else if (!(*iterator).path.empty())
         {
-          RPG_Graphics_Positions_t map_positions, graphics_positions;
+          ACE_ASSERT((*iterator).positions.empty());
+          RPG_Map_PositionList_t map_positions;
+          RPG_Graphics_Positions_t graphics_positions;
           for (RPG_Map_PathConstIterator_t iterator2 = (*iterator).path.begin();
                iterator2 != (*iterator).path.end();
                iterator2++)
@@ -777,7 +799,25 @@ RPG_Client_Engine::handleActions()
             graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
                                                                                size,
                                                                                view));
-          }
+          } // end FOR
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_positions,
+                                                                              graphics_positions,
+                                                                              (*iterator).window->getScreen());
+        } // end ELSE
+        else
+        {
+          ACE_ASSERT((*iterator).path.empty());
+          RPG_Map_PositionList_t map_positions;
+          RPG_Graphics_Positions_t graphics_positions;
+          for (RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).positions.begin();
+               iterator2 != (*iterator).positions.end();
+               iterator2++)
+          {
+            map_positions.push_back(*iterator2);
+            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator2,
+                                                                               size,
+                                                                               view));
+          } // end FOR
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_positions,
                                                                               graphics_positions,
                                                                               (*iterator).window->getScreen());

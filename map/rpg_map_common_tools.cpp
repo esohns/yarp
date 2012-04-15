@@ -1966,7 +1966,7 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
 
     return;
   } // end IF
-  else if (radius_in > RPG_MAP_CIRCLE_MAX_RAD)
+  else if (radius_in > RPG_MAP_CIRCLE_MAX_RADIUS)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid radius (was: %u), aborting\n"),
@@ -1994,17 +1994,11 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
         area_out.insert(std::make_pair(center_in.first + j, current_y));
     area_out.insert(std::make_pair(center_in.first + *(circle_radius_p + i), current_y));
   } // end FOR
-  // bounds check
-  if (current_y == std::numeric_limits<unsigned int>::max())
-  {
-    // rollback one (decrease y)
-    i--;
-    current_y++;
-    ACE_ASSERT(current_y == 0);
-  } // end IF
+  i--;
+  current_y++;
   if (!fillArea_in)
     for (j = *(circle_radius_p + i) - 1;
-         j >= 0;
+         j != std::numeric_limits<unsigned int>::max();
          j--)
       area_out.insert(std::make_pair(center_in.first + j, current_y));
   // second quadrant (CCW)
@@ -2014,7 +2008,7 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
          j++)
       area_out.insert(std::make_pair(center_in.first - j, current_y));
   for (;
-       i >= 0;
+       i != std::numeric_limits<unsigned int>::max();
        i--, current_y++)
   {
     if (fillArea_in)
@@ -2027,7 +2021,8 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
                                                                                : 0,
                                    current_y));
   } // end FOR
-  ACE_ASSERT(current_y == center_in.second);
+  ACE_ASSERT((current_y == (center_in.second + 1)) &&
+             (i == std::numeric_limits<unsigned int>::max()));
   // third quadrant (CCW)
   for (i = 1;
        i <= radius_in;
@@ -2043,13 +2038,15 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
                                                                                : 0,
                                    current_y));
   } // end FOR
-  if (!fillArea_in)
-    for (j = ((*(circle_radius_p + i) <= center_in.first) ? (center_in.first - *(circle_radius_p + i))
-                                                          : 0);
-         j <= static_cast<unsigned int>(*(circle_radius_p + i) - 1);
-         j++)
-      area_out.insert(std::make_pair(center_in.first - j, current_y));
+  i--;
+  current_y--;
   ACE_ASSERT(current_y == (center_in.second + radius_in));
+  if (!fillArea_in)
+    for (j = ((*(circle_radius_p + i) <= center_in.first) ? (*(circle_radius_p + i) - 1)
+                                                          : center_in.first);
+         j >= 1;
+         j--)
+      area_out.insert(std::make_pair(center_in.first - j, current_y));
   // fourth quadrant (CCW)
   if (!fillArea_in)
     for (j = 0;
@@ -2058,7 +2055,7 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
       area_out.insert(std::make_pair(center_in.first + j, current_y));
   for (;
        i > 0;
-       i--, current_y++)
+       i--, current_y--)
   {
     if (fillArea_in)
       for (j = 0;
@@ -2067,7 +2064,8 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
         area_out.insert(std::make_pair(center_in.first + j, current_y));
     area_out.insert(std::make_pair(center_in.first + *(circle_radius_p + i), current_y));
   } // end FOR
-  ACE_ASSERT((current_y - 1) == center_in.second);
+  ACE_ASSERT((i == 0) &&
+             (current_y == center_in.second));
 }
 
 void
@@ -2095,10 +2093,22 @@ unsigned int
 RPG_Map_Common_Tools::distance(const RPG_Map_Position_t& position1_in,
                                const RPG_Map_Position_t& position2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::dist2Positions"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::distance"));
 
-  return (::abs(static_cast<int>(position1_in.first - position2_in.first)) +
-          ::abs(static_cast<int>(position1_in.second - position2_in.second)));
+  return (::abs(static_cast<int>(position1_in.first)  - static_cast<int>(position2_in.first)) +
+          ::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second)));
+}
+
+unsigned int
+RPG_Map_Common_Tools::distanceMax(const RPG_Map_Position_t& position1_in,
+                                  const RPG_Map_Position_t& position2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::distanceMax"));
+
+  unsigned int distance_1 = ::abs(static_cast<int>(position1_in.first)  - static_cast<int>(position2_in.first));
+  unsigned int distance_2 = ::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second));
+
+  return ((distance_1 > distance_2) ? distance_1 : distance_2);
 }
 
 bool

@@ -164,12 +164,16 @@ typedef std::pair<unsigned int, unsigned int> RPG_Client_Position_t;
 struct RPG_Client_Action
 {
   RPG_Client_Command    command;
+  RPG_Map_Position_t    previous;
   // *NOTE*: depending on the scenario, these could be map or screen coordinates !
   RPG_Client_Position_t position;
   RPG_Graphics_IWindow* window;
   RPG_Graphics_Cursor   cursor;
   RPG_Engine_EntityID_t entity_id;
+  // *TODO*: this does not really belong here...
   RPG_Map_Path_t        path;
+  RPG_Map_Position_t    source;
+  RPG_Map_Positions_t   positions;
 };
 typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
 typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;
@@ -190,7 +194,8 @@ enum RPG_Client_MiniMapTile
 
 enum RPG_Client_SelectionMode
 {
-  SELECTIONMODE_NORMAL = 0,
+  SELECTIONMODE_AIM_CIRCLE = 0,
+  SELECTIONMODE_NORMAL,
   SELECTIONMODE_PATH,
   //
   RPG_CLIENT_SELECTIONMODE_MAX,

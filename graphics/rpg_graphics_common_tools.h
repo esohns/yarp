@@ -25,6 +25,8 @@
 #include "rpg_graphics_incl.h"
 #include "rpg_graphics_common.h"
 
+#include <rpg_map_common.h>
+
 #include <png.h>
 
 #include <ace/Global_Macros.h>
@@ -89,7 +91,7 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
 
   // coordinate transformations
   static const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,  // position (screen coordinates !)
-                                                  const RPG_Graphics_Size_t&,      // map size
+                                                  const RPG_Map_Size_t&,           // map size
                                                   const RPG_Graphics_Size_t&,      // window size
                                                   const RPG_Graphics_Position_t&); // viewport (map coordinates !)
   // *NOTE*: translates the center of the map square to screen coordinates

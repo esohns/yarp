@@ -23,8 +23,6 @@
 
 /* Circles ==================================================================*/
 
-#define RPG_MAP_CIRCLE_MAX_RAD 15
-
 /*
  * These numbers are limit offsets for one quadrant of a circle of a given
  * radius (the first number of each line) from the source.  The number in

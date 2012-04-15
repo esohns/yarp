@@ -576,7 +576,7 @@ RPG_Graphics_Cursor_Manager::drawHighlight(const RPG_Graphics_Positions_t& graph
 }
 
 void
-RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Graphics_Position_t& mapPosition_in,
+RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_Position_t& mapPosition_in,
                                               const RPG_Graphics_Position_t& graphicsPosition_in,
                                               const SDL_Surface* targetSurface_in)
 {
@@ -606,7 +606,7 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Graphics_Position_t& map
 }
 
 void
-RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Graphics_Positions_t& mapPositions_in,
+RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_PositionList_t& mapPositions_in,
                                               const RPG_Graphics_Positions_t& graphicsPositions_in,
                                               const SDL_Surface* targetSurface_in)
 {
@@ -655,11 +655,10 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Graphics_Positions_t& ma
   } // end ELSEIF
   ACE_ASSERT(myHighlightBGCache.size() == mapPositions_in.size());
 
-  RPG_Graphics_PositionsConstIterator_t map_position_iterator, graphics_position_iterator;
+  RPG_Graphics_PositionsConstIterator_t graphics_position_iterator = graphicsPositions_in.begin();;
   RPG_Graphics_TileCacheIterator_t cache_iterator = myHighlightBGCache.begin();
-  graphics_position_iterator = graphicsPositions_in.begin();
   myHighlightWindow->clip();
-  for (map_position_iterator = mapPositions_in.begin();
+  for (RPG_Map_PositionListConstIterator_t map_position_iterator = mapPositions_in.begin();
        map_position_iterator != mapPositions_in.end();
        map_position_iterator++, graphics_position_iterator++, cache_iterator++)
   {

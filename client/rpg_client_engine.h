@@ -90,7 +90,7 @@ class RPG_Client_Export RPG_Client_Engine
 
   void mode(const RPG_Client_SelectionMode&); // set mode
   //void clear(const RPG_Client_SelectionMode&); // clear mode
-  bool hasMode(const RPG_Client_SelectionMode&) const; // mode
+  RPG_Client_SelectionMode mode() const; // return value: current mode
   bool hasSeen(const RPG_Engine_EntityID_t&,     // entity
                const RPG_Map_Position_t&) const; // position
 

@@ -57,17 +57,17 @@ RPG_Engine_Event_Manager::~RPG_Engine_Event_Manager()
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-  const void* act = NULL;
+  // *WARNING*: the timers are cleaned up by the timer manager (common.dll)...
   for (RPG_Engine_EventTimersConstIterator_t iterator = myTimers.begin();
        iterator != myTimers.end();
        iterator++)
   {
-    act = NULL;
-    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel((*iterator).first, &act) <= 0)
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                 (*iterator).first));
-    ACE_ASSERT(act == (*iterator).second);
+    //act = NULL;
+    //if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel((*iterator).first, &act) <= 0)
+    //  ACE_DEBUG((LM_DEBUG,
+    //             ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+    //             (*iterator).first));
+    //ACE_ASSERT(act == (*iterator).second);
     delete (*iterator).second;
   } // end FOR
 }
@@ -228,7 +228,7 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
   if (timer_id == -1)
   {
     ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to schedule activation timer, aborting\n")));
+               ACE_TEXT("failed to schedule activation timer, aborting\n")));
 
     return;
   } // end IF
@@ -239,6 +239,11 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
     ACE_ASSERT(myEntityTimers.find(id_in) == myEntityTimers.end());
     myEntityTimers[id_in] = timer_id;
   } // end lock scope
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("scheduled activation timer (ID: %d) for entity %u\n"),
+             timer_id,
+             id_in));
 }
 
 void
@@ -271,6 +276,11 @@ RPG_Engine_Event_Manager::remove(const RPG_Engine_EntityID_t& id_in)
 
   // cancel corresponding activation timer
   remove(timer_id);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("cancelled activation timer (ID: %d) for entity %u\n"),
+             timer_id,
+             id_in));
 }
 
 void
@@ -280,6 +290,10 @@ RPG_Engine_Event_Manager::start()
 
   // init game clock
   myGameClockStart = ACE_OS::gettimeofday();
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("started game clock: \"%#D\"\n"),
+             &myGameClockStart));
 
   //// sanity check
   //if (isRunning())
@@ -323,7 +337,7 @@ RPG_Engine_Event_Manager::stop()
   // stop/fini game clock
   ACE_Time_Value elapsed = ACE_OS::gettimeofday() - myGameClockStart;
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("stopping game clock: \"%T#\"\n"),
+             ACE_TEXT("stopping game clock: \"%#T\"\n"),
              &elapsed));
 
   //// sanity check
