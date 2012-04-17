@@ -274,8 +274,7 @@ do_work(const std::string& magicDictionaryFilename_in,
 //   RPG_Character_Player player = RPG_Character_Player::load(playerFilename_in,
 //                                                            schemaRepository_in);
   RPG_Engine_Entity entity = RPG_Engine_Common_Tools::loadEntity(profileFilename_in,
-                                                                 schemaRepository_in,
-                                                                 false);
+                                                                 schemaRepository_in);
   ACE_ASSERT(entity.character);
   entity.character->dump();
 

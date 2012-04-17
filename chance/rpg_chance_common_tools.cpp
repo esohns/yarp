@@ -29,7 +29,7 @@
 
 #include <ace/Log_Msg.h>
 
-const int
+int
 RPG_Chance_Common_Tools::getCheck(const short int& modifier_in,
                                   const RPG_Dice_DieType& dieType_in)
 {

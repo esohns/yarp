@@ -94,7 +94,7 @@ class SDL_GUI_LevelWindow
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?
-  void initMiniMap(RPG_Engine_Level*); // level state handle
+  void initMiniMap(RPG_Engine*); // level state handle
   void restoreBG();
 
   RPG_Engine*                     myEngine;

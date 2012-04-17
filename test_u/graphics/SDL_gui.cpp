@@ -31,7 +31,7 @@
 #include <rpg_client_defines.h>
 
 #include <rpg_engine_defines.h>
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 #include <rpg_engine_common_tools.h>
 
 #include <rpg_map_defines.h>
@@ -102,7 +102,7 @@ static SDL_Surface*     screen     = NULL;
 static ACE_Thread_Mutex hover_lock;
 static unsigned long    hover_time = 0;
 
-const bool
+bool
 do_initVideo(const std::string& graphicsDirectory_in,
              const SDL_video_config_t& config_in)
 {
@@ -343,16 +343,16 @@ print_usage(const std::string& programName_in)
   path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-  std::cout << ACE_TEXT("-p ([FILE]): map (*.txt)") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT("-p ([FILE]): map (*") << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [") << path.c_str() << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s         : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES) << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x         : do NOT validate XML") << ACE_TEXT(" [") << SDL_GUI_DEF_VALIDATE_XML << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& magicDictionary_out,
@@ -442,8 +442,8 @@ process_arguments(const int argc_in,
   mapFile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   slideShowMode_out = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   traceInformation_out = false;
@@ -840,9 +840,9 @@ do_slideshow(const std::string& graphicsDirectory_in,
 
 void
 do_UI(RPG_Engine_Entity& entity_in,
-      RPG_Engine_Level& engine_in,
+      RPG_Engine* engine_in,
       RPG_Graphics_MapStyle_t& mapStyle_in,
-      const RPG_Map_t& map_in,
+      const RPG_Engine_Level_t& level_in,
       const RPG_Map_FloorPlan_Config_t& mapConfig_in,
       SDL_GUI_MainWindow* mainWindow_in)
 {
@@ -857,12 +857,13 @@ do_UI(RPG_Engine_Entity& entity_in,
   RPG_Graphics_Position_t mouse_position;
   unsigned int map_index = 1;
   std::ostringstream converter;
-  RPG_Map_t current_map = map_in;
+  RPG_Engine_Level_t current_level;
   do
   {
     window = NULL;
     need_redraw = false;
-    mouse_position = std::make_pair(0, 0);
+    mouse_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                    std::numeric_limits<unsigned int>::max());
     force_redraw = false;
 
     // step1: retrieve next event
@@ -918,23 +919,22 @@ do_UI(RPG_Engine_Entity& entity_in,
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("generating level map...\n")));
 
-            RPG_Map_Common_Tools::create(std::string(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME)),
-                                         mapConfig_in,
-                                         current_map);
+            RPG_Engine_Level::create(mapConfig_in,
+                                     current_level);
 
-            if (engine_in.isRunning())
-              engine_in.stop();
+            if (engine_in->isRunning())
+              engine_in->stop();
 
-            entity_in.position = current_map.start;
+            entity_in.position = current_level.map.start;
 
             SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->getChild(WINDOW_MAP));
             ACE_ASSERT(map_window);
             // *NOTE*: triggers a center/redraw/refresh of the map window !
             // --> but as we're not using the client engine, it doesn't redraw...
-            engine_in.init(map_window,
-                           current_map);
+            engine_in->init(map_window,
+                            current_level);
             map_window->init();
-            engine_in.start();
+            engine_in->start();
 
             // center map window...
             try
@@ -956,7 +956,7 @@ do_UI(RPG_Engine_Entity& entity_in,
           }
           case SDLK_p:
           {
-            RPG_Map_Common_Tools::print(current_map);
+            RPG_Engine_Level::print(current_level);
 
             break;
           }
@@ -974,21 +974,13 @@ do_UI(RPG_Engine_Entity& entity_in,
             std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
 #endif
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-            dump_path += current_map.name;
+            dump_path += current_level.level_meta.name;
             dump_path += ACE_TEXT_ALWAYS_CHAR("_");
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
             converter << map_index++;
             dump_path += converter.str();
-            dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-            if (!RPG_Map_Common_Tools::save(dump_path,
-                                            current_map))
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
-                         dump_path.c_str()));
-
-              return;
-            } // end IF
+            dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+            engine_in->save(dump_path);
 
             break;
           }
@@ -1162,6 +1154,7 @@ do_work(const mode_t& mode_in,
         const std::string& graphicsDictionary_in,
         const bool& debugMode_in,
         const std::string& graphicsDirectory_in,
+        const std::string& schemaRepository_in,
         const unsigned long& cacheSize_in,
         const bool& validateXML_in)
 {
@@ -1255,34 +1248,24 @@ do_work(const mode_t& mode_in,
     case MODE_FLOOR_PLAN:
     {
       // step1: create/load initial level map
-      RPG_Map_t map;
+      RPG_Engine_Level_t level;
       if (map_in.empty())
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating level map...\n")));
 
-        RPG_Map_Common_Tools::create(std::string(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME)),
-                                     mapConfig_in,
-                                     map);
+        RPG_Engine_Level::create(mapConfig_in,
+                                 level);
       } // end IF
       else
       {
-        if (!RPG_Map_Common_Tools::load(map_in,
-                                        map,
-                                        false,
-                                        false))
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
-                     map_in.c_str()));
-
-          return;
-        } // end IF
+        level = RPG_Engine_Level::load(map_in,
+                                       schemaRepository_in);
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("loaded map (\"%s\":\n%s\n"),
                    map_in.c_str(),
-                   RPG_Map_Common_Tools::info(map).c_str()));
+                   RPG_Map_Level::info(level.map).c_str()));
       } // end ELSE
 //       RPG_Map_Common_Tools::print(map);
 
@@ -1314,21 +1297,20 @@ do_work(const mode_t& mode_in,
       RPG_Engine_Entity entity;
       entity.actions.clear();
       entity.character = NULL;
-      entity.graphic = NULL;
-      entity.position = std::make_pair(0, 0);
+      entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                       std::numeric_limits<unsigned int>::max());
       entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
       if (entity_in.empty())
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating entity...\n")));
 
-        entity = RPG_Engine_Common_Tools::createEntity(true);
+        entity = RPG_Engine_Common_Tools::createEntity();
       } // end IF
       else
       {
         entity = RPG_Engine_Common_Tools::loadEntity(entity_in,
-                                                     schemaRepository,
-                                                     true);
+                                                     schemaRepository);
         if (!entity.character)
         {
           ACE_DEBUG((LM_ERROR,
@@ -1343,10 +1325,10 @@ do_work(const mode_t& mode_in,
                    entity_in.c_str(),
                    RPG_Engine_Common_Tools::info(entity).c_str()));
       } // end ELSE
-      entity.position = map.start;
+      entity.position = level.map.start;
 
       // step5: init sub-windows (level window, hotspots, minimap, ...)
-      RPG_Engine_Level level_engine;
+      RPG_Engine level_engine;
       mainWindow.init(&level_engine,
                       mapStyle,
                       debugMode_in);
@@ -1368,7 +1350,7 @@ do_work(const mode_t& mode_in,
       // *NOTE*: triggers a center/draw/refresh...
       // --> but as we're not using the client engine, it doesn't redraw...
       level_engine.init(map_window,
-                        map);
+                        level);
       map_window->init(mapStyle,
                        debugMode_in);
       level_engine.start();
@@ -1407,9 +1389,9 @@ do_work(const mode_t& mode_in,
 
       // step8: run interface
       do_UI(entity,
-            level_engine,
+            &level_engine,
             mapStyle,
-            map,
+            level,
             mapConfig_in,
             &mainWindow);
 
@@ -1589,8 +1571,8 @@ ACE_TMAIN(int argc,
   std::string mapFilename = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   mapFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   bool slideShowMode = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   bool traceInformation = false;
   bool printVersionAndExit = false;
@@ -1669,6 +1651,12 @@ ACE_TMAIN(int argc,
     return EXIT_FAILURE;
   } // end IF
   mode = (slideShowMode ? MODE_RANDOM_IMAGES : mode);
+
+  std::string schemaRepository = config_path;
+#ifndef CONFIGDIR
+  schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CONFIG_SUB);
+#endif
 
   // step1c: set correct trace level
   //ACE_Trace::start_tracing();
@@ -1782,6 +1770,7 @@ ACE_TMAIN(int argc,
           graphicsDictionary,
           debugMode,
           graphicsDirectory,
+          schemaRepository,
           cacheSize,
           validateXML);
   timer.stop();

@@ -34,8 +34,8 @@ class RPG_Chance_Export RPG_Chance_Common_Tools
 {
  public:
   // perform a standard die roll check
-  static const int getCheck(const short int&,                // modifier
-                            const RPG_Dice_DieType& = D_20); // type of dice
+  static int getCheck(const short int&,                // modifier
+                      const RPG_Dice_DieType& = D_20); // type of dice
 
  private:
   // safety measures

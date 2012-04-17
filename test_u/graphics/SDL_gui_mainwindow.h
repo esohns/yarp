@@ -79,7 +79,7 @@ class SDL_GUI_MainWindow
 
   // helper methods
   void initScrollSpots();
-  void initMap(RPG_Engine_Level*,              // level state handle
+  void initMap(RPG_Engine*,                    // level engine handle
                const RPG_Graphics_MapStyle_t&, // map style
                const bool&);                   // debug mode
   void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)

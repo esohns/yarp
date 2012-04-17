@@ -66,7 +66,7 @@ SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 }
 
 void
-SDL_GUI_MainWindow::init(RPG_Engine_Level* levelState_in,
+SDL_GUI_MainWindow::init(RPG_Engine* engine_in,
                          const RPG_Graphics_MapStyle_t& style_in,
                          const bool& debugMode_in)
 {
@@ -76,7 +76,7 @@ SDL_GUI_MainWindow::init(RPG_Engine_Level* levelState_in,
   initScrollSpots();
 
   // init map
-  initMap(levelState_in,
+  initMap(engine_in,
           style_in,
           debugMode_in);
 }
@@ -773,26 +773,15 @@ SDL_GUI_MainWindow::initScrollSpots()
 }
 
 void
-SDL_GUI_MainWindow::initMap(RPG_Engine_Level* levelState_in,
+SDL_GUI_MainWindow::initMap(RPG_Engine* engine_in,
                             const RPG_Graphics_MapStyle_t& style_in,
                             const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initMap"));
 
   SDL_GUI_LevelWindow* map_window = NULL;
-  try
-  {
-    map_window = new SDL_GUI_LevelWindow(*this,
-                                         levelState_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-               sizeof(SDL_GUI_LevelWindow)));
-
-    return;
-  }
+  map_window = new(std::nothrow) SDL_GUI_LevelWindow(*this,
+                                                     engine_in);
   if (!map_window)
   {
     ACE_DEBUG((LM_CRITICAL,

@@ -859,7 +859,7 @@ generate_player()
        iterator != playerClass.subClasses.end();
        iterator++)
   {
-    if (!RPG_Common_Tools::isCasterClass(*iterator))
+    if (!RPG_Magic_Common_Tools::isCasterClass(*iterator))
       continue;
 
     for (unsigned char i = 0;
@@ -875,7 +875,7 @@ generate_player()
                                                                         i);
 
       // *NOTE*: divine casters know ALL spells from the levels they can cast
-      if (!RPG_Common_Tools::isDivineCasterClass(*iterator))
+      if (!RPG_Magic_Common_Tools::isDivineCasterClass(*iterator))
       {
         // step2: compute # known spells
         numKnownSpells = RPG_Magic_Common_Tools::getNumKnownSpells(*iterator,
@@ -927,8 +927,8 @@ generate_player()
         std::cout << ACE_TEXT("remaining spell(s): ") << (numSpells - numChosen) << std::endl;
         std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
-        if (print_spells_table((RPG_Common_Tools::isDivineCasterClass(*iterator) ? available
-                                                                                 : knownSpells),
+        if (print_spells_table((RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available
+                                                                                       : knownSpells),
                                chosen_spell))
         {
           spells.push_back(chosen_spell);
@@ -1021,7 +1021,6 @@ generate_entity(const RPG_Player& player_in,
   entity_p->character = &const_cast<RPG_Player&>(player_in);
   entity_p->position = std::make_pair(0, 0);
   entity_p->sprite = sprite_in;
-  entity_p->graphic = NULL;
 //   // *NOTE*: cannot load surface, as SDL hasn't been initialized...
 //   RPG_Graphics_GraphicTypeUnion type;
 //   type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
@@ -1086,17 +1085,12 @@ do_work(const bool& generateEntity_in,
     } // end IF
     if (entity_p)
     {
-      if (entity_p->graphic)
-      {
-        SDL_FreeSurface(entity_p->graphic);
-        entity_p->graphic = NULL;
-      } // end IF
       delete entity_p;
       entity_p = NULL;
     } // end IF
 
     // step1: generate new player character
-    player_p = (random_in ? RPG_Player_Common_Tools::generatePlayer()
+    player_p = (random_in ? RPG_Player::create()
                           : ::generate_player());
     ACE_ASSERT(player_p);
     player_p->dump();
@@ -1210,13 +1204,6 @@ do_work(const bool& generateEntity_in,
       path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
       if (generateEntity_in)
       {
-        // clean up
-        if (entity_p->graphic)
-        {
-          SDL_FreeSurface(entity_p->graphic);
-          entity_p->graphic = NULL;
-        } // end IF
-
         entity_p = generate_entity(*player_p,
                                    RPG_GRAPHICS_DEF_SPRITE);
         if (!RPG_Engine_Common_Tools::saveEntity(*entity_p,

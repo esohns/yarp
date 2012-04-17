@@ -24,6 +24,7 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_engine_defines.h>
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
@@ -299,7 +300,7 @@ do_battle(RPG_Player_Party_t& party_in,
                                    std::numeric_limits<unsigned int>::max());
   //entity.modes();
   //entity.actions();
-  entity.sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CREATURE_SPRITE_FILE);
+  entity.sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
   entity.is_spawned = true;
   for (RPG_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
@@ -322,7 +323,7 @@ do_battle(RPG_Player_Party_t& party_in,
 
         break;
       } // end IF
-      monster_p = dynamic_cast<RPG_Monster*>(entity->character);
+      monster_p = dynamic_cast<RPG_Monster*>(entity.character);
       ACE_ASSERT(monster_p);
 
 //       // debug info
@@ -455,7 +456,7 @@ do_work(const std::string& magicDictionaryFilename_in,
          i < numPlayers_in;
          i++)
     {
-      player_p = RPG_Player_Common_Tools::generatePlayer();
+      player_p = RPG_Player::create();
       ACE_ASSERT(player_p);
 //       player_p->dump();
 
@@ -482,12 +483,17 @@ do_work(const std::string& magicDictionaryFilename_in,
       environment.terrain = TERRAIN_ANY;
       RPG_Monster_OrganizationSet_t organizations;
       organizations.insert(ORGANIZATION_ANY);
+      RPG_Monster_HitDice hit_dice;
+      hit_dice.typeDice = RPG_DICE_DIETYPE_INVALID;
+      hit_dice.numDice = 0;
+      hit_dice.modifier = 0;
       RPG_Monster_Encounter_t encounter;
       RPG_Monster_Common_Tools::generateRandomEncounter(numMonsterTypes_in,
                                                         numFoes_in,
                                                         alignment,
                                                         environment,
                                                         organizations,
+                                                        hit_dice,
                                                         encounter);
 
       // step5: FIGHT !
