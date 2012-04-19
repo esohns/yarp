@@ -182,8 +182,8 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_UI_DEF_FLOOR_PLAN);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-  std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT("-p [FILE] : floor plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
@@ -234,7 +234,7 @@ process_arguments(const int argc_in,
 #endif
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_UI_DEF_FLOOR_PLAN);
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
@@ -423,34 +423,32 @@ do_work(const RPG_Client_Config& config_in,
   }
 
   // step1: load floor plan
-  RPG_Map_t map;
-  RPG_Map_Common_Tools::load(mapFilename_in,
-                             map,
-                             false,
-                             false);
+  RPG_Engine_Level_t level;
+  level = RPG_Engine_Level::load(mapFilename_in,
+                                 schemaRepository_in);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded floor plan %s\n"),
+             ACE_TEXT("loaded level \"%s\":\n%s\n"),
              mapFilename_in.c_str(),
-             RPG_Map_Common_Tools::info(map).c_str()));
+             RPG_Map_Level::info(level.map).c_str()));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
-  for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin();
-       iterator != map.plan.doors.end();
+  for (RPG_Map_DoorsConstIterator_t iterator = level.map.plan.doors.begin();
+       iterator != level.map.plan.doors.end();
        iterator++)
   {
     // *WARNING*: set iterators are CONST for a good reason !
     // --> (but we know what we're doing)...
     const_cast<RPG_Map_Door_t&>(*iterator).outside = RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
-                                                                                              map.plan);
+                                                                                              level.map.plan);
 
     door_positions.insert((*iterator).position);
   } // end FOR
 
   // step2: init client / engine / gtk cb user data
   RPG_Client_Engine client_engine;
-  RPG_Engine_Level level_engine;
+  RPG_Engine level_engine;
   RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
   userData.do_hover              = true;
@@ -483,10 +481,9 @@ do_work(const RPG_Client_Config& config_in,
   //ACE_ASSERT(userData.xml);
 
   userData.entity                = RPG_Engine_Common_Tools::loadEntity(playerProfile_in,
-                                                                       schemaRepository_in,
-                                                                       true);
+                                                                       schemaRepository_in);
   ACE_ASSERT(userData.entity.character);
-  userData.entity.position = map.start;
+  userData.entity.position = level.map.start;
 //   userData.entity.actions();
   //userData.entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   //userData.entity.graphic = NULL;
@@ -519,7 +516,7 @@ do_work(const RPG_Client_Config& config_in,
 
   // step5c: level engine
   level_engine.init(&client_engine,
-                    map);
+                    level);
   level_engine.start();
   if (!level_engine.isRunning())
   {
@@ -547,7 +544,8 @@ do_work(const RPG_Client_Config& config_in,
 
   // step5e: client engine
   client_engine.init(&level_engine,
-                     mainWindow.getChild(WINDOW_MAP));
+                     mainWindow.getChild(WINDOW_MAP),
+                     userData.xml);
 
   // step5f: trigger initial drawing
   RPG_Client_Action client_action;
@@ -1042,7 +1040,7 @@ ACE_TMAIN(int argc_in,
 #endif
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_UI_DEF_FLOOR_PLAN);
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   std::string playerProfile = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);

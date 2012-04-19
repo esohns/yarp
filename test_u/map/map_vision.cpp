@@ -24,6 +24,10 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_engine_defines.h>
+#include <rpg_engine_common.h>
+#include <rpg_engine_level.h>
+
 #include <rpg_map_common.h>
 #include <rpg_map_common_tools.h>
 #include <rpg_map_pathfinding_tools.h>
@@ -64,13 +68,13 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-  std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT("-p [FILE] : floor plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   bool& debugParser_out,
@@ -90,7 +94,7 @@ process_arguments(const int argc_in,
 #endif
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
@@ -153,7 +157,8 @@ process_arguments(const int argc_in,
 
 void
 do_work(const bool& debugParser_in,
-        const std::string& filename_in)
+        const std::string& filename_in,
+        const std::string& schemaRepository_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -163,23 +168,21 @@ do_work(const bool& debugParser_in,
   RPG_Common_Tools::initStringConversionTables();
 
   // step1: load floor plan
-  RPG_Map_t map;
-  RPG_Map_Common_Tools::load(filename_in,
-                             map,
-                             false,
-                             debugParser_in);
+  RPG_Engine_Level_t level;
+  level = RPG_Engine_Level::load(filename_in,
+                                 schemaRepository_in);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded floor plan %s\n"),
+             ACE_TEXT("loaded level plan %s\n"),
              filename_in.c_str(),
-             RPG_Map_Common_Tools::info(map).c_str()));
+             RPG_Map_Level::info(level.map).c_str()));
 
   // step2: find source / target positions (just use any two seed positions...)
-  if (map.seeds.size() < 2)
+  if (level.map.seeds.size() < 2)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("cannot proceed (need >= 2 seed positions, had: %d), aborting\n"),
-               map.seeds.size()));
+               level.map.seeds.size()));
 
     return;
   } // end IF
@@ -189,14 +192,14 @@ do_work(const bool& debugParser_in,
   do
   {
     result.clear();
-    RPG_Dice::generateRandomNumbers(map.seeds.size(),
+    RPG_Dice::generateRandomNumbers(level.map.seeds.size(),
                                     2,
                                     result);
   } while (result.front() == result.back());
-  iterator = map.seeds.begin();
+  iterator = level.map.seeds.begin();
   std::advance(iterator, result.front() - 1);
   source = *iterator;
-  iterator = map.seeds.begin();
+  iterator = level.map.seeds.begin();
   std::advance(iterator, result.back() - 1);
   target = *iterator;
 
@@ -227,22 +230,22 @@ do_work(const bool& debugParser_in,
   bool done = false;
   RPG_Map_PositionListConstIterator_t line_of_sight_iterator;
   for (unsigned int y = 0;
-       y < map.plan.size_y;
+       y < level.map.plan.size_y;
        y++)
   {
     for (unsigned int x = 0;
-         x < map.plan.size_x;
+         x < level.map.plan.size_x;
          x++)
     {
       current_position = std::make_pair(x, y);
       current_position_door.position = current_position;
 
       // unmapped, floor, wall, or door ?
-      if (map.plan.unmapped.find(current_position) != map.plan.unmapped.end())
+      if (level.map.plan.unmapped.find(current_position) != level.map.plan.unmapped.end())
         converter << ACE_TEXT(" "); // unmapped
-      else if (map.plan.walls.find(current_position) != map.plan.walls.end())
+      else if (level.map.plan.walls.find(current_position) != level.map.plan.walls.end())
         converter << ACE_TEXT("#"); // wall
-      else if (map.plan.doors.find(current_position_door) != map.plan.doors.end())
+      else if (level.map.plan.doors.find(current_position_door) != level.map.plan.doors.end())
         converter << ACE_TEXT("="); // door
       else
       {
@@ -355,7 +358,32 @@ ACE_TMAIN(int argc,
 #endif
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+
+  std::string config_path;
+#ifdef CONFIGDIR
+  config_path = CONFIGDIR;
+#else
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef CONFIGDIR
+
+  std::string schemaRepository = config_path;
+#ifndef CONFIGDIR
+  schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CONFIG_SUB);
+#endif
+
+  // sanity check
+  if (!RPG_Common_File_Tools::isDirectory(schemaRepository))
+  {
+    ACE_DEBUG((LM_WARNING,
+               ACE_TEXT("invalid XML schema repository (was: \"%s\"), continuing\n"),
+               schemaRepository.c_str()));
+
+    // try fallback
+    schemaRepository.clear();
+  } // end IF
+
 
   bool traceInformation    = false;
   bool printVersionAndExit = false;
@@ -424,7 +452,8 @@ ACE_TMAIN(int argc,
   timer.start();
   // step2: do actual work
   do_work(debugParser,
-          floorPlan);
+          floorPlan,
+          schemaRepository);
   timer.stop();
 
   // debug info
