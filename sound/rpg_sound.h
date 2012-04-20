@@ -12,7 +12,7 @@
 struct RPG_Sound_Export RPG_Sound
 {
   RPG_Sound_Category category;
-  RPG_Sound_Event event;
+  RPG_Sound_Event sound_event;
   std::string file;
   unsigned char interval;
 };

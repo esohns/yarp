@@ -118,12 +118,10 @@ struct RPG_Client_Config
   // *** sound ***
   RPG_Client_SDL_AudioConfig_t audio_config;
   std::string                  sound_directory;
-  unsigned int                 sound_cache_size;
   std::string                  sound_dictionary;
   // *** graphics ***
   RPG_Client_SDL_VideoConfig_t video_config;
   std::string                  graphics_directory;
-  unsigned int                 graphics_cache_size;
   std::string                  graphics_dictionary;
   // *** magic ***
   std::string                  magic_dictionary;

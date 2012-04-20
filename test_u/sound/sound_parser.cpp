@@ -155,8 +155,8 @@ do_initAudio(const SDL_audio_config_t& config_in)
              ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %u\nchannels: %u\nCD [id, status]: \"%s\" [%d, %d]\n"),
              driver,
              obtained.frequency,
-             static_cast<unsigned long> (obtained.format),
-             static_cast<unsigned long> (obtained.channels),
+             static_cast<unsigned int>(obtained.format),
+             static_cast<unsigned int>(obtained.channels),
              SDL_CDName(0),
              (cdrom ? cdrom->id : -1),
              (cdrom ? cdrom->status : -1)));
@@ -171,12 +171,12 @@ timer_SDL_cb(Uint32 interval_in,
   RPG_TRACE(ACE_TEXT("::timer_SDL_cb"));
 
   // create an SDL timer event
-  SDL_Event event;
-  event.type = SDL_TIMEREVENT;
-  event.user.data1 = argument_in;
+  SDL_Event sdl_event;
+  sdl_event.type = SDL_TIMEREVENT;
+  sdl_event.user.data1 = argument_in;
 
   // push it onto the event queue
-  if (SDL_PushEvent(&event))
+  if (SDL_PushEvent(&sdl_event))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
@@ -189,7 +189,7 @@ timer_SDL_cb(Uint32 interval_in,
 
 // wait for an input event; stop after timeout_in second(s) (0: wait forever)
 void
-do_SDL_waitForInput(const unsigned long& timeout_in)
+do_SDL_waitForInput(const unsigned int& timeout_in)
 {
   RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
 
@@ -200,10 +200,10 @@ do_SDL_waitForInput(const unsigned long& timeout_in)
                           NULL);              // callback argument
 
   // loop until something interesting happens
-  SDL_Event event;
+  SDL_Event sdl_event;
   do
   {
-    if (SDL_WaitEvent(&event) != 1)
+    if (SDL_WaitEvent(&sdl_event) != 1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
@@ -212,9 +212,9 @@ do_SDL_waitForInput(const unsigned long& timeout_in)
       // what else can we do ?
       break;
     } // end IF
-    if (event.type == SDL_KEYDOWN ||
-        event.type == SDL_MOUSEBUTTONDOWN ||
-        event.type == SDL_TIMEREVENT)
+    if (sdl_event.type == SDL_KEYDOWN ||
+        sdl_event.type == SDL_MOUSEBUTTONDOWN ||
+        sdl_event.type == SDL_TIMEREVENT)
       break;
   } while (true);
 
@@ -236,23 +236,24 @@ print_usage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+#ifdef BASEDIR
+  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 #else
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+#endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#ifndef DATADIR
+#ifndef BASEDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif
@@ -260,7 +261,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-r       : play random sounds") << ACE_TEXT(" [") << SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS << ACE_TEXT("]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
@@ -273,7 +274,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   bool& dumpDictionary_out,
@@ -288,22 +289,23 @@ process_arguments(const int argc_in,
 
   // init results
   std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+#ifdef BASEDIR
+  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 #else
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+#endif // #ifdef BASEDIR
 
   dumpDictionary_out = false;
 
   directory_out = base_data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#ifndef DATADIR
+#ifndef BASEDIR
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif
@@ -312,11 +314,11 @@ process_arguments(const int argc_in,
 
   filename_out = base_data_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
   filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#endif // #ifdef DATADIR
+#endif // #ifdef BASEDIR
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
 
@@ -403,19 +405,17 @@ do_work(const bool& dumpDictionary_in,
         const std::string& path_in,
         const bool& playRandomSounds_in,
         const std::string& dictionary_in,
-        const bool& validateXML_in,
-        const unsigned long& cacheSize_in)
+        const bool& validateXML_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Sound_Common_Tools::initStringConversionTables();
 
   // step1: init: sound directory, cache, ...
   RPG_Sound_Common_Tools::init(path_in,
-                               cacheSize_in);
+                               SOUNDPARSER_DEF_SOUND_CACHESIZE);
 
   // step2: init sound dictionary
   try
@@ -553,22 +553,23 @@ ACE_TMAIN(int argc,
   // step1: init
   // step1a set defaults
   std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+#ifdef BASEDIR
+  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 #else
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
+#endif // #ifdef BASEDIR
 
   bool dumpDictionary = false;
 
   std::string soundDirectory = base_data_path;
   soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#ifndef DATADIR
+#ifndef BASEDIR
   soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif
@@ -577,11 +578,11 @@ ACE_TMAIN(int argc,
 
   std::string filename = base_data_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#endif // #ifdef DATADIR
+#endif // #ifdef BASEDIR
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
 
@@ -589,7 +590,7 @@ ACE_TMAIN(int argc,
   bool printVersionAndExit = false;
   bool validateXML = true;
 
-  unsigned long cacheSize    = SOUNDPARSER_DEF_SOUND_CACHESIZE;
+  unsigned int cacheSize     = SOUNDPARSER_DEF_SOUND_CACHESIZE;
   SDL_audio_config_t audio_config;
   audio_config.frequency     = SOUNDPARSER_DEF_AUDIO_FREQUENCY;
   audio_config.format        = SOUNDPARSER_DEF_AUDIO_FORMAT;
@@ -730,8 +731,7 @@ ACE_TMAIN(int argc,
           soundDirectory,
           playRandomSounds,
           filename,
-          validateXML,
-          cacheSize);
+          validateXML);
   timer.stop();
   // debug info
   std::string working_time_string;

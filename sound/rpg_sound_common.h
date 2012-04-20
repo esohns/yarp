@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_SOUND_COMMON_H
 #define RPG_SOUND_COMMON_H
 
@@ -34,11 +35,11 @@ typedef RPG_Sound_Dictionary_t::const_iterator RPG_Sound_DictionaryIterator_t;
 
 struct RPG_Sound_SoundCacheNode_t
 {
-  RPG_Sound_Event event;
+  RPG_Sound_Event sound_event;
   Mix_Chunk*      chunk;
 
   inline bool operator==(const RPG_Sound_SoundCacheNode_t& rhs_in) const
-  { return (this->event == rhs_in.event); }
+  { return (this->sound_event == rhs_in.sound_event); }
 };
 typedef std::vector<RPG_Sound_SoundCacheNode_t> RPG_Sound_SoundCache_t;
 typedef RPG_Sound_SoundCache_t::iterator RPG_Sound_SoundCacheIterator_t;

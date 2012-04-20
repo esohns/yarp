@@ -183,7 +183,10 @@ do_work(const bool& dumpDictionary_in,
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Graphics_Common_Tools::initStringConversionTables();
+  std::string directory;
+  RPG_Graphics_Common_Tools::init(directory,
+                                  0,
+                                  false);
 
   // step1a: init graphics dictionary
   try
@@ -285,8 +288,8 @@ ACE_TMAIN(int argc,
   // step1: init
   // step1a set defaults
   std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
+#ifdef BASEDIR
+  base_data_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
 #else
   base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
 #endif // #ifdef DATADIR
@@ -296,11 +299,11 @@ ACE_TMAIN(int argc,
 
   std::string filename = base_data_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
-#endif // #ifdef DATADIR
+#endif // #ifdef BASEDIR
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 

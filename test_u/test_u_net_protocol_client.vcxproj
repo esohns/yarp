@@ -52,7 +52,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>E:\Gtk\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glib-2.0.lib;ACE.lib</AdditionalDependencies>
+      <AdditionalDependencies>glib-2.0.lib;ACEd.lib</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -67,7 +67,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>E:\Yarp\net\protocol;E:\Yarp\net;E:\Yarp\net\stream;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\3rd_party;E:\Gtk\include\gtk-2.0;E:\Gtk\lib\gtk-2.0\include;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\include\glib-2.0;E:\Gtk\lib\glib-2.0\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

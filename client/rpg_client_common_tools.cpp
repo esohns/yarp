@@ -39,15 +39,16 @@
 
 void
 RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
+                              const std::string& soundDirectory_in,
                               const std::string& graphicsDictionaryFile_in,
                               const std::string& graphicsDirectory_in,
                               const bool& initSDL_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::init"));
 
-  // step1: init string conversion facilities
-  RPG_Sound_Common_Tools::initStringConversionTables();
-  // step1a: ...and other static data
+  // step1: init string conversion facilities (and other static data)
+  RPG_Sound_Common_Tools::init(soundDirectory_in,
+                               RPG_CLIENT_DEF_SOUND_CACHESIZE);
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
                                   RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
                                   initSDL_in);

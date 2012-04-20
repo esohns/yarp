@@ -361,16 +361,17 @@ ACE_TMAIN(int argc,
   floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                        true);
 #else
   config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+#endif // #ifdef BASEDIR
 
   std::string schemaRepository = config_path;
-#ifndef CONFIGDIR
+#ifndef BASEDIR
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CONFIG_SUB);
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   // sanity check
@@ -383,8 +384,7 @@ ACE_TMAIN(int argc,
     // try fallback
     schemaRepository.clear();
   } // end IF
-
-
+  
   bool traceInformation    = false;
   bool printVersionAndExit = false;
 

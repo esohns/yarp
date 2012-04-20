@@ -1042,8 +1042,6 @@ do_work(const bool& generateEntity_in,
   RPG_Engine_Common_Tools::init(magicDictionaryFilename_in,
                                 itemDictionaryFilename_in,
                                 std::string());
-  RPG_Graphics_Common_Tools::initStringConversionTables();
-
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
                                   graphicsCacheSize_in,
                                   false); // DON'T init SDL bits...

@@ -38,16 +38,20 @@ RPG_Sound_EventToStringTable_t RPG_Sound_EventHelper::myRPG_Sound_EventToStringT
 std::string            RPG_Sound_Common_Tools::mySoundDirectory;
 
 ACE_Thread_Mutex       RPG_Sound_Common_Tools::myCacheLock;
-unsigned long          RPG_Sound_Common_Tools::myOldestCacheEntry = 0;
-unsigned long          RPG_Sound_Common_Tools::myCacheSize = 0;
+unsigned int           RPG_Sound_Common_Tools::myOldestCacheEntry = 0;
+unsigned int           RPG_Sound_Common_Tools::myCacheSize = 0;
 RPG_Sound_SoundCache_t RPG_Sound_Common_Tools::mySoundCache;
 
 bool                   RPG_Sound_Common_Tools::myInitialized = false;
 
-void RPG_Sound_Common_Tools::init(const std::string& directory_in,
-                                  const unsigned long& cacheSize_in)
+void
+RPG_Sound_Common_Tools::init(const std::string& directory_in,
+                             const unsigned int& cacheSize_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::init"));
+
+  // init string conversion facilities
+  RPG_Sound_Common_Tools::initStringConversionTables();
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isDirectory(directory_in))
@@ -145,7 +149,7 @@ RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
   } // end SWITCH
 }
 
-const int
+int
 RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::play"));
@@ -154,7 +158,7 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
 
   // step1: sound already cached ?
   RPG_Sound_SoundCacheNode_t node;
-  node.event = event_in;
+  node.sound_event = event_in;
 
   // synch cache access
   {
@@ -170,12 +174,12 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
     {
       RPG_Sound_t sound;
       sound.category = RPG_SOUND_CATEGORY_INVALID;
-      sound.event = RPG_SOUND_EVENT_INVALID;
+      sound.sound_event = RPG_SOUND_EVENT_INVALID;
       sound.file.clear();
       sound.interval = 0;
       // retrieve event properties from the dictionary
       sound = RPG_SOUND_DICTIONARY_SINGLETON::instance()->getSound(event_in);
-      ACE_ASSERT(sound.event == event_in);
+      ACE_ASSERT(sound.sound_event == event_in);
       // load the file
       Mix_Chunk* chunk = NULL;
       std::string path;
@@ -226,7 +230,7 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
   return result;
 }
 
-const bool
+bool
 RPG_Sound_Common_Tools::isPlaying(const int& channel_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::isPlaying"));

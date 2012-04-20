@@ -147,30 +147,31 @@ print_usage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                        true);
 #else
   config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+#endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
+#ifdef BASEDIR
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR("graphics");
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE] : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
+#ifdef BASEDIR
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR("item");
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
@@ -200,29 +201,30 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                        true);
 #else
   config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+#endif // #ifdef BASEDIR
 
   // init results
   graphicsDictionary_out = config_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
+#ifdef BASEDIR
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
 #endif
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   itemDictionary_out = config_path;
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
+#ifdef BASEDIR
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+  itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
 #endif
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
@@ -303,7 +305,6 @@ process_arguments(const int argc_in,
 
 bool
 do_initGUI(const std::string& graphicsDirectory_in,
-           const unsigned int& graphicsCacheSize_in,
            RPG_Client_GTK_CBData_t& userData_in,
            const RPG_Client_SDL_VideoConfig_t& videoConfig_in)
 {
@@ -388,9 +389,6 @@ do_initGUI(const std::string& graphicsDirectory_in,
     return false;
   } // end IF
 
-  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  graphicsCacheSize_in);
-
   return true;
 }
 
@@ -402,25 +400,16 @@ do_work(const RPG_Client_Config& config_in,
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-  std::string dummy;
+  std::string empty;
   // step0: init: random seed, string conversion facilities, ...
-  RPG_Engine_Common_Tools::init(dummy,
+  RPG_Engine_Common_Tools::init(config_in.magic_dictionary,
                                 config_in.item_dictionary,
-                                dummy);
-  RPG_Graphics_Common_Tools::initStringConversionTables();
-
-  // init graphics dictionary
-  try
-  {
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(config_in.graphics_dictionary);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init, returning\n")));
-
-    return;
-  }
+                                empty);
+  RPG_Client_Common_Tools::init(config_in.sound_dictionary,
+                                config_in.sound_directory,
+                                config_in.graphics_dictionary,
+                                config_in.graphics_directory,
+                                true);
 
   // step1: load floor plan
   RPG_Engine_Level_t level;
@@ -464,10 +453,9 @@ do_work(const RPG_Client_Config& config_in,
   userData.schemaRepository      = schemaRepository_in;
 
   GDK_THREADS_ENTER();
-  if (!do_initGUI(config_in.graphics_directory,  // graphics directory
-                  config_in.graphics_cache_size, // graphics cache size
-                  userData,                      // GTK cb data
-                  config_in.video_config))       // SDL video config
+  if (!do_initGUI(config_in.graphics_directory, // graphics directory
+                  userData,                     // GTK cb data
+                  config_in.video_config))      // SDL video config
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize video, aborting\n")));
@@ -502,9 +490,6 @@ do_work(const RPG_Client_Config& config_in,
 //
 //     return;
 //   } // end IF
-
-  // step4a: set default cursor
-  RPG_Client_Common_Tools::init();
 
   // step5b: setup style
   RPG_Graphics_MapStyle_t map_style;
@@ -1005,30 +990,35 @@ ACE_TMAIN(int argc_in,
 #endif
 
   std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
+  std::string base_data_path;
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                        true);
+  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 #else
   config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  base_data_path = config_path;
+#endif // #ifdef BASEDIR
 
   // step1: init
   // step1a set defaults
   std::string graphicsDictionary = config_path;
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
+#ifdef BASEDIR
   graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
 #endif
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   std::string itemDictionary = config_path;
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
+#ifdef BASEDIR
   itemDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
-  itemDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+  itemDictionary += ACE_TEXT_ALWAYS_CHAR("item");
 #endif
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
@@ -1093,9 +1083,9 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   std::string schemaRepository = config_path;
-#ifndef CONFIGDIR
+#ifndef BASEDIR
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CONFIG_SUB);
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   // sanity check
@@ -1153,13 +1143,6 @@ ACE_TMAIN(int argc_in,
 //  config.glade_file                        = UIfile;
 //  config.gtk_cb_data                       = userData;
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
-#else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
-
   // *** sound ***
 //  config.audio_config.frequency            = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
 //  config.audio_config.format               = RPG_CLIENT_DEF_AUDIO_FORMAT;
@@ -1187,16 +1170,15 @@ ACE_TMAIN(int argc_in,
   config.video_config.doubleBuffer         = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
   config.graphics_directory = base_data_path;
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #else
-  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif
-  config.graphics_cache_size               = RPG_CLIENT_DEF_GRAPHICS_CACHESIZE;
   config.graphics_dictionary               = graphicsDictionary;
 
   // *** magic ***

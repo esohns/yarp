@@ -199,7 +199,7 @@ void RPG_Sound_Dictionary::dump() const
   RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::dump"));
 
   std::ostringstream converter;
-  unsigned long index = 0;
+  unsigned int index = 0;
   for (RPG_Sound_DictionaryIterator_t iterator = myDictionary.begin();
        iterator != myDictionary.end();
        iterator++, index++)
@@ -208,7 +208,7 @@ void RPG_Sound_Dictionary::dump() const
                ACE_TEXT("Sound[#%u]:\nCategory: %s\nEvent: %s\nFile: %s\nInterval: %u\n"),
                index,
                RPG_Sound_CategoryHelper::RPG_Sound_CategoryToString((iterator->second).category).c_str(),
-               RPG_Sound_EventHelper::RPG_Sound_EventToString((iterator->second).event).c_str(),
+               RPG_Sound_EventHelper::RPG_Sound_EventToString((iterator->second).sound_event).c_str(),
                ((iterator->second).file).c_str(),
                (iterator->second).interval));
     ACE_DEBUG((LM_DEBUG,
