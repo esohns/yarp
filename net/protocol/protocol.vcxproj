@@ -82,7 +82,7 @@ popd</Command>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>E:\Yarp\net;E:\Yarp\net\stream;E:\Yarp\common;E:\Yarp\3rd_party\flex\include;E:\Yarp\3rd_party;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_PROTOCOL_BUILD_DLL;RPG_NET_HAS_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RPG_PROTOCOL_BUILD_DLL;RPG_NET_HAS_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

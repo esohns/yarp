@@ -63,8 +63,8 @@ RPG_Graphics_TileSetTypeToStringTable_t RPG_Graphics_TileSetTypeHelper::myRPG_Gr
 std::string                  RPG_Graphics_Common_Tools::myGraphicsDirectory;
 
 ACE_Thread_Mutex             RPG_Graphics_Common_Tools::myCacheLock;
-unsigned long                RPG_Graphics_Common_Tools::myOldestCacheEntry = 0;
-unsigned long                RPG_Graphics_Common_Tools::myCacheSize = 0;
+unsigned int                 RPG_Graphics_Common_Tools::myOldestCacheEntry = 0;
+unsigned int                 RPG_Graphics_Common_Tools::myCacheSize = 0;
 RPG_Graphics_GraphicsCache_t RPG_Graphics_Common_Tools::myGraphicsCache;
 
 RPG_Graphics_FontCache_t     RPG_Graphics_Common_Tools::myFontCache;
@@ -73,10 +73,13 @@ bool                         RPG_Graphics_Common_Tools::myInitialized = false;
 
 void
 RPG_Graphics_Common_Tools::init(const std::string& directory_in,
-                                const unsigned long& cacheSize_in,
+                                const unsigned int& cacheSize_in,
                                 const bool& initSDL_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::init"));
+
+  // init string conversion facilities
+  RPG_Graphics_Common_Tools::initStringConversionTables();
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isDirectory(directory_in))
@@ -160,7 +163,7 @@ RPG_Graphics_Common_Tools::getGraphicsDirectory()
   return myGraphicsDirectory;
 }
 
-const std::string
+std::string
 RPG_Graphics_Common_Tools::styleToString(const RPG_Graphics_StyleUnion& style_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::styleToString"));
@@ -190,7 +193,7 @@ RPG_Graphics_Common_Tools::styleToString(const RPG_Graphics_StyleUnion& style_in
   return std::string(ACE_TEXT_ALWAYS_CHAR("INVALID"));
 }
 
-const std::string
+std::string
 RPG_Graphics_Common_Tools::typeToString(const RPG_Graphics_GraphicTypeUnion& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::typeToString"));
@@ -222,7 +225,7 @@ RPG_Graphics_Common_Tools::typeToString(const RPG_Graphics_GraphicTypeUnion& typ
   return std::string(ACE_TEXT_ALWAYS_CHAR("INVALID"));
 }
 
-const std::string
+std::string
 RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::tileToString"));
@@ -291,7 +294,7 @@ RPG_Graphics_Common_Tools::tileToString(const RPG_Graphics_Tile& tile_in)
   return result;
 }
 
-const std::string
+std::string
 RPG_Graphics_Common_Tools::tileSetToString(const RPG_Graphics_TileSet& tileSet_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::tileSetToString"));
@@ -323,7 +326,7 @@ RPG_Graphics_Common_Tools::tileSetToString(const RPG_Graphics_TileSet& tileSet_i
   return result;
 }
 
-const std::string
+std::string
 RPG_Graphics_Common_Tools::elementTypeToString(const RPG_Graphics_ElementTypeUnion& elementType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::elementTypeToString"));
@@ -347,7 +350,7 @@ RPG_Graphics_Common_Tools::elementTypeToString(const RPG_Graphics_ElementTypeUni
   return std::string(ACE_TEXT_ALWAYS_CHAR("INVALID"));
 }
 
-const std::string
+std::string
 RPG_Graphics_Common_Tools::elementsToString(const RPG_Graphics_Elements_t& elements_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::elementsToString"));
@@ -393,7 +396,7 @@ RPG_Graphics_Common_Tools::elementsToString(const RPG_Graphics_Elements_t& eleme
   return result;
 }
 
-const std::string
+std::string
 RPG_Graphics_Common_Tools::graphicToString(const RPG_Graphics_t& graphic_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::graphicToString"));
@@ -461,7 +464,7 @@ RPG_Graphics_Common_Tools::graphicToString(const RPG_Graphics_t& graphic_in)
   return result;
 }
 
-const RPG_Graphics_GraphicTypeUnion
+RPG_Graphics_GraphicTypeUnion
 RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
                                        const bool& halfHeight_in)
 {
@@ -712,7 +715,7 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
   } // end SWITCH
 }
 
-const RPG_Graphics_TextSize_t
+RPG_Graphics_TextSize_t
 RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Font& font_in,
                                     const std::string& textString_in)
 {
@@ -744,8 +747,8 @@ RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Font& font_in,
     } // end IF
   } // end lock scope
 
-  return std::make_pair(static_cast<unsigned long> (width),
-                        static_cast<unsigned long> (height));
+  return std::make_pair(static_cast<unsigned int>(width),
+                        static_cast<unsigned int>(height));
 }
 
 void
@@ -858,7 +861,7 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
 
   std::string path = path_base;
   RPG_Graphics_Tile_t current_tile;
-  unsigned long type = 0;
+  unsigned int type = 0;
   std::istringstream converter;
 //  size_t edge_position = std::string::npos;
   size_t edge_position = -1;
@@ -1815,7 +1818,7 @@ RPG_Graphics_Common_Tools::initStringConversionTables()
              ACE_TEXT("RPG_Graphics_Common_Tools: initialized string conversion tables...\n")));
 }
 
-const bool
+bool
 RPG_Graphics_Common_Tools::initFonts()
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::initFonts"));
@@ -2094,7 +2097,7 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
   } // end IF
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Graphics_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in,
                                       const RPG_Map_Size_t& mapSize_in,
                                       const RPG_Graphics_Size_t& windowSize_in,
@@ -2132,7 +2135,7 @@ RPG_Graphics_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in
   return map_position;
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Graphics_Common_Tools::map2Screen(const RPG_Graphics_Position_t& position_in,
                                       const RPG_Graphics_Size_t& windowSize_in,
                                       const RPG_Graphics_Position_t& viewport_in)

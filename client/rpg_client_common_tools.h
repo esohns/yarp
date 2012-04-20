@@ -39,8 +39,11 @@
 class RPG_Client_Export RPG_Client_Common_Tools
 {
  public:
-  // *NOTE*: initializes cursor manager singleton
-  static void init();
+  // *NOTE*: initializes cursor manager singleton/dictionaries
+  static void init(const std::string&,  // sound dictionary
+                   const std::string&,  // graphics dictionary
+                   const std::string&,  // graphics directory
+                   const bool& = true); // init SDL ?
 
   static void initFloorEdges(const RPG_Map_FloorPlan_t&,             // floor plan
                              const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset

@@ -3,6 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-g $(ProjectDir)..\graphics\rpg_graphics.xml -i $(ProjectDir)..\item\rpg_item.xml -m $(ProjectDir)..\magic\rpg_magic.xml -t -u $(ProjectDir)character\player\character_generator_gui.glade</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-d $(ProjectDir)..\graphics\data -g $(ProjectDir)..\graphics\rpg_graphics.xml -i $(ProjectDir)..\item\rpg_item.xml -m $(ProjectDir)..\magic\rpg_magic.xml -t -u $(ProjectDir)character\player\character_generator_gui.glade</LocalDebuggerCommandArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>-d $(ProjectDir)..\graphics\data -g $(ProjectDir)..\graphics\rpg_graphics.xml -i $(ProjectDir)..\item\rpg_item.xml -m $(ProjectDir)..\magic\rpg_magic.xml -t -u $(ProjectDir)character\player\character_generator_gui.glade</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

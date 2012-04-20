@@ -43,8 +43,8 @@ class RPG_Sound_Export RPG_Sound_Dictionary
 
  public:
   // init sound dictionary
-  void init(const std::string&,  // filename
-            const bool& = true); // validate XML ?
+  void init(const std::string&,   // filename
+            const bool& = false); // validate XML ?
 
   const RPG_Sound_t getSound(const RPG_Sound_Event&) const; // event
 

@@ -22,6 +22,7 @@
 #include "rpg_common_file_tools.h"
 
 #include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
 
 #include <ace/ACE.h>
 #include <ace/OS.h>
@@ -29,7 +30,7 @@
 #include <ace/FILE_Connector.h>
 #include <ace/Dirent_Selector.h>
 
-const bool
+bool
 RPG_Common_File_Tools::isReadable(const std::string& filename_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isReadable"));
@@ -48,7 +49,7 @@ RPG_Common_File_Tools::isReadable(const std::string& filename_in)
   return true;
 }
 
-const bool
+bool
 RPG_Common_File_Tools::isEmpty(const std::string& filename_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isEmpty"));
@@ -67,7 +68,7 @@ RPG_Common_File_Tools::isEmpty(const std::string& filename_in)
   return (stat.st_size == 0);
 }
 
-const bool
+bool
 RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
 {
 //   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isDirectory"));
@@ -101,7 +102,7 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
   return ((stat.st_mode & S_IFMT) == S_IFDIR);
 }
 
-const bool
+bool
 RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::createDirectory"));
@@ -156,7 +157,7 @@ RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
   return true;
 }
 
-const bool
+bool
 RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::deleteFile"));
@@ -177,7 +178,7 @@ RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
   ACE_FILE_IO file;
   if (connector.connect(file,
                         address,
-                        const_cast<ACE_Time_Value*> (&ACE_Time_Value::zero),
+                        const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero),
                         ACE_Addr::sap_any,
                         0,
                         (O_WRONLY | O_BINARY | O_EXCL),
@@ -207,7 +208,7 @@ RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
   return true;
 }
 
-const bool
+bool
 RPG_Common_File_Tools::loadFile(const std::string& filename_in,
                                 unsigned char*& file_out)
 {
@@ -251,19 +252,9 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
     return false;
   } // end IF
   ACE_OS::rewind(fp);
-  // allocate array
-  try
-  {
-    file_out = new unsigned char[fsize];
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate memory(%d): %m, aborting\n"),
-               fsize));
 
-    return false;
-  }
+  // allocate array
+  file_out = new(std::nothrow) unsigned char[fsize];
   if (!file_out)
   {
     ACE_DEBUG((LM_ERROR,
@@ -272,11 +263,12 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
 
     return false;
   } // end IF
+
   // read data
-  if (ACE_OS::fread(static_cast<void*> (file_out), // target buffer
-                    fsize,                            // read everything
-                    1,                                // ... all at once
-                    fp) != 1)                         // handle
+  if (ACE_OS::fread(static_cast<void*>(file_out), // target buffer
+                    fsize,                        // read everything
+                    1,                            // ... all at once
+                    fp) != 1)                     // handle
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to read file(\"%s\"): %m, aborting\n"),
@@ -305,7 +297,7 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
   return true;
 }
 
-const std::string
+std::string
 RPG_Common_File_Tools::getWorkingDirectory()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getWorkingDirectory"));
@@ -325,6 +317,33 @@ RPG_Common_File_Tools::getWorkingDirectory()
     return result;
   } // end IF
   result = cwd;
+
+  return result;
+}
+
+std::string
+RPG_Common_File_Tools::getDataDirectory(const std::string& baseDir_in,
+                                        const bool& isConfig_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getDataDirectory"));
+
+  std::string result = baseDir_in;
+
+  if (baseDir_in.empty())
+    result = RPG_Common_File_Tools::getWorkingDirectory();
+
+  if (!RPG_Common_File_Tools::isDirectory(result))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("not a directory: \"%s\", aborting\n"),
+               result.c_str()));
+
+    return std::string();
+  } // end IF
+
+  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  result += (isConfig_in ? ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB)
+                         : ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB));
 
   return result;
 }

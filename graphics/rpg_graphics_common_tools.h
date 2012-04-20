@@ -40,27 +40,25 @@
 class RPG_Graphics_Export RPG_Graphics_Common_Tools
 {
  public:
-  // init string conversion facilities
-  static void initStringConversionTables();
   // *WARNING*: needs to be called AFTER SDL_SetVideoMode !
   // *NOTE*: not using SDL at all ? --> provide 'false' as last parameter...
-  static void init(const std::string&,   // graphics directory
-                   const unsigned long&, // cache size
-                   const bool& = true);  // init SDL ?
+  static void init(const std::string&,  // graphics directory
+                   const unsigned int&, // cache size
+                   const bool& = true); // init SDL ?
   static void fini();
   static std::string getGraphicsDirectory();
-  static const std::string typeToString(const RPG_Graphics_GraphicTypeUnion&);
-  static const std::string styleToString(const RPG_Graphics_StyleUnion&);
-  static const std::string tileToString(const RPG_Graphics_Tile&);
-  static const std::string tileSetToString(const RPG_Graphics_TileSet&);
-  static const std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
-  static const std::string elementsToString(const RPG_Graphics_Elements_t&);
-  static const std::string graphicToString(const RPG_Graphics_t&);
+  static std::string typeToString(const RPG_Graphics_GraphicTypeUnion&);
+  static std::string styleToString(const RPG_Graphics_StyleUnion&);
+  static std::string tileToString(const RPG_Graphics_Tile&);
+  static std::string tileSetToString(const RPG_Graphics_TileSet&);
+  static std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
+  static std::string elementsToString(const RPG_Graphics_Elements_t&);
+  static std::string graphicToString(const RPG_Graphics_t&);
 
   static void graphicToFile(const RPG_Graphics_t&, // graphic
                             std::string&);         // return value: FQ filename
-  static const RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Font&, // font
-                                                const std::string&);      // string
+  static RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Font&, // font
+                                          const std::string&);      // string
 
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
   static void loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle&,     // style
@@ -90,14 +88,14 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                    SDL_Surface*); // screen
 
   // coordinate transformations
-  static const RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,  // position (screen coordinates !)
-                                                  const RPG_Map_Size_t&,           // map size
-                                                  const RPG_Graphics_Size_t&,      // window size
-                                                  const RPG_Graphics_Position_t&); // viewport (map coordinates !)
+  static RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,  // position (screen coordinates !)
+                                            const RPG_Map_Size_t&,           // map size
+                                            const RPG_Graphics_Size_t&,      // window size
+                                            const RPG_Graphics_Position_t&); // viewport (map coordinates !)
   // *NOTE*: translates the center of the map square to screen coordinates
-  static const RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&,  // position (map coordinates !)
-                                                  const RPG_Graphics_Size_t&,      // window size
-                                                  const RPG_Graphics_Position_t&); // viewport (map coordinates !)
+  static RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&,  // position (map coordinates !)
+                                            const RPG_Graphics_Size_t&,      // window size
+                                            const RPG_Graphics_Position_t&); // viewport (map coordinates !)
 
  private:
   // safety measures
@@ -107,11 +105,12 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools& operator=(const RPG_Graphics_Common_Tools&));
 
   // helper methods
-  static const bool initFonts();
+  static void initStringConversionTables();
+  static bool initFonts();
 
   // convert style (wall-, floor-, ...) to appropriate graphic (meta)type
-  static const RPG_Graphics_GraphicTypeUnion styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
-                                                         const bool& = false);           // half-height (wallstyle only) ?
+  static RPG_Graphics_GraphicTypeUnion styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
+                                                   const bool& = false);           // half-height (wallstyle only) ?
 
   static void fade(const float&,  // interval (seconds)
                    SDL_Surface*,  // target image
@@ -121,8 +120,8 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
 
   static ACE_Thread_Mutex             myCacheLock;
 
-  static unsigned long                myOldestCacheEntry;
-  static unsigned long                myCacheSize;
+  static unsigned int                 myOldestCacheEntry;
+  static unsigned int                 myCacheSize;
   static RPG_Graphics_GraphicsCache_t myGraphicsCache;
 
   static RPG_Graphics_FontCache_t     myFontCache;

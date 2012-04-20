@@ -51,8 +51,8 @@ class RPG_Item_Export RPG_Item_Dictionary
 
  public:
   // init item dictionary
-  void init(const std::string&,  // filename
-            const bool& = true); // validate XML ?
+  void init(const std::string&,   // filename
+            const bool& = false); // validate XML ?
 
   const RPG_Item_PropertiesBase& getProperties(const RPG_Item_Base*) const;
   const RPG_Item_ArmorProperties& getArmorProperties(const RPG_Item_ArmorType&) const;

@@ -30,16 +30,18 @@
 class RPG_Common_Export RPG_Common_File_Tools
 {
  public:
-  static const bool isReadable(const std::string&); // FQ filename
-  static const bool isEmpty(const std::string&); // FQ filename
-  static const bool isDirectory(const std::string&); // directory
-  static const bool createDirectory(const std::string&); // directory
-  static const bool deleteFile(const std::string&); // FQ filename
+  static bool isReadable(const std::string&); // FQ filename
+  static bool isEmpty(const std::string&); // FQ filename
+  static bool isDirectory(const std::string&); // directory
+  static bool createDirectory(const std::string&); // directory
+  static bool deleteFile(const std::string&); // FQ filename
   // *NOTE*: user needs to free (delete[] !) the returned memory
-  static const bool loadFile(const std::string&, // FQ filename
-                             unsigned char*&);   // return value: memory (array)
+  static bool loadFile(const std::string&, // FQ filename
+                       unsigned char*&);   // return value: memory (array)
 
-  static const std::string getWorkingDirectory();
+  static std::string getWorkingDirectory();
+  static std::string getDataDirectory(const std::string&, // base (==install) directory
+                                      const bool&);       // config ? : data
 
  private:
   // safety measures

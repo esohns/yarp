@@ -82,7 +82,7 @@ popd</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>RPG_CHARACTER_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RPG_CHARACTER_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\chance;E:\Yarp\common;E:\Yarp\chance\dice;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

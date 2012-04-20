@@ -51,7 +51,4 @@
 #define RPG_ENGINE_DEF_LEVEL_FILE           "default_level"
 #define RPG_ENGINE_LEVEL_FILE_EXT           ".level"
 
-// CONFIGDIR-specific
-#define RPG_ENGINE_DEF_CONFIG_SUB           "engine"
-
 #endif

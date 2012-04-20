@@ -21,32 +21,97 @@
 
 #include "rpg_client_common_tools.h"
 
-#include <rpg_engine_common_tools.h>
+#include "rpg_client_defines.h"
+
+#include <rpg_sound_dictionary.h>
+#include <rpg_sound_common_tools.h>
 
 #include <rpg_graphics_defines.h>
+#include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_cursor_manager.h>
+#include <rpg_graphics_common_tools.h>
+
+#include <rpg_engine_common_tools.h>
 
 #include <rpg_map_common_tools.h>
 
 #include <rpg_common_macros.h>
 
 void
-RPG_Client_Common_Tools::init()
+RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
+                              const std::string& graphicsDictionaryFile_in,
+                              const std::string& graphicsDirectory_in,
+                              const bool& initSDL_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::init"));
 
-  // step1: init cursor manager singleton
-  try
-  {
-    RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Graphics_Cursor_Manager::set, returning\n")));
+  // step1: init string conversion facilities
+  RPG_Sound_Common_Tools::initStringConversionTables();
+  // step1a: ...and other static data
+  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+                                  RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+                                  initSDL_in);
 
-    return;
-  }
+  // step1: init dictionaries
+  // step1a: init graphics dictionary
+  if (!graphicsDictionaryFile_in.empty())
+  {
+    try
+    {
+      RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionaryFile_in
+#ifdef _DEBUG
+                                                          ,true
+#else
+                                                          ,false
+#endif
+                                                          );
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init, returning\n")));
+
+      return;
+    }
+  } // end IF
+
+  // step1b: init sound dictionary
+  if (!soundDictionaryFile_in.empty())
+  {
+    try
+    {
+      RPG_SOUND_DICTIONARY_SINGLETON::instance()->init(soundDictionaryFile_in
+#ifdef _DEBUG
+                                                       ,true
+#else
+                                                       ,false
+#endif
+        );
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Sound_Dictionary::init, returning\n")));
+
+      return;
+    }
+  } // end IF
+
+  // step2: init cursor manager singleton
+  if (initSDL_in)
+  {
+    try
+    {
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Graphics_Cursor_Manager::set, returning\n")));
+
+      return;
+    }
+  } // end IF
 }
 
 void

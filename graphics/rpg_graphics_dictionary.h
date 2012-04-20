@@ -40,8 +40,8 @@ class RPG_Graphics_Export RPG_Graphics_Dictionary
                              ACE_Thread_Mutex>;
 
  public:
-  void init(const std::string&,  // (XML) dictionary file
-            const bool& = true); // validate XML ?
+  void init(const std::string&,   // (XML) dictionary file
+            const bool& = false); // validate XML ?
 
   const RPG_Graphics_t get(const RPG_Graphics_GraphicTypeUnion&) const; // type
   const RPG_Graphics_Fonts_t getFonts() const;

@@ -87,14 +87,15 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   // step1a: init randomization
   RPG_Dice::init();
 
-  // step1b: init other static data
+  // step1b: init string conversion facilities
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
-  RPG_Magic_Common_Tools::init();
   RPG_Item_Common_Tools::initStringConversionTables();
-  RPG_Character_Common_Tools::init();
   RPG_Combat_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();
+  // step1c: ...and other static data
+  RPG_Magic_Common_Tools::init();
+  RPG_Character_Common_Tools::init();
 
   RPG_Engine_CommandHelper::init();
   RPG_Engine_EntityModeHelper::init();
@@ -105,7 +106,13 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   {
     try
     {
-      RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFile_in);
+      RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFile_in
+#ifdef _DEBUG
+                                                       ,true
+#else
+                                                       ,false
+#endif
+                                                       );
     }
     catch (...)
     {
@@ -121,7 +128,13 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   {
     try
     {
-      RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFile_in);
+      RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFile_in
+#ifdef _DEBUG
+                                                      ,true
+#else
+                                                      ,false
+#endif
+        );
     }
     catch (...)
     {
@@ -137,7 +150,13 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   {
     try
     {
-      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in);
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in
+#ifdef _DEBUG
+                                                         ,true
+#else
+                                                         ,false
+#endif
+        );
     }
     catch (...)
     {
