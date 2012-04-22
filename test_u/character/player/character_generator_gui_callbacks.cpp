@@ -26,6 +26,7 @@
 #include <rpg_client_defines.h>
 #include <rpg_client_callbacks.h>
 
+#include <rpg_engine_defines.h>
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
@@ -242,7 +243,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // reset profile widgets
   ::reset_entity_profile(data->xml);
-  data->entity.sprite = RPG_GRAPHICS_DEF_SPRITE;
+  data->entity.sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
   ::update_sprite_gallery(*data);
   ::set_current_image(data->entity.sprite,
                       data->xml);

@@ -50,8 +50,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   // init (clipping of highlight tile)
   void init(RPG_Graphics_SDLWindowBase*); // target window handle
 
-  const RPG_Graphics_Cursor type() const;
-  const RPG_Graphics_Position_t position() const;
+  RPG_Graphics_Cursor type() const;
+  RPG_Graphics_Position_t position() const;
 
   void set(const RPG_Graphics_Cursor&); // cursor type
 //   SDL_Surface* get() const;

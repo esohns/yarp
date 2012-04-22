@@ -108,7 +108,7 @@ RPG_Graphics_Cursor_Manager::init(RPG_Graphics_SDLWindowBase* window_in)
   myHighlightWindow = window_in;
 }
 
-const RPG_Graphics_Cursor
+RPG_Graphics_Cursor
 RPG_Graphics_Cursor_Manager::type() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));
@@ -116,7 +116,7 @@ RPG_Graphics_Cursor_Manager::type() const
   return myCurrentType;
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Graphics_Cursor_Manager::position() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));

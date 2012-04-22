@@ -55,26 +55,45 @@ RPG_Player_Equipment::equip(const RPG_Item_ID_t& itemID_in,
   // *TODO*: auto-choose appropriate slot
   ACE_ASSERT(slot_in != EQUIPMENTSLOT_ANY);
 
+  // *NOTE*: is there something else currently equipped in that slot ?
+  // --> unequip it first
+  RPG_Player_EquipmentConstIterator_t iterator = myEquipment.find(slot_in);
+  if (iterator != myEquipment.end())
+  {
+    // check: dual-handed item ?
+    if ((slot_in == EQUIPMENTSLOT_HAND_LEFT) ||
+        (slot_in == EQUIPMENTSLOT_HAND_RIGHT))
+    {
+      RPG_Character_EquipmentSlot other_hand = ((slot_in == EQUIPMENTSLOT_HAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                                                     : EQUIPMENTSLOT_HAND_LEFT);
+      RPG_Player_EquipmentConstIterator_t iterator2 = myEquipment.find(other_hand);
+      if (iterator2 != myEquipment.end())
+        if ((*iterator2).second == (*iterator).second)
+          myEquipment.erase(iterator2);
+    } // end IF
+
+    myEquipment.erase(iterator);
+  } // end IF
+
   myEquipment.insert(std::make_pair(slot_in, itemID_in));
 
-//   // debug info
-//   RPG_Item_Base* handle = NULL;
-//   if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(itemID_in, handle))
-//   {
-//     // debug info
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("invalid item ID: %d, aborting\n"),
-//                itemID_in));
-//
-//     return;
-//   } // end IF
-//   ACE_ASSERT(handle);
-//
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("equipped item (ID: %d, type: \"%s\") @ \"%s\"\n"),
-//              itemID_in,
-//              RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str(),
-//              RPG_Player_EquipmentSlotHelper::RPG_Player_EquipmentSlotToString(slot_in).c_str()));
+   //// debug info
+   //RPG_Item_Base* handle = NULL;
+   //if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(itemID_in, handle))
+   //{
+   //  // debug info
+   //  ACE_DEBUG((LM_ERROR,
+   //             ACE_TEXT("invalid item ID: %d, aborting\n"),
+   //             itemID_in));
+
+   //  return;
+   //} // end IF
+   //ACE_ASSERT(handle);
+   //ACE_DEBUG((LM_DEBUG,
+   //           ACE_TEXT("equipped item (ID: %d, type: \"%s\") @ \"%s\"\n"),
+   //           itemID_in,
+   //           RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str(),
+   //           RPG_Player_EquipmentSlotHelper::RPG_Player_EquipmentSlotToString(slot_in).c_str()));
 }
 
 void
@@ -350,19 +369,6 @@ RPG_Player_Equipment::dump() const
 
     switch (handle->getType())
     {
-      case ITEM_WEAPON:
-      {
-        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
-        ACE_ASSERT(weapon);
-
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("slot \"%s\" --> weapon (ID: %d, type: %s)\n"),
-                   RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
-                   (*iterator).second,
-                   RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()).c_str()));
-
-        break;
-      }
       case ITEM_ARMOR:
       {
         RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
@@ -373,6 +379,32 @@ RPG_Player_Equipment::dump() const
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
                    (*iterator).second,
                    RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()).c_str()));
+
+        break;
+      }
+      case ITEM_COMMODITY:
+      {
+        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(handle);
+        ACE_ASSERT(commodity);
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("slot \"%s\" --> commodity (ID: %d, type: %s)\n"),
+                   RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
+                   (*iterator).second,
+                   RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->getCommodityType()).c_str()));
+
+        break;
+      }
+      case ITEM_WEAPON:
+      {
+        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
+        ACE_ASSERT(weapon);
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("slot \"%s\" --> weapon (ID: %d, type: %s)\n"),
+                   RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
+                   (*iterator).second,
+                   RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()).c_str()));
 
         break;
       }

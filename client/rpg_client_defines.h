@@ -111,6 +111,7 @@
 #define RPG_CLIENT_DEF_SCREENSHOT_PREFIX               "screenshot"
 #define RPG_CLIENT_DEF_SCREENSHOT_EXT                  ".png"
 
+#define RPG_CLIENT_DEF_VISIONBLEND_ISON                true
 #define RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL          false
 
 #endif

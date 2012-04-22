@@ -131,6 +131,16 @@ File "E:\Yarp\character\monster\rpg_monster.xml"
 File "E:\Yarp\graphics\rpg_graphics.xml"
 File "E:\Yarp\sound\rpg_sound.xml"
 
+; Config - XSD schema
+File "E:\Yarp\engine\rpg_engine.xsd"
+File "E:\Yarp\character\player\rpg_player.xsd"
+File "E:\Yarp\map\rpg_map.xsd"
+File "E:\Yarp\chance\dice\rpg_dice.xsd"
+File "E:\Yarp\common\rpg_common.xsd"
+File "E:\Yarp\common\rpg_common_environment.xsd"
+File "E:\Yarp\character\rpg_character.xsd"
+File "E:\Yarp\magic\rpg_magic.xsd"
+
 ; Config - glade
 File "E:\Yarp\client\rpg_client.glade"
 File "E:\Yarp\test_u\character\player\character_generator_gui.glade"

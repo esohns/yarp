@@ -93,14 +93,13 @@ class RPG_Engine_Export RPG_Engine
   unsigned int numSpawned() const;
 
   // vision
+  unsigned char getVisibleRadius(const RPG_Engine_EntityID_t&) const; // id
   void getVisiblePositions(const RPG_Engine_EntityID_t&, // id
-                           RPG_Map_Positions_t&) const;  // return value: (currently) seen positions
+                           RPG_Map_Positions_t&) const;  // return value: (currently) visible positions
 
   bool findPath(const RPG_Map_Position_t&, // start position
                 const RPG_Map_Position_t&, // end position
                 RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
-
-  //using RPG_Engine_Level::getMeta;
 
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;

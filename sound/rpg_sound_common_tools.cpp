@@ -53,16 +53,19 @@ RPG_Sound_Common_Tools::init(const std::string& directory_in,
   // init string conversion facilities
   RPG_Sound_Common_Tools::initStringConversionTables();
 
-  // sanity check(s)
-  if (!RPG_Common_File_Tools::isDirectory(directory_in))
+  if (!directory_in.empty())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
-               directory_in.c_str()));
+    // sanity check(s)
+    if (!RPG_Common_File_Tools::isDirectory(directory_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
+                 directory_in.c_str()));
 
-    return;
+      return;
+    } // end IF
+    mySoundDirectory = directory_in;
   } // end IF
-  mySoundDirectory = directory_in;
   myCacheSize = cacheSize_in;
 
   if (myInitialized)

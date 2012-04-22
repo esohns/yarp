@@ -28,7 +28,7 @@
 #include <map>
 
 // useful types
-typedef std::multimap<RPG_Character_EquipmentSlot, RPG_Item_ID_t> RPG_Player_Equipment_t;
+typedef std::map<RPG_Character_EquipmentSlot, RPG_Item_ID_t> RPG_Player_Equipment_t;
 typedef RPG_Player_Equipment_t::const_iterator RPG_Player_EquipmentConstIterator_t;
 
 #endif

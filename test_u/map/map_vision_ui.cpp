@@ -206,6 +206,15 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += RPG_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  path = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+  path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
+  std::cout << ACE_TEXT("-p [FILE]: entity profile (*") << ACE_TEXT(RPG_ENGINE_ENTITY_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
 } // end print_usage
@@ -217,6 +226,7 @@ process_arguments(const int argc_in,
                   std::string& itemDictionary_out,
                   std::string& levelMap_out,
                   std::string& monsterDictionary_out,
+                  std::string& entityProfile_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
 {
@@ -273,12 +283,21 @@ process_arguments(const int argc_in,
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
 
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  entityProfile_out = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+#else
+  entityProfile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+#endif
+  entityProfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
+
   traceInformation_out    = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("g:i:l:m:tv"));
+                             ACE_TEXT("g:i:l:m:p:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -306,6 +325,12 @@ process_arguments(const int argc_in,
       case 'm':
       {
         monsterDictionary_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'p':
+      {
+        entityProfile_out = argumentParser.opt_arg();
 
         break;
       }
@@ -345,7 +370,8 @@ process_arguments(const int argc_in,
 }
 
 bool
-do_initGUI(const std::string& graphicsDirectory_in,
+do_initGUI(const std::string& graphicsDictionary_in,
+           const std::string& graphicsDirectory_in,
            RPG_Client_GTK_CBData_t& userData_in,
            const RPG_Client_SDL_VideoConfig_t& videoConfig_in)
 {
@@ -360,6 +386,16 @@ do_initGUI(const std::string& graphicsDirectory_in,
 
     return false;
   } // end IF
+  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+                                  RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+                                  false);
+  RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in
+#ifdef _DEBUG
+                                                      ,true
+#else
+                                                      ,false
+#endif
+                                                      );
 
   // init SDL UI handling
 
@@ -446,11 +482,6 @@ do_work(const RPG_Client_Config& config_in,
   RPG_Engine_Common_Tools::init(config_in.magic_dictionary,
                                 config_in.item_dictionary,
                                 config_in.monster_dictionary);
-  RPG_Client_Common_Tools::init(config_in.sound_dictionary,
-                                config_in.sound_directory,
-                                config_in.graphics_dictionary,
-                                config_in.graphics_directory,
-                                true);
 
   // step1: load level map
   RPG_Engine_Level_t level = RPG_Engine_Level::load(levelFilename_in,
@@ -492,9 +523,10 @@ do_work(const RPG_Client_Config& config_in,
   userData.schemaRepository      = schemaRepository_in;
 
   GDK_THREADS_ENTER();
-  if (!do_initGUI(config_in.graphics_directory,  // graphics directory
+  if (!do_initGUI(config_in.graphics_dictionary,
+                  config_in.graphics_directory,
                   userData,                      // GTK cb data
-                  config_in.video_config))       // SDL video config
+                  config_in.video_config))       // SDL_video configuration
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize video, aborting\n")));
@@ -506,6 +538,12 @@ do_work(const RPG_Client_Config& config_in,
   GDK_THREADS_LEAVE();
   ACE_ASSERT(userData.screen);
   //ACE_ASSERT(userData.xml);
+
+  RPG_Client_Common_Tools::init(config_in.sound_dictionary,
+                                config_in.sound_directory,
+                                config_in.graphics_dictionary,
+                                config_in.graphics_directory,
+                                true);
 
   userData.entity                = RPG_Engine_Common_Tools::loadEntity(playerProfile_in,
                                                                        schemaRepository_in);
@@ -702,6 +740,15 @@ do_work(const RPG_Client_Config& config_in,
       {
         switch (sdl_event.key.keysym.sym)
         {
+          case SDLK_b:
+          {
+            level_window->toggleVisionBlend();
+
+            schedule_redraw = true;
+            client_action.window = level_window;
+
+            break;
+          }
           case SDLK_l:
           {
             equipped_lightsource = !equipped_lightsource;
@@ -750,6 +797,7 @@ do_work(const RPG_Client_Config& config_in,
               player_base->defaultEquip();
 
             schedule_redraw = true;
+            client_action.window = level_window;
 
             break;
           }
@@ -764,9 +812,7 @@ do_work(const RPG_Client_Config& config_in,
             break;
         } // end SWITCH
 
-        if (done)
-          break; // leave
-        // *WARNING*: falls through !
+        break;
       }
       case SDL_ACTIVEEVENT:
       {
@@ -882,6 +928,8 @@ do_work(const RPG_Client_Config& config_in,
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
         }
+        if (schedule_redraw)
+          client_action.window = window;
 
         break;
       }
@@ -939,7 +987,6 @@ do_work(const RPG_Client_Config& config_in,
     if (schedule_redraw)
     {
       client_action.command = COMMAND_WINDOW_DRAW;
-      client_action.window = window;
       client_engine.action(client_action);
 
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -978,7 +1025,7 @@ do_work(const RPG_Client_Config& config_in,
         // --> redraw cursor
         client_action.command = COMMAND_CURSOR_DRAW;
         client_action.position = mouse_position;
-        client_action.window = window;
+        client_action.window = &mainWindow;
         client_engine.action(client_action);
 
         break;
@@ -1145,23 +1192,13 @@ ACE_TMAIN(int argc_in,
   levelMap += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string playerProfile = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+  std::string entityProfile = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
 #else
-  std::string playerProfile = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+  std::string entityProfile = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
 #endif
-  playerProfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  playerProfile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  playerProfile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-
-  // sanity check
-  if (!RPG_Common_File_Tools::isReadable(playerProfile))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid player profile (was: \"%s\"), aborting\n"),
-               playerProfile.c_str()));
-
-    return EXIT_FAILURE;
-  } // end IF
+  entityProfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
 
   bool traceInformation    = false;
   bool printVersionAndExit = false;
@@ -1173,6 +1210,7 @@ ACE_TMAIN(int argc_in,
                           itemDictionary,
                           levelMap,
                           monsterDictionary,
+                          entityProfile,
                           traceInformation,
                           printVersionAndExit)))
   {
@@ -1186,6 +1224,7 @@ ACE_TMAIN(int argc_in,
   if (!RPG_Common_File_Tools::isReadable(itemDictionary)     ||
       !RPG_Common_File_Tools::isReadable(monsterDictionary)  ||
       !RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
+      !RPG_Common_File_Tools::isReadable(entityProfile)  ||
       !RPG_Common_File_Tools::isReadable(levelMap))
   {
     ACE_DEBUG((LM_DEBUG,
@@ -1285,12 +1324,12 @@ ACE_TMAIN(int argc_in,
   config.video_config.doubleBuffer         = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
   config.graphics_directory = base_data_path;
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#ifdef BASEDIR
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #else
-  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif
@@ -1372,7 +1411,7 @@ ACE_TMAIN(int argc_in,
   do_work(config,
           schemaRepository,
           levelMap,
-          playerProfile);
+          entityProfile);
   timer.stop();
 
   // debug info

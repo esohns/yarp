@@ -841,22 +841,23 @@ RPG_Engine::getName(const RPG_Engine_EntityID_t& id_in) const
   return result;
 }
 
-void
-RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
-                                RPG_Map_Positions_t& positions_out) const
+unsigned char
+RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine::getVisiblePositions"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getVisibleRadius"));
 
   // init return value(s)
-  positions_out.clear();
+  unsigned char result = 0;
+
+  // sanity check
+  if (id_in == 0)
+    return result;
 
   // step1: retrieve:
   // - race (if any)
   // - center position
   // - equiped light source (if any)
   RPG_Character_Race_t race(0);
-  RPG_Map_Position_t center = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                             std::numeric_limits<unsigned int>::max());
   RPG_Item_CommodityLight equipped_light_source = RPG_ITEM_COMMODITYLIGHT_INVALID;
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
@@ -881,8 +882,6 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
 
       equipped_light_source = monster->getEquipment().getLightSource();
     } // end ELSE
-
-    center = (*iterator).second->position;
   } // end lock scope
 
   // step2: consider environment / ambient lighting
@@ -899,20 +898,36 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
       RPG_Character_Race_Common_Tools::hasRace(race, RACE_GNOME))
     lit_radius *= 2;
 
-  unsigned char effective_radius = ((environment_radius > lit_radius) ? environment_radius
-                                                                      : lit_radius);
+  result = ((environment_radius > lit_radius) ? environment_radius
+                                              : lit_radius);
 
   // step5: consider darkvision
   if ((RPG_Character_Race_Common_Tools::hasRace(race, RACE_DWARF) ||
        RPG_Character_Race_Common_Tools::hasRace(race, RACE_ORC)) &&
-      (effective_radius < 60))
-    effective_radius = 60;
+      (result < 60))
+    result = 60;
 
-  // OK: got the visible radius
-  // --> compute involved positions
-  RPG_Map_Common_Tools::buildCircle(center,
+  result /= RPG_ENGINE_FEET_PER_SQUARE;
+
+  return result;
+}
+
+void
+RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
+                                RPG_Map_Positions_t& positions_out) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getVisiblePositions"));
+  
+  // init return value(s)
+  positions_out.clear();
+
+  // sanity check
+  if (id_in == 0)
+    return; // done
+
+  RPG_Map_Common_Tools::buildCircle(getPosition(id_in),
                                     getSize(),
-                                    (static_cast<unsigned int>(effective_radius) / RPG_ENGINE_FEET_PER_SQUARE),
+                                    getVisibleRadius(id_in),
                                     true,
                                     positions_out);
 }

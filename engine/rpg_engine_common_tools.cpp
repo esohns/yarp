@@ -494,6 +494,7 @@ RPG_Engine_Common_Tools::createEntity()
   //result.actions();
   result.sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
   result.is_spawned = false;
+  result.activation_timer = -1;
 
   // generate player
   RPG_Player* player_p = RPG_Player::create();
@@ -516,6 +517,7 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
   //result.actions();
   result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   result.is_spawned = false;
+  result.activation_timer = -1;
 
   RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
   // compute individual hitpoints

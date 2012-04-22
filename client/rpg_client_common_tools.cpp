@@ -130,10 +130,10 @@ RPG_Client_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
   RPG_Map_Position_t north_east, north_west, south_east, south_west;
   RPG_Graphics_FloorEdgeTileSet_t current_floor_edges;
   RPG_Map_Door_t position_door;
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < floorPlan_in.size_y;
        y++)
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < floorPlan_in.size_x;
          x++)
   {
@@ -283,10 +283,10 @@ RPG_Client_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
   RPG_Graphics_WallTileSet_t current_walls;
   RPG_Map_Door_t position_door;
   bool has_walls = false;
-  for (unsigned long y = 0;
+  for (unsigned int y = 0;
        y < floorPlan_in.size_y;
        y++)
-    for (unsigned long x = 0;
+    for (unsigned int x = 0;
          x < floorPlan_in.size_x;
          x++)
     {

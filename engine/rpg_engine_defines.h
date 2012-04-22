@@ -50,5 +50,6 @@
 #define RPG_ENGINE_DEF_LEVEL_NAME           "default level"
 #define RPG_ENGINE_DEF_LEVEL_FILE           "default_level"
 #define RPG_ENGINE_LEVEL_FILE_EXT           ".level"
+#define RPG_ENGINE_ENTITY_FILE_EXT          ".entity"
 
 #endif

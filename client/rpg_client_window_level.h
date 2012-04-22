@@ -59,6 +59,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
   void toggleMiniMap();
+  void toggleVisionBlend();
   void toggleDoor(const RPG_Map_Position_t&); // door position
 
   // init level properties
@@ -104,6 +105,9 @@ class RPG_Client_Export RPG_Client_WindowLevel
   RPG_Graphics_DoorTileSet_t      myCurrentDoorSet;
   SDL_Surface*                    myOffMapTile;
   SDL_Surface*                    myInvisibleTile;
+  bool                            myDoVisionBlend;
+  SDL_Surface*                    myVisionBlendTile;
+  SDL_Surface*                    myVisionTempTile;
 
   // tiles / position
   RPG_Graphics_FloorEdgeTileMap_t myFloorEdgeTiles;

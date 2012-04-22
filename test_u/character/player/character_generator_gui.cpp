@@ -80,40 +80,43 @@ print_usage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string config_path;
+  std::string base_data_path;
 #ifdef BASEDIR
   config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                         true);
+  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 #else
   config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+  base_data_path = config_path;
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::string path = config_path;
-#ifndef BASEDIR
+  std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifndef BASEDIR
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #else
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #endif
   std::cout << ACE_TEXT("-d [DIR]    : graphics directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #ifndef BASEDIR
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
-#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #ifndef BASEDIR
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("item");
-#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]   : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -157,11 +160,15 @@ process_arguments(const int argc_in,
 
   // init configuration
   std::string config_path;
+  std::string base_data_path;
 #ifdef BASEDIR
   config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                         true);
+  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 #else
   config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+  base_data_path = config_path;
 #endif // #ifdef BASEDIR
 
   graphicsDictionary_out = config_path;
@@ -204,14 +211,13 @@ process_arguments(const int argc_in,
 #endif
   UIfile_out += RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_FILE;
 
-  graphicsDirectory_out = config_path;
-#ifndef BASEDIR
+  graphicsDirectory_out = base_data_path;
   graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#ifndef BASEDIR
   graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #else
-  graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #endif
 
@@ -707,7 +713,7 @@ ACE_TMAIN(int argc_in,
 #ifdef BASEDIR
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #else
-  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif

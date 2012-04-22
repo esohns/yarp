@@ -85,6 +85,4 @@
 #define RPG_GRAPHICS_SDL_HOVEREVENT                    SDL_USEREVENT + 1
 #define RPG_GRAPHICS_SDL_MOUSEMOVEOUT                  SDL_USEREVENT + 2
 
-#define RPG_GRAPHICS_DEF_SPRITE                        SPRITE_HUMAN
-
 #endif

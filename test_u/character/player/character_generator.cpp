@@ -26,6 +26,7 @@
 
 #include <rpg_client_defines.h>
 
+#include <rpg_engine_defines.h>
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
@@ -992,35 +993,21 @@ generate_player()
   return player_p;
 }
 
-RPG_Engine_Entity*
+RPG_Engine_Entity
 generate_entity(const RPG_Player& player_in,
                 const RPG_Graphics_Sprite& sprite_in)
 {
   RPG_TRACE(ACE_TEXT("::generate_entity"));
 
-  RPG_Engine_Entity* entity_p = NULL;
-  entity_p = new(std::nothrow) RPG_Engine_Entity;
-  ACE_ASSERT(entity_p);
-  if (!entity_p)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory, aborting\n")));
+  RPG_Engine_Entity result;
+  result.character = &const_cast<RPG_Player&>(player_in);
+  result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                   std::numeric_limits<unsigned int>::max());
+  result.sprite = sprite_in;
+  result.is_spawned = false;
+  result.activation_timer = -1;
 
-    return NULL;
-  }
-
-  entity_p->character = &const_cast<RPG_Player&>(player_in);
-  entity_p->position = std::make_pair(0, 0);
-  entity_p->sprite = sprite_in;
-//   // *NOTE*: cannot load surface, as SDL hasn't been initialized...
-//   RPG_Graphics_GraphicTypeUnion type;
-//   type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-//   type.sprite = sprite_in;
-//   result.graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // type
-//                                                           false); // don't cache
-//   ACE_ASSERT(result.graphic);
-
-  return entity_p;
+  return result;
 }
 
 void
@@ -1060,22 +1047,17 @@ do_work(const bool& generateEntity_in,
   }
 
   // step2: display menu options
-  RPG_Player* player_p = NULL;
   bool done = false;
   char c = ' ';
   unsigned int numPlayers = 0;
-  RPG_Engine_Entity* entity_p = NULL;
+  RPG_Player* player_p = NULL;
+  RPG_Engine_Entity entity;
   do
   {
     if (player_p)
     {
       delete player_p;
       player_p = NULL;
-    } // end IF
-    if (entity_p)
-    {
-      delete entity_p;
-      entity_p = NULL;
     } // end IF
 
     // step1: generate new player character
@@ -1105,7 +1087,8 @@ do_work(const bool& generateEntity_in,
 #endif
             path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             path += player_p->getName();
-            path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+            path += (generateEntity_in ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT)
+                                       : ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT));
 
             // sanity check
             if (RPG_Common_File_Tools::isReadable(path))
@@ -1131,7 +1114,7 @@ do_work(const bool& generateEntity_in,
                   default:
                   {
                     ACE_DEBUG((LM_ERROR,
-                               ACE_TEXT("unrecognized (gender) option \"%c\", try again\n"),
+                               ACE_TEXT("unrecognized option \"%c\", try again\n"),
                                c));
                     break;
                   }
@@ -1145,9 +1128,9 @@ do_work(const bool& generateEntity_in,
 
             if (generateEntity_in)
             {
-              entity_p = generate_entity(*player_p,
-                                         RPG_GRAPHICS_DEF_SPRITE);
-              if (!RPG_Engine_Common_Tools::saveEntity(*entity_p,
+              entity = generate_entity(*player_p,
+                                       RPG_ENGINE_DEF_ENTITY_SPRITE);
+              if (!RPG_Engine_Common_Tools::saveEntity(entity,
                                                        path))
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
@@ -1172,7 +1155,7 @@ do_work(const bool& generateEntity_in,
           default:
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("unrecognized (gender) option \"%c\", try again\n"),
+                       ACE_TEXT("unrecognized option \"%c\", try again\n"),
                        c));
             break;
           }
@@ -1190,12 +1173,14 @@ do_work(const bool& generateEntity_in,
 #endif
       path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       path += player_p->getName();
-      path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+      path += (generateEntity_in ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT)
+                                 : ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT));
+
       if (generateEntity_in)
       {
-        entity_p = generate_entity(*player_p,
-                                   RPG_GRAPHICS_DEF_SPRITE);
-        if (!RPG_Engine_Common_Tools::saveEntity(*entity_p,
+        entity = generate_entity(*player_p,
+                                 RPG_ENGINE_DEF_ENTITY_SPRITE);
+        if (!RPG_Engine_Common_Tools::saveEntity(entity,
                                                  path))
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
