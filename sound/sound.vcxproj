@@ -132,6 +132,7 @@ popd</Command>
       <SkelTypeSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </SkelTypeSuffix>
       <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">RPG_Sound_Export</ExportSymbol>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CXX_Parser_Mapping_Rule>
   </ItemGroup>
   <ItemGroup>

@@ -79,7 +79,7 @@ File "E:\lpng157\projects\vstudio\Release\libpng15.dll"
 
 File "D:\Archive\Develop\libiconv-2.dll"
 File "D:\Archive\Develop\libxml2-2.dll"
-    
+
 File "E:\Yarp\Yarp\Release\dice.dll"
 File "E:\Yarp\Yarp\Release\chance.dll"
 File "E:\Yarp\Yarp\Release\common.dll"
@@ -97,13 +97,14 @@ File "E:\Yarp\Yarp\Release\stream.dll"
 File "E:\Yarp\Yarp\Release\net.dll"
 File "E:\Yarp\Yarp\Release\protocol.dll"
 File "E:\Yarp\Yarp\Release\client.dll"
-  
+
 File "E:\Yarp\Yarp\Release\test_u_chance_dice.exe"
 File "E:\Yarp\Yarp\Release\test_u_chance_rangeToRoll.exe"
 File "E:\Yarp\Yarp\Release\test_u_character_generator.exe"
 File "E:\Yarp\Yarp\Release\test_u_character_generator_gui.exe"
 File "E:\Yarp\Yarp\Release\test_u_character_parser.exe"
 File "E:\Yarp\Yarp\Release\test_u_client_gui.exe"
+File "E:\Yarp\Yarp\Release\test_u_combat_simulator.exe"
 File "E:\Yarp\Yarp\Release\test_u_graphics_parser.exe"
 File "E:\Yarp\Yarp\Release\test_u_graphics_SDL_gui.exe"
 File "E:\Yarp\Yarp\Release\test_u_item_parser.exe"
@@ -111,6 +112,7 @@ File "E:\Yarp\Yarp\Release\test_u_magic_parser.exe"
 File "E:\Yarp\Yarp\Release\test_u_map_generator.exe"
 File "E:\Yarp\Yarp\Release\test_u_map_parser.exe"
 File "E:\Yarp\Yarp\Release\test_u_map_path_finder.exe"
+File "E:\Yarp\Yarp\Release\test_u_map_path_finder_gui.exe"
 File "E:\Yarp\Yarp\Release\test_u_map_vision.exe"
 File "E:\Yarp\Yarp\Release\test_u_map_vision_gui.exe"
 File "E:\Yarp\Yarp\Release\test_u_monster_parser.exe"
@@ -144,9 +146,14 @@ File "E:\Yarp\magic\rpg_magic.xsd"
 ; Config - glade
 File "E:\Yarp\client\rpg_client.glade"
 File "E:\Yarp\test_u\character\player\character_generator_gui.glade"
+File "E:\Yarp\test_u\net\protocol\IRC_client_channel_tab.glade"
+File "E:\Yarp\test_u\net\protocol\IRC_client_main.glade"
+File "E:\Yarp\test_u\net\protocol\IRC_client_server_page.glade"
 
 ; Config - ini
 File "E:\Yarp\client\rpg_client.ini"
+File "E:\Yarp\net\protocol\IRC_client.ini"
+File "E:\Yarp\net\protocol\servers.ini"
 
 ; Data
 ; set output path to the installation directory
@@ -480,14 +487,16 @@ WriteUninstaller "uninstall.exe"
   
 SectionEnd
 
-; Optional section (can be disabled by the user)
-Section "Start Menu Shortcuts"
+;--------------------------------
 
-CreateDirectory "$SMPROGRAMS\Yarp"
-CreateShortCut "$SMPROGRAMS\Yarp\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-CreateShortCut "$SMPROGRAMS\Yarp\Yarp (MakeNSISW).lnk" "$INSTDIR\Yarp.nsi" "" "$INSTDIR\Yarp.nsi" 0
+; Optional section (can be disabled by the user)
+;Section "Start Menu Shortcuts"
+
+;CreateDirectory "$SMPROGRAMS\Yarp"
+;CreateShortCut "$SMPROGRAMS\Yarp\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
+;CreateShortCut "$SMPROGRAMS\Yarp\Yarp (MakeNSISW).lnk" "$INSTDIR\Yarp.nsi" "" "$INSTDIR\Yarp.nsi" 0
   
-SectionEnd
+;SectionEnd
 
 ;--------------------------------
 

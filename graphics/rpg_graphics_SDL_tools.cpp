@@ -125,7 +125,7 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
 
     return NULL;
   } // end IF
-  else if (modes == reinterpret_cast<SDL_Rect**> (-1))
+  else if (modes == reinterpret_cast<SDL_Rect**>(-1))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("ALL resolutions available (flags: %x)...\n"),
@@ -213,7 +213,7 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
   return screen;
 }
 
-const std::string
+std::string
 RPG_Graphics_SDL_Tools::keyToString(const SDL_keysym& key_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::keyToString"));
@@ -268,7 +268,7 @@ RPG_Graphics_SDL_Tools::keyToString(const SDL_keysym& key_in)
   return result;
 }
 
-const SDL_Color
+SDL_Color
 RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
                                         const SDL_Surface& targetSurface_in)
 {

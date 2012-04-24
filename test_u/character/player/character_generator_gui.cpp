@@ -79,23 +79,20 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path;
-  std::string base_data_path;
+  std::string base_path;
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-  base_data_path = config_path;
-#endif // #ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
@@ -105,7 +102,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d [DIR]    : graphics directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -113,7 +110,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -121,17 +118,17 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-i [FILE]   : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
-#ifndef BASEDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
-#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]   : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("test_u");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("character");
@@ -159,49 +156,46 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init configuration
-  std::string config_path;
-  std::string base_data_path;
+  std::string base_path;
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-  base_data_path = config_path;
-#endif // #ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   graphicsDictionary_out = config_path;
-#ifndef BASEDIR
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
-#endif
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   itemDictionary_out = config_path;
-#ifndef BASEDIR
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
-#endif
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   logToFile_out      = false;
 
   magicDictionary_out = config_path;
-#ifndef BASEDIR
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
-#endif
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   traceInformation_out = false;
 
   UIfile_out = config_path;
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   UIfile_out += ACE_TEXT_ALWAYS_CHAR("test_u");
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UIfile_out += ACE_TEXT_ALWAYS_CHAR("character");
@@ -213,7 +207,7 @@ process_arguments(const int argc_in,
 
   graphicsDirectory_out = base_data_path;
   graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
@@ -653,46 +647,43 @@ ACE_TMAIN(int argc_in,
 #endif
 
   // step1 init/validate configuration
-  std::string config_path;
-  std::string base_data_path;
+  std::string base_path;
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-  base_data_path = config_path;
-#endif // #ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   // step1a: process commandline arguments
   std::string graphicsDictionary = config_path;
-#ifndef BASEDIR
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   graphicsDictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
-#endif
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   std::string itemDictionary = config_path;
-#ifndef BASEDIR
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   itemDictionary += ACE_TEXT_ALWAYS_CHAR("item");
-#endif
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   itemDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   std::string magicDictionary = config_path;
-#ifndef BASEDIR
   magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   magicDictionary += ACE_TEXT_ALWAYS_CHAR("magic");
-#endif
   magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   std::string UIfile = config_path;
   UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   UIfile += ACE_TEXT_ALWAYS_CHAR("test_u");
   UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UIfile += ACE_TEXT_ALWAYS_CHAR("character");
@@ -703,14 +694,14 @@ ACE_TMAIN(int argc_in,
   UIfile += RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_FILE;
 
   std::string schemaRepository = config_path;
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   std::string graphicsDirectory = base_data_path;
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #else
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR("graphics");

@@ -164,6 +164,7 @@ popd</Command>
       <SkelTypeSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </SkelTypeSuffix>
       <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">__declspec(dllexport)</ExportSymbol>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CXX_Parser_Mapping_Rule>
   </ItemGroup>
   <ItemGroup>

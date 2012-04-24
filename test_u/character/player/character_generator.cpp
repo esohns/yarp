@@ -91,39 +91,38 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path;
+  std::string base_path;
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-e        : generate entity") << ACE_TEXT(" [") << CHARACTER_GENERATOR_DEF_GENERATE_ENTITY << ACE_TEXT("]") << std::endl;
   std::string path = config_path;
-#ifndef BASEDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("graphics"); // directory
-#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE] : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
-#ifndef BASEDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("item"); // directory
-#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
-#ifndef BASEDIR
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("magic"); // directory
-#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE]: generate (party of) #players") << ACE_TEXT(" [") << CHARACTER_GENERATOR_DEF_GENERATE_PARTY << ACE_TEXT("; 0:off]") << std::endl;
@@ -146,39 +145,38 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string config_path;
+  std::string base_path;
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
 
   // init results
   generateEntity_out = CHARACTER_GENERATOR_DEF_GENERATE_ENTITY;
 
   itemDictionary_out = config_path;
-#ifndef BASEDIR
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
-#endif
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   magicDictionary_out = config_path;
-#ifndef BASEDIR
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
-#endif
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   graphicsDictionary_out = config_path;
-#ifndef BASEDIR
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
-#endif
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   generateParty_out = CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
@@ -1280,53 +1278,50 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string config_path;
-  std::string base_data_path;
+  std::string base_path;
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-  base_data_path = config_path;
-#endif // #ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   // init configuration
   bool generateEntity          = CHARACTER_GENERATOR_DEF_GENERATE_ENTITY;
 
   std::string itemDictionaryFilename = config_path;
-#ifndef BASEDIR
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("item");
-#endif
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   std::string magicDictionaryFilename = config_path;
-#ifndef BASEDIR
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("magic");
-#endif
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   std::string graphicsDictionaryFilename = config_path;
-#ifndef BASEDIR
   graphicsDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   graphicsDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("graphics");
-#endif
   graphicsDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   graphicsDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   std::string graphicsDirectory = base_data_path;
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
-  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
-#else
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#else
+  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #endif
 
   unsigned int numPartyMembers = CHARACTER_GENERATOR_DEF_GENERATE_PARTY;

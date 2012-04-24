@@ -235,38 +235,35 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string base_data_path;
+  std::string base_path;
 #ifdef BASEDIR
-  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#ifndef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
-#endif
-  std::cout << ACE_TEXT("-f [DIR] : data directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-r       : play random sounds") << ACE_TEXT(" [") << SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS << ACE_TEXT("]") << std::endl;
-  path = base_data_path;
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
 #else
   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#endif // #ifdef DATADIR
+#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  std::cout << ACE_TEXT("-f [DIR] : data directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-r       : play random sounds") << ACE_TEXT(" [") << SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS << ACE_TEXT("]") << std::endl;
+  path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("sound");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-s [FILE]: sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
@@ -288,38 +285,35 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  std::string base_data_path;
+  std::string base_path;
 #ifdef BASEDIR
-  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   dumpDictionary_out = false;
 
   directory_out = base_data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  directory_out += ACE_TEXT_ALWAYS_CHAR("sound");
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#else
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#ifndef BASEDIR
-  directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
-#endif
+#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
 
   playRandomSounds_out = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
 
-  filename_out = base_data_path;
+  filename_out = config_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
-  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#endif // #ifdef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  filename_out += ACE_TEXT_ALWAYS_CHAR("sound");
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
 
   traceInformation_out = false;
@@ -552,38 +546,35 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string base_data_path;
+  std::string base_path;
 #ifdef BASEDIR
-  base_data_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   bool dumpDictionary = false;
 
   std::string soundDirectory = base_data_path;
   soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
-  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  soundDirectory += ACE_TEXT_ALWAYS_CHAR("sound");
   soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#else
   soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#ifndef BASEDIR
-  soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
-#endif
+#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
 
   bool playRandomSounds = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
 
-  std::string filename = base_data_path;
+  std::string filename = config_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
-#endif // #ifdef BASEDIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  filename += ACE_TEXT_ALWAYS_CHAR("sound");
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
 
   bool traceInformation = false;

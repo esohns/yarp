@@ -169,7 +169,7 @@ process_arguments(const int argc_in,
         converter << argumentParser.opt_arg();
         converter >> temp;
         if (temp == -1)
-          maxNumDoorsPerRoom_out = std::numeric_limits<unsigned long>::max();
+          maxNumDoorsPerRoom_out = std::numeric_limits<unsigned int>::max();
 
         break;
       }

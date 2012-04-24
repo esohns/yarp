@@ -21,9 +21,6 @@
 #ifndef RPG_NET_PROTOCOL_DEFINES_H
 #define RPG_NET_PROTOCOL_DEFINES_H
 
-// CONFIGDIR-specific
-#define RPG_NET_PROTOCOL_DEF_CONFIG_SUB                "protocol"
-
 // "\0\0"
 #define YY_END_OF_BUFFER_CHAR                          0
 #define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE     2

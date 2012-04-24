@@ -298,6 +298,29 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
 }
 
 std::string
+RPG_Common_File_Tools::realPath(const std::string& path_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::realPath"));
+
+  // init result(s)
+  std::string result;
+
+  char path[PATH_MAX];
+  if (ACE_OS::realpath(path_in.c_str(),
+                       path) == NULL)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::realpath(\"%s\"): %m, aborting\n"),
+               path_in.c_str()));
+
+    return result;
+  } // end IF
+  result = path;
+
+  return result;
+}
+
+std::string
 RPG_Common_File_Tools::getWorkingDirectory()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getWorkingDirectory"));
@@ -338,12 +361,17 @@ RPG_Common_File_Tools::getDataDirectory(const std::string& baseDir_in,
                ACE_TEXT("not a directory: \"%s\", aborting\n"),
                result.c_str()));
 
-    return std::string();
+    // clean up
+    result.clear();
+
+    return result;
   } // end IF
 
+#if (!defined _DEBUG) && (!defined DEBUG_RELEASE)
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   result += (isConfig_in ? ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB)
                          : ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB));
+#endif
 
   return result;
 }

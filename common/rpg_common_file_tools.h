@@ -39,6 +39,8 @@ class RPG_Common_Export RPG_Common_File_Tools
   static bool loadFile(const std::string&, // FQ filename
                        unsigned char*&);   // return value: memory (array)
 
+  static std::string realPath(const std::string&); // path
+
   static std::string getWorkingDirectory();
   static std::string getDataDirectory(const std::string&, // base (==install) directory
                                       const bool&);       // config ? : data

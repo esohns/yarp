@@ -69,10 +69,10 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
                                  const bool&,  // double-buffer ?
                                  const bool&); // run fullscreen ?
 
-  static const std::string keyToString(const SDL_keysym&);
+  static std::string keyToString(const SDL_keysym&);
 
-  static const SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
-                                         const SDL_Surface&); // target surface
+  static SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
+                                   const SDL_Surface&); // target surface
 
   static SDL_Rect boundingBox(const SDL_Rect&,  // rect 1
                               const SDL_Rect&); // rect 2

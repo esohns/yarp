@@ -58,11 +58,16 @@ RPG_Sound_Common_Tools::init(const std::string& directory_in,
     // sanity check(s)
     if (!RPG_Common_File_Tools::isDirectory(directory_in))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
-                 directory_in.c_str()));
+      // re-try with resolved path
+      std::string resolved_path = RPG_Common_File_Tools::realPath(directory_in);
+      if (!RPG_Common_File_Tools::isDirectory(resolved_path))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
+                   directory_in.c_str()));
 
-      return;
+        return;
+      } // end IF
     } // end IF
     mySoundDirectory = directory_in;
   } // end IF
