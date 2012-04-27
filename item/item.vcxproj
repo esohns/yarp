@@ -188,6 +188,7 @@ popd</Command>
       <NamespaceMap Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">urn:rpg=</NamespaceMap>
       <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">RPG_Item_Export</ExportSymbol>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </CXX_Parser_Mapping_Rule>
   </ItemGroup>
   <ItemGroup>

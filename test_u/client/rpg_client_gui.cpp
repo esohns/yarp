@@ -854,6 +854,7 @@ do_initGUI(const std::string& UIfile_in,
                                                                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
   ACE_ASSERT(filechooser_dialog);
   userData_in.map_filter = gtk_file_filter_new();
+  ACE_ASSERT(userData_in.map_filter);
   if (!userData_in.map_filter)
   {
     ACE_DEBUG((LM_ERROR,
@@ -871,6 +872,7 @@ do_initGUI(const std::string& UIfile_in,
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.map_filter);
   g_object_unref(G_OBJECT(userData_in.map_filter));
   userData_in.entity_filter = gtk_file_filter_new();
+  ACE_ASSERT(userData_in.entity_filter);
   if (!userData_in.entity_filter)
   {
     ACE_DEBUG((LM_ERROR,
@@ -883,7 +885,7 @@ do_initGUI(const std::string& UIfile_in,
     return false;
   } // end IF
   pattern = ACE_TEXT_ALWAYS_CHAR("*");
-  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
   gtk_file_filter_add_pattern(userData_in.entity_filter, pattern.c_str());
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.entity_filter);
   g_object_unref(G_OBJECT(userData_in.entity_filter));
@@ -892,12 +894,20 @@ do_initGUI(const std::string& UIfile_in,
                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME)));
   ACE_ASSERT(about_dialog);
 
+  GtkWidget* equipment_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
+                                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_EQUIPMENTDIALOG_NAME)));
+  ACE_ASSERT(equipment_dialog);
+
   GtkWidget* main_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
                                                            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME)));
   ACE_ASSERT(main_dialog);
-//   GdkWindow* main_dialog_window = gtk_widget_get_window(main_dialog);
-//   gtk_window_set_title(,
-//                        caption.c_str());
+  GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());
+  ACE_ASSERT(image_icon);
+  gtk_window_set_icon(GTK_WINDOW(main_dialog),
+                      gtk_image_get_pixbuf(GTK_IMAGE(image_icon)));
+  //GdkWindow* main_dialog_window = gtk_widget_get_window(main_dialog);
+  //gtk_window_set_title(,
+  //                     caption.c_str());
 
   GtkWidget* main_entry_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
                                                                  ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME)));
@@ -906,7 +916,8 @@ do_initGUI(const std::string& UIfile_in,
                                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME)));
   ACE_ASSERT(entry);
   GtkEntryBuffer* entry_buffer = gtk_entry_buffer_new(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME), // text
-                                                      -1);              // length in bytes (-1: \0-terminated)
+                                                      -1);                                             // length in bytes (-1: \0-terminated)
+  ACE_ASSERT(entry_buffer);
   if (!entry_buffer)
   {
     ACE_DEBUG((LM_ERROR,
@@ -1059,6 +1070,14 @@ do_initGUI(const std::string& UIfile_in,
                    ACE_TEXT_ALWAYS_CHAR("response"),
                    G_CALLBACK(gtk_widget_hide),
                    &about_dialog);
+  g_signal_connect(equipment_dialog,
+                   ACE_TEXT_ALWAYS_CHAR("response"),
+                   G_CALLBACK(gtk_widget_hide),
+                   &equipment_dialog);
+  g_signal_connect(main_entry_dialog,
+                   ACE_TEXT_ALWAYS_CHAR("response"),
+                   G_CALLBACK(gtk_widget_hide),
+                   &main_entry_dialog);
   gpointer userData_p = const_cast<RPG_Client_GTK_CBData_t*>(&userData_in);
   g_signal_connect(main_dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
@@ -1066,10 +1085,6 @@ do_initGUI(const std::string& UIfile_in,
                    //                    G_CALLBACK(gtk_widget_destroyed),
                    //                    &main_dialog,
                    userData_p);
-  g_signal_connect(main_entry_dialog,
-                   ACE_TEXT_ALWAYS_CHAR("response"),
-                   G_CALLBACK(gtk_widget_hide),
-                   &main_entry_dialog);
 
    // step4b: connect custom signals
   GtkButton* button = NULL;
@@ -1183,6 +1198,22 @@ do_initGUI(const std::string& UIfile_in,
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
                    G_CALLBACK(part_game_clicked_GTK_cb),
+                   userData_p);
+
+  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                           ACE_TEXT_ALWAYS_CHAR("equip")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(equip_clicked_GTK_cb),
+                   userData_p);
+
+  button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                           ACE_TEXT_ALWAYS_CHAR("rest")));
+  ACE_ASSERT(button);
+  g_signal_connect(button,
+                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+                   G_CALLBACK(rest_clicked_GTK_cb),
                    userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,

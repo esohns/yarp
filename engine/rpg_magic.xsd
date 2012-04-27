@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+  <!-- include chance_dice schema -->
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
+  <!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
+  <!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
+  <!-- include character schema -->
+  <xsd:include schemaLocation="rpg_character.xsd"/>
+
+<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
+<!--   import chance_dice schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_dice.xsd"/> -->
+<!--   import item schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_item.xsd"/> -->
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Magic: magic-related types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="RPG_Magic_School_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SCHOOL_NONE"/>
+      <!--                               -->
+      <xsd:enumeration value="SCHOOL_ABJURATION"/>
+      <xsd:enumeration value="SCHOOL_CONJURATION"/>
+      <xsd:enumeration value="SCHOOL_DIVINATION"/>
+      <xsd:enumeration value="SCHOOL_ENCHANTMENT"/>
+      <xsd:enumeration value="SCHOOL_EVOCATION"/>
+      <xsd:enumeration value="SCHOOL_ILLUSION"/>
+      <xsd:enumeration value="SCHOOL_NECROMANCY"/>
+      <xsd:enumeration value="SCHOOL_TRANSMUTATION"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_SubSchool_Type">
+    <xsd:restriction base="xsd:string">
+      <!-- SCHOOL_CONJURATION -->
+      <xsd:enumeration value="SUBSCHOOL_SUMMONING"/>
+      <xsd:enumeration value="SUBSCHOOL_CALLING"/>
+      <xsd:enumeration value="SUBSCHOOL_HEALING"/>
+      <xsd:enumeration value="SUBSCHOOL_TELEPORTATION"/>
+      <xsd:enumeration value="SUBSCHOOL_CREATION"/>
+      <!-- SCHOOL_DIVINATION -->
+      <xsd:enumeration value="SUBSCHOOL_SCRYING"/>
+      <!-- SCHOOL_ENCHANTMENT -->
+      <xsd:enumeration value="SUBSCHOOL_CHARM"/>
+      <xsd:enumeration value="SUBSCHOOL_COMPULSION"/>
+      <!-- SCHOOL_ILLUSION -->
+      <xsd:enumeration value="SUBSCHOOL_FIGMENT"/>
+      <xsd:enumeration value="SUBSCHOOL_GLAMER"/>
+      <xsd:enumeration value="SUBSCHOOL_PATTERN"/>
+      <xsd:enumeration value="SUBSCHOOL_PHANTASM"/>
+      <xsd:enumeration value="SUBSCHOOL_SHADOW"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_Descriptor_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DESCRIPTOR_ACID"/>
+      <xsd:enumeration value="DESCRIPTOR_AIR"/>
+      <xsd:enumeration value="DESCRIPTOR_CHAOTIC"/>
+      <xsd:enumeration value="DESCRIPTOR_COLD"/>
+      <xsd:enumeration value="DESCRIPTOR_DARKNESS"/>
+      <xsd:enumeration value="DESCRIPTOR_DEATH"/>
+      <xsd:enumeration value="DESCRIPTOR_EARTH"/>
+      <xsd:enumeration value="DESCRIPTOR_ELECTRICITY"/>
+      <xsd:enumeration value="DESCRIPTOR_EVIL"/>
+      <xsd:enumeration value="DESCRIPTOR_FEAR"/>
+      <xsd:enumeration value="DESCRIPTOR_FIRE"/>
+      <xsd:enumeration value="DESCRIPTOR_FORCE"/>
+      <xsd:enumeration value="DESCRIPTOR_GOOD"/>
+      <xsd:enumeration value="DESCRIPTOR_LANGUAGE_DEPENDENT"/>
+      <xsd:enumeration value="DESCRIPTOR_LAWFUL"/>
+      <xsd:enumeration value="DESCRIPTOR_LIGHT"/>
+      <xsd:enumeration value="DESCRIPTOR_MIND_AFFECTING"/>
+      <xsd:enumeration value="DESCRIPTOR_SONIC"/>
+      <xsd:enumeration value="DESCRIPTOR_WATER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_Domain_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DOMAIN_NONE"/>
+      <!--                               -->
+      <xsd:enumeration value="DOMAIN_AIR"/>
+      <xsd:enumeration value="DOMAIN_ANIMAL"/>
+      <xsd:enumeration value="DOMAIN_CHAOS"/>
+      <xsd:enumeration value="DOMAIN_DEATH"/>
+      <xsd:enumeration value="DOMAIN_DESTRUCTION"/>
+      <xsd:enumeration value="DOMAIN_EARTH"/>
+      <xsd:enumeration value="DOMAIN_EVIL"/>
+      <xsd:enumeration value="DOMAIN_FIRE"/>
+      <xsd:enumeration value="DOMAIN_GOOD"/>
+      <xsd:enumeration value="DOMAIN_HEALING"/>
+      <xsd:enumeration value="DOMAIN_KNOWLEDGE"/>
+      <xsd:enumeration value="DOMAIN_LAW"/>
+      <xsd:enumeration value="DOMAIN_LUCK"/>
+      <xsd:enumeration value="DOMAIN_MAGIC"/>
+      <xsd:enumeration value="DOMAIN_PLANT"/>
+      <xsd:enumeration value="DOMAIN_PROTECTION"/>
+      <xsd:enumeration value="DOMAIN_STRENGTH"/>
+      <xsd:enumeration value="DOMAIN_SUN"/>
+      <xsd:enumeration value="DOMAIN_TRAVEL"/>
+      <xsd:enumeration value="DOMAIN_TRICKERY"/>
+      <xsd:enumeration value="DOMAIN_WAR"/>
+      <xsd:enumeration value="DOMAIN_WATER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_SpellType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPELL_NONE"/>
+      <!--                                    -->
+      <xsd:enumeration value="SPELL_ACID_ARROW"/>
+      <xsd:enumeration value="SPELL_ACID_FOG"/>
+      <xsd:enumeration value="SPELL_ACID_SPLASH"/>
+      <xsd:enumeration value="SPELL_AID"/>
+      <xsd:enumeration value="SPELL_AIR_WALK"/>
+      <xsd:enumeration value="SPELL_ALARM"/>
+      <xsd:enumeration value="SPELL_ALIGN_WEAPON"/>
+      <xsd:enumeration value="SPELL_ALTER_SELF"/>
+      <xsd:enumeration value="SPELL_ANALYZE_DWEOMER"/>
+      <xsd:enumeration value="SPELL_ANIMAL_GROWTH"/>
+      <xsd:enumeration value="SPELL_ANIMAL_MESSENGER"/>
+      <xsd:enumeration value="SPELL_ANIMAL_SHAPES"/>
+      <xsd:enumeration value="SPELL_ANIMAL_TRANCE"/>
+      <xsd:enumeration value="SPELL_ANIMATE_DEAD"/>
+      <xsd:enumeration value="SPELL_ANIMATE_OBJECTS"/>
+      <xsd:enumeration value="SPELL_ANIMATE_PLANTS"/>
+      <xsd:enumeration value="SPELL_ANIMATE_ROPE"/>
+      <xsd:enumeration value="SPELL_ANTILIFE_SHELL"/>
+      <xsd:enumeration value="SPELL_ANTIMAGIC_FIELD"/>
+      <xsd:enumeration value="SPELL_ANTIPATHY"/>
+      <xsd:enumeration value="SPELL_ANTIPLANT_SHELL"/>
+      <xsd:enumeration value="SPELL_ARCANE_EYE"/>
+      <xsd:enumeration value="SPELL_ARCANE_LOCK"/>
+      <xsd:enumeration value="SPELL_ARCANE_MARK"/>
+      <xsd:enumeration value="SPELL_ARCANE_SIGHT"/>
+      <xsd:enumeration value="SPELL_ARCANE_SIGHT_GREATER"/>
+      <xsd:enumeration value="SPELL_ASTRAL_PROJECTION"/>
+      <xsd:enumeration value="SPELL_ATONEMENT"/>
+      <xsd:enumeration value="SPELL_AUGURY"/>
+      <xsd:enumeration value="SPELL_AWAKEN"/>
+      <xsd:enumeration value="SPELL_BALEFUL_POLYMORPH"/>
+      <xsd:enumeration value="SPELL_BANE"/>
+      <xsd:enumeration value="SPELL_BANISHMENT"/>
+      <xsd:enumeration value="SPELL_BARKSKIN"/>
+      <xsd:enumeration value="SPELL_BEARS_ENDURANCE"/>
+      <xsd:enumeration value="SPELL_BEARS_ENDURANCE_MASS"/>
+      <xsd:enumeration value="SPELL_BESTOW_CURSE"/>
+      <xsd:enumeration value="SPELL_BINDING"/>
+      <xsd:enumeration value="SPELL_BLACK_TENTACLES"/>
+      <xsd:enumeration value="SPELL_BLADE_BARRIER"/>
+      <xsd:enumeration value="SPELL_BLASPHEMY"/>
+      <xsd:enumeration value="SPELL_BLESS"/>
+      <xsd:enumeration value="SPELL_BLESS_WATER"/>
+      <xsd:enumeration value="SPELL_BLESS_WEAPON"/>
+      <xsd:enumeration value="SPELL_BLIGHT"/>
+      <xsd:enumeration value="SPELL_BLINDNESS_DEAFNESS"/>
+      <xsd:enumeration value="SPELL_BLINK"/>
+      <xsd:enumeration value="SPELL_BLUR"/>
+      <xsd:enumeration value="SPELL_BREAK_ENCHANTMENT"/>
+      <xsd:enumeration value="SPELL_BULLS_STRENGTH"/>
+      <xsd:enumeration value="SPELL_BULLS_STRENGTH_MASS"/>
+      <xsd:enumeration value="SPELL_BURNING_HANDS"/>
+      <xsd:enumeration value="SPELL_CALL_LIGHTNING"/>
+      <xsd:enumeration value="SPELL_CALL_LIGHTNING_STORM"/>
+      <xsd:enumeration value="SPELL_CALM_ANIMALS"/>
+      <xsd:enumeration value="SPELL_CALM_EMOTIONS"/>
+      <xsd:enumeration value="SPELL_CATS_GRACE"/>
+      <xsd:enumeration value="SPELL_CATS_GRACE_MASS"/>
+      <xsd:enumeration value="SPELL_CAUSE_FEAR"/>
+      <xsd:enumeration value="SPELL_CHAIN_LIGHTNING"/>
+      <xsd:enumeration value="SPELL_CHANGESTAFF"/>
+      <xsd:enumeration value="SPELL_CHAOS_HAMMER"/>
+      <xsd:enumeration value="SPELL_CHARM_ANIMAL"/>
+      <xsd:enumeration value="SPELL_CHARM_MONSTER"/>
+      <xsd:enumeration value="SPELL_CHARM_MONSTER_MASS"/>
+      <xsd:enumeration value="SPELL_CHARM_PERSON"/>
+      <xsd:enumeration value="SPELL_CHILL_METAL"/>
+      <xsd:enumeration value="SPELL_CHILL_TOUCH"/>
+      <xsd:enumeration value="SPELL_CIRCLE_OF_DEATH"/>
+      <xsd:enumeration value="SPELL_CLAIRAUDIENCE_CLAIRVOYANCE"/>
+      <xsd:enumeration value="SPELL_CLENCHED_FIST"/>
+      <xsd:enumeration value="SPELL_CLOAK_OF_CHAOS"/>
+      <xsd:enumeration value="SPELL_CLONE"/>
+      <xsd:enumeration value="SPELL_CLOUDKILL"/>
+      <xsd:enumeration value="SPELL_COLOR_SPRAY"/>
+      <xsd:enumeration value="SPELL_COMMAND"/>
+      <xsd:enumeration value="SPELL_COMMAND_GREATER"/>
+      <xsd:enumeration value="SPELL_COMMAND_PLANTS"/>
+      <xsd:enumeration value="SPELL_COMMAND_UNDEAD"/>
+      <xsd:enumeration value="SPELL_COMMUNE"/>
+      <xsd:enumeration value="SPELL_COMMUNE_WITH_NATURE"/>
+      <xsd:enumeration value="SPELL_COMPREHEND_LANGUAGES"/>
+      <xsd:enumeration value="SPELL_CONE_OF_COLD"/>
+      <xsd:enumeration value="SPELL_CONFUSION"/>
+      <xsd:enumeration value="SPELL_CONFUSION_LESSER"/>
+      <xsd:enumeration value="SPELL_CONSECRATE"/>
+      <xsd:enumeration value="SPELL_CONTACT_OTHER_PLANE"/>
+      <xsd:enumeration value="SPELL_CONTAGION"/>
+      <xsd:enumeration value="SPELL_CONTINGENCY"/>
+      <xsd:enumeration value="SPELL_CONTINUAL_FLAME"/>
+      <xsd:enumeration value="SPELL_CONTROL_PLANTS"/>
+      <xsd:enumeration value="SPELL_CONTROL_UNDEAD"/>
+      <xsd:enumeration value="SPELL_CONTROL_WATER"/>
+      <xsd:enumeration value="SPELL_CONTROL_WEATHER"/>
+      <xsd:enumeration value="SPELL_CONTROL_WINDS"/>
+      <xsd:enumeration value="SPELL_CREATE_FOOD_AND_WATER"/>
+      <xsd:enumeration value="SPELL_CREATE_UNDEAD"/>
+      <xsd:enumeration value="SPELL_CREATE_UNDEAD_GREATER"/>
+      <xsd:enumeration value="SPELL_CREATE_WATER"/>
+      <xsd:enumeration value="SPELL_CREEPING_DOOM"/>
+      <xsd:enumeration value="SPELL_CRUSHING_DESPAIR"/>
+      <xsd:enumeration value="SPELL_CRUSHING_HAND"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_CRITICAL"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_CRITICAL_MASS"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_LIGHT"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_LIGHT_MASS"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_MINOR"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_MODERATE"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_MODERATE_MASS"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_SERIOUS"/>
+      <xsd:enumeration value="SPELL_CURE_WOUNDS_SERIOUS_MASS"/>
+      <xsd:enumeration value="SPELL_CURSE_WATER"/>
+      <xsd:enumeration value="SPELL_DANCING_LIGHTS"/>
+      <xsd:enumeration value="SPELL_DARKNESS"/>
+      <xsd:enumeration value="SPELL_DARKNESS_DEEPER"/>
+      <xsd:enumeration value="SPELL_DARKVISION"/>
+      <xsd:enumeration value="SPELL_DAYLIGHT"/>
+      <xsd:enumeration value="SPELL_DAZE"/>
+      <xsd:enumeration value="SPELL_DAZE_MONSTER"/>
+      <xsd:enumeration value="SPELL_DEATH_KNELL"/>
+      <xsd:enumeration value="SPELL_DEATH_WARD"/>
+      <xsd:enumeration value="SPELL_DEATHWATCH"/>
+      <xsd:enumeration value="SPELL_DEEP_SLUMBER"/>
+      <xsd:enumeration value="SPELL_DELAY_POISON"/>
+      <xsd:enumeration value="SPELL_DELAYED_BLAST_FIREBALL"/>
+      <xsd:enumeration value="SPELL_DEMAND"/>
+      <xsd:enumeration value="SPELL_DESECRATE"/>
+      <xsd:enumeration value="SPELL_DESTRUCTION"/>
+      <xsd:enumeration value="SPELL_DETECT_ANIMALS_PLANTS"/>
+      <xsd:enumeration value="SPELL_DETECT_CHAOS"/>
+      <xsd:enumeration value="SPELL_DETECT_EVIL"/>
+      <xsd:enumeration value="SPELL_DETECT_GOOD"/>
+      <xsd:enumeration value="SPELL_DETECT_LAW"/>
+      <xsd:enumeration value="SPELL_DETECT_MAGIC"/>
+      <xsd:enumeration value="SPELL_DETECT_POISON"/>
+      <xsd:enumeration value="SPELL_DETECT_SCRYING"/>
+      <xsd:enumeration value="SPELL_DETECT_SECRET_DOORS"/>
+      <xsd:enumeration value="SPELL_DETECT_SNARES_AND_PITS"/>
+      <xsd:enumeration value="SPELL_DETECT_THOUGHTS"/>
+      <xsd:enumeration value="SPELL_DETECT_UNDEAD"/>
+      <xsd:enumeration value="SPELL_DICTUM"/>
+      <xsd:enumeration value="SPELL_DIMENSION_DOOR"/>
+      <xsd:enumeration value="SPELL_DIMENSIONAL_ANCHOR"/>
+      <xsd:enumeration value="SPELL_DIMENSIONAL_LOCK"/>
+      <xsd:enumeration value="SPELL_DIMINISH_PLANTS"/>
+      <xsd:enumeration value="SPELL_DISCERN_LIES"/>
+      <xsd:enumeration value="SPELL_DISCERN_LOCATION"/>
+      <xsd:enumeration value="SPELL_DISGUISE_SELF"/>
+      <xsd:enumeration value="SPELL_DISINTEGRATE"/>
+      <xsd:enumeration value="SPELL_DISMISSAL"/>
+      <xsd:enumeration value="SPELL_DISPEL_CHAOS"/>
+      <xsd:enumeration value="SPELL_DISPEL_EVIL"/>
+      <xsd:enumeration value="SPELL_DISPEL_GOOD"/>
+      <xsd:enumeration value="SPELL_DISPEL_LAW"/>
+      <xsd:enumeration value="SPELL_DISPEL_MAGIC"/>
+      <xsd:enumeration value="SPELL_DISPEL_MAGIC_GREATER"/>
+      <xsd:enumeration value="SPELL_DISPLACEMENT"/>
+      <xsd:enumeration value="SPELL_DISRUPT_UNDEAD"/>
+      <xsd:enumeration value="SPELL_DISRUPTING_WEAPON"/>
+      <xsd:enumeration value="SPELL_DIVINATION"/>
+      <xsd:enumeration value="SPELL_DIVINE_FAVOR"/>
+      <xsd:enumeration value="SPELL_DIVINE_POWER"/>
+      <xsd:enumeration value="SPELL_DOMINATE_ANIMAL"/>
+      <xsd:enumeration value="SPELL_DOMINATE_MONSTER"/>
+      <xsd:enumeration value="SPELL_DOMINATE_PERSON"/>
+      <xsd:enumeration value="SPELL_DOOM"/>
+      <xsd:enumeration value="SPELL_DREAM"/>
+      <xsd:enumeration value="SPELL_EAGLES_SPLENDOR"/>
+      <xsd:enumeration value="SPELL_EAGLES_SPLENDOR_MASS"/>
+      <xsd:enumeration value="SPELL_ELEMENTAL_SWARM"/>
+      <xsd:enumeration value="SPELL_ENDURE_ELEMENTS"/>
+      <xsd:enumeration value="SPELL_ENERGY_DRAIN"/>
+      <xsd:enumeration value="SPELL_ENERVATION"/>
+      <xsd:enumeration value="SPELL_ENLARGE_PERSON"/>
+      <xsd:enumeration value="SPELL_ENLARGE_PERSON_MASS"/>
+      <xsd:enumeration value="SPELL_ENTANGLE"/>
+      <xsd:enumeration value="SPELL_ENTHRALL"/>
+      <xsd:enumeration value="SPELL_ENTROPIC_SHIELD"/>
+      <xsd:enumeration value="SPELL_ERASE"/>
+      <xsd:enumeration value="SPELL_ETHEREAL_JAUNT"/>
+      <xsd:enumeration value="SPELL_ETHEREALNESS"/>
+      <xsd:enumeration value="SPELL_EXPEDITIOUS_RETREAT"/>
+      <xsd:enumeration value="SPELL_EXPLOSIVE_RUNES"/>
+      <xsd:enumeration value="SPELL_EYEBITE"/>
+      <xsd:enumeration value="SPELL_FEAR"/>
+      <xsd:enumeration value="SPELL_FEEBLEMIND"/>
+      <xsd:enumeration value="SPELL_FIRE_STORM"/>
+      <xsd:enumeration value="SPELL_GASEOUS_FORM"/>
+      <xsd:enumeration value="SPELL_GOOD_HOPE"/>
+      <xsd:enumeration value="SPELL_HEAL"/>
+      <xsd:enumeration value="SPELL_HEAL_MASS"/>
+      <xsd:enumeration value="SPELL_HEAT_METAL"/>
+      <xsd:enumeration value="SPELL_HEROISM"/>
+      <xsd:enumeration value="SPELL_HOLD_MONSTER"/>
+      <xsd:enumeration value="SPELL_IMPLOSION"/>
+      <xsd:enumeration value="SPELL_INSANITY"/>
+      <xsd:enumeration value="SPELL_INVISIBILITY"/>
+      <xsd:enumeration value="SPELL_MAGIC_WEAPON"/>
+      <xsd:enumeration value="SPELL_MIRACLE"/>
+      <xsd:enumeration value="SPELL_MIRROR_IMAGE"/>
+      <xsd:enumeration value="SPELL_NEUTRALIZE_POISON"/>
+      <xsd:enumeration value="SPELL_PLANE_SHIFT"/>
+      <xsd:enumeration value="SPELL_PLANT_GROWTH"/>
+      <xsd:enumeration value="SPELL_POLYMORPH"/>
+      <xsd:enumeration value="SPELL_POWER_WORD_STUN"/>
+      <xsd:enumeration value="SPELL_PROJECT_IMAGE"/>
+      <xsd:enumeration value="SPELL_REMOVE_CURSE"/>
+      <xsd:enumeration value="SPELL_REMOVE_DISEASE"/>
+      <xsd:enumeration value="SPELL_REMOVE_FEAR"/>
+      <xsd:enumeration value="SPELL_RESTORATION"/>
+      <xsd:enumeration value="SPELL_RESTORATION_GREATER"/>
+      <xsd:enumeration value="SPELL_REVERSE_GRAVITY"/>
+      <xsd:enumeration value="SPELL_SCARE"/>
+      <xsd:enumeration value="SPELL_SEE_INVISIBILITY"/>
+      <xsd:enumeration value="SPELL_SILENT_IMAGE"/>
+      <xsd:enumeration value="SPELL_SLOW"/>
+      <xsd:enumeration value="SPELL_STINKING_CLOUD"/>
+      <xsd:enumeration value="SPELL_STONE_SHAPE"/>
+      <xsd:enumeration value="SPELL_SUGGESTION"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_I"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_III"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_IV"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_V"/>
+      <xsd:enumeration value="SPELL_SUMMON_MONSTER_IX"/>
+      <xsd:enumeration value="SPELL_SYMPATHY"/>
+      <xsd:enumeration value="SPELL_TELEKINESIS"/>
+      <xsd:enumeration value="SPELL_TELEPATHY"/>
+      <xsd:enumeration value="SPELL_TELEPORT_GREATER"/>
+      <xsd:enumeration value="SPELL_TONGUES"/>
+      <xsd:enumeration value="SPELL_TRUE_SEEING"/>
+      <xsd:enumeration value="SPELL_UNHOLY_AURA"/>
+      <xsd:enumeration value="SPELL_UNHOLY_BLIGHT"/>
+      <xsd:enumeration value="SPELL_WISH"/>
+      <xsd:enumeration value="SPELL_WISH_LIMITED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_AbilityClass_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ABILITYCLASS_EXTRAORDINARY"/>
+      <xsd:enumeration value="ABILITYCLASS_SPELLLIKE"/>
+      <xsd:enumeration value="ABILITYCLASS_SUPERNATURAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_AbilityType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ABILITYTYPE_SMITE"/>
+      <xsd:enumeration value="ABILITYTYPE_SMOKE_CLAWS"/>
+      <xsd:enumeration value="ABILITYTYPE_WHIRLWIND_BLAST"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_Type_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_SpellType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="school" type="RPG_Magic_School_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="subSchool" type="RPG_Magic_SubSchool_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="descriptor" type="RPG_Magic_Descriptor_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="counterSpell" type="RPG_Magic_SpellType_Type" use="optional" default="SPELL_NONE"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Magic_CasterClassUnion_Type">
+    <xsd:union memberTypes="RPG_Common_SubClass_Type RPG_Magic_Domain_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_Level_Type">
+    <xsd:sequence>
+      <xsd:element name="casterClass" type="RPG_Magic_CasterClassUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="level" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_Spell_CastingTime_Type">
+    <xsd:sequence>
+      <xsd:element name="rounds" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="action" type="RPG_Common_ActionType_Type" use="optional" default="ACTION_STANDARD"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Magic_Spell_RangeEffect_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="RANGEEFFECT_PERSONAL"/>
+      <xsd:enumeration value="RANGEEFFECT_TOUCH"/>
+      <xsd:enumeration value="RANGEEFFECT_CLOSE"/>
+      <xsd:enumeration value="RANGEEFFECT_MEDIUM"/>
+      <xsd:enumeration value="RANGEEFFECT_LONG"/>
+      <xsd:enumeration value="RANGEEFFECT_UNLIMITED"/>
+      <xsd:enumeration value="RANGEEFFECT_RANGED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_RangeProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="maximum" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="increment" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="effect" type="RPG_Magic_Spell_RangeEffect_Type" use="optional" default="RANGEEFFECT_PERSONAL"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Magic_Spell_Target_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TARGET_SELF"/>
+      <xsd:enumeration value="TARGET_SINGLE"/>
+      <xsd:enumeration value="TARGET_SEVERAL"/>
+      <xsd:enumeration value="TARGET_LOCATION"/>
+      <xsd:enumeration value="TARGET_AREA"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+ <xsd:simpleType name="RPG_Magic_Spell_AreaOfEffect_Type">
+   <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="EFFECT_BURST"/>
+     <xsd:enumeration value="EFFECT_EMANATION"/>
+     <xsd:enumeration value="EFFECT_SPREAD"/>
+   </xsd:restriction>
+ </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_TargetProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="base" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="effect" type="RPG_Magic_Spell_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="shape" type="RPG_Common_AreaOfEffect_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="radius" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="height" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="target" type="RPG_Magic_Spell_Target_Type" use="optional" default="TARGET_SELF"/>
+    <xsd:attribute name="shapeable" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="rangeIsInHD" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="incrementIsReciprocal" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Magic_Spell_Duration_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DURATION_CONCENTRATION"/>
+      <xsd:enumeration value="DURATION_DISCHARGE"/>
+      <xsd:enumeration value="DURATION_INSTANTANEOUS"/>
+      <xsd:enumeration value="DURATION_PERMANENT"/>
+      <xsd:enumeration value="DURATION_TIMED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_DurationProperties_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Common_EffectDuration_Type">
+        <xsd:attribute name="duration" type="RPG_Magic_Spell_Duration_Type" use="optional" default="DURATION_INSTANTANEOUS"/>
+        <xsd:attribute name="dismissible" type="xsd:boolean" use="optional" default="false"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Magic_Spell_Precondition_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PRECONDITION_ALLY"/>
+      <xsd:enumeration value="PRECONDITION_ALIGNMENT"/>
+      <xsd:enumeration value="PRECONDITION_ATTACK_MELEE_ANY"/>
+      <xsd:enumeration value="PRECONDITION_ATTACK_MELEE_RANGED_TOUCH"/>
+      <xsd:enumeration value="PRECONDITION_ATTRIBUTE_MAX"/>
+      <xsd:enumeration value="PRECONDITION_CASTER_PLANE"/>
+      <xsd:enumeration value="PRECONDITION_CONDITION"/>
+      <xsd:enumeration value="PRECONDITION_ENVIRONMENT"/>
+      <xsd:enumeration value="PRECONDITION_HD_MAX"/>
+      <xsd:enumeration value="PRECONDITION_HD_MIN"/>
+      <xsd:enumeration value="PRECONDITION_IMMUNITY_POISON"/>
+      <xsd:enumeration value="PRECONDITION_SPELLLEVEL_MAX"/>
+      <xsd:enumeration value="PRECONDITION_MANUFACTURED"/>
+      <xsd:enumeration value="PRECONDITION_NONMAGICAL"/>
+      <xsd:enumeration value="PRECONDITION_OBJECT"/>
+      <xsd:enumeration value="PRECONDITION_SIGHTLESS"/>
+      <xsd:enumeration value="PRECONDITION_SIZE_MAX"/>
+      <xsd:enumeration value="PRECONDITION_SIZE_RELATIVE"/>
+      <xsd:enumeration value="PRECONDITION_TYPE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Spell_PreconditionProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_Spell_Precondition_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="value" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="condition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="creature" type="RPG_Common_CreatureType_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="environment" type="RPG_Common_Environment_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="reverse" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="baseIsCasterLevel" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Magic_Spell_Effect_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPELLEFFECT_ABILITY_LOSS_MAGICAL_ALL"/>
+      <xsd:enumeration value="SPELLEFFECT_ABILITY_LOSS_MAGICAL_EXTRAORDINARY"/>
+      <xsd:enumeration value="SPELLEFFECT_ABILITY_LOSS_MAGICAL_SPELLLIKE"/>
+      <xsd:enumeration value="SPELLEFFECT_ABILITY_LOSS_MAGICAL_SUPERNATURAL"/>
+      <xsd:enumeration value="SPELLEFFECT_ALIGN_WEAPON"/>
+      <xsd:enumeration value="SPELLEFFECT_ANIMATE_DEAD"/>
+      <xsd:enumeration value="SPELLEFFECT_ANIMATE_OBJECT"/>
+      <xsd:enumeration value="SPELLEFFECT_ATONEMENT"/>
+      <xsd:enumeration value="SPELLEFFECT_AUGURY"/>
+      <xsd:enumeration value="SPELLEFFECT_BANISH_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_BARRIER_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_BARRIER_MAGIC"/>
+      <xsd:enumeration value="SPELLEFFECT_BLESS_WATER"/>
+      <xsd:enumeration value="SPELLEFFECT_BLESS_WEAPON"/>
+      <xsd:enumeration value="SPELLEFFECT_BLIND"/>
+      <xsd:enumeration value="SPELLEFFECT_CALM_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_CHARM_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_COMMAND"/>
+      <xsd:enumeration value="SPELLEFFECT_COMPREHEND_LANGUAGES"/>
+      <xsd:enumeration value="SPELLEFFECT_CONFUSE"/>
+      <xsd:enumeration value="SPELLEFFECT_CONSUME"/>
+      <xsd:enumeration value="SPELLEFFECT_CONTACT_DIETY"/>
+      <xsd:enumeration value="SPELLEFFECT_CONTROL_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_CONTROL_WATER"/>
+      <xsd:enumeration value="SPELLEFFECT_CONTROL_WEATHER"/>
+      <xsd:enumeration value="SPELLEFFECT_CONTROL_WINDS"/>
+      <xsd:enumeration value="SPELLEFFECT_CONTINGENCY"/>
+      <xsd:enumeration value="SPELLEFFECT_CREATE_FOOD_AND_WATER"/>
+      <xsd:enumeration value="SPELLEFFECT_CREATE_WATER"/>
+      <xsd:enumeration value="SPELLEFFECT_CURSE_WATER"/>
+      <xsd:enumeration value="SPELLEFFECT_DAMAGE"/>
+      <xsd:enumeration value="SPELLEFFECT_DARKNESS"/>
+      <xsd:enumeration value="SPELLEFFECT_DARKVISION"/>
+      <xsd:enumeration value="SPELLEFFECT_DAZE"/>
+      <xsd:enumeration value="SPELLEFFECT_DEAFEN"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_ANIMALS_PLANTS"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_MAGIC"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_POISON"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_SCRYING"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_SECRET_DOORS"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_SNARES_AND_PITS"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_THOUGHTS"/>
+      <xsd:enumeration value="SPELLEFFECT_DETECT_UNDEAD"/>
+      <xsd:enumeration value="SPELLEFFECT_DIMENSIONAL_ANCHOR"/>
+      <xsd:enumeration value="SPELLEFFECT_DIMINISH"/>
+      <xsd:enumeration value="SPELLEFFECT_DISCERN_LIES"/>
+      <xsd:enumeration value="SPELLEFFECT_DISGUISE"/>
+      <xsd:enumeration value="SPELLEFFECT_DISINTEGRATE"/>
+      <xsd:enumeration value="SPELLEFFECT_DISPEL_MAGIC"/>
+      <xsd:enumeration value="SPELLEFFECT_ENTANGLE"/>
+      <xsd:enumeration value="SPELLEFFECT_ETHEREAL"/>
+      <xsd:enumeration value="SPELLEFFECT_FASCINATE"/>
+      <xsd:enumeration value="SPELLEFFECT_FEAR"/>
+      <xsd:enumeration value="SPELLEFFECT_GROW"/>
+      <xsd:enumeration value="SPELLEFFECT_HEAL"/>
+      <xsd:enumeration value="SPELLEFFECT_HOLD_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_IDENTIFY"/>
+      <xsd:enumeration value="SPELLEFFECT_IDENTIFY_CONDITION"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_MAGIC_DEATH"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_MAGIC_MIND_AFFECTING"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_POISON"/>
+      <xsd:enumeration value="SPELLEFFECT_IMMUNITY_POSSESSION"/>
+      <xsd:enumeration value="SPELLEFFECT_INVISIBLE"/>
+      <xsd:enumeration value="SPELLEFFECT_KILL"/>
+      <xsd:enumeration value="SPELLEFFECT_KNOCKOUT"/>
+      <xsd:enumeration value="SPELLEFFECT_LEVITATE"/>
+      <xsd:enumeration value="SPELLEFFECT_LIGHT_MAGICAL"/>
+      <xsd:enumeration value="SPELLEFFECT_LOCATE"/>
+      <xsd:enumeration value="SPELLEFFECT_LOCK"/>
+      <xsd:enumeration value="SPELLEFFECT_MARK"/>
+      <xsd:enumeration value="SPELLEFFECT_MESSENGER"/>
+      <xsd:enumeration value="SPELLEFFECT_MISS"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_ARMOR_CLASS"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_ATTACK_ROLL"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_ATTRIBUTE"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_ALL"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_CHECK_ATTRIBUTE_CHARISMA"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_CHECK_SKILL_ALL"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_DAMAGE_ROLL"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_HP"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_LEVEL_CASTER"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_MORALE"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE_ALL"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE_FEAR"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_SAVE_REFLEX"/>
+      <xsd:enumeration value="SPELLEFFECT_MODIFIER_WEAPON_DAMAGE_ROLL"/>
+      <xsd:enumeration value="SPELLEFFECT_PARALYSIS"/>
+      <xsd:enumeration value="SPELLEFFECT_POLYMORPH"/>
+      <xsd:enumeration value="SPELLEFFECT_RAISE_DEAD"/>
+      <xsd:enumeration value="SPELLEFFECT_RESISTANCE_SPELL_LAWFUL"/>
+      <xsd:enumeration value="SPELLEFFECT_SENSOR_AUDIAL"/>
+      <xsd:enumeration value="SPELLEFFECT_SENSOR_VISUAL"/>
+      <xsd:enumeration value="SPELLEFFECT_SLEEP"/>
+      <xsd:enumeration value="SPELLEFFECT_SLOW"/>
+      <xsd:enumeration value="SPELLEFFECT_STUN"/>
+      <xsd:enumeration value="SPELLEFFECT_SUGGESTION"/>
+      <xsd:enumeration value="SPELLEFFECT_SUMMON_CREATURE"/>
+      <xsd:enumeration value="SPELLEFFECT_TELEPORT"/>
+      <xsd:enumeration value="SPELLEFFECT_TELEPORT_INTERPLANAR"/>
+      <xsd:enumeration value="SPELLEFFECT_TRIGGER_ALARM"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+ <xsd:simpleType name="RPG_Magic_Spell_DamageTypeUnion_Type">
+   <xsd:union memberTypes="RPG_Common_PhysicalDamageType_Type RPG_Magic_Descriptor_Type"/>
+ </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Magic_CheckTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Common_Skill_Type RPG_Common_Attribute_Type RPG_Common_BaseCheckTypeUnion_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Magic_Check_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_CheckTypeUnion_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="modifier" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="baseIsCasterLevel" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_CounterMeasure_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Common_CounterMeasure_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="check" type="RPG_Magic_Check_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="spell" type="RPG_Magic_SpellType_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVEREDUCTION_NEGATES"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_Spell_EffectProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_Spell_Effect_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="damage" type="RPG_Magic_Spell_DamageTypeUnion_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="base" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="increment" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrement" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="domain" type="RPG_Magic_Domain_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="creature" type="RPG_Common_CreatureType_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="duration" type="RPG_Common_EffectDuration_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="precondition" type="RPG_Magic_Spell_PreconditionProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="maxRange" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="counterMeasure" type="RPG_Magic_CounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="includeAdjacent" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="incrementIsReciprocal" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_Spell_PropertiesXML_Type">
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Magic_Spell_Type_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="level" type="RPG_Magic_Spell_Level_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="cost" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="time" type="RPG_Magic_Spell_CastingTime_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="range" type="RPG_Magic_Spell_RangeProperties_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="target" type="RPG_Magic_Spell_TargetProperties_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="duration" type="RPG_Magic_Spell_DurationProperties_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="precondition" type="RPG_Magic_Spell_PreconditionProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="effect" type="RPG_Magic_Spell_EffectProperties_Type" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="counterMeasure" type="RPG_Magic_CounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="saveable" type="RPG_Common_SavingThrow_Type" use="optional" default="SAVE_NONE"/>
+    <xsd:attribute name="resistible" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="effectsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_SpellLikeProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Magic_SpellType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="casterLevel" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="duration" type="RPG_Common_Duration_Type" minOccurs="0" maxOccurs="1"/>
+      <!--      <xsd:element name="area" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>-->
+      <xsd:element name="save" type="RPG_Common_SavingThrowCheck_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Magic_Dictionary_Type" id="skip0">
+    <xsd:sequence>
+      <xsd:element name="spell" type="RPG_Magic_Spell_PropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- xml instance document(s) will contain a dictionary of different types of spells -->
+  <xsd:element name="spellDictionary" type="RPG_Magic_Dictionary_Type"/>
+
+</xsd:schema>

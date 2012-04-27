@@ -9,9 +9,11 @@
 
 enum RPG_Item_ArmorCategory
 {
-  ARMORCATEGORY_LIGHT = 0,
+  ARMORCATEGORY_GLOVES = 0,
+  ARMORCATEGORY_LIGHT,
   ARMORCATEGORY_MEDIUM,
   ARMORCATEGORY_HEAVY,
+  ARMORCATEGORY_HELMET,
   ARMORCATEGORY_SHIELD,
   //
   RPG_ITEM_ARMORCATEGORY_MAX,
@@ -34,9 +36,11 @@ class RPG_Item_Export RPG_Item_ArmorCategoryHelper
   inline static void init()
   {
     myRPG_Item_ArmorCategoryToStringTable.clear();
+    myRPG_Item_ArmorCategoryToStringTable.insert(std::make_pair(ARMORCATEGORY_GLOVES, ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_GLOVES")));
     myRPG_Item_ArmorCategoryToStringTable.insert(std::make_pair(ARMORCATEGORY_LIGHT, ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_LIGHT")));
     myRPG_Item_ArmorCategoryToStringTable.insert(std::make_pair(ARMORCATEGORY_MEDIUM, ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_MEDIUM")));
     myRPG_Item_ArmorCategoryToStringTable.insert(std::make_pair(ARMORCATEGORY_HEAVY, ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_HEAVY")));
+    myRPG_Item_ArmorCategoryToStringTable.insert(std::make_pair(ARMORCATEGORY_HELMET, ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_HELMET")));
     myRPG_Item_ArmorCategoryToStringTable.insert(std::make_pair(ARMORCATEGORY_SHIELD, ACE_TEXT_ALWAYS_CHAR("ARMORCATEGORY_SHIELD")));
   };
 

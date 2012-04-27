@@ -68,6 +68,9 @@ class RPG_Client_Export RPG_Client_WindowLevel
             const RPG_Graphics_MapStyle_t&); // map style
   void init();
 
+  // (re)set lighting blend cache
+  void setBlendRadius(const unsigned char&); // radius
+
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
@@ -75,6 +78,11 @@ class RPG_Client_Export RPG_Client_WindowLevel
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
+
+  // debug
+#ifdef _DEBUG
+  void toggleShowCoordinates();
+#endif
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
@@ -96,6 +104,9 @@ class RPG_Client_Export RPG_Client_WindowLevel
   RPG_Client_Engine*              myClient;
   RPG_Client_Action               myClientAction;
   bool                            myDrawMinimap;
+#ifdef _DEBUG
+  bool                            myShowCoordinates;
+#endif
 
   RPG_Graphics_MapStyle_t         myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
@@ -115,6 +126,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
   RPG_Graphics_DoorTileMap_t      myDoorTiles;
 
   SDL_Surface*                    myWallBlend;
+  RPG_Client_BlendingMaskCache_t  myLightingCache;
 
   mutable ACE_Thread_Mutex        myLock;
   // center of displayed area

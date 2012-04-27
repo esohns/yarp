@@ -242,10 +242,12 @@ RPG_Client_Engine::initMap()
 
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_INIT;
-  new_action.position = std::make_pair(0, 0);
+  new_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                       std::numeric_limits<unsigned int>::max());
   new_action.window = myWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
+  new_action.radius = 0;
 
   action(new_action);
 }
@@ -261,10 +263,13 @@ RPG_Client_Engine::redraw()
   // step1: draw map window
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_DRAW;
-  new_action.position = std::make_pair(0, 0);
+  new_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                       std::numeric_limits<unsigned int>::max());
   new_action.window = myWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
+  new_action.radius = 0;
+
   action(new_action);
 
   // step2: refresh the window
@@ -286,6 +291,7 @@ RPG_Client_Engine::setView(const RPG_Map_Position_t& position_in)
   new_action.window = myWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
+  new_action.radius = 0;
 
   action(new_action);
 }
@@ -358,6 +364,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
   client_action.window = NULL;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   client_action.entity_id = 0;
+  client_action.radius = 0;
   switch (command_in)
   {
     case COMMAND_ATTACK:
@@ -429,10 +436,13 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
       return;
     }
-    case COMMAND_E2C_ENTITY_UPDATE:
+    case COMMAND_E2C_ENTITY_POSITION_UPDATE:
     {
       ACE_ASSERT(parameters_in.size() == 2);
-      client_action.command = COMMAND_ENTITY_DRAW;
+
+      // *NOTE*: when using (dynamic) lighting, just redraw the whole lot...
+      client_action.command = COMMAND_WINDOW_DRAW;
+      //client_action.command = COMMAND_ENTITY_DRAW;
       client_action.position = *static_cast<const RPG_Map_Position_t* const>(parameters_in.back());
       client_action.window = myWindow;
       client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(parameters_in.front());
@@ -456,6 +466,15 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
         client_action.command = COMMAND_SET_VIEW;
       } // end IF
+
+      break;
+    }
+    case COMMAND_E2C_ENTITY_VISION_UPDATE:
+    {
+      ACE_ASSERT(parameters_in.size() == 1);
+      client_action.command = COMMAND_SET_VISION_RADIUS;
+      client_action.radius = *static_cast<const unsigned char* const>(parameters_in.back());
+      client_action.window = myWindow;
 
       break;
     }
@@ -655,6 +674,8 @@ RPG_Client_Engine::handleActions()
         RPG_Graphics_Surface::update(dirtyRegion,
                                      (*iterator).window->getScreen());
 
+
+
         break;
       }
       case COMMAND_SET_VIEW:
@@ -698,6 +719,60 @@ RPG_Client_Engine::handleActions()
                                                                          (*iterator).window->getScreen());
 
         // fiddling with the view (probably) invalidates (part of) the cursor BG
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG((*iterator).window->getScreen());
+        SDL_Rect dirty_region = {0, 0, 0, 0};
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(cursor_position.first,
+                                                               cursor_position.second,
+                                                               (*iterator).window->getScreen(),
+                                                               dirty_region);
+        //RPG_Graphics_Surface::update(dirtyRegion,
+        //                             (*iterator).window->getScreen());
+
+        refresh_window = true;
+
+        break;
+      }
+      case COMMAND_SET_VISION_RADIUS:
+      {
+        // sanity check
+        ACE_ASSERT((*iterator).window);
+
+        RPG_Client_WindowLevel* window = dynamic_cast<RPG_Client_WindowLevel*>((*iterator).window);
+        ACE_ASSERT(window);
+        try
+        {
+          window->setBlendRadius((*iterator).radius);
+          window->draw();
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_WindowLevel::setView([%u,%u])/draw(), aborting\n"),
+                     window,
+                     (*iterator).position.first,
+                     (*iterator).position.second));
+
+          return;
+        }
+
+        // fiddling with the vision invalidates the tile highlight BG
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
+        // --> store/draw the new tile highlight (BG)
+        RPG_Map_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+        RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
+                                                                                myEngine->getSize(),
+                                                                                (*iterator).window->getSize(),
+                                                                                (*iterator).window->getView());
+        RPG_Map_Position_t screen_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
+                                                                                   (*iterator).window->getSize(false),
+                                                                                   (*iterator).window->getView());
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_position,
+                                                                            screen_position,
+                                                                            (*iterator).window->getScreen());
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(screen_position,
+                                                                         (*iterator).window->getScreen());
+
+        // fiddling with the vision (probably) invalidates (part of) the cursor BG
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG((*iterator).window->getScreen());
         SDL_Rect dirty_region = {0, 0, 0, 0};
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(cursor_position.first,

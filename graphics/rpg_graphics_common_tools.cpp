@@ -109,12 +109,10 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
 
     myInitialized = false;
   } // end IF
-  else
-  {
-    // init colors
-    if (initSDL_in)
-      RPG_Graphics_SDL_Tools::initColors();
-  } // end ELSE
+
+  // init colors
+  if (initSDL_in)
+    RPG_Graphics_SDL_Tools::initColors();
 
   // init fonts
   if (initSDL_in)
@@ -126,7 +124,7 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
       return;
     } // end IF
 
-  myInitialized = true;
+  myInitialized = initSDL_in;
 }
 
 void
@@ -142,9 +140,7 @@ RPG_Graphics_Common_Tools::fini()
     for (RPG_Graphics_GraphicsCacheIterator_t iter = myGraphicsCache.begin();
          iter != myGraphicsCache.end();
          iter++)
-    {
       SDL_FreeSurface((*iter).image);
-    } // end FOR
     myGraphicsCache.clear();
     myOldestCacheEntry = 0;
 
@@ -152,9 +148,7 @@ RPG_Graphics_Common_Tools::fini()
     for (RPG_Graphics_FontCacheIterator_t iter = myFontCache.begin();
          iter != myFontCache.end();
          iter++)
-    {
       TTF_CloseFont((*iter).second);
-    } // end FOR
     myFontCache.clear();
   } // end lock scope
 

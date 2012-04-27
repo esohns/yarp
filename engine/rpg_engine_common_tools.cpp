@@ -161,7 +161,7 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Character_Monster_Dictionary::init, returning\n")));
+                 ACE_TEXT("caught exception in RPG_Monster_Dictionary::init, returning\n")));
 
       return;
     }

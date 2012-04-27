@@ -40,10 +40,11 @@
       <xsd:enumeration value="COMMAND_STEP"/>
       <xsd:enumeration value="COMMAND_STOP"/>
       <xsd:enumeration value="COMMAND_TRAVEL"/>
-      <!--   ENGINE to CLIENT protocol ONLY ! -->
+      <!-- ENGINE to CLIENT protocol -->
       <xsd:enumeration value="COMMAND_E2C_ENTITY_ADD"/>
       <xsd:enumeration value="COMMAND_E2C_ENTITY_REMOVE"/>
-      <xsd:enumeration value="COMMAND_E2C_ENTITY_UPDATE"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_POSITION_UPDATE"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_VISION_UPDATE"/>
       <xsd:enumeration value="COMMAND_E2C_QUIT"/>
     </xsd:restriction>
   </xsd:simpleType>

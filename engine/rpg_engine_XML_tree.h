@@ -80,13 +80,13 @@ class RPG_Engine_Level_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "../common/rpg_common_environment_XML_tree.h"
+#include "rpg_common_environment_XML_tree.h"
 
-#include "../character/player/rpg_player_XML_tree.h"
+#include "rpg_player_XML_tree.h"
 
-#include "../map/rpg_map_XML_tree.h"
+#include "rpg_map_XML_tree.h"
 
-#include "../graphics/rpg_graphics_XML_tree.h"
+#include "rpg_graphics_XML_tree.h"
 
 class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
 {
@@ -104,7 +104,8 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
     COMMAND_TRAVEL,
     COMMAND_E2C_ENTITY_ADD,
     COMMAND_E2C_ENTITY_REMOVE,
-    COMMAND_E2C_ENTITY_UPDATE,
+    COMMAND_E2C_ENTITY_POSITION_UPDATE,
+    COMMAND_E2C_ENTITY_VISION_UPDATE,
     COMMAND_E2C_QUIT
   };
 
@@ -155,8 +156,8 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
   _xsd_RPG_Engine_Command_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[13];
-  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[13];
+  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[14];
+  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[14];
 };
 
 class RPG_Engine_Export RPG_Engine_EntityMode_XMLTree_Type: public ::xml_schema::string

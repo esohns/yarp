@@ -258,13 +258,16 @@ RPG_Engine::start()
   RPG_Engine_Event spawn_event;
   spawn_event.type = EVENT_ENTITY_SPAWN;
   ACE_ASSERT(inherited2::myLevelMeta.spawn_timer == -1);
-  inherited2::myLevelMeta.spawn_timer = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
-                                                                                                 inherited2::myLevelMeta.spawn_interval,
-                                                                                                 false);
-  ACE_ASSERT(inherited2::myLevelMeta.spawn_timer != -1);
-  if (inherited2::myLevelMeta.spawn_timer == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to schedule spawn timer, continuing\n")));
+  if (inherited2::myLevelMeta.spawn_interval != ACE_Time_Value::zero)
+  {
+    inherited2::myLevelMeta.spawn_timer = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
+                                                                                                   inherited2::myLevelMeta.spawn_interval,
+                                                                                                   false);
+    ACE_ASSERT(inherited2::myLevelMeta.spawn_timer != -1);
+    if (inherited2::myLevelMeta.spawn_timer == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to schedule spawn timer, continuing\n")));
+  } // end IF
 }
 
 void
@@ -569,9 +572,26 @@ RPG_Engine::setActive(const RPG_Engine_EntityID_t& id_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::setActive"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-  myActivePlayer = id_in;
+    myActivePlayer = id_in;
+  } // end lock scope
+
+  // notify client window
+  unsigned char visible_radius = getVisibleRadius(id_in);
+  RPG_Engine_ClientParameters_t parameters;
+  parameters.push_back(&visible_radius);
+  try
+  {
+    myClient->notify(COMMAND_E2C_ENTITY_VISION_UPDATE, parameters);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION_UPDATE).c_str()));
+  }
 }
 
 RPG_Engine_EntityID_t
@@ -1201,7 +1221,7 @@ RPG_Engine::handleEntities()
           } // end IF
           *position = (*iterator).second->position;
           parameters->push_back(position);
-          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_UPDATE, parameters));
+          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_POSITION_UPDATE, parameters));
 
           break;
         }
@@ -1267,13 +1287,13 @@ RPG_Engine::handleEntities()
   for (RPG_Engine_ClientNotificationsConstIterator_t iterator = notifications.begin();
        iterator != notifications.end();
        iterator++)
-    if ((*iterator).second)
-    {
-      for (RPG_Engine_ClientParametersConstIterator_t iterator2 = (*iterator).second->begin();
-           iterator2 != (*iterator).second->end();
-           iterator2++)
-        delete (*iterator2);
+  {
+    for (RPG_Engine_ClientParametersConstIterator_t iterator2 = (*iterator).second->begin();
+         iterator2 != (*iterator).second->end();
+         iterator2++)
+      delete (*iterator2);
 
-      delete (*iterator).second;
-    } // end IF
+    ACE_ASSERT((*iterator).second);
+    delete (*iterator).second;
+  } // end FOR
 }

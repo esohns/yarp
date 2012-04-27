@@ -106,7 +106,7 @@ RPG_Graphics_Surface::~RPG_Graphics_Surface()
     SDL_FreeSurface(mySurface);
 }
 
-const RPG_Graphics_GraphicTypeUnion
+RPG_Graphics_GraphicTypeUnion
 RPG_Graphics_Surface::type() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::type"));
@@ -916,10 +916,10 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
 }
 
 void
-RPG_Graphics_Surface::shade(const Uint8& opacity_in,
+RPG_Graphics_Surface::alpha(const Uint8& opacity_in,
                             SDL_Surface& targetImage_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::shade"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::alpha"));
 
   // *NOTE*: SDL_SetAlpha() will not work, as transparent pixels should remain that way...
   // --> do it manually
@@ -955,10 +955,10 @@ RPG_Graphics_Surface::shade(const Uint8& opacity_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
+RPG_Graphics_Surface::alpha(const SDL_Surface& sourceImage_in,
                             const Uint8& opacity_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::shade"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::alpha"));
 
   SDL_Surface* result = NULL;
   result = RPG_Graphics_Surface::copy(sourceImage_in);

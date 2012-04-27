@@ -3,7 +3,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-c $(ProjectDir)..\client\rpg_client.ini -e $(ProjectDir)..\character\monster\rpg_monster.xml -f $(TEMP)\default_map.txt -g $(ProjectDir)..\graphics\rpg_graphics.xml -i $(ProjectDir)..\item\rpg_item.xml -m $(ProjectDir)..\magic\rpg_magic.xml -s $(ProjectDir)..\sound\rpg_sound.xml -t -u $(ProjectDir)..\client\rpg_client.glade</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-c $(ProjectDir)..\client\rpg_client.ini -e $(ProjectDir)..\character\monster\rpg_monster.xml -f $(TEMP)\default_level.level -g $(ProjectDir)..\graphics\rpg_graphics.xml -i $(ProjectDir)..\item\rpg_item.xml -m $(ProjectDir)..\magic\rpg_magic.xml -s $(ProjectDir)..\sound\rpg_sound.xml -t -u $(ProjectDir)..\client\rpg_client.glade</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommandArguments>-c $(ProjectDir)..\client\rpg_client.ini -e $(ProjectDir)..\character\monster\rpg_monster.xml -f $(TEMP)\default_level.level -g $(ProjectDir)..\graphics\rpg_graphics.xml -i $(ProjectDir)..\item\rpg_item.xml -m $(ProjectDir)..\magic\rpg_magic.xml -r $(ProjectDir)..\engine -s $(ProjectDir)..\sound\rpg_sound.xml -t -u $(ProjectDir)..\client\rpg_client.glade</LocalDebuggerCommandArguments>

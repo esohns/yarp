@@ -56,7 +56,7 @@ class RPG_Graphics_Export RPG_Graphics_Surface
             const bool&);                         // assume ownership ?
   void init(SDL_Surface*, // SDL surface
             const bool&); // assume ownership ?
-  const RPG_Graphics_GraphicTypeUnion type() const;
+  RPG_Graphics_GraphicTypeUnion type() const;
   // *WARNING*: NEVER SDL_FreeSurface() the return argument !
   SDL_Surface* surface() const;
 
@@ -104,10 +104,10 @@ class RPG_Graphics_Export RPG_Graphics_Surface
                       const Uint32&,   // color
                       SDL_Surface*);   // target surface (e.g. screen)
 
-  static void shade(const Uint8&,  // alpha (0: transparent --> 255: opaque)
+  static void alpha(const Uint8&,  // alpha (0: transparent --> 255: opaque)
                     SDL_Surface&); // target surface
   // *NOTE*: results need to be SDL_FreeSurface()d !
-  static SDL_Surface* shade(const SDL_Surface&,               // source surface
+  static SDL_Surface* alpha(const SDL_Surface&,               // source surface
                             const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
   static void clear(SDL_Surface*); // target surface
 

@@ -172,7 +172,7 @@ RPG_Player_Player_Base::init(// base attributes
   myExperience = experience_in;
 }
 
-RPG_Character_Gender
+const RPG_Character_Gender&
 RPG_Player_Player_Base::getGender() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getGender"));
@@ -196,7 +196,7 @@ RPG_Player_Player_Base::getClass() const
   return myClass;
 }
 
-RPG_Character_OffHand
+const RPG_Character_OffHand&
 RPG_Player_Player_Base::getOffHand() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getOffHand"));

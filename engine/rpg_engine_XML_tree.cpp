@@ -401,11 +401,11 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_Command_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Engine_Command_XMLTree_Type_indexes_,
-                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 13,
+                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 14,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 13 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 14 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -414,7 +414,7 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_literals_[13] =
+_xsd_RPG_Engine_Command_XMLTree_Type_literals_[14] =
 {
   "COMMAND_ATTACK",
   "COMMAND_ATTACK_FULL",
@@ -427,12 +427,13 @@ _xsd_RPG_Engine_Command_XMLTree_Type_literals_[13] =
   "COMMAND_TRAVEL",
   "COMMAND_E2C_ENTITY_ADD",
   "COMMAND_E2C_ENTITY_REMOVE",
-  "COMMAND_E2C_ENTITY_UPDATE",
+  "COMMAND_E2C_ENTITY_POSITION_UPDATE",
+  "COMMAND_E2C_ENTITY_VISION_UPDATE",
   "COMMAND_E2C_QUIT"
 };
 
 const RPG_Engine_Command_XMLTree_Type::value RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[13] =
+_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[14] =
 {
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK_FULL,
@@ -440,8 +441,9 @@ _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[13] =
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_DOOR_CLOSE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_DOOR_OPEN,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_ADD,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_POSITION_UPDATE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_REMOVE,
-  ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_UPDATE,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_VISION_UPDATE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_QUIT,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_SEARCH,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_STEP,

@@ -48,7 +48,7 @@ RPG_Item_Base::~RPG_Item_Base()
   RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->deregisterItem(this);
 }
 
-const RPG_Item_Type
+const RPG_Item_Type&
 RPG_Item_Base::getType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Base::getType"));

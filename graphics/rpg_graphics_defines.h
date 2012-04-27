@@ -52,14 +52,16 @@
 #define RPG_GRAPHICS_TILE_FLOOR_WIDTH                  109 // pixels
 #define RPG_GRAPHICS_TILE_FLOOR_HEIGHT                 44  // pixels
 
-// *TODO*: some are south/east are 56, north/west 57...
+// *TODO*: some south/east are 56, north/west 57...
 #define RPG_GRAPHICS_TILE_WALL_WIDTH                   57 // pixels
 #define RPG_GRAPHICS_TILE_WALL_HEIGHT                  98 // pixels
 #define RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF             66 // pixels
 
-// *NOTE*: 0.0: transparent --> 1.0: opaque
+// *NOTE*: 0.0: transparent --> 1.0: opaque (black)
+// used for tile shading (to black)
 #define RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY          0.6
 #define RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY          0.8
+#define RPG_GRAPHICS_TILE_DEF_PREV_SEEN_OPACITY        0.9
 
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY        400 // ms
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN      20 // pixels
@@ -73,8 +75,7 @@
 #define RPG_GRAPHICS_DEF_DICTIONARY_FILE               "rpg_graphics.xml"
 // #define RPG_GRAPHICS_DEF_DUMP_DIR                      "/var/tmp"
 
-// CONFIG/DATADIR-specific
-//#define RPG_GRAPHICS_DEF_CONFIG_SUB                    "graphics"
+// DATADIR-specific
 #define RPG_GRAPHICS_DEF_DATA_SUB                      "graphics"
 
 // buffer for printing keyboard events (debug info)

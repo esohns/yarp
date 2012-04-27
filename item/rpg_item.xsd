@@ -259,9 +259,11 @@
 
   <xsd:simpleType name="RPG_Item_ArmorCategory_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ARMORCATEGORY_GLOVES"/>
       <xsd:enumeration value="ARMORCATEGORY_LIGHT"/>
       <xsd:enumeration value="ARMORCATEGORY_MEDIUM"/>
       <xsd:enumeration value="ARMORCATEGORY_HEAVY"/>
+      <xsd:enumeration value="ARMORCATEGORY_HELMET"/>
       <xsd:enumeration value="ARMORCATEGORY_SHIELD"/>
     </xsd:restriction>
   </xsd:simpleType>

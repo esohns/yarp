@@ -190,6 +190,7 @@ popd</Command>
       </SkelTypeSuffix>
       <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">RPG_Common_Export</ExportSymbol>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </CXX_Parser_Mapping_Rule>
     <CXX_Parser_Mapping_Rule Include="rpg_common_environment.xsd">
       <FileType>XSD</FileType>
@@ -204,6 +205,7 @@ popd</Command>
       <SkelTypeSuffix Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </SkelTypeSuffix>
       <ExportSymbol Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">__declspec(dllexport)</ExportSymbol>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </CXX_Parser_Mapping_Rule>
   </ItemGroup>
   <ItemGroup>

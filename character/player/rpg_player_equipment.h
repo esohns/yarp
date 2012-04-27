@@ -43,8 +43,9 @@ class RPG_Player_Export RPG_Player_Equipment
   virtual ~RPG_Player_Equipment();
 
   // *NOTE*: equipped items SHALL be part of the inventory !
-  void equip(const RPG_Item_ID_t&, // item ID
-             const RPG_Character_EquipmentSlot&); // where ?
+  void equip(const RPG_Item_ID_t&,                                    // item ID
+             const RPG_Character_EquipmentSlot& = EQUIPMENTSLOT_ANY); // where ?
+  void unequip(const RPG_Item_ID_t&); // what ?
   void unequip(const RPG_Character_EquipmentSlot&); // where ?
   void strip();
 
@@ -57,7 +58,8 @@ class RPG_Player_Export RPG_Player_Equipment
   // light source in EQUIPMENTSLOT_LEFT/RIGHT_HAND, if any
   RPG_Item_CommodityLight getLightSource() const;
 
-  bool isEquipped(const RPG_Item_ID_t&) const; // item ID
+  bool isEquipped(const RPG_Item_ID_t&,                // item ID
+                  RPG_Character_EquipmentSlot&) const; // return value: slot (if any)
 
   // dump equipment
   void dump() const;
@@ -67,8 +69,8 @@ class RPG_Player_Export RPG_Player_Equipment
 
  private:
   // safety measures
-//   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Equipment(const RPG_Player_Equipment&));
-//   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Equipment& operator=(const RPG_Player_Equipment&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Equipment(const RPG_Player_Equipment&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Equipment& operator=(const RPG_Player_Equipment&));
 };
 
 #endif

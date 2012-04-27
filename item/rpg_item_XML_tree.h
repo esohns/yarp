@@ -101,11 +101,11 @@ class RPG_Item_DictionaryXML_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "../chance/dice/rpg_dice_XML_tree.h"
+#include "rpg_dice_XML_tree.h"
 
-#include "../common/rpg_common_XML_tree.h"
+#include "rpg_common_XML_tree.h"
 
-#include "../magic/rpg_magic_XML_tree.h"
+#include "rpg_magic_XML_tree.h"
 
 class RPG_Item_Export RPG_Item_Type_XMLTree_Type: public ::xml_schema::string
 {
@@ -1692,9 +1692,11 @@ class RPG_Item_Export RPG_Item_ArmorCategory_XMLTree_Type: public ::xml_schema::
   public:
   enum value
   {
+    ARMORCATEGORY_GLOVES,
     ARMORCATEGORY_LIGHT,
     ARMORCATEGORY_MEDIUM,
     ARMORCATEGORY_HEAVY,
+    ARMORCATEGORY_HELMET,
     ARMORCATEGORY_SHIELD
   };
 
@@ -1745,8 +1747,8 @@ class RPG_Item_Export RPG_Item_ArmorCategory_XMLTree_Type: public ::xml_schema::
   _xsd_RPG_Item_ArmorCategory_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Item_ArmorCategory_XMLTree_Type_literals_[4];
-  static const value _xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_[4];
+  static const char* const _xsd_RPG_Item_ArmorCategory_XMLTree_Type_literals_[6];
+  static const value _xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_[6];
 };
 
 class RPG_Item_Export RPG_Item_ArmorType_XMLTree_Type: public ::xml_schema::string

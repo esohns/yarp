@@ -60,10 +60,10 @@ class RPG_Player_Export RPG_Player_Player_Base
   virtual ~RPG_Player_Player_Base();
 
   // retrieve basic player character data
-  RPG_Character_Gender getGender() const;
+  const RPG_Character_Gender& getGender() const;
   const RPG_Character_Race_t& getRace() const;
   const RPG_Character_Class& getClass() const;
-  RPG_Character_OffHand getOffHand() const;
+  const RPG_Character_OffHand& getOffHand() const;
 
   unsigned int getExperience() const;
   // compute dynamically from class/XP

@@ -52,48 +52,114 @@ RPG_Player_Equipment::equip(const RPG_Item_ID_t& itemID_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::equip"));
 
-  // *TODO*: auto-choose appropriate slot
-  ACE_ASSERT(slot_in != EQUIPMENTSLOT_ANY);
+  // sanity check(s)
+  ACE_ASSERT(slot_in != RPG_CHARACTER_EQUIPMENTSLOT_INVALID);
 
-  // *NOTE*: is there something else currently equipped in that slot ?
-  // --> unequip it first
-  RPG_Player_EquipmentConstIterator_t iterator = myEquipment.find(slot_in);
-  if (iterator != myEquipment.end())
+  RPG_Character_EquipmentSlots slots;
+  slots.is_inclusive = false;
+  RPG_Player_EquipmentConstIterator_t equipment_iterator;
+
+  // auto-choose appropriate slot ?
+  if (slot_in == EQUIPMENTSLOT_ANY)
   {
-    // check: dual-handed item ?
-    if ((slot_in == EQUIPMENTSLOT_HAND_LEFT) ||
-        (slot_in == EQUIPMENTSLOT_HAND_RIGHT))
+    RPG_Item_Common_Tools::item2Slot(itemID_in, slots);
+    ACE_ASSERT(!slots.slots.empty());
+
+    if (!slots.is_inclusive)
     {
-      RPG_Character_EquipmentSlot other_hand = ((slot_in == EQUIPMENTSLOT_HAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
-                                                                                     : EQUIPMENTSLOT_HAND_LEFT);
-      RPG_Player_EquipmentConstIterator_t iterator2 = myEquipment.find(other_hand);
-      if (iterator2 != myEquipment.end())
-        if ((*iterator2).second == (*iterator).second)
-          myEquipment.erase(iterator2);
+      // (try to) find a suitable (free !) slot
+      RPG_Character_EquipmentSlot free_slot = RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
+      for (RPG_Character_EquipmentSlotsIterator_t iterator = slots.slots.begin();
+           iterator != slots.slots.end();
+           iterator++)
+      {
+        equipment_iterator = myEquipment.find(*iterator);
+        if (equipment_iterator == myEquipment.end())
+        {
+          // --> found free slot
+          free_slot = *iterator;
+
+          break;
+        } // end IF
+      } // end FOR
+
+      // no free slot ? --> unequip something
+      if (free_slot == RPG_CHARACTER_EQUIPMENTSLOT_INVALID)
+      {
+        free_slot = slots.slots.front();
+        equipment_iterator = myEquipment.find(free_slot);
+        ACE_ASSERT(equipment_iterator != myEquipment.end());
+        unequip((*equipment_iterator).second);
+
+        slots.slots.clear();
+        slots.slots.push_back(free_slot);
+      } // end IF
+    } // end IF
+  } // end IF
+  else
+    slots.slots.push_back(slot_in);
+  ACE_ASSERT(!slots.slots.empty());
+
+  // debug info
+  RPG_Item_Base* handle = NULL;
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(itemID_in, handle))
+  {
+    // debug info
+    ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("invalid item ID (was: %u), aborting\n"),
+                itemID_in));
+
+    return;
+  } // end IF
+  ACE_ASSERT(handle);
+
+  for (RPG_Character_EquipmentSlotsIterator_t iterator = slots.slots.begin();
+       iterator != slots.slots.end();
+       iterator++)
+  {
+    // occupied ? --> unequip first
+    unequip(*iterator);
+
+    myEquipment.insert(std::make_pair(*iterator, itemID_in));
+
+    // debug info
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("equipped item (ID: %d, type: \"%s\") @ \"%s\"\n"),
+               itemID_in,
+               RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str(),
+               RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(*iterator).c_str()));
+  } // end FOR
+}
+
+void
+RPG_Player_Equipment::unequip(const RPG_Item_ID_t& itemID_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::unequip"));
+
+  RPG_Player_EquipmentConstIterator_t iterator;
+  while (true)
+  {
+    for (iterator = myEquipment.begin();
+         iterator != myEquipment.end();
+         iterator++)
+      if ((*iterator).second == itemID_in)
+        break;
+
+    // found an entry ?
+    if (iterator != myEquipment.end())
+    {
+      // debug info
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("unequipped \"%s\"\n"),
+                 RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str()));
+      
+      myEquipment.erase(iterator);
+
+      continue;
     } // end IF
 
-    myEquipment.erase(iterator);
-  } // end IF
-
-  myEquipment.insert(std::make_pair(slot_in, itemID_in));
-
-   //// debug info
-   //RPG_Item_Base* handle = NULL;
-   //if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->getItem(itemID_in, handle))
-   //{
-   //  // debug info
-   //  ACE_DEBUG((LM_ERROR,
-   //             ACE_TEXT("invalid item ID: %d, aborting\n"),
-   //             itemID_in));
-
-   //  return;
-   //} // end IF
-   //ACE_ASSERT(handle);
-   //ACE_DEBUG((LM_DEBUG,
-   //           ACE_TEXT("equipped item (ID: %d, type: \"%s\") @ \"%s\"\n"),
-   //           itemID_in,
-   //           RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str(),
-   //           RPG_Player_EquipmentSlotHelper::RPG_Player_EquipmentSlotToString(slot_in).c_str()));
+    break; // ...done
+  } // end WHILE
 }
 
 void
@@ -101,15 +167,23 @@ RPG_Player_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::unequip"));
 
-  // sanity check
+  // sanity check(s)
   if (slot_in == EQUIPMENTSLOT_ANY)
+  {
     strip();
 
-  myEquipment.erase(slot_in);
+    return;
+  } // end IF
+  RPG_Player_EquipmentConstIterator_t iterator = myEquipment.find(slot_in);
+  if (iterator == myEquipment.end())
+    return;
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("unequipped \"%s\"\n"),
-//              RPG_Player_EquipmentSlotHelper::RPG_Player_EquipmentSlotToString(slot_in).c_str()));
+  myEquipment.erase(iterator);
+
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("unequipped \"%s\"\n"),
+             RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(slot_in).c_str()));
 }
 
 void
@@ -119,8 +193,9 @@ RPG_Player_Equipment::strip()
 
   myEquipment.clear();
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("unequipped ALL\n")));
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("unequipped ALL\n")));
 }
 
 RPG_Item_WeaponType
@@ -333,15 +408,23 @@ RPG_Player_Equipment::getLightSource() const
 }
 
 bool
-RPG_Player_Equipment::isEquipped(const RPG_Item_ID_t& itemID_in) const
+RPG_Player_Equipment::isEquipped(const RPG_Item_ID_t& itemID_in,
+                                 RPG_Character_EquipmentSlot& slot_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::isEquipped"));
+
+  // init return value(s)
+  slot_out = RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
 
   for (RPG_Player_EquipmentConstIterator_t iterator = myEquipment.begin();
        iterator != myEquipment.end();
        iterator++)
     if ((*iterator).second == itemID_in)
+    {
+      slot_out = (*iterator).first;
+
       return true;
+    } // end IF
 
   return false;
 }

@@ -142,6 +142,7 @@ enum RPG_Client_Command
   COMMAND_CURSOR_SET,
   COMMAND_ENTITY_DRAW,
   COMMAND_SET_VIEW,
+  COMMAND_SET_VISION_RADIUS,
   COMMAND_TILE_HIGHLIGHT_DRAW,
   COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG,
   COMMAND_TILE_HIGHLIGHT_RESTORE_BG,
@@ -172,6 +173,7 @@ struct RPG_Client_Action
   RPG_Map_Path_t        path;
   RPG_Map_Position_t    source;
   RPG_Map_Positions_t   positions;
+  unsigned char         radius; // map squares
 };
 typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
 typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;
@@ -202,5 +204,8 @@ enum RPG_Client_SelectionMode
 
 typedef std::map<RPG_Engine_EntityID_t, RPG_Map_Positions_t> RPG_Client_SeenPositions_t;
 typedef RPG_Client_SeenPositions_t::const_iterator RPG_Client_SeenPositionsConstIterator_t;
+
+typedef std::vector<SDL_Surface*> RPG_Client_BlendingMaskCache_t;
+typedef RPG_Client_BlendingMaskCache_t::iterator RPG_Client_BlendingMaskCacheIterator_t;
 
 #endif

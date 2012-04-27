@@ -61,6 +61,173 @@
 #include <sstream>
 
 void
+update_equipment(const RPG_Client_GTK_CBData_t& data_in)
+{
+  RPG_TRACE(ACE_TEXT("::update_equipment"));
+
+  // sanity check(s)
+  ACE_ASSERT(data_in.xml);
+  ACE_ASSERT(data_in.entity.character);
+  ACE_ASSERT(data_in.entity.character->isPlayerCharacter());
+  RPG_Player* player = dynamic_cast<RPG_Player*>(data_in.entity.character);
+  ACE_ASSERT(player);
+
+  std::string text;
+  std::stringstream converter;
+  GtkWidget* current = NULL;
+
+  // step1: list equipment
+  current = GTK_WIDGET(glade_xml_get_widget(data_in.xml,
+                                            ACE_TEXT_ALWAYS_CHAR("equipment_vbox")));
+  ACE_ASSERT(current);
+  GList* entries = gtk_container_get_children(GTK_CONTAINER(current));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    for (GList* iterator = entries;
+         iterator;
+         iterator = g_list_next(iterator))
+    {
+      // *NOTE*: effectively removes the widget from the container...
+      gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    } // end FOR
+
+    g_list_free(entries);
+  } // end IF
+  GtkWidget* current_box, *check_button, *label = NULL;
+  RPG_Player_Equipment& player_equipment = player->getEquipment();
+  RPG_Item_Base* item = NULL;
+  RPG_Character_EquipmentSlot equipment_slot;
+  const RPG_Player_Inventory& player_inventory = player->getInventory();
+  std::string widget_name;
+  for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin();
+       iterator != player_inventory.myItems.end();
+       iterator++)
+  {
+    item = NULL;
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
+                                                              item))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item (ID: %d), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+    ACE_ASSERT(item);
+    switch (item->getType())
+    {
+      case ITEM_ARMOR:
+      {
+        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item);
+        ACE_ASSERT(armor);
+
+        text = RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
+
+        break;
+      }
+      case ITEM_COMMODITY:
+      {
+        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(item);
+        ACE_ASSERT(commodity);
+
+        RPG_Item_CommodityUnion commodity_type = commodity->getCommoditySubType();
+        switch (commodity_type.discriminator)
+        {
+          case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
+          {
+            text = RPG_Common_Tools::enumToString(RPG_Item_CommodityBeverageHelper::RPG_Item_CommodityBeverageToString(commodity_type.commoditybeverage));
+
+            break;
+          }
+          case RPG_Item_CommodityUnion::COMMODITYLIGHT:
+          {
+            text = RPG_Common_Tools::enumToString(RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString(commodity_type.commoditylight));
+
+            break;
+          }
+          default:
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid commodity subtype (was: %d), aborting\n"),
+                       commodity_type.discriminator));
+
+            break;
+          }
+        } // end SWITCH
+
+        break;
+      }
+      case ITEM_WEAPON:
+      {
+        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(item);
+        ACE_ASSERT(weapon);
+
+        // *TODO*: pretty-print this string
+        text = RPG_Common_Tools::enumToString(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()), false); // don't strip leading "xxx_"
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
+                   RPG_Item_TypeHelper::RPG_Item_TypeToString(item->getType()).c_str()));
+
+        break;
+      }
+    } // end SWITCH
+
+    current_box = NULL;
+    current_box = gtk_hbox_new(TRUE, // homogeneous
+                               0);   // spacing
+    ACE_ASSERT(current_box);
+    label = NULL;
+    label = gtk_label_new(text.c_str());
+    ACE_ASSERT(label);
+    gtk_box_pack_start(GTK_BOX(current_box), label,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+    check_button = NULL;
+    check_button = gtk_check_button_new();
+    ACE_ASSERT(check_button);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_button),
+                                 player_equipment.isEquipped(*iterator, equipment_slot));
+    converter.str(ACE_TEXT(""));
+    if (!(converter << *iterator))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to convert integer (was: %u), aborting\n"),
+                 *iterator));
+
+      return;
+    } // end IF
+    widget_name = converter.str();
+    gtk_widget_set_name(check_button,
+                        widget_name.c_str());
+    g_signal_connect(check_button,
+                     ACE_TEXT_ALWAYS_CHAR("toggled"),
+                     G_CALLBACK(item_toggled_GTK_cb),
+                     &const_cast<RPG_Client_GTK_CBData_t&>(data_in));
+
+    gtk_box_pack_start(GTK_BOX(current_box), check_button,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+
+//     gtk_container_add(GTK_CONTAINER(current), label);
+    gtk_box_pack_start(GTK_BOX(current), current_box,
+                       TRUE, // expand
+                       TRUE, // fill
+                       0);   // padding
+  } // end FOR
+
+  gtk_widget_show_all(current);
+}
+
+void
 update_character_profile(const RPG_Player& player_in,
                          GladeXML* xml_in)
 {
@@ -82,21 +249,22 @@ update_character_profile(const RPG_Player& player_in,
 
   // step2: gender
   text.clear();
-  switch (player_in.getGender())
+  const RPG_Character_Gender& player_gender = player_in.getGender();
+  switch (player_gender)
   {
     case RPG_CHARACTER_GENDER_MAX:
     case RPG_CHARACTER_GENDER_INVALID:
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid gender (was: \"%s\"), aborting\n"),
-                 RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender()).c_str()));
+                 RPG_Character_GenderHelper::RPG_Character_GenderToString(player_gender).c_str()));
 
       break;
     }
     case GENDER_NONE:
       text = ACE_TEXT_ALWAYS_CHAR("N/A"); break;
     default:
-      text = RPG_Common_Tools::enumToString(RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender())); break;
+      text = RPG_Common_Tools::enumToString(RPG_Character_GenderHelper::RPG_Character_GenderToString(player_gender)); break;
   } // end SWITCH
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("gender")));
@@ -106,7 +274,7 @@ update_character_profile(const RPG_Player& player_in,
 
   // step3: race
   text.clear();
-  RPG_Character_Race_t player_race = player_in.getRace();
+  const RPG_Character_Race_t& player_race = player_in.getRace();
   if (player_race.count() == 0)
     text = ACE_TEXT_ALWAYS_CHAR("N/A");
   else
@@ -148,7 +316,7 @@ update_character_profile(const RPG_Player& player_in,
 
   // step4: class
   text.clear();
-  RPG_Character_Class player_class = player_in.getClass();
+  const RPG_Character_Class& player_class = player_in.getClass();
   switch (player_class.metaClass)
   {
     case RPG_CHARACTER_METACLASS_MAX:
@@ -210,7 +378,7 @@ update_character_profile(const RPG_Player& player_in,
 
   // step5: alignment
   text.clear();
-  RPG_Character_Alignment player_alignment = player_in.getAlignment();
+  const RPG_Character_Alignment& player_alignment = player_in.getAlignment();
   // "Neutral" "Neutral" --> "True Neutral"
   if ((player_alignment.civic == ALIGNMENTCIVIC_NEUTRAL) &&
       (player_alignment.ethic == ALIGNMENTETHIC_NEUTRAL))
@@ -367,7 +535,7 @@ update_character_profile(const RPG_Player& player_in,
     g_list_free(entries);
   } // end IF
   GtkWidget* label = NULL;
-  RPG_Character_Conditions_t player_condition = player_in.getCondition();
+  const RPG_Character_Conditions_t& player_condition = player_in.getCondition();
   for (RPG_Character_ConditionsIterator_t iterator = player_condition.begin();
        iterator != player_condition.end();
        iterator++)
@@ -460,7 +628,7 @@ update_character_profile(const RPG_Player& player_in,
     g_list_free(entries);
   } // end IF
   label = NULL;
-  RPG_Character_Feats_t player_feats = player_in.getFeats();
+  const RPG_Character_Feats_t& player_feats = player_in.getFeats();
   for (RPG_Character_FeatsConstIterator_t iterator = player_feats.begin();
        iterator != player_feats.end();
        iterator++)
@@ -495,7 +663,7 @@ update_character_profile(const RPG_Player& player_in,
 
     g_list_free(entries);
   } // end IF
-  RPG_Character_Abilities_t player_abilities = player_in.getAbilities();
+  const RPG_Character_Abilities_t& player_abilities = player_in.getAbilities();
   for (RPG_Character_AbilitiesConstIterator_t iterator = player_abilities.begin();
        iterator != player_abilities.end();
        iterator++)
@@ -531,7 +699,7 @@ update_character_profile(const RPG_Player& player_in,
     g_list_free(entries);
   } // end IF
   GtkWidget* current_box = NULL;
-  RPG_Character_Skills_t player_skills = player_in.getSkills();
+  const RPG_Character_Skills_t& player_skills = player_in.getSkills();
   for (RPG_Character_SkillsConstIterator_t iterator = player_skills.begin();
        iterator != player_skills.end();
        iterator++)
@@ -604,7 +772,7 @@ update_character_profile(const RPG_Player& player_in,
 
     g_list_free(entries);
   } // end IF
-  RPG_Magic_SpellTypes_t player_known_spells = player_in.getKnownSpells();
+  const RPG_Magic_SpellTypes_t& player_known_spells = player_in.getKnownSpells();
   for (RPG_Magic_SpellTypesIterator_t iterator = player_known_spells.begin();
        iterator != player_known_spells.end();
        iterator++)
@@ -638,7 +806,7 @@ update_character_profile(const RPG_Player& player_in,
 
     g_list_free(entries);
   } // end IF
-  RPG_Magic_Spells_t player_spells = player_in.getSpells();
+  const RPG_Magic_Spells_t& player_spells = player_in.getSpells();
   unsigned int count = 0;
   RPG_Magic_SpellTypes_t processsed_types;
   for (RPG_Magic_SpellsIterator_t iterator = player_spells.begin();
@@ -709,9 +877,10 @@ update_character_profile(const RPG_Player& player_in,
 
     g_list_free(entries);
   } // end IF
-  RPG_Player_Inventory player_inventory = player_in.getInventory();
-//   RPG_Character_Equipment player_equipment = player_in.getEquipment();
+  const RPG_Player_Inventory& player_inventory = player_in.getInventory();
+  RPG_Player_Equipment& player_equipment = const_cast<RPG_Player&>(player_in).getEquipment();
   RPG_Item_Base* item = NULL;
+  RPG_Character_EquipmentSlot equipment_slot;
   for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin();
        iterator != player_inventory.myItems.end();
        iterator++)
@@ -794,8 +963,8 @@ update_character_profile(const RPG_Player& player_in,
     } // end SWITCH
 
     // equipped ? --> add '*'
-    if (const_cast<RPG_Player&>(player_in).getEquipment().isEquipped(*iterator))
-      text += ACE_TEXT_ALWAYS_CHAR(" *");
+    if (player_equipment.isEquipped(*iterator, equipment_slot))
+      text += ACE_TEXT_ALWAYS_CHAR("*");
 
     label = NULL;
     label = gtk_label_new(text.c_str());
@@ -854,7 +1023,6 @@ update_entity_profile(const RPG_Engine_Entity& entity_in,
     } // end IF
 
     // assemble path
-    std::string filename;
     RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
     ACE_ASSERT(!filename.empty());
     // sanity check(s)
@@ -1140,10 +1308,10 @@ dirent_selector_profiles(const dirent* entry_in)
 
   // *NOTE*: select player profiles
   std::string filename(entry_in->d_name);
-  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT));
+  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT));
   if (filename.rfind(extension,
-//                     std::string::npos) != (filename.size() - extension.size()))
-                     -1) != (filename.size() - extension.size()))
+                     std::string::npos) != (filename.size() - extension.size()))
+//                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("ignoring \"%s\"...\n"),
@@ -1164,8 +1332,8 @@ dirent_selector_maps(const dirent* entry_in)
   std::string filename(entry_in->d_name);
   std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT));
   if (filename.rfind(extension,
-//                     std::string::npos) != (filename.size() - extension.size()))
-                     -1) != (filename.size() - extension.size()))
+                     std::string::npos) != (filename.size() - extension.size()))
+//                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("ignoring \"%s\"...\n"),
@@ -1227,20 +1395,21 @@ load_files(const std::string& repository_in,
 
   // iterate over entries
   std::string entry;
-  std::string extension = (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT)
-                                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
+  std::string extension = (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT)
+                                                 : ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT));
   GtkTreeIter iter;
+  size_t position = -1;
   for (unsigned int i = 0;
        i < static_cast<unsigned int>(entries.length());
        i++)
   {
     // sanitize name (chop off extension)
     entry = entries[i]->d_name;
-    entry.erase(entry.rfind(extension,
-//                            std::string::npos),
-                            -1),
-//                std::string::npos);
-                -1);
+    position = entry.rfind(extension,
+                           std::string::npos);
+    ACE_ASSERT(position != std::string::npos);
+    entry.erase(position,
+                std::string::npos);
 
     // append new (text) entry
     gtk_list_store_append(listStore_in, &iter);
@@ -1501,6 +1670,18 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
   // make this insensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
 
+  // make equip button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("equip")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
+  // make rest button insensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("rest")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
   return FALSE;
 }
 
@@ -1634,7 +1815,7 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
 #endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->entity.character->getName();
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
 
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
@@ -1719,7 +1900,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 #endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
 
   // load player profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
@@ -1749,6 +1930,12 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(button);
   if (!RPG_Engine_Common_Tools::isCharacterDisabled(data->entity.character))
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+  // make equip button sensitive (if it's not already)
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("equip")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   return FALSE;
 }
@@ -2385,6 +2572,134 @@ part_game_clicked_GTK_cb(GtkWidget* widget_in,
                                                  ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(combo_box);
   gtk_widget_set_sensitive(GTK_WIDGET(combo_box), TRUE);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+equip_clicked_GTK_cb(GtkWidget* widget_in,
+                     gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::equip_clicked_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->entity.character);
+  ACE_ASSERT(data->entity.character->isPlayerCharacter());
+  RPG_Player* player = dynamic_cast<RPG_Player*>(data->entity.character);
+  ACE_ASSERT(player);
+  ACE_ASSERT(data->xml);
+
+  // retrieve about dialog handle
+  GtkWidget* equipment_dialog = GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_EQUIPMENTDIALOG_NAME)));
+  ACE_ASSERT(equipment_dialog);
+  if (!equipment_dialog)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_EQUIPMENTDIALOG_NAME)));
+
+    return TRUE; // propagate
+  } // end IF
+
+  ::update_equipment(*data);
+
+  // draw it
+  if (!GTK_WIDGET_VISIBLE(equipment_dialog))
+    gtk_widget_show_all(equipment_dialog);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+item_toggled_GTK_cb(GtkWidget* widget_in,
+                    gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::item_toggled_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->entity.character);
+  ACE_ASSERT(data->entity.character->isPlayerCharacter());
+  RPG_Player* player = dynamic_cast<RPG_Player*>(data->entity.character);
+  ACE_ASSERT(player);
+  ACE_ASSERT(data->level_engine);
+  ACE_ASSERT(data->client_engine);
+
+  // retrieve item id
+  std::string widget_name = gtk_widget_get_name(widget_in);
+  std::istringstream input(widget_name);
+  RPG_Item_ID_t item_id = 0;
+  if (!(input >> item_id))
+  {
+    ACE_DEBUG((LM_ERROR,
+              ACE_TEXT("failed to retrieve item id (was: \"%s\"), aborting\n"),
+              widget_name.c_str()));
+
+    return TRUE; // propagate
+  } // end IF
+
+  RPG_Engine_EntityID_t active_entity = data->level_engine->getActive();
+  unsigned char visible_radius_before = 0;
+  if (active_entity)
+    visible_radius_before = data->level_engine->getVisibleRadius(active_entity);
+
+  // *TODO*: where ?
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget_in)))
+  {
+    player->getEquipment().equip(item_id,
+                                 EQUIPMENTSLOT_ANY);
+  } // end IF
+  else
+    player->getEquipment().unequip(item_id);
+
+  // equipped light source --> update vision !
+  if (active_entity)
+  {
+    unsigned char visible_radius_after = data->level_engine->getVisibleRadius(active_entity);
+    if (visible_radius_before != visible_radius_after)
+    {
+      // notify client window
+      RPG_Engine_ClientParameters_t parameters;
+      parameters.push_back(&visible_radius_after);
+
+      try
+      {
+        data->client_engine->notify(COMMAND_E2C_ENTITY_VISION_UPDATE, parameters);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION_UPDATE).c_str()));
+      }
+    } // end IF
+  } // end IF
+
+  ::update_equipment(*data);
+
+  return FALSE;
+}
+
+G_MODULE_EXPORT gint
+rest_clicked_GTK_cb(GtkWidget* widget_in,
+                    gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::rest_clicked_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // *TODO*
+  ACE_ASSERT(false);
 
   return FALSE;
 }
