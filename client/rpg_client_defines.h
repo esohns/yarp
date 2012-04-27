@@ -66,8 +66,10 @@
 #define RPG_CLIENT_DEF_VIDEO_W                         1024
 #define RPG_CLIENT_DEF_VIDEO_H                         786
 #define RPG_CLIENT_DEF_VIDEO_BPP                       32
-#define RPG_CLIENT_DEF_VIDEO_FULLSCREEN                false
 #define RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER              false
+#define RPG_CLIENT_DEF_VIDEO_OPENGL                    false
+#define RPG_CLIENT_DEF_VIDEO_FULLSCREEN                false
+#define RPG_CLIENT_DEF_VIDEO_INIT                      false
 // #define RPG_CLIENT_DEF_VIDEO_FRAMERATE              30
 
 #define RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE               0 // 0: don't care
@@ -97,7 +99,8 @@
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_DOOR               RPG_Graphics_SDL_Tools::CLR32_BROWN
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_FLOOR              RPG_Graphics_SDL_Tools::CLR32_PURPLE44
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_MONSTER            RPG_Graphics_SDL_Tools::CLR32_RED
-#define RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER             RPG_Graphics_SDL_Tools::CLR32_WHITE
+#define RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER             RPG_Graphics_SDL_Tools::CLR32_GREEN
+#define RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER_ACTIVE      RPG_Graphics_SDL_Tools::CLR32_WHITE
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_STAIRS             RPG_Graphics_SDL_Tools::CLR32_LIGHTPINK
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_WALL               RPG_Graphics_SDL_Tools::CLR32_BLACK
 

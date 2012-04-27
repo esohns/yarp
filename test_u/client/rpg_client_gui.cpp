@@ -305,6 +305,7 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]   : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-n          : use SDL_VIDEODRIVER environment") << ACE_TEXT(" [") << RPG_CLIENT_DEF_VIDEO_INIT << ACE_TEXT("]") << std::endl;
   path = config_path;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -342,6 +343,7 @@ process_arguments(const int& argc_in,
                   std::string& itemDictionary_out,
                   bool& logToFile_out,
                   std::string& magicDictionary_out,
+                  bool& videoDriverEnv_out,
                   std::string& schemaRepository_out,
                   std::string& soundDictionary_out,
                   bool& traceInformation_out,
@@ -417,6 +419,8 @@ process_arguments(const int& argc_in,
 #endif
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
+  videoDriverEnv_out = RPG_CLIENT_DEF_VIDEO_INIT;
+
   schemaRepository_out = config_path;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   schemaRepository_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -448,7 +452,7 @@ process_arguments(const int& argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:e:f:g:i:lm:r:s:tu:vx::"),
+                             ACE_TEXT("c:e:f:g:i:lm:nr:s:tu:vx::"),
                              1,                         // skip command name
                              1,                         // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -499,6 +503,12 @@ process_arguments(const int& argc_in,
       case 'm':
       {
         magicDictionary_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'n':
+      {
+        videoDriverEnv_out = true;
 
         break;
       }
@@ -783,6 +793,12 @@ do_initGUI(const std::string& UIfile_in,
 //   SDL_SetEventFilter(event_filter_SDL_cb);
 
   // ***** window/screen setup *****
+  if (videoConfig_in.initVideo)
+    RPG_Graphics_SDL_Tools::initVideo(videoConfig_in.doubleBuffer,
+                                      videoConfig_in.useOpenGL,
+                                      videoConfig_in.fullScreen,
+                                      true);
+
   // set window caption
   std::string caption;
   caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
@@ -824,6 +840,7 @@ do_initGUI(const std::string& UIfile_in,
                                                           videoConfig_in.screen_height,
                                                           videoConfig_in.screen_colordepth,
                                                           videoConfig_in.doubleBuffer,
+                                                          videoConfig_in.useOpenGL,
                                                           videoConfig_in.fullScreen);
   if (!userData_in.screen)
   {
@@ -2246,6 +2263,8 @@ ACE_TMAIN(int argc_in,
 #endif
   magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
+  bool videoDriverEnv = RPG_CLIENT_DEF_VIDEO_INIT;
+
   std::string soundDictionary = config_path;
   soundDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -2291,6 +2310,7 @@ ACE_TMAIN(int argc_in,
                           itemDictionary,
                           logToFile,
                           magicDictionary,
+                          videoDriverEnv,
                           schemaRepository,
                           soundDictionary,
                           traceInformation,
@@ -2368,6 +2388,7 @@ ACE_TMAIN(int argc_in,
   config.audio_config.format               = RPG_CLIENT_DEF_AUDIO_FORMAT;
   config.audio_config.channels             = RPG_CLIENT_DEF_AUDIO_CHANNELS;
   config.audio_config.samples              = RPG_CLIENT_DEF_AUDIO_SAMPLES;
+  config.audio_config.useCD                = true;
   config.sound_directory = base_data_path;
   config.sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -2383,8 +2404,10 @@ ACE_TMAIN(int argc_in,
   config.video_config.screen_width         = RPG_CLIENT_DEF_VIDEO_W;
   config.video_config.screen_height        = RPG_CLIENT_DEF_VIDEO_H;
   config.video_config.screen_colordepth    = RPG_CLIENT_DEF_VIDEO_BPP;
-  config.video_config.fullScreen           = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
   config.video_config.doubleBuffer         = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
+  config.video_config.useOpenGL            = RPG_CLIENT_DEF_VIDEO_OPENGL;
+  config.video_config.fullScreen           = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
+  config.video_config.initVideo            = videoDriverEnv;
   config.graphics_directory = base_data_path;
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -2438,11 +2461,17 @@ ACE_TMAIN(int argc_in,
                     config);
 
   // step2a: init SDL
-  if (SDL_Init(SDL_INIT_TIMER | // timers
-               SDL_INIT_AUDIO |
-               SDL_INIT_VIDEO |
-               SDL_INIT_CDROM | // audioCD playback
-               SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
+  if (SDL_Init(SDL_INIT_TIMER |                                   // timers
+               SDL_INIT_AUDIO |                                   // audio
+               ((videoDriverEnv == false) ? SDL_INIT_VIDEO : 0) | // video now or later
+               (config.audio_config.useCD ? SDL_INIT_CDROM : 0) | // audioCD playback
+               //SDL_INIT_JOYSTICK |                                // joystick
+               SDL_INIT_NOPARACHUTE | // "...Prevents SDL from catching fatal signals..."
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+               SDL_INIT_EVENTTHREAD) == -1)                       // dedicated event handler
+#else
+               0) == -1)
+#endif
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),

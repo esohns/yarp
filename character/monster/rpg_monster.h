@@ -22,6 +22,7 @@
 #define RPG_MONSTER_H
 
 #include "rpg_monster_exports.h"
+#include "rpg_monster_size.h"
 
 #include <rpg_player_base.h>
 
@@ -56,7 +57,7 @@ class RPG_Monster_Export RPG_Monster
               const RPG_Character_Skills_t&,     // skills
               const RPG_Character_Feats_t&,      // base feats
               const RPG_Character_Abilities_t&,  // base abilities
-              const RPG_Common_Size&,            // (default) size
+              const RPG_Monster_Size&,           // (default) size
               const unsigned short int&,         // max HP
               const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
               // current status
@@ -71,16 +72,16 @@ class RPG_Monster_Export RPG_Monster
 //   RPG_Monster& operator=(const RPG_Monster&);
 
   const RPG_Common_CreatureType& getType() const;
+  const RPG_Monster_Size& getSize() const;
   bool isSummoned() const;
 
   // access current equipment (if any)
-  const RPG_Player_Equipment& getEquipment() const;
+  RPG_Player_Equipment& getEquipment();
 
+  // implement (part of) RPG_IPlayer
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
   virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
-
   virtual void gainExperience(const unsigned int&); // XP
-
   virtual bool isPlayerCharacter() const;
 
   virtual void dump() const;
@@ -92,11 +93,13 @@ class RPG_Monster_Export RPG_Monster
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster());
 
   // helper methods
+  // implement (part of) RPG_IPlayer
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                          const RPG_Combat_AttackSituation&) const;
   virtual signed char getShieldBonus() const;
 
   RPG_Common_CreatureType myType;
+  RPG_Monster_Size        mySize;
   bool                    myIsSummoned;
 };
 

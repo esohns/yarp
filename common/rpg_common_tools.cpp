@@ -440,7 +440,8 @@ RPG_Common_Tools::getSizeModifierLoad(const RPG_Common_Size& size_in,
 }
 
 unsigned char
-RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
+RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in,
+                              const bool& isTall_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sizeToReach"));
 
@@ -449,18 +450,18 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
     case SIZE_FINE:
     case SIZE_DIMINUTIVE:
     case SIZE_TINY:
+      return 0;
     case SIZE_SMALL:
     case SIZE_MEDIUM:
-    {
       return 5;
-    }
     case SIZE_LARGE:
+      return (isTall_in ? 10 : 5);
     case SIZE_HUGE:
+      return (isTall_in ? 15 : 10);
     case SIZE_GARGANTUAN:
+      return (isTall_in ? 20 : 15);
     case SIZE_COLOSSAL:
-    {
-      return 10;
-    }
+      return (isTall_in ? 30 : 20);
     default:
     {
       ACE_DEBUG((LM_ERROR,

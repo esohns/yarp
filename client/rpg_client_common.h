@@ -95,6 +95,7 @@ struct RPG_Client_SDL_AudioConfig_t
 //   Uint8  channels;
   int    channels;
   Uint16 samples;
+  bool   useCD;
 };
 
 // *NOTE* types as used by SDL
@@ -104,8 +105,10 @@ struct RPG_Client_SDL_VideoConfig_t
   int  screen_height;
   int  screen_colordepth; // bits/pixel
 //   Uint32 screen_flags;
-  bool fullScreen;
   bool doubleBuffer;
+  bool useOpenGL;
+  bool fullScreen;
+  bool initVideo;
 };
 
 struct RPG_Client_Config

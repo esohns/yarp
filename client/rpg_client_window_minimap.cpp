@@ -278,6 +278,8 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
           color = RPG_CLIENT_DEF_MINIMAPCOLOR_MONSTER; break;
         case MINIMAPTILE_PLAYER:
           color = RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER; break;
+        case MINIMAPTILE_PLAYER_ACTIVE:
+          color = RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER_ACTIVE; break;
         case MINIMAPTILE_STAIRS:
           color = RPG_CLIENT_DEF_MINIMAPCOLOR_STAIRS; break;
         default:

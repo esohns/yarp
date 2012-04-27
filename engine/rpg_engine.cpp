@@ -28,6 +28,7 @@
 #include <rpg_map_common_tools.h>
 #include <rpg_map_pathfinding_tools.h>
 
+#include <rpg_item_dictionary.h>
 #include <rpg_item_common_tools.h>
 
 #include <rpg_character_race_common_tools.h>
@@ -945,11 +946,37 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
   if (id_in == 0)
     return; // done
 
-  RPG_Map_Common_Tools::buildCircle(getPosition(id_in),
+  // step1: find "lit" positions
+  RPG_Map_Position_t current_position = getPosition(id_in);
+  RPG_Map_Common_Tools::buildCircle(current_position,
                                     getSize(),
                                     getVisibleRadius(id_in),
                                     true,
                                     positions_out);
+
+  //// step2: remove any blocked (== unreachable) positions
+  //// --> cannot see through walls / (closed) doors...
+  //RPG_Map_Positions_t obstacles;
+  //{
+  //  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  //  obstacles = myMap.plan.walls;
+  //  for (RPG_Map_DoorsConstIterator_t door_iterator = inherited2::myMap.plan.doors.begin();
+  //       door_iterator != myMap.plan.doors.end();
+  //       door_iterator++)
+  //    if (!(*door_iterator).is_open)
+  //      obstacles.insert((*door_iterator).position);
+  //} // end lock scope
+  //RPG_Map_Path_t path;
+  //// *WARNING*: this works for associative containers ONLY
+  //for (RPG_Map_PositionsConstIterator_t iterator = positions_out.begin();
+  //     iterator != positions_out.end();
+  //     iterator++)
+  //  if (!inherited2::findPath(current_position,
+  //                            *iterator,
+  //                            obstacles,
+  //                            path))
+  //    positions_out.erase(iterator++);
 }
 
 unsigned int
@@ -990,8 +1017,8 @@ RPG_Engine::findPath(const RPG_Map_Position_t& start_in,
       obstacles.insert((*door_iterator).position);
   // - entities
   for (RPG_Engine_EntitiesConstIterator_t entity_iterator = myEntities.begin();
-        entity_iterator != myEntities.end();
-        entity_iterator++)
+       entity_iterator != myEntities.end();
+       entity_iterator++)
     obstacles.insert((*entity_iterator).second->position);
   // - start, end are NEVER obstacles...
   obstacles.erase(start_in);
@@ -1001,6 +1028,71 @@ RPG_Engine::findPath(const RPG_Map_Position_t& start_in,
                               end_in,
                               obstacles,
                               path_out);
+}
+
+bool
+RPG_Engine::canReach(const RPG_Engine_EntityID_t& id_in,
+                     const RPG_Map_Position_t& position_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::canReach"));
+
+  // sanity check(s)
+  ACE_ASSERT(id_in);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  RPG_Engine_EntitiesConstIterator_t entity_iterator = myEntities.end();
+  entity_iterator = myEntities.find(id_in);
+  ACE_ASSERT(entity_iterator != myEntities.end());
+
+  // step1: compute distance
+  unsigned int range = RPG_Engine_Common_Tools::range((*entity_iterator).second->position,
+                                                      position_in);
+
+  // step2: compute entity reach
+  unsigned char reach = 0;
+  bool absolute_reach = false;
+
+  if ((*entity_iterator).second->character->isPlayerCharacter())
+  {
+    RPG_Player_Player_Base* player_base = NULL;
+    player_base = dynamic_cast<RPG_Player_Player_Base*>((*entity_iterator).second->character);
+    ACE_ASSERT(player_base);
+
+    reach = RPG_Common_Tools::sizeToReach(player_base->getSize());
+
+    RPG_Item_WeaponType weapon_type = player_base->getEquipment().getPrimaryWeapon(player_base->getOffHand());
+    const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
+    if (RPG_Item_Common_Tools::isMeleeWeapon(weapon_type))
+    {
+      if (properties.isReachWeapon)
+      {
+        reach *= 2;
+        absolute_reach = RPG_Item_Common_Tools::hasAbsoluteReach(weapon_type);
+      } // end IF
+    } // end IF
+    else
+      reach = properties.rangeIncrement; // ranged weapon
+
+    // compute max reach for ranged weapons
+    if (RPG_Item_Common_Tools::isThrownWeapon(weapon_type))
+      reach *= 5;
+    else if (RPG_Item_Common_Tools::isProjectileWeapon(weapon_type))
+      reach *= 10;
+  } // end IF
+  else
+  {
+    RPG_Monster* monster = NULL;
+    monster = dynamic_cast<RPG_Monster*>((*entity_iterator).second->character);
+    ACE_ASSERT(monster);
+
+    const RPG_Monster_Size& monster_size = monster->getSize();
+    reach = RPG_Common_Tools::sizeToReach(monster_size.size,
+                                          monster_size.isTall);
+  } // end IF
+
+  return (absolute_reach ? (range == reach)
+                         : (range <= reach));
 }
 
 void

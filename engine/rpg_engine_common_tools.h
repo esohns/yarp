@@ -76,6 +76,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
 
   // ***** combat-related *****
+  static unsigned char range(const RPG_Map_Position_t&,  // A
+                             const RPG_Map_Position_t&); // B
   static bool isCharacterHelpless(const RPG_Player_Base* const); // character handle
   static bool isCharacterDisabled(const RPG_Player_Base* const); // character handle
   static bool isPartyHelpless(const RPG_Player_Party_t&); // party

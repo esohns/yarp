@@ -438,13 +438,9 @@ RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& weaponType_
     case RANGED_WEAPON_CROSSBOW_HAND:
     case RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT:
     case RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY:
-    {
       return true;
-    }
     default:
-    {
       break;
-    }
   } // end SWITCH
 
   return false;
@@ -485,9 +481,7 @@ RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_i
     case TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED:
     case TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED:
     case TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN:
-    {
       return true;
-    }
     default:
     {
       // ALL projectile weapons are two-handed...
@@ -524,14 +518,29 @@ RPG_Item_Common_Tools::isMeleeWeapon(const RPG_Item_WeaponType& weaponType_in)
     case LIGHT_MELEE_WEAPON_HAMMER_LIGHT:
     case ONE_HANDED_MELEE_WEAPON_TRIDENT:
     case LIGHT_MELEE_WEAPON_SAI:
-    {
       return true;
-    }
     default:
-    {
       break;
-    }
   } // end SWITCH
 
   return false;
+}
+
+bool
+RPG_Item_Common_Tools::hasAbsoluteReach(const RPG_Item_WeaponType& weaponType_in)
+{
+  // sanity check
+  const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weaponType_in);
+  if (!properties.isReachWeapon)
+    return false;
+
+  switch (weaponType_in)
+  {
+    case TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED:
+      return false;
+    default:
+      break;
+  } // end SWITCH
+
+  return true;
 }

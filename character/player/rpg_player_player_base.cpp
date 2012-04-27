@@ -72,7 +72,6 @@ RPG_Player_Player_Base::RPG_Player_Player_Base(// base attributes
              skills_in,
              feats_in,
              abilities_in,
-             RPG_Character_Race_Common_Tools::race2Size(race_in),
              maxHitPoints_in,
              knownSpells_in,
              condition_in,
@@ -84,7 +83,8 @@ RPG_Player_Player_Base::RPG_Player_Player_Base(// base attributes
    myRace(race_in),
    myClass(class_in),
    myOffHand(offHand_in),
-   myExperience(experience_in)
+   myExperience(experience_in),
+   mySize(RPG_Character_Race_Common_Tools::race2Size(race_in))
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::RPG_Player_Player_Base"));
 
@@ -96,7 +96,8 @@ RPG_Player_Player_Base::RPG_Player_Player_Base(const RPG_Player_Player_Base& pla
    myRace(playerBase_in.myRace),
    myClass(playerBase_in.myClass),
    myOffHand(playerBase_in.myOffHand),
-   myExperience(playerBase_in.myExperience)
+   myExperience(playerBase_in.myExperience),
+   mySize(playerBase_in.mySize)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::RPG_Player_Player_Base"));
 
@@ -155,7 +156,6 @@ RPG_Player_Player_Base::init(// base attributes
                   skills_in,
                   feats_in,
                   abilities_in,
-                  RPG_Character_Race_Common_Tools::race2Size(race_in),
                   maxHitPoints_in,
                   knownSpells_in,
                   // current status
@@ -170,6 +170,7 @@ RPG_Player_Player_Base::init(// base attributes
   myClass      = class_in;
   myOffHand    = offHand_in;
   myExperience = experience_in;
+  mySize       = RPG_Character_Race_Common_Tools::race2Size(race_in);
 }
 
 const RPG_Character_Gender&
@@ -202,6 +203,14 @@ RPG_Player_Player_Base::getOffHand() const
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getOffHand"));
 
   return myOffHand;
+}
+
+const RPG_Common_Size&
+RPG_Player_Player_Base::getSize() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSize"));
+
+  return mySize;
 }
 
 unsigned char

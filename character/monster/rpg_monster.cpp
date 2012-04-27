@@ -43,7 +43,7 @@ RPG_Monster::RPG_Monster(// base attributes
                          const RPG_Character_Skills_t& skills_in,
                          const RPG_Character_Feats_t& feats_in,
                          const RPG_Character_Abilities_t& abilities_in,
-                         const RPG_Common_Size& defaultSize_in,
+                         const RPG_Monster_Size& defaultSize_in,
                          const unsigned short int& maxHitPoints_in,
                          const RPG_Magic_SpellTypes_t& knownSpells_in,
                          // current status
@@ -60,7 +60,6 @@ RPG_Monster::RPG_Monster(// base attributes
              skills_in,
              feats_in,
              abilities_in,
-             defaultSize_in,
              maxHitPoints_in,
              knownSpells_in,
              // current status
@@ -70,6 +69,7 @@ RPG_Monster::RPG_Monster(// base attributes
              spells_in,
              inventory_in),
    myType(type_in),
+   mySize(defaultSize_in),
    myIsSummoned(isSummoned_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::RPG_Monster"));
@@ -79,6 +79,7 @@ RPG_Monster::RPG_Monster(// base attributes
 RPG_Monster::RPG_Monster(const RPG_Monster& monster_in)
  : inherited(monster_in),
    myType(monster_in.myType),
+   mySize(monster_in.mySize),
    myIsSummoned(monster_in.myIsSummoned)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::RPG_Monster"));
@@ -97,6 +98,7 @@ RPG_Monster::~RPG_Monster()
 //   RPG_TRACE(ACE_TEXT("RPG_Monster::operator="));
 //
 //   myType = monster_in.myType;
+//   mySize = monster_in.mySize;
 //   myIsSummoned = monster_in.myIsSummoned;
 //   inherited::operator=(monster_in);
 //
@@ -109,6 +111,14 @@ RPG_Monster::getType() const
   RPG_TRACE(ACE_TEXT("RPG_Monster::getType"));
 
   return myType;
+}
+
+const RPG_Monster_Size&
+RPG_Monster::getSize() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster::getSize"));
+
+  return mySize;
 }
 
 bool
@@ -206,7 +216,7 @@ RPG_Monster::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
 
   // *TODO*: consider non-bipeds...
   RPG_Character_Encumbrance encumbrance_by_load = RPG_Character_Common_Tools::getEncumbrance(getAttribute(ATTRIBUTE_STRENGTH),
-                                                                                             getSize(),
+                                                                                             getSize().size,
                                                                                              getInventory().getTotalWeight(),
                                                                                              true);
   signed char maxDexModifierAC = std::numeric_limits<signed char>::max();
@@ -246,8 +256,8 @@ RPG_Monster::isPlayerCharacter() const
   return false;
 }
 
-const RPG_Player_Equipment&
-RPG_Monster::getEquipment() const
+RPG_Player_Equipment&
+RPG_Monster::getEquipment()
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getEquipment"));
 

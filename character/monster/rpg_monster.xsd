@@ -33,7 +33,13 @@
     </xsd:documentation>
   </xsd:annotation>
 
-  <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
+  <xsd:complexType name="RPG_Monster_Size_Type">
+    <xsd:sequence>
+      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="isTall" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
   <xsd:complexType name="RPG_Monster_NaturalArmorClass_Type">
     <xsd:sequence>
       <xsd:element name="normal" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
@@ -272,7 +278,7 @@
   <xsd:complexType name="RPG_Monster_PropertiesXML_Type">
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="size" type="RPG_Monster_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Common_CreatureType_Type" minOccurs="1" maxOccurs="1"/>
 <!--       <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="hitDice" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>

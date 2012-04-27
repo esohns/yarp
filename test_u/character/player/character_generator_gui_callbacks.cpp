@@ -417,7 +417,7 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
 #endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->entity.character->getName();
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
 
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
@@ -490,7 +490,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 #endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
 
   // load entity profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,

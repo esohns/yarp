@@ -101,6 +101,9 @@ class RPG_Engine_Export RPG_Engine
                 const RPG_Map_Position_t&, // end position
                 RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
 
+  bool canReach(const RPG_Engine_EntityID_t&, // id
+                const RPG_Map_Position_t&);   // target position
+
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
   typedef RPG_Engine_Level inherited2;

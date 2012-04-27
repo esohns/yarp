@@ -49,7 +49,6 @@ RPG_Player_Base::RPG_Player_Base(// base attributes
 								                 const RPG_Character_Skills_t& skills_in,
 								                 const RPG_Character_Feats_t& feats_in,
 								                 const RPG_Character_Abilities_t& abilities_in,
-								                 const RPG_Common_Size& defaultSize_in,
 								                 const unsigned short int& maxHitPoints_in,
 								                 const RPG_Magic_SpellTypes_t& knownSpells_in,
 								                 // current status
@@ -59,7 +58,6 @@ RPG_Player_Base::RPG_Player_Base(// base attributes
 								                 const RPG_Magic_Spells_t& spells_in,
 								                 const RPG_Item_List_t& inventory_in)
  : myWealth(wealth_in),
-   mySize(defaultSize_in),
    myKnownSpells(knownSpells_in),
    mySpells(spells_in),
    myInventory(inventory_in),
@@ -80,7 +78,6 @@ RPG_Player_Base::RPG_Player_Base(// base attributes
 
 RPG_Player_Base::RPG_Player_Base(const RPG_Player_Base& playerBase_in)
  : myWealth(playerBase_in.myWealth),
-   mySize(playerBase_in.mySize),
    myKnownSpells(playerBase_in.myKnownSpells),
    mySpells(playerBase_in.mySpells),
    myInventory(playerBase_in.myInventory),
@@ -105,7 +102,6 @@ RPG_Player_Base::RPG_Player_Base(const RPG_Player_Base& playerBase_in)
 //   RPG_TRACE(ACE_TEXT("RPG_Player_Base::operator="));
 //
 //   myWealth = playerBase_in.myWealth;
-//   mySize = playerBase_in.mySize;
 //   myKnownSpells = playerBase_in.myKnownSpells;
 //   mySpells = playerBase_in.mySpells;
 //   myInventory = playerBase_in.myInventory;
@@ -132,7 +128,6 @@ RPG_Player_Base::init(// base attributes
 					            const RPG_Character_Skills_t& skills_in,
 					            const RPG_Character_Feats_t& feats_in,
 					            const RPG_Character_Abilities_t& abilities_in,
-					            const RPG_Common_Size& defaultSize_in,
 					            const unsigned short int& maxHitPoints_in,
 					            const RPG_Magic_SpellTypes_t& knownSpells_in,
 					            // current status
@@ -145,7 +140,6 @@ RPG_Player_Base::init(// base attributes
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::init"));
 
   myWealth            = wealth_in;
-  mySize              = defaultSize_in;
   myKnownSpells       = knownSpells_in;
   mySpells            = spells_in;
   myInventory         = inventory_in;
@@ -289,14 +283,6 @@ RPG_Player_Base::hasAbility(const RPG_Character_Ability& ability_in) const
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasAbility"));
 
   return (myAbilities.find(ability_in) != myAbilities.end());
-}
-
-RPG_Common_Size
-RPG_Player_Base::getSize() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getSize"));
-
-  return mySize;
 }
 
 const RPG_Magic_SpellTypes_t&

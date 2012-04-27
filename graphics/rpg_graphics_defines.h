@@ -73,13 +73,16 @@
 #define RPG_GRAPHICS_WINDOW_SCROLL_OFFSET              1
 
 #define RPG_GRAPHICS_DEF_DICTIONARY_FILE               "rpg_graphics.xml"
-// #define RPG_GRAPHICS_DEF_DUMP_DIR                      "/var/tmp"
 
 // DATADIR-specific
 #define RPG_GRAPHICS_DEF_DATA_SUB                      "graphics"
 
 // buffer for printing keyboard events (debug info)
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE            32
+
+#define RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR          "SDL_VIDEODRIVER"
+//#define RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME             "directx"
+#define RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME             "windib"
 
 // SDL event types
 // *WARNING*: make sure that these are used consistently !

@@ -1695,14 +1695,12 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                                               myClientAction.positions);
 
             // step2: remove invalid positions
-            RPG_Map_PositionsIterator_t iterator = myClientAction.positions.begin();
-            while (iterator != myClientAction.positions.end())
-            {
+            // *WARNING*: this works for associative containers ONLY
+            for (RPG_Map_PositionsIterator_t iterator = myClientAction.positions.begin();
+                 iterator != myClientAction.positions.end();
+                 iterator++)
               if (!myEngine->isValid(*iterator))
                 myClientAction.positions.erase(iterator++);
-              else
-                iterator++;
-            } // end WHILE
 
             break;
           }
@@ -1859,8 +1857,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             // monster ?
             if (player_action.target &&
                 myEngine->isMonster(player_action.target) &&
-                RPG_Map_Common_Tools::isAdjacent(myEngine->getPosition(myClientAction.entity_id),
-                                                  map_position))
+                myEngine->canReach(myClientAction.entity_id,
+                                   map_position))
             {
               // --> attack monster
               player_action.command = COMMAND_ATTACK;

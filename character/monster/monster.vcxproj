@@ -118,6 +118,7 @@ popd</Command>
     <ClInclude Include="rpg_monster_organizationstep.h" />
     <ClInclude Include="rpg_monster_propertiesxml.h" />
     <ClInclude Include="rpg_monster_savingthrowmodifiers.h" />
+    <ClInclude Include="rpg_monster_size.h" />
     <ClInclude Include="rpg_monster_specialabilityprecondition.h" />
     <ClInclude Include="rpg_monster_specialabilityproperties.h" />
     <ClInclude Include="rpg_monster_specialattackprecondition.h" />

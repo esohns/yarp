@@ -54,7 +54,8 @@ class RPG_Common_Export RPG_Common_Tools
   // *NOTE*: use for encumbrance
   static float getSizeModifierLoad(const RPG_Common_Size&,
                                    const bool& = true); // is biped ?
-  static unsigned char sizeToReach(const RPG_Common_Size&);
+  static unsigned char sizeToReach(const RPG_Common_Size&,
+                                   const bool& = true); // is tall ? : long
   static unsigned char environment2Radius(const RPG_Common_Environment&);
 
   // use this to "pretty-print" enumerated (i.e. XML-) values

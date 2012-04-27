@@ -64,6 +64,7 @@ class RPG_Player_Export RPG_Player_Player_Base
   const RPG_Character_Race_t& getRace() const;
   const RPG_Character_Class& getClass() const;
   const RPG_Character_OffHand& getOffHand() const;
+  const RPG_Common_Size& getSize() const;
 
   unsigned int getExperience() const;
   // compute dynamically from class/XP
@@ -72,13 +73,14 @@ class RPG_Player_Export RPG_Player_Player_Base
   // access current equipment
   RPG_Player_Equipment& getEquipment();
 
+  // implement RPG_IPlayer
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                          const RPG_Combat_AttackSituation&) const;
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
   virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
-
   virtual bool isPlayerCharacter() const;
   virtual void gainExperience(const unsigned int&); // XP
+
   unsigned int rest(const RPG_Common_Camp&, // type of rest
                     const unsigned int&);   // hours
   void defaultEquip();
@@ -147,7 +149,8 @@ class RPG_Player_Export RPG_Player_Player_Base
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Player_Base& operator=(const RPG_Player_Player_Base&));
 
   unsigned int          myExperience;
-//  unsigned short int       mySize; // cm
+  RPG_Common_Size       mySize;
+
 //  unsigned short int       myWeight; // kg
 //  unsigned int             myAge; // years
 };

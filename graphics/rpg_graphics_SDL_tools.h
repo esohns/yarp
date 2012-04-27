@@ -63,10 +63,15 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
   static Uint32 CLR32_CURSE_RED;
   static Uint32 CLR32_GOLD_SHADE;
 
+  static void initVideo(const bool&,         // double-buffer ?
+                        const bool&,         // use OpenGL / blitting ?
+                        const bool&,         // run fullscreen ?
+                        const bool& = true); // honor SDL_VIDEODRIVER environment ?
   static SDL_Surface* initScreen(const int&,   // width
                                  const int&,   // height
                                  const int&,   // color depth
                                  const bool&,  // double-buffer ?
+                                 const bool&,  // use OpenGL / blitting ?
                                  const bool&); // run fullscreen ?
 
   static std::string keyToString(const SDL_keysym&);

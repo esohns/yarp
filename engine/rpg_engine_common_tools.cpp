@@ -1098,6 +1098,27 @@ RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Monster_Group_t& group
   return (numHelplessMonsters == groupInstance_in.size());
 }
 
+unsigned char
+RPG_Engine_Common_Tools::range(const RPG_Map_Position_t& position1_in,
+                               const RPG_Map_Position_t& position2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::range"));
+
+  // sanity check
+  if (position1_in == position2_in)
+    return 0;
+
+  unsigned char result = RPG_Map_Common_Tools::distance(position1_in,
+                                                        position2_in);
+
+  // diagonal ?
+  unsigned int offset_x = ::abs(static_cast<int>(position1_in.first) - static_cast<int>(position2_in.first));
+  if (offset_x == ::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second)))
+    result = offset_x + (offset_x / 2);
+
+  return result;
+}
+
 bool
 RPG_Engine_Common_Tools::isCharacterHelpless(const RPG_Player_Base* const character_in)
 {
@@ -1524,7 +1545,9 @@ is_player_miss:
 
     // choose appropriate form of attack...
     // consider that the monster may (temporarily) have a bigger reach...
-    attackForm = (distance_in > RPG_Common_Tools::sizeToReach(monster->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
+    const RPG_Monster_Size& monster_size = monster->getSize();
+    attackForm = ((distance_in > RPG_Common_Tools::sizeToReach(monster_size.size,
+                                                               monster_size.isTall)) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
 
     // step2: perform attack(s)
     // *TODO*: if available (AND preconditions are met), we MAY also choose a special attack...
