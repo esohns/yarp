@@ -341,8 +341,7 @@ RPG_Client_WindowLevel::toggleDoor(const RPG_Map_Position_t& position_in)
 
   ACE_ASSERT(myEngine);
 
-  const RPG_Map_Door_t& door = myEngine->getDoor(position_in);
-  ACE_ASSERT(door.position == position_in);
+  bool is_open = (myEngine->state(position_in) == DOORSTATE_OPEN);
 
   // change tile accordingly
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
@@ -354,11 +353,11 @@ RPG_Client_WindowLevel::toggleDoor(const RPG_Map_Position_t& position_in)
   switch (orientation)
   {
     case ORIENTATION_HORIZONTAL:
-      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.horizontal_open
-                                               : myCurrentDoorSet.horizontal_closed); break;
+      myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.horizontal_open
+                                          : myCurrentDoorSet.horizontal_closed); break;
     case ORIENTATION_VERTICAL:
-      myDoorTiles[position_in] = (door.is_open ? myCurrentDoorSet.vertical_open
-                                               : myCurrentDoorSet.vertical_closed); break;
+      myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.vertical_open
+                                          : myCurrentDoorSet.vertical_closed); break;
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -429,14 +428,13 @@ RPG_Client_WindowLevel::init()
   myDoorTiles.clear();
 
   // init tiles / position
-  RPG_Client_Common_Tools::initFloorEdges(myEngine->getFloorPlan(),
+  RPG_Client_Common_Tools::initFloorEdges(*myEngine,
                                           myCurrentFloorEdgeSet,
                                           myFloorEdgeTiles);
-  RPG_Client_Common_Tools::initWalls(myEngine->getFloorPlan(),
+  RPG_Client_Common_Tools::initWalls(*myEngine,
                                      myCurrentWallSet,
                                      myWallTiles);
-  RPG_Client_Common_Tools::initDoors(myEngine->getFloorPlan(),
-                                     *myEngine,
+  RPG_Client_Common_Tools::initDoors(*myEngine,
                                      myCurrentDoorSet,
                                      myDoorTiles);
 
@@ -1695,12 +1693,16 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                                               myClientAction.positions);
 
             // step2: remove invalid positions
+            RPG_Map_Positions_t obstacles = myEngine->getObstacles(false);
             // *WARNING*: this works for associative containers ONLY
             for (RPG_Map_PositionsIterator_t iterator = myClientAction.positions.begin();
                  iterator != myClientAction.positions.end();
-                 iterator++)
-              if (!myEngine->isValid(*iterator))
-                myClientAction.positions.erase(iterator++);
+                 )
+              (RPG_Map_Common_Tools::hasLineOfSight(myClientAction.source,
+                                                    *iterator,
+                                                    obstacles,
+                                                    false) ? iterator++
+                                                           : myClientAction.positions.erase(iterator++));
 
             break;
           }
@@ -1813,64 +1815,101 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         //           map_position.first,
         //           map_position.second));
         
-        // player standing next to door ?
         myClientAction.entity_id = myEngine->getActive();
+        if (myClientAction.entity_id == 0)
+          break; // --> no player, no action...
+
         RPG_Engine_Action player_action;
         player_action.command = RPG_ENGINE_COMMAND_INVALID;
-        player_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                std::numeric_limits<unsigned int>::max());
-        player_action.path.clear();
-        player_action.target = 0;
+        player_action.position = map_position;
+        //player_action.path.clear();
+        player_action.target = myEngine->hasEntity(map_position);
+        // self ?
+        if (player_action.target == myClientAction.entity_id)
+          break;
+
+        // clicked on monster ?
+        if (player_action.target &&
+            myEngine->isMonster(player_action.target))
+        {
+          // attack/pursue selected monster
+          player_action.command = COMMAND_ATTACK;
+
+          // reuse existing path ?
+          if (!myEngine->canReach(myClientAction.entity_id,
+                                  map_position) &&
+              (myClient->mode() == SELECTIONMODE_PATH) &&
+              !myClientAction.path.empty())
+          {
+            // sanity checks
+            ACE_ASSERT(myClientAction.path.front().first == myEngine->getPosition(myClientAction.entity_id));
+            ACE_ASSERT(myClientAction.path.back().first == player_action.position);
+
+            // path exists --> reuse it
+            player_action.path = myClientAction.path;
+            player_action.path.pop_front();
+            //player_action.path.pop_back();
+
+            // restore/clear old tile highlight background
+            myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+            myClient->action(myClientAction);
+          } // end IF
+
+          myEngine->action(myClientAction.entity_id, player_action);
+
+          break;
+        } // end IF
+        else
+          player_action.target = 0;
+
+        // player standing next to door ?
         switch (myEngine->getElement(map_position))
         {
           case MAPELEMENT_DOOR:
           {
-            const RPG_Map_Door_t& door = myEngine->getDoor(map_position);
-
-            // closed --> (try to) open it
+            // (try to) handle door ?
             if (myClientAction.entity_id &&
-                (!door.is_open) &&
                 RPG_Map_Common_Tools::isAdjacent(myEngine->getPosition(myClientAction.entity_id),
                                                  map_position))
             {
-              player_action.command = (door.is_open ? COMMAND_DOOR_CLOSE
-                                                    : COMMAND_DOOR_OPEN);
-              player_action.position = map_position;
-              myEngine->action(myClientAction.entity_id, player_action);
+              bool ignore_door = false;
+              switch (myEngine->state(map_position))
+              {
+                case DOORSTATE_OPEN:
+                  player_action.command = COMMAND_DOOR_CLOSE; break;
+                case DOORSTATE_CLOSED:
+                case DOORSTATE_LOCKED:
+                  player_action.command = COMMAND_DOOR_OPEN; break;
+                case DOORSTATE_BROKEN:
+                  ignore_door = true; break;
+                default:
+                {
+                  ACE_DEBUG((LM_ERROR,
+                             ACE_TEXT("[%u,%u]: invalid door state (was: \"%s\"), aborting\n"),
+                             map_position.first, map_position.second,
+                             RPG_Map_DoorStateHelper::RPG_Map_DoorStateToString(myEngine->state(map_position)).c_str()));
 
-              break;
+                  return;
+                }
+              } // end SWITCH
+              player_action.position = map_position;
+
+              if (!ignore_door)
+              {
+                myEngine->action(myClientAction.entity_id, player_action);
+
+                break;
+              } // end IF
             } // end IF
 
             // *WARNING*: falls through !
           }
           case MAPELEMENT_FLOOR:
           {
-            if ((myClientAction.entity_id == 0) ||
-                !myEngine->isValid(map_position))
-              break;
-
-            player_action.target = myEngine->hasEntity(map_position);
-            // self ?
-            if (player_action.target == myClientAction.entity_id)
-              break;
-
-            // monster ?
-            if (player_action.target &&
-                myEngine->isMonster(player_action.target) &&
-                myEngine->canReach(myClientAction.entity_id,
-                                   map_position))
-            {
-              // --> attack monster
-              player_action.command = COMMAND_ATTACK;
-              player_action.position = map_position;
-              myEngine->action(myClientAction.entity_id, player_action);
-
-              break;
-            } // end IF
-
             // (try to) travel to this position
             player_action.command = COMMAND_TRAVEL;
-            player_action.position = map_position;
+
+            // reuse existing path ?
             if ((myClient->mode() == SELECTIONMODE_PATH) &&
                 !myClientAction.path.empty())
             {
@@ -1886,7 +1925,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
               myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
               myClient->action(myClientAction);
             } // end IF
-            player_action.target = 0;
+
             myEngine->action(myClientAction.entity_id, player_action);
 
             break;

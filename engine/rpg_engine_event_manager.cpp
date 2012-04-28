@@ -695,17 +695,8 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
               // obstacles:
               // - walls
               // - (closed, locked) doors
-              RPG_Map_Positions_t obstacles = myEngine->getFloorPlan().walls;
-              for (RPG_Map_DoorsConstIterator_t door_iterator = myEngine->getFloorPlan().doors.begin();
-                   door_iterator != myEngine->getFloorPlan().doors.end();
-                   door_iterator++)
-                if (!(*door_iterator).is_open)
-                  obstacles.insert((*door_iterator).position);
               // - entities
-              for (RPG_Engine_EntitiesConstIterator_t entity_iterator = myEngine->myEntities.begin();
-                   entity_iterator != myEngine->myEntities.end();
-                   entity_iterator++)
-                obstacles.insert((*entity_iterator).second->position);
+              RPG_Map_Positions_t obstacles = myEngine->getObstacles(true);
               // - start, end positions never are obstacles...
               obstacles.erase((*iterator).second->position);
               obstacles.erase(current_action.position);
@@ -761,7 +752,7 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
     }
     case EVENT_ENTITY_SPAWN:
     {
-      const RPG_Engine_LevelMeta_t& level_meta = myEngine->getMeta();
+      const RPG_Engine_LevelMeta_t& level_meta = myEngine->getMeta(true);
 
       if (level_meta.roaming_monsters.empty()                  ||
           (myEngine->numSpawned() >= level_meta.max_spawned)   ||

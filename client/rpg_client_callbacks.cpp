@@ -2263,7 +2263,7 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
 #endif
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += data->level_engine->getMeta().name;
+  filename += data->level_engine->getMeta(true).name;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   data->level_engine->save(filename);
 

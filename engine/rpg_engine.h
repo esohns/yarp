@@ -67,9 +67,12 @@ class RPG_Engine_Export RPG_Engine
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
-  // *WARNING*: DO NOT USE this while the engine is running !
+  // *WARNING*: DO NOT USE while the engine isRunning() !
   void init(RPG_Engine_IWindow*,        // UI handle
             const RPG_Engine_Level_t&); // level
+  // *WARNING*: handle with care !
+  void lock();
+  void unlock();
 
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
   RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
@@ -104,10 +107,31 @@ class RPG_Engine_Export RPG_Engine
   bool canReach(const RPG_Engine_EntityID_t&, // id
                 const RPG_Map_Position_t&);   // target position
 
+  // map
+  RPG_Engine_LevelMeta_t getMeta(const bool& = true) const; // locked access ?
+  RPG_Map_Position_t getStartPosition(const bool& = true) const; // locked access ?
+  RPG_Map_Size_t getSize(const bool& = true) const; // locked access ?
+  RPG_Map_DoorState state(const RPG_Map_Position_t&,
+                          const bool& = true) const; // locked access ?
+
+  bool isValid(const RPG_Map_Position_t&,
+               const bool& = true) const; // locked access ?
+  bool isCorner(const RPG_Map_Position_t&,
+                const bool& = true) const; // locked access ?
+  RPG_Map_Element getElement(const RPG_Map_Position_t&,
+                             const bool& = true) const; // locked access ?
+  RPG_Map_Positions_t getObstacles(const bool&,               // include entities ?
+                                   const bool& = true) const; // locked access ?
+  RPG_Map_Positions_t getWalls(const bool& = true) const; // locked access ?
+  RPG_Map_Positions_t getDoors(const bool& = true) const; // locked access ?
+
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
   typedef RPG_Engine_Level inherited2;
 
+  // hide unwanted funcionality
+  using RPG_Engine_Level::init;
+  using RPG_Engine_Level::getMeta;
   using RPG_Engine_Level::findPath;
 
   // safety measures

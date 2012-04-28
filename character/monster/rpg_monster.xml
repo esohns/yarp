@@ -7,7 +7,9 @@
                    xsi:schemaLocation="urn:rpg rpg_monster.xsd">
   <monster>
     <name>Aboleth</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_ABERRATION</metaType>
       <subType>SUBTYPE_AQUATIC</subType>
@@ -212,9 +214,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Aboleth Mage</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_ABERRATION</metaType>
       <subType>SUBTYPE_AQUATIC</subType>
@@ -433,9 +438,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Achaierai</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_EVIL</subType>
@@ -600,9 +608,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Allip</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_UNDEAD</metaType>
       <subType>SUBTYPE_INCORPOREAL</subType>
@@ -715,9 +726,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Astral Deva</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_ANGEL</subType>
@@ -946,9 +960,12 @@
     </advancements>
     <levelAdjustment>8</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Planetar Angel</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_ANGEL</subType>
@@ -1142,9 +1159,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Solar Angel</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_ANGEL</subType>
@@ -1401,9 +1421,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Tiny Animated Object</name>
-    <size>SIZE_TINY</size>
+    <size>
+      <size>SIZE_TINY</size>
+    </size>
     <type>
       <metaType>METATYPE_CONSTRUCT</metaType>
     </type>
@@ -1480,9 +1503,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Small Animated Object</name>
-    <size>SIZE_SMALL</size>
+    <size>
+      <size>SIZE_SMALL</size>
+    </size>
     <type>
       <metaType>METATYPE_CONSTRUCT</metaType>
     </type>
@@ -1555,9 +1581,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Medium Animated Object</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_CONSTRUCT</metaType>
     </type>
@@ -1630,9 +1659,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Large Animated Object</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_CONSTRUCT</metaType>
     </type>
@@ -1705,9 +1737,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Huge Animated Object</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_CONSTRUCT</metaType>
     </type>
@@ -1780,9 +1815,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Gargantuan Animated Object</name>
-    <size>SIZE_GARGANTUAN</size>
+    <size>
+      <size>SIZE_GARGANTUAN</size>
+    </size>
     <type>
       <metaType>METATYPE_CONSTRUCT</metaType>
     </type>
@@ -1855,9 +1893,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Colossal Animated Object</name>
-    <size>SIZE_COLOSSAL</size>
+    <size>
+      <size>SIZE_COLOSSAL</size>
+    </size>
     <type>
       <metaType>METATYPE_CONSTRUCT</metaType>
     </type>
@@ -1930,9 +1971,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Ankheg</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
     </type>
@@ -2084,9 +2128,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Aranea</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
       <subType>SUBTYPE_SHAPECHANGER</subType>
@@ -2257,9 +2304,12 @@
     </advancements>
     <levelAdjustment>4</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Lantern Archon</name>
-    <size>SIZE_SMALL</size>
+    <size>
+      <size>SIZE_SMALL</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_ARCHON</subType>
@@ -2383,9 +2433,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Hound Archon</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_ARCHON</subType>
@@ -2602,9 +2655,12 @@
     </advancements>
     <levelAdjustment>5</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Hound Archon Hero</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_ARCHON</subType>
@@ -2809,9 +2865,12 @@
     </advancements>
     <levelAdjustment>5</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Trumpet Archon</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_ARCHON</subType>
@@ -2983,9 +3042,12 @@
     </advancements>
     <levelAdjustment>8</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Juvenile Arrowhawk</name>
-    <size>SIZE_SMALL</size>
+    <size>
+      <size>SIZE_SMALL</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_AIR</subType>
@@ -3140,9 +3202,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Adult Arrowhawk</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_AIR</subType>
@@ -3298,9 +3363,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Elder Arrowhawk</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_AIR</subType>
@@ -3467,9 +3535,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Assassin Vine</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_PLANT</metaType>
     </type>
@@ -3614,9 +3685,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Athach</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_ABERRATION</metaType>
     </type>
@@ -3846,9 +3920,12 @@
     </advancements>
     <levelAdjustment>5</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Avoral</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_EXTRAPLANAR</subType>
@@ -4071,9 +4148,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Azer</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_EXTRAPLANAR</subType>
@@ -4237,9 +4317,12 @@
     </advancements>
     <levelAdjustment>4</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Barghest</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_EVIL</subType>
@@ -4403,9 +4486,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Greater Barghest</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_EVIL</subType>
@@ -4578,9 +4664,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Basilisk</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
     </type>
@@ -4715,9 +4804,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Abyssal Greater Basilisk</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_AUGMENTED</subType>
@@ -4881,9 +4973,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Behir</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
     </type>
@@ -5124,9 +5219,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Belker</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_ELEMENTAL</metaType>
       <subType>SUBTYPE_EXTRAPLANAR</subType>
@@ -5327,9 +5425,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Blink Dog</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
     </type>
@@ -5471,9 +5572,12 @@
     </advancements>
     <levelAdjustment>2</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Bodak</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_UNDEAD</metaType>
       <subType>SUBTYPE_EXTRAPLANAR</subType>
@@ -5609,9 +5713,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Bralani</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -5881,9 +5988,12 @@
     </advancements>
     <levelAdjustment>5</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Bugbear</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_HUMANOID</metaType>
       <subType>SUBTYPE_GOBLINOID</subType>
@@ -6008,9 +6118,12 @@
     </advancements>
     <levelAdjustment>1</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Bulette</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
     </type>
@@ -6166,9 +6279,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Centaur</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_HUMANOID</metaType>
     </type>
@@ -6338,9 +6454,12 @@
     </alignment>
     <levelAdjustment>2</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Chaos Beast</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -6558,9 +6677,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Chimera</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
     </type>
@@ -6779,9 +6901,12 @@
     </advancements>
     <levelAdjustment>2</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Choker</name>
-    <size>SIZE_SMALL</size>
+    <size>
+      <size>SIZE_SMALL</size>
+    </size>
     <type>
       <metaType>METATYPE_ABERRATION</metaType>
     </type>
@@ -6925,9 +7050,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Chuul</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_ABERRATION</metaType>
       <subType>SUBTYPE_AQUATIC</subType>
@@ -7128,9 +7256,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Cloaker</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_ABERRATION</metaType>
     </type>
@@ -7373,9 +7504,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Cockatrice</name>
-    <size>SIZE_SMALL</size>
+    <size>
+      <size>SIZE_SMALL</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
     </type>
@@ -7500,9 +7634,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Couatl</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
     </type>
@@ -7769,9 +7906,12 @@
     </advancements>
     <levelAdjustment>7</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Darkmantle</name>
-    <size>SIZE_SMALL</size>
+    <size>
+      <size>SIZE_SMALL</size>
+    </size>
     <type>
       <metaType>METATYPE_MAGICAL_BEAST</metaType>
     </type>
@@ -7921,9 +8061,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Delver</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_ABERRATION</metaType>
     </type>
@@ -8159,9 +8302,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Babau</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -8440,9 +8586,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Balor</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -8901,9 +9050,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Bebilith</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -9184,9 +9336,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Dretch</name>
-    <size>SIZE_SMALL</size>
+    <size>
+      <size>SIZE_SMALL</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -9407,9 +9562,12 @@
     </advancements>
     <levelAdjustment>2</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Glabrezu</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -9733,9 +9891,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Hezrou</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -10022,9 +10183,12 @@
     </advancements>
     <levelAdjustment>9</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Marilith</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -10447,9 +10611,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Nalfeshnee</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -10795,9 +10962,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Quasit</name>
-    <size>SIZE_TINY</size>
+    <size>
+      <size>SIZE_TINY</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -11060,9 +11230,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Retriever</name>
-    <size>SIZE_HUGE</size>
+    <size>
+      <size>SIZE_HUGE</size>
+    </size>
     <type>
       <metaType>METATYPE_CONSTRUCT</metaType>
       <subType>SUBTYPE_EXTRAPLANAR</subType>
@@ -11256,9 +11429,12 @@
     </advancements>
     <levelAdjustment>0</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Succubus</name>
-    <size>SIZE_MEDIUM</size>
+    <size>
+      <size>SIZE_MEDIUM</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -11528,9 +11704,12 @@
     </advancements>
     <levelAdjustment>6</levelAdjustment>
   </monster>
+  
   <monster>
     <name>Vrock</name>
-    <size>SIZE_LARGE</size>
+    <size>
+      <size>SIZE_LARGE</size>
+    </size>
     <type>
       <metaType>METATYPE_OUTSIDER</metaType>
       <subType>SUBTYPE_CHAOTIC</subType>
@@ -11873,4 +12052,5 @@
     </advancements>
     <levelAdjustment>8</levelAdjustment>
   </monster>
+  
 </monsterDictionary>

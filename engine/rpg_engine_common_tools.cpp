@@ -93,12 +93,13 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   RPG_Item_Common_Tools::initStringConversionTables();
   RPG_Combat_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();
+  RPG_Map_Common_Tools::initStringConversionTables();
+  RPG_Engine_CommandHelper::init();
+  RPG_Engine_EntityModeHelper::init();
+
   // step1c: ...and other static data
   RPG_Magic_Common_Tools::init();
   RPG_Character_Common_Tools::init();
-
-  RPG_Engine_CommandHelper::init();
-  RPG_Engine_EntityModeHelper::init();
 
   // step1c: init dictionaries
   // step1ca: init magic dictionary

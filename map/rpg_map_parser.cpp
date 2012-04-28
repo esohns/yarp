@@ -470,9 +470,7 @@ namespace yy {
                                         RPG_Map_Door_t door;
                                         door.position = driver->myCurrentPosition;
                                         door.outside = DIRECTION_INVALID;
-                                        door.is_open = false;
-                                        door.is_locked = false;
-                                        door.is_broken = false;
+                                        door.state = DOORSTATE_CLOSED; // *TODO*
                                         driver->myCurrentPlan->doors.insert(door);
                                         driver->myCurrentPosition.first++;
                                         break;

@@ -22,11 +22,20 @@
     </xsd:documentation>
   </xsd:annotation>
 
- <xsd:complexType name="RPG_Map_Position_Type">
-   <xsd:sequence>
-     <xsd:element name="x" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-     <xsd:element name="y" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-   </xsd:sequence>
- </xsd:complexType>
+  <xsd:simpleType name="RPG_Map_DoorState_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DOORSTATE_OPEN"/>
+      <xsd:enumeration value="DOORSTATE_CLOSED"/>
+      <xsd:enumeration value="DOORSTATE_LOCKED"/>
+      <xsd:enumeration value="DOORSTATE_BROKEN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="RPG_Map_Position_Type">
+    <xsd:sequence>
+      <xsd:element name="x" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="y" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
 
 </xsd:schema>

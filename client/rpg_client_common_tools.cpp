@@ -116,7 +116,7 @@ RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
 }
 
 void
-RPG_Client_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
+RPG_Client_Common_Tools::initFloorEdges(const RPG_Engine& engine_in,
                                         const RPG_Graphics_FloorEdgeTileSet_t& tileSet_in,
                                         RPG_Graphics_FloorEdgeTileMap_t& floorEdgeTiles_out)
 {
@@ -129,105 +129,107 @@ RPG_Client_Common_Tools::initFloorEdges(const RPG_Map_FloorPlan_t& floorPlan_in,
   RPG_Map_Position_t east, north, west, south;
   RPG_Map_Position_t north_east, north_west, south_east, south_west;
   RPG_Graphics_FloorEdgeTileSet_t current_floor_edges;
-  RPG_Map_Door_t position_door;
+  RPG_Map_Element current_element;
+  RPG_Map_Size_t map_size = engine_in.getSize();
+  RPG_Map_Positions_t walls = engine_in.getWalls();
   for (unsigned int y = 0;
-       y < floorPlan_in.size_y;
+       y < map_size.second;
        y++)
     for (unsigned int x = 0;
-         x < floorPlan_in.size_x;
+         x < map_size.first;
          x++)
   {
     current_position = std::make_pair(x, y);
     ACE_OS::memset(&current_floor_edges,
-                  0,
-                  sizeof(current_floor_edges));
+                   0,
+                   sizeof(current_floor_edges));
 
-    position_door.position = current_position;
     // floor or door ? --> compute floor edges
-    if (RPG_Map_Common_Tools::isFloor(current_position, floorPlan_in) ||
-        (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+    current_element = engine_in.getElement(current_position);
+    if ((current_element != MAPELEMENT_FLOOR) &&
+        (current_element != MAPELEMENT_DOOR))
+      continue;
+
+    // find neighboring map elements
+    east = current_position;
+    east.first++;
+    north = current_position;
+    north.second--;
+    west = current_position;
+    west.first--;
+    south = current_position;
+    south.second++;
+    north_east = north;
+    north_east.first++;
+    north_west = north;
+    north_west.first--;
+    south_east = south;
+    south_east.first++;
+    south_west = south;
+    south_west.first--;
+
+    if (walls.find(east) != walls.end())
     {
-      // step1: find neighboring map elements
-      east = current_position;
-      east.first++;
-      north = current_position;
-      north.second--;
-      west = current_position;
-      west.first--;
-      south = current_position;
-      south.second++;
-      north_east = north;
-      north_east.first++;
-      north_west = north;
-      north_west.first--;
-      south_east = south;
-      south_east.first++;
-      south_west = south;
-      south_west.first--;
-
-      if (floorPlan_in.walls.find(east) != floorPlan_in.walls.end())
-      {
-        current_floor_edges.east = tileSet_in.east;
-        if (floorPlan_in.walls.find(north) != floorPlan_in.walls.end())
-          current_floor_edges.north_east = tileSet_in.north_east;
-        if (floorPlan_in.walls.find(south) != floorPlan_in.walls.end())
-          current_floor_edges.south_east = tileSet_in.south_east;
-      } // end IF
-      else
-      {
-        // right corner ?
-        if ((floorPlan_in.walls.find(north) == floorPlan_in.walls.end()) &&
-          (floorPlan_in.walls.find(north_east) != floorPlan_in.walls.end()))
-          current_floor_edges.right = tileSet_in.right;
-      } // end ELSE
-      if ((floorPlan_in.walls.find(west) != floorPlan_in.walls.end()))
-      {
-        current_floor_edges.west = tileSet_in.west;
-        if (floorPlan_in.walls.find(north) != floorPlan_in.walls.end())
-          current_floor_edges.north_west = tileSet_in.north_west;
-        if (floorPlan_in.walls.find(south) != floorPlan_in.walls.end())
-          current_floor_edges.south_west = tileSet_in.south_west;
-      } // end IF
-      else
-      {
-        // left corner ?
-        if ((floorPlan_in.walls.find(south) == floorPlan_in.walls.end()) &&
-            (floorPlan_in.walls.find(south_west) != floorPlan_in.walls.end()))
-          current_floor_edges.left = tileSet_in.left;
-      } // end ELSE
-      if ((floorPlan_in.walls.find(north) != floorPlan_in.walls.end()))
-        current_floor_edges.north = tileSet_in.north;
-      else
-      {
-        // top corner ?
-        if ((floorPlan_in.walls.find(west) == floorPlan_in.walls.end()) &&
-            (floorPlan_in.walls.find(north_west) != floorPlan_in.walls.end()))
-          current_floor_edges.top = tileSet_in.top;
-      } // end ELSE
-      if ((floorPlan_in.walls.find(south) != floorPlan_in.walls.end()))
-        current_floor_edges.south = tileSet_in.south;
-      else
-      {
-        // bottom corner ?
-        if ((floorPlan_in.walls.find(east) == floorPlan_in.walls.end()) &&
-            (floorPlan_in.walls.find(south_east) != floorPlan_in.walls.end()))
-          current_floor_edges.bottom = tileSet_in.bottom;
-      } // end ELSE
-
-      if (current_floor_edges.east.surface ||
-          current_floor_edges.north.surface ||
-          current_floor_edges.west.surface ||
-          current_floor_edges.south.surface ||
-          current_floor_edges.south_east.surface ||
-          current_floor_edges.south_west.surface ||
-          current_floor_edges.north_west.surface ||
-          current_floor_edges.north_east.surface ||
-          current_floor_edges.top.surface ||
-          current_floor_edges.right.surface ||
-          current_floor_edges.left.surface ||
-          current_floor_edges.bottom.surface)
-        floorEdgeTiles_out.insert(std::make_pair(current_position, current_floor_edges));
+      current_floor_edges.east = tileSet_in.east;
+      if (walls.find(north) != walls.end())
+        current_floor_edges.north_east = tileSet_in.north_east;
+      if (walls.find(south) != walls.end())
+        current_floor_edges.south_east = tileSet_in.south_east;
     } // end IF
+    else
+    {
+      // right corner ?
+      if ((walls.find(north) == walls.end()) &&
+        (walls.find(north_east) != walls.end()))
+        current_floor_edges.right = tileSet_in.right;
+    } // end ELSE
+    if ((walls.find(west) != walls.end()))
+    {
+      current_floor_edges.west = tileSet_in.west;
+      if (walls.find(north) != walls.end())
+        current_floor_edges.north_west = tileSet_in.north_west;
+      if (walls.find(south) != walls.end())
+        current_floor_edges.south_west = tileSet_in.south_west;
+    } // end IF
+    else
+    {
+      // left corner ?
+      if ((walls.find(south) == walls.end()) &&
+          (walls.find(south_west) != walls.end()))
+        current_floor_edges.left = tileSet_in.left;
+    } // end ELSE
+    if ((walls.find(north) != walls.end()))
+      current_floor_edges.north = tileSet_in.north;
+    else
+    {
+      // top corner ?
+      if ((walls.find(west) == walls.end()) &&
+          (walls.find(north_west) != walls.end()))
+        current_floor_edges.top = tileSet_in.top;
+    } // end ELSE
+    if ((walls.find(south) != walls.end()))
+      current_floor_edges.south = tileSet_in.south;
+    else
+    {
+      // bottom corner ?
+      if ((walls.find(east) == walls.end()) &&
+          (walls.find(south_east) != walls.end()))
+        current_floor_edges.bottom = tileSet_in.bottom;
+    } // end ELSE
+
+    if (current_floor_edges.east.surface ||
+        current_floor_edges.north.surface ||
+        current_floor_edges.west.surface ||
+        current_floor_edges.south.surface ||
+        current_floor_edges.south_east.surface ||
+        current_floor_edges.south_west.surface ||
+        current_floor_edges.north_west.surface ||
+        current_floor_edges.north_east.surface ||
+        current_floor_edges.top.surface ||
+        current_floor_edges.right.surface ||
+        current_floor_edges.left.surface ||
+        current_floor_edges.bottom.surface)
+      floorEdgeTiles_out.insert(std::make_pair(current_position, current_floor_edges));
   } // end FOR
 }
 
@@ -269,7 +271,7 @@ RPG_Client_Common_Tools::updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t&
 }
 
 void
-RPG_Client_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
+RPG_Client_Common_Tools::initWalls(const RPG_Engine& engine_in,
                                    const RPG_Graphics_WallTileSet_t& tileSet_in,
                                    RPG_Graphics_WallTileMap_t& wallTiles_out)
 {
@@ -281,13 +283,15 @@ RPG_Client_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
   RPG_Map_Position_t current_position;
   RPG_Map_Position_t east, north, west, south;
   RPG_Graphics_WallTileSet_t current_walls;
-  RPG_Map_Door_t position_door;
   bool has_walls = false;
+  RPG_Map_Element current_element;
+  RPG_Map_Size_t map_size = engine_in.getSize();
+  RPG_Map_Positions_t walls = engine_in.getWalls();
   for (unsigned int y = 0;
-       y < floorPlan_in.size_y;
+       y < map_size.second;
        y++)
     for (unsigned int x = 0;
-         x < floorPlan_in.size_x;
+         x < map_size.first;
          x++)
     {
       current_position = std::make_pair(x, y);
@@ -296,49 +300,49 @@ RPG_Client_Common_Tools::initWalls(const RPG_Map_FloorPlan_t& floorPlan_in,
                      sizeof(current_walls));
       has_walls = false;
 
-      position_door.position = current_position;
       // floor or door ? --> compute walls
-      if (RPG_Map_Common_Tools::isFloor(current_position, floorPlan_in) ||
-          (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end()))
+      current_element = engine_in.getElement(current_position);
+      if ((current_element != MAPELEMENT_FLOOR) &&
+          (current_element != MAPELEMENT_DOOR))
+        continue;
+
+      // find neighboring walls
+      east = current_position;
+      east.first++;
+      north = current_position;
+      north.second--;
+      west = current_position;
+      west.first--;
+      south = current_position;
+      south.second++;
+
+      if ((walls.find(east) != walls.end()) ||
+          (current_position.first == (map_size.first - 1))) // perimeter
       {
-        // step1: find neighboring walls
-        east = current_position;
-        east.first++;
-        north = current_position;
-        north.second--;
-        west = current_position;
-        west.first--;
-        south = current_position;
-        south.second++;
-
-        if ((floorPlan_in.walls.find(east) != floorPlan_in.walls.end()) ||
-            (current_position.first == (floorPlan_in.size_x - 1))) // perimeter
-        {
-          current_walls.east = tileSet_in.east;
-          has_walls = true;
-        } // end IF
-        if ((floorPlan_in.walls.find(west) != floorPlan_in.walls.end()) ||
-            (current_position.first == 0)) // perimeter
-        {
-          current_walls.west = tileSet_in.west;
-          has_walls = true;
-        } // end IF
-        if ((floorPlan_in.walls.find(north) != floorPlan_in.walls.end()) ||
-            (current_position.second == 0)) // perimeter
-        {
-          current_walls.north = tileSet_in.north;
-          has_walls = true;
-        } // end IF
-        if ((floorPlan_in.walls.find(south) != floorPlan_in.walls.end()) ||
-            (current_position.second == (floorPlan_in.size_y - 1))) // perimeter
-        {
-          current_walls.south = tileSet_in.south;
-          has_walls = true;
-        } // end IF
-
-        if (has_walls)
-          wallTiles_out.insert(std::make_pair(current_position, current_walls));
+        current_walls.east = tileSet_in.east;
+        has_walls = true;
       } // end IF
+      if ((walls.find(west) != walls.end()) ||
+          (current_position.first == 0)) // perimeter
+      {
+        current_walls.west = tileSet_in.west;
+        has_walls = true;
+      } // end IF
+      if ((walls.find(north) != walls.end()) ||
+          (current_position.second == 0)) // perimeter
+      {
+        current_walls.north = tileSet_in.north;
+        has_walls = true;
+      } // end IF
+      if ((walls.find(south) != walls.end()) ||
+          (current_position.second == (map_size.second - 1))) // perimeter
+      {
+        current_walls.south = tileSet_in.south;
+        has_walls = true;
+      } // end IF
+
+      if (has_walls)
+        wallTiles_out.insert(std::make_pair(current_position, current_walls));
     } // end FOR
 }
 
@@ -364,8 +368,7 @@ RPG_Client_Common_Tools::updateWalls(const RPG_Graphics_WallTileSet_t& tileSet_i
 }
 
 void
-RPG_Client_Common_Tools::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
-                                   const RPG_Engine& engine_in,
+RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
                                    const RPG_Graphics_DoorTileSet_t& tileSet_in,
                                    RPG_Graphics_DoorTileMap_t& doorTiles_out)
 {
@@ -376,49 +379,54 @@ RPG_Client_Common_Tools::initDoors(const RPG_Map_FloorPlan_t& floorPlan_in,
 
   RPG_Graphics_Tile_t current_tile;
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  for (RPG_Map_DoorsConstIterator_t iterator = floorPlan_in.doors.begin();
-       iterator != floorPlan_in.doors.end();
+  RPG_Map_Positions_t doors = engine_in.getDoors();
+  RPG_Map_DoorState door_state = RPG_MAP_DOORSTATE_INVALID;
+  for (RPG_Map_PositionsConstIterator_t iterator = doors.begin();
+       iterator != doors.end();
        iterator++)
   {
     ACE_OS::memset(&current_tile,
                    0,
                    sizeof(current_tile));
     orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-    if ((*iterator).is_broken)
+    door_state = RPG_MAP_DOORSTATE_INVALID;
+
+    door_state = engine_in.state(*iterator);
+    ACE_ASSERT(door_state != RPG_MAP_DOORSTATE_INVALID);
+    if (door_state == DOORSTATE_BROKEN)
     {
-      doorTiles_out.insert(std::make_pair((*iterator).position, tileSet_in.broken));
+      doorTiles_out.insert(std::make_pair(*iterator, tileSet_in.broken));
       continue;
     } // end IF
 
     orientation = RPG_Client_Common_Tools::getDoorOrientation(engine_in,
-                                                              (*iterator).position);
+                                                              *iterator);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
       {
-        current_tile = ((*iterator).is_open ? tileSet_in.horizontal_open
-                                            : tileSet_in.horizontal_closed);
+        current_tile = ((door_state == DOORSTATE_OPEN) ? tileSet_in.horizontal_open
+                                                       : tileSet_in.horizontal_closed);
         break;
       }
       case ORIENTATION_VERTICAL:
       {
-        current_tile = ((*iterator).is_open ? tileSet_in.vertical_open
-                                            : tileSet_in.vertical_closed);
+        current_tile = ((door_state == DOORSTATE_OPEN) ? tileSet_in.vertical_open
+                                                       : tileSet_in.vertical_closed);
         break;
       }
       default:
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid door [%u,%u] orientation (was: \"%s\"), continuing\n"),
-                   (*iterator).position.first,
-                   (*iterator).position.second,
+                   (*iterator).first, (*iterator).second,
                    RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
 
         continue;
       }
     } // end SWITCH
 
-    doorTiles_out.insert(std::make_pair((*iterator).position, current_tile));
+    doorTiles_out.insert(std::make_pair(*iterator, current_tile));
   } // end FOR
 }
 
@@ -430,8 +438,8 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::updateDoors"));
 
   RPG_Graphics_Tile_t current_tile;
-  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  RPG_Map_Door_t current_door;
+  RPG_Graphics_Orientation orientation;
+  RPG_Map_DoorState door_state;
   for (RPG_Graphics_DoorTileMapIterator_t iterator = doorTiles_inout.begin();
        iterator != doorTiles_inout.end();
        iterator++)
@@ -440,9 +448,11 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
                    0,
                    sizeof(current_tile));
     orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
+    door_state = RPG_MAP_DOORSTATE_INVALID;
 
-    current_door = engine_in.getDoor((*iterator).first);
-    if (current_door.is_broken)
+    door_state = engine_in.state((*iterator).first);
+    ACE_ASSERT(door_state != RPG_MAP_DOORSTATE_INVALID);
+    if (door_state == DOORSTATE_BROKEN)
     {
       (*iterator).second = tileSet_in.broken;
       continue;
@@ -454,22 +464,21 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
     {
       case ORIENTATION_HORIZONTAL:
       {
-        current_tile = (current_door.is_open ? tileSet_in.horizontal_open
-                                             : tileSet_in.horizontal_closed);
+        current_tile = ((door_state == DOORSTATE_OPEN) ? tileSet_in.horizontal_open
+                                                       : tileSet_in.horizontal_closed);
         break;
       }
       case ORIENTATION_VERTICAL:
       {
-        current_tile = (current_door.is_open ? tileSet_in.vertical_open
-                                             : tileSet_in.vertical_closed);
+        current_tile = ((door_state == DOORSTATE_OPEN) ? tileSet_in.vertical_open
+                                                       : tileSet_in.vertical_closed);
         break;
       }
       default:
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid door [%u,%u] orientation (was: \"%s\"), continuing\n"),
-                   (*iterator).first.first,
-                   (*iterator).first.second,
+                   (*iterator).first.first, (*iterator).first.second,
                    RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
 
         continue;
@@ -645,12 +654,13 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
   // (closed) door ?
   if (engine_in.getElement(position_in) == MAPELEMENT_DOOR)
   {
-    RPG_Map_Door_t door = engine_in.getDoor(position_in);
+    RPG_Map_DoorState door_state = engine_in.state(position_in);
     RPG_Engine_EntityID_t entity_id = engine_in.getActive();
-    if (!door.is_open &&
+    if (((door_state == DOORSTATE_CLOSED) ||
+         (door_state == DOORSTATE_LOCKED)) &&
         entity_id &&
-        (RPG_Map_Common_Tools::distance(engine_in.getPosition(entity_id),
-                                        position_in) == 1))
+        RPG_Map_Common_Tools::isAdjacent(engine_in.getPosition(entity_id),
+                                         position_in))
       result = CURSOR_DOOR_OPEN;
   } // end IF
 

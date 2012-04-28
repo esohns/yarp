@@ -372,23 +372,16 @@ RPG_Engine_Level::getMeta() const
   return myLevelMeta;
 }
 
-void
+bool
 RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
-                             const bool& open_in,
-                             bool& toggled_out)
+                             const bool& open_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::handleDoor"));
-
-  // init return value(s)
-  toggled_out = false;
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
   position_door.outside = DIRECTION_INVALID;
-  position_door.is_open = false;
-  position_door.is_locked = false;
-  position_door.is_broken = false;
-
+  position_door.state = RPG_MAP_DOORSTATE_INVALID;
   RPG_Map_DoorsIterator_t iterator = myMap.plan.doors.find(position_door);
   // sanity check
   ACE_ASSERT(iterator != myMap.plan.doors.end());
@@ -396,46 +389,70 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
   if (open_in)
   {
     // sanity check
-    if ((*iterator).is_open)
+    if ((*iterator).state == DOORSTATE_OPEN)
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("door [%u,%u] already open...\n"),
 //                  position_in.first,
 //                  position_in.second));
 
-      return;
+      return false;
     } // end IF
 
     // cannot simply open locked doors...
-    if ((*iterator).is_locked)
+    if ((*iterator).state == DOORSTATE_LOCKED)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("door [%u,%u] is locked...\n"),
                  position_in.first,
                  position_in.second));
 
-      return;
+      return false;
+    } // end IF
+
+    // cannot open broken doors...
+    if ((*iterator).state == DOORSTATE_BROKEN)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("door [%u,%u] is broken...\n"),
+                 position_in.first,
+                 position_in.second));
+
+      return false;
     } // end IF
   } // end IF
   else
   {
     // sanity check
-    if (!(*iterator).is_open)
+    if (((*iterator).state == DOORSTATE_CLOSED) ||
+        ((*iterator).state == DOORSTATE_LOCKED))
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("door [%u,%u] already closed...\n"),
 //                  position_in.first,
 //                  position_in.second));
 
-      return;
+      return false;
+    } // end IF
+
+    // cannot close broken doors...
+    if ((*iterator).state == DOORSTATE_BROKEN)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("door [%u,%u] is broken...\n"),
+                 position_in.first,
+                 position_in.second));
+
+      return false;
     } // end IF
   } // end ELSE
 
   // *WARNING*: set iterators are CONST for a good reason !
   // --> (but we know what we're doing)...
-  (const_cast<RPG_Map_Door_t&>(*iterator)).is_open = open_in;
+  (const_cast<RPG_Map_Door_t&>(*iterator)).state = (open_in ? DOORSTATE_OPEN
+                                                            : DOORSTATE_CLOSED);
 
-  toggled_out = true;
+  return true;
 }
 
 bool

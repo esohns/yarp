@@ -558,7 +558,7 @@ RPG_Map_Level::save(const std::string& filename_in) const
     } // end IF
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("removed empty TXT file \"%s\"...\n"),
+               ACE_TEXT("removed empty file \"%s\"...\n"),
                filename_in.c_str()));
   } // end IF
   else
@@ -572,7 +572,7 @@ RPG_Map_Level::save(const std::string& filename_in) const
     } // end IF
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("wrote TXT file \"%s\" (%u byte(s))...\n"),
+               ACE_TEXT("wrote file \"%s\" (%u byte(s))...\n"),
                filename_in.c_str(),
                static_cast<unsigned int>(info.size_)));
   } // end ELSE
@@ -616,17 +616,17 @@ RPG_Map_Level::isValid(const RPG_Map_Position_t& position_in) const
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::isValid"));
 
   RPG_Map_Element element = getElement(position_in);
+  RPG_Map_DoorState door_state = RPG_MAP_DOORSTATE_INVALID;
   switch (element)
   {
     case MAPELEMENT_FLOOR:
       return true;
     case MAPELEMENT_DOOR:
     {
-      RPG_Map_Door_t current_door = getDoor(position_in);
-      if (current_door.is_open)
-        return true;
+      door_state = state(position_in);
 
-      break;
+      return ((door_state == DOORSTATE_OPEN) ||
+              (door_state == DOORSTATE_BROKEN));
     }
     default:
       break;
@@ -711,25 +711,48 @@ RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
   return MAPELEMENT_FLOOR;
 }
 
-const RPG_Map_Door_t&
-RPG_Map_Level::getDoor(const RPG_Map_Position_t& position_in) const
+RPG_Map_DoorState
+RPG_Map_Level::state(const RPG_Map_Position_t& position_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Map_Level"));
-
-  ACE_ASSERT(!myMap.plan.doors.empty());
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::state"));
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
   position_door.outside = DIRECTION_INVALID;
-  position_door.is_open = false;
-  position_door.is_locked = false;
-  position_door.is_broken = false;
+  position_door.state = RPG_MAP_DOORSTATE_INVALID;
 
   RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.find(position_door);
   // sanity check
   ACE_ASSERT(iterator != myMap.plan.doors.end());
+  if (iterator == myMap.plan.doors.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid argument (was: [%u,%u]), aborting\n"),
+               position_in.first, position_in.second));
 
-  return *iterator;
+    return RPG_MAP_DOORSTATE_INVALID;
+  } // end IF
+
+  return (*iterator).state;
+}
+
+RPG_Map_Positions_t
+RPG_Map_Level::getObstacles() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getObstacles"));
+
+  // *NOTE*: obstacles are:
+  // - walls
+  // - ![open | broken] doors
+  RPG_Map_Positions_t result = myMap.plan.walls;
+  for (RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.begin();
+       iterator != myMap.plan.doors.end();
+       iterator++)
+    if (((*iterator).state != DOORSTATE_OPEN) &&
+        ((*iterator).state != DOORSTATE_BROKEN))
+      result.insert((*iterator).position);
+
+  return result;
 }
 
 bool
@@ -746,17 +769,8 @@ RPG_Map_Level::findPath(const RPG_Map_Position_t& start_in,
   if (start_in == end_in)
     return true;
 
-  // add obstacles:
-  // - walls
-  // - (closed) doors
-  RPG_Map_Positions_t obstacles = myMap.plan.walls;
-  for (RPG_Map_DoorsConstIterator_t door_iterator = myMap.plan.doors.begin();
-       door_iterator != myMap.plan.doors.end();
-       door_iterator++)
-    if (!(*door_iterator).is_open)
-      obstacles.insert((*door_iterator).position);
   RPG_Map_Pathfinding_Tools::findPath(getSize(),
-                                      obstacles, // walls & closed doors
+                                      getObstacles(), // walls & closed doors
                                       start_in,
                                       DIRECTION_INVALID,
                                       end_in,
@@ -801,7 +815,7 @@ RPG_Map_Level::findValid(const RPG_Map_Position_t& center_in,
   // *WARNING*: this works for associative containers ONLY
   for (RPG_Map_PositionsIterator_t iterator = area_out.begin();
        iterator != area_out.end();
-       iterator++)
-    if (!isValid(*iterator))
-      area_out.erase(iterator++);
+       )
+    (isValid(*iterator) ? iterator++
+                        : area_out.erase(iterator++));
 }

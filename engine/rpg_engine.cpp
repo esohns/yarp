@@ -394,6 +394,22 @@ RPG_Engine::init(RPG_Engine_IWindow* client_in,
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(this);
 }
 
+void
+RPG_Engine::lock()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::lock"));
+
+  myLock.acquire();
+}
+
+void
+RPG_Engine::unlock()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::unlock"));
+
+  myLock.release();
+}
+
 RPG_Engine_EntityID_t
 RPG_Engine::add(RPG_Engine_Entity* entity_in)
 {
@@ -946,37 +962,34 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
   if (id_in == 0)
     return; // done
 
+  RPG_Map_Position_t current_position;
+  RPG_Map_Positions_t obstacles;  
+  
   // step1: find "lit" positions
-  RPG_Map_Position_t current_position = getPosition(id_in);
-  RPG_Map_Common_Tools::buildCircle(current_position,
-                                    getSize(),
-                                    getVisibleRadius(id_in),
-                                    true,
-                                    positions_out);
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-  //// step2: remove any blocked (== unreachable) positions
-  //// --> cannot see through walls / (closed) doors...
-  //RPG_Map_Positions_t obstacles;
-  //{
-  //  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    current_position = getPosition(id_in);
+    RPG_Map_Common_Tools::buildCircle(current_position,
+                                      getSize(),
+                                      getVisibleRadius(id_in),
+                                      true,
+                                      positions_out);
 
-  //  obstacles = myMap.plan.walls;
-  //  for (RPG_Map_DoorsConstIterator_t door_iterator = inherited2::myMap.plan.doors.begin();
-  //       door_iterator != myMap.plan.doors.end();
-  //       door_iterator++)
-  //    if (!(*door_iterator).is_open)
-  //      obstacles.insert((*door_iterator).position);
-  //} // end lock scope
-  //RPG_Map_Path_t path;
-  //// *WARNING*: this works for associative containers ONLY
-  //for (RPG_Map_PositionsConstIterator_t iterator = positions_out.begin();
-  //     iterator != positions_out.end();
-  //     iterator++)
-  //  if (!inherited2::findPath(current_position,
-  //                            *iterator,
-  //                            obstacles,
-  //                            path))
-  //    positions_out.erase(iterator++);
+  // step2: remove any blocked (== unreachable) positions
+  // --> cannot see through walls / (closed) doors...
+    obstacles = inherited2::getObstacles();
+  } // end lock scope
+
+  // *WARNING*: this works for associative containers ONLY
+  for (RPG_Map_PositionsConstIterator_t iterator = positions_out.begin();
+       iterator != positions_out.end();
+       )
+    (RPG_Map_Common_Tools::hasLineOfSight(current_position,
+                                          *iterator,
+                                          obstacles,
+                                          true) ? iterator++
+                                                : positions_out.erase(iterator++));
 }
 
 unsigned int
@@ -1009,12 +1022,7 @@ RPG_Engine::findPath(const RPG_Map_Position_t& start_in,
   // obstacles:
   // - walls
   // - (closed, locked) doors
-  RPG_Map_Positions_t obstacles = myMap.plan.walls;
-  for (RPG_Map_DoorsConstIterator_t door_iterator = inherited2::myMap.plan.doors.begin();
-       door_iterator != myMap.plan.doors.end();
-       door_iterator++)
-    if (!(*door_iterator).is_open)
-      obstacles.insert((*door_iterator).position);
+  RPG_Map_Positions_t obstacles = inherited2::getObstacles();
   // - entities
   for (RPG_Engine_EntitiesConstIterator_t entity_iterator = myEntities.begin();
        entity_iterator != myEntities.end();
@@ -1093,6 +1101,200 @@ RPG_Engine::canReach(const RPG_Engine_EntityID_t& id_in,
 
   return (absolute_reach ? (range == reach)
                          : (range <= reach));
+}
+
+RPG_Engine_LevelMeta_t
+RPG_Engine::getMeta(const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getMeta"));
+
+  RPG_Engine_LevelMeta_t result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::getMeta();
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Map_Position_t
+RPG_Engine::getStartPosition(const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getStartPosition"));
+
+  RPG_Map_Position_t result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::getStartPosition();
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Map_Size_t
+RPG_Engine::getSize(const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getSize"));
+
+  RPG_Map_Size_t result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::getSize();
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Map_DoorState
+RPG_Engine::state(const RPG_Map_Position_t& position_in,
+                  const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::state"));
+
+  RPG_Map_DoorState result = RPG_MAP_DOORSTATE_INVALID;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::state(position_in);
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+bool
+RPG_Engine::isValid(const RPG_Map_Position_t& position_in,
+                    const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::isValid"));
+
+  bool result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::isValid(position_in);
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+bool
+RPG_Engine::isCorner(const RPG_Map_Position_t& position_in,
+                     const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::isCorner"));
+
+  bool result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::isCorner(position_in);
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Map_Element
+RPG_Engine::getElement(const RPG_Map_Position_t& position_in,
+                       const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getElement"));
+
+  RPG_Map_Element result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::getElement(position_in);
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Map_Positions_t
+RPG_Engine::getObstacles(const bool& includeEntities_in,
+                         const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getObstacles"));
+
+  RPG_Map_Positions_t result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::getObstacles();
+
+  if (includeEntities_in)
+    for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
+         iterator != myEntities.end();
+         iterator++)
+      result.insert((*iterator).second->position);
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Map_Positions_t
+RPG_Engine::getWalls(const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getWalls"));
+
+  RPG_Map_Positions_t result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::myMap.plan.walls;
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Map_Positions_t
+RPG_Engine::getDoors(const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getDoors"));
+
+  RPG_Map_Positions_t result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  for (RPG_Map_DoorsConstIterator_t iterator = inherited2::myMap.plan.doors.begin();
+       iterator != inherited2::myMap.plan.doors.end();
+       iterator++)
+    result.insert((*iterator).position);
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
 }
 
 void
@@ -1206,13 +1408,9 @@ RPG_Engine::handleEntities()
         case COMMAND_DOOR_CLOSE:
         case COMMAND_DOOR_OPEN:
         {
-          bool toggled = false;
-          handleDoor(current_action.position,
-                     (current_action.command == COMMAND_DOOR_OPEN),
-                     toggled);
-
           // notify client window ?
-          if (toggled)
+          if (handleDoor(current_action.position,
+                         (current_action.command == COMMAND_DOOR_OPEN)))
           {
             RPG_Engine_ClientParameters_t* parameters = NULL;
             parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;

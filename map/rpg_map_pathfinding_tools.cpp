@@ -309,8 +309,8 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Position_t& start_in,
   // init return value(s)
   path_out.clear();
 
-  int dx    = ::abs(static_cast<int>(end_in.first - start_in.first));
-  int dy    = ::abs(static_cast<int>(end_in.second - start_in.second));
+  int dx    = ::abs(static_cast<int>(end_in.first)  - static_cast<int>(start_in.first));
+  int dy    = ::abs(static_cast<int>(end_in.second) - static_cast<int>(start_in.second));
   int x     = start_in.first;
   int y     = start_in.second;
   int n     = 1 + dx + dy;

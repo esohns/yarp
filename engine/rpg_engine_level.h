@@ -55,9 +55,24 @@ class RPG_Engine_Export RPG_Engine_Level
   const RPG_Engine_LevelMeta_t& getMeta() const;
 
  protected:
-  void handleDoor(const RPG_Map_Position_t&, // position
-                  const bool&,               // open ? : close
-                  bool&);                    // return value: toggled ?
+  // hide some funcionality
+  using RPG_Map_Level::getStartPosition;
+  using RPG_Map_Level::getSeedPoints;
+  using RPG_Map_Level::getFloorPlan;
+  using RPG_Map_Level::getSize;
+
+  using RPG_Map_Level::isValid;
+  using RPG_Map_Level::isCorner;
+  using RPG_Map_Level::getElement;
+  using RPG_Map_Level::state;
+  using RPG_Map_Level::getObstacles;
+
+  using RPG_Map_Level::findPath;
+  using RPG_Map_Level::findValid;
+
+  // *NOTE*: return value: toggled ?
+  bool handleDoor(const RPG_Map_Position_t&, // position
+                  const bool&);              // open ? : close
   bool findPath(const RPG_Map_Position_t&,  // start position
                 const RPG_Map_Position_t&,  // end position
                 const RPG_Map_Positions_t&, // obstacles
@@ -76,5 +91,9 @@ class RPG_Engine_Export RPG_Engine_Level
   // *WARNING*: result needs to be delete()d !
   RPG_Engine_Level_XMLTree_Type* toLevelXML() const;
   static RPG_Engine_Level_t levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
+
+  // hide unwanted funcionality
+  using RPG_Map_Level::init;
+  using RPG_Map_Level::save;
 };
 #endif
