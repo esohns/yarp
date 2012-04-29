@@ -322,6 +322,54 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
   return result;
 }
 
+unsigned short
+RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
+                                 bool& reachIsAbsolute_out) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getReach"));
+
+  // init return value(s)
+  baseRange_out = 0;
+  reachIsAbsolute_out = false;
+
+  // *TODO*: consider polymorphed states...
+  unsigned short result = RPG_Common_Tools::sizeToReach(mySize, true);
+
+  RPG_Item_WeaponType weapon_type = myEquipment.getPrimaryWeapon(myOffHand);
+  const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
+  if (RPG_Item_Common_Tools::isMeleeWeapon(weapon_type))
+  {
+    if (properties.isReachWeapon)
+    {
+      result *= 2;
+      reachIsAbsolute_out = RPG_Item_Common_Tools::hasAbsoluteReach(weapon_type);
+    } // end IF
+  } // end IF
+  else
+  {
+    // --> ranged weapon
+    ACE_ASSERT(RPG_Item_Common_Tools::isRangedWeapon(weapon_type));
+
+    baseRange_out = properties.rangeIncrement;
+
+    // compute max reach for ranged weapons
+    if (RPG_Item_Common_Tools::isThrownWeapon(weapon_type))
+      result = baseRange_out * 5;
+    else if (RPG_Item_Common_Tools::isProjectileWeapon(weapon_type))
+      result = baseRange_out * 10;
+    else
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid weapon type (was \"%s\"), continuing\n"),
+                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str()));
+
+      ACE_ASSERT(false);
+    } // end IF
+  } // end ELSE
+
+  return result;
+}
+
 unsigned char
 RPG_Player_Player_Base::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
 {

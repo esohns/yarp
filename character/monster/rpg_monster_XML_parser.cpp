@@ -1645,7 +1645,7 @@ RPG_Monster_PropertiesXML_Type::space(unsigned char space_in)
 }
 
 void
-RPG_Monster_PropertiesXML_Type::reach(unsigned char reach_in)
+RPG_Monster_PropertiesXML_Type::reach(unsigned short reach_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::reach"));
 

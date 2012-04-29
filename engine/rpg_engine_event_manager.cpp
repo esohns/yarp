@@ -588,18 +588,8 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
             break;
           } // end IF
           next_action.target = (*closest_target).first;
-          // *TODO*: check reach instead
-          if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
-                                               (*closest_target).second->position))
-          {
-            // start attacking right away...
-            next_action.command = COMMAND_ATTACK;
-          } // end IF
-          else
-          {
-            // start pursuing...
-            next_action.command = COMMAND_TRAVEL;
-          } // end ELSE
+          // start attacking/pursuing...
+          next_action.command = COMMAND_ATTACK;
 
           (*iterator).second->actions.push_back(next_action);
         } // end IF
@@ -618,7 +608,8 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
           {
             ACE_ASSERT(current_action.target);
             RPG_Engine_EntitiesConstIterator_t target = myEngine->myEntities.find(current_action.target);
-            if (target == myEngine->myEntities.end())
+            if ((target == myEngine->myEntities.end()) ||
+                RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character)) // target disabled ?
             {
               (*iterator).second->modes.erase(ENTITYMODE_FIGHTING);
               done_current_action = true;
@@ -631,8 +622,9 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
             // adjacent ? --> start attack !
             // *TODO*: compute standard/fullround
             do_next_action = true;
-            if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
-                                                 (*target).second->position))
+            if (myEngine->canReach(event_handle->entity_id,
+                                   (*target).second->position,
+                                   false))
             {
               // (try to) attack the opponent
               next_action.command = COMMAND_ATTACK_FULL;

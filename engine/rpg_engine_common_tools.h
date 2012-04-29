@@ -22,6 +22,7 @@
 #define RPG_ENGINE_COMMON_TOOLS_H
 
 #include "rpg_engine_exports.h"
+#include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
 #include "rpg_engine_level.h"
 #include "rpg_engine_XML_tree.h"
@@ -33,7 +34,6 @@
 #include <rpg_player_common.h>
 #include <rpg_player_XML_tree.h>
 
-#include <rpg_combat_defines.h>
 #include <rpg_combat_attacksituation.h>
 #include <rpg_combat_defensesituation.h>
 
@@ -76,8 +76,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
 
   // ***** combat-related *****
-  static unsigned char range(const RPG_Map_Position_t&,  // A
-                             const RPG_Map_Position_t&); // B
+  static unsigned int range(const RPG_Map_Position_t&,  // A
+                            const RPG_Map_Position_t&); // B
   static bool isCharacterHelpless(const RPG_Player_Base* const); // character handle
   static bool isCharacterDisabled(const RPG_Player_Base* const); // character handle
   static bool isPartyHelpless(const RPG_Player_Party_t&); // party
@@ -88,12 +88,12 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static void performCombatRound(const RPG_Combat_AttackSituation&,      // attack situation
                                  const RPG_Combat_DefenseSituation&,     // defense situation
                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
-  static void attack(const RPG_Player_Base*,                                    // attacker
-                     RPG_Player_Base*,                                          // defender
-                     const RPG_Combat_AttackSituation& = ATTACK_NORMAL,         // attack situation
-                     const RPG_Combat_DefenseSituation& = DEFENSE_NORMAL,       // defense situation
-                     const bool& = true,                                        // full-round action ?
-                     const unsigned short& = RPG_COMBAT_DEF_ADJACENT_DISTANCE); // distance (feet)
+  static void attack(const RPG_Player_Base*,                              // attacker
+                     RPG_Player_Base*,                                    // defender
+                     const RPG_Combat_AttackSituation& = ATTACK_NORMAL,   // attack situation
+                     const RPG_Combat_DefenseSituation& = DEFENSE_NORMAL, // defense situation
+                     const bool& = true,                                  // full-round action ?
+                     const unsigned short& = RPG_ENGINE_FEET_PER_SQUARE); // distance (feet)
 
  private:
   // safety measures

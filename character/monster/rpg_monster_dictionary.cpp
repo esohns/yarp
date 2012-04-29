@@ -274,8 +274,8 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
                                      spellProperties_p,
                                      rangedProperties_p);
 
-//   unsigned_int_pimpl                      space_p;
-//   unsigned_int_pimpl                      reach_p;
+//  ::xml_schema::unsigned_int_pimpl               space_p;
+//  ::xml_schema::unsigned_short_pimpl             unsigned_short_p;
   RPG_Monster_SavingThrowModifiers_Type          savingThrowModifiers_p;
   savingThrowModifiers_p.parsers(byte_p,
                                  byte_p,
@@ -348,7 +348,7 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
                           specialAttack_p,
                           specialAbilityProperties_p,
                           unsigned_byte_p,
-                          unsigned_byte_p,
+                          unsigned_short_p,
                           savingThrowModifiers_p,
                           attributes_p,
                           skills_p,

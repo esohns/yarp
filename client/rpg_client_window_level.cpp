@@ -305,6 +305,7 @@ RPG_Client_WindowLevel::getView() const
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::getView"));
 
   RPG_Graphics_Position_t result;
+
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -530,9 +531,11 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
 
   // sanity check(s)
+  ACE_ASSERT(myEngine);
   ACE_ASSERT(myCeilingTile);
   ACE_ASSERT(myOffMapTile);
   ACE_ASSERT(myInvisibleTile);
+  ACE_ASSERT(myVisionBlendTile);
   ACE_ASSERT(targetSurface);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
@@ -589,15 +592,21 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
   // *NOTE*: draw (visible !) tiles order according to the painter's algorithm
   // --> "back-to-front"
-  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive();
+
+  // lock engine
+  myEngine->lock();
+
+  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(false);
   RPG_Map_Position_t active_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                       std::numeric_limits<unsigned int>::max());
   RPG_Map_Positions_t visible_positions;
   if (active_entity_id)
   {
-    active_position = myEngine->getPosition(active_entity_id);
+    active_position = myEngine->getPosition(active_entity_id,
+                                            false);
     myEngine->getVisiblePositions(active_entity_id,
-                                  visible_positions);
+                                  visible_positions,
+                                  false);
   } // end IF
 
   // pass 1:
@@ -620,6 +629,7 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   //   1. blend (currently) visible tiles ("light-source")
   //   2. blend (previously) seen tiles ("memory")
 
+  SDL_Rect dirty_region = {0, 0, 0, 0};
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -631,15 +641,14 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
     unsigned int floor_column_index = 0;
     RPG_Graphics_Position_t screen_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                              std::numeric_limits<unsigned int>::max());
-    RPG_Map_Size_t map_size = myEngine->getSize();
-    RPG_Map_Element current_element;
+    RPG_Map_Size_t map_size = myEngine->getSize(false);
+    RPG_Map_Element current_element = MAPELEMENT_INVALID;
     bool is_visible, has_been_seen;
     RPG_Client_BlendingMaskCacheIterator_t blendmask_iterator = myLightingCache.end();
-    SDL_Rect dirty_region = {0, 0, 0, 0};
     RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
 
     // debug info
-    SDL_Rect rect;
+    SDL_Rect rect = {0, 0, 0, 0};
     std::ostringstream converter;
     std::string tile_text;
     RPG_Graphics_TextSize_t tile_text_size;
@@ -655,12 +664,12 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
          i++)
     {
       current_map_position.second = myView.second + i;
-      // off the map ? --> continue
+      // step0: off the map ? --> continue
       if ((current_map_position.second < 0) ||
           (current_map_position.second >= static_cast<int>(map_size.second)))
         continue;
 
-      // floor tile rotation
+      // step1: floor tile rotation
       begin_row = myCurrentFloorSet.tiles.begin();
       //std::advance(begin_row, (current_map_position.second % myCurrentFloorSet.rows) * myCurrentFloorSet.columns);
       std::advance(begin_row, current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
@@ -678,7 +687,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
 
         is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
         has_been_seen = myClient->hasSeen(active_entity_id, current_map_position);
-        current_element = myEngine->getElement(current_map_position);
+        current_element = myEngine->getElement(current_map_position,
+                                               false);
         ACE_ASSERT(current_element != MAPELEMENT_INVALID);
 
         // map --> screen coordinates
@@ -697,12 +707,6 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                     screen_position.second,
                                     ((is_visible || has_been_seen) ? *myOffMapTile : *myInvisibleTile),
                                     targetSurface);
-
-  //         // off the map ? --> continue
-  //         if ((current_map_position.second < 0) ||
-  //             (current_map_position.second >= myEngine.getDimensions().second) ||
-  //             (current_map_position.first < 0) ||
-  //             (current_map_position.first >= myEngine.getDimensions().first))
 
           // advance floor iterator
           //std::advance(floor_iterator, myCurrentFloorSet.rows);
@@ -740,13 +744,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                   NULL,                // aspect (--> everything)
                                   myVisionTempTile,    // target
                                   &dirty_region))      // aspect
-              {
                 ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+                           ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
                            SDL_GetError()));
-
-                return;
-              } // end IF
             } // end IF
           } // end IF
           else if (has_been_seen)
@@ -760,13 +760,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                 NULL,              // aspect (--> everything)
                                 myVisionTempTile,  // target
                                 &dirty_region))    // aspect
-            {
               ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+                         ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
                          SDL_GetError()));
-
-              return;
-            } // end IF
           } // end IF
           RPG_Graphics_Surface::put(screen_position.first,
                                     screen_position.second,
@@ -954,7 +950,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
          i++)
     {
       current_map_position.second = myView.second + i;
-      // off the map ? --> continue
+
+      // step0: off the map ? --> continue
       if ((current_map_position.second < 0) ||
           (current_map_position.second >= static_cast<int>(map_size.second)))
         continue;
@@ -964,7 +961,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
            j++)
       {
         current_map_position.first = myView.first + j;
-        // off the map ? --> continue
+
+        // step0: off the map ? --> continue
         if ((current_map_position.first < 0) ||
             (current_map_position.first >= static_cast<int>(map_size.first)))
           continue;
@@ -1024,18 +1022,18 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         // step4: objects
 
         // step5: creatures
-        entity_id = myEngine->hasEntity(current_map_position);
+        entity_id = myEngine->hasEntity(current_map_position,
+                                        false);
         if (entity_id && is_visible)
         {
           // invalidate bg
           RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->invalidateBG(entity_id);
 
           // draw creature
-          SDL_Rect dirtyRegion;
           RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(entity_id,
                                                                screen_position,
                                                                targetSurface,
-                                                               dirtyRegion);
+                                                               dirty_region);
         } // end IF
 
         // step6: effects
@@ -1064,7 +1062,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         // step8: ceiling
         // *TODO*: this is static information: compute once / level and use a lookup-table here...
         if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
-                                                *myEngine) &&
+                                                *myEngine,
+                                                false) &&
             is_visible)
         {
           RPG_Graphics_Surface::put(screen_position.first,
@@ -1133,6 +1132,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
     //} // end IF
   } // end lock scope
 
+  // unlock engine
+  myEngine->unlock();
+
   // realize any children
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
        iterator != myChildren.end();
@@ -1156,9 +1158,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   } // end FOR
 
   // whole viewport needs a refresh...
-  SDL_Rect dirtyRegion;
-  SDL_GetClipRect(targetSurface, &dirtyRegion);
-  invalidate(dirtyRegion);
+  SDL_GetClipRect(targetSurface, &dirty_region);
+  invalidate(dirty_region);
 
   // reset clipping area
   unclip(targetSurface);

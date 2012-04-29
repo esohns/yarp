@@ -440,7 +440,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type
   virtual void specialAttack(const RPG_Monster_SpecialAttackProperties&);
   virtual void specialAbility(const RPG_Monster_SpecialAbilityProperties&);
   virtual void space(unsigned char);
-  virtual void reach(unsigned char);
+  virtual void reach(unsigned short);
   virtual void saves(const RPG_Monster_SavingThrowModifiers&);
   virtual void attributes(const RPG_Character_Attributes&);
   virtual void skills(const RPG_Character_Skills&);

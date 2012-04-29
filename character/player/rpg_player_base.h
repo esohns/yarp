@@ -103,8 +103,8 @@ class RPG_Player_Export RPG_Player_Base
   // sustain some damage (melee, magic, ...)
   void sustainDamage(const RPG_Combat_Damage&); // damage
 
+  // implement (part of) RPG_IPlayer
   virtual void status() const;
-
   virtual void dump() const;
 
  protected:

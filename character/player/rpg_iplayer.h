@@ -37,12 +37,17 @@ class RPG_IPlayer
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
   virtual signed char getShieldBonus() const = 0;
 
+  virtual unsigned short getReach(unsigned short&,  // return value: base range (if any)
+                                  bool&) const = 0; // return value: reach is absolute ?
   virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const = 0; // environment
 
   // get a hint if this is a PC/NPC
   virtual bool isPlayerCharacter() const = 0;
 
   virtual void gainExperience(const unsigned int&) = 0; // XP
+
+  virtual void status() const = 0;
+  virtual void dump() const = 0;
 
  private:
   // safety measures

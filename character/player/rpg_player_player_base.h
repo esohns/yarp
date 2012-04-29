@@ -73,13 +73,19 @@ class RPG_Player_Export RPG_Player_Player_Base
   // access current equipment
   RPG_Player_Equipment& getEquipment();
 
-  // implement RPG_IPlayer
+  // implement (part of) RPG_IPlayer
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                          const RPG_Combat_AttackSituation&) const;
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
+
+  virtual unsigned short getReach(unsigned short&, // return value: base range (if any)
+                                  bool&) const;    // return value: reach is absolute ?
   virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
+
   virtual bool isPlayerCharacter() const;
+
   virtual void gainExperience(const unsigned int&); // XP
+
 
   unsigned int rest(const RPG_Common_Camp&, // type of rest
                     const unsigned int&);   // hours
@@ -134,6 +140,7 @@ class RPG_Player_Export RPG_Player_Player_Base
             const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
             const RPG_Item_List_t&);           // list of (carried) items
 
+  // implement (part of) RPG_IPlayer
   virtual signed char getShieldBonus() const;
 
   RPG_Character_Gender  myGender;

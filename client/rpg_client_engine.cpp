@@ -396,10 +396,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       SDL_Surface* sprite_graphic = NULL;
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-      if (!myEngine->isMonster(entity_id))
+      if (!myEngine->isMonster(entity_id, true))
         type.sprite = sprite;
       else
-        type.sprite = RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(entity_id));
+        type.sprite = RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(entity_id, true));
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
                                                               true,   // convert to display format
                                                               false); // don't cache
@@ -440,17 +440,20 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     {
       ACE_ASSERT(parameters_in.size() == 2);
 
-      // *NOTE*: when using (dynamic) lighting, just redraw the whole lot...
-      client_action.command = COMMAND_WINDOW_DRAW;
-      //client_action.command = COMMAND_ENTITY_DRAW;
       client_action.position = *static_cast<const RPG_Map_Position_t* const>(parameters_in.back());
       client_action.window = myWindow;
       client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(parameters_in.front());
 
+      // *NOTE*: when using (dynamic) lighting, redraw the whole window...
+      RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(true);
+      client_action.command = ((client_action.entity_id == active_entity_id) ? COMMAND_WINDOW_DRAW
+                                                                             : COMMAND_ENTITY_DRAW);
+
       // update seen positions
       RPG_Map_Positions_t seen_positions;
       myEngine->getVisiblePositions(client_action.entity_id,
-                                    seen_positions);
+                                    seen_positions,
+                                    true);
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -459,12 +462,28 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       } // end lock scope
 
       // adjust view ?
-      if (getCenterOnActive() &&
-          (client_action.entity_id == myEngine->getActive()))
+      if ((client_action.entity_id == active_entity_id))
       {
+        // *NOTE*: re-drawing the window will invalidate the hightlight BG...
+        client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
         action(client_action);
 
-        client_action.command = COMMAND_SET_VIEW;
+        if (getCenterOnActive())
+          client_action.command = COMMAND_SET_VIEW;
+        else
+          client_action.command = COMMAND_WINDOW_DRAW;
+        action(client_action);
+
+        client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+        action(client_action);
+
+        client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+        action(client_action);
+
+        client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+        action(client_action);
+
+        client_action.command = COMMAND_CURSOR_DRAW;
       } // end IF
 
       break;
@@ -472,9 +491,26 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     case COMMAND_E2C_ENTITY_VISION_UPDATE:
     {
       ACE_ASSERT(parameters_in.size() == 1);
-      client_action.command = COMMAND_SET_VISION_RADIUS;
       client_action.radius = *static_cast<const unsigned char* const>(parameters_in.back());
       client_action.window = myWindow;
+
+      // *NOTE*: re-drawing the window will invalidate the hightlight BG...
+      client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+      action(client_action);
+
+      client_action.command = COMMAND_SET_VISION_RADIUS;
+      action(client_action);
+
+      client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+      action(client_action);
+
+      client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+      action(client_action);
+
+      client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+      action(client_action);
+
+      client_action.command = COMMAND_CURSOR_DRAW;
 
       break;
     }
@@ -706,8 +742,8 @@ RPG_Client_Engine::handleActions()
         // --> store/draw the new tile highlight (BG)
         RPG_Map_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
         RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                                                myEngine->getSize(),
-                                                                                (*iterator).window->getSize(),
+                                                                                myEngine->getSize(true),
+                                                                                (*iterator).window->getSize(false),
                                                                                 (*iterator).window->getView());
         RPG_Map_Position_t screen_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
                                                                                    (*iterator).window->getSize(false),
@@ -760,8 +796,8 @@ RPG_Client_Engine::handleActions()
         // --> store/draw the new tile highlight (BG)
         RPG_Map_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
         RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                                                myEngine->getSize(),
-                                                                                (*iterator).window->getSize(),
+                                                                                myEngine->getSize(true),
+                                                                                (*iterator).window->getSize(false),
                                                                                 (*iterator).window->getView());
         RPG_Map_Position_t screen_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
                                                                                    (*iterator).window->getSize(false),
@@ -957,7 +993,7 @@ RPG_Client_Engine::handleActions()
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
 
-        RPG_Map_Position_t center = myEngine->getSize();
+        RPG_Map_Position_t center = myEngine->getSize(true);
         center.first >>= 1;
         center.second >>= 1;
 
@@ -1014,18 +1050,7 @@ RPG_Client_Engine::handleActions()
         // sanity check
         ACE_ASSERT((*iterator).window);
 
-        try
-        {
-          (*iterator).window->refresh();
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::refresh(), aborting\n"),
-                     (*iterator).window));
-
-          return;
-        }
+        refresh_window = true;
 
         break;
       }

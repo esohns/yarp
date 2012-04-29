@@ -69,7 +69,7 @@ struct RPG_Monster_Properties
   RPG_Monster_Attack attack;
   std::vector<RPG_Monster_SpecialAttackProperties> specialAttacks;
   unsigned char space; // feet
-  unsigned char reach; // feet
+  unsigned short reach; // feet
   RPG_Monster_SavingThrowModifiers saves;
   RPG_Character_Attributes attributes;
   RPG_Character_Skills_t skills;

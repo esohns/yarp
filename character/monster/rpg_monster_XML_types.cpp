@@ -973,7 +973,7 @@ space_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
-reach_parser (::xml_schema::unsigned_byte_pskel& p)
+reach_parser (::xml_schema::unsigned_short_pskel& p)
 {
   this->reach_parser_ = &p;
 }
@@ -1057,7 +1057,7 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Monster_SpecialAttackProperties_Type_pskel& specialAttack,
          ::RPG_Monster_SpecialAbilityProperties_Type_pskel& specialAbility,
          ::xml_schema::unsigned_byte_pskel& space,
-         ::xml_schema::unsigned_byte_pskel& reach,
+         ::xml_schema::unsigned_short_pskel& reach,
          ::RPG_Monster_SavingThrowModifiers_Type_pskel& saves,
          ::RPG_Character_Attributes_Type_pskel& attributes,
          ::RPG_Character_Skills_Type_pskel& skills,
@@ -3275,7 +3275,7 @@ space (unsigned char)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
-reach (unsigned char)
+reach (unsigned short)
 {
 }
 
@@ -3693,7 +3693,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "reach" && ns == "urn:rpg")
   {
     if (this->reach_parser_)
-      this->reach (this->reach_parser_->post_unsigned_byte ());
+      this->reach (this->reach_parser_->post_unsigned_short ());
 
     return true;
   }

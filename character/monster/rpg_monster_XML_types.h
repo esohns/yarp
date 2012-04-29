@@ -1452,7 +1452,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
   space (unsigned char);
 
   virtual void
-  reach (unsigned char);
+  reach (unsigned short);
 
   virtual void
   saves (const RPG_Monster_SavingThrowModifiers&);
@@ -1529,7 +1529,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
   space_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  reach_parser (::xml_schema::unsigned_byte_pskel&);
+  reach_parser (::xml_schema::unsigned_short_pskel&);
 
   void
   saves_parser (::RPG_Monster_SavingThrowModifiers_Type_pskel&);
@@ -1577,7 +1577,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
            ::RPG_Monster_SpecialAttackProperties_Type_pskel& /* specialAttack */,
            ::RPG_Monster_SpecialAbilityProperties_Type_pskel& /* specialAbility */,
            ::xml_schema::unsigned_byte_pskel& /* space */,
-           ::xml_schema::unsigned_byte_pskel& /* reach */,
+           ::xml_schema::unsigned_short_pskel& /* reach */,
            ::RPG_Monster_SavingThrowModifiers_Type_pskel& /* saves */,
            ::RPG_Character_Attributes_Type_pskel& /* attributes */,
            ::RPG_Character_Skills_Type_pskel& /* skills */,
@@ -1619,7 +1619,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
   ::RPG_Monster_SpecialAttackProperties_Type_pskel* specialAttack_parser_;
   ::RPG_Monster_SpecialAbilityProperties_Type_pskel* specialAbility_parser_;
   ::xml_schema::unsigned_byte_pskel* space_parser_;
-  ::xml_schema::unsigned_byte_pskel* reach_parser_;
+  ::xml_schema::unsigned_short_pskel* reach_parser_;
   ::RPG_Monster_SavingThrowModifiers_Type_pskel* saves_parser_;
   ::RPG_Character_Attributes_Type_pskel* attributes_parser_;
   ::RPG_Character_Skills_Type_pskel* skills_parser_;

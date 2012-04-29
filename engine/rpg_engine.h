@@ -81,31 +81,38 @@ class RPG_Engine_Export RPG_Engine
               const RPG_Engine_Action&);    // action
 
   void setActive(const RPG_Engine_EntityID_t&); // id
-  RPG_Engine_EntityID_t getActive() const; // return value: id (if any)
+  RPG_Engine_EntityID_t getActive(const bool& = true) const; // locked access ?
   void mode(const RPG_Engine_EntityMode&); // add mode (to active entity)
   void clear(const RPG_Engine_EntityMode&); // clear mode (from active entity)
   bool hasMode(const RPG_Engine_EntityMode&) const; // mode
 
-  RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&) const;
+  RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&,
+                                 const bool& = true) const; // locked access ?
   RPG_Map_Position_t findValid(const RPG_Map_Position_t&,  // center
                                const unsigned int&) const; // max (square !) radius
-  RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&) const;
-  bool isMonster(const RPG_Engine_EntityID_t&) const;
+  RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&,
+                                  const bool& = true) const; // locked access ?
+  bool isMonster(const RPG_Engine_EntityID_t&,
+                 const bool& = true) const; // locked access ?
   //std::string getSprite(const RPG_Engine_EntityID_t&) const;
-  std::string getName(const RPG_Engine_EntityID_t&) const;
+  std::string getName(const RPG_Engine_EntityID_t&,
+                      const bool& = true) const; // locked access ?
   unsigned int numSpawned() const;
 
   // vision
-  unsigned char getVisibleRadius(const RPG_Engine_EntityID_t&) const; // id
+  unsigned char getVisibleRadius(const RPG_Engine_EntityID_t&,
+                                 const bool& = true) const;    // locked access ?
   void getVisiblePositions(const RPG_Engine_EntityID_t&, // id
-                           RPG_Map_Positions_t&) const;  // return value: (currently) visible positions
+                           RPG_Map_Positions_t&,         // return value: (currently) visible positions
+                           const bool& = true) const;    // locked access ?
 
   bool findPath(const RPG_Map_Position_t&, // start position
                 const RPG_Map_Position_t&, // end position
                 RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
 
   bool canReach(const RPG_Engine_EntityID_t&, // id
-                const RPG_Map_Position_t&);   // target position
+                const RPG_Map_Position_t&,    // target position
+                const bool& = true) const;    // locked access ?
 
   // map
   RPG_Engine_LevelMeta_t getMeta(const bool& = true) const; // locked access ?
@@ -144,9 +151,11 @@ class RPG_Engine_Export RPG_Engine
   virtual int svc(void);
 
   // helper methods
-  // *WARNING*: this needs myLock to be held !
-  bool isBlocked(const RPG_Map_Position_t&);
+  // *NOTE*: requires myLock to be held !
+  bool isBlocked(const RPG_Map_Position_t&) const;
+
   void clearEntityActions(const RPG_Engine_EntityID_t& = 0); // entity ID (default: ALL)
+
   // perform (one round of) actions
   void handleEntities();
 

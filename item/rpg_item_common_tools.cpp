@@ -238,7 +238,7 @@ RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_in)
   return false;
 }
 
-unsigned char
+unsigned short
 RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_in,
                                            const bool& ambienceIsBright_in)
 {

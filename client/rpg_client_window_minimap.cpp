@@ -87,9 +87,11 @@ RPG_Client_Window_MiniMap::getView() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::getView"));
 
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
   ACE_ASSERT(false);
 
-  return std::make_pair(0, 0);
+  return std::make_pair(std::numeric_limits<unsigned int>::max(),
+                        std::numeric_limits<unsigned int>::max());
 }
 
 void
@@ -211,7 +213,10 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
       return;
     } // end IF
 
-  RPG_Map_Position_t map_position = std::make_pair(0, 0);
+  // lock engine
+  myEngine->lock();
+
+  RPG_Map_Position_t map_position;
   RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
   Uint32 color = 0;
   SDL_Rect destrect = {0, 0, 3, 2};
@@ -227,20 +232,23 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
       // step1: retrieve appropriate symbol
       map_position = std::make_pair(x, y);
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      entity_id = myEngine->hasEntity(map_position);
+      entity_id = myEngine->hasEntity(map_position,
+                                      false);
       
       if (entity_id)
       {
-        if (entity_id == myEngine->getActive())
+        if (entity_id == myEngine->getActive(false))
           tile = MINIMAPTILE_PLAYER_ACTIVE;
-        else if (!myEngine->isMonster(entity_id))
+        else if (!myEngine->isMonster(entity_id,
+                                      false))
           tile = MINIMAPTILE_PLAYER;
         else
           tile = MINIMAPTILE_MONSTER;
       } // end IF
       else
       {
-        switch (myEngine->getElement(map_position))
+        switch (myEngine->getElement(map_position,
+                                     false))
         {
           case MAPELEMENT_UNMAPPED:
           case MAPELEMENT_WALL:
@@ -255,9 +263,8 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
-                       x,
-                       y,
-                       myEngine->getElement(map_position)));
+                       x, y,
+                       myEngine->getElement(map_position, false)));
 
             return;
           }
@@ -288,7 +295,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
                      ACE_TEXT("invalid minimap tile type (was: %d), aborting\n"),
                      tile));
 
-          break;
+          return;
         }
       } // end SWITCH
 
@@ -315,6 +322,9 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
       pixels[1] = color;
       pixels[2] = color;
     } // end FOR
+
+  // unlock engine
+  myEngine->unlock();
 
   if (SDL_MUSTLOCK(mySurface))
     SDL_UnlockSurface(mySurface);

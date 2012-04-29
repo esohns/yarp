@@ -439,7 +439,7 @@ RPG_Common_Tools::getSizeModifierLoad(const RPG_Common_Size& size_in,
   return 0.0F;
 }
 
-unsigned char
+unsigned short
 RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in,
                               const bool& isTall_in)
 {
@@ -475,7 +475,7 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in,
   return 0;
 }
 
-unsigned char
+unsigned short
 RPG_Common_Tools::environment2Radius(const RPG_Common_Environment& environment_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environment2Radius"));

@@ -80,8 +80,13 @@ class RPG_Monster_Export RPG_Monster
 
   // implement (part of) RPG_IPlayer
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
+
+  virtual unsigned short getReach(unsigned short&, // return value: base range (if any)
+                                  bool&) const;    // return value: reach is absolute ?
   virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
+
   virtual void gainExperience(const unsigned int&); // XP
+
   virtual bool isPlayerCharacter() const;
 
   virtual void dump() const;

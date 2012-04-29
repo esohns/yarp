@@ -67,7 +67,8 @@ class RPG_Client_Export RPG_Client_Common_Tools
   static RPG_Graphics_Sprite monster2Sprite(const std::string&);
 
   static bool hasCeiling(const RPG_Map_Position_t&, // position
-                         const RPG_Engine&);        // state / engine
+                         const RPG_Engine&,         // state / engine
+                         const bool& = true);       // locked access ?
   static RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine&,          // state / engine
                                                      const RPG_Map_Position_t&); // door
   static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position

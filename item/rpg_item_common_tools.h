@@ -61,8 +61,8 @@ class RPG_Item_Export RPG_Item_Common_Tools
   static bool hasAbsoluteReach(const RPG_Item_WeaponType&); // weapon type
 
   // *TODO*: consider shape of the light
-  static unsigned char lightingItem2Radius(const RPG_Item_CommodityLight&, // lighting item type
-                                           const bool& = true);            // ambience is "bright" ?
+  static unsigned short lightingItem2Radius(const RPG_Item_CommodityLight&, // lighting item type
+                                            const bool& = true);            // ambience is "bright" ?
 
   static void item2Slot(const RPG_Item_ID_t&,           // item id
                         RPG_Character_EquipmentSlots&); // return value: possible slot(s)

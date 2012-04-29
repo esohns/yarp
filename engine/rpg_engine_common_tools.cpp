@@ -1080,7 +1080,7 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
            attackSituation_in,
            defenseSituation_in,
            true,
-           RPG_COMBAT_DEF_ADJACENT_DISTANCE);
+           RPG_ENGINE_FEET_PER_SQUARE);
   } // end FOR
 }
 
@@ -1099,7 +1099,7 @@ RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Monster_Group_t& group
   return (numHelplessMonsters == groupInstance_in.size());
 }
 
-unsigned char
+unsigned int
 RPG_Engine_Common_Tools::range(const RPG_Map_Position_t& position1_in,
                                const RPG_Map_Position_t& position2_in)
 {
@@ -1109,8 +1109,8 @@ RPG_Engine_Common_Tools::range(const RPG_Map_Position_t& position1_in,
   if (position1_in == position2_in)
     return 0;
 
-  unsigned char result = RPG_Map_Common_Tools::distance(position1_in,
-                                                        position2_in);
+  unsigned int result = RPG_Map_Common_Tools::distance(position1_in,
+                                                       position2_in);
 
   // diagonal ?
   unsigned int offset_x = ::abs(static_cast<int>(position1_in.first) - static_cast<int>(position2_in.first));
@@ -1129,7 +1129,7 @@ RPG_Engine_Common_Tools::isCharacterHelpless(const RPG_Player_Base* const charac
 
   if ((character_in->hasCondition(CONDITION_PARALYZED)) || // spell, ...
       (character_in->hasCondition(CONDITION_HELD))      || // bound as per spell, ...
-      (character_in->hasCondition(CONDITION_BOUND))     || // bound ase per rope, ...
+      (character_in->hasCondition(CONDITION_BOUND))     || // bound as per rope, ...
       (character_in->hasCondition(CONDITION_SLEEPING))  || // natural, spell, ...
       (character_in->hasCondition(CONDITION_PETRIFIED)) || // turned to stone
       isCharacterDisabled(character_in))                   // disabled
@@ -1272,10 +1272,23 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
                                 const bool& isFullRoundAction_in,
                                 const unsigned short& distance_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::attackFoe"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::attack"));
 
   // sanity check
   ACE_ASSERT(attacker_in && target_inout);
+
+  bool reach_is_absolute = false;
+  unsigned short base_range = 0;
+  unsigned short max_reach = attacker_in->getReach(base_range,
+                                                   reach_is_absolute);
+  if (distance_in > max_reach)
+    return; // --> done (out of reach)
+  RPG_Combat_AttackForm attackForm = (base_range ? ATTACKFORM_RANGED
+                                                 : (reach_is_absolute &&
+                                                    (distance_in < max_reach)) ? RPG_COMBAT_ATTACKFORM_INVALID
+                                                                               : ATTACKFORM_MELEE);
+  if (attackForm == RPG_COMBAT_ATTACKFORM_INVALID)
+    return; // --> done (cannot reach)
 
   RPG_Dice_Roll roll;
   roll.numDice = 1;
@@ -1288,8 +1301,8 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
   RPG_Item_WeaponProperties weapon_properties;
   bool is_threat = false;
   bool is_critical_hit = false;
-  RPG_Common_Attribute attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  RPG_Combat_AttackForm attackForm = RPG_COMBAT_ATTACKFORM_INVALID;
+  RPG_Common_Attribute attribute = ((attackForm == ATTACKFORM_RANGED) ? ATTRIBUTE_DEXTERITY
+                                                                      : ATTRIBUTE_STRENGTH);
   int targetArmorClass = 0;
   float STR_factor = 1.0;
   RPG_Combat_Damage damage;
@@ -1304,11 +1317,6 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
     ACE_ASSERT(player_base);
     // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
     // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE may use its DEX modifier for melee attacks...
-    attribute = ATTRIBUTE_STRENGTH;
-    // consider that the player may (temporarily) have a bigger reach...
-    attackForm = (distance_in > RPG_Common_Tools::sizeToReach(player_base->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
-    if (attackForm == ATTACKFORM_RANGED)
-      attribute = ATTRIBUTE_DEXTERITY;
     RPG_Character_BaseAttackBonus_t attackBonus = player_base->getAttackBonus(attribute,
                                                                               attackSituation_in);
     ACE_ASSERT(!attackBonus.empty());
@@ -1543,12 +1551,6 @@ is_player_miss:
     // - deflection bonuses
     // - natural armor
     // - dodge bonuses
-
-    // choose appropriate form of attack...
-    // consider that the monster may (temporarily) have a bigger reach...
-    const RPG_Monster_Size& monster_size = monster->getSize();
-    attackForm = ((distance_in > RPG_Common_Tools::sizeToReach(monster_size.size,
-                                                               monster_size.isTall)) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
 
     // step2: perform attack(s)
     // *TODO*: if available (AND preconditions are met), we MAY also choose a special attack...
