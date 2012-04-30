@@ -83,7 +83,10 @@ class RPG_Monster_Export RPG_Monster
 
   virtual unsigned short getReach(unsigned short&, // return value: base range (if any)
                                   bool&) const;    // return value: reach is absolute ?
-  virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
+  virtual unsigned char getSpeed(const bool& = false,                                 // running ?
+                                 const RPG_Common_AmbientLighting& = AMBIENCE_BRIGHT, // environment
+                                 const RPG_Common_Terrain& = TERRAIN_ANY,             // terrain
+                                 const RPG_Common_Track& = TRACK_NONE) const;         // track
 
   virtual void gainExperience(const unsigned int&); // XP
 

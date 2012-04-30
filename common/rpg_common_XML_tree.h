@@ -100,7 +100,7 @@ class RPG_Common_Camp_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "../chance/dice/rpg_dice_XML_tree.h"
+#include "rpg_dice_XML_tree.h"
 
 class RPG_Common_Export RPG_Common_CreatureMetaType_XMLTree_Type: public ::xml_schema::string
 {

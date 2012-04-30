@@ -144,6 +144,7 @@ popd</Command>
     <ClInclude Include="rpg_common_timerhandler.h" />
     <ClInclude Include="rpg_common_timer_manager.h" />
     <ClInclude Include="rpg_common_tools.h" />
+    <ClInclude Include="rpg_common_track.h" />
     <ClInclude Include="rpg_common_usage.h" />
     <ClInclude Include="rpg_common_XML_parser.h" />
     <ClInclude Include="rpg_common_XML_tree.h" />

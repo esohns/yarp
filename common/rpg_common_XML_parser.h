@@ -321,6 +321,15 @@ class RPG_Common_Export RPG_Common_Terrain_Type
   virtual RPG_Common_Terrain post_RPG_Common_Terrain_Type();
 };
 
+class RPG_Common_Export RPG_Common_Track_Type
+ : public RPG_Common_Track_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+  // virtual void pre();
+  virtual RPG_Common_Track post_RPG_Common_Track_Type();
+};
+
 class RPG_Common_Export RPG_Common_Climate_Type
  : public RPG_Common_Climate_Type_pskel,
    public ::xml_schema::string_pimpl

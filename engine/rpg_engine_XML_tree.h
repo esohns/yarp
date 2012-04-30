@@ -98,6 +98,7 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
     COMMAND_ATTACK_STANDARD,
     COMMAND_DOOR_CLOSE,
     COMMAND_DOOR_OPEN,
+    COMMAND_RUN,
     COMMAND_SEARCH,
     COMMAND_STEP,
     COMMAND_STOP,
@@ -156,8 +157,8 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
   _xsd_RPG_Engine_Command_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[14];
-  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[14];
+  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[15];
+  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[15];
 };
 
 class RPG_Engine_Export RPG_Engine_EntityMode_XMLTree_Type: public ::xml_schema::string
@@ -166,6 +167,7 @@ class RPG_Engine_Export RPG_Engine_EntityMode_XMLTree_Type: public ::xml_schema:
   enum value
   {
     ENTITYMODE_FIGHTING,
+    ENTITYMODE_RUNNING,
     ENTITYMODE_SEARCHING,
     ENTITYMODE_TRAVELLING
   };
@@ -217,8 +219,8 @@ class RPG_Engine_Export RPG_Engine_EntityMode_XMLTree_Type: public ::xml_schema:
   _xsd_RPG_Engine_EntityMode_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Engine_EntityMode_XMLTree_Type_literals_[3];
-  static const value _xsd_RPG_Engine_EntityMode_XMLTree_Type_indexes_[3];
+  static const char* const _xsd_RPG_Engine_EntityMode_XMLTree_Type_literals_[4];
+  static const value _xsd_RPG_Engine_EntityMode_XMLTree_Type_indexes_[4];
 };
 
 class RPG_Engine_Export RPG_Engine_Player_XMLTree_Type: public ::RPG_Player_PlayerXML_XMLTree_Type

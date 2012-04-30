@@ -45,6 +45,8 @@ class RPG_Common_Export RPG_Common_Timer_Manager
   //                   const bool&,           // reschedule interval ?
   //                   int&);                 // return value: timer ID
   //void cancelTimer(const int&); // timer ID
+  void resetInterval(const long&,            // timer ID
+                     const ACE_Time_Value&); // interval
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;

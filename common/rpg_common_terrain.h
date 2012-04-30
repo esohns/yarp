@@ -9,10 +9,11 @@
 
 enum RPG_Common_Terrain
 {
-  TERRAIN_DESERTS = 0,
-  TERRAIN_FORESTS,
+  TERRAIN_DESERT_SANDY = 0,
+  TERRAIN_FOREST,
   TERRAIN_HILLS,
-  TERRAIN_MARSHES,
+  TERRAIN_JUNGLE,
+  TERRAIN_MOOR,
   TERRAIN_MOUNTAINS,
   TERRAIN_PLAINS,
   TERRAIN_PLANE_INNER_AIR,
@@ -40,6 +41,8 @@ enum RPG_Common_Terrain
   TERRAIN_PLANE_TRANSITIVE_SHADOW,
   TERRAIN_PLANE_TRANSITIVE_ANY,
   TERRAIN_SETTLEMENT,
+  TERRAIN_SWAMP,
+  TERRAIN_TUNDRA_FROZEN,
   TERRAIN_UNDER_GROUND,
   TERRAIN_UNDER_WATER,
   TERRAIN_ANY,
@@ -64,10 +67,11 @@ class RPG_Common_Export RPG_Common_TerrainHelper
   inline static void init()
   {
     myRPG_Common_TerrainToStringTable.clear();
-    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_DESERTS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_DESERTS")));
-    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_FORESTS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_FORESTS")));
+    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_DESERT_SANDY, ACE_TEXT_ALWAYS_CHAR("TERRAIN_DESERT_SANDY")));
+    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_FOREST, ACE_TEXT_ALWAYS_CHAR("TERRAIN_FOREST")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_HILLS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_HILLS")));
-    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_MARSHES, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MARSHES")));
+    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_JUNGLE, ACE_TEXT_ALWAYS_CHAR("TERRAIN_JUNGLE")));
+    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_MOOR, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MOOR")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_MOUNTAINS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_MOUNTAINS")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_PLAINS, ACE_TEXT_ALWAYS_CHAR("TERRAIN_PLAINS")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_PLANE_INNER_AIR, ACE_TEXT_ALWAYS_CHAR("TERRAIN_PLANE_INNER_AIR")));
@@ -95,6 +99,8 @@ class RPG_Common_Export RPG_Common_TerrainHelper
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_PLANE_TRANSITIVE_SHADOW, ACE_TEXT_ALWAYS_CHAR("TERRAIN_PLANE_TRANSITIVE_SHADOW")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_PLANE_TRANSITIVE_ANY, ACE_TEXT_ALWAYS_CHAR("TERRAIN_PLANE_TRANSITIVE_ANY")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_SETTLEMENT, ACE_TEXT_ALWAYS_CHAR("TERRAIN_SETTLEMENT")));
+    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_SWAMP, ACE_TEXT_ALWAYS_CHAR("TERRAIN_SWAMP")));
+    myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_TUNDRA_FROZEN, ACE_TEXT_ALWAYS_CHAR("TERRAIN_TUNDRA_FROZEN")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_UNDER_GROUND, ACE_TEXT_ALWAYS_CHAR("TERRAIN_UNDER_GROUND")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_UNDER_WATER, ACE_TEXT_ALWAYS_CHAR("TERRAIN_UNDER_WATER")));
     myRPG_Common_TerrainToStringTable.insert(std::make_pair(TERRAIN_ANY, ACE_TEXT_ALWAYS_CHAR("TERRAIN_ANY")));

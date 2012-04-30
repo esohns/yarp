@@ -372,11 +372,27 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     case COMMAND_DOOR_CLOSE:
     case COMMAND_DOOR_OPEN:
     {
-      ACE_ASSERT(parameters_in.size() == 1);
+      ACE_ASSERT(parameters_in.size() == 2);
+
+      RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
+      ACE_ASSERT(entity_id);
 
       client_action.command = COMMAND_TOGGLE_DOOR;
-      client_action.position = *static_cast<RPG_Map_Position_t* const>(parameters_in.front());
+      client_action.position = *static_cast<RPG_Map_Position_t* const>(parameters_in.back());
       client_action.window = myWindow;
+
+      // update seen positions
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+        ACE_ASSERT(mySeenPositions.find(entity_id) == mySeenPositions.end());
+
+        RPG_Map_Positions_t seen_positions;
+        myEngine->getVisiblePositions(entity_id,
+                                      seen_positions,
+                                      true);
+        mySeenPositions.insert(std::make_pair(entity_id, seen_positions));
+      } // end lock scope
 
       break;
     }
@@ -412,7 +428,12 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
         ACE_ASSERT(mySeenPositions.find(entity_id) == mySeenPositions.end());
-        mySeenPositions.insert(std::make_pair(entity_id, RPG_Map_Positions_t()));
+
+        RPG_Map_Positions_t seen_positions;
+        myEngine->getVisiblePositions(entity_id,
+                                      seen_positions,
+                                      true);
+        mySeenPositions.insert(std::make_pair(entity_id, seen_positions));
       } // end lock scope
 
       return;
@@ -474,16 +495,22 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
           client_action.command = COMMAND_WINDOW_DRAW;
         action(client_action);
 
+        client_action.position = RPG_Graphics_Common_Tools::screen2Map(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(),
+                                                                       myEngine->getSize(true),
+                                                                       myWindow->getSize(false),
+                                                                       myWindow->getView());
+
         client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
         action(client_action);
 
         client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
         action(client_action);
 
-        client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-        action(client_action);
+        //client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+        //action(client_action);
 
-        client_action.command = COMMAND_CURSOR_DRAW;
+        //client_action.position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+        //client_action.command = COMMAND_CURSOR_DRAW;
       } // end IF
 
       break;
@@ -852,7 +879,7 @@ RPG_Client_Engine::handleActions()
         } // end ELSE
         else
         {
-          ACE_ASSERT((*iterator).path.empty());
+          ACE_ASSERT(!(*iterator).positions.empty());
           RPG_Graphics_Positions_t graphics_positions;
           for (RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).positions.begin();
                iterator2 != (*iterator).positions.end();
@@ -917,7 +944,7 @@ RPG_Client_Engine::handleActions()
         } // end ELSE
         else
         {
-          ACE_ASSERT((*iterator).path.empty());
+          ACE_ASSERT(!(*iterator).positions.empty());
           RPG_Map_PositionList_t map_positions;
           RPG_Graphics_Positions_t graphics_positions;
           for (RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).positions.begin();

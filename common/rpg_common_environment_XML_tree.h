@@ -62,6 +62,7 @@
 //
 class RPG_Common_Plane_XMLTree_Type;
 class RPG_Common_Terrain_XMLTree_Type;
+class RPG_Common_Track_XMLTree_Type;
 class RPG_Common_Climate_XMLTree_Type;
 class RPG_Common_TimeOfDay_XMLTree_Type;
 class RPG_Common_AmbientLighting_XMLTree_Type;
@@ -150,10 +151,11 @@ class RPG_Common_Export RPG_Common_Terrain_XMLTree_Type: public ::xml_schema::st
   public:
   enum value
   {
-    TERRAIN_DESERTS,
-    TERRAIN_FORESTS,
+    TERRAIN_DESERT_SANDY,
+    TERRAIN_FOREST,
     TERRAIN_HILLS,
-    TERRAIN_MARSHES,
+    TERRAIN_JUNGLE,
+    TERRAIN_MOOR,
     TERRAIN_MOUNTAINS,
     TERRAIN_PLAINS,
     TERRAIN_PLANE_INNER_AIR,
@@ -181,6 +183,8 @@ class RPG_Common_Export RPG_Common_Terrain_XMLTree_Type: public ::xml_schema::st
     TERRAIN_PLANE_TRANSITIVE_SHADOW,
     TERRAIN_PLANE_TRANSITIVE_ANY,
     TERRAIN_SETTLEMENT,
+    TERRAIN_SWAMP,
+    TERRAIN_TUNDRA_FROZEN,
     TERRAIN_UNDER_GROUND,
     TERRAIN_UNDER_WATER,
     TERRAIN_ANY
@@ -233,8 +237,71 @@ class RPG_Common_Export RPG_Common_Terrain_XMLTree_Type: public ::xml_schema::st
   _xsd_RPG_Common_Terrain_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_Terrain_XMLTree_Type_literals_[34];
-  static const value _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_[34];
+  static const char* const _xsd_RPG_Common_Terrain_XMLTree_Type_literals_[37];
+  static const value _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_[37];
+};
+
+class RPG_Common_Export RPG_Common_Track_XMLTree_Type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    TRACK_NONE,
+    TRACK_HIGHWAY,
+    TRACK_ROAD,
+    TRACK_TRAIL,
+    TRACK_ANY
+  };
+
+  RPG_Common_Track_XMLTree_Type (value v);
+
+  RPG_Common_Track_XMLTree_Type (const char* v);
+
+  RPG_Common_Track_XMLTree_Type (const ::std::string& v);
+
+  RPG_Common_Track_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Common_Track_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
+  RPG_Common_Track_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
+  RPG_Common_Track_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
+  RPG_Common_Track_XMLTree_Type (const ::std::string& s,
+                                 const ::xercesc::DOMElement* e,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
+  RPG_Common_Track_XMLTree_Type (const RPG_Common_Track_XMLTree_Type& x,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
+  virtual RPG_Common_Track_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  RPG_Common_Track_XMLTree_Type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_RPG_Common_Track_XMLTree_Type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_RPG_Common_Track_XMLTree_Type_convert () const;
+
+  public:
+  static const char* const _xsd_RPG_Common_Track_XMLTree_Type_literals_[5];
+  static const value _xsd_RPG_Common_Track_XMLTree_Type_indexes_[5];
 };
 
 class RPG_Common_Export RPG_Common_Climate_XMLTree_Type: public ::xml_schema::string
@@ -618,6 +685,14 @@ operator<< (::std::ostream&, const RPG_Common_Terrain_XMLTree_Type&);
 
 RPG_Common_Export
 ::std::ostream&
+operator<< (::std::ostream&, RPG_Common_Track_XMLTree_Type::value);
+
+RPG_Common_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Common_Track_XMLTree_Type&);
+
+RPG_Common_Export
+::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Climate_XMLTree_Type::value);
 
 RPG_Common_Export
@@ -686,6 +761,19 @@ operator<< (::xml_schema::list_stream&,
 
 RPG_Common_Export
 void
+operator<< (::xercesc::DOMElement&, const RPG_Common_Track_XMLTree_Type&);
+
+RPG_Common_Export
+void
+operator<< (::xercesc::DOMAttr&, const RPG_Common_Track_XMLTree_Type&);
+
+RPG_Common_Export
+void
+operator<< (::xml_schema::list_stream&,
+            const RPG_Common_Track_XMLTree_Type&);
+
+RPG_Common_Export
+void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Climate_XMLTree_Type&);
 
 RPG_Common_Export
@@ -736,6 +824,11 @@ RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Common_Terrain_XMLTree_Type&);
+
+RPG_Common_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Common_Track_XMLTree_Type&);
 
 RPG_Common_Export
 ::xml_schema::ostream< ACE_OutputCDR >&

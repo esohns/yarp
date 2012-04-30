@@ -78,7 +78,8 @@ class RPG_Engine_Export RPG_Engine
   RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
   void action(const RPG_Engine_EntityID_t&, // id
-              const RPG_Engine_Action&);    // action
+              const RPG_Engine_Action&,     // action
+              const bool& = true);          // locked access ?
 
   void setActive(const RPG_Engine_EntityID_t&); // id
   RPG_Engine_EntityID_t getActive(const bool& = true) const; // locked access ?
@@ -105,10 +106,14 @@ class RPG_Engine_Export RPG_Engine
   void getVisiblePositions(const RPG_Engine_EntityID_t&, // id
                            RPG_Map_Positions_t&,         // return value: (currently) visible positions
                            const bool& = true) const;    // locked access ?
+  bool canSee(const RPG_Engine_EntityID_t&, // id
+              const RPG_Map_Position_t&,    // position
+              const bool& = true) const;    // locked access ?
 
   bool findPath(const RPG_Map_Position_t&, // start position
                 const RPG_Map_Position_t&, // end position
-                RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
+                RPG_Map_Path_t&,           // return value: (partial) path A --> B
+                const bool& = true) const; // locked access ?
 
   bool canReach(const RPG_Engine_EntityID_t&, // id
                 const RPG_Map_Position_t&,    // target position

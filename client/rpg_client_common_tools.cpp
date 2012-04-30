@@ -648,33 +648,34 @@ RPG_Client_Common_Tools::getDoorOrientation(const RPG_Engine& engine_in,
 
 RPG_Graphics_Cursor
 RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
-                                   const RPG_Engine& engine_in)
+                                   const RPG_Engine& engine_in,
+                                   const bool& lockedAcces_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::getCursor"));
 
   RPG_Graphics_Cursor result = CURSOR_NORMAL;
 
   // monster ?
-  RPG_Engine_EntityID_t entity_id = engine_in.hasEntity(position_in);
+  RPG_Engine_EntityID_t entity_id = engine_in.hasEntity(position_in, lockedAcces_in);
   if (entity_id &&
-      engine_in.isMonster(entity_id))
+      engine_in.isMonster(entity_id, lockedAcces_in))
   {
     // && in reach ?
-    entity_id = engine_in.getActive();
+    entity_id = engine_in.getActive(lockedAcces_in);
     if (entity_id &&
-        RPG_Map_Common_Tools::isAdjacent(engine_in.getPosition(entity_id), position_in))
+        RPG_Map_Common_Tools::isAdjacent(engine_in.getPosition(entity_id, lockedAcces_in), position_in))
       return CURSOR_TARGET;
   } // end IF
 
   // (closed) door ?
-  if (engine_in.getElement(position_in) == MAPELEMENT_DOOR)
+  if (engine_in.getElement(position_in, lockedAcces_in) == MAPELEMENT_DOOR)
   {
-    RPG_Map_DoorState door_state = engine_in.state(position_in);
-    RPG_Engine_EntityID_t entity_id = engine_in.getActive();
+    RPG_Map_DoorState door_state = engine_in.state(position_in, lockedAcces_in);
+    RPG_Engine_EntityID_t entity_id = engine_in.getActive(lockedAcces_in);
     if (((door_state == DOORSTATE_CLOSED) ||
          (door_state == DOORSTATE_LOCKED)) &&
         entity_id &&
-        RPG_Map_Common_Tools::isAdjacent(engine_in.getPosition(entity_id),
+        RPG_Map_Common_Tools::isAdjacent(engine_in.getPosition(entity_id, lockedAcces_in),
                                          position_in))
       result = CURSOR_DOOR_OPEN;
   } // end IF

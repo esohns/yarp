@@ -428,13 +428,17 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
   } // end lock scope
 
   // notify AI
-  float steps_per_round = static_cast<float>(entity_in->character->getSpeed(inherited2::myLevelMeta.environment.lighting)) /
-                          static_cast<float>(RPG_ENGINE_FEET_PER_SQUARE);
-  steps_per_round /= static_cast<float>(RPG_ENGINE_ROUND_INTERVAL);
-  float fracional = ::modf(steps_per_round, &steps_per_round);
+  unsigned char temp = entity_in->character->getSpeed(false,
+                                                      inherited2::myLevelMeta.environment.lighting);
+  temp /= RPG_ENGINE_FEET_PER_SQUARE;
+  temp *= RPG_ENGINE_ROUND_INTERVAL;
+  float squares_per_round = temp;
+  squares_per_round = 1.0F / squares_per_round;
+  squares_per_round /= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
+  float fractional = ::modf(squares_per_round, &squares_per_round);
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->add(id,
-                                                      ACE_Time_Value(static_cast<time_t>(steps_per_round),
-                                                                     static_cast<suseconds_t>(fracional * 1000000)));
+                                                      ACE_Time_Value(static_cast<time_t>(squares_per_round),
+                                                                     static_cast<suseconds_t>(fractional * 1000000.0F)));
 
   // notify client / window
   RPG_Engine_Command command = COMMAND_E2C_ENTITY_ADD;
@@ -507,11 +511,16 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
 
 void
 RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
-                   const RPG_Engine_Action& action_in)
+                   const RPG_Engine_Action& action_in,
+                   const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::action"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  // sanity check
+  ACE_ASSERT(id_in);
+
+  if (lockedAccess_in)
+    myLock.acquire();
 
   RPG_Engine_EntitiesIterator_t iterator = myEntities.find(id_in);
   if (iterator == myEntities.end())
@@ -519,6 +528,9 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
                id_in));
+
+    if (lockedAccess_in)
+      myLock.release();
 
     return;
   } // end IF
@@ -546,6 +558,9 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
         (*iterator).second->actions.pop_front();
         (*iterator).second->actions.push_front(action_in);
 
+        if (lockedAccess_in)
+          myLock.release();
+
         // done
         return;
       } // end IF
@@ -555,6 +570,9 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
     case COMMAND_STOP:
     {
       (*iterator).second->actions.clear();
+
+      if (lockedAccess_in)
+        myLock.release();
 
       // done
       return;
@@ -571,6 +589,9 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
         (*iterator).second->actions.pop_front();
         (*iterator).second->actions.push_front(action_in);
 
+        if (lockedAccess_in)
+          myLock.release();
+
         // done
         return;
       } // end IF
@@ -582,6 +603,9 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
   } // end SWITCH
 
   (*iterator).second->actions.push_back(action_in);
+
+  if (lockedAccess_in)
+    myLock.release();
 }
 
 void
@@ -1076,6 +1100,31 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
                                                 : positions_out.erase(iterator++));
 }
 
+bool
+RPG_Engine::canSee(const RPG_Engine_EntityID_t& id_in,
+                   const RPG_Map_Position_t& position_in,
+                   const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::canSee"));
+
+  // sanity check
+  if (id_in == 0)
+    return false; // *CONSIDER*: false negative ?
+ 
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  RPG_Map_Positions_t visible_positions;
+  getVisiblePositions(id_in,
+                      visible_positions,
+                      false);
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return (visible_positions.find(position_in) != visible_positions.end());
+}
+
 unsigned int
 RPG_Engine::numSpawned() const
 {
@@ -1097,11 +1146,13 @@ RPG_Engine::numSpawned() const
 bool
 RPG_Engine::findPath(const RPG_Map_Position_t& start_in,
                      const RPG_Map_Position_t& end_in,
-                     RPG_Map_Path_t& path_out) const
+                     RPG_Map_Path_t& path_out,
+                     const bool& lockedAccess_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::findPath"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  if (lockedAccess_in)
+    myLock.acquire();
 
   // obstacles:
   // - walls
@@ -1115,6 +1166,9 @@ RPG_Engine::findPath(const RPG_Map_Position_t& start_in,
   // - start, end are NEVER obstacles...
   obstacles.erase(start_in);
   obstacles.erase(end_in);
+
+  if (lockedAccess_in)
+    myLock.release();
 
   return inherited2::findPath(start_in,
                               end_in,
@@ -1471,6 +1525,20 @@ RPG_Engine::handleEntities()
 
               return;
             } // end IF
+            RPG_Engine_EntityID_t* entity_id = NULL;
+            entity_id = new(std::nothrow) RPG_Engine_EntityID_t;
+            if (!entity_id)
+            {
+              ACE_DEBUG((LM_CRITICAL,
+                         ACE_TEXT("unable to allocate memory, aborting\n")));
+
+              // clean up
+              delete parameters;
+
+              return;
+            } // end IF
+            *entity_id = (*iterator).first;
+            parameters->push_back(entity_id);
             RPG_Map_Position_t* position = NULL;
             position = new(std::nothrow) RPG_Map_Position_t;
             if (!position)
@@ -1490,14 +1558,77 @@ RPG_Engine::handleEntities()
 
           break;
         }
-        case COMMAND_SEARCH:
+        case COMMAND_RUN:
         {
-          (*iterator).second->modes.insert(ENTITYMODE_SEARCHING);
+          // toggle mode
+          bool is_running = ((*iterator).second->modes.find(ENTITYMODE_RUNNING) != (*iterator).second->modes.end());
+          if (is_running)
+          {
+            // stop running
+
+            // notify AI
+            unsigned char temp = (*iterator).second->character->getSpeed(false,
+                                                                         inherited2::myLevelMeta.environment.lighting);
+            temp /= RPG_ENGINE_FEET_PER_SQUARE;
+            temp *= RPG_ENGINE_ROUND_INTERVAL;
+            float squares_per_round = temp;
+            squares_per_round = 1.0F / squares_per_round;
+            squares_per_round /= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
+            float fractional = ::modf(squares_per_round, &squares_per_round);
+            RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->reschedule((*iterator).first,
+                                                                       ACE_Time_Value(static_cast<time_t>(squares_per_round),
+                                                                                      static_cast<suseconds_t>(fractional * 1000000.0F)));
+
+            (*iterator).second->modes.erase(ENTITYMODE_RUNNING);
+          } // end IF
+          else
+          {
+            // start running
+
+            // notify AI
+            unsigned char temp = (*iterator).second->character->getSpeed(true,
+                                                                         inherited2::myLevelMeta.environment.lighting);
+            temp /= RPG_ENGINE_FEET_PER_SQUARE;
+            temp *= RPG_ENGINE_ROUND_INTERVAL;
+            float squares_per_round = temp;
+            squares_per_round = 1.0F / squares_per_round;
+            squares_per_round /= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
+            float fractional = ::modf(squares_per_round, &squares_per_round);
+            RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->reschedule((*iterator).first,
+                                                                       ACE_Time_Value(static_cast<time_t>(squares_per_round),
+                                                                                      static_cast<suseconds_t>(fractional * 1000000.0F)));
+
+            (*iterator).second->modes.insert(ENTITYMODE_RUNNING);
+          } // end ELSE
 
           // debug info
           ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("\"%s\" is searching...\n"),
-                     (*iterator).second->character->getName().c_str()));
+                     ACE_TEXT("\"%s\" %s running...\n"),
+                     (*iterator).second->character->getName().c_str(),
+                     (is_running ? ACE_TEXT("stopped") : ACE_TEXT("started"))));
+
+          break;
+        }
+        case COMMAND_SEARCH:
+        {
+          // toggle mode
+          bool is_searching = ((*iterator).second->modes.find(ENTITYMODE_SEARCHING) != (*iterator).second->modes.end());
+          if (is_searching)
+          {
+            // stop searching
+            (*iterator).second->modes.erase(ENTITYMODE_SEARCHING);
+          } // end IF
+          else
+          {
+            // start searching
+            (*iterator).second->modes.insert(ENTITYMODE_SEARCHING);
+          } // end ELSE
+
+          // debug info
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("\"%s\" %s searching...\n"),
+                     (*iterator).second->character->getName().c_str(),
+                     (is_searching ? ACE_TEXT("stopped") : ACE_TEXT("started"))));
 
           break;
         }

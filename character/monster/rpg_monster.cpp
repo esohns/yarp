@@ -32,6 +32,7 @@
 #include <rpg_character_race_common_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -226,11 +227,17 @@ RPG_Monster::getReach(unsigned short& baseRange_out,
 }
 
 unsigned char
-RPG_Monster::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
+RPG_Monster::getSpeed(const bool& isRunning_in,
+                      const RPG_Common_AmbientLighting& lighting_in,
+                      const RPG_Common_Terrain& terrain_in,
+                      const RPG_Common_Track& track_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getSpeed"));
 
-  // init return value(s)
+  // sanity check(s)
+  ACE_ASSERT(lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
+
+  // init return value
   unsigned char result = 0;
 
   // step1: retrieve base speed (type)
@@ -282,10 +289,20 @@ RPG_Monster::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
                                                result,
                                                runModifier);
 
+  float modifier = 1.0F;
   // step3: consider vision [equipment / ambient lighting]
   if ((inherited::myEquipment.getLightSource() == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
       (lighting_in == AMBIENCE_DARKNESS))
-    result /= 2;
+    modifier *= 0.5F;
+
+  // step4: consider terrain [track type]
+  modifier *= RPG_Common_Tools::terrain2SpeedModifier(terrain_in, track_in);
+
+  // step5: consider movement mode
+  if (isRunning_in)
+    modifier *= static_cast<float>(runModifier);
+
+  result = static_cast<unsigned char>(static_cast<float>(result) * modifier);
 
   // *TODO*: consider other (spell, ...) effects
   return result;

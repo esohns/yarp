@@ -24,10 +24,11 @@
 
   <xsd:simpleType name="RPG_Common_Terrain_Type">
     <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="TERRAIN_DESERTS"/>
-      <xsd:enumeration value="TERRAIN_FORESTS"/>
+      <xsd:enumeration value="TERRAIN_DESERT_SANDY"/>
+      <xsd:enumeration value="TERRAIN_FOREST"/>
       <xsd:enumeration value="TERRAIN_HILLS"/>
-      <xsd:enumeration value="TERRAIN_MARSHES"/>
+      <xsd:enumeration value="TERRAIN_JUNGLE"/>
+      <xsd:enumeration value="TERRAIN_MOOR"/>
       <xsd:enumeration value="TERRAIN_MOUNTAINS"/>
       <xsd:enumeration value="TERRAIN_PLAINS"/>
       <xsd:enumeration value="TERRAIN_PLANE_INNER_AIR"/>
@@ -55,12 +56,24 @@
       <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_SHADOW"/>
       <xsd:enumeration value="TERRAIN_PLANE_TRANSITIVE_ANY"/>
       <xsd:enumeration value="TERRAIN_SETTLEMENT"/>
+      <xsd:enumeration value="TERRAIN_SWAMP"/>
+      <xsd:enumeration value="TERRAIN_TUNDRA_FROZEN"/>
       <xsd:enumeration value="TERRAIN_UNDER_GROUND"/>
       <xsd:enumeration value="TERRAIN_UNDER_WATER"/>
       <xsd:enumeration value="TERRAIN_ANY"/>
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="RPG_Common_Track_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TRACK_NONE"/>
+      <xsd:enumeration value="TRACK_HIGHWAY"/>
+      <xsd:enumeration value="TRACK_ROAD"/>
+      <xsd:enumeration value="TRACK_TRAIL"/>
+      <xsd:enumeration value="TRACK_ANY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
   <xsd:simpleType name="RPG_Common_Climate_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="CLIMATE_COLD"/>

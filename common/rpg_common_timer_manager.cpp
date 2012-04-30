@@ -61,7 +61,7 @@ RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()
   fini_timers();
 
   inherited::deactivate();
-  // make sure the dispatcher thread is really dead...
+  // make sure the dispatcher thread has joined...
   inherited::wait();
 
 //   ACE_DEBUG((LM_DEBUG,
@@ -155,6 +155,32 @@ RPG_Common_Timer_Manager::fini_timers()
 ////              ACE_TEXT("cancelled timer (ID: %u)...\n"),
 ////              timerID_in));
 //}
+
+void
+RPG_Common_Timer_Manager::resetInterval(const long& timerID_in,
+                                        const ACE_Time_Value& interval_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::resetInterval"));
+
+  // synch access to timer queue
+  {
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(mutex());
+
+    if (inherited::timer_queue()->reset_interval(timerID_in, interval_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to reset_interval() for timer (ID: %u): \"%m\", aborting\n"),
+                 timerID_in));
+
+      return;
+    } // end IF
+  } // end lock scope
+
+//   // debug info
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("reset timer interval (ID: %u)...\n"),
+//              timerID_in));
+}
 
 void
 RPG_Common_Timer_Manager::dump_state() const

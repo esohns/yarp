@@ -80,7 +80,10 @@ class RPG_Player_Export RPG_Player_Player_Base
 
   virtual unsigned short getReach(unsigned short&, // return value: base range (if any)
                                   bool&) const;    // return value: reach is absolute ?
-  virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
+  virtual unsigned char getSpeed(const bool& = false,                                 // running ?
+                                 const RPG_Common_AmbientLighting& = AMBIENCE_BRIGHT, // environment
+                                 const RPG_Common_Terrain& = TERRAIN_ANY,             // terrain
+                                 const RPG_Common_Track& = TRACK_NONE) const;         // track
 
   virtual bool isPlayerCharacter() const;
 

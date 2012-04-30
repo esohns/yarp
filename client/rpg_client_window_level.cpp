@@ -1181,6 +1181,10 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
   // sanity check(s)
   ACE_ASSERT(myClient);
+  ACE_ASSERT(myEngine);
+
+  // lock engine
+  myEngine->lock();
 
   bool delegate_to_parent = false;
   switch (event_in.type)
@@ -1200,12 +1204,12 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           myClient->centerOnActive(!myClient->getCenterOnActive());
 
           // adjust view ?
-          RPG_Engine_EntityID_t entity_id = myEngine->getActive();
+          RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
           if (myClient->getCenterOnActive() &&
               entity_id)
           {
             myClientAction.command = COMMAND_SET_VIEW;
-            myClientAction.position = myEngine->getPosition(entity_id);
+            myClientAction.position = myEngine->getPosition(entity_id, false);
             myClient->action(myClientAction);
           } // end IF
 
@@ -1216,17 +1220,17 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         {
           // step1: set view
           myClientAction.command = COMMAND_SET_VIEW;
-          myClientAction.entity_id = myEngine->getActive();
+          myClientAction.entity_id = myEngine->getActive(false);
           if ((event_in.key.keysym.mod & KMOD_SHIFT) ||
               (myClientAction.entity_id == 0))
           {
             // center view
-            myClientAction.position = myEngine->getSize();
+            myClientAction.position = myEngine->getSize(false);
             myClientAction.position.first >>= 1;
             myClientAction.position.second >>= 1;
           } // end IF
           else
-            myClientAction.position = myEngine->getPosition(myClientAction.entity_id);
+            myClientAction.position = myEngine->getPosition(myClientAction.entity_id, false);
           myClient->action(myClientAction);
 
           break;
@@ -1243,22 +1247,62 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         // implement (manual) refresh
         case SDLK_r:
         {
-          // --> need a redraw
-          redraw_out = true;
+          if (event_in.key.keysym.mod & KMOD_SHIFT)
+          {
+            // --> need a redraw
+            redraw_out = true;
+          } // end IF
+          else
+          {
+            RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
+            if (entity_id)
+            {
+              RPG_Engine_Action player_action;
+              player_action.command = COMMAND_RUN;
+              player_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                      std::numeric_limits<unsigned int>::max());
+              //player_action.path.clear();
+              player_action.target = 0;
+
+              myEngine->action(entity_id,
+                               player_action,
+                               true);
+            } // end IF
+          } // end ELSE
 
           break;
         }
-#ifdef _DEBUG
         case SDLK_s:
         {
-          toggleShowCoordinates();
+          if (event_in.key.keysym.mod & KMOD_SHIFT)
+          {
+#ifdef _DEBUG
+            toggleShowCoordinates();
 
-          // --> need a redraw
-          redraw_out = true;
+            // --> need a redraw
+            redraw_out = true;
+#endif
+          } // end IF
+          else
+          {
+            RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
+            if (entity_id)
+            {
+              RPG_Engine_Action player_action;
+              player_action.command = COMMAND_SEARCH;
+              player_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                      std::numeric_limits<unsigned int>::max());
+              //player_action.path.clear();
+              player_action.target = 0;
+
+              myEngine->action(entity_id,
+                               player_action,
+                               false);
+            } // end IF
+          } // end ELSE
 
           break;
         }
-#endif
         case SDLK_t:
         {
           // step0: restore/clear old tile highlight background
@@ -1273,8 +1317,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
           RPG_Graphics_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
           myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                                          myEngine->getSize(),
-                                                                          getSize(),
+                                                                          myEngine->getSize(false),
+                                                                          getSize(false),
                                                                           getView());
 
           // toggle path selection mode
@@ -1302,17 +1346,18 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           {
             // --> switch on path selection
 
-            myClientAction.entity_id = myEngine->getActive();
+            myClientAction.entity_id = myEngine->getActive(false);
             if (myClientAction.entity_id)
             {
-              if (myEngine->isValid(myClientAction.position))
+              if (myEngine->isValid(myClientAction.position, false))
               {
-                RPG_Graphics_Position_t current_position = myEngine->getPosition(myClientAction.entity_id);
+                RPG_Graphics_Position_t current_position = myEngine->getPosition(myClientAction.entity_id, false);
                 if (current_position != myClientAction.position)
                 {
                   if (!myEngine->findPath(current_position,
                                           myClientAction.position,
-                                          myClientAction.path))
+                                          myClientAction.path,
+                                          false))
                   {
                     //ACE_DEBUG((LM_DEBUG,
                     //           ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], aborting\n"),
@@ -1374,8 +1419,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
           RPG_Graphics_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
           myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                                          myEngine->getSize(),
-                                                                          getSize(),
+                                                                          myEngine->getSize(false),
+                                                                          getSize(false),
                                                                           getView());
 
           // toggle path selection mode
@@ -1524,14 +1569,14 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
           if (!(event_in.key.keysym.mod & KMOD_SHIFT))
           {
-            myClientAction.entity_id = myEngine->getActive();
+            myClientAction.entity_id = myEngine->getActive(false);
             if (myClientAction.entity_id == 0)
               break; // nothing to do...
 
             RPG_Engine_Action player_action;
             player_action.command = COMMAND_TRAVEL;
             // compute target position
-            player_action.position = myEngine->getPosition(myClientAction.entity_id);
+            player_action.position = myEngine->getPosition(myClientAction.entity_id, false);
             switch (direction)
             {
               case DIRECTION_UP:
@@ -1554,9 +1599,11 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             player_action.path.clear();
             player_action.target = 0;
 
-            if (myEngine->isValid(player_action.position))
+            if (myEngine->isValid(player_action.position, false))
             {
-              myEngine->action(myClientAction.entity_id, player_action);
+              myEngine->action(myClientAction.entity_id,
+                               player_action,
+                               false);
 
               // adjust view ?
               if (myClient->getCenterOnActive())
@@ -1592,8 +1639,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       // find map square
       myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
                                                                                      event_in.motion.y),
-                                                                      myEngine->getSize(),
-                                                                      getSize(),
+                                                                      myEngine->getSize(false),
+                                                                      getSize(false),
                                                                       getView());
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
@@ -1647,7 +1694,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
               (current_position.second == std::numeric_limits<unsigned int>::max()))
             break; // done
 
-          myClientAction.entity_id = myEngine->hasEntity(current_position);
+          myClientAction.entity_id = myEngine->hasEntity(current_position, false);
           if (myClientAction.entity_id)
           {
             myClientAction.command = COMMAND_ENTITY_DRAW;
@@ -1670,7 +1717,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
             //RPG_Map_Positions_t circle;
             //RPG_Map_Common_Tools::buildCircle(myClientAction.source,
-            //                                  myEngine->getSize(),
+            //                                  myEngine->getSize(false),
             //                                  RPG_Map_Common_Tools::distanceMax(myClientAction.source,
             //                                                                    myClientAction.position),
             //                                  false, // don't fill
@@ -1681,20 +1728,20 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             //for (RPG_Map_PositionsConstIterator_t iterator = circle.begin();
             //     iterator != circle.end();
             //     iterator++)
-            //  if (!myEngine->isValid(*iterator))
+            //  if (!myEngine->isValid(*iterator, false))
             //    invalid.insert(*iterator);
             //std::set_difference(circle.begin, circle.end(),
             //                    invalid.begin(), invalid.end(),
             //                    myClientAction.positions.begin());
 
             RPG_Map_Common_Tools::buildCircle(myClientAction.source,
-                                              myEngine->getSize(),
+                                              myEngine->getSize(false),
                                               circle_radius,
                                               false, // don't fill
                                               myClientAction.positions);
 
             // step2: remove invalid positions
-            RPG_Map_Positions_t obstacles = myEngine->getObstacles(false);
+            RPG_Map_Positions_t obstacles = myEngine->getObstacles(false, false);
             // *WARNING*: this works for associative containers ONLY
             for (RPG_Map_PositionsIterator_t iterator = myClientAction.positions.begin();
                  iterator != myClientAction.positions.end();
@@ -1711,15 +1758,16 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             break;
           case SELECTIONMODE_PATH:
           {
-            myClientAction.entity_id = myEngine->getActive();
-            if (myEngine->isValid(myClientAction.position))
+            myClientAction.entity_id = myEngine->getActive(false);
+            if (myEngine->isValid(myClientAction.position, false))
             {
-              current_position = myEngine->getPosition(myClientAction.entity_id);
+              current_position = myEngine->getPosition(myClientAction.entity_id, false);
               if (current_position != myClientAction.position)
               {
                 if (!myEngine->findPath(current_position,
                                         myClientAction.position,
-                                        myClientAction.path))
+                                        myClientAction.path,
+                                        false))
                 {
                   //ACE_DEBUG((LM_DEBUG,
                   //           ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], aborting\n"),
@@ -1769,7 +1817,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
       // set an appropriate cursor
       RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
-                                                                           *myEngine);
+                                                                           *myEngine,
+                                                                           false);
       RPG_Client_SelectionMode current_mode = myClient->mode();
       if (cursor_type == CURSOR_NORMAL)
       {
@@ -1805,8 +1854,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       {
         RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
                                                                                                     event_in.button.y),
-                                                                                     myEngine->getSize(),
-                                                                                     getSize(),
+                                                                                     myEngine->getSize(false),
+                                                                                     getSize(false),
                                                                                      getView());
 
         //ACE_DEBUG((LM_DEBUG,
@@ -1816,34 +1865,40 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         //           map_position.first,
         //           map_position.second));
         
-        myClientAction.entity_id = myEngine->getActive();
-        if (myClientAction.entity_id == 0)
-          break; // --> no player, no action...
+        myClientAction.entity_id = myEngine->getActive(false);
+        if ((myClientAction.entity_id == 0) ||
+            (!myClient->hasSeen(myClientAction.entity_id,
+                                map_position)))
+          break; // --> no player/vision, no action...
 
         RPG_Engine_Action player_action;
         player_action.command = RPG_ENGINE_COMMAND_INVALID;
         player_action.position = map_position;
         //player_action.path.clear();
-        player_action.target = myEngine->hasEntity(map_position);
+        player_action.target = myEngine->hasEntity(map_position, false);
         // self ?
         if (player_action.target == myClientAction.entity_id)
           break;
 
         // clicked on monster ?
         if (player_action.target &&
-            myEngine->isMonster(player_action.target))
+            myEngine->canSee(myClientAction.entity_id,
+                             map_position,
+                             false) &&
+            myEngine->isMonster(player_action.target, false))
         {
           // attack/pursue selected monster
           player_action.command = COMMAND_ATTACK;
 
           // reuse existing path ?
           if (!myEngine->canReach(myClientAction.entity_id,
-                                  map_position) &&
+                                  map_position,
+                                  false) &&
               (myClient->mode() == SELECTIONMODE_PATH) &&
               !myClientAction.path.empty())
           {
             // sanity checks
-            ACE_ASSERT(myClientAction.path.front().first == myEngine->getPosition(myClientAction.entity_id));
+            ACE_ASSERT(myClientAction.path.front().first == myEngine->getPosition(myClientAction.entity_id, false));
             ACE_ASSERT(myClientAction.path.back().first == player_action.position);
 
             // path exists --> reuse it
@@ -1856,7 +1911,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             myClient->action(myClientAction);
           } // end IF
 
-          myEngine->action(myClientAction.entity_id, player_action);
+          myEngine->action(myClientAction.entity_id,
+                           player_action,
+                           false);
 
           break;
         } // end IF
@@ -1864,17 +1921,17 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           player_action.target = 0;
 
         // player standing next to door ?
-        switch (myEngine->getElement(map_position))
+        switch (myEngine->getElement(map_position, false))
         {
           case MAPELEMENT_DOOR:
           {
             // (try to) handle door ?
             if (myClientAction.entity_id &&
-                RPG_Map_Common_Tools::isAdjacent(myEngine->getPosition(myClientAction.entity_id),
+                RPG_Map_Common_Tools::isAdjacent(myEngine->getPosition(myClientAction.entity_id, false),
                                                  map_position))
             {
               bool ignore_door = false;
-              switch (myEngine->state(map_position))
+              switch (myEngine->state(map_position, false))
               {
                 case DOORSTATE_OPEN:
                   player_action.command = COMMAND_DOOR_CLOSE; break;
@@ -1888,7 +1945,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                   ACE_DEBUG((LM_ERROR,
                              ACE_TEXT("[%u,%u]: invalid door state (was: \"%s\"), aborting\n"),
                              map_position.first, map_position.second,
-                             RPG_Map_DoorStateHelper::RPG_Map_DoorStateToString(myEngine->state(map_position)).c_str()));
+                             RPG_Map_DoorStateHelper::RPG_Map_DoorStateToString(myEngine->state(map_position, false)).c_str()));
 
                   return;
                 }
@@ -1897,7 +1954,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
 
               if (!ignore_door)
               {
-                myEngine->action(myClientAction.entity_id, player_action);
+                myEngine->action(myClientAction.entity_id,
+                                 player_action,
+                                 false);
 
                 break;
               } // end IF
@@ -1915,7 +1974,7 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                 !myClientAction.path.empty())
             {
               // sanity checks
-              ACE_ASSERT(myClientAction.path.front().first == myEngine->getPosition(myClientAction.entity_id));
+              ACE_ASSERT(myClientAction.path.front().first == myEngine->getPosition(myClientAction.entity_id, false));
               ACE_ASSERT(myClientAction.path.back().first == player_action.position);
 
               // path exists --> reuse it
@@ -1927,7 +1986,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
               myClient->action(myClientAction);
             } // end IF
 
-            myEngine->action(myClientAction.entity_id, player_action);
+            myEngine->action(myClientAction.entity_id,
+                             player_action,
+                             false);
 
             break;
           }
@@ -1979,6 +2040,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       break;
     }
   } // end SWITCH
+
+  // unlock engine
+  myEngine->unlock();
 
   if (delegate_to_parent)
     getParent()->handleEvent(event_in,

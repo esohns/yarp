@@ -36,6 +36,7 @@
       <xsd:enumeration value="COMMAND_ATTACK_STANDARD"/>
       <xsd:enumeration value="COMMAND_DOOR_CLOSE"/>
       <xsd:enumeration value="COMMAND_DOOR_OPEN"/>
+      <xsd:enumeration value="COMMAND_RUN"/>
       <xsd:enumeration value="COMMAND_SEARCH"/>
       <xsd:enumeration value="COMMAND_STEP"/>
       <xsd:enumeration value="COMMAND_STOP"/>
@@ -52,6 +53,7 @@
   <xsd:simpleType name="RPG_Engine_EntityMode_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ENTITYMODE_FIGHTING"/>
+      <xsd:enumeration value="ENTITYMODE_RUNNING"/>
       <xsd:enumeration value="ENTITYMODE_SEARCHING"/>
       <xsd:enumeration value="ENTITYMODE_TRAVELLING"/>
     </xsd:restriction>

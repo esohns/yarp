@@ -69,7 +69,6 @@ struct RPG_Engine_Entity
   RPG_Graphics_Sprite     sprite;
   // monster - onlies
   bool                    is_spawned;
-  long                    activation_timer;
 };
 typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;

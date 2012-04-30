@@ -533,6 +533,13 @@ RPG_Common_Terrain RPG_Common_Terrain_Type::post_RPG_Common_Terrain_Type()
   return RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(post_string());
 }
 
+RPG_Common_Track RPG_Common_Track_Type::post_RPG_Common_Track_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Track_Type::post_RPG_Common_Track_Type"));
+
+  return RPG_Common_TrackHelper::stringToRPG_Common_Track(post_string());
+}
+
 RPG_Common_Climate RPG_Common_Climate_Type::post_RPG_Common_Climate_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Climate_Type::post_RPG_Common_Climate_Type"));

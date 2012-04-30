@@ -284,6 +284,41 @@ RPG_Engine_Event_Manager::remove(const RPG_Engine_EntityID_t& id_in)
 }
 
 void
+RPG_Engine_Event_Manager::reschedule(const RPG_Engine_EntityID_t& id_in,
+                                     const ACE_Time_Value& activationInterval_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::reschedule"));
+
+  // sanity check
+  ACE_ASSERT(id_in);
+
+  long timer_id = -1;
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    RPG_Engine_EntityTimersConstIterator_t iterator = myEntityTimers.find(id_in);
+    ACE_ASSERT(iterator != myEntityTimers.end());
+    if (iterator == myEntityTimers.end())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+                 id_in));
+
+      return;
+    } // end IF
+    timer_id = (*iterator).second;
+    ACE_ASSERT(timer_id != -1);
+
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->resetInterval(timer_id, activationInterval_in);
+  } // end lock scope
+
+  //ACE_DEBUG((LM_DEBUG,
+  //           ACE_TEXT("reset timer interval (ID: %d) for entity %u\n"),
+  //           timer_id,
+  //           id_in));
+}
+
+void
 RPG_Engine_Event_Manager::start()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::start"));
@@ -599,7 +634,7 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
           break;
 
         // fighting / travelling ?
-        RPG_Engine_Action& current_action = (*iterator).second->actions.back();
+        RPG_Engine_Action& current_action = (*iterator).second->actions.front();
         bool done_current_action = false;
         bool do_next_action = false;
         switch (current_action.command)

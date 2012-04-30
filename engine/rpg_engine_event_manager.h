@@ -66,6 +66,8 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   void add(const RPG_Engine_EntityID_t&, // id
            const ACE_Time_Value&);       // activation interval
   void remove(const RPG_Engine_EntityID_t&); // id
+  void reschedule(const RPG_Engine_EntityID_t&, // id
+                  const ACE_Time_Value&);       // activation interval
 
   // implement RPG_Common_IControl
   virtual void start();
