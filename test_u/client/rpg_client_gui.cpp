@@ -1635,13 +1635,15 @@ do_work(const RPG_Client_Config& config_in,
     window = NULL;
     schedule_redraw = false;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
-    client_action.position = std::make_pair(0, 0);
+    client_action.position = std::make_pair(std::numeric_limits<int>::max(),
+                                            std::numeric_limits<int>::max());
     client_action.window = NULL;
     client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
     client_action.entity_id = 0;
     client_action.path.clear();
     previous_redraw = false;
-    mouse_position = std::make_pair(0, 0);
+    mouse_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                    std::numeric_limits<unsigned int>::max());
 //     refresh_screen = false;
 
     // step1: get next pending event

@@ -22,6 +22,7 @@
 #define RPG_CLIENT_COMMON_TOOLS_H
 
 #include "rpg_client_exports.h"
+#include "rpg_client_common.h"
 
 #include <rpg_engine.h>
 
@@ -71,9 +72,12 @@ class RPG_Client_Export RPG_Client_Common_Tools
                          const bool& = true);       // locked access ?
   static RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine&,          // state / engine
                                                      const RPG_Map_Position_t&); // door
-  static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
-                                       const RPG_Engine&,         // state / engine
-                                       const bool& = true);       // locked access ?
+  static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&,       // position
+                                       const RPG_Engine_EntityID_t&,    // active player
+                                       const bool&,                     // has player seen this position ?
+                                       const RPG_Client_SelectionMode&, // current selection mode
+                                       const RPG_Engine&,               // state / engine
+                                       const bool& = true);             // locked access ?
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools());

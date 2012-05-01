@@ -44,6 +44,7 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
+   myClient(NULL),
    myEngine(NULL),
    myBG(NULL),
    mySurface(NULL)
@@ -171,6 +172,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(targetSurface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
+  ACE_ASSERT(myClient);
   ACE_ASSERT(myEngine);
   ACE_ASSERT(mySurface);
 
@@ -221,6 +223,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   Uint32 color = 0;
   SDL_Rect destrect = {0, 0, 3, 2};
   Uint32* pixels = NULL;
+  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(false);
   RPG_Engine_EntityID_t entity_id = 0;
   for (unsigned int y = 0;
        y < map_size.second;
@@ -237,46 +240,57 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
       
       if (entity_id)
       {
-        if (entity_id == myEngine->getActive(false))
+        if (entity_id == active_entity_id)
           tile = MINIMAPTILE_PLAYER_ACTIVE;
-        else if (!myEngine->isMonster(entity_id,
-                                      false))
-          tile = MINIMAPTILE_PLAYER;
         else
-          tile = MINIMAPTILE_MONSTER;
-      } // end IF
-      else
-      {
-        switch (myEngine->getElement(map_position,
-                                     false))
         {
-          case MAPELEMENT_UNMAPPED:
-          case MAPELEMENT_WALL:
-            tile = MINIMAPTILE_NONE; break;
-          case MAPELEMENT_FLOOR:
-            tile = MINIMAPTILE_FLOOR; break;
-          case MAPELEMENT_STAIRS:
-            tile = MINIMAPTILE_STAIRS; break;
-          case MAPELEMENT_DOOR:
-            tile = MINIMAPTILE_DOOR; break;
-          default:
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
-                       x, y,
-                       myEngine->getElement(map_position, false)));
-
-            return;
-          }
-        } // end SWITCH
+          if (myEngine->canSee(active_entity_id,
+                               map_position,
+                               false))
+            tile = (myEngine->isMonster(entity_id, false) ? MINIMAPTILE_MONSTER
+                                                          : MINIMAPTILE_PLAYER);
+        } // end ELSE
       } // end IF
+
+      if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
+      {
+        if (myClient->hasSeen(active_entity_id, map_position))
+        {
+          switch (myEngine->getElement(map_position,
+                                       false))
+          {
+            case MAPELEMENT_UNMAPPED:
+              tile = MINIMAPTILE_NONE; break;
+            case MAPELEMENT_WALL:
+              tile = MINIMAPTILE_WALL; break;
+            case MAPELEMENT_FLOOR:
+              tile = MINIMAPTILE_FLOOR; break;
+            case MAPELEMENT_STAIRS:
+              tile = MINIMAPTILE_STAIRS; break;
+            case MAPELEMENT_DOOR:
+              tile = MINIMAPTILE_DOOR; break;
+            default:
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
+                         x, y,
+                         myEngine->getElement(map_position, false)));
+
+              return;
+            }
+          } // end SWITCH
+        } // end IF
+        else
+          tile = MINIMAPTILE_NONE;
+      } // end IF
+      ACE_ASSERT(tile != RPG_CLIENT_MINIMAPTILE_INVALID);
 
       // step2: map symbol to color
       color = 0;
       switch (tile)
       {
         case MINIMAPTILE_NONE:
-          color = RPG_CLIENT_DEF_MINIMAPCOLOR_WALL; break;
+          color = RPG_CLIENT_DEF_MINIMAPCOLOR_UNMAPPED; break;
         case MINIMAPTILE_DOOR:
           color = RPG_CLIENT_DEF_MINIMAPCOLOR_DOOR; break;
         case MINIMAPTILE_FLOOR:
@@ -289,6 +303,8 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
           color = RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER_ACTIVE; break;
         case MINIMAPTILE_STAIRS:
           color = RPG_CLIENT_DEF_MINIMAPCOLOR_STAIRS; break;
+        case MINIMAPTILE_WALL:
+          color = RPG_CLIENT_DEF_MINIMAPCOLOR_WALL; break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -367,12 +383,15 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_Window_MiniMap::init(RPG_Engine* engine_in)
+RPG_Client_Window_MiniMap::init(RPG_Client_Engine* client_in,
+                                RPG_Engine* engine_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::init"));
 
   // sanity check(s)
   ACE_ASSERT(engine_in);
+  ACE_ASSERT(engine_in);
 
+  myClient = client_in;
   myEngine = engine_in;
 }

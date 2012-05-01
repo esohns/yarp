@@ -648,6 +648,9 @@ RPG_Client_Common_Tools::getDoorOrientation(const RPG_Engine& engine_in,
 
 RPG_Graphics_Cursor
 RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
+                                   const RPG_Engine_EntityID_t& id_in,
+                                   const bool& hasSeen_in,
+                                   const RPG_Client_SelectionMode& mode_in,
                                    const RPG_Engine& engine_in,
                                    const bool& lockedAcces_in)
 {
@@ -655,29 +658,56 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
 
   RPG_Graphics_Cursor result = CURSOR_NORMAL;
 
+  RPG_Map_Position_t entity_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                      std::numeric_limits<unsigned int>::max());
+  if (id_in)
+    entity_position = engine_in.getPosition(id_in, lockedAcces_in);
+
+  switch (mode_in)
+  {
+    case SELECTIONMODE_AIM_CIRCLE:
+      return CURSOR_TARGET;
+    case SELECTIONMODE_NORMAL:
+      break;
+    case SELECTIONMODE_PATH:
+    {
+      if (id_in == 0)
+        break;
+
+      if ((entity_position != position_in) &&
+          (engine_in.isValid(position_in, lockedAcces_in) &&
+          hasSeen_in))
+        return CURSOR_TRAVEL;
+
+      return CURSOR_TARGET_INVALID;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid selectin mode (was: %d), aborting\n"),
+                 mode_in));
+
+      return result;
+    }
+  } // end SWITCH
+
   // monster ?
   RPG_Engine_EntityID_t entity_id = engine_in.hasEntity(position_in, lockedAcces_in);
-  if (entity_id &&
+  if (id_in &&
+      entity_id &&
       engine_in.isMonster(entity_id, lockedAcces_in))
-  {
-    // && in reach ?
-    entity_id = engine_in.getActive(lockedAcces_in);
-    if (entity_id &&
-        RPG_Map_Common_Tools::isAdjacent(engine_in.getPosition(entity_id, lockedAcces_in), position_in))
-      return CURSOR_TARGET;
-  } // end IF
+    return CURSOR_TARGET;
 
-  // (closed) door ?
+  // (closed/locked) door ?
   if (engine_in.getElement(position_in, lockedAcces_in) == MAPELEMENT_DOOR)
   {
     RPG_Map_DoorState door_state = engine_in.state(position_in, lockedAcces_in);
-    RPG_Engine_EntityID_t entity_id = engine_in.getActive(lockedAcces_in);
     if (((door_state == DOORSTATE_CLOSED) ||
          (door_state == DOORSTATE_LOCKED)) &&
-        entity_id &&
-        RPG_Map_Common_Tools::isAdjacent(engine_in.getPosition(entity_id, lockedAcces_in),
+        id_in &&
+        RPG_Map_Common_Tools::isAdjacent(entity_position,
                                          position_in))
-      result = CURSOR_DOOR_OPEN;
+      return CURSOR_DOOR_OPEN;
   } // end IF
 
   return result;

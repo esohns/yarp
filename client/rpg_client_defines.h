@@ -95,6 +95,7 @@
 #define RPG_CLIENT_ENGINE_IDLE_DELAY                   10 // ms
 
 // minimap colors
+#define RPG_CLIENT_DEF_MINIMAPCOLOR_UNMAPPED           RPG_Graphics_SDL_Tools::CLR32_BLACK
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_CORRIDOR           RPG_Graphics_SDL_Tools::CLR32_PURPLE44
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_DOOR               RPG_Graphics_SDL_Tools::CLR32_BROWN
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_FLOOR              RPG_Graphics_SDL_Tools::CLR32_PURPLE44

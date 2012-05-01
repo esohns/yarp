@@ -2508,11 +2508,11 @@ _xsd_RPG_Graphics_Cursor_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_ + 14,
+                    _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_ + 15,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_ + 14 || _xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_ + 15 || _xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2521,7 +2521,7 @@ _xsd_RPG_Graphics_Cursor_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_Cursor_XMLTree_Type::
-_xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[14] =
+_xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[15] =
 {
   "CURSOR_DOOR_OPEN",
   "CURSOR_NORMAL",
@@ -2535,12 +2535,13 @@ _xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[14] =
   "CURSOR_SCROLL_UR",
   "CURSOR_STAIRS",
   "CURSOR_TARGET",
+  "CURSOR_TARGET_INVALID",
   "CURSOR_TRAVEL",
   "CURSOR_WAIT"
 };
 
 const RPG_Graphics_Cursor_XMLTree_Type::value RPG_Graphics_Cursor_XMLTree_Type::
-_xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_[14] =
+_xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_[15] =
 {
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_DOOR_OPEN,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_NORMAL,
@@ -2554,6 +2555,7 @@ _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_[14] =
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_SCROLL_UR,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_STAIRS,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_TARGET,
+  ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_TARGET_INVALID,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_TRAVEL,
   ::RPG_Graphics_Cursor_XMLTree_Type::CURSOR_WAIT
 };
@@ -3036,11 +3038,11 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 66,
+                    _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 67,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 66 || _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_ + 67 || _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -3049,7 +3051,7 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_GraphicTypeUnion_XMLTree_Type::
-_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[66] =
+_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[67] =
 {
   "CURSOR_DOOR_OPEN",
   "CURSOR_NORMAL",
@@ -3063,6 +3065,7 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[66] =
   "CURSOR_SCROLL_UR",
   "CURSOR_STAIRS",
   "CURSOR_TARGET",
+  "CURSOR_TARGET_INVALID",
   "CURSOR_TRAVEL",
   "CURSOR_WAIT",
   "FONT_MAIN_SMALL",
@@ -3120,7 +3123,7 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[66] =
 };
 
 const RPG_Graphics_GraphicTypeUnion_XMLTree_Type::value RPG_Graphics_GraphicTypeUnion_XMLTree_Type::
-_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[66] =
+_xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[67] =
 {
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_DOOR_OPEN,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_NORMAL,
@@ -3134,6 +3137,7 @@ _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[66] =
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_SCROLL_UR,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_STAIRS,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_TARGET,
+  ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_TARGET_INVALID,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_TRAVEL,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::CURSOR_WAIT,
   ::RPG_Graphics_GraphicTypeUnion_XMLTree_Type::FONT_MAIN_LARGE,

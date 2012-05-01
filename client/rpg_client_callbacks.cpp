@@ -2494,6 +2494,12 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(combo_box);
   gtk_widget_set_sensitive(GTK_WIDGET(combo_box), FALSE);
 
+  // make quit button insensitive
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("quit")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+
   // minimize dialog window
   GdkWindow* toplevel = gtk_widget_get_parent_window(widget_in);
   ACE_ASSERT(toplevel);
@@ -2572,6 +2578,12 @@ part_game_clicked_GTK_cb(GtkWidget* widget_in,
                                                  ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(combo_box);
   gtk_widget_set_sensitive(GTK_WIDGET(combo_box), TRUE);
+
+  // make quit button insensitive
+  button = GTK_BUTTON(glade_xml_get_widget(data->xml,
+                                           ACE_TEXT_ALWAYS_CHAR("quit")));
+  ACE_ASSERT(button);
+  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   return FALSE;
 }

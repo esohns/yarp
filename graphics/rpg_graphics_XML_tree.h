@@ -730,6 +730,7 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_XMLTree_Type: public ::xml_schema:
     CURSOR_SCROLL_UR,
     CURSOR_STAIRS,
     CURSOR_TARGET,
+    CURSOR_TARGET_INVALID,
     CURSOR_TRAVEL,
     CURSOR_WAIT
   };
@@ -781,8 +782,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_XMLTree_Type: public ::xml_schema:
   _xsd_RPG_Graphics_Cursor_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[14];
-  static const value _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_[14];
+  static const char* const _xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[15];
+  static const value _xsd_RPG_Graphics_Cursor_XMLTree_Type_indexes_[15];
 };
 
 class RPG_Graphics_Export RPG_Graphics_Font_XMLTree_Type: public ::xml_schema::string
@@ -1144,6 +1145,7 @@ class RPG_Graphics_Export RPG_Graphics_GraphicTypeUnion_XMLTree_Type: public ::x
     CURSOR_SCROLL_UR,
     CURSOR_STAIRS,
     CURSOR_TARGET,
+    CURSOR_TARGET_INVALID,
     CURSOR_TRAVEL,
     CURSOR_WAIT,
     FONT_MAIN_SMALL,
@@ -1247,8 +1249,8 @@ class RPG_Graphics_Export RPG_Graphics_GraphicTypeUnion_XMLTree_Type: public ::x
   _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[66];
-  static const value _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[66];
+  static const char* const _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_literals_[67];
+  static const value _xsd_RPG_Graphics_GraphicTypeUnion_XMLTree_Type_indexes_[67];
 };
 
 class RPG_Graphics_Export RPG_Graphics_WindowType_XMLTree_Type: public ::xml_schema::string

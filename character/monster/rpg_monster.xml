@@ -2279,7 +2279,7 @@
       <feat>FEAT_WEAPON_FINESSE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_FORESTS</terrain>
+      <terrain>TERRAIN_FOREST</terrain>
       <climate>CLIMATE_TEMPERATE</climate>
     </environment>
     <organizations>
@@ -3639,7 +3639,7 @@
     <feats>
     </feats>
     <environment>
-      <terrain>TERRAIN_FORESTS</terrain>
+      <terrain>TERRAIN_FOREST</terrain>
       <climate>CLIMATE_TEMPERATE</climate>
     </environment>
     <organizations>
@@ -4765,7 +4765,7 @@
       <feat>FEAT_GREAT_FORTITUDE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_DESERTS</terrain>
+      <terrain>TERRAIN_DESERT_SANDY</terrain>
       <climate>CLIMATE_WARM</climate>
     </environment>
     <organizations>
@@ -6417,7 +6417,7 @@
       <feat>FEAT_WEAPON_FOCUS</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_FORESTS</terrain>
+      <terrain>TERRAIN_FOREST</terrain>
       <climate>CLIMATE_TEMPERATE</climate>
     </environment>
     <organizations>
@@ -7214,7 +7214,7 @@
       <feat>FEAT_IMPROVED_INITIATIVE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_MARSHES</terrain>
+      <terrain>TERRAIN_SWAMP</terrain>
       <climate>CLIMATE_TEMPERATE</climate>
     </environment>
     <organizations>
@@ -7864,7 +7864,7 @@
       <feat>FEAT_IMPROVED_INITIATIVE</feat>
     </feats>
     <environment>
-      <terrain>TERRAIN_FORESTS</terrain>
+      <terrain>TERRAIN_FOREST</terrain>
       <climate>CLIMATE_WARM</climate>
     </environment>
     <organizations>

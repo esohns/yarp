@@ -385,13 +385,15 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        ACE_ASSERT(mySeenPositions.find(entity_id) == mySeenPositions.end());
+        RPG_Client_SeenPositionsIterator_t iterator = mySeenPositions.find(entity_id);
+        ACE_ASSERT(iterator != mySeenPositions.end());
 
         RPG_Map_Positions_t seen_positions;
         myEngine->getVisiblePositions(entity_id,
                                       seen_positions,
                                       true);
-        mySeenPositions.insert(std::make_pair(entity_id, seen_positions));
+        (*iterator).second.insert(seen_positions.begin(),
+                                  seen_positions.end());
       } // end lock scope
 
       break;
@@ -719,6 +721,21 @@ RPG_Client_Engine::handleActions()
       }
       case COMMAND_CURSOR_SET:
       {
+        // sanity check
+        ACE_ASSERT((*iterator).window);
+
+        // sanity check
+        RPG_Graphics_Cursor current_type = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type();
+        if (current_type == (*iterator).cursor)
+          break; // nothing to do...
+
+        // step1: restore cursor bg
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG((*iterator).window->getScreen(),
+                                                                     dirtyRegion);
+        RPG_Graphics_Surface::update(dirtyRegion,
+                                     (*iterator).window->getScreen());
+
+        // step2: set new cursor
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set((*iterator).cursor);
 
         break;
@@ -764,32 +781,32 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        // fiddling with the view invalidates the tile highlight BG
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
-        // --> store/draw the new tile highlight (BG)
-        RPG_Map_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
-        RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                                                myEngine->getSize(true),
-                                                                                (*iterator).window->getSize(false),
-                                                                                (*iterator).window->getView());
-        RPG_Map_Position_t screen_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
-                                                                                   (*iterator).window->getSize(false),
-                                                                                   (*iterator).window->getView());
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_position,
-                                                                            screen_position,
-                                                                            (*iterator).window->getScreen());
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(screen_position,
-                                                                         (*iterator).window->getScreen());
+        //// fiddling with the view invalidates the tile highlight BG
+        //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
+        //// --> store/draw the new tile highlight (BG)
+        //RPG_Map_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+        //RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
+        //                                                                        myEngine->getSize(true),
+        //                                                                        (*iterator).window->getSize(false),
+        //                                                                        (*iterator).window->getView());
+        //RPG_Map_Position_t screen_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
+        //                                                                           (*iterator).window->getSize(false),
+        //                                                                           (*iterator).window->getView());
+        //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_position,
+        //                                                                    screen_position,
+        //                                                                    (*iterator).window->getScreen());
+        //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(screen_position,
+        //                                                                 (*iterator).window->getScreen());
 
-        // fiddling with the view (probably) invalidates (part of) the cursor BG
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG((*iterator).window->getScreen());
-        SDL_Rect dirty_region = {0, 0, 0, 0};
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(cursor_position.first,
-                                                               cursor_position.second,
-                                                               (*iterator).window->getScreen(),
-                                                               dirty_region);
-        //RPG_Graphics_Surface::update(dirtyRegion,
-        //                             (*iterator).window->getScreen());
+        //// fiddling with the view (probably) invalidates (part of) the cursor BG
+        //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG((*iterator).window->getScreen());
+        //SDL_Rect dirty_region = {0, 0, 0, 0};
+        //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(cursor_position.first,
+        //                                                       cursor_position.second,
+        //                                                       (*iterator).window->getScreen(),
+        //                                                       dirty_region);
+        ////RPG_Graphics_Surface::update(dirtyRegion,
+        ////                             (*iterator).window->getScreen());
 
         refresh_window = true;
 

@@ -139,6 +139,7 @@
       <xsd:enumeration value="CURSOR_SCROLL_UR"/>
       <xsd:enumeration value="CURSOR_STAIRS"/>
       <xsd:enumeration value="CURSOR_TARGET"/>
+      <xsd:enumeration value="CURSOR_TARGET_INVALID"/>
       <xsd:enumeration value="CURSOR_TRAVEL"/>
       <xsd:enumeration value="CURSOR_WAIT"/>
     </xsd:restriction>

@@ -26,6 +26,7 @@
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
+class RPG_Client_Engine;
 class RPG_Engine;
 
 class RPG_Client_Window_MiniMap
@@ -48,7 +49,8 @@ class RPG_Client_Window_MiniMap
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
 
-  void init(RPG_Engine*); // (level) state handle
+  void init(RPG_Client_Engine*, // engine
+            RPG_Engine*);       // (level) state
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
@@ -58,10 +60,11 @@ class RPG_Client_Window_MiniMap
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap(const RPG_Client_Window_MiniMap&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap& operator=(const RPG_Client_Window_MiniMap&));
 
-  RPG_Engine*  myEngine;
+  RPG_Client_Engine* myClient;
+  RPG_Engine*        myEngine;
 
-  SDL_Surface* myBG;
-  SDL_Surface* mySurface;
+  SDL_Surface*       myBG;
+  SDL_Surface*       mySurface;
 };
 
 #endif // RPG_GRAPHICS_MINIMAP_H
