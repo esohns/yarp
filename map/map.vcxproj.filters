@@ -15,6 +15,9 @@
     <Filter Include="XML">
       <UniqueIdentifier>{527d9122-6b65-47db-88fe-ab342b036c3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{b0adcef5-bd58-4396-a6bf-f8e6d261c72d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="location.hh">
@@ -122,5 +125,10 @@
     <CXX_Tree_Mapping_Rule Include="rpg_map.xsd">
       <Filter>XML</Filter>
     </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

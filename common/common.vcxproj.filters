@@ -15,6 +15,9 @@
     <Filter Include="scripts">
       <UniqueIdentifier>{1c841097-efbf-4461-a031-cdbe7b0127b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{f9382353-050d-45e8-b2bd-18c110fa956a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rpg_common_actiontype.h">
@@ -242,5 +245,10 @@
     <CXX_Parser_Mapping_Rule Include="rpg_common_environment.xsd">
       <Filter>XML</Filter>
     </CXX_Parser_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

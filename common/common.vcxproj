@@ -76,6 +76,9 @@ popd</Command>
       <Inputs>rpg_common.xsd</Inputs>
       <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_common_XML_tree.cpp;rpg_common_XML_tree.h;rpg_common_XML_types.cpp;rpg_common_XML_types.h;rpg_common_actiontype.h;rpg_common_amount.h;rpg_common_areaofeffect.h;rpg_common_attribute.h;rpg_common_basechecktypeunion.h;rpg_common_camp.h;rpg_common_checktype.h;rpg_common_climate.h;rpg_common_condition.h;rpg_common_countermeasure.h;rpg_common_creaturemetatype.h;rpg_common_creaturesubtype.h;rpg_common_creaturetype.h;rpg_common_exports.h;rpg_common_duration.h;rpg_common_effectduration.h;rpg_common_effecttype.h;rpg_common_environment.h;rpg_common_environment_XML_tree.cpp;rpg_common_environment_XML_tree.h;rpg_common_environment_XML_types.cpp;rpg_common_environment_XML_types.h;rpg_common_environment_incl.h;rpg_common_incl.h;rpg_common_physicaldamagetype.h;rpg_common_plane.h;rpg_common_savereductiontype.h;rpg_common_savingthrow.h;rpg_common_savingthrowcheck.h;rpg_common_size.h;rpg_common_skill.h;rpg_common_subclass.h;rpg_common_terrain.h;rpg_common_timeofday.h;rpg_common_usage.h;%(Outputs)</Outputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -95,6 +98,9 @@ popd</Command>
       <AdditionalDependencies>xerces-c_3D.lib;ACE.lib;Secur32.lib;Advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="rpg_common.h" />
@@ -218,6 +224,9 @@ popd</Command>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -59,6 +59,9 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -79,6 +82,9 @@
       <AdditionalDependencies>SDL_mixer.lib;SDLmain.lib;SDL.lib;ACE.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="sound\sound_parser.cpp" />
@@ -100,6 +106,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sound\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

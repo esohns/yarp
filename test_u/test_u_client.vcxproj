@@ -60,6 +60,9 @@
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -79,6 +82,9 @@
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\libgnomeui-dev-2.22.1\lib;E:\libgnome-dev_2.24.1-1_win32\lib;E:\libglade-dev_2.6.4-1_win32\lib;E:\Gtk\lib;E:\SDL-1.2.14\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libgnomeui-2.dll.a;libgnome-2.dll.a;libglade-2.0.dll.a;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gthread-2.0.lib;glib-2.0.lib;SDL_ttf.lib;SDL_mixer.lib;SDLmain.lib;SDL.lib;ACE.lib</AdditionalDependencies>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="client\rpg_client_gui.cpp" />
@@ -121,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

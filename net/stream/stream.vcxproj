@@ -66,6 +66,9 @@ popd</Command>
       <Message>generating export macros...</Message>
       <Outputs>rpg_stream_exports.h</Outputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -85,6 +88,9 @@ popd</Command>
       <AdditionalLibraryDirectories>E:\Yarp\Debug;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ACE.lib</AdditionalDependencies>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="rpg_stream.h" />
@@ -181,6 +187,9 @@ popd</Command>
     <None Include="rpg_stream_task_base_asynch.i" />
     <None Include="rpg_stream_task_base_synch.i" />
     <None Include="scripts\exports.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

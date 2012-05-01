@@ -57,6 +57,9 @@
       <SubSystem>Console</SubSystem>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -77,6 +80,9 @@
       <AdditionalDependencies>gtk-win32-2.0.lib;gdk-win32-2.0.lib;gthread-2.0.lib;glib-2.0.lib;libpng15.lib;SDL_ttf.lib;SDLmain.lib;SDL.lib;ACE.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="map\path_finder_ui.cpp" />
@@ -107,6 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="map\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

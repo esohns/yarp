@@ -70,6 +70,9 @@ popd</Command>
       <Inputs>rpg_item.xsd</Inputs>
       <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_item_XML_tree.cpp;rpg_item_XML_tree.h;rpg_item_XML_types.cpp;rpg_item_XML_types.h;rpg_item_armorcategory.h;rpg_item_armorpropertiesbase.h;rpg_item_armorpropertiesxml.h;rpg_item_armortype.h;rpg_item_baseproperties.h;rpg_item_creationcost.h;rpg_item_criticalhitproperties.h;rpg_item_exports.h;rpg_item_magicalprerequisites.h;rpg_item_propertiesbase.h;rpg_item_storeprice.h;rpg_item_weaponcategory.h;rpg_item_weaponclass.h;rpg_item_weaponpropertiesbase.h;rpg_item_weaponpropertiesxml.h;rpg_item_weapontype.h;%(Outputs)</Outputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -89,6 +92,9 @@ popd</Command>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xerces-c_3D.lib;ACE.lib</AdditionalDependencies>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="rpg_item_ACEXML_dictionary.h">
@@ -201,6 +207,9 @@ popd</Command>
     <ProjectReference Include="..\magic\magic.vcxproj">
       <Project>{6867cf99-3611-4345-b992-85780c27119e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

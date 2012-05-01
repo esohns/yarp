@@ -94,8 +94,9 @@ struct SDL_video_config_t
   int    screen_height;
   int    screen_colordepth; // bits/pixel
 //   Uint32 screen_flags;
-  bool   fullScreen;
   bool   doubleBuffer;
+  bool   useOpenGL;
+  bool   fullScreen;
 };
 
 static SDL_Surface*     screen     = NULL;
@@ -151,6 +152,7 @@ do_initVideo(const std::string& graphicsDirectory_in,
                                               config_in.screen_height,
                                               config_in.screen_colordepth,
                                               config_in.doubleBuffer,
+                                              config_in.useOpenGL,
                                               config_in.fullScreen);
 
   return (screen != NULL);
@@ -306,7 +308,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
@@ -1536,8 +1538,9 @@ ACE_TMAIN(int argc,
   video_config.screen_height     = SDL_GUI_DEF_VIDEO_H;
   video_config.screen_colordepth = SDL_GUI_DEF_VIDEO_BPP;
 //   video_config.screen_flags      = ;
-  video_config.fullScreen        = SDL_GUI_DEF_VIDEO_FULLSCREEN;
   video_config.doubleBuffer      = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
+  video_config.useOpenGL         = SDL_GUI_DEF_VIDEO_USE_OPENGL;
+  video_config.fullScreen        = SDL_GUI_DEF_VIDEO_FULLSCREEN;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,

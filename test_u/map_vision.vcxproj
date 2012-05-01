@@ -61,6 +61,9 @@
       <AdditionalDependencies>SDLmain.lib;SDL.lib;ACEd.lib</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT.LIB %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -81,6 +84,9 @@
       <AdditionalLibraryDirectories>E:\SDL-1.2.14\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDLmain.lib;SDL.lib;ACE.lib</AdditionalDependencies>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="map\stdafx.h" />
@@ -104,6 +110,9 @@
     <ProjectReference Include="..\map\map.vcxproj">
       <Project>{e1b4aac5-f8c0-469f-9be3-e3a93b01ed84}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

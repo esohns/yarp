@@ -76,6 +76,9 @@ popd
       <Inputs>rpg_player.xsd</Inputs>
       <Outputs>rpg_XMLSchema_XML_tree.h;rpg_player_exports.h;rpg_player_abilities.h;rpg_player_XML_tree.cpp;rpg_player_XML_tree.h;rpg_player_basexml.h;rpg_player_conditions.h;rpg_player_playerxml.h;rpg_player_spells.h;%(Outputs)</Outputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -105,6 +108,9 @@ popd
       <Outputs>rpg_XMLSchema_XML_tree.h;rpg_player_exports.h;rpg_player_abilities.h;rpg_player_XML_tree.cpp;rpg_player_XML_tree.h;rpg_player_basexml.h;rpg_player_conditions.h;rpg_player_playerxml.h;rpg_player_spells.h;%(Outputs)</Outputs>
       <Inputs>rpg_player.xsd</Inputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="scripts\bindings.bat" />
@@ -167,6 +173,9 @@ popd
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

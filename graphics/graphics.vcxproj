@@ -69,6 +69,9 @@ popd</Command>
       <Inputs>rpg_graphics.xsd</Inputs>
       <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_graphics_XML_tree.cpp;rpg_graphics_XML_tree.h;rpg_graphics_XML_types.cpp;rpg_graphics_XML_types.h;rpg_graphics_category.h;rpg_graphics_exports.h;rpg_graphics_cursor.h;rpg_graphics_doorstyle.h;rpg_graphics_edgestyle.h;rpg_graphics_element.h;rpg_graphics_elementtypeunion.h;rpg_graphics_floorstyle.h;rpg_graphics_font.h;rpg_graphics_graphic.h;rpg_graphics_graphictypeunion.h;rpg_graphics_hotspottype.h;rpg_graphics_image.h;rpg_graphics_incl.h;rpg_graphics_windowtype.h;rpg_graphics_interfaceelementtype.h;rpg_graphics_orientation.h;rpg_graphics_sprite.h;rpg_graphics_stairsstyle.h;rpg_graphics_styleunion.h;rpg_graphics_tile.h;rpg_graphics_tilegraphic.h;rpg_graphics_tileset.h;rpg_graphics_tilesetgraphic.h;rpg_graphics_tilesettype.h;rpg_graphics_tiletype.h;rpg_graphics_wallstyle.h;%(Outputs)</Outputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -89,6 +92,9 @@ popd</Command>
       <AdditionalDependencies>SDL_ttf.lib;SDL.lib;libpng15.lib;xerces-c_3D.lib;ACE.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="rpg_graphics.map" />
@@ -185,6 +191,9 @@ popd</Command>
     <ProjectReference Include="..\common\common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,6 +15,9 @@
     <Filter Include="XML">
       <UniqueIdentifier>{8cc9ada3-4ff5-49c8-bf49-40969494e750}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{552b8c4e-d95a-49cf-8d14-d920fadf7cc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\bindings.bat">
@@ -161,5 +164,10 @@
     <CXX_Tree_Mapping_Rule Include="rpg_monster.xsd">
       <Filter>XML</Filter>
     </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Yarp\scripts\version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

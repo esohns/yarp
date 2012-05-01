@@ -47,6 +47,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -69,9 +72,19 @@ popd
       <Outputs>Yarp.exe</Outputs>
       <Inputs>.\scripts\Yarp.nsi</Inputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="scripts\make_rpm.sh" />
     <None Include="scripts\Yarp.nsi" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="scripts\version.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

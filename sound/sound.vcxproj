@@ -69,6 +69,9 @@ popd</Command>
       <Inputs>rpg_sound.xsd</Inputs>
       <Outputs>rpg_XMLSchema_XML_types.h;rpg_sound_XML_types.cpp;rpg_sound_XML_types.h;rpg_sound_category.h;rpg_sound_exports.h;rpg_sound_event.h;rpg_sound_incl.h;%(Outputs)</Outputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -88,6 +91,9 @@ popd</Command>
       <AdditionalLibraryDirectories>E:\SDL-1.2.14\lib;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL_mixer.lib;SDL.lib;xerces-c_3D.lib;ACE.lib</AdditionalDependencies>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="rpg_sound.map" />
@@ -143,6 +149,9 @@ popd</Command>
     <ProjectReference Include="..\common\common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

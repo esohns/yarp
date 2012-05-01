@@ -15,6 +15,9 @@
     <Filter Include="XML">
       <UniqueIdentifier>{d54fe677-c5bc-4df4-8ac7-35337dd8c714}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{018c356f-43cf-495d-bef7-e81d30154bfa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\bindings.bat">
@@ -209,5 +212,10 @@
     <CXX_Parser_Mapping_Rule Include="rpg_graphics.xsd">
       <Filter>XML</Filter>
     </CXX_Parser_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

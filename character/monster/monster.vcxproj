@@ -70,6 +70,9 @@ popd</Command>
       <Inputs>rpg_monster.xsd</Inputs>
       <Outputs>rpg_XMLSchema_XML_types.h;rpg_monster_XML_types.cpp;rpg_monster_XML_types.h;rpg_monster_actiontrigger.h;rpg_monster_advancement.h;rpg_monster_advancementstep.h;rpg_monster_attack.h;rpg_monster_attackaction.h;rpg_monster_defenseaction.h;rpg_monster_exports.h;rpg_monster_incl.h;rpg_monster_naturalarmorclass.h;rpg_monster_naturalweapon.h;rpg_monster_organization.h;rpg_monster_organizations.h;rpg_monster_organizationslaverstep.h;rpg_monster_organizationstep.h;rpg_monster_propertiesxml.h;rpg_monster_savingthrowmodifiers.h;rpg_monster_specialabilityprecondition.h;rpg_monster_specialabilityproperties.h;rpg_monster_specialattackprecondition.h;rpg_monster_specialattackproperties.h;rpg_monster_specialbaseproperties.h;rpg_monster_specialdefenseprecondition.h;rpg_monster_specialdefenseproperties.h;rpg_monster_specialpropertytypeunion.h;rpg_monster_summonmonster.h;rpg_monster_weapontypeunion.h;%(Outputs)</Outputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -90,6 +93,9 @@ popd</Command>
       <AdditionalDependencies>xerces-c_3D.lib;ACE.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="rpg_monster.map" />
@@ -173,6 +179,9 @@ popd</Command>
     <ProjectReference Include="..\player\player.vcxproj">
       <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

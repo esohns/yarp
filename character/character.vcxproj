@@ -73,6 +73,9 @@ popd</Command>
       <Inputs>rpg_character.xsd</Inputs>
       <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_character_XML_tree.cpp;rpg_character_XML_tree.h;rpg_character_XML_types.cpp;rpg_character_XML_types.h;rpg_character_ability.h;rpg_character_skillvalue.h;rpg_character_skills.h;rpg_character_feats.h;rpg_character_alignment.h;rpg_character_alignmentcivic.h;rpg_character_alignmentethic.h;rpg_character_attributes.h;rpg_character_exports.h;rpg_character_check.h;rpg_character_checktypeunion.h;rpg_character_classxml.h;rpg_character_feat.h;rpg_character_gender.h;rpg_character_incl.h;rpg_character_equipmentslot.h;rpg_character_metaclass.h;rpg_character_offhand.h;rpg_character_race.h;%(Outputs)</Outputs>
     </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -93,6 +96,9 @@ popd</Command>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="rpg_character_ability.h" />
@@ -178,6 +184,9 @@ popd</Command>
     <ProjectReference Include="..\common\common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
