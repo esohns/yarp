@@ -437,8 +437,8 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
   temp /= RPG_ENGINE_FEET_PER_SQUARE;
   temp *= RPG_ENGINE_ROUND_INTERVAL;
   float squares_per_round = temp;
-  squares_per_round = 1.0F / squares_per_round;
-  squares_per_round /= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
+  squares_per_round = (1.0F / squares_per_round);
+  squares_per_round *= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
   float fractional = ::modf(squares_per_round, &squares_per_round);
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->add(id,
                                                       ACE_Time_Value(static_cast<time_t>(squares_per_round),
@@ -1089,12 +1089,10 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
     myLock.acquire();
 
   // step1: find "lit" positions
-  RPG_Map_Position_t current_position = getPosition(id_in,
-                                                    false);
+  RPG_Map_Position_t current_position = getPosition(id_in, false);
   RPG_Map_Common_Tools::buildCircle(current_position,
                                     inherited2::getSize(),
-                                    getVisibleRadius(id_in,
-                                                     false),
+                                    getVisibleRadius(id_in, false),
                                     true,
                                     positions_out);
 
@@ -1597,8 +1595,8 @@ RPG_Engine::handleEntities()
             temp /= RPG_ENGINE_FEET_PER_SQUARE;
             temp *= RPG_ENGINE_ROUND_INTERVAL;
             float squares_per_round = temp;
-            squares_per_round = 1.0F / squares_per_round;
-            squares_per_round /= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
+            squares_per_round = (1.0F / squares_per_round);
+            squares_per_round *= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
             float fractional = ::modf(squares_per_round, &squares_per_round);
             RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->reschedule((*iterator).first,
                                                                        ACE_Time_Value(static_cast<time_t>(squares_per_round),

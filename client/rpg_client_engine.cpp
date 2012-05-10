@@ -487,7 +487,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
                                                                              : COMMAND_ENTITY_DRAW);
 
       // adjust view ?
-      if ((client_action.entity_id == active_entity_id))
+      if (client_action.entity_id == active_entity_id)
       {
         client_action.command = COMMAND_PLAY_SOUND;
         client_action.sound = EVENT_WALK;

@@ -43,6 +43,7 @@ class RPG_Client_Export RPG_Client_Common_Tools
   // *NOTE*: initializes cursor manager singleton/dictionaries
   static void init(const std::string&,  // sound dictionary
                    const std::string&,  // sound directory
+                   const bool&,         // muted ?
                    const std::string&,  // graphics dictionary
                    const std::string&,  // graphics directory
                    const bool& = true); // init SDL ?

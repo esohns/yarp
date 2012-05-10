@@ -40,6 +40,7 @@
 void
 RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
                               const std::string& soundDirectory_in,
+                              const bool& muted_in,
                               const std::string& graphicsDictionaryFile_in,
                               const std::string& graphicsDirectory_in,
                               const bool& initSDL_in)
@@ -48,7 +49,8 @@ RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
 
   // step1: init string conversion facilities (and other static data)
   RPG_Sound_Common_Tools::init(soundDirectory_in,
-                               RPG_CLIENT_DEF_SOUND_CACHESIZE);
+                               RPG_CLIENT_DEF_SOUND_CACHESIZE,
+                               muted_in);
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
                                   RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
                                   initSDL_in);

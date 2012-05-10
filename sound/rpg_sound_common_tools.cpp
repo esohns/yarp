@@ -35,6 +35,7 @@
 RPG_Sound_CategoryToStringTable_t RPG_Sound_CategoryHelper::myRPG_Sound_CategoryToStringTable;
 RPG_Sound_EventToStringTable_t RPG_Sound_EventHelper::myRPG_Sound_EventToStringTable;
 
+bool                   RPG_Sound_Common_Tools::myIsMuted;
 std::string            RPG_Sound_Common_Tools::mySoundDirectory;
 
 ACE_Thread_Mutex       RPG_Sound_Common_Tools::myCacheLock;
@@ -46,13 +47,15 @@ bool                   RPG_Sound_Common_Tools::myInitialized = false;
 
 void
 RPG_Sound_Common_Tools::init(const std::string& directory_in,
-                             const unsigned int& cacheSize_in)
+                             const unsigned int& cacheSize_in,
+                             const bool& mute_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::init"));
 
   // init string conversion facilities
   RPG_Sound_Common_Tools::initStringConversionTables();
 
+  myIsMuted = mute_in;
   if (!directory_in.empty())
   {
     // sanity check(s)
@@ -235,9 +238,12 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
     } // end IF
 
     ACE_ASSERT((*iter).chunk);
-    result = Mix_PlayChannel(-1,            // play on the first free channel
-                             (*iter).chunk, // data
-                             0);            // don't loop
+    if (!myIsMuted)
+      result = Mix_PlayChannel(-1,            // play on the first free channel
+                               (*iter).chunk, // data
+                               0);            // don't loop
+    else
+      result = 0;
   } // end lock scope
 
   return result;

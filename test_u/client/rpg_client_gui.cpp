@@ -253,6 +253,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-a          : no audio") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -336,6 +337,7 @@ print_usage(const std::string& programName_in)
 bool
 process_arguments(const int& argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
+                  bool& mute_out,
                   std::string& iniFile_out,
                   std::string& monsterDictionary_out,
                   std::string& floorPlan_out,
@@ -354,6 +356,8 @@ process_arguments(const int& argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+  mute_out = false;
+
   std::string config_path;
 #ifdef BASEDIR
   std::string base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
@@ -452,7 +456,7 @@ process_arguments(const int& argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:e:f:g:i:lm:nr:s:tu:vx::"),
+                             ACE_TEXT("ac:e:f:g:i:lm:nr:s:tu:vx::"),
                              1,                         // skip command name
                              1,                         // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -464,6 +468,12 @@ process_arguments(const int& argc_in,
   {
     switch (option)
     {
+      case 'a':
+      {
+        mute_out = true;
+
+        break;
+      }
       case 'c':
       {
         iniFile_out = argumentParser.opt_arg();
@@ -1345,6 +1355,7 @@ do_work(const RPG_Client_Config& config_in,
                                 config_in.monster_dictionary);
   RPG_Client_Common_Tools::init(config_in.sound_dictionary,
                                 config_in.sound_directory,
+                                config_in.audio_config.mute,
                                 config_in.graphics_dictionary,
                                 config_in.graphics_directory,
                                 false);
@@ -2223,6 +2234,7 @@ ACE_TMAIN(int argc_in,
                                                                        false);
 
   // step1a: process commandline arguments
+  bool mute_sound = false;
   std::string iniFile = config_path;
   iniFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -2305,6 +2317,7 @@ ACE_TMAIN(int argc_in,
                                                                   : 0);
   if (!(process_arguments(argc_in,
                           argv_in,
+                          mute_sound,
                           iniFile,
                           monsterDictionary,
                           floorPlan,
@@ -2386,6 +2399,7 @@ ACE_TMAIN(int argc_in,
 //   config.gtk_cb_data                       = userData;
 
   // *** sound ***
+  config.audio_config.mute                 = mute_sound;
   config.audio_config.frequency            = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
   config.audio_config.format               = RPG_CLIENT_DEF_AUDIO_FORMAT;
   config.audio_config.channels             = RPG_CLIENT_DEF_AUDIO_CHANNELS;

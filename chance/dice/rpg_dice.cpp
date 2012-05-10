@@ -131,10 +131,10 @@ bool
 RPG_Dice::probability(const float& probability_in)
 {
   // sanity checks
-  ACE_ASSERT((probability_in >= 0.0) && (probability_in <= 1.0));
-  if (probability_in == 0.0)
+  ACE_ASSERT((probability_in >= 0.0F) && (probability_in <= 1.0F));
+  if (probability_in == 0.0F)
     return false;
-  else if (probability_in == 1.0)
+  else if (probability_in == 1.0F)
     return true;
 
   // step1: convert decimal to a fraction

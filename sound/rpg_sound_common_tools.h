@@ -35,7 +35,8 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
 {
  public:
   static void init(const std::string&,   // sound directory
-                   const unsigned int&); // cache size
+                   const unsigned int&,  // cache size
+                   const bool& = false); // mute ?
   static void fini();
 
   static void soundToFile(const RPG_Sound_t&, // sound
@@ -57,6 +58,7 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
   // init string conversion facilities
   static void initStringConversionTables();
 
+  static bool                   myIsMuted;
   static std::string            mySoundDirectory;
 
   static ACE_Thread_Mutex       myCacheLock;

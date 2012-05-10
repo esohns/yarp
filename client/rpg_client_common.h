@@ -92,6 +92,7 @@ struct RPG_Client_GTK_CBData_t
 // *NOTE* types as used by SDL
 struct RPG_Client_SDL_AudioConfig_t
 {
+  bool   mute;
   int    frequency;
   Uint16 format;
 //   Uint8  channels;
