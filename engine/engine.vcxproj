@@ -46,7 +46,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>E:\Yarp\graphics;E:\Yarp\map;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\chance;E:\SDL-1.2.14;E:\Gtk\include\libpng14;E:\Gtk\include;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Yarp\graphics;E:\Yarp\sound;E:\Yarp\map;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\chance;E:\SDL-1.2.14;E:\Gtk\include\libpng14;E:\Gtk\include;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_PLAYER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -83,7 +83,7 @@ popd</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>E:\Yarp\graphics;E:\Yarp\map;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\chance;E:\SDL-1.2.14;E:\Gtk\include\libpng14;E:\Gtk\include;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Yarp\graphics;E:\Yarp\sound;E:\Yarp\map;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\combat;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Yarp\chance;E:\SDL-1.2.14;E:\Gtk\include\libpng14;E:\Gtk\include;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_PLAYER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -126,8 +126,8 @@ popd</Command>
     <ClInclude Include="rpg_engine_event_common.h" />
     <ClInclude Include="rpg_engine_event_manager.h" />
     <ClInclude Include="rpg_engine_exports.h" />
+    <ClInclude Include="rpg_engine_iclient.h" />
     <ClInclude Include="rpg_engine_incl.h" />
-    <ClInclude Include="rpg_engine_iwindow.h" />
     <ClInclude Include="rpg_engine_level.h" />
     <ClInclude Include="rpg_engine_messagequeue.h" />
     <ClInclude Include="rpg_engine_XML_tree.h" />
@@ -183,6 +183,9 @@ popd</Command>
     </ProjectReference>
     <ProjectReference Include="..\map\map.vcxproj">
       <Project>{e1b4aac5-f8c0-469f-9be3-e3a93b01ed84}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\sound\sound.vcxproj">
+      <Project>{d55b85ff-fd26-43de-a8b1-8833ac97b05c}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

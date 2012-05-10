@@ -28,6 +28,8 @@
 #include <rpg_graphics_iwindow.h>
 #include <rpg_graphics_cursor.h>
 
+#include <rpg_sound_event.h>
+
 #include <rpg_map_common.h>
 
 #include <glade/glade.h>
@@ -144,6 +146,7 @@ enum RPG_Client_Command
   COMMAND_CURSOR_RESTORE_BG,
   COMMAND_CURSOR_SET,
   COMMAND_ENTITY_DRAW,
+  COMMAND_PLAY_SOUND,
   COMMAND_SET_VIEW,
   COMMAND_SET_VISION_RADIUS,
   COMMAND_TILE_HIGHLIGHT_DRAW,
@@ -172,6 +175,7 @@ struct RPG_Client_Action
   RPG_Graphics_IWindow* window;
   RPG_Graphics_Cursor   cursor;
   RPG_Engine_EntityID_t entity_id;
+  RPG_Sound_Event       sound;
   // *TODO*: this does not really belong here...
   RPG_Map_Path_t        path;
   RPG_Map_Position_t    source;

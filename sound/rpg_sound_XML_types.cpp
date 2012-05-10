@@ -55,6 +55,12 @@ sound_event_parser (::RPG_Sound_Event_Type_pskel& p)
 }
 
 void RPG_Sound_Type_pskel::
+volume_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->volume_parser_ = &p;
+}
+
+void RPG_Sound_Type_pskel::
 file_parser (::xml_schema::string_pskel& p)
 {
   this->file_parser_ = &p;
@@ -69,11 +75,13 @@ interval_parser (::xml_schema::unsigned_byte_pskel& p)
 void RPG_Sound_Type_pskel::
 parsers (::RPG_Sound_Category_Type_pskel& category,
          ::RPG_Sound_Event_Type_pskel& sound_event,
+         ::xml_schema::unsigned_byte_pskel& volume,
          ::xml_schema::string_pskel& file,
          ::xml_schema::unsigned_byte_pskel& interval)
 {
   this->category_parser_ = &category;
   this->sound_event_parser_ = &sound_event;
+  this->volume_parser_ = &volume;
   this->file_parser_ = &file;
   this->interval_parser_ = &interval;
 }
@@ -82,6 +90,7 @@ RPG_Sound_Type_pskel::
 RPG_Sound_Type_pskel ()
 : category_parser_ (0),
   sound_event_parser_ (0),
+  volume_parser_ (0),
   file_parser_ (0),
   interval_parser_ (0)
 {
@@ -118,6 +127,11 @@ category (const RPG_Sound_Category&)
 
 void RPG_Sound_Type_pskel::
 sound_event (const RPG_Sound_Event&)
+{
+}
+
+void RPG_Sound_Type_pskel::
+volume (unsigned char)
 {
 }
 
@@ -161,6 +175,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "volume" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->volume_parser_;
+
+    if (this->volume_parser_)
+      this->volume_parser_->pre ();
+
+    return true;
+  }
+
   if (n == "file" && ns == "urn:rpg")
   {
     this->::xml_schema::complex_content::context_.top ().parser_ = this->file_parser_;
@@ -193,6 +217,14 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->sound_event_parser_)
       this->sound_event (this->sound_event_parser_->post_RPG_Sound_Event_Type ());
+
+    return true;
+  }
+
+  if (n == "volume" && ns == "urn:rpg")
+  {
+    if (this->volume_parser_)
+      this->volume (this->volume_parser_->post_unsigned_byte ());
 
     return true;
   }

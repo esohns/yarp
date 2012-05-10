@@ -24,8 +24,6 @@
 #include "rpg_sound_exports.h"
 #include "rpg_sound_common.h"
 
-#include <xsd/cxx/xml/error-handler.hxx>
-
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -46,7 +44,7 @@ class RPG_Sound_Export RPG_Sound_Dictionary
   void init(const std::string&,   // filename
             const bool& = false); // validate XML ?
 
-  const RPG_Sound_t getSound(const RPG_Sound_Event&) const; // event
+  const RPG_Sound_t& get(const RPG_Sound_Event&) const; // event
 
   // debug info
   void dump() const;
@@ -58,20 +56,7 @@ class RPG_Sound_Export RPG_Sound_Dictionary
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary(const RPG_Sound_Dictionary&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary& operator=(const RPG_Sound_Dictionary&));
 
-  // private error handler
-  class XSD_Error_Handler
-   : public ::xsd::cxx::xml::error_handler<char>
-  {
-   public:
-    virtual bool handle(const std::string&,                             // id
-                        unsigned long,                                  // line
-                        unsigned long,                                  // column
-                        ::xsd::cxx::xml::error_handler<char>::severity, // severity
-                        const std::string&);                            // message
-  };
-
   RPG_Sound_Dictionary_t myDictionary;
-  XSD_Error_Handler      myXSDErrorHandler;
 };
 
 typedef ACE_Singleton<RPG_Sound_Dictionary,

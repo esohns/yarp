@@ -21,12 +21,13 @@
 #ifndef RPG_SOUND_DEFINES_H
 #define RPG_SOUND_DEFINES_H
 
-#define RPG_SOUND_DEF_DICTIONARY_FILE "rpg_sound.xml"
+#define RPG_SOUND_DEF_DICTIONARY_FILE     "rpg_sound.xml"
+#define RPG_SOUND_DEF_DICTIONARY_INSTANCE "soundDictionary"
 
 // DATADIR-specific
-#define RPG_SOUND_DEF_DATA_SUB        "sound"
+#define RPG_SOUND_DEF_DATA_SUB            "sound"
 
-#define RPG_SOUND_DEF_AMBIENT_SUB     "ambient"
-#define RPG_SOUND_DEF_EFFECT_SUB      "effect"
+#define RPG_SOUND_DEF_AMBIENT_SUB         "ambient"
+#define RPG_SOUND_DEF_EFFECT_SUB          "effect"
 
 #endif

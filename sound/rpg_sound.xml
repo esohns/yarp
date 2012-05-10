@@ -8,6 +8,7 @@
   <sound>
     <category>CATEGORY_MUSIC_AMBIENT</category>
     <sound_event>EVENT_MAIN_TITLE</sound_event>
+    <volume>8</volume>
     <file>music_main_title.ogg</file>
   </sound>
   <sound>

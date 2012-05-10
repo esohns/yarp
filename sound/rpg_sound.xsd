@@ -55,6 +55,8 @@
     <xsd:sequence>
       <xsd:element name="category" type="RPG_Sound_Category_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="sound_event" type="RPG_Sound_Event_Type" minOccurs="1" maxOccurs="1"/>
+      <!-- *NOTE*: SDL volume range: [0-128] -->
+      <xsd:element name="volume" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="interval" type="xsd:unsignedByte" use="optional" default="0"/>

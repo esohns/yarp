@@ -73,6 +73,7 @@
 #define RPG_GRAPHICS_WINDOW_SCROLL_OFFSET              1
 
 #define RPG_GRAPHICS_DEF_DICTIONARY_FILE               "rpg_graphics.xml"
+#define RPG_GRAPHICS_DEF_DICTIONARY_INSTANCE           "graphicsDictionary"
 
 // DATADIR-specific
 #define RPG_GRAPHICS_DEF_DATA_SUB                      "graphics"

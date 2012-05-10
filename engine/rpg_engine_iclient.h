@@ -16,16 +16,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RPG_ENGINE_IWINDOW_H
-#define RPG_ENGINE_IWINDOW_H
+#ifndef RPG_ENGINE_ICLIENT_H
+#define RPG_ENGINE_ICLIENT_H
 
 #include "rpg_engine_common.h"
 
-#include <rpg_map_common.h>
+//#include <rpg_map_common.h>
 
-#include <SDL/SDL.h>
+//#include <SDL/SDL.h>
 
-class RPG_Engine_IWindow
+class RPG_Engine_IClient
 {
  public:
   // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
@@ -44,4 +44,4 @@ class RPG_Engine_IWindow
                       const RPG_Engine_ClientParameters_t&) = 0;
 };
 
-#endif // RPG_ENGINE_IWINDOW_H
+#endif // RPG_ENGINE_ICLIENT_H

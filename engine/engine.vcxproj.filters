@@ -38,9 +38,6 @@
     <ClInclude Include="rpg_engine_incl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rpg_engine_iwindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rpg_engine_level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_engine_iclient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

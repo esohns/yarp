@@ -55,10 +55,10 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
 {
  public:
   // *NOTE*: initializes (static) data from ALL individual modules
-  // namely: - randomization
-  //         - string conversion facilities
-  //         - static tables (skills, spells, ...)
-  //         - dictionaries (spells, items, monsters, ...)
+  // in particular: - randomization
+  //                - string conversion facilities
+  //                - static tables (skills, spells, ...)
+  //                - dictionaries (spells, items, monsters, ...)
   static void init(const std::string&,  // magic dictionary file
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
@@ -88,7 +88,7 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static void performCombatRound(const RPG_Combat_AttackSituation&,      // attack situation
                                  const RPG_Combat_DefenseSituation&,     // defense situation
                                  const RPG_Engine_CombatantSequence_t&); // battle sequence
-  static void attack(const RPG_Player_Base*,                              // attacker
+  static bool attack(const RPG_Player_Base*,                              // attacker
                      RPG_Player_Base*,                                    // defender
                      const RPG_Combat_AttackSituation& = ATTACK_NORMAL,   // attack situation
                      const RPG_Combat_DefenseSituation& = DEFENSE_NORMAL, // defense situation

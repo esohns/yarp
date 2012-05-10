@@ -106,6 +106,9 @@ class RPG_Sound_Export RPG_Sound_Type_pskel: public ::xml_schema::complex_conten
   sound_event (const RPG_Sound_Event&);
 
   virtual void
+  volume (unsigned char);
+
+  virtual void
   file (const ::std::string&);
 
   virtual void
@@ -123,6 +126,9 @@ class RPG_Sound_Export RPG_Sound_Type_pskel: public ::xml_schema::complex_conten
   sound_event_parser (::RPG_Sound_Event_Type_pskel&);
 
   void
+  volume_parser (::xml_schema::unsigned_byte_pskel&);
+
+  void
   file_parser (::xml_schema::string_pskel&);
 
   void
@@ -131,6 +137,7 @@ class RPG_Sound_Export RPG_Sound_Type_pskel: public ::xml_schema::complex_conten
   void
   parsers (::RPG_Sound_Category_Type_pskel& /* category */,
            ::RPG_Sound_Event_Type_pskel& /* sound_event */,
+           ::xml_schema::unsigned_byte_pskel& /* volume */,
            ::xml_schema::string_pskel& /* file */,
            ::xml_schema::unsigned_byte_pskel& /* interval */);
 
@@ -158,6 +165,7 @@ class RPG_Sound_Export RPG_Sound_Type_pskel: public ::xml_schema::complex_conten
   protected:
   ::RPG_Sound_Category_Type_pskel* category_parser_;
   ::RPG_Sound_Event_Type_pskel* sound_event_parser_;
+  ::xml_schema::unsigned_byte_pskel* volume_parser_;
   ::xml_schema::string_pskel* file_parser_;
   ::xml_schema::unsigned_byte_pskel* interval_parser_;
 };

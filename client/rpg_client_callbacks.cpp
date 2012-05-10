@@ -35,6 +35,9 @@
 #include <rpg_graphics_dictionary.h>
 #include <rpg_graphics_common_tools.h>
 
+#include <rpg_sound_event.h>
+#include <rpg_sound_common_tools.h>
+
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
 
@@ -2425,6 +2428,14 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   // center on character
   data->client_engine->setView(data->entity.position);
 
+  // play sound
+  int channel = -1;
+  channel = RPG_Sound_Common_Tools::play(EVENT_MAIN_TITLE);
+  if (channel == -1)
+    ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to play sound (was: \"%s\", continuing\n"),
+                RPG_Sound_EventHelper::RPG_Sound_EventToString(EVENT_MAIN_TITLE).c_str()));
+
   // make join button INsensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
 
@@ -2524,10 +2535,10 @@ part_game_clicked_GTK_cb(GtkWidget* widget_in,
   // deactivate the current character
   RPG_Engine_EntityID_t id = data->level_engine->getActive();
   if (id)
-  {
-    data->level_engine->setActive(0);
     data->level_engine->remove(id);
-  } // end IF
+
+  // stop sound
+  RPG_Sound_Common_Tools::stop(-1);
 
   // update entity profile widgets
   ::update_entity_profile(data->entity,
@@ -2680,17 +2691,17 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
     {
       // notify client window
       RPG_Engine_ClientParameters_t parameters;
+      parameters.push_back(&active_entity);
       parameters.push_back(&visible_radius_after);
-
       try
       {
-        data->client_engine->notify(COMMAND_E2C_ENTITY_VISION_UPDATE, parameters);
+        data->client_engine->notify(COMMAND_E2C_ENTITY_VISION, parameters);
       }
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION_UPDATE).c_str()));
+                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str()));
       }
     } // end IF
   } // end IF

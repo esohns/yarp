@@ -28,12 +28,15 @@
 #include "rpg_client_ui_tools.h"
 #include "rpg_client_entity_manager.h"
 
-#include <rpg_engine.h>
-
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
 #include <rpg_graphics_cursor_manager.h>
 #include <rpg_graphics_common_tools.h>
+
+#include <rpg_sound_common.h>
+#include <rpg_sound_common_tools.h>
+
+#include <rpg_engine.h>
 
 #include <rpg_common_macros.h>
 #include <rpg_common_file_tools.h>
@@ -359,17 +362,25 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
+  client_action.previous = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max());
   client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                           std::numeric_limits<unsigned int>::max());
   client_action.window = NULL;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   client_action.entity_id = 0;
+  client_action.sound = RPG_SOUND_EVENT_INVALID;
+  client_action.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                        std::numeric_limits<unsigned int>::max());
   client_action.radius = 0;
   switch (command_in)
   {
     case COMMAND_ATTACK:
+    case COMMAND_ATTACK_FULL:
+    case COMMAND_ATTACK_STANDARD:
       return;
     case COMMAND_DOOR_CLOSE:
+      client_action.sound = EVENT_DOOR_CLOSE;
     case COMMAND_DOOR_OPEN:
     {
       ACE_ASSERT(parameters_in.size() == 2);
@@ -380,6 +391,11 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       client_action.command = COMMAND_TOGGLE_DOOR;
       client_action.position = *static_cast<RPG_Map_Position_t* const>(parameters_in.back());
       client_action.window = myWindow;
+      action(client_action);
+
+      client_action.command = COMMAND_PLAY_SOUND;
+      if (command_in == COMMAND_DOOR_OPEN)
+        client_action.sound = EVENT_DOOR_OPEN;
 
       // update seen positions
       {
@@ -398,7 +414,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
       break;
     }
+    case COMMAND_RUN:
     case COMMAND_SEARCH:
+    case COMMAND_STEP:
+      return;
     case COMMAND_STOP:
     case COMMAND_TRAVEL:
       return;
@@ -440,26 +459,21 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
       return;
     }
-    case COMMAND_E2C_ENTITY_REMOVE:
+    case COMMAND_E2C_ENTITY_HIT:
+    case COMMAND_E2C_ENTITY_MISS:
     {
       ACE_ASSERT(parameters_in.size() == 1);
+
       RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
       ACE_ASSERT(entity_id);
 
-      // step1: unload sprite graphics
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(entity_id);
+      client_action.command = COMMAND_PLAY_SOUND;
+      client_action.sound = ((command_in == COMMAND_E2C_ENTITY_HIT) ? EVENT_SWORD_HIT
+                                                                    : EVENT_SWORD_MISS);
 
-      // step2: fini seen positions
-      {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-        ACE_ASSERT(mySeenPositions.find(entity_id) != mySeenPositions.end());
-        mySeenPositions.erase(entity_id);
-      } // end lock scope
-
-      return;
+      break;
     }
-    case COMMAND_E2C_ENTITY_POSITION_UPDATE:
+    case COMMAND_E2C_ENTITY_POSITION:
     {
       ACE_ASSERT(parameters_in.size() == 2);
 
@@ -472,21 +486,13 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       client_action.command = ((client_action.entity_id == active_entity_id) ? COMMAND_WINDOW_DRAW
                                                                              : COMMAND_ENTITY_DRAW);
 
-      // update seen positions
-      RPG_Map_Positions_t seen_positions;
-      myEngine->getVisiblePositions(client_action.entity_id,
-                                    seen_positions,
-                                    true);
-      {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) != mySeenPositions.end());
-        mySeenPositions[client_action.entity_id].insert(seen_positions.begin(), seen_positions.end());
-      } // end lock scope
-
       // adjust view ?
       if ((client_action.entity_id == active_entity_id))
       {
+        client_action.command = COMMAND_PLAY_SOUND;
+        client_action.sound = EVENT_WALK;
+        action(client_action);
+
         // *NOTE*: re-drawing the window will invalidate the hightlight BG...
         client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
         action(client_action);
@@ -506,7 +512,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         action(client_action);
 
         client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-        action(client_action);
+        //action(client_action);
 
         //client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
         //action(client_action);
@@ -514,12 +520,52 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         //client_action.position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
         //client_action.command = COMMAND_CURSOR_DRAW;
       } // end IF
+      //else
+      //  action(client_action);
+
+      // update seen positions
+      RPG_Map_Positions_t seen_positions;
+      myEngine->getVisiblePositions(client_action.entity_id,
+                                    seen_positions,
+                                    true);
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) != mySeenPositions.end());
+        mySeenPositions[client_action.entity_id].insert(seen_positions.begin(), seen_positions.end());
+      } // end lock scope
 
       break;
     }
-    case COMMAND_E2C_ENTITY_VISION_UPDATE:
+    case COMMAND_E2C_ENTITY_REMOVE:
     {
       ACE_ASSERT(parameters_in.size() == 1);
+      RPG_Engine_EntityID_t entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
+      ACE_ASSERT(entity_id);
+
+      // step1: unload sprite graphics
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(entity_id);
+
+      // step2: fini seen positions
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+        ACE_ASSERT(mySeenPositions.find(entity_id) != mySeenPositions.end());
+        mySeenPositions.erase(entity_id);
+      } // end lock scope
+
+      if (entity_id == myEngine->getActive(true))
+        return; // don't play a sound...
+
+      client_action.command = COMMAND_PLAY_SOUND;
+      client_action.sound = EVENT_CONDITION_WEAK;
+
+      break;
+    }
+    case COMMAND_E2C_ENTITY_VISION:
+    {
+      ACE_ASSERT(parameters_in.size() == 2);
+      client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(parameters_in.front());
       client_action.radius = *static_cast<const unsigned char* const>(parameters_in.back());
       client_action.window = myWindow;
 
@@ -540,6 +586,18 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       action(client_action);
 
       client_action.command = COMMAND_CURSOR_DRAW;
+
+      // update seen positions
+      RPG_Map_Positions_t seen_positions;
+      myEngine->getVisiblePositions(client_action.entity_id,
+                                    seen_positions,
+                                    true);
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) != mySeenPositions.end());
+        mySeenPositions[client_action.entity_id].insert(seen_positions.begin(), seen_positions.end());
+      } // end lock scope
 
       break;
     }
@@ -755,6 +813,20 @@ RPG_Client_Engine::handleActions()
                                      (*iterator).window->getScreen());
 
 
+
+        break;
+      }
+      case COMMAND_PLAY_SOUND:
+      {
+        // sanity check
+        ACE_ASSERT((*iterator).sound != RPG_SOUND_EVENT_INVALID);
+
+        int channel = -1;
+        channel = RPG_Sound_Common_Tools::play((*iterator).sound);
+        if (channel == -1)
+          ACE_DEBUG((LM_ERROR,
+                      ACE_TEXT("failed to play sound (was: \"%s\", continuing\n"),
+                      RPG_Sound_EventHelper::RPG_Sound_EventToString((*iterator).sound).c_str()));
 
         break;
       }

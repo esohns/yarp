@@ -383,12 +383,16 @@ RPG_Engine::dump_state() const
 }
 
 void
-RPG_Engine::init(RPG_Engine_IWindow* client_in,
+RPG_Engine::init(RPG_Engine_IClient* client_in,
                  const RPG_Engine_Level_t& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::init"));
 
+  // sanity check(s)
+  ACE_ASSERT(client_in);
+
   myClient = client_in;
+
   inherited2::init(level_in);
 
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(this);
@@ -471,6 +475,7 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
   // notify AI
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(id_in);
 
+  bool was_active = false;
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -490,6 +495,9 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
       delete (*iterator).second;
     } // end IF
     myEntities.erase(iterator);
+
+    if (id_in == myActivePlayer)
+      was_active = true;
   } // end lock scope
 
   // notify client / window
@@ -507,6 +515,10 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
                ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command).c_str()));
   }
+
+  // was active player ?
+  if (was_active)
+    setActive(0);
 }
 
 void
@@ -619,20 +631,24 @@ RPG_Engine::setActive(const RPG_Engine_EntityID_t& id_in)
     myActivePlayer = id_in;
   } // end lock scope
 
-  // notify client window
-  unsigned char visible_radius = getVisibleRadius(id_in);
-  RPG_Engine_ClientParameters_t parameters;
-  parameters.push_back(&visible_radius);
-  try
+  // notify client ?
+  if (id_in)
   {
-    myClient->notify(COMMAND_E2C_ENTITY_VISION_UPDATE, parameters);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION_UPDATE).c_str()));
-  }
+    unsigned char visible_radius = getVisibleRadius(id_in);
+    RPG_Engine_ClientParameters_t parameters;
+    parameters.push_back(&const_cast<RPG_Engine_EntityID_t&>(id_in));
+    parameters.push_back(&visible_radius);
+    try
+    {
+      myClient->notify(COMMAND_E2C_ENTITY_VISION, parameters);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str()));
+    }
+  } // end IF
 }
 
 RPG_Engine_EntityID_t
@@ -1440,6 +1456,7 @@ RPG_Engine::handleEntities()
 
   bool action_complete = true;
   RPG_Engine_EntityID_t remove_id = 0;
+  bool do_quit = false;
   RPG_Engine_ClientNotifications_t notifications;
 
   {
@@ -1474,38 +1491,46 @@ RPG_Engine::handleEntities()
                         false))
             break; // nothing to do...
 
-          // *TODO*: implement combat situations, in-turn-movement, ...
-          RPG_Engine_Common_Tools::attack((*iterator).second->character,
-                                          (*target).second->character,
-                                          ATTACK_NORMAL,
-                                          DEFENSE_NORMAL,
-                                          (current_action.command == COMMAND_ATTACK_FULL),
-                                          (RPG_Engine_Common_Tools::range((*iterator).second->position,
-                                                                          (*target).second->position) * RPG_ENGINE_FEET_PER_SQUARE));
-
-          // target disabled ?
-          if (RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character))
+          // notify client
+          RPG_Engine_ClientParameters_t* parameters = NULL;
+          parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
+          if (!parameters)
           {
-            // remove entity (see below)
-            remove_id = (*target).first;
+            ACE_DEBUG((LM_CRITICAL,
+                       ACE_TEXT("unable to allocate memory, aborting\n")));
 
-            if ((*target).first == myActivePlayer)
-            {
-              myActivePlayer = 0;
-
-              // notify client window
-              RPG_Engine_ClientParameters_t* parameters = NULL;
-              parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
-              if (!parameters)
-              {
-                ACE_DEBUG((LM_CRITICAL,
-                           ACE_TEXT("unable to allocate memory, aborting\n")));
-
-                return;
-              } // end IF
-              notifications.push_back(std::make_pair(COMMAND_E2C_QUIT, parameters));
-            } // end ELSEIF
+            return;
           } // end IF
+          RPG_Engine_EntityID_t* entity_id = NULL;
+          entity_id = new(std::nothrow) RPG_Engine_EntityID_t;
+          if (!entity_id)
+          {
+            ACE_DEBUG((LM_CRITICAL,
+                       ACE_TEXT("unable to allocate memory, aborting\n")));
+
+            // clean up
+            delete parameters;
+
+            return;
+          } // end IF
+          *entity_id = (*target).first;
+          parameters->push_back(entity_id);
+
+          // *TODO*: implement combat situations, in-turn-movement, ...
+          bool hit = RPG_Engine_Common_Tools::attack((*iterator).second->character,
+                                                     (*target).second->character,
+                                                     ATTACK_NORMAL,
+                                                     DEFENSE_NORMAL,
+                                                     (current_action.command == COMMAND_ATTACK_FULL),
+                                                     (RPG_Engine_Common_Tools::range((*iterator).second->position,
+                                                                                     (*target).second->position) * RPG_ENGINE_FEET_PER_SQUARE));
+          notifications.push_back(std::make_pair((hit ? COMMAND_E2C_ENTITY_HIT
+                                                      : COMMAND_E2C_ENTITY_MISS),
+                                                 parameters));
+
+          // target disabled ? --> remove entity (see below)
+          if (RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character))
+            remove_id = (*target).first;
 
           break;
         }
@@ -1692,7 +1717,7 @@ RPG_Engine::handleEntities()
           } // end IF
           *position = (*iterator).second->position;
           parameters->push_back(position);
-          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_POSITION_UPDATE, parameters));
+          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_POSITION, parameters));
 
           break;
         }
@@ -1731,10 +1756,6 @@ RPG_Engine::handleEntities()
     } // end FOR
   } // end lock scope
 
-  // remove entity ?
-  if (remove_id)
-    remove(remove_id);
-
   // notify client / window
   for (RPG_Engine_ClientNotificationsConstIterator_t iterator = notifications.begin();
        iterator != notifications.end();
@@ -1764,4 +1785,29 @@ RPG_Engine::handleEntities()
     ACE_ASSERT((*iterator).second);
     delete (*iterator).second;
   } // end FOR
+
+  // remove entity ?
+  if (remove_id)
+  {
+    remove(remove_id);
+
+    // quit game ?
+    if (remove_id == getActive(true))
+    {
+      setActive(0);
+
+      // notify client
+      RPG_Engine_ClientParameters_t parameters;
+      try
+      {
+        myClient->notify(COMMAND_E2C_QUIT, parameters);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_QUIT).c_str()));
+      }
+    } // end IF
+  } // end IF
 }

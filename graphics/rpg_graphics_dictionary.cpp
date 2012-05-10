@@ -21,10 +21,12 @@
 
 #include "rpg_graphics_dictionary.h"
 
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_XML_parser.h"
 #include "rpg_graphics_common_tools.h"
 
 #include <rpg_common_macros.h>
+#include <rpg_common_defines.h>
 #include <rpg_common_xsderrorhandler.h>
 
 #include <ace/Log_Msg.h>
@@ -101,8 +103,8 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
   // Parse the document to obtain the object model.
   //
   ::xml_schema::document doc_p(dictionary_p,
-                               ACE_TEXT_ALWAYS_CHAR("urn:rpg"),
-                               ACE_TEXT_ALWAYS_CHAR("graphicsDictionary"));
+                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
+                               ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_INSTANCE));
 
   dictionary_p.pre();
 
@@ -142,7 +144,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 //              filename_in.c_str()));
 }
 
-const RPG_Graphics_t
+const RPG_Graphics_t&
 RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::get"));
@@ -220,7 +222,7 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
   return dummy;
 }
 
-const RPG_Graphics_Fonts_t
+RPG_Graphics_Fonts_t
 RPG_Graphics_Dictionary::getFonts() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::getFonts"));

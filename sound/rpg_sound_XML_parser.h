@@ -57,6 +57,7 @@ class RPG_Sound_Export RPG_Sound_Type
 //     virtual void pre();
   virtual void category(const RPG_Sound_Category&);
   virtual void sound_event(const RPG_Sound_Event&);
+  virtual void volume(unsigned char);
   virtual void file(const ::std::string&);
   virtual void interval(unsigned char);
   virtual RPG_Sound post_RPG_Sound_Type();

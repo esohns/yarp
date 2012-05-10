@@ -23,7 +23,7 @@
 
 #include "rpg_engine_exports.h"
 #include "rpg_engine_common.h"
-#include "rpg_engine_iwindow.h"
+#include "rpg_engine_iclient.h"
 #include "rpg_engine_messagequeue.h"
 #include "rpg_engine_entitymode.h"
 #include "rpg_engine_level.h"
@@ -68,7 +68,7 @@ class RPG_Engine_Export RPG_Engine
   virtual void dump_state() const;
 
   // *WARNING*: DO NOT USE while the engine isRunning() !
-  void init(RPG_Engine_IWindow*,        // UI handle
+  void init(RPG_Engine_IClient*,        // client interface handle
             const RPG_Engine_Level_t&); // level
   // *WARNING*: handle with care !
   void lock();
@@ -183,6 +183,6 @@ class RPG_Engine_Export RPG_Engine
   RPG_Engine_Entities_t                       myEntities;
   RPG_Engine_EntityID_t                       myActivePlayer;
 
-  RPG_Engine_IWindow*                         myClient;
+  RPG_Engine_IClient*                         myClient;
 };
 #endif

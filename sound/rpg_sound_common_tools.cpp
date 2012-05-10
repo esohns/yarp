@@ -186,7 +186,7 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
       sound.file.clear();
       sound.interval = 0;
       // retrieve event properties from the dictionary
-      sound = RPG_SOUND_DICTIONARY_SINGLETON::instance()->getSound(event_in);
+      sound = RPG_SOUND_DICTIONARY_SINGLETON::instance()->get(event_in);
       ACE_ASSERT(sound.sound_event == event_in);
       // load the file
       Mix_Chunk* chunk = NULL;
@@ -211,6 +211,11 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
 
         return result;
       } // end IF
+
+      // set volume (if any)
+      if (sound.volume)
+        Mix_VolumeChunk(chunk, sound.volume);
+
       // add the chunk to our cache
       if (mySoundCache.size() == myCacheSize)
       {
@@ -243,9 +248,6 @@ RPG_Sound_Common_Tools::isPlaying(const int& channel_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::isPlaying"));
 
-  if (channel_in == -1)
-    return Mix_PlayingMusic();
-
   return Mix_Playing(channel_in);
 }
 
@@ -254,10 +256,7 @@ RPG_Sound_Common_Tools::stop(const int& channel_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::stop"));
 
-  if (channel_in == -1)
-    Mix_HaltMusic();
-  else
-    Mix_HaltChannel(channel_in);
+  Mix_HaltChannel(-1);
 }
 
 void

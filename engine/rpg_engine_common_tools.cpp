@@ -1262,7 +1262,7 @@ RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_Attack
   } // end SWITCH
 }
 
-void
+bool
 RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
                                 RPG_Player_Base* const target_inout,
                                 const RPG_Combat_AttackSituation& attackSituation_in,
@@ -1275,18 +1275,20 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
   // sanity check
   ACE_ASSERT(attacker_in && target_inout);
 
+  bool has_hit = false;
+
   bool reach_is_absolute = false;
   unsigned short base_range = 0;
   unsigned short max_reach = attacker_in->getReach(base_range,
                                                    reach_is_absolute);
   if (distance_in > max_reach)
-    return; // --> done (out of reach)
+    return false; // --> done (out of reach)
   RPG_Combat_AttackForm attackForm = (base_range ? ATTACKFORM_RANGED
                                                  : (reach_is_absolute &&
                                                     (distance_in < max_reach)) ? RPG_COMBAT_ATTACKFORM_INVALID
                                                                                : ATTACKFORM_MELEE);
   if (attackForm == RPG_COMBAT_ATTACKFORM_INVALID)
-    return; // --> done (cannot reach)
+    return false; // --> done (cannot reach)
 
   RPG_Dice_Roll roll;
   roll.numDice = 1;
@@ -1389,7 +1391,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 //       maxReach = 50; // not really meant to be thrown...
 
       // nothing to do...
-      return;
+      return false;
     } // end IF
 
     // *TODO*: consider multi-weapon/offhand attacks...
@@ -1403,7 +1405,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
       is_threat = false;
       is_critical_hit = false;
 
-      // step2a: roll D_20
+      // step2a: roll D_20...
       result.clear();
       RPG_Dice::simulateRoll(roll,
                              1,
@@ -1423,18 +1425,16 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
                                result);
       } // end IF
 
-      if (attack_roll == 1)
+      // hit or miss ?
+      if ((attack_roll == 1) ||
+          (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20)))
         goto is_player_miss;
 
-      // hit or miss ?
-      if (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20))
-        goto is_player_miss;
-      else if (is_threat)
-      {
-        // check for critical
-        if ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass)
-          is_critical_hit = true;
-      } // end ELSE
+      has_hit = true;
+      // hit --> check for critical
+      if (is_threat &&
+          ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass))
+        is_critical_hit = true;
 
 // is_player_hit:
       // compute damage
@@ -1678,7 +1678,7 @@ init_monster_special_attack:
                  monster->getName().c_str()));
 
       // what else can we do ?
-      return;
+      return false;
     } // end IF
 
     special_iterator = monster_properties.specialAttacks.begin();
@@ -1740,7 +1740,7 @@ monster_perform_single_action:
       is_threat = false;
       is_critical_hit = false;
 
-      // step2a: roll D_20
+      // step2a: roll D_20...
       result.clear();
       RPG_Dice::simulateRoll(roll,
                             1,
@@ -1761,9 +1761,6 @@ monster_perform_single_action:
                               result);
       } // end IF
 
-      if (attack_roll == 1)
-        goto is_monster_miss;
-
       // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
       if (current_action->attackBonuses.size() == current_action->numAttacksPerRound)
         currentAttackBonus = current_action->attackBonuses[i];
@@ -1776,14 +1773,15 @@ monster_perform_single_action:
       // *TODO*: consider other modifiers...
 
       // hit or miss ?
-      if (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20))
+      if ((attack_roll == 1) ||
+          (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20)))
         goto is_monster_miss;
-      else if (is_threat)
-      {
-        // check for critical
-        if ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass)
-          is_critical_hit = true;
-      } // end ELSE
+
+      has_hit = true;
+      // hit --> check for critical
+      if (is_threat &&
+          ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass))
+        is_critical_hit = true;
 
 // is_monster_hit:
       // compute damage
@@ -1861,7 +1859,7 @@ monster_perform_single_action:
       // if the target has been disabled, we're done...
       // *TODO*: consider remaining actions...
       if (isCharacterHelpless(target_inout))
-        return;
+        return true;
 
       // if this was a Standard Action, we're done
       if (!isFullRoundAction_in)
@@ -1899,6 +1897,8 @@ monster_advance_attack_iterator:
       } // end IF
     } // end IF
   } // end ELSE
+
+  return has_hit;
 }
 
 RPG_Engine_Player_XMLTree_Type*
