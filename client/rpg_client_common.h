@@ -98,7 +98,8 @@ struct RPG_Client_SDL_AudioConfig_t
 //   Uint8  channels;
   int    channels;
   Uint16 samples;
-  bool   useCD;
+  int    mix_channels;
+  bool   use_CD;
 };
 
 // *NOTE* types as used by SDL
@@ -112,6 +113,17 @@ struct RPG_Client_SDL_VideoConfig_t
   bool useOpenGL;
   bool fullScreen;
   bool initVideo;
+};
+
+struct RPG_Client_NetworkConfig_t
+{
+  std::string    server;
+  unsigned short port;
+  std::string    password;
+  std::string    nick;
+  std::string    user;
+  std::string    realname;
+  std::string    channel;
 };
 
 struct RPG_Client_Config
@@ -129,6 +141,8 @@ struct RPG_Client_Config
   RPG_Client_SDL_VideoConfig_t video_config;
   std::string                  graphics_directory;
   std::string                  graphics_dictionary;
+  // *** network ***
+  RPG_Client_NetworkConfig_t   network_config;
   // *** magic ***
   std::string                  magic_dictionary;
   // *** item ***
@@ -160,6 +174,7 @@ enum RPG_Client_Command
   COMMAND_WINDOW_DRAW,
   COMMAND_WINDOW_INIT,
   COMMAND_WINDOW_REFRESH,
+  COMMAND_WINDOW_UPDATE_MINIMAP,
   //
   RPG_CLIENT_COMMAND_MAX,
   RPG_CLIENT_COMMAND_INVALID

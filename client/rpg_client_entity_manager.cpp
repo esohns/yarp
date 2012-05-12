@@ -58,7 +58,7 @@ RPG_Client_Entity_Manager::~RPG_Client_Entity_Manager()
 }
 
 void
-RPG_Client_Entity_Manager::init(RPG_Graphics_SDLWindowBase* window_in)
+RPG_Client_Entity_Manager::init(RPG_Graphics_IWindow* window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::init"));
 

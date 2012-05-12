@@ -58,6 +58,7 @@ struct RPG_Engine_Action
   RPG_Engine_EntityID_t target;
 };
 typedef std::deque<RPG_Engine_Action> RPG_Engine_Actions_t;
+typedef RPG_Engine_Actions_t::iterator RPG_Engine_ActionsIterator_t;
 typedef RPG_Engine_Actions_t::const_iterator RPG_Engine_ActionsConstIterator_t;
 
 struct RPG_Engine_Entity

@@ -201,7 +201,7 @@ RPG_Engine_Event_Manager::svc(void)
     //handleEntities();
   } // end WHILE
 
-  ACE_NOTREACHED(ACE_TEXT("should never get here\n"));
+  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
 
   return -1;
@@ -241,8 +241,9 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
   } // end lock scope
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("scheduled activation timer (ID: %d) for entity %u\n"),
+             ACE_TEXT("scheduled activation timer (ID: %d [%#T]) for entity %u\n"),
              timer_id,
+             &activationInterval_in,
              id_in));
 }
 
@@ -604,7 +605,7 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
                        (possible_targets.front() == (*iterator).first));
             possible_targets.erase(possible_targets.begin());
 
-            // step2: remove other monsters
+            // step2: remove fellow monsters
             monster_remove_t monster_remove = {myEngine, false, true};
             possible_targets.remove_if(monster_remove);
 
@@ -956,6 +957,6 @@ RPG_Engine_Event_Manager::invisible_remove_t::operator()(const RPG_Engine_Entity
   RPG_Map_Position_t position = engine->getPosition(id_in, locked_access);
 
   return !engine->canSee(entity_id,
-                         engine->getPosition(id_in, locked_access),
+                         id_in,
                          locked_access);
 }

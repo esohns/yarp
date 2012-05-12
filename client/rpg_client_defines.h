@@ -61,7 +61,9 @@
 #define RPG_CLIENT_DEF_AUDIO_FREQUENCY                 44100
 #define RPG_CLIENT_DEF_AUDIO_FORMAT                    AUDIO_S16SYS
 #define RPG_CLIENT_DEF_AUDIO_CHANNELS                  2
-#define RPG_CLIENT_DEF_AUDIO_SAMPLES                   1024
+#define RPG_CLIENT_DEF_AUDIO_SAMPLES                   4096
+#define RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS              5
+#define RPG_CLIENT_DEF_AUDIO_USE_CD                    false
 
 #define RPG_CLIENT_DEF_VIDEO_W                         1024
 #define RPG_CLIENT_DEF_VIDEO_H                         786
@@ -71,6 +73,14 @@
 #define RPG_CLIENT_DEF_VIDEO_FULLSCREEN                false
 #define RPG_CLIENT_DEF_VIDEO_INIT                      false
 // #define RPG_CLIENT_DEF_VIDEO_FRAMERATE              30
+
+#define RPG_CLIENT_DEF_NETWORK_SERVER                  "localhost"
+#define RPG_CLIENT_DEF_NETWORK_PORT                    6667
+#define RPG_CLIENT_DEF_NETWORK_PASSWORD                "secretpasswordhere"
+#define RPG_CLIENT_DEF_NETWORK_NICK                    "Wiz"
+#define RPG_CLIENT_DEF_NETWORK_USER                    "user"
+#define RPG_CLIENT_DEF_NETWORK_REALNAME                "Ronnie Reagan"
+#define RPG_CLIENT_DEF_NETWORK_CHANNEL                 "#foobar"
 
 #define RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE               0 // 0: don't care
 #define RPG_CLIENT_DEF_MAP_DOORS                       true

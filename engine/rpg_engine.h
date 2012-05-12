@@ -78,6 +78,7 @@ class RPG_Engine_Export RPG_Engine
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
   RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
+  bool exists(const RPG_Engine_EntityID_t&) const; // id
   void action(const RPG_Engine_EntityID_t&, // id
               const RPG_Engine_Action&,     // action
               const bool& = true);          // locked access ?
@@ -109,6 +110,9 @@ class RPG_Engine_Export RPG_Engine
                            const bool& = true) const;    // locked access ?
   bool canSee(const RPG_Engine_EntityID_t&, // id
               const RPG_Map_Position_t&,    // position
+              const bool& = true) const;    // locked access ?
+  bool canSee(const RPG_Engine_EntityID_t&, // id
+              const RPG_Engine_EntityID_t&, // target id
               const bool& = true) const;    // locked access ?
 
   bool findPath(const RPG_Map_Position_t&, // start position

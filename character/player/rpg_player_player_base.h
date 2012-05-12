@@ -78,6 +78,7 @@ class RPG_Player_Export RPG_Player_Player_Base
                                                          const RPG_Combat_AttackSituation&) const;
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
 
+  // *NOTE*: return value unit is feet
   virtual unsigned short getReach(unsigned short&, // return value: base range (if any)
                                   bool&) const;    // return value: reach is absolute ?
   virtual unsigned char getSpeed(const bool& = false,                                 // running ?

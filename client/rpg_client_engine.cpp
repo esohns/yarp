@@ -360,6 +360,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
   ACE_ASSERT(myEngine);
 
+  bool do_action = true;
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
   client_action.previous = std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -378,7 +379,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     case COMMAND_ATTACK:
     case COMMAND_ATTACK_FULL:
     case COMMAND_ATTACK_STANDARD:
-      return;
+      do_action = false; break;
     case COMMAND_DOOR_CLOSE:
       client_action.sound = EVENT_DOOR_CLOSE;
     case COMMAND_DOOR_OPEN:
@@ -418,10 +419,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     case COMMAND_RUN:
     case COMMAND_SEARCH:
     case COMMAND_STEP:
-      return;
     case COMMAND_STOP:
     case COMMAND_TRAVEL:
-      return;
+      do_action = false; break;
     case COMMAND_E2C_ENTITY_ADD:
     {
       ACE_ASSERT(parameters_in.size() == 2);
@@ -458,7 +458,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         mySeenPositions.insert(std::make_pair(client_action.entity_id, seen_positions));
       } // end lock scope
 
-      return;
+      do_action = false;
+      
+      break;
     }
     case COMMAND_E2C_ENTITY_HIT:
     case COMMAND_E2C_ENTITY_MISS:
@@ -476,14 +478,21 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     }
     case COMMAND_E2C_ENTITY_POSITION:
     {
-      ACE_ASSERT(parameters_in.size() == 2);
+      ACE_ASSERT(parameters_in.size() == 3);
 
-      client_action.position = *static_cast<const RPG_Map_Position_t* const>(parameters_in.back());
+      RPG_Engine_ClientParametersConstIterator_t parameter_iterator = parameters_in.begin();
+      client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(*parameter_iterator);
+      ACE_ASSERT(client_action.entity_id);
+      parameter_iterator++;
+      client_action.position = *static_cast<const RPG_Map_Position_t* const>(*parameter_iterator);
       ACE_ASSERT(client_action.position != std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                           std::numeric_limits<unsigned int>::max()));
+      parameter_iterator++;
+      client_action.previous = *static_cast<const RPG_Map_Position_t* const>(*parameter_iterator);
+      ACE_ASSERT(client_action.previous != std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                          std::numeric_limits<unsigned int>::max()));
+
       client_action.window = myWindow;
-      client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(parameters_in.front());
-      ACE_ASSERT(client_action.entity_id);
 
       // *NOTE*: when using (dynamic) lighting, redraw the whole window...
       RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(true);
@@ -528,10 +537,34 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       } // end IF
       else
       {
-        if (myEngine->canSee(active_entity_id,
-                             client_action.position,
-                             true))
+        // --> (re)draw entity ?
+        ACE_ASSERT(client_action.command == COMMAND_ENTITY_DRAW);
+
+        if (active_entity_id)
+        {
+          // update the minimap (only)
+          client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
           action(client_action);
+
+          client_action.command = COMMAND_ENTITY_DRAW;
+          if (!myEngine->canSee(active_entity_id,
+                                client_action.position,
+                                true))
+          {
+            do_action = false; // entity not within field of view...
+            
+            if (myEngine->canSee(active_entity_id,
+                                 client_action.previous,
+                                 true))
+            {
+              // entity has left field of view...
+              client_action.command = COMMAND_ENTITY_REMOVE;
+              do_action = true;
+            } // end IF
+          } // end IF
+        } // end IF
+        else
+          do_action = false;
       } // end ELSE
 
       // update seen positions
@@ -567,7 +600,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       } // end lock scope
 
       if (client_action.entity_id == myEngine->getActive(true))
-        return; // don't play a sound...
+        do_action = false; // don't play a sound...
 
       client_action.command = COMMAND_PLAY_SOUND;
       client_action.sound = EVENT_CONDITION_WEAK;
@@ -635,7 +668,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         GDK_THREADS_LEAVE();
       } // end IF
 
-      return;
+      do_action = false;
+
+      break;
     }
     default:
     {
@@ -643,11 +678,14 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
                  ACE_TEXT("invalid command (was: \"%s\", aborting\n"),
                  RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str()));
 
-      return;
+      do_action = false;
+
+      break;
     }
   } // end SWITCH
 
-  action(client_action);
+  if (do_action)
+    action(client_action);
 }
 
 void
@@ -846,8 +884,9 @@ RPG_Client_Engine::handleActions()
         RPG_Graphics_Surface::update(dirtyRegion,
                                      (*iterator).window->getScreen());
 
-        // step2: free entity resources
-        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove((*iterator).entity_id);
+        // step2: free entity resources ?
+        if (!myEngine->exists((*iterator).entity_id))
+          RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove((*iterator).entity_id);
 
         break;
       }
@@ -860,8 +899,8 @@ RPG_Client_Engine::handleActions()
         channel = RPG_Sound_Common_Tools::play((*iterator).sound);
         if (channel == -1)
           ACE_DEBUG((LM_ERROR,
-                      ACE_TEXT("failed to play sound (was: \"%s\", continuing\n"),
-                      RPG_Sound_EventHelper::RPG_Sound_EventToString((*iterator).sound).c_str()));
+                     ACE_TEXT("failed to play sound (was: \"%s\"), continuing\n"),
+                     RPG_Sound_EventHelper::RPG_Sound_EventToString((*iterator).sound).c_str()));
 
         break;
       }
@@ -1094,6 +1133,32 @@ RPG_Client_Engine::handleActions()
 
         break;
       }
+      case COMMAND_TOGGLE_DOOR:
+      {
+        // sanity check
+        ACE_ASSERT((*iterator).window);
+
+        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        ACE_ASSERT(level_window);
+        try
+        {
+          level_window->toggleDoor((*iterator).position);
+          (*iterator).window->clear();
+          (*iterator).window->draw();
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::toggleDoor/clear/draw(), aborting\n"),
+                     level_window));
+
+          return;
+        }
+
+        refresh_window = true;
+
+        break;
+      }
       case COMMAND_WINDOW_BORDER_DRAW:
       {
         // sanity check
@@ -1214,23 +1279,21 @@ RPG_Client_Engine::handleActions()
 
         break;
       }
-      case COMMAND_TOGGLE_DOOR:
+      case COMMAND_WINDOW_UPDATE_MINIMAP:
       {
         // sanity check
         ACE_ASSERT((*iterator).window);
 
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
         ACE_ASSERT(level_window);
         try
         {
-          level_window->toggleDoor((*iterator).position);
-          (*iterator).window->clear();
-          (*iterator).window->draw();
+          level_window->updateMinimap();
         }
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::toggleDoor/clear/draw(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::updateMinimap(), aborting\n"),
                      level_window));
 
           return;

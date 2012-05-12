@@ -59,6 +59,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
             const RPG_Graphics_MapStyle_t&); // map style
 
   void toggleMiniMap();
+  bool showMiniMap() const;
   void toggleVisionBlend();
 
   // adjust viewport
@@ -75,6 +76,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position
   // (re)set lighting blend cache
   virtual void setBlendRadius(const unsigned char&); // radius
+  virtual void updateMinimap();
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
@@ -103,6 +105,11 @@ class RPG_Client_Export RPG_Client_WindowLevel
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?
   void initMiniMap();
+
+  void drawChild(const RPG_Graphics_WindowType&, // (child) type
+                 SDL_Surface* = NULL,            // target surface (default: screen)
+                 const unsigned int& = 0,        // offset x (top-left = [0,0])
+                 const unsigned int& = 0);       // offset y (top-left = [0,0])
 
   RPG_Engine*                     myEngine;
   RPG_Client_Engine*              myClient;

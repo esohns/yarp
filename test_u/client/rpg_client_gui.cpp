@@ -715,26 +715,60 @@ do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
-               SDL_GetError()));
+               Mix_GetError()));
 
     return false;
   } // end IF
-//   Mix_AllocateChannels(4);
+  if (Mix_AllocateChannels(audioConfig_in.mix_channels) != audioConfig_in.mix_channels)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
+               audioConfig_in.mix_channels,
+               Mix_GetError()));
+
+    return false;
+  } // end IF
+
   RPG_Client_SDL_AudioConfig_t obtained;
   obtained.frequency = 0;
   obtained.format = 0;
   obtained.channels = 0;
   obtained.samples = 0;
+  obtained.mix_channels = Mix_AllocateChannels(-1);
+  std::string format_string;
   if (Mix_QuerySpec(&obtained.frequency,
                     &obtained.format,
                     &obtained.channels) == 0)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
-               SDL_GetError()));
+               Mix_GetError()));
 
     return false;
   } // end IF
+  switch (obtained.format)
+  {
+    case AUDIO_U8:
+      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U8"); break;
+    case AUDIO_S8:
+      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S8"); break;
+    case AUDIO_U16LSB:
+      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16LSB"); break;
+    case AUDIO_S16LSB:
+      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16LSB"); break;
+    case AUDIO_U16MSB:
+      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16MSB"); break;
+    case AUDIO_S16MSB:
+      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16MSB"); break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid audio format (was: %u), aborting\n"),
+                 obtained.format));
+
+      return false;
+    }
+  } // end SWITCH
   char driver[MAXPATHLEN];
   if (!SDL_AudioDriverName(driver, sizeof(driver)))
   {
@@ -746,7 +780,8 @@ do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
   } // end IF
 
   // initialize audioCD playing
-  if (SDL_CDNumDrives() <= 0)
+  if (audioConfig_in.use_CD &&
+      (SDL_CDNumDrives() <= 0))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_CDNumDrives(): \"%s\", aborting\n"),
@@ -755,17 +790,29 @@ do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
     return false;
   } // end IF
   SDL_CD* cdrom = NULL;
-  cdrom = SDL_CDOpen(0); // open default drive
+  if (audioConfig_in.use_CD)
+  {
+    cdrom = SDL_CDOpen(0); // open default drive
+    if (!cdrom)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_CDOpen(0): \"%s\", aborting\n"),
+                 SDL_GetError()));
+
+      return false;
+    } // end IF
+  } // end IF
 
   ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %u\nchannels: %u\nCD [id, status]: \"%s\" [%d, %d]\n"),
+             ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %s\nchannels: %d\nmix channels: %d\nCD [id, status]: %s [%d, %d]\n"),
              driver,
              obtained.frequency,
-             static_cast<unsigned int>(obtained.format),
-             static_cast<unsigned int>(obtained.channels),
-             SDL_CDName(0),
-             cdrom->id,
-             cdrom->status));
+             format_string.c_str(),
+             obtained.channels,
+             obtained.mix_channels,
+             (audioConfig_in.use_CD ? SDL_CDName(0) : ACE_TEXT_ALWAYS_CHAR("N/A")),
+             (audioConfig_in.use_CD ? cdrom->id : -1),
+             (audioConfig_in.use_CD ? cdrom->status : -1)));
 
   return true;
 }
@@ -1467,21 +1514,28 @@ do_work(const RPG_Client_Config& config_in,
 
   // step5d: client engine
   client_engine.init(&level_engine,
-                     mainWindow.getChild(WINDOW_MAP),
+                     mainWindow.child(WINDOW_MAP),
                      userData.xml);
 
   // step5e: queue initial drawing
   RPG_Client_Action client_action;
   client_action.command = COMMAND_WINDOW_DRAW;
-  client_action.position = std::make_pair(0, 0);
+  client_action.previous = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max());
+  client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max());
   client_action.window = &mainWindow;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   client_action.entity_id = 0;
+  client_action.sound = RPG_SOUND_EVENT_INVALID;
+  client_action.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                        std::numeric_limits<unsigned int>::max());
+  client_action.radius = 0;
   client_engine.action(client_action);
   client_action.command = COMMAND_WINDOW_REFRESH;
   client_engine.action(client_action);
 
-  RPG_Client_WindowLevel* level_window = dynamic_cast<RPG_Client_WindowLevel*>(mainWindow.getChild(WINDOW_MAP));
+  RPG_Graphics_IWindow* level_window = mainWindow.child(WINDOW_MAP);
   ACE_ASSERT(level_window);
   // init/add entity to the graphics cache
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(level_window);
@@ -1965,16 +2019,27 @@ do_parseIniFile(const std::string& iniFilename_in,
   RPG_TRACE(ACE_TEXT("::do_parseIniFile"));
 
   // init return value(s)
+  //config_out.audio_config.mute = false;
   config_out.audio_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
   config_out.audio_config.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
   config_out.audio_config.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
   config_out.audio_config.samples = RPG_CLIENT_DEF_AUDIO_SAMPLES;
+  config_out.audio_config.mix_channels = RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS;
+  config_out.audio_config.use_CD = RPG_CLIENT_DEF_AUDIO_USE_CD;
 
   config_out.video_config.screen_width = RPG_CLIENT_DEF_VIDEO_W;
   config_out.video_config.screen_height = RPG_CLIENT_DEF_VIDEO_H;
   config_out.video_config.screen_colordepth = RPG_CLIENT_DEF_VIDEO_BPP;
   config_out.video_config.fullScreen = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
   config_out.video_config.doubleBuffer = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
+
+  config_out.network_config.server = RPG_CLIENT_DEF_NETWORK_SERVER;
+  config_out.network_config.port = RPG_CLIENT_DEF_NETWORK_PORT;
+  config_out.network_config.password = RPG_CLIENT_DEF_NETWORK_PASSWORD;
+  config_out.network_config.nick = RPG_CLIENT_DEF_NETWORK_NICK;
+  config_out.network_config.user = RPG_CLIENT_DEF_NETWORK_USER;
+  config_out.network_config.realname = RPG_CLIENT_DEF_NETWORK_REALNAME;
+  config_out.network_config.channel = RPG_CLIENT_DEF_NETWORK_CHANNEL;
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -2013,6 +2078,7 @@ do_parseIniFile(const std::string& iniFilename_in,
   int val_index = 0;
   ACE_TString val_name, val_value;
   ACE_Configuration::VALUETYPE val_type;
+  std::istringstream converter;
   while (config_heap.enumerate_values(section_key,
                                       val_index,
                                       val_name,
@@ -2051,6 +2117,20 @@ do_parseIniFile(const std::string& iniFilename_in,
     {
       config_out.audio_config.samples = ::atoi(val_value.c_str());
     }
+    else if (val_name == ACE_TEXT("audio_mix_channels"))
+    {
+      config_out.audio_config.mix_channels = ::atoi(val_value.c_str());
+    }
+    else if (val_name == ACE_TEXT("audio_cd"))
+    {
+      converter.str(val_value.c_str());
+      converter >> config_out.audio_config.use_CD;
+      if (converter.fail())
+      {
+        converter.clear();
+        converter >> std::boolalpha >> config_out.audio_config.use_CD;
+      } // end IF
+    }
     else if (val_name == ACE_TEXT("screen_width"))
     {
       config_out.video_config.screen_width = ::atoi(val_value.c_str());
@@ -2073,84 +2153,84 @@ do_parseIniFile(const std::string& iniFilename_in,
     ++val_index;
   } // end WHILE
 
-//   // find/open "connection" section...
-//   if (config_heap.open_section(config_heap.root_section(),
-//                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER),
-//                                0, // MUST exist !
-//                                section_key) != 0)
-//   {
-//     ACE_ERROR((LM_ERROR,
-//                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-//                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER)));
-//
-//     return;
-//   } // end IF
-//
-//   // import values...
-//   val_index = 0;
-//   while (config_heap.enumerate_values(section_key,
-//                                       val_index,
-//                                       val_name,
-//                                       val_type) == 0)
-//   {
-//     if (config_heap.get_string_value(section_key,
-//                                      val_name.c_str(),
-//                                      val_value))
-//     {
-//       ACE_ERROR((LM_ERROR,
-//                  ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
-//                  val_name.c_str()));
-//
-//       return;
-//     } // end IF
-//
-// //     ACE_DEBUG((LM_DEBUG,
-// //                ACE_TEXT("enumerated %s, type %d\n"),
-// //                val_name.c_str(),
-// //                val_type));
-//
-//     // *TODO*: move these strings...
-//     if (val_name == ACE_TEXT("server"))
-//     {
-//       serverHostname_out = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("port"))
-//     {
-//       serverPortNumber_out = ::atoi(val_value.c_str());
-//     }
-//     else if (val_name == ACE_TEXT("password"))
-//     {
-//       loginOptions_out.password = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("nick"))
-//     {
-//       loginOptions_out.nick = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("user"))
-//     {
-//       loginOptions_out.user.username = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("realname"))
-//     {
-//       loginOptions_out.user.realname = val_value.c_str();
-//     }
-//     else if (val_name == ACE_TEXT("channel"))
-//     {
-//       loginOptions_out.channel = val_value.c_str();
-//     }
-//     else
-//     {
-//       ACE_ERROR((LM_ERROR,
-//                  ACE_TEXT("unexpected key \"%s\", continuing\n"),
-//                  val_name.c_str()));
-//     } // end ELSE
-//
-//     ++val_index;
-//   } // end WHILE
+   // find/open "connection" section...
+   if (config_heap.open_section(config_heap.root_section(),
+                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER),
+                                0, // MUST exist !
+                                section_key) != 0)
+   {
+     ACE_ERROR((LM_ERROR,
+                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
+                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CNF_CONNECTION_SECTION_HEADER)));
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("imported \"%s\"...\n"),
-//              configFilename_in.c_str()));
+     return;
+   } // end IF
+
+   // import values...
+   val_index = 0;
+   while (config_heap.enumerate_values(section_key,
+                                       val_index,
+                                       val_name,
+                                       val_type) == 0)
+   {
+     if (config_heap.get_string_value(section_key,
+                                      val_name.c_str(),
+                                      val_value))
+     {
+       ACE_ERROR((LM_ERROR,
+                  ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
+                  val_name.c_str()));
+
+       return;
+     } // end IF
+
+ //     ACE_DEBUG((LM_DEBUG,
+ //                ACE_TEXT("enumerated %s, type %d\n"),
+ //                val_name.c_str(),
+ //                val_type));
+
+     // *TODO*: move these strings...
+     if (val_name == ACE_TEXT("server"))
+     {
+       config_out.network_config.server = val_value.c_str();
+     }
+     else if (val_name == ACE_TEXT("port"))
+     {
+       config_out.network_config.port = ::atoi(val_value.c_str());
+     }
+     else if (val_name == ACE_TEXT("password"))
+     {
+       config_out.network_config.password = val_value.c_str();
+     }
+     else if (val_name == ACE_TEXT("nick"))
+     {
+       config_out.network_config.nick = val_value.c_str();
+     }
+     else if (val_name == ACE_TEXT("user"))
+     {
+       config_out.network_config.user = val_value.c_str();
+     }
+     else if (val_name == ACE_TEXT("realname"))
+     {
+       config_out.network_config.realname = val_value.c_str();
+     }
+     else if (val_name == ACE_TEXT("channel"))
+     {
+       config_out.network_config.channel = val_value.c_str();
+     }
+     else
+     {
+       ACE_ERROR((LM_ERROR,
+                  ACE_TEXT("unexpected key \"%s\", continuing\n"),
+                  val_name.c_str()));
+     } // end ELSE
+
+     ++val_index;
+   } // end WHILE
+
+   ACE_DEBUG((LM_DEBUG,
+              ACE_TEXT("imported \"%s\"...\n"),
+              iniFilename_in.c_str()));
 }
 
 void
@@ -2411,7 +2491,8 @@ ACE_TMAIN(int argc_in,
   config.audio_config.format               = RPG_CLIENT_DEF_AUDIO_FORMAT;
   config.audio_config.channels             = RPG_CLIENT_DEF_AUDIO_CHANNELS;
   config.audio_config.samples              = RPG_CLIENT_DEF_AUDIO_SAMPLES;
-  config.audio_config.useCD                = true;
+  config.audio_config.mix_channels         = RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS;
+  config.audio_config.use_CD               = RPG_CLIENT_DEF_AUDIO_USE_CD;
   config.sound_directory = base_data_path;
   config.sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -2441,6 +2522,15 @@ ACE_TMAIN(int argc_in,
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #endif
   config.graphics_dictionary               = graphicsDictionary;
+
+  // *** network ***
+  config.network_config.server   = RPG_CLIENT_DEF_NETWORK_SERVER;
+  config.network_config.port     = RPG_CLIENT_DEF_NETWORK_PORT;
+  config.network_config.password = RPG_CLIENT_DEF_NETWORK_PASSWORD;
+  config.network_config.nick     = RPG_CLIENT_DEF_NETWORK_NICK;
+  config.network_config.user     = RPG_CLIENT_DEF_NETWORK_USER;
+  config.network_config.realname = RPG_CLIENT_DEF_NETWORK_REALNAME;
+  config.network_config.channel  = RPG_CLIENT_DEF_NETWORK_CHANNEL;
 
   // *** magic ***
   config.magic_dictionary                  = magicDictionary;
@@ -2484,20 +2574,21 @@ ACE_TMAIN(int argc_in,
                     config);
 
   // step2a: init SDL
-  if (SDL_Init(SDL_INIT_TIMER |                                   // timers
-               SDL_INIT_AUDIO |                                   // audio
-               ((videoDriverEnv == false) ? SDL_INIT_VIDEO : 0) | // video now or later
-               (config.audio_config.useCD ? SDL_INIT_CDROM : 0) | // audioCD playback
-               //SDL_INIT_JOYSTICK |                                // joystick
-               SDL_INIT_NOPARACHUTE | // "...Prevents SDL from catching fatal signals..."
+  Uint32 sdl_init_flags = 0;
+  sdl_init_flags |= SDL_INIT_TIMER;                                     // timers
+  sdl_init_flags |= (config.audio_config.mute    ? 0 : SDL_INIT_AUDIO); // audio
+  sdl_init_flags |= (videoDriverEnv              ? 0 : SDL_INIT_VIDEO); // video (now or later)
+  sdl_init_flags |= (!config.audio_config.use_CD ? 0 : SDL_INIT_CDROM); // audioCD playback
+  //sdl_init_flags |= SDL_INIT_JOYSTICK;                                  // joystick
+  sdl_init_flags |= SDL_INIT_NOPARACHUTE;                               /**< Don't catch fatal signals */
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-               SDL_INIT_EVENTTHREAD) == -1)                       // dedicated event handler
-#else
-               0) == -1)
+  sdl_init_flags |= SDL_INIT_EVENTTHREAD;                               /**< Not supported on all OS's */
 #endif
+  if (SDL_Init(sdl_init_flags) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
+               ACE_TEXT("failed to SDL_Init(%u): \"%s\", aborting\n"),
+               sdl_init_flags,
                SDL_GetError()));
 
     return EXIT_FAILURE;

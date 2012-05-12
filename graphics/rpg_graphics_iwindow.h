@@ -47,6 +47,7 @@ class RPG_Graphics_IWindow
                     const unsigned int& = 0,      // offset x (top-left = [0,0])
                     const unsigned int& = 0) = 0; // offset y (top-left = [0,0])
   virtual void refresh(SDL_Surface* = NULL) = 0; // target surface (default: screen)
+  virtual RPG_Graphics_IWindow* child(const RPG_Graphics_WindowType&) = 0; // type
 
   virtual void clip(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])

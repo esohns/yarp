@@ -325,6 +325,16 @@ RPG_Client_WindowLevel::toggleMiniMap()
   myDrawMinimap = !myDrawMinimap;
 }
 
+bool
+RPG_Client_WindowLevel::showMiniMap() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::showMiniMap"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  return myDrawMinimap;
+}
+
 void
 RPG_Client_WindowLevel::toggleVisionBlend()
 {
@@ -425,6 +435,45 @@ RPG_Client_WindowLevel::drawBorder(SDL_Surface* targetSurface_in,
 
   ACE_NOTREACHED(ACE_TEXT("not reached..."));
   ACE_ASSERT(false);
+}
+
+void
+RPG_Client_WindowLevel::drawChild(const RPG_Graphics_WindowType& child_in,
+                                  SDL_Surface* targetSurface_in,
+                                  const unsigned int& offsetX_in,
+                                  const unsigned int& offsetY_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::drawChild"));
+
+  // sanity check(s)
+  ACE_ASSERT(child_in != RPG_GRAPHICS_WINDOWTYPE_INVALID);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  // set target surface
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+
+  // draw any child(ren) of a specific type
+  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
+       iterator != myChildren.end();
+       iterator++)
+  {
+    if (((*iterator)->getType() != child_in) ||
+        ((child_in == WINDOW_MINIMAP) && !myDrawMinimap)) // minimap switched off...
+      continue;
+
+    try
+    {
+      (*iterator)->draw(targetSurface,
+                        offsetX_in,
+                        offsetY_in);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
+    }
+  } // end FOR
 }
 
 void
@@ -532,11 +581,27 @@ RPG_Client_WindowLevel::setBlendRadius(const unsigned char& radius_in)
 }
 
 void
+RPG_Client_WindowLevel::updateMinimap()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::updateMinimap"));
+
+  // sanity check
+  if (!showMiniMap())
+    return;
+
+  drawChild(WINDOW_MINIMAP,
+            NULL,
+            0, 0);
+}
+
+void
 RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                              const unsigned int& offsetX_in,
                              const unsigned int& offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::draw"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
@@ -641,507 +706,504 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   //   2. blend (previously) seen tiles ("memory")
 
   SDL_Rect dirty_region = {0, 0, 0, 0};
+
+  int i, j;
+  RPG_Client_SignedPosition_t current_map_position = std::make_pair(std::numeric_limits<int>::max(),
+                                                                    std::numeric_limits<int>::max());
+  RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
+  RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
+  unsigned int floor_column_index = 0;
+  RPG_Graphics_Position_t screen_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                            std::numeric_limits<unsigned int>::max());
+  RPG_Map_Size_t map_size = myEngine->getSize(false);
+  RPG_Map_Element current_element = MAPELEMENT_INVALID;
+  bool is_visible, has_been_seen;
+  RPG_Client_BlendingMaskCacheIterator_t blendmask_iterator = myLightingCache.end();
+  RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
+
+  // debug info
+  SDL_Rect rect = {0, 0, 0, 0};
+  std::ostringstream converter;
+  std::string tile_text;
+  RPG_Graphics_TextSize_t tile_text_size;
+  RPG_Map_Position_t map_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                    std::numeric_limits<unsigned int>::max());
+
+  //// "clear" map "window"
+  //clear();
+
+  // pass 1
+  for (i = -static_cast<int>(top_right.second);
+        i <= static_cast<int>(top_right.second);
+        i++)
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    current_map_position.second = myView.second + i;
+    // step0: off the map ? --> continue
+    if ((current_map_position.second < 0) ||
+        (current_map_position.second >= static_cast<int>(map_size.second)))
+      continue;
 
-    int i, j;
-    RPG_Client_SignedPosition_t current_map_position = std::make_pair(std::numeric_limits<int>::max(),
-                                                                      std::numeric_limits<int>::max());
-    RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
-    RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
-    unsigned int floor_column_index = 0;
-    RPG_Graphics_Position_t screen_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                             std::numeric_limits<unsigned int>::max());
-    RPG_Map_Size_t map_size = myEngine->getSize(false);
-    RPG_Map_Element current_element = MAPELEMENT_INVALID;
-    bool is_visible, has_been_seen;
-    RPG_Client_BlendingMaskCacheIterator_t blendmask_iterator = myLightingCache.end();
-    RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
+    // step1: floor tile rotation
+    begin_row = myCurrentFloorSet.tiles.begin();
+    //std::advance(begin_row, (current_map_position.second % myCurrentFloorSet.rows) * myCurrentFloorSet.columns);
+    std::advance(begin_row, current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
 
-    // debug info
-    SDL_Rect rect = {0, 0, 0, 0};
-    std::ostringstream converter;
-    std::string tile_text;
-    RPG_Graphics_TextSize_t tile_text_size;
-    RPG_Map_Position_t map_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                     std::numeric_limits<unsigned int>::max());
-
-    //// "clear" map "window"
-    //clear();
-
-    // pass 1
-    for (i = -static_cast<int>(top_right.second);
-         i <= static_cast<int>(top_right.second);
-         i++)
+    for (j = diff + i;
+          (j + i) <= sum;
+          j++)
     {
-      current_map_position.second = myView.second + i;
+      current_map_position.first = myView.first + j;
+
       // step0: off the map ? --> continue
-      if ((current_map_position.second < 0) ||
-          (current_map_position.second >= static_cast<int>(map_size.second)))
+      if ((current_map_position.first < 0) ||
+          (current_map_position.first >= static_cast<int>(map_size.first)))
         continue;
 
-      // step1: floor tile rotation
-      begin_row = myCurrentFloorSet.tiles.begin();
-      //std::advance(begin_row, (current_map_position.second % myCurrentFloorSet.rows) * myCurrentFloorSet.columns);
-      std::advance(begin_row, current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
+      is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
+      has_been_seen = myClient->hasSeen(active_entity_id, current_map_position);
+      current_element = myEngine->getElement(current_map_position,
+                                              false);
+      ACE_ASSERT(current_element != MAPELEMENT_INVALID);
 
-      for (j = diff + i;
-           (j + i) <= sum;
-           j++)
+      // map --> screen coordinates
+//       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
+//       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
+      screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
+                                                              mySize,
+                                                              myView);
+
+      // step1: unmapped areas
+      if ((current_element == MAPELEMENT_UNMAPPED) ||
+          // *NOTE*: walls are drawn together with the floor...
+          (current_element == MAPELEMENT_WALL))
       {
-        current_map_position.first = myView.first + j;
-
-        // step0: off the map ? --> continue
-        if ((current_map_position.first < 0) ||
-            (current_map_position.first >= static_cast<int>(map_size.first)))
-          continue;
-
-        is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
-        has_been_seen = myClient->hasSeen(active_entity_id, current_map_position);
-        current_element = myEngine->getElement(current_map_position,
-                                               false);
-        ACE_ASSERT(current_element != MAPELEMENT_INVALID);
-
-        // map --> screen coordinates
-  //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
-  //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-        screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                                mySize,
-                                                                myView);
-
-        // step1: unmapped areas
-        if ((current_element == MAPELEMENT_UNMAPPED) ||
-            // *NOTE*: walls are drawn together with the floor...
-            (current_element == MAPELEMENT_WALL))
-        {
-          RPG_Graphics_Surface::put(screen_position.first,
-                                    screen_position.second,
-                                    ((is_visible || has_been_seen) ? *myOffMapTile : *myInvisibleTile),
-                                    targetSurface);
-
-          // advance floor iterator
-          //std::advance(floor_iterator, myCurrentFloorSet.rows);
-
-          continue;
-        } // end IF
-
-        // step2: floor
-        // floor tile rotation
-        floor_iterator = begin_row;
-        //std::advance(floor_iterator, current_map_position.first % myCurrentFloorSet.columns);
-        std::advance(floor_iterator, (myCurrentFloorSet.rows * (current_map_position.first % myCurrentFloorSet.columns)));
-
-        if ((current_element == MAPELEMENT_FLOOR) ||
-            (current_element == MAPELEMENT_DOOR))
-        {
-          // blend tile ? 
-          if (is_visible)
-          {
-            if ((static_cast<unsigned int>(current_map_position.first)  != active_position.first) ||
-                (static_cast<unsigned int>(current_map_position.second) != active_position.second))
-            {
-              // step0: find blend mask
-              blendmask_iterator = myLightingCache.begin();
-              std::advance(blendmask_iterator,
-                           RPG_Map_Common_Tools::distanceMax(active_position,
-                                                             current_map_position) - 1);
-
-              // step1: get background
-              RPG_Graphics_Surface::copy(*(*floor_iterator).surface,
-                                         *myVisionTempTile);
-
-              // step2: blend tiles
-              if (SDL_BlitSurface(*blendmask_iterator, // source
-                                  NULL,                // aspect (--> everything)
-                                  myVisionTempTile,    // target
-                                  &dirty_region))      // aspect
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
-                           SDL_GetError()));
-            } // end IF
-          } // end IF
-          else if (has_been_seen)
-          {
-            // step1: get background
-            RPG_Graphics_Surface::copy(*(*floor_iterator).surface,
-                                       *myVisionTempTile);
-
-            // step2: blend tiles
-            if (SDL_BlitSurface(myVisionBlendTile, // source
-                                NULL,              // aspect (--> everything)
-                                myVisionTempTile,  // target
-                                &dirty_region))    // aspect
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
-                         SDL_GetError()));
-          } // end IF
-          RPG_Graphics_Surface::put(screen_position.first,
-                                    screen_position.second,
-                                    (is_visible ? (((static_cast<unsigned int>(current_map_position.first)  == active_position.first) &&
-                                                    (static_cast<unsigned int>(current_map_position.second) == active_position.second)) ? *(*floor_iterator).surface
-                                                                                                                                        : *myVisionTempTile)
-                                                : (has_been_seen ? *myVisionTempTile
-                                                                 : *myInvisibleTile)),
-                                    targetSurface);
-
-#ifdef _DEBUG
-          if (myShowCoordinates)
-          {
-            // debug info
-            rect.x = screen_position.first;
-            rect.y = screen_position.second;
-            rect.w = (*floor_iterator).surface->w;
-            rect.h = (*floor_iterator).surface->h;
-            //RPG_Graphics_Surface::putRect(rect,                              // rectangle
-            //                              RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR, // color
-            //                              targetSurface);                    // target surface
-            converter.str(ACE_TEXT(""));
-            converter.clear();
-            tile_text = ACE_TEXT("[");
-            converter << current_map_position.first;
-            tile_text += converter.str();
-            tile_text += ACE_TEXT(",");
-            converter.str(ACE_TEXT(""));
-            converter.clear();
-            converter << current_map_position.second;
-            tile_text += converter.str();
-            tile_text += ACE_TEXT("]");
-            tile_text_size = RPG_Graphics_Common_Tools::textSize(FONT_MAIN_SMALL,
-                                                                 tile_text);
-            RPG_Graphics_Surface::putText(FONT_MAIN_SMALL,
-                                          tile_text,
-                                          RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-                                                                                  *targetSurface),
-                                          true, // add shade
-                                          RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                                  *targetSurface),
-                                          (rect.x + ((rect.w - tile_text_size.first) / 2)),
-                                          (rect.y + ((rect.h - tile_text_size.second) / 2)),
-                                          targetSurface);
-          } // end IF
-#endif
-
-          // step3: floor edges
-          floor_edge_iterator = myFloorEdgeTiles.find(current_map_position);
-          if ((floor_edge_iterator != myFloorEdgeTiles.end()) &&
-              is_visible)
-          {
-            // straight edges
-            if ((*floor_edge_iterator).second.west.surface)
-              RPG_Graphics_Surface::put(screen_position.first +
-                                        (*floor_edge_iterator).second.west.offset_x,
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.west.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.west.offset_y),
-                                        *(myCurrentFloorEdgeSet.west.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.north.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                         (*floor_edge_iterator).second.north.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.north.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.north.offset_y),
-                                        *(myCurrentFloorEdgeSet.north.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.east.surface)
-              RPG_Graphics_Surface::put(screen_position.first +
-                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                        (*floor_edge_iterator).second.east.offset_x,
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.east.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.east.offset_y),
-                                        *(myCurrentFloorEdgeSet.east.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.south.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                        (*floor_edge_iterator).second.south.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.south.surface->h +
-                                          (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                          (*floor_edge_iterator).second.south.offset_y),
-                                        *(myCurrentFloorEdgeSet.south.surface),
-                                        targetSurface);
-            // corners
-            if ((*floor_edge_iterator).second.south_west.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (*floor_edge_iterator).second.south_west.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.south_west.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.south_west.offset_y),
-                                        *(myCurrentFloorEdgeSet.south_west.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.north_west.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                         (*floor_edge_iterator).second.north_west.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.north_west.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.north_west.offset_y),
-                                        *(myCurrentFloorEdgeSet.north_west.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.south_east.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                         (*floor_edge_iterator).second.south_east.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.south_east.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.south_east.offset_y),
-                                        *(myCurrentFloorEdgeSet.south_east.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.north_east.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                         (*floor_edge_iterator).second.north_east.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.north_east.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.north_east.offset_y),
-                                        *(myCurrentFloorEdgeSet.north_east.surface),
-                                        targetSurface);
-            // (square) corners
-            if ((*floor_edge_iterator).second.top.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (*floor_edge_iterator).second.top.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.top.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.top.offset_y),
-                                        *(myCurrentFloorEdgeSet.top.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.right.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                         (*floor_edge_iterator).second.right.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.right.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.right.offset_y),
-                                        *(myCurrentFloorEdgeSet.right.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.left.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (*floor_edge_iterator).second.left.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.left.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.left.offset_y),
-                                        *(myCurrentFloorEdgeSet.left.surface),
-                                        targetSurface);
-            if ((*floor_edge_iterator).second.bottom.surface)
-              RPG_Graphics_Surface::put((screen_position.first +
-                                         (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                         (*floor_edge_iterator).second.bottom.offset_x),
-                                        (screen_position.second -
-                                         (*floor_edge_iterator).second.bottom.surface->h +
-                                         (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                         (*floor_edge_iterator).second.bottom.offset_y),
-                                        *(myCurrentFloorEdgeSet.bottom.surface),
-                                        targetSurface);
-          } // end IF
-        } // end IF
+        RPG_Graphics_Surface::put(screen_position.first,
+                                  screen_position.second,
+                                  ((is_visible || has_been_seen) ? *myOffMapTile : *myInvisibleTile),
+                                  targetSurface);
 
         // advance floor iterator
         //std::advance(floor_iterator, myCurrentFloorSet.rows);
-      } // end FOR
-    } // end FOR
 
-    // pass 2
-    RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
-    RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
-    RPG_Engine_EntityID_t entity_id = 0;
-    for (i = -static_cast<int>(top_right.second);
-         i <= static_cast<int>(top_right.second);
-         i++)
+        continue;
+      } // end IF
+
+      // step2: floor
+      // floor tile rotation
+      floor_iterator = begin_row;
+      //std::advance(floor_iterator, current_map_position.first % myCurrentFloorSet.columns);
+      std::advance(floor_iterator, (myCurrentFloorSet.rows * (current_map_position.first % myCurrentFloorSet.columns)));
+
+      if ((current_element == MAPELEMENT_FLOOR) ||
+          (current_element == MAPELEMENT_DOOR))
+      {
+        // blend tile ? 
+        if (is_visible)
+        {
+          if ((static_cast<unsigned int>(current_map_position.first)  != active_position.first) ||
+              (static_cast<unsigned int>(current_map_position.second) != active_position.second))
+          {
+            // step0: find blend mask
+            blendmask_iterator = myLightingCache.begin();
+            std::advance(blendmask_iterator,
+                          RPG_Map_Common_Tools::distanceMax(active_position,
+                                                            current_map_position) - 1);
+
+            // step1: get background
+            RPG_Graphics_Surface::copy(*(*floor_iterator).surface,
+                                        *myVisionTempTile);
+
+            // step2: blend tiles
+            if (SDL_BlitSurface(*blendmask_iterator, // source
+                                NULL,                // aspect (--> everything)
+                                myVisionTempTile,    // target
+                                &dirty_region))      // aspect
+              ACE_DEBUG((LM_ERROR,
+                          ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
+                          SDL_GetError()));
+          } // end IF
+        } // end IF
+        else if (has_been_seen)
+        {
+          // step1: get background
+          RPG_Graphics_Surface::copy(*(*floor_iterator).surface,
+                                      *myVisionTempTile);
+
+          // step2: blend tiles
+          if (SDL_BlitSurface(myVisionBlendTile, // source
+                              NULL,              // aspect (--> everything)
+                              myVisionTempTile,  // target
+                              &dirty_region))    // aspect
+            ACE_DEBUG((LM_ERROR,
+                        ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
+                        SDL_GetError()));
+        } // end IF
+        RPG_Graphics_Surface::put(screen_position.first,
+                                  screen_position.second,
+                                  (is_visible ? (((static_cast<unsigned int>(current_map_position.first)  == active_position.first) &&
+                                                  (static_cast<unsigned int>(current_map_position.second) == active_position.second)) ? *(*floor_iterator).surface
+                                                                                                                                      : *myVisionTempTile)
+                                              : (has_been_seen ? *myVisionTempTile
+                                                                : *myInvisibleTile)),
+                                  targetSurface);
+
+#ifdef _DEBUG
+        if (myShowCoordinates)
+        {
+          // debug info
+          rect.x = screen_position.first;
+          rect.y = screen_position.second;
+          rect.w = (*floor_iterator).surface->w;
+          rect.h = (*floor_iterator).surface->h;
+          //RPG_Graphics_Surface::putRect(rect,                              // rectangle
+          //                              RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR, // color
+          //                              targetSurface);                    // target surface
+          converter.str(ACE_TEXT(""));
+          converter.clear();
+          tile_text = ACE_TEXT("[");
+          converter << current_map_position.first;
+          tile_text += converter.str();
+          tile_text += ACE_TEXT(",");
+          converter.str(ACE_TEXT(""));
+          converter.clear();
+          converter << current_map_position.second;
+          tile_text += converter.str();
+          tile_text += ACE_TEXT("]");
+          tile_text_size = RPG_Graphics_Common_Tools::textSize(FONT_MAIN_SMALL,
+                                                                tile_text);
+          RPG_Graphics_Surface::putText(FONT_MAIN_SMALL,
+                                        tile_text,
+                                        RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                                *targetSurface),
+                                        true, // add shade
+                                        RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                *targetSurface),
+                                        (rect.x + ((rect.w - tile_text_size.first) / 2)),
+                                        (rect.y + ((rect.h - tile_text_size.second) / 2)),
+                                        targetSurface);
+        } // end IF
+#endif
+
+        // step3: floor edges
+        floor_edge_iterator = myFloorEdgeTiles.find(current_map_position);
+        if ((floor_edge_iterator != myFloorEdgeTiles.end()) &&
+            is_visible)
+        {
+          // straight edges
+          if ((*floor_edge_iterator).second.west.surface)
+            RPG_Graphics_Surface::put(screen_position.first +
+                                      (*floor_edge_iterator).second.west.offset_x,
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.west.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.west.offset_y),
+                                      *(myCurrentFloorEdgeSet.west.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.north.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                        (*floor_edge_iterator).second.north.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.north.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.north.offset_y),
+                                      *(myCurrentFloorEdgeSet.north.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.east.surface)
+            RPG_Graphics_Surface::put(screen_position.first +
+                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                      (*floor_edge_iterator).second.east.offset_x,
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.east.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.east.offset_y),
+                                      *(myCurrentFloorEdgeSet.east.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.south.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                      (*floor_edge_iterator).second.south.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.south.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.south.offset_y),
+                                      *(myCurrentFloorEdgeSet.south.surface),
+                                      targetSurface);
+          // corners
+          if ((*floor_edge_iterator).second.south_west.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (*floor_edge_iterator).second.south_west.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.south_west.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.south_west.offset_y),
+                                      *(myCurrentFloorEdgeSet.south_west.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.north_west.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                        (*floor_edge_iterator).second.north_west.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.north_west.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.north_west.offset_y),
+                                      *(myCurrentFloorEdgeSet.north_west.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.south_east.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                        (*floor_edge_iterator).second.south_east.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.south_east.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.south_east.offset_y),
+                                      *(myCurrentFloorEdgeSet.south_east.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.north_east.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                        (*floor_edge_iterator).second.north_east.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.north_east.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.north_east.offset_y),
+                                      *(myCurrentFloorEdgeSet.north_east.surface),
+                                      targetSurface);
+          // (square) corners
+          if ((*floor_edge_iterator).second.top.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (*floor_edge_iterator).second.top.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.top.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                      (*floor_edge_iterator).second.top.offset_y),
+                                      *(myCurrentFloorEdgeSet.top.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.right.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                        (*floor_edge_iterator).second.right.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.right.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.right.offset_y),
+                                      *(myCurrentFloorEdgeSet.right.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.left.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (*floor_edge_iterator).second.left.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.left.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.left.offset_y),
+                                      *(myCurrentFloorEdgeSet.left.surface),
+                                      targetSurface);
+          if ((*floor_edge_iterator).second.bottom.surface)
+            RPG_Graphics_Surface::put((screen_position.first +
+                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                        (*floor_edge_iterator).second.bottom.offset_x),
+                                      (screen_position.second -
+                                        (*floor_edge_iterator).second.bottom.surface->h +
+                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                        (*floor_edge_iterator).second.bottom.offset_y),
+                                      *(myCurrentFloorEdgeSet.bottom.surface),
+                                      targetSurface);
+        } // end IF
+      } // end IF
+
+      // advance floor iterator
+      //std::advance(floor_iterator, myCurrentFloorSet.rows);
+    } // end FOR
+  } // end FOR
+
+  // pass 2
+  RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
+  RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
+  RPG_Engine_EntityID_t entity_id = 0;
+  for (i = -static_cast<int>(top_right.second);
+        i <= static_cast<int>(top_right.second);
+        i++)
+  {
+    current_map_position.second = myView.second + i;
+
+    // step0: off the map ? --> continue
+    if ((current_map_position.second < 0) ||
+        (current_map_position.second >= static_cast<int>(map_size.second)))
+      continue;
+
+    for (j = diff + i;
+          (j + i) <= sum;
+          j++)
     {
-      current_map_position.second = myView.second + i;
+      current_map_position.first = myView.first + j;
 
       // step0: off the map ? --> continue
-      if ((current_map_position.second < 0) ||
-          (current_map_position.second >= static_cast<int>(map_size.second)))
+      if ((current_map_position.first < 0) ||
+          (current_map_position.first >= static_cast<int>(map_size.first)))
         continue;
 
-      for (j = diff + i;
-           (j + i) <= sum;
-           j++)
+      is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
+
+      // transform map coordinates into screen coordinates
+//       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
+//       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
+      screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
+                                                              mySize,
+                                                              myView);
+
+      wall_iterator = myWallTiles.find(current_map_position);
+      door_iterator = myDoorTiles.find(current_map_position);
+
+      // step1: walls (west & north)
+      if ((wall_iterator != myWallTiles.end()) &&
+          is_visible)
       {
-        current_map_position.first = myView.first + j;
-
-        // step0: off the map ? --> continue
-        if ((current_map_position.first < 0) ||
-            (current_map_position.first >= static_cast<int>(map_size.first)))
-          continue;
-
-        is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
-
-        // transform map coordinates into screen coordinates
-  //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
-  //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-        screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                                mySize,
-                                                                myView);
-
-        wall_iterator = myWallTiles.find(current_map_position);
-        door_iterator = myDoorTiles.find(current_map_position);
-
-        // step1: walls (west & north)
-        if ((wall_iterator != myWallTiles.end()) &&
-            is_visible)
-        {
-          if ((*wall_iterator).second.west.surface)
-            RPG_Graphics_Surface::put(screen_position.first,
-                                      (screen_position.second -
-                                       (*wall_iterator).second.west.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
-                                      *(myCurrentWallSet.west.surface),
-                                      targetSurface);
-          if ((*wall_iterator).second.north.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
-                                      (screen_position.second -
-                                       (*wall_iterator).second.north.surface->h +
-                                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
-                                      *(myCurrentWallSet.north.surface),
-                                      targetSurface);
-        } // end IF
-
-        // step2: doors
-        if ((door_iterator != myDoorTiles.end()) &&
-            is_visible)
-        {
-          // *NOTE*: doors are drawn in the "middle" of the floor tile
-          RPG_Graphics_Surface::put((screen_position.first +
-                                     (*door_iterator).second.offset_x +
-                                     (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 4)),
-                                    (screen_position.second +
-                                     (*door_iterator).second.offset_y -
-                                     (*door_iterator).second.surface->h +
-                                     (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2) -
-                                     (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 4)),
-                                    *(*door_iterator).second.surface,
-                                    targetSurface);
-        } // end IF
-
-        // step3: furniture & traps
-
-        // step4: objects
-
-        // step5: creatures
-        entity_id = myEngine->hasEntity(current_map_position,
-                                        false);
-        if (entity_id && is_visible)
-        {
-          // invalidate bg
-          RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->invalidateBG(entity_id);
-
-          // draw creature
-          RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(entity_id,
-                                                               screen_position,
-                                                               targetSurface,
-                                                               dirty_region);
-        } // end IF
-
-        // step6: effects
-
-        // step7: walls (south & east)
-        if ((wall_iterator != myWallTiles.end()) &&
-            is_visible)
-        {
-          if ((*wall_iterator).second.south.surface)
-            RPG_Graphics_Surface::put(screen_position.first,
-                                      (screen_position.second -
-                                       (*wall_iterator).second.south.surface->h +
-                                       RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
-                                      *(*wall_iterator).second.south.surface,
-                                      targetSurface);
-          if ((*wall_iterator).second.east.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                       (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
-                                      (screen_position.second -
-                                       (*wall_iterator).second.east.surface->h +
-                                       RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
-                                      *(*wall_iterator).second.east.surface,
-                                      targetSurface);
-        } // end IF
-
-        // step8: ceiling
-        // *TODO*: this is static information: compute once / level and use a lookup-table here...
-        if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
-                                                *myEngine,
-                                                false) &&
-            is_visible)
-        {
+        if ((*wall_iterator).second.west.surface)
           RPG_Graphics_Surface::put(screen_position.first,
                                     (screen_position.second -
-                                     (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
-                                                                          : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
-                                     (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8 : 2))),
-                                    *myCeilingTile,
+                                      (*wall_iterator).second.west.surface->h +
+                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                    *(myCurrentWallSet.west.surface),
                                     targetSurface);
-        } // end IF
-      } // end FOR
+        if ((*wall_iterator).second.north.surface)
+          RPG_Graphics_Surface::put((screen_position.first +
+                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                    (screen_position.second -
+                                      (*wall_iterator).second.north.surface->h +
+                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+                                    *(myCurrentWallSet.north.surface),
+                                    targetSurface);
+      } // end IF
+
+      // step2: doors
+      if ((door_iterator != myDoorTiles.end()) &&
+          is_visible)
+      {
+        // *NOTE*: doors are drawn in the "middle" of the floor tile
+        RPG_Graphics_Surface::put((screen_position.first +
+                                    (*door_iterator).second.offset_x +
+                                    (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 4)),
+                                  (screen_position.second +
+                                    (*door_iterator).second.offset_y -
+                                    (*door_iterator).second.surface->h +
+                                    (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2) -
+                                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 4)),
+                                  *(*door_iterator).second.surface,
+                                  targetSurface);
+      } // end IF
+
+      // step3: furniture & traps
+
+      // step4: objects
+
+      // step5: creatures
+      entity_id = myEngine->hasEntity(current_map_position,
+                                      false);
+      if (entity_id && is_visible)
+      {
+        // invalidate bg
+        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->invalidateBG(entity_id);
+
+        // draw creature
+        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(entity_id,
+                                                              screen_position,
+                                                              targetSurface,
+                                                              dirty_region);
+      } // end IF
+
+      // step6: effects
+
+      // step7: walls (south & east)
+      if ((wall_iterator != myWallTiles.end()) &&
+          is_visible)
+      {
+        if ((*wall_iterator).second.south.surface)
+          RPG_Graphics_Surface::put(screen_position.first,
+                                    (screen_position.second -
+                                      (*wall_iterator).second.south.surface->h +
+                                      RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
+                                    *(*wall_iterator).second.south.surface,
+                                    targetSurface);
+        if ((*wall_iterator).second.east.surface)
+          RPG_Graphics_Surface::put((screen_position.first +
+                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                    (screen_position.second -
+                                      (*wall_iterator).second.east.surface->h +
+                                      RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
+                                    *(*wall_iterator).second.east.surface,
+                                    targetSurface);
+      } // end IF
+
+      // step8: ceiling
+      // *TODO*: this is static information: compute once / level and use a lookup-table here...
+      if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
+                                              *myEngine,
+                                              false) &&
+          is_visible)
+      {
+        RPG_Graphics_Surface::put(screen_position.first,
+                                  (screen_position.second -
+                                    (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
+                                                                        : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
+                                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8 : 2))),
+                                  *myCeilingTile,
+                                  targetSurface);
+      } // end IF
     } // end FOR
+  } // end FOR
 
-    // pass 3
-    // - vision blending
-    //if (active_entity_id &&
-    //    myDoVisionBlend)
-    //{
-    //  unsigned int visible_radius = myEngine->getVisibleRadius(active_entity_id);
-    //  RPG_Map_Position_t entity_position = myEngine->getPosition(active_entity_id);
-    //  RPG_Client_BlendingMaskCacheIterator_t blendmask_iterator = myLightingCache.begin();
-    //  for (RPG_Map_PositionsConstIterator_t iterator = visible_positions.begin();
-    //       iterator != visible_positions.end();
-    //       iterator++)
-    //  {
-    //    if ((*iterator == entity_position) ||
-    //        !myEngine->isValid(*iterator))
-    //      continue; // done
+  // pass 3
+  // - vision blending
+  //if (active_entity_id &&
+  //    myDoVisionBlend)
+  //{
+  //  unsigned int visible_radius = myEngine->getVisibleRadius(active_entity_id);
+  //  RPG_Map_Position_t entity_position = myEngine->getPosition(active_entity_id);
+  //  RPG_Client_BlendingMaskCacheIterator_t blendmask_iterator = myLightingCache.begin();
+  //  for (RPG_Map_PositionsConstIterator_t iterator = visible_positions.begin();
+  //       iterator != visible_positions.end();
+  //       iterator++)
+  //  {
+  //    if ((*iterator == entity_position) ||
+  //        !myEngine->isValid(*iterator))
+  //      continue; // done
 
-    //    // step0: find blend mask
-    //    blendmask_iterator = myLightingCache.begin();
-    //    std::advance(blendmask_iterator,
-    //                 RPG_Map_Common_Tools::distanceMax(entity_position,
-    //                                                   *iterator) - 1);
+  //    // step0: find blend mask
+  //    blendmask_iterator = myLightingCache.begin();
+  //    std::advance(blendmask_iterator,
+  //                 RPG_Map_Common_Tools::distanceMax(entity_position,
+  //                                                   *iterator) - 1);
 
-    //    // blend visible tile
-    //    // step1: get background
-    //    screen_position = RPG_Graphics_Common_Tools::map2Screen(*iterator,
-    //                                                            mySize,
-    //                                                            myView);
-    //    RPG_Graphics_Surface::get(screen_position.first,
-    //                              screen_position.second,
-    //                              true, // use (fast) blitting method
-    //                              *targetSurface,
-    //                              *myVisionTempTile);
+  //    // blend visible tile
+  //    // step1: get background
+  //    screen_position = RPG_Graphics_Common_Tools::map2Screen(*iterator,
+  //                                                            mySize,
+  //                                                            myView);
+  //    RPG_Graphics_Surface::get(screen_position.first,
+  //                              screen_position.second,
+  //                              true, // use (fast) blitting method
+  //                              *targetSurface,
+  //                              *myVisionTempTile);
 
-    //    // step2: merge tiles
-    //    if (SDL_BlitSurface(*blendmask_iterator, // source
-    //                        NULL,                // aspect (--> everything)
-    //                        myVisionTempTile,    // target
-    //                        &dirty_region))      // aspect
-    //    {
-    //      ACE_DEBUG((LM_ERROR,
-    //                 ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-    //                 SDL_GetError()));
+  //    // step2: merge tiles
+  //    if (SDL_BlitSurface(*blendmask_iterator, // source
+  //                        NULL,                // aspect (--> everything)
+  //                        myVisionTempTile,    // target
+  //                        &dirty_region))      // aspect
+  //    {
+  //      ACE_DEBUG((LM_ERROR,
+  //                 ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+  //                 SDL_GetError()));
 
-    //      return;
-    //    } // end IF
+  //      return;
+  //    } // end IF
 
-    //    // step3: write result
-    //    RPG_Graphics_Surface::put(screen_position.first,
-    //                              screen_position.second,
-    //                              *myVisionTempTile,
-    //                              targetSurface);
-    //  } // end FOR
-    //} // end IF
-  } // end lock scope
+  //    // step3: write result
+  //    RPG_Graphics_Surface::put(screen_position.first,
+  //                              screen_position.second,
+  //                              *myVisionTempTile,
+  //                              targetSurface);
+  //  } // end FOR
+  //} // end IF
 
   // unlock engine
   myEngine->unlock();

@@ -239,9 +239,16 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
 
     ACE_ASSERT((*iter).chunk);
     if (!myIsMuted)
+    {
       result = Mix_PlayChannel(-1,            // play on the first free channel
                                (*iter).chunk, // data
                                0);            // don't loop
+      if (result == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to Mix_PlayChannel(\"%s\"): \"%s\", aborting\n"),
+                   RPG_Sound_EventHelper::RPG_Sound_EventToString(event_in).c_str(),
+                   Mix_GetError()));
+    } // end IF
     else
       result = 0;
   } // end lock scope

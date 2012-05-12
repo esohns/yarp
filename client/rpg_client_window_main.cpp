@@ -22,8 +22,9 @@
 #include "rpg_client_window_main.h"
 
 #include "rpg_client_defines.h"
-#include "rpg_client_window_level.h"
+#include "rpg_client_iwindow_level.h"
 #include "rpg_client_engine.h"
+#include "rpg_client_window_level.h"
 
 #include <rpg_graphics_defines.h>
 #include <rpg_graphics_surface.h>
@@ -380,12 +381,11 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         ACE_ASSERT(hotspot);
 
         // retrieve map window handle
-        RPG_Client_WindowLevel* level_window = dynamic_cast<RPG_Client_WindowLevel*>(getChild(WINDOW_MAP));
-        ACE_ASSERT(level_window);
-
         client_action.command = COMMAND_SET_VIEW;
+        client_action.window = child(WINDOW_MAP);
+        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(client_action.window);
+        ACE_ASSERT(level_window);
         client_action.position = level_window->getView();
-        client_action.window = level_window;
         switch (hotspot->getCursorType())
         {
           case CURSOR_SCROLL_UL:
@@ -550,15 +550,6 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
           (window_in->getType() != WINDOW_HOTSPOT)) // not a hotspot
         break;
 
-      // retrieve hotspot window handle
-      RPG_Graphics_HotSpot* hotspot = NULL;
-      hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
-      ACE_ASSERT(hotspot);
-
-      // retrieve map window handle
-      RPG_Client_WindowLevel* level_window = dynamic_cast<RPG_Client_WindowLevel*>(getChild(WINDOW_MAP));
-      ACE_ASSERT(level_window);
-
       if (myLastHoverTime)
       {
         // throttle scrolling
@@ -567,10 +558,19 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
       } // end ELSE
       myLastHoverTime = event_in.user.code;
 
-      // OK: scroll
       client_action.command = COMMAND_SET_VIEW;
+
+      // retrieve map window handle
+      client_action.window = child(WINDOW_MAP);
+      RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(client_action.window);
+      ACE_ASSERT(level_window);
+
+      // retrieve hotspot window handle
+      RPG_Graphics_HotSpot* hotspot = NULL;
+      hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
+      ACE_ASSERT(hotspot);
+
       client_action.position = level_window->getView();
-      client_action.window = level_window;
       switch (hotspot->getCursorType())
       {
         case CURSOR_SCROLL_UL:

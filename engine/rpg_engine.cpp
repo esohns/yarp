@@ -209,7 +209,7 @@ RPG_Engine::svc(void)
     handleEntities();
   } // end WHILE
 
-  // SHOULD NEVER-EVER GET HERE !
+  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
 
   return -1;
@@ -521,6 +521,19 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
     setActive(0);
 }
 
+bool
+RPG_Engine::exists(const RPG_Engine_EntityID_t& id_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::exists"));
+
+  // sanity check
+  ACE_ASSERT(id_in);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  return (myEntities.find(id_in) != myEntities.end());
+}
+
 void
 RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
                    const RPG_Engine_Action& action_in,
@@ -565,7 +578,14 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
 
           (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
         } // end IF
-        
+        else
+        {
+          // stop attacking
+          while (((*iterator).second->actions.front().command == COMMAND_ATTACK_FULL) ||
+                 ((*iterator).second->actions.front().command == COMMAND_ATTACK_STANDARD))
+            (*iterator).second->actions.pop_front();
+        } // end ELSE
+
         ACE_ASSERT((*iterator).second->actions.front().command == COMMAND_ATTACK);
         (*iterator).second->actions.pop_front();
         (*iterator).second->actions.push_front(action_in);
@@ -1136,7 +1156,7 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
                                           *iterator,
                                           obstacles,
                                           true) ? iterator++
-                                                : positions_out.erase(iterator++));
+                                                 : positions_out.erase(iterator++));
 }
 
 bool
@@ -1162,6 +1182,78 @@ RPG_Engine::canSee(const RPG_Engine_EntityID_t& id_in,
     myLock.release();
 
   return (visible_positions.find(position_in) != visible_positions.end());
+}
+
+bool
+RPG_Engine::canSee(const RPG_Engine_EntityID_t& id_in,
+                   const RPG_Engine_EntityID_t& target_in,
+                   const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::canSee"));
+
+  // sanity check
+  if ((id_in == 0) || (target_in == 0))
+    return false; // *CONSIDER*: false negative ?
+ 
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  RPG_Engine_EntitiesConstIterator_t iterator = myEntities.find(target_in);
+  ACE_ASSERT(iterator != myEntities.end());
+  if (iterator == myEntities.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+               target_in));
+
+    if (lockedAccess_in)
+      myLock.release();
+
+    // *CONSIDER*: false negative ?
+    return false;
+  } // end IF
+
+  // target using a light source ?
+  // *TODO*: consider magic light, spells, ...
+  bool target_equipped_a_light = false;
+  if ((*iterator).second->character->isPlayerCharacter())
+  {
+    RPG_Player_Player_Base* player_base = NULL;
+    player_base = dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
+    ACE_ASSERT(player_base);
+
+    target_equipped_a_light = (player_base->getEquipment().getLightSource() != RPG_ITEM_COMMODITYLIGHT_INVALID);
+  } // end IF
+  else
+  {
+    RPG_Monster* monster = NULL;
+    monster = dynamic_cast<RPG_Monster*>((*iterator).second->character);
+    ACE_ASSERT(monster);
+
+    target_equipped_a_light = (monster->getEquipment().getLightSource() != RPG_ITEM_COMMODITYLIGHT_INVALID);
+  } // end ELSE
+  RPG_Map_Position_t target_position = (*iterator).second->position;
+  if (!target_equipped_a_light)
+  {
+    if (lockedAccess_in)
+      myLock.release();
+
+    // can the source see the target position ?
+    return canSee(id_in,
+                  target_position,
+                  lockedAccess_in);
+  } // end IF
+
+  RPG_Map_Position_t source_position = getPosition(id_in, false);
+  RPG_Map_Positions_t obstacles = inherited2::getObstacles();
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return RPG_Map_Common_Tools::hasLineOfSight(source_position,
+                                              target_position,
+                                              obstacles,
+                                              false);
 }
 
 unsigned int
@@ -1247,14 +1339,14 @@ RPG_Engine::canReach(const RPG_Engine_EntityID_t& id_in,
   // step2: compute entity reach
   unsigned short base_reach = 0;
   bool absolute_reach = false;
-  unsigned short max_reach = (*iterator).second->character->getReach(base_reach,
-                                                                     absolute_reach);
+  unsigned int max_reach = (*iterator).second->character->getReach(base_reach,
+                                                                   absolute_reach) / RPG_ENGINE_FEET_PER_SQUARE;
 
   if (lockedAccess_in)
     myLock.release();
 
-  return (absolute_reach ? (static_cast<unsigned short>(range) == max_reach)
-                         : (static_cast<unsigned short>(range) <= max_reach));
+  return (absolute_reach ? (range == max_reach)
+                         : (range <= max_reach));
 }
 
 RPG_Engine_LevelMeta_t
@@ -1691,21 +1783,21 @@ RPG_Engine::handleEntities()
           // position blocked ?
           if (isBlocked(current_action.position))
           {
-            // *NOTE*: --> no/invalid path, cannot proceed...
-            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+            if ((*iterator).second->modes.find(ENTITYMODE_TRAVELLING) != (*iterator).second->modes.end())
+            {
+              // *NOTE*: --> no/invalid path, cannot proceed...
+              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
 
-            // remove all queued steps + [idle|travel] action
-            while ((*iterator).second->actions.front().command == COMMAND_STEP)
-              (*iterator).second->actions.pop_front();
-            if ((*iterator).second->actions.front().command == COMMAND_TRAVEL)
-              (*iterator).second->actions.pop_front();
-            action_complete = false;
+              // remove all queued steps + travel action
+              while ((*iterator).second->actions.front().command == COMMAND_STEP);
+                (*iterator).second->actions.pop_front();
+              ACE_ASSERT((*iterator).second->actions.front().command == COMMAND_TRAVEL);
+            } // end IF
+
+            action_complete = true;
 
             break;
           } // end IF
-
-          // OK: take a step...
-          (*iterator).second->position = current_action.position;
 
           // notify client window
           RPG_Engine_ClientParameters_t* parameters = NULL;
@@ -1731,9 +1823,9 @@ RPG_Engine::handleEntities()
           } // end IF
           *entity_id = (*iterator).first;
           parameters->push_back(entity_id);
-          RPG_Map_Position_t* position = NULL;
-          position = new(std::nothrow) RPG_Map_Position_t;
-          if (!position)
+          RPG_Map_Position_t* next_position = NULL;
+          next_position = new(std::nothrow) RPG_Map_Position_t;
+          if (!next_position)
           {
             ACE_DEBUG((LM_CRITICAL,
                        ACE_TEXT("unable to allocate memory, aborting\n")));
@@ -1744,9 +1836,28 @@ RPG_Engine::handleEntities()
 
             return;
           } // end IF
-          *position = (*iterator).second->position;
-          parameters->push_back(position);
+          *next_position = current_action.position;
+          parameters->push_back(next_position);
+          RPG_Map_Position_t* previous_position = NULL;
+          previous_position = new(std::nothrow) RPG_Map_Position_t;
+          if (!previous_position)
+          {
+            ACE_DEBUG((LM_CRITICAL,
+                       ACE_TEXT("unable to allocate memory, aborting\n")));
+
+            // clean up
+            delete entity_id;
+            delete next_position;
+            delete parameters;
+
+            return;
+          } // end IF
+          *previous_position = (*iterator).second->position;
+          parameters->push_back(previous_position);
           notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_POSITION, parameters));
+
+          // OK: take a step...
+          (*iterator).second->position = current_action.position;
 
           break;
         }

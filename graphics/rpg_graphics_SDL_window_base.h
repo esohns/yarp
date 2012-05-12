@@ -48,7 +48,12 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual RPG_Graphics_Size_t getSize(const bool& = false) const; // top-level ?
 
   virtual void clear(const Uint32& = RPG_Graphics_SDL_Tools::CLR32_BLACK);
+  //virtual void drawChild(const RPG_Graphics_WindowType&, // child type
+  //                       SDL_Surface* = NULL,            // target surface (default: screen)
+  //                       const unsigned int& = 0,        // offset x (top-left = [0,0])
+  //                       const unsigned int& = 0) = 0;   // offset y (top-left = [0,0])
   virtual void refresh(SDL_Surface* = NULL); // target surface (default: screen)
+  virtual RPG_Graphics_IWindow* child(const RPG_Graphics_WindowType&); // type
 
   virtual void clip(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
@@ -61,7 +66,6 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual void notify(const RPG_Graphics_Cursor&) const;
 
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
-  RPG_Graphics_IWindow* getChild(const RPG_Graphics_WindowType&); // type
 
  protected:
   // *NOTE*: window assumes responsibility for its background surface
