@@ -299,6 +299,7 @@ do_work(const std::string& name_in,
     level.level_meta.spawn_probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
     level.level_meta.max_spawned = RPG_ENGINE_DEF_AI_MAX_SPAWNED;
     level.level_meta.spawn_timer = -1;
+    level.level_meta.amble_probability = RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY;
 
     level.map = map;
   } // end IF

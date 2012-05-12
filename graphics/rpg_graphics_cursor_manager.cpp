@@ -99,7 +99,7 @@ RPG_Graphics_Cursor_Manager::~RPG_Graphics_Cursor_Manager()
 }
 
 void
-RPG_Graphics_Cursor_Manager::init(RPG_Graphics_SDLWindowBase* window_in)
+RPG_Graphics_Cursor_Manager::init(RPG_Graphics_IWindow* window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::init"));
 
@@ -654,7 +654,8 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_PositionList_t& mapP
 }
 
 void
-RPG_Graphics_Cursor_Manager::restoreHighlightBG(SDL_Surface* targetSurface_in)
+RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& viewPort_in,
+                                                SDL_Surface* targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::restoreHighlightBG"));
 
@@ -665,7 +666,6 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(SDL_Surface* targetSurface_in)
 
   RPG_Graphics_Position_t screen_position;
   RPG_Graphics_Size_t size = myHighlightWindow->getSize();
-  RPG_Graphics_Position_t view = myHighlightWindow->getView();
   SDL_Rect current_rect, dirty_region;
   current_rect.w = static_cast<uint16_t>(myHighlightBGCache.front().second->w);
   current_rect.h = static_cast<uint16_t>(myHighlightBGCache.front().second->h);
@@ -679,7 +679,7 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(SDL_Surface* targetSurface_in)
   {
     screen_position = RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
                                                             size,
-                                                            view);
+                                                            viewPort_in);
     RPG_Graphics_Surface::put(screen_position.first,
                               screen_position.second,
                               *(*iterator).second,

@@ -54,6 +54,12 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_client_iwindow_level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_client_iwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_client_callbacks.cpp">

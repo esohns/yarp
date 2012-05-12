@@ -336,6 +336,10 @@ RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
   unsigned short result = RPG_Common_Tools::sizeToReach(mySize, true);
 
   RPG_Item_WeaponType weapon_type = myEquipment.getPrimaryWeapon(myOffHand);
+  // sanity check: equipped any weapon ?
+  if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
+    return result;
+
   const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
   if (RPG_Item_Common_Tools::isMeleeWeapon(weapon_type))
   {
@@ -566,14 +570,50 @@ RPG_Player_Player_Base::defaultEquip()
       {
         RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
         ACE_ASSERT(armor);
-//         RPG_Item_ArmorProperties armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
+//         RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
         // shield or (body) armor ?
         // *TODO*: what about other types of armor ?
         slot = EQUIPMENTSLOT_BODY;
         if (RPG_Item_Common_Tools::isShield(armor->getArmorType()))
-          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                                 : EQUIPMENTSLOT_HAND_RIGHT);
-        myEquipment.equip(*iterator, slot);
+        {
+          // *NOTE*: secondary, then primary
+          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                              : EQUIPMENTSLOT_HAND_RIGHT);
+          if (myEquipment.isEquipped(slot))
+            slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                : EQUIPMENTSLOT_HAND_LEFT);
+        } // end IF
+        if (myEquipment.isEquipped(slot))
+          break; // cannot equip...
+
+        myEquipment.equip(*iterator,
+                          myOffHand,
+                          slot);
+
+        break;
+      }
+      case ITEM_COMMODITY:
+      {
+        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(handle);
+        ACE_ASSERT(commodity);
+        RPG_Item_CommodityUnion commodity_type = commodity->getCommoditySubType();
+        //RPG_Item_CommodityProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
+        // - by default, equip light sources only
+        if (commodity_type.discriminator != RPG_Item_CommodityUnion::COMMODITYLIGHT)
+          break;
+
+        // *NOTE*: secondary, then primary
+        slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                            : EQUIPMENTSLOT_HAND_RIGHT);
+        if (myEquipment.isEquipped(slot))
+          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                              : EQUIPMENTSLOT_HAND_LEFT);
+        //if (myEquipment.isEquipped(slot))
+        //  break; // cannot equip...
+
+        myEquipment.equip(*iterator,
+                          myOffHand,
+                          slot);
 
         break;
       }
@@ -581,21 +621,24 @@ RPG_Player_Player_Base::defaultEquip()
       {
         RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
         ACE_ASSERT(weapon);
-//         RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
+//         RPG_Item_WeaponProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
         // - by default, equip melee weapons only
         // *TODO*: what about other types of weapons ?
         if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->getWeaponType()))
           break;
 
-        slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
-                                               : EQUIPMENTSLOT_HAND_LEFT);
-        myEquipment.equip(*iterator, slot);
-        if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon->getWeaponType()))
-        {
-          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                                 : EQUIPMENTSLOT_HAND_RIGHT);
-          myEquipment.equip(*iterator, slot);
-        } // end IF
+        // *NOTE*: primary, then secondary
+        slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                            : EQUIPMENTSLOT_HAND_LEFT);
+        if (myEquipment.isEquipped(slot))
+          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                              : EQUIPMENTSLOT_HAND_RIGHT);
+        if (myEquipment.isEquipped(slot))
+          break; // cannot equip...
+
+        myEquipment.equip(*iterator,
+                          myOffHand,
+                          slot);
 
         break;
       }

@@ -29,6 +29,7 @@
 #include "rpg_item_instance_common.h"
 
 #include <rpg_character_common.h>
+#include <rpg_character_offhand.h>
 
 #include <rpg_common.h>
 
@@ -65,6 +66,7 @@ class RPG_Item_Export RPG_Item_Common_Tools
                                             const bool& = true);            // ambience is "bright" ?
 
   static void item2Slot(const RPG_Item_ID_t&,           // item id
+                        const RPG_Character_OffHand&,   // off-hand
                         RPG_Character_EquipmentSlots&); // return value: possible slot(s)
 
  private:

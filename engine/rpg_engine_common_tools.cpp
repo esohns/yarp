@@ -1297,6 +1297,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
   RPG_Dice_RollResult_t result;
   int attack_roll = 0;
   int currentAttackBonus = 0;
+  bool is_offhand = false;
   RPG_Item_WeaponType weapon_type = RPG_ITEM_WEAPONTYPE_INVALID;
   RPG_Item_WeaponProperties weapon_properties;
   bool is_threat = false;
@@ -1335,7 +1336,18 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 //     } // end FOR
 
     // --> check primary weapon
+    // *TODO*: consider multi-weapon/offhand attacks...
     weapon_type = const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getPrimaryWeapon(player_base->getOffHand());
+    // sanity check: equipped any weapon ?
+    if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
+    {
+      // try offhand
+      weapon_type = const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getSecondaryWeapon(player_base->getOffHand());
+      if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
+        return false; // done (no weapon equipped)
+
+      is_offhand = true;
+    } // end IF
     weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
     // consider range penalty...
     if (weapon_properties.rangeIncrement)
@@ -1346,7 +1358,6 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
         *iterator += (static_cast<int>((distance_in / weapon_properties.rangeIncrement)) * -2);
     } // end IF
     // *TODO*: consider other modifiers...
-    // *TODO*: consider multi-weapon/offhand attacks...
 
     // step2: compute target AC
     // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size modifier [+ other modifiers]

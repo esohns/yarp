@@ -36,6 +36,7 @@
       <xsd:enumeration value="COMMAND_ATTACK_STANDARD"/>
       <xsd:enumeration value="COMMAND_DOOR_CLOSE"/>
       <xsd:enumeration value="COMMAND_DOOR_OPEN"/>
+      <xsd:enumeration value="COMMAND_IDLE"/>
       <xsd:enumeration value="COMMAND_RUN"/>
       <xsd:enumeration value="COMMAND_SEARCH"/>
       <xsd:enumeration value="COMMAND_STEP"/>
@@ -81,6 +82,7 @@
       <xsd:element name="spawn_interval" type="RPG_Common_FixedPeriod_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="spawn_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="max_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="amble_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="map" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

@@ -915,6 +915,31 @@ RPG_Engine::hasEntity(const RPG_Map_Position_t& position_in,
   return result;
 }
 
+RPG_Engine_EntityList_t
+RPG_Engine::entities(const RPG_Map_Position_t& position_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::entities"));
+
+  RPG_Engine_EntityList_t result;
+
+  myLock.acquire();
+
+  // step1: retrieve entities
+  for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
+        iterator != myEntities.end();
+        iterator++)
+    result.push_back((*iterator).first);
+
+  // step2: sort entity list
+  distance_sort_t distance_sort = {this, false, position_in};
+
+  myLock.release();
+
+  result.sort(distance_sort);
+
+  return result;
+}
+
 bool
 RPG_Engine::isMonster(const RPG_Engine_EntityID_t& id_in,
                       const bool& lockedAccess_in) const
@@ -1581,6 +1606,12 @@ RPG_Engine::handleEntities()
 
           break;
         }
+        case COMMAND_IDLE:
+        {
+          action_complete = false; // *NOTE*: handled by the AI
+
+          break;
+        }
         case COMMAND_RUN:
         {
           // toggle mode
@@ -1663,11 +1694,11 @@ RPG_Engine::handleEntities()
             // *NOTE*: --> no/invalid path, cannot proceed...
             (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
 
-            // remove all queued steps + travel action
+            // remove all queued steps + [idle|travel] action
             while ((*iterator).second->actions.front().command == COMMAND_STEP)
               (*iterator).second->actions.pop_front();
-            ACE_ASSERT((*iterator).second->actions.front().command == COMMAND_TRAVEL);
-            (*iterator).second->actions.pop_front();
+            if ((*iterator).second->actions.front().command == COMMAND_TRAVEL)
+              (*iterator).second->actions.pop_front();
             action_complete = false;
 
             break;
@@ -1787,13 +1818,12 @@ RPG_Engine::handleEntities()
   // remove entity ?
   if (remove_id)
   {
+    RPG_Engine_EntityID_t active_entity_id = getActive(true);
     remove(remove_id);
 
-    // quit game ?
-    if (remove_id == getActive(true))
+    // has active entity left the game ?
+    if (remove_id == active_entity_id)
     {
-      setActive(0);
-
       // notify client
       RPG_Engine_ClientParameters_t parameters;
       try
@@ -1808,4 +1838,24 @@ RPG_Engine::handleEntities()
       }
     } // end IF
   } // end IF
+}
+
+bool
+RPG_Engine::distance_sort_t::operator()(const RPG_Engine_EntityID_t& id1_in,
+                                        const RPG_Engine_EntityID_t& id2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::distance_sort_t::operator()"));
+
+  // sanity check(s)
+  ACE_ASSERT(engine);
+
+  RPG_Map_Position_t position_1, position_2;
+  position_1 = engine->getPosition(id1_in, locked_access);
+  position_2 = engine->getPosition(id2_in, locked_access);
+
+  unsigned int distance_1, distance_2;
+  distance_1 = RPG_Map_Common_Tools::distance(position_1, reference_position);
+  distance_2 = RPG_Map_Common_Tools::distance(position_2, reference_position);
+
+  return (distance_1 < distance_2);
 }

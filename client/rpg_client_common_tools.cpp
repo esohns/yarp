@@ -668,6 +668,7 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
   switch (mode_in)
   {
     case SELECTIONMODE_AIM_CIRCLE:
+    case SELECTIONMODE_AIM_SQUARE:
       return CURSOR_TARGET;
     case SELECTIONMODE_NORMAL:
       break;
@@ -686,7 +687,7 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid selectin mode (was: %d), aborting\n"),
+                 ACE_TEXT("invalid selection mode (was: %d), aborting\n"),
                  mode_in));
 
       return result;

@@ -2204,7 +2204,7 @@ int
 ACE_TMAIN(int argc_in,
           ACE_TCHAR* argv_in[])
 {
-//   RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init ACE
 // *PORTABILITY*: on Windows, we need to init ACE...
@@ -2216,6 +2216,13 @@ ACE_TMAIN(int argc_in,
 
     return EXIT_FAILURE;
   } // end IF
+#endif
+
+  // detect memory leaks
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#ifdef _DEBUG
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 #endif
 
   // *PROCESS PROFILE*

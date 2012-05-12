@@ -51,6 +51,7 @@ RPG_Engine_Level::RPG_Engine_Level()
   myLevelMeta.spawn_probability = 0.0F;
   myLevelMeta.max_spawned = 0;
   myLevelMeta.spawn_timer = -1;
+  myLevelMeta.amble_probability = 0.0F;
 }
 
 RPG_Engine_Level::~RPG_Engine_Level()
@@ -77,6 +78,8 @@ RPG_Engine_Level::create(const RPG_Map_FloorPlan_Config_t& mapConfig_in,
   level_out.level_meta.spawn_probability = 0.0F;
   level_out.level_meta.max_spawned = 0;
   level_out.level_meta.spawn_timer = -1;
+  level_out.level_meta.amble_probability = 0.0F;
+
   RPG_Map_Level::create(mapConfig_in,
                         level_out.map);
 }
@@ -100,6 +103,8 @@ RPG_Engine_Level::load(const std::string& filename_in,
   result.level_meta.spawn_probability = 0.0F;
   result.level_meta.max_spawned = 0;
   result.level_meta.spawn_timer = -1;
+  result.level_meta.amble_probability = 0.0F;
+
   result.map.start = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                     std::numeric_limits<unsigned int>::max());
   result.map.seeds.clear();
@@ -510,6 +515,7 @@ RPG_Engine_Level::toLevelXML() const
                                                             spawn_interval,
                                                             myLevelMeta.spawn_probability,
                                                             myLevelMeta.max_spawned,
+                                                            myLevelMeta.amble_probability,
                                                             map_string);
   ACE_ASSERT(level_p);
   if (!level_p)
@@ -564,6 +570,8 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
   result.level_meta.spawn_probability = level_in.spawn_probability();
   result.level_meta.max_spawned = level_in.max_spawned();
   result.level_meta.spawn_timer = -1;
+  result.level_meta.amble_probability = level_in.amble_probability();
+
   RPG_Map_ParserDriver parser_driver(false, false);
   parser_driver.init(&result.map.start,
                      &result.map.seeds,

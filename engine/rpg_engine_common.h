@@ -43,6 +43,7 @@
 #include <deque>
 #include <string>
 #include <map>
+#include <list>
 
 typedef std::set<RPG_Engine_EntityMode> RPG_Engine_EntityMode_t;
 typedef RPG_Engine_EntityMode_t::const_iterator RPG_Engine_EntityModeConstIterator_t;
@@ -74,6 +75,10 @@ typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
 typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t;
 
+typedef std::list<RPG_Engine_EntityID_t> RPG_Engine_EntityList_t;
+typedef RPG_Engine_EntityList_t::iterator RPG_Engine_EntityListIterator_t;
+typedef RPG_Engine_EntityList_t::const_iterator RPG_Engine_EntityListConstIterator_t;
+
 struct RPG_Engine_LevelMeta_t
 {
   std::string            name;
@@ -87,6 +92,7 @@ struct RPG_Engine_LevelMeta_t
   // *NOTE*: # concurrent (!) instances
   unsigned int           max_spawned; // 0: don't auto-spawn
   long                   spawn_timer;
+  float                  amble_probability; // % [0.0 - 1.0]
 };
 struct RPG_Engine_Level_t
 {

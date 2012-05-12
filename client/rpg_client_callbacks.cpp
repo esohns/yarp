@@ -2676,10 +2676,9 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
 
   // *TODO*: where ?
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget_in)))
-  {
     player->getEquipment().equip(item_id,
+                                 player->getOffHand(),
                                  EQUIPMENTSLOT_ANY);
-  } // end IF
   else
     player->getEquipment().unequip(item_id);
 

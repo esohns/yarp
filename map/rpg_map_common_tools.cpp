@@ -1875,33 +1875,31 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
   // init result(s)
   area_out.clear();
 
-  unsigned int x, y, delta;
+  unsigned int left_x, x, y, i;
   bool done;
   for (unsigned int r = 0;
        r <= radius_in;
        r++)
   {
-    delta = 0;
     if (!fillArea_in &&
         (r != radius_in))
       continue;
 
-    if (radius_in == 0)
+    if (r == 0)
     {
       area_out.insert(center_in);
       continue;
     } // end IF
 
     // compute leftmost x
-    x = center_in.first;
-    if (x < r)
-      delta = r - x;
-    x -= ((x == 0) ? 0 : (delta ? delta : r));
+    left_x = center_in.first;
+    left_x -= ((left_x == 0) ? 0 : ((left_x < r) ? left_x : r));
+    x = left_x;
     // --> up
     done = false;
-    for (delta = 0, y = center_in.second;
-         delta <= r;
-         delta++, y--)
+    for (i = 0, y = center_in.second;
+         i <= r;
+         i++, y--)
     {
       if (y == 0)
         done = true;
@@ -1912,10 +1910,13 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
         break;
     } // end FOR
     // --> right
-    done = false;
-    for (delta = 0, x++;
-         delta < (2 * r);
-         delta++, x++)
+    if (done)
+      done = false;
+    else
+      y++;
+    for (x++;
+         x <= (center_in.first + r); // *WARNING*: no overflow checking here !
+         x++)
     {
       if (x == (size_in.first - 1))
         done = true;
@@ -1926,10 +1927,13 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
         break;
     } // end FOR
     // --> down
-    done = false;
-    for (delta = 0, y++;
-         delta < (2 * r);
-         delta++, y++)
+    if (done)
+      done = false;
+    else
+      x--;
+    for (y++;
+         y <= (center_in.second + r); // *WARNING*: no overflow checking here !
+         y++)
     {
       if (y == (size_in.second - 1))
         done = true;
@@ -1940,10 +1944,13 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
         break;
     } // end FOR
     // --> left
-    done = false;
-    for (delta = 0, x--;
-         delta < (2 * r);
-         delta++, x--)
+    if (done)
+      done = false;
+    else
+      y--;
+    for (x--;
+         x >= left_x;
+         x--)
     {
       if (x == 0)
         done = true;
@@ -1954,12 +1961,30 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
         break;
     } // end FOR
     // --> up
-    done = false;
-    for (delta = 0, y--;
-         delta < (r - 1);
-         delta++, y--)
+    if (done)
+      done = false;
+    else
+      x++;
+    for (i = 0, y--;
+         i <= (r - 1);
+         i++, y--)
+    {
+      if (y == (center_in.second + 1))
+        done = true;
+
       area_out.insert(std::make_pair(x, y));
-    ACE_ASSERT(y == (center_in.second - 1));
+
+      if (done)
+        break;
+    } // end FOR
+    if (done)
+    {
+      done = false;
+      y--;
+    } // end IF
+    else
+      y++;
+    ACE_ASSERT(y == center_in.second);
   } // end FOR
 }
 

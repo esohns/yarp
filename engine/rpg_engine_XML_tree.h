@@ -98,6 +98,7 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
     COMMAND_ATTACK_STANDARD,
     COMMAND_DOOR_CLOSE,
     COMMAND_DOOR_OPEN,
+    COMMAND_IDLE,
     COMMAND_RUN,
     COMMAND_SEARCH,
     COMMAND_STEP,
@@ -159,8 +160,8 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
   _xsd_RPG_Engine_Command_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[17];
-  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[17];
+  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[18];
+  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[18];
 };
 
 class RPG_Engine_Export RPG_Engine_EntityMode_XMLTree_Type: public ::xml_schema::string
@@ -457,6 +458,20 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   void
   max_spawned (const max_spawned_type& x);
 
+  // amble_probability
+  // 
+  typedef ::xml_schema::float_ amble_probability_type;
+  typedef ::xsd::cxx::tree::traits< amble_probability_type, char > amble_probability_traits;
+
+  const amble_probability_type&
+  amble_probability () const;
+
+  amble_probability_type&
+  amble_probability ();
+
+  void
+  amble_probability (const amble_probability_type& x);
+
   // map
   // 
   typedef ::xml_schema::string map_type;
@@ -481,6 +496,7 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
                                  const spawn_interval_type&,
                                  const spawn_probability_type&,
                                  const max_spawned_type&,
+                                 const amble_probability_type&,
                                  const map_type&);
 
   RPG_Engine_Level_XMLTree_Type (const name_type&,
@@ -488,6 +504,7 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
                                  ::std::auto_ptr< spawn_interval_type >&,
                                  const spawn_probability_type&,
                                  const max_spawned_type&,
+                                 const amble_probability_type&,
                                  const map_type&);
 
   RPG_Engine_Level_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
@@ -527,6 +544,7 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   ::xsd::cxx::tree::one< spawn_interval_type > spawn_interval_;
   ::xsd::cxx::tree::one< spawn_probability_type > spawn_probability_;
   ::xsd::cxx::tree::one< max_spawned_type > max_spawned_;
+  ::xsd::cxx::tree::one< amble_probability_type > amble_probability_;
   ::xsd::cxx::tree::one< map_type > map_;
 };
 

@@ -96,6 +96,8 @@
     <ClInclude Include="rpg_client_engine.h" />
     <ClInclude Include="rpg_client_entity_manager.h" />
     <ClInclude Include="rpg_client_exports.h" />
+    <ClInclude Include="rpg_client_iwindow.h" />
+    <ClInclude Include="rpg_client_iwindow_level.h" />
     <ClInclude Include="rpg_client_ui_tools.h" />
     <ClInclude Include="rpg_client_window_level.h" />
     <ClInclude Include="rpg_client_window_main.h" />

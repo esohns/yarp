@@ -30,6 +30,7 @@
 #include "rpg_engine_event_manager.h"
 
 #include <rpg_map_common.h>
+#include <rpg_map_common_tools.h>
 
 #include <rpg_common_icontrol.h>
 #include <rpg_common_idumpstate.h>
@@ -93,9 +94,9 @@ class RPG_Engine_Export RPG_Engine
                                const unsigned int&) const; // max (square !) radius
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&,
                                   const bool& = true) const; // locked access ?
+  RPG_Engine_EntityList_t entities(const RPG_Map_Position_t&) const; // sort: position (closest first)
   bool isMonster(const RPG_Engine_EntityID_t&,
                  const bool& = true) const; // locked access ?
-  //std::string getSprite(const RPG_Engine_EntityID_t&) const;
   std::string getName(const RPG_Engine_EntityID_t&,
                       const bool& = true) const; // locked access ?
   unsigned int numSpawned() const;
@@ -158,6 +159,16 @@ class RPG_Engine_Export RPG_Engine
   // helper methods
   // *NOTE*: requires myLock to be held !
   bool isBlocked(const RPG_Map_Position_t&) const;
+
+  // helper classes
+  struct distance_sort_t
+  {
+    const RPG_Engine* const engine;
+    bool                    locked_access;
+    RPG_Map_Position_t      reference_position;
+
+    bool operator()(const RPG_Engine_EntityID_t&, const RPG_Engine_EntityID_t&);
+  };
 
   void clearEntityActions(const RPG_Engine_EntityID_t& = 0); // entity ID (default: ALL)
 

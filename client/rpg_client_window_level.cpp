@@ -417,6 +417,17 @@ RPG_Client_WindowLevel::init(RPG_Client_Engine* clientEngine_in,
 }
 
 void
+RPG_Client_WindowLevel::drawBorder(SDL_Surface* targetSurface_in,
+                                   const unsigned int& offsetX_in,
+                                   const unsigned int& offsetY_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::drawBorder"));
+
+  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+  ACE_ASSERT(false);
+}
+
+void
 RPG_Client_WindowLevel::init()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::init"));
@@ -1457,7 +1468,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
                                                                           getView());
 
           // toggle path selection mode
-          if (myClient->mode() == SELECTIONMODE_AIM_CIRCLE)
+          if ((myClient->mode() == SELECTIONMODE_AIM_CIRCLE) ||
+              (myClient->mode() == SELECTIONMODE_AIM_SQUARE))
           {
             // --> switch off aim selection
 
@@ -1481,7 +1493,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             // initial radius == 0
             myClientAction.positions.insert(myClientAction.position);
 
-            myClient->mode(SELECTIONMODE_AIM_CIRCLE);
+//            myClient->mode(SELECTIONMODE_AIM_CIRCLE);
+            myClient->mode(SELECTIONMODE_AIM_SQUARE);
           } // end ELSE
 
           // on the map ?
@@ -1762,37 +1775,28 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         switch (current_mode)
         {
           case SELECTIONMODE_AIM_CIRCLE:
+          case SELECTIONMODE_AIM_SQUARE:
           {
-            // step1: build circle with given radius
-            unsigned int circle_radius = RPG_Map_Common_Tools::distanceMax(myClientAction.source,
-                                                                           myClientAction.position);
-            if (circle_radius > RPG_MAP_CIRCLE_MAX_RADIUS)
-              circle_radius = RPG_MAP_CIRCLE_MAX_RADIUS;
+            // step1: build selection with given radius
+            unsigned int selection_radius = RPG_Map_Common_Tools::distanceMax(myClientAction.source,
+                                                                              myClientAction.position);
+            if (current_mode == SELECTIONMODE_AIM_CIRCLE)
+            {
+              if (selection_radius > RPG_MAP_CIRCLE_MAX_RADIUS)
+                selection_radius = RPG_MAP_CIRCLE_MAX_RADIUS;
 
-            //RPG_Map_Positions_t circle;
-            //RPG_Map_Common_Tools::buildCircle(myClientAction.source,
-            //                                  myEngine->getSize(false),
-            //                                  RPG_Map_Common_Tools::distanceMax(myClientAction.source,
-            //                                                                    myClientAction.position),
-            //                                  false, // don't fill
-            //                                  circle);
-
-            //// step2: remove invalid positions
-            //RPG_Map_Positions_t invalid;
-            //for (RPG_Map_PositionsConstIterator_t iterator = circle.begin();
-            //     iterator != circle.end();
-            //     iterator++)
-            //  if (!myEngine->isValid(*iterator, false))
-            //    invalid.insert(*iterator);
-            //std::set_difference(circle.begin, circle.end(),
-            //                    invalid.begin(), invalid.end(),
-            //                    myClientAction.positions.begin());
-
-            RPG_Map_Common_Tools::buildCircle(myClientAction.source,
-                                              myEngine->getSize(false),
-                                              circle_radius,
-                                              false, // don't fill
-                                              myClientAction.positions);
+              RPG_Map_Common_Tools::buildCircle(myClientAction.source,
+                                                myEngine->getSize(false),
+                                                selection_radius,
+                                                false, // don't fill
+                                                myClientAction.positions);
+            } // end IF
+            else
+              RPG_Map_Common_Tools::buildSquare(myClientAction.source,
+                                                myEngine->getSize(false),
+                                                selection_radius,
+                                                false, // don't fill
+                                                myClientAction.positions);
 
             // step2: remove invalid positions
             RPG_Map_Positions_t obstacles = myEngine->getObstacles(false, false);
@@ -1855,19 +1859,20 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid selection mode (was: %d), aborting\n"),
-                       myClient->mode()));
+                       current_mode));
 
             myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                      std::numeric_limits<unsigned int>::max());
 
-            break;
+            return;
           }
         } // end SWITCH
         myClient->action(myClientAction);
 
         // step5: draw tile highlight(s) ?
         if (myClient->hasSeen(myClientAction.entity_id, myClientAction.position) ||
-            (current_mode == SELECTIONMODE_AIM_CIRCLE))
+            (current_mode == SELECTIONMODE_AIM_CIRCLE)                           ||
+            (current_mode == SELECTIONMODE_AIM_SQUARE))
         {
           myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
           myClient->action(myClientAction);
@@ -2134,27 +2139,6 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
     getParent()->handleEvent(event_in,
                              window_in,
                              redraw_out);
-}
-
-void
-RPG_Client_WindowLevel::clear()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowLevel::clear"));
-
-  SDL_Rect dstRect = {0, 0, 0, 0};
-//  clip();
-  SDL_GetClipRect(myScreen, &dstRect);
-  if (SDL_FillRect(myScreen,                             // target surface
-                   &dstRect,                             // fill area
-                   RPG_Graphics_SDL_Tools::CLR32_BLACK)) // color
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
-//  unclip();
 }
 
 void

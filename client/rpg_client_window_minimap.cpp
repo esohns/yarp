@@ -83,18 +83,6 @@ RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
   SDL_FreeSurface(mySurface);
 }
 
-RPG_Graphics_Position_t
-RPG_Client_Window_MiniMap::getView() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::getView"));
-
-  ACE_NOTREACHED(ACE_TEXT("not reached..."));
-  ACE_ASSERT(false);
-
-  return std::make_pair(std::numeric_limits<unsigned int>::max(),
-                        std::numeric_limits<unsigned int>::max());
-}
-
 void
 RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
                                        RPG_Graphics_IWindow* window_in,

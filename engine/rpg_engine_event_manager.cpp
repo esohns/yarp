@@ -591,42 +591,52 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
         } // end IF
 
         // idle monster ? --> choose strategy
-        if (!(*iterator).second->character->isPlayerCharacter() &&
-            (*iterator).second->actions.empty())
+        if (!(*iterator).second->character->isPlayerCharacter())
         {
-          // find closest target (if any)
-          // *TODO*: implement strategy here (strongest/weakest target, ...)
-          unsigned int distance, closest_distance = std::numeric_limits<unsigned int>::max();
-          RPG_Engine_EntitiesConstIterator_t closest_target = myEngine->myEntities.end();
-          for (RPG_Engine_EntitiesConstIterator_t iterator2 = myEngine->myEntities.begin();
-               iterator2 != myEngine->myEntities.end();
-               iterator2++)
+          bool is_idle = (*iterator).second->actions.empty();
+          if (!is_idle)
+            is_idle = ((*iterator).second->actions.front().command == COMMAND_IDLE);
+          if (is_idle)
           {
-            if (!(*iterator2).second->character->isPlayerCharacter())
-              continue;
+            // step1: sort targets by distance
+            RPG_Engine_EntityList_t possible_targets = myEngine->entities((*iterator).second->position);
+            ACE_ASSERT(!possible_targets.empty() &&
+                       (possible_targets.front() == (*iterator).first));
+            possible_targets.erase(possible_targets.begin());
 
-            distance = RPG_Map_Common_Tools::distance((*iterator).second->position,
-                                                      (*iterator2).second->position);
-            if (distance < closest_distance)
+            // step2: remove other monsters
+            monster_remove_t monster_remove = {myEngine, false, true};
+            possible_targets.remove_if(monster_remove);
+
+            // step3: remove invisible (== cannot (currently) see) targets
+            invisible_remove_t invisible_remove = {myEngine, false, (*iterator).first};
+            possible_targets.remove_if(invisible_remove);
+
+            if (possible_targets.empty())
             {
-              closest_distance = distance;
-              closest_target = iterator2;
+              //ACE_DEBUG((LM_DEBUG,
+              //           ACE_TEXT("no target, continuing\n")));
+
+              // --> no active player(s), amble about...
+              next_action.command = COMMAND_IDLE;
             } // end IF
-          } // end FOR
-          //ACE_ASSERT(closest_target != myEngine->myEntities.end());
-          if (closest_target == myEngine->myEntities.end())
-          {
-            // --> no active player(s)...
-            //ACE_DEBUG((LM_DEBUG,
-            //           ACE_TEXT("no target, continuing\n")));
+            else
+            {
+              // start attacking/pursuing...
+              next_action.command = COMMAND_ATTACK;
+              // *TODO*: implement more strategy here (strongest/weakest target, ...)
+              next_action.target = possible_targets.front();
+            } // end ELSE
 
-            break;
+            // transition idle --> attack ?
+            if (!(*iterator).second->actions.empty() &&
+                (next_action.command == COMMAND_ATTACK))
+              (*iterator).second->actions.pop_front();
+
+            if ((*iterator).second->actions.empty() ||
+                (next_action.command != COMMAND_IDLE))
+              (*iterator).second->actions.push_back(next_action);
           } // end IF
-          next_action.target = (*closest_target).first;
-          // start attacking/pursuing...
-          next_action.command = COMMAND_ATTACK;
-
-          (*iterator).second->actions.push_back(next_action);
         } // end IF
 
         // idle ? --> nothing to do this round then...
@@ -671,6 +681,52 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
               next_action.command = COMMAND_TRAVEL;
               next_action.target = current_action.target;
             } // end ELSE
+
+            break;
+          }
+          case COMMAND_IDLE:
+          {
+            // amble around a little bit...
+            const RPG_Engine_LevelMeta_t& level_meta = myEngine->getMeta(false);
+            if (!RPG_Dice::probability(level_meta.amble_probability))
+              break; // not this time...
+            do_next_action = true;
+
+            next_action.command = COMMAND_STEP;
+            // choose random direction
+            RPG_Map_Direction direction;
+            RPG_Dice_RollResult_t roll_result;
+            do
+            {
+              direction = DIRECTION_INVALID;
+              roll_result.clear();
+              RPG_Dice::generateRandomNumbers(DIRECTION_MAX,
+                                              1,
+                                              roll_result);
+              direction = static_cast<RPG_Map_Direction>(roll_result.front() - 1);
+              ACE_ASSERT(direction < DIRECTION_MAX);
+
+              next_action.position = myEngine->getPosition((*iterator).first, false);
+              switch (direction)
+              {
+                case DIRECTION_UP:
+                  next_action.position.second--; break;
+                case DIRECTION_RIGHT:
+                  next_action.position.first++; break;
+                case DIRECTION_DOWN:
+                  next_action.position.second++; break;
+                case DIRECTION_LEFT:
+                  next_action.position.first--; break;
+                default:
+                {
+                  ACE_DEBUG((LM_ERROR,
+                             ACE_TEXT("invalid direction (was: %u), aborting\n"),
+                             direction));
+
+                  break;
+                }
+              } // end SWITCH
+            } while (!myEngine->isValid(next_action.position, false));
 
             break;
           }
@@ -875,78 +931,31 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
   } // end SWITCH
 }
 
-//void
-//RPG_Engine_Event_Manager::handleEntities()
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::handleEntities"));
-//
-//  ACE_ASSERT(myEngine);
-//
-//  RPG_Engine_Action next_action;
-//  next_action.command = RPG_ENGINE_COMMAND_INVALID;
-//  next_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-//                                        std::numeric_limits<unsigned int>::max());
-//  next_action.path.clear();
-//  next_action.target = 0;
-//
-//  {
-//    ACE_Guard<ACE_Thread_Mutex> aGuard(myEngine->myLock);
-//
-//    for (RPG_Engine_EntitiesConstIterator_t iterator = myEngine->myEntities.begin();
-//         iterator != myEngine->myEntities.end();
-//         iterator++)
-//    {
-//      // do not control player characters...
-//      if ((*iterator).second->character->isPlayerCharacter())
-//        continue;
-//
-//      // idle ? --> do something !
-//      if ((*iterator).second->actions.empty())
-//      {
-//        // find closest target (if any)
-//        // *TODO*: implement strategy here (strongest/weakest target, ...)
-//        unsigned int distance, closest_distance = std::numeric_limits<unsigned int>::max();
-//        RPG_Engine_EntitiesConstIterator_t closest_target = myEngine->myEntities.end();
-//        for (RPG_Engine_EntitiesConstIterator_t iterator2 = myEngine->myEntities.begin();
-//             iterator2 != myEngine->myEntities.end();
-//             iterator2++)
-//        {
-//          if (!(*iterator2).second->character->isPlayerCharacter())
-//            continue;
-//
-//          distance = RPG_Map_Common_Tools::distance((*iterator).second->position,
-//                                                    (*iterator2).second->position);
-//          if (distance < closest_distance)
-//          {
-//            closest_distance = distance;
-//            closest_target = iterator2;
-//          } // end IF
-//        } // end FOR
-//        //ACE_ASSERT(closest_target != myEngine->myEntities.end());
-//        if (closest_target == myEngine->myEntities.end())
-//        {
-//          // --> no active player(s)...
-//          //ACE_DEBUG((LM_DEBUG,
-//          //           ACE_TEXT("no target, continuing\n")));
-//
-//          break;
-//        } // end IF
-//        next_action.target = (*closest_target).first;
-//        // *TODO*: check reach instead
-//        if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
-//                                             (*closest_target).second->position))
-//        {
-//          // start attacking right away...
-//          next_action.command = COMMAND_ATTACK;
-//        } // end IF
-//        else
-//        {
-//          // start pursuing...
-//          next_action.command = COMMAND_TRAVEL;
-//        } // end ELSE
-//
-//        (*iterator).second->actions.push_back(next_action);
-//      } // end IF
-//    } // end FOR
-//  } // end lock scope
-//}
+bool
+RPG_Engine_Event_Manager::monster_remove_t::operator()(const RPG_Engine_EntityID_t& id_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::monster_remove_t::operator()"));
+
+  // sanity check(s)
+  ACE_ASSERT(engine);
+
+  bool is_monster = engine->isMonster(id_in, locked_access);
+
+  return (remove_monsters ? is_monster : !is_monster);
+}
+
+bool
+RPG_Engine_Event_Manager::invisible_remove_t::operator()(const RPG_Engine_EntityID_t& id_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::invisible_remove_t::operator()"));
+
+  // sanity check(s)
+  ACE_ASSERT(engine);
+  ACE_ASSERT(entity_id);
+
+  RPG_Map_Position_t position = engine->getPosition(id_in, locked_access);
+
+  return !engine->canSee(entity_id,
+                         engine->getPosition(id_in, locked_access),
+                         locked_access);
+}

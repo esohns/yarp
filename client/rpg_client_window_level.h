@@ -23,6 +23,7 @@
 
 #include "rpg_client_exports.h"
 #include "rpg_client_common.h"
+#include "rpg_client_iwindow_level.h"
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
@@ -44,32 +45,36 @@ class RPG_Client_Engine;
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Client_Export RPG_Client_WindowLevel
- : public RPG_Graphics_SDLWindowBase
+ : public RPG_Graphics_SDLWindowBase,
+   public RPG_Client_IWindowLevel
 {
  public:
   RPG_Client_WindowLevel(// *** SDL window ***
                          const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_WindowLevel();
 
-  // adjust viewport
-  void setView(const RPG_Map_Position_t&); // view (map coordinates)
-  void setView(const int&,
-               const int&); // view (relative map coordinates)
-  // implement (part of) RPG_Graphics_IWindow 
-  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
-
-  void toggleMiniMap();
-  void toggleVisionBlend();
-  void toggleDoor(const RPG_Map_Position_t&); // door position
-
   // init level properties
   void init(RPG_Client_Engine*,              // engine handle
             RPG_Engine*,                     // (level) state handle
             const RPG_Graphics_MapStyle_t&); // map style
-  void init();
 
+  void toggleMiniMap();
+  void toggleVisionBlend();
+
+  // adjust viewport
+  void setView(const int&,
+               const int&); // view (relative map coordinates)
+
+  // implement RPG_Client_IWindowLevel
+  virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
+                          const unsigned int& = 0,  // offset x (top-left = [0,0])
+                          const unsigned int& = 0); // offset y (top-left = [0,0])
+  virtual void init();
+  virtual void setView(const RPG_Map_Position_t&); // view (map coordinates)
+  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  virtual void toggleDoor(const RPG_Map_Position_t&); // door position
   // (re)set lighting blend cache
-  void setBlendRadius(const unsigned char&); // radius
+  virtual void setBlendRadius(const unsigned char&); // radius
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
@@ -93,7 +98,6 @@ class RPG_Client_Export RPG_Client_WindowLevel
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel& operator=(const RPG_Client_WindowLevel&));
 
   // helper methods
-  void clear();
   void setStyle(const RPG_Graphics_StyleUnion&);
 
   void initCeiling();

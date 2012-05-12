@@ -330,6 +330,24 @@ max_spawned (const max_spawned_type& x)
   this->max_spawned_.set (x);
 }
 
+const RPG_Engine_Level_XMLTree_Type::amble_probability_type& RPG_Engine_Level_XMLTree_Type::
+amble_probability () const
+{
+  return this->amble_probability_.get ();
+}
+
+RPG_Engine_Level_XMLTree_Type::amble_probability_type& RPG_Engine_Level_XMLTree_Type::
+amble_probability ()
+{
+  return this->amble_probability_.get ();
+}
+
+void RPG_Engine_Level_XMLTree_Type::
+amble_probability (const amble_probability_type& x)
+{
+  this->amble_probability_.set (x);
+}
+
 const RPG_Engine_Level_XMLTree_Type::map_type& RPG_Engine_Level_XMLTree_Type::
 map () const
 {
@@ -401,11 +419,11 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_Command_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Engine_Command_XMLTree_Type_indexes_,
-                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 17,
+                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 18,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 17 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 18 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -414,13 +432,14 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_literals_[17] =
+_xsd_RPG_Engine_Command_XMLTree_Type_literals_[18] =
 {
   "COMMAND_ATTACK",
   "COMMAND_ATTACK_FULL",
   "COMMAND_ATTACK_STANDARD",
   "COMMAND_DOOR_CLOSE",
   "COMMAND_DOOR_OPEN",
+  "COMMAND_IDLE",
   "COMMAND_RUN",
   "COMMAND_SEARCH",
   "COMMAND_STEP",
@@ -436,7 +455,7 @@ _xsd_RPG_Engine_Command_XMLTree_Type_literals_[17] =
 };
 
 const RPG_Engine_Command_XMLTree_Type::value RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[17] =
+_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[18] =
 {
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK_FULL,
@@ -450,6 +469,7 @@ _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[17] =
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_REMOVE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_VISION,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_QUIT,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_IDLE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_RUN,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_SEARCH,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_STEP,
@@ -746,6 +766,7 @@ RPG_Engine_Level_XMLTree_Type (const name_type& name,
                                const spawn_interval_type& spawn_interval,
                                const spawn_probability_type& spawn_probability,
                                const max_spawned_type& max_spawned,
+                               const amble_probability_type& amble_probability,
                                const map_type& map)
 : ::xml_schema::type (),
   name_ (name, ::xml_schema::flags (), this),
@@ -754,6 +775,7 @@ RPG_Engine_Level_XMLTree_Type (const name_type& name,
   spawn_interval_ (spawn_interval, ::xml_schema::flags (), this),
   spawn_probability_ (spawn_probability, ::xml_schema::flags (), this),
   max_spawned_ (max_spawned, ::xml_schema::flags (), this),
+  amble_probability_ (amble_probability, ::xml_schema::flags (), this),
   map_ (map, ::xml_schema::flags (), this)
 {
 }
@@ -764,6 +786,7 @@ RPG_Engine_Level_XMLTree_Type (const name_type& name,
                                ::std::auto_ptr< spawn_interval_type >& spawn_interval,
                                const spawn_probability_type& spawn_probability,
                                const max_spawned_type& max_spawned,
+                               const amble_probability_type& amble_probability,
                                const map_type& map)
 : ::xml_schema::type (),
   name_ (name, ::xml_schema::flags (), this),
@@ -772,6 +795,7 @@ RPG_Engine_Level_XMLTree_Type (const name_type& name,
   spawn_interval_ (spawn_interval, ::xml_schema::flags (), this),
   spawn_probability_ (spawn_probability, ::xml_schema::flags (), this),
   max_spawned_ (max_spawned, ::xml_schema::flags (), this),
+  amble_probability_ (amble_probability, ::xml_schema::flags (), this),
   map_ (map, ::xml_schema::flags (), this)
 {
 }
@@ -787,6 +811,7 @@ RPG_Engine_Level_XMLTree_Type (const RPG_Engine_Level_XMLTree_Type& x,
   spawn_interval_ (x.spawn_interval_, f, this),
   spawn_probability_ (x.spawn_probability_, f, this),
   max_spawned_ (x.max_spawned_, f, this),
+  amble_probability_ (x.amble_probability_, f, this),
   map_ (x.map_, f, this)
 {
 }
@@ -802,6 +827,7 @@ RPG_Engine_Level_XMLTree_Type (const ::xercesc::DOMElement& e,
   spawn_interval_ (f, this),
   spawn_probability_ (f, this),
   max_spawned_ (f, this),
+  amble_probability_ (f, this),
   map_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -896,6 +922,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // amble_probability
+    //
+    if (n.name () == "amble_probability" && n.namespace_ () == "urn:rpg")
+    {
+      if (!amble_probability_.present ())
+      {
+        this->amble_probability_.set (amble_probability_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     // map
     //
     if (n.name () == "map" && n.namespace_ () == "urn:rpg")
@@ -948,6 +985,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "urn:rpg");
   }
 
+  if (!amble_probability_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "amble_probability",
+      "urn:rpg");
+  }
+
   if (!map_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
@@ -987,6 +1031,9 @@ operator== (const RPG_Engine_Level_XMLTree_Type& x, const RPG_Engine_Level_XMLTr
     return false;
 
   if (!(x.max_spawned () == y.max_spawned ()))
+    return false;
+
+  if (!(x.amble_probability () == y.amble_probability ()))
     return false;
 
   if (!(x.map () == y.map ()))
@@ -1059,6 +1106,7 @@ operator<< (::std::ostream& o, const RPG_Engine_Level_XMLTree_Type& i)
   o << ::std::endl << "spawn_interval: " << i.spawn_interval ();
   o << ::std::endl << "spawn_probability: " << i.spawn_probability ();
   o << ::std::endl << "max_spawned: " << i.max_spawned ();
+  o << ::std::endl << "amble_probability: " << i.amble_probability ();
   o << ::std::endl << "map: " << i.map ();
   return o;
 }
@@ -1794,6 +1842,18 @@ operator<< (::xercesc::DOMElement& e, const RPG_Engine_Level_XMLTree_Type& i)
     s << i.max_spawned ();
   }
 
+  // amble_probability
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "amble_probability",
+        "urn:rpg",
+        e));
+
+    s << i.amble_probability ();
+  }
+
   // map
   //
   {
@@ -2175,6 +2235,7 @@ RPG_Engine_Level_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   spawn_interval_ (f, this),
   spawn_probability_ (f, this),
   max_spawned_ (f, this),
+  amble_probability_ (f, this),
   map_ (f, this)
 {
   this->parse (s, f);
@@ -2225,6 +2286,12 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     max_spawned_type r;
     s >> r;
     this->max_spawned_.set (r);
+  }
+
+  {
+    amble_probability_type r;
+    s >> r;
+    this->amble_probability_.set (r);
   }
 
   {
@@ -2288,6 +2355,7 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
   s << x.spawn_interval ();
   s << x.spawn_probability ();
   s << x.max_spawned ();
+  s << x.amble_probability ();
   s << x.map ();
   return s;
 }

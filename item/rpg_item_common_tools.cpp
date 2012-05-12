@@ -275,6 +275,7 @@ RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_i
 
 void
 RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
+                                 const RPG_Character_OffHand& offHand_in,
                                  RPG_Character_EquipmentSlots& slots_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::item2Slot"));
@@ -333,8 +334,11 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
         }
         case ARMORCATEGORY_SHIELD:
         {
-          slots_out.slots.push_back(EQUIPMENTSLOT_HAND_RIGHT);
-          slots_out.slots.push_back(EQUIPMENTSLOT_HAND_LEFT);
+          // *NOTE*: secondary, then primary
+          slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                                 : EQUIPMENTSLOT_HAND_RIGHT);
+          slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                                 : EQUIPMENTSLOT_HAND_LEFT);
 
           break;
         }
@@ -361,8 +365,11 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
           break;
         case RPG_Item_CommodityUnion::COMMODITYLIGHT:
         {
-          slots_out.slots.push_back(EQUIPMENTSLOT_HAND_RIGHT);
-          slots_out.slots.push_back(EQUIPMENTSLOT_HAND_LEFT);
+          // *NOTE*: secondary, then primary
+          slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                                 : EQUIPMENTSLOT_HAND_RIGHT);
+          slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                                 : EQUIPMENTSLOT_HAND_LEFT);
 
           break;
         }
@@ -393,10 +400,15 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
       const RPG_Item_WeaponType& weapon_type = weapon->getWeaponType();
       const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
 
-      if (properties.isDoubleWeapon)
+      // *TODO*: consider single-handed use of double-handed weapons...
+      if (properties.isDoubleWeapon ||
+          RPG_Item_Common_Tools::isTwoHandedWeapon(weapon_type))
         slots_out.is_inclusive = true;
-      slots_out.slots.push_back(EQUIPMENTSLOT_HAND_RIGHT);
-      slots_out.slots.push_back(EQUIPMENTSLOT_HAND_LEFT);
+      // *NOTE*: primary, then secondary
+      slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                             : EQUIPMENTSLOT_HAND_LEFT);
+      slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                             : EQUIPMENTSLOT_HAND_RIGHT);
 
       break;
     }

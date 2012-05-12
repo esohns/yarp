@@ -44,7 +44,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Size_t
    myTitle(title_in),
 //    myBackGround(backGround_in),
    myOffset(std::make_pair(0, 0)),
-   myLastAbsolutePosition(std::make_pair(0, 0)),
+   myLastAbsolutePosition(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                         std::numeric_limits<unsigned int>::max())),
    myParent(NULL),
    myType(type_in)
 {
@@ -70,7 +71,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
     myTitle(title_in),
 //     myBackGround(backGround_in),
     myOffset(offset_in),
-    myLastAbsolutePosition(std::make_pair(0, 0)),
+    myLastAbsolutePosition(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max())),
     myParent(&const_cast<RPG_Graphics_SDLWindowBase&>(parent_in)),
     myType(type_in)
 {
@@ -221,6 +223,30 @@ RPG_Graphics_SDLWindowBase::getScreen() const
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getScreen"));
 
   return (myScreen ? myScreen : SDL_GetVideoSurface());
+}
+
+void
+RPG_Graphics_SDLWindowBase::clear(const Uint32& color_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clear"));
+
+  // sanity check(s)
+  ACE_ASSERT(myScreen);
+
+  SDL_Rect dstRect = {0, 0, 0, 0};
+  clip();
+  SDL_GetClipRect(myScreen, &dstRect);
+  if (SDL_FillRect(myScreen,                             // target surface
+                   &dstRect,                             // fill area
+                   RPG_Graphics_SDL_Tools::CLR32_BLACK)) // color
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_FillRect(): \"%s\", aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+  unclip();
 }
 
 void

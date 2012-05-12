@@ -1187,17 +1187,29 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   // init return value(s)
   SDL_Surface* result = NULL;
 
-  //// sanity check
-  ////--> buffer must contain a PNG file
-  //if (png_sig_cmp(const_cast<unsigned char*>(buffer_in), // buffer
-  //                0,                                     // start at the beginning
-  //                RPG_GRAPHICS_PNG_SIGNATURE_BYTES))     // #signature bytes to check
-  //{
-  //  ACE_DEBUG((LM_ERROR,
-  //             ACE_TEXT("failed to png_sig_cmp(): %m, aborting\n")));
+  // sanity check
+  //--> file must have a PNG signature
+  unsigned char sig_buffer[RPG_GRAPHICS_PNG_SIGNATURE_BYTES];
+  if (ACE_OS::fread(sig_buffer,
+                    RPG_GRAPHICS_PNG_SIGNATURE_BYTES,
+                    1,
+                    file_in) != 1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to fread(%u): %m, aborting\n"),
+               RPG_GRAPHICS_PNG_SIGNATURE_BYTES));
 
-  //  return NULL;
-  //} // end IF
+    return NULL;
+  } // end IF
+  if (png_sig_cmp(sig_buffer,                        // buffer
+                  0,                                 // start at the beginning
+                  RPG_GRAPHICS_PNG_SIGNATURE_BYTES)) // #signature bytes to check
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to png_sig_cmp(): %m, aborting\n")));
+
+    return NULL;
+  } // end IF
 
   png_structp png_ptr = NULL;
   // create the PNG loading context structure
@@ -1212,6 +1224,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
 
     return NULL;
   } // end IF
+  png_set_sig_bytes(png_ptr, RPG_GRAPHICS_PNG_SIGNATURE_BYTES);
 
   // *NOTE* beyond this point:
   // - cleanup "png_ptr"

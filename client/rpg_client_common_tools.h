@@ -79,6 +79,7 @@ class RPG_Client_Export RPG_Client_Common_Tools
                                        const RPG_Client_SelectionMode&, // current selection mode
                                        const RPG_Engine&,               // state / engine
                                        const bool& = true);             // locked access ?
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools());

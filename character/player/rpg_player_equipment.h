@@ -44,6 +44,7 @@ class RPG_Player_Export RPG_Player_Equipment
 
   // *NOTE*: equipped items SHALL be part of the inventory !
   void equip(const RPG_Item_ID_t&,                                    // item ID
+             const RPG_Character_OffHand&,                            // off-hand
              const RPG_Character_EquipmentSlot& = EQUIPMENTSLOT_ANY); // where ?
   void unequip(const RPG_Item_ID_t&); // what ?
   void unequip(const RPG_Character_EquipmentSlot&); // where ?
@@ -51,6 +52,7 @@ class RPG_Player_Export RPG_Player_Equipment
 
   // weapon in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
   RPG_Item_WeaponType getPrimaryWeapon(const RPG_Character_OffHand&) const;
+  RPG_Item_WeaponType getSecondaryWeapon(const RPG_Character_OffHand&) const;
   // armor in EQUIPMENTSLOT_BODY/TORSO
   RPG_Item_ArmorType getBodyArmor() const;
   // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR (!)
@@ -58,6 +60,7 @@ class RPG_Player_Export RPG_Player_Equipment
   // light source in EQUIPMENTSLOT_LEFT/RIGHT_HAND, if any
   RPG_Item_CommodityLight getLightSource() const;
 
+  bool isEquipped(const RPG_Character_EquipmentSlot&) const; // slot
   bool isEquipped(const RPG_Item_ID_t&,                // item ID
                   RPG_Character_EquipmentSlot&) const; // return value: slot (if any)
 
