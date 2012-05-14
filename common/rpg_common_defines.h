@@ -32,6 +32,7 @@
 // *NOTE*: refer to the XSD C++/Tree manual for details
 #define RPG_COMMON_XML_SCHEMA_CHARSET          "UTF-8"
 #define RPG_COMMON_XML_TARGET_NAMESPACE        "urn:rpg"
+#define RPG_COMMON_XML_SCHEMA_FILE_EXT         ".xsd"
 
 // DATADIR-specific
 #define RPG_COMMON_DEF_DATA_SUB                "data"

@@ -26,6 +26,35 @@
 
 #include <ace/Log_Msg.h>
 
+RPG_Common_XSDErrorHandler::RPG_Common_XSDErrorHandler()
+ : myFailed(false)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::RPG_Common_XSDErrorHandler"));
+
+}
+
+RPG_Common_XSDErrorHandler::~RPG_Common_XSDErrorHandler()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::~RPG_Common_XSDErrorHandler"));
+
+}
+
+void
+RPG_Common_XSDErrorHandler::reset()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::reset"));
+
+  myFailed = false;
+}
+
+bool
+RPG_Common_XSDErrorHandler::failed()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::failed"));
+
+  return myFailed;
+}
+
 bool
 RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
                                    unsigned long line_in,
@@ -33,7 +62,7 @@ RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
                                    ::xsd::cxx::xml::error_handler<char>::severity severity_in,
                                    const std::string& message_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::XSD_Error_Handler::handle"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::handle"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
@@ -64,6 +93,8 @@ RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
                  column_in,
                  message_in.c_str()));
 
+      myFailed = true;
+
       break;
     }
     case ::xml_schema::error_handler::severity::fatal:
@@ -74,6 +105,8 @@ RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
                  line_in,
                  column_in,
                  message_in.c_str()));
+
+      myFailed = true;
 
       break;
     }
@@ -86,10 +119,86 @@ RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
                  column_in,
                  message_in.c_str()));
 
+      myFailed = true;
+
       break;
     }
   } // end SWITCH
 
-  // try to continue anyway...
-  return true;
+  // try to continue ?
+  return myFailed;
+}
+
+// *********************************************************************** //
+
+RPG_Common_XercesErrorHandler::RPG_Common_XercesErrorHandler()
+ : myFailed(false)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::RPG_Common_XercesErrorHandler"));
+
+}
+
+RPG_Common_XercesErrorHandler::~RPG_Common_XercesErrorHandler()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::~RPG_Common_XercesErrorHandler"));
+
+}
+
+void
+RPG_Common_XercesErrorHandler::resetErrors()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::resetErrors"));
+
+  myFailed = false;
+}
+
+bool
+RPG_Common_XercesErrorHandler::failed()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::failed"));
+
+  return myFailed;
+}
+
+void
+RPG_Common_XercesErrorHandler::warning(const ::xercesc::SAXParseException& exception_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::warning"));
+
+  ACE_DEBUG((LM_WARNING,
+             ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+             exception_in.getSystemId(),
+             exception_in.getLineNumber(),
+             exception_in.getColumnNumber(),
+             exception_in.getMessage()));
+}
+
+void
+RPG_Common_XercesErrorHandler::error(const ::xercesc::SAXParseException& exception_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::error"));
+
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+             exception_in.getSystemId(),
+             exception_in.getLineNumber(),
+             exception_in.getColumnNumber(),
+             exception_in.getMessage()));
+
+  myFailed = true;
+}
+
+void
+RPG_Common_XercesErrorHandler::fatalError(const ::xercesc::SAXParseException& exception_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::fatalError"));
+
+  ACE_DEBUG((LM_ERROR,
+             ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
+             exception_in.getSystemId(),
+             exception_in.getLineNumber(),
+             exception_in.getColumnNumber(),
+             exception_in.getMessage()));
+
+  myFailed = true;
 }

@@ -1133,21 +1133,21 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                     targetSurface);
       } // end IF
 
-      // step8: ceiling
-      // *TODO*: this is static information: compute once / level and use a lookup-table here...
-      if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
-                                              *myEngine,
-                                              false) &&
-          is_visible)
-      {
-        RPG_Graphics_Surface::put(screen_position.first,
-                                  (screen_position.second -
-                                    (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
-                                                                        : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
-                                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8 : 2))),
-                                  *myCeilingTile,
-                                  targetSurface);
-      } // end IF
+      //// step8: ceiling
+      //// *TODO*: this is static information: compute once / level and use a lookup-table here...
+      //if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
+      //                                        *myEngine,
+      //                                        false) &&
+      //    is_visible)
+      //{
+      //  RPG_Graphics_Surface::put(screen_position.first,
+      //                            (screen_position.second -
+      //                              (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
+      //                                                                  : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
+      //                              (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8 : 2))),
+      //                            *myCeilingTile,
+      //                            targetSurface);
+      //} // end IF
     } // end FOR
   } // end FOR
 

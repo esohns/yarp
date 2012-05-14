@@ -58,10 +58,13 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   // in particular: - randomization
   //                - string conversion facilities
   //                - static tables (skills, spells, ...)
+  //                - XML parsing facilities
   //                - dictionaries (spells, items, monsters, ...)
-  static void init(const std::string&,  // magic dictionary file
+  static void init(const std::string&,  // schema directory
+                   const std::string&,  // magic dictionary file
                    const std::string&,  // item dictionary file
                    const std::string&); // monster dictionary file
+  static void fini();
 
   // ***** entity-related *****
   // *NOTE*: entity.character must be deleted() by the caller !

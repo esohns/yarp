@@ -188,6 +188,9 @@
     <ClInclude Include="rpg_common_track.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_common_XML_tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="rpg_common.map">
@@ -235,6 +238,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_common_XML_tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

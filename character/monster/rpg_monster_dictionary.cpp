@@ -36,6 +36,7 @@
 #include <rpg_common_macros.h>
 #include <rpg_common_xsderrorhandler.h>
 #include <rpg_common_tools.h>
+#include <rpg_common_XML_tools.h>
 
 #include <rpg_dice_common_tools.h>
 
@@ -375,11 +376,16 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
   ::xml_schema::flags flags;
   if (!validateXML_in)
     flags = flags | ::xml_schema::flags::dont_validate;
+  ::xml_schema::properties properties;
   try
   {
+    //doc_p.parse(filename_in,
+    //            RPG_XSDErrorHandler,
+    //            flags);
     doc_p.parse(filename_in,
-                RPG_XSDErrorHandler,
-                flags);
+                *RPG_Common_XML_Tools::parser(),
+                flags,
+                properties);
   }
   catch (const ::xml_schema::parsing& exception)
   {

@@ -1397,7 +1397,8 @@ do_work(const RPG_Client_Config& config_in,
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0a: init RPG engine
-  RPG_Engine_Common_Tools::init(config_in.magic_dictionary,
+  RPG_Engine_Common_Tools::init(schemaRepository_in,
+                                config_in.magic_dictionary,
                                 config_in.item_dictionary,
                                 config_in.monster_dictionary);
   RPG_Client_Common_Tools::init(config_in.sound_dictionary,
@@ -2008,6 +2009,9 @@ do_work(const RPG_Client_Config& config_in,
 
   // no more data will arrive from here on...
 
+  // fini RPG Engine
+  RPG_Engine_Common_Tools::fini();
+
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
 }
@@ -2429,14 +2433,26 @@ ACE_TMAIN(int argc_in,
   // validate argument(s)
   if (!RPG_Common_File_Tools::isReadable(iniFile)            ||
       !RPG_Common_File_Tools::isReadable(monsterDictionary)  ||
+      !RPG_Common_File_Tools::isReadable(floorPlan)          ||
       !RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
       !RPG_Common_File_Tools::isReadable(itemDictionary)     ||
       !RPG_Common_File_Tools::isReadable(magicDictionary)    ||
       !RPG_Common_File_Tools::isDirectory(schemaRepository)  ||
       !RPG_Common_File_Tools::isReadable(soundDictionary)    ||
-      !RPG_Common_File_Tools::isReadable(UIfile)             ||
-      !RPG_Common_File_Tools::isReadable(floorPlan))
+      !RPG_Common_File_Tools::isReadable(UIfile))
   {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid argument: \n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n, aborting\n"),
+               iniFile.c_str(),
+               monsterDictionary.c_str(),
+               floorPlan.c_str(),
+               graphicsDictionary.c_str(),
+               itemDictionary.c_str(),
+               magicDictionary.c_str(),
+               schemaRepository.c_str(),
+               soundDictionary.c_str(),
+               UIfile.c_str()));
+
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
 

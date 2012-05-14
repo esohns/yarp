@@ -60,6 +60,7 @@
 #include <rpg_common_attribute.h>
 #include <rpg_common_tools.h>
 #include <rpg_common_file_tools.h>
+#include <rpg_common_XML_tools.h>
 #include <rpg_common_xsderrorhandler.h>
 
 #include <rpg_chance_common_tools.h>
@@ -78,7 +79,8 @@ RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_Command
 RPG_Engine_EntityModeToStringTable_t RPG_Engine_EntityModeHelper::myRPG_Engine_EntityModeToStringTable;
 
 void
-RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
+RPG_Engine_Common_Tools::init(const std::string& schemaDirectory_in,
+                              const std::string& magicDictionaryFile_in,
                               const std::string& itemDictionaryFile_in,
                               const std::string& monsterDictionaryFile_in)
 {
@@ -102,6 +104,8 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   RPG_Character_Common_Tools::init();
 
   // step1c: init dictionaries
+  RPG_Common_XML_Tools::init(schemaDirectory_in);
+
   // step1ca: init magic dictionary
   if (!magicDictionaryFile_in.empty())
   {
@@ -167,6 +171,14 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
       return;
     }
   } // end IF
+}
+
+void
+RPG_Engine_Common_Tools::fini()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::fini"));
+
+  RPG_Common_XML_Tools::fini();
 }
 
 RPG_Engine_Entity
