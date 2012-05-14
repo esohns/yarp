@@ -546,6 +546,7 @@ do_work(const std::string& magicDictionary_in,
                                 empty);
   RPG_Client_Common_Tools::init(empty,
                                 empty,
+                                true,
                                 graphicsDictionary_in,
                                 graphicsDirectory_in,
                                 false); // don't init SDL

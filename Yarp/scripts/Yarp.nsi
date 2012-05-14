@@ -152,8 +152,8 @@ File "E:\Yarp\test_u\net\protocol\IRC_client_server_page.glade"
 
 ; Config - ini
 File "E:\Yarp\client\rpg_client.ini"
-File "E:\Yarp\net\protocol\IRC_client.ini"
-File "E:\Yarp\net\protocol\servers.ini"
+File "E:\Yarp\test_u\net\protocol\IRC_client.ini"
+File "E:\Yarp\test_u\net\protocol\servers.ini"
 
 ; Data
 ; set output path to the installation directory
