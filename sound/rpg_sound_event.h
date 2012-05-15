@@ -9,7 +9,8 @@
 
 enum RPG_Sound_Event
 {
-  EVENT_MAIN_TITLE = 0,
+  EVENT_AMBIENT = 0,
+  EVENT_MAIN_TITLE,
   EVENT_BELL,
   EVENT_CONDITION_ILL,
   EVENT_CONDITION_WEAK,
@@ -42,6 +43,7 @@ class RPG_Sound_Export RPG_Sound_EventHelper
   inline static void init()
   {
     myRPG_Sound_EventToStringTable.clear();
+    myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_AMBIENT, ACE_TEXT_ALWAYS_CHAR("EVENT_AMBIENT")));
     myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_MAIN_TITLE, ACE_TEXT_ALWAYS_CHAR("EVENT_MAIN_TITLE")));
     myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_BELL, ACE_TEXT_ALWAYS_CHAR("EVENT_BELL")));
     myRPG_Sound_EventToStringTable.insert(std::make_pair(EVENT_CONDITION_ILL, ACE_TEXT_ALWAYS_CHAR("EVENT_CONDITION_ILL")));

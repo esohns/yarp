@@ -23,9 +23,13 @@
 
 #include "rpg_sound_incl.h"
 #include "rpg_sound_exports.h"
+#include "rpg_sound_defines.h"
 #include "rpg_sound_common.h"
 
+#include <SDL/SDL.h>
+
 #include <ace/Global_Macros.h>
+#include <ace/Time_Value.h>
 #include <ace/Synch.h>
 
 /**
@@ -34,18 +38,27 @@
 class RPG_Sound_Export RPG_Sound_Common_Tools
 {
  public:
-  static void init(const std::string&,   // sound directory
-                   const unsigned int&,  // cache size
-                   const bool& = false); // mute ?
+  static bool init(const RPG_Sound_SDLConfig_t&,                  // SDL config parameters
+                   const std::string&,                            // sound directory
+                   const bool& = RPG_SOUND_DEF_AMBIENT_USE_CD,    // use CD ?
+                   const unsigned int& = RPG_SOUND_DEF_CACHESIZE, // cache size
+                   const bool& = false);                          // mute ?
   static void fini();
 
   static void soundToFile(const RPG_Sound_t&, // sound
                           std::string&);      // return value: FQ filename
 
   // *NOTE*: returns the channel# that is playing the sound/music/...
-  static int play(const RPG_Sound_Event&); // event
+  static int play(const RPG_Sound_Event&, // event
+                  ACE_Time_Value&);       // return value: length
+  static int play(const std::string&, // sound file
+                  ACE_Time_Value&);   // return value: length
   static bool isPlaying(const int& = -1); // channel (-1: ALL channels)
   static void stop(const int& = -1); // channel (-1: ALL channels)
+
+  // *NOTE*: returns the track# that is playing...
+  // *NOTE*: passing NULL will invoke all commands on the last drive SDL_OpenCD()ed...
+  static int playRandomTrack(SDL_CD* = NULL); // CDROM handle
 
  private:
   // safety measures
@@ -60,6 +73,7 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
 
   static bool                   myIsMuted;
   static std::string            mySoundDirectory;
+  static RPG_Sound_SDLConfig_t  myConfig;
 
   static ACE_Thread_Mutex       myCacheLock;
   static unsigned int           myOldestCacheEntry;

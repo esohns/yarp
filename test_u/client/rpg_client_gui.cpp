@@ -686,138 +686,6 @@ reactor_worker_func(void* args_in)
 }
 
 bool
-do_initAudio(const RPG_Client_SDL_AudioConfig_t& audioConfig_in)
-{
-  RPG_TRACE(ACE_TEXT("::do_initAudio"));
-
-  // init SDL audio handling
-//   SDL_AudioSpec wanted;
-//   wanted.freq = audioConfig_in.frequency;
-//   wanted.format = audioConfig_in.format;
-//   wanted.channels = audioConfig_in.channels;
-//   wanted.samples = audioConfig_in.samples;
-// //   wanted.callback = fill_audio;
-// //   wanted.userdata = NULL;
-//
-//   // Open the audio device, forcing the desired format
-//   if (SDL_OpenAudio(&wanted, NULL) < 0)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to SDL_OpenAudio(): \"%s\", aborting\n"),
-//                SDL_GetError()));
-//
-//     return;
-//   } // end IF
-  if (Mix_OpenAudio(audioConfig_in.frequency,
-                    audioConfig_in.format,
-                    audioConfig_in.channels,
-                    audioConfig_in.samples) < 0)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
-               Mix_GetError()));
-
-    return false;
-  } // end IF
-  if (Mix_AllocateChannels(audioConfig_in.mix_channels) != audioConfig_in.mix_channels)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
-               audioConfig_in.mix_channels,
-               Mix_GetError()));
-
-    return false;
-  } // end IF
-
-  RPG_Client_SDL_AudioConfig_t obtained;
-  obtained.frequency = 0;
-  obtained.format = 0;
-  obtained.channels = 0;
-  obtained.samples = 0;
-  obtained.mix_channels = Mix_AllocateChannels(-1);
-  std::string format_string;
-  if (Mix_QuerySpec(&obtained.frequency,
-                    &obtained.format,
-                    &obtained.channels) == 0)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
-               Mix_GetError()));
-
-    return false;
-  } // end IF
-  switch (obtained.format)
-  {
-    case AUDIO_U8:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U8"); break;
-    case AUDIO_S8:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S8"); break;
-    case AUDIO_U16LSB:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16LSB"); break;
-    case AUDIO_S16LSB:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16LSB"); break;
-    case AUDIO_U16MSB:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16MSB"); break;
-    case AUDIO_S16MSB:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16MSB"); break;
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid audio format (was: %u), aborting\n"),
-                 obtained.format));
-
-      return false;
-    }
-  } // end SWITCH
-  char driver[MAXPATHLEN];
-  if (!SDL_AudioDriverName(driver, sizeof(driver)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
-               SDL_GetError()));
-
-    return false;
-  } // end IF
-
-  // initialize audioCD playing
-  if (audioConfig_in.use_CD &&
-      (SDL_CDNumDrives() <= 0))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_CDNumDrives(): \"%s\", aborting\n"),
-               SDL_GetError()));
-
-    return false;
-  } // end IF
-  SDL_CD* cdrom = NULL;
-  if (audioConfig_in.use_CD)
-  {
-    cdrom = SDL_CDOpen(0); // open default drive
-    if (!cdrom)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_CDOpen(0): \"%s\", aborting\n"),
-                 SDL_GetError()));
-
-      return false;
-    } // end IF
-  } // end IF
-
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %s\nchannels: %d\nmix channels: %d\nCD [id, status]: %s [%d, %d]\n"),
-             driver,
-             obtained.frequency,
-             format_string.c_str(),
-             obtained.channels,
-             obtained.mix_channels,
-             (audioConfig_in.use_CD ? SDL_CDName(0) : ACE_TEXT_ALWAYS_CHAR("N/A")),
-             (audioConfig_in.use_CD ? cdrom->id : -1),
-             (audioConfig_in.use_CD ? cdrom->status : -1)));
-
-  return true;
-}
-
-bool
 do_initGUI(const std::string& UIfile_in,
            RPG_Client_GTK_CBData_t& userData_in,
            const RPG_Client_SDL_VideoConfig_t& videoConfig_in)
@@ -1347,7 +1215,9 @@ do_runIntro(SDL_Surface* screen_in)
   RPG_TRACE(ACE_TEXT("::do_runIntro"));
 
   // step1: play intro music
-  RPG_Sound_Common_Tools::play(EVENT_MAIN_TITLE);
+  ACE_Time_Value length;
+  RPG_Sound_Common_Tools::play(EVENT_MAIN_TITLE,
+                               length);
 
   // step2: show start logo
   RPG_Graphics_GraphicTypeUnion type;
@@ -1401,12 +1271,22 @@ do_work(const RPG_Client_Config& config_in,
                                 config_in.magic_dictionary,
                                 config_in.item_dictionary,
                                 config_in.monster_dictionary);
-  RPG_Client_Common_Tools::init(config_in.sound_dictionary,
-                                config_in.sound_directory,
-                                config_in.audio_config.mute,
-                                config_in.graphics_dictionary,
-                                config_in.graphics_directory,
-                                false);
+  if (!RPG_Client_Common_Tools::init(config_in.audio_config.sdl_config,
+                                     config_in.audio_config.repository,
+                                     config_in.audio_config.use_CD,
+                                     RPG_SOUND_DEF_CACHESIZE,
+                                     config_in.audio_config.mute,
+                                     config_in.audio_config.dictionary,
+                                     config_in.graphics_directory,
+                                     RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+                                     config_in.graphics_dictionary,
+                                     false))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Client_Common_Tools::init(), aborting\n")));
+
+    return;
+  } // end IF
 
   // step0b: (if necessary) init the TP_Reactor
   if (config_in.num_threadpool_threads)
@@ -1421,18 +1301,11 @@ do_work(const RPG_Client_Config& config_in,
   } // end IF
 
   // step1: init audio
-  if (!do_initAudio(config_in.audio_config))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize audio, aborting\n")));
-
-    return;
-  } // end IF
 
   // step2: init UI
+  RPG_Client_GTK_CBData_t userData;
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
-  RPG_Client_GTK_CBData_t userData;
 //   userData.lock;
   userData.do_hover              = true;
   userData.hover_time            = 0;
@@ -1989,6 +1862,7 @@ do_work(const RPG_Client_Config& config_in,
   } while (!done);
 
   // step8: clean up
+  RPG_Client_Common_Tools::fini();
   level_engine.stop();
   client_engine.stop();
 
@@ -2024,12 +1898,12 @@ do_parseIniFile(const std::string& iniFilename_in,
 
   // init return value(s)
   //config_out.audio_config.mute = false;
-  config_out.audio_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  config_out.audio_config.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  config_out.audio_config.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  config_out.audio_config.samples = RPG_CLIENT_DEF_AUDIO_SAMPLES;
-  config_out.audio_config.mix_channels = RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS;
-  config_out.audio_config.use_CD = RPG_CLIENT_DEF_AUDIO_USE_CD;
+  config_out.audio_config.sdl_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
+  config_out.audio_config.sdl_config.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
+  config_out.audio_config.sdl_config.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
+  config_out.audio_config.sdl_config.samples = RPG_CLIENT_DEF_AUDIO_SAMPLES;
+  config_out.audio_config.sdl_config.mix_channels = RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS;
+  config_out.audio_config.use_CD = RPG_SOUND_DEF_AMBIENT_USE_CD;
 
   config_out.video_config.screen_width = RPG_CLIENT_DEF_VIDEO_W;
   config_out.video_config.screen_height = RPG_CLIENT_DEF_VIDEO_H;
@@ -2107,23 +1981,23 @@ do_parseIniFile(const std::string& iniFilename_in,
     // *TODO*: move these strings...
     if (val_name == ACE_TEXT("audio_frequency"))
     {
-      config_out.audio_config.frequency = ::atoi(val_value.c_str());
+      config_out.audio_config.sdl_config.frequency = ::atoi(val_value.c_str());
     }
 //     else if (val_name == ACE_TEXT("audio_format"))
 //     {
-//       audioConfig_out.format = ::atoi(val_value.c_str());
+//       audioConfig_out.sdl_config.format = ::atoi(val_value.c_str());
 //     }
     else if (val_name == ACE_TEXT("audio_channels"))
     {
-      config_out.audio_config.channels = ::atoi(val_value.c_str());
+      config_out.audio_config.sdl_config.channels = ::atoi(val_value.c_str());
     }
     else if (val_name == ACE_TEXT("audio_samples"))
     {
-      config_out.audio_config.samples = ::atoi(val_value.c_str());
+      config_out.audio_config.sdl_config.samples = ::atoi(val_value.c_str());
     }
     else if (val_name == ACE_TEXT("audio_mix_channels"))
     {
-      config_out.audio_config.mix_channels = ::atoi(val_value.c_str());
+      config_out.audio_config.sdl_config.mix_channels = ::atoi(val_value.c_str());
     }
     else if (val_name == ACE_TEXT("audio_cd"))
     {
@@ -2146,6 +2020,16 @@ do_parseIniFile(const std::string& iniFilename_in,
     else if (val_name == ACE_TEXT("screen_colordepth"))
     {
       config_out.video_config.screen_colordepth = ::atoi(val_value.c_str());
+    }
+    else if (val_name == ACE_TEXT("screen_fullscreen"))
+    {
+      converter.str(val_value.c_str());
+      converter >> config_out.video_config.fullScreen;
+      if (converter.fail())
+      {
+        converter.clear();
+        converter >> std::boolalpha >> config_out.video_config.fullScreen;
+      } // end IF
     }
     else
     {
@@ -2267,6 +2151,33 @@ do_printVersion(const std::string& programName_in)
 
 //   std::cout << "ACE: " << ACE_VERSION << std::endl;
   std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
+
+  // step3: print SDL version(s)
+  SDL_version sdl_version_compiled;
+  SDL_VERSION(&sdl_version_compiled);
+  version_number.str("");
+  version_number << sdl_version_compiled.major;
+  version_number << ACE_TEXT(".");
+  version_number << sdl_version_compiled.minor;
+  version_number << ACE_TEXT(".");
+  version_number << sdl_version_compiled.patch;
+  std::cout << ACE_TEXT("SDL (compiled against): ") << version_number.str() << std::endl;
+  const SDL_version* sdl_version_linked = SDL_Linked_Version();
+  version_number.str("");
+  version_number << sdl_version_linked->major;
+  version_number << ACE_TEXT(".");
+  version_number << sdl_version_linked->minor;
+  version_number << ACE_TEXT(".");
+  version_number << sdl_version_linked->patch;
+  std::cout << ACE_TEXT("SDL (linked against): ") << version_number.str() << std::endl;
+  const SDL_version* mix_version_linked = Mix_Linked_Version();
+  version_number.str("");
+  version_number << mix_version_linked->major;
+  version_number << ACE_TEXT(".");
+  version_number << mix_version_linked->minor;
+  version_number << ACE_TEXT(".");
+  version_number << mix_version_linked->patch;
+  std::cout << ACE_TEXT("SDL_mixer (linked against): ") << version_number.str() << std::endl;
 
   // step3: print compiler name/version
   version_number.str("");
@@ -2502,23 +2413,23 @@ ACE_TMAIN(int argc_in,
 //   config.gtk_cb_data                       = userData;
 
   // *** sound ***
-  config.audio_config.mute                 = mute_sound;
-  config.audio_config.frequency            = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  config.audio_config.format               = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  config.audio_config.channels             = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  config.audio_config.samples              = RPG_CLIENT_DEF_AUDIO_SAMPLES;
-  config.audio_config.mix_channels         = RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS;
-  config.audio_config.use_CD               = RPG_CLIENT_DEF_AUDIO_USE_CD;
-  config.sound_directory = base_data_path;
-  config.sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  config.audio_config.mute                    = mute_sound;
+  config.audio_config.sdl_config.frequency    = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
+  config.audio_config.sdl_config.format       = RPG_CLIENT_DEF_AUDIO_FORMAT;
+  config.audio_config.sdl_config.channels     = RPG_CLIENT_DEF_AUDIO_CHANNELS;
+  config.audio_config.sdl_config.samples      = RPG_CLIENT_DEF_AUDIO_SAMPLES;
+  config.audio_config.sdl_config.mix_channels = RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS;
+  config.audio_config.use_CD                  = RPG_SOUND_DEF_AMBIENT_USE_CD;
+  config.audio_config.repository = base_data_path;
+  config.audio_config.repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  config.sound_directory += ACE_TEXT_ALWAYS_CHAR("sound");
-  config.sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR("sound");
+  config.audio_config.repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #else
-  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
+  config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
 #endif
-  config.sound_dictionary                  = soundDictionary;
+  config.audio_config.dictionary = soundDictionary;
 
   // *** graphics ***
   config.video_config.screen_width         = RPG_CLIENT_DEF_VIDEO_W;

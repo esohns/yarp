@@ -46,7 +46,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>E:\Yarp\common;E:\SDL-1.2.14;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Yarp\common;E:\Yarp\chance\dice;E:\SDL-1.2.14;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_SOUND_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -81,7 +81,7 @@ popd</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>E:\Yarp\common;E:\SDL-1.2.14;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Yarp\common;E:\Yarp\chance\dice;E:\SDL-1.2.14;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_SOUND_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -107,6 +107,7 @@ popd</Command>
     <ClInclude Include="rpg_sound_defines.h" />
     <ClInclude Include="rpg_sound_dictionary.h" />
     <ClInclude Include="rpg_sound_event.h" />
+    <ClInclude Include="rpg_sound_event_manager.h" />
     <ClInclude Include="rpg_sound_exports.h" />
     <ClInclude Include="rpg_sound_incl.h" />
     <ClInclude Include="rpg_sound_XML_parser.h" />
@@ -117,6 +118,7 @@ popd</Command>
   <ItemGroup>
     <ClCompile Include="rpg_sound_common_tools.cpp" />
     <ClCompile Include="rpg_sound_dictionary.cpp" />
+    <ClCompile Include="rpg_sound_event_manager.cpp" />
     <ClCompile Include="rpg_sound_XML_parser.cpp" />
     <ClCompile Include="rpg_sound_XML_types.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -896,11 +896,12 @@ RPG_Client_Engine::handleActions()
         ACE_ASSERT((*iterator).sound != RPG_SOUND_EVENT_INVALID);
 
         int channel = -1;
-        channel = RPG_Sound_Common_Tools::play((*iterator).sound);
+        ACE_Time_Value length = ACE_Time_Value::zero;
+        channel = RPG_Sound_Common_Tools::play((*iterator).sound, length);
         if (channel == -1)
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to play sound (was: \"%s\"), continuing\n"),
-                     RPG_Sound_EventHelper::RPG_Sound_EventToString((*iterator).sound).c_str()));
+                     ACE_TEXT(RPG_Sound_EventHelper::RPG_Sound_EventToString((*iterator).sound).c_str())));
 
         break;
       }

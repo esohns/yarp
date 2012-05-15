@@ -23,6 +23,7 @@
 
 #include "rpg_client_defines.h"
 
+#include <rpg_sound_defines.h>
 #include <rpg_sound_dictionary.h>
 #include <rpg_sound_common_tools.h>
 
@@ -37,22 +38,34 @@
 
 #include <rpg_common_macros.h>
 
-void
-RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
+bool
+RPG_Client_Common_Tools::init(const RPG_Sound_SDLConfig_t& audioConfig_in,
                               const std::string& soundDirectory_in,
+                              const bool& useCD_in,
+                              const unsigned int& soundCacheSize_in,
                               const bool& muted_in,
-                              const std::string& graphicsDictionaryFile_in,
+                              const std::string& soundDictionaryFile_in,
                               const std::string& graphicsDirectory_in,
+                              const unsigned int& graphicsCacheSize_in,
+                              const std::string& graphicsDictionaryFile_in,
                               const bool& initSDL_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::init"));
 
   // step1: init string conversion facilities (and other static data)
-  RPG_Sound_Common_Tools::init(soundDirectory_in,
-                               RPG_CLIENT_DEF_SOUND_CACHESIZE,
-                               muted_in);
+  if (!RPG_Sound_Common_Tools::init(audioConfig_in,
+                                    soundDirectory_in,
+                                    useCD_in,
+                                    soundCacheSize_in,
+                                    muted_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to RPG_Sound_Common_Tools::init, aborting\n")));
+
+    return false;
+  } // end IF
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+                                  graphicsCacheSize_in,
                                   initSDL_in);
 
   // step1: init dictionaries
@@ -72,9 +85,9 @@ RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init, returning\n")));
+                 ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init, aborting\n")));
 
-      return;
+      return false;
     }
   } // end IF
 
@@ -94,9 +107,9 @@ RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Sound_Dictionary::init, returning\n")));
+                 ACE_TEXT("caught exception in RPG_Sound_Dictionary::init, aborting\n")));
 
-      return;
+      return false;
     }
   } // end IF
 
@@ -110,11 +123,21 @@ RPG_Client_Common_Tools::init(const std::string& soundDictionaryFile_in,
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Graphics_Cursor_Manager::set, returning\n")));
+                 ACE_TEXT("caught exception in RPG_Graphics_Cursor_Manager::set, aborting\n")));
 
-      return;
+      return false;
     }
   } // end IF
+
+  return true;
+}
+
+void
+RPG_Client_Common_Tools::fini()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::fini"));
+
+  RPG_Sound_Common_Tools::fini();
 }
 
 void

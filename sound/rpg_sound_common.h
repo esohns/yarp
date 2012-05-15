@@ -23,11 +23,23 @@
 
 #include "rpg_sound_incl.h"
 
+#include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
+
+// *NOTE* types as used by SDL
+struct RPG_Sound_SDLConfig_t
+{
+  int    frequency;
+  Uint16 format;
+//   Uint8  channels;
+  int    channels;
+  Uint16 samples;
+  int    mix_channels;
+};
 
 typedef RPG_Sound RPG_Sound_t;
 typedef std::map<RPG_Sound_Event, RPG_Sound_t> RPG_Sound_Dictionary_t;
@@ -36,6 +48,7 @@ typedef RPG_Sound_Dictionary_t::const_iterator RPG_Sound_DictionaryIterator_t;
 struct RPG_Sound_SoundCacheNode_t
 {
   RPG_Sound_Event sound_event;
+  std::string     sound_file;
   Mix_Chunk*      chunk;
 
   inline bool operator==(const RPG_Sound_SoundCacheNode_t& rhs_in) const

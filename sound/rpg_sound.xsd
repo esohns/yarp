@@ -36,6 +36,7 @@
 
   <xsd:simpleType name="RPG_Sound_Event_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EVENT_AMBIENT"/>
       <xsd:enumeration value="EVENT_MAIN_TITLE"/>
       <xsd:enumeration value="EVENT_BELL"/>
       <xsd:enumeration value="EVENT_CONDITION_ILL"/>

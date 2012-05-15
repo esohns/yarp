@@ -84,10 +84,9 @@ RPG_Graphics_SDL_Tools::initVideo(const bool& doubleBuffer_in,
 //                                          //  but may provide a speed increase on SMP systems..."
                           SDL_ANYFORMAT | // "...Allow any video depth/pixel-format..."
                           SDL_HWPALETTE | // "...Surface has exclusive palette..."
-                          (doubleBuffer_in ? SDL_DOUBLEBUF : 0) |
-                          (openGL_in ? (SDL_OPENGL | SDL_OPENGLBLIT) : 0) |
-                          (fullScreen_in ? (SDL_FULLSCREEN | SDL_NOFRAME)
-                                          : SDL_RESIZABLE));
+                          (doubleBuffer_in ? SDL_DOUBLEBUF                  : 0) |
+                          (openGL_in       ? (SDL_OPENGL | SDL_OPENGLBLIT)  : 0) |
+                          (fullScreen_in   ? (SDL_FULLSCREEN | SDL_NOFRAME) : SDL_RESIZABLE));
   if (SDL_VideoInit((useVideoDriverEnv_in ? driver_env
                                           : ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME)),
                     surface_flags) == -1)
@@ -129,13 +128,13 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
              driver,
              (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
              (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw_CC ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw_A ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw_CC ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw_A ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_fill ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_hw      ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_hw_CC   ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_hw_A    ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_sw      ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_sw_CC   ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_sw_A    ? ACE_TEXT("yes") : ACE_TEXT("no")),
+             (videoInfo->blit_fill    ? ACE_TEXT("yes") : ACE_TEXT("no")),
              videoInfo->video_mem,
              videoInfo->vfmt->palette,
              videoInfo->vfmt->BitsPerPixel,
@@ -144,18 +143,17 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
              videoInfo->vfmt->Rshift, videoInfo->vfmt->Gshift, videoInfo->vfmt->Bshift, videoInfo->vfmt->Ashift,
              videoInfo->vfmt->Rloss, videoInfo->vfmt->Gloss, videoInfo->vfmt->Bloss, videoInfo->vfmt->Aloss,
              videoInfo->vfmt->colorkey,
-             static_cast<int> (videoInfo->vfmt->alpha)));
+             static_cast<int>(videoInfo->vfmt->alpha)));
 
   // set surface flags
   Uint32 surface_flags = ((videoInfo->hw_available ? SDL_HWSURFACE : SDL_SWSURFACE) |
                           SDL_ASYNCBLIT | // "...will usually slow down blitting on single CPU machines,
-//                                         //  but may provide a speed increase on SMP systems..."
+                                          //  but may provide a speed increase on SMP systems..."
                           SDL_ANYFORMAT | // "...Allow any video depth/pixel-format..."
                           SDL_HWPALETTE | // "...Surface has exclusive palette..."
-                          (doubleBuffer_in ? SDL_DOUBLEBUF : 0) |
-                          (openGL_in ? (SDL_OPENGL | SDL_OPENGLBLIT) : 0) |
-                          (fullScreen_in ? (SDL_FULLSCREEN | SDL_NOFRAME)
-                                         : SDL_RESIZABLE));
+                          (doubleBuffer_in ? SDL_DOUBLEBUF                  : 0) |
+                          (openGL_in       ? (SDL_OPENGL | SDL_OPENGLBLIT)  : 0) |
+                          (fullScreen_in   ? (SDL_FULLSCREEN | SDL_NOFRAME) : SDL_RESIZABLE));
   // get available fullscreen/hardware/... modes
   SDL_Rect** modes = NULL;
   modes = SDL_ListModes(NULL,           // use same as videoInfo
@@ -172,14 +170,14 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
   else if (modes == reinterpret_cast<SDL_Rect**>(-1))
   {
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("ALL resolutions available (flags: %x)...\n"),
+               ACE_TEXT("ALL resolutions available (flags: 0x%x)...\n"),
                surface_flags));
   }
   else
   {
     // print valid modes
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("*** available resolutions (flags: %x) ***\n"),
+               ACE_TEXT("*** available resolutions (flags: 0x%x) ***\n"),
                surface_flags));
     for (unsigned int i = 0;
          modes[i];
@@ -201,7 +199,7 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
     case 0:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("requested mode (width: %d, height: %d, depth: %d, flags: %x) not supported --> change settings, aborting\n"),
+                 ACE_TEXT("requested mode (width: %d, height: %d, depth: %d, flags: 0x%x) not supported --> change settings, aborting\n"),
                  width_in,
                  height_in,
                  colorDepth_in,

@@ -41,12 +41,19 @@ class RPG_Client_Export RPG_Client_Common_Tools
 {
  public:
   // *NOTE*: initializes cursor manager singleton/dictionaries
-  static void init(const std::string&,  // sound dictionary
-                   const std::string&,  // sound directory
-                   const bool&,         // muted ?
-                   const std::string&,  // graphics dictionary
-                   const std::string&,  // graphics directory
-                   const bool& = true); // init SDL ?
+  static bool init(// *** audio ***
+                   const RPG_Sound_SDLConfig_t&, // SDL config parameters
+                   const std::string&,           // sound directory
+                   const bool&,                  // use CD ?
+                   const unsigned int&,          // cache size
+                   const bool&,                  // mute ?
+                   const std::string&,           // sound dictionary
+                   // *** video ***
+                   const std::string&,           // graphics directory
+                   const unsigned int&,          // cache size
+                   const std::string&,           // graphics dictionary
+                   const bool& = true);          // init SDL ?
+  static void fini();
 
   static void initFloorEdges(const RPG_Engine&,                      // state / engine
                              const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset

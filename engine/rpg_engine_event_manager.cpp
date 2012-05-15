@@ -809,16 +809,7 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
             next_action.position = current_action.path.front().first;
             do_next_action = true;
 
-            // step3: check: done ?
             current_action.path.pop_front();
-            done_current_action = current_action.path.empty();
-            if (done_current_action)
-            {
-              ACE_ASSERT(next_action.position == current_action.position);
-
-              // *NOTE*: --> reached target...
-              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-            } // end IF
 
             break;
           }

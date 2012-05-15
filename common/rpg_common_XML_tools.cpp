@@ -44,7 +44,7 @@ RPG_Common_XML_Tools::dirent_selector(const dirent* entry_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::dirent_selector"));
 
-  // *NOTE*: select maps
+  // *NOTE*: select XML schemas
   std::string filename(entry_in->d_name);
   std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_FILE_EXT));
   if (filename.rfind(extension,
@@ -85,21 +85,21 @@ RPG_Common_XML_Tools::init(const std::string& schemaDirectory_in)
   if (!RPG_Common_File_Tools::isDirectory(schemaDirectory_in))
   {
     ACE_DEBUG((LM_ERROR,
-            ACE_TEXT("invalid argument, not a directory (was: \"%s\"), aborting\n"),
-            schemaDirectory_in.c_str()));
+               ACE_TEXT("invalid argument, not a directory (was: \"%s\"), aborting\n"),
+               ACE_TEXT(schemaDirectory_in.c_str())));
 
     return;
   } // end IF
 
   // retrieve all relevant schema files...
   ACE_Dirent_Selector entries;
-  if (entries.open(schemaDirectory_in.c_str(),
+  if (entries.open(ACE_TEXT(schemaDirectory_in.c_str()),
                    &RPG_Common_XML_Tools::dirent_selector,
                    &RPG_Common_XML_Tools::dirent_comparator) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
-               schemaDirectory_in.c_str()));
+               ACE_TEXT(schemaDirectory_in.c_str())));
 
     return;
   } // end IF
@@ -155,15 +155,15 @@ RPG_Common_XML_Tools::init(const std::string& schemaDirectory_in)
   {
     path = schemaDirectory_in;
     path += ACE_DIRECTORY_SEPARATOR_STR_A;
-    path += entries[i]->d_name;
+    path += ACE_TEXT_ALWAYS_CHAR(entries[i]->d_name);
     if (!myParser->loadGrammar(path.c_str(),
                                ::xercesc::Grammar::SchemaGrammarType,
                                true) ||
         RPG_XercesErrorHandler.failed())
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to loadGrammar(\"%s\": \"%m\", aborting\n"),
-                 entries[i]->d_name));
+                 ACE_TEXT("failed to loadGrammar(\"%s\"), aborting\n"),
+                 ACE_TEXT(path.c_str())));
 
       break;
     } // end IF
@@ -187,7 +187,10 @@ RPG_Common_XML_Tools::fini()
   RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::fini"));
 
   // clean up
-  delete myGrammarPool;
+  ::xercesc::delete(myGrammarPool,
+                    ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  //::xercesc::delete(myParser,
+  //                  ::xercesc::XMLPlatformUtils::fgMemoryManager);
   delete myParser;
 
   xercesc::XMLPlatformUtils::Terminate();

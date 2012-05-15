@@ -24,6 +24,9 @@
 #include "rpg_common_macros.h"
 #include "rpg_XMLSchema_XML_tree.h"
 
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+
 #include <ace/Log_Msg.h>
 
 RPG_Common_XSDErrorHandler::RPG_Common_XSDErrorHandler()
@@ -65,33 +68,33 @@ RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
   RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::handle"));
 
 //   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-//              id_in.c_str(),
+//              ACE_TEXT("error occured (ID: \"%s\", location: [%d,%d]): \"%s\", continuing\n"),
+//              ACE_TEXT(id_in.c_str()),
 //              line_in,
 //              column_in,
-//              message_in.c_str()));
+//              ACE_TEXT(message_in.c_str())));
 
   switch (severity_in)
   {
     case ::xml_schema::error_handler::severity::warning:
     {
       ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
+                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: [%d,%d]): \"%s\", continuing\n"),
+                 ACE_TEXT(id_in.c_str()),
                  line_in,
                  column_in,
-                 message_in.c_str()));
+                 ACE_TEXT(message_in.c_str())));
 
       break;
     }
     case ::xml_schema::error_handler::severity::error:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
+                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: [%d,%d]): \"%s\", continuing\n"),
+                 ACE_TEXT(id_in.c_str()),
                  line_in,
                  column_in,
-                 message_in.c_str()));
+                 ACE_TEXT(message_in.c_str())));
 
       myFailed = true;
 
@@ -100,11 +103,11 @@ RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
     case ::xml_schema::error_handler::severity::fatal:
     {
       ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
+                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: [%d,%d]): \"%s\", continuing\n"),
+                 ACE_TEXT(id_in.c_str()),
                  line_in,
                  column_in,
-                 message_in.c_str()));
+                 ACE_TEXT(message_in.c_str())));
 
       myFailed = true;
 
@@ -113,11 +116,11 @@ RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
     default:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
+                 ACE_TEXT("unkown error occured (ID: \"%s\", location: [%d,%d]): \"%s\", continuing\n"),
+                 ACE_TEXT(id_in.c_str()),
                  line_in,
                  column_in,
-                 message_in.c_str()));
+                 ACE_TEXT(message_in.c_str())));
 
       myFailed = true;
 
@@ -165,12 +168,17 @@ RPG_Common_XercesErrorHandler::warning(const ::xercesc::SAXParseException& excep
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::warning"));
 
+  std::string system_id = ::xercesc::XMLString::transcode(exception_in.getSystemId(),
+                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string message   = ::xercesc::XMLString::transcode(exception_in.getMessage(),
+                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+
   ACE_DEBUG((LM_WARNING,
-             ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-             exception_in.getSystemId(),
+             ACE_TEXT("WARNING: error occured (ID: \"%s\", location [%Q,%Q]): \"%s\", continuing\n"),
+             ACE_TEXT(system_id.c_str()),
              exception_in.getLineNumber(),
              exception_in.getColumnNumber(),
-             exception_in.getMessage()));
+             ACE_TEXT(message.c_str())));
 }
 
 void
@@ -178,12 +186,17 @@ RPG_Common_XercesErrorHandler::error(const ::xercesc::SAXParseException& excepti
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::error"));
 
+  std::string system_id = ::xercesc::XMLString::transcode(exception_in.getSystemId(),
+                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string message   = ::xercesc::XMLString::transcode(exception_in.getMessage(),
+                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-             exception_in.getSystemId(),
+             ACE_TEXT("ERROR: error occured (ID: \"%s\", location: [%Q,%Q]): \"%s\", continuing\n"),
+             ACE_TEXT(system_id.c_str()),
              exception_in.getLineNumber(),
              exception_in.getColumnNumber(),
-             exception_in.getMessage()));
+             ACE_TEXT(message.c_str())));
 
   myFailed = true;
 }
@@ -193,12 +206,17 @@ RPG_Common_XercesErrorHandler::fatalError(const ::xercesc::SAXParseException& ex
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::fatalError"));
 
+  std::string system_id = ::xercesc::XMLString::transcode(exception_in.getSystemId(),
+                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string message   = ::xercesc::XMLString::transcode(exception_in.getMessage(),
+                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-             exception_in.getSystemId(),
+             ACE_TEXT("FATAL: error occured (ID: \"%s\", location: [%Q,%Q]): \"%s\", continuing\n"),
+             ACE_TEXT(system_id.c_str()),
              exception_in.getLineNumber(),
              exception_in.getColumnNumber(),
-             exception_in.getMessage()));
+             ACE_TEXT(message.c_str())));
 
   myFailed = true;
 }

@@ -28,6 +28,7 @@
 #include <rpg_graphics_iwindow.h>
 #include <rpg_graphics_cursor.h>
 
+#include <rpg_sound_common.h>
 #include <rpg_sound_event.h>
 
 #include <rpg_map_common.h>
@@ -62,14 +63,8 @@ struct RPG_Client_GTK_CBData_t
 //    schemaRepository(),
 //     entity(),
     level_engine(NULL)//,
-//     map_config()
- {
-//    entity.character = NULL;
-//    entity.position = std::make_pair(0, 0);
-//    entity.actions;
-//    entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-//    entity.graphic = NULL;
- };
+//     map_config(),
+ { };
 
   ACE_Thread_Mutex           lock;
   bool                       do_hover;
@@ -89,17 +84,13 @@ struct RPG_Client_GTK_CBData_t
   RPG_Map_FloorPlan_Config_t map_config;
 };
 
-// *NOTE* types as used by SDL
-struct RPG_Client_SDL_AudioConfig_t
+struct RPG_Client_AudioConfig_t
 {
-  bool   mute;
-  int    frequency;
-  Uint16 format;
-//   Uint8  channels;
-  int    channels;
-  Uint16 samples;
-  int    mix_channels;
-  bool   use_CD;
+  RPG_Sound_SDLConfig_t sdl_config;
+  std::string           repository;
+  std::string           dictionary;
+  bool                  use_CD;
+  bool                  mute;
 };
 
 // *NOTE* types as used by SDL
@@ -134,9 +125,7 @@ struct RPG_Client_Config
   std::string                  glade_file;
 //   GTK_cb_data_t      gtk_cb_data;
   // *** sound ***
-  RPG_Client_SDL_AudioConfig_t audio_config;
-  std::string                  sound_directory;
-  std::string                  sound_dictionary;
+  RPG_Client_AudioConfig_t     audio_config;
   // *** graphics ***
   RPG_Client_SDL_VideoConfig_t video_config;
   std::string                  graphics_directory;

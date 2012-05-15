@@ -36,7 +36,7 @@
 #include <rpg_graphics_common_tools.h>
 
 #include <rpg_sound_event.h>
-#include <rpg_sound_common_tools.h>
+#include <rpg_sound_event_manager.h>
 
 #include <rpg_map_defines.h>
 #include <rpg_map_common_tools.h>
@@ -2428,13 +2428,8 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   // center on character
   data->client_engine->setView(data->entity.position);
 
-  // play sound
-  int channel = -1;
-  channel = RPG_Sound_Common_Tools::play(EVENT_MAIN_TITLE);
-  if (channel == -1)
-    ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to play sound (was: \"%s\", continuing\n"),
-                RPG_Sound_EventHelper::RPG_Sound_EventToString(EVENT_MAIN_TITLE).c_str()));
+  // play ambient sound
+  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->start();
 
   // make join button INsensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
@@ -2537,8 +2532,8 @@ part_game_clicked_GTK_cb(GtkWidget* widget_in,
   if (id)
     data->level_engine->remove(id);
 
-  // stop sound
-  RPG_Sound_Common_Tools::stop(-1);
+  // stop ambient sound
+  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->stop();
 
   // update entity profile widgets
   ::update_entity_profile(data->entity,
