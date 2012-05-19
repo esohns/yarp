@@ -44,14 +44,14 @@ class RPG_Client_Engine;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_Export RPG_Client_WindowLevel
+class RPG_Client_Export RPG_Client_Window_Level
  : public RPG_Graphics_SDLWindowBase,
    public RPG_Client_IWindowLevel
 {
  public:
-  RPG_Client_WindowLevel(// *** SDL window ***
-                         const RPG_Graphics_SDLWindowBase&); // parent
-  virtual ~RPG_Client_WindowLevel();
+  RPG_Client_Window_Level(// *** SDL window ***
+                          const RPG_Graphics_SDLWindowBase&); // parent
+  virtual ~RPG_Client_Window_Level();
 
   // init level properties
   void init(RPG_Client_Engine*,              // engine handle
@@ -60,6 +60,8 @@ class RPG_Client_Export RPG_Client_WindowLevel
 
   void toggleMiniMap();
   bool showMiniMap() const;
+  void toggleMessages();
+  bool showMessages() const;
   void toggleVisionBlend();
 
   // adjust viewport
@@ -77,6 +79,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
   // (re)set lighting blend cache
   virtual void setBlendRadius(const unsigned char&); // radius
   virtual void updateMinimap();
+  virtual void updateMessageWindow(const std::string&); // message
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
@@ -95,9 +98,9 @@ class RPG_Client_Export RPG_Client_WindowLevel
   typedef RPG_Graphics_SDLWindowBase inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel(const RPG_Client_WindowLevel&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowLevel& operator=(const RPG_Client_WindowLevel&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level(const RPG_Client_Window_Level&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level& operator=(const RPG_Client_Window_Level&));
 
   // helper methods
   void setStyle(const RPG_Graphics_StyleUnion&);
@@ -105,11 +108,13 @@ class RPG_Client_Export RPG_Client_WindowLevel
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?
   void initMiniMap();
+  void initMessageWindow();
 
   void drawChild(const RPG_Graphics_WindowType&, // (child) type
                  SDL_Surface* = NULL,            // target surface (default: screen)
                  const unsigned int& = 0,        // offset x (top-left = [0,0])
-                 const unsigned int& = 0);       // offset y (top-left = [0,0])
+                 const unsigned int& = 0,        // offset y (top-left = [0,0])
+                 const bool& = true);            // refresh ?
 
   RPG_Engine*                     myEngine;
   RPG_Client_Engine*              myClient;
@@ -118,6 +123,7 @@ class RPG_Client_Export RPG_Client_WindowLevel
 #ifdef _DEBUG
   bool                            myShowCoordinates;
 #endif
+  bool                            myShowMessages;
 
   RPG_Graphics_MapStyle_t         myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;

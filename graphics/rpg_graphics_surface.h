@@ -110,6 +110,8 @@ class RPG_Graphics_Export RPG_Graphics_Surface
   static SDL_Surface* alpha(const SDL_Surface&,               // source surface
                             const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
   static void clear(SDL_Surface*); // target surface
+  static void fill(const Uint32&, // color
+                   SDL_Surface*); // target surface
 
   // refresh (partial) screen surface
   static void update(const SDL_Rect&, // "dirty" rectangle

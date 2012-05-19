@@ -232,6 +232,7 @@
      <xsd:enumeration value="WINDOW_MAIN"/>
      <xsd:enumeration value="WINDOW_MAP"/>
      <xsd:enumeration value="WINDOW_MENU"/>
+     <xsd:enumeration value="WINDOW_MESSAGE"/>
      <xsd:enumeration value="WINDOW_MINIMAP"/>
    </xsd:restriction>
  </xsd:simpleType>

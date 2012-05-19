@@ -42,10 +42,10 @@
 
 #include <sstream>
 
-RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_Size_t& size_in,
-                                             const RPG_Graphics_GraphicTypeUnion& elementType_in,
-                                             const std::string& title_in,
-                                             const RPG_Graphics_Font& font_in)
+RPG_Client_Window_Main::RPG_Client_Window_Main(const RPG_Graphics_Size_t& size_in,
+                                               const RPG_Graphics_GraphicTypeUnion& elementType_in,
+                                               const std::string& title_in,
+                                               const RPG_Graphics_Font& font_in)
  : inherited(size_in,        // size
              elementType_in, // element type
              title_in),      // title
@@ -56,23 +56,23 @@ RPG_Client_WindowMain::RPG_Client_WindowMain(const RPG_Graphics_Size_t& size_in,
    myAutoEdgeScroll(RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL),
    myTitleFont(font_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::RPG_Client_WindowMain"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::RPG_Client_Window_Main"));
 
 }
 
-RPG_Client_WindowMain::~RPG_Client_WindowMain()
+RPG_Client_Window_Main::~RPG_Client_Window_Main()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::~RPG_Client_WindowMain"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::~RPG_Client_Window_Main"));
 
 }
 
 void
-RPG_Client_WindowMain::init(RPG_Client_Engine* clientEngine_in,
-                            const bool& doAutoEdgeScroll_in,
-                            RPG_Engine* engine_in,
-                            const RPG_Graphics_MapStyle_t& style_in)
+RPG_Client_Window_Main::init(RPG_Client_Engine* clientEngine_in,
+                             const bool& doAutoEdgeScroll_in,
+                             RPG_Engine* engine_in,
+                             const RPG_Graphics_MapStyle_t& style_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::init"));
 
   // sanity checks
   ACE_ASSERT(clientEngine_in);
@@ -90,11 +90,11 @@ RPG_Client_WindowMain::init(RPG_Client_Engine* clientEngine_in,
 }
 
 void
-RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
-                            const unsigned int& offsetX_in,
-                            const unsigned int& offsetY_in)
+RPG_Client_Window_Main::draw(SDL_Surface* targetSurface_in,
+                             const unsigned int& offsetX_in,
+                             const unsigned int& offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::draw"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::draw"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
@@ -128,7 +128,7 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -150,7 +150,7 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -168,7 +168,7 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       return;
     } // end IF
@@ -190,7 +190,7 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       return;
     } // end IF
@@ -228,11 +228,11 @@ RPG_Client_WindowMain::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
+RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
                                    RPG_Graphics_IWindow* window_in,
                                    bool& redraw_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::handleEvent"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::handleEvent"));
 
   // init return value(s)
   redraw_out = false;
@@ -317,10 +317,17 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("%s key\n%s\n"),
 //                  ((event_in.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
-//                  RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str()));
+//                  ACE_TEXT(RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str())));
 
       switch (event_in.key.keysym.sym)
       {
+        case SDLK_ESCAPE:
+        {
+          RPG_Engine_ClientParameters_t parameters;
+          myEngine->notify(COMMAND_E2C_QUIT, parameters);
+
+          break;
+        }
         case SDLK_s:
         {
           std::ostringstream converter;
@@ -480,7 +487,7 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
           {
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
-                       RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str()));
+                       ACE_TEXT(RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str())));
 
             return;
           }
@@ -664,8 +671,8 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
         default:
         {
           ACE_DEBUG((LM_DEBUG,
-                      ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
-                      RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str()));
+                     ACE_TEXT("invalid/unknown cursor type (was: %s), aborting\n"),
+                     ACE_TEXT(RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str())));
 
           return;
         }
@@ -697,15 +704,15 @@ RPG_Client_WindowMain::handleEvent(const SDL_Event& event_in,
 }
 
 void
-RPG_Client_WindowMain::notify(const RPG_Graphics_Cursor& cursor_in) const
+RPG_Client_Window_Main::notify(const RPG_Graphics_Cursor& cursor_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::notify"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::notify"));
 
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
   client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                           std::numeric_limits<unsigned int>::max());
-  client_action.window = const_cast<RPG_Client_WindowMain*>(this);
+  client_action.window = const_cast<RPG_Client_Window_Main*>(this);
   client_action.cursor = cursor_in;
   client_action.entity_id = 0;
   if (cursor_in == RPG_GRAPHICS_CURSOR_INVALID)
@@ -721,9 +728,9 @@ RPG_Client_WindowMain::notify(const RPG_Graphics_Cursor& cursor_in) const
 }
 
 void
-RPG_Client_WindowMain::initScrollSpots()
+RPG_Client_Window_Main::initScrollSpots()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::initScrollSpots"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::initScrollSpots"));
 
   // upper left
   RPG_Graphics_HotSpot::init(*this,                  // parent
@@ -784,14 +791,14 @@ RPG_Client_WindowMain::initScrollSpots()
 }
 
 void
-RPG_Client_WindowMain::initMap(RPG_Client_Engine* clientEngine_in,
+RPG_Client_Window_Main::initMap(RPG_Client_Engine* clientEngine_in,
                                RPG_Engine* engine_in,
                                const RPG_Graphics_MapStyle_t& style_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::initMap"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::initMap"));
 
-  RPG_Client_WindowLevel* map_window = NULL;
-  map_window = new(std::nothrow) RPG_Client_WindowLevel(*this);
+  RPG_Client_Window_Level* map_window = NULL;
+  map_window = new(std::nothrow) RPG_Client_Window_Level(*this);
   if (!map_window)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -808,11 +815,11 @@ RPG_Client_WindowMain::initMap(RPG_Client_Engine* clientEngine_in,
 }
 
 void
-RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
+RPG_Client_Window_Main::drawBorder(SDL_Surface* targetSurface_in,
                                   const unsigned int& offsetX_in,
                                   const unsigned int& offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_WindowMain::drawBorder"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::drawBorder"));
 
   // set target surface
   SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
@@ -839,7 +846,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -863,7 +870,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -887,7 +894,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -911,7 +918,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -939,7 +946,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -960,7 +967,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -981,7 +988,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -1002,7 +1009,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -1017,7 +1024,7 @@ RPG_Client_WindowMain::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF

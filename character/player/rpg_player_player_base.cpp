@@ -365,7 +365,7 @@ RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid weapon type (was \"%s\"), continuing\n"),
-                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str()));
+                 ACE_TEXT(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str())));
 
       ACE_ASSERT(false);
     } // end IF
@@ -420,7 +420,7 @@ RPG_Player_Player_Base::getSpeed(const bool& isRunning_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid (body) armor category (was \"%s\"), aborting\n"),
-                   RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str()));
+                   ACE_TEXT(RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str())));
 
         return 0;
       }
@@ -477,16 +477,22 @@ RPG_Player_Player_Base::gainExperience(const unsigned int& XP_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::gainExperience"));
 
-  unsigned char old_level = getLevel(*myClass.subClasses.begin());
+  unsigned char old_level = getLevel(SUBCLASS_NONE);
 
   myExperience += XP_in;
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("player: \"%s\" gained %u XP (total: %u)...\n"),
+             ACE_TEXT(getName().c_str()),
+             XP_in,
+             myExperience));
 
   // *TODO*: trigger level-up
   if (old_level != getLevel(*myClass.subClasses.begin()))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("player: \"%s\" (XP: %d) has gained a level (%d)...\n"),
-               getName().c_str(),
+               ACE_TEXT(getName().c_str()),
                myExperience,
                static_cast<int>(getLevel(*myClass.subClasses.begin()))));
   } // end IF
@@ -546,18 +552,26 @@ RPG_Player_Player_Base::defaultEquip()
   // remove everything
   inherited::myEquipment.strip();
 
-  RPG_Character_EquipmentSlot slot;
+  RPG_Character_EquipmentSlots slots;
   RPG_Item_Base* handle = NULL;
+  RPG_Item_ID_t item_id = 0;
   for (RPG_Item_ListIterator_t iterator = inherited::myInventory.myItems.begin();
        iterator != inherited::myInventory.myItems.end();
        iterator++)
   {
+    slots.slots.clear();
+    slots.is_inclusive = false;
+    RPG_Item_Common_Tools::item2Slot(*iterator,
+                                     myOffHand,
+                                     slots);
+    ACE_ASSERT(!slots.slots.empty());
+
     handle = NULL;
     if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
                                                               handle))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item ID: %d, aborting\n"),
+                 ACE_TEXT("invalid item ID (was: %d), aborting\n"),
                  *iterator));
 
       return;
@@ -571,24 +585,14 @@ RPG_Player_Player_Base::defaultEquip()
         RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
         ACE_ASSERT(armor);
 //         RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
-        // shield or (body) armor ?
-        // *TODO*: what about other types of armor ?
-        slot = EQUIPMENTSLOT_BODY;
-        if (RPG_Item_Common_Tools::isShield(armor->getArmorType()))
-        {
-          // *NOTE*: secondary, then primary
-          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                              : EQUIPMENTSLOT_HAND_RIGHT);
-          if (myEquipment.isEquipped(slot))
-            slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
-                                                : EQUIPMENTSLOT_HAND_LEFT);
-        } // end IF
-        if (myEquipment.isEquipped(slot))
+
+        if (myEquipment.isEquipped(slots.slots.front(),
+                                   item_id))
           break; // cannot equip...
 
         myEquipment.equip(*iterator,
                           myOffHand,
-                          slot);
+                          slots.slots.front());
 
         break;
       }
@@ -601,19 +605,12 @@ RPG_Player_Player_Base::defaultEquip()
         // - by default, equip light sources only
         if (commodity_type.discriminator != RPG_Item_CommodityUnion::COMMODITYLIGHT)
           break;
-
-        // *NOTE*: secondary, then primary
-        slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                            : EQUIPMENTSLOT_HAND_RIGHT);
-        if (myEquipment.isEquipped(slot))
-          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
-                                              : EQUIPMENTSLOT_HAND_LEFT);
-        //if (myEquipment.isEquipped(slot))
+        //if (myEquipment.isEquipped(slot, item_id))
         //  break; // cannot equip...
 
         myEquipment.equip(*iterator,
                           myOffHand,
-                          slot);
+                          slots.slots.front());
 
         break;
       }
@@ -626,19 +623,13 @@ RPG_Player_Player_Base::defaultEquip()
         // *TODO*: what about other types of weapons ?
         if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->getWeaponType()))
           break;
-
-        // *NOTE*: primary, then secondary
-        slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
-                                            : EQUIPMENTSLOT_HAND_LEFT);
-        if (myEquipment.isEquipped(slot))
-          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                              : EQUIPMENTSLOT_HAND_RIGHT);
-        if (myEquipment.isEquipped(slot))
+        if (myEquipment.isEquipped(slots.slots.front(),
+                                   item_id))
           break; // cannot equip...
 
         myEquipment.equip(*iterator,
                           myOffHand,
-                          slot);
+                          slots.slots.front());
 
         break;
       }
@@ -662,7 +653,7 @@ RPG_Player_Player_Base::status() const
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("name: \"%s\" (XP: %d (%u))\n"),
-             getName().c_str(),
+             ACE_TEXT(getName().c_str()),
              myExperience,
              static_cast<unsigned int>(getLevel())));
 
@@ -677,22 +668,22 @@ RPG_Player_Player_Base::dump() const
   // *TODO*: add items
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Player \"%s\": \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nCondition: %s\nHP: %d/%u\nXP: %u\nGold: %u\nAttributes:\n===========\n%sFeats:\n======\n%sAbilities:\n==========\n%sSkills:\n=======\n%sSpells (known):\n=======\n%sSpells (prepared):\n=======\n%sItems:\n======\n"),
-             getName().c_str(),
-             RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str(),
-             RPG_Character_Common_Tools::raceToString(myRace).c_str(),
-             RPG_Character_Common_Tools::classToString(myClass).c_str(),
-             RPG_Character_Common_Tools::alignmentToString(getAlignment()).c_str(),
-             RPG_Character_Common_Tools::conditionToString(myCondition).c_str(),
+             ACE_TEXT(getName().c_str()),
+             ACE_TEXT(RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::raceToString(myRace).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::classToString(myClass).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::alignmentToString(getAlignment()).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::conditionToString(myCondition).c_str()),
              myNumHitPoints,
              getNumTotalHitPoints(),
              myExperience,
              myWealth,
-             RPG_Character_Common_Tools::attributesToString(myAttributes).c_str(),
-             RPG_Character_Skills_Common_Tools::featsToString(myFeats).c_str(),
-             RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str(),
-             RPG_Character_Skills_Common_Tools::skillsToString(mySkills).c_str(),
-             RPG_Magic_Common_Tools::spellsToString(myKnownSpells).c_str(),
-             RPG_Magic_Common_Tools::spellsToString(mySpells).c_str()));
+             ACE_TEXT(RPG_Character_Common_Tools::attributesToString(myAttributes).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::featsToString(myFeats).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::skillsToString(mySkills).c_str()),
+             ACE_TEXT(RPG_Magic_Common_Tools::spellsToString(myKnownSpells).c_str()),
+             ACE_TEXT(RPG_Magic_Common_Tools::spellsToString(mySpells).c_str())));
 }
 
 signed char

@@ -26,6 +26,7 @@ enum RPG_Engine_Command
   COMMAND_E2C_ENTITY_POSITION,
   COMMAND_E2C_ENTITY_REMOVE,
   COMMAND_E2C_ENTITY_VISION,
+  COMMAND_E2C_MESSAGE,
   COMMAND_E2C_QUIT,
   //
   RPG_ENGINE_COMMAND_MAX,
@@ -65,6 +66,7 @@ class RPG_Engine_Export RPG_Engine_CommandHelper
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_POSITION, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_POSITION")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_REMOVE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_REMOVE")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_VISION, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_VISION")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_MESSAGE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_MESSAGE")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_QUIT, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_QUIT")));
   };
 

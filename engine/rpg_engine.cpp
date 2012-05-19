@@ -458,7 +458,7 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command).c_str()));
+               ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command).c_str())));
   }
 
   return id;
@@ -513,7 +513,7 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-               RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command).c_str()));
+               ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command).c_str())));
   }
 
   // was active player ?
@@ -666,7 +666,7 @@ RPG_Engine::setActive(const RPG_Engine_EntityID_t& id_in)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str()));
+                 ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
     }
   } // end IF
 }
@@ -1645,7 +1645,58 @@ RPG_Engine::handleEntities()
 
           // target disabled ? --> remove entity (see below)
           if (RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character))
+          {
+            // notify client
+            parameters = NULL;
+            parameters = new(std::nothrow) RPG_Engine_ClientParameters_t;
+            if (!parameters)
+            {
+              ACE_DEBUG((LM_CRITICAL,
+                         ACE_TEXT("unable to allocate memory, aborting\n")));
+
+              return;
+            } // end IF
+            std::string* message = NULL;
+            message = new(std::nothrow) std::string;
+            if (!message)
+            {
+              ACE_DEBUG((LM_CRITICAL,
+                         ACE_TEXT("unable to allocate memory, aborting\n")));
+
+              // clean up
+              delete parameters;
+
+              return;
+            } // end IF
+            *message = (*target).second->character->getName();
+            *message += ACE_TEXT_ALWAYS_CHAR(" has been disabled");
+            parameters->push_back(message);
+            notifications.push_back(std::make_pair(COMMAND_E2C_MESSAGE,
+                                                   parameters));
+
+            // award XP
+            if (!(*target).second->character->isPlayerCharacter())
+            {
+              RPG_Player_Player_Base* player_base = dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
+              ACE_ASSERT(player_base);
+              unsigned int xp = RPG_Engine_Common_Tools::combat2XP((*target).second->character->getName(),
+                                                                   player_base->getLevel(),
+                                                                   1,
+                                                                   1);
+              player_base->gainExperience(xp);
+
+              // append some more info to the message
+              std::ostringstream converter;
+              *message += ACE_TEXT_ALWAYS_CHAR(", ");
+              *message += (*iterator).second->character->getName();
+              *message += ACE_TEXT_ALWAYS_CHAR(" received ");
+              converter << xp;
+              *message += converter.str();
+              *message += ACE_TEXT_ALWAYS_CHAR(" XP");
+            } // end IF
+
             remove_id = (*target).first;
+          } // end IF
 
           break;
         }
@@ -1750,7 +1801,7 @@ RPG_Engine::handleEntities()
           // debug info
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("\"%s\" %s running...\n"),
-                     (*iterator).second->character->getName().c_str(),
+                     ACE_TEXT((*iterator).second->character->getName().c_str()),
                      (is_running ? ACE_TEXT("stopped") : ACE_TEXT("started"))));
 
           break;
@@ -1773,7 +1824,7 @@ RPG_Engine::handleEntities()
           // debug info
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("\"%s\" %s searching...\n"),
-                     (*iterator).second->character->getName().c_str(),
+                     ACE_TEXT((*iterator).second->character->getName().c_str()),
                      (is_searching ? ACE_TEXT("stopped") : ACE_TEXT("started"))));
 
           break;
@@ -1789,7 +1840,7 @@ RPG_Engine::handleEntities()
               (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
 
               // remove all queued steps + travel action
-              while ((*iterator).second->actions.front().command == COMMAND_STEP);
+              while ((*iterator).second->actions.front().command == COMMAND_STEP)
                 (*iterator).second->actions.pop_front();
               ACE_ASSERT((*iterator).second->actions.front().command == COMMAND_TRAVEL);
             } // end IF
@@ -1868,7 +1919,7 @@ RPG_Engine::handleEntities()
           // debug info
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("\"%s\" stopped...\n"),
-                     (*iterator).second->character->getName().c_str()));
+                     ACE_TEXT((*iterator).second->character->getName().c_str())));
 
           // *TODO*: stop ALL activities !
 
@@ -1885,7 +1936,7 @@ RPG_Engine::handleEntities()
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid action (ID: %u, was: \"%s\"), continuing\n"),
                      (*iterator).first,
-                     RPG_Engine_CommandHelper::RPG_Engine_CommandToString(current_action.command).c_str()));
+                     ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(current_action.command).c_str())));
 
           break;
         }
@@ -1909,7 +1960,7 @@ RPG_Engine::handleEntities()
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).first).c_str()));
+                 ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).first).c_str())));
     }
   } // end FOR
   // clean up
@@ -1945,7 +1996,7 @@ RPG_Engine::handleEntities()
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_QUIT).c_str()));
+                   ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_QUIT).c_str())));
       }
     } // end IF
   } // end IF

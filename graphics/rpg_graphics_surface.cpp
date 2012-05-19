@@ -76,7 +76,7 @@ RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion& 
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
 
     return;
   } // end IF
@@ -147,7 +147,7 @@ RPG_Graphics_Surface::init(const RPG_Graphics_GraphicTypeUnion& type_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
 
     return;
   } // end IF
@@ -196,7 +196,7 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     return NULL;
   } // end IF
@@ -220,7 +220,7 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::fopen(\"%s\"): \"%m\", aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     return NULL;
   } // end IF
@@ -237,13 +237,13 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::loadPNG(\"%s\"), aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     // clean up
 	if (ACE_OS::fclose(file_ptr))
 	  ACE_DEBUG((LM_ERROR,
-		         ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-			     filename_in.c_str()));
+		           ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+			         ACE_TEXT(filename_in.c_str())));
     //delete[] srcbuf;
 
     return NULL;
@@ -253,7 +253,7 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   if (ACE_OS::fclose(file_ptr))
 	ACE_DEBUG((LM_ERROR,
 	           ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-			   filename_in.c_str()));
+			       ACE_TEXT(filename_in.c_str())));
   //delete[] srcbuf;
 
   if (convertToDisplayFormat_in)
@@ -284,8 +284,8 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
     {
       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to SDL_DisplayFormat(): %s, aborting\n"),
-                 ACE_TEXT("failed to SDL_DisplayFormatAlpha(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT("failed to SDL_DisplayFormatAlpha(): \"%s\", aborting\n"),
+                 ACE_TEXT(SDL_GetError())));
 
       // clean up
       SDL_FreeSurface(result);
@@ -314,7 +314,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
-                 targetFile_in.c_str()));
+                 ACE_TEXT(targetFile_in.c_str())));
 
       return;
     } // end IF
@@ -372,7 +372,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       return;
     } // end IF
@@ -410,7 +410,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
-               targetFile_in.c_str()));
+               ACE_TEXT(targetFile_in.c_str())));
 
     // clean up
     // *NOTE*: output has been modified, but the value is still present in image[0]
@@ -436,7 +436,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to close file(\"%s\"): %m, continuing\n"),
-                 targetFile_in.c_str()));
+                 ACE_TEXT(targetFile_in.c_str())));
     } // end IF
     // *NOTE*: output has been modified, but the value is still present in image[0]
     delete[] image[0];
@@ -459,7 +459,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to close file(\"%s\"): %m, continuing\n"),
-                 targetFile_in.c_str()));
+                 ACE_TEXT(targetFile_in.c_str())));
     } // end IF
     // *NOTE*: output has been modified, but the value is still present in image[0]
     delete[] image[0];
@@ -481,7 +481,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to close file(\"%s\"): %m, continuing\n"),
-                 targetFile_in.c_str()));
+                 ACE_TEXT(targetFile_in.c_str())));
     } // end IF
     // *NOTE*: output has been modified, but the value is still present in image[0]
     delete[] image[0];
@@ -520,7 +520,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to close file(\"%s\"): %m, continuing\n"),
-               targetFile_in.c_str()));
+               ACE_TEXT(targetFile_in.c_str())));
   } // end IF
   // *NOTE*: output has been modified, but the value is still present in image[0]
   delete[] image[0];
@@ -528,7 +528,7 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("wrote PNG file \"%s\"...\n"),
-             targetFile_in.c_str()));
+             ACE_TEXT(targetFile_in.c_str())));
 }
 
 SDL_Surface*
@@ -558,7 +558,7 @@ RPG_Graphics_Surface::create(const unsigned int& width_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return NULL;
   } // end IF
@@ -604,7 +604,7 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return NULL;
   } // end IF
@@ -613,11 +613,11 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((&source_in)))
-    if (SDL_LockSurface(&const_cast<SDL_Surface&> (source_in)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&>(source_in)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
       // clean up
     SDL_FreeSurface(result);
@@ -628,12 +628,12 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
   for (unsigned int i = 0;
        i < clipped_height;
        i++)
-  ::memcpy((static_cast<unsigned char*> (result->pixels) + (result->pitch * i)),
-           (static_cast<unsigned char*> (source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
+  ::memcpy((static_cast<unsigned char*>(result->pixels) + (result->pitch * i)),
+           (static_cast<unsigned char*>(source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
            (clipped_width * result->format->BytesPerPixel)); // RGBA --> 4 bytes
 
   if (SDL_MUSTLOCK((&source_in)))
-    SDL_UnlockSurface(&const_cast<SDL_Surface&> (source_in));
+    SDL_UnlockSurface(&const_cast<SDL_Surface&>(source_in));
 
 //   // bounding box
 //   SDL_Rect toRect;
@@ -648,7 +648,7 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-//                SDL_GetError()));
+//                ACE_TEXT(SDL_GetError())));
   //
 //     return;
 //   } // end IF
@@ -692,7 +692,7 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       return;
     } // end IF
@@ -706,7 +706,7 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       return;
     } // end IF
@@ -715,7 +715,7 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       // clean up
       if (SDL_MUSTLOCK((&source_in)))
@@ -762,7 +762,7 @@ RPG_Graphics_Surface::put(const unsigned int& offsetX_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -803,8 +803,8 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Graphics_Common_Tools::renderText(\"%s\", \"%s\"), aborting\n"),
-                 RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str(),
-                 textString_in.c_str()));
+                 ACE_TEXT(RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str()),
+                 ACE_TEXT(textString_in.c_str())));
 
       return;
     } // end IF
@@ -825,8 +825,8 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::renderText(\"%s\", \"%s\"), aborting\n"),
-               RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str(),
-               textString_in.c_str()));
+               ACE_TEXT(RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str()),
+               ACE_TEXT(textString_in.c_str())));
 
     return;
   } // end IF
@@ -929,7 +929,7 @@ RPG_Graphics_Surface::alpha(const Uint8& opacity_in,
     {
       ACE_DEBUG((LM_ERROR,
                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-                SDL_GetError()));
+                ACE_TEXT(SDL_GetError())));
 
       return;
     } // end IF
@@ -977,8 +977,8 @@ RPG_Graphics_Surface::alpha(const SDL_Surface& sourceImage_in,
     if (SDL_LockSurface(result))
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-                SDL_GetError()));
+                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+                 ACE_TEXT(SDL_GetError())));
 
       // clean up
       SDL_FreeSurface(result);
@@ -1013,16 +1013,26 @@ RPG_Graphics_Surface::clear(SDL_Surface* targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::clear"));
 
+  fill(RPG_Graphics_SDL_Tools::CLR32_BLACK_A0, // "transparency"
+       targetSurface_in);
+}
+
+void
+RPG_Graphics_Surface::fill(const Uint32& color_in,
+                           SDL_Surface* targetSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::fill"));
+
   // sanity check
   ACE_ASSERT(targetSurface_in);
 
   // fill with "transparency"...
-  if (SDL_FillRect(targetSurface_in,                        // target
-                   NULL,                                    // aspect (--> everything)
-                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A0)) // "transparency"
+  if (SDL_FillRect(targetSurface_in, // target
+                   NULL,             // aspect (--> everything)
+                   color_in))        // color
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, continuing\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 }
 
 void
@@ -1054,7 +1064,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in,
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-//                SDL_GetError()));
+//                ACE_TEXT(SDL_GetError())));
   //
 //     // clean up
 //     SDL_FreeSurface(result);
@@ -1068,7 +1078,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -1105,7 +1115,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return NULL;
   } // end IF
@@ -1119,7 +1129,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-//                SDL_GetError()));
+//                ACE_TEXT(SDL_GetError())));
   //
 //     // clean up
 //     SDL_FreeSurface(result);
@@ -1133,7 +1143,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     SDL_FreeSurface(result);
@@ -1293,11 +1303,11 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loading PNG \"%s\" [wxh,d,#c,t,i,c,f]: %ux%u,%d,%u,%d,%d,%d,%d...\n"),
-             filename_in.c_str(),
+             ACE_TEXT(filename_in.c_str()),
              width,
              height,
              bit_depth,
-             static_cast<unsigned long>(png_get_channels(png_ptr, info_ptr)),
+             static_cast<unsigned int>(png_get_channels(png_ptr, info_ptr)),
              color_type,
              interlace,
              compression,
@@ -1347,8 +1357,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-               width,
-               height));
+               width, height));
 
     // clean up
     png_destroy_read_struct(&png_ptr,
@@ -1373,7 +1382,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-                        (sizeof(png_bytep) * height)));
+               (sizeof(png_bytep) * height)));
 
     // clean up
     png_destroy_read_struct(&png_ptr,
@@ -1387,7 +1396,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-                        (sizeof(png_bytep) * height)));
+               (sizeof(png_bytep) * height)));
 
     // clean up
     png_destroy_read_struct(&png_ptr,
@@ -1410,7 +1419,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       // clean up
       png_destroy_read_struct(&png_ptr,
@@ -1422,7 +1431,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
       return NULL;
     } // end IF
 
-  for (unsigned long row = 0;
+  for (unsigned int row = 0;
        row < height;
        row++)
     row_pointers[row] = static_cast<png_bytep>(static_cast<Uint8*>(result->pixels) + (row * result->pitch));

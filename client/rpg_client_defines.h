@@ -101,6 +101,15 @@
 
 #define RPG_CLIENT_ENGINE_IDLE_DELAY                   10 // ms
 
+// message window
+#define RPG_CLIENT_DEF_MESSAGE_ISON                    true
+#define RPG_CLIENT_DEF_MESSAGE_FONT                    FONT_MAIN_SMALL
+#define RPG_CLIENT_DEF_MESSAGE_LINES                   5
+#define RPG_CLIENT_DEF_MESSAGE_SHADE_LINES             true
+#define RPG_CLIENT_DEF_MESSAGE_COLOR                   RPG_Graphics_SDL_Tools::CLR32_WHITE
+#define RPG_CLIENT_DEF_MESSAGE_SHADECOLOR              RPG_Graphics_SDL_Tools::CLR32_BLACK
+#define RPG_CLIENT_DEF_MESSAGE_CACHE_SIZE              50
+
 // minimap colors
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_UNMAPPED           RPG_Graphics_SDL_Tools::CLR32_BLACK
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_CORRIDOR           RPG_Graphics_SDL_Tools::CLR32_PURPLE44

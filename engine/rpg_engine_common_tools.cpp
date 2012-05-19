@@ -78,6 +78,8 @@
 RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
 RPG_Engine_EntityModeToStringTable_t RPG_Engine_EntityModeHelper::myRPG_Engine_EntityModeToStringTable;
 
+RPG_Engine_CR2ExperienceMap_t RPG_Engine_Common_Tools::myCR2ExperienceMap;
+
 void
 RPG_Engine_Common_Tools::init(const std::string& schemaDirectory_in,
                               const std::string& magicDictionaryFile_in,
@@ -171,6 +173,8 @@ RPG_Engine_Common_Tools::init(const std::string& schemaDirectory_in,
       return;
     }
   } // end IF
+
+  initCR2ExperienceMap();
 }
 
 void
@@ -1922,6 +1926,460 @@ monster_advance_attack_iterator:
   } // end ELSE
 
   return has_hit;
+}
+
+unsigned int
+RPG_Engine_Common_Tools::combat2XP(const std::string& type_in,
+                                   const unsigned int& acl_in,
+                                   const unsigned int& numFoes_in,
+                                   const unsigned int& numPartyMembers_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::combat2XP"));
+
+  // sanity check(s)
+  ACE_ASSERT(acl_in && numFoes_in && numPartyMembers_in);
+
+  // step1: retrieve challenge rating
+  const RPG_Monster_Properties& monster_type = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
+  RPG_Engine_CR2ExperienceMapConstIterator_t iterator = myCR2ExperienceMap.find(monster_type.challengeRating);
+  if (iterator == myCR2ExperienceMap.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to retrieve XP table (CR was: %u), aborting\n"),
+               monster_type.challengeRating));
+
+    return 0;
+  } // end IF
+
+  // step2: retrieve table entry
+  if ((*iterator).second.size() < acl_in)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to retrieve XP table (max. ACL was: %u), aborting\n"),
+               (*iterator).second.size()));
+
+    // *TODO*: individual foe too easy, award standard amount...
+    return 0;
+  } // end IF
+  unsigned int result = (*iterator).second[acl_in];
+
+  // step3: adjust result according to the number of foes / party members
+  result *= numFoes_in;
+  result /= numPartyMembers_in;
+
+  return result;
+}
+
+void
+RPG_Engine_Common_Tools::initCR2ExperienceMap()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::initCR2ExperienceMap"));
+
+  myCR2ExperienceMap.clear();
+
+  RPG_Engine_Level2ExperienceList_t l2xp;
+  // CR 1
+  l2xp.push_back(300);
+  l2xp.push_back(300);
+  l2xp.push_back(300);
+  l2xp.push_back(300);
+  l2xp.push_back(300);
+  l2xp.push_back(300);
+  l2xp.push_back(263);
+  l2xp.push_back(200);
+  myCR2ExperienceMap.insert(std::make_pair(1, l2xp));
+
+  l2xp.clear();
+  // CR 2
+  l2xp.push_back(600);
+  l2xp.push_back(600);
+  l2xp.push_back(600);
+  l2xp.push_back(600);
+  l2xp.push_back(500);
+  l2xp.push_back(450);
+  l2xp.push_back(394);
+  l2xp.push_back(300);
+  l2xp.push_back(225);
+  myCR2ExperienceMap.insert(std::make_pair(2, l2xp));
+
+  l2xp.clear();
+  // CR 3
+  l2xp.push_back(900);
+  l2xp.push_back(900);
+  l2xp.push_back(900);
+  l2xp.push_back(800);
+  l2xp.push_back(750);
+  l2xp.push_back(600);
+  l2xp.push_back(525);
+  l2xp.push_back(450);
+  l2xp.push_back(338);
+  l2xp.push_back(250);
+  myCR2ExperienceMap.insert(std::make_pair(3, l2xp));
+
+  l2xp.clear();
+  // CR 4
+  l2xp.push_back(1350);
+  l2xp.push_back(1350);
+  l2xp.push_back(1350);
+  l2xp.push_back(1200);
+  l2xp.push_back(1000);
+  l2xp.push_back(900);
+  l2xp.push_back(700);
+  l2xp.push_back(600);
+  l2xp.push_back(506);
+  l2xp.push_back(375);
+  l2xp.push_back(275);
+  myCR2ExperienceMap.insert(std::make_pair(4, l2xp));
+
+  l2xp.clear();
+  // CR 5
+  l2xp.push_back(1800);
+  l2xp.push_back(1800);
+  l2xp.push_back(1800);
+  l2xp.push_back(1600);
+  l2xp.push_back(1500);
+  l2xp.push_back(1200);
+  l2xp.push_back(1050);
+  l2xp.push_back(800);
+  l2xp.push_back(675);
+  l2xp.push_back(563);
+  l2xp.push_back(413);
+  l2xp.push_back(300);
+  myCR2ExperienceMap.insert(std::make_pair(5, l2xp));
+
+  l2xp.clear();
+  // CR 6
+  l2xp.push_back(2700);
+  l2xp.push_back(2700);
+  l2xp.push_back(2700);
+  l2xp.push_back(2400);
+  l2xp.push_back(2250);
+  l2xp.push_back(1800);
+  l2xp.push_back(1400);
+  l2xp.push_back(1200);
+  l2xp.push_back(900);
+  l2xp.push_back(750);
+  l2xp.push_back(619);
+  l2xp.push_back(450);
+  l2xp.push_back(325);
+  myCR2ExperienceMap.insert(std::make_pair(6, l2xp));
+
+  l2xp.clear();
+  // CR 7
+  l2xp.push_back(3600);
+  l2xp.push_back(3600);
+  l2xp.push_back(3600);
+  l2xp.push_back(3200);
+  l2xp.push_back(3000);
+  l2xp.push_back(2700);
+  l2xp.push_back(2100);
+  l2xp.push_back(1600);
+  l2xp.push_back(1350);
+  l2xp.push_back(1000);
+  l2xp.push_back(825);
+  l2xp.push_back(675);
+  l2xp.push_back(488);
+  l2xp.push_back(350);
+  myCR2ExperienceMap.insert(std::make_pair(7, l2xp));
+
+  l2xp.clear();
+  // CR 8
+  l2xp.push_back(5400);
+  l2xp.push_back(5400);
+  l2xp.push_back(5400);
+  l2xp.push_back(4800);
+  l2xp.push_back(4500);
+  l2xp.push_back(3600);
+  l2xp.push_back(3150);
+  l2xp.push_back(2400);
+  l2xp.push_back(1800);
+  l2xp.push_back(1500);
+  l2xp.push_back(1100);
+  l2xp.push_back(900);
+  l2xp.push_back(731);
+  l2xp.push_back(525);
+  l2xp.push_back(375);
+  myCR2ExperienceMap.insert(std::make_pair(8, l2xp));
+
+  l2xp.clear();
+  // CR 9
+  l2xp.push_back(7200);
+  l2xp.push_back(7200);
+  l2xp.push_back(7200);
+  l2xp.push_back(6400);
+  l2xp.push_back(6000);
+  l2xp.push_back(5400);
+  l2xp.push_back(4200);
+  l2xp.push_back(3600);
+  l2xp.push_back(2700);
+  l2xp.push_back(2000);
+  l2xp.push_back(1650);
+  l2xp.push_back(1200);
+  l2xp.push_back(975);
+  l2xp.push_back(788);
+  l2xp.push_back(563);
+  l2xp.push_back(400);
+  myCR2ExperienceMap.insert(std::make_pair(9, l2xp));
+
+  l2xp.clear();
+  // CR 10
+  l2xp.push_back(10800);
+  l2xp.push_back(10800);
+  l2xp.push_back(10800);
+  l2xp.push_back(9600);
+  l2xp.push_back(9000);
+  l2xp.push_back(7200);
+  l2xp.push_back(6300);
+  l2xp.push_back(4800);
+  l2xp.push_back(4050);
+  l2xp.push_back(3000);
+  l2xp.push_back(2200);
+  l2xp.push_back(1800);
+  l2xp.push_back(1300);
+  l2xp.push_back(1050);
+  l2xp.push_back(844);
+  l2xp.push_back(600);
+  l2xp.push_back(425);
+  myCR2ExperienceMap.insert(std::make_pair(10, l2xp));
+
+  l2xp.clear();
+  // CR 11
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(12800);
+  l2xp.push_back(12000);
+  l2xp.push_back(8400);
+  l2xp.push_back(7200);
+  l2xp.push_back(5400);
+  l2xp.push_back(4500);
+  l2xp.push_back(3300);
+  l2xp.push_back(2400);
+  l2xp.push_back(1950);
+  l2xp.push_back(1400);
+  l2xp.push_back(1125);
+  l2xp.push_back(900);
+  l2xp.push_back(638);
+  l2xp.push_back(450);
+  myCR2ExperienceMap.insert(std::make_pair(11, l2xp));
+
+  l2xp.clear();
+  // CR 12
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(18000);
+  l2xp.push_back(14400);
+  l2xp.push_back(12600);
+  l2xp.push_back(9600);
+  l2xp.push_back(8100);
+  l2xp.push_back(6000);
+  l2xp.push_back(4950);
+  l2xp.push_back(3600);
+  l2xp.push_back(2600);
+  l2xp.push_back(2100);
+  l2xp.push_back(1500);
+  l2xp.push_back(1200);
+  l2xp.push_back(956);
+  l2xp.push_back(675);
+  l2xp.push_back(475);
+  myCR2ExperienceMap.insert(std::make_pair(12, l2xp));
+
+  l2xp.clear();
+  // CR 13
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(21600);
+  l2xp.push_back(16800);
+  l2xp.push_back(14400);
+  l2xp.push_back(10800);
+  l2xp.push_back(9000);
+  l2xp.push_back(6600);
+  l2xp.push_back(5400);
+  l2xp.push_back(3900);
+  l2xp.push_back(2800);
+  l2xp.push_back(2250);
+  l2xp.push_back(1600);
+  l2xp.push_back(1275);
+  l2xp.push_back(1013);
+  l2xp.push_back(713);
+  l2xp.push_back(500);
+  myCR2ExperienceMap.insert(std::make_pair(13, l2xp));
+
+  l2xp.clear();
+  // CR 14
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(25200);
+  l2xp.push_back(19200);
+  l2xp.push_back(16200);
+  l2xp.push_back(12000);
+  l2xp.push_back(9900);
+  l2xp.push_back(7200);
+  l2xp.push_back(5850);
+  l2xp.push_back(4200);
+  l2xp.push_back(3000);
+  l2xp.push_back(2400);
+  l2xp.push_back(1700);
+  l2xp.push_back(1350);
+  l2xp.push_back(1069);
+  l2xp.push_back(750);
+  myCR2ExperienceMap.insert(std::make_pair(14, l2xp));
+
+  l2xp.clear();
+  // CR 15
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(28800);
+  l2xp.push_back(21600);
+  l2xp.push_back(18000);
+  l2xp.push_back(13200);
+  l2xp.push_back(10800);
+  l2xp.push_back(7800);
+  l2xp.push_back(6300);
+  l2xp.push_back(4500);
+  l2xp.push_back(3200);
+  l2xp.push_back(2550);
+  l2xp.push_back(1800);
+  l2xp.push_back(1425);
+  l2xp.push_back(1000);
+  myCR2ExperienceMap.insert(std::make_pair(15, l2xp));
+
+  l2xp.clear();
+  // CR 16
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(32400);
+  l2xp.push_back(24000);
+  l2xp.push_back(19800);
+  l2xp.push_back(14400);
+  l2xp.push_back(11700);
+  l2xp.push_back(8400);
+  l2xp.push_back(6750);
+  l2xp.push_back(4800);
+  l2xp.push_back(3400);
+  l2xp.push_back(2700);
+  l2xp.push_back(1900);
+  l2xp.push_back(1500);
+  myCR2ExperienceMap.insert(std::make_pair(16, l2xp));
+
+  l2xp.clear();
+  // CR 17
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(36000);
+  l2xp.push_back(26400);
+  l2xp.push_back(21600);
+  l2xp.push_back(15600);
+  l2xp.push_back(12600);
+  l2xp.push_back(9000);
+  l2xp.push_back(7200);
+  l2xp.push_back(5100);
+  l2xp.push_back(3600);
+  l2xp.push_back(2850);
+  l2xp.push_back(2000);
+  myCR2ExperienceMap.insert(std::make_pair(17, l2xp));
+
+  l2xp.clear();
+  // CR 18
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(39600);
+  l2xp.push_back(28800);
+  l2xp.push_back(23400);
+  l2xp.push_back(16800);
+  l2xp.push_back(13500);
+  l2xp.push_back(9600);
+  l2xp.push_back(7650);
+  l2xp.push_back(5400);
+  l2xp.push_back(3800);
+  l2xp.push_back(3000);
+  myCR2ExperienceMap.insert(std::make_pair(18, l2xp));
+
+  l2xp.clear();
+  // CR 19
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(43200);
+  l2xp.push_back(31200);
+  l2xp.push_back(25200);
+  l2xp.push_back(18000);
+  l2xp.push_back(14400);
+  l2xp.push_back(10200);
+  l2xp.push_back(8100);
+  l2xp.push_back(5700);
+  l2xp.push_back(4000);
+  myCR2ExperienceMap.insert(std::make_pair(19, l2xp));
+
+  l2xp.clear();
+  // CR 20
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(0);
+  l2xp.push_back(46800);
+  l2xp.push_back(33600);
+  l2xp.push_back(27000);
+  l2xp.push_back(19200);
+  l2xp.push_back(15300);
+  l2xp.push_back(10800);
+  l2xp.push_back(8550);
+  l2xp.push_back(6000);
+  myCR2ExperienceMap.insert(std::make_pair(20, l2xp));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Engine_Common_Tools: initialized experience points table...\n")));
 }
 
 RPG_Engine_Player_XMLTree_Type*

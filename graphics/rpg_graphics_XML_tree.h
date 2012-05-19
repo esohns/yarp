@@ -1262,6 +1262,7 @@ class RPG_Graphics_Export RPG_Graphics_WindowType_XMLTree_Type: public ::xml_sch
     WINDOW_MAIN,
     WINDOW_MAP,
     WINDOW_MENU,
+    WINDOW_MESSAGE,
     WINDOW_MINIMAP
   };
 
@@ -1312,8 +1313,8 @@ class RPG_Graphics_Export RPG_Graphics_WindowType_XMLTree_Type: public ::xml_sch
   _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[5];
-  static const value _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_[5];
+  static const char* const _xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[6];
+  static const value _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_[6];
 };
 
 class RPG_Graphics_Export RPG_Graphics_InterfaceElementType_XMLTree_Type: public ::xml_schema::string

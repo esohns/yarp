@@ -242,8 +242,10 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
   // sanity check: initialized ?
   if (myUseCDROM &&
       !myInitialized)
+  {
     initCD();
-  ACE_ASSERT(myInitialized);
+    ACE_ASSERT(myInitialized);
+  } // end IF
 
   // play (another) track/sound...
   ACE_Time_Value length = ACE_Time_Value::max_time;
@@ -309,6 +311,7 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
     std::advance(iterator, roll_result.front() - 1);
 
     myTrackOrChannel = RPG_Sound_Common_Tools::play(*iterator,
+                                                    RPG_SOUND_DEF_AMBIENT_VOLUME,
                                                     length);
     if (myTrackOrChannel == -1)
     {

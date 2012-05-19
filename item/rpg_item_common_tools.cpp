@@ -316,6 +316,7 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
         case ARMORCATEGORY_LIGHT:
         case ARMORCATEGORY_MEDIUM:
         {
+          // *TODO*: is this correct ?
           slots_out.slots.push_back(EQUIPMENTSLOT_TORSO);
 
           break;

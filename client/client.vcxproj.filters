@@ -60,6 +60,9 @@
     <ClInclude Include="rpg_client_iwindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_client_window_message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_client_callbacks.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_client_window_message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

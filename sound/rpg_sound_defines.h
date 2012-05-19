@@ -22,6 +22,8 @@
 #define RPG_SOUND_DEFINES_H
 
 #define RPG_SOUND_DEF_AMBIENT_USE_CD      false
+#define RPG_SOUND_DEF_AMBIENT_VOLUME      8 // (0-128)
+
 #define RPG_SOUND_DEF_CDTRACK_PAD         3 // allow an extra 3 seconds between tracks
 #define RPG_SOUND_DEF_CACHESIZE           50
 

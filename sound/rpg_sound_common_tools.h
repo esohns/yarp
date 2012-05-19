@@ -51,8 +51,9 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
   // *NOTE*: returns the channel# that is playing the sound/music/...
   static int play(const RPG_Sound_Event&, // event
                   ACE_Time_Value&);       // return value: length
-  static int play(const std::string&, // sound file
-                  ACE_Time_Value&);   // return value: length
+  static int play(const std::string&,   // sound file
+                  const unsigned char&, // volume (0-128)
+                  ACE_Time_Value&);     // return value: length
   static bool isPlaying(const int& = -1); // channel (-1: ALL channels)
   static void stop(const int& = -1); // channel (-1: ALL channels)
 

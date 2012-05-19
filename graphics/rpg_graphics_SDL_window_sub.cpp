@@ -71,34 +71,33 @@ RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_Size_t& size_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::saveBG"));
 
-  // sanity check(s)
+  // clean up ?
+  if (myBGHasBeenSaved)
+  {
+    ACE_ASSERT(myBG);
+    SDL_FreeSurface(myBG);
+    myBG = NULL;
+  } // end IF
   ACE_ASSERT(myBG == NULL);
-  ACE_ASSERT(!myBGHasBeenSaved);
 
-  myBG = RPG_Graphics_Surface::get((myScreen->w -
-                                    (myBorderLeft + myBorderRight) -
-                                    myOffset.first),
-                                   (myScreen->h -
-                                    (myBorderTop + myBorderBottom) -
-                                    myOffset.second),
+  myBG = RPG_Graphics_Surface::get((inherited::myBorderLeft + inherited::myOffset.first),
+                                   (inherited::myBorderTop + inherited::myOffset.second),
                                    ((size_in.first == 0) ? inherited::mySize.first
                                                          : size_in.first),
                                    ((size_in.second == 0) ? inherited::mySize.second
                                                           : size_in.second),
-                                   *myScreen);
+                                   *inherited::myScreen);
   if (!myBG)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::get(%u,%u,%u,%u,%@), returning\n"),
-               (myScreen->w -
-                (myBorderLeft + myBorderRight) -
-                myOffset.first),
-               (myScreen->h -
-                (myBorderTop + myBorderBottom) -
-                myOffset.second),
-               size_in.first,
-               size_in.second,
-               myScreen));
+               (inherited::myBorderLeft + inherited::myOffset.first),
+               (inherited::myBorderTop + inherited::myOffset.second),
+               ((size_in.first == 0) ? inherited::mySize.first
+                                     : size_in.first),
+               ((size_in.second == 0) ? inherited::mySize.second
+                                      : size_in.second),
+               inherited::myScreen));
 
     return;
   } // end IF
@@ -107,31 +106,26 @@ RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_Size_t& size_in)
 }
 
 void
-RPG_Graphics_SDLWindowSub::restoreBG()
+RPG_Graphics_SDLWindowSub::restoreBG(const bool& update_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::restoreBG"));
 
   // sanity check(s)
   ACE_ASSERT(myBG);
 
-  RPG_Graphics_Surface::put((myScreen->w -
-                             (myBorderLeft + myBorderRight) -
-                             myOffset.first),
-                            (myScreen->h -
-                             (myBorderTop + myBorderBottom) -
-                             myOffset.second),
+  RPG_Graphics_Surface::put((inherited::myBorderLeft + inherited::myOffset.first),
+                            (inherited::myBorderTop + inherited::myOffset.second),
                             *myBG,
-                            myScreen);
-  // update screen immediately
-  SDL_Rect dirtyRegion;
-  dirtyRegion.x = static_cast<int16_t>(myScreen->w -
-                                       (myBorderLeft + myBorderRight) -
-                                       myOffset.first);
-  dirtyRegion.y = static_cast<int16_t>(myScreen->h -
-                                       (myBorderTop + myBorderBottom) -
-                                       myOffset.second);
-  dirtyRegion.w = myBG->w;
-  dirtyRegion.h = myBG->h;
-  RPG_Graphics_Surface::update(dirtyRegion,
-                               myScreen);
+                            inherited::myScreen);
+
+  // update screen immediately ?
+  if (update_in)
+  {
+    SDL_Rect dirty_region = {static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first),
+                             static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second),
+                             myBG->w,
+                             myBG->h};
+    RPG_Graphics_Surface::update(dirty_region,
+                                 inherited::myScreen);
+  } // end IF
 }

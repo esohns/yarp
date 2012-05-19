@@ -220,7 +220,7 @@ RPG_Player_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid attribute: \"%s\", aborting\n"),
-                 RPG_Common_AttributeHelper::RPG_Common_AttributeToString(attribute_in).c_str()));
+                 ACE_TEXT(RPG_Common_AttributeHelper::RPG_Common_AttributeToString(attribute_in).c_str())));
 
       break;
     }
@@ -402,11 +402,11 @@ RPG_Player_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
 
   ACE_DEBUG((LM_INFO,
              ACE_TEXT("character \"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
-             getName().c_str(),
+             ACE_TEXT(getName().c_str()),
              myNumHitPoints,
              myNumTotalHitPoints,
              total_damage_value,
-             (!hasCondition(CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR(" --> DOWN") : ACE_TEXT_ALWAYS_CHAR(""))));
+             (!hasCondition(CONDITION_NORMAL) ? ACE_TEXT(" --> DOWN") : ACE_TEXT(""))));
 }
 
 void
@@ -416,7 +416,7 @@ RPG_Player_Base::status() const
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
-             RPG_Character_Common_Tools::conditionToString(myCondition).c_str(),
+             ACE_TEXT(RPG_Character_Common_Tools::conditionToString(myCondition).c_str()),
              myNumHitPoints,
              myNumTotalHitPoints,
              myWealth));
@@ -441,13 +441,13 @@ RPG_Player_Base::dump() const
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Name: \"%s\"\nAlignment: \"%s\"\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sSpells:\n==========\n%sItems:\n======\n"),
-             myName.c_str(),
-             RPG_Character_Common_Tools::alignmentToString(myAlignment).c_str(),
-             RPG_Character_Common_Tools::attributesToString(myAttributes).c_str(),
-             RPG_Character_Skills_Common_Tools::skillsToString(mySkills).c_str(),
-             RPG_Character_Skills_Common_Tools::featsToString(myFeats).c_str(),
-             RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str(),
-             spells.c_str()));
+             ACE_TEXT(myName.c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::alignmentToString(myAlignment).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::attributesToString(myAttributes).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::skillsToString(mySkills).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::featsToString(myFeats).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str()),
+             ACE_TEXT(spells.c_str())));
 
   // dump items
   myInventory.dump();

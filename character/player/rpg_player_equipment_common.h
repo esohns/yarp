@@ -30,5 +30,6 @@
 // useful types
 typedef std::map<RPG_Character_EquipmentSlot, RPG_Item_ID_t> RPG_Player_Equipment_t;
 typedef RPG_Player_Equipment_t::const_iterator RPG_Player_EquipmentConstIterator_t;
+typedef RPG_Player_Equipment_t::iterator RPG_Player_EquipmentIterator_t;
 
 #endif

@@ -95,8 +95,8 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   unsigned int                     myBorderRight;
 
 //   // title sizes
-//   unsigned long                    myTitleWidth;
-//   unsigned long                    myTitleHeight;
+//   unsigned int                    myTitleWidth;
+//   unsigned int                    myTitleHeight;
 
   // helper types
   typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
@@ -118,7 +118,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   std::string                      myTitle;
 //   SDL_Surface*                     myBackGround;
 
-  RPG_Graphics_Offset_t            myOffset; // offset to parent
+  RPG_Graphics_Offset_t            myOffset; // offset to parent (w/o borders !)
   RPG_Graphics_Windows_t           myChildren;
 
   RPG_Graphics_Position_t          myLastAbsolutePosition;

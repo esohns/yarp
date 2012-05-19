@@ -57,7 +57,7 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   // *NOTE*: initializes (static) data from ALL individual modules
   // in particular: - randomization
   //                - string conversion facilities
-  //                - static tables (skills, spells, ...)
+  //                - static tables (skills, spells, experience, ...)
   //                - XML parsing facilities
   //                - dictionaries (spells, items, monsters, ...)
   static void init(const std::string&,  // schema directory
@@ -97,6 +97,10 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                      const RPG_Combat_DefenseSituation& = DEFENSE_NORMAL, // defense situation
                      const bool& = true,                                  // full-round action ?
                      const unsigned short& = RPG_ENGINE_FEET_PER_SQUARE); // distance (feet)
+  static unsigned int combat2XP(const std::string&,       // type
+                                const unsigned int&,      // ACL (average character level)
+                                const unsigned int& = 1,  // number of foes
+                                const unsigned int& = 1); // number of party members
 
  private:
   // safety measures
@@ -109,6 +113,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   typedef std::deque<RPG_Engine_CombatantSequenceElement> RPG_Engine_CombatSequenceList_t;
   typedef RPG_Engine_CombatSequenceList_t::iterator RPG_Engine_CombatSequenceListIterator_t;
 
+  // helper methods
+  static void initCR2ExperienceMap();
   static bool isMonsterGroupHelpless(const RPG_Monster_Group_t&); // group instance
   static bool isValidFoeAvailable(const bool&,                            // monsters ? : players
                                   const RPG_Engine_CombatantSequence_t&); // battle sequence
@@ -120,6 +126,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Engine_Player_XMLTree_Type* playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree_Type&);
+
+  static RPG_Engine_CR2ExperienceMap_t myCR2ExperienceMap;
 };
 
 #endif

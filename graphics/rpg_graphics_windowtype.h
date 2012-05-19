@@ -13,6 +13,7 @@ enum RPG_Graphics_WindowType
   WINDOW_MAIN,
   WINDOW_MAP,
   WINDOW_MENU,
+  WINDOW_MESSAGE,
   WINDOW_MINIMAP,
   //
   RPG_GRAPHICS_WINDOWTYPE_MAX,
@@ -39,6 +40,7 @@ class RPG_Graphics_Export RPG_Graphics_WindowTypeHelper
     myRPG_Graphics_WindowTypeToStringTable.insert(std::make_pair(WINDOW_MAIN, ACE_TEXT_ALWAYS_CHAR("WINDOW_MAIN")));
     myRPG_Graphics_WindowTypeToStringTable.insert(std::make_pair(WINDOW_MAP, ACE_TEXT_ALWAYS_CHAR("WINDOW_MAP")));
     myRPG_Graphics_WindowTypeToStringTable.insert(std::make_pair(WINDOW_MENU, ACE_TEXT_ALWAYS_CHAR("WINDOW_MENU")));
+    myRPG_Graphics_WindowTypeToStringTable.insert(std::make_pair(WINDOW_MESSAGE, ACE_TEXT_ALWAYS_CHAR("WINDOW_MESSAGE")));
     myRPG_Graphics_WindowTypeToStringTable.insert(std::make_pair(WINDOW_MINIMAP, ACE_TEXT_ALWAYS_CHAR("WINDOW_MINIMAP")));
   };
 

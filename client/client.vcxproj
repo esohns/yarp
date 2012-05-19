@@ -101,6 +101,7 @@
     <ClInclude Include="rpg_client_ui_tools.h" />
     <ClInclude Include="rpg_client_window_level.h" />
     <ClInclude Include="rpg_client_window_main.h" />
+    <ClInclude Include="rpg_client_window_message.h" />
     <ClInclude Include="rpg_client_window_minimap.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -116,6 +117,7 @@
     <ClCompile Include="rpg_client_ui_tools.cpp" />
     <ClCompile Include="rpg_client_window_level.cpp" />
     <ClCompile Include="rpg_client_window_main.cpp" />
+    <ClCompile Include="rpg_client_window_message.cpp" />
     <ClCompile Include="rpg_client_window_minimap.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

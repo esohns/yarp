@@ -446,15 +446,14 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
                                                            sprite_graphic);
 
       // step2: init seen positions
+      RPG_Map_Positions_t seen_positions;
+      myEngine->getVisiblePositions(client_action.entity_id,
+                                    seen_positions,
+                                    true);
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
         ACE_ASSERT(mySeenPositions.find(client_action.entity_id) == mySeenPositions.end());
-
-        RPG_Map_Positions_t seen_positions;
-        myEngine->getVisiblePositions(client_action.entity_id,
-                                      seen_positions,
-                                      true);
         mySeenPositions.insert(std::make_pair(client_action.entity_id, seen_positions));
       } // end lock scope
 
@@ -648,6 +647,17 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
       break;
     }
+    case COMMAND_E2C_MESSAGE:
+    {
+      // sanity check
+      ACE_ASSERT(parameters_in.size() == 1);
+
+      client_action.command = COMMAND_WINDOW_UPDATE_MESSAGEWINDOW;
+      client_action.window = myWindow;
+      client_action.message = *static_cast<const std::string* const>(parameters_in.front());
+
+      break;
+    }
     case COMMAND_E2C_QUIT:
     {
       // sanity check
@@ -676,7 +686,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid command (was: \"%s\", aborting\n"),
-                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str()));
+                 ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str())));
 
       do_action = false;
 
@@ -1280,10 +1290,36 @@ RPG_Client_Engine::handleActions()
 
         break;
       }
+      case COMMAND_WINDOW_UPDATE_MESSAGEWINDOW:
+      {
+        // sanity check
+        ACE_ASSERT((*iterator).window == myWindow);
+        ACE_ASSERT(!(*iterator).message.empty());
+
+        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        ACE_ASSERT(level_window);
+        try
+        {
+          level_window->updateMessageWindow((*iterator).message);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::updateMessageWindow(\"%s\"), aborting\n"),
+                     level_window,
+                     ACE_TEXT((*iterator).message.c_str())));
+
+          return;
+        }
+
+        refresh_window = true;
+
+        break;
+      }
       case COMMAND_WINDOW_UPDATE_MINIMAP:
       {
         // sanity check
-        ACE_ASSERT((*iterator).window);
+        ACE_ASSERT((*iterator).window == myWindow);
 
         RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
         ACE_ASSERT(level_window);

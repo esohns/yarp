@@ -16,30 +16,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RPG_CLIENT_WINDOW_MINIMAP_H
-#define RPG_CLIENT_WINDOW_MINIMAP_H
+#ifndef RPG_CLIENT_WINDOW_MESSAGE_H
+#define RPG_CLIENT_WINDOW_MESSAGE_H
 
-#include <rpg_graphics_SDL_window_base.h>
+#include "rpg_client_common.h"
+
+#include <rpg_graphics_SDL_window_sub.h>
+#include <rpg_graphics_font.h>
 
 #include <SDL/SDL.h>
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch.h>
 
-// forward declaration(s)
-class RPG_Client_Engine;
-class RPG_Engine;
+#include <string>
 
-class RPG_Client_Window_MiniMap
- : public RPG_Graphics_SDLWindowBase
+class RPG_Client_Window_Message
+ : public RPG_Graphics_SDLWindowSub
 {
  public:
-  RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindowBase&, // parent
-                            // *NOTE*: offset doesn't include any border(s) !
-                            const RPG_Graphics_Offset_t&);     // offset
-  virtual ~RPG_Client_Window_MiniMap();
+  RPG_Client_Window_Message(const RPG_Graphics_SDLWindowBase&); // parent
+  virtual ~RPG_Client_Window_Message();
 
-  void init(RPG_Client_Engine*, // engine
-            RPG_Engine*);       // (level) state
+  void init(const RPG_Graphics_Font&, // font
+            const unsigned int&);     // lines
+  void push(const std::string&); // message
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
@@ -50,18 +51,24 @@ class RPG_Client_Window_MiniMap
                            bool&);                // return value: redraw ?
 
  private:
-  typedef RPG_Graphics_SDLWindowBase inherited;
+  typedef RPG_Graphics_SDLWindowSub inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap(const RPG_Client_Window_MiniMap&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap& operator=(const RPG_Client_Window_MiniMap&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message(const RPG_Client_Window_Message&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message& operator=(const RPG_Client_Window_Message&));
 
-  RPG_Client_Engine* myClient;
-  RPG_Engine*        myEngine;
+  // helper methods
+  void initScrollSpots();
 
-  SDL_Surface*       myBG;
-  SDL_Surface*       mySurface;
+  RPG_Client_Engine*        myClient;
+  RPG_Graphics_Font         myFont;
+  unsigned int              myNumLines;
+
+  ACE_Thread_Mutex          myLock;
+  RPG_Client_MessageStack_t myMessages;
+
+  SDL_Surface*              myBG;
 };
 
-#endif // RPG_CLIENT_WINDOW_MINIMAP_H
+#endif // RPG_CLIENT_WINDOW_MESSAGE_H

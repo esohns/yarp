@@ -353,10 +353,11 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in,
     ACE_ASSERT((*iter).chunk);
 
     // compute length
-    int milliseconds = (((*iter).chunk->alen * 1000) /
-                        ((RPG_Sound_Common_Tools::myConfig.format & 0xFF) *
-                         RPG_Sound_Common_Tools::myConfig.channels *
-                         RPG_Sound_Common_Tools::myConfig.frequency));
+    ACE_UINT64 milliseconds = (*iter).chunk->alen / ((RPG_Sound_Common_Tools::myConfig.format & 0xFF) / 8);
+    milliseconds /= RPG_Sound_Common_Tools::myConfig.channels; // <-- frames
+    milliseconds *= 1000;
+    milliseconds /= RPG_Sound_Common_Tools::myConfig.frequency;
+    length_out.msec(static_cast<int>(milliseconds));
     length_out.msec(milliseconds);
 
     if (!myIsMuted)
@@ -379,6 +380,7 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in,
 
 int
 RPG_Sound_Common_Tools::play(const std::string& file_in,
+                             const unsigned char& volume_in,
                              ACE_Time_Value& length_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::play"));
@@ -425,9 +427,9 @@ RPG_Sound_Common_Tools::play(const std::string& file_in,
         return result;
       } // end IF
 
-      // *TODO*: set volume (if any)
-      //if (sound.volume)
-      //  Mix_VolumeChunk(chunk, sound.volume);
+      // set volume (if any)
+      ACE_ASSERT(volume_in <= MIX_MAX_VOLUME);
+      Mix_VolumeChunk(node.chunk, volume_in);
 
       // add the chunk to our cache
       if (mySoundCache.size() == myCacheSize)
@@ -448,11 +450,11 @@ RPG_Sound_Common_Tools::play(const std::string& file_in,
     ACE_ASSERT((*iter).chunk);
   
     // compute length
-    int milliseconds = (((*iter).chunk->alen * 1000) /
-                        ((RPG_Sound_Common_Tools::myConfig.format & 0xFF) *
-                         RPG_Sound_Common_Tools::myConfig.channels *
-                         RPG_Sound_Common_Tools::myConfig.frequency));
-    length_out.msec(milliseconds);
+    ACE_UINT64 milliseconds = (*iter).chunk->alen / ((RPG_Sound_Common_Tools::myConfig.format & 0xFF) / 8);
+    milliseconds /= RPG_Sound_Common_Tools::myConfig.channels; // <-- frames
+    milliseconds *= 1000;
+    milliseconds /= RPG_Sound_Common_Tools::myConfig.frequency;
+    length_out.msec(static_cast<int>(milliseconds));
 
     if (!myIsMuted)
     {

@@ -217,4 +217,9 @@ typedef RPG_Engine_CombatantSequence_t::const_iterator RPG_Engine_CombatantSeque
 typedef std::vector<void*> RPG_Engine_ClientParameters_t;
 typedef RPG_Engine_ClientParameters_t::const_iterator RPG_Engine_ClientParametersConstIterator_t;
 
+typedef std::vector<unsigned int> RPG_Engine_Level2ExperienceList_t;
+typedef RPG_Engine_Level2ExperienceList_t::const_iterator RPG_Engine_Level2ExperienceListConstIterator_t;
+typedef std::map<unsigned char, RPG_Engine_Level2ExperienceList_t> RPG_Engine_CR2ExperienceMap_t;
+typedef RPG_Engine_CR2ExperienceMap_t::const_iterator RPG_Engine_CR2ExperienceMapConstIterator_t;
+
 #endif

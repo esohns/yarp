@@ -25,6 +25,8 @@
 
 #include <rpg_map_common.h>
 
+#include <string>
+
 class RPG_Client_IWindowLevel
  : public RPG_Client_IWindow
 {
@@ -40,6 +42,7 @@ class RPG_Client_IWindowLevel
   virtual void toggleDoor(const RPG_Map_Position_t&) = 0; // door position
   virtual void setBlendRadius(const unsigned char&) = 0; // radius
   virtual void updateMinimap() = 0;
+  virtual void updateMessageWindow(const std::string&) = 0; // message
 };
 
 #endif

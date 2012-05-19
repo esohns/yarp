@@ -50,11 +50,13 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
   void close();
 
  protected:
+  using RPG_Graphics_SDLWindowBase::myClipRect;
+
   // helper method(s)
   // *NOTE*: make sure setScreen has been invoked
   void saveBG(const RPG_Graphics_Size_t&);
-
-  bool         myBGHasBeenSaved;
+  bool myBGHasBeenSaved;
+  void restoreBG(const bool& = true); // update ?
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
@@ -63,10 +65,6 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowSub());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowSub(const RPG_Graphics_SDLWindowSub&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowSub& operator=(const RPG_Graphics_SDLWindowSub&));
-
-  // helper method(s)
-  // *NOTE*: make sure setScreen has been invoked
-  void restoreBG();
 
   SDL_Surface* myBG;
 };

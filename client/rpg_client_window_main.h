@@ -46,16 +46,16 @@ class RPG_Engine;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_Export RPG_Client_WindowMain
+class RPG_Client_Export RPG_Client_Window_Main
  : public RPG_Graphics_TopLevel,
    public RPG_Client_IWindow
 {
  public:
-  RPG_Client_WindowMain(const RPG_Graphics_Size_t&,                  // size
+  RPG_Client_Window_Main(const RPG_Graphics_Size_t&,                  // size
                         const RPG_Graphics_GraphicTypeUnion&,        // (element) type
                         const std::string&,                          // title
                         const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
-  virtual ~RPG_Client_WindowMain();
+  virtual ~RPG_Client_Window_Main();
 
   // initialize different hotspots
   // *WARNING*: call this AFTER setScreen() !
@@ -82,9 +82,9 @@ class RPG_Client_Export RPG_Client_WindowMain
   typedef RPG_Graphics_TopLevel inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowMain());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowMain(const RPG_Client_WindowMain&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_WindowMain& operator=(const RPG_Client_WindowMain&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Main());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Main(const RPG_Client_Window_Main&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Main& operator=(const RPG_Client_Window_Main&));
 
   // helper methods
   void initScrollSpots();

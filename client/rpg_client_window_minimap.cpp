@@ -164,11 +164,9 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(myEngine);
   ACE_ASSERT(mySurface);
 
-  RPG_Map_Size_t map_size = myEngine->getSize();
-
   // init clipping
   SDL_GetClipRect(targetSurface, &(inherited::myClipRect));
-  SDL_Rect clipRect;
+  SDL_Rect clipRect = {0, 0, 0, 0};
   clipRect.x = static_cast<int16_t>(myBorderLeft +
                                     (myScreen->w -
                                      (myBorderLeft + myBorderRight) -
@@ -213,6 +211,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   Uint32* pixels = NULL;
   RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(false);
   RPG_Engine_EntityID_t entity_id = 0;
+  RPG_Map_Size_t map_size = myEngine->getSize(false);
   for (unsigned int y = 0;
        y < map_size.second;
        y++)
@@ -235,8 +234,9 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
           if (myEngine->canSee(active_entity_id,
                                map_position,
                                false))
-            tile = (myEngine->isMonster(entity_id, false) ? MINIMAPTILE_MONSTER
-                                                          : MINIMAPTILE_PLAYER);
+            tile = (myEngine->isMonster(entity_id,
+                                        false) ? MINIMAPTILE_MONSTER
+                                               : MINIMAPTILE_PLAYER);
         } // end ELSE
       } // end IF
 

@@ -419,11 +419,11 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Engine_Command_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Engine_Command_XMLTree_Type_indexes_,
-                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 18,
+                    _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 19,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 18 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Engine_Command_XMLTree_Type_indexes_ + 19 || _xsd_RPG_Engine_Command_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -432,7 +432,7 @@ _xsd_RPG_Engine_Command_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_literals_[18] =
+_xsd_RPG_Engine_Command_XMLTree_Type_literals_[19] =
 {
   "COMMAND_ATTACK",
   "COMMAND_ATTACK_FULL",
@@ -451,11 +451,12 @@ _xsd_RPG_Engine_Command_XMLTree_Type_literals_[18] =
   "COMMAND_E2C_ENTITY_POSITION",
   "COMMAND_E2C_ENTITY_REMOVE",
   "COMMAND_E2C_ENTITY_VISION",
+  "COMMAND_E2C_MESSAGE",
   "COMMAND_E2C_QUIT"
 };
 
 const RPG_Engine_Command_XMLTree_Type::value RPG_Engine_Command_XMLTree_Type::
-_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[18] =
+_xsd_RPG_Engine_Command_XMLTree_Type_indexes_[19] =
 {
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_ATTACK_FULL,
@@ -468,6 +469,7 @@ _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[18] =
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_POSITION,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_REMOVE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_ENTITY_VISION,
+  ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_MESSAGE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_E2C_QUIT,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_IDLE,
   ::RPG_Engine_Command_XMLTree_Type::COMMAND_RUN,

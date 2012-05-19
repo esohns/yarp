@@ -163,6 +163,7 @@ enum RPG_Client_Command
   COMMAND_WINDOW_DRAW,
   COMMAND_WINDOW_INIT,
   COMMAND_WINDOW_REFRESH,
+  COMMAND_WINDOW_UPDATE_MESSAGEWINDOW,
   COMMAND_WINDOW_UPDATE_MINIMAP,
   //
   RPG_CLIENT_COMMAND_MAX,
@@ -182,6 +183,7 @@ struct RPG_Client_Action
   RPG_Graphics_Cursor   cursor;
   RPG_Engine_EntityID_t entity_id;
   RPG_Sound_Event       sound;
+  std::string           message;
   // *TODO*: this does not really belong here...
   RPG_Map_Path_t        path;
   RPG_Map_Position_t    source;
@@ -223,5 +225,8 @@ typedef RPG_Client_SeenPositions_t::iterator RPG_Client_SeenPositionsIterator_t;
 
 typedef std::vector<SDL_Surface*> RPG_Client_BlendingMaskCache_t;
 typedef RPG_Client_BlendingMaskCache_t::iterator RPG_Client_BlendingMaskCacheIterator_t;
+
+typedef std::deque<std::string> RPG_Client_MessageStack_t;
+typedef RPG_Client_MessageStack_t::const_iterator RPG_Client_MessageStackConstIterator_t;
 
 #endif
