@@ -25,7 +25,6 @@
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_iwindow.h"
-#include "rpg_graphics_SDL_window_base.h"
 
 #include <rpg_map_common.h>
 
@@ -48,10 +47,10 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
 
  public:
   // init (clipping of highlight tile)
-  void init(RPG_Graphics_SDLWindowBase*); // target window handle
+  void init(RPG_Graphics_IWindow*); // target window handle
 
-  const RPG_Graphics_Cursor type() const;
-  const RPG_Graphics_Position_t position() const;
+  RPG_Graphics_Cursor type() const;
+  RPG_Graphics_Position_t position() const;
 
   void set(const RPG_Graphics_Cursor&); // cursor type
 //   SDL_Surface* get() const;
@@ -80,7 +79,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   void storeHighlightBG(const RPG_Map_PositionList_t&,   // positions (map coords !)
                         const RPG_Graphics_Positions_t&, // positions (screen coords !)
                         const SDL_Surface*);             // source surface (e.g. screen)
-  void restoreHighlightBG(SDL_Surface*); // target surface (e.g. screen)
+  void restoreHighlightBG(const RPG_Graphics_Position_t&, // viewport (map coords !)
+                          SDL_Surface*); // target surface (e.g. screen)
   void resetHighlightBG(const RPG_Graphics_Position_t&); // reset to (single) initial position (map coords !)
 
  private:
@@ -102,7 +102,7 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   SDL_Surface*                myBG;
 
   // tile highlight
-  RPG_Graphics_SDLWindowBase* myHighlightWindow;
+  RPG_Graphics_IWindow*       myHighlightWindow;
   RPG_Graphics_TileCache_t    myHighlightBGCache;
   SDL_Surface*                myHighlightTile;
 };

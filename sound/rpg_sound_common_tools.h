@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef RPG_SOUND_COMMON_TOOLS_H
 #define RPG_SOUND_COMMON_TOOLS_H
 
@@ -33,19 +34,17 @@
 class RPG_Sound_Export RPG_Sound_Common_Tools
 {
  public:
-  // init string conversion facilities
-  static void initStringConversionTables();
-
-  static void init(const std::string&,    // sound directory
-                   const unsigned long&); // cache size
+  static void init(const std::string&,   // sound directory
+                   const unsigned int&,  // cache size
+                   const bool& = false); // mute ?
   static void fini();
 
   static void soundToFile(const RPG_Sound_t&, // sound
                           std::string&);      // return value: FQ filename
 
   // *NOTE*: returns the channel# that is playing the sound/music/...
-  static const int play(const RPG_Sound_Event&); // event
-  static const bool isPlaying(const int& = -1); // channel (-1: ALL channels)
+  static int play(const RPG_Sound_Event&); // event
+  static bool isPlaying(const int& = -1); // channel (-1: ALL channels)
   static void stop(const int& = -1); // channel (-1: ALL channels)
 
  private:
@@ -55,11 +54,16 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools(const RPG_Sound_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools& operator=(const RPG_Sound_Common_Tools&));
 
+  // helper methods
+  // init string conversion facilities
+  static void initStringConversionTables();
+
+  static bool                   myIsMuted;
   static std::string            mySoundDirectory;
 
   static ACE_Thread_Mutex       myCacheLock;
-  static unsigned long          myOldestCacheEntry;
-  static unsigned long          myCacheSize;
+  static unsigned int           myOldestCacheEntry;
+  static unsigned int           myCacheSize;
   static RPG_Sound_SoundCache_t mySoundCache;
 
   static bool                   myInitialized;

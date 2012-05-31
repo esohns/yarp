@@ -32,6 +32,7 @@
 #define RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME           "main_dialog"
 #define RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME          "about_dialog"
 #define RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME    "filechooser_dialog"
+#define RPG_CLIENT_DEF_GNOME_EQUIPMENTDIALOG_NAME      "equipment_dialog"
 #define RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME            "character_frame"
 #define RPG_CLIENT_DEF_GNOME_CHARBOX_NAME              "character_repository_combobox"
 #define RPG_CLIENT_DEF_GNOME_MAPBOX_NAME               "map_repository_combobox"
@@ -60,14 +61,26 @@
 #define RPG_CLIENT_DEF_AUDIO_FREQUENCY                 44100
 #define RPG_CLIENT_DEF_AUDIO_FORMAT                    AUDIO_S16SYS
 #define RPG_CLIENT_DEF_AUDIO_CHANNELS                  2
-#define RPG_CLIENT_DEF_AUDIO_SAMPLES                   1024
+#define RPG_CLIENT_DEF_AUDIO_SAMPLES                   4096
+#define RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS              5
+#define RPG_CLIENT_DEF_AUDIO_USE_CD                    false
 
 #define RPG_CLIENT_DEF_VIDEO_W                         1024
 #define RPG_CLIENT_DEF_VIDEO_H                         786
 #define RPG_CLIENT_DEF_VIDEO_BPP                       32
-#define RPG_CLIENT_DEF_VIDEO_FULLSCREEN                false
 #define RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER              false
+#define RPG_CLIENT_DEF_VIDEO_OPENGL                    false
+#define RPG_CLIENT_DEF_VIDEO_FULLSCREEN                false
+#define RPG_CLIENT_DEF_VIDEO_INIT                      false
 // #define RPG_CLIENT_DEF_VIDEO_FRAMERATE              30
+
+#define RPG_CLIENT_DEF_NETWORK_SERVER                  "localhost"
+#define RPG_CLIENT_DEF_NETWORK_PORT                    6667
+#define RPG_CLIENT_DEF_NETWORK_PASSWORD                "secretpasswordhere"
+#define RPG_CLIENT_DEF_NETWORK_NICK                    "Wiz"
+#define RPG_CLIENT_DEF_NETWORK_USER                    "user"
+#define RPG_CLIENT_DEF_NETWORK_REALNAME                "Ronnie Reagan"
+#define RPG_CLIENT_DEF_NETWORK_CHANNEL                 "#foobar"
 
 #define RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE               0 // 0: don't care
 #define RPG_CLIENT_DEF_MAP_DOORS                       true
@@ -92,11 +105,13 @@
 #define RPG_CLIENT_ENGINE_IDLE_DELAY                   10 // ms
 
 // minimap colors
+#define RPG_CLIENT_DEF_MINIMAPCOLOR_UNMAPPED           RPG_Graphics_SDL_Tools::CLR32_BLACK
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_CORRIDOR           RPG_Graphics_SDL_Tools::CLR32_PURPLE44
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_DOOR               RPG_Graphics_SDL_Tools::CLR32_BROWN
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_FLOOR              RPG_Graphics_SDL_Tools::CLR32_PURPLE44
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_MONSTER            RPG_Graphics_SDL_Tools::CLR32_RED
-#define RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER             RPG_Graphics_SDL_Tools::CLR32_WHITE
+#define RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER             RPG_Graphics_SDL_Tools::CLR32_GREEN
+#define RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER_ACTIVE      RPG_Graphics_SDL_Tools::CLR32_WHITE
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_STAIRS             RPG_Graphics_SDL_Tools::CLR32_LIGHTPINK
 #define RPG_CLIENT_DEF_MINIMAPCOLOR_WALL               RPG_Graphics_SDL_Tools::CLR32_BLACK
 
@@ -111,6 +126,7 @@
 #define RPG_CLIENT_DEF_SCREENSHOT_PREFIX               "screenshot"
 #define RPG_CLIENT_DEF_SCREENSHOT_EXT                  ".png"
 
+#define RPG_CLIENT_DEF_VISIONBLEND_ISON                true
 #define RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL          false
 
 #endif

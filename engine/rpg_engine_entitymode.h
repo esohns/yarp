@@ -10,6 +10,7 @@
 enum RPG_Engine_EntityMode
 {
   ENTITYMODE_FIGHTING = 0,
+  ENTITYMODE_RUNNING,
   ENTITYMODE_SEARCHING,
   ENTITYMODE_TRAVELLING,
   //
@@ -34,6 +35,7 @@ class RPG_Engine_Export RPG_Engine_EntityModeHelper
   {
     myRPG_Engine_EntityModeToStringTable.clear();
     myRPG_Engine_EntityModeToStringTable.insert(std::make_pair(ENTITYMODE_FIGHTING, ACE_TEXT_ALWAYS_CHAR("ENTITYMODE_FIGHTING")));
+    myRPG_Engine_EntityModeToStringTable.insert(std::make_pair(ENTITYMODE_RUNNING, ACE_TEXT_ALWAYS_CHAR("ENTITYMODE_RUNNING")));
     myRPG_Engine_EntityModeToStringTable.insert(std::make_pair(ENTITYMODE_SEARCHING, ACE_TEXT_ALWAYS_CHAR("ENTITYMODE_SEARCHING")));
     myRPG_Engine_EntityModeToStringTable.insert(std::make_pair(ENTITYMODE_TRAVELLING, ACE_TEXT_ALWAYS_CHAR("ENTITYMODE_TRAVELLING")));
   };

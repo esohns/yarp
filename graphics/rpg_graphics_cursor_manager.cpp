@@ -99,7 +99,7 @@ RPG_Graphics_Cursor_Manager::~RPG_Graphics_Cursor_Manager()
 }
 
 void
-RPG_Graphics_Cursor_Manager::init(RPG_Graphics_SDLWindowBase* window_in)
+RPG_Graphics_Cursor_Manager::init(RPG_Graphics_IWindow* window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::init"));
 
@@ -108,7 +108,7 @@ RPG_Graphics_Cursor_Manager::init(RPG_Graphics_SDLWindowBase* window_in)
   myHighlightWindow = window_in;
 }
 
-const RPG_Graphics_Cursor
+RPG_Graphics_Cursor
 RPG_Graphics_Cursor_Manager::type() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));
@@ -116,7 +116,7 @@ RPG_Graphics_Cursor_Manager::type() const
   return myCurrentType;
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Graphics_Cursor_Manager::position() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));
@@ -137,80 +137,55 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
   // check cache first
   RPG_Graphics_Cursor_CacheConstIterator_t iterator = myCache.find(type_in);
   if (iterator != myCache.end())
-  {
     myCurrentGraphic = (*iterator).second;
-
-    // create background surface
-    if (myBG)
-    {
-      SDL_FreeSurface(myBG);
-      myBG = NULL;
-    } // end IF
-    myBG = RPG_Graphics_Surface::create((*iterator).second->w,
-                                        (*iterator).second->h);
-    if (!myBG)
+  else
+  {
+    // not in cache --> (try to) load graphic
+    RPG_Graphics_GraphicTypeUnion type;
+    type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
+    type.cursor = type_in;
+    RPG_Graphics_t graphic;
+    graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+    graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+    // retrieve properties from the dictionary
+    graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+    ACE_ASSERT((graphic.type.cursor == type_in) &&
+               (graphic.type.discriminator == RPG_Graphics_GraphicTypeUnion::CURSOR));
+    // sanity check
+    if (graphic.category != CATEGORY_CURSOR)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-                 (*iterator).second->w,
-                 (*iterator).second->h));
+                 ACE_TEXT("invalid category (was: \"%s\"): \"%s\" not a cursor type, aborting\n"),
+                 RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str(),
+                 RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(type_in).c_str()));
 
       return;
     } // end IF
-    myBGPosition = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                  std::numeric_limits<unsigned int>::max());
 
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("set cursor to: \"%s\"\n"),
-//                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+    // assemble path
+    std::string filename;
+    RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
+    ACE_ASSERT(!filename.empty());
 
-    myCurrentType = type_in;
+    // load file
+    myCurrentGraphic = NULL;
+    myCurrentGraphic = RPG_Graphics_Surface::load(filename, // file
+                                                  true);    // convert to display format
+    if (!myCurrentGraphic)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                 filename.c_str()));
 
-    return;
-  } // end IF
+      return;
+    } // end IF
 
-  // not in cache --> (try to) load graphic
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
-  type.cursor = type_in;
-  RPG_Graphics_t graphic;
-  graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-  graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
-  // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  ACE_ASSERT((graphic.type.cursor == type_in) &&
-             (graphic.type.discriminator == RPG_Graphics_GraphicTypeUnion::CURSOR));
-  // sanity check
-  if (graphic.category != CATEGORY_CURSOR)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid category (was: \"%s\"): \"%s\" not a cursor type, aborting\n"),
-               RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str(),
-               RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(type_in).c_str()));
+    // update cache
+    myCache.insert(std::make_pair(type_in, myCurrentGraphic));
 
-    return;
-  } // end IF
-
-  // assemble path
-  std::string filename;
-  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
-  ACE_ASSERT(!filename.empty());
-
-  // load file
-  myCurrentGraphic = NULL;
-  myCurrentGraphic = RPG_Graphics_Surface::load(filename, // file
-                                                true);    // convert to display format
-  if (!myCurrentGraphic)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-               filename.c_str()));
-
-    return;
-  } // end IF
-
-  // update cache
-  myCache.insert(std::make_pair(type_in, myCurrentGraphic));
+    iterator = myCache.find(type_in);
+    ACE_ASSERT(iterator != myCache.end());
+  } // end ELSE
 
   // create background surface
   if (myBG)
@@ -218,25 +193,27 @@ RPG_Graphics_Cursor_Manager::set(const RPG_Graphics_Cursor& type_in)
     SDL_FreeSurface(myBG);
     myBG = NULL;
   } // end IF
-  myBG = RPG_Graphics_Surface::create(myCurrentGraphic->w,
-                                      myCurrentGraphic->h);
+  myBG = RPG_Graphics_Surface::create((*iterator).second->w,
+                                      (*iterator).second->h);
   if (!myBG)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-               myCurrentGraphic->w,
-               myCurrentGraphic->h));
+                ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
+                (*iterator).second->w,
+                (*iterator).second->h));
 
     return;
   } // end IF
+  invalidateBG();
+
   myBGPosition = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                 std::numeric_limits<unsigned int>::max());
 
-  myCurrentType = type_in;
+//     ACE_DEBUG((LM_DEBUG,
+//                ACE_TEXT("set cursor to: \"%s\"\n"),
+//                RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("set cursor to: \"%s\"\n"),
-//              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(type_in).c_str()));
+  myCurrentType = type_in;
 }
 
 void
@@ -376,6 +353,9 @@ RPG_Graphics_Cursor_Manager::restoreBG(SDL_Surface* targetSurface_in,
     return;
   } // end IF
   SDL_SetClipRect(targetSurface_in, &clipRect);
+
+  // safety...
+  invalidateBG();
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
   // --> reset them
@@ -674,7 +654,8 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_PositionList_t& mapP
 }
 
 void
-RPG_Graphics_Cursor_Manager::restoreHighlightBG(SDL_Surface* targetSurface_in)
+RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& viewPort_in,
+                                                SDL_Surface* targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::restoreHighlightBG"));
 
@@ -685,7 +666,6 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(SDL_Surface* targetSurface_in)
 
   RPG_Graphics_Position_t screen_position;
   RPG_Graphics_Size_t size = myHighlightWindow->getSize();
-  RPG_Graphics_Position_t view = myHighlightWindow->getView();
   SDL_Rect current_rect, dirty_region;
   current_rect.w = static_cast<uint16_t>(myHighlightBGCache.front().second->w);
   current_rect.h = static_cast<uint16_t>(myHighlightBGCache.front().second->h);
@@ -699,7 +679,7 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(SDL_Surface* targetSurface_in)
   {
     screen_position = RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
                                                             size,
-                                                            view);
+                                                            viewPort_in);
     RPG_Graphics_Surface::put(screen_position.first,
                               screen_position.second,
                               *(*iterator).second,

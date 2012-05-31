@@ -21,6 +21,8 @@
 #ifndef RPG_MAP_COMMON_H
 #define RPG_MAP_COMMON_H
 
+#include "rpg_map_doorstate.h"
+
 #include <string>
 #include <vector>
 #include <map>
@@ -94,10 +96,8 @@ struct RPG_Map_Door_t
   }
 
   RPG_Map_Position_t position;
-  RPG_Map_Direction outside;
-  bool is_open;
-  bool is_locked;
-  bool is_broken;
+  RPG_Map_Direction  outside;
+  RPG_Map_DoorState  state;
 };
 struct door_compare
  : public std::binary_function<RPG_Map_Door_t, RPG_Map_Door_t, bool>

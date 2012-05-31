@@ -38,6 +38,7 @@ namespace urn:rpg
   RPG_Combat_RangedAttackProperties_Type      RPG_Combat_RangedAttackProperties;
   RPG_Combat_Check_Type                       RPG_Combat_Check;
 
+  RPG_Monster_Size_Type                       RPG_Monster_Size;
   RPG_Monster_MetaType_Type                   RPG_Monster_MetaType;
   RPG_Monster_SubType_Type                    RPG_Monster_SubType;
   RPG_Monster_Type_Type                       RPG_Monster_Type;

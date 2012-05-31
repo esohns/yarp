@@ -28,6 +28,8 @@
 #include <rpg_graphics_iwindow.h>
 #include <rpg_graphics_cursor.h>
 
+#include <rpg_sound_event.h>
+
 #include <rpg_map_common.h>
 
 #include <glade/glade.h>
@@ -90,11 +92,14 @@ struct RPG_Client_GTK_CBData_t
 // *NOTE* types as used by SDL
 struct RPG_Client_SDL_AudioConfig_t
 {
+  bool   mute;
   int    frequency;
   Uint16 format;
 //   Uint8  channels;
   int    channels;
   Uint16 samples;
+  int    mix_channels;
+  bool   use_CD;
 };
 
 // *NOTE* types as used by SDL
@@ -104,8 +109,21 @@ struct RPG_Client_SDL_VideoConfig_t
   int  screen_height;
   int  screen_colordepth; // bits/pixel
 //   Uint32 screen_flags;
-  bool fullScreen;
   bool doubleBuffer;
+  bool useOpenGL;
+  bool fullScreen;
+  bool initVideo;
+};
+
+struct RPG_Client_NetworkConfig_t
+{
+  std::string    server;
+  unsigned short port;
+  std::string    password;
+  std::string    nick;
+  std::string    user;
+  std::string    realname;
+  std::string    channel;
 };
 
 struct RPG_Client_Config
@@ -118,13 +136,13 @@ struct RPG_Client_Config
   // *** sound ***
   RPG_Client_SDL_AudioConfig_t audio_config;
   std::string                  sound_directory;
-  unsigned int                 sound_cache_size;
   std::string                  sound_dictionary;
   // *** graphics ***
   RPG_Client_SDL_VideoConfig_t video_config;
   std::string                  graphics_directory;
-  unsigned int                 graphics_cache_size;
   std::string                  graphics_dictionary;
+  // *** network ***
+  RPG_Client_NetworkConfig_t   network_config;
   // *** magic ***
   std::string                  magic_dictionary;
   // *** item ***
@@ -143,7 +161,10 @@ enum RPG_Client_Command
   COMMAND_CURSOR_RESTORE_BG,
   COMMAND_CURSOR_SET,
   COMMAND_ENTITY_DRAW,
+  COMMAND_ENTITY_REMOVE,
+  COMMAND_PLAY_SOUND,
   COMMAND_SET_VIEW,
+  COMMAND_SET_VISION_RADIUS,
   COMMAND_TILE_HIGHLIGHT_DRAW,
   COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG,
   COMMAND_TILE_HIGHLIGHT_RESTORE_BG,
@@ -153,6 +174,7 @@ enum RPG_Client_Command
   COMMAND_WINDOW_DRAW,
   COMMAND_WINDOW_INIT,
   COMMAND_WINDOW_REFRESH,
+  COMMAND_WINDOW_UPDATE_MINIMAP,
   //
   RPG_CLIENT_COMMAND_MAX,
   RPG_CLIENT_COMMAND_INVALID
@@ -170,10 +192,12 @@ struct RPG_Client_Action
   RPG_Graphics_IWindow* window;
   RPG_Graphics_Cursor   cursor;
   RPG_Engine_EntityID_t entity_id;
+  RPG_Sound_Event       sound;
   // *TODO*: this does not really belong here...
   RPG_Map_Path_t        path;
   RPG_Map_Position_t    source;
   RPG_Map_Positions_t   positions;
+  unsigned char         radius; // map squares
 };
 typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
 typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;
@@ -187,6 +211,7 @@ enum RPG_Client_MiniMapTile
   MINIMAPTILE_PLAYER,
   MINIMAPTILE_PLAYER_ACTIVE,
   MINIMAPTILE_STAIRS,
+  MINIMAPTILE_WALL,
   //
   RPG_CLIENT_MINIMAPTILE_MAX,
   RPG_CLIENT_MINIMAPTILE_INVALID
@@ -195,6 +220,7 @@ enum RPG_Client_MiniMapTile
 enum RPG_Client_SelectionMode
 {
   SELECTIONMODE_AIM_CIRCLE = 0,
+  SELECTIONMODE_AIM_SQUARE,
   SELECTIONMODE_NORMAL,
   SELECTIONMODE_PATH,
   //
@@ -204,5 +230,9 @@ enum RPG_Client_SelectionMode
 
 typedef std::map<RPG_Engine_EntityID_t, RPG_Map_Positions_t> RPG_Client_SeenPositions_t;
 typedef RPG_Client_SeenPositions_t::const_iterator RPG_Client_SeenPositionsConstIterator_t;
+typedef RPG_Client_SeenPositions_t::iterator RPG_Client_SeenPositionsIterator_t;
+
+typedef std::vector<SDL_Surface*> RPG_Client_BlendingMaskCache_t;
+typedef RPG_Client_BlendingMaskCache_t::iterator RPG_Client_BlendingMaskCacheIterator_t;
 
 #endif

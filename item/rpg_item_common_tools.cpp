@@ -22,7 +22,11 @@
 #include "rpg_item_common_tools.h"
 
 #include "rpg_item_incl.h"
+#include "rpg_item_armor.h"
+#include "rpg_item_commodity.h"
+#include "rpg_item_weapon.h"
 #include "rpg_item_dictionary.h"
+#include "rpg_item_instance_manager.h"
 #include "rpg_item_XML_parser.h"
 
 #include <rpg_common_environment_incl.h>
@@ -234,7 +238,7 @@ RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_in)
   return false;
 }
 
-unsigned char
+unsigned short
 RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_in,
                                            const bool& ambienceIsBright_in)
 {
@@ -269,6 +273,156 @@ RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_i
   return result;
 }
 
+void
+RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
+                                 const RPG_Character_OffHand& offHand_in,
+                                 RPG_Character_EquipmentSlots& slots_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::item2Slot"));
+
+  // init return value(s)
+  slots_out.slots.clear();
+  slots_out.is_inclusive = false;
+
+  // retrieve properties
+  RPG_Item_Base* item_base = NULL;
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(itemID_in, item_base))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid item ID (was: %u), aborting\n"),
+               itemID_in));
+
+    return;
+  } // end IF
+  ACE_ASSERT(item_base);
+
+  const RPG_Item_Type& item_type = item_base->getType();
+  switch (item_type)
+  {
+    case ITEM_ARMOR:
+    {
+      const RPG_Item_Armor* armor = dynamic_cast<const RPG_Item_Armor*>(item_base);
+      ACE_ASSERT(armor);
+      const RPG_Item_ArmorType& armor_type = armor->getArmorType();
+      const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
+      switch (properties.category)
+      {
+        case ARMORCATEGORY_GLOVES:
+        {
+          slots_out.slots.push_back(EQUIPMENTSLOT_HANDS);
+
+          break;
+        }
+        case ARMORCATEGORY_LIGHT:
+        case ARMORCATEGORY_MEDIUM:
+        {
+          slots_out.slots.push_back(EQUIPMENTSLOT_TORSO);
+
+          break;
+        }
+        case ARMORCATEGORY_HEAVY:
+        {
+          slots_out.slots.push_back(EQUIPMENTSLOT_BODY);
+
+          break;
+        }
+        case ARMORCATEGORY_HELMET:
+        {
+          slots_out.slots.push_back(EQUIPMENTSLOT_HEAD);
+
+          break;
+        }
+        case ARMORCATEGORY_SHIELD:
+        {
+          // *NOTE*: secondary, then primary
+          slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                                 : EQUIPMENTSLOT_HAND_RIGHT);
+          slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                                 : EQUIPMENTSLOT_HAND_LEFT);
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid armor category (was: \"%s\"), aborting\n"),
+                     RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str()));
+
+          return;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case ITEM_COMMODITY:
+    {
+      const RPG_Item_Commodity* commodity = dynamic_cast<const RPG_Item_Commodity*>(item_base);
+      ACE_ASSERT(commodity);
+      const RPG_Item_CommodityUnion& commodity_type = commodity->getCommoditySubType();
+      switch (commodity_type.discriminator)
+      {
+        case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
+          break;
+        case RPG_Item_CommodityUnion::COMMODITYLIGHT:
+        {
+          // *NOTE*: secondary, then primary
+          slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                                 : EQUIPMENTSLOT_HAND_RIGHT);
+          slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                                 : EQUIPMENTSLOT_HAND_LEFT);
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid commodity type (was: %d), aborting\n"),
+                     commodity_type.discriminator));
+
+          return;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case ITEM_OTHER:
+    case ITEM_VALUABLE:
+    {
+      // *TODO*
+      ACE_ASSERT(false);
+
+      break;
+    }
+    case ITEM_WEAPON:
+    {
+      const RPG_Item_Weapon* weapon = dynamic_cast<const RPG_Item_Weapon*>(item_base);
+      ACE_ASSERT(weapon);
+      const RPG_Item_WeaponType& weapon_type = weapon->getWeaponType();
+      const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
+
+      // *TODO*: consider single-handed use of double-handed weapons...
+      if (properties.isDoubleWeapon ||
+          RPG_Item_Common_Tools::isTwoHandedWeapon(weapon_type))
+        slots_out.is_inclusive = true;
+      // *NOTE*: primary, then secondary
+      slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                             : EQUIPMENTSLOT_HAND_LEFT);
+      slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                                             : EQUIPMENTSLOT_HAND_RIGHT);
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
+                 RPG_Item_TypeHelper::RPG_Item_TypeToString(item_type).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+}
+
 bool
 RPG_Item_Common_Tools::isThrownWeapon(const RPG_Item_WeaponType& weaponType_in)
 {
@@ -296,13 +450,9 @@ RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& weaponType_
     case RANGED_WEAPON_CROSSBOW_HAND:
     case RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT:
     case RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY:
-    {
       return true;
-    }
     default:
-    {
       break;
-    }
   } // end SWITCH
 
   return false;
@@ -343,9 +493,7 @@ RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_i
     case TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED:
     case TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED:
     case TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN:
-    {
       return true;
-    }
     default:
     {
       // ALL projectile weapons are two-handed...
@@ -382,14 +530,29 @@ RPG_Item_Common_Tools::isMeleeWeapon(const RPG_Item_WeaponType& weaponType_in)
     case LIGHT_MELEE_WEAPON_HAMMER_LIGHT:
     case ONE_HANDED_MELEE_WEAPON_TRIDENT:
     case LIGHT_MELEE_WEAPON_SAI:
-    {
       return true;
-    }
     default:
-    {
       break;
-    }
   } // end SWITCH
 
   return false;
+}
+
+bool
+RPG_Item_Common_Tools::hasAbsoluteReach(const RPG_Item_WeaponType& weaponType_in)
+{
+  // sanity check
+  const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weaponType_in);
+  if (!properties.isReachWeapon)
+    return false;
+
+  switch (weaponType_in)
+  {
+    case TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED:
+      return false;
+    default:
+      break;
+  } // end SWITCH
+
+  return true;
 }

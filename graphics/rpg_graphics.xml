@@ -67,6 +67,11 @@
   </graphic>
   <graphic>
     <category>CATEGORY_CURSOR</category>
+    <type>CURSOR_TARGET_INVALID</type>
+    <file>cursor_target_invalid.png</file>
+  </graphic>
+  <graphic>
+    <category>CATEGORY_CURSOR</category>
     <type>CURSOR_TRAVEL</type>
     <file>cursor_target_green.png</file>
   </graphic>

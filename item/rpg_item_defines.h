@@ -21,9 +21,6 @@
 #ifndef RPG_ITEM_DEFINES_H
 #define RPG_ITEM_DEFINES_H
 
-#define RPG_ITEM_DEF_DICTIONARY_FILE      "rpg_item.xml"
-
-// CONFIGDIR-specific
-#define RPG_ITEM_DEF_CONFIG_SUB           "item"
+#define RPG_ITEM_DEF_DICTIONARY_FILE "rpg_item.xml"
 
 #endif

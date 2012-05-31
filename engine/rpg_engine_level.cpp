@@ -51,6 +51,7 @@ RPG_Engine_Level::RPG_Engine_Level()
   myLevelMeta.spawn_probability = 0.0F;
   myLevelMeta.max_spawned = 0;
   myLevelMeta.spawn_timer = -1;
+  myLevelMeta.amble_probability = 0.0F;
 }
 
 RPG_Engine_Level::~RPG_Engine_Level()
@@ -77,6 +78,8 @@ RPG_Engine_Level::create(const RPG_Map_FloorPlan_Config_t& mapConfig_in,
   level_out.level_meta.spawn_probability = 0.0F;
   level_out.level_meta.max_spawned = 0;
   level_out.level_meta.spawn_timer = -1;
+  level_out.level_meta.amble_probability = 0.0F;
+
   RPG_Map_Level::create(mapConfig_in,
                         level_out.map);
 }
@@ -100,6 +103,8 @@ RPG_Engine_Level::load(const std::string& filename_in,
   result.level_meta.spawn_probability = 0.0F;
   result.level_meta.max_spawned = 0;
   result.level_meta.spawn_timer = -1;
+  result.level_meta.amble_probability = 0.0F;
+
   result.map.start = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                     std::numeric_limits<unsigned int>::max());
   result.map.seeds.clear();
@@ -372,23 +377,16 @@ RPG_Engine_Level::getMeta() const
   return myLevelMeta;
 }
 
-void
+bool
 RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
-                             const bool& open_in,
-                             bool& toggled_out)
+                             const bool& open_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::handleDoor"));
-
-  // init return value(s)
-  toggled_out = false;
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
   position_door.outside = DIRECTION_INVALID;
-  position_door.is_open = false;
-  position_door.is_locked = false;
-  position_door.is_broken = false;
-
+  position_door.state = RPG_MAP_DOORSTATE_INVALID;
   RPG_Map_DoorsIterator_t iterator = myMap.plan.doors.find(position_door);
   // sanity check
   ACE_ASSERT(iterator != myMap.plan.doors.end());
@@ -396,46 +394,70 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
   if (open_in)
   {
     // sanity check
-    if ((*iterator).is_open)
+    if ((*iterator).state == DOORSTATE_OPEN)
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("door [%u,%u] already open...\n"),
 //                  position_in.first,
 //                  position_in.second));
 
-      return;
+      return false;
     } // end IF
 
     // cannot simply open locked doors...
-    if ((*iterator).is_locked)
+    if ((*iterator).state == DOORSTATE_LOCKED)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("door [%u,%u] is locked...\n"),
                  position_in.first,
                  position_in.second));
 
-      return;
+      return false;
+    } // end IF
+
+    // cannot open broken doors...
+    if ((*iterator).state == DOORSTATE_BROKEN)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("door [%u,%u] is broken...\n"),
+                 position_in.first,
+                 position_in.second));
+
+      return false;
     } // end IF
   } // end IF
   else
   {
     // sanity check
-    if (!(*iterator).is_open)
+    if (((*iterator).state == DOORSTATE_CLOSED) ||
+        ((*iterator).state == DOORSTATE_LOCKED))
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("door [%u,%u] already closed...\n"),
 //                  position_in.first,
 //                  position_in.second));
 
-      return;
+      return false;
+    } // end IF
+
+    // cannot close broken doors...
+    if ((*iterator).state == DOORSTATE_BROKEN)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("door [%u,%u] is broken...\n"),
+                 position_in.first,
+                 position_in.second));
+
+      return false;
     } // end IF
   } // end ELSE
 
   // *WARNING*: set iterators are CONST for a good reason !
   // --> (but we know what we're doing)...
-  (const_cast<RPG_Map_Door_t&>(*iterator)).is_open = open_in;
+  (const_cast<RPG_Map_Door_t&>(*iterator)).state = (open_in ? DOORSTATE_OPEN
+                                                            : DOORSTATE_CLOSED);
 
-  toggled_out = true;
+  return true;
 }
 
 bool
@@ -493,6 +515,7 @@ RPG_Engine_Level::toLevelXML() const
                                                             spawn_interval,
                                                             myLevelMeta.spawn_probability,
                                                             myLevelMeta.max_spawned,
+                                                            myLevelMeta.amble_probability,
                                                             map_string);
   ACE_ASSERT(level_p);
   if (!level_p)
@@ -547,6 +570,8 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
   result.level_meta.spawn_probability = level_in.spawn_probability();
   result.level_meta.max_spawned = level_in.max_spawned();
   result.level_meta.spawn_timer = -1;
+  result.level_meta.amble_probability = level_in.amble_probability();
+
   RPG_Map_ParserDriver parser_driver(false, false);
   parser_driver.init(&result.map.start,
                      &result.map.seeds,

@@ -87,17 +87,19 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   // step1a: init randomization
   RPG_Dice::init();
 
-  // step1b: init other static data
+  // step1b: init string conversion facilities
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
-  RPG_Magic_Common_Tools::init();
   RPG_Item_Common_Tools::initStringConversionTables();
-  RPG_Character_Common_Tools::init();
   RPG_Combat_Common_Tools::initStringConversionTables();
   RPG_Monster_Common_Tools::initStringConversionTables();
-
+  RPG_Map_Common_Tools::initStringConversionTables();
   RPG_Engine_CommandHelper::init();
   RPG_Engine_EntityModeHelper::init();
+
+  // step1c: ...and other static data
+  RPG_Magic_Common_Tools::init();
+  RPG_Character_Common_Tools::init();
 
   // step1c: init dictionaries
   // step1ca: init magic dictionary
@@ -105,7 +107,13 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   {
     try
     {
-      RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFile_in);
+      RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFile_in
+#ifdef _DEBUG
+                                                       ,true
+#else
+                                                       ,false
+#endif
+                                                       );
     }
     catch (...)
     {
@@ -121,7 +129,13 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   {
     try
     {
-      RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFile_in);
+      RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFile_in
+#ifdef _DEBUG
+                                                      ,true
+#else
+                                                      ,false
+#endif
+        );
     }
     catch (...)
     {
@@ -137,12 +151,18 @@ RPG_Engine_Common_Tools::init(const std::string& magicDictionaryFile_in,
   {
     try
     {
-      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in);
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in
+#ifdef _DEBUG
+                                                         ,true
+#else
+                                                         ,false
+#endif
+        );
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Character_Monster_Dictionary::init, returning\n")));
+                 ACE_TEXT("caught exception in RPG_Monster_Dictionary::init, returning\n")));
 
       return;
     }
@@ -1058,7 +1078,7 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
            attackSituation_in,
            defenseSituation_in,
            true,
-           RPG_COMBAT_DEF_ADJACENT_DISTANCE);
+           RPG_ENGINE_FEET_PER_SQUARE);
   } // end FOR
 }
 
@@ -1077,6 +1097,27 @@ RPG_Engine_Common_Tools::isMonsterGroupHelpless(const RPG_Monster_Group_t& group
   return (numHelplessMonsters == groupInstance_in.size());
 }
 
+unsigned int
+RPG_Engine_Common_Tools::range(const RPG_Map_Position_t& position1_in,
+                               const RPG_Map_Position_t& position2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::range"));
+
+  // sanity check
+  if (position1_in == position2_in)
+    return 0;
+
+  unsigned int result = RPG_Map_Common_Tools::distance(position1_in,
+                                                       position2_in);
+
+  // diagonal ?
+  unsigned int offset_x = ::abs(static_cast<int>(position1_in.first) - static_cast<int>(position2_in.first));
+  if (offset_x == ::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second)))
+    result = offset_x + (offset_x / 2);
+
+  return result;
+}
+
 bool
 RPG_Engine_Common_Tools::isCharacterHelpless(const RPG_Player_Base* const character_in)
 {
@@ -1086,7 +1127,7 @@ RPG_Engine_Common_Tools::isCharacterHelpless(const RPG_Player_Base* const charac
 
   if ((character_in->hasCondition(CONDITION_PARALYZED)) || // spell, ...
       (character_in->hasCondition(CONDITION_HELD))      || // bound as per spell, ...
-      (character_in->hasCondition(CONDITION_BOUND))     || // bound ase per rope, ...
+      (character_in->hasCondition(CONDITION_BOUND))     || // bound as per rope, ...
       (character_in->hasCondition(CONDITION_SLEEPING))  || // natural, spell, ...
       (character_in->hasCondition(CONDITION_PETRIFIED)) || // turned to stone
       isCharacterDisabled(character_in))                   // disabled
@@ -1221,7 +1262,7 @@ RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_Attack
   } // end SWITCH
 }
 
-void
+bool
 RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
                                 RPG_Player_Base* const target_inout,
                                 const RPG_Combat_AttackSituation& attackSituation_in,
@@ -1229,10 +1270,25 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
                                 const bool& isFullRoundAction_in,
                                 const unsigned short& distance_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::attackFoe"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::attack"));
 
   // sanity check
   ACE_ASSERT(attacker_in && target_inout);
+
+  bool has_hit = false;
+
+  bool reach_is_absolute = false;
+  unsigned short base_range = 0;
+  unsigned short max_reach = attacker_in->getReach(base_range,
+                                                   reach_is_absolute);
+  if (distance_in > max_reach)
+    return false; // --> done (out of reach)
+  RPG_Combat_AttackForm attackForm = (base_range ? ATTACKFORM_RANGED
+                                                 : (reach_is_absolute &&
+                                                    (distance_in < max_reach)) ? RPG_COMBAT_ATTACKFORM_INVALID
+                                                                               : ATTACKFORM_MELEE);
+  if (attackForm == RPG_COMBAT_ATTACKFORM_INVALID)
+    return false; // --> done (cannot reach)
 
   RPG_Dice_Roll roll;
   roll.numDice = 1;
@@ -1241,12 +1297,13 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
   RPG_Dice_RollResult_t result;
   int attack_roll = 0;
   int currentAttackBonus = 0;
+  bool is_offhand = false;
   RPG_Item_WeaponType weapon_type = RPG_ITEM_WEAPONTYPE_INVALID;
   RPG_Item_WeaponProperties weapon_properties;
   bool is_threat = false;
   bool is_critical_hit = false;
-  RPG_Common_Attribute attribute = RPG_COMMON_ATTRIBUTE_INVALID;
-  RPG_Combat_AttackForm attackForm = RPG_COMBAT_ATTACKFORM_INVALID;
+  RPG_Common_Attribute attribute = ((attackForm == ATTACKFORM_RANGED) ? ATTRIBUTE_DEXTERITY
+                                                                      : ATTRIBUTE_STRENGTH);
   int targetArmorClass = 0;
   float STR_factor = 1.0;
   RPG_Combat_Damage damage;
@@ -1261,11 +1318,6 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
     ACE_ASSERT(player_base);
     // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
     // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE may use its DEX modifier for melee attacks...
-    attribute = ATTRIBUTE_STRENGTH;
-    // consider that the player may (temporarily) have a bigger reach...
-    attackForm = (distance_in > RPG_Common_Tools::sizeToReach(player_base->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
-    if (attackForm == ATTACKFORM_RANGED)
-      attribute = ATTRIBUTE_DEXTERITY;
     RPG_Character_BaseAttackBonus_t attackBonus = player_base->getAttackBonus(attribute,
                                                                               attackSituation_in);
     ACE_ASSERT(!attackBonus.empty());
@@ -1284,7 +1336,18 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 //     } // end FOR
 
     // --> check primary weapon
+    // *TODO*: consider multi-weapon/offhand attacks...
     weapon_type = const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getPrimaryWeapon(player_base->getOffHand());
+    // sanity check: equipped any weapon ?
+    if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
+    {
+      // try offhand
+      weapon_type = const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getSecondaryWeapon(player_base->getOffHand());
+      if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
+        return false; // done (no weapon equipped)
+
+      is_offhand = true;
+    } // end IF
     weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
     // consider range penalty...
     if (weapon_properties.rangeIncrement)
@@ -1295,7 +1358,6 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
         *iterator += (static_cast<int>((distance_in / weapon_properties.rangeIncrement)) * -2);
     } // end IF
     // *TODO*: consider other modifiers...
-    // *TODO*: consider multi-weapon/offhand attacks...
 
     // step2: compute target AC
     // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size modifier [+ other modifiers]
@@ -1340,7 +1402,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 //       maxReach = 50; // not really meant to be thrown...
 
       // nothing to do...
-      return;
+      return false;
     } // end IF
 
     // *TODO*: consider multi-weapon/offhand attacks...
@@ -1354,7 +1416,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
       is_threat = false;
       is_critical_hit = false;
 
-      // step2a: roll D_20
+      // step2a: roll D_20...
       result.clear();
       RPG_Dice::simulateRoll(roll,
                              1,
@@ -1374,18 +1436,16 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
                                result);
       } // end IF
 
-      if (attack_roll == 1)
+      // hit or miss ?
+      if ((attack_roll == 1) ||
+          (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20)))
         goto is_player_miss;
 
-      // hit or miss ?
-      if (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20))
-        goto is_player_miss;
-      else if (is_threat)
-      {
-        // check for critical
-        if ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass)
-          is_critical_hit = true;
-      } // end ELSE
+      has_hit = true;
+      // hit --> check for critical
+      if (is_threat &&
+          ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass))
+        is_critical_hit = true;
 
 // is_player_hit:
       // compute damage
@@ -1500,10 +1560,6 @@ is_player_miss:
     // - deflection bonuses
     // - natural armor
     // - dodge bonuses
-
-    // choose appropriate form of attack...
-    // consider that the monster may (temporarily) have a bigger reach...
-    attackForm = (distance_in > RPG_Common_Tools::sizeToReach(monster->getSize()) ? ATTACKFORM_RANGED : ATTACKFORM_MELEE);
 
     // step2: perform attack(s)
     // *TODO*: if available (AND preconditions are met), we MAY also choose a special attack...
@@ -1633,7 +1689,7 @@ init_monster_special_attack:
                  monster->getName().c_str()));
 
       // what else can we do ?
-      return;
+      return false;
     } // end IF
 
     special_iterator = monster_properties.specialAttacks.begin();
@@ -1695,7 +1751,7 @@ monster_perform_single_action:
       is_threat = false;
       is_critical_hit = false;
 
-      // step2a: roll D_20
+      // step2a: roll D_20...
       result.clear();
       RPG_Dice::simulateRoll(roll,
                             1,
@@ -1716,9 +1772,6 @@ monster_perform_single_action:
                               result);
       } // end IF
 
-      if (attack_roll == 1)
-        goto is_monster_miss;
-
       // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
       if (current_action->attackBonuses.size() == current_action->numAttacksPerRound)
         currentAttackBonus = current_action->attackBonuses[i];
@@ -1731,14 +1784,15 @@ monster_perform_single_action:
       // *TODO*: consider other modifiers...
 
       // hit or miss ?
-      if (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20))
+      if ((attack_roll == 1) ||
+          (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20)))
         goto is_monster_miss;
-      else if (is_threat)
-      {
-        // check for critical
-        if ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass)
-          is_critical_hit = true;
-      } // end ELSE
+
+      has_hit = true;
+      // hit --> check for critical
+      if (is_threat &&
+          ((static_cast<int>(result.front()) + currentAttackBonus) >= targetArmorClass))
+        is_critical_hit = true;
 
 // is_monster_hit:
       // compute damage
@@ -1816,7 +1870,7 @@ monster_perform_single_action:
       // if the target has been disabled, we're done...
       // *TODO*: consider remaining actions...
       if (isCharacterHelpless(target_inout))
-        return;
+        return true;
 
       // if this was a Standard Action, we're done
       if (!isFullRoundAction_in)
@@ -1854,6 +1908,8 @@ monster_advance_attack_iterator:
       } // end IF
     } // end IF
   } // end ELSE
+
+  return has_hit;
 }
 
 RPG_Engine_Player_XMLTree_Type*

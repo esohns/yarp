@@ -26,7 +26,7 @@
 #include <rpg_engine_common.h>
 
 #include <rpg_graphics_common.h>
-#include <rpg_graphics_SDL_window_base.h>
+#include <rpg_graphics_iwindow.h>
 
 #include <SDL/SDL.h>
 
@@ -47,7 +47,7 @@ class RPG_Client_Export RPG_Client_Entity_Manager
 
  public:
   // init (clipping)
-  void init(RPG_Graphics_SDLWindowBase*); // target window handle
+  void init(RPG_Graphics_IWindow*); // (target) window handle
 
   // manage entities
   // *NOTE*: fire-and-forget API, surface is SDL_FreeSurface()d on remove()...
@@ -87,8 +87,8 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   typedef RPG_Client_EntityCache_t::iterator RPG_Client_EntityCacheIterator_t;
   typedef RPG_Client_EntityCache_t::const_iterator RPG_Client_EntityCacheConstIterator_t;
 
-  RPG_Graphics_SDLWindowBase* myWindow;
-  RPG_Client_EntityCache_t    myCache;
+  RPG_Graphics_IWindow*    myWindow;
+  RPG_Client_EntityCache_t myCache;
 };
 
 typedef ACE_Singleton<RPG_Client_Entity_Manager,

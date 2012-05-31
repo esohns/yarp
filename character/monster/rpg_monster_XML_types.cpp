@@ -39,6 +39,36 @@
 
 #include "rpg_monster_XML_types.h"
 
+// RPG_Monster_Size_Type_pskel
+//
+
+void RPG_Monster_Size_Type_pskel::
+size_parser (::RPG_Common_Size_Type_pskel& p)
+{
+  this->size_parser_ = &p;
+}
+
+void RPG_Monster_Size_Type_pskel::
+isTall_parser (::xml_schema::boolean_pskel& p)
+{
+  this->isTall_parser_ = &p;
+}
+
+void RPG_Monster_Size_Type_pskel::
+parsers (::RPG_Common_Size_Type_pskel& size,
+         ::xml_schema::boolean_pskel& isTall)
+{
+  this->size_parser_ = &size;
+  this->isTall_parser_ = &isTall;
+}
+
+RPG_Monster_Size_Type_pskel::
+RPG_Monster_Size_Type_pskel ()
+: size_parser_ (0),
+  isTall_parser_ (0)
+{
+}
+
 // RPG_Monster_NaturalArmorClass_Type_pskel
 //
 
@@ -877,7 +907,7 @@ name_parser (::xml_schema::string_pskel& p)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
-size_parser (::RPG_Common_Size_Type_pskel& p)
+size_parser (::RPG_Monster_Size_Type_pskel& p)
 {
   this->size_parser_ = &p;
 }
@@ -943,7 +973,7 @@ space_parser (::xml_schema::unsigned_byte_pskel& p)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
-reach_parser (::xml_schema::unsigned_byte_pskel& p)
+reach_parser (::xml_schema::unsigned_short_pskel& p)
 {
   this->reach_parser_ = &p;
 }
@@ -1016,7 +1046,7 @@ levelAdjustment_parser (::xml_schema::unsigned_byte_pskel& p)
 
 void RPG_Monster_PropertiesXML_Type_pskel::
 parsers (::xml_schema::string_pskel& name,
-         ::RPG_Common_Size_Type_pskel& size,
+         ::RPG_Monster_Size_Type_pskel& size,
          ::RPG_Common_CreatureType_Type_pskel& type,
          ::RPG_Dice_Roll_Type_pskel& hitDice,
          ::xml_schema::byte_pskel& initiative,
@@ -1027,7 +1057,7 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Monster_SpecialAttackProperties_Type_pskel& specialAttack,
          ::RPG_Monster_SpecialAbilityProperties_Type_pskel& specialAbility,
          ::xml_schema::unsigned_byte_pskel& space,
-         ::xml_schema::unsigned_byte_pskel& reach,
+         ::xml_schema::unsigned_short_pskel& reach,
          ::RPG_Monster_SavingThrowModifiers_Type_pskel& saves,
          ::RPG_Character_Attributes_Type_pskel& attributes,
          ::RPG_Character_Skills_Type_pskel& skills,
@@ -1114,6 +1144,85 @@ RPG_Monster_Dictionary_Type_pskel::
 RPG_Monster_Dictionary_Type_pskel ()
 : monster_parser_ (0)
 {
+}
+
+// RPG_Monster_Size_Type_pskel
+//
+
+void RPG_Monster_Size_Type_pskel::
+size (const RPG_Common_Size&)
+{
+}
+
+void RPG_Monster_Size_Type_pskel::
+isTall (bool)
+{
+}
+
+bool RPG_Monster_Size_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "size" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->size_parser_;
+
+    if (this->size_parser_)
+      this->size_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_Size_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "size" && ns == "urn:rpg")
+  {
+    if (this->size_parser_)
+      this->size (this->size_parser_->post_RPG_Common_Size_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_Size_Type_pskel::
+_attribute_impl (const ::xml_schema::ro_string& ns,
+                 const ::xml_schema::ro_string& n,
+                 const ::xml_schema::ro_string& v)
+{
+  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
+    return true;
+
+  if (n == "isTall" && ns.empty ())
+  {
+    if (this->isTall_parser_)
+    {
+      this->isTall_parser_->pre ();
+      this->isTall_parser_->_pre_impl ();
+      this->isTall_parser_->_characters (v);
+      this->isTall_parser_->_post_impl ();
+      this->isTall (this->isTall_parser_->post_boolean ());
+    }
+
+    return true;
+  }
+
+  return false;
 }
 
 // RPG_Monster_NaturalArmorClass_Type_pskel
@@ -3111,7 +3220,7 @@ name (const ::std::string&)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
-size (const RPG_Common_Size&)
+size (const RPG_Monster_Size&)
 {
 }
 
@@ -3166,7 +3275,7 @@ space (unsigned char)
 }
 
 void RPG_Monster_PropertiesXML_Type_pskel::
-reach (unsigned char)
+reach (unsigned short)
 {
 }
 
@@ -3496,7 +3605,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "size" && ns == "urn:rpg")
   {
     if (this->size_parser_)
-      this->size (this->size_parser_->post_RPG_Common_Size_Type ());
+      this->size (this->size_parser_->post_RPG_Monster_Size_Type ());
 
     return true;
   }
@@ -3584,7 +3693,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "reach" && ns == "urn:rpg")
   {
     if (this->reach_parser_)
-      this->reach (this->reach_parser_->post_unsigned_byte ());
+      this->reach (this->reach_parser_->post_unsigned_short ());
 
     return true;
   }

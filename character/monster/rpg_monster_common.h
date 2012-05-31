@@ -60,7 +60,7 @@ typedef RPG_Monster_Advancement_t::const_iterator RPG_Monster_AdvancementIterato
 struct RPG_Monster_Properties
 {
 //   std::string name;
-  RPG_Common_Size size;
+  RPG_Monster_Size size;
   RPG_Common_CreatureType type;
   RPG_Monster_HitDice hitDice;
   char initiative;
@@ -69,7 +69,7 @@ struct RPG_Monster_Properties
   RPG_Monster_Attack attack;
   std::vector<RPG_Monster_SpecialAttackProperties> specialAttacks;
   unsigned char space; // feet
-  unsigned char reach; // feet
+  unsigned short reach; // feet
   RPG_Monster_SavingThrowModifiers saves;
   RPG_Character_Attributes attributes;
   RPG_Character_Skills_t skills;

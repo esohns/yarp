@@ -14,13 +14,18 @@ enum RPG_Engine_Command
   COMMAND_ATTACK_STANDARD,
   COMMAND_DOOR_CLOSE,
   COMMAND_DOOR_OPEN,
+  COMMAND_IDLE,
+  COMMAND_RUN,
   COMMAND_SEARCH,
   COMMAND_STEP,
   COMMAND_STOP,
   COMMAND_TRAVEL,
   COMMAND_E2C_ENTITY_ADD,
+  COMMAND_E2C_ENTITY_HIT,
+  COMMAND_E2C_ENTITY_MISS,
+  COMMAND_E2C_ENTITY_POSITION,
   COMMAND_E2C_ENTITY_REMOVE,
-  COMMAND_E2C_ENTITY_UPDATE,
+  COMMAND_E2C_ENTITY_VISION,
   COMMAND_E2C_QUIT,
   //
   RPG_ENGINE_COMMAND_MAX,
@@ -48,13 +53,18 @@ class RPG_Engine_Export RPG_Engine_CommandHelper
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_ATTACK_STANDARD, ACE_TEXT_ALWAYS_CHAR("COMMAND_ATTACK_STANDARD")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_DOOR_CLOSE, ACE_TEXT_ALWAYS_CHAR("COMMAND_DOOR_CLOSE")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_DOOR_OPEN, ACE_TEXT_ALWAYS_CHAR("COMMAND_DOOR_OPEN")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_IDLE, ACE_TEXT_ALWAYS_CHAR("COMMAND_IDLE")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_RUN, ACE_TEXT_ALWAYS_CHAR("COMMAND_RUN")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_SEARCH, ACE_TEXT_ALWAYS_CHAR("COMMAND_SEARCH")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_STEP, ACE_TEXT_ALWAYS_CHAR("COMMAND_STEP")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_STOP, ACE_TEXT_ALWAYS_CHAR("COMMAND_STOP")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_TRAVEL, ACE_TEXT_ALWAYS_CHAR("COMMAND_TRAVEL")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_ADD, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_ADD")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_HIT, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_HIT")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_MISS, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_MISS")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_POSITION, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_POSITION")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_REMOVE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_REMOVE")));
-    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_UPDATE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_UPDATE")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_VISION, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_VISION")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_QUIT, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_QUIT")));
   };
 

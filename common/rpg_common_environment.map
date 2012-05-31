@@ -4,6 +4,7 @@ namespace urn:rpg
 
   RPG_Common_Plane_Type           RPG_Common_Plane;
   RPG_Common_Terrain_Type         RPG_Common_Terrain;
+  RPG_Common_Track_Type           RPG_Common_Track;
   RPG_Common_Climate_Type         RPG_Common_Climate;
   RPG_Common_TimeOfDay_Type       RPG_Common_TimeOfDay;
   RPG_Common_AmbientLighting_Type RPG_Common_AmbientLighting;

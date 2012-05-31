@@ -106,7 +106,7 @@ RPG_Graphics_Surface::~RPG_Graphics_Surface()
     SDL_FreeSurface(mySurface);
 }
 
-const RPG_Graphics_GraphicTypeUnion
+RPG_Graphics_GraphicTypeUnion
 RPG_Graphics_Surface::type() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::type"));
@@ -915,11 +915,50 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
     SDL_UnlockSurface(targetSurface_in);
 }
 
+void
+RPG_Graphics_Surface::alpha(const Uint8& opacity_in,
+                            SDL_Surface& targetImage_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::alpha"));
+
+  // *NOTE*: SDL_SetAlpha() will not work, as transparent pixels should remain that way...
+  // --> do it manually
+  // lock surface during pixel access
+  if (SDL_MUSTLOCK((&targetImage_in)))
+    if (SDL_LockSurface(&targetImage_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+                SDL_GetError()));
+
+      return;
+    } // end IF
+
+  Uint32* pixels = static_cast<Uint32*>(targetImage_in.pixels);
+  for (unsigned int j = 0;
+       j < static_cast<unsigned int>(targetImage_in.h);
+       j++)
+    for (unsigned int i = 0;
+         i < static_cast<unsigned int>(targetImage_in.w);
+         i++)
+  {
+    // ignore transparent pixels
+    if (((pixels[(targetImage_in.w * j) + i] & targetImage_in.format->Amask) >> targetImage_in.format->Ashift) == SDL_ALPHA_TRANSPARENT)
+      continue;
+
+    pixels[(targetImage_in.w * j) + i] &= ~static_cast<Uint32>((SDL_ALPHA_OPAQUE << targetImage_in.format->Ashift));
+    pixels[(targetImage_in.w * j) + i] |= (static_cast<Uint32>(opacity_in) << targetImage_in.format->Ashift);
+  } // end FOR
+
+  if (SDL_MUSTLOCK((&targetImage_in)))
+    SDL_UnlockSurface(&targetImage_in);
+}
+
 SDL_Surface*
-RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
+RPG_Graphics_Surface::alpha(const SDL_Surface& sourceImage_in,
                             const Uint8& opacity_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::shade"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::alpha"));
 
   SDL_Surface* result = NULL;
   result = RPG_Graphics_Surface::copy(sourceImage_in);
@@ -948,11 +987,11 @@ RPG_Graphics_Surface::shade(const SDL_Surface& sourceImage_in,
     } // end IF
 
   Uint32* pixels = static_cast<Uint32*>(result->pixels);
-  for (unsigned long j = 0;
-       j < static_cast<unsigned long>(result->h);
+  for (unsigned int j = 0;
+       j < static_cast<unsigned int>(result->h);
        j++)
-    for (unsigned long i = 0;
-         i < static_cast<unsigned long>(result->w);
+    for (unsigned int i = 0;
+         i < static_cast<unsigned int>(result->w);
          i++)
   {
     // ignore transparent pixels
@@ -984,6 +1023,65 @@ RPG_Graphics_Surface::clear(SDL_Surface* targetSurface_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, continuing\n"),
                SDL_GetError()));
+}
+
+void
+RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in,
+                           SDL_Surface& targetImage_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::copy"));
+
+  // sanity check(s)
+  ACE_ASSERT((sourceImage_in.w == targetImage_in.w) &&
+             (sourceImage_in.h == targetImage_in.h));
+  if ((sourceImage_in.w != targetImage_in.w) ||
+      (sourceImage_in.h != targetImage_in.h))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid image format: [%d,%d] != [%d,%d], aborting\n"),
+               sourceImage_in.w, sourceImage_in.h,
+               targetImage_in.w, targetImage_in.h));
+
+    return;
+  } // end IF
+
+  // *NOTE*: blitting does not preserve the alpha channel...
+  // --> do it manually
+//   if (SDL_BlitSurface(&const_cast<SDL_Surface&> (sourceImage_in),
+//                       NULL,
+//                       result,
+//                       NULL))
+//   {
+//     ACE_DEBUG((LM_ERROR,
+//                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+//                SDL_GetError()));
+  //
+//     // clean up
+//     SDL_FreeSurface(result);
+  //
+//     return NULL;
+//   } // end IF
+
+  // lock surface during pixel access
+  if (SDL_MUSTLOCK((&sourceImage_in)))
+    if (SDL_LockSurface(&const_cast<SDL_Surface&>(sourceImage_in)))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+
+  for (unsigned int i = 0;
+       i < static_cast<unsigned int>(sourceImage_in.h);
+       i++)
+    ::memcpy((static_cast<unsigned char*>(targetImage_in.pixels) + (targetImage_in.pitch * i)),
+             (static_cast<unsigned char*>(sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
+             (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
+
+  if (SDL_MUSTLOCK((&sourceImage_in)))
+    SDL_UnlockSurface(&const_cast<SDL_Surface&>(sourceImage_in));
 }
 
 SDL_Surface*
@@ -1089,17 +1187,29 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
   // init return value(s)
   SDL_Surface* result = NULL;
 
-  //// sanity check
-  ////--> buffer must contain a PNG file
-  //if (png_sig_cmp(const_cast<unsigned char*>(buffer_in), // buffer
-  //                0,                                     // start at the beginning
-  //                RPG_GRAPHICS_PNG_SIGNATURE_BYTES))     // #signature bytes to check
-  //{
-  //  ACE_DEBUG((LM_ERROR,
-  //             ACE_TEXT("failed to png_sig_cmp(): %m, aborting\n")));
+  // sanity check
+  //--> file must have a PNG signature
+  unsigned char sig_buffer[RPG_GRAPHICS_PNG_SIGNATURE_BYTES];
+  if (ACE_OS::fread(sig_buffer,
+                    RPG_GRAPHICS_PNG_SIGNATURE_BYTES,
+                    1,
+                    file_in) != 1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to fread(%u): %m, aborting\n"),
+               RPG_GRAPHICS_PNG_SIGNATURE_BYTES));
 
-  //  return NULL;
-  //} // end IF
+    return NULL;
+  } // end IF
+  if (png_sig_cmp(sig_buffer,                        // buffer
+                  0,                                 // start at the beginning
+                  RPG_GRAPHICS_PNG_SIGNATURE_BYTES)) // #signature bytes to check
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to png_sig_cmp(): %m, aborting\n")));
+
+    return NULL;
+  } // end IF
 
   png_structp png_ptr = NULL;
   // create the PNG loading context structure
@@ -1114,6 +1224,7 @@ RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
 
     return NULL;
   } // end IF
+  png_set_sig_bytes(png_ptr, RPG_GRAPHICS_PNG_SIGNATURE_BYTES);
 
   // *NOTE* beyond this point:
   // - cleanup "png_ptr"

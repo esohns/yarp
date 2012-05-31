@@ -9,6 +9,7 @@
 
 #include "rpg_common_plane.h"
 #include "rpg_common_terrain.h"
+#include "rpg_common_track.h"
 #include "rpg_common_climate.h"
 #include "rpg_common_timeofday.h"
 #include "rpg_common_ambientlighting.h"

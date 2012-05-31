@@ -24,6 +24,7 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_engine_defines.h>
 #include <rpg_engine_common.h>
 #include <rpg_engine_common_tools.h>
 
@@ -81,12 +82,12 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  std::string base_path;
+#ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -94,18 +95,18 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-f [VALUE]: total number of foes")  << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_FOES << ACE_TEXT("]") << ACE_TEXT(" (0: random)") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR("monster");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
@@ -114,8 +115,8 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-p [VALUE]: number of players") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_PLAYERS << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
@@ -141,12 +142,12 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  std::string base_path;
+#ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
 
   // init results
   numBattles_out = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
@@ -154,26 +155,26 @@ process_arguments(const int argc_in,
 
   magicDictionaryFilename_out = config_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   itemDictionaryFilename_out = config_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   monsterDictionaryFilename_out = config_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("monster");
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
@@ -299,7 +300,7 @@ do_battle(RPG_Player_Party_t& party_in,
                                    std::numeric_limits<unsigned int>::max());
   //entity.modes();
   //entity.actions();
-  entity.sprite = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CREATURE_SPRITE_FILE);
+  entity.sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
   entity.is_spawned = true;
   for (RPG_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
@@ -322,7 +323,7 @@ do_battle(RPG_Player_Party_t& party_in,
 
         break;
       } // end IF
-      monster_p = dynamic_cast<RPG_Monster*>(entity->character);
+      monster_p = dynamic_cast<RPG_Monster*>(entity.character);
       ACE_ASSERT(monster_p);
 
 //       // debug info
@@ -455,7 +456,7 @@ do_work(const std::string& magicDictionaryFilename_in,
          i < numPlayers_in;
          i++)
     {
-      player_p = RPG_Player_Common_Tools::generatePlayer();
+      player_p = RPG_Player::create();
       ACE_ASSERT(player_p);
 //       player_p->dump();
 
@@ -482,12 +483,17 @@ do_work(const std::string& magicDictionaryFilename_in,
       environment.terrain = TERRAIN_ANY;
       RPG_Monster_OrganizationSet_t organizations;
       organizations.insert(ORGANIZATION_ANY);
+      RPG_Monster_HitDice hit_dice;
+      hit_dice.typeDice = RPG_DICE_DIETYPE_INVALID;
+      hit_dice.numDice = 0;
+      hit_dice.modifier = 0;
       RPG_Monster_Encounter_t encounter;
       RPG_Monster_Common_Tools::generateRandomEncounter(numMonsterTypes_in,
                                                         numFoes_in,
                                                         alignment,
                                                         environment,
                                                         organizations,
+                                                        hit_dice,
                                                         encounter);
 
       // step5: FIGHT !
@@ -577,36 +583,36 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  std::string base_path;
+#ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
 
   // init configuration
   std::string itemDictionaryFilename = config_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   std::string magicDictionaryFilename = config_path;
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   std::string monsterDictionaryFilename = config_path;
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifndef CONFIGDIR
-  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_CHARACTER_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_CONFIG_SUB);
+  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("monster");
   monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
@@ -706,9 +712,9 @@ ACE_TMAIN(int argc,
 //   std::string working_time_string;
 //   ACE_Time_Value working_time;
 //   timer.elapsed_time(working_time);
-//   RPS_FLB_Common_Tools::Period2String(working_time,
-//                                       working_time_string);
-  //
+//   RPG_Common_Tools::Period2String(working_time,
+//                                   working_time_string);
+//
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
 //              working_time_string.c_str()));

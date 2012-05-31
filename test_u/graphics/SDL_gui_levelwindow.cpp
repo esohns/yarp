@@ -66,10 +66,10 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
    myHideFloor(false),
    myHideWalls(false),
    myWallBlend(NULL),
-   myView(std::make_pair(myEngine->getFloorPlan().size_x / 2,
-                         myEngine->getFloorPlan().size_y / 2)),
-   myHighlightBGPosition(std::make_pair(myEngine->getFloorPlan().size_x / 2,
-                                        myEngine->getFloorPlan().size_y / 2)),
+   myView(std::make_pair(myEngine->getSize().first / 2,
+                         myEngine->getSize().second / 2)),
+   myHighlightBGPosition(std::make_pair(myEngine->getSize().first / 2,
+                                        myEngine->getSize().second / 2)),
    myHighlightBG(NULL),
    myHighlightTile(NULL),
    myMinimapIsOn(SDL_GUI_DEF_GRAPHICS_MINIMAP_ISON)
@@ -354,6 +354,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_TextSize_t tile_text_size;
   RPG_Position_t map_position = std::make_pair(0, 0);
   RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
+  RPG_Engine_EntityID_t entity_id = 0;
 
   // "clear" map "window"
   clear();
@@ -597,7 +598,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   // pass 2
   RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
-  RPG_Engine_EntityGraphics_t entity_graphics = myEngine->getGraphics();
+//  RPG_Engine_EntityGraphics_t entity_graphics = myEngine->getGraphics();
   RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
   for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
@@ -670,21 +671,35 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // step4: objects
 
       // step5: creatures
-      creature_iterator = entity_graphics.find(current_map_position);
-      if (creature_iterator != entity_graphics.end())
+      entity_id = myEngine->hasEntity(current_map_position);
+      if (entity_id)
       {
-        // sanity check
-        ACE_ASSERT((*creature_iterator).second);
+        // invalidate bg
+        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->invalidateBG(entity_id);
 
-        // *NOTE*: creatures are drawn in the "middle" of the floor tile
-        RPG_Graphics_Surface::put((screen_position.first +
-                                   ((RPG_GRAPHICS_TILE_FLOOR_WIDTH - (*creature_iterator).second->w) / 2)),
-                                  (screen_position.second +
-                                   (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
-                                   (*creature_iterator).second->h),
-                                  *((*creature_iterator).second),
-                                  targetSurface);
+        // draw creature
+        SDL_Rect dirtyRegion;
+        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(entity_id,
+                                                             screen_position,
+                                                             targetSurface,
+                                                             dirtyRegion);
       } // end IF
+
+      //creature_iterator = entity_graphics.find(current_map_position);
+      //if (creature_iterator != entity_graphics.end())
+      //{
+      //  // sanity check
+      //  ACE_ASSERT((*creature_iterator).second);
+
+      //  // *NOTE*: creatures are drawn in the "middle" of the floor tile
+      //  RPG_Graphics_Surface::put((screen_position.first +
+      //                             ((RPG_GRAPHICS_TILE_FLOOR_WIDTH - (*creature_iterator).second->w) / 2)),
+      //                            (screen_position.second +
+      //                             (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
+      //                             (*creature_iterator).second->h),
+      //                            *((*creature_iterator).second),
+      //                            targetSurface);
+      //} // end IF
 
       // step6: effects
 
@@ -710,7 +725,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step8: ceiling
-      if (RPG_Engine_Common_Tools::hasCeiling(current_map_position, *myEngine) &&
+      if (RPG_Client_Common_Tools::hasCeiling(current_map_position, *myEngine) &&
           !myHideWalls)
       {
         RPG_Graphics_Surface::put(screen_position.first,
@@ -907,8 +922,9 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             {
               if (element == MAPELEMENT_DOOR)
               {
-                RPG_Map_Door_t door = myEngine->getDoor(player_action.position);
-                if (!door.is_open)
+                RPG_Map_DoorState door_state = myEngine->state(player_action.position, true);
+                if ((door_state == DOORSTATE_CLOSED) ||
+                    (door_state == DOORSTATE_LOCKED))
                   break;
               } // end IF
 
@@ -1147,7 +1163,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // set an appropriate cursor
-      RPG_Graphics_Cursor cursor_type = RPG_Engine_Common_Tools::getCursor(map_position, *myEngine);
+      RPG_Engine_EntityID_t entity_id = myEngine->getActive(true);
+      RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(map_position,
+                                                                           entity_id,
+                                                                           true,
+                                                                           SELECTIONMODE_NORMAL,
+                                                                           *myEngine,
+                                                                           true);
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         // *NOTE*: restore cursor BG first
@@ -1186,11 +1208,11 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         // closed door ? --> (try to) open it
         if (myEngine->getElement(map_position) == MAPELEMENT_DOOR)
         {
-          RPG_Map_Door_t door = myEngine->getDoor(map_position);
+          RPG_Map_DoorState door_state = myEngine->state(map_position, true);
 
           RPG_Engine_Action action;
-          action.command = (door.is_open ? COMMAND_DOOR_CLOSE
-                                         : COMMAND_DOOR_OPEN);
+          action.command = ((door_state == DOORSTATE_OPEN) ? COMMAND_DOOR_CLOSE
+                                                           : COMMAND_DOOR_OPEN);
           action.position = map_position;
           myEngine->action(myEngine->getActive(), action);
         } // end IF
@@ -1251,19 +1273,18 @@ SDL_GUI_LevelWindow::init()
   myDoorTiles.clear();
 
   // init tiles / position
-  RPG_Client_Common_Tools::initFloorEdges(myEngine->getFloorPlan(),
+  RPG_Client_Common_Tools::initFloorEdges(*myEngine,
                                           myCurrentFloorEdgeSet,
                                           myFloorEdgeTiles);
-  RPG_Client_Common_Tools::initWalls(myEngine->getFloorPlan(),
+  RPG_Client_Common_Tools::initWalls(*myEngine,
                                      myCurrentWallSet,
                                      myWallTiles);
-  RPG_Client_Common_Tools::initDoors(myEngine->getFloorPlan(),
-                                     *myEngine,
+  RPG_Client_Common_Tools::initDoors(*myEngine,
                                      myCurrentDoorSet,
                                      myDoorTiles);
 
   // init view
-  RPG_Map_Size_t size = myEngine->getSize();
+  RPG_Map_Size_t size = myEngine->getSize(true);
   setView((size.first  / 2),
           (size.second / 2));
 
@@ -1346,21 +1367,20 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
       ACE_ASSERT(parameters_in.size() == 1);
 
       RPG_Map_Position_t position = *static_cast<RPG_Map_Position_t*>(parameters_in.front());
-      const RPG_Map_Door_t& door = myEngine->getDoor(position);
-      ACE_ASSERT(door.position == position);
+      RPG_Map_DoorState door_state = myEngine->state(position, true);
 
       // change tile accordingly
       RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-      orientation = RPG_Engine_Common_Tools::getDoorOrientation(*myEngine,
+      orientation = RPG_Client_Common_Tools::getDoorOrientation(*myEngine,
                                                                 position);
       switch (orientation)
       {
         case ORIENTATION_HORIZONTAL:
-          myDoorTiles[position] = (door.is_open ? myCurrentDoorSet.horizontal_open
-          : myCurrentDoorSet.horizontal_closed); break;
+          myDoorTiles[position] = ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.horizontal_open
+                                                                  : myCurrentDoorSet.horizontal_closed); break;
         case ORIENTATION_VERTICAL:
-          myDoorTiles[position] = (door.is_open ? myCurrentDoorSet.vertical_open
-          : myCurrentDoorSet.vertical_closed); break;
+          myDoorTiles[position] = ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.vertical_open
+                                                                  : myCurrentDoorSet.vertical_closed); break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -1392,7 +1412,7 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
 
       return;
     }
-    case COMMAND_E2C_ENTITY_UPDATE:
+    case COMMAND_E2C_ENTITY_POSITION_UPDATE:
     {
       ACE_ASSERT(parameters_in.size() == 2);
 
@@ -1408,6 +1428,12 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
                                    getScreen());
 
       break;
+    }
+    case COMMAND_E2C_ENTITY_VISION_UPDATE:
+    {
+      ACE_ASSERT(parameters_in.size() == 2);
+
+      return;
     }
     case COMMAND_E2C_QUIT:
     {
@@ -1649,12 +1675,12 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       // adjust EAST wall opacity
       SDL_Surface* shaded_wall = NULL;
-      shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.east.surface,
+      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.east.surface,
                                                 static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
+                   ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return;
@@ -1663,12 +1689,12 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.east.surface = shaded_wall;
 
       // adjust WEST wall opacity
-      shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.west.surface,
+      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.west.surface,
                                                 static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
+                   ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return;
@@ -1677,12 +1703,12 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.west.surface = shaded_wall;
 
       // adjust SOUTH wall opacity
-      shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.south.surface,
+      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.south.surface,
                                                 static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
+                   ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return;
@@ -1691,12 +1717,12 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.south.surface = shaded_wall;
 
       // adjust NORTH wall opacity
-      shaded_wall = RPG_Graphics_Surface::shade(*myCurrentWallSet.north.surface,
+      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.north.surface,
                                                 static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
+                   ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return;
@@ -1796,13 +1822,13 @@ SDL_GUI_LevelWindow::initCeiling()
   } // end IF
 
   SDL_Surface* shaded_ceiling = NULL;
-  shaded_ceiling = RPG_Graphics_Surface::shade(*myCurrentCeilingTile,
+  shaded_ceiling = RPG_Graphics_Surface::alpha(*myCurrentCeilingTile,
                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::shade(%u), aborting\n"),
-               static_cast<Uint8> ((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+               ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
+               static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
     // clean up
     SDL_FreeSurface(myCurrentCeilingTile);
@@ -1867,7 +1893,7 @@ SDL_GUI_LevelWindow::initWallBlend(const bool& halfHeightWalls_in)
 }
 
 void
-SDL_GUI_LevelWindow::initMiniMap(RPG_Engine_Level* levelState_in)
+SDL_GUI_LevelWindow::initMiniMap(RPG_Engine* engine_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initMiniMap"));
 
@@ -1880,7 +1906,7 @@ SDL_GUI_LevelWindow::initMiniMap(RPG_Engine_Level* levelState_in)
   {
     minimap_window = new SDL_GUI_MinimapWindow(*this,
                                                offset,
-                                               levelState_in);
+                                               engine_in);
   }
   catch (...)
   {

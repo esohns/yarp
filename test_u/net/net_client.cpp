@@ -78,18 +78,18 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << NET_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << NET_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& serverHostname_out,
-                  unsigned long& connectionInterval_out,
+                  unsigned int& connectionInterval_out,
                   bool& logToFile_out,
                   unsigned short& serverPortNumber_out,
                   bool& stressTestServer_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
                   bool& useThreadPool_out,
-                  unsigned long& numThreadPoolThreads_out)
+                  unsigned int& numThreadPoolThreads_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -214,7 +214,7 @@ process_arguments(const int argc_in,
   return true;
 }
 
-const bool
+bool
 init_threadPool()
 {
   RPG_TRACE(ACE_TEXT("::init_threadPool"));
@@ -297,7 +297,7 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 //   signals_inout.push_back(SIGRTMAX);
 }
 
-const bool
+bool
 init_signalHandling(const std::vector<int>& signals_inout,
                     Net_Client_SignalHandler& eventHandler_in,
                     ACE_Sig_Handlers& signalHandlers_in)
@@ -395,11 +395,11 @@ tp_worker_func(void* args_in)
 
 void
 do_work(const std::string& serverHostname_in,
-        const unsigned long& connectionInterval_in,
+        const unsigned int& connectionInterval_in,
         const unsigned short& serverPortNumber_in,
         const bool& stressTestServer_in,
         const bool& useThreadPool_in,
-        const unsigned long& numThreadPoolThreads_in)
+        const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -446,8 +446,8 @@ do_work(const std::string& serverHostname_in,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config,
-                  0,
-                  sizeof(RPG_Net_ConfigPOD));
+                 0,
+                 sizeof(RPG_Net_ConfigPOD));
   config.clientPingInterval = 0; // servers do this...
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
@@ -574,7 +574,7 @@ do_work(const std::string& serverHostname_in,
     // *NOTE*: asynchronous writing to a closed socket triggers the
     // SIGPIPE signal (default action: abort).
     // --> as this doesn't use select(), guard against this (ignore the signal)
-    ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
+    ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
     ACE_Sig_Action original_action;
     no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -675,15 +675,15 @@ ACE_TMAIN(int argc,
 #endif
 
   // step1a set defaults
-  std::string serverHostname         = NET_CLIENT_DEF_SERVER_HOSTNAME;
-  unsigned long connectionInterval   = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
-  bool logToFile                     = false;
-  unsigned short serverPortNumber    = RPG_NET_DEF_LISTENING_PORT;
-  bool stressTestServer              = false;
-  bool traceInformation              = false;
-  bool printVersionAndExit           = false;
-  bool useThreadPool                 = NET_CLIENT_DEF_CLIENT_USES_TP;
-  unsigned long numThreadPoolThreads = NET_CLIENT_DEF_NUM_TP_THREADS;
+  std::string serverHostname        = NET_CLIENT_DEF_SERVER_HOSTNAME;
+  unsigned int connectionInterval   = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
+  bool logToFile                    = false;
+  unsigned short serverPortNumber   = RPG_NET_DEF_LISTENING_PORT;
+  bool stressTestServer             = false;
+  bool traceInformation             = false;
+  bool printVersionAndExit          = false;
+  bool useThreadPool                = NET_CLIENT_DEF_CLIENT_USES_TP;
+  unsigned int numThreadPoolThreads = NET_CLIENT_DEF_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -817,12 +817,12 @@ ACE_TMAIN(int argc,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-			 elapsed_time.real_time,
+			       elapsed_time.real_time,
              elapsed_time.user_time,
              elapsed_time.system_time,
              user_time_string.c_str(),
              system_time_string.c_str(),
-			 elapsed_rusage.ru_maxrss,
+			       elapsed_rusage.ru_maxrss,
              elapsed_rusage.ru_ixrss,
              elapsed_rusage.ru_idrss,
              elapsed_rusage.ru_isrss,

@@ -24,6 +24,9 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_engine_defines.h>
+
+#include <rpg_map_level.h>
 #include <rpg_map_common_tools.h>
 
 #include <rpg_dice.h>
@@ -61,16 +64,16 @@ print_usage(const std::string& programName_in)
   std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-  std::cout << ACE_TEXT("-m [FILE] : map (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT("-m [FILE] : map (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-p        : debug parser") << ACE_TEXT(" [") << MAP_PARSER_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s        : debug scanner") << ACE_TEXT(" [") << MAP_PARSER_DEF_DEBUG_SCANNER << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   bool& debugScanner_out,
@@ -91,8 +94,8 @@ process_arguments(const int argc_in,
   mapFile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -168,20 +171,11 @@ do_work(const bool& debugScanner_in,
 
   // step1: load map
   RPG_Map_t map;
-  if (!RPG_Map_Common_Tools::load(mapFile_in,
-                                  map,
-                                  debugScanner_in,
-                                  debugParser_in))
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
-               mapFile_in.c_str()));
-
-    return;
-  } // end IF
+  RPG_Map_Level::load(mapFile_in,
+                      map);
 
   // debug info
-  RPG_Map_Common_Tools::print(map);
+  RPG_Map_Level::print(map);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -258,8 +252,8 @@ ACE_TMAIN(int argc,
   std::string mapFile              = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   mapFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  mapFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  mapFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  mapFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  mapFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   bool traceInformation            = false;
   bool printVersionAndExit         = false;

@@ -26,6 +26,10 @@
 #include "rpg_item_commoditybeverage.h"
 #include "rpg_item_commoditylight.h"
 #include "rpg_item_commodityunion.h"
+#include "rpg_item_instance_common.h"
+
+#include <rpg_character_common.h>
+#include <rpg_character_offhand.h>
 
 #include <rpg_common.h>
 
@@ -55,9 +59,15 @@ class RPG_Item_Export RPG_Item_Common_Tools
 
   static bool isShield(const RPG_Item_ArmorType&); // armor type
 
+  static bool hasAbsoluteReach(const RPG_Item_WeaponType&); // weapon type
+
   // *TODO*: consider shape of the light
-  static unsigned char lightingItem2Radius(const RPG_Item_CommodityLight&, // lighting item type
-                                           const bool& = true);            // ambience is "bright" ?
+  static unsigned short lightingItem2Radius(const RPG_Item_CommodityLight&, // lighting item type
+                                            const bool& = true);            // ambience is "bright" ?
+
+  static void item2Slot(const RPG_Item_ID_t&,           // item id
+                        const RPG_Character_OffHand&,   // off-hand
+                        RPG_Character_EquipmentSlots&); // return value: possible slot(s)
 
  private:
   // safety measures

@@ -37,6 +37,8 @@
 class RPG_Map_Export RPG_Map_Common_Tools
 {
  public:
+  static void initStringConversionTables();
+
   static unsigned int distance(const RPG_Map_Position_t&,  // position 1
                                const RPG_Map_Position_t&); // position 2
   static unsigned int distanceMax(const RPG_Map_Position_t&,  // position 1
@@ -59,9 +61,10 @@ class RPG_Map_Export RPG_Map_Common_Tools
                            const RPG_Map_FloorPlan_t&);
   static bool roomsAreSquare(const RPG_Map_t&); // map
 
-  static bool hasLineOfSight(const RPG_Map_Position_t&,   // start position
-                             const RPG_Map_Position_t&,   // end position
-                             const RPG_Map_Positions_t&); // obstacles
+  static bool hasLineOfSight(const RPG_Map_Position_t&,  // start position
+                             const RPG_Map_Position_t&,  // end position
+                             const RPG_Map_Positions_t&, // obstacles
+                             const bool& = false);       // target can be an obstacle ?
 
   static void createFloorPlan(const unsigned int&,   // map dimension x
                               const unsigned int&,   // map dimension y

@@ -36,7 +36,7 @@ class RPG_Item_Export RPG_Item_Base
   virtual ~RPG_Item_Base();
 
   // what am I ?
-  const RPG_Item_Type getType() const;
+  const RPG_Item_Type& getType() const;
 
   virtual void dump() const;
 

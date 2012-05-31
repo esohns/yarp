@@ -60,10 +60,11 @@ class RPG_Player_Export RPG_Player_Player_Base
   virtual ~RPG_Player_Player_Base();
 
   // retrieve basic player character data
-  RPG_Character_Gender getGender() const;
+  const RPG_Character_Gender& getGender() const;
   const RPG_Character_Race_t& getRace() const;
   const RPG_Character_Class& getClass() const;
-  RPG_Character_OffHand getOffHand() const;
+  const RPG_Character_OffHand& getOffHand() const;
+  const RPG_Common_Size& getSize() const;
 
   unsigned int getExperience() const;
   // compute dynamically from class/XP
@@ -72,13 +73,24 @@ class RPG_Player_Export RPG_Player_Player_Base
   // access current equipment
   RPG_Player_Equipment& getEquipment();
 
+  // implement (part of) RPG_IPlayer
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                          const RPG_Combat_AttackSituation&) const;
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const;
-  virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const; // environment
+
+  // *NOTE*: return value unit is feet
+  virtual unsigned short getReach(unsigned short&, // return value: base range (if any)
+                                  bool&) const;    // return value: reach is absolute ?
+  virtual unsigned char getSpeed(const bool& = false,                                 // running ?
+                                 const RPG_Common_AmbientLighting& = AMBIENCE_BRIGHT, // environment
+                                 const RPG_Common_Terrain& = TERRAIN_ANY,             // terrain
+                                 const RPG_Common_Track& = TRACK_NONE) const;         // track
 
   virtual bool isPlayerCharacter() const;
+
   virtual void gainExperience(const unsigned int&); // XP
+
+
   unsigned int rest(const RPG_Common_Camp&, // type of rest
                     const unsigned int&);   // hours
   void defaultEquip();
@@ -132,6 +144,7 @@ class RPG_Player_Export RPG_Player_Player_Base
             const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
             const RPG_Item_List_t&);           // list of (carried) items
 
+  // implement (part of) RPG_IPlayer
   virtual signed char getShieldBonus() const;
 
   RPG_Character_Gender  myGender;
@@ -147,7 +160,8 @@ class RPG_Player_Export RPG_Player_Player_Base
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Player_Base& operator=(const RPG_Player_Player_Base&));
 
   unsigned int          myExperience;
-//  unsigned short int       mySize; // cm
+  RPG_Common_Size       mySize;
+
 //  unsigned short int       myWeight; // kg
 //  unsigned int             myAge; // years
 };

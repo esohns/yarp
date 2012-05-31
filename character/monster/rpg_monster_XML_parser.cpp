@@ -108,6 +108,44 @@ RPG_Monster_Dictionary_Type::monster(const RPG_Monster_PropertiesXML& monster_in
   myMonsterDictionary->insert(std::make_pair(monster_in.name, properties));
 }
 
+RPG_Monster_Size_Type::RPG_Monster_Size_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Size_Type::RPG_Monster_Size_Type"));
+
+  mySize.size = RPG_COMMON_SIZE_INVALID;
+  mySize.isTall = true;
+}
+
+void
+RPG_Monster_Size_Type::size(const RPG_Common_Size& size_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Size_Type::size"));
+
+  mySize.size = size_in;
+}
+
+void
+RPG_Monster_Size_Type::isTall(bool isTall_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Size_Type::isTall"));
+
+  mySize.isTall = isTall_in;
+}
+
+RPG_Monster_Size
+RPG_Monster_Size_Type::post_RPG_Monster_Size_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Size_Type::post_RPG_Monster_Size_Type"));
+
+  RPG_Monster_Size result = mySize;
+
+  // clear structure
+  mySize.size = RPG_COMMON_SIZE_INVALID;
+  mySize.isTall = true;
+
+  return result;
+}
+
 RPG_Monster_NaturalArmorClass_Type::RPG_Monster_NaturalArmorClass_Type()
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_NaturalArmorClass_Type::RPG_Monster_NaturalArmorClass_Type"));
@@ -1466,7 +1504,8 @@ RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type()
   RPG_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::RPG_Monster_PropertiesXML_Type"));
 
   myCurrentProperties.name.resize(0);
-  myCurrentProperties.size = RPG_COMMON_SIZE_INVALID;
+  myCurrentProperties.size.size = RPG_COMMON_SIZE_INVALID;
+  myCurrentProperties.size.isTall = true;
   myCurrentProperties.type.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentProperties.type.subTypes.clear();
   myCurrentProperties.hitDice.numDice = 0;
@@ -1518,7 +1557,7 @@ RPG_Monster_PropertiesXML_Type::name(const std::string& name_in)
 }
 
 void
-RPG_Monster_PropertiesXML_Type::size(const RPG_Common_Size& size_in)
+RPG_Monster_PropertiesXML_Type::size(const RPG_Monster_Size& size_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::size"));
 
@@ -1606,7 +1645,7 @@ RPG_Monster_PropertiesXML_Type::space(unsigned char space_in)
 }
 
 void
-RPG_Monster_PropertiesXML_Type::reach(unsigned char reach_in)
+RPG_Monster_PropertiesXML_Type::reach(unsigned short reach_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_PropertiesXML_Type::reach"));
 
@@ -1710,7 +1749,8 @@ RPG_Monster_PropertiesXML_Type::post_RPG_Monster_PropertiesXML_Type()
 
   // clear structure
   myCurrentProperties.name.resize(0);
-  myCurrentProperties.size = RPG_COMMON_SIZE_INVALID;
+  myCurrentProperties.size.size = RPG_COMMON_SIZE_INVALID;
+  myCurrentProperties.size.isTall = true;
   myCurrentProperties.type.metaType = RPG_COMMON_CREATUREMETATYPE_INVALID;
   myCurrentProperties.type.subTypes.clear();
   myCurrentProperties.hitDice.numDice = 0;

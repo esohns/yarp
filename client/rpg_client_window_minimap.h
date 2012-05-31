@@ -26,6 +26,7 @@
 #include <ace/Global_Macros.h>
 
 // forward declaration(s)
+class RPG_Client_Engine;
 class RPG_Engine;
 
 class RPG_Client_Window_MiniMap
@@ -37,18 +38,16 @@ class RPG_Client_Window_MiniMap
                             const RPG_Graphics_Offset_t&);     // offset
   virtual ~RPG_Client_Window_MiniMap();
 
-  // implement (part of) RPG_Graphics_IWindow
-  // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  void init(RPG_Client_Engine*, // engine
+            RPG_Engine*);       // (level) state
 
+  // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
                     const unsigned int& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
-
-  void init(RPG_Engine*); // (level) state handle
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
@@ -58,10 +57,11 @@ class RPG_Client_Window_MiniMap
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap(const RPG_Client_Window_MiniMap&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_MiniMap& operator=(const RPG_Client_Window_MiniMap&));
 
-  RPG_Engine*  myEngine;
+  RPG_Client_Engine* myClient;
+  RPG_Engine*        myEngine;
 
-  SDL_Surface* myBG;
-  SDL_Surface* mySurface;
+  SDL_Surface*       myBG;
+  SDL_Surface*       mySurface;
 };
 
 #endif // RPG_GRAPHICS_MINIMAP_H

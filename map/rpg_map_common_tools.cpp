@@ -24,6 +24,7 @@
 
 #include "rpg_map_common_tools.h"
 
+#include "rpg_map_doorstate.h"
 #include "rpg_map_data.h"
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_pathfinding_tools.h"
@@ -40,6 +41,20 @@
 #include <iostream>
 #include <stack>
 #include <iterator>
+
+// init statics
+RPG_Map_DoorStateToStringTable_t RPG_Map_DoorStateHelper::myRPG_Map_DoorStateToStringTable;
+
+void
+RPG_Map_Common_Tools::initStringConversionTables()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::initStringConversionTables"));
+
+  RPG_Map_DoorStateHelper::init();
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("RPG_Map_Common_Tools: initialized string conversion tables...\n")));
+}
 
 void
 RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
@@ -1427,6 +1442,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
 
   RPG_Map_AreaListConstIterator_t zonelist_iter;
   RPG_Map_AreaConstIterator_t zone_iter;
+
   // step0: add room walls
   for (zonelist_iter = boundaries_in.begin();
        zonelist_iter != boundaries_in.end();
@@ -1435,15 +1451,15 @@ RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
          zone_iter != (*zonelist_iter).end();
          zone_iter++)
       level_out.walls.insert(*zone_iter);
+
   // step1: add the doors
-//   unsigned long index = 0;
-//   unsigned long index2 = 0;
+//   unsigned int index = 0;
+//   unsigned int index2 = 0;
   RPG_Map_Door_t door;
+  door.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                 std::numeric_limits<unsigned int>::max());
   door.outside = DIRECTION_INVALID;
-  door.is_open = false;
-  door.is_locked = false;
-  door.is_broken = false;
-  door.position = std::make_pair(0, 0);
+  door.state = DOORSTATE_CLOSED; // *TODO*
   RPG_Map_AreaConstIterator_t doors_iterator;
   RPG_Map_AreaListConstIterator_t rooms_iter;
   rooms_iter = rooms_in.begin();
@@ -1859,33 +1875,31 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
   // init result(s)
   area_out.clear();
 
-  unsigned int x, y, delta;
+  unsigned int left_x, x, y, i;
   bool done;
   for (unsigned int r = 0;
        r <= radius_in;
        r++)
   {
-    delta = 0;
     if (!fillArea_in &&
         (r != radius_in))
       continue;
 
-    if (radius_in == 0)
+    if (r == 0)
     {
       area_out.insert(center_in);
       continue;
     } // end IF
 
     // compute leftmost x
-    x = center_in.first;
-    if (x < r)
-      delta = r - x;
-    x -= ((x == 0) ? 0 : (delta ? delta : r));
+    left_x = center_in.first;
+    left_x -= ((left_x == 0) ? 0 : ((left_x < r) ? left_x : r));
+    x = left_x;
     // --> up
     done = false;
-    for (delta = 0, y = center_in.second;
-         delta <= r;
-         delta++, y--)
+    for (i = 0, y = center_in.second;
+         i <= r;
+         i++, y--)
     {
       if (y == 0)
         done = true;
@@ -1896,10 +1910,13 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
         break;
     } // end FOR
     // --> right
-    done = false;
-    for (delta = 0, x++;
-         delta < (2 * r);
-         delta++, x++)
+    if (done)
+      done = false;
+    else
+      y++;
+    for (x++;
+         x <= (center_in.first + r); // *WARNING*: no overflow checking here !
+         x++)
     {
       if (x == (size_in.first - 1))
         done = true;
@@ -1910,10 +1927,13 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
         break;
     } // end FOR
     // --> down
-    done = false;
-    for (delta = 0, y++;
-         delta < (2 * r);
-         delta++, y++)
+    if (done)
+      done = false;
+    else
+      x--;
+    for (y++;
+         y <= (center_in.second + r); // *WARNING*: no overflow checking here !
+         y++)
     {
       if (y == (size_in.second - 1))
         done = true;
@@ -1924,10 +1944,13 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
         break;
     } // end FOR
     // --> left
-    done = false;
-    for (delta = 0, x--;
-         delta < (2 * r);
-         delta++, x--)
+    if (done)
+      done = false;
+    else
+      y--;
+    for (x--;
+         x >= left_x;
+         x--)
     {
       if (x == 0)
         done = true;
@@ -1938,12 +1961,30 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
         break;
     } // end FOR
     // --> up
-    done = false;
-    for (delta = 0, y--;
-         delta < (r - 1);
-         delta++, y--)
+    if (done)
+      done = false;
+    else
+      x++;
+    for (i = 0, y--;
+         i <= (r - 1);
+         i++, y--)
+    {
+      if (y == (center_in.second + 1))
+        done = true;
+
       area_out.insert(std::make_pair(x, y));
-    ACE_ASSERT(y == (center_in.second - 1));
+
+      if (done)
+        break;
+    } // end FOR
+    if (done)
+    {
+      done = false;
+      y--;
+    } // end IF
+    else
+      y++;
+    ACE_ASSERT(y == center_in.second);
   } // end FOR
 }
 
@@ -2117,8 +2158,7 @@ RPG_Map_Common_Tools::isAdjacent(const RPG_Map_Position_t& position1_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isAdjacent"));
 
-  return ((::abs(static_cast<int>(position1_in.first - position2_in.first)) +
-           ::abs(static_cast<int>(position1_in.second - position2_in.second))) == 1);
+  return (distanceMax(position1_in, position2_in) == 1);
 }
 
 std::string
@@ -2647,16 +2687,17 @@ RPG_Map_Common_Tools::roomsAreSquare(const RPG_Map_t& map_in)
 }
 
 bool
-RPG_Map_Common_Tools::hasLineOfSight(const RPG_Map_Position_t& start_in,
-                                     const RPG_Map_Position_t& end_in,
-                                     const RPG_Map_Positions_t& obstacles_in)
+RPG_Map_Common_Tools::hasLineOfSight(const RPG_Map_Position_t& source_in,
+                                     const RPG_Map_Position_t& target_in,
+                                     const RPG_Map_Positions_t& obstacles_in,
+                                     const bool& allowTargetIsObstacle_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::hasLineOfSight"));
 
   // step1: compute shortest path (== line-of-sight)
   RPG_Map_PositionList_t path;
-  RPG_Map_Pathfinding_Tools::findPath(start_in,
-                                      end_in,
+  RPG_Map_Pathfinding_Tools::findPath(source_in,
+                                      target_in,
                                       path);
 
   // step2: path blocked at some point ?
@@ -2665,6 +2706,12 @@ RPG_Map_Common_Tools::hasLineOfSight(const RPG_Map_Position_t& start_in,
   std::set_intersection(obstacles_in.begin(), obstacles_in.end(),
                         line_of_sight.begin(), line_of_sight.end(),
                         std::inserter(blocked, blocked.begin()));
+
+  // *NOTE*: if target_in is an obstacle itself, the view (!) is NOT blocked
+  // as long as there are no other obstacles in the path...
+  if (allowTargetIsObstacle_in &&
+      (obstacles_in.find(target_in) != obstacles_in.end()))
+    return (blocked.size() == 1);
 
   return blocked.empty();
 }

@@ -54,8 +54,11 @@ class RPG_Common_Export RPG_Common_Tools
   // *NOTE*: use for encumbrance
   static float getSizeModifierLoad(const RPG_Common_Size&,
                                    const bool& = true); // is biped ?
-  static unsigned char sizeToReach(const RPG_Common_Size&);
-  static unsigned char environment2Radius(const RPG_Common_Environment&);
+  static unsigned short sizeToReach(const RPG_Common_Size&,
+                                    const bool& = true); // is tall ? : long
+  static unsigned short environment2Radius(const RPG_Common_Environment&);
+  static float terrain2SpeedModifier(const RPG_Common_Terrain& = TERRAIN_ANY, // terrain
+                                     const RPG_Common_Track& = TRACK_NONE);   // track type
 
   // use this to "pretty-print" enumerated (i.e. XML-) values
   // e.g. "SUBCLASS_MONK" --> "Monk"

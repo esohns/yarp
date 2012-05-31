@@ -41,6 +41,51 @@
 
 #include "rpg_map_XML_tree.h"
 
+// RPG_Map_DoorState_XMLTree_Type
+// 
+
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Map_DoorState_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (const RPG_Map_DoorState_XMLTree_Type& v,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Map_DoorState_XMLTree_Type& RPG_Map_DoorState_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Map_DoorState_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
 // RPG_Map_Position_XMLTree_Type
 // 
 
@@ -82,6 +127,80 @@ y (const y_type& x)
 
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
+
+// RPG_Map_DoorState_XMLTree_Type
+//
+
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Map_DoorState_XMLTree_Type_convert ();
+}
+
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Map_DoorState_XMLTree_Type_convert ();
+}
+
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (const ::std::string& s,
+                                const ::xercesc::DOMElement* e,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Map_DoorState_XMLTree_Type_convert ();
+}
+
+RPG_Map_DoorState_XMLTree_Type* RPG_Map_DoorState_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Map_DoorState_XMLTree_Type (*this, f, c);
+}
+
+RPG_Map_DoorState_XMLTree_Type::value RPG_Map_DoorState_XMLTree_Type::
+_xsd_RPG_Map_DoorState_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Map_DoorState_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Map_DoorState_XMLTree_Type_indexes_,
+                    _xsd_RPG_Map_DoorState_XMLTree_Type_indexes_ + 4,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Map_DoorState_XMLTree_Type_indexes_ + 4 || _xsd_RPG_Map_DoorState_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Map_DoorState_XMLTree_Type::
+_xsd_RPG_Map_DoorState_XMLTree_Type_literals_[4] =
+{
+  "DOORSTATE_OPEN",
+  "DOORSTATE_CLOSED",
+  "DOORSTATE_LOCKED",
+  "DOORSTATE_BROKEN"
+};
+
+const RPG_Map_DoorState_XMLTree_Type::value RPG_Map_DoorState_XMLTree_Type::
+_xsd_RPG_Map_DoorState_XMLTree_Type_indexes_[4] =
+{
+  ::RPG_Map_DoorState_XMLTree_Type::DOORSTATE_BROKEN,
+  ::RPG_Map_DoorState_XMLTree_Type::DOORSTATE_CLOSED,
+  ::RPG_Map_DoorState_XMLTree_Type::DOORSTATE_LOCKED,
+  ::RPG_Map_DoorState_XMLTree_Type::DOORSTATE_OPEN
+};
 
 // RPG_Map_Position_XMLTree_Type
 //
@@ -203,6 +322,18 @@ operator!= (const RPG_Map_Position_XMLTree_Type& x, const RPG_Map_Position_XMLTr
 #include <ostream>
 
 ::std::ostream&
+operator<< (::std::ostream& o, RPG_Map_DoorState_XMLTree_Type::value i)
+{
+  return o << RPG_Map_DoorState_XMLTree_Type::_xsd_RPG_Map_DoorState_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Map_DoorState_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
 operator<< (::std::ostream& o, const RPG_Map_Position_XMLTree_Type& i)
 {
   o << ::std::endl << "x: " << i.x ();
@@ -217,6 +348,25 @@ operator<< (::std::ostream& o, const RPG_Map_Position_XMLTree_Type& i)
 #include <ostream>
 #include <xsd/cxx/tree/error-handler.hxx>
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Map_DoorState_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Map_DoorState_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Map_DoorState_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
 
 void
 operator<< (::xercesc::DOMElement& e, const RPG_Map_Position_XMLTree_Type& i)
@@ -248,6 +398,15 @@ operator<< (::xercesc::DOMElement& e, const RPG_Map_Position_XMLTree_Type& i)
   }
 }
 
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Map_DoorState_XMLTree_Type_convert ();
+}
+
 RPG_Map_Position_XMLTree_Type::
 RPG_Map_Position_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                ::xml_schema::flags f,
@@ -274,6 +433,13 @@ parse (::xml_schema::istream< ACE_InputCDR >& s,
     s >> r;
     this->y_.set (r);
   }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Map_DoorState_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
 }
 
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&

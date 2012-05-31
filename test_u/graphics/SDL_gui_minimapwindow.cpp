@@ -39,13 +39,13 @@
 SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& parent_in,
                                              // *NOTE*: offset doesn't include any border(s) !
                                              const RPG_Graphics_Offset_t& offset_in,
-                                             RPG_Engine_Level* levelState_in)
+                                             RPG_Engine* engine_in)
  : inherited(WINDOW_MINIMAP, // type
              parent_in,      // parent
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
-   myEngine(levelState_in),
+   myEngine(engine_in),
    myBG(NULL),
    mySurface(NULL)
 {

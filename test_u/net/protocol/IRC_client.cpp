@@ -68,22 +68,22 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string path;
-#ifdef CONFIGDIR
-  path = CONFIGDIR;
+  std::string config_path;
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                        true);
 #else
-  path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+#endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-#ifndef CONFIGDIR
+  std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_CONFIG_SUB);
 #endif
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
@@ -93,7 +93,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << IRC_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& configFile_out,
@@ -102,26 +102,25 @@ process_arguments(const int argc_in,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
                   bool& useThreadPool_out,
-                  unsigned long& numThreadPoolThreads_out)
+                  unsigned int& numThreadPoolThreads_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                        true);
 #else
   config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+#endif // #ifdef BASEDIR
 
   // init configuration
-#ifndef CONFIGDIR
   configFile_out = config_path;
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  configFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_CONFIG_SUB);
 #endif
-  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   configFile_out += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
 
   debugParser_out          = false;
@@ -223,7 +222,7 @@ process_arguments(const int argc_in,
   return true;
 }
 
-const bool
+bool
 init_threadPool()
 {
   RPG_TRACE(ACE_TEXT("::init_threadPool"));
@@ -306,7 +305,7 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 //   signals_inout.push_back(SIGRTMAX);
 }
 
-const bool
+bool
 init_signalHandling(const std::vector<int>& signals_inout,
                     IRC_Client_SignalHandler& eventHandler_in,
                     ACE_Sig_Handlers& signalHandlers_in)
@@ -408,7 +407,7 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
         const std::string& serverHostname_in,
         const unsigned short& serverPortNumber_in,
         const bool& useThreadPool_in,
-        const unsigned long& numThreadPoolThreads_in)
+        const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -468,15 +467,15 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
     // debug info
     ACE_TCHAR buf[BUFSIZ];
     ACE_OS::memset(buf,
-                    0,
-                    (BUFSIZ * sizeof(ACE_TCHAR)));
+                   0,
+                   (BUFSIZ * sizeof(ACE_TCHAR)));
     if (remote_address.addr_to_string(buf,
                                       (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
       ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
     ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
-                buf));
+               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
+               buf));
 
     return;
   } // end IF
@@ -787,28 +786,27 @@ ACE_TMAIN(int argc,
 
   // step1a: process commandline arguments
   std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                        true);
 #else
   config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+#endif // #ifdef BASEDIR
 
-  std::string configFile             = config_path;
-#ifndef CONFIGDIR
+  std::string configFile = config_path;
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CONFIG_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  configFile += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configFile += ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_CONFIG_SUB);
 #endif
-  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   configFile += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
 
-  bool debugParser                   = false;
-  bool logToFile                     = false;
-  bool traceInformation              = false;
-  bool printVersionAndExit           = false;
-  bool useThreadPool                 = IRC_CLIENT_DEF_CLIENT_USES_TP;
-  unsigned long numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
+  bool debugParser                  = false;
+  bool logToFile                    = false;
+  bool traceInformation             = false;
+  bool printVersionAndExit          = false;
+  bool useThreadPool                = IRC_CLIENT_DEF_CLIENT_USES_TP;
+  unsigned int numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
   if (!(process_arguments(argc,
                           argv,
                           configFile,

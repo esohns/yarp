@@ -23,6 +23,8 @@
 
 #include "rpg_client_exports.h"
 
+#include "rpg_client_common.h"
+
 #include <rpg_engine_common.h>
 
 #include <rpg_player.h>
@@ -32,6 +34,7 @@
 
 #include <string>
 
+RPG_Client_Export void update_equipment(const RPG_Client_GTK_CBData_t&);
 RPG_Client_Export void update_character_profile(const RPG_Player&, GladeXML*);
 RPG_Client_Export void update_entity_profile(const RPG_Engine_Entity&, GladeXML*);
 RPG_Client_Export void reset_entity_profile(GladeXML*);
@@ -63,6 +66,9 @@ G_MODULE_EXPORT gint map_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer
 G_MODULE_EXPORT gint map_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint join_game_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint part_game_clicked_GTK_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint equip_clicked_GTK_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint item_toggled_GTK_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint rest_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint server_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint server_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
 //   gint do_SDLEventLoop_GTK_cb(gpointer);

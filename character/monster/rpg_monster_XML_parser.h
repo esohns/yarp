@@ -30,6 +30,22 @@
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
+
+class RPG_Monster_Export RPG_Monster_Size_Type
+ : public RPG_Monster_Size_Type_pskel
+{
+ public:
+  RPG_Monster_Size_Type();
+
+//   virtual void pre();
+  virtual void size(const RPG_Common_Size&);
+  virtual void isTall(bool);
+  virtual RPG_Monster_Size post_RPG_Monster_Size_Type();
+
+ private:
+  RPG_Monster_Size mySize;
+};
+
 class RPG_Monster_Export RPG_Monster_NaturalArmorClass_Type
  : public RPG_Monster_NaturalArmorClass_Type_pskel
 {
@@ -413,7 +429,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type
 
 //   virtual void pre();
   virtual void name(const std::string&);
-  virtual void size(const RPG_Common_Size&);
+  virtual void size(const RPG_Monster_Size&);
   virtual void type(const RPG_Common_CreatureType&);
   virtual void hitDice(const RPG_Dice_Roll&);
   virtual void initiative(signed char);
@@ -424,7 +440,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type
   virtual void specialAttack(const RPG_Monster_SpecialAttackProperties&);
   virtual void specialAbility(const RPG_Monster_SpecialAbilityProperties&);
   virtual void space(unsigned char);
-  virtual void reach(unsigned char);
+  virtual void reach(unsigned short);
   virtual void saves(const RPG_Monster_SavingThrowModifiers&);
   virtual void attributes(const RPG_Character_Attributes&);
   virtual void skills(const RPG_Character_Skills&);

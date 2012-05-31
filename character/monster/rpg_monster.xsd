@@ -7,25 +7,25 @@
             attributeFormDefault="unqualified">
 
   <!-- include chance_dice schema -->
-  <xsd:include schemaLocation="../../chance/dice/rpg_dice.xsd"/>
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
   <!-- include common schema -->
-  <xsd:include schemaLocation="../../common/rpg_common.xsd"/>
+  <xsd:include schemaLocation="rpg_common.xsd"/>
   <!-- include common environment schema -->
-  <xsd:include schemaLocation="../../common/rpg_common_environment.xsd"/>
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
   <!-- include magic schema -->
-  <xsd:include schemaLocation="../../magic/rpg_magic.xsd"/>
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
   <!-- include item schema -->
-  <xsd:include schemaLocation="../../item/rpg_item.xsd"/>
+  <xsd:include schemaLocation="rpg_item.xsd"/>
   <!-- include combat schema -->
-  <xsd:include schemaLocation="../../combat/rpg_combat.xsd"/>
+  <xsd:include schemaLocation="rpg_combat.xsd"/>
   <!-- include character schema -->
-  <!--<xsd:include schemaLocation="../rpg_character.xsd"/>-->
+  <!--<xsd:include schemaLocation="rpg_character.xsd"/>-->
  
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_dice.xsd"/> -->
 <!--   import item schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/> -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_item.xsd"/> -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -33,7 +33,13 @@
     </xsd:documentation>
   </xsd:annotation>
 
-  <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
+  <xsd:complexType name="RPG_Monster_Size_Type">
+    <xsd:sequence>
+      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="isTall" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
   <xsd:complexType name="RPG_Monster_NaturalArmorClass_Type">
     <xsd:sequence>
       <xsd:element name="normal" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
@@ -272,7 +278,7 @@
   <xsd:complexType name="RPG_Monster_PropertiesXML_Type">
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="size" type="RPG_Monster_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Common_CreatureType_Type" minOccurs="1" maxOccurs="1"/>
 <!--       <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="hitDice" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
@@ -284,7 +290,7 @@
       <xsd:element name="specialAttack" type="RPG_Monster_SpecialAttackProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="specialAbility" type="RPG_Monster_SpecialAbilityProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="space" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="reach" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="reach" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="saves" type="RPG_Monster_SavingThrowModifiers_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="attributes" type="RPG_Character_Attributes_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="skills" type="RPG_Character_Skills_Type" minOccurs="0" maxOccurs="1"/>

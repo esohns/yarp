@@ -66,7 +66,12 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
   // Construct the parser.
   //
   ::xml_schema::string_pimpl                     string_p;
+
   RPG_Common_Size_Type                           size_p;
+  ::xml_schema::boolean_pimpl                    bool_p;
+  RPG_Monster_Size_Type                          size_p2;
+  size_p2.parsers(size_p,
+                  bool_p);
 
   RPG_Common_CreatureMetaType_Type               metaType_p;
   RPG_Common_CreatureSubType_Type                subType_p;
@@ -100,7 +105,6 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
 
   RPG_Monster_WeaponTypeUnion_Type               weaponUnion_p;
   RPG_Common_Condition_Type                      condition_p;
-  ::xml_schema::boolean_pimpl                    bool_p;
   RPG_Monster_SpecialDefensePreCondition_Type    specialDefensePreCondition_p;
   specialDefensePreCondition_p.parsers(weaponUnion_p,
                                        condition_p,
@@ -270,8 +274,8 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
                                      spellProperties_p,
                                      rangedProperties_p);
 
-//   unsigned_int_pimpl                      space_p;
-//   unsigned_int_pimpl                      reach_p;
+//  ::xml_schema::unsigned_int_pimpl               space_p;
+//  ::xml_schema::unsigned_short_pimpl             unsigned_short_p;
   RPG_Monster_SavingThrowModifiers_Type          savingThrowModifiers_p;
   savingThrowModifiers_p.parsers(byte_p,
                                  byte_p,
@@ -304,7 +308,7 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
                         time_p,
                         lighting_p,
                         bool_p);
-  RPG_Monster_Organization_Type        organization_p;
+  RPG_Monster_Organization_Type                  organization_p;
   RPG_Dice_ValueRange_Type                       range_p;
   range_p.parsers(int_p,
                   int_p);
@@ -333,7 +337,7 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
 //   unsigned_int_pimpl                      levelAdjustment_p;
   RPG_Monster_PropertiesXML_Type                 propertiesXML_p;
   propertiesXML_p.parsers(string_p,
-                          size_p,
+                          size_p2,
                           type_p,
                           roll_p,
                           byte_p,
@@ -344,7 +348,7 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
                           specialAttack_p,
                           specialAbilityProperties_p,
                           unsigned_byte_p,
-                          unsigned_byte_p,
+                          unsigned_short_p,
                           savingThrowModifiers_p,
                           attributes_p,
                           skills_p,
@@ -497,7 +501,7 @@ RPG_Monster_Dictionary::dump() const
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Monster (\"%s\"):\nSize: %s\nType: %s\nHit Dice: %s\nInitiative: %d\nSpeed: %d ft/round\nArmor Class (normal/touch/flat-footed): %d / %d / %d\nAttacks:\n-------\n%sSpace: %d ft\nReach: %d ft\nSaves (fortitude/reflex/will): %d / %d / %d\nAttributes:\n-----------\n%sSkills:\n-------\n%sFeats:\n------\n%sEnvironment: %s\nOrganizations:\n--------------\n%sChallenge Rating: %d\nTreasure Modifier: %d\nAlignment: %s\nAdvancement:\n------------\n%sLevel Adjustment: %d\n"),
                (iterator->first).c_str(),
-               RPG_Common_SizeHelper::RPG_Common_SizeToString((iterator->second).size).c_str(),
+               RPG_Common_SizeHelper::RPG_Common_SizeToString((iterator->second).size.size).c_str(),
                RPG_Common_Tools::creatureTypeToString((iterator->second).type).c_str(),
                RPG_Dice_Common_Tools::rollToString((iterator->second).hitDice).c_str(),
                (iterator->second).initiative,

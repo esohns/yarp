@@ -44,7 +44,8 @@ RPG_Sound_Type::RPG_Sound_Type()
   RPG_TRACE(ACE_TEXT("RPG_Sound_Type::RPG_Sound_Type"));
 
   myCurrentSound.category = RPG_SOUND_CATEGORY_INVALID;
-  myCurrentSound.event = RPG_SOUND_EVENT_INVALID;
+  myCurrentSound.sound_event = RPG_SOUND_EVENT_INVALID;
+  myCurrentSound.volume = 0;
   myCurrentSound.file.clear();
   myCurrentSound.interval = 0;
 }
@@ -56,11 +57,18 @@ void RPG_Sound_Type::category(const RPG_Sound_Category& category_in)
   myCurrentSound.category = category_in;
 }
 
-void RPG_Sound_Type::event(const RPG_Sound_Event& event_in)
+void RPG_Sound_Type::sound_event(const RPG_Sound_Event& event_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Type::event"));
 
-  myCurrentSound.event = event_in;
+  myCurrentSound.sound_event = event_in;
+}
+
+void RPG_Sound_Type::volume(const unsigned char volume_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Type::volume"));
+
+  myCurrentSound.volume = volume_in;
 }
 
 void RPG_Sound_Type::file(const ::std::string& file_in)
@@ -85,7 +93,8 @@ RPG_Sound RPG_Sound_Type::post_RPG_Sound_Type()
 
   // clear structure
   myCurrentSound.category = RPG_SOUND_CATEGORY_INVALID;
-  myCurrentSound.event = RPG_SOUND_EVENT_INVALID;
+  myCurrentSound.sound_event = RPG_SOUND_EVENT_INVALID;
+  myCurrentSound.volume = 0;
   myCurrentSound.file.clear();
   myCurrentSound.interval = 0;
 
@@ -117,7 +126,7 @@ void RPG_Sound_Dictionary_Type::sound(const RPG_Sound& sound_in)
 
   RPG_Sound_t sound = sound_in;
 
-  myDictionary->insert(std::make_pair(sound.event, sound));
+  myDictionary->insert(std::make_pair(sound.sound_event, sound));
 }
 
 void RPG_Sound_Dictionary_Type::post_RPG_Sound_Dictionary_Type()

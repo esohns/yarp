@@ -9,15 +9,14 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="scripts">
       <UniqueIdentifier>{67ce5c66-18f4-4601-98e0-2a62da8353f2}</UniqueIdentifier>
     </Filter>
     <Filter Include="XML">
       <UniqueIdentifier>{7a70749c-9429-40f3-90fd-125b98c10807}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{d44b8cdb-7bc4-4eb2-b628-f9f91f5109c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -37,9 +36,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_engine_incl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_engine_iwindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_engine_level.h">
@@ -70,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_engine_iclient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -105,5 +104,10 @@
     <CXX_Tree_Mapping_Rule Include="rpg_engine.xsd">
       <Filter>XML</Filter>
     </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

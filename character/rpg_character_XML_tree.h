@@ -94,7 +94,7 @@ class RPG_Character_Check_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "../common/rpg_common_XML_tree.h"
+#include "rpg_common_XML_tree.h"
 
 class RPG_Character_Export RPG_Character_Gender_XMLTree_Type: public ::xml_schema::string
 {

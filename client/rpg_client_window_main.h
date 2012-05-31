@@ -22,6 +22,7 @@
 #define RPG_CLIENT_WINDOW_MAIN_H
 
 #include "rpg_client_exports.h"
+#include "rpg_client_iwindow.h"
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_cursor.h>
@@ -46,7 +47,8 @@ class RPG_Engine;
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Client_Export RPG_Client_WindowMain
- : public RPG_Graphics_TopLevel
+ : public RPG_Graphics_TopLevel,
+   public RPG_Client_IWindow
 {
  public:
   RPG_Client_WindowMain(const RPG_Graphics_Size_t&,                  // size
@@ -55,16 +57,17 @@ class RPG_Client_Export RPG_Client_WindowMain
                         const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
   virtual ~RPG_Client_WindowMain();
 
-  void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
-                  const unsigned int& = 0,  // offset x (top-left = [0,0])
-                  const unsigned int& = 0); // offset y (top-left = [0,0])
-
   // initialize different hotspots
   // *WARNING*: call this AFTER setScreen() !
   void init(RPG_Client_Engine*,              // engine handle
             const bool&,                     // do automatic edge scroll ?
             RPG_Engine*,                     // (level) state handle
             const RPG_Graphics_MapStyle_t&); // map style
+
+  // implement RPG_Client_IWindow
+  virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
+                          const unsigned int& = 0,  // offset x (top-left = [0,0])
+                          const unsigned int& = 0); // offset y (top-left = [0,0])
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)

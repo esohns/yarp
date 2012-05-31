@@ -7,16 +7,15 @@
             attributeFormDefault="unqualified">
 
   <!-- include dice schema -->
-  <xsd:include schemaLocation="../chance/dice/rpg_dice.xsd"/>
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
   <!-- include common schema -->
-  <xsd:include schemaLocation="../common/rpg_common.xsd"/>
+  <xsd:include schemaLocation="rpg_common.xsd"/>
   <!-- include magic schema -->
-  <xsd:include schemaLocation="../magic/rpg_magic.xsd"/>
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
  
-<!--             xmlns:rpg_chance_dice="urn:rpg_chance_dice"> -->
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!-- import chance_dice schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="rpg_chance_dice.xsd"/> -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_dice.xsd"/> -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -260,9 +259,11 @@
 
   <xsd:simpleType name="RPG_Item_ArmorCategory_Type">
     <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ARMORCATEGORY_GLOVES"/>
       <xsd:enumeration value="ARMORCATEGORY_LIGHT"/>
       <xsd:enumeration value="ARMORCATEGORY_MEDIUM"/>
       <xsd:enumeration value="ARMORCATEGORY_HEAVY"/>
+      <xsd:enumeration value="ARMORCATEGORY_HELMET"/>
       <xsd:enumeration value="ARMORCATEGORY_SHIELD"/>
     </xsd:restriction>
   </xsd:simpleType>

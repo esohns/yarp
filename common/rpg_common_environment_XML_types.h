@@ -52,6 +52,7 @@
 //
 class RPG_Common_Plane_Type_pskel;
 class RPG_Common_Terrain_Type_pskel;
+class RPG_Common_Track_Type_pskel;
 class RPG_Common_Climate_Type_pskel;
 class RPG_Common_TimeOfDay_Type_pskel;
 class RPG_Common_AmbientLighting_Type_pskel;
@@ -91,6 +92,18 @@ class RPG_Common_Export RPG_Common_Terrain_Type_pskel: public virtual ::xml_sche
 
   virtual RPG_Common_Terrain
   post_RPG_Common_Terrain_Type () = 0;
+};
+
+class RPG_Common_Export RPG_Common_Track_Type_pskel: public virtual ::xml_schema::string_pskel
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual RPG_Common_Track
+  post_RPG_Common_Track_Type () = 0;
 };
 
 class RPG_Common_Export RPG_Common_Climate_Type_pskel: public virtual ::xml_schema::string_pskel

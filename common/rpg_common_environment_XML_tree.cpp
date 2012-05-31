@@ -131,6 +131,51 @@ operator= (value v)
 }
 
 
+// RPG_Common_Track_XMLTree_Type
+// 
+
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Common_Track_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (const RPG_Common_Track_XMLTree_Type& v,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Common_Track_XMLTree_Type& RPG_Common_Track_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Common_Track_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
 // RPG_Common_Climate_XMLTree_Type
 // 
 
@@ -566,11 +611,11 @@ _xsd_RPG_Common_Terrain_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_Terrain_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_ + 34,
+                    _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_ + 37,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_ + 34 || _xsd_RPG_Common_Terrain_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_ + 37 || _xsd_RPG_Common_Terrain_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -579,12 +624,13 @@ _xsd_RPG_Common_Terrain_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_Terrain_XMLTree_Type::
-_xsd_RPG_Common_Terrain_XMLTree_Type_literals_[34] =
+_xsd_RPG_Common_Terrain_XMLTree_Type_literals_[37] =
 {
-  "TERRAIN_DESERTS",
-  "TERRAIN_FORESTS",
+  "TERRAIN_DESERT_SANDY",
+  "TERRAIN_FOREST",
   "TERRAIN_HILLS",
-  "TERRAIN_MARSHES",
+  "TERRAIN_JUNGLE",
+  "TERRAIN_MOOR",
   "TERRAIN_MOUNTAINS",
   "TERRAIN_PLAINS",
   "TERRAIN_PLANE_INNER_AIR",
@@ -612,19 +658,22 @@ _xsd_RPG_Common_Terrain_XMLTree_Type_literals_[34] =
   "TERRAIN_PLANE_TRANSITIVE_SHADOW",
   "TERRAIN_PLANE_TRANSITIVE_ANY",
   "TERRAIN_SETTLEMENT",
+  "TERRAIN_SWAMP",
+  "TERRAIN_TUNDRA_FROZEN",
   "TERRAIN_UNDER_GROUND",
   "TERRAIN_UNDER_WATER",
   "TERRAIN_ANY"
 };
 
 const RPG_Common_Terrain_XMLTree_Type::value RPG_Common_Terrain_XMLTree_Type::
-_xsd_RPG_Common_Terrain_XMLTree_Type_indexes_[34] =
+_xsd_RPG_Common_Terrain_XMLTree_Type_indexes_[37] =
 {
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_ANY,
-  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_DESERTS,
-  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_FORESTS,
+  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_DESERT_SANDY,
+  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_FOREST,
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_HILLS,
-  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_MARSHES,
+  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_JUNGLE,
+  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_MOOR,
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_MOUNTAINS,
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_PLAINS,
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_PLANE_INNER_AIR,
@@ -652,8 +701,86 @@ _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_[34] =
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_PLANE_TRANSITIVE_ETHERAL,
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_PLANE_TRANSITIVE_SHADOW,
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_SETTLEMENT,
+  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_SWAMP,
+  ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_TUNDRA_FROZEN,
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_UNDER_GROUND,
   ::RPG_Common_Terrain_XMLTree_Type::TERRAIN_UNDER_WATER
+};
+
+// RPG_Common_Track_XMLTree_Type
+//
+
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (const ::xercesc::DOMElement& e,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Common_Track_XMLTree_Type_convert ();
+}
+
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Common_Track_XMLTree_Type_convert ();
+}
+
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (const ::std::string& s,
+                               const ::xercesc::DOMElement* e,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Common_Track_XMLTree_Type_convert ();
+}
+
+RPG_Common_Track_XMLTree_Type* RPG_Common_Track_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Common_Track_XMLTree_Type (*this, f, c);
+}
+
+RPG_Common_Track_XMLTree_Type::value RPG_Common_Track_XMLTree_Type::
+_xsd_RPG_Common_Track_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_Track_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Common_Track_XMLTree_Type_indexes_,
+                    _xsd_RPG_Common_Track_XMLTree_Type_indexes_ + 5,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Common_Track_XMLTree_Type_indexes_ + 5 || _xsd_RPG_Common_Track_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Common_Track_XMLTree_Type::
+_xsd_RPG_Common_Track_XMLTree_Type_literals_[5] =
+{
+  "TRACK_NONE",
+  "TRACK_HIGHWAY",
+  "TRACK_ROAD",
+  "TRACK_TRAIL",
+  "TRACK_ANY"
+};
+
+const RPG_Common_Track_XMLTree_Type::value RPG_Common_Track_XMLTree_Type::
+_xsd_RPG_Common_Track_XMLTree_Type_indexes_[5] =
+{
+  ::RPG_Common_Track_XMLTree_Type::TRACK_ANY,
+  ::RPG_Common_Track_XMLTree_Type::TRACK_HIGHWAY,
+  ::RPG_Common_Track_XMLTree_Type::TRACK_NONE,
+  ::RPG_Common_Track_XMLTree_Type::TRACK_ROAD,
+  ::RPG_Common_Track_XMLTree_Type::TRACK_TRAIL
 };
 
 // RPG_Common_Climate_XMLTree_Type
@@ -1093,6 +1220,18 @@ operator<< (::std::ostream& o, const RPG_Common_Terrain_XMLTree_Type& i)
 }
 
 ::std::ostream&
+operator<< (::std::ostream& o, RPG_Common_Track_XMLTree_Type::value i)
+{
+  return o << RPG_Common_Track_XMLTree_Type::_xsd_RPG_Common_Track_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Common_Track_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
 operator<< (::std::ostream& o, RPG_Common_Climate_XMLTree_Type::value i)
 {
   return o << RPG_Common_Climate_XMLTree_Type::_xsd_RPG_Common_Climate_XMLTree_Type_literals_[i];
@@ -1202,6 +1341,25 @@ operator<< (::xercesc::DOMAttr& a, const RPG_Common_Terrain_XMLTree_Type& i)
 void
 operator<< (::xml_schema::list_stream& l,
             const RPG_Common_Terrain_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Common_Track_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Common_Track_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Common_Track_XMLTree_Type& i)
 {
   l << static_cast< const ::xml_schema::string& > (i);
 }
@@ -1363,6 +1521,15 @@ RPG_Common_Terrain_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
   _xsd_RPG_Common_Terrain_XMLTree_Type_convert ();
 }
 
+RPG_Common_Track_XMLTree_Type::
+RPG_Common_Track_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_Track_XMLTree_Type_convert ();
+}
+
 RPG_Common_Climate_XMLTree_Type::
 RPG_Common_Climate_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
                                  ::xml_schema::flags f,
@@ -1476,6 +1643,13 @@ operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
 ::xsd::cxx::tree::ostream< ACE_OutputCDR >&
 operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
             const RPG_Common_Terrain_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Track_XMLTree_Type& x)
 {
   return s << static_cast< const ::xml_schema::string& > (x);
 }

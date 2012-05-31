@@ -7,62 +7,63 @@
                  xsi:schemaLocation="urn:rpg rpg_sound.xsd">
   <sound>
     <category>CATEGORY_MUSIC_AMBIENT</category>
-    <event>EVENT_MAIN_TITLE</event>
+    <sound_event>EVENT_MAIN_TITLE</sound_event>
+    <volume>8</volume>
     <file>music_main_title.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_BELL</event>
+    <sound_event>EVENT_BELL</sound_event>
     <file>sound_bell.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_CONDITION_ILL</event>
+    <sound_event>EVENT_CONDITION_ILL</sound_event>
     <file>sound_condition_ill.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_CONDITION_WEAK</event>
+    <sound_event>EVENT_CONDITION_WEAK</sound_event>
     <file>sound_condition_weak.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_COUNTING</event>
+    <sound_event>EVENT_COUNTING</sound_event>
     <file>sound_counting.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_DOOR_CLOSE</event>
+    <sound_event>EVENT_DOOR_CLOSE</sound_event>
     <file>sound_door_close.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_DOOR_OPEN</event>
+    <sound_event>EVENT_DOOR_OPEN</sound_event>
     <file>sound_door_open.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_FOUNTAIN</event>
+    <sound_event>EVENT_FOUNTAIN</sound_event>
     <file>sound_fountain.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_SWORD_HIT</event>
+    <sound_event>EVENT_SWORD_HIT</sound_event>
     <file>sound_sword_hit.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_SWORD_MISS</event>
+    <sound_event>EVENT_SWORD_MISS</sound_event>
     <file>sound_sword_miss.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_WALK</event>
+    <sound_event>EVENT_WALK</sound_event>
     <file>sound_walk.ogg</file>
   </sound>
   <sound>
     <category>CATEGORY_EFFECT_ONESHOT</category>
-    <event>EVENT_XP_LEVELUP</event>
+    <sound_event>EVENT_XP_LEVELUP</sound_event>
     <file>sound_xp_levelup.ogg</file>
   </sound>
 </soundDictionary>

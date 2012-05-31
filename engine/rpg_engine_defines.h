@@ -27,6 +27,7 @@
 #define RPG_ENGINE_DEF_MAX_QUEUE_SLOTS      100
 #define RPG_ENGINE_DEF_EVENT_PEEK_INTERVAL  50 // ms
 
+#define RPG_ENGINE_DEF_SPEED_MODIFIER       20 // --> 1/20 speed <==> normal
 #define RPG_ENGINE_ROUND_INTERVAL           6 // s
 #define RPG_ENGINE_FEET_PER_SQUARE          5
 
@@ -37,6 +38,7 @@
 #define RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC   10
 #define RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY 0.3F
 #define RPG_ENGINE_DEF_AI_MAX_SPAWNED       20
+#define RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY 0.5F
 
 #define RPG_ENGINE_DEF_PLANE                PLANE_MATERIAL
 #define RPG_ENGINE_DEF_TERRAIN              TERRAIN_UNDER_GROUND
@@ -50,8 +52,6 @@
 #define RPG_ENGINE_DEF_LEVEL_NAME           "default level"
 #define RPG_ENGINE_DEF_LEVEL_FILE           "default_level"
 #define RPG_ENGINE_LEVEL_FILE_EXT           ".level"
-
-// CONFIGDIR-specific
-#define RPG_ENGINE_DEF_CONFIG_SUB           "engine"
+#define RPG_ENGINE_ENTITY_FILE_EXT          ".entity"
 
 #endif

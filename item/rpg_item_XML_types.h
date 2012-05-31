@@ -94,11 +94,11 @@ class RPG_Item_DictionaryXML_Type_pskel;
 #include "rpg_item_incl.h"
 #include "rpg_item_common.h"
 
-#include "../chance/dice/rpg_dice_XML_types.h"
+#include "rpg_dice_XML_types.h"
 
-#include "../common/rpg_common_XML_types.h"
+#include "rpg_common_XML_types.h"
 
-#include "../magic/rpg_magic_XML_types.h"
+#include "rpg_magic_XML_types.h"
 
 class RPG_Item_Export RPG_Item_Type_Type_pskel: public virtual ::xml_schema::string_pskel
 {

@@ -21,6 +21,4 @@
 #ifndef RPG_COMBAT_DEFINES_H
 #define RPG_COMBAT_DEFINES_H
 
-#define RPG_COMBAT_DEF_ADJACENT_DISTANCE 5 // feet
-
 #endif

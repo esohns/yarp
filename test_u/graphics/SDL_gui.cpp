@@ -31,7 +31,7 @@
 #include <rpg_client_defines.h>
 
 #include <rpg_engine_defines.h>
-#include <rpg_engine_level.h>
+#include <rpg_engine.h>
 #include <rpg_engine_common_tools.h>
 
 #include <rpg_map_defines.h>
@@ -94,15 +94,16 @@ struct SDL_video_config_t
   int    screen_height;
   int    screen_colordepth; // bits/pixel
 //   Uint32 screen_flags;
-  bool   fullScreen;
   bool   doubleBuffer;
+  bool   useOpenGL;
+  bool   fullScreen;
 };
 
 static SDL_Surface*     screen     = NULL;
 static ACE_Thread_Mutex hover_lock;
 static unsigned long    hover_time = 0;
 
-const bool
+bool
 do_initVideo(const std::string& graphicsDirectory_in,
              const SDL_video_config_t& config_in)
 {
@@ -151,6 +152,7 @@ do_initVideo(const std::string& graphicsDirectory_in,
                                               config_in.screen_height,
                                               config_in.screen_colordepth,
                                               config_in.doubleBuffer,
+                                              config_in.useOpenGL,
                                               config_in.fullScreen);
 
   return (screen != NULL);
@@ -270,18 +272,14 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
-#else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
-  std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  std::string base_path;
+#ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -293,48 +291,41 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-  std::cout << ACE_TEXT("-c ([FILE]): character profile (*.xml)") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-c ([FILE]): character profile (*") << ACE_TEXT(RPG_PLAYER_PROFILE_EXT) << ACE_TEXT(") [") << path.c_str() << ACE_TEXT("]") << std::endl;
   path = base_data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("graphics");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+#else
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
-#ifndef DATADIR
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif
   std::cout << ACE_TEXT("-d [DIR]   : graphics directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-f         : debug") << ACE_TEXT(" [\"") << SDL_GUI_DEF_DEBUG << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]  : items dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -343,16 +334,16 @@ print_usage(const std::string& programName_in)
   path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-  std::cout << ACE_TEXT("-p ([FILE]): map (*.txt)") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT("-p ([FILE]): map (*") << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [") << path.c_str() << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s         : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES) << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x         : do NOT validate XML") << ACE_TEXT(" [") << SDL_GUI_DEF_VALIDATE_XML << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& magicDictionary_out,
@@ -370,61 +361,49 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
-#else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
-  std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  std::string base_path;
+#ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   magicDictionary_out = config_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   itemsDictionary_out = config_path;
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   debugMode_out = SDL_GUI_DEF_DEBUG;
 
   directory_out = base_data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  directory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#else
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
-#ifndef DATADIR
-  directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif
 
   graphicsDictionary_out = config_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -442,8 +421,8 @@ process_arguments(const int argc_in,
   mapFile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   slideShowMode_out = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   traceInformation_out = false;
@@ -840,9 +819,9 @@ do_slideshow(const std::string& graphicsDirectory_in,
 
 void
 do_UI(RPG_Engine_Entity& entity_in,
-      RPG_Engine_Level& engine_in,
+      RPG_Engine* engine_in,
       RPG_Graphics_MapStyle_t& mapStyle_in,
-      const RPG_Map_t& map_in,
+      const RPG_Engine_Level_t& level_in,
       const RPG_Map_FloorPlan_Config_t& mapConfig_in,
       SDL_GUI_MainWindow* mainWindow_in)
 {
@@ -857,12 +836,13 @@ do_UI(RPG_Engine_Entity& entity_in,
   RPG_Graphics_Position_t mouse_position;
   unsigned int map_index = 1;
   std::ostringstream converter;
-  RPG_Map_t current_map = map_in;
+  RPG_Engine_Level_t current_level;
   do
   {
     window = NULL;
     need_redraw = false;
-    mouse_position = std::make_pair(0, 0);
+    mouse_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                    std::numeric_limits<unsigned int>::max());
     force_redraw = false;
 
     // step1: retrieve next event
@@ -918,23 +898,22 @@ do_UI(RPG_Engine_Entity& entity_in,
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("generating level map...\n")));
 
-            RPG_Map_Common_Tools::create(std::string(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME)),
-                                         mapConfig_in,
-                                         current_map);
+            RPG_Engine_Level::create(mapConfig_in,
+                                     current_level);
 
-            if (engine_in.isRunning())
-              engine_in.stop();
+            if (engine_in->isRunning())
+              engine_in->stop();
 
-            entity_in.position = current_map.start;
+            entity_in.position = current_level.map.start;
 
             SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->getChild(WINDOW_MAP));
             ACE_ASSERT(map_window);
             // *NOTE*: triggers a center/redraw/refresh of the map window !
             // --> but as we're not using the client engine, it doesn't redraw...
-            engine_in.init(map_window,
-                           current_map);
+            engine_in->init(map_window,
+                            current_level);
             map_window->init();
-            engine_in.start();
+            engine_in->start();
 
             // center map window...
             try
@@ -956,7 +935,7 @@ do_UI(RPG_Engine_Entity& entity_in,
           }
           case SDLK_p:
           {
-            RPG_Map_Common_Tools::print(current_map);
+            RPG_Engine_Level::print(current_level);
 
             break;
           }
@@ -974,21 +953,13 @@ do_UI(RPG_Engine_Entity& entity_in,
             std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
 #endif
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-            dump_path += current_map.name;
+            dump_path += current_level.level_meta.name;
             dump_path += ACE_TEXT_ALWAYS_CHAR("_");
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
             converter << map_index++;
             dump_path += converter.str();
-            dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-            if (!RPG_Map_Common_Tools::save(dump_path,
-                                            current_map))
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to RPG_Map_Common_Tools::save(\"%s\"), aborting\n"),
-                         dump_path.c_str()));
-
-              return;
-            } // end IF
+            dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+            engine_in->save(dump_path);
 
             break;
           }
@@ -1162,45 +1133,19 @@ do_work(const mode_t& mode_in,
         const std::string& graphicsDictionary_in,
         const bool& debugMode_in,
         const std::string& graphicsDirectory_in,
-        const unsigned long& cacheSize_in,
+        const std::string& schemaRepository_in,
+        const unsigned int& cacheSize_in,
         const bool& validateXML_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
-  RPG_Dice::init();
-  RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Common_Tools::initStringConversionTables();
-  RPG_Magic_Common_Tools::init();
-  RPG_Item_Common_Tools::initStringConversionTables();
-  RPG_Character_Common_Tools::init();
-  RPG_Graphics_Common_Tools::initStringConversionTables();
+  std::string empty;
+  RPG_Engine_Common_Tools::init(magicDictionary_in,
+                                itemsDictionary_in,
+                                empty);
 
-  // step1a: init magic dictionary
-  try
-  {
-    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionary_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
-
-    return;
-  }
-  // step1a: init item dictionary
-  try
-  {
-    RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemsDictionary_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
-
-    return;
-  }
-  // step1b: init graphics dictionary
+  // step1a: init graphics dictionary
   try
   {
     RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in,
@@ -1214,7 +1159,7 @@ do_work(const mode_t& mode_in,
     return;
   }
 
-  // step1c: init Video
+  // step1b: init Video
   if (!do_initVideo(graphicsDirectory_in,
                     videoConfig_in))
   {
@@ -1223,7 +1168,7 @@ do_work(const mode_t& mode_in,
 
     return;
   } // end IF
-  // step1d: init graphics directory, cache, fonts, ...
+  // step1c: init graphics directory, cache, fonts, ...
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
                                   cacheSize_in);
 
@@ -1255,34 +1200,24 @@ do_work(const mode_t& mode_in,
     case MODE_FLOOR_PLAN:
     {
       // step1: create/load initial level map
-      RPG_Map_t map;
+      RPG_Engine_Level_t level;
       if (map_in.empty())
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating level map...\n")));
 
-        RPG_Map_Common_Tools::create(std::string(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_NAME)),
-                                     mapConfig_in,
-                                     map);
+        RPG_Engine_Level::create(mapConfig_in,
+                                 level);
       } // end IF
       else
       {
-        if (!RPG_Map_Common_Tools::load(map_in,
-                                        map,
-                                        false,
-                                        false))
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to RPG_Map_Common_Tools::load(\"%s\"), aborting\n"),
-                     map_in.c_str()));
-
-          return;
-        } // end IF
+        level = RPG_Engine_Level::load(map_in,
+                                       schemaRepository_in);
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("loaded map (\"%s\":\n%s\n"),
                    map_in.c_str(),
-                   RPG_Map_Common_Tools::info(map).c_str()));
+                   RPG_Map_Level::info(level.map).c_str()));
       } // end ELSE
 //       RPG_Map_Common_Tools::print(map);
 
@@ -1298,37 +1233,36 @@ do_work(const mode_t& mode_in,
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
 
       // step4: create/load initial entity
-      std::string base_data_path;
-#ifdef DATADIR
-      base_data_path = DATADIR;
-#else
-      base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
-      std::string schemaRepository = base_data_path;
-      schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
-      schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-      schemaRepository += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_CONFIG_SUB);
+      std::string base_path;
+#ifdef BASEDIR
+      base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
 #endif
+      std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                        true);
+
+      std::string schemaRepository = config_path;
+      schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+      schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
+#endif
+
       RPG_Engine_Entity entity;
       entity.actions.clear();
       entity.character = NULL;
-      entity.graphic = NULL;
-      entity.position = std::make_pair(0, 0);
+      entity.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                       std::numeric_limits<unsigned int>::max());
       entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
       if (entity_in.empty())
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating entity...\n")));
 
-        entity = RPG_Engine_Common_Tools::createEntity(true);
+        entity = RPG_Engine_Common_Tools::createEntity();
       } // end IF
       else
       {
         entity = RPG_Engine_Common_Tools::loadEntity(entity_in,
-                                                     schemaRepository,
-                                                     true);
+                                                     schemaRepository);
         if (!entity.character)
         {
           ACE_DEBUG((LM_ERROR,
@@ -1343,10 +1277,10 @@ do_work(const mode_t& mode_in,
                    entity_in.c_str(),
                    RPG_Engine_Common_Tools::info(entity).c_str()));
       } // end ELSE
-      entity.position = map.start;
+      entity.position = level.map.start;
 
       // step5: init sub-windows (level window, hotspots, minimap, ...)
-      RPG_Engine_Level level_engine;
+      RPG_Engine level_engine;
       mainWindow.init(&level_engine,
                       mapStyle,
                       debugMode_in);
@@ -1368,7 +1302,7 @@ do_work(const mode_t& mode_in,
       // *NOTE*: triggers a center/draw/refresh...
       // --> but as we're not using the client engine, it doesn't redraw...
       level_engine.init(map_window,
-                        map);
+                        level);
       map_window->init(mapStyle,
                        debugMode_in);
       level_engine.start();
@@ -1407,9 +1341,9 @@ do_work(const mode_t& mode_in,
 
       // step8: run interface
       do_UI(entity,
-            level_engine,
+            &level_engine,
             mapStyle,
-            map,
+            level,
             mapConfig_in,
             &mainWindow);
 
@@ -1515,66 +1449,54 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string base_data_path;
-#ifdef DATADIR
-  base_data_path = DATADIR;
-#else
-  base_data_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef DATADIR
-  std::string config_path;
-#ifdef CONFIGDIR
-  config_path = CONFIGDIR;
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
-#endif // #ifdef CONFIGDIR
+  std::string base_path;
+#ifdef BASEDIR
+  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
+#endif
+  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                    true);
+  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
+                                                                       false);
 
   std::string magicDictionary = config_path;
   magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  magicDictionary += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   magicDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
   std::string itemsDictionary = config_path;
   itemsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  itemsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  itemsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  itemsDictionary += ACE_TEXT_ALWAYS_CHAR("item");
   itemsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   itemsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
   bool debugMode = SDL_GUI_DEF_DEBUG;
 
   std::string graphicsDirectory = base_data_path;
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef DATADIR
-  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
 #endif
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
-#ifndef DATADIR
-  graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
-#endif
 
   unsigned int cacheSize = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
 
   std::string graphicsDictionary = base_data_path;
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef CONFIGDIR
-  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB);
-#else
-  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_CONFIG_SUB);
-#endif
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  graphicsDictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
   mode_t mode = SDL_GUI_DEF_MODE;
+
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   std::string entityFilename = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
 #else
@@ -1583,14 +1505,16 @@ ACE_TMAIN(int argc,
   entityFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
   entityFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   std::string mapFilename = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
 #else
   std::string mapFilename = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
 #endif
   mapFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP);
-  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+
   bool slideShowMode = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
   bool traceInformation = false;
   bool printVersionAndExit = false;
@@ -1614,8 +1538,9 @@ ACE_TMAIN(int argc,
   video_config.screen_height     = SDL_GUI_DEF_VIDEO_H;
   video_config.screen_colordepth = SDL_GUI_DEF_VIDEO_BPP;
 //   video_config.screen_flags      = ;
-  video_config.fullScreen        = SDL_GUI_DEF_VIDEO_FULLSCREEN;
   video_config.doubleBuffer      = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
+  video_config.useOpenGL         = SDL_GUI_DEF_VIDEO_USE_OPENGL;
+  video_config.fullScreen        = SDL_GUI_DEF_VIDEO_FULLSCREEN;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -1670,13 +1595,19 @@ ACE_TMAIN(int argc,
   } // end IF
   mode = (slideShowMode ? MODE_RANDOM_IMAGES : mode);
 
+  std::string schemaRepository = config_path;
+#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
+#endif
+
   // step1c: set correct trace level
   //ACE_Trace::start_tracing();
   if (!traceInformation)
   {
     u_long process_priority_mask = (LM_SHUTDOWN |
                                     //LM_INFO |  // <-- DISABLE trace messages !
-                                    LM_DEBUG |
+                                    //LM_DEBUG |
                                     LM_INFO |
                                     LM_NOTICE |
                                     LM_WARNING |
@@ -1782,6 +1713,7 @@ ACE_TMAIN(int argc,
           graphicsDictionary,
           debugMode,
           graphicsDirectory,
+          schemaRepository,
           cacheSize,
           validateXML);
   timer.stop();

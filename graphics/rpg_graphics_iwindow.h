@@ -23,6 +23,7 @@
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
+#include "rpg_graphics_SDL_tools.h"
 
 #include <SDL/SDL.h>
 
@@ -38,12 +39,15 @@ class RPG_Graphics_IWindow
 
   virtual RPG_Graphics_WindowType getType() const = 0;
   virtual RPG_Graphics_Size_t getSize(const bool& = false) const = 0; // top-level ?
-  virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
+  //virtual void setView(const RPG_Graphics_Position_t&) = 0; // view (map coordinates !)
+  //virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
 
+  virtual void clear(const Uint32& = RPG_Graphics_SDL_Tools::CLR32_BLACK) = 0;
   virtual void draw(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])
                     const unsigned int& = 0) = 0; // offset y (top-left = [0,0])
   virtual void refresh(SDL_Surface* = NULL) = 0; // target surface (default: screen)
+  virtual RPG_Graphics_IWindow* child(const RPG_Graphics_WindowType&) = 0; // type
 
   virtual void clip(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])

@@ -3677,11 +3677,11 @@ _xsd_RPG_Item_ArmorCategory_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Item_ArmorCategory_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_,
-                    _xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_ + 4,
+                    _xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_ + 6,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_ + 4 || _xsd_RPG_Item_ArmorCategory_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Item_ArmorCategory_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -3690,18 +3690,22 @@ _xsd_RPG_Item_ArmorCategory_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Item_ArmorCategory_XMLTree_Type::
-_xsd_RPG_Item_ArmorCategory_XMLTree_Type_literals_[4] =
+_xsd_RPG_Item_ArmorCategory_XMLTree_Type_literals_[6] =
 {
+  "ARMORCATEGORY_GLOVES",
   "ARMORCATEGORY_LIGHT",
   "ARMORCATEGORY_MEDIUM",
   "ARMORCATEGORY_HEAVY",
+  "ARMORCATEGORY_HELMET",
   "ARMORCATEGORY_SHIELD"
 };
 
 const RPG_Item_ArmorCategory_XMLTree_Type::value RPG_Item_ArmorCategory_XMLTree_Type::
-_xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_[4] =
+_xsd_RPG_Item_ArmorCategory_XMLTree_Type_indexes_[6] =
 {
+  ::RPG_Item_ArmorCategory_XMLTree_Type::ARMORCATEGORY_GLOVES,
   ::RPG_Item_ArmorCategory_XMLTree_Type::ARMORCATEGORY_HEAVY,
+  ::RPG_Item_ArmorCategory_XMLTree_Type::ARMORCATEGORY_HELMET,
   ::RPG_Item_ArmorCategory_XMLTree_Type::ARMORCATEGORY_LIGHT,
   ::RPG_Item_ArmorCategory_XMLTree_Type::ARMORCATEGORY_MEDIUM,
   ::RPG_Item_ArmorCategory_XMLTree_Type::ARMORCATEGORY_SHIELD

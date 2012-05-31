@@ -24,7 +24,10 @@
 #include <rpg_config.h>
 #endif
 
+#include <rpg_engine_defines.h>
+
 #include <rpg_map_common.h>
+#include <rpg_map_level.h>
 #include <rpg_map_common_tools.h>
 #include <rpg_map_pathfinding_tools.h>
 
@@ -66,13 +69,13 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
-  std::cout << ACE_TEXT("-p [FILE] : floor plan (*.txt)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT("-p [FILE] : level plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   bool& buildCorridors_out,
@@ -94,7 +97,7 @@ process_arguments(const int argc_in,
 #endif
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
@@ -175,15 +178,22 @@ do_work(const bool& buildCorridors_in,
 
   // step1: load floor plan
   RPG_Map_t map;
-  RPG_Map_Common_Tools::load(filename_in,
-                             map,
-                             false,
-                             debugParser_in);
+  if (!RPG_Map_Level::load(filename_in,
+                           map,
+                           false,
+                           debugParser_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to load floor plan \"%s\", aborting\n"),
+               filename_in.c_str()));
+
+    return;
+  } // end IF
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded floor plan %s\n"),
              filename_in.c_str(),
-             RPG_Map_Common_Tools::info(map).c_str()));
+             RPG_Map_Level::info(map).c_str()));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
@@ -421,7 +431,7 @@ ACE_TMAIN(int argc,
 #endif
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan += ACE_TEXT_ALWAYS_CHAR(PATH_FINDER_DEF_FLOOR_PLAN);
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_EXT);
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   bool traceInformation    = false;
   bool printVersionAndExit = false;

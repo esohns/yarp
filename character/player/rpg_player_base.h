@@ -22,11 +22,12 @@
 #define RPG_PLAYER_BASE_H
 
 #include "rpg_player_exports.h"
+#include "rpg_iplayer.h"
 #include "rpg_player_inventory.h"
 #include "rpg_player_equipment.h"
 
-#include <rpg_combat_attacksituation.h>
-#include <rpg_combat_defensesituation.h>
+//#include <rpg_combat_attacksituation.h>
+//#include <rpg_combat_defensesituation.h>
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 #include <rpg_common_environment_incl.h>
@@ -62,6 +63,7 @@ base class of all PCs, NPCs and monsters
   @author Erik Sohns <erik.sohns@web.de>
  */
 class RPG_Player_Export RPG_Player_Base
+ : public RPG_IPlayer
 {
  public:
   virtual ~RPG_Player_Base();
@@ -91,7 +93,6 @@ class RPG_Player_Export RPG_Player_Base
   short int getNumHitPoints() const;
 
   unsigned int getWealth() const;
-  RPG_Common_Size getSize() const;
 
   const RPG_Magic_SpellTypes_t& getKnownSpells() const;
   const RPG_Magic_Spells_t& getSpells() const;
@@ -99,20 +100,11 @@ class RPG_Player_Export RPG_Player_Base
   const RPG_Player_Inventory& getInventory() const;
 //   const RPG_Character_Equipment getEquipment() const;
 
-  virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
-                                                         const RPG_Combat_AttackSituation&) const = 0;
-  virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
-  virtual unsigned char getSpeed(const RPG_Common_AmbientLighting&) const = 0; // environment
-
-  // get a hint if this is a PC/NPC
-  virtual bool isPlayerCharacter() const = 0;
   // sustain some damage (melee, magic, ...)
   void sustainDamage(const RPG_Combat_Damage&); // damage
-  // we just got wiser...
-  virtual void gainExperience(const unsigned int&) = 0; // XP
 
+  // implement (part of) RPG_IPlayer
   virtual void status() const;
-
   virtual void dump() const;
 
  protected:
@@ -123,7 +115,6 @@ class RPG_Player_Export RPG_Player_Base
 				          const RPG_Character_Skills_t&,     // skills
 				          const RPG_Character_Feats_t&,      // base feats
 				          const RPG_Character_Abilities_t&,  // base abilities
-				          const RPG_Common_Size&,            // (default) size
 				          const unsigned short int&,         // max HP
 				          const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
 				          // current status
@@ -142,7 +133,6 @@ class RPG_Player_Export RPG_Player_Base
             const RPG_Character_Skills_t&,     // skills
             const RPG_Character_Feats_t&,      // base feats
             const RPG_Character_Abilities_t&,  // base abilities
-            const RPG_Common_Size&,            // (default) size
             const unsigned short int&,         // max HP
             const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
             // current status
@@ -152,10 +142,7 @@ class RPG_Player_Export RPG_Player_Base
             const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
             const RPG_Item_List_t&);           // list of (carried) items
 
-  virtual signed char getShieldBonus() const = 0;
-
   unsigned int               myWealth;
-  RPG_Common_Size            mySize;
 
   RPG_Magic_SpellTypes_t     myKnownSpells;
   RPG_Magic_Spells_t         mySpells;

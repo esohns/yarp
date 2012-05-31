@@ -50,6 +50,7 @@
 
 // Forward declarations
 //
+class RPG_Monster_Size_Type_pskel;
 class RPG_Monster_NaturalArmorClass_Type_pskel;
 class RPG_Monster_SpecialPropertyTypeUnion_Type_pskel;
 class RPG_Monster_SpecialBaseProperties_Type_pskel;
@@ -86,26 +87,81 @@ class RPG_Monster_Dictionary_Type_pskel;
 
 #include "rpg_XMLSchema_XML_types.h"
 
+#include <rpg_magic_incl.h>
 #include <rpg_item_weapontype.h>
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 #include <rpg_common_environment_incl.h>
-#include <rpg_character_incl.h>
-#include <rpg_magic_incl.h>
 #include <rpg_combat_incl.h>
+#include <rpg_character_incl.h>
 #include "rpg_monster_incl.h"
 
-#include "../../chance/dice/rpg_dice_XML_types.h"
+#include "rpg_dice_XML_types.h"
 
-#include "../../common/rpg_common_XML_types.h"
+#include "rpg_common_XML_types.h"
 
-#include "../../common/rpg_common_environment_XML_types.h"
+#include "rpg_common_environment_XML_types.h"
 
-#include "../../magic/rpg_magic_XML_types.h"
+#include "rpg_magic_XML_types.h"
 
-#include "../../item/rpg_item_XML_types.h"
+#include "rpg_item_XML_types.h"
 
-#include "../../combat/rpg_combat_XML_types.h"
+#include "rpg_combat_XML_types.h"
+
+class RPG_Monster_Export RPG_Monster_Size_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  size (const RPG_Common_Size&);
+
+  virtual void
+  isTall (bool);
+
+  virtual RPG_Monster_Size
+  post_RPG_Monster_Size_Type () = 0;
+
+  // Parser construction API.
+  //
+  void
+  size_parser (::RPG_Common_Size_Type_pskel&);
+
+  void
+  isTall_parser (::xml_schema::boolean_pskel&);
+
+  void
+  parsers (::RPG_Common_Size_Type_pskel& /* size */,
+           ::xml_schema::boolean_pskel& /* isTall */);
+
+  // Constructor.
+  //
+  RPG_Monster_Size_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  virtual bool
+  _attribute_impl (const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&,
+                   const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Common_Size_Type_pskel* size_parser_;
+  ::xml_schema::boolean_pskel* isTall_parser_;
+};
 
 class RPG_Monster_Export RPG_Monster_NaturalArmorClass_Type_pskel: public ::xml_schema::complex_content
 {
@@ -1363,7 +1419,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
   name (const ::std::string&);
 
   virtual void
-  size (const RPG_Common_Size&);
+  size (const RPG_Monster_Size&);
 
   virtual void
   type (const RPG_Common_CreatureType&);
@@ -1396,7 +1452,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
   space (unsigned char);
 
   virtual void
-  reach (unsigned char);
+  reach (unsigned short);
 
   virtual void
   saves (const RPG_Monster_SavingThrowModifiers&);
@@ -1440,7 +1496,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
   name_parser (::xml_schema::string_pskel&);
 
   void
-  size_parser (::RPG_Common_Size_Type_pskel&);
+  size_parser (::RPG_Monster_Size_Type_pskel&);
 
   void
   type_parser (::RPG_Common_CreatureType_Type_pskel&);
@@ -1473,7 +1529,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
   space_parser (::xml_schema::unsigned_byte_pskel&);
 
   void
-  reach_parser (::xml_schema::unsigned_byte_pskel&);
+  reach_parser (::xml_schema::unsigned_short_pskel&);
 
   void
   saves_parser (::RPG_Monster_SavingThrowModifiers_Type_pskel&);
@@ -1510,7 +1566,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
 
   void
   parsers (::xml_schema::string_pskel& /* name */,
-           ::RPG_Common_Size_Type_pskel& /* size */,
+           ::RPG_Monster_Size_Type_pskel& /* size */,
            ::RPG_Common_CreatureType_Type_pskel& /* type */,
            ::RPG_Dice_Roll_Type_pskel& /* hitDice */,
            ::xml_schema::byte_pskel& /* initiative */,
@@ -1521,7 +1577,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
            ::RPG_Monster_SpecialAttackProperties_Type_pskel& /* specialAttack */,
            ::RPG_Monster_SpecialAbilityProperties_Type_pskel& /* specialAbility */,
            ::xml_schema::unsigned_byte_pskel& /* space */,
-           ::xml_schema::unsigned_byte_pskel& /* reach */,
+           ::xml_schema::unsigned_short_pskel& /* reach */,
            ::RPG_Monster_SavingThrowModifiers_Type_pskel& /* saves */,
            ::RPG_Character_Attributes_Type_pskel& /* attributes */,
            ::RPG_Character_Skills_Type_pskel& /* skills */,
@@ -1552,7 +1608,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
 
   protected:
   ::xml_schema::string_pskel* name_parser_;
-  ::RPG_Common_Size_Type_pskel* size_parser_;
+  ::RPG_Monster_Size_Type_pskel* size_parser_;
   ::RPG_Common_CreatureType_Type_pskel* type_parser_;
   ::RPG_Dice_Roll_Type_pskel* hitDice_parser_;
   ::xml_schema::byte_pskel* initiative_parser_;
@@ -1563,7 +1619,7 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_Type_pskel: public ::xml_sche
   ::RPG_Monster_SpecialAttackProperties_Type_pskel* specialAttack_parser_;
   ::RPG_Monster_SpecialAbilityProperties_Type_pskel* specialAbility_parser_;
   ::xml_schema::unsigned_byte_pskel* space_parser_;
-  ::xml_schema::unsigned_byte_pskel* reach_parser_;
+  ::xml_schema::unsigned_short_pskel* reach_parser_;
   ::RPG_Monster_SavingThrowModifiers_Type_pskel* saves_parser_;
   ::RPG_Character_Attributes_Type_pskel* attributes_parser_;
   ::RPG_Character_Skills_Type_pskel* skills_parser_;

@@ -72,19 +72,19 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>")  << ACE_TEXT(" [") << RPG_NET_DEF_SERVER_USES_TP << ACE_TEXT(":") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
-const bool
+bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-                  unsigned long& clientPingInterval_out,
-                  unsigned long& keepAliveTimeout_out,
+                  unsigned int& clientPingInterval_out,
+                  unsigned int& keepAliveTimeout_out,
                   bool& logToFile_out,
                   std::string& networkInterface_out,
                   unsigned short& listeningPortNumber_out,
-                  unsigned long& statisticsReportingInterval_out,
+                  unsigned int& statisticsReportingInterval_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
                   bool& useThreadPool_out,
-                  unsigned long& numThreadPoolThreads_out)
+                  unsigned int& numThreadPoolThreads_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -203,7 +203,7 @@ process_arguments(const int argc_in,
   return true;
 }
 
-const bool
+bool
 init_fileLogging(std::ofstream& stream_in)
 {
   RPG_TRACE(ACE_TEXT("::init_fileLogging"));
@@ -245,7 +245,7 @@ init_fileLogging(std::ofstream& stream_in)
   return true;
 }
 
-const bool
+bool
 init_coreDumping()
 {
   RPG_TRACE(ACE_TEXT("::init_coreDumping"));
@@ -305,7 +305,7 @@ init_coreDumping()
   return true;
 }
 
-const bool
+bool
 init_threadPool()
 {
   RPG_TRACE(ACE_TEXT("::init_threadPool"));
@@ -384,7 +384,7 @@ init_signals(const bool& allowUserRuntimeStats_in,
 //   signals_inout.push_back(SIGRTMAX);
 }
 
-const bool
+bool
 init_signalHandling(const std::vector<int>& signals_inout,
                     Net_Server_SignalHandler& eventHandler_in,
                     ACE_Sig_Handlers& signalHandlers_in)
@@ -449,8 +449,8 @@ init_signalHandling(const std::vector<int>& signals_inout,
   return true;
 }
 
-const bool
-init_statisticsReporting(const unsigned long& reportingInterval_in,
+bool
+init_statisticsReporting(const unsigned int& reportingInterval_in,
                          RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic>& handler_in)
 {
   RPG_TRACE(ACE_TEXT("::init_statisticsReporting"));
@@ -518,12 +518,12 @@ tp_worker_func(void* args_in)
 }
 
 void
-do_work(const unsigned long& clientPingInterval_in,
+do_work(const unsigned int& clientPingInterval_in,
         const std::string& networkInterface_in,
         const unsigned short& listeningPortNumber_in,
-        const unsigned long& statisticsReportingInterval_in,
+        const unsigned int& statisticsReportingInterval_in,
         const bool& useThreadPool_in,
-        const unsigned long& numThreadPoolThreads_in)
+        const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -584,8 +584,8 @@ do_work(const unsigned long& clientPingInterval_in,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config,
-                  0,
-                  sizeof(RPG_Net_ConfigPOD));
+                 0,
+                 sizeof(RPG_Net_ConfigPOD));
   config.clientPingInterval = clientPingInterval_in;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
@@ -666,7 +666,7 @@ do_work(const unsigned long& clientPingInterval_in,
     // *NOTE*: asynchronous writing to a closed socket triggers the
     // SIGPIPE signal (default action: abort).
     // --> as this doesn't use select(), guard against this (ignore the signal)
-    ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
+    ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
     ACE_Sig_Action original_action;
     no_sigpipe.register_action(SIGPIPE, &original_action);
 
@@ -756,16 +756,16 @@ ACE_TMAIN(int argc,
 #endif
 
   // step1a set defaults
-  unsigned long clientPingInterval          = RPG_NET_DEF_PING_INTERVAL;
-  unsigned long keepAliveTimeout            = RPG_NET_DEF_KEEPALIVE;
-  bool logToFile                            = false;
-  std::string networkInterface              = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
-  unsigned short listeningPortNumber        = RPG_NET_DEF_LISTENING_PORT;
-  unsigned long statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
-  bool traceInformation                     = false;
-  bool printVersionAndExit                  = false;
-  bool useThreadPool                        = RPG_NET_DEF_SERVER_USES_TP;
-  unsigned long numThreadPoolThreads        = RPG_NET_DEF_SERVER_NUM_TP_THREADS;
+  unsigned int clientPingInterval          = RPG_NET_DEF_PING_INTERVAL;
+  unsigned int keepAliveTimeout            = RPG_NET_DEF_KEEPALIVE;
+  bool logToFile                           = false;
+  std::string networkInterface             = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
+  unsigned short listeningPortNumber       = RPG_NET_DEF_LISTENING_PORT;
+  unsigned int statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
+  bool traceInformation                    = false;
+  bool printVersionAndExit                 = false;
+  bool useThreadPool                       = RPG_NET_DEF_SERVER_USES_TP;
+  unsigned int numThreadPoolThreads        = RPG_NET_DEF_SERVER_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
@@ -933,8 +933,8 @@ ACE_TMAIN(int argc,
   } // end IF
   ACE_Profile_Timer::Rusage elapsed_rusage;
   ACE_OS::memset(&elapsed_rusage,
-                  0,
-                  sizeof(ACE_Profile_Timer::Rusage));
+                 0,
+                 sizeof(ACE_Profile_Timer::Rusage));
   process_profile.elapsed_rusage(elapsed_rusage);
   ACE_Time_Value user_time(elapsed_rusage.ru_utime);
   ACE_Time_Value system_time(elapsed_rusage.ru_stime);
@@ -949,12 +949,12 @@ ACE_TMAIN(int argc,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-			 elapsed_time.real_time,
+			       elapsed_time.real_time,
              elapsed_time.user_time,
              elapsed_time.system_time,
              user_time_string.c_str(),
              system_time_string.c_str(),
-			 elapsed_rusage.ru_maxrss,
+			       elapsed_rusage.ru_maxrss,
              elapsed_rusage.ru_ixrss,
              elapsed_rusage.ru_idrss,
              elapsed_rusage.ru_isrss,

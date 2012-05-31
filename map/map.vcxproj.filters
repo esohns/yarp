@@ -9,15 +9,14 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="scripts">
       <UniqueIdentifier>{3f7349b6-2d59-443f-b104-7ae9f96ab6c0}</UniqueIdentifier>
     </Filter>
     <Filter Include="XML">
       <UniqueIdentifier>{527d9122-6b65-47db-88fe-ab342b036c3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{b0adcef5-bd58-4396-a6bf-f8e6d261c72d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +91,9 @@
     <ClInclude Include="rpg_map_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_map_doorstate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_map_common_tools.cpp">
@@ -123,5 +125,10 @@
     <CXX_Tree_Mapping_Rule Include="rpg_map.xsd">
       <Filter>XML</Filter>
     </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Yarp\scripts\version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

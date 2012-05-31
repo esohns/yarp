@@ -35,30 +35,45 @@
 RPG_Sound_CategoryToStringTable_t RPG_Sound_CategoryHelper::myRPG_Sound_CategoryToStringTable;
 RPG_Sound_EventToStringTable_t RPG_Sound_EventHelper::myRPG_Sound_EventToStringTable;
 
+bool                   RPG_Sound_Common_Tools::myIsMuted;
 std::string            RPG_Sound_Common_Tools::mySoundDirectory;
 
 ACE_Thread_Mutex       RPG_Sound_Common_Tools::myCacheLock;
-unsigned long          RPG_Sound_Common_Tools::myOldestCacheEntry = 0;
-unsigned long          RPG_Sound_Common_Tools::myCacheSize = 0;
+unsigned int           RPG_Sound_Common_Tools::myOldestCacheEntry = 0;
+unsigned int           RPG_Sound_Common_Tools::myCacheSize = 0;
 RPG_Sound_SoundCache_t RPG_Sound_Common_Tools::mySoundCache;
 
 bool                   RPG_Sound_Common_Tools::myInitialized = false;
 
-void RPG_Sound_Common_Tools::init(const std::string& directory_in,
-                                  const unsigned long& cacheSize_in)
+void
+RPG_Sound_Common_Tools::init(const std::string& directory_in,
+                             const unsigned int& cacheSize_in,
+                             const bool& mute_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::init"));
 
-  // sanity check(s)
-  if (!RPG_Common_File_Tools::isDirectory(directory_in))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
-               directory_in.c_str()));
+  // init string conversion facilities
+  RPG_Sound_Common_Tools::initStringConversionTables();
 
-    return;
+  myIsMuted = mute_in;
+  if (!directory_in.empty())
+  {
+    // sanity check(s)
+    if (!RPG_Common_File_Tools::isDirectory(directory_in))
+    {
+      // re-try with resolved path
+      std::string resolved_path = RPG_Common_File_Tools::realPath(directory_in);
+      if (!RPG_Common_File_Tools::isDirectory(resolved_path))
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
+                   directory_in.c_str()));
+
+        return;
+      } // end IF
+    } // end IF
+    mySoundDirectory = directory_in;
   } // end IF
-  mySoundDirectory = directory_in;
   myCacheSize = cacheSize_in;
 
   if (myInitialized)
@@ -145,7 +160,7 @@ RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
   } // end SWITCH
 }
 
-const int
+int
 RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::play"));
@@ -154,7 +169,7 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
 
   // step1: sound already cached ?
   RPG_Sound_SoundCacheNode_t node;
-  node.event = event_in;
+  node.sound_event = event_in;
 
   // synch cache access
   {
@@ -170,12 +185,12 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
     {
       RPG_Sound_t sound;
       sound.category = RPG_SOUND_CATEGORY_INVALID;
-      sound.event = RPG_SOUND_EVENT_INVALID;
+      sound.sound_event = RPG_SOUND_EVENT_INVALID;
       sound.file.clear();
       sound.interval = 0;
       // retrieve event properties from the dictionary
-      sound = RPG_SOUND_DICTIONARY_SINGLETON::instance()->getSound(event_in);
-      ACE_ASSERT(sound.event == event_in);
+      sound = RPG_SOUND_DICTIONARY_SINGLETON::instance()->get(event_in);
+      ACE_ASSERT(sound.sound_event == event_in);
       // load the file
       Mix_Chunk* chunk = NULL;
       std::string path;
@@ -199,6 +214,11 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
 
         return result;
       } // end IF
+
+      // set volume (if any)
+      if (sound.volume)
+        Mix_VolumeChunk(chunk, sound.volume);
+
       // add the chunk to our cache
       if (mySoundCache.size() == myCacheSize)
       {
@@ -218,21 +238,28 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in)
     } // end IF
 
     ACE_ASSERT((*iter).chunk);
-    result = Mix_PlayChannel(-1,            // play on the first free channel
-                             (*iter).chunk, // data
-                             0);            // don't loop
+    if (!myIsMuted)
+    {
+      result = Mix_PlayChannel(-1,            // play on the first free channel
+                               (*iter).chunk, // data
+                               0);            // don't loop
+      if (result == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to Mix_PlayChannel(\"%s\"): \"%s\", aborting\n"),
+                   RPG_Sound_EventHelper::RPG_Sound_EventToString(event_in).c_str(),
+                   Mix_GetError()));
+    } // end IF
+    else
+      result = 0;
   } // end lock scope
 
   return result;
 }
 
-const bool
+bool
 RPG_Sound_Common_Tools::isPlaying(const int& channel_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::isPlaying"));
-
-  if (channel_in == -1)
-    return Mix_PlayingMusic();
 
   return Mix_Playing(channel_in);
 }
@@ -242,10 +269,7 @@ RPG_Sound_Common_Tools::stop(const int& channel_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::stop"));
 
-  if (channel_in == -1)
-    Mix_HaltMusic();
-  else
-    Mix_HaltChannel(channel_in);
+  Mix_HaltChannel(-1);
 }
 
 void

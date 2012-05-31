@@ -83,7 +83,7 @@ class RPG_Character_Check_Type_pskel;
 #include <rpg_common_incl.h>
 #include "rpg_character_incl.h"
 
-#include "../common/rpg_common_XML_types.h"
+#include "rpg_common_XML_types.h"
 
 class RPG_Character_Export RPG_Character_Gender_Type_pskel: public virtual ::xml_schema::string_pskel
 {

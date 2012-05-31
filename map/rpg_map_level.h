@@ -54,14 +54,15 @@ class RPG_Map_Export RPG_Map_Level
   const RPG_Map_Position_t& getStartPosition() const;
   const RPG_Map_Positions_t& getSeedPoints() const;
   const RPG_Map_FloorPlan_t& getFloorPlan() const;
-
   RPG_Map_Size_t getSize() const;
+  RPG_Map_DoorState state(const RPG_Map_Position_t&) const;
 
-  // either floor or an open (!) door ?
+  // either floor or an open/broken (!) door ?
   bool isValid(const RPG_Map_Position_t&) const;
-  bool isCorner(const RPG_Map_Position_t&)const;
+  bool isCorner(const RPG_Map_Position_t&) const;
   RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
-  const RPG_Map_Door_t& getDoor(const RPG_Map_Position_t&) const;
+  RPG_Map_Positions_t getObstacles() const;
+
   bool findPath(const RPG_Map_Position_t&, // start position
                 const RPG_Map_Position_t&, // end position
                 RPG_Map_Path_t&) const;    // return value: (partial) path A --> B

@@ -56,6 +56,7 @@ RPG_Common_CampToStringTable_t RPG_Common_CampHelper::myRPG_Common_CampToStringT
 
 RPG_Common_PlaneToStringTable_t RPG_Common_PlaneHelper::myRPG_Common_PlaneToStringTable;
 RPG_Common_TerrainToStringTable_t RPG_Common_TerrainHelper::myRPG_Common_TerrainToStringTable;
+RPG_Common_TrackToStringTable_t RPG_Common_TrackHelper::myRPG_Common_TrackToStringTable;
 RPG_Common_ClimateToStringTable_t RPG_Common_ClimateHelper::myRPG_Common_ClimateToStringTable;
 RPG_Common_TimeOfDayToStringTable_t RPG_Common_TimeOfDayHelper::myRPG_Common_TimeOfDayToStringTable;
 RPG_Common_AmbientLightingToStringTable_t RPG_Common_AmbientLightingHelper::myRPG_Common_AmbientLightingToStringTable;
@@ -84,6 +85,7 @@ RPG_Common_Tools::initStringConversionTables()
 
   RPG_Common_PlaneHelper::init();
   RPG_Common_TerrainHelper::init();
+  RPG_Common_TrackHelper::init();
   RPG_Common_ClimateHelper::init();
   RPG_Common_TimeOfDayHelper::init();
   RPG_Common_AmbientLightingHelper::init();
@@ -197,12 +199,17 @@ RPG_Common_Tools::terrainToPlane(const RPG_Common_Terrain& terrain_in)
 
   switch (terrain_in)
   {
-    case TERRAIN_DESERTS:
-    case TERRAIN_FORESTS:
+    case TERRAIN_DESERT_SANDY:
+    case TERRAIN_FOREST:
     case TERRAIN_HILLS:
+    case TERRAIN_JUNGLE:
+    case TERRAIN_MOOR:
     case TERRAIN_MOUNTAINS:
     case TERRAIN_PLAINS:
     case TERRAIN_PLANE_MATERIAL_ANY:
+    case TERRAIN_SETTLEMENT:
+    case TERRAIN_SWAMP:
+    case TERRAIN_TUNDRA_FROZEN:
     case TERRAIN_UNDER_GROUND:
     case TERRAIN_UNDER_WATER:
     {
@@ -439,8 +446,9 @@ RPG_Common_Tools::getSizeModifierLoad(const RPG_Common_Size& size_in,
   return 0.0F;
 }
 
-unsigned char
-RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
+unsigned short
+RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in,
+                              const bool& isTall_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sizeToReach"));
 
@@ -449,18 +457,18 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
     case SIZE_FINE:
     case SIZE_DIMINUTIVE:
     case SIZE_TINY:
+      return 0;
     case SIZE_SMALL:
     case SIZE_MEDIUM:
-    {
       return 5;
-    }
     case SIZE_LARGE:
+      return (isTall_in ? 10 : 5);
     case SIZE_HUGE:
+      return (isTall_in ? 15 : 10);
     case SIZE_GARGANTUAN:
+      return (isTall_in ? 20 : 15);
     case SIZE_COLOSSAL:
-    {
-      return 10;
-    }
+      return (isTall_in ? 30 : 20);
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -474,7 +482,7 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in)
   return 0;
 }
 
-unsigned char
+unsigned short
 RPG_Common_Tools::environment2Radius(const RPG_Common_Environment& environment_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environment2Radius"));
@@ -506,6 +514,239 @@ RPG_Common_Tools::environment2Radius(const RPG_Common_Environment& environment_i
   } // end SWITCH
 
   return 0;
+}
+
+float
+RPG_Common_Tools::terrain2SpeedModifier(const RPG_Common_Terrain& terrain_in,
+                                        const RPG_Common_Track& track_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::terrain2SpeedModifier"));
+
+  // sanity check
+  ACE_ASSERT((track_in == TRACK_NONE)    ||
+             (track_in == TRACK_HIGHWAY) ||
+             (track_in == TRACK_ROAD)    ||
+             (track_in == TRACK_TRAIL));
+
+  switch (terrain_in)
+  {
+    case TERRAIN_SETTLEMENT:
+    case TERRAIN_UNDER_GROUND:
+    case TERRAIN_ANY:
+      return 1.0F;
+    // ---------------------- //
+    case TERRAIN_DESERT_SANDY:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+          return 1.0F;
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+        case TRACK_NONE:
+          return 0.5F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case TERRAIN_FOREST:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+          return 1.0F;
+        case TRACK_NONE:
+          return 0.5F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case TERRAIN_HILLS:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+          return 1.0F;
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+          return 0.75F;
+        case TRACK_NONE:
+          return 0.5F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case TERRAIN_JUNGLE:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+          return 1.0F;
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+          return 0.75F;
+        case TRACK_NONE:
+          return 0.25F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case TERRAIN_MOOR:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+          return 1.0F;
+        case TRACK_NONE:
+          return 0.75F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case TERRAIN_MOUNTAINS:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+          return 0.75F;
+        case TRACK_NONE:
+          return 0.5F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case TERRAIN_PLAINS:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+          return 1.0F;
+        case TRACK_NONE:
+          return 0.75F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case TERRAIN_SWAMP:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+          return 1.0F;
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+          return 0.75F;
+        case TRACK_NONE:
+          return 0.5F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    case TERRAIN_TUNDRA_FROZEN:
+    {
+      switch (track_in)
+      {
+        case TRACK_HIGHWAY:
+          return 1.0F;
+        case TRACK_ROAD:
+        case TRACK_TRAIL:
+        case TRACK_NONE:
+          return 0.75F;
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
+                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid terrain: \"%s\", aborting\n"),
+                 RPG_Common_TerrainHelper::RPG_Common_TerrainToString(terrain_in).c_str()));
+
+      break;
+    }
+  } // end SWITCH
+
+  return 0.0F;
 }
 
 std::string

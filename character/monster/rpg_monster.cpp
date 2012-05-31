@@ -32,6 +32,7 @@
 #include <rpg_character_race_common_tools.h>
 
 #include <rpg_common_macros.h>
+#include <rpg_common_tools.h>
 
 #include <ace/Log_Msg.h>
 
@@ -43,7 +44,7 @@ RPG_Monster::RPG_Monster(// base attributes
                          const RPG_Character_Skills_t& skills_in,
                          const RPG_Character_Feats_t& feats_in,
                          const RPG_Character_Abilities_t& abilities_in,
-                         const RPG_Common_Size& defaultSize_in,
+                         const RPG_Monster_Size& defaultSize_in,
                          const unsigned short int& maxHitPoints_in,
                          const RPG_Magic_SpellTypes_t& knownSpells_in,
                          // current status
@@ -60,7 +61,6 @@ RPG_Monster::RPG_Monster(// base attributes
              skills_in,
              feats_in,
              abilities_in,
-             defaultSize_in,
              maxHitPoints_in,
              knownSpells_in,
              // current status
@@ -70,6 +70,7 @@ RPG_Monster::RPG_Monster(// base attributes
              spells_in,
              inventory_in),
    myType(type_in),
+   mySize(defaultSize_in),
    myIsSummoned(isSummoned_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::RPG_Monster"));
@@ -79,6 +80,7 @@ RPG_Monster::RPG_Monster(// base attributes
 RPG_Monster::RPG_Monster(const RPG_Monster& monster_in)
  : inherited(monster_in),
    myType(monster_in.myType),
+   mySize(monster_in.mySize),
    myIsSummoned(monster_in.myIsSummoned)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::RPG_Monster"));
@@ -97,6 +99,7 @@ RPG_Monster::~RPG_Monster()
 //   RPG_TRACE(ACE_TEXT("RPG_Monster::operator="));
 //
 //   myType = monster_in.myType;
+//   mySize = monster_in.mySize;
 //   myIsSummoned = monster_in.myIsSummoned;
 //   inherited::operator=(monster_in);
 //
@@ -109,6 +112,14 @@ RPG_Monster::getType() const
   RPG_TRACE(ACE_TEXT("RPG_Monster::getType"));
 
   return myType;
+}
+
+const RPG_Monster_Size&
+RPG_Monster::getSize() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster::getSize"));
+
+  return mySize;
 }
 
 bool
@@ -163,12 +174,70 @@ RPG_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_i
   return result;
 }
 
+unsigned short
+RPG_Monster::getReach(unsigned short& baseRange_out,
+                      bool& reachIsAbsolute_out) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster::getReach"));
+
+  // init return value(s)
+  baseRange_out = 0;
+  reachIsAbsolute_out = false;
+
+  // step1: retrieve base speed (type)
+  const RPG_Monster_Properties& properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
+  unsigned short result = properties.reach;
+
+  //// *TODO*: consider polymorphed states...
+  //unsigned short result = RPG_Common_Tools::sizeToReach(mySize, true);
+
+  //RPG_Item_WeaponType weapon_type = myEquipment.getPrimaryWeapon(myOffHand);
+  //const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
+  //if (RPG_Item_Common_Tools::isMeleeWeapon(weapon_type))
+  //{
+  //  if (properties.isReachWeapon)
+  //  {
+  //    result *= 2;
+  //    reachIsAbsolute_out = RPG_Item_Common_Tools::hasAbsoluteReach(weapon_type);
+  //  } // end IF
+  //} // end IF
+  //else
+  //{
+  //  // --> ranged weapon
+  //  ACE_ASSERT(RPG_Item_Common_Tools::isRangedWeapon(weapon_type));
+
+  //  baseRange_out = properties.rangeIncrement;
+
+  //  // compute max reach for ranged weapons
+  //  if (RPG_Item_Common_Tools::isThrownWeapon(weapon_type))
+  //    result = baseRange_out * 5;
+  //  else if (RPG_Item_Common_Tools::isProjectileWeapon(weapon_type))
+  //    result = baseRange_out * 10;
+  //  else
+  //  {
+  //    ACE_DEBUG((LM_ERROR,
+  //               ACE_TEXT("invalid weapon type (was \"%s\"), continuing\n"),
+  //               RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str()));
+
+  //    ACE_ASSERT(false);
+  //  } // end IF
+  //} // end ELSE
+
+  return result;
+}
+
 unsigned char
-RPG_Monster::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
+RPG_Monster::getSpeed(const bool& isRunning_in,
+                      const RPG_Common_AmbientLighting& lighting_in,
+                      const RPG_Common_Terrain& terrain_in,
+                      const RPG_Common_Track& track_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getSpeed"));
 
-  // init return value(s)
+  // sanity check(s)
+  ACE_ASSERT(lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
+
+  // init return value
   unsigned char result = 0;
 
   // step1: retrieve base speed (type)
@@ -206,7 +275,7 @@ RPG_Monster::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
 
   // *TODO*: consider non-bipeds...
   RPG_Character_Encumbrance encumbrance_by_load = RPG_Character_Common_Tools::getEncumbrance(getAttribute(ATTRIBUTE_STRENGTH),
-                                                                                             getSize(),
+                                                                                             getSize().size,
                                                                                              getInventory().getTotalWeight(),
                                                                                              true);
   signed char maxDexModifierAC = std::numeric_limits<signed char>::max();
@@ -220,10 +289,20 @@ RPG_Monster::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
                                                result,
                                                runModifier);
 
+  float modifier = 1.0F;
   // step3: consider vision [equipment / ambient lighting]
   if ((inherited::myEquipment.getLightSource() == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
       (lighting_in == AMBIENCE_DARKNESS))
-    result /= 2;
+    modifier *= 0.5F;
+
+  // step4: consider terrain [track type]
+  modifier *= RPG_Common_Tools::terrain2SpeedModifier(terrain_in, track_in);
+
+  // step5: consider movement mode
+  if (isRunning_in)
+    modifier *= static_cast<float>(runModifier);
+
+  result = static_cast<unsigned char>(static_cast<float>(result) * modifier);
 
   // *TODO*: consider other (spell, ...) effects
   return result;
@@ -246,8 +325,8 @@ RPG_Monster::isPlayerCharacter() const
   return false;
 }
 
-const RPG_Player_Equipment&
-RPG_Monster::getEquipment() const
+RPG_Player_Equipment&
+RPG_Monster::getEquipment()
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getEquipment"));
 

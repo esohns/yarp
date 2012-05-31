@@ -46,8 +46,9 @@
 #define SDL_GUI_DEF_VIDEO_W                    1024
 #define SDL_GUI_DEF_VIDEO_H                    786
 #define SDL_GUI_DEF_VIDEO_BPP                  32
-#define SDL_GUI_DEF_VIDEO_FULLSCREEN           false
 #define SDL_GUI_DEF_VIDEO_DOUBLEBUFFER         true
+#define SDL_GUI_DEF_VIDEO_USE_OPENGL           false
+#define SDL_GUI_DEF_VIDEO_FULLSCREEN           false
 
 #define SDL_GUI_SDL_TIMEREVENT                 SDL_USEREVENT
 // *NOTE*: this defines the input resolution or "interactivity"

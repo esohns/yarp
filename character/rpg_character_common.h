@@ -23,6 +23,8 @@
 
 #include <rpg_common_condition.h>
 
+#include <rpg_character_equipmentslot.h>
+
 #include <set>
 #include <vector>
 
@@ -33,5 +35,13 @@ typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsItera
 typedef std::vector<signed char> RPG_Character_BaseAttackBonus_t;
 typedef RPG_Character_BaseAttackBonus_t::iterator RPG_Character_BaseAttackBonusIterator_t;
 typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttackBonusConstIterator_t;
+
+typedef std::vector<RPG_Character_EquipmentSlot> RPG_Character_EquipmentSlots_t;
+typedef RPG_Character_EquipmentSlots_t::const_iterator RPG_Character_EquipmentSlotsIterator_t;
+struct RPG_Character_EquipmentSlots
+{
+  RPG_Character_EquipmentSlots_t slots;
+  bool is_inclusive; // logic AND ? : OR
+};
 
 #endif

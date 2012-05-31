@@ -72,7 +72,6 @@ RPG_Player_Player_Base::RPG_Player_Player_Base(// base attributes
              skills_in,
              feats_in,
              abilities_in,
-             RPG_Character_Race_Common_Tools::race2Size(race_in),
              maxHitPoints_in,
              knownSpells_in,
              condition_in,
@@ -84,7 +83,8 @@ RPG_Player_Player_Base::RPG_Player_Player_Base(// base attributes
    myRace(race_in),
    myClass(class_in),
    myOffHand(offHand_in),
-   myExperience(experience_in)
+   myExperience(experience_in),
+   mySize(RPG_Character_Race_Common_Tools::race2Size(race_in))
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::RPG_Player_Player_Base"));
 
@@ -96,7 +96,8 @@ RPG_Player_Player_Base::RPG_Player_Player_Base(const RPG_Player_Player_Base& pla
    myRace(playerBase_in.myRace),
    myClass(playerBase_in.myClass),
    myOffHand(playerBase_in.myOffHand),
-   myExperience(playerBase_in.myExperience)
+   myExperience(playerBase_in.myExperience),
+   mySize(playerBase_in.mySize)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::RPG_Player_Player_Base"));
 
@@ -155,7 +156,6 @@ RPG_Player_Player_Base::init(// base attributes
                   skills_in,
                   feats_in,
                   abilities_in,
-                  RPG_Character_Race_Common_Tools::race2Size(race_in),
                   maxHitPoints_in,
                   knownSpells_in,
                   // current status
@@ -170,9 +170,10 @@ RPG_Player_Player_Base::init(// base attributes
   myClass      = class_in;
   myOffHand    = offHand_in;
   myExperience = experience_in;
+  mySize       = RPG_Character_Race_Common_Tools::race2Size(race_in);
 }
 
-RPG_Character_Gender
+const RPG_Character_Gender&
 RPG_Player_Player_Base::getGender() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getGender"));
@@ -196,12 +197,20 @@ RPG_Player_Player_Base::getClass() const
   return myClass;
 }
 
-RPG_Character_OffHand
+const RPG_Character_OffHand&
 RPG_Player_Player_Base::getOffHand() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getOffHand"));
 
   return myOffHand;
+}
+
+const RPG_Common_Size&
+RPG_Player_Player_Base::getSize() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSize"));
+
+  return mySize;
 }
 
 unsigned char
@@ -313,14 +322,70 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
   return result;
 }
 
+unsigned short
+RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
+                                 bool& reachIsAbsolute_out) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getReach"));
+
+  // init return value(s)
+  baseRange_out = 0;
+  reachIsAbsolute_out = false;
+
+  // *TODO*: consider polymorphed states...
+  unsigned short result = RPG_Common_Tools::sizeToReach(mySize, true);
+
+  RPG_Item_WeaponType weapon_type = myEquipment.getPrimaryWeapon(myOffHand);
+  // sanity check: equipped any weapon ?
+  if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
+    return result;
+
+  const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
+  if (RPG_Item_Common_Tools::isMeleeWeapon(weapon_type))
+  {
+    if (properties.isReachWeapon)
+    {
+      result *= 2;
+      reachIsAbsolute_out = RPG_Item_Common_Tools::hasAbsoluteReach(weapon_type);
+    } // end IF
+  } // end IF
+  else
+  {
+    // --> ranged weapon
+    ACE_ASSERT(RPG_Item_Common_Tools::isRangedWeapon(weapon_type));
+
+    baseRange_out = properties.rangeIncrement;
+
+    // compute max reach for ranged weapons
+    if (RPG_Item_Common_Tools::isThrownWeapon(weapon_type))
+      result = baseRange_out * 5;
+    else if (RPG_Item_Common_Tools::isProjectileWeapon(weapon_type))
+      result = baseRange_out * 10;
+    else
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid weapon type (was \"%s\"), continuing\n"),
+                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str()));
+
+      ACE_ASSERT(false);
+    } // end IF
+  } // end ELSE
+
+  return result;
+}
+
 unsigned char
-RPG_Player_Player_Base::getSpeed(const RPG_Common_AmbientLighting& lighting_in) const
+RPG_Player_Player_Base::getSpeed(const bool& isRunning_in,
+                                 const RPG_Common_AmbientLighting& lighting_in,
+                                 const RPG_Common_Terrain& terrain_in,
+                                 const RPG_Common_Track& track_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSpeed"));
 
   // sanity check(s)
   ACE_ASSERT(lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
 
+  // init return value
   unsigned char result = 0;
 
   // step1: retrieve base speed (race)
@@ -380,10 +445,20 @@ RPG_Player_Player_Base::getSpeed(const RPG_Common_AmbientLighting& lighting_in) 
                                                result,
                                                runModifier);
 
+  float modifier = 1.0F;
   // step3: consider vision [equipment / ambient lighting]
   if ((const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getLightSource() == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
       (lighting_in == AMBIENCE_DARKNESS))
-    result /= 2;
+    modifier *= 0.5F;
+
+  // step4: consider terrain [track type]
+  modifier *= RPG_Common_Tools::terrain2SpeedModifier(terrain_in, track_in);
+
+  // step5: consider movement mode
+  if (isRunning_in)
+    modifier *= static_cast<float>(runModifier);
+
+  result = static_cast<unsigned char>(static_cast<float>(result) * modifier);
 
   // *TODO*: consider other (spell, ...) effects
   return result;
@@ -495,14 +570,50 @@ RPG_Player_Player_Base::defaultEquip()
       {
         RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
         ACE_ASSERT(armor);
-//         RPG_Item_ArmorProperties armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
+//         RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
         // shield or (body) armor ?
         // *TODO*: what about other types of armor ?
         slot = EQUIPMENTSLOT_BODY;
         if (RPG_Item_Common_Tools::isShield(armor->getArmorType()))
-          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                                 : EQUIPMENTSLOT_HAND_RIGHT);
-        myEquipment.equip(*iterator, slot);
+        {
+          // *NOTE*: secondary, then primary
+          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                              : EQUIPMENTSLOT_HAND_RIGHT);
+          if (myEquipment.isEquipped(slot))
+            slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                                : EQUIPMENTSLOT_HAND_LEFT);
+        } // end IF
+        if (myEquipment.isEquipped(slot))
+          break; // cannot equip...
+
+        myEquipment.equip(*iterator,
+                          myOffHand,
+                          slot);
+
+        break;
+      }
+      case ITEM_COMMODITY:
+      {
+        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(handle);
+        ACE_ASSERT(commodity);
+        RPG_Item_CommodityUnion commodity_type = commodity->getCommoditySubType();
+        //RPG_Item_CommodityProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
+        // - by default, equip light sources only
+        if (commodity_type.discriminator != RPG_Item_CommodityUnion::COMMODITYLIGHT)
+          break;
+
+        // *NOTE*: secondary, then primary
+        slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                            : EQUIPMENTSLOT_HAND_RIGHT);
+        if (myEquipment.isEquipped(slot))
+          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                              : EQUIPMENTSLOT_HAND_LEFT);
+        //if (myEquipment.isEquipped(slot))
+        //  break; // cannot equip...
+
+        myEquipment.equip(*iterator,
+                          myOffHand,
+                          slot);
 
         break;
       }
@@ -510,21 +621,24 @@ RPG_Player_Player_Base::defaultEquip()
       {
         RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
         ACE_ASSERT(weapon);
-//         RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
+//         RPG_Item_WeaponProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
         // - by default, equip melee weapons only
         // *TODO*: what about other types of weapons ?
         if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->getWeaponType()))
           break;
 
-        slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
-                                               : EQUIPMENTSLOT_HAND_LEFT);
-        myEquipment.equip(*iterator, slot);
-        if (RPG_Item_Common_Tools::isTwoHandedWeapon(weapon->getWeaponType()))
-        {
-          slot = ((getOffHand() == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
-                                                 : EQUIPMENTSLOT_HAND_RIGHT);
-          myEquipment.equip(*iterator, slot);
-        } // end IF
+        // *NOTE*: primary, then secondary
+        slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
+                                            : EQUIPMENTSLOT_HAND_LEFT);
+        if (myEquipment.isEquipped(slot))
+          slot = ((myOffHand == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_LEFT
+                                              : EQUIPMENTSLOT_HAND_RIGHT);
+        if (myEquipment.isEquipped(slot))
+          break; // cannot equip...
+
+        myEquipment.equip(*iterator,
+                          myOffHand,
+                          slot);
 
         break;
       }

@@ -44,7 +44,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Size_t
    myTitle(title_in),
 //    myBackGround(backGround_in),
    myOffset(std::make_pair(0, 0)),
-   myLastAbsolutePosition(std::make_pair(0, 0)),
+   myLastAbsolutePosition(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                         std::numeric_limits<unsigned int>::max())),
    myParent(NULL),
    myType(type_in)
 {
@@ -70,7 +71,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
     myTitle(title_in),
 //     myBackGround(backGround_in),
     myOffset(offset_in),
-    myLastAbsolutePosition(std::make_pair(0, 0)),
+    myLastAbsolutePosition(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                          std::numeric_limits<unsigned int>::max())),
     myParent(&const_cast<RPG_Graphics_SDLWindowBase&>(parent_in)),
     myType(type_in)
 {
@@ -222,6 +224,66 @@ RPG_Graphics_SDLWindowBase::getScreen() const
 
   return (myScreen ? myScreen : SDL_GetVideoSurface());
 }
+
+void
+RPG_Graphics_SDLWindowBase::clear(const Uint32& color_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clear"));
+
+  // sanity check(s)
+  ACE_ASSERT(myScreen);
+
+  SDL_Rect dstRect = {0, 0, 0, 0};
+  clip();
+  SDL_GetClipRect(myScreen, &dstRect);
+  if (SDL_FillRect(myScreen,                             // target surface
+                   &dstRect,                             // fill area
+                   RPG_Graphics_SDL_Tools::CLR32_BLACK)) // color
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_FillRect(): \"%s\", aborting\n"),
+               SDL_GetError()));
+
+    return;
+  } // end IF
+  unclip();
+}
+
+//void
+//RPG_Graphics_SDLWindowBase::drawChild(const RPG_Graphics_WindowType& child_in,
+//                                      SDL_Surface* targetSurface_in,
+//                                      const unsigned int& offsetX_in,
+//                                      const unsigned int& offsetY_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::drawChild"));
+//
+//  // sanity check(s)
+//  ACE_ASSERT(child_in != RPG_GRAPHICS_WINDOWTYPE_INVALID);
+//
+//  // set target surface
+//  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+//
+//  // realize any child(ren) of a specific type
+//  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
+//       iterator != myChildren.end();
+//       iterator++)
+//  {
+//    if ((*iterator)->getType() != child_in)
+//      continue;
+//
+//    try
+//    {
+//      (*iterator)->draw(targetSurface,
+//                        offsetX_in,
+//                        offsetY_in);
+//    }
+//    catch (...)
+//    {
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
+//    }
+//  } // end FOR
+//}
 
 void
 RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
@@ -455,7 +517,7 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
     }
   } // end SWITCH
 
-  // *NOTE*: should never get here...
+  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
 }
 
@@ -466,6 +528,7 @@ RPG_Graphics_SDLWindowBase::notify(const RPG_Graphics_Cursor& cursor_in) const
 
   ACE_UNUSED_ARG(cursor_in);
 
+  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
 }
 
@@ -522,9 +585,9 @@ RPG_Graphics_SDLWindowBase::getWindow(const RPG_Graphics_Position_t& position_in
 }
 
 RPG_Graphics_IWindow*
-RPG_Graphics_SDLWindowBase::getChild(const RPG_Graphics_WindowType& type_in)
+RPG_Graphics_SDLWindowBase::child(const RPG_Graphics_WindowType& type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getChild"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::child"));
 
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
        iterator != myChildren.end();

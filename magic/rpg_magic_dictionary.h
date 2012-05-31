@@ -49,8 +49,8 @@ class RPG_Magic_Export RPG_Magic_Dictionary
 
  public:
   // init magic dictionary
-  void init(const std::string&,  // filename
-            const bool& = true); // validate XML ?
+  void init(const std::string&,   // filename
+            const bool& = false); // validate XML ?
 
   RPG_Magic_Spell_Properties getSpellProperties(const std::string&) const; // name of spell
   RPG_Magic_Spell_Properties getSpellProperties(const RPG_Magic_SpellType&, // type of spell

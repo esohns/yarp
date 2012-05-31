@@ -66,6 +66,8 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   void add(const RPG_Engine_EntityID_t&, // id
            const ACE_Time_Value&);       // activation interval
   void remove(const RPG_Engine_EntityID_t&); // id
+  void reschedule(const RPG_Engine_EntityID_t&, // id
+                  const ACE_Time_Value&);       // activation interval
 
   // implement RPG_Common_IControl
   virtual void start();
@@ -105,6 +107,24 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   typedef RPG_Engine_EventTimers_t::const_iterator RPG_Engine_EventTimersConstIterator_t;
   typedef std::map<RPG_Engine_EntityID_t, long> RPG_Engine_EntityTimers_t;
   typedef RPG_Engine_EntityTimers_t::const_iterator RPG_Engine_EntityTimersConstIterator_t;
+
+  // helper classes
+  struct monster_remove_t
+  {
+    RPG_Engine* engine;
+    bool        locked_access;
+    bool        remove_monsters;
+
+    bool operator()(const RPG_Engine_EntityID_t&);
+  };
+  struct invisible_remove_t
+  {
+    RPG_Engine*           engine;
+    bool                  locked_access;
+    RPG_Engine_EntityID_t entity_id;
+
+    bool operator()(const RPG_Engine_EntityID_t&);
+  };
 
   ACE_Thread_Mutex          myLock;
   ACE_Time_Value            myGameClockStart;

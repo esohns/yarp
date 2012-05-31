@@ -22,6 +22,7 @@
 #define RPG_CLIENT_COMMON_TOOLS_H
 
 #include "rpg_client_exports.h"
+#include "rpg_client_common.h"
 
 #include <rpg_engine.h>
 
@@ -39,21 +40,25 @@
 class RPG_Client_Export RPG_Client_Common_Tools
 {
  public:
-  // *NOTE*: initializes cursor manager singleton
-  static void init();
+  // *NOTE*: initializes cursor manager singleton/dictionaries
+  static void init(const std::string&,  // sound dictionary
+                   const std::string&,  // sound directory
+                   const bool&,         // muted ?
+                   const std::string&,  // graphics dictionary
+                   const std::string&,  // graphics directory
+                   const bool& = true); // init SDL ?
 
-  static void initFloorEdges(const RPG_Map_FloorPlan_t&,             // floor plan
+  static void initFloorEdges(const RPG_Engine&,                      // state / engine
                              const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset
                              RPG_Graphics_FloorEdgeTileMap_t&);      // return value: floor edge tiles / position
   static void updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t&, // appropriate (style) tileset
                                RPG_Graphics_FloorEdgeTileMap_t&);      // input/output value: floor edge tiles / position
-  static void initWalls(const RPG_Map_FloorPlan_t&,        // floor plan
+  static void initWalls(const RPG_Engine&,                 // state / engine
                         const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
                         RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
   static void updateWalls(const RPG_Graphics_WallTileSet_t&, // appropriate (style) tileset
                           RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
-  static void initDoors(const RPG_Map_FloorPlan_t&,        // floor plan
-                        const RPG_Engine&,                 // state / engine
+  static void initDoors(const RPG_Engine&,                 // state / engine
                         const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
                         RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
   static void updateDoors(const RPG_Graphics_DoorTileSet_t&, // appropriate (style) tileset
@@ -62,12 +67,18 @@ class RPG_Client_Export RPG_Client_Common_Tools
 
   static RPG_Graphics_Sprite class2Sprite(const RPG_Character_Class&);
   static RPG_Graphics_Sprite monster2Sprite(const std::string&);
+
   static bool hasCeiling(const RPG_Map_Position_t&, // position
-                         const RPG_Engine&);        // state / engine
+                         const RPG_Engine&,         // state / engine
+                         const bool& = true);       // locked access ?
   static RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine&,          // state / engine
                                                      const RPG_Map_Position_t&); // door
-  static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&, // position
-                                       const RPG_Engine&);        // state / engine
+  static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&,       // position
+                                       const RPG_Engine_EntityID_t&,    // active player
+                                       const bool&,                     // has player seen this position ?
+                                       const RPG_Client_SelectionMode&, // current selection mode
+                                       const RPG_Engine&,               // state / engine
+                                       const bool& = true);             // locked access ?
 
  private:
   // safety measures

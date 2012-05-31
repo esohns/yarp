@@ -12,7 +12,7 @@
 struct RPG_Monster_Export RPG_Monster_PropertiesXML
 {
   std::string name;
-  RPG_Common_Size size;
+  RPG_Monster_Size size;
   RPG_Common_CreatureType type;
   RPG_Dice_Roll hitDice;
   signed char initiative;
@@ -23,7 +23,7 @@ struct RPG_Monster_Export RPG_Monster_PropertiesXML
   std::vector<RPG_Monster_SpecialAttackProperties> specialAttacks;
   std::vector<RPG_Monster_SpecialAbilityProperties> specialAbilities;
   unsigned char space;
-  unsigned char reach;
+  unsigned short int reach;
   RPG_Monster_SavingThrowModifiers saves;
   RPG_Character_Attributes attributes;
   RPG_Character_Skills skills;

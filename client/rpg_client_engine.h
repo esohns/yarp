@@ -25,7 +25,7 @@
 #include "rpg_client_common.h"
 
 #include <rpg_engine_common.h>
-#include <rpg_engine_iwindow.h>
+#include <rpg_engine_iclient.h>
 
 #include <rpg_graphics_iwindow.h>
 
@@ -50,7 +50,7 @@ class RPG_Client_Export RPG_Client_Engine
  : public ACE_Task<ACE_MT_SYNCH>,
    public RPG_Common_IControl,
    public RPG_Common_IDumpState,
-   public RPG_Engine_IWindow
+   public RPG_Engine_IClient
 {
  public:
   RPG_Client_Engine();

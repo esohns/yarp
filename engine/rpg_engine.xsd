@@ -9,19 +9,19 @@
 <!-- include chance_dice schema -->
 <!--   <xsd:include schemaLocation="rpg_dice.xsd"/> -->
 <!-- include common environment schema -->
-  <xsd:include schemaLocation="../common/rpg_common_environment.xsd"/>
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
 <!-- include character player schema -->
-  <xsd:include schemaLocation="../character/player/rpg_player.xsd"/>
+  <xsd:include schemaLocation="rpg_player.xsd"/>
 <!-- include map schema -->
-  <xsd:include schemaLocation="../map/rpg_map.xsd"/>
+  <xsd:include schemaLocation="rpg_map.xsd"/>
 <!-- include graphics schema -->
-  <xsd:include schemaLocation="../graphics/rpg_graphics.xsd"/>
-  
+  <xsd:include schemaLocation="rpg_graphics.xsd"/>
+
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_dice.xsd"/> -->
 <!--   import item schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/> -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_item.xsd"/> -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -36,14 +36,19 @@
       <xsd:enumeration value="COMMAND_ATTACK_STANDARD"/>
       <xsd:enumeration value="COMMAND_DOOR_CLOSE"/>
       <xsd:enumeration value="COMMAND_DOOR_OPEN"/>
+      <xsd:enumeration value="COMMAND_IDLE"/>
+      <xsd:enumeration value="COMMAND_RUN"/>
       <xsd:enumeration value="COMMAND_SEARCH"/>
       <xsd:enumeration value="COMMAND_STEP"/>
       <xsd:enumeration value="COMMAND_STOP"/>
       <xsd:enumeration value="COMMAND_TRAVEL"/>
-      <!--   ENGINE to CLIENT protocol ONLY ! -->
+      <!-- ENGINE to CLIENT protocol -->
       <xsd:enumeration value="COMMAND_E2C_ENTITY_ADD"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_HIT"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_MISS"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_POSITION"/>
       <xsd:enumeration value="COMMAND_E2C_ENTITY_REMOVE"/>
-      <xsd:enumeration value="COMMAND_E2C_ENTITY_UPDATE"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_VISION"/>
       <xsd:enumeration value="COMMAND_E2C_QUIT"/>
     </xsd:restriction>
   </xsd:simpleType>
@@ -51,6 +56,7 @@
   <xsd:simpleType name="RPG_Engine_EntityMode_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ENTITYMODE_FIGHTING"/>
+      <xsd:enumeration value="ENTITYMODE_RUNNING"/>
       <xsd:enumeration value="ENTITYMODE_SEARCHING"/>
       <xsd:enumeration value="ENTITYMODE_TRAVELLING"/>
     </xsd:restriction>
@@ -76,6 +82,7 @@
       <xsd:element name="spawn_interval" type="RPG_Common_FixedPeriod_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="spawn_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="max_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="amble_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="map" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
