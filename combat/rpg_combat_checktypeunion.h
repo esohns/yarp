@@ -7,9 +7,7 @@
 #ifndef RPG_COMBAT_CHECKTYPEUNION_H
 #define RPG_COMBAT_CHECKTYPEUNION_H
 
-#include "rpg_combat_exports.h"
-
-struct RPG_Combat_Export RPG_Combat_CheckTypeUnion
+struct RPG_Combat_CheckTypeUnion
 {
   union
   {

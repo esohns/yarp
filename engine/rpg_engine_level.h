@@ -93,7 +93,7 @@ class RPG_Engine_Export RPG_Engine_Level
   static RPG_Engine_Level_t levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
 
   // hide unwanted funcionality
-  using RPG_Map_Level::init;
+  //using RPG_Map_Level::init;
   using RPG_Map_Level::save;
 };
 #endif

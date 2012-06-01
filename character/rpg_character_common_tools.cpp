@@ -647,6 +647,8 @@ RPG_Character_Common_Tools::getLoadModifiers(const RPG_Character_Encumbrance& en
 
   switch (encumbrance_in)
   {
+    case LOAD_LIGHT:
+      break;
     case LOAD_MEDIUM:
     {
       maxDexModifierAC_out = 3;
@@ -661,6 +663,14 @@ RPG_Character_Common_Tools::getLoadModifiers(const RPG_Character_Encumbrance& en
       armorCheckPenalty_out = -6;
       speed_out = getReducedSpeed(baseSpeed_in);
       runModifier_out = RPG_CHARACTER_DEF_RUN_MODIFIER_HEAVY;
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid load (was: %u), aborting\n"),
+                 RPG_Character_EncumbranceHelper::RPG_Character_EncumbranceToString(encumbrance_in).c_str()));
 
       break;
     }

@@ -177,7 +177,7 @@ RPG_Player_Equipment::unequip(const RPG_Item_ID_t& itemID_in)
                  ACE_TEXT("unequipped \"%s\"\n"),
                  RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str()));
       
-      myEquipment.erase(iterator);
+      myEquipment.erase((*iterator).first);
 
       continue;
     } // end IF

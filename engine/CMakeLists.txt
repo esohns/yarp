@@ -20,7 +20,7 @@ set(RPG_Engine_LIB_SRCS
     rpg_engine_XML_tree.cpp
     rpg_engine_XML_tree.h
     rpg_engine_common.h
-    rpg_engine_iwindow.h
+    rpg_engine_iclient.h
     rpg_engine_incl.h
     rpg_engine_command.h
     rpg_engine_common_tools.cpp
@@ -60,7 +60,7 @@ install(FILES
         rpg_engine_XML_tree.h
         rpg_engine_common.h
         rpg_engine_incl.h
-        rpg_engine_iwindow.h
+        rpg_engine_iclient.h
         rpg_engine_command.h
         rpg_engine_common_tools.h
         rpg_engine_defines.h

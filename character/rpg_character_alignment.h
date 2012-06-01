@@ -7,9 +7,7 @@
 #ifndef RPG_CHARACTER_ALIGNMENT_H
 #define RPG_CHARACTER_ALIGNMENT_H
 
-#include "rpg_character_exports.h"
-
-struct RPG_Character_Export RPG_Character_Alignment
+struct RPG_Character_Alignment
 {
   RPG_Character_AlignmentCivic civic;
   RPG_Character_AlignmentEthic ethic;

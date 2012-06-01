@@ -18,8 +18,6 @@ enum RPG_Character_AlignmentCivic
   RPG_CHARACTER_ALIGNMENTCIVIC_INVALID
 };
 
-#include "rpg_character_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -28,7 +26,7 @@ enum RPG_Character_AlignmentCivic
 typedef std::map<RPG_Character_AlignmentCivic, std::string> RPG_Character_AlignmentCivicToStringTable_t;
 typedef RPG_Character_AlignmentCivicToStringTable_t::const_iterator RPG_Character_AlignmentCivicToStringTableIterator_t;
 
-class RPG_Character_Export RPG_Character_AlignmentCivicHelper
+class RPG_Character_AlignmentCivicHelper
 {
  public:
   inline static void init()

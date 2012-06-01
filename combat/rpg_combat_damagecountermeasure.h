@@ -7,9 +7,7 @@
 #ifndef RPG_COMBAT_DAMAGECOUNTERMEASURE_H
 #define RPG_COMBAT_DAMAGECOUNTERMEASURE_H
 
-#include "rpg_combat_exports.h"
-
-struct RPG_Combat_Export RPG_Combat_DamageCounterMeasure
+struct RPG_Combat_DamageCounterMeasure
 {
   RPG_Common_CounterMeasure type;
   RPG_Combat_Check check;

@@ -712,9 +712,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
                                                                     std::numeric_limits<int>::max());
   RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
   RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
-  unsigned int floor_column_index = 0;
+  //unsigned int floor_column_index = 0;
   RPG_Graphics_Position_t screen_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                            std::numeric_limits<unsigned int>::max());
+                                                           std::numeric_limits<unsigned int>::max());
   RPG_Map_Size_t map_size = myEngine->getSize(false);
   RPG_Map_Element current_element = MAPELEMENT_INVALID;
   bool is_visible, has_been_seen;
@@ -722,12 +722,12 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
 
   // debug info
-  SDL_Rect rect = {0, 0, 0, 0};
+  //SDL_Rect rect = {0, 0, 0, 0};
   std::ostringstream converter;
   std::string tile_text;
   RPG_Graphics_TextSize_t tile_text_size;
-  RPG_Map_Position_t map_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                    std::numeric_limits<unsigned int>::max());
+//   RPG_Map_Position_t map_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+//                                                    std::numeric_limits<unsigned int>::max());
 
   //// "clear" map "window"
   //clear();
@@ -1866,11 +1866,13 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             for (RPG_Map_PositionsIterator_t iterator = myClientAction.positions.begin();
                  iterator != myClientAction.positions.end();
                  )
-              (RPG_Map_Common_Tools::hasLineOfSight(myClientAction.source,
-                                                    *iterator,
-                                                    obstacles,
-                                                    false) ? iterator++
-                                                           : myClientAction.positions.erase(iterator++));
+              if (RPG_Map_Common_Tools::hasLineOfSight(myClientAction.source,
+                                                       *iterator,
+                                                       obstacles,
+                                                       false))
+		iterator++;
+	      else
+                myClientAction.positions.erase(iterator++);
 
             break;
           }

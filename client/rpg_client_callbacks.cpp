@@ -2261,7 +2261,7 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->xml);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
+  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY);
 #else
   std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
 #endif
@@ -2330,7 +2330,7 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 
   // construct filename
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
+  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY);
 #else
   std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
 #endif
