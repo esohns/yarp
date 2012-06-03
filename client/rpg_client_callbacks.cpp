@@ -2419,7 +2419,7 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   // set start position, if necessary
   if (data->entity.position == std::make_pair(std::numeric_limits<unsigned int>::max(),
                                               std::numeric_limits<unsigned int>::max()))
-    data->entity.position = data->level_engine->getStartPosition();
+    data->entity.position = data->level_engine->getStartPosition(true);
 
   // activate the current character
   RPG_Engine_EntityID_t id = data->level_engine->add(&(data->entity));

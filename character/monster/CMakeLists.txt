@@ -41,6 +41,7 @@ set(RPG_Monster_LIB_SRCS
     rpg_monster_organizationstep.h
     rpg_monster_propertiesxml.h
     rpg_monster_savingthrowmodifiers.h
+    rpg_monster_size.h
     rpg_monster_specialabilityprecondition.h
     rpg_monster_specialabilityproperties.h
     rpg_monster_specialattackprecondition.h
@@ -101,6 +102,7 @@ install(FILES
         rpg_monster_organizationstep.h
         rpg_monster_propertiesxml.h
         rpg_monster_savingthrowmodifiers.h
+        rpg_monster_size.h
         rpg_monster_specialabilityprecondition.h
         rpg_monster_specialabilityproperties.h
         rpg_monster_specialattackprecondition.h

@@ -43,6 +43,7 @@ set(RPG_Character_LIB_SRCS
     rpg_character_common_tools.h
     rpg_character_XML_tools.cpp
     rpg_character_XML_tools.h
+    rpg_character_encumbrance.h
     rpg_character_feat.h
     rpg_character_gender.h
     rpg_character_incl.h
@@ -101,6 +102,7 @@ install(FILES
         rpg_character_common.h
         rpg_character_common_tools.h
         rpg_character_XML_tools.h
+        rpg_character_encumbrance.h
         rpg_character_equipmentslot.h
         rpg_character_feat.h
         rpg_character_gender.h

@@ -95,7 +95,8 @@ class RPG_Engine_Export RPG_Engine
                                const unsigned int&) const; // max (square !) radius
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&,
                                   const bool& = true) const; // locked access ?
-  RPG_Engine_EntityList_t entities(const RPG_Map_Position_t&) const; // sort: position (closest first)
+  RPG_Engine_EntityList_t entities(const RPG_Map_Position_t&, // sort: position (closest first)
+                                   const bool& = true) const; // locked access ?
   bool isMonster(const RPG_Engine_EntityID_t&,
                  const bool& = true) const; // locked access ?
   std::string getName(const RPG_Engine_EntityID_t&,

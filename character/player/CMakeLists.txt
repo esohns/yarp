@@ -16,6 +16,7 @@ set(RPG_Player_LIB_SRCS
     rpg_player_exports.h
     rpg_player.cpp
     rpg_player.h
+    rpg_iplayer.h
     rpg_player_abilities.h
     rpg_player_XML_tree.cpp
     rpg_player_XML_tree.h
@@ -74,6 +75,7 @@ install(FILES
 	rpg_player_playerxml.h
 	rpg_player_spells.h
         rpg_player.h
+	rpg_iplayer.h
         rpg_player_XML_tree.h
         rpg_player_base.h
         rpg_player_common.h

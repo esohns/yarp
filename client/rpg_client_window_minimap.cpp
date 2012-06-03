@@ -242,7 +242,9 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 
       if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
       {
-        if (myClient->hasSeen(active_entity_id, map_position))
+        if (myClient->hasSeen(active_entity_id,
+                              map_position,
+                              false))
         {
           switch (myEngine->getElement(map_position,
                                        false))

@@ -16,6 +16,7 @@ set(RPG_Map_LIB_SRCS
     rpg_map_XML_tree.cpp
     rpg_XMLSchema_XML_tree.h
     rpg_map_position.h
+    rpg_map_doorstate.h
     rpg_map_incl.h
     rpg_map_defines.h
     rpg_map_exports.h
@@ -94,6 +95,7 @@ install(FILES
         stack.hh
         rpg_map_XML_tree.h
         rpg_map_position.h
+	rpg_map_doorstate.h
         rpg_map_incl.h
         DESTINATION include)
 install(TARGETS RPG_Map LIBRARY DESTINATION lib)

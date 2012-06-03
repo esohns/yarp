@@ -7,9 +7,7 @@
 #ifndef RPG_MAGIC_SPELL_PRECONDITIONPROPERTIES_H
 #define RPG_MAGIC_SPELL_PRECONDITIONPROPERTIES_H
 
-#include "rpg_magic_exports.h"
-
-struct RPG_Magic_Export RPG_Magic_Spell_PreconditionProperties
+struct RPG_Magic_Spell_PreconditionProperties
 {
   RPG_Magic_Spell_Precondition type;
   int value;

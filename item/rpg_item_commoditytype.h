@@ -18,8 +18,6 @@ enum RPG_Item_CommodityType
   RPG_ITEM_COMMODITYTYPE_INVALID
 };
 
-#include "rpg_item_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -28,7 +26,7 @@ enum RPG_Item_CommodityType
 typedef std::map<RPG_Item_CommodityType, std::string> RPG_Item_CommodityTypeToStringTable_t;
 typedef RPG_Item_CommodityTypeToStringTable_t::const_iterator RPG_Item_CommodityTypeToStringTableIterator_t;
 
-class RPG_Item_Export RPG_Item_CommodityTypeHelper
+class RPG_Item_CommodityTypeHelper
 {
  public:
   inline static void init()

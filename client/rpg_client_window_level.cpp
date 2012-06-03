@@ -749,8 +749,8 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
     std::advance(begin_row, current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
 
     for (j = diff + i;
-          (j + i) <= sum;
-          j++)
+         (j + i) <= sum;
+         j++)
     {
       current_map_position.first = myView.first + j;
 
@@ -760,7 +760,9 @@ RPG_Client_WindowLevel::draw(SDL_Surface* targetSurface_in,
         continue;
 
       is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
-      has_been_seen = myClient->hasSeen(active_entity_id, current_map_position);
+      has_been_seen = myClient->hasSeen(active_entity_id,
+                                        current_map_position,
+                                        false);
       current_element = myEngine->getElement(current_map_position,
                                               false);
       ACE_ASSERT(current_element != MAPELEMENT_INVALID);
@@ -1438,7 +1440,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
             if (myClientAction.entity_id)
             {
               if (myEngine->isValid(myClientAction.position, false) &&
-                  myClient->hasSeen(myClientAction.entity_id, myClientAction.position))
+                  myClient->hasSeen(myClientAction.entity_id,
+                                    myClientAction.position,
+                                    true))
               {
                 RPG_Graphics_Position_t current_position = myEngine->getPosition(myClientAction.entity_id, false);
                 if (current_position != myClientAction.position)
@@ -1494,7 +1498,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           // step3: set/draw an appropriate cursor
           RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
                                                                                myClientAction.entity_id,
-                                                                               myClient->hasSeen(myClientAction.entity_id, myClientAction.position),
+                                                                               myClient->hasSeen(myClientAction.entity_id,
+                                                                                                 myClientAction.position,
+                                                                                                 true),
                                                                                myClient->mode(),
                                                                                *myEngine,
                                                                                false);
@@ -1574,7 +1580,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
           RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
                                                                                entity_id,
-                                                                               myClient->hasSeen(entity_id, myClientAction.position),
+                                                                               myClient->hasSeen(entity_id,
+                                                                                                 myClientAction.position,
+                                                                                                 true),
                                                                                myClient->mode(),
                                                                                *myEngine,
                                                                                false);
@@ -1882,7 +1890,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
           {
             if (myClientAction.entity_id &&
                 myEngine->isValid(myClientAction.position, false) &&
-                myClient->hasSeen(myClientAction.entity_id, myClientAction.position))
+                myClient->hasSeen(myClientAction.entity_id,
+                                  myClientAction.position,
+                                  true))
             {
               current_position = myEngine->getPosition(myClientAction.entity_id, false);
               if (current_position != myClientAction.position)
@@ -1934,8 +1944,10 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         myClient->action(myClientAction);
 
         // step5: draw tile highlight(s) ?
-        if (myClient->hasSeen(myClientAction.entity_id, myClientAction.position) ||
-            (current_mode == SELECTIONMODE_AIM_CIRCLE)                           ||
+        if (myClient->hasSeen(myClientAction.entity_id,
+                              myClientAction.position,
+                              true)                     ||
+            (current_mode == SELECTIONMODE_AIM_CIRCLE)  ||
             (current_mode == SELECTIONMODE_AIM_SQUARE))
         {
           myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
@@ -1946,7 +1958,9 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
       // set an appropriate cursor
       RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
                                                                            myClientAction.entity_id,
-                                                                           myClient->hasSeen(myClientAction.entity_id, myClientAction.position),
+                                                                           myClient->hasSeen(myClientAction.entity_id,
+                                                                                             myClientAction.position,
+                                                                                             true),
                                                                            myClient->mode(),
                                                                            *myEngine,
                                                                            false);
@@ -1993,7 +2007,8 @@ RPG_Client_WindowLevel::handleEvent(const SDL_Event& event_in,
         myClientAction.entity_id = myEngine->getActive(false);
         if ((myClientAction.entity_id == 0) ||
             (!myClient->hasSeen(myClientAction.entity_id,
-                                map_position)))
+                                map_position,
+                                true)))
         {
           //// unlock engine
           //myEngine->unlock();

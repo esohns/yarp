@@ -816,6 +816,8 @@ RPG_Map_Level::findValid(const RPG_Map_Position_t& center_in,
   for (RPG_Map_PositionsIterator_t iterator = area_out.begin();
        iterator != area_out.end();
        )
-    (isValid(*iterator) ? iterator++
-                        : area_out.erase(iterator++));
+    if (isValid(*iterator))
+      iterator++;
+    else
+      area_out.erase(iterator++);
 }

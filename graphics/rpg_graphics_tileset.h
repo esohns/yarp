@@ -7,9 +7,7 @@
 #ifndef RPG_GRAPHICS_TILESET_H
 #define RPG_GRAPHICS_TILESET_H
 
-#include "rpg_graphics_exports.h"
-
-struct RPG_Graphics_Export RPG_Graphics_TileSet
+struct RPG_Graphics_TileSet
 {
   RPG_Graphics_TileSetType type;
   RPG_Graphics_StyleUnion style;

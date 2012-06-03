@@ -374,8 +374,8 @@ process_arguments(const int& argc_in,
   iniFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   iniFile_out += ACE_TEXT_ALWAYS_CHAR("client");
-#endif
   iniFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   iniFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_INI_FILE);
 
   monsterDictionary_out = config_path;
@@ -2296,13 +2296,6 @@ ACE_TMAIN(int argc_in,
 
     return EXIT_FAILURE;
   } // end IF
-#endif
-
-  // detect memory leaks
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#ifdef _DEBUG
-  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
 #endif
 
   // *PROCESS PROFILE*

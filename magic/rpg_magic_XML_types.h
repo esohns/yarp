@@ -96,13 +96,13 @@ class RPG_Magic_Dictionary_Type_pskel;
 #include <rpg_character_incl.h>
 #include "rpg_magic_incl.h"
 
-#include "../chance/dice/rpg_dice_XML_types.h"
+#include "rpg_dice_XML_types.h"
 
-#include "../common/rpg_common_XML_types.h"
+#include "rpg_common_XML_types.h"
 
-#include "../common/rpg_common_environment_XML_types.h"
+#include "rpg_common_environment_XML_types.h"
 
-#include "../character/rpg_character_XML_types.h"
+#include "rpg_character_XML_types.h"
 
 class RPG_Magic_Export RPG_Magic_School_Type_pskel: public virtual ::xml_schema::string_pskel
 {

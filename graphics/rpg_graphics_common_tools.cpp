@@ -956,8 +956,7 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
     converter.clear();
     converter.str((*iterator).file);
     edge_position = (*iterator).file.find(ACE_TEXT_ALWAYS_CHAR("edge"), 7, 4);
-//    if (edge_position == std::string::npos)
-    if (edge_position == -1)
+    if (edge_position == std::string::npos)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to find \"edge\" sequence in filename (was: \"%s\"), aborting\n"),

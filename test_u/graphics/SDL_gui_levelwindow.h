@@ -21,7 +21,8 @@
 #ifndef SDL_GUI_LEVELWINDOW_H
 #define SDL_GUI_LEVELWINDOW_H
 
-#include <rpg_engine_iwindow.h>
+#include <rpg_engine_common.h>
+#include <rpg_engine_iclient.h>
 
 #include <rpg_graphics_common.h>
 #include <rpg_graphics_SDL_window_base.h>
@@ -40,7 +41,7 @@ class RPG_Engine;
 */
 class SDL_GUI_LevelWindow
  : public RPG_Graphics_SDLWindowBase,
-   public RPG_Engine_IWindow
+   public RPG_Engine_IClient
 {
  public:
   SDL_GUI_LevelWindow(// *** SDL window ***
@@ -70,7 +71,7 @@ class SDL_GUI_LevelWindow
                            RPG_Graphics_IWindow*, // target window (NULL: this)
                            bool&);                // return value: redraw ?
 
-  // implement RPG_Engine_IWindow
+  // implement RPG_Engine_IClient
   //virtual void redraw();
   //// *NOTE*: this triggers a complete redraw !
   //virtual void toggleDoor(const RPG_Map_Position_t&);

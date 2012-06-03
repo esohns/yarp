@@ -71,8 +71,8 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-a<[VALUE]> : enforce (minimum) room-size") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MIN_ROOMSIZE != 0) << ACE_TEXT(":") << MAP_GENERATOR_DEF_MIN_ROOMSIZE << ACE_TEXT("; 0:off]") << std::endl;
-  std::cout << ACE_TEXT("-c          : corridor(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-a<[VALUE]> : enforce (minimum) room-size") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MIN_ROOMSIZE != 0) << ACE_TEXT("; 0:off]") << std::endl;
+  std::cout << ACE_TEXT("-c          : generate corridor(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-d<[VALUE]> : enforce maximum #doors/room") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM != 0) << ACE_TEXT(":") << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM << ACE_TEXT("; 0:off]") << std::endl;
   std::cout << ACE_TEXT("-l          : generate level") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_LEVEL << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE << ACE_TEXT("]") << std::endl;
@@ -83,8 +83,9 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT("-o ([FILE]) : output file") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
+  path += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
+                                   : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
+  std::cout << ACE_TEXT("-o <[FILE]> : output file") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p          : print (==dump) result") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_DUMP << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r [VALUE]  : #areas") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_NUM_AREAS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s          : square room(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_SQUARE_ROOMS << ACE_TEXT("]") << std::endl;
@@ -127,6 +128,8 @@ process_arguments(const int argc_in,
 #endif
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  outputFile_out += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
+                                             : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
 
   numAreas_out = MAP_GENERATOR_DEF_NUM_AREAS;
   dump_out = MAP_GENERATOR_DEF_DUMP;
@@ -408,6 +411,8 @@ ACE_TMAIN(int argc,
 #endif
   outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+//   outputFile += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
+//                                          : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
   std::string default_output_file = outputFile;
 
   bool dumpResult                 = MAP_GENERATOR_DEF_DUMP;

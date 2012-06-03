@@ -28,8 +28,6 @@ enum RPG_Graphics_FloorStyle
   RPG_GRAPHICS_FLOORSTYLE_INVALID
 };
 
-#include "rpg_graphics_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -38,7 +36,7 @@ enum RPG_Graphics_FloorStyle
 typedef std::map<RPG_Graphics_FloorStyle, std::string> RPG_Graphics_FloorStyleToStringTable_t;
 typedef RPG_Graphics_FloorStyleToStringTable_t::const_iterator RPG_Graphics_FloorStyleToStringTableIterator_t;
 
-class RPG_Graphics_Export RPG_Graphics_FloorStyleHelper
+class RPG_Graphics_FloorStyleHelper
 {
  public:
   inline static void init()

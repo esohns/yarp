@@ -19,8 +19,6 @@ enum RPG_Magic_Spell_Duration
   RPG_MAGIC_SPELL_DURATION_INVALID
 };
 
-#include "rpg_magic_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -29,7 +27,7 @@ enum RPG_Magic_Spell_Duration
 typedef std::map<RPG_Magic_Spell_Duration, std::string> RPG_Magic_Spell_DurationToStringTable_t;
 typedef RPG_Magic_Spell_DurationToStringTable_t::const_iterator RPG_Magic_Spell_DurationToStringTableIterator_t;
 
-class RPG_Magic_Export RPG_Magic_Spell_DurationHelper
+class RPG_Magic_Spell_DurationHelper
 {
  public:
   inline static void init()

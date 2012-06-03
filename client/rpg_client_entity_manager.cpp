@@ -126,7 +126,7 @@ RPG_Client_Entity_Manager::remove(const RPG_Engine_EntityID_t& id_in)
   SDL_FreeSurface((*iterator).second.graphic);
   SDL_FreeSurface((*iterator).second.bg);
 
-  myCache.erase(iterator);
+  myCache.erase((*iterator).first);
 }
 
 bool

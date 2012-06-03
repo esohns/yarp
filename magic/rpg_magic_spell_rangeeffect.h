@@ -21,8 +21,6 @@ enum RPG_Magic_Spell_RangeEffect
   RPG_MAGIC_SPELL_RANGEEFFECT_INVALID
 };
 
-#include "rpg_magic_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -31,7 +29,7 @@ enum RPG_Magic_Spell_RangeEffect
 typedef std::map<RPG_Magic_Spell_RangeEffect, std::string> RPG_Magic_Spell_RangeEffectToStringTable_t;
 typedef RPG_Magic_Spell_RangeEffectToStringTable_t::const_iterator RPG_Magic_Spell_RangeEffectToStringTableIterator_t;
 
-class RPG_Magic_Export RPG_Magic_Spell_RangeEffectHelper
+class RPG_Magic_Spell_RangeEffectHelper
 {
  public:
   inline static void init()

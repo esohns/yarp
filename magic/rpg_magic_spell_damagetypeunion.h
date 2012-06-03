@@ -7,9 +7,7 @@
 #ifndef RPG_MAGIC_SPELL_DAMAGETYPEUNION_H
 #define RPG_MAGIC_SPELL_DAMAGETYPEUNION_H
 
-#include "rpg_magic_exports.h"
-
-struct RPG_Magic_Export RPG_Magic_Spell_DamageTypeUnion
+struct RPG_Magic_Spell_DamageTypeUnion
 {
   union
   {

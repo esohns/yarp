@@ -7,9 +7,7 @@
 #ifndef RPG_ITEM_BASEPROPERTIES_H
 #define RPG_ITEM_BASEPROPERTIES_H
 
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_BaseProperties
+struct RPG_Item_BaseProperties
 {
   unsigned short int baseWeight;
   RPG_Item_StorePrice baseStorePrice;

@@ -7,9 +7,7 @@
 #ifndef RPG_COMMON_DURATION_H
 #define RPG_COMMON_DURATION_H
 
-#include "rpg_common_exports.h"
-
-struct RPG_Common_Export RPG_Common_Duration
+struct RPG_Common_Duration
 {
   unsigned int activation;
   unsigned int interval;

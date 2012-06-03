@@ -7,9 +7,7 @@
 #ifndef RPG_ITEM_COMMODITYPROPERTIESBASE_H
 #define RPG_ITEM_COMMODITYPROPERTIESBASE_H
 
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_CommodityPropertiesBase
+struct RPG_Item_CommodityPropertiesBase
  : public RPG_Item_PropertiesBase
 {
   RPG_Item_CommodityType type;

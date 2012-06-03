@@ -85,11 +85,11 @@ class RPG_Combat_Damage_Type_pskel;
 #include <rpg_magic_incl.h>
 #include "rpg_combat_incl.h"
 
-#include "../chance/dice/rpg_dice_XML_types.h"
+#include "rpg_dice_XML_types.h"
 
-#include "../common/rpg_common_XML_types.h"
+#include "rpg_common_XML_types.h"
 
-#include "../magic/rpg_magic_XML_types.h"
+#include "rpg_magic_XML_types.h"
 
 class RPG_Combat_Export RPG_Combat_AttackForm_Type_pskel: public virtual ::xml_schema::string_pskel
 {

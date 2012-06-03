@@ -19,8 +19,6 @@ enum RPG_Magic_Spell_Target
   RPG_MAGIC_SPELL_TARGET_INVALID
 };
 
-#include "rpg_magic_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -29,7 +27,7 @@ enum RPG_Magic_Spell_Target
 typedef std::map<RPG_Magic_Spell_Target, std::string> RPG_Magic_Spell_TargetToStringTable_t;
 typedef RPG_Magic_Spell_TargetToStringTable_t::const_iterator RPG_Magic_Spell_TargetToStringTableIterator_t;
 
-class RPG_Magic_Export RPG_Magic_Spell_TargetHelper
+class RPG_Magic_Spell_TargetHelper
 {
  public:
   inline static void init()
