@@ -906,7 +906,7 @@ do_UI(RPG_Engine_Entity& entity_in,
 
             entity_in.position = current_level.map.start;
 
-            SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->getChild(WINDOW_MAP));
+            SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->child(WINDOW_MAP));
             ACE_ASSERT(map_window);
             // *NOTE*: triggers a center/redraw/refresh of the map window !
             // --> but as we're not using the client engine, it doesn't redraw...
@@ -1072,7 +1072,7 @@ do_UI(RPG_Engine_Entity& entity_in,
     // redraw map ?
     if (force_redraw || need_redraw)
     {
-      SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->getChild(WINDOW_MAP));
+      SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->child(WINDOW_MAP));
       ACE_ASSERT(map_window);
 
       try
@@ -1297,7 +1297,7 @@ do_work(const mode_t& mode_in,
       }
 
       // step6: init level state engine
-      SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.getChild(WINDOW_MAP));
+      SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.child(WINDOW_MAP));
       ACE_ASSERT(map_window);
       // *NOTE*: triggers a center/draw/refresh...
       // --> but as we're not using the client engine, it doesn't redraw...

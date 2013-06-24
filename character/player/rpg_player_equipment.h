@@ -73,7 +73,6 @@ class RPG_Player_Export RPG_Player_Equipment
 
  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Equipment(const RPG_Player_Equipment&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Equipment& operator=(const RPG_Player_Equipment&));
 };
 

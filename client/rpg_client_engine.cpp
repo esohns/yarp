@@ -754,17 +754,30 @@ RPG_Client_Engine::mode() const
 
 bool
 RPG_Client_Engine::hasSeen(const RPG_Engine_EntityID_t& id_in,
-                           const RPG_Map_Position_t& position_in) const
+                           const RPG_Map_Position_t& position_in,
+                           const bool& lockedAccess_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::hasSeen"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  if (lockedAccess_in)
+    myLock.acquire();
 
   RPG_Client_SeenPositionsConstIterator_t iterator = mySeenPositions.find(id_in);
   if (iterator == mySeenPositions.end())
+  {
+    if (lockedAccess_in)
+      myLock.release();
+    
     return false;
+  } // end IF
 
-  return ((*iterator).second.find(position_in) != (*iterator).second.end());
+  RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).second.find(position_in);
+  bool result = (iterator2 != (*iterator).second.end());
+  
+  if (lockedAccess_in)
+    myLock.release();
+  
+  return result;
 }
 
 void

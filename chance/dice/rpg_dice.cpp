@@ -33,9 +33,9 @@
 #include <ace/Time_Value.h>
 #include <ace/Log_Msg.h>
 
-#include <stdlib.h>
 #include <algorithm>
 #include <string>
+#include <cmath>
 
 void
 RPG_Dice::init()
@@ -337,7 +337,7 @@ RPG_Dice::farey(const float& decimal_in,
   while ((b <= maxNominator_in) && (d <= maxNominator_in))
   {
     mediant = static_cast<float>(a + c)/static_cast<float>(b + d);
-    if (std::abs(decimal_in - mediant) < epsilon_in)
+    if (std::fabs(decimal_in - mediant) < epsilon_in)
     {
       if (b + d <= maxNominator_in)
         return std::make_pair(a + c, b + d);

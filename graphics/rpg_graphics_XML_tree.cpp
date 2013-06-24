@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -3238,11 +3237,11 @@ _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_,
-                    _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_ + 6,
+                    _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_ + 5,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_ + 5 || _xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -3251,24 +3250,22 @@ _xsd_RPG_Graphics_WindowType_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Graphics_WindowType_XMLTree_Type::
-_xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[6] =
+_xsd_RPG_Graphics_WindowType_XMLTree_Type_literals_[5] =
 {
   "WINDOW_HOTSPOT",
   "WINDOW_MAIN",
   "WINDOW_MAP",
   "WINDOW_MENU",
-  "WINDOW_MESSAGE",
   "WINDOW_MINIMAP"
 };
 
 const RPG_Graphics_WindowType_XMLTree_Type::value RPG_Graphics_WindowType_XMLTree_Type::
-_xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_[6] =
+_xsd_RPG_Graphics_WindowType_XMLTree_Type_indexes_[5] =
 {
   ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_HOTSPOT,
   ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MAIN,
   ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MAP,
   ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MENU,
-  ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MESSAGE,
   ::RPG_Graphics_WindowType_XMLTree_Type::WINDOW_MINIMAP
 };
 

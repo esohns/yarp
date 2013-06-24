@@ -2261,7 +2261,7 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->xml);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
+  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY);
 #else
   std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
 #endif
@@ -2330,7 +2330,7 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 
   // construct filename
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
+  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY);
 #else
   std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
 #endif
@@ -2419,7 +2419,7 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   // set start position, if necessary
   if (data->entity.position == std::make_pair(std::numeric_limits<unsigned int>::max(),
                                               std::numeric_limits<unsigned int>::max()))
-    data->entity.position = data->level_engine->getStartPosition();
+    data->entity.position = data->level_engine->getStartPosition(true);
 
   // activate the current character
   RPG_Engine_EntityID_t id = data->level_engine->add(&(data->entity));

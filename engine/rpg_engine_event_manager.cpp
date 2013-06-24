@@ -272,7 +272,7 @@ RPG_Engine_Event_Manager::remove(const RPG_Engine_EntityID_t& id_in)
     timer_id = (*iterator).second;
     ACE_ASSERT(timer_id != -1);
 
-    myEntityTimers.erase(iterator);
+    myEntityTimers.erase((*iterator).first);
   } // end lock scope
 
   // cancel corresponding activation timer
@@ -551,7 +551,7 @@ RPG_Engine_Event_Manager::remove(const long& id_in)
                id_in));
   ACE_ASSERT(act == (*iterator).second);
   delete (*iterator).second;
-  myTimers.erase(iterator);
+  myTimers.erase((*iterator).first);
 }
 
 void
@@ -576,253 +576,270 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
       next_action.path.clear();
       next_action.target = 0;
 
+      myEngine->lock();
+
+      // step1: check pending action (if any)
+      RPG_Engine_EntitiesIterator_t iterator = myEngine->myEntities.find(event_handle->entity_id);
+      ACE_ASSERT(iterator != myEngine->myEntities.end());
+      if (iterator == myEngine->myEntities.end())
       {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myEngine->myLock);
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+                   event_handle->entity_id));
 
-        // step1: check pending action (if any)
-        RPG_Engine_EntitiesIterator_t iterator = myEngine->myEntities.find(event_handle->entity_id);
-        ACE_ASSERT(iterator != myEngine->myEntities.end());
-        if (iterator == myEngine->myEntities.end())
+        myEngine->unlock();
+        
+        return;
+      } // end IF
+
+      // idle monster ? --> choose strategy
+      if (!(*iterator).second->character->isPlayerCharacter())
+      {
+        bool is_idle = (*iterator).second->actions.empty();
+        if (!is_idle)
+          is_idle = ((*iterator).second->actions.front().command == COMMAND_IDLE);
+        if (is_idle)
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
-                     event_handle->entity_id));
+          // step1: sort targets by distance
+          RPG_Engine_EntityList_t possible_targets = myEngine->entities((*iterator).second->position,
+                                                                        false);
+          ACE_ASSERT(!possible_targets.empty() &&
+                      (possible_targets.front() == (*iterator).first));
+          possible_targets.erase(possible_targets.begin());
 
-           return;
-        } // end IF
+          // step2: remove fellow monsters
+          monster_remove_t monster_remove = {myEngine, false, true};
+          possible_targets.remove_if(monster_remove);
 
-        // idle monster ? --> choose strategy
-        if (!(*iterator).second->character->isPlayerCharacter())
-        {
-          bool is_idle = (*iterator).second->actions.empty();
-          if (!is_idle)
-            is_idle = ((*iterator).second->actions.front().command == COMMAND_IDLE);
-          if (is_idle)
+          // step3: remove invisible (== cannot (currently) see) targets
+          invisible_remove_t invisible_remove = {myEngine, false, (*iterator).first};
+          possible_targets.remove_if(invisible_remove);
+
+          if (possible_targets.empty())
           {
-            // step1: sort targets by distance
-            RPG_Engine_EntityList_t possible_targets = myEngine->entities((*iterator).second->position);
-            ACE_ASSERT(!possible_targets.empty() &&
-                       (possible_targets.front() == (*iterator).first));
-            possible_targets.erase(possible_targets.begin());
+            //ACE_DEBUG((LM_DEBUG,
+            //           ACE_TEXT("no target, continuing\n")));
 
-            // step2: remove fellow monsters
-            monster_remove_t monster_remove = {myEngine, false, true};
-            possible_targets.remove_if(monster_remove);
-
-            // step3: remove invisible (== cannot (currently) see) targets
-            invisible_remove_t invisible_remove = {myEngine, false, (*iterator).first};
-            possible_targets.remove_if(invisible_remove);
-
-            if (possible_targets.empty())
-            {
-              //ACE_DEBUG((LM_DEBUG,
-              //           ACE_TEXT("no target, continuing\n")));
-
-              // --> no active player(s), amble about...
-              next_action.command = COMMAND_IDLE;
-            } // end IF
-            else
-            {
-              // start attacking/pursuing...
-              next_action.command = COMMAND_ATTACK;
-              // *TODO*: implement more strategy here (strongest/weakest target, ...)
-              next_action.target = possible_targets.front();
-            } // end ELSE
-
-            // transition idle --> attack ?
-            if (!(*iterator).second->actions.empty() &&
-                (next_action.command == COMMAND_ATTACK))
-              (*iterator).second->actions.pop_front();
-
-            if ((*iterator).second->actions.empty() ||
-                (next_action.command != COMMAND_IDLE))
-              (*iterator).second->actions.push_back(next_action);
+            // --> no active player(s), amble about...
+            next_action.command = COMMAND_IDLE;
           } // end IF
+          else
+          {
+            // start attacking/pursuing...
+            next_action.command = COMMAND_ATTACK;
+            // *TODO*: implement more strategy here (strongest/weakest target, ...)
+            next_action.target = possible_targets.front();
+          } // end ELSE
+
+          // transition idle --> attack ?
+          if (!(*iterator).second->actions.empty() &&
+              (next_action.command == COMMAND_ATTACK))
+            (*iterator).second->actions.pop_front();
+
+          if ((*iterator).second->actions.empty() ||
+              (next_action.command != COMMAND_IDLE))
+            (*iterator).second->actions.push_back(next_action);
         } // end IF
+      } // end IF
 
-        // idle ? --> nothing to do this round then...
-        if ((*iterator).second->actions.empty())
-          break;
+      // idle ? --> nothing to do this round then...
+      if ((*iterator).second->actions.empty())
+      {
+        myEngine->unlock();
+        
+        break;
+      } // end IF
 
-        // fighting / travelling ?
-        RPG_Engine_Action& current_action = (*iterator).second->actions.front();
-        bool done_current_action = false;
-        bool do_next_action = false;
-        switch (current_action.command)
+      // fighting / travelling ?
+      RPG_Engine_Action& current_action = (*iterator).second->actions.front();
+      bool done_current_action = false;
+      bool do_next_action = false;
+      switch (current_action.command)
+      {
+        case COMMAND_ATTACK:
         {
-          case COMMAND_ATTACK:
+          ACE_ASSERT(current_action.target);
+          RPG_Engine_EntitiesConstIterator_t target = myEngine->myEntities.find(current_action.target);
+          if ((target == myEngine->myEntities.end()) ||
+              RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character)) // target disabled ?
           {
-            ACE_ASSERT(current_action.target);
-            RPG_Engine_EntitiesConstIterator_t target = myEngine->myEntities.find(current_action.target);
-            if ((target == myEngine->myEntities.end()) ||
-                RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character)) // target disabled ?
-            {
-              (*iterator).second->modes.erase(ENTITYMODE_FIGHTING);
-              done_current_action = true;
+            (*iterator).second->modes.erase(ENTITYMODE_FIGHTING);
+            done_current_action = true;
 
-              break; // nothing to do...
-            } // end IF
+            break; // nothing to do...
+          } // end IF
 
-            (*iterator).second->modes.insert(ENTITYMODE_FIGHTING);
+          (*iterator).second->modes.insert(ENTITYMODE_FIGHTING);
 
-            // adjacent ? --> start attack !
-            // *TODO*: compute standard/fullround
-            do_next_action = true;
-            if (myEngine->canReach(event_handle->entity_id,
-                                   (*target).second->position,
-                                   false))
-            {
-              // (try to) attack the opponent
-              next_action.command = COMMAND_ATTACK_FULL;
-              next_action.target = current_action.target;
-            } // end IF
-            else
-            {
-              // (try to) travel there first...
-              next_action.command = COMMAND_TRAVEL;
-              next_action.target = current_action.target;
-            } // end ELSE
-
-            break;
-          }
-          case COMMAND_IDLE:
+          // adjacent ? --> start attack !
+          // *TODO*: compute standard/fullround
+          do_next_action = true;
+          if (myEngine->canReach(event_handle->entity_id,
+                                  (*target).second->position,
+                                  false))
           {
-            // amble around a little bit...
-            const RPG_Engine_LevelMeta_t& level_meta = myEngine->getMeta(false);
-            if (!RPG_Dice::probability(level_meta.amble_probability))
-              break; // not this time...
-            do_next_action = true;
+            // (try to) attack the opponent
+            next_action.command = COMMAND_ATTACK_FULL;
+            next_action.target = current_action.target;
+          } // end IF
+          else
+          {
+            // (try to) travel there first...
+            next_action.command = COMMAND_TRAVEL;
+            next_action.target = current_action.target;
+          } // end ELSE
 
-            next_action.command = COMMAND_STEP;
-            // choose random direction
-            RPG_Map_Direction direction;
-            RPG_Dice_RollResult_t roll_result;
-            do
+          break;
+        }
+        case COMMAND_IDLE:
+        {
+          // amble around a little bit...
+          const RPG_Engine_LevelMeta_t& level_meta = myEngine->getMeta(false);
+          if (!RPG_Dice::probability(level_meta.amble_probability))
+            break; // not this time...
+          do_next_action = true;
+
+          next_action.command = COMMAND_STEP;
+          // choose random direction
+          RPG_Map_Direction direction;
+          RPG_Dice_RollResult_t roll_result;
+          do
+          {
+            direction = DIRECTION_INVALID;
+            roll_result.clear();
+            RPG_Dice::generateRandomNumbers(DIRECTION_MAX,
+                                            1,
+                                            roll_result);
+            direction = static_cast<RPG_Map_Direction>(roll_result.front() - 1);
+            ACE_ASSERT(direction < DIRECTION_MAX);
+
+            next_action.position = myEngine->getPosition((*iterator).first, false);
+            switch (direction)
             {
-              direction = DIRECTION_INVALID;
-              roll_result.clear();
-              RPG_Dice::generateRandomNumbers(DIRECTION_MAX,
-                                              1,
-                                              roll_result);
-              direction = static_cast<RPG_Map_Direction>(roll_result.front() - 1);
-              ACE_ASSERT(direction < DIRECTION_MAX);
-
-              next_action.position = myEngine->getPosition((*iterator).first, false);
-              switch (direction)
+              case DIRECTION_UP:
+                next_action.position.second--; break;
+              case DIRECTION_RIGHT:
+                next_action.position.first++; break;
+              case DIRECTION_DOWN:
+                next_action.position.second++; break;
+              case DIRECTION_LEFT:
+                next_action.position.first--; break;
+              default:
               {
-                case DIRECTION_UP:
-                  next_action.position.second--; break;
-                case DIRECTION_RIGHT:
-                  next_action.position.first++; break;
-                case DIRECTION_DOWN:
-                  next_action.position.second++; break;
-                case DIRECTION_LEFT:
-                  next_action.position.first--; break;
-                default:
-                {
-                  ACE_DEBUG((LM_ERROR,
-                             ACE_TEXT("invalid direction (was: %u), aborting\n"),
-                             direction));
+                ACE_DEBUG((LM_ERROR,
+                            ACE_TEXT("invalid direction (was: %u), aborting\n"),
+                            direction));
 
-                  break;
-                }
-              } // end SWITCH
-            } while (!myEngine->isValid(next_action.position, false));
+                break;
+              }
+            } // end SWITCH
+          } while (!myEngine->isValid(next_action.position, false));
 
-            break;
-          }
-          case COMMAND_TRAVEL:
+          break;
+        }
+        case COMMAND_TRAVEL:
+        {
+          // --> (try to) take the first/next step along a path...
+
+          // sanity check
+          if (current_action.position == (*iterator).second->position)
           {
-            // --> (try to) take the first/next step along a path...
+            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+            done_current_action = true;
+            break; // nothing (more) to do...
+          } // end IF
 
-            // sanity check
-            if (current_action.position == (*iterator).second->position)
+          // step0: chasing a target ?
+          if (current_action.target)
+          {
+            // determine target position
+            RPG_Engine_EntitiesConstIterator_t target = myEngine->myEntities.end();
+            target = myEngine->myEntities.find(current_action.target);
+            if (target == myEngine->myEntities.end())
             {
+              // *NOTE*: --> target has gone...
               (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
               done_current_action = true;
               break; // nothing (more) to do...
             } // end IF
 
-            // step0: chasing a target ?
-            if (current_action.target)
+            current_action.position = (*target).second->position;
+
+            if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
+                                                  current_action.position))
             {
-              // determine target position
-              RPG_Engine_EntitiesConstIterator_t target = myEngine->myEntities.end();
-              target = myEngine->myEntities.find(current_action.target);
-              if (target == myEngine->myEntities.end())
-              {
-                // *NOTE*: --> target has gone...
-                (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-                done_current_action = true;
-                break; // nothing (more) to do...
-              } // end IF
-
-              current_action.position = (*target).second->position;
-
-              if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
-                                                   current_action.position))
-              {
-                // *NOTE*: --> reached target...
-                (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-                done_current_action = true;
-                break; // nothing (more) to do...
-              } // end IF
+              // *NOTE*: --> reached target...
+              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+              done_current_action = true;
+              break; // nothing (more) to do...
             } // end IF
-            ACE_ASSERT(current_action.position != (*iterator).second->position);
+          } // end IF
+          ACE_ASSERT(current_action.position != (*iterator).second->position);
 
-            // step1: compute path first/again ?
-            if (current_action.path.empty() ||
-                (current_action.path.back().first != current_action.position)) // pursuit mode...
+          // step1: compute path first/again ?
+          if (current_action.path.empty() ||
+              (current_action.path.back().first != current_action.position)) // pursuit mode...
+          {
+            current_action.path.clear();
+
+            // obstacles:
+            // - walls
+            // - (closed, locked) doors
+            // - entities
+            RPG_Map_Positions_t obstacles = myEngine->getObstacles(true,   // include entities
+                                                                   false); // don't lock
+            // - start, end positions never are obstacles...
+            obstacles.erase((*iterator).second->position);
+            obstacles.erase(current_action.position);
+
+            if (!myEngine->findPath((*iterator).second->position,
+                                    current_action.position,
+                                    obstacles,
+                                    current_action.path))
             {
-              current_action.path.clear();
-
-              // obstacles:
-              // - walls
-              // - (closed, locked) doors
-              // - entities
-              RPG_Map_Positions_t obstacles = myEngine->getObstacles(true);
-              // - start, end positions never are obstacles...
-              obstacles.erase((*iterator).second->position);
-              obstacles.erase(current_action.position);
-
-              if (!myEngine->findPath((*iterator).second->position,
-                                      current_action.position,
-                                      obstacles,
-                                      current_action.path))
-              {
-                // *NOTE*: --> no/invalid path, cannot proceed...
-                (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
-                done_current_action = true;
-                break; // stop & cancel path...
-              } // end IF
-              ACE_ASSERT(!current_action.path.empty());
-              ACE_ASSERT((current_action.path.front().first == (*iterator).second->position) &&
-                         (current_action.path.back().first == current_action.position));
-              current_action.path.pop_front();
-
-              (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
+              // *NOTE*: --> no/invalid path, cannot proceed...
+              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+              done_current_action = true;
+              break; // stop & cancel path...
             } // end IF
             ACE_ASSERT(!current_action.path.empty());
-
-            // step2: (try to) step to the next adjacent position
-            next_action.command = COMMAND_STEP;
-            next_action.position = current_action.path.front().first;
-            do_next_action = true;
-
+            ACE_ASSERT((current_action.path.front().first == (*iterator).second->position) &&
+                        (current_action.path.back().first == current_action.position));
             current_action.path.pop_front();
 
-            break;
-          }
-          default:
-            break; // the engine executes these...
-        } // end SWITCH
+            (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
+          } // end IF
+          ACE_ASSERT(!current_action.path.empty());
 
-        if (done_current_action)
-          (*iterator).second->actions.pop_front();
-        if (do_next_action)
-          (*iterator).second->actions.push_front(next_action);
-      } // end lock scope
+          // step2: (try to) step to the next adjacent position
+          next_action.command = COMMAND_STEP;
+          next_action.position = current_action.path.front().first;
+          do_next_action = true;
 
+          // step3: check: done ?
+          current_action.path.pop_front();
+          done_current_action = current_action.path.empty();
+          if (done_current_action)
+          {
+            ACE_ASSERT(next_action.position == current_action.position);
+
+            // *NOTE*: --> reached target...
+            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+          } // end IF
+
+          break;
+        }
+        default:
+          break; // the engine executes these...
+      } // end SWITCH
+
+      if (done_current_action)
+        (*iterator).second->actions.pop_front();
+      if (do_next_action)
+        (*iterator).second->actions.push_front(next_action);
+
+      myEngine->unlock();
+      
       break;
     }
     case EVENT_ENTITY_SPAWN:
@@ -944,8 +961,6 @@ RPG_Engine_Event_Manager::invisible_remove_t::operator()(const RPG_Engine_Entity
   // sanity check(s)
   ACE_ASSERT(engine);
   ACE_ASSERT(entity_id);
-
-  RPG_Map_Position_t position = engine->getPosition(id_in, locked_access);
 
   return !engine->canSee(entity_id,
                          id_in,

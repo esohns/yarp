@@ -16,8 +16,6 @@ enum RPG_Graphics_HotspotType
   RPG_GRAPHICS_HOTSPOTTYPE_INVALID
 };
 
-#include "rpg_graphics_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -26,7 +24,7 @@ enum RPG_Graphics_HotspotType
 typedef std::map<RPG_Graphics_HotspotType, std::string> RPG_Graphics_HotspotTypeToStringTable_t;
 typedef RPG_Graphics_HotspotTypeToStringTable_t::const_iterator RPG_Graphics_HotspotTypeToStringTableIterator_t;
 
-class RPG_Graphics_Export RPG_Graphics_HotspotTypeHelper
+class RPG_Graphics_HotspotTypeHelper
 {
  public:
   inline static void init()

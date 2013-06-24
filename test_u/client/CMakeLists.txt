@@ -7,8 +7,8 @@ pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
 pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
 pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
 pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+pkg_check_modules(PKG_CONFIG_MODULE_GTHREAD REQUIRED gthread-2.0)
 pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
@@ -29,8 +29,8 @@ include_directories(${PKG_CONFIG_MODULE_XERCES_C_INCLUDE_DIRS}
                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
                     ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS})
+                    ${PKG_CONFIG_MODULE_GTHREAD_INCLUDE_DIRS}
+                    ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -40,7 +40,7 @@ set(client_gui_SRCS rpg_client_gui.cpp)
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
-set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS "DATADIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
+set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
 
 add_executable(client_gui ${client_gui_SRCS})
 
@@ -54,8 +54,8 @@ target_link_libraries(client_gui
                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                       ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES})
+                      ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES})
 
 target_link_libraries(client_gui
                       ACE

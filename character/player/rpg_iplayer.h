@@ -34,6 +34,9 @@
 class RPG_IPlayer
 {
  public:
+  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
+  // -Wno-non-virtual-dtor in the project settings...
+   
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus(const RPG_Common_Attribute&, // modifier
                                                          const RPG_Combat_AttackSituation&) const = 0;
   virtual signed char getArmorClass(const RPG_Combat_DefenseSituation&) const = 0;
@@ -53,10 +56,6 @@ class RPG_IPlayer
 
   virtual void status() const = 0;
   virtual void dump() const = 0;
-
- private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_IPlayer());
 };
 
 #endif

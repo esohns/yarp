@@ -19,8 +19,6 @@ enum RPG_Common_Track
   RPG_COMMON_TRACK_INVALID
 };
 
-#include "rpg_common_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -29,7 +27,7 @@ enum RPG_Common_Track
 typedef std::map<RPG_Common_Track, std::string> RPG_Common_TrackToStringTable_t;
 typedef RPG_Common_TrackToStringTable_t::const_iterator RPG_Common_TrackToStringTableIterator_t;
 
-class RPG_Common_Export RPG_Common_TrackHelper
+class RPG_Common_TrackHelper
 {
  public:
   inline static void init()

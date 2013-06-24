@@ -20,8 +20,6 @@ enum RPG_Item_ArmorCategory
   RPG_ITEM_ARMORCATEGORY_INVALID
 };
 
-#include "rpg_item_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -30,7 +28,7 @@ enum RPG_Item_ArmorCategory
 typedef std::map<RPG_Item_ArmorCategory, std::string> RPG_Item_ArmorCategoryToStringTable_t;
 typedef RPG_Item_ArmorCategoryToStringTable_t::const_iterator RPG_Item_ArmorCategoryToStringTableIterator_t;
 
-class RPG_Item_Export RPG_Item_ArmorCategoryHelper
+class RPG_Item_ArmorCategoryHelper
 {
  public:
   inline static void init()

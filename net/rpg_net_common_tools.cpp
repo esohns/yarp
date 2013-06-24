@@ -299,13 +299,9 @@ RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
   if (!port_in)
   {
     std::string::size_type last_colon_pos = result.find_last_of(':',
-		                                                        -1); // begin searching at the end !
-//                                                                std::string::npos); // begin searching at the end !
-//    if (last_colon_pos != std::string::npos)
-    if (last_colon_pos != -1)
-    {
+                                                                std::string::npos); // begin searching at the end !
+    if (last_colon_pos != std::string::npos)
       result = result.substr(0, last_colon_pos);
-    } // end IF
   } // end IF
 
   return result;
@@ -1098,7 +1094,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
   ACE_OS::memset(&ip,
                  0,
                  sizeof(ip));
-  sockaddr_in* addr_handle = NULL;
+//   sockaddr_in* addr_handle = NULL;
   for (size_t i = 0;
        i < count;
        i++)
@@ -1109,7 +1105,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
                    sizeof(ip));
 
     // reset address handle
-    addr_handle = NULL;
+//     addr_handle = NULL;
 
     // sanity check: only support IPv4 (for now)
     if (addr_array[i].get_type() != AF_INET)

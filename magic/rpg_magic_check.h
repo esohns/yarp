@@ -7,9 +7,7 @@
 #ifndef RPG_MAGIC_CHECK_H
 #define RPG_MAGIC_CHECK_H
 
-#include "rpg_magic_exports.h"
-
-struct RPG_Magic_Export RPG_Magic_Check
+struct RPG_Magic_Check
 {
   RPG_Magic_CheckTypeUnion type;
   unsigned char difficultyClass;

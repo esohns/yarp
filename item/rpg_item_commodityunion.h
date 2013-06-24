@@ -7,9 +7,7 @@
 #ifndef RPG_ITEM_COMMODITYUNION_H
 #define RPG_ITEM_COMMODITYUNION_H
 
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_CommodityUnion
+struct RPG_Item_CommodityUnion
 {
   union
   {

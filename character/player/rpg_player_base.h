@@ -109,20 +109,20 @@ class RPG_Player_Export RPG_Player_Base
 
  protected:
   RPG_Player_Base(// base attributes
-				          const std::string&,                // name
-				          const RPG_Character_Alignment&,    // alignment
-				          const RPG_Character_Attributes&,   // base attributes
-				          const RPG_Character_Skills_t&,     // skills
-				          const RPG_Character_Feats_t&,      // base feats
-				          const RPG_Character_Abilities_t&,  // base abilities
-				          const unsigned short int&,         // max HP
-				          const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
-				          // current status
-				          const RPG_Character_Conditions_t&, // condition
-				          const short int&,                  // HP
-				          const unsigned int&,               // wealth (GP)
-				          const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
-				          const RPG_Item_List_t&);           // list of (carried) items
+		  const std::string&,                // name
+		  const RPG_Character_Alignment&,    // alignment
+		  const RPG_Character_Attributes&,   // base attributes
+		  const RPG_Character_Skills_t&,     // skills
+		  const RPG_Character_Feats_t&,      // base feats
+		  const RPG_Character_Abilities_t&,  // base abilities
+		  const unsigned short int&,         // max HP
+		  const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
+		  // current status
+		  const RPG_Character_Conditions_t&, // condition
+		  const short int&,                  // HP
+		  const unsigned int&,               // wealth (GP)
+		  const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
+		  const RPG_Item_List_t&);           // list of (carried) items
   RPG_Player_Base(const RPG_Player_Base&);
 
 //   RPG_Player_Base& operator=(const RPG_Player_Base&);

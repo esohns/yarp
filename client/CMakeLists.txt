@@ -29,27 +29,36 @@ set(RPG_Client_LIB_SRCS
     rpg_client_callbacks.cpp
     rpg_client_callbacks.h
     rpg_client_common.h
+    rpg_client_common_tools.h
+    rpg_client_common_tools.cpp
     rpg_client_defines.h
+    rpg_client_engine.h
+    rpg_client_engine.cpp
+    rpg_client_entity_manager.h
+    rpg_client_entity_manager.cpp
     rpg_client_exports.h
+    rpg_client_iwindow.h
+    rpg_client_iwindow_level.h
+    rpg_client_ui_tools.h
+    rpg_client_ui_tools.cpp
     rpg_client_window_level.cpp
     rpg_client_window_level.h
     rpg_client_window_main.cpp
     rpg_client_window_main.h
     rpg_client_window_minimap.h
     rpg_client_window_minimap.cpp
-    rpg_client_engine.h
-    rpg_client_engine.cpp
-    rpg_client_common_tools.h
-    rpg_client_common_tools.cpp)
+#     rpg_client_window_message.h
+#     rpg_client_window_message.cpp
+)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Client_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
 endif()
-set_source_files_properties(${RPG_Client_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS "RPG_CLIENT_BUILD_DLL;RPG_GRAPHICS_HAS_DLL=1")
+set_source_files_properties(${RPG_Client_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS "RPG_CLIENT_BUILD_DLL;RPG_ENGINE_HAS_DLL=1;RPG_GRAPHICS_HAS_DLL=1;RPG_SOUND_HAS_DLL=1")
 
 add_library(RPG_Client SHARED ${RPG_Client_LIB_SRCS})
 
-add_dependencies(RPG_Client RPG_Graphics RPG_Engine RPG_Map)
+add_dependencies(RPG_Client RPG_Sound RPG_Graphics RPG_Engine RPG_Map)
 
 set_target_properties(RPG_Client PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
@@ -61,12 +70,17 @@ install(FILES
 install(FILES
         rpg_client_callbacks.h
         rpg_client_common.h
+        rpg_client_common_tools.h
         rpg_client_defines.h
+        rpg_client_engine.h
+        rpg_client_entity_manager.h
         rpg_client_exports.h
+        rpg_client_iwindow.h
+        rpg_client_iwindow_level.h
+        rpg_client_ui_tools.h
         rpg_client_window_level.h
         rpg_client_window_main.h
         rpg_client_window_minimap.h
-        rpg_client_engine.h
-        rpg_client_common_tools.h
+# 	rpg_client_window_message.h
         DESTINATION include)
 install(TARGETS RPG_Client LIBRARY DESTINATION lib)

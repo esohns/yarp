@@ -37,8 +37,6 @@ enum RPG_Magic_Domain
   RPG_MAGIC_DOMAIN_INVALID
 };
 
-#include "rpg_magic_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -47,7 +45,7 @@ enum RPG_Magic_Domain
 typedef std::map<RPG_Magic_Domain, std::string> RPG_Magic_DomainToStringTable_t;
 typedef RPG_Magic_DomainToStringTable_t::const_iterator RPG_Magic_DomainToStringTableIterator_t;
 
-class RPG_Magic_Export RPG_Magic_DomainHelper
+class RPG_Magic_DomainHelper
 {
  public:
   inline static void init()

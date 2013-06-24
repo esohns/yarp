@@ -7,9 +7,7 @@
 #ifndef RPG_ITEM_WEAPONPROPERTIESXML_H
 #define RPG_ITEM_WEAPONPROPERTIESXML_H
 
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_WeaponPropertiesXML
+struct RPG_Item_WeaponPropertiesXML
  : public RPG_Item_WeaponPropertiesBase
 {
   signed char toHitModifier;

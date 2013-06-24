@@ -41,6 +41,8 @@
 
 #include <ace/Log_Msg.h>
 
+#include <cmath>
+
 // init statics
 ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> RPG_Engine::myCurrentID = 1;
 
@@ -439,7 +441,7 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
   float squares_per_round = temp;
   squares_per_round = (1.0F / squares_per_round);
   squares_per_round *= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
-  float fractional = ::modf(squares_per_round, &squares_per_round);
+  float fractional = std::modf(squares_per_round, &squares_per_round);
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->add(id,
                                                       ACE_Time_Value(static_cast<time_t>(squares_per_round),
                                                                      static_cast<suseconds_t>(fractional * 1000000.0F)));
@@ -936,25 +938,27 @@ RPG_Engine::hasEntity(const RPG_Map_Position_t& position_in,
 }
 
 RPG_Engine_EntityList_t
-RPG_Engine::entities(const RPG_Map_Position_t& position_in) const
+RPG_Engine::entities(const RPG_Map_Position_t& position_in,
+                     const bool& lockedAccess_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::entities"));
 
   RPG_Engine_EntityList_t result;
 
-  myLock.acquire();
-
+  if (lockedAccess_in)
+    myLock.acquire();
+  
   // step1: retrieve entities
   for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
         iterator != myEntities.end();
         iterator++)
     result.push_back((*iterator).first);
 
+  if (lockedAccess_in)
+    myLock.release();
+    
   // step2: sort entity list
   distance_sort_t distance_sort = {this, false, position_in};
-
-  myLock.release();
-
   result.sort(distance_sort);
 
   return result;
@@ -1152,11 +1156,13 @@ RPG_Engine::getVisiblePositions(const RPG_Engine_EntityID_t& id_in,
   for (RPG_Map_PositionsConstIterator_t iterator = positions_out.begin();
        iterator != positions_out.end();
        )
-    (RPG_Map_Common_Tools::hasLineOfSight(current_position,
-                                          *iterator,
-                                          obstacles,
-                                          true) ? iterator++
-                                                 : positions_out.erase(iterator++));
+    if (RPG_Map_Common_Tools::hasLineOfSight(current_position,
+                                             *iterator,
+                                             obstacles,
+                                             true))
+      iterator++;
+    else
+      positions_out.erase(iterator++);
 }
 
 bool
@@ -1571,7 +1577,6 @@ RPG_Engine::handleEntities()
 
   bool action_complete = true;
   RPG_Engine_EntityID_t remove_id = 0;
-  bool do_quit = false;
   RPG_Engine_ClientNotifications_t notifications;
 
   {
@@ -1771,7 +1776,7 @@ RPG_Engine::handleEntities()
             float squares_per_round = temp;
             squares_per_round = (1.0F / squares_per_round);
             squares_per_round *= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
-            float fractional = ::modf(squares_per_round, &squares_per_round);
+            float fractional = std::modf(squares_per_round, &squares_per_round);
             RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->reschedule((*iterator).first,
                                                                        ACE_Time_Value(static_cast<time_t>(squares_per_round),
                                                                                       static_cast<suseconds_t>(fractional * 1000000.0F)));
@@ -1790,7 +1795,7 @@ RPG_Engine::handleEntities()
             float squares_per_round = temp;
             squares_per_round = 1.0F / squares_per_round;
             squares_per_round /= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
-            float fractional = ::modf(squares_per_round, &squares_per_round);
+            float fractional = std::modf(squares_per_round, &squares_per_round);
             RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->reschedule((*iterator).first,
                                                                        ACE_Time_Value(static_cast<time_t>(squares_per_round),
                                                                                       static_cast<suseconds_t>(fractional * 1000000.0F)));

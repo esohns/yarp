@@ -352,7 +352,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   std::ostringstream converter;
   std::string tile_text;
   RPG_Graphics_TextSize_t tile_text_size;
-  RPG_Position_t map_position = std::make_pair(0, 0);
+//   RPG_Position_t map_position = std::make_pair(0, 0);
   RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
   RPG_Engine_EntityID_t entity_id = 0;
 
@@ -1405,14 +1405,10 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
 
       return;
     }
-    case COMMAND_E2C_ENTITY_REMOVE:
-    {
-      ACE_ASSERT(parameters_in.size() == 1);
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()));
-
+    case COMMAND_E2C_ENTITY_HIT:
+    case COMMAND_E2C_ENTITY_MISS:
       return;
-    }
-    case COMMAND_E2C_ENTITY_POSITION_UPDATE:
+    case COMMAND_E2C_ENTITY_POSITION:
     {
       ACE_ASSERT(parameters_in.size() == 2);
 
@@ -1429,7 +1425,14 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
 
       break;
     }
-    case COMMAND_E2C_ENTITY_VISION_UPDATE:
+    case COMMAND_E2C_ENTITY_REMOVE:
+    {
+      ACE_ASSERT(parameters_in.size() == 1);
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()));
+      
+      return;
+    }
+    case COMMAND_E2C_ENTITY_VISION:
     {
       ACE_ASSERT(parameters_in.size() == 2);
 

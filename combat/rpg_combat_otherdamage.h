@@ -7,9 +7,7 @@
 #ifndef RPG_COMBAT_OTHERDAMAGE_H
 #define RPG_COMBAT_OTHERDAMAGE_H
 
-#include "rpg_combat_exports.h"
-
-struct RPG_Combat_Export RPG_Combat_OtherDamage
+struct RPG_Combat_OtherDamage
 {
   RPG_Combat_OtherDamageType type;
   signed char modifier;

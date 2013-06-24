@@ -105,13 +105,13 @@ class RPG_Magic_Dictionary_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "../chance/dice/rpg_dice_XML_tree.h"
+#include "rpg_dice_XML_tree.h"
 
-#include "../common/rpg_common_XML_tree.h"
+#include "rpg_common_XML_tree.h"
 
-#include "../common/rpg_common_environment_XML_tree.h"
+#include "rpg_common_environment_XML_tree.h"
 
-#include "../character/rpg_character_XML_tree.h"
+#include "rpg_character_XML_tree.h"
 
 class RPG_Magic_Export RPG_Magic_School_XMLTree_Type: public ::xml_schema::string
 {

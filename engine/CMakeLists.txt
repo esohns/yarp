@@ -16,21 +16,28 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../chance
 
 ########### next target ###############
 set(RPG_Engine_LIB_SRCS
-    rpg_XMLSchema_XML_tree.h
-    rpg_engine_XML_tree.cpp
-    rpg_engine_XML_tree.h
-    rpg_engine_common.h
-    rpg_engine_iwindow.h
-    rpg_engine_incl.h
+    rpg_engine.cpp
+    rpg_engine.h
     rpg_engine_command.h
+    rpg_engine_common.h
     rpg_engine_common_tools.cpp
     rpg_engine_common_tools.h
     rpg_engine_defines.h
+    rpg_engine_entitymode.h
+    rpg_engine_event_common.h
+    rpg_engine_event_manager.cpp
+    rpg_engine_event_manager.h
     rpg_engine_exports.h
+    rpg_engine_iclient.h
+    rpg_engine_incl.h
+    rpg_engine_level.cpp
+    rpg_engine_level.h
     rpg_engine_messagequeue.cpp
     rpg_engine_messagequeue.h
-    rpg_engine_level.cpp
-    rpg_engine_level.h)
+    rpg_engine_XML_tree.cpp
+    rpg_engine_XML_tree.h
+    rpg_XMLSchema_XML_tree.h
+    rpg_XMLSchema_XML_types.h)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Engine_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
@@ -57,15 +64,19 @@ set_target_properties(RPG_Engine PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(FILES rpg_engine.xsd
         DESTINATION share/RPG/config)
 install(FILES
-        rpg_engine_XML_tree.h
-        rpg_engine_common.h
-        rpg_engine_incl.h
-        rpg_engine_iwindow.h
+        rpg_engine.h
         rpg_engine_command.h
+        rpg_engine_common.h
         rpg_engine_common_tools.h
         rpg_engine_defines.h
+        rpg_engine_entitymode.h
+        rpg_engine_event_common.h
+        rpg_engine_event_manager.h
         rpg_engine_exports.h
-        rpg_engine_messagequeue.h
+        rpg_engine_iclient.h
+        rpg_engine_incl.h
         rpg_engine_level.h
+        rpg_engine_messagequeue.h
+        rpg_engine_XML_tree.h
         DESTINATION include)
 install(TARGETS RPG_Engine LIBRARY DESTINATION lib)

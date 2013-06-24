@@ -33,8 +33,6 @@ enum RPG_Magic_Descriptor
   RPG_MAGIC_DESCRIPTOR_INVALID
 };
 
-#include "rpg_magic_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -43,7 +41,7 @@ enum RPG_Magic_Descriptor
 typedef std::map<RPG_Magic_Descriptor, std::string> RPG_Magic_DescriptorToStringTable_t;
 typedef RPG_Magic_DescriptorToStringTable_t::const_iterator RPG_Magic_DescriptorToStringTableIterator_t;
 
-class RPG_Magic_Export RPG_Magic_DescriptorHelper
+class RPG_Magic_DescriptorHelper
 {
  public:
   inline static void init()

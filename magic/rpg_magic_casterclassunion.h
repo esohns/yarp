@@ -7,9 +7,7 @@
 #ifndef RPG_MAGIC_CASTERCLASSUNION_H
 #define RPG_MAGIC_CASTERCLASSUNION_H
 
-#include "rpg_magic_exports.h"
-
-struct RPG_Magic_Export RPG_Magic_CasterClassUnion
+struct RPG_Magic_CasterClassUnion
 {
   union
   {

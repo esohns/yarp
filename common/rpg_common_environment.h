@@ -7,9 +7,7 @@
 #ifndef RPG_COMMON_ENVIRONMENT_H
 #define RPG_COMMON_ENVIRONMENT_H
 
-#include "rpg_common_exports.h"
-
-struct RPG_Common_Export RPG_Common_Environment
+struct RPG_Common_Environment
 {
   RPG_Common_Plane plane;
   RPG_Common_Terrain terrain;

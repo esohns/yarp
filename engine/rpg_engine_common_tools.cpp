@@ -1348,7 +1348,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 //                  ACE_TEXT("player: \"%s\" attack #%d: base attack bonus: %d\n"),
 //                  player_base->getName().c_str(),
 //                  index,
-//                  static_cast<int> (*iterator)));
+//                  static_cast<int>(*iterator)));
 //     } // end FOR
 
     // --> check primary weapon

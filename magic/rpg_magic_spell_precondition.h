@@ -33,8 +33,6 @@ enum RPG_Magic_Spell_Precondition
   RPG_MAGIC_SPELL_PRECONDITION_INVALID
 };
 
-#include "rpg_magic_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -43,7 +41,7 @@ enum RPG_Magic_Spell_Precondition
 typedef std::map<RPG_Magic_Spell_Precondition, std::string> RPG_Magic_Spell_PreconditionToStringTable_t;
 typedef RPG_Magic_Spell_PreconditionToStringTable_t::const_iterator RPG_Magic_Spell_PreconditionToStringTableIterator_t;
 
-class RPG_Magic_Export RPG_Magic_Spell_PreconditionHelper
+class RPG_Magic_Spell_PreconditionHelper
 {
  public:
   inline static void init()

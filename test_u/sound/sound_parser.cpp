@@ -581,7 +581,6 @@ ACE_TMAIN(int argc,
   bool printVersionAndExit = false;
   bool validateXML = true;
 
-  unsigned int cacheSize     = SOUNDPARSER_DEF_SOUND_CACHESIZE;
   SDL_audio_config_t audio_config;
   audio_config.frequency     = SOUNDPARSER_DEF_AUDIO_FREQUENCY;
   audio_config.format        = SOUNDPARSER_DEF_AUDIO_FORMAT;

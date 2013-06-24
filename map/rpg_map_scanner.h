@@ -861,6 +861,10 @@ int RPG_Map_Scanner_get_lineno (yyscan_t yyscanner );
 
 void RPG_Map_Scanner_set_lineno (int line_number ,yyscan_t yyscanner );
 
+int RPG_Map_Scanner_get_column  (yyscan_t yyscanner );
+
+void RPG_Map_Scanner_set_column (int column_no ,yyscan_t yyscanner );
+
 /* %if-bison-bridge */
 /* %endif */
 
@@ -956,6 +960,6 @@ extern int RPG_Map_Scanner_lex (yyscan_t yyscanner);
 #line 89 "./map_scanner.l"
 
 
-#line 960 "rpg_map_scanner.h"
+#line 964 "rpg_map_scanner.h"
 #undef RPG_Map_Scanner_IN_HEADER
 #endif /* RPG_Map_Scanner_HEADER_H */

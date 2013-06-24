@@ -2,7 +2,7 @@
 //  or project specific include files that are used frequently, but
 //      are changed infrequently
 //
-
+#if defined _MSC_VER
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 
 // *NOTE*: workaround for ACE_WIN32/64
@@ -10,6 +10,7 @@
 
 // Windows Header Files
 #include <windows.h>
+#endif
 
 // System Library Header Files
 #include <ace/OS.h>

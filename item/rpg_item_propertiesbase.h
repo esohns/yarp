@@ -7,9 +7,7 @@
 #ifndef RPG_ITEM_PROPERTIESBASE_H
 #define RPG_ITEM_PROPERTIESBASE_H
 
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_PropertiesBase
+struct RPG_Item_PropertiesBase
  : public RPG_Item_BaseProperties
 {
   RPG_Magic_School aura;

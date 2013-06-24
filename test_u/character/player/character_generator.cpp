@@ -1003,7 +1003,6 @@ generate_entity(const RPG_Player& player_in,
                                    std::numeric_limits<unsigned int>::max());
   result.sprite = sprite_in;
   result.is_spawned = false;
-  result.activation_timer = -1;
 
   return result;
 }

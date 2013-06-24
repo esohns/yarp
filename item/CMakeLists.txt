@@ -26,9 +26,18 @@ set(RPG_Item_LIB_SRCS
     rpg_item_base.cpp
     rpg_item_base.h
     rpg_item_baseproperties.h
+    rpg_item_commodity.cpp
+    rpg_item_commodity.h
+    rpg_item_commoditybeverage.h
+    rpg_item_commoditylight.h
+    rpg_item_commoditypropertiesbase.h
+    rpg_item_commoditytype.h
+    rpg_item_commodityunion.h
     rpg_item_common.h
     rpg_item_common_tools.cpp
     rpg_item_common_tools.h
+    rpg_item_common_XML_tools.cpp
+    rpg_item_common_XML_tools.h
     rpg_item_creationcost.h
     rpg_item_criticalhitproperties.h
     rpg_item_defines.h
@@ -90,8 +99,15 @@ install(FILES
         rpg_item_armortype.h
         rpg_item_base.h
         rpg_item_baseproperties.h
+	rpg_item_commodity.h
+	rpg_item_commoditybeverage.h
+	rpg_item_commoditylight.h
+	rpg_item_commoditypropertiesbase.h
+	rpg_item_commoditytype.h
+	rpg_item_commodityunion.h
         rpg_item_common.h
         rpg_item_common_tools.h
+	rpg_item_common_XML_tools.h
         rpg_item_creationcost.h
         rpg_item_criticalhitproperties.h
         rpg_item_defines.h
