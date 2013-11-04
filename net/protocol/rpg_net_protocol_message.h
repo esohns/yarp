@@ -23,7 +23,7 @@
 
 #include "rpg_net_protocol_IRCmessage.h"
 
-#include <rpg_stream_data_message_base.h>
+#include "rpg_stream_data_message_base.h"
 
 #include <ace/Global_Macros.h>
 

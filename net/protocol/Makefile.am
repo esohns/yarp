@@ -1,6 +1,7 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = -I$(top_srcdir)/../common -I$(srcdir)/../stream
 
 SUBDIRS = scripts
 
@@ -29,4 +30,4 @@ libRPG_Net_Protocol_la_SOURCES = location.hh position.hh \
 	rpg_net_protocol_sessionmessage.cpp rpg_net_protocol_sessionmessage.h rpg_net_protocol_sockethandler.cpp \
 	rpg_net_protocol_sockethandler.h rpg_net_protocol_stream.cpp rpg_net_protocol_stream.h \
 	rpg_net_protocol_tools.cpp rpg_net_protocol_tools.h stack.hh
-libRPG_Net_Protocol_la_CPPFLAGS = -I$(srcdir)/..
+dnl libRPG_Net_Protocol_la_CPPFLAGS = -I$(srcdir)/..

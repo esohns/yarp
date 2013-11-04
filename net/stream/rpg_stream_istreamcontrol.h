@@ -21,7 +21,7 @@
 #ifndef RPG_STREAM_ISTREAMCONTROL_H
 #define RPG_STREAM_ISTREAMCONTROL_H
 
-#include <rpg_common_icontrol.h>
+#include "rpg_common_icontrol.h"
 
 class RPG_Stream_IStreamControl
  : public RPG_Common_IControl

@@ -1,12 +1,13 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = -I$(top_srcdir)/../common
 
 include_HEADERS = rpg_stream.h rpg_stream_allocatorheap.h rpg_stream_base.h \
 	rpg_stream_base.i rpg_stream_counter.h rpg_stream_data_message_base.h \
 	rpg_stream_data_message_base.i rpg_stream_datablockallocatorheap.h rpg_stream_defines.h \
 	rpg_stream_headmoduletask.h rpg_stream_headmoduletask_base.h rpg_stream_headmoduletask_base.i \
-	rpg_stream_iallocator.h rpg_stream_icontrol.h rpg_stream_idumpstate.h \
+	rpg_stream_iallocator.h rpg_stream_istreamcontrol.h \
 	rpg_stream_imessagequeue.h rpg_stream_irefcount.h rpg_stream_istreamcontrol.h rpg_stream_itask.h \
 	rpg_stream_itask_base.h rpg_stream_message_base.h rpg_stream_messageallocatorheap.h \
 	rpg_stream_messageallocatorheap_base.h rpg_stream_messageallocatorheap_base.i rpg_stream_messagequeue.h \
@@ -27,7 +28,7 @@ libRPG_Stream_la_SOURCES = rpg_stream.cpp rpg_stream.h \
 	rpg_stream_datablockallocatorheap.cpp rpg_stream_datablockallocatorheap.h rpg_stream_defines.h \
 	rpg_stream_headmoduletask.cpp rpg_stream_headmoduletask.h rpg_stream_headmoduletask_base.cpp \
 	rpg_stream_headmoduletask_base.h rpg_stream_headmoduletask_base.i rpg_stream_iallocator.h \
-	rpg_stream_icontrol.h rpg_stream_idumpstate.h rpg_stream_imessagequeue.h \
+	rpg_stream_imessagequeue.h \
 	rpg_stream_irefcount.h rpg_stream_istreamcontrol.h rpg_stream_itask.h rpg_stream_itask_base.h \
 	rpg_stream_message_base.cpp rpg_stream_message_base.h rpg_stream_messageallocatorheap.cpp \
 	rpg_stream_messageallocatorheap.h rpg_stream_messageallocatorheap_base.cpp \

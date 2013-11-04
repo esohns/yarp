@@ -25,7 +25,7 @@
 #include "rpg_common_terrain.h"
 
 // timer queue
-#include <ace/Event_Handler_Handle_Timeout_Upcall.h>
+//#include <ace/Event_Handler_Handle_Timeout_Upcall.h>
 #include <ace/Timer_Queue_T.h>
 #include <ace/Timer_Heap_T.h>
 #include <ace/Timer_Queue_Adapters.h>
@@ -42,7 +42,8 @@ typedef std::set<RPG_Common_Terrain> RPG_Common_Terrains_t;
 typedef RPG_Common_Terrains_t::const_iterator RPG_Common_TerrainsIterator_t;
 
 // these typedefs ensure that we use the minimal amount of locking necessary
-typedef ACE_Event_Handler_Handle_Timeout_Upcall RPG_Common_TimeoutUpcall_t;
+//typedef ACE_Event_Handler_Handle_Timeout_Upcall RPG_Common_TimeoutUpcall_t;
+typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_Null_Mutex> RPG_Common_TimeoutUpcall_t;
 typedef ACE_Timer_Heap_T<ACE_Event_Handler*,
                          RPG_Common_TimeoutUpcall_t,
                          ACE_Null_Mutex> RPG_Common_TimerHeap_t;

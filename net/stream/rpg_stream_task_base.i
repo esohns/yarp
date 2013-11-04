@@ -338,8 +338,8 @@ RPG_Stream_TaskBase<SessionMessageType,
         // complains about a missing reference to StreamITaskBase::handleDataMessage...
 //         inherited2::handleDataMessage(message,
 //                                       passMessageDownstream);
-        handleDataMessage(message,
-                          passMessageDownstream);
+        this->handleDataMessage(message,
+                                passMessageDownstream);
       }
       catch (...)
       {

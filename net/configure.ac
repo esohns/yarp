@@ -98,6 +98,7 @@ AC_CHECK_FUNCS([memmove])
 AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile
+                 stream/Makefile
                  protocol/Makefile
                  protocol/scripts/Makefile])
 

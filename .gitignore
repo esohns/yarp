@@ -12,7 +12,20 @@ autom4te.cache
 build
 aux_config
 CMakeFiles
-
+*.o
+*.lo
+*.la
+stamp-h1
+.deps
+.libs
+_configs.sed
+config.h
+config.h.in
+RPG_*-config.h
+config.log
+config.status
+configure
+libtool
 Makefile
 Makefile.in
 
@@ -82,6 +95,7 @@ IRCbisect_scanner_report.txt
 /sound/Release
 /net/stream/Release
 /test_u/Release
+
 /character/player/rpg_character.xsd
 /character/player/rpg_common.xsd
 /character/player/rpg_item.xsd

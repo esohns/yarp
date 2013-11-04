@@ -24,7 +24,7 @@
 #include "rpg_stream_istreamcontrol.h"
 #include "rpg_stream_streammodule.h"
 
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Stream.h>

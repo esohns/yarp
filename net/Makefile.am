@@ -1,6 +1,7 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = -I$(top_srcdir)/../common -I$(top_srcdir)/../chance/dice -I$(srcdir)/stream
 
 SUBDIRS = stream protocol
 
