@@ -18,27 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_COMMON_MODULES_H
-#define RPG_NET_COMMON_MODULES_H
+#ifndef RPG_NET_STREAM_COMMON_H
+#define RPG_NET_STREAM_COMMON_H
 
+#include "rpg_net_exports.h"
 #include "rpg_net_common.h"
-#include "rpg_net_sessionmessage.h"
-#include "rpg_net_message.h"
-#include "rpg_net_remote_comm.h"
+#include "rpg_net_asynchstreamhandler_t.h"
+#include "rpg_net_stream.h"
 
-#include "rpg_stream_streammodule.h"
-
-template <typename SessionMessageType,
-          typename ProtocolMessageType,
-          typename ProtocolCommandType,
-          typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic;
-
-// declare module(s)
-typedef RPG_Net_Module_RuntimeStatistic<RPG_Net_SessionMessage,
-                                        RPG_Net_Message,
-                                        RPG_Net_MessageType,
-                                        RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICS_T;
-DATASTREAM_MODULE_T(RPG_NET_MODULE_RUNTIMESTATISTICS_T, // type
-                    RPG_Net_Module_RuntimeStatistic);   // name
+typedef RPG_Net_AsynchStreamHandler_T<RPG_Net_ConfigPOD,
+                                      RPG_Net_RuntimeStatistic,
+                                      RPG_Net_Stream> RPG_Net_StreamHandler_t;
 
 #endif

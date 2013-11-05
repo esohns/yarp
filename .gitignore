@@ -7,6 +7,9 @@ ltsugar.m4
 ltversion.m4
 lt~obsolete.m4
 
+.anjuta
+*.anjuta
+.anjuta_sym_db.db
 .kdev4
 autom4te.cache
 build

@@ -30,9 +30,9 @@
 #include "rpg_net_module_protocolhandler.h"
 #include "rpg_net_module_runtimestatistic.h"
 
-#include <rpg_common_istatistic.h>
+#include "rpg_common_istatistic.h"
 
-#include <rpg_stream_base.h>
+#include "rpg_stream_base.h"
 
 #include <ace/Global_Macros.h>
 

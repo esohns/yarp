@@ -27,7 +27,7 @@
 #include "rpg_net_remote_comm.h"
 #include "rpg_net_stream_config.h"
 
-#include <rpg_common_timer_manager.h>
+#include "rpg_common_timer_manager.h"
 
 RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
  : inherited(false), // DON'T auto-start !

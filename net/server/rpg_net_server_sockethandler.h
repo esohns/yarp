@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
+ *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,27 +18,38 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_COMMON_MODULES_H
-#define RPG_NET_COMMON_MODULES_H
+#ifndef RPG_Net_Server_SocketHandler_H
+#define RPG_Net_Server_SocketHandler_H
 
-#include "rpg_net_common.h"
-#include "rpg_net_sessionmessage.h"
-#include "rpg_net_message.h"
-#include "rpg_net_remote_comm.h"
+#include "rpg_net_exports.h"
+#include "rpg_net_stream_socket_base.h"
 
-#include "rpg_stream_streammodule.h"
+#include <ace/Global_Macros.h>
 
-template <typename SessionMessageType,
-          typename ProtocolMessageType,
-          typename ProtocolCommandType,
-          typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic;
+class RPG_Net_Export RPG_Net_Server_SocketHandler
+ : public ACE_Service_Handler
+{
+ public:
+  RPG_Net_Server_SocketHandler();
+  virtual ~RPG_Net_Server_SocketHandler();
 
-// declare module(s)
-typedef RPG_Net_Module_RuntimeStatistic<RPG_Net_SessionMessage,
-                                        RPG_Net_Message,
-                                        RPG_Net_MessageType,
-                                        RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICS_T;
-DATASTREAM_MODULE_T(RPG_NET_MODULE_RUNTIMESTATISTICS_T, // type
-                    RPG_Net_Module_RuntimeStatistic);   // name
+  virtual void open(ACE_HANDLE,          // socket identifier
+                    ACE_Message_Block&); // initial data (if any)
+
+ protected:
+  virtual void handle_read_stream(const ACE_Asynch_Read_Stream::Result&); // result
+  virtual void handle_write_stream(const ACE_Asynch_Write_Stream::Result&); // result
+
+ private:
+  typedef ACE_Service_Handler inherited;
+
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_SocketHandler(const RPG_Net_Server_SocketHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_SocketHandler& operator=(const RPG_Net_Server_SocketHandler&));
+  void initiate_read_stream(void);
+
+  ACE_Asynch_Read_Stream  myInputStream;
+  ACE_Asynch_Write_Stream myOutputStream;
+  ACE_HANDLE              myHandle;
+};
 
 #endif

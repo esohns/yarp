@@ -22,9 +22,8 @@
 #define RPG_NET_SESSIONMESSAGE_H
 
 #include "rpg_net_stream_config.h"
-// #include "rpg_net_message.h"
 
-#include <rpg_stream_session_message_base.h>
+#include "rpg_stream_session_message_base.h"
 
 #include <ace/Global_Macros.h>
 

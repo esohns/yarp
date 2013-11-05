@@ -116,7 +116,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 //   ACE_ASSERT(args_in);
 
   // step0: init user data
-  myUserData = *static_cast<DataType*> (args_in);
+  myUserData = *static_cast<DataType*>(args_in);
 
   // step1: (re-)activate() our queue
   // *NOTE*: the first time around, our queue will have been open()ed
@@ -129,8 +129,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   if (myQueue.activate() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Message_Queue::activate(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Message_Queue::activate(): \"%m\", aborting\n")));
 
     return -1;
   } // end IF
@@ -820,7 +819,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   } // end IF
 
   // pass message downstream...
-  if (const_cast<own_type*> (this)->put_next(message, NULL) == -1)
+  if (const_cast<own_type*>(this)->put_next(message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to put_next(): \"%m\", aborting\n")));

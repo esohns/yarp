@@ -90,14 +90,3 @@ else(INSTALL_DOCUMENTATION)
   message(STATUS "documentation will NOT be installed...")
 endif(INSTALL_DOCUMENTATION)
 
-########### install files ###############
-
-#original Makefile.am contents follow:
-
-#METASOURCES = AUTO
-#
-#ACLOCAL_AMFLAGS = -I m4
-#
-#SUBDIRS = chance common magic item character monster combat map graphics sound engine stream net client test_u
-#
-#EXTRA_DIST = Yarp.spec

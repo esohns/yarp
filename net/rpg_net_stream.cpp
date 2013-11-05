@@ -85,7 +85,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // - push them onto the stream (tail-first) !
   // ******************* Runtime Statistics ************************
   RPG_NET_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl = dynamic_cast<RPG_NET_MODULE_RUNTIMESTATISTICS_T*> (myRuntimeStatistic.writer());
+  runtimeStatistic_impl = dynamic_cast<RPG_NET_MODULE_RUNTIMESTATISTICS_T*>(myRuntimeStatistic.writer());
   if (!runtimeStatistic_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -115,7 +115,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
   // ******************* Protocol Handler ************************
   RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
-  protocolHandler_impl = dynamic_cast<RPG_Net_Module_ProtocolHandler*> (myProtocolHandler.writer());
+  protocolHandler_impl = dynamic_cast<RPG_Net_Module_ProtocolHandler*>(myProtocolHandler.writer());
   if (!protocolHandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -148,7 +148,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
   // ******************* Header Parser ************************
   RPG_Net_Module_HeaderParser* headerParser_impl = NULL;
-  headerParser_impl = dynamic_cast<RPG_Net_Module_HeaderParser*> (myHeaderParser.writer());
+  headerParser_impl = dynamic_cast<RPG_Net_Module_HeaderParser*>(myHeaderParser.writer());
   if (!headerParser_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -177,7 +177,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
   // ******************* Socket Handler ************************
   RPG_Net_Module_SocketHandler* socketHandler_impl = NULL;
-  socketHandler_impl = dynamic_cast<RPG_Net_Module_SocketHandler*> (mySocketHandler.writer());
+  socketHandler_impl = dynamic_cast<RPG_Net_Module_SocketHandler*>(mySocketHandler.writer());
   if (!socketHandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -199,7 +199,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // enqueue the module...
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
-  mySocketHandler.arg(&const_cast<RPG_Net_ConfigPOD&> (config_in));
+  mySocketHandler.arg(&const_cast<RPG_Net_ConfigPOD&>(config_in));
   if (push(&mySocketHandler))
   {
     ACE_DEBUG((LM_ERROR,

@@ -111,6 +111,7 @@ AC_CONFIG_FILES([Makefile
                  engine/Makefile
                  stream/Makefile
                  net/Makefile
+                 net/stream/Makefile
                  net/protocol/Makefile
                  net/protocol/scripts/Makefile
                  client/Makefile

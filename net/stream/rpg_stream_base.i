@@ -114,7 +114,7 @@ RPG_Stream_Base<DataType,
        iterator.advance())
   {
     // need a downcast...
-    RPG_Stream_Module* stream_module = dynamic_cast<RPG_Stream_Module*> (module);
+    RPG_Stream_Module* stream_module = dynamic_cast<RPG_Stream_Module*>(module);
     ACE_ASSERT(stream_module);
     try
     {
@@ -236,7 +236,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -392,7 +392,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -471,7 +471,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -552,7 +552,7 @@ RPG_Stream_Base<DataType,
 
   // need to downcast
   HEADMODULETASK_BASETYPE* head_task = NULL;
-  head_task = dynamic_cast<HEADMODULETASK_BASETYPE*> (const_cast<ACE_Module<ACE_MT_SYNCH>*> (module)->writer());
+  head_task = dynamic_cast<HEADMODULETASK_BASETYPE*>(const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->writer());
   if (!head_task)
   {
     ACE_DEBUG((LM_ERROR,
@@ -608,7 +608,7 @@ RPG_Stream_Base<DataType,
 //                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     // OK: we've got a handle... wait
-    const_cast<ACE_Module<ACE_MT_SYNCH>*> (module)->writer()->wait();
+    const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->writer()->wait();
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("waiting for module (\"%s\") to finish processing...DONE\n"),
@@ -710,8 +710,8 @@ RPG_Stream_Base<DataType,
        iter.advance())
   {
     // silently ignore ACE head/tail modules...
-    if ((module == const_cast<RPG_Stream_Base*> (this)->tail()) ||
-        (module == const_cast<RPG_Stream_Base*> (this)->head()))
+    if ((module == const_cast<RPG_Stream_Base*>(this)->tail()) ||
+        (module == const_cast<RPG_Stream_Base*>(this)->head()))
     {
       continue;
     } // end IF
@@ -719,8 +719,8 @@ RPG_Stream_Base<DataType,
     stream_layout.append(ACE_TEXT_ALWAYS_CHAR(module->name()));
 
     // avoid trailing "-->"...
-    if (const_cast<ACE_Module<ACE_MT_SYNCH>*> (module)->next() !=
-        const_cast<RPG_Stream_Base*> (this)->tail())
+    if (const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->next() !=
+        const_cast<RPG_Stream_Base*>(this)->tail())
     {
       stream_layout += ACE_TEXT_ALWAYS_CHAR(" --> ");
     } // end IF
@@ -868,8 +868,7 @@ RPG_Stream_Base<DataType,
   if (!session_config)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate RPG_Stream_SessionConfig: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to allocate RPG_Stream_SessionConfig: \"%m\", aborting\n")));
 
     return;
   } // end IF
@@ -905,8 +904,7 @@ RPG_Stream_Base<DataType,
   if (!message)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate SessionMessageType: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to allocate SessionMessageType: \"%m\", aborting\n")));
 
     // clean up
     session_config->decrease();
@@ -925,8 +923,7 @@ RPG_Stream_Base<DataType,
   if (put(message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::put(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to ACE_Stream::put(): \"%m\", aborting\n")));
 
     // clean up
     message->release();
