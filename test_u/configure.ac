@@ -91,7 +91,8 @@ AC_CHECK_FUNCS([memset])
 AC_CONFIG_FILES([Makefile
                  chance/Makefile
                  character/Makefile
-................ character/monster/Makefile
+                 character/player/Makefile
+                 character/monster/Makefile
                  combat/Makefile
                  item/Makefile
                  magic/Makefile

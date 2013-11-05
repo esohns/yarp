@@ -1,6 +1,7 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I$(top_srcdir)/m4
+#ACLOCAL_AMFLAGS = -I$(top_srcdir)/m4 -I$(top_srcdir)/../common
+AM_CPPFLAGS = -I$(top_srcdir)/../common
 
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h
 

@@ -1009,8 +1009,9 @@ generate_entity(const RPG_Player& player_in,
 
 void
 do_work(const bool& generateEntity_in,
-        const std::string magicDictionaryFilename_in,
-        const std::string itemDictionaryFilename_in,
+        const std::string& schemaDirectory_in,
+        const std::string& magicDictionaryFilename_in,
+        const std::string& itemDictionaryFilename_in,
         const std::string& graphicsDictionary_in,
         const std::string& graphicsDirectory_in,
         const unsigned int& graphicsCacheSize_in,
@@ -1023,7 +1024,8 @@ do_work(const bool& generateEntity_in,
   RPG_Dice::init();
 
   // step1b: init string conversion facilities
-  RPG_Engine_Common_Tools::init(magicDictionaryFilename_in,
+  RPG_Engine_Common_Tools::init(schemaDirectory_in,
+                                magicDictionaryFilename_in,
                                 itemDictionaryFilename_in,
                                 std::string());
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
@@ -1397,6 +1399,7 @@ ACE_TMAIN(int argc,
 
   // step2: do actual work
   do_work(generateEntity,
+          config_path,
           magicDictionaryFilename,
           itemDictionaryFilename,
           graphicsDictionaryFilename,

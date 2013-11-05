@@ -31,12 +31,11 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_DICE_XML_TREE_H
-#define CXX___RPG_DICE_XML_TREE_H
+#ifndef CXX_____RPG_DICE_XML_TREE_H
+#define CXX_____RPG_DICE_XML_TREE_H
 
 // Begin prologue.
 //
-#include "rpg_dice_exports.h"
 //
 // End prologue.
 
@@ -77,9 +76,7 @@ class RPG_Dice_ValueRange_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
-#include <xsd/cxx/tree/istream-fwd.hxx>
-
-class RPG_Dice_Export RPG_Dice_DieType_XMLTree_Type: public ::xml_schema::string
+class RPG_Dice_DieType_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -103,10 +100,6 @@ class RPG_Dice_Export RPG_Dice_DieType_XMLTree_Type: public ::xml_schema::string
   RPG_Dice_DieType_XMLTree_Type (const ::std::string& v);
 
   RPG_Dice_DieType_XMLTree_Type (const ::xml_schema::string& v);
-
-  RPG_Dice_DieType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                 ::xml_schema::flags f = 0,
-                                 ::xml_schema::container* c = 0);
 
   RPG_Dice_DieType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
@@ -147,7 +140,7 @@ class RPG_Dice_Export RPG_Dice_DieType_XMLTree_Type: public ::xml_schema::string
   static const value _xsd_RPG_Dice_DieType_XMLTree_Type_indexes_[10];
 };
 
-class RPG_Dice_Export RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
+class RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // numDice
@@ -207,10 +200,6 @@ class RPG_Dice_Export RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
   //
   RPG_Dice_Roll_XMLTree_Type (const typeDice_type&);
 
-  RPG_Dice_Roll_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                              ::xml_schema::flags f = 0,
-                              ::xml_schema::container* c = 0);
-
   RPG_Dice_Roll_XMLTree_Type (const ::xercesc::DOMElement& e,
                               ::xml_schema::flags f = 0,
                               ::xml_schema::container* c = 0);
@@ -234,25 +223,19 @@ class RPG_Dice_Export RPG_Dice_Roll_XMLTree_Type: public ::xml_schema::type
          ::xml_schema::flags);
 
   protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
   numDice_optional numDice_;
   ::xsd::cxx::tree::one< typeDice_type > typeDice_;
   modifier_optional modifier_;
 };
 
-RPG_Dice_Export
 bool
 operator== (const RPG_Dice_Roll_XMLTree_Type&, const RPG_Dice_Roll_XMLTree_Type&);
 
-RPG_Dice_Export
 bool
 operator!= (const RPG_Dice_Roll_XMLTree_Type&, const RPG_Dice_Roll_XMLTree_Type&);
 
 
-class RPG_Dice_Export RPG_Dice_ValueRange_XMLTree_Type: public ::xml_schema::type
+class RPG_Dice_ValueRange_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // begin
@@ -288,10 +271,6 @@ class RPG_Dice_Export RPG_Dice_ValueRange_XMLTree_Type: public ::xml_schema::typ
   RPG_Dice_ValueRange_XMLTree_Type (const begin_type&,
                                     const end_type&);
 
-  RPG_Dice_ValueRange_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                    ::xml_schema::flags f = 0,
-                                    ::xml_schema::container* c = 0);
-
   RPG_Dice_ValueRange_XMLTree_Type (const ::xercesc::DOMElement& e,
                                     ::xml_schema::flags f = 0,
                                     ::xml_schema::container* c = 0);
@@ -315,38 +294,28 @@ class RPG_Dice_Export RPG_Dice_ValueRange_XMLTree_Type: public ::xml_schema::typ
          ::xml_schema::flags);
 
   protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
   ::xsd::cxx::tree::one< begin_type > begin_;
   ::xsd::cxx::tree::one< end_type > end_;
 };
 
-RPG_Dice_Export
 bool
 operator== (const RPG_Dice_ValueRange_XMLTree_Type&, const RPG_Dice_ValueRange_XMLTree_Type&);
 
-RPG_Dice_Export
 bool
 operator!= (const RPG_Dice_ValueRange_XMLTree_Type&, const RPG_Dice_ValueRange_XMLTree_Type&);
 
 
 #include <iosfwd>
 
-RPG_Dice_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Dice_DieType_XMLTree_Type::value);
 
-RPG_Dice_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Dice_DieType_XMLTree_Type&);
 
-RPG_Dice_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Dice_Roll_XMLTree_Type&);
 
-RPG_Dice_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Dice_ValueRange_XMLTree_Type&);
 
@@ -364,41 +333,21 @@ operator<< (::std::ostream&, const RPG_Dice_ValueRange_XMLTree_Type&);
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Dice_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Dice_DieType_XMLTree_Type&);
 
-RPG_Dice_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Dice_DieType_XMLTree_Type&);
 
-RPG_Dice_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Dice_DieType_XMLTree_Type&);
 
-RPG_Dice_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Dice_Roll_XMLTree_Type&);
 
-RPG_Dice_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Dice_ValueRange_XMLTree_Type&);
-
-RPG_Dice_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Dice_DieType_XMLTree_Type&);
-
-RPG_Dice_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Dice_Roll_XMLTree_Type&);
-
-RPG_Dice_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Dice_ValueRange_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 
@@ -407,4 +356,4 @@ operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
 //
 // End epilogue.
 
-#endif // CXX___RPG_DICE_XML_TREE_H
+#endif // CXX_____RPG_DICE_XML_TREE_H

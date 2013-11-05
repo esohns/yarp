@@ -26,7 +26,7 @@
 #include "rpg_stream_session_config.h"
 #include "rpg_stream_iallocator.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Message_Block.h>
 
@@ -73,7 +73,7 @@ RPG_Stream_HeadModuleTask::~RPG_Stream_HeadModuleTask()
 
 int
 RPG_Stream_HeadModuleTask::put(ACE_Message_Block* mb_in,
-                           ACE_Time_Value* tv_in)
+                               ACE_Time_Value* tv_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::put"));
 

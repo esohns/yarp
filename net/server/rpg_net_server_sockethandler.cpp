@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
+ *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,28 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
-#ifndef RPG_NET_COMMON_MODULES_H
-#define RPG_NET_COMMON_MODULES_H
+#include "rpg_net_server_sockethandler.h"
 
-#include "rpg_net_common.h"
-#include "rpg_net_sessionmessage.h"
-#include "rpg_net_message.h"
-#include "rpg_net_remote_comm.h"
+RPG_Net_Server_SocketHandler::RPG_Net_Server_SocketHandler()
+ : myHandle(ACE_INVALID_HANDLE)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::RPG_Net_Server_SocketHandler"));
 
-#include "rpg_stream_streammodule.h"
+}
 
-template <typename SessionMessageType,
-          typename ProtocolMessageType,
-          typename ProtocolCommandType,
-          typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic;
+RPG_Net_Server_SocketHandler::~RPG_Net_Server_SocketHandler()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::~RPG_Net_Server_SocketHandler"));
 
-// declare module(s)
-typedef RPG_Net_Module_RuntimeStatistic<RPG_Net_SessionMessage,
-                                        RPG_Net_Message,
-                                        RPG_Net_MessageType,
-                                        RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICS_T;
-DATASTREAM_MODULE_T(RPG_NET_MODULE_RUNTIMESTATISTICS_T, // type
-                    RPG_Net_Module_RuntimeStatistic);   // name
-
-#endif
+}

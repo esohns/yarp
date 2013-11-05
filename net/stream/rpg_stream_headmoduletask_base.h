@@ -43,7 +43,7 @@ template <typename DataType,
           typename ProtocolMessageType>
 class RPG_Stream_HeadModuleTaskBase
  : public RPG_Stream_TaskBase<SessionMessageType,
-                          ProtocolMessageType>,
+                              ProtocolMessageType>,
    public RPG_Stream_IStreamControl,
    public RPG_Stream_StateMachine_Control
 {
@@ -116,19 +116,19 @@ class RPG_Stream_HeadModuleTaskBase
 
  private:
   typedef RPG_Stream_TaskBase<SessionMessageType,
-                          ProtocolMessageType> inherited;
+                              ProtocolMessageType> inherited;
   typedef RPG_Stream_StateMachine_Control inherited2;
   typedef RPG_Stream_HeadModuleTaskBase<DataType,
-                                    SessionConfigType,
-                                    SessionMessageType,
-                                    ProtocolMessageType> own_type;
+				                                SessionConfigType,
+				                                SessionMessageType,
+				                                ProtocolMessageType> own_type;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase(const RPG_Stream_HeadModuleTaskBase<DataType,
-                                                                                   SessionConfigType,
-                                                                                   SessionMessageType,
-                                                                                   ProtocolMessageType>&));
+								                                                                           SessionConfigType,
+								                                                                           SessionMessageType,
+								                                                                           ProtocolMessageType>&));
   // *TODO*: apparently, ACE_UNIMPLEMENTED_FUNC gets confused by template arguments...
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>& operator=(const RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>&));
 

@@ -3,9 +3,10 @@ METASOURCES = AUTO
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(top_srcdir)/../common -I$(top_srcdir)/../chance/dice -I$(srcdir)/stream
 
-SUBDIRS = stream protocol
+SUBDIRS = stream protocol .
 
-include_HEADERS = rpg_net_client_sockethandler.h rpg_net_common.h \
+include_HEADERS = rpg_net_common.h rpg_net_asynchlistener.h rpg_net_asynchsockethandler_t.h \
+  rpg_net_asynchstreamhandler_t.h \
 	rpg_net_common_tools.h rpg_net_connection_manager.h rpg_net_connection_manager.i \
 	rpg_net_controller_base.h rpg_net_defines.h rpg_net_iconnection.h rpg_net_iconnectionmanager.h \
 	rpg_net_icounter.h rpg_net_listener.h rpg_net_message.h rpg_net_module_headerparser.h \
@@ -18,8 +19,10 @@ include_HEADERS = rpg_net_client_sockethandler.h rpg_net_common.h \
 
 lib_LTLIBRARIES = libRPG_Net.la
 
-libRPG_Net_la_SOURCES = rpg_net_client_sockethandler.cpp \
-	rpg_net_client_sockethandler.h rpg_net_common.h rpg_net_common_tools.cpp rpg_net_common_tools.h \
+libRPG_Net_la_SOURCES = rpg_net_asynchlistener.h rpg_net_asynchlistener.cpp rpg_net_asynchsockethandler_t.h \
+  rpg_net_asynchsockethandler_t.i rpg_net_asynchsockethandler_t.cpp rpg_net_asynchstreamhandler_t.h \
+  rpg_net_asynchstreamhandler_t.i rpg_net_asynchstreamhandler_t.cpp \
+  rpg_net_common.h rpg_net_common_tools.cpp rpg_net_common_tools.h \
 	rpg_net_connection_manager.cpp rpg_net_connection_manager.h rpg_net_connection_manager.i \
 	rpg_net_controller_base.cpp rpg_net_controller_base.h rpg_net_defines.h rpg_net_iconnection.h \
 	rpg_net_iconnectionmanager.h rpg_net_icounter.h rpg_net_listener.cpp rpg_net_listener.h \

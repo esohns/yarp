@@ -1,10 +1,10 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([XML2CppCode], [0.1], [erik.sohns@web.de],[XML2CppCode],[http://www.rpg.org])
+AC_INIT([XML2CppCode], [0.1], [erik.sohns@web.de], [XML2CppCode], [http://www.rpg.org])
 AC_PREREQ([2.63])
-AC_CONFIG_SRCDIR([XML_parser.cpp])
-AC_CONFIG_AUX_DIR([.])
+AC_CONFIG_SRCDIR([config.h.in])
+AC_CONFIG_AUX_DIR([aux_config])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 

@@ -94,12 +94,6 @@
 #include <xsd/cxx/tree/serialization/double.hxx>
 #include <xsd/cxx/tree/serialization/decimal.hxx>
 
-#include <xsd/cxx/tree/ace-cdr-stream-insertion.hxx>
-#include <xsd/cxx/tree/stream-insertion.hxx>
-
-#include <xsd/cxx/tree/ace-cdr-stream-extraction.hxx>
-#include <xsd/cxx/tree/stream-extraction.hxx>
-
 namespace xml_schema
 {
   // anyType and anySimpleType.
@@ -204,14 +198,6 @@ namespace xml_schema
   typedef ::xsd::cxx::tree::as_double< double_ > as_double;
   typedef ::xsd::cxx::tree::as_decimal< decimal > as_decimal;
   typedef ::xsd::cxx::tree::facet facet;
-
-  // Data representation output stream template.
-  //
-  using ::xsd::cxx::tree::ostream;
-
-  // Data representation input stream template.
-  //
-  using ::xsd::cxx::tree::istream;
 
   // Flags and properties.
   //
