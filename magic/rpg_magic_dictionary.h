@@ -21,10 +21,10 @@
 #ifndef RPG_MAGIC_DICTIONARY_H
 #define RPG_MAGIC_DICTIONARY_H
 
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
-#include <rpg_common_environment_incl.h>
-#include <rpg_character_incl.h>
+#include "rpg_dice_incl.h"
+#include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
+#include "rpg_character_incl.h"
 #include "rpg_magic_incl.h"
 
 #include "rpg_magic_exports.h"

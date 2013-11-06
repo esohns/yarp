@@ -1976,7 +1976,7 @@ RPG_Engine::handleEntities()
     for (RPG_Engine_ClientParametersConstIterator_t iterator2 = (*iterator).second->begin();
          iterator2 != (*iterator).second->end();
          iterator2++)
-      delete (*iterator2);
+      delete (*iterator2); // *TODO*: this doesn't work !!!
 
     ACE_ASSERT((*iterator).second);
     delete (*iterator).second;

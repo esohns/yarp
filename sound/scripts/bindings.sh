@@ -8,19 +8,17 @@
 #// 20/02/06 | soh | Creation.
 #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
+# sanity check(s)
+command -v XML2CppCode >/dev/null 2>&1 || { echo "XML2CppCode is not installed. Aborting." >&2; exit 1; }
+command -v xsdcxx >/dev/null 2>&1 || { echo "xsdcxx is not installed. Aborting." >&2; exit 1; }
+
 # C++ "glue code"
-/usr/local/bin/XML2CppCode -e -f ./../rpg_sound.xsd -i -o ./.. -p ./../templates/h -s -u
+XML2CppCode -e -f ./../rpg_sound.xsd -i -o ./.. -s -u
 
 # XML Parser
 # generate "XMLSchema" namespace include file
-/usr/bin/xsdcxx cxx-parser --char-type char --output-dir ./.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema_XML_types.xsd
+xsdcxx cxx-parser --char-type char --output-dir ./.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema_XML_types.xsd
 
 # generate include/implementation
 xsdcxx cxx-parser --type-map ./../rpg_sound.map --char-type char --output-dir ./.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ./../rpg_sound.xsd
 
-# generate include/implementation
-# xsdcxx cxx-parser --type-map ./../rpg_magic.map --char-type char --output-dir ./.. --namespace-map urn:rpg= --xml-parser xerces --generate-noop-impl --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --impl-file-suffix _XML_parser_base --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ./../rpg_magic.xsd
-
-# # XML Tree
-# # generate schema files
-# /usr/bin/xsdcxx cxx-tree --char-type char --output-dir ./.. --namespace-map http://www.w3.org/2001/XMLSchema= --generate-serialization --generate-ostream --generate-doxygen --generate-comparison --generate-forward --suppress-parsing --type-naming knr --function-naming knr --root-element-last --hxx-suffix .h --cxx-suffix .cpp --fwd-suffix -fwd.h --show-anonymous --show-sloc ../rpg_character.xsd

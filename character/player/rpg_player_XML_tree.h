@@ -79,8 +79,6 @@ class RPG_Player_PlayerXML_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
-#include <xsd/cxx/tree/istream-fwd.hxx>
-
 #include "rpg_common_XML_tree.h"
 
 #include "rpg_magic_XML_tree.h"
@@ -113,10 +111,6 @@ class RPG_Player_Export RPG_Player_Abilities_XMLTree_Type: public ::xml_schema::
   //
   RPG_Player_Abilities_XMLTree_Type ();
 
-  RPG_Player_Abilities_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                     ::xml_schema::flags f = 0,
-                                     ::xml_schema::container* c = 0);
-
   RPG_Player_Abilities_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f = 0,
                                      ::xml_schema::container* c = 0);
@@ -140,10 +134,6 @@ class RPG_Player_Export RPG_Player_Abilities_XMLTree_Type: public ::xml_schema::
          ::xml_schema::flags);
 
   protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
   ability_sequence ability_;
 };
 
@@ -180,10 +170,6 @@ class RPG_Player_Export RPG_Player_Spells_XMLTree_Type: public ::xml_schema::typ
   //
   RPG_Player_Spells_XMLTree_Type ();
 
-  RPG_Player_Spells_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                  ::xml_schema::flags f = 0,
-                                  ::xml_schema::container* c = 0);
-
   RPG_Player_Spells_XMLTree_Type (const ::xercesc::DOMElement& e,
                                   ::xml_schema::flags f = 0,
                                   ::xml_schema::container* c = 0);
@@ -207,10 +193,6 @@ class RPG_Player_Export RPG_Player_Spells_XMLTree_Type: public ::xml_schema::typ
          ::xml_schema::flags);
 
   protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
   spell_sequence spell_;
 };
 
@@ -247,10 +229,6 @@ class RPG_Player_Export RPG_Player_Conditions_XMLTree_Type: public ::xml_schema:
   //
   RPG_Player_Conditions_XMLTree_Type ();
 
-  RPG_Player_Conditions_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                      ::xml_schema::flags f = 0,
-                                      ::xml_schema::container* c = 0);
-
   RPG_Player_Conditions_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
                                       ::xml_schema::container* c = 0);
@@ -274,10 +252,6 @@ class RPG_Player_Export RPG_Player_Conditions_XMLTree_Type: public ::xml_schema:
          ::xml_schema::flags);
 
   protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
   condition_sequence condition_;
 };
 
@@ -580,10 +554,6 @@ class RPG_Player_Export RPG_Player_BaseXML_XMLTree_Type: public ::xml_schema::ty
                                    const gold_type&,
                                    ::std::auto_ptr< inventory_type >&);
 
-  RPG_Player_BaseXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                   ::xml_schema::flags f = 0,
-                                   ::xml_schema::container* c = 0);
-
   RPG_Player_BaseXML_XMLTree_Type (const ::xercesc::DOMElement& e,
                                    ::xml_schema::flags f = 0,
                                    ::xml_schema::container* c = 0);
@@ -607,10 +577,6 @@ class RPG_Player_Export RPG_Player_BaseXML_XMLTree_Type: public ::xml_schema::ty
          ::xml_schema::flags);
 
   protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
   ::xsd::cxx::tree::one< name_type > name_;
   ::xsd::cxx::tree::one< alignment_type > alignment_;
   ::xsd::cxx::tree::one< attributes_type > attributes_;
@@ -738,10 +704,6 @@ class RPG_Player_Export RPG_Player_PlayerXML_XMLTree_Type: public ::RPG_Player_B
                                      ::std::auto_ptr< classXML_type >&,
                                      const offhand_type&);
 
-  RPG_Player_PlayerXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                     ::xml_schema::flags f = 0,
-                                     ::xml_schema::container* c = 0);
-
   RPG_Player_PlayerXML_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f = 0,
                                      ::xml_schema::container* c = 0);
@@ -765,10 +727,6 @@ class RPG_Player_Export RPG_Player_PlayerXML_XMLTree_Type: public ::RPG_Player_B
          ::xml_schema::flags);
 
   protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
   ::xsd::cxx::tree::one< gender_type > gender_;
   race_sequence race_;
   ::xsd::cxx::tree::one< classXML_type > classXML_;
@@ -1022,31 +980,6 @@ RPG_Player_Export
 player_t (const ::RPG_Player_PlayerXML_XMLTree_Type& x, 
           const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
           ::xml_schema::flags f = 0);
-
-RPG_Player_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Player_Abilities_XMLTree_Type&);
-
-RPG_Player_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Player_Spells_XMLTree_Type&);
-
-RPG_Player_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Player_Conditions_XMLTree_Type&);
-
-RPG_Player_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Player_BaseXML_XMLTree_Type&);
-
-RPG_Player_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Player_PlayerXML_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 

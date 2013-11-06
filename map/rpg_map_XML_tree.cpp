@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -396,59 +395,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Map_Position_XMLTree_Type& i)
 
     s << i.y ();
   }
-}
-
-RPG_Map_DoorState_XMLTree_Type::
-RPG_Map_DoorState_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                ::xml_schema::flags f,
-                                ::xml_schema::container* c)
-: ::xml_schema::string (s, f, c)
-{
-  _xsd_RPG_Map_DoorState_XMLTree_Type_convert ();
-}
-
-RPG_Map_Position_XMLTree_Type::
-RPG_Map_Position_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                               ::xml_schema::flags f,
-                               ::xml_schema::container* c)
-: ::xml_schema::type (s, f, c),
-  x_ (f, this),
-  y_ (f, this)
-{
-  this->parse (s, f);
-}
-
-void RPG_Map_Position_XMLTree_Type::
-parse (::xml_schema::istream< ACE_InputCDR >& s,
-       ::xml_schema::flags f)
-{
-  {
-    x_type r;
-    s >> r;
-    this->x_.set (r);
-  }
-
-  {
-    y_type r;
-    s >> r;
-    this->y_.set (r);
-  }
-}
-
-::xsd::cxx::tree::ostream< ACE_OutputCDR >&
-operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
-            const RPG_Map_DoorState_XMLTree_Type& x)
-{
-  return s << static_cast< const ::xml_schema::string& > (x);
-}
-
-::xsd::cxx::tree::ostream< ACE_OutputCDR >&
-operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
-            const RPG_Map_Position_XMLTree_Type& x)
-{
-  s << x.x ();
-  s << x.y ();
-  return s;
 }
 
 #include <xsd/cxx/post.hxx>

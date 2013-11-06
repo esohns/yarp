@@ -40,6 +40,7 @@
 #include <ace/Get_Opt.h>
 #include <ace/Profile_Timer.h>
 #include <ace/Proactor.h>
+#include <ace/TP_Reactor.h>
 #include <ace/Signal.h>
 #include <ace/Sig_Handler.h>
 #include <ace/High_Res_Timer.h>
@@ -497,7 +498,7 @@ tp_worker_func(void* args_in)
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
   //while (!ACE_Reactor::event_loop_done())
-	while (!ACE_Proactor::proactor_event_loop_done())
+	while (!ACE_Proactor::instance()->proactor_event_loop_done())
   {
     // block and wait for an event...
 		//if (ACE_Reactor::instance()->handle_events(NULL) == -1)
@@ -543,7 +544,7 @@ do_work(const unsigned int& clientPingInterval_in,
 
   // step1a: signal handling
   // event handler for signals
-  Net_Server_SignalHandler signalEventHandler(RPG_NET_LISTENER_SINGLETON::instance(),
+  Net_Server_SignalHandler signalEventHandler(RPG_NET_ASYNCHLISTENER_SINGLETON::instance(),
                                               RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
   ACE_Sig_Handlers      signalHandlers;
   // *WARNING*: 'signals' appears to be a keyword in some contexts...
@@ -674,29 +675,29 @@ do_work(const unsigned int& clientPingInterval_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%p\", aborting\n")));
 */
-	 int success = 1;
-   while (!ACE_Proactor::instance()->proactor_event_loop_done())
-	 {
-	   success = ACE_Proactor::instance()->handle_events();
-	   if (success == -1)
-	   {
-	     ACE_DEBUG((LM_ERROR,
-	                ACE_TEXT("failed to ACE_Proactor::handle_events(): \"%m\", aborting\n")));
+	  int success = 1;
+    while (!ACE_Proactor::instance()->proactor_event_loop_done())
+	  {
+	    success = ACE_Proactor::instance()->handle_events();
+	    if (success == -1)
+	    {
+	      ACE_DEBUG((LM_ERROR,
+	                 ACE_TEXT("failed to ACE_Proactor::handle_events(): \"%m\", aborting\n")));
 
- 		   // clean up
-	     // stop listener, clean up pending connections
-	     RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
-	     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-	     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-	     no_sigpipe.restore_action(SIGPIPE, original_action);
+ 		    // clean up
+	      // stop listener, clean up pending connections
+	      RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
+	      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+	      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+	      no_sigpipe.restore_action(SIGPIPE, original_action);
 
-	     return;
-	   } // end IF
-	 }
+	      return;
+	    } // end IF
+	  }
 
     // clean up
     no_sigpipe.restore_action(SIGPIPE, original_action);
-//  } // end ELSE
+  } // end ELSE
 
   // clean up
   if (statisticsReportingInterval_in)
@@ -771,7 +772,6 @@ ACE_TMAIN(int argc,
   unsigned int statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                    = false;
   bool printVersionAndExit                 = false;
-  bool useThreadPool                       = RPG_NET_DEF_SERVER_USES_TP;
   unsigned int numThreadPoolThreads        = RPG_NET_DEF_SERVER_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
@@ -785,7 +785,6 @@ ACE_TMAIN(int argc,
                           statisticsReportingInterval,
                           traceInformation,
                           printVersionAndExit,
-                          useThreadPool,
                           numThreadPoolThreads)))
   {
     // make 'em learn...
@@ -806,8 +805,7 @@ ACE_TMAIN(int argc,
 //
 //     return EXIT_FAILURE;
   } // end IF
-  else if (useThreadPool &&
-           (numThreadPoolThreads == 0))
+  else if (numThreadPoolThreads == 0)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("need at least 1 worker thread in the pool...\n")));
@@ -896,7 +894,6 @@ ACE_TMAIN(int argc,
           networkInterface,
           listeningPortNumber,
           statisticsReportingInterval,
-          useThreadPool,
           numThreadPoolThreads);
   timer.stop();
 

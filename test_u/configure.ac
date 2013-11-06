@@ -66,17 +66,17 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, ACE sdl SDL_ttf libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
+PKG_CHECK_MODULES(pkg_libs, ACE SDL xerces-c SDL_ttf SDL_mixer libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 
 # checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lpthread':
-AC_CHECK_LIB([pthread], [main])
+#AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lACE':
 #AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lxerces-c':
-AC_CHECK_LIB([xerces-c], [main])
+#AC_CHECK_LIB([xerces-c], [main])
 
 # Checks for header files.
 AC_HEADER_STDBOOL

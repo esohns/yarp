@@ -21,36 +21,36 @@
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
 #include "character_generator_gui_common.h"
 #include "character_generator_gui_callbacks.h"
 
-#include <rpg_client_defines.h>
-#include <rpg_client_common_tools.h>
-#include <rpg_client_callbacks.h>
+#include "rpg_client_defines.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_callbacks.h"
 
-#include <rpg_engine_defines.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine_defines.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_sprite.h>
-#include <rpg_graphics_dictionary.h>
-#include <rpg_graphics_common_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_sprite.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_common_tools.h"
 
-#include <rpg_player_defines.h>
+#include "rpg_player_defines.h"
 
-#include <rpg_item_defines.h>
+#include "rpg_item_defines.h"
 
-#include <rpg_magic_defines.h>
+#include "rpg_magic_defines.h"
 
-#include <rpg_character_defines.h>
+#include "rpg_character_defines.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
@@ -530,7 +530,8 @@ do_initGUI(const std::string& graphicsDirectory_in,
 }
 
 void
-do_work(const std::string& magicDictionary_in,
+do_work(const std::string& schemaDirectory_in,
+      	const std::string& magicDictionary_in,
         const std::string& itemDictionary_in,
         const std::string& graphicsDictionary_in,
         const std::string& schemaRepository_in,
@@ -541,14 +542,21 @@ do_work(const std::string& magicDictionary_in,
 
   // step0a: init RPG engine
   std::string empty;
-  RPG_Engine_Common_Tools::init(magicDictionary_in,
+  RPG_Engine_Common_Tools::init(schemaDirectory_in,
+                                magicDictionary_in,
                                 itemDictionary_in,
                                 empty);
-  RPG_Client_Common_Tools::init(empty,
+	RPG_Sound_SDLConfig_t sound_config;
+  RPG_Client_Common_Tools::init(sound_config,
                                 empty,
-				true,
-                                graphicsDictionary_in,
+                                false,
+                                0,
+                                false,
+                                empty,
+                                //
                                 graphicsDirectory_in,
+																0,
+                                graphicsDictionary_in,
                                 false); // don't init SDL
 
   GTK_cb_data_t userData;
@@ -813,7 +821,8 @@ ACE_TMAIN(int argc_in,
   ACE_High_Res_Timer timer;
   timer.start();
   // step3: do actual work
-  do_work(magicDictionary,
+  do_work(config_path,
+          magicDictionary,
           itemDictionary,
           graphicsDictionary,
           schemaRepository,

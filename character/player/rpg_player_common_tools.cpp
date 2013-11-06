@@ -470,7 +470,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
                    ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
                    RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()).c_str()));
 
-        return false;
+        return NULL;
       }
     } // end SWITCH
   } // end FOR

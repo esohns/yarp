@@ -18,8 +18,6 @@ enum RPG_Engine_EntityMode
   RPG_ENGINE_ENTITYMODE_INVALID
 };
 
-#include "rpg_engine_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -28,7 +26,7 @@ enum RPG_Engine_EntityMode
 typedef std::map<RPG_Engine_EntityMode, std::string> RPG_Engine_EntityModeToStringTable_t;
 typedef RPG_Engine_EntityModeToStringTable_t::const_iterator RPG_Engine_EntityModeToStringTableIterator_t;
 
-class RPG_Engine_Export RPG_Engine_EntityModeHelper
+class RPG_Engine_EntityModeHelper
 {
  public:
   inline static void init()

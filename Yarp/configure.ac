@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([yarp],[0.1],[erik.sohns@web.de],[gui],[http://www.yarp.org])
+AC_INIT([yarp], [0.1], [erik.sohns@web.de], [Yarp], [http://www.yarp.org])
 AC_PREREQ(2.63)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
@@ -64,17 +64,17 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, sdl SDL_ttf libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
+PKG_CHECK_MODULES(pkg_libs, ACE xerces-c sdl SDL_ttf libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 
 # checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lACE':
-AC_CHECK_LIB([ACE], [main])
+#AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
-AC_CHECK_LIB([pthread], [main])
+#AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lxerces-c':
-AC_CHECK_LIB([xerces-c], [main])
+#AC_CHECK_LIB([xerces-c], [main])
 
 # Checks for header files.
 AC_HEADER_STDBOOL
@@ -91,7 +91,8 @@ AC_CONFIG_FILES([Makefile
                  magic/Makefile
                  item/Makefile
                  character/Makefile
-                 monster/Makefile
+                 character/player/Makefile
+                 character/monster/Makefile
                  combat/Makefile
                  map/Makefile
                  map/scripts/Makefile
@@ -109,7 +110,6 @@ AC_CONFIG_FILES([Makefile
                  sound/data/ambient/Makefile
                  sound/data/effect/Makefile
                  engine/Makefile
-                 stream/Makefile
                  net/Makefile
                  net/stream/Makefile
                  net/protocol/Makefile
@@ -118,15 +118,16 @@ AC_CONFIG_FILES([Makefile
                  test_u/Makefile
                  test_u/chance/Makefile
                  test_u/character/Makefile
+								 test_u/character/player/Makefile
+								 test_u/character/monster/Makefile
+                 test_u/client/Makefile
                  test_u/combat/Makefile
                  test_u/graphics/Makefile
-                 test_u/client/Makefile
-                 test_u/item/Makefile
+								 test_u/item/Makefile
                  test_u/magic/Makefile
                  test_u/map/Makefile
-                 test_u/monster/Makefile
                  test_u/net/Makefile
                  test_u/net/protocol/Makefile
-                 test_u/sound/Makefile])
+								 test_u/sound/Makefile])
 
 AC_OUTPUT

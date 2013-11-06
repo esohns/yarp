@@ -40,7 +40,7 @@ AX_PREFIX_CONFIG_H
 # get the cpp compiler flags
 #CXXFLAGS="${CXXFLAGS=}"
 # reset the cpp compiler flags
-CXXFLAGS=
+CXXFLAGS="-DRPG_ENGINE_BUILD_DLL"
 # this macro is used to get the arguments supplied
 # to the configure script (./configure --enable-debug)
 # Check if we have enable debug support.
@@ -52,11 +52,11 @@ AC_ARG_ENABLE(debug,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
 #  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
-  CXXFLAGS="-g3 -O0 -Wall"
+  CXXFLAGS="-g3 -O0 -Wall ${CXXFLAGS}"
   AC_MSG_RESULT(yes)
 else
 #  CXXFLAGS="${CXXFLAGS} -O3 -march=native -DRPG_NTRACE=0"
-  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0"
+  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0 ${CXXFLAGS}"
   AC_MSG_RESULT(no)
 fi
 

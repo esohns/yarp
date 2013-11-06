@@ -1141,7 +1141,8 @@ do_work(const mode_t& mode_in,
 
   // step0: init: random seed, string conversion facilities, ...
   std::string empty;
-  RPG_Engine_Common_Tools::init(magicDictionary_in,
+  RPG_Engine_Common_Tools::init(schemaRepository_in,
+                                magicDictionary_in,
                                 itemsDictionary_in,
                                 empty);
 

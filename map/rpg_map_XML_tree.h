@@ -76,8 +76,6 @@ class RPG_Map_Position_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
-#include <xsd/cxx/tree/istream-fwd.hxx>
-
 class RPG_Map_Export RPG_Map_DoorState_XMLTree_Type: public ::xml_schema::string
 {
   public:
@@ -96,10 +94,6 @@ class RPG_Map_Export RPG_Map_DoorState_XMLTree_Type: public ::xml_schema::string
   RPG_Map_DoorState_XMLTree_Type (const ::std::string& v);
 
   RPG_Map_DoorState_XMLTree_Type (const ::xml_schema::string& v);
-
-  RPG_Map_DoorState_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                  ::xml_schema::flags f = 0,
-                                  ::xml_schema::container* c = 0);
 
   RPG_Map_DoorState_XMLTree_Type (const ::xercesc::DOMElement& e,
                                   ::xml_schema::flags f = 0,
@@ -176,10 +170,6 @@ class RPG_Map_Export RPG_Map_Position_XMLTree_Type: public ::xml_schema::type
   RPG_Map_Position_XMLTree_Type (const x_type&,
                                  const y_type&);
 
-  RPG_Map_Position_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
-                                 ::xml_schema::flags f = 0,
-                                 ::xml_schema::container* c = 0);
-
   RPG_Map_Position_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
                                  ::xml_schema::container* c = 0);
@@ -203,10 +193,6 @@ class RPG_Map_Export RPG_Map_Position_XMLTree_Type: public ::xml_schema::type
          ::xml_schema::flags);
 
   protected:
-  void
-  parse (::xml_schema::istream< ACE_InputCDR >&,
-         ::xml_schema::flags);
-
   ::xsd::cxx::tree::one< x_type > x_;
   ::xsd::cxx::tree::one< y_type > y_;
 };
@@ -264,16 +250,6 @@ operator<< (::xml_schema::list_stream&,
 RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Position_XMLTree_Type&);
-
-RPG_Map_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Map_DoorState_XMLTree_Type&);
-
-RPG_Map_Export
-::xml_schema::ostream< ACE_OutputCDR >&
-operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
-            const RPG_Map_Position_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 

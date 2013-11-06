@@ -2,4 +2,5 @@ METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = chance character combat graphics client item magic map net sound
+SUBDIRS = chance character client combat graphics item magic map net sound
+

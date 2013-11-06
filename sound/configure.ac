@@ -39,7 +39,7 @@ AX_PREFIX_CONFIG_H
 # get the cpp compiler flags
 #CXXFLAGS="${CXXFLAGS=}"
 # reset the cpp compiler flags
-CXXFLAGS=
+CXXFLAGS="-DRPG_SOUND_BUILD_DLL"
 # this macro is used to get the arguments supplied
 # to the configure script (./configure --enable-debug)
 # Check if we have enable debug support.
@@ -51,11 +51,11 @@ AC_ARG_ENABLE(debug,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
 #  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
-  CXXFLAGS="-g3 -O0 -Wall"
+  CXXFLAGS="-g3 -O0 -Wall ${CXXFLAGS}"
   AC_MSG_RESULT(yes)
 else
 #  CXXFLAGS="${CXXFLAGS} -O3 -march=native -DRPG_NTRACE=0"
-  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0"
+  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0 ${CXXFLAGS}"
   AC_MSG_RESULT(no)
 fi
 
@@ -64,19 +64,19 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, sdl)
+PKG_CHECK_MODULES(pkg_libs, ACE xerces-c sdl SDL_mixer)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 
 # checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lACE':
-AC_CHECK_LIB([ACE], [main])
+#AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
-AC_CHECK_LIB([pthread], [main])
+#AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lxerces-c':
-AC_CHECK_LIB([xerces-c], [main])
+#AC_CHECK_LIB([xerces-c], [main])
 # FIXME: Replace `main' with a function in `-lSDL_mixer':
-AC_CHECK_LIB([SDL_mixer], [main])
+#AC_CHECK_LIB([SDL_mixer], [main])
 
 # Checks for header files.
 AC_HEADER_STDBOOL
