@@ -26,32 +26,30 @@
 #include "rpg_player_inventory.h"
 #include "rpg_player_equipment.h"
 
-//#include <rpg_combat_attacksituation.h>
-//#include <rpg_combat_defensesituation.h>
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
-#include <rpg_common_environment_incl.h>
-#include <rpg_character_incl.h>
-#include <rpg_magic_incl.h>
-#include <rpg_combat_incl.h>
+#include "rpg_dice_incl.h"
+#include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
+#include "rpg_character_incl.h"
+#include "rpg_magic_incl.h"
+#include "rpg_combat_incl.h"
 
-#include <rpg_item_instance_common.h>
+#include "rpg_item_instance_common.h"
 
-#include <rpg_character_alignmentcivic.h>
-#include <rpg_character_alignmentethic.h>
-#include <rpg_character_alignment.h>
-#include <rpg_character_common.h>
-#include <rpg_character_skills_common.h>
-#include <rpg_character_feat.h>
-#include <rpg_character_ability.h>
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+#include "rpg_character_common.h"
+#include "rpg_character_skills_common.h"
+#include "rpg_character_feat.h"
+#include "rpg_character_ability.h"
 
-#include <rpg_magic_common.h>
+#include "rpg_magic_common.h"
 
-#include <rpg_common_attribute.h>
-#include <rpg_common_skill.h>
-#include <rpg_common_condition.h>
-#include <rpg_common_size.h>
-#include <rpg_common_ambientlighting.h>
+#include "rpg_common_attribute.h"
+#include "rpg_common_skill.h"
+#include "rpg_common_condition.h"
+#include "rpg_common_size.h"
+#include "rpg_common_ambientlighting.h"
 
 #include <ace/Global_Macros.h>
 
@@ -109,20 +107,20 @@ class RPG_Player_Export RPG_Player_Base
 
  protected:
   RPG_Player_Base(// base attributes
-		  const std::string&,                // name
-		  const RPG_Character_Alignment&,    // alignment
-		  const RPG_Character_Attributes&,   // base attributes
-		  const RPG_Character_Skills_t&,     // skills
-		  const RPG_Character_Feats_t&,      // base feats
-		  const RPG_Character_Abilities_t&,  // base abilities
-		  const unsigned short int&,         // max HP
-		  const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
-		  // current status
-		  const RPG_Character_Conditions_t&, // condition
-		  const short int&,                  // HP
-		  const unsigned int&,               // wealth (GP)
-		  const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
-		  const RPG_Item_List_t&);           // list of (carried) items
+									const std::string&,                // name
+									const RPG_Character_Alignment&,    // alignment
+									const RPG_Character_Attributes&,   // base attributes
+									const RPG_Character_Skills_t&,     // skills
+									const RPG_Character_Feats_t&,      // base feats
+									const RPG_Character_Abilities_t&,  // base abilities
+									const unsigned short int&,         // max HP
+									const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
+									// current status
+									const RPG_Character_Conditions_t&, // condition
+									const short int&,                  // HP
+									const unsigned int&,               // wealth (GP)
+									const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
+									const RPG_Item_List_t&);           // list of (carried) items
   RPG_Player_Base(const RPG_Player_Base&);
 
 //   RPG_Player_Base& operator=(const RPG_Player_Base&);

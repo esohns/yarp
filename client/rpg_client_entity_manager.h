@@ -23,10 +23,10 @@
 
 #include "rpg_client_exports.h"
 
-#include <rpg_engine_common.h>
+#include "rpg_engine_common.h"
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_iwindow.h>
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_iwindow.h"
 
 #include <SDL/SDL.h>
 

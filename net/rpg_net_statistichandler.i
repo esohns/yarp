@@ -18,35 +18,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
+#include <ace/Reactor.h>
+#include <ace/Proactor.h>
 #include <ace/Log_Msg.h>
 
 template <typename StatisticsInfoContainer_t>
-RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler(const COLLECTOR_TYPE* interface_in,
-                                                                              const ActionSpecifier& action_in)
- : inherited(NULL,                            // no reactor
+RPG_Net_StatisticHandler_Reactor_T<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler_Reactor_T(const COLLECTOR_TYPE* interface_in,
+                                                                                                  const ActionSpecifier& action_in)
+ : inherited(ACE_Reactor::instance(),         // use default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myInterface(interface_in),
    myAction(action_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::RPG_Net_StatisticHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler_Reactor_T::RPG_Net_StatisticHandler_Reactor_T"));
 
 }
 
 template <typename StatisticsInfoContainer_t>
-RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::~RPG_Net_StatisticHandler()
+RPG_Net_StatisticHandler_Reactor_T<StatisticsInfoContainer_t>::~RPG_Net_StatisticHandler_Reactor_T()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::~RPG_Net_StatisticHandler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler_Reactor_T::~RPG_Net_StatisticHandler_Reactor_T"));
 
 }
 
 template <typename StatisticsInfoContainer_t>
 int
-RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::handle_timeout(const ACE_Time_Value& tv_in,
-                                                                    const void* arg_in)
+RPG_Net_StatisticHandler_Reactor_T<StatisticsInfoContainer_t>::handle_timeout(const ACE_Time_Value& tv_in,
+                                                                              const void* arg_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::handle_timeout"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler_Reactor_T::handle_timeout"));
 
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);
@@ -106,65 +108,84 @@ RPG_Net_StatisticHandler<StatisticsInfoContainer_t>::handle_timeout(const ACE_Ti
   return 0;
 }
 
-// *NOTE*: specialization to work around case where StatisticsInfoContainer_t is void... :-(
-// *TODO*: this generates multiple defined symbols linker issues (which in turn can be solved with
-// /FORCE:MULTIPLE linker option on MSVC)...
-//template <>
-//int RPG_Net_StatisticHandler<void>::handle_timeout(const ACE_Time_Value& tv_in,
-//                                                   const void* arg_in)
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler::handle_timeout"));
-//
-//  ACE_UNUSED_ARG(tv_in);
-//  ACE_UNUSED_ARG(arg_in);
-//
-//  switch(myAction)
-//  {
-//    case ACTION_COLLECT:
-//    {
-//      try
-//      {
-//        if (!myInterface->collect(NULL))
-//        {
-//          ACE_DEBUG((LM_ERROR,
-//                     ACE_TEXT("failed to RPG_Common_IStatistic::collect(), continuing\n")));
-//        }
-//      }
-//      catch (...)
-//      {
-//        ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("caught an exception in RPG_Common_IStatistic::collect(), continuing\n")));
-//
-//        // *TODO*: what else can we do ?
-//      }
-//
-//      break;
-//    }
-//    case ACTION_REPORT:
-//    {
-//      try
-//      {
-//        myInterface->report();
-//      }
-//      catch (...)
-//      {
-//        ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("caught an exception in RPS_FLB_Common_IStatistic::report(), continuing\n")));
-//
-//        // *TODO*: what else can we do ?
-//      }
-//
-//      break;
-//    }
-//    default:
-//    {
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("unknown/invalid action %u, continuing\n"),
-//                 myAction));
-//
-//      break;
-//    }
-//  } // end SWITCH
-//
-//  return 0;
-//}
+////////////////////////////////////////////////////////////////////////////////
+
+template <typename StatisticsInfoContainer_t>
+RPG_Net_StatisticHandler_Proactor_T<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler_Proactor_T(const COLLECTOR_TYPE* interface_in,
+                                                                                                    const ActionSpecifier& action_in)
+ : inherited(ACE_Proactor::instance()), // use default proactor
+   myInterface(interface_in),
+   myAction(action_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler_Proactor_T::RPG_Net_StatisticHandler_Proactor_T"));
+
+}
+
+template <typename StatisticsInfoContainer_t>
+RPG_Net_StatisticHandler_Proactor_T<StatisticsInfoContainer_t>::~RPG_Net_StatisticHandler_Proactor_T()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler_Proactor_T::~RPG_Net_StatisticHandler_Proactor_T"));
+
+}
+
+template <typename StatisticsInfoContainer_t>
+void
+RPG_Net_StatisticHandler_Proactor_T<StatisticsInfoContainer_t>::handle_time_out(const ACE_Time_Value& tv_in,
+                                                                                const void* arg_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_StatisticHandler_Proactor_T::handle_time_out"));
+
+  ACE_UNUSED_ARG(tv_in);
+  ACE_UNUSED_ARG(arg_in);
+
+  switch (myAction)
+  {
+    case ACTION_COLLECT:
+    {
+      StatisticsInfoContainer_t result;
+      ACE_OS::memset(&result,
+                     0,
+                     sizeof(StatisticsInfoContainer_t));
+
+      try
+      {
+        if (!myInterface->collect(result))
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Common_IStatistic::collect(), continuing\n")));
+        } // end IF
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught an exception in RPG_Common_IStatistic::collect(), continuing\n")));
+
+      }
+
+      // *TODO*: what else can we do, dump the result somehow ?
+      break;
+    }
+    case ACTION_REPORT:
+    {
+      try
+      {
+        myInterface->report();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught an exception in RPG_Common_IStatistic::report(), continuing\n")));
+      }
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("unknown/invalid action %u, continuing\n"),
+                 myAction));
+
+      break;
+    }
+  } // end SWITCH
+}

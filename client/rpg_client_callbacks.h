@@ -25,9 +25,9 @@
 
 #include "rpg_client_common.h"
 
-#include <rpg_engine_common.h>
+#include "rpg_engine_common.h"
 
-#include <rpg_player.h>
+#include "rpg_player.h"
 
 #include <glade/glade.h>
 #include <gtk/gtk.h>

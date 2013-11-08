@@ -21,11 +21,13 @@ enum RPG_Engine_Command
   COMMAND_STOP,
   COMMAND_TRAVEL,
   COMMAND_E2C_ENTITY_ADD,
+  COMMAND_E2C_ENTITY_REMOVE,
   COMMAND_E2C_ENTITY_HIT,
   COMMAND_E2C_ENTITY_MISS,
+  COMMAND_E2C_ENTITY_CONDITION,
   COMMAND_E2C_ENTITY_POSITION,
-  COMMAND_E2C_ENTITY_REMOVE,
   COMMAND_E2C_ENTITY_VISION,
+  COMMAND_E2C_ENTITY_LEVEL_UP,
   COMMAND_E2C_MESSAGE,
   COMMAND_E2C_QUIT,
   //
@@ -59,11 +61,13 @@ class RPG_Engine_CommandHelper
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_STOP, ACE_TEXT_ALWAYS_CHAR("COMMAND_STOP")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_TRAVEL, ACE_TEXT_ALWAYS_CHAR("COMMAND_TRAVEL")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_ADD, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_ADD")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_REMOVE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_REMOVE")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_HIT, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_HIT")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_MISS, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_MISS")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_CONDITION, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_CONDITION")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_POSITION, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_POSITION")));
-    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_REMOVE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_REMOVE")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_VISION, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_VISION")));
+    myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_ENTITY_LEVEL_UP, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_ENTITY_LEVEL_UP")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_MESSAGE, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_MESSAGE")));
     myRPG_Engine_CommandToStringTable.insert(std::make_pair(COMMAND_E2C_QUIT, ACE_TEXT_ALWAYS_CHAR("COMMAND_E2C_QUIT")));
   };

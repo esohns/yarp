@@ -38,13 +38,6 @@ class RPG_Common_Export RPG_Common_Timer_Manager
                              ACE_Recursive_Thread_Mutex>;
 
  public:
-  //// *IMPORTANT NOTE*: this is a fire-and-forget API (assumes resp. for the event handler)...
-  //bool scheduleTimer(ACE_Event_Handler*,    // timer dispatch handler
-  //                   const void*,           // act (== dispatch argument)
-  //                   const ACE_Time_Value&, // period (starting NOW)
-  //                   const bool&,           // reschedule interval ?
-  //                   int&);                 // return value: timer ID
-  //void cancelTimer(const int&); // timer ID
   void resetInterval(const long&,            // timer ID
                      const ACE_Time_Value&); // interval
 
@@ -62,6 +55,11 @@ class RPG_Common_Export RPG_Common_Timer_Manager
 
   // helper methods
   void fini_timers();
+
+	// *IMPORTANT NOTE*: this is only the functor, individual handlers are 
+	//                   managed in the queue
+	RPG_Common_TimeoutUpcall_t myTimerHandler;
+	RPG_Common_TimerHeap_t     myTimerQueue;
 };
 
 typedef ACE_Singleton<RPG_Common_Timer_Manager,

@@ -35,10 +35,8 @@ struct RPG_Sound_SDLConfig_t
 {
   int    frequency;
   Uint16 format;
-//   Uint8  channels;
   int    channels;
-  Uint16 samples;
-  int    mix_channels;
+  int    chunksize;
 };
 
 typedef RPG_Sound RPG_Sound_t;

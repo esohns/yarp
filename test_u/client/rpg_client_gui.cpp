@@ -21,56 +21,56 @@
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_client_defines.h>
-#include <rpg_client_common.h>
-#include <rpg_client_callbacks.h>
-#include <rpg_client_window_main.h>
-#include <rpg_client_window_level.h>
-#include <rpg_client_engine.h>
-#include <rpg_client_entity_manager.h>
-#include <rpg_client_common_tools.h>
-#include <rpg_client_ui_tools.h>
+#include "rpg_client_defines.h"
+#include "rpg_client_common.h"
+#include "rpg_client_callbacks.h"
+#include "rpg_client_window_main.h"
+#include "rpg_client_window_level.h"
+#include "rpg_client_engine.h"
+#include "rpg_client_entity_manager.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_ui_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_dictionary.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_SDL_tools.h>
-#include <rpg_graphics_common_tools.h>
-#include <rpg_graphics_cursor.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_SDL_tools.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor.h"
 
-#include <rpg_sound_defines.h>
-#include <rpg_sound_dictionary.h>
-#include <rpg_sound_common_tools.h>
+#include "rpg_sound_defines.h"
+#include "rpg_sound_common.h"
+#include "rpg_sound_dictionary.h"
+#include "rpg_sound_common_tools.h"
 
-#include <rpg_map_defines.h>
-#include <rpg_map_common_tools.h>
-#include <rpg_map_level.h>
+#include "rpg_map_defines.h"
+#include "rpg_map_common_tools.h"
+#include "rpg_map_level.h"
 
-#include <rpg_engine_defines.h>
-#include <rpg_engine.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine_defines.h"
+#include "rpg_engine.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_monster_defines.h>
+#include "rpg_monster_defines.h"
 
-#include <rpg_player_defines.h>
-#include <rpg_player.h>
+#include "rpg_player_defines.h"
+#include "rpg_player.h"
 
-#include <rpg_item_defines.h>
+#include "rpg_item_defines.h"
 
-#include <rpg_magic_defines.h>
+#include "rpg_magic_defines.h"
 
-#include <rpg_character_defines.h>
+#include "rpg_character_defines.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
-//#include <gnome.h>
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 
@@ -1901,8 +1901,7 @@ do_parseIniFile(const std::string& iniFilename_in,
   config_out.audio_config.sdl_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
   config_out.audio_config.sdl_config.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
   config_out.audio_config.sdl_config.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  config_out.audio_config.sdl_config.samples = RPG_CLIENT_DEF_AUDIO_SAMPLES;
-  config_out.audio_config.sdl_config.mix_channels = RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS;
+  config_out.audio_config.sdl_config.chunksize = RPG_CLIENT_DEF_AUDIO_CHUNKSIZE;
   config_out.audio_config.use_CD = RPG_SOUND_DEF_AMBIENT_USE_CD;
 
   config_out.video_config.screen_width = RPG_CLIENT_DEF_VIDEO_W;
@@ -1991,13 +1990,9 @@ do_parseIniFile(const std::string& iniFilename_in,
     {
       config_out.audio_config.sdl_config.channels = ::atoi(val_value.c_str());
     }
-    else if (val_name == ACE_TEXT("audio_samples"))
+    else if (val_name == ACE_TEXT("audio_chunksize"))
     {
-      config_out.audio_config.sdl_config.samples = ::atoi(val_value.c_str());
-    }
-    else if (val_name == ACE_TEXT("audio_mix_channels"))
-    {
-      config_out.audio_config.sdl_config.mix_channels = ::atoi(val_value.c_str());
+      config_out.audio_config.sdl_config.chunksize = ::atoi(val_value.c_str());
     }
     else if (val_name == ACE_TEXT("audio_cd"))
     {
@@ -2406,13 +2401,12 @@ ACE_TMAIN(int argc_in,
 //   config.gtk_cb_data                       = userData;
 
   // *** sound ***
-  config.audio_config.mute                    = mute_sound;
-  config.audio_config.sdl_config.frequency    = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  config.audio_config.sdl_config.format       = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  config.audio_config.sdl_config.channels     = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  config.audio_config.sdl_config.samples      = RPG_CLIENT_DEF_AUDIO_SAMPLES;
-  config.audio_config.sdl_config.mix_channels = RPG_CLIENT_DEF_AUDIO_MIX_CHANNELS;
-  config.audio_config.use_CD                  = RPG_SOUND_DEF_AMBIENT_USE_CD;
+  config.audio_config.mute                 = mute_sound;
+  config.audio_config.sdl_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
+  config.audio_config.sdl_config.format    = RPG_CLIENT_DEF_AUDIO_FORMAT;
+  config.audio_config.sdl_config.channels  = RPG_CLIENT_DEF_AUDIO_CHANNELS;
+  config.audio_config.sdl_config.chunksize = RPG_CLIENT_DEF_AUDIO_CHUNKSIZE;
+  config.audio_config.use_CD               = RPG_SOUND_DEF_AMBIENT_USE_CD;
   config.audio_config.repository = base_data_path;
   config.audio_config.repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)

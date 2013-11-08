@@ -21,14 +21,14 @@
 #ifndef RPG_NET_STATISTICHANDLER_H
 #define RPG_NET_STATISTICHANDLER_H
 
-#include <rpg_common_istatistic.h>
+#include "rpg_common_istatistic.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>
-#include <ace/Time_Value.h>
+#include <ace/Asynch_IO.h>
 
 template <typename StatisticsInfoContainer_t>
-class RPG_Net_StatisticHandler
+class RPG_Net_StatisticHandler_Reactor_T
  : public ACE_Event_Handler
 {
  public:
@@ -41,9 +41,9 @@ class RPG_Net_StatisticHandler
 
   typedef RPG_Common_IStatistic<StatisticsInfoContainer_t> COLLECTOR_TYPE;
 
-  RPG_Net_StatisticHandler(const COLLECTOR_TYPE*,   // interface handle
-                           const ActionSpecifier&); // action: collect/report
-  virtual ~RPG_Net_StatisticHandler();
+  RPG_Net_StatisticHandler_Reactor_T(const COLLECTOR_TYPE*,   // interface handle
+                                     const ActionSpecifier&); // action: collect/report
+  virtual ~RPG_Net_StatisticHandler_Reactor_T();
 
   // implement specific behaviour
   virtual int handle_timeout(const ACE_Time_Value&, // current time
@@ -53,9 +53,45 @@ class RPG_Net_StatisticHandler
   typedef ACE_Event_Handler inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler(const RPG_Net_StatisticHandler&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler& operator=(const RPG_Net_StatisticHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Reactor_T());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Reactor_T(const RPG_Net_StatisticHandler_Reactor_T&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Reactor_T& operator=(const RPG_Net_StatisticHandler_Reactor_T&));
+
+  const COLLECTOR_TYPE* myInterface;
+  ActionSpecifier       myAction;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+template <typename StatisticsInfoContainer_t>
+class RPG_Net_StatisticHandler_Proactor_T
+ : public ACE_Handler
+{
+ public:
+   // define different types of Actions for this interface
+  enum ActionSpecifier
+  {
+    ACTION_REPORT = 0,
+    ACTION_COLLECT,
+  };
+
+  typedef RPG_Common_IStatistic<StatisticsInfoContainer_t> COLLECTOR_TYPE;
+
+  RPG_Net_StatisticHandler_Proactor_T(const COLLECTOR_TYPE*,   // interface handle
+                                      const ActionSpecifier&); // action: collect/report
+  virtual ~RPG_Net_StatisticHandler_Proactor_T();
+
+  // implement specific behaviour
+  virtual void handle_time_out(const ACE_Time_Value&, // current time
+                               const void* = NULL);   // asynchronous completion token
+
+ private:
+  typedef ACE_Handler inherited;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Proactor_T());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Proactor_T(const RPG_Net_StatisticHandler_Proactor_T&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Proactor_T& operator=(const RPG_Net_StatisticHandler_Proactor_T&));
 
   const COLLECTOR_TYPE* myInterface;
   ActionSpecifier       myAction;

@@ -25,48 +25,48 @@
 #include "rpg_engine_incl.h"
 #include "rpg_engine_XML_tree.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_common_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_common_tools.h"
 
-#include <rpg_map_parser_driver.h>
-#include <rpg_map_common_tools.h>
+#include "rpg_map_parser_driver.h"
+#include "rpg_map_common_tools.h"
 
-#include <rpg_monster_common.h>
-#include <rpg_monster_common_tools.h>
-#include <rpg_monster_attackaction.h>
-#include <rpg_monster_dictionary.h>
+#include "rpg_monster_common.h"
+#include "rpg_monster_common_tools.h"
+#include "rpg_monster_attackaction.h"
+#include "rpg_monster_dictionary.h"
 
-#include <rpg_player_defines.h>
-#include <rpg_player_common_tools.h>
+#include "rpg_player_defines.h"
+#include "rpg_player_common_tools.h"
 
-#include <rpg_combat_common_tools.h>
+#include "rpg_combat_common_tools.h"
 
-#include <rpg_character_common_tools.h>
-#include <rpg_character_race_common_tools.h>
-#include <rpg_character_class_common_tools.h>
+#include "rpg_character_common_tools.h"
+#include "rpg_character_race_common_tools.h"
+#include "rpg_character_class_common_tools.h"
 
-#include <rpg_item_common.h>
-#include <rpg_item_armor.h>
-#include <rpg_item_weapon.h>
-#include <rpg_item_instance_manager.h>
-#include <rpg_item_dictionary.h>
-#include <rpg_item_common_tools.h>
+#include "rpg_item_common.h"
+#include "rpg_item_armor.h"
+#include "rpg_item_weapon.h"
+#include "rpg_item_instance_manager.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_common_tools.h"
 
-#include <rpg_magic_dictionary.h>
-#include <rpg_magic_common_tools.h>
+#include "rpg_magic_dictionary.h"
+#include "rpg_magic_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_attribute.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
-#include <rpg_common_XML_tools.h>
-#include <rpg_common_xsderrorhandler.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_attribute.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_XML_tools.h"
+#include "rpg_common_xsderrorhandler.h"
 
-#include <rpg_chance_common_tools.h>
+#include "rpg_chance_common_tools.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
 
 #include <ace/Log_Msg.h>
 
@@ -183,6 +183,22 @@ RPG_Engine_Common_Tools::fini()
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::fini"));
 
   RPG_Common_XML_Tools::fini();
+}
+
+bool
+RPG_Engine_Common_Tools::isOneShotEvent(const RPG_Engine_EventType& eventType_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isOneShotEvent"));
+
+	switch (eventType_in)
+	{
+    case EVENT_ENTITY_ACTIVATE:
+		case EVENT_ENTITY_SPAWN:
+			return false;
+		default: break;
+	}
+
+	return true;
 }
 
 RPG_Engine_Entity
@@ -1926,6 +1942,25 @@ monster_advance_attack_iterator:
   } // end ELSE
 
   return has_hit;
+}
+
+unsigned int
+RPG_Engine_Common_Tools::party2ACL(const RPG_Player_Party_t& party_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::party2ACL"));
+
+	// init return value(s)
+	unsigned int return_value = 0;
+
+  for (RPG_Player_PartyConstIterator_t iterator = party_in.begin();
+       iterator != party_in.end();
+       iterator++)
+	  return_value += (*iterator)->getLevel();
+
+	// divide&round
+	return_value = (return_value + (party_in.size() >> 1)) / party_in.size();
+
+	return (return_value == 0 ? 1 : return_value);
 }
 
 unsigned int

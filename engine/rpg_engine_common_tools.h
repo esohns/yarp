@@ -24,6 +24,7 @@
 #include "rpg_engine_exports.h"
 #include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
+#include "rpg_engine_event_common.h"
 #include "rpg_engine_level.h"
 #include "rpg_engine_XML_tree.h"
 
@@ -66,6 +67,9 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                    const std::string&); // monster dictionary file
   static void fini();
 
+	// ***** event-releated *****
+	static bool isOneShotEvent(const RPG_Engine_EventType&);
+
   // ***** entity-related *****
   // *NOTE*: entity.character must be deleted() by the caller !
   static RPG_Engine_Entity loadEntity(const std::string&,  // FQ filename
@@ -97,6 +101,7 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                      const RPG_Combat_DefenseSituation& = DEFENSE_NORMAL, // defense situation
                      const bool& = true,                                  // full-round action ?
                      const unsigned short& = RPG_ENGINE_FEET_PER_SQUARE); // distance (feet)
+	static unsigned int party2ACL(const RPG_Player_Party_t&);
   static unsigned int combat2XP(const std::string&,       // type
                                 const unsigned int&,      // ACL (average character level)
                                 const unsigned int& = 1,  // number of foes

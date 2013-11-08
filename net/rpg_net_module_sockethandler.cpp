@@ -34,7 +34,7 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
    myIsInitialized(false),
    mySessionID(0),
    myStatCollectHandler(this,
-                        STATISTICHANDLER_TYPE::ACTION_COLLECT),
+                        RPG_Net_StatisticHandler_Reactor_t::ACTION_COLLECT),
    myStatCollectHandlerID(-1),
    myCurrentMessageLength(0),
    myCurrentMessage(NULL),
@@ -402,7 +402,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //
 //   try
 //   {
-//     message_out = static_cast<RPG_Net_Message*> (//                                   inherited::myAllocator->malloc(requestedSize_in));
+//     message_out = static_cast<RPG_Net_Message*> (//inherited::myAllocator->malloc(requestedSize_in));
 //   }
 //   catch (...)
 //   {

@@ -24,13 +24,13 @@
 #include "rpg_client_exports.h"
 #include "rpg_client_common.h"
 
-#include <rpg_engine_common.h>
-#include <rpg_engine_iclient.h>
+#include "rpg_engine_common.h"
+#include "rpg_engine_iclient.h"
 
-#include <rpg_graphics_iwindow.h>
+#include "rpg_graphics_iwindow.h"
 
-#include <rpg_common_icontrol.h>
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_icontrol.h"
+#include "rpg_common_idumpstate.h"
 
 #include <glade/glade.h>
 
@@ -79,7 +79,7 @@ class RPG_Client_Export RPG_Client_Engine
   //virtual void removeEntity(const RPG_Engine_EntityID_t&);
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify(const RPG_Engine_Command&,
-                      const RPG_Engine_ClientParameters_t&);
+                      const RPG_Engine_ClientNotificationParameters_t&);
 
   void initMap();
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!

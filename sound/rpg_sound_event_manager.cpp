@@ -325,7 +325,7 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
   ACE_ASSERT(length != ACE_Time_Value::max_time);
 
   RPG_Common_TimerHandler* timer_handler = NULL;
-  timer_handler = new(std::nothrow) RPG_Common_TimerHandler(this);
+  timer_handler = new(std::nothrow) RPG_Common_TimerHandler(this, true);
   if (!timer_handler)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -343,9 +343,6 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to schedule timer, aborting\n")));
-
-    // clean up
-    delete timer_handler;
 
     return;
   } // end IF

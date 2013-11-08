@@ -67,7 +67,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
 //   wanted.freq = audioConfig_in.frequency;
 //   wanted.format = audioConfig_in.format;
 //   wanted.channels = audioConfig_in.channels;
-//   wanted.samples = audioConfig_in.samples;
+//   wanted.samples = audioConfig_in.chunksize;
 // //   wanted.callback = fill_audio;
 // //   wanted.userdata = NULL;
 //
@@ -83,7 +83,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
   if (Mix_OpenAudio(config_in.frequency,
                     config_in.format,
                     config_in.channels,
-                    config_in.samples) < 0)
+                    config_in.chunksize) < 0)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
@@ -91,21 +91,20 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
 
     return false;
   } // end IF
-  if (Mix_AllocateChannels(config_in.mix_channels) != config_in.mix_channels)
+/*  if (Mix_AllocateChannels(config_in.channels) != config_in.channels)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
-               config_in.mix_channels,
+               config_in.channels,
                Mix_GetError()));
 
     return false;
-  } // end IF
+  } // end IF*/
 
   RPG_Sound_Common_Tools::myConfig.frequency = 0;
   RPG_Sound_Common_Tools::myConfig.format = 0;
   RPG_Sound_Common_Tools::myConfig.channels = 0;
-  RPG_Sound_Common_Tools::myConfig.samples = 0;
-  RPG_Sound_Common_Tools::myConfig.mix_channels = Mix_AllocateChannels(-1);
+  RPG_Sound_Common_Tools::myConfig.chunksize = 0;
   std::string format_string;
   if (Mix_QuerySpec(&RPG_Sound_Common_Tools::myConfig.frequency,
                     &RPG_Sound_Common_Tools::myConfig.format,
@@ -155,12 +154,11 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
                                                       useCD_in);
 
   ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %s\nchannels: %d\nmix channels: %d\nCD: %s\n"),
+             ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %s\nchannels: %d\nCD: %s\n"),
              ACE_TEXT(driver),
              RPG_Sound_Common_Tools::myConfig.frequency,
              ACE_TEXT(format_string.c_str()),
              RPG_Sound_Common_Tools::myConfig.channels,
-             RPG_Sound_Common_Tools::myConfig.mix_channels,
              (useCD_in ? ACE_TEXT(SDL_CDName(0)) : ACE_TEXT("N/A"))));
 
   myIsMuted = mute_in;

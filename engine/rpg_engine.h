@@ -29,11 +29,11 @@
 #include "rpg_engine_level.h"
 #include "rpg_engine_event_manager.h"
 
-#include <rpg_map_common.h>
-#include <rpg_map_common_tools.h>
+#include "rpg_map_common.h"
+#include "rpg_map_common_tools.h"
 
-#include <rpg_common_icontrol.h>
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_icontrol.h"
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
@@ -181,7 +181,7 @@ class RPG_Engine_Export RPG_Engine
   void handleEntities();
 
   // helper types
-  typedef std::vector<std::pair<RPG_Engine_Command, RPG_Engine_ClientParameters_t*> > RPG_Engine_ClientNotifications_t;
+  typedef std::vector<std::pair<RPG_Engine_Command, RPG_Engine_ClientNotificationParameters_t> > RPG_Engine_ClientNotifications_t;
   typedef RPG_Engine_ClientNotifications_t::const_iterator RPG_Engine_ClientNotificationsConstIterator_t;
 
   // atomic ID generator

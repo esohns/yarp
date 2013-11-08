@@ -24,15 +24,16 @@
 #include "rpg_engine_command.h"
 #include "rpg_engine_entitymode.h"
 
-#include <rpg_graphics_sprite.h>
+#include "rpg_graphics_sprite.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
-#include <rpg_monster_common.h>
+#include "rpg_monster_common.h"
 
-#include <rpg_player_base.h>
+#include "rpg_player_base.h"
 
-#include <rpg_common_environment.h>
+#include "rpg_common_environment.h"
+#include "rpg_common_condition.h"
 
 #include <SDL/SDL.h>
 
@@ -213,9 +214,19 @@ typedef RPG_Engine_CombatantSequence_t::iterator RPG_Engine_CombatantSequenceIte
 typedef RPG_Engine_CombatantSequence_t::const_iterator RPG_Engine_CombatantSequenceConstIterator_t;
 // typedef RPG_Engine_CombatantSequence_t::const_reverse_iterator RPG_Engine_CombatantSequenceRIterator_t;
 
-// *TODO*: this interface is too generic...
-typedef std::vector<void*> RPG_Engine_ClientParameters_t;
-typedef RPG_Engine_ClientParameters_t::const_iterator RPG_Engine_ClientParametersConstIterator_t;
+struct RPG_Engine_ClientNotificationParameters_t
+{
+  RPG_Engine_EntityID_t entity_id;
+	RPG_Common_Condition  condition;
+	RPG_Map_Position_t    position;
+	RPG_Map_Position_t    previous_position;
+	unsigned char         visible_radius;
+	RPG_Graphics_Sprite   sprite;
+	std::string           message;
+};
+//typedef std::vector<void*> RPG_Engine_ClientParameters_t;
+//typedef RPG_Engine_ClientParameters_t::iterator RPG_Engine_ClientParametersIterator_t;
+//typedef RPG_Engine_ClientParameters_t::const_iterator RPG_Engine_ClientParametersConstIterator_t;
 
 typedef std::vector<unsigned int> RPG_Engine_Level2ExperienceList_t;
 typedef RPG_Engine_Level2ExperienceList_t::const_iterator RPG_Engine_Level2ExperienceListConstIterator_t;

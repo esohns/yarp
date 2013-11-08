@@ -28,18 +28,18 @@
 #include "rpg_client_ui_tools.h"
 #include "rpg_client_entity_manager.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_common_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_common_tools.h"
 
-#include <rpg_sound_common.h>
-#include <rpg_sound_common_tools.h>
+#include "rpg_sound_common.h"
+#include "rpg_sound_common_tools.h"
 
-#include <rpg_engine.h>
+#include "rpg_engine.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_file_tools.h"
 
 #include <ace/Log_Msg.h>
 
@@ -354,7 +354,7 @@ RPG_Client_Engine::setView(const RPG_Map_Position_t& position_in)
 
 void
 RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
-                          const RPG_Engine_ClientParameters_t& parameters_in)
+                          const RPG_Engine_ClientNotificationParameters_t& parameters_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::notify"));
 
@@ -384,14 +384,12 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       client_action.sound = EVENT_DOOR_CLOSE;
     case COMMAND_DOOR_OPEN:
     {
-      ACE_ASSERT(parameters_in.size() == 2);
-
       client_action.command = COMMAND_TOGGLE_DOOR;
-      client_action.position = *static_cast<RPG_Map_Position_t* const>(parameters_in.back());
+      client_action.position = parameters_in.position;
       ACE_ASSERT(client_action.position != std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                           std::numeric_limits<unsigned int>::max()));
       client_action.window = myWindow;
-      client_action.entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
+      client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT(client_action.entity_id);
       action(client_action);
 
@@ -424,18 +422,15 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       do_action = false; break;
     case COMMAND_E2C_ENTITY_ADD:
     {
-      ACE_ASSERT(parameters_in.size() == 2);
-
-      client_action.entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
+      client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT(client_action.entity_id);
-      RPG_Graphics_Sprite sprite = *static_cast<RPG_Graphics_Sprite* const>(parameters_in.back());
 
       // step1: load sprite graphics
       SDL_Surface* sprite_graphic = NULL;
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
       if (!myEngine->isMonster(client_action.entity_id, true))
-        type.sprite = sprite;
+        type.sprite = parameters_in.sprite;
       else
         type.sprite = RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(client_action.entity_id, true));
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
@@ -464,9 +459,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     case COMMAND_E2C_ENTITY_HIT:
     case COMMAND_E2C_ENTITY_MISS:
     {
-      ACE_ASSERT(parameters_in.size() == 1);
-
-      client_action.entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
+      client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT(client_action.entity_id);
 
       client_action.command = COMMAND_PLAY_SOUND;
@@ -477,20 +470,14 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     }
     case COMMAND_E2C_ENTITY_POSITION:
     {
-      ACE_ASSERT(parameters_in.size() == 3);
-
-      RPG_Engine_ClientParametersConstIterator_t parameter_iterator = parameters_in.begin();
-      client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(*parameter_iterator);
+      client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT(client_action.entity_id);
-      parameter_iterator++;
-      client_action.position = *static_cast<const RPG_Map_Position_t* const>(*parameter_iterator);
+      client_action.position = parameters_in.position;
       ACE_ASSERT(client_action.position != std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                           std::numeric_limits<unsigned int>::max()));
-      parameter_iterator++;
-      client_action.previous = *static_cast<const RPG_Map_Position_t* const>(*parameter_iterator);
+      client_action.previous = parameters_in.previous_position;
       ACE_ASSERT(client_action.previous != std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                           std::numeric_limits<unsigned int>::max()));
-
       client_action.window = myWindow;
 
       // *NOTE*: when using (dynamic) lighting, redraw the whole window...
@@ -582,11 +569,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     }
     case COMMAND_E2C_ENTITY_REMOVE:
     {
-      ACE_ASSERT(parameters_in.size() == 1);
-
       client_action.command = COMMAND_ENTITY_REMOVE;
       client_action.window = myWindow;
-      client_action.entity_id = *static_cast<RPG_Engine_EntityID_t* const>(parameters_in.front());
+      client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT(client_action.entity_id);
       action(client_action);
 
@@ -608,12 +593,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     }
     case COMMAND_E2C_ENTITY_VISION:
     {
-      ACE_ASSERT(parameters_in.size() == 2);
-
       client_action.window = myWindow;
-      client_action.entity_id = *static_cast<const RPG_Engine_EntityID_t* const>(parameters_in.front());
+      client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT(client_action.entity_id);
-      client_action.radius = *static_cast<const unsigned char* const>(parameters_in.back());
+      client_action.radius = parameters_in.visible_radius;
 
       // *NOTE*: re-drawing the window will invalidate the hightlight BG...
       client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
@@ -649,20 +632,14 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     }
     case COMMAND_E2C_MESSAGE:
     {
-      // sanity check
-      ACE_ASSERT(parameters_in.size() == 1);
-
       client_action.command = COMMAND_WINDOW_UPDATE_MESSAGEWINDOW;
       client_action.window = myWindow;
-      client_action.message = *static_cast<const std::string* const>(parameters_in.front());
+      client_action.message = parameters_in.message;
 
       break;
     }
     case COMMAND_E2C_QUIT:
     {
-      // sanity check
-      ACE_ASSERT(parameters_in.empty());
-
       if (myWidgets)
       {
         GDK_THREADS_ENTER();

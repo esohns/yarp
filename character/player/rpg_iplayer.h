@@ -21,15 +21,15 @@
 #ifndef RPG_IPLAYER_H
 #define RPG_IPLAYER_H
 
-#include <rpg_combat_attacksituation.h>
-#include <rpg_combat_defensesituation.h>
+#include "rpg_combat_attacksituation.h"
+#include "rpg_combat_defensesituation.h"
 
-#include <rpg_character_common.h>
+#include "rpg_character_common.h"
 
-#include <rpg_common_attribute.h>
-#include <rpg_common_terrain.h>
-#include <rpg_common_track.h>
-#include <rpg_common_ambientlighting.h>
+#include "rpg_common_attribute.h"
+#include "rpg_common_terrain.h"
+#include "rpg_common_track.h"
+#include "rpg_common_ambientlighting.h"
 
 class RPG_IPlayer
 {
@@ -52,7 +52,7 @@ class RPG_IPlayer
   // get a hint if this is a PC/NPC
   virtual bool isPlayerCharacter() const = 0;
 
-  virtual void gainExperience(const unsigned int&) = 0; // XP
+  virtual bool gainExperience(const unsigned int&) = 0; // XP
 
   virtual void status() const = 0;
   virtual void dump() const = 0;

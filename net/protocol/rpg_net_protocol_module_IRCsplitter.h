@@ -25,13 +25,13 @@
 #include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_IRCbisect.h"
 
-#include <rpg_net_statistichandler.h>
+#include "rpg_net_statistichandler.h"
 
-#include <rpg_common_istatistic.h>
+#include "rpg_common_istatistic.h"
 
-#include <rpg_stream_headmoduletask_base.h>
-#include <rpg_stream_session_config_base.h>
-#include <rpg_stream_streammodule.h>
+#include "rpg_stream_headmoduletask_base.h"
+#include "rpg_stream_session_config_base.h"
+#include "rpg_stream_streammodule.h"
 
 #include <ace/Global_Macros.h>
 
@@ -90,7 +90,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCSplitter& operator=(const RPG_Net_Protocol_Module_IRCSplitter&));
 
   // convenience types
-  typedef RPG_Net_StatisticHandler<RPG_Net_Protocol_RuntimeStatistic> STATISTICHANDLER_TYPE;
+  typedef RPG_Net_StatisticHandler_Reactor_T<RPG_Net_Protocol_RuntimeStatistic> STATISTICHANDLER_TYPE;
   typedef RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> SESSIONCONFIG_TYPE;
 
   // helper methods

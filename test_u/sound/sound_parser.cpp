@@ -21,20 +21,21 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_sound_defines.h>
-#include <rpg_sound_dictionary.h>
-#include <rpg_sound_common_tools.h>
+#include "rpg_sound_defines.h"
+#include "rpg_sound_common.h"
+#include "rpg_sound_dictionary.h"
+#include "rpg_sound_common_tools.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include <SDL/SDL.h>
 
@@ -49,29 +50,12 @@
 #include <string>
 
 #define SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS false
-#define SOUNDPARSER_DEF_SOUND_CACHESIZE    50
-
-#define SOUNDPARSER_DEF_AUDIO_FREQUENCY    44100
-#define SOUNDPARSER_DEF_AUDIO_FORMAT       AUDIO_S16SYS
-#define SOUNDPARSER_DEF_AUDIO_CHANNELS     2
-#define SOUNDPARSER_DEF_AUDIO_SAMPLES      4096
-
 #define SDL_TIMEREVENT                     SDL_USEREVENT
-
-// *NOTE* types as used by SDL
-struct SDL_audio_config_t
-{
-  int    frequency;
-  Uint16 format;
-//   Uint8  channels;
-  int    channels;
-  Uint16 samples;
-};
 
 static SDL_CD* cdrom = NULL;
 
-const bool
-do_initAudio(const SDL_audio_config_t& config_in)
+bool
+do_initAudio(const RPG_Sound_SDLConfig_t& config_in)
 {
   RPG_TRACE(ACE_TEXT("::do_initAudio"));
 
@@ -97,7 +81,7 @@ do_initAudio(const SDL_audio_config_t& config_in)
   if (Mix_OpenAudio(config_in.frequency,
                     config_in.format,
                     config_in.channels,
-                    config_in.samples) < 0)
+                    config_in.chunksize) < 0)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
@@ -106,11 +90,11 @@ do_initAudio(const SDL_audio_config_t& config_in)
     return false;
   } // end IF
 //   Mix_AllocateChannels(4);
-  SDL_audio_config_t obtained;
-  obtained.frequency = 0;
+  RPG_Sound_SDLConfig_t obtained;
+  obtained.frequency = -1;
   obtained.format = 0;
-  obtained.channels = 0;
-  obtained.samples = 0;
+  obtained.channels = -1;
+  obtained.chunksize = -1;
   if (Mix_QuerySpec(&obtained.frequency,
                     &obtained.format,
                     &obtained.channels) == 0)
@@ -408,8 +392,16 @@ do_work(const bool& dumpDictionary_in,
   RPG_Dice_Common_Tools::initStringConversionTables();
 
   // step1: init: sound directory, cache, ...
-  RPG_Sound_Common_Tools::init(path_in,
-                               SOUNDPARSER_DEF_SOUND_CACHESIZE);
+	RPG_Sound_SDLConfig_t sound_config;
+	sound_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
+	sound_config.format = RPG_SOUND_DEF_AUDIO_FORMAT;
+	sound_config.channels = RPG_SOUND_DEF_AUDIO_CHANNELS;
+	sound_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
+  RPG_Sound_Common_Tools::init(sound_config,
+                               path_in,
+                               RPG_SOUND_DEF_AMBIENT_USE_CD,
+                               RPG_SOUND_DEF_CACHESIZE,
+                               false);
 
   // step2: init sound dictionary
   try
@@ -436,6 +428,7 @@ do_work(const bool& dumpDictionary_in,
   RPG_Sound_Event sound_event = RPG_SOUND_EVENT_INVALID;
   RPG_Dice_RollResult_t result;
   int current_channel = -1;
+	ACE_Time_Value duration = ACE_Time_Value::zero;
   do
   {
     result.clear();
@@ -447,7 +440,7 @@ do_work(const bool& dumpDictionary_in,
                ACE_TEXT("playing event sound \"%s\"...\n"),
                RPG_Sound_EventHelper::RPG_Sound_EventToString(sound_event).c_str()));
 
-    current_channel = RPG_Sound_Common_Tools::play(sound_event);
+    current_channel = RPG_Sound_Common_Tools::play(sound_event, duration);
     if (current_channel == -1)
     {
       ACE_DEBUG((LM_ERROR,
@@ -581,11 +574,11 @@ ACE_TMAIN(int argc,
   bool printVersionAndExit = false;
   bool validateXML = true;
 
-  SDL_audio_config_t audio_config;
-  audio_config.frequency     = SOUNDPARSER_DEF_AUDIO_FREQUENCY;
-  audio_config.format        = SOUNDPARSER_DEF_AUDIO_FORMAT;
-  audio_config.channels      = SOUNDPARSER_DEF_AUDIO_CHANNELS;
-  audio_config.samples       = SOUNDPARSER_DEF_AUDIO_SAMPLES;
+  RPG_Sound_SDLConfig_t audio_config;
+  audio_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
+  audio_config.format    = RPG_SOUND_DEF_AUDIO_FORMAT;
+  audio_config.channels  = RPG_SOUND_DEF_AUDIO_CHANNELS;
+  audio_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,

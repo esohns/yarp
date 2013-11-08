@@ -40,6 +40,7 @@ struct RPG_Engine_Event
 {
   RPG_Engine_EventType  type;
   RPG_Engine_EntityID_t entity_id;
+	long                  timer_id;
 };
 
 #endif

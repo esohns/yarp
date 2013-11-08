@@ -21,25 +21,25 @@
 
 #include "rpg_player_player_base.h"
 
-#include <rpg_combat_common_tools.h>
+#include "rpg_combat_common_tools.h"
 
-#include <rpg_item_common.h>
-#include <rpg_item_armor.h>
-#include <rpg_item_commodity.h>
-#include <rpg_item_weapon.h>
-#include <rpg_item_dictionary.h>
-#include <rpg_item_instance_manager.h>
-#include <rpg_item_common_tools.h>
+#include "rpg_item_common.h"
+#include "rpg_item_armor.h"
+#include "rpg_item_commodity.h"
+#include "rpg_item_weapon.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_instance_manager.h"
+#include "rpg_item_common_tools.h"
 
-#include <rpg_character_defines.h>
-#include <rpg_character_common_tools.h>
-#include <rpg_character_race_common_tools.h>
-#include <rpg_character_skills_common_tools.h>
+#include "rpg_character_defines.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_race_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 
-#include <rpg_magic_common_tools.h>
+#include "rpg_magic_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
@@ -218,7 +218,7 @@ RPG_Player_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getLevel"));
 
-  // *TODO*: consider implementing class-specific tables...
+  // *TODO*: implement class-specific tables
   ACE_UNUSED_ARG(subClass_in);
 
   unsigned char result = 0;
@@ -472,12 +472,16 @@ RPG_Player_Player_Base::isPlayerCharacter() const
   return true;
 }
 
-void
+bool
 RPG_Player_Player_Base::gainExperience(const unsigned int& XP_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::gainExperience"));
 
-  unsigned char old_level = getLevel(SUBCLASS_NONE);
+  std::vector<unsigned char> levels;
+	for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
+	     iterator != myClass.subClasses.end();
+	     iterator++)
+		levels.push_back(getLevel(*iterator));
 
   myExperience += XP_in;
 
@@ -487,15 +491,24 @@ RPG_Player_Player_Base::gainExperience(const unsigned int& XP_in)
              XP_in,
              myExperience));
 
-  // *TODO*: trigger level-up
-  if (old_level != getLevel(*myClass.subClasses.begin()))
-  {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("player: \"%s\" (XP: %d) has gained a level (%d)...\n"),
-               ACE_TEXT(getName().c_str()),
-               myExperience,
-               static_cast<int>(getLevel(*myClass.subClasses.begin()))));
-  } // end IF
+	// gained a class level ?
+	unsigned int index = 0;
+	for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
+	     iterator != myClass.subClasses.end();
+	     iterator++, index++)
+		if (getLevel(*iterator) != levels[index])
+	  {
+		  ACE_DEBUG((LM_DEBUG,
+		             ACE_TEXT("player: \"%s\" (XP: %d) has reached level %u as %s...\n"),
+		             ACE_TEXT(getName().c_str()),
+		             myExperience,
+		             static_cast<unsigned int>(getLevel(*iterator)),
+		             ACE_TEXT(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str())));
+
+			return true;
+		} // end IF
+
+	return false;
 }
 
 unsigned int

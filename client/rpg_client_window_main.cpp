@@ -26,17 +26,17 @@
 #include "rpg_client_engine.h"
 #include "rpg_client_window_level.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_hotspot.h>
-#include <rpg_graphics_common_tools.h>
-#include <rpg_graphics_SDL_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_hotspot.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_engine.h>
+#include "rpg_engine.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
 
 #include <ace/Log_Msg.h>
 
@@ -323,8 +323,25 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
       {
         case SDLK_ESCAPE:
         {
-          RPG_Engine_ClientParameters_t parameters;
-          myEngine->notify(COMMAND_E2C_QUIT, parameters);
+          RPG_Engine_ClientNotificationParameters_t parameters;
+					parameters.entity_id = 0;
+					parameters.condition = RPG_COMMON_CONDITION_INVALID;
+				  parameters.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+				                                       std::numeric_limits<unsigned int>::max());
+					parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+				                                                std::numeric_limits<unsigned int>::max());
+					parameters.visible_radius = 0;
+					parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+					try
+					{
+						myEngine->notify(COMMAND_E2C_QUIT, parameters);
+					}
+					catch (...)
+					{
+						ACE_DEBUG((LM_ERROR,
+								       ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+								       ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_QUIT).c_str())));
+					}
 
           break;
         }

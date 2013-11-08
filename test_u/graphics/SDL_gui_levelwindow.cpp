@@ -24,23 +24,23 @@
 #include "SDL_gui_defines.h"
 #include "SDL_gui_minimapwindow.h"
 
-#include <rpg_client_defines.h>
-#include <rpg_client_entity_manager.h>
-#include <rpg_client_common_tools.h>
+#include "rpg_client_defines.h"
+#include "rpg_client_entity_manager.h"
+#include "rpg_client_common_tools.h"
 
-#include <rpg_engine.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_common_tools.h>
-#include <rpg_graphics_SDL_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_map_common_tools.h>
+#include "rpg_map_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
 
 #include <ace/Log_Msg.h>
 
@@ -1353,7 +1353,7 @@ SDL_GUI_LevelWindow::setView(const RPG_Map_Position_t& position_in)
 
 void
 SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
-                            const RPG_Engine_ClientParameters_t& parameters_in)
+                            const RPG_Engine_ClientNotificationParameters_t& parameters_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::notify"));
 
@@ -1364,23 +1364,20 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
     case COMMAND_DOOR_CLOSE:
     case COMMAND_DOOR_OPEN:
     {
-      ACE_ASSERT(parameters_in.size() == 1);
-
-      RPG_Map_Position_t position = *static_cast<RPG_Map_Position_t*>(parameters_in.front());
-      RPG_Map_DoorState door_state = myEngine->state(position, true);
+      RPG_Map_DoorState door_state = myEngine->state(parameters_in.position, true);
 
       // change tile accordingly
       RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
       orientation = RPG_Client_Common_Tools::getDoorOrientation(*myEngine,
-                                                                position);
+                                                                parameters_in.position);
       switch (orientation)
       {
         case ORIENTATION_HORIZONTAL:
-          myDoorTiles[position] = ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.horizontal_open
-                                                                  : myCurrentDoorSet.horizontal_closed); break;
+          myDoorTiles[parameters_in.position] = ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.horizontal_open
+                                                                                : myCurrentDoorSet.horizontal_closed); break;
         case ORIENTATION_VERTICAL:
-          myDoorTiles[position] = ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.vertical_open
-                                                                  : myCurrentDoorSet.vertical_closed); break;
+          myDoorTiles[parameters_in.position] = ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.vertical_open
+                                                                                : myCurrentDoorSet.vertical_closed); break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -1399,9 +1396,19 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
       return;
     case COMMAND_E2C_ENTITY_ADD:
     {
-      ACE_ASSERT(parameters_in.size() == 2);
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()),
-                                                           static_cast<SDL_Surface*>(parameters_in.back()));
+      SDL_Surface* sprite_graphic = NULL;
+      RPG_Graphics_GraphicTypeUnion type;
+      type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
+      if (!myEngine->isMonster(parameters_in.entity_id, true))
+        type.sprite = parameters_in.sprite;
+      else
+        type.sprite = RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id, true));
+      sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
+                                                              true,   // convert to display format
+                                                              false); // don't cache
+      ACE_ASSERT(sprite_graphic);
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(parameters_in.entity_id,
+                                                           sprite_graphic);
 
       return;
     }
@@ -1410,11 +1417,9 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
       return;
     case COMMAND_E2C_ENTITY_POSITION:
     {
-      ACE_ASSERT(parameters_in.size() == 2);
-
       SDL_Rect dirtyRegion = {0, 0, 0, 0};
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()),
-                                                           RPG_Graphics_Common_Tools::map2Screen(*static_cast<RPG_Map_Position_t*>(parameters_in.back()),
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(parameters_in.entity_id,
+                                                           RPG_Graphics_Common_Tools::map2Screen(parameters_in.position,
                                                                                                  getSize(false),
                                                                                                  getView()),
                                                            getScreen(),
@@ -1427,21 +1432,16 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
     }
     case COMMAND_E2C_ENTITY_REMOVE:
     {
-      ACE_ASSERT(parameters_in.size() == 1);
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(*static_cast<RPG_Engine_EntityID_t*>(parameters_in.front()));
-      
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(parameters_in.entity_id);
+
       return;
     }
     case COMMAND_E2C_ENTITY_VISION:
     {
-      ACE_ASSERT(parameters_in.size() == 2);
-
       return;
     }
     case COMMAND_E2C_QUIT:
     {
-      ACE_ASSERT(parameters_in.empty());
-
       return;
     }
     default:

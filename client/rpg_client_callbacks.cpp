@@ -25,35 +25,35 @@
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
 
-#include <rpg_engine_defines.h>
-#include <rpg_engine_common.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine_defines.h"
+#include "rpg_engine_common.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor.h>
-#include <rpg_graphics_dictionary.h>
-#include <rpg_graphics_common_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_common_tools.h"
 
-#include <rpg_sound_event.h>
-#include <rpg_sound_event_manager.h>
+#include "rpg_sound_event.h"
+#include "rpg_sound_event_manager.h"
 
-#include <rpg_map_defines.h>
-#include <rpg_map_common_tools.h>
+#include "rpg_map_defines.h"
+#include "rpg_map_common_tools.h"
 
-#include <rpg_player_defines.h>
+#include "rpg_player_defines.h"
 
-#include <rpg_item_armor.h>
-#include <rpg_item_commodity.h>
-#include <rpg_item_weapon.h>
-#include <rpg_item_instance_manager.h>
+#include "rpg_item_armor.h"
+#include "rpg_item_commodity.h"
+#include "rpg_item_weapon.h"
+#include "rpg_item_instance_manager.h"
 
-#include <rpg_magic_common_tools.h>
+#include "rpg_magic_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include <gmodule.h>
 
@@ -2684,9 +2684,15 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
     if (visible_radius_before != visible_radius_after)
     {
       // notify client window
-      RPG_Engine_ClientParameters_t parameters;
-      parameters.push_back(&active_entity);
-      parameters.push_back(&visible_radius_after);
+		  RPG_Engine_ClientNotificationParameters_t parameters;
+			parameters.entity_id = active_entity;
+			parameters.condition = RPG_COMMON_CONDITION_INVALID;
+			parameters.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+				                                   std::numeric_limits<unsigned int>::max());
+			parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+				                                            std::numeric_limits<unsigned int>::max());
+			parameters.visible_radius = visible_radius_after;
+			parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
       try
       {
         data->client_engine->notify(COMMAND_E2C_ENTITY_VISION, parameters);

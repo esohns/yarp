@@ -25,9 +25,10 @@
 #include "rpg_engine_common.h"
 #include "rpg_engine_event_common.h"
 
-#include <rpg_common_icontrol.h>
-#include <rpg_common_itimer.h>
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_icontrol.h"
+#include "rpg_common_itimer.h"
+#include "rpg_common_timerhandler.h"
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
@@ -52,15 +53,17 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Engine_Event_Manager,
                              ACE_Recursive_Thread_Mutex>;
+	friend class RPG_Common_TimerHandler;
 
  public:
-  void init(RPG_Engine*); // (level) engine
+  void init(RPG_Engine*); // engine handle
 
   // manage generic event sources
-  long schedule(const RPG_Engine_Event&, // event
-                const ACE_Time_Value&,   // interval (or delay)
-                const bool& = false);    // one-shot ?
-  void remove(const long&); // id
+	// *IMPORTANT*: fire&forget API !!!
+  long schedule(RPG_Engine_Event*,     // event handle
+                const ACE_Time_Value&, // interval (or delay)
+                const bool& = false);  // one-shot ?
+  void cancel(const long&); // timer (!) id
 
   // manage entities
   void add(const RPG_Engine_EntityID_t&, // id
@@ -77,10 +80,6 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
-  // implement RPG_Common_ITimer interface
-  // *WARNING*: NOT to be called by the user
-  virtual void handleTimeout(const void*); // ACT (if any)
-
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
 
@@ -90,10 +89,13 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager(const RPG_Engine_Event_Manager&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager& operator=(const RPG_Engine_Event_Manager&));
 
-  // override task-based members
+  // implement task-based members
   virtual int open(void* = NULL);
   virtual int close(u_long = 0);
   virtual int svc(void);
+
+  // implement RPG_Common_ITimer interface
+  virtual void handleTimeout(const void*); // ACT (if any)
 
   static void wait_all();
 
@@ -130,6 +132,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   ACE_Time_Value            myGameClockStart;
 
   RPG_Engine_EventTimers_t  myTimers;
+	// *NOTE*: used for mapping purposes only
   RPG_Engine_EntityTimers_t myEntityTimers;
 };
 

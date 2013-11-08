@@ -21,11 +21,11 @@
 #ifndef SDL_GUI_LEVELWINDOW_H
 #define SDL_GUI_LEVELWINDOW_H
 
-#include <rpg_engine_common.h>
-#include <rpg_engine_iclient.h>
+#include "rpg_engine_common.h"
+#include "rpg_engine_iclient.h"
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_SDL_window_base.h>
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_SDL_window_base.h"
 
 #include <SDL/SDL.h>
 
@@ -77,7 +77,7 @@ class SDL_GUI_LevelWindow
   //virtual void toggleDoor(const RPG_Map_Position_t&);
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify(const RPG_Engine_Command&,
-                      const RPG_Engine_ClientParameters_t&);
+                      const RPG_Engine_ClientNotificationParameters_t&);
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;

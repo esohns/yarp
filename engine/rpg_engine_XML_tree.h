@@ -102,11 +102,13 @@ class RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
     COMMAND_STOP,
     COMMAND_TRAVEL,
     COMMAND_E2C_ENTITY_ADD,
+    COMMAND_E2C_ENTITY_REMOVE,
     COMMAND_E2C_ENTITY_HIT,
     COMMAND_E2C_ENTITY_MISS,
+    COMMAND_E2C_ENTITY_CONDITION,
     COMMAND_E2C_ENTITY_POSITION,
-    COMMAND_E2C_ENTITY_REMOVE,
     COMMAND_E2C_ENTITY_VISION,
+    COMMAND_E2C_ENTITY_LEVEL_UP,
     COMMAND_E2C_MESSAGE,
     COMMAND_E2C_QUIT
   };
@@ -154,8 +156,8 @@ class RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Engine_Command_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[19];
-  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[19];
+  static const char* const _xsd_RPG_Engine_Command_XMLTree_Type_literals_[21];
+  static const value _xsd_RPG_Engine_Command_XMLTree_Type_indexes_[21];
 };
 
 class RPG_Engine_EntityMode_XMLTree_Type: public ::xml_schema::string

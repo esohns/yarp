@@ -6,7 +6,8 @@ SUBDIRS = protocol
 
 bin_PROGRAMS = net_client net_server
 
-net_server_SOURCES = net_server.cpp
+net_server_SOURCES = net_server.cpp net_server_signalhandler.cpp \
+  net_server_signalhandler.h
 #net_server_LDFLAGS = $(pkg_libs_LIBS)
 net_server_LDADD = -lRPG_Net -lRPG_Stream -lRPG_Common -lRPG_Dice $(pkg_libs_LIBS)
 

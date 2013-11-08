@@ -21,42 +21,42 @@
 
 #include "rpg_player_base.h"
 
-#include <rpg_combat_incl.h>
-#include <rpg_combat_common.h>
+#include "rpg_combat_incl.h"
+#include "rpg_combat_common.h"
 
-#include <rpg_character_common_tools.h>
-#include <rpg_character_skills_common_tools.h>
+#include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 
-#include <rpg_item_common.h>
-#include <rpg_item_dictionary.h>
+#include "rpg_item_common.h"
+#include "rpg_item_dictionary.h"
 
-#include <rpg_magic_common_tools.h>
+#include "rpg_magic_common_tools.h"
 
-#include <rpg_dice_incl.h>
-#include <rpg_dice_common.h>
-#include <rpg_dice.h>
+#include "rpg_dice_incl.h"
+#include "rpg_dice_common.h"
+#include "rpg_dice.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 
 #include <string>
 
 RPG_Player_Base::RPG_Player_Base(// base attributes
-				 const std::string& name_in,
-				 const RPG_Character_Alignment& alignment_in,
-				 const RPG_Character_Attributes& attributes_in,
-				 const RPG_Character_Skills_t& skills_in,
-				 const RPG_Character_Feats_t& feats_in,
-				 const RPG_Character_Abilities_t& abilities_in,
-				 const unsigned short int& maxHitPoints_in,
-				 const RPG_Magic_SpellTypes_t& knownSpells_in,
-				 // current status
-				 const RPG_Character_Conditions_t& condition_in,
-				 const short int& hitpoints_in,
-				 const unsigned int& wealth_in,
-				 const RPG_Magic_Spells_t& spells_in,
-				 const RPG_Item_List_t& inventory_in)
+																 const std::string& name_in,
+																 const RPG_Character_Alignment& alignment_in,
+																 const RPG_Character_Attributes& attributes_in,
+																 const RPG_Character_Skills_t& skills_in,
+																 const RPG_Character_Feats_t& feats_in,
+																 const RPG_Character_Abilities_t& abilities_in,
+																 const unsigned short int& maxHitPoints_in,
+																 const RPG_Magic_SpellTypes_t& knownSpells_in,
+																 // current status
+																 const RPG_Character_Conditions_t& condition_in,
+																 const short int& hitpoints_in,
+																 const unsigned int& wealth_in,
+																 const RPG_Magic_Spells_t& spells_in,
+																 const RPG_Item_List_t& inventory_in)
  : myWealth(wealth_in),
    myKnownSpells(knownSpells_in),
    mySpells(spells_in),

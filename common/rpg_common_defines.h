@@ -27,6 +27,8 @@
 // general stuff
 #define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH 64
 #define RPG_COMMON_DEF_TASK_GROUP_ID           0
+// *NOTE*: use ACE_DEFAULT_TIMERS instead ?
+#define RPG_COMMON_MAX_TIMER_SLOTS             1024
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details

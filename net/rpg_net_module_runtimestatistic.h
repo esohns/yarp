@@ -89,7 +89,7 @@ class RPG_Net_Module_RuntimeStatistic
 
   // convenience types
   typedef StatisticsContainerType STATISTICINTERFACE_TYPE;
-  typedef RPG_Net_StatisticHandler<STATISTICINTERFACE_TYPE> STATISTICHANDLER_TYPE;
+  typedef RPG_Net_StatisticHandler_Reactor_T<STATISTICINTERFACE_TYPE> STATISTICHANDLER_TYPE;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic(const RPG_Net_Module_RuntimeStatistic&));

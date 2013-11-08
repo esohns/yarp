@@ -27,8 +27,9 @@
 #include "net_server_signalhandler.h"
 
 #include "rpg_net_defines.h"
+#include "rpg_net_common.h"
+#include "rpg_net_listener.h"
 #include "rpg_net_asynchlistener.h"
-#include "rpg_net_connection_manager.h"
 #include "rpg_net_common_tools.h"
 #include "rpg_net_stream_messageallocator.h"
 
@@ -63,11 +64,12 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
-  std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-l          : log to a file [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]  : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval") << ACE_TEXT(" [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
-  std::cout << ACE_TEXT("-t          : trace information") << std::endl;
+  std::cout << ACE_TEXT("-r          : use reactor ([") << RPG_NET_DEF_SERVER_USES_REACTOR << ACE_TEXT("]") << std::endl;
+	std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
+	std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads ([") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
@@ -80,6 +82,7 @@ process_arguments(const int argc_in,
                   bool& logToFile_out,
                   std::string& networkInterface_out,
                   unsigned short& listeningPortNumber_out,
+									bool& useReactor_out,
                   unsigned int& statisticsReportingInterval_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
@@ -93,6 +96,7 @@ process_arguments(const int argc_in,
   logToFile_out = false;
   networkInterface_out = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
   listeningPortNumber_out = RPG_NET_DEF_LISTENING_PORT;
+	useReactor_out = RPG_NET_DEF_SERVER_USES_REACTOR;
   statisticsReportingInterval_out = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -100,7 +104,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:k:ln:p:s:tvx:"));
+                             ACE_TEXT("i:k:ln:p:rs:tvx:"));
 
   int option = 0;
   std::stringstream converter;
@@ -147,7 +151,13 @@ process_arguments(const int argc_in,
 
         break;
       }
-      case 's':
+      case 'r':
+      {
+        useReactor_out = true;
+
+        break;
+      }
+			case 's':
       {
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -446,49 +456,13 @@ init_signalHandling(const std::vector<int>& signals_inout,
   return true;
 }
 
-bool
-init_statisticsReporting(const unsigned int& reportingInterval_in,
-                         RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic>& handler_in)
-{
-  RPG_TRACE(ACE_TEXT("::init_statisticsReporting"));
-
-  ACE_Time_Value interval(reportingInterval_in, 0);
-  long timerID = -1;
-  timerID = ACE_Proactor::instance()->schedule_timer(&handler_in,
-                                                     NULL,
-                                                     interval,
-                                                     interval);
-  if (timerID == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Proactor::schedule_timer(): \"%m\", aborting\n")));
-
-    return false;
-  } // end IF
-
-  return true;
-}
-
-void
-fini_statisticsReporting(RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic>& handler_in)
-{
-  RPG_TRACE(ACE_TEXT("::fini_statisticsReporting"));
-
-  if (ACE_Proactor::instance()->cancel_timer(&handler_in, // handler
-                                             1) != 1)     // don't call handle_close()
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Proactor::cancel_timer(): \"%m\", returning\n")));
-  } // end IF
-}
-
 static
 ACE_THR_FUNC_RETURN
 tp_worker_func(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("::tp_worker_func"));
 
-  ACE_UNUSED_ARG(args_in);
+	bool use_reactor = *reinterpret_cast<bool*>(args_in);
 
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
@@ -497,19 +471,15 @@ tp_worker_func(void* args_in)
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
-  //while (!ACE_Reactor::event_loop_done())
-	while (!ACE_Proactor::instance()->proactor_event_loop_done())
-  {
-    // block and wait for an event...
-		//if (ACE_Reactor::instance()->handle_events(NULL) == -1)
-    if (ACE_Proactor::instance()->handle_events() == -1)
-		{
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("(%t) error handling events: \"%m\", aborting\n")));
-
-			break;
-		}
-  } // end WHILE
+	int success = 0;
+	// handle any events...
+	if (use_reactor)
+		success = ACE_Reactor::instance()->run_reactor_event_loop(0);
+	else
+		success = ACE_Proactor::instance()->proactor_run_event_loop(0);
+	if (success == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
@@ -517,30 +487,32 @@ tp_worker_func(void* args_in)
   // clean up
   no_sigpipe.restore_action(SIGPIPE, original_action);
 
-  return 0;
+	// *PORTABILITY*
+	// *TODO*
+  return (success == 0 ? NULL : NULL);
 }
 
 void
 do_work(const unsigned int& clientPingInterval_in,
         const std::string& networkInterface_in,
         const unsigned short& listeningPortNumber_in,
+        const bool& useReactor_in,
         const unsigned int& statisticsReportingInterval_in,
         const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-/*  // step0: (if necessary) init the TP_Reactor
-  if (useThreadPool_in)
+  // step0: (if necessary) init the TP_Reactor
+  if (useReactor_in && (numThreadPoolThreads_in > 1))
   {
     if (!init_threadPool())
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to init_threadPool(), aborting\n")));
+                 ACE_TEXT("failed to init thread pool, aborting\n")));
 
       return;
     } // end IF
   } // end IF
-*/
 
   // step1a: signal handling
   // event handler for signals
@@ -563,19 +535,23 @@ do_work(const unsigned int& clientPingInterval_in,
 
   // step1b: init regular (global) stats reporting
   // event handler for timer
-  RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> statsHandler(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance(),
-                                                                  RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic>::ACTION_REPORT);
-  if (statisticsReportingInterval_in)
+	long timerID = -1;
+	RPG_Net_StatisticHandler_Reactor_t statistics_handler(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance(),
+	                                                      RPG_Net_StatisticHandler_Reactor_t::ACTION_REPORT);
+	if (statisticsReportingInterval_in)
   {
-    if (!init_statisticsReporting(statisticsReportingInterval_in,
-                                  statsHandler))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to init_statisticsReporting(%u), aborting\n"),
-                 statisticsReportingInterval_in));
+		ACE_Time_Value interval(statisticsReportingInterval_in, 0);
+    timerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&statistics_handler,
+                                                                      NULL,
+                                                                      ACE_OS::gettimeofday () + interval,
+                                                                      interval);
+		if (timerID == -1)
+		{
+		  ACE_DEBUG((LM_DEBUG,
+         			   ACE_TEXT("failed to schedule timer: \"%m\", aborting\n")));
 
-      return;
-    } // end IF
+		  return;
+		} // end IF
   } // end IF
 
   // step2a: init stream configuration object
@@ -599,16 +575,46 @@ do_work(const unsigned int& clientPingInterval_in,
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
   // step2c: init/start listening
-  RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
-  RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->start();
-  if (!RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->isRunning())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start listener (port: %u), aborting\n"),
-               listeningPortNumber_in));
+	if (useReactor_in)
+	{
+		RPG_NET_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
+		RPG_NET_LISTENER_SINGLETON::instance()->start();
+		if (!RPG_NET_LISTENER_SINGLETON::instance()->isRunning())
+		{
+		  ACE_DEBUG((LM_ERROR,
+		             ACE_TEXT("failed to start listener (port: %u), aborting\n"),
+		             listeningPortNumber_in));
 
-    return;
-  } // end IF
+			// clean up
+			if (statisticsReportingInterval_in)
+ 			  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+  			  ACE_DEBUG((LM_DEBUG,
+             			   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+             			   timerID));
+
+		  return;
+		} // end IF
+	}
+	else
+	{
+		RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
+		RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->start();
+		if (!RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->isRunning())
+		{
+		  ACE_DEBUG((LM_ERROR,
+		             ACE_TEXT("failed to start listener (port: %u), aborting\n"),
+		             listeningPortNumber_in));
+
+			// clean up
+			if (statisticsReportingInterval_in)
+ 			  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+  			  ACE_DEBUG((LM_DEBUG,
+             			   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+             			   timerID));
+
+		  return;
+		} // end IF
+	} // end IF
 
   // *NOTE*: from this point on, we need to potentially also clean up
   //         any remote connections !
@@ -619,8 +625,12 @@ do_work(const unsigned int& clientPingInterval_in,
   // - signal connection attempts to acceptor
   // - signal timer expiration to perform maintenance/local statistics reporting
 
-//   // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
-//   ACE_Reactor::instance()->restart(1);
+  // *NOTE*: asynchronous writing to a closed socket triggers the
+  // SIGPIPE signal (default action: abort).
+  // --> as this doesn't use select(), guard against this (ignore the signal)
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
+  ACE_Sig_Action original_action;
+  no_sigpipe.register_action(SIGPIPE, &original_action);
 
   // *NOTE*: if we use a thread pool, we need to do this differently...
   if (numThreadPoolThreads_in > 1)
@@ -645,8 +655,15 @@ do_work(const unsigned int& clientPingInterval_in,
                  numThreadPoolThreads_in));
 
       // clean up
-      // stop listener, clean up pending connections
-      RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
+			if (statisticsReportingInterval_in)
+ 			  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+  			  ACE_DEBUG((LM_DEBUG,
+             			   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+             			   timerID));
+      if (useReactor_in)
+				RPG_NET_LISTENER_SINGLETON::instance()->stop();
+			else
+				RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
@@ -663,50 +680,57 @@ do_work(const unsigned int& clientPingInterval_in,
   } // end IF
   else
   {
-    // *NOTE*: asynchronous writing to a closed socket triggers the
-    // SIGPIPE signal (default action: abort).
-    // --> as this doesn't use select(), guard against this (ignore the signal)
-    ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
-    ACE_Sig_Action original_action;
-    no_sigpipe.register_action(SIGPIPE, &original_action);
-
-/*    if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%p\", aborting\n")));
+		if (useReactor_in)
+		{
+/*      // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
+      ACE_Reactor::instance()->restart(1);
 */
-	  int success = 1;
-    while (!ACE_Proactor::instance()->proactor_event_loop_done())
-	  {
-	    success = ACE_Proactor::instance()->handle_events();
-	    if (success == -1)
-	    {
-	      ACE_DEBUG((LM_ERROR,
-	                 ACE_TEXT("failed to ACE_Proactor::handle_events(): \"%m\", aborting\n")));
+		  while (!ACE_Reactor::instance()->reactor_event_loop_done())
+			{
+			  if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
+	  		{
+	    		ACE_DEBUG((LM_ERROR,
+	      		         ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
 
- 		    // clean up
-	      // stop listener, clean up pending connections
-	      RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
-	      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-	      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-	      no_sigpipe.restore_action(SIGPIPE, original_action);
+	 		    // clean up
+		      // stop listener
+			    RPG_NET_LISTENER_SINGLETON::instance()->stop();
 
-	      return;
-	    } // end IF
-	  }
+	  		  break;
+	  		} // end IF
+			}
+		}
+		else
+		{
+  		while (!ACE_Proactor::instance()->proactor_event_loop_done())
+			{
+			  if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
+	  		{
+	    		ACE_DEBUG((LM_ERROR,
+	      		         ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
 
-    // clean up
-    no_sigpipe.restore_action(SIGPIPE, original_action);
+	 		    // clean up
+		      // stop listener
+			    RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
+
+	  		  break;
+	  		} // end IF
+			}
+		}
   } // end ELSE
 
   // clean up
-  if (statisticsReportingInterval_in)
-    fini_statisticsReporting(statsHandler);
+	if (statisticsReportingInterval_in)
+	  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+		  ACE_DEBUG((LM_DEBUG,
+         			   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+         			   timerID));
   // *NOTE*: listener should have been stopped by now
   // --> clean up active connections
 //   RPG_NET_LISTENER_SINGLETON::instance()->stop();
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+  no_sigpipe.restore_action(SIGPIPE, original_action);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -769,6 +793,7 @@ ACE_TMAIN(int argc,
   bool logToFile                           = false;
   std::string networkInterface             = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
   unsigned short listeningPortNumber       = RPG_NET_DEF_LISTENING_PORT;
+	bool useReactor                          = RPG_NET_DEF_SERVER_USES_REACTOR;
   unsigned int statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                    = false;
   bool printVersionAndExit                 = false;
@@ -782,6 +807,7 @@ ACE_TMAIN(int argc,
                           logToFile,
                           networkInterface,
                           listeningPortNumber,
+                          useReactor,
                           statisticsReportingInterval,
                           traceInformation,
                           printVersionAndExit,
@@ -893,6 +919,7 @@ ACE_TMAIN(int argc,
   do_work(clientPingInterval,
           networkInterface,
           listeningPortNumber,
+          useReactor,
           statisticsReportingInterval,
           numThreadPoolThreads);
   timer.stop();

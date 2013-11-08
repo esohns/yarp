@@ -24,15 +24,15 @@
 #include "rpg_monster_common.h"
 #include "rpg_monster_dictionary.h"
 
-#include <rpg_item_common.h>
-#include <rpg_item_dictionary.h>
+#include "rpg_item_common.h"
+#include "rpg_item_dictionary.h"
 
-#include <rpg_character_defines.h>
-#include <rpg_character_common_tools.h>
-#include <rpg_character_race_common_tools.h>
+#include "rpg_character_defines.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_race_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
 #include <ace/Log_Msg.h>
 
@@ -308,13 +308,15 @@ RPG_Monster::getSpeed(const bool& isRunning_in,
   return result;
 }
 
-void
+bool
 RPG_Monster::gainExperience(const unsigned int& XP_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::gainExperience"));
 
   // *TODO*
   ACE_ASSERT(false);
+
+	return false;
 }
 
 bool

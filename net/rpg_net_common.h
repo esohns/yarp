@@ -22,8 +22,8 @@
 #define RPG_NET_COMMON_H
 
 #include "rpg_net_exports.h"
-//#include "rpg_net_remote_comm.h"
 #include "rpg_net_connection_manager.h"
+#include "rpg_net_statistichandler.h"
 
 #include <ace/Time_Value.h>
 #include <ace/Singleton.h>
@@ -73,5 +73,8 @@ typedef ACE_Singleton<RPG_Net_Connection_Manager_t,
 RPG_NET_SINGLETON_DECLARE(ACE_Singleton,
 			                    RPG_Net_Connection_Manager_t,
 													ACE_Recursive_Thread_Mutex);
+
+typedef RPG_Net_StatisticHandler_Reactor_T<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Reactor_t;
+typedef RPG_Net_StatisticHandler_Proactor_T<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Proactor_t;
 
 #endif

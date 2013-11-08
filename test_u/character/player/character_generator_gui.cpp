@@ -39,6 +39,9 @@
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_common_tools.h"
 
+#include "rpg_sound_defines.h"
+#include "rpg_sound_common.h"
+
 #include "rpg_player_defines.h"
 
 #include "rpg_item_defines.h"
@@ -547,6 +550,10 @@ do_work(const std::string& schemaDirectory_in,
                                 itemDictionary_in,
                                 empty);
 	RPG_Sound_SDLConfig_t sound_config;
+	sound_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
+	sound_config.format = RPG_SOUND_DEF_AUDIO_FORMAT;
+	sound_config.channels = RPG_SOUND_DEF_AUDIO_CHANNELS;
+	sound_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
   RPG_Client_Common_Tools::init(sound_config,
                                 empty,
                                 false,

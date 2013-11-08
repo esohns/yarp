@@ -24,21 +24,21 @@
 #include "rpg_monster_exports.h"
 #include "rpg_monster_size.h"
 
-#include <rpg_player_base.h>
+#include "rpg_player_base.h"
 
-#include <rpg_combat_defensesituation.h>
-#include <rpg_combat_attacksituation.h>
+#include "rpg_combat_defensesituation.h"
+#include "rpg_combat_attacksituation.h"
 
-#include <rpg_magic_common.h>
+#include "rpg_magic_common.h"
 
-#include <rpg_character_incl.h>
-#include <rpg_character_common.h>
-#include <rpg_character_skills_common.h>
+#include "rpg_character_incl.h"
+#include "rpg_character_common.h"
+#include "rpg_character_skills_common.h"
 
-#include <rpg_item_instance_common.h>
+#include "rpg_item_instance_common.h"
 
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
+#include "rpg_dice_incl.h"
+#include "rpg_common_incl.h"
 
 #include <ace/Global_Macros.h>
 
@@ -88,7 +88,7 @@ class RPG_Monster_Export RPG_Monster
                                  const RPG_Common_Terrain& = TERRAIN_ANY,             // terrain
                                  const RPG_Common_Track& = TRACK_NONE) const;         // track
 
-  virtual void gainExperience(const unsigned int&); // XP
+  virtual bool gainExperience(const unsigned int&); // XP
 
   virtual bool isPlayerCharacter() const;
 

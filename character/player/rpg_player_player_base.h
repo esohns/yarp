@@ -24,27 +24,27 @@
 #include "rpg_player_exports.h"
 #include "rpg_player_base.h"
 
-#include <rpg_character_gender.h>
-#include <rpg_character_common.h>
-#include <rpg_character_race_common.h>
-#include <rpg_character_class_common.h>
-#include <rpg_character_offhand.h>
-#include <rpg_character_alignmentcivic.h>
-#include <rpg_character_alignmentethic.h>
-#include <rpg_character_alignment.h>
-#include <rpg_character_attributes.h>
-#include <rpg_character_skills_common.h>
+#include "rpg_character_gender.h"
+#include "rpg_character_common.h"
+#include "rpg_character_race_common.h"
+#include "rpg_character_class_common.h"
+#include "rpg_character_offhand.h"
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+#include "rpg_character_attributes.h"
+#include "rpg_character_skills_common.h"
 
-#include <rpg_combat_attacksituation.h>
-#include <rpg_combat_defensesituation.h>
+#include "rpg_combat_attacksituation.h"
+#include "rpg_combat_defensesituation.h"
 
-#include <rpg_item_instance_common.h>
+#include "rpg_item_instance_common.h"
 
-#include <rpg_magic_common.h>
+#include "rpg_magic_common.h"
 
-#include <rpg_common_attribute.h>
-#include <rpg_common_subclass.h>
-#include <rpg_common_camp.h>
+#include "rpg_common_attribute.h"
+#include "rpg_common_subclass.h"
+#include "rpg_common_camp.h"
 
 #include <ace/Global_Macros.h>
 
@@ -88,8 +88,7 @@ class RPG_Player_Export RPG_Player_Player_Base
 
   virtual bool isPlayerCharacter() const;
 
-  virtual void gainExperience(const unsigned int&); // XP
-
+  virtual bool gainExperience(const unsigned int&); // XP
 
   unsigned int rest(const RPG_Common_Camp&, // type of rest
                     const unsigned int&);   // hours

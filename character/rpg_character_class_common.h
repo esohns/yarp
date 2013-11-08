@@ -23,7 +23,7 @@
 
 #include "rpg_character_metaclass.h"
 
-#include <rpg_common_subclass.h>
+#include "rpg_common_subclass.h"
 
 #include <set>
 

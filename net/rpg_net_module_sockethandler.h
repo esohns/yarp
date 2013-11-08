@@ -23,12 +23,11 @@
 
 #include "rpg_net_common.h"
 #include "rpg_net_stream_config.h"
-#include "rpg_net_statistichandler.h"
 
-#include <rpg_common_istatistic.h>
+#include "rpg_common_istatistic.h"
 
-#include <rpg_stream_headmoduletask_base.h>
-#include <rpg_stream_streammodule.h>
+#include "rpg_stream_headmoduletask_base.h"
+#include "rpg_stream_streammodule.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
@@ -43,7 +42,7 @@ class RPG_Net_Module_SocketHandler
                                         RPG_Net_StreamConfig,
                                         RPG_Net_SessionMessage,
                                         RPG_Net_Message>,
-   // implement this so we can use a generic (timed) event handler to trigger stat collection...
+   // callback to trigger statistics collection...
    public RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>
 {
  public:
@@ -69,7 +68,7 @@ class RPG_Net_Module_SocketHandler
                                     bool&);                   // return value: pass message downstream ?
 
   // implement RPG_Common_IStatistic
-  // *NOTE*: we reuse the interface for our own purposes (to implement timer-based data collection)
+  // *NOTE*: implements regular (timer-based) statistics collection
   virtual bool collect(RPG_Net_RuntimeStatistic&) const; // return value: (currently unused !)
   virtual void report() const;
 
@@ -83,26 +82,23 @@ class RPG_Net_Module_SocketHandler
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler(const RPG_Net_Module_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler& operator=(const RPG_Net_Module_SocketHandler&));
 
-  // convenience types
-  typedef RPG_Net_StatisticHandler<RPG_Net_RuntimeStatistic> STATISTICHANDLER_TYPE;
-
   // helper methods
   bool bisectMessages(RPG_Net_Message*&); // return value: complete message (chain)
 //   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
   bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                             const ACE_Time_Value&) const;    // statistics generation time
 
-  bool                  myIsInitialized;
-  unsigned int          mySessionID;
+  bool                               myIsInitialized;
+  unsigned int                       mySessionID;
 
   // timer stuff
-  STATISTICHANDLER_TYPE myStatCollectHandler;
-  long                  myStatCollectHandlerID;
+  RPG_Net_StatisticHandler_Reactor_t myStatCollectHandler;
+  long                               myStatCollectHandlerID;
 
   // protocol stuff
-  unsigned int          myCurrentMessageLength;
-  RPG_Net_Message*      myCurrentMessage;
-  RPG_Net_Message*      myCurrentBuffer;
+  unsigned int                       myCurrentMessageLength;
+  RPG_Net_Message*                   myCurrentMessage;
+  RPG_Net_Message*                   myCurrentBuffer;
 };
 
 // declare module

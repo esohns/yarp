@@ -49,7 +49,9 @@
 #define RPG_NET_DEF_CNF_NETWORK_INTERFACE         "eth0"
 #endif
 
-// use a thread pool for handling network data ?
+// default event handler (default: use asynch I/O (proactor))
+#define RPG_NET_DEF_SERVER_USES_REACTOR           false
+// use a thread pool for handling data ?
 #define RPG_NET_DEF_SERVER_USES_TP                false
 #define RPG_NET_DEF_SERVER_NUM_TP_THREADS         10
 
