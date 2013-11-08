@@ -24,7 +24,7 @@ template <typename ConfigType,
 RPG_Net_AsynchStreamHandler_T<ConfigType,
                               StatisticsContainerType,
                               StreamType>::RPG_Net_AsynchStreamHandler_T()
- : inherited(),
+ : inherited(NULL),
    myBuffer(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::RPG_Net_AsynchStreamHandler_T"));

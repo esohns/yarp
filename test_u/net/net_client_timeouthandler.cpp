@@ -21,7 +21,7 @@
 
 #include "net_client_timeouthandler.h"
 
-#include <rpg_net_connection_manager.h>
+#include "rpg_net_common.h"
 
 #include <ace/Reactor.h>
 

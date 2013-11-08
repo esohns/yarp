@@ -25,7 +25,7 @@
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
 
-#include <rpg_stream_iallocator.h>
+#include "rpg_stream_iallocator.h"
 
 #include <string>
 
@@ -263,5 +263,5 @@ RPG_Net_Stream::report() const
   // just a dummy
   ACE_ASSERT(false);
 
-  ACE_NOTREACHED(ACE_TEXT("not reached..."));
+  ACE_NOTREACHED(return;)
 }

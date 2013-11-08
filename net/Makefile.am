@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DRPG_NET_BUILD_DLL -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../chance/dice -I$(srcdir)/stream
 
-SUBDIRS = stream . protocol
+SUBDIRS = stream . protocol client
 
 noinst_HEADERS = stdafx.h
 include_HEADERS = rpg_net_common.h rpg_net_asynchlistener.h \

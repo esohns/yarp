@@ -24,7 +24,7 @@
 #include "rpg_net_exports.h"
 #include "rpg_net_common.h"
 
-#include <rpg_common_istatistic.h>
+#include "rpg_common_istatistic.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>

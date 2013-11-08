@@ -313,20 +313,33 @@ init_coreDumping()
 }
 
 bool
-init_threadPool()
+init_threadPool(const bool& useReactor_in,
+                const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::init_threadPool"));
 
-  ACE_TP_Reactor* threadpool_reactor = NULL;
-  ACE_NEW_RETURN(threadpool_reactor,
-                 ACE_TP_Reactor(),
-                 false);
-  ACE_Reactor* new_reactor = NULL;
-  ACE_NEW_RETURN(new_reactor,
-                 ACE_Reactor(threadpool_reactor, 1), // delete in dtor
-                 false);
-  // make this the "default" reactor...
-  ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+	if (useReactor_in && (numThreadPoolThreads_in > 1))
+	{
+		ACE_TP_Reactor* threadpool_reactor = NULL;
+		ACE_NEW_RETURN(threadpool_reactor,
+		               ACE_TP_Reactor(),
+		               false);
+		ACE_Reactor* new_reactor = NULL;
+		ACE_NEW_RETURN(new_reactor,
+		               ACE_Reactor(threadpool_reactor, 1), // delete in dtor
+		               false);
+		// make this the "default" reactor...
+		ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+	} // end IF
+	else
+	{
+		ACE_Proactor* proactor = NULL;
+		ACE_NEW_RETURN(proactor,
+		               ACE_Proactor(NULL, false, NULL),
+		               false);
+		// make this the "default" proactor...
+		ACE_Proactor::instance(proactor, 1); // delete in dtor
+	} // end ELSE
 
   return true;
 }
@@ -502,16 +515,13 @@ do_work(const unsigned int& clientPingInterval_in,
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-  // step0: (if necessary) init the TP_Reactor
-  if (useReactor_in && (numThreadPoolThreads_in > 1))
+  // step0: (if necessary) init the thread pool
+  if (!init_threadPool(useReactor_in, numThreadPoolThreads_in))
   {
-    if (!init_threadPool())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to init thread pool, aborting\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init thread pool, aborting\n")));
 
-      return;
-    } // end IF
+    return;
   } // end IF
 
   // step1a: signal handling
@@ -636,10 +646,11 @@ do_work(const unsigned int& clientPingInterval_in,
   if (numThreadPoolThreads_in > 1)
   {
     // start a (group of) worker thread(s)...
+		bool thread_argument = useReactor_in;
     int grp_id = -1;
     grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
                                                      ::tp_worker_func,            // function
-                                                     NULL,                        // argument
+                                                     &thread_argument,            // argument
                                                      (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
                                                      ACE_DEFAULT_THREAD_PRIORITY, // priority
                                                      -1,                          // group id --> create new
@@ -651,14 +662,14 @@ do_work(const unsigned int& clientPingInterval_in,
     if (grp_id == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%p\", aborting\n"),
+                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
                  numThreadPoolThreads_in));
 
       // clean up
 			if (statisticsReportingInterval_in)
  			  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
   			  ACE_DEBUG((LM_DEBUG,
-             			   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+             			   ACE_TEXT("failed to cancel statistics reporting event (ID: %d): \"%m\", continuing\n"),
              			   timerID));
       if (useReactor_in)
 				RPG_NET_LISTENER_SINGLETON::instance()->stop();
@@ -671,9 +682,9 @@ do_work(const unsigned int& clientPingInterval_in,
     } // end IF
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("started group (ID: %u) of %u worker(s)...\n"),
-               grp_id,
-               numThreadPoolThreads_in));
+               ACE_TEXT("spawned %u event handlers (group ID: %u)...\n"),
+							 numThreadPoolThreads_in,
+               grp_id));
 
     // ... and wait for this group to join
     ACE_Thread_Manager::instance()->wait_grp(grp_id);
@@ -698,8 +709,8 @@ do_work(const unsigned int& clientPingInterval_in,
 
 	  		  break;
 	  		} // end IF
-			}
-		}
+			} // end WHILE
+		} // end IF
 		else
 		{
   		while (!ACE_Proactor::instance()->proactor_event_loop_done())
@@ -715,8 +726,8 @@ do_work(const unsigned int& clientPingInterval_in,
 
 	  		  break;
 	  		} // end IF
-			}
-		}
+			} // end WHILE
+		} // end ELSE
   } // end ELSE
 
   // clean up
@@ -780,8 +791,7 @@ ACE_TMAIN(int argc,
   if (ACE::init() == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF

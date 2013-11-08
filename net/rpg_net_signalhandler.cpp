@@ -23,17 +23,18 @@
 
 #include "rpg_net_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_icontrol.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_icontrol.h"
 
 #include <ace/Reactor.h>
+#include <ace/Proactor.h>
 #include <ace/Log_Msg.h>
 
 #include <sstream>
 
 RPG_Net_SignalHandler::RPG_Net_SignalHandler(RPG_Common_IControl* control_in,
                                              RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* report_in)
- : inherited(ACE_Reactor::instance(),         // corresp. reactor
+ : inherited(ACE_Reactor::instance(),         // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myControl(control_in),
    myReport(report_in)
@@ -81,7 +82,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
     //           information.c_str()));
   } // end ELSE
 
-  bool stop_reactor = false;
+  bool stop_event_dispatching = false;
   bool report = false;
   switch (signal_in)
   {
@@ -98,7 +99,7 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
 //                  ACE_TEXT("shutting down...\n")));
 
       // shutdown...
-      stop_reactor = true;
+      stop_event_dispatching = true;
 
       break;
     }
@@ -152,19 +153,20 @@ RPG_Net_SignalHandler::handle_signal(int signal_in,
   } // end IF
 
   // ...shutdown ?
-  if (stop_reactor)
+  if (stop_event_dispatching)
   {
     // stop everything, i.e.
     // - leave reactor event loop handling signals, sockets (listeners), maintenance timers...
     // - break out of any (blocking) calls
     // --> (try to) terminate in a well-behaved manner
 
-    // step1: stop reactor
-    if (reactor()->end_event_loop() == -1)
+    // step1: stop default reactor/proactor
+    if ((reactor()->end_event_loop() == -1) ||
+        (ACE_Proactor::instance()->end_event_loop() == -1))
     {
       //// *PORTABILITY*: tracing in a signal handler context is not portable
       //ACE_DEBUG((LM_ERROR,
-      //           ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+      //           ACE_TEXT("failed to terminate event handling: \"%m\", continuing\n")));
     } // end IF
 
     // step2: invoke our controller (if any)

@@ -64,8 +64,6 @@ class RPG_Net_AsynchSocketHandler_T
                                      StatisticsContainerType> MANAGER_t;
   // meant to be sub-classed
   RPG_Net_AsynchSocketHandler_T(MANAGER_t*); // manager handle
-	// *TODO*: clean this up ASAP !!!!
-  RPG_Net_AsynchSocketHandler_T();
 
   // helper method(s)
   void initiate_read_stream();
@@ -80,8 +78,7 @@ class RPG_Net_AsynchSocketHandler_T
   typedef ACE_Service_Handler inherited;
 
   // safety measures
-	// *TODO*: clean this up ASAP !!!!
-  //ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler_T());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler_T());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler_T(const RPG_Net_AsynchSocketHandler_T&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler_T& operator=(const RPG_Net_AsynchSocketHandler_T&));
 

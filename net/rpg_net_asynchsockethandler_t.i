@@ -32,30 +32,12 @@
 template <typename ConfigType,
           typename StatisticsContainerType>
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T()
- : inherited(),
-//    myUserData(),
-   myIsInitialized(false),
-   myInputStream(),
-   myOutputStream(),
-   myPeer(),
-   myID(0),
-   myIsRegistered(false),
-   myManager(NULL)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::RPG_Net_AsynchSocketHandler_T"));
-
-}
-
-template <typename ConfigType,
-          typename StatisticsContainerType>
-RPG_Net_AsynchSocketHandler_T<ConfigType,
 		                          StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T(MANAGER_t* manager_in)
  : inherited(),
 //    myUserData(),
    myIsInitialized(false),
-   myInputStream(),
    myOutputStream(),
+   myInputStream(),
    myPeer(),
    myID(0),
    myIsRegistered(false),
@@ -356,6 +338,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   // - the client closes the socket --> child handle_xxx() returns -1
   // - we reject the connection (too many open)
   delete this;
+
+	return 0;
 }
 
 template <typename ConfigType,

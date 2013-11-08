@@ -22,10 +22,9 @@
 #define RPG_NET_CLIENT_SOCKETHANDLER_H
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
-#include <ace/Connector.h>
-#include <ace/SOCK_Connector.h>
 
 class RPG_Net_Client_SocketHandler
  : public ACE_Svc_Handler<ACE_SOCK_STREAM,
@@ -48,9 +47,5 @@ class RPG_Net_Client_SocketHandler
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_SocketHandler(const RPG_Net_Client_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_SocketHandler& operator=(const RPG_Net_Client_SocketHandler&));
 };
-
-// define implementation-specific connector...
-typedef ACE_Connector<RPG_Net_Client_SocketHandler,
-                      ACE_SOCK_CONNECTOR> RPG_Net_Client_Connector;
 
 #endif

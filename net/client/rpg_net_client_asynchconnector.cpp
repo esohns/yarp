@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
+ *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,8 +17,38 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
-#ifndef NET_COMMON_H
-#define NET_COMMON_H
+#include "rpg_net_client_asynchconnector.h"
 
-#endif
+#include "rpg_net_common.h"
+
+#include "rpg_common_macros.h"
+
+RPG_Net_Client_AsynchConnector::RPG_Net_Client_AsynchConnector()
+ : inherited()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::RPG_Net_Client_AsynchConnector"));
+
+}
+
+RPG_Net_Client_AsynchConnector::~RPG_Net_Client_AsynchConnector()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::~RPG_Net_Client_AsynchConnector"));
+
+}
+
+RPG_Net_StreamHandler_t*
+RPG_Net_Client_AsynchConnector::make_handler(void)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::make_handler"));
+
+	// init return value(s)
+	RPG_Net_StreamHandler_t* handler_out = NULL;
+
+	// default behavior
+  ACE_NEW_NORETURN(handler_out,
+                   RPG_Net_StreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
+
+  return handler_out;
+}
