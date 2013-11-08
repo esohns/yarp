@@ -24,7 +24,7 @@
 #include "rpg_net_remote_comm.h"
 #include "rpg_net_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Reactor.h>
 
@@ -32,9 +32,9 @@
 #include <iostream>
 
 RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler()
- : inherited(NULL, // no specific thread manager
-             NULL, // no specific message queue
-             ACE_Reactor::instance())
+ : inherited(NULL,                    // thread manager
+             NULL,                    // message queue
+             ACE_Reactor::instance()) // default reactor
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
 
@@ -120,7 +120,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
   // step1: read data
   size_t bytes_received = 0;
   // *TODO*: do blocking IO until further notice...
-  if (peer().recv_n(static_cast<void*> (&data),            // buffer
+  if (peer().recv_n(static_cast<void*>(&data),                // buffer
                     sizeof(RPG_Net_Remote_Comm::PingMessage), // length
                     NULL,                                     // timeout --> block
                     &bytes_received) == -1)                   // number of recieved bytes

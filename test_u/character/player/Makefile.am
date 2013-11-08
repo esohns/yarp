@@ -5,7 +5,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/../common -I$(top_srcdir)/../chance/dice \
  -I$(top_srcdir)/../magic -I$(top_srcdir)/../item -I$(top_srcdir)/../character \
  -I$(top_srcdir)/../combat -I$(top_srcdir)/../character/player \
  -I$(top_srcdir)/../character/monster -I$(top_srcdir)/../map \
- -I$(top_srcdir)/../graphics -I$(top_srcdir)/../engine -I$(top_srcdir)/../client
+ -I$(top_srcdir)/../graphics -I$(top_srcdir)/../sound -I$(top_srcdir)/../engine \
+ -I$(top_srcdir)/../client
 
 bin_PROGRAMS = character_generator character_generator_gui character_parser
 

@@ -21,9 +21,10 @@
 
 #include "net_client_signalhandler.h"
 
-#include <rpg_net_connection_manager.h>
+#include "rpg_net_common.h"
 
 #include <ace/Reactor.h>
+#include <ace/Proactor.h>
 
 Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHostname_in,
                                                    const unsigned short& serverPort_in,
@@ -56,10 +57,10 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
   // debug info
   if (info_in == NULL)
   {
-    // *PORTABILITY*: tracing in a signal handler context is not portable
+/*    // *PORTABILITY*: tracing in a signal handler context is not portable
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("%D: received [%S], but no siginfo_t was available, continuing\n"),
-               signal_in));
+               signal_in));*/
   } // end IF
   else
   {
@@ -77,7 +78,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 //                information.c_str()));
   } // end ELSE
 
-  bool stop_reactor = false;
+  bool stop_event_dispatching = false;
   bool connect_to_server = false;
   bool abort_oldest = false;
   switch (signal_in)
@@ -95,7 +96,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 //                  ACE_TEXT("shutting down...\n")));
 
       // shutdown...
-      stop_reactor = true;
+      stop_event_dispatching = true;
 
       break;
     }
@@ -161,14 +162,14 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
       if (myPeerAddress.addr_to_string(buf,
                                        (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
       {
-        // *PORTABILITY*: tracing in a signal handler context is not portable
+/*        // *PORTABILITY*: tracing in a signal handler context is not portable
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+                   ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));*/
       } // end IF
-      // *PORTABILITY*: tracing in a signal handler context is not portable
+/*      // *PORTABILITY*: tracing in a signal handler context is not portable
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
-                 buf));
+                 buf));*/
 
       // release an existing connection, maybe that helps...
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
@@ -176,19 +177,20 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
   } // end IF
 
   // ...shutdown ?
-  if (stop_reactor)
+  if (stop_event_dispatching)
   {
     // stop everything, i.e.
     // - leave reactor event loop handling signals, sockets, (maintenance) timers...
     // - break out of any (blocking) calls
     // --> (try to) terminate in a well-behaved manner
 
-    // stop reactor
-    if (reactor()->end_event_loop() == -1)
+    // stop reactor/proactor
+    if ((reactor()->end_event_loop() == -1) ||
+        (ACE_Proactor::instance()->end_event_loop() == -1))
     {
-      // *PORTABILITY*: tracing in a signal handler context is not portable
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+      //// *PORTABILITY*: tracing in a signal handler context is not portable
+      //ACE_DEBUG((LM_ERROR,
+      //           ACE_TEXT("failed to terminate event handling: \"%m\", continuing\n")));
     } // end IF
 
     // de-register from the reactor...

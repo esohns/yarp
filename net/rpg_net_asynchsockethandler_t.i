@@ -36,8 +36,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
  : inherited(),
 //    myUserData(),
    myIsInitialized(false),
-   myInputStream(),
    myOutputStream(),
+   myInputStream(),
    myPeer(),
    myID(0),
    myIsRegistered(false),
@@ -54,8 +54,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
  : inherited(),
 //    myUserData(),
    myIsInitialized(false),
-   myInputStream(),
    myOutputStream(),
+   myInputStream(),
    myPeer(),
    myID(0),
    myIsRegistered(false),
@@ -356,6 +356,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   // - the client closes the socket --> child handle_xxx() returns -1
   // - we reject the connection (too many open)
   delete this;
+
+	return 0;
 }
 
 template <typename ConfigType,

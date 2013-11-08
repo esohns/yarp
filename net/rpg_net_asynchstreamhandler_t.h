@@ -45,12 +45,12 @@ class RPG_Net_AsynchStreamHandler_T
   virtual ~RPG_Net_AsynchStreamHandler_T();
 
   // override some service methods
-  virtual void open(ACE_HANDLE,          // socket identifier
+  virtual void open(ACE_HANDLE,          // (socket) handle
                     ACE_Message_Block&); // initial data (if any)
 	virtual int handle_output(ACE_HANDLE); // (socket) handle
   virtual int handle_close(ACE_HANDLE,        // (socket) handle
         					         ACE_Reactor_Mask); // (select) mask
-		
+
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate these to our stream
   virtual bool collect(StatisticsContainerType&) const; // return value: statistic data

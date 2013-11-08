@@ -21,7 +21,7 @@
 #ifndef NET_CLIENT_TIMEOUTHANDLER_H
 #define NET_CLIENT_TIMEOUTHANDLER_H
 
-#include "net_common.h"
+#include "rpg_net_client_common.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>

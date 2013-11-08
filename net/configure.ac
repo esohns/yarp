@@ -100,7 +100,8 @@ AC_CHECK_FUNCS([memset])
 AC_CONFIG_FILES([Makefile
                  stream/Makefile
                  protocol/Makefile
-                 protocol/scripts/Makefile])
+                 protocol/scripts/Makefile
+                 client/Makefile])
 
 AC_OUTPUT
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
+ *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef NET_COMMON_H
-#define NET_COMMON_H
+#ifndef RPG_Net_Client_AsynchConnector_H
+#define RPG_Net_Client_AsynchConnector_H
+
+#include "rpg_net_exports.h"
+#include "rpg_net_stream_common.h"
+
+#include <ace/Global_Macros.h>
+#include <ace/Asynch_Connector.h>
+
+class RPG_Net_Export RPG_Net_Client_AsynchConnector
+ : public ACE_Asynch_Connector<RPG_Net_StreamHandler_t>
+{
+ public:
+	// override default creation strategy
+	virtual RPG_Net_StreamHandler_t* make_handler(void);
+
+ private:
+  typedef ACE_Asynch_Connector<RPG_Net_StreamHandler_t> inherited;
+
+  // safety measures
+  RPG_Net_Client_AsynchConnector();
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector(const RPG_Net_Client_AsynchConnector&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector& operator=(const RPG_Net_Client_AsynchConnector&));
+  virtual ~RPG_Net_Client_AsynchConnector();
+};
 
 #endif

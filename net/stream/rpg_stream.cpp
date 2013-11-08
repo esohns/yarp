@@ -240,7 +240,7 @@ RPG_Stream::stop()
   } // end IF
 
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,

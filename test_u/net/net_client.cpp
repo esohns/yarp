@@ -28,14 +28,14 @@
 #include "net_client_timeouthandler.h"
 #include "net_client_signalhandler.h"
 
-#include <rpg_net_defines.h>
-#include <rpg_net_common_tools.h>
-#include <rpg_net_connection_manager.h>
-#include <rpg_net_stream_messageallocator.h>
+#include "rpg_net_defines.h"
+#include "rpg_net_common_tools.h"
+#include "rpg_net_connection_manager.h"
+#include "rpg_net_stream_messageallocator.h"
 
-#include <rpg_common_tools.h>
+#include "rpg_common_tools.h"
 
-#include <rpg_stream_allocatorheap.h>
+#include "rpg_stream_allocatorheap.h"
 
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
