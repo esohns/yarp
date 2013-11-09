@@ -68,8 +68,8 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]  : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
   std::cout << ACE_TEXT("-r          : use reactor ([") << RPG_NET_DEF_SERVER_USES_REACTOR << ACE_TEXT("]") << std::endl;
-	std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
-	std::cout << ACE_TEXT("-t          : trace information") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads ([") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
@@ -82,7 +82,7 @@ process_arguments(const int argc_in,
                   bool& logToFile_out,
                   std::string& networkInterface_out,
                   unsigned short& listeningPortNumber_out,
-									bool& useReactor_out,
+                  bool& useReactor_out,
                   unsigned int& statisticsReportingInterval_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
@@ -683,7 +683,7 @@ do_work(const unsigned int& clientPingInterval_in,
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("spawned %u event handlers (group ID: %u)...\n"),
-							 numThreadPoolThreads_in,
+               numThreadPoolThreads_in,
                grp_id));
 
     // ... and wait for this group to join
@@ -691,51 +691,51 @@ do_work(const unsigned int& clientPingInterval_in,
   } // end IF
   else
   {
-		if (useReactor_in)
-		{
+    if (useReactor_in)
+    {
 /*      // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
       ACE_Reactor::instance()->restart(1);
 */
-		  while (!ACE_Reactor::instance()->reactor_event_loop_done())
-			{
-			  if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
-	  		{
-	    		ACE_DEBUG((LM_ERROR,
-	      		         ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
+      while (!ACE_Reactor::instance()->reactor_event_loop_done())
+      {
+        if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
 
-	 		    // clean up
-		      // stop listener
-			    RPG_NET_LISTENER_SINGLETON::instance()->stop();
+	  // clean up
+	  // stop listener
+	  RPG_NET_LISTENER_SINGLETON::instance()->stop();
 
-	  		  break;
-	  		} // end IF
-			} // end WHILE
-		} // end IF
-		else
-		{
-  		while (!ACE_Proactor::instance()->proactor_event_loop_done())
-			{
-			  if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
-	  		{
-	    		ACE_DEBUG((LM_ERROR,
-	      		         ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
+          break;
+        } // end IF
+      } // end WHILE
+    } // end IF
+    else
+    {
+      while (!ACE_Proactor::instance()->proactor_event_loop_done())
+      {
+        if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
 
-	 		    // clean up
-		      // stop listener
-			    RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
+          // clean up
+          // stop listener
+          RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
 
-	  		  break;
-	  		} // end IF
-			} // end WHILE
-		} // end ELSE
+          break;
+        } // end IF
+      } // end WHILE
+    } // end ELSE
   } // end ELSE
 
   // clean up
-	if (statisticsReportingInterval_in)
-	  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
-		  ACE_DEBUG((LM_DEBUG,
-         			   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-         			   timerID));
+  if (statisticsReportingInterval_in)
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                 timerID));
   // *NOTE*: listener should have been stopped by now
   // --> clean up active connections
 //   RPG_NET_LISTENER_SINGLETON::instance()->stop();
@@ -990,12 +990,12 @@ ACE_TMAIN(int argc,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-			       elapsed_time.real_time,
+             elapsed_time.real_time,
              elapsed_time.user_time,
              elapsed_time.system_time,
              user_time_string.c_str(),
              system_time_string.c_str(),
-			       elapsed_rusage.ru_maxrss,
+             elapsed_rusage.ru_maxrss,
              elapsed_rusage.ru_ixrss,
              elapsed_rusage.ru_idrss,
              elapsed_rusage.ru_isrss,
