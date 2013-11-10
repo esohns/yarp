@@ -47,6 +47,7 @@
 #include <ace/Profile_Timer.h>
 #include <ace/Reactor.h>
 #include <ace/TP_Reactor.h>
+#include <ace/Proactor.h>
 #include <ace/Signal.h>
 #include <ace/Sig_Handler.h>
 #include <ace/Connector.h>
@@ -84,19 +85,17 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -107,7 +106,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-r [VALUE]  : reporting interval (seconds: 0 --> OFF)") << ACE_TEXT(" [") << IRC_CLIENT_DEF_STATSINTERVAL << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -116,12 +115,12 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("protocol");
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   std::cout << ACE_TEXT("-u [DIR]    : UI file directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << IRC_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads ([") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -135,23 +134,20 @@ process_arguments(const int argc_in,
                   bool& traceInformation_out,
                   std::string& UIFileDirectory_out,
                   bool& printVersionAndExit_out,
-                  bool& useThreadPool_out,
                   unsigned int& numThreadPoolThreads_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string config_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
 #endif // #ifdef BASEDIR
 
   // init results
   configFile_out = config_path;
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   configFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -163,7 +159,7 @@ process_arguments(const int argc_in,
 
   serverConfigFile_out = config_path;
   serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   serverConfigFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
   serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -172,18 +168,17 @@ process_arguments(const int argc_in,
   traceInformation_out     = false;
 
   UIFileDirectory_out = config_path;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   UIFileDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UIFileDirectory_out += ACE_TEXT_ALWAYS_CHAR("protocol");
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
 
   printVersionAndExit_out  = false;
-  useThreadPool_out        = IRC_CLIENT_DEF_CLIENT_USES_TP;
   numThreadPoolThreads_out = IRC_CLIENT_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:dlr:s:tu:vx::"),
+                             ACE_TEXT("c:dlr:s:tu:vx:"),
                              1, // skip command name
                              1, // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -248,8 +243,6 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        useThreadPool_out = true;
-
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
@@ -295,21 +288,34 @@ process_arguments(const int argc_in,
   return true;
 }
 
-const bool
-init_threadPool()
+bool
+init_threadPool(const bool& useReactor_in,
+                const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::init_threadPool"));
 
-  ACE_TP_Reactor* threadpool_reactor = NULL;
-  ACE_NEW_RETURN(threadpool_reactor,
-                 ACE_TP_Reactor(),
-                 false);
-  ACE_Reactor* new_reactor = NULL;
-  ACE_NEW_RETURN(new_reactor,
-                 ACE_Reactor(threadpool_reactor, 1), // delete in dtor
-                 false);
-  // make this the "default" reactor...
-  ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+  if (useReactor_in && (numThreadPoolThreads_in > 1))
+    {
+      ACE_TP_Reactor* threadpool_reactor = NULL;
+      ACE_NEW_RETURN(threadpool_reactor,
+                     ACE_TP_Reactor(),
+                     false);
+      ACE_Reactor* new_reactor = NULL;
+      ACE_NEW_RETURN(new_reactor,
+                     ACE_Reactor(threadpool_reactor, 1), // delete in dtor
+                     false);
+      // make this the "default" reactor...
+      ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+    } // end IF
+  else
+    {
+      ACE_Proactor* proactor = NULL;
+      ACE_NEW_RETURN(proactor,
+                     ACE_Proactor(NULL, false, NULL),
+                     false);
+      // make this the "default" proactor...
+      ACE_Proactor::instance(proactor, 1); // delete in dtor
+    } // end ELSE
 
   return true;
 }
@@ -320,7 +326,7 @@ tp_worker_func(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("::tp_worker_func"));
 
-  ACE_UNUSED_ARG(args_in);
+  bool use_reactor = *reinterpret_cast<bool*>(args_in);
 
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
@@ -329,53 +335,30 @@ tp_worker_func(void* args_in)
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
-  while (!ACE_Reactor::event_loop_done())
+  int success = 0;
+  // handle any events...
+  if (use_reactor)
   {
-    // block and wait for an event...
-    if (ACE_Reactor::instance()->handle_events(NULL) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("(%t) error handling events: \"%m\"\n")));
-  } // end WHILE
-
-  // clean up
-  no_sigpipe.restore_action(SIGPIPE, original_action);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("(%t) worker leaving...\n")));
-
-  return 0;
-}
-
-static
-ACE_THR_FUNC_RETURN
-reactor_worker_func(void* args_in)
-{
-  RPG_TRACE(ACE_TEXT("::reactor_worker_func"));
-
-  ACE_UNUSED_ARG(args_in);
-
-  // *NOTE*: asynchronous writing to a closed socket triggers the
-  // SIGPIPE signal (default action: abort).
-  // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
-  ACE_Sig_Action original_action;
-  no_sigpipe.register_action(SIGPIPE, &original_action);
-
-  // assume ownership over the reactor...
-  ACE_Reactor::instance()->owner(ACE_OS::thr_self(),
-                                 NULL);
-
-  if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
+    // assume ownership over the reactor...
+    ACE_Reactor::instance()->owner(ACE_OS::thr_self(),
+                                   NULL);
+    success = ACE_Reactor::instance()->run_reactor_event_loop(0);
+  }
+  else
+    success = ACE_Proactor::instance()->proactor_run_event_loop(0);
+  if (success == -1)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%m\", continuing\n")));
-
-  // clean up
-  no_sigpipe.restore_action(SIGPIPE, original_action);
+               ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
 
-  return NULL;
+  // clean up
+  no_sigpipe.restore_action(SIGPIPE, original_action);
+
+  // *PORTABILITY*
+  // *TODO*
+  return (success == 0 ? NULL : NULL);
 }
 
 void
@@ -551,22 +534,21 @@ do_main_window(const std::string& UIFileDirectory_in,
 }
 
 void
-do_work(const bool& useThreadPool_in,
-        const unsigned int& numThreadPoolThreads_in,
+do_work(const unsigned int& numThreadPoolThreads_in,
         const std::string& UIFileDirectory_in,
         main_cb_data_t& userData_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-  // step0a: (if necessary) init the TP_Reactor
-  if (useThreadPool_in &&
-      !init_threadPool())
+  // step0: (if necessary) init the thread pool
+  if (!init_threadPool(IRC_CLIENT_DEF_CLIENT_USES_REACTOR, numThreadPoolThreads_in))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init_threadPool(), aborting\n")));
+               ACE_TEXT("failed to init thread pool, aborting\n")));
 
     return;
   } // end IF
+
 
   // step0b: init connection manager
   RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
@@ -584,55 +566,36 @@ do_work(const bool& useThreadPool_in,
   // - perform socket I/O --> ACE_Reactor
   // - UI events --> GTK main loop
 
-//   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
-//   ACE_Reactor::instance()->restart(1);
-
   // step2: dispatch events...
-  // *NOTE*: if we use a thread pool, we invoke a different function...
+  // *NOTE*: if we use a thread pool, we need to do this differently...
+  bool thread_argument = IRC_CLIENT_DEF_CLIENT_USES_REACTOR;
   int grp_id = -1;
-  if (useThreadPool_in)
-  {
-    // start a (group of) worker(s)...
-    grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
-                                                     ::tp_worker_func,            // function
-                                                     NULL,                        // argument
-                                                     (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                     ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                                     -1,                          // group id --> create new
-                                                     NULL,                        // task
-                                                     NULL,                        // handle(s)
-                                                     NULL,                        // stack(s)
-                                                     NULL,                        // stack size(s)
-                                                     NULL);                       // name(s)
-  } // end IF
-  else
-  {
-    // start a worker...
-    grp_id = ACE_Thread_Manager::instance()->spawn_n(1,                           // # threads
-                                                     ::reactor_worker_func,       // function
-                                                     NULL,                        // argument
-                                                     (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                     ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                                     -1,                          // group id --> create new
-                                                     NULL,                        // task
-                                                     NULL,                        // handle(s)
-                                                     NULL,                        // stack(s)
-                                                     NULL,                        // stack size(s)
-                                                     NULL);                       // name(s)
-  } // end ELSE
+
+  // start a (group of) worker thread(s)...
+  grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
+                                                   ::tp_worker_func,            // function
+                                                   &thread_argument,            // argument
+                                                   (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
+                                                   ACE_DEFAULT_THREAD_PRIORITY, // priority
+                                                   -1,                          // group id --> create new
+                                                   NULL,                        // task
+                                                   NULL,                        // handle(s)
+                                                   NULL,                        // stack(s)
+                                                   NULL,                        // stack size(s)
+                                                   NULL);                       // name(s)
   if (grp_id == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
-               (useThreadPool_in ? numThreadPoolThreads_in : 1)));
+               numThreadPoolThreads_in));
 
     return;
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("started group (ID: %u) of %u worker thread(s)...\n"),
-             grp_id,
-             (useThreadPool_in ? numThreadPoolThreads_in : 1)));
+             ACE_TEXT("spawned %u event handlers (group ID: %u)...\n"),
+             numThreadPoolThreads_in,
+             grp_id));
 
   // dispatch GTK events
   // *WARNING*: this doesn't really make any sense - still, it seems to be a
@@ -643,12 +606,22 @@ do_work(const bool& useThreadPool_in,
   gtk_main();
   GDK_THREADS_LEAVE();
 
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("finished GTK event dispatching...\n")));
+
   // done handling UI events
 
-  // stop reactor
-  if (ACE_Reactor::instance()->end_event_loop() == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+  // stop reactor/proactor
+  if (IRC_CLIENT_DEF_CLIENT_USES_REACTOR)
+  {
+    if (ACE_Reactor::instance()->end_event_loop() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to terminate event handling: \"%m\", continuing\n")));
+  }
+  else
+    if (ACE_Proactor::instance()->end_event_loop() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to terminate event handling: \"%m\", continuing\n")));
 
   // no more data will be enqueued onto the processing streams...
 
@@ -1299,24 +1272,22 @@ ACE_TMAIN(int argc,
   process_profile.start();
 
   // init GTK
-  g_thread_init(NULL);
+//  g_thread_init(NULL);
   gdk_threads_init();
   gtk_init(&argc, &argv);
 
   // step2 init/validate configuration
 
   // step2a: process commandline arguments
-  std::string config_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
 #endif // #ifdef BASEDIR
 
   std::string configFile = config_path;
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   configFile += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -1328,7 +1299,7 @@ ACE_TMAIN(int argc,
 
   std::string serverConfigFile = config_path;
   serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   serverConfigFile += ACE_TEXT_ALWAYS_CHAR("protocol");
   serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -1338,12 +1309,11 @@ ACE_TMAIN(int argc,
 
   std::string UIFileDirectory = config_path;
   UIFileDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   UIFileDirectory += ACE_TEXT_ALWAYS_CHAR("protocol");
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
 
   bool printVersionAndExit          = false;
-  bool useThreadPool                = IRC_CLIENT_DEF_CLIENT_USES_TP;
   unsigned int numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
   if (!(process_arguments(argc,
                           argv,
@@ -1355,7 +1325,6 @@ ACE_TMAIN(int argc,
                           traceInformation,
                           UIFileDirectory,
                           printVersionAndExit,
-                          useThreadPool,
                           numThreadPoolThreads)))
   {
     // make 'em learn...
@@ -1465,8 +1434,7 @@ ACE_TMAIN(int argc,
   // step3: do actual work
   ACE_High_Res_Timer timer;
   timer.start();
-  do_work(useThreadPool,
-          numThreadPoolThreads,
+  do_work(numThreadPoolThreads,
           UIFileDirectory,
           userData);
 

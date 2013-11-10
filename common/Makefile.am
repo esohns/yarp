@@ -1,7 +1,8 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -DRPG_COMMON_BUILD_DLL -I$(srcdir)/../chance/dice
+AM_CPPFLAGS = -DRPG_COMMON_BUILD_DLL -DMETA_PACKAGE=\"@META_PACKAGE@\" \
+  -I$(srcdir)/../chance/dice
 
 noinst_HEADERS = stdafx.h
 include_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \

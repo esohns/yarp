@@ -21,25 +21,25 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
 #include "IRC_common.h"
 #include "IRC_client_defines.h"
 #include "IRC_client_signalhandler.h"
 
-#include <rpg_net_protocol_defines.h>
-#include <rpg_net_protocol_common.h>
-#include <rpg_net_protocol_messageallocator.h>
-#include <rpg_net_protocol_module_IRChandler.h>
+#include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_messageallocator.h"
+#include "rpg_net_protocol_module_IRChandler.h"
 
-#include <rpg_net_defines.h>
-#include <rpg_net_connection_manager.h>
+#include "rpg_net_defines.h"
+#include "rpg_net_connection_manager.h"
 
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
-#include <rpg_stream_allocatorheap.h>
+#include "rpg_stream_allocatorheap.h"
 
 #include <ace/ACE.h>
 #include <ace/Version.h>
@@ -68,19 +68,17 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -90,7 +88,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x<[VALUE]> : use thread pool <#threads>") << ACE_TEXT(" [") << IRC_CLIENT_DEF_CLIENT_USES_TP  << ACE_TEXT(" : ") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads ([") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -101,23 +99,20 @@ process_arguments(const int argc_in,
                   bool& logToFile_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
-                  bool& useThreadPool_out,
                   unsigned int& numThreadPoolThreads_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string config_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
 #endif // #ifdef BASEDIR
 
   // init configuration
   configFile_out = config_path;
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   configFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -127,12 +122,11 @@ process_arguments(const int argc_in,
   logToFile_out            = false;
   traceInformation_out     = false;
   printVersionAndExit_out  = false;
-  useThreadPool_out        = IRC_CLIENT_DEF_CLIENT_USES_TP;
   numThreadPoolThreads_out = IRC_CLIENT_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:dltvx::"),
+                             ACE_TEXT("c:dltvx:"),
                              1, // skip command name
                              1, // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -176,7 +170,6 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        useThreadPool_out = true;
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
@@ -223,20 +216,33 @@ process_arguments(const int argc_in,
 }
 
 bool
-init_threadPool()
+init_threadPool(const bool& useReactor_in,
+                const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::init_threadPool"));
 
-  ACE_TP_Reactor* threadpool_reactor = NULL;
-  ACE_NEW_RETURN(threadpool_reactor,
-                 ACE_TP_Reactor(),
-                 false);
-  ACE_Reactor* new_reactor = NULL;
-  ACE_NEW_RETURN(new_reactor,
-                 ACE_Reactor(threadpool_reactor, 1), // delete in dtor
-                 false);
-  // make this the "default" reactor...
-  ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+  if (useReactor_in && (numThreadPoolThreads_in > 1))
+    {
+      ACE_TP_Reactor* threadpool_reactor = NULL;
+      ACE_NEW_RETURN(threadpool_reactor,
+                     ACE_TP_Reactor(),
+                     false);
+      ACE_Reactor* new_reactor = NULL;
+      ACE_NEW_RETURN(new_reactor,
+                     ACE_Reactor(threadpool_reactor, 1), // delete in dtor
+                     false);
+      // make this the "default" reactor...
+      ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+    } // end IF
+  else
+    {
+      ACE_Proactor* proactor = NULL;
+      ACE_NEW_RETURN(proactor,
+                     ACE_Proactor(NULL, false, NULL),
+                     false);
+      // make this the "default" proactor...
+      ACE_Proactor::instance(proactor, 1); // delete in dtor
+    } // end ELSE
 
   return true;
 }
@@ -376,51 +382,56 @@ tp_worker_func(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("::tp_worker_func"));
 
-  ACE_UNUSED_ARG(args_in);
+  bool use_reactor = *reinterpret_cast<bool*>(args_in);
 
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
   // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
-  while (!ACE_Reactor::event_loop_done())
+  int success = 0;
+  // handle any events...
+  if (use_reactor)
   {
-    // block and wait for an event...
-    if (ACE_Reactor::instance()->handle_events(NULL) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("(%t) error handling events: \"%m\"\n")));
-  } // end WHILE
-
-  // clean up
-  no_sigpipe.restore_action(SIGPIPE, original_action);
+    // assume ownership over the reactor...
+    ACE_Reactor::instance()->owner(ACE_OS::thr_self(),
+                                   NULL);
+    success = ACE_Reactor::instance()->run_reactor_event_loop(0);
+  }
+  else
+    success = ACE_Proactor::instance()->proactor_run_event_loop(0);
+  if (success == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
 
-  return 0;
+  // clean up
+  no_sigpipe.restore_action(SIGPIPE, original_action);
+
+  // *PORTABILITY*
+  // *TODO*
+  return (success == 0 ? NULL : NULL);
 }
 
 void
 do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
         const std::string& serverHostname_in,
         const unsigned short& serverPortNumber_in,
-        const bool& useThreadPool_in,
         const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-  // step0a: (if necessary) init the TP_Reactor
-  if (useThreadPool_in)
+  // step0: (if necessary) init the thread pool
+  if (!init_threadPool(IRC_CLIENT_DEF_CLIENT_USES_REACTOR, numThreadPoolThreads_in))
   {
-    if (!init_threadPool())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to init_threadPool(), aborting\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init thread pool, aborting\n")));
 
-      return;
-    } // end IF
+    return;
   } // end IF
 
   // step0b: init client connector
@@ -491,13 +502,14 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
 
   // step3: dispatch events...
   // *NOTE*: if we use a thread pool, we need to do this differently...
-  if (useThreadPool_in)
+  if (numThreadPoolThreads_in > 1)
   {
-    // start a (group of) worker(s)...
+    // start a (group of) worker thread(s)...
+    bool thread_argument = IRC_CLIENT_DEF_CLIENT_USES_REACTOR;
     int grp_id = -1;
     grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
                                                      ::tp_worker_func,            // function
-                                                     NULL,                        // argument
+                                                     &thread_argument,            // argument
                                                      (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
                                                      ACE_DEFAULT_THREAD_PRIORITY, // priority
                                                      -1,                          // group id --> create new
@@ -530,36 +542,48 @@ do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
     } // end IF
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("started group (ID: %u) of %u worker thread(s)...\n"),
-               grp_id,
-               numThreadPoolThreads_in));
+               ACE_TEXT("spawned %u event handlers (group ID: %u)...\n"),
+               numThreadPoolThreads_in,
+               grp_id));
 
     // ... and wait for this group to join
     ACE_Thread_Manager::instance()->wait_grp(grp_id);
   } // end IF
   else
   {
-    if (ACE_Reactor::instance()->run_reactor_event_loop() == -1)
+    if (IRC_CLIENT_DEF_CLIENT_USES_REACTOR)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::run_reactor_event_loop(): \"%m\", aborting\n")));
+/*    // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
+      ACE_Reactor::instance()->restart(1);
+*/
+      while (!ACE_Reactor::instance()->reactor_event_loop_done())
+      {
+        if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
 
-      // clean up
-//       if (stressTestServer_in)
-//       {
-//         if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
-//                                                   NULL,     // pointer to args passed to handler
-//                                                   1) != 1)  // don't invoke handle_close() on handler
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                     ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
-//         } // end IF
-//       } // end IF
-      RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-      RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-
-      return;
+	  break;
+	} // end IF
+      } // end WHILE
     } // end IF
+    else
+    {
+      while (!ACE_Proactor::instance()->proactor_event_loop_done())
+      {
+        if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
+
+          // clean up
+          // *TODO*: stop connector
+          //			    connector.cancel();
+
+          break;
+        } // end IF
+      } // end WHILE
+    } // end ELSE
   } // end ELSE
 
   // step4: clean up
@@ -785,17 +809,15 @@ ACE_TMAIN(int argc,
   // step1 init/validate configuration
 
   // step1a: process commandline arguments
-  std::string config_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                        true);
-#else
-  config_path = RPG_Common_File_Tools::getWorkingDirectory(); // fallback
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
 #endif // #ifdef BASEDIR
 
   std::string configFile = config_path;
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
   configFile += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -805,7 +827,6 @@ ACE_TMAIN(int argc,
   bool logToFile                    = false;
   bool traceInformation             = false;
   bool printVersionAndExit          = false;
-  bool useThreadPool                = IRC_CLIENT_DEF_CLIENT_USES_TP;
   unsigned int numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
   if (!(process_arguments(argc,
                           argv,
@@ -814,7 +835,6 @@ ACE_TMAIN(int argc,
                           logToFile,
                           traceInformation,
                           printVersionAndExit,
-                          useThreadPool,
                           numThreadPoolThreads)))
   {
     // make 'em learn...
@@ -955,7 +975,6 @@ ACE_TMAIN(int argc,
   do_work(config,
           serverHostname,
           serverPortNumber,
-          useThreadPool,
           numThreadPoolThreads);
   // clean up
   IRChandlerModule.close();

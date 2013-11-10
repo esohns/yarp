@@ -61,12 +61,11 @@ print_usage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::print_usage"));
 
-  std::string base_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
-#endif
-  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
-                                                                    true);
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -97,12 +96,11 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string base_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
-#endif
-  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
-                                                                    true);
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
 
   // init results
   dumpDictionary_out = false;
@@ -286,12 +284,11 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string base_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
-#endif
-  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
-                                                                    true);
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
 
   bool dumpDictionary      = false;
 

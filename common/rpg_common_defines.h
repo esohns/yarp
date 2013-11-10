@@ -29,6 +29,8 @@
 #define RPG_COMMON_DEF_TASK_GROUP_ID           0
 // *NOTE*: use ACE_DEFAULT_TIMERS instead ?
 #define RPG_COMMON_MAX_TIMER_SLOTS             1024
+// *IMPORTANT NOTE*: used for libc calls (i.e. char buffers, mostly)
+#define RPG_COMMON_BUFSIZE                     1024
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details
@@ -36,14 +38,20 @@
 #define RPG_COMMON_XML_TARGET_NAMESPACE        "urn:rpg"
 #define RPG_COMMON_XML_SCHEMA_FILE_EXT         ".xsd"
 
-// DATADIR-specific
+// BASEDIR-specific
 #define RPG_COMMON_DEF_DATA_SUB                "data"
 #define RPG_COMMON_DEF_CONFIG_SUB              "config"
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
 #define RPG_COMMON_DUMP_DIR                    "/var/tmp"
 #else
 #define RPG_COMMON_DUMP_DIR                    "TEMP" // environment
+#endif
+
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+#define RPG_COMMON_DEF_USER_LOGIN_BASE        "LOGNAME" // environment
+#else
+#define RPG_COMMON_DEF_USER_LOGIN_BASE        "USERNAME" // environment
 #endif
 
 #endif

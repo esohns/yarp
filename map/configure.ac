@@ -39,8 +39,6 @@ LT_INIT
 # prefix config.h
 AX_PREFIX_CONFIG_H
 
-# get the cpp compiler flags
-#CXXFLAGS="${CXXFLAGS=}"
 # reset the cpp compiler flags
 CXXFLAGS=
 # this macro is used to get the arguments supplied
@@ -53,12 +51,27 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-#  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
-  CXXFLAGS="-g3 -O0 -Wall"
+  CXXFLAGS="${CXXFLAGS} -g -O0 -Wall -D_DEBUG"
   AC_MSG_RESULT(yes)
 else
-#  CXXFLAGS="${CXXFLAGS} -O3 -march=native -DRPG_NTRACE=0"
-  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0"
+  CXXFLAGS="${CXXFLAGS} -O3 -march=native"
+  AC_MSG_RESULT(no)
+fi
+
+# this macro is used to get the arguments supplied
+# to the configure script (./configure --enable-tracing)
+# Check if we have enable tracing support.
+AC_MSG_CHECKING(whether to enable tracing)
+tracing_default="no"
+AC_ARG_ENABLE(tracing,
+              [ --enable-tracing=[no/yes] turn on tracing [default=$tracing_default]],
+              ,
+              enable_tracing=$tracing_default)
+if test "x$enable_tracing" = "xyes"; then
+  CXXFLAGS="${CXXFLAGS} -DRPG_NTRACE=0"
+  AC_MSG_RESULT(yes)
+else
+  CXXFLAGS="${CXXFLAGS} -DRPG_NTRACE=1"
   AC_MSG_RESULT(no)
 fi
 
@@ -94,6 +107,8 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile
+                 data/Makefile
                  scripts/Makefile])
 
 AC_OUTPUT
+

@@ -82,7 +82,7 @@ RPG_Common_XML_Tools::init(const std::string& schemaDirectory_in)
   if (RPG_Common_XML_Tools::myInitialized)
     return;
 
-  xercesc::XMLPlatformUtils::Initialize();
+  XMLPlatformUtils::Initialize();
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isDirectory(schemaDirectory_in))
@@ -107,10 +107,10 @@ RPG_Common_XML_Tools::init(const std::string& schemaDirectory_in)
     return;
   } // end IF
 
-	try
-	{
-   myGrammarPool = static_cast<XMLGrammarPool*>(new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager));
-	}
+  try
+  {
+    myGrammarPool = static_cast<XMLGrammarPool*>(new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager));
+  }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
@@ -121,7 +121,7 @@ RPG_Common_XML_Tools::init(const std::string& schemaDirectory_in)
 
     return;
   } // end IF
-	if (!myGrammarPool)
+  if (!myGrammarPool)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));
@@ -203,13 +203,14 @@ RPG_Common_XML_Tools::fini()
   RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::fini"));
 
   // clean up
-  delete(myGrammarPool,
-         XMLPlatformUtils::fgMemoryManager);
+//  delete(myGrammarPool,
+//         XMLPlatformUtils::fgMemoryManager);
+  delete myGrammarPool;
   //delete(myParser,
   //                  XMLPlatformUtils::fgMemoryManager);
   delete myParser;
 
-  xercesc::XMLPlatformUtils::Terminate();
+  XMLPlatformUtils::Terminate();
 }
 
 SAX2XMLReader*

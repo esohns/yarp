@@ -1706,12 +1706,10 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
+  std::string user_name; // *NOTE*: empty --> use current user
+  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-                                      ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
-#else
-                                      ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY)));
-#endif
+                                      ACE_TEXT(game_directory.c_str()));
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               data->entity_filter);
 
@@ -1811,11 +1809,9 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->entity.character);
 
   // assemble target filename
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
-#else
-  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
-#endif
+  std::string user_name; // *NOTE*: empty --> use current user
+  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+  std::string filename = game_directory;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->entity.character->getName();
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
@@ -1896,11 +1892,9 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // construct filename
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
-#else
-  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
-#endif
+  std::string user_name; // *NOTE*: empty --> use current user
+  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+  std::string filename = game_directory;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
@@ -1964,11 +1958,8 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load profile data
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  unsigned int num_entries = ::load_files(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY),
-#else
-  unsigned int num_entries = ::load_files(ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY)),
-#endif
+  std::string user_name; // *NOTE*: empty --> use current user
+  unsigned int num_entries = ::load_files(RPG_Common_File_Tools::getUserGameDirectory(user_name),
                                           true,
                                           GTK_LIST_STORE(model));
 

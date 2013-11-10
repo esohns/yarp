@@ -265,10 +265,10 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
                                                                : dirty_region.w);
   dirty_region.h = ((inherited::mySize.second > dirty_region.h) ? inherited::mySize.second
                                                                 : dirty_region.h);
-  if (dirty_region.x > (inherited::myBorderLeft + inherited::myOffset.first))
-    dirty_region.x = (inherited::myBorderLeft + inherited::myOffset.first);
-  if (dirty_region.y > (inherited::myBorderTop + inherited::myOffset.second))
-    dirty_region.y = (inherited::myBorderTop + inherited::myOffset.second);
+  if (dirty_region.x > static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first))
+    dirty_region.x = static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first);
+  if (dirty_region.y > static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second))
+    dirty_region.y = static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second);
   invalidate(dirty_region);
 
   // remember position of last realization

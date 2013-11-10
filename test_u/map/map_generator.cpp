@@ -24,21 +24,22 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_engine_defines.h>
-#include <rpg_engine_common.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine_defines.h"
+#include "rpg_engine_common.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_map_defines.h>
-#include <rpg_map_common_tools.h>
+#include "rpg_map_defines.h"
+#include "rpg_map_common_tools.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -69,6 +70,12 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-a<[VALUE]> : enforce (minimum) room-size") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MIN_ROOMSIZE != 0) << ACE_TEXT("; 0:off]") << std::endl;
@@ -76,12 +83,17 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d<[VALUE]> : enforce maximum #doors/room") << ACE_TEXT(" [") << (MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM != 0) << ACE_TEXT(":") << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM << ACE_TEXT("; 0:off]") << std::endl;
   std::cout << ACE_TEXT("-l          : generate level") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_LEVEL << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE << ACE_TEXT("]") << std::endl;
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("map");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR("data");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   path += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
                                    : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
@@ -114,6 +126,12 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
+
   // init results
   minRoomSize_out = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
   corridors_out = MAP_GENERATOR_DEF_CORRIDORS;
@@ -121,12 +139,17 @@ process_arguments(const int argc_in,
   maxNumDoorsPerRoom_out = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   maximizeRoomSize_out = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  outputFile_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  outputFile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  outputFile_out = data_path;
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+  outputFile_out += ACE_TEXT_ALWAYS_CHAR("map");
+  outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  outputFile_out += ACE_TEXT_ALWAYS_CHAR("data");
+  outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   outputFile_out += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
                                              : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
@@ -393,6 +416,12 @@ ACE_TMAIN(int argc,
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
+
   // step1: init
   // step1a set defaults
   unsigned int minRoomSize        = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
@@ -403,16 +432,20 @@ ACE_TMAIN(int argc,
   bool maximizeRoomSize           = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
   unsigned int numAreas           = MAP_GENERATOR_DEF_NUM_AREAS;
 
-  std::string outputFile;
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  outputFile = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  outputFile = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  std::string outputFile = data_path;
   outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+  outputFile += ACE_TEXT_ALWAYS_CHAR("map");
+  outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  outputFile += ACE_TEXT_ALWAYS_CHAR("data");
+  outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
   outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
-//   outputFile += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
-//                                          : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
+  outputFile += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
+                                         : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
   std::string default_output_file = outputFile;
 
   bool dumpResult                 = MAP_GENERATOR_DEF_DUMP;

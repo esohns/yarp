@@ -331,8 +331,12 @@ RPG_Net_Protocol_Module_IRCStreamer::handleDataMessage(RPG_Net_Protocol_Message*
     // *NOTE*: the "final" parameter may be a list-item, but in this case
     // the whitespace is excluded from the allowed set of characters...
     if ((reverse_i == 1) &&
-//        ((*iterator).find(' ') != std::string::npos))
+// *PORTABILITY*: this is un-portable so we do an ugly hack...
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+        ((*iterator).find(' ') != std::string::npos))
+#else
         ((*iterator).find(' ') != -1))
+#endif
     {
       // sanity check(s)
       ACE_ASSERT(param_separator == ' '); // cannot be (part of) a list-item

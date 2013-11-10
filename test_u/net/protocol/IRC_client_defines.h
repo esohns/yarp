@@ -31,8 +31,8 @@
 #define IRC_CLIENT_CNF_NETWORKS_SECTION_HEADER   "networks"
 #define IRC_CLIENT_CNF_SERVERS_SECTION_HEADER    "servers"
 
-#define IRC_CLIENT_DEF_CLIENT_USES_TP            false
-#define IRC_CLIENT_DEF_NUM_TP_THREADS            5
+#define IRC_CLIENT_DEF_CLIENT_USES_REACTOR       false
+#define IRC_CLIENT_DEF_NUM_TP_THREADS            3
 
 #define IRC_CLIENT_DEF_STATSINTERVAL             0 // seconds: 0 --> OFF
 

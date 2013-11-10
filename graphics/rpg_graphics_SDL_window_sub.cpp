@@ -123,8 +123,8 @@ RPG_Graphics_SDLWindowSub::restoreBG(const bool& update_in)
   {
     SDL_Rect dirty_region = {static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first),
                              static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second),
-                             myBG->w,
-                             myBG->h};
+                             static_cast<uint16_t>(myBG->w),
+                             static_cast<uint16_t>(myBG->h)};
     RPG_Graphics_Surface::update(dirty_region,
                                  inherited::myScreen);
   } // end IF

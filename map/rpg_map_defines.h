@@ -33,8 +33,11 @@
 #define RPG_MAP_SCANNER_BUFSIZE    16384 // == to YY_BUF_SIZE
 
 #define RPG_MAP_FILE_EXT           ".txt"
-#define RPG_MAP_DEF_MAP_FILE       "default_map"
 
+// default (maps) data directory tree organization
+#define RPG_MAP_DEF_MAPS_SUB       "maps"
+
+#define RPG_MAP_DEF_MAP_FILE       "dungeon_one"
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
 #define RPG_MAP_DEF_REPOSITORY     "/var/tmp"
 #else
@@ -42,3 +45,4 @@
 #endif
 
 #endif
+

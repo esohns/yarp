@@ -251,12 +251,8 @@ RPG_Stream_TaskAsynch::svc(void)
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("worker thread (ID: %t) failed to ACE_Task::getq(): \"%m\", aborting\n")));
 
-  // SHOULD NEVER GET HERE !
   ACE_ASSERT(false);
-
-  ACE_NOTREACHED(ACE_TEXT("not reached..."));
-
-  return -1;
+  ACE_NOTREACHED(return -1;)
 }
 
 void

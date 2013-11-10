@@ -1,6 +1,5 @@
 *~
 
-aclocal.m4
 libtool.m4
 ltoptions.m4
 ltsugar.m4
@@ -15,23 +14,10 @@ autom4te.cache
 build
 aux_config
 CMakeFiles
-*.o
-*.lo
-*.la
-stamp-h1
-.deps
-.libs
-_configs.sed
-config.h
+aclocal.m4
 config.h.in
-RPG_*-config.h
-config.log
-config.status
-configure
-libtool
-Makefile
 Makefile.in
-core
+configure
 
 scanner_report.txt
 lex.backup
@@ -100,29 +86,3 @@ IRCbisect_scanner_report.txt
 /net/stream/Release
 /test_u/Release
 
-/character/player/rpg_character.xsd
-/character/player/rpg_common.xsd
-/character/player/rpg_item.xsd
-/character/player/rpg_magic.xsd
-/character/rpg_common.xsd
-/combat/rpg_common.xsd
-/combat/rpg_dice.xsd
-/combat/rpg_magic.xsd
-/common/rpg_dice.xsd
-/engine/rpg_common_environment.xsd
-/engine/rpg_graphics.xsd
-/engine/rpg_map.xsd
-/engine/rpg_player.xsd
-/item/rpg_common.xsd
-/item/rpg_dice.xsd
-/item/rpg_magic.xsd
-/magic/rpg_character.xsd
-/magic/rpg_common.xsd
-/magic/rpg_common_environment.xsd
-/magic/rpg_dice.xsd
-/character/monster/rpg_combat.xsd
-/character/monster/rpg_common.xsd
-/character/monster/rpg_common_environment.xsd
-/character/monster/rpg_dice.xsd
-/character/monster/rpg_item.xsd
-/character/monster/rpg_magic.xsd

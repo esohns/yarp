@@ -50,7 +50,7 @@
 #define RPG_ENGINE_SCHEMA_FILE              "rpg_engine.xsd"
 #define RPG_ENGINE_LEVEL_NAME_MAX_LENGTH    30
 #define RPG_ENGINE_DEF_LEVEL_NAME           "default level"
-#define RPG_ENGINE_DEF_LEVEL_FILE           "default_level"
+#define RPG_ENGINE_DEF_LEVEL_FILE           "dungeon_one"
 #define RPG_ENGINE_LEVEL_FILE_EXT           ".level"
 #define RPG_ENGINE_ENTITY_FILE_EXT          ".entity"
 

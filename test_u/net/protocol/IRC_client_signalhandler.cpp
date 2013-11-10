@@ -27,6 +27,7 @@
 #include <rpg_net_connection_manager.h>
 
 #include <ace/Reactor.h>
+#include <ace/Proactor.h>
 
 IRC_Client_SignalHandler::IRC_Client_SignalHandler(const std::string& serverHostname_in,
                                                    const unsigned short& serverPort_in,
@@ -80,7 +81,7 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
 //                information.c_str()));
   } // end ELSE
 
-  bool stop_reactor = false;
+  bool stop_event_dispatching = false;
   bool connect_to_server = false;
   bool abort_oldest = false;
   switch (signal_in)
@@ -98,7 +99,7 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
 //                  ACE_TEXT("shutting down...\n")));
 
       // shutdown...
-      stop_reactor = true;
+      stop_event_dispatching = true;
 
       break;
     }
@@ -179,7 +180,7 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
   } // end IF
 
   // ...shutdown ?
-  if (stop_reactor)
+  if (stop_event_dispatching)
   {
     // stop everything, i.e.
     // - leave reactor event loop handling signals, sockets, (maintenance) timers...
@@ -187,11 +188,12 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
     // --> (try to) terminate in a well-behaved manner
 
     // stop reactor
-    if (reactor()->end_event_loop() == -1)
+    if ((reactor()->end_event_loop() == -1) ||
+        (ACE_Proactor::instance()->end_event_loop() == -1))
     {
-      // *PORTABILITY*: tracing in a signal handler context is not portable
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+      //// *PORTABILITY*: tracing in a signal handler context is not portable
+      //ACE_DEBUG((LM_ERROR,
+      //           ACE_TEXT("failed to terminate event handling: \"%m\", continuing\n")));
     } // end IF
 
     // de-register from the reactor...

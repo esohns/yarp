@@ -26,13 +26,13 @@
 #include "rpg_common_itimer.h"
 
 RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
- : myTimerHandler(),
-	 myTimerQueue(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
+ : myTimerQueue(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
                 true,                       // preallocate timer nodes
                 &myTimerHandler,            // upcall functor
-	              NULL),                      // freelist --> allocate
-	 inherited(ACE_Thread_Manager::instance(), // thread manager --> use default
-             &myTimerQueue)                  // timer queue
+                NULL),                      // freelist --> allocate
+   inherited(ACE_Thread_Manager::instance(), // thread manager --> use default
+             &myTimerQueue),                 // timer queue
+   myTimerHandler()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::RPG_Common_Timer_Manager"));
 

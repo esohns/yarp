@@ -458,8 +458,8 @@ RPG_Client_Window_Level::drawBorder(SDL_Surface* targetSurface_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::drawBorder"));
 
-  ACE_NOTREACHED(ACE_TEXT("not reached..."));
   ACE_ASSERT(false);
+  ACE_NOTREACHED(return;)
 }
 
 void
@@ -915,6 +915,7 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
         if (myShowCoordinates)
         {
           // debug info
+          SDL_Rect rect;
           rect.x = screen_position.first;
           rect.y = screen_position.second;
           rect.w = (*floor_iterator).surface->w;

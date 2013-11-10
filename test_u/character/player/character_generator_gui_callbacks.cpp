@@ -410,15 +410,11 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   data->entity.sprite = *(data->current_sprite);
 
   // assemble target filename
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
-#else
-  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
-#endif
+  std::string user_name; // *NOTE*: empty --> use current user
+  std::string filename = RPG_Common_File_Tools::getUserGameDirectory(user_name);
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->entity.character->getName();
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
-
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
     ACE_DEBUG((LM_ERROR,
@@ -483,15 +479,11 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // construct filename
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
-#else
-  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
-#endif
+  std::string user_name; // *NOTE*: empty --> use current user
+  std::string filename = RPG_Common_File_Tools::getUserGameDirectory(user_name);
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
-
   // load entity profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
                                                      data->schemaRepository);
@@ -556,11 +548,9 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load profile data
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  unsigned long num_entries = ::load_files(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY),
-#else
-  unsigned long num_entries = ::load_files(ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY)),
-#endif
+  std::string user_name; // *NOTE*: empty --> use current user
+  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+  unsigned long num_entries = ::load_files(game_directory,
                                            true,
                                            GTK_LIST_STORE(model));
 

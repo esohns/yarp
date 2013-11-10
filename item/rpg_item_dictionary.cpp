@@ -247,10 +247,8 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
   } // end SWITCH
 
   ACE_ASSERT(false);
-  ACE_NOTREACHED(ACE_TEXT("not reached..."));
-
   RPG_Item_PropertiesBase dummy;
-  return dummy;
+  ACE_NOTREACHED(return dummy;)
 }
 
 const RPG_Item_CommodityProperties&
@@ -300,8 +298,9 @@ RPG_Item_Dictionary::getCommodityProperties(const RPG_Item_CommodityUnion& commo
     }
   } // end SWITCH
 
+  ACE_ASSERT(false);
   RPG_Item_CommodityProperties dummy;
-  return dummy;
+  ACE_NOTREACHED(return dummy;)
 }
 
 const RPG_Item_ArmorProperties&

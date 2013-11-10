@@ -75,7 +75,7 @@
 #define RPG_GRAPHICS_DEF_DICTIONARY_FILE               "rpg_graphics.xml"
 #define RPG_GRAPHICS_DEF_DICTIONARY_INSTANCE           "graphicsDictionary"
 
-// DATADIR-specific
+// BASEDIR-specific
 #define RPG_GRAPHICS_DEF_DATA_SUB                      "graphics"
 
 // buffer for printing keyboard events (debug info)

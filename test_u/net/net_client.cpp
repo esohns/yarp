@@ -226,28 +226,28 @@ init_threadPool(const bool& useReactor_in,
 {
   RPG_TRACE(ACE_TEXT("::init_threadPool"));
 
-	if (useReactor_in && (numThreadPoolThreads_in > 1))
-	{
-		ACE_TP_Reactor* threadpool_reactor = NULL;
-		ACE_NEW_RETURN(threadpool_reactor,
-		               ACE_TP_Reactor(),
-		               false);
-		ACE_Reactor* new_reactor = NULL;
-		ACE_NEW_RETURN(new_reactor,
-		               ACE_Reactor(threadpool_reactor, 1), // delete in dtor
-		               false);
-		// make this the "default" reactor...
-		ACE_Reactor::instance(new_reactor, 1); // delete in dtor
-	} // end IF
-	else
-	{
-		ACE_Proactor* proactor = NULL;
-		ACE_NEW_RETURN(proactor,
-		               ACE_Proactor(NULL, false, NULL),
-		               false);
-		// make this the "default" proactor...
-		ACE_Proactor::instance(proactor, 1); // delete in dtor
-	} // end ELSE
+  if (useReactor_in && (numThreadPoolThreads_in > 1))
+  {
+    ACE_TP_Reactor* threadpool_reactor = NULL;
+    ACE_NEW_RETURN(threadpool_reactor,
+                   ACE_TP_Reactor(),
+                   false);
+    ACE_Reactor* new_reactor = NULL;
+    ACE_NEW_RETURN(new_reactor,
+                   ACE_Reactor(threadpool_reactor, 1), // delete in dtor
+                   false);
+    // make this the "default" reactor...
+    ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+  } // end IF
+  else
+  {
+    ACE_Proactor* proactor = NULL;
+    ACE_NEW_RETURN(proactor,
+                   ACE_Proactor(NULL, false, NULL),
+                   false);
+    // make this the "default" proactor...
+    ACE_Proactor::instance(proactor, 1); // delete in dtor
+  } // end ELSE
 
   return true;
 }
@@ -386,7 +386,7 @@ tp_worker_func(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("::tp_worker_func"));
 
-	bool use_reactor = *reinterpret_cast<bool*>(args_in);
+  bool use_reactor = *reinterpret_cast<bool*>(args_in);
 
   // *NOTE*: asynchronous writing to a closed socket triggers the
   // SIGPIPE signal (default action: abort).
@@ -395,13 +395,13 @@ tp_worker_func(void* args_in)
   ACE_Sig_Action original_action;
   no_sigpipe.register_action(SIGPIPE, &original_action);
 
-	int success = 0;
-	// handle any events...
-	if (use_reactor)
-		success = ACE_Reactor::instance()->run_reactor_event_loop(0);
-	else
-		success = ACE_Proactor::instance()->proactor_run_event_loop(0);
-	if (success == -1)
+  int success = 0;
+  // handle any events...
+  if (use_reactor)
+    success = ACE_Reactor::instance()->run_reactor_event_loop(0);
+  else
+    success = ACE_Proactor::instance()->proactor_run_event_loop(0);
+  if (success == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
 
@@ -411,8 +411,8 @@ tp_worker_func(void* args_in)
   // clean up
   no_sigpipe.restore_action(SIGPIPE, original_action);
 
-	// *PORTABILITY*
-	// *TODO*
+  // *PORTABILITY*
+  // *TODO*
   return (success == 0 ? NULL : NULL);
 }
 
@@ -550,7 +550,7 @@ do_work(const std::string& serverHostname_in,
   if (numThreadPoolThreads_in > 1)
   {
     // start a (group of) worker thread(s)...
-		bool thread_argument = useReactor_in;
+    bool thread_argument = useReactor_in;
     int grp_id = -1;
     grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
                                                      ::tp_worker_func,            // function
@@ -588,7 +588,7 @@ do_work(const std::string& serverHostname_in,
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("spawned %u event handlers (group ID: %u)...\n"),
-							 numThreadPoolThreads_in,
+               numThreadPoolThreads_in,
                grp_id));
 
     // ... and wait for this group to join
@@ -596,39 +596,39 @@ do_work(const std::string& serverHostname_in,
   } // end IF
   else
   {
-		if (useReactor_in)
-		{
-/*      // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
+    if (useReactor_in)
+    {
+/*    // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
       ACE_Reactor::instance()->restart(1);
 */
-		  while (!ACE_Reactor::instance()->reactor_event_loop_done())
-			{
-			  if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
-	  		{
-	    		ACE_DEBUG((LM_ERROR,
-	      		         ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
+      while (!ACE_Reactor::instance()->reactor_event_loop_done())
+      {
+        if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
 
-	  		  break;
-	  		} // end IF
-			} // end WHILE
-		} // end IF
-		else
-		{
-  		while (!ACE_Proactor::instance()->proactor_event_loop_done())
-			{
-			  if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
-	  		{
-	    		ACE_DEBUG((LM_ERROR,
-	      		         ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
+	  break;
+	} // end IF
+      } // end WHILE
+    } // end IF
+    else
+    {
+      while (!ACE_Proactor::instance()->proactor_event_loop_done())
+      {
+        if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
 
-	 		    // clean up
-		      // *TODO*: stop connector
-//			    connector.cancel();
+          // clean up
+          // *TODO*: stop connector
+          //			    connector.cancel();
 
-	  		  break;
-	  		} // end IF
-			} // end WHILE
-		} // end ELSE
+          break;
+        } // end IF
+      } // end WHILE
+    } // end ELSE
   } // end ELSE
 
   // step4: clean up

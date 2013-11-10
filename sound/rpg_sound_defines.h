@@ -37,7 +37,7 @@
 #define RPG_SOUND_DEF_DICTIONARY_FILE     "rpg_sound.xml"
 #define RPG_SOUND_DEF_DICTIONARY_INSTANCE "soundDictionary"
 
-// DATADIR-specific
+// BASEDIR-specific
 #define RPG_SOUND_DEF_DATA_SUB            "sound"
 
 #define RPG_SOUND_DEF_AMBIENT_SUB         "ambient"

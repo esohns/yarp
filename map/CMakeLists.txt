@@ -5,6 +5,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+add_subdirectory(data)
+
 ########### next target ###############
 set(RPG_Map_LIB_SRCS
     location.hh

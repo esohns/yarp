@@ -517,8 +517,8 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
     }
   } // end SWITCH
 
-  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
+  ACE_NOTREACHED(return;)
 }
 
 void
@@ -528,8 +528,8 @@ RPG_Graphics_SDLWindowBase::notify(const RPG_Graphics_Cursor& cursor_in) const
 
   ACE_UNUSED_ARG(cursor_in);
 
-  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
+  ACE_NOTREACHED(return;)
 }
 
 RPG_Graphics_WindowType

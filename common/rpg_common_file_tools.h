@@ -42,8 +42,13 @@ class RPG_Common_Export RPG_Common_File_Tools
   static std::string realPath(const std::string&); // path
 
   static std::string getWorkingDirectory();
-  static std::string getDataDirectory(const std::string&, // base (==install) directory
-                                      const bool&);       // config ? : data
+  // *PORTABILITY*: - on UNIX, this should be passed as a BASEDIR macro at compile time
+  //                - on WIN32, this should default to the working directory
+  static std::string getConfigDataDirectory(const std::string&, // base directory
+                                            const bool&);       // config ? : data
+
+  static std::string getUserHomeDirectory(const std::string&); // user
+  static std::string getUserGameDirectory(const std::string&); // user
 
  private:
   // safety measures

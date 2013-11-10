@@ -49,7 +49,7 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-  CXXFLAGS="${CXXFLAGS} -g -O0 -Wall"
+  CXXFLAGS="${CXXFLAGS} -g -O0 -Wall -D_DEBUG"
   AC_MSG_RESULT(yes)
 else
   CXXFLAGS="${CXXFLAGS} -O3 -march=native"
@@ -110,6 +110,7 @@ AC_CONFIG_FILES([Makefile
                  character/monster/Makefile
                  combat/Makefile
                  map/Makefile
+                 map/data/Makefile
                  map/scripts/Makefile
                  graphics/Makefile
                  graphics/data/Makefile
@@ -144,6 +145,6 @@ AC_CONFIG_FILES([Makefile
                  test_u/map/Makefile
                  test_u/net/Makefile
                  test_u/net/protocol/Makefile
-								 test_u/sound/Makefile])
+                 test_u/sound/Makefile])
 
 AC_OUTPUT

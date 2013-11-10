@@ -1143,7 +1143,7 @@ RPG_Engine_Common_Tools::range(const RPG_Map_Position_t& position1_in,
                                                        position2_in);
 
   // diagonal ?
-  unsigned int offset_x = ::abs(static_cast<int>(position1_in.first) - static_cast<int>(position2_in.first));
+  int offset_x = ::abs(static_cast<int>(position1_in.first) - static_cast<int>(position2_in.first));
   if (offset_x == ::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second)))
     result = offset_x + (offset_x / 2);
 
@@ -1329,7 +1329,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
   RPG_Dice_RollResult_t result;
   int attack_roll = 0;
   int currentAttackBonus = 0;
-  bool is_offhand = false;
+  bool is_offhand = false; // *TODO* implement this rule
   RPG_Item_WeaponType weapon_type = RPG_ITEM_WEAPONTYPE_INVALID;
   RPG_Item_WeaponProperties weapon_properties;
   bool is_threat = false;

@@ -3,7 +3,7 @@ METASOURCES = AUTO
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(srcdir)/../chance/dice -I$(srcdir)/../common
 
-SUBDIRS = scripts
+SUBDIRS = scripts . data
 
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h stdafx.h
 include_HEADERS = rpg_map_common.h rpg_map_common_tools.h rpg_map_defines.h \

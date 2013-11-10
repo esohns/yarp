@@ -379,58 +379,12 @@ RPG_Map_Level::save(const std::string& filename_in) const
     return;
   } // end IF
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("created/openend TXT file: \"%s\"...\n"),
-//              filename_in.c_str()));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("created/openend TXT file: \"%s\"...\n"),
+             filename_in.c_str()));
 
   ssize_t sent_bytes = 0;
   std::string row;
-
-  // write the row to the file
-  sent_bytes = fileStream.send(row.c_str(),
-                               row.size());
-  switch (sent_bytes)
-  {
-    case -1:
-    case 0:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_FILE_IO::send(%u): %m, aborting\n"),
-                 row.size()));
-
-      // clean up
-      if (fileStream.close() == -1)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
-      } // end IF
-
-      return;
-    }
-    default:
-    {
-      if (static_cast<size_t>(sent_bytes) != row.size())
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_FILE_IO::send(%u) (result was: %d), aborting\n"),
-                   row.size(),
-                   sent_bytes));
-
-        // clean up
-        if (fileStream.close() == -1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to ACE_FILE_IO::close(): %m, aborting\n")));
-        } // end IF
-
-        return;
-      } // end IF
-
-      break;
-    }
-  } // end SWITCH
-
-  sent_bytes = 0;
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
   for (unsigned int y = 0;

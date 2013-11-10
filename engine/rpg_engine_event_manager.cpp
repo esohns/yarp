@@ -136,11 +136,8 @@ RPG_Engine_Event_Manager::close(u_long arg_in)
     }
     case 1:
     {
-      ACE_NOTREACHED(ACE_TEXT("should never get here\n"));
       ACE_ASSERT(false);
-
-      // what else can we do ?
-      break;
+      ACE_NOTREACHED(break;)
     }
     default:
     {
@@ -205,10 +202,8 @@ RPG_Engine_Event_Manager::svc(void)
     //handleEntities();
   } // end WHILE
 
-  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
-
-  return -1;
+  ACE_NOTREACHED(return -1;)
 }
 
 void

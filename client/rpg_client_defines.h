@@ -21,8 +21,8 @@
 #ifndef RPG_CLIENT_DEFINES_H
 #define RPG_CLIENT_DEFINES_H
 
-#define RPG_CLIENT_DEF_ACE_USES_TP                     false
-#define RPG_CLIENT_DEF_ACE_NUM_TP_THREADS              5
+#define RPG_CLIENT_DEF_USES_REACTOR                    false
+#define RPG_CLIENT_DEF_NUM_TP_THREADS                  3
 
 #define RPG_CLIENT_DEF_GNOME_APPLICATION_ID            "rpg_client"
 #define RPG_CLIENT_DEF_GNOME_UI_FILE                   "rpg_client.glade"

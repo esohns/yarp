@@ -320,10 +320,8 @@ RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in
              RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(spellType_in).c_str()));
 
   ACE_ASSERT(false);
-  ACE_NOTREACHED(ACE_TEXT("not reached..."));
-
   RPG_Magic_Spell_Properties dummy;
-  return dummy;
+  ACE_NOTREACHED(return dummy;)
 }
 
 RPG_Magic_SpellTypes_t

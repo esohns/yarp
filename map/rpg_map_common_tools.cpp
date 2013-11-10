@@ -2409,10 +2409,8 @@ compare_size:
 
   goto compare_size;
 
-  ACE_NOTREACHED(ACE_TEXT("not reached"));
   ACE_ASSERT(false);
-
-  return DIRECTION_INVALID;
+  ACE_NOTREACHED(return DIRECTION_INVALID;)
 }
 
 bool
