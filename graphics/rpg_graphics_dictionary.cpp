@@ -149,10 +149,6 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::get"));
 
-  RPG_Graphics_t dummy;
-  dummy.category = RPG_GRAPHICS_CATEGORY_INVALID;
-  dummy.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
-
   switch (type_in.discriminator)
   {
     case RPG_Graphics_GraphicTypeUnion::CURSOR:
@@ -209,9 +205,7 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
                  ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), aborting\n"),
                  type_in.discriminator));
 
-      ACE_ASSERT(false);
-
-      return dummy;
+      break;
     }
   } // end SWITCH
 
@@ -219,7 +213,11 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
              ACE_TEXT("type \"%s\" not found, aborting\n"),
              RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
 
-  return dummy;
+  ACE_ASSERT(false);
+  RPG_Graphics_t dummy;
+  dummy.category = RPG_GRAPHICS_CATEGORY_INVALID;
+  dummy.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  ACE_NOTREACHED(return dummy;)
 }
 
 RPG_Graphics_Fonts_t

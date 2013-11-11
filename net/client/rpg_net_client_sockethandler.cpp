@@ -52,35 +52,42 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::open"));
 
   // call baseclass...
+  // *NOTE*: this registers this instance with the reactor (READ_MASK)
   int result = inherited::open(arg_in);
   if (result == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%m\", aborting\n")));
 
     return -1;
   } // end IF
+//  // register with reactor...
+//  if (reactor()->register_handler(this,
+//                                  READ_MASK) == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%m\", aborting\n")));
+
+//    return -1;
+//  } // end IF
 
   // debug info
   ACE_INET_Addr localAddress;
   if (peer().get_local_addr(localAddress) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", aborting\n")));
 
     return -1;
-  }
+  } // end IF
   ACE_INET_Addr remoteAddress;
   if (peer().get_remote_addr(remoteAddress) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", aborting\n")));
 
     return -1;
-  }
+  } // end IF
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connected (handle: %d) \"%s\" | \"%s:%u\" <--> \"%s:%u\"\n"),
              peer().get_handle(),
@@ -89,17 +96,6 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
              localAddress.get_port_number(),
              remoteAddress.get_host_name(),
              remoteAddress.get_port_number()));
-
-  // register with reactor...
-  if (reactor()->register_handler(this,
-                                  READ_MASK) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
-
-    return -1;
-  } // end IF
 
   return 0;
 }

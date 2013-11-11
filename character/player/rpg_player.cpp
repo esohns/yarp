@@ -771,7 +771,7 @@ RPG_Player::create()
   player_p = new(std::nothrow) RPG_Player(name,
                                           gender,
                                           player_race,
-							                            player_class,
+                                          player_class,
                                           alignment,
                                           attributes,
                                           skills,
@@ -793,7 +793,7 @@ RPG_Player::create()
                ACE_TEXT("failed to allocate memory, aborting\n")));
 
     return NULL;
-  }
+  } // end IF
 
   return player_p;
 }
@@ -1031,7 +1031,7 @@ RPG_Player::dummy()
                               GENDER_NONE,
                               RACE_NONE,
                               player_class,
-							                alignment,
+                              alignment,
                               attributes,
                               skills,
                               feats,

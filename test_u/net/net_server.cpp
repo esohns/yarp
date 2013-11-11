@@ -312,38 +312,6 @@ init_coreDumping()
   return true;
 }
 
-bool
-init_threadPool(const bool& useReactor_in,
-                const unsigned int& numThreadPoolThreads_in)
-{
-  RPG_TRACE(ACE_TEXT("::init_threadPool"));
-
-  if (useReactor_in && (numThreadPoolThreads_in > 1))
-    {
-      ACE_TP_Reactor* threadpool_reactor = NULL;
-      ACE_NEW_RETURN(threadpool_reactor,
-                     ACE_TP_Reactor(),
-                     false);
-      ACE_Reactor* new_reactor = NULL;
-      ACE_NEW_RETURN(new_reactor,
-                     ACE_Reactor(threadpool_reactor, 1), // delete in dtor
-                     false);
-      // make this the "default" reactor...
-      ACE_Reactor::instance(new_reactor, 1); // delete in dtor
-    } // end IF
-  else
-    {
-      ACE_Proactor* proactor = NULL;
-      ACE_NEW_RETURN(proactor,
-                     ACE_Proactor(NULL, false, NULL),
-                     false);
-      // make this the "default" proactor...
-      ACE_Proactor::instance(proactor, 1); // delete in dtor
-    } // end ELSE
-
-  return true;
-}
-
 void
 init_signals(const bool& allowUserRuntimeStats_in,
              std::vector<int>& signals_inout)
@@ -405,47 +373,56 @@ init_signals(const bool& allowUserRuntimeStats_in,
 }
 
 bool
-init_signalHandling(const std::vector<int>& signals_inout,
+init_signalHandling(const std::vector<int>& signals_in,
                     Net_Server_SignalHandler& eventHandler_in,
-                    ACE_Sig_Handlers& signalHandlers_in)
+                    ACE_Sig_Handlers& signalDispatcher_in,
+                    std::vector<ACE_Sig_Action>& previousActions_out,
+                    std::vector<int>& sigKeys_out)
 {
   RPG_TRACE(ACE_TEXT("::init_signalHandling"));
+
+  // init return value(s)
+  previousActions_out.clear();
+  sigKeys_out.clear();
 
   // step1: register signal handlers for the list of signals we want to catch
 
   // specify (default) action...
-  // --> we don't actually need to keep this around after registration
+  // *IMPORTANT NOTE* don't actually need to keep this around after registration
   ACE_Sig_Action signalAction((ACE_SignalHandler)SIG_DFL, // default action (will be overridden below)...
                               ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
                                                           // --> block them all ! (except KILL off course...)
-//                               (SA_RESTART | SA_SIGINFO)); // flags
-                              SA_SIGINFO);               // flags
+                              (SA_RESTART | SA_SIGINFO)); // flags
 
   // register different signals...
-  int sigkey = -1;
-  for (std::vector<int>::const_iterator iter = signals_inout.begin();
-       iter != signals_inout.end();
-       iter++)
+  int sig_key = -1;
+  ACE_Event_Handler* previous_handler = NULL;
+  for (std::vector<int>::const_iterator iterator = signals_in.begin();
+       iterator != signals_in.end();
+       iterator++)
   {
-    sigkey = signalHandlers_in.register_handler(*iter,            // signal
-                                                &eventHandler_in, // new handler
-                                                &signalAction,    // new action
-                                                NULL,             // old handler
-                                                NULL);            // old action
-    if (sigkey == -1)
-    {
+    sig_key = -1;
+    previous_handler = NULL;
+    ACE_Sig_Action previous_action;
+    sig_key = signalDispatcher_in.register_handler(*iterator,         // signal
+                                                   &eventHandler_in,  // new handler
+                                                   &signalAction,     // new action
+                                                   &previous_handler, // previous handler
+                                                   &previous_action); // previous action
+    if (sig_key == -1)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": \"%m\", aborting\n"),
-                 *iter));
+                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\"): \"%m\", continuing\n"),
+                 *iterator));
 
-      return false;
-    } // end IF
+    previousActions_out.push_back(previous_action);
+    sigKeys_out.push_back(sig_key);
 
     // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered handler for \"%S\" (key: %d)...\n"),
-               *iter,
-               sigkey));
+    if (sig_key != -1)
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("registered handler for \"%S\" (key: %d)...\n"),
+                 *iterator,
+                 sig_key));
   } // end FOR
 
   // actually, there is only a single handler for ALL signals in the set...
@@ -454,55 +431,77 @@ init_signalHandling(const std::vector<int>& signals_inout,
 //              ACE_TEXT("handling %d signal(s)...\n"),
 //              signals_inout.size()));
 
-  // step2: ignore SIGPIPE; need this to enable sending to exit gracefully
-  // after an asynchronous client disconnect (i.e. crash/...)
-  // specify ignore action...
-  // --> we don't actually need to keep this around after registration
-  ACE_Sig_Action ignoreAction((ACE_SignalHandler)SIG_IGN, // ignore action...
-                              ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
-                                                          // --> block them all ! (except KILL off course...)
-                              SA_SIGINFO); // flags
-//                               (SA_RESTART | SA_SIGINFO)); // flags
-  ACE_Sig_Action originalAction;
-  ignoreAction.register_action(SIGPIPE, &originalAction);
+  // step2: ignore SIGPIPE: need this to continue gracefully after a client
+  // suddenly disconnects (i.e. application/system crash, etc...)
+  // --> specify ignore action
+  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
+  // *WARNING*: do NOT restart system calls in this case (see manual)
+  ACE_Sig_Action ignore_action(static_cast<ACE_SignalHandler>(SIG_IGN), // ignore action
+                               ACE_Sig_Set(1),                          // mask of signals to be blocked when we're servicing
+                                                                        // --> block them all ! (except KILL off course...)
+                               SA_SIGINFO);                             // flags
+//                               (SA_RESTART | SA_SIGINFO));              // flags
+  ACE_Sig_Action previous_action;
+  if (ignore_action.register_action(SIGPIPE, &previous_action) == -1)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to ACE_Sig_Action::register_action(SIGPIPE): \"%m\", continuing\n")));
+  previousActions_out.push_back(previous_action);
+  sigKeys_out.push_back(-1);
 
   return true;
 }
 
-static
-ACE_THR_FUNC_RETURN
-tp_worker_func(void* args_in)
+void
+fini_signalHandling(const std::vector<int>& signals_in,
+                    ACE_Sig_Handlers& signalDispatcher_in,
+                    const std::vector<ACE_Sig_Action>& actions_in,
+                    const std::vector<int> sigKeys_in)
 {
-  RPG_TRACE(ACE_TEXT("::tp_worker_func"));
+  RPG_TRACE(ACE_TEXT("::fini_signalHandling"));
 
-  bool use_reactor = *reinterpret_cast<bool*>(args_in);
+  // restore previous signal handlers
+  // register different signals...
+  std::vector<ACE_Sig_Action>::const_iterator action_iterator = actions_in.begin();
+  std::vector<int>::const_iterator key_iterator = sigKeys_in.begin();
+  int success = -1;
+  for (std::vector<int>::const_iterator iterator = signals_in.begin();
+       iterator != signals_in.end();
+       iterator++, action_iterator++, key_iterator++)
+  {
+    success = signalDispatcher_in.remove_handler(*iterator,                                      // signal
+                                                 &const_cast<ACE_Sig_Action&>(*action_iterator), // new (== previous) disposition
+                                                 NULL,                                           // previous disposition, don't care
+                                                 *key_iterator);                                 // sigkey
+    if (success == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Sig_Handlers::remove_handler(\"%S\"): \"%m\", continuing\n"),
+                 *iterator));
 
-  // *NOTE*: asynchronous writing to a closed socket triggers the
-  // SIGPIPE signal (default action: abort).
-  // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
-  ACE_Sig_Action original_action;
-  no_sigpipe.register_action(SIGPIPE, &original_action);
+    // debug info
+    if (success != -1)
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("restored handler for \"%S\" (key: %d)...\n"),
+                 *iterator,
+                 *key_iterator));
+  } // end FOR
 
-  int success = 0;
-  // handle any events...
-  if (use_reactor)
-    success = ACE_Reactor::instance()->run_reactor_event_loop(0);
-  else
-    success = ACE_Proactor::instance()->proactor_run_event_loop(0);
-  if (success == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
+  // restore previous SIGPIPE handler
+ action_iterator++; key_iterator++;
+ success = signalDispatcher_in.remove_handler(SIGPIPE,                                         // signal
+                                              &const_cast<ACE_Sig_Action&>(*action_iterator),  // new (== previous) disposition
+                                              NULL,                                            // previous disposition, don't care
+                                              *key_iterator);                                  // sigkey
+ if (success == -1)
+   ACE_DEBUG((LM_ERROR,
+              ACE_TEXT("failed to ACE_Sig_Handlers::remove_handler(\"%S\"): \"%m\", continuing\n"),
+              SIGPIPE));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("(%t) worker leaving...\n")));
-
-  // clean up
-  no_sigpipe.restore_action(SIGPIPE, original_action);
-
-  // *PORTABILITY*
-  // *TODO*
-  return (success == 0 ? NULL : NULL);
+ // debug info
+ if (success != -1)
+   ACE_DEBUG((LM_DEBUG,
+              ACE_TEXT("restored handler for \"%S\" (key: %d)...\n"),
+              SIGPIPE,
+              *key_iterator));
 }
 
 void
@@ -515,35 +514,30 @@ do_work(const unsigned int& clientPingInterval_in,
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-  // step0: (if necessary) init the thread pool
-  if (!init_threadPool(useReactor_in, numThreadPoolThreads_in))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init thread pool, aborting\n")));
-
-    return;
-  } // end IF
-
-  // step1a: signal handling
+  // step1: signal handling
   // event handler for signals
-  Net_Server_SignalHandler signalEventHandler(RPG_NET_ASYNCHLISTENER_SINGLETON::instance(),
-                                              RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
-  ACE_Sig_Handlers      signalHandlers;
+  Net_Server_SignalHandler signal_handler(RPG_NET_ASYNCHLISTENER_SINGLETON::instance(),
+                                          RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
+  ACE_Sig_Handlers signal_dispatcher;
   // *WARNING*: 'signals' appears to be a keyword in some contexts...
-  std::vector<int>      signalss;
+  std::vector<int> signalss;
   init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK IF regular reporting is off
                signalss);
+  std::vector<ACE_Sig_Action> previous_actions;
+  std::vector<int> sig_keys;
   if (!init_signalHandling(signalss,
-                           signalEventHandler,
-                           signalHandlers))
+                           signal_handler,
+                           signal_dispatcher,
+                           previous_actions,
+                           sig_keys))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init_signalHandling(), aborting\n")));
+               ACE_TEXT("failed to init signal handlers, aborting\n")));
 
     return;
   } // end IF
 
-  // step1b: init regular (global) stats reporting
+  // step2: init regular (global) stats reporting
   // event handler for timer
   long timerID = -1;
   RPG_Net_StatisticHandler_Reactor_t statistics_handler(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance(),
@@ -560,11 +554,17 @@ do_work(const unsigned int& clientPingInterval_in,
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to schedule timer: \"%m\", aborting\n")));
 
+      // clean up
+      fini_signalHandling(signalss,
+                          signal_dispatcher,
+                          previous_actions,
+                          sig_keys);
+
       return;
     } // end IF
   } // end IF
 
-  // step2a: init stream configuration object
+  // step3a: init stream configuration object
   RPG_Stream_AllocatorHeap heapAllocator;
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
                                                   &heapAllocator);
@@ -580,11 +580,40 @@ do_work(const unsigned int& clientPingInterval_in,
   // *WARNING*: set at runtime, by the appropriate connection handler
   config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
-  // step2b: init connection manager
+  // step3b: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS);
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
-  // step2c: init/start listening
+  // step4: handle events (signals, incoming connections/data, timers, ...)
+  // event loop:
+  // - catch SIGINT/SIGQUIT/SIGTERM/... signals (and perform orderly shutdown)
+  // - signal connection attempts to acceptor
+  // - signal timer expiration to perform maintenance/local statistics reporting
+
+  // step4a: init worker(s)
+  int group_id = -1;
+  if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
+                                               numThreadPoolThreads_in,
+                                               group_id))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init event dispatch, aborting\n")));
+
+    // clean up
+    if (statisticsReportingInterval_in)
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                   timerID));
+    fini_signalHandling(signalss,
+                        signal_dispatcher,
+                        previous_actions,
+                        sig_keys);
+
+    return;
+  } // end IF
+
+  // step4b: start listening
   if (useReactor_in)
   {
     RPG_NET_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
@@ -596,11 +625,18 @@ do_work(const unsigned int& clientPingInterval_in,
                  listeningPortNumber_in));
 
       // clean up
+      RPG_Net_Common_Tools::finiEventDispatch(useReactor_in,
+                                              !useReactor_in,
+                                              group_id);
       if (statisticsReportingInterval_in)
         if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                      timerID));
+      fini_signalHandling(signalss,
+                          signal_dispatcher,
+                          previous_actions,
+                          sig_keys);
 
       return;
     } // end IF
@@ -616,132 +652,70 @@ do_work(const unsigned int& clientPingInterval_in,
                  listeningPortNumber_in));
 
       // clean up
+      RPG_Net_Common_Tools::finiEventDispatch(useReactor_in,
+                                              !useReactor_in,
+                                              group_id);
       if (statisticsReportingInterval_in)
         if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                      timerID));
+      fini_signalHandling(signalss,
+                          signal_dispatcher,
+                          previous_actions,
+                          sig_keys);
 
       return;
     } // end IF
   } // end IF
 
-  // *NOTE*: from this point on, we need to potentially also clean up
-  //         any remote connections !
+  // *NOTE*: from this point on, clean up any remote connections !
 
-  // step2d: handle events (signals, incoming connections/data, timers, ...)
-  // event loop:
-  // - catch SIGINT/SIGQUIT/SIGTERM/... signals (and perform orderly shutdown)
-  // - signal connection attempts to acceptor
-  // - signal timer expiration to perform maintenance/local statistics reporting
-
-  // *NOTE*: asynchronous writing to a closed socket triggers the
-  // SIGPIPE signal (default action: abort).
-  // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
-  ACE_Sig_Action original_action;
-  no_sigpipe.register_action(SIGPIPE, &original_action);
-
-  // *NOTE*: if we use a thread pool, we need to do this differently...
-  if (numThreadPoolThreads_in > 1)
+  // *NOTE*: when using a thread pool, handle things differently...
+  if (numThreadPoolThreads_in)
   {
-    // start a (group of) worker thread(s)...
-    bool thread_argument = useReactor_in;
-    int grp_id = -1;
-    grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
-                                                     ::tp_worker_func,            // function
-                                                     &thread_argument,            // argument
-                                                     (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                     ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                                     -1,                          // group id --> create new
-                                                     NULL,                        // task
-                                                     NULL,                        // handle(s)
-                                                     NULL,                        // stack(s)
-                                                     NULL,                        // stack size(s)
-                                                     NULL);                       // name(s)
-    if (grp_id == -1)
-    {
+    if (ACE_Thread_Manager::instance()->wait_grp(group_id) == -1)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
-                 numThreadPoolThreads_in));
-
-      // clean up
-      if (statisticsReportingInterval_in)
-        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("failed to cancel statistics reporting event (ID: %d): \"%m\", continuing\n"),
-                     timerID));
-      if (useReactor_in)
-        RPG_NET_LISTENER_SINGLETON::instance()->stop();
-      else
-        RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-
-      return;
-    } // end IF
-
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("spawned %u event handlers (group ID: %u)...\n"),
-               numThreadPoolThreads_in,
-               grp_id));
-
-    // ... and wait for this group to join
-    ACE_Thread_Manager::instance()->wait_grp(grp_id);
+                 ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(%d): \"%m\", continuing\n"),
+                 group_id));
   } // end IF
   else
   {
     if (useReactor_in)
     {
-/*      // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
+/*      // *WARNING*: restart system calls (after e.g. SIGINT) for the reactor
       ACE_Reactor::instance()->restart(1);
 */
-      while (!ACE_Reactor::instance()->reactor_event_loop_done())
-      {
-        if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
-
-          // clean up
-          // stop listener
-          RPG_NET_LISTENER_SINGLETON::instance()->stop();
-
-          break;
-        } // end IF
-      } // end WHILE
+      if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
     } // end IF
     else
-    {
-      while (!ACE_Proactor::instance()->proactor_event_loop_done())
-      {
-        if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
-
-          // clean up
-          // stop listener
-          RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
-
-          break;
-        } // end IF
-      } // end WHILE
-    } // end ELSE
+      if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
   } // end ELSE
 
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("finished event dispatch...\n")));
+
   // clean up
+  if (useReactor_in)
+    RPG_NET_LISTENER_SINGLETON::instance()->stop();
+  else
+    RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+
   if (statisticsReportingInterval_in)
     if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                  timerID));
-  // *NOTE*: listener should have been stopped by now
-  // --> clean up active connections
-//   RPG_NET_LISTENER_SINGLETON::instance()->stop();
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-  no_sigpipe.restore_action(SIGPIPE, original_action);
+  fini_signalHandling(signalss,
+                      signal_dispatcher,
+                      previous_actions,
+                      sig_keys);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

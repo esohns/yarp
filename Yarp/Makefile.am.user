@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 2.7.0, 2013-11-10T05:04:56. -->
+<!-- Written by QtCreator 2.7.0, 2013-11-10T23:13:36. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -56,7 +56,7 @@
    <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">{f7292e29-bd9a-4884-83aa-44bdf2b0ecc8}</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">1</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">2</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
     <value type="QString" key="AutotoolsProjectManager.AutotoolsBuildConfiguration.BuildDirectory">/mnt/win_c/Temp/yarp/Yarp/build/optimized</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
@@ -253,13 +253,13 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.1">
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments"></value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-t</value>
     <value type="int" key="ProjectExplorer.CustomExecutableRunConfiguration.BaseEnvironmentBase">1</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/usr/local/bin/net_server</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_server</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <valuelist type="QVariantList" key="ProjectExplorer.CustomExecutableRunConfiguration.UserEnvironmentChanges"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /usr/local/bin/net_server</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_c/Temp/yarp/Yarp</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_server</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">server</value>
     <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
@@ -269,14 +269,14 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.2">
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments"></value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-r -t</value>
     <value type="int" key="ProjectExplorer.CustomExecutableRunConfiguration.BaseEnvironmentBase">1</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/usr/local/bin/net_client</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_client</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <valuelist type="QVariantList" key="ProjectExplorer.CustomExecutableRunConfiguration.UserEnvironmentChanges"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /usr/local/bin/net_client</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">client</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_c/Temp/yarp/Yarp</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_client</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">net client</value>
     <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">true</value>

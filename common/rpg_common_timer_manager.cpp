@@ -26,37 +26,47 @@
 #include "rpg_common_itimer.h"
 
 RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
- : myTimerQueue(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
+ : inherited(ACE_Thread_Manager::instance(), // thread manager --> use default
+             NULL),                          // timer queue --> allocate (dummy) temp :(
+   myTimerHandler(),
+   myTimerQueue(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
                 true,                       // preallocate timer nodes
                 &myTimerHandler,            // upcall functor
-                NULL),                      // freelist --> allocate
-   inherited(ACE_Thread_Manager::instance(), // thread manager --> use default
-             &myTimerQueue),                 // timer queue
-   myTimerHandler()
+                NULL)                       // freelist --> allocate
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::RPG_Common_Timer_Manager"));
+
+  // set time queue
+  if (inherited::timer_queue(&myTimerQueue) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::timer_queue(): \"%m\", aborting\n")));
+
+    return;
+  } // end IF
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("spawning timer dispatch thread...\n")));
 
   // ok: spawn the dispatching worker thread
-  if (inherited::activate((THR_NEW_LWP | THR_JOINABLE), // flags
-                          1,                            // # threads --> 1
-                          0,                            // force active ?
-                          ACE_DEFAULT_THREAD_PRIORITY,  // priority
-                          RPG_COMMON_DEF_TASK_GROUP_ID, // group id
-                          NULL,                         // task base
-                          NULL,                         // thread handle(s)
-                          NULL,                         // stack(s)
-                          NULL,                         // stack size(s)
-                          NULL,                         // thread id(s)
-                          NULL) == -1)                  // thread name(s)
+  if (inherited::activate((THR_NEW_LWP | THR_JOINABLE),         // flags
+                          1,                                    // # threads --> 1
+                          0,                                    // force active ?
+                          ACE_DEFAULT_THREAD_PRIORITY,          // priority
+                          RPG_COMMON_DEF_TIMER_THREAD_GROUP_ID, // group id
+                          NULL,                                 // task base
+                          NULL,                                 // thread handle(s)
+                          NULL,                                 // stack(s)
+                          NULL,                                 // stack size(s)
+                          NULL,                                 // thread id(s)
+                          NULL) == -1)                          // thread name(s)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to activate() timer dispatch thread: \"%m\", continuing\n")));
+               ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::activate(): \"%m\", continuing\n")));
    else
      ACE_DEBUG((LM_DEBUG,
-                ACE_TEXT("spawned timer dispatch thread (ID: %t)\n"),
-                inherited::thr_id()));
+                ACE_TEXT("spawned timer dispatch thread (ID: %t, group: %d)\n"),
+                inherited::thr_id(),
+               RPG_COMMON_DEF_TIMER_THREAD_GROUP_ID));
 }
 
 RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()

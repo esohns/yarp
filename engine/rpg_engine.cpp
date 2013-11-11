@@ -1905,13 +1905,13 @@ RPG_Engine::handleEntities()
       // notify client
       RPG_Engine_ClientNotificationParameters_t parameters;
       parameters.entity_id = 0;
-			parameters.condition = RPG_COMMON_CONDITION_INVALID;
+      parameters.condition = RPG_COMMON_CONDITION_INVALID;
       parameters.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                            std::numeric_limits<unsigned int>::max());
-			parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+      parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                     std::numeric_limits<unsigned int>::max());
-			parameters.visible_radius = 0;
-			parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+      parameters.visible_radius = 0;
+      parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
       try
       {
         myClient->notify(COMMAND_E2C_QUIT, parameters);

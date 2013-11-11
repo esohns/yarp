@@ -32,34 +32,45 @@
 // forward declaration(s)
 struct dirent;
 
+// init globals
+ACE_THR_FUNC_RETURN tp_event_dispatcher_func(void* args_in); // use reactor ?
+
 class RPG_Net_Export RPG_Net_Common_Tools
 {
  public:
+  static bool initEventDispatch(const bool&,         // use reactor
+                                const unsigned int&, // number of thread-pool threads
+                                int&);               // return value: group ID
+  // *NOTE*: this blocks until worker(s) join(s)
+  static void finiEventDispatch(const bool&,  // stop reactor
+                                const bool&,  // stop proactor
+                                const int&);  // group ID (>= 0 ? join threads)
+
   // *NOTE*: this implements log rotation...
-  static const bool getNextLogFilename(const bool&,        // server ?
-                                       const std::string&, // log directory
-                                       std::string&);      // return value: FQ current log filename
+  static bool getNextLogFilename(const bool&,        // server ?
+                                 const std::string&, // log directory
+                                 std::string&);      // return value: FQ current log filename
   static unsigned long myMaxNumberOfLogFiles;
 
   // --- general tools ---
   // *NOTE*: if (the first argument == 0), the trailing ":0" will be cropped from the return value !
-  static const std::string IPAddress2String(const unsigned short&, // port (network byte order !)
-                                            const unsigned long&); // IP address (network byte order !)
-  static const std::string IPProtocol2String(const unsigned char&); // protocol
-  static const std::string MACAddress2String(const char* const); // pointer to message data (START of ethernet header address field !)
-  static const std::string EthernetProtocolTypeID2String(const unsigned short&); // ethernet frame type (network byte order !)
+  static std::string IPAddress2String(const unsigned short&, // port (network byte order !)
+                                      const unsigned long&); // IP address (network byte order !)
+  static std::string IPProtocol2String(const unsigned char&); // protocol
+  static std::string MACAddress2String(const char* const); // pointer to message data (START of ethernet header address field !)
+  static std::string EthernetProtocolTypeID2String(const unsigned short&); // ethernet frame type (network byte order !)
 
 //   static const bool selectNetworkInterface(const std::string&, // default interface identifier
 //                                            std::string&);      // return value: interface identifier
-  static const bool retrieveLocalIPAddress(const std::string&, // interface identifier
-                                           std::string&);      // return value: IP address (dotted-decimal)
-  static const bool retrieveLocalHostname(std::string&); // return value: hostname
-  static const bool setSocketBuffer(const ACE_HANDLE&, // socket handle
-                                    const int&,        // option (SO_RCVBUF || SO_SNDBUF)
-                                    const int&);       // size (bytes)
+  static bool retrieveLocalIPAddress(const std::string&, // interface identifier
+                                     std::string&);      // return value: IP address (dotted-decimal)
+  static bool retrieveLocalHostname(std::string&); // return value: hostname
+  static bool setSocketBuffer(const ACE_HANDLE&, // socket handle
+                              const int&,        // option (SO_RCVBUF || SO_SNDBUF)
+                              const int&);       // size (bytes)
   // *NOTE*: this should toggle Nagle's algorithm
-  static const bool setNoDelay(const ACE_HANDLE&, // socket handle
-                               const bool&);      // TCP_NODELAY ?
+  static bool setNoDelay(const ACE_HANDLE&, // socket handle
+                         const bool&);      // TCP_NODELAY ?
 
   static void retrieveSignalInfo(const int&,        // signal
                                  const siginfo_t&,  // info

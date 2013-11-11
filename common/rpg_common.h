@@ -26,7 +26,7 @@
 
 // timer queue
 #include <ace/Synch_Traits.h>
-//#include <ace/Event_Handler_Handle_Timeout_Upcall.h>
+#include <ace/Event_Handler_Handle_Timeout_Upcall.h>
 #include <ace/Timer_Queue_T.h>
 #include <ace/Timer_Heap_T.h>
 #include <ace/Timer_Queue_Adapters.h>
@@ -44,7 +44,7 @@ typedef RPG_Common_Terrains_t::const_iterator RPG_Common_TerrainsIterator_t;
 
 // *NOTE*: ensure a minimal amount of locking
 //typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_SYNCH_NULL_MUTEX> RPG_Common_TimeoutUpcall_t;
-typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_SYNCH_NULL_MUTEX> RPG_Common_TimeoutUpcall_t;
+typedef ACE_Event_Handler_Handle_Timeout_Upcall RPG_Common_TimeoutUpcall_t;
 typedef ACE_Timer_Heap_T<ACE_Event_Handler*,
                          RPG_Common_TimeoutUpcall_t,
                          ACE_SYNCH_NULL_MUTEX> RPG_Common_TimerHeap_t;

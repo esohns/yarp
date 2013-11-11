@@ -30,6 +30,12 @@ RPG_Net_Client_AsynchConnector::RPG_Net_Client_AsynchConnector()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::RPG_Net_Client_AsynchConnector"));
 
+  // init base class
+  if (inherited::open(false,                    // pass addresses
+                      ACE_Proactor::instance(), // default proactor
+                      false) == -1)             // validate new connections
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Asynch_Connector::open(): \"%m\", continuing\n")));
 }
 
 RPG_Net_Client_AsynchConnector::~RPG_Net_Client_AsynchConnector()
@@ -43,10 +49,10 @@ RPG_Net_Client_AsynchConnector::make_handler(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::make_handler"));
 
-	// init return value(s)
-	RPG_Net_StreamHandler_t* handler_out = NULL;
+  // init return value(s)
+  RPG_Net_StreamHandler_t* handler_out = NULL;
 
-	// default behavior
+  // default behavior
   ACE_NEW_NORETURN(handler_out,
                    RPG_Net_StreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
 

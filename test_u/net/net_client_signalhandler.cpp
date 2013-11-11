@@ -21,7 +21,9 @@
 
 #include "net_client_signalhandler.h"
 
-#include "rpg_net_common.h"
+#include "rpg_net_common_tools.h"
+
+#include "rpg_common_defines.h"
 
 #include <ace/Reactor.h>
 #include <ace/Proactor.h>
@@ -33,7 +35,22 @@ Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHost
              ACE_Event_Handler::LO_PRIORITY), // priority
    myPeerAddress(serverPort_in,
                  serverHostname_in.c_str()),
-   myConnector(connector_in)
+   myConnector(connector_in),
+   myAsynchConnector(NULL)
+{
+  RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::Net_Client_SignalHandler"));
+
+}
+
+Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHostname_in,
+                                                   const unsigned short& serverPort_in,
+                                                   RPG_Net_Client_AsynchConnector* connector_in)
+ : inherited(ACE_Reactor::instance(),         // corresp. reactor
+             ACE_Event_Handler::LO_PRIORITY), // priority
+   myPeerAddress(serverPort_in,
+                 serverHostname_in.c_str()),
+   myConnector(NULL),
+   myAsynchConnector(connector_in)
 {
   RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::Net_Client_SignalHandler"));
 
@@ -105,7 +122,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR1:
 #else
-	  case SIGBREAK:
+    case SIGBREAK:
 #endif
     {
       // (try to) connect...
@@ -116,7 +133,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR2:
 #else
-	  case SIGABRT:
+    case SIGABRT:
 #endif
     {
       // (try to) abort oldest connection...
@@ -145,28 +162,40 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
   // ...connect ?
   if (connect_to_server)
   {
-    RPG_Net_Client_SocketHandler* handler = NULL;
-    if (myConnector->connect(handler,                     // service handler
-                             myPeerAddress/*,              // remote SAP
-                             ACE_Synch_Options::defaults, // synch options
-                             ACE_INET_Addr::sap_any,      // local SAP
-                             0,                           // try to re-use address (SO_REUSEADDR)
-                             O_RDWR,                      // flags
-                             0*/) == -1)                  // perms
+    int success = -1;
+    if (myConnector)
+    {
+      RPG_Net_Client_SocketHandler* handler = NULL;
+      success = myConnector->connect(handler,                                // service handler
+                                     myPeerAddress,                          // remote SAP
+                                     ACE_Synch_Options::defaults,            // synch options
+                                     ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
+                                     1,                                      // re-use address (SO_REUSEADDR) ?
+                                     O_RDWR,                                 // flags
+                                     0);                                     // perms
+    } // end IF
+    else
+    {
+      success = myAsynchConnector->connect(myPeerAddress,                          // remote SAP
+                                           ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
+                                           1,                                      // re-use address (SO_REUSEADDR) ?
+                                           NULL);                                  // ACT
+    } // end ELSE
+    if (success == -1)
     {
       // debug info
-      ACE_TCHAR buf[BUFSIZ];
+      ACE_TCHAR buf[RPG_COMMON_BUFSIZE];
       ACE_OS::memset(buf,
                      0,
-                     (BUFSIZ * sizeof(ACE_TCHAR)));
+                     (RPG_COMMON_BUFSIZE * sizeof(ACE_TCHAR)));
       if (myPeerAddress.addr_to_string(buf,
-                                       (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
+                                       (RPG_COMMON_BUFSIZE * sizeof(ACE_TCHAR))) == -1)
       {
 /*        // *PORTABILITY*: tracing in a signal handler context is not portable
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));*/
       } // end IF
-/*      // *PORTABILITY*: tracing in a signal handler context is not portable
+ /*      // *PORTABILITY*: tracing in a signal handler context is not portable
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
                  buf));*/

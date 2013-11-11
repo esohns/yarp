@@ -48,8 +48,8 @@ template <typename ConfigType,
           typename StatisticsContainerType,
           typename StreamType>
 RPG_Net_AsynchStreamHandler_T<ConfigType,
-										          StatisticsContainerType,
-										          StreamType>::~RPG_Net_AsynchStreamHandler_T()
+                              StatisticsContainerType,
+                              StreamType>::~RPG_Net_AsynchStreamHandler_T()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::~RPG_Net_AsynchStreamHandler_T"));
 
@@ -62,9 +62,9 @@ template <typename ConfigType,
           typename StreamType>
 void
 RPG_Net_AsynchStreamHandler_T<ConfigType,
-											        StatisticsContainerType,
-											        StreamType>::open(ACE_HANDLE handle_in,
-                  															ACE_Message_Block& messageBlock_in)
+                              StatisticsContainerType,
+                              StreamType>::open(ACE_HANDLE handle_in,
+                                                ACE_Message_Block& messageBlock_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::open"));
 
@@ -77,8 +77,8 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
     // (most probably) too many connections...
     ACE_OS::last_error(EBUSY);
 
-		// clean up
-		delete this;
+    // clean up
+    delete this;
 
     return;
   } // end IF

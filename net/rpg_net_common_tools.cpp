@@ -24,15 +24,19 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_packet_headers.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include <ace/Log_Msg.h>
 #include <ace/INET_Addr.h>
 #include <ace/Dirent_Selector.h>
+#include <ace/Reactor.h>
+#include <ace/TP_Reactor.h>
+#include <ace/Proactor.h>
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
 #include <netinet/ether.h>
 #endif
 
@@ -41,7 +45,145 @@
 // init statics
 unsigned long RPG_Net_Common_Tools::myMaxNumberOfLogFiles = RPG_NET_DEF_LOG_MAXNUMFILES;
 
-const bool
+ACE_THR_FUNC_RETURN
+tp_event_dispatcher_func(void* args_in)
+{
+  RPG_TRACE(ACE_TEXT("::tp_event_dispatcher_func"));
+
+  bool use_reactor = *reinterpret_cast<bool*>(args_in);
+
+  // ignore SIGPIPE: need this to continue gracefully after a client
+  // suddenly disconnects (i.e. application/system crash, etc...)
+  // --> specify ignore action
+  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
+  // *WARNING*: do NOT restart system calls in this case (see manual)
+  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN),
+                            ACE_Sig_Set(1),                          // mask of signals to be blocked when we're servicing
+                                                                     // --> block them all ! (except KILL off course...)
+                            SA_SIGINFO);                             // flags
+//                            (SA_RESTART | SA_SIGINFO));              // flags
+  ACE_Sig_Action original_action;
+  if (no_sigpipe.register_action(SIGPIPE, &original_action) == -1)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to ACE_Sig_Action::register_action(SIGPIPE): \"%m\", continuing\n")));
+
+  int success = -1;
+  // handle any events...
+  if (use_reactor)
+    success = ACE_Reactor::instance()->run_reactor_event_loop(0);
+  else
+    success = ACE_Proactor::instance()->proactor_run_event_loop(0);
+  if (success == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("(%t) worker leaving...\n")));
+
+  // clean up
+  if (no_sigpipe.restore_action(SIGPIPE, original_action) == -1)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to ACE_Sig_Action::restore_action(SIGPIPE): \"%m\", continuing\n")));
+
+  // *PORTABILITY*
+  // *TODO*
+  return (success == 0 ? NULL : NULL);
+}
+
+bool
+RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
+                                        const unsigned int& numThreadPoolThreads_in,
+                                        int& groupID_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::initEventDispatch"));
+
+  // init return value(s)
+  groupID_out = -1;
+
+  // step1: init reactor/proactor
+  if (useReactor_in && (numThreadPoolThreads_in > 1))
+  {
+    ACE_TP_Reactor* threadpool_reactor = NULL;
+    ACE_NEW_RETURN(threadpool_reactor,
+                   ACE_TP_Reactor(),
+                   false);
+    ACE_Reactor* new_reactor = NULL;
+    ACE_NEW_RETURN(new_reactor,
+                   ACE_Reactor(threadpool_reactor, 1), // delete in dtor
+                   false);
+    // make this the "default" reactor...
+    ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+  } // end IF
+  else
+  {
+    ACE_Proactor* proactor = NULL;
+    ACE_NEW_RETURN(proactor,
+                   ACE_Proactor(NULL, false, NULL),
+                   false);
+    // make this the "default" proactor...
+    ACE_Proactor::instance(proactor, 1); // delete in dtor
+  } // end ELSE
+
+  // step2: spawn worker(s) ?
+  if (numThreadPoolThreads_in > 1)
+  {
+    // start a (group of) worker thread(s)...
+    groupID_out = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,                       // # threads
+                                                          ::tp_event_dispatcher_func,                    // function
+                                                          &const_cast<bool&>(useReactor_in),             // argument
+                                                          (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
+                                                          ACE_DEFAULT_THREAD_PRIORITY,                   // priority
+                                                          RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_GROUP_ID, // group id
+                                                          NULL,                                          // task
+                                                          NULL,                                          // handle(s)
+                                                          NULL,                                          // stack(s)
+                                                          NULL,                                          // stack size(s)
+                                                          NULL);                                         // name(s)
+    if (groupID_out == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
+                 numThreadPoolThreads_in));
+
+      return false;
+    } // end IF
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("spawned %u event handlers (group ID: %d)...\n"),
+               numThreadPoolThreads_in,
+               groupID_out));
+  } // end IF
+
+  return true;
+}
+
+void
+RPG_Net_Common_Tools::finiEventDispatch(const bool& stopReactor_in,
+                                        const bool& stopProactor_in,
+                                        const int& groupID_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::finiEventDispatch"));
+
+  // step1: stop reactor/proactor
+  if (stopReactor_in)
+    if (ACE_Reactor::instance()->end_event_loop() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::end_event_loop: \"%m\", continuing\n")));
+
+  if (stopProactor_in)
+    if (ACE_Proactor::instance()->end_event_loop() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Proactor::end_event_loop: \"%m\", continuing\n")));
+
+  // step2: wait for any worker(s)
+  if (groupID_in != -1)
+    if (ACE_Thread_Manager::instance()->wait_grp(groupID_in) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(%d): \"%m\", continuing\n"),
+                 groupID_in));
+}
+
+bool
 RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
                                          const std::string& directory_in,
                                          std::string& FQLogFilename_out)
@@ -256,7 +398,7 @@ RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
   return true;
 }
 
-const std::string
+std::string
 RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
                                        const unsigned long& IPAddress_in)
 {
@@ -307,7 +449,7 @@ RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
   return result;
 }
 
-const std::string
+std::string
 RPG_Net_Common_Tools::IPProtocol2String(const unsigned char& protocol_in)
 {
   RPG_TRACE("RPG_Net_Common_Tools::IPProtocol2String");
@@ -486,7 +628,7 @@ RPG_Net_Common_Tools::IPProtocol2String(const unsigned char& protocol_in)
   return result;
 }
 
-const std::string
+std::string
 RPG_Net_Common_Tools::MACAddress2String(const char* const addressDataPtr_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::MACAddress2String"));
@@ -522,7 +664,7 @@ RPG_Net_Common_Tools::MACAddress2String(const char* const addressDataPtr_in)
   return result;
 }
 
-const std::string
+std::string
 RPG_Net_Common_Tools::EthernetProtocolTypeID2String(const unsigned short& frameType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::EthernetProtocolTypeID2String"));
@@ -948,7 +1090,7 @@ RPG_Net_Common_Tools::EthernetProtocolTypeID2String(const unsigned short& frameT
   return result;
 }
 
-// const bool
+// bool
 // RPG_Net_Common_Tools::selectNetworkInterface(const std::string& defaultInterfaceIdentifier_in,
 //                                              std::string& interfaceIdentifier_out)
 // {
@@ -1045,7 +1187,7 @@ RPG_Net_Common_Tools::EthernetProtocolTypeID2String(const unsigned short& frameT
 //   return true;
 // }
 
-const bool
+bool
 RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentifier_in,
                                              std::string& IPaddress_out)
 {
@@ -1154,7 +1296,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
   return true;
 }
 
-const bool
+bool
 RPG_Net_Common_Tools::retrieveLocalHostname(std::string& hostname_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::retrieveLocalHostname"));
@@ -1180,7 +1322,7 @@ RPG_Net_Common_Tools::retrieveLocalHostname(std::string& hostname_out)
   return true;
 }
 
-const bool
+bool
 RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                                       const int& option_in,
                                       const int& size_in)
@@ -1267,7 +1409,7 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   return true;
 }
 
-const bool
+bool
 RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                                  const bool& noDelay_in)
 {

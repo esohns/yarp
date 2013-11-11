@@ -21,37 +21,39 @@
 #ifndef RPG_COMMON_DEFINES_H
 #define RPG_COMMON_DEFINES_H
 
-#define RPG_COMMON_MAX_SPELL_LEVEL             9
-#define RPG_COMMON_MAX_CLASS_LEVEL             20
+#define RPG_COMMON_MAX_SPELL_LEVEL                    9
+#define RPG_COMMON_MAX_CLASS_LEVEL                    20
 
 // general stuff
-#define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH 64
-#define RPG_COMMON_DEF_TASK_GROUP_ID           0
+#define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH        64
+// *WARNING*: make sure group IDs are consistent !!!
+#define RPG_COMMON_DEF_TIMER_THREAD_GROUP_ID          0
+#define RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_GROUP_ID 1
 // *NOTE*: use ACE_DEFAULT_TIMERS instead ?
-#define RPG_COMMON_MAX_TIMER_SLOTS             1024
+#define RPG_COMMON_MAX_TIMER_SLOTS                    1024
 // *IMPORTANT NOTE*: used for libc calls (i.e. char buffers, mostly)
-#define RPG_COMMON_BUFSIZE                     1024
+#define RPG_COMMON_BUFSIZE                            512
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_COMMON_XML_SCHEMA_CHARSET          "UTF-8"
-#define RPG_COMMON_XML_TARGET_NAMESPACE        "urn:rpg"
-#define RPG_COMMON_XML_SCHEMA_FILE_EXT         ".xsd"
+#define RPG_COMMON_XML_SCHEMA_CHARSET                 "UTF-8"
+#define RPG_COMMON_XML_TARGET_NAMESPACE               "urn:rpg"
+#define RPG_COMMON_XML_SCHEMA_FILE_EXT                ".xsd"
 
 // BASEDIR-specific
-#define RPG_COMMON_DEF_DATA_SUB                "data"
-#define RPG_COMMON_DEF_CONFIG_SUB              "config"
+#define RPG_COMMON_DEF_DATA_SUB                       "data"
+#define RPG_COMMON_DEF_CONFIG_SUB                     "config"
 
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-#define RPG_COMMON_DUMP_DIR                    "/var/tmp"
+#define RPG_COMMON_DUMP_DIR                           "/var/tmp"
 #else
-#define RPG_COMMON_DUMP_DIR                    "TEMP" // environment
+#define RPG_COMMON_DUMP_DIR                           "TEMP" // environment
 #endif
 
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-#define RPG_COMMON_DEF_USER_LOGIN_BASE        "LOGNAME" // environment
+#define RPG_COMMON_DEF_USER_LOGIN_BASE                "LOGNAME" // environment
 #else
-#define RPG_COMMON_DEF_USER_LOGIN_BASE        "USERNAME" // environment
+#define RPG_COMMON_DEF_USER_LOGIN_BASE                "USERNAME" // environment
 #endif
 
 #endif
