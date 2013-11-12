@@ -252,14 +252,16 @@ RPG_Net_Client_SocketHandler::handle_close(ACE_HANDLE handle_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::handle_close"));
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("lost connection (handle: %d) to server...\n"),
-             handle_in));
-
   // *NOTE*: this is called when:
   // - the server closes the socket
-  // - we close() ourselves
+  // - client closed() handler itself (failure to connect ?)
+
+  // debug info
+  if (handle_in != -1)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("lost connection %d to server...\n"),
+               handle_in));
+
   return inherited::handle_close(handle_in,
                                  mask_in);
 }

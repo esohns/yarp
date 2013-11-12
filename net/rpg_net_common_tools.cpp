@@ -52,6 +52,9 @@ tp_event_dispatcher_func(void* args_in)
 
   bool use_reactor = *reinterpret_cast<bool*>(args_in);
 
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("(%t) worker starting...\n")));
+
   // ignore SIGPIPE: need this to continue gracefully after a client
   // suddenly disconnects (i.e. application/system crash, etc...)
   // --> specify ignore action
@@ -77,13 +80,13 @@ tp_event_dispatcher_func(void* args_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("(%t) worker leaving...\n")));
-
   // clean up
   if (no_sigpipe.restore_action(SIGPIPE, original_action) == -1)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("failed to ACE_Sig_Action::restore_action(SIGPIPE): \"%m\", continuing\n")));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("(%t) worker leaving...\n")));
 
   // *PORTABILITY*
   // *TODO*
@@ -118,7 +121,7 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
   {
     ACE_Proactor* proactor = NULL;
     ACE_NEW_RETURN(proactor,
-                   ACE_Proactor(NULL, false, NULL),
+                   ACE_Proactor(NULL, true, NULL),
                    false);
     // make this the "default" proactor...
     ACE_Proactor::instance(proactor, 1); // delete in dtor
@@ -128,17 +131,53 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
   if (numThreadPoolThreads_in > 1)
   {
     // start a (group of) worker thread(s)...
-    groupID_out = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,                       // # threads
-                                                          ::tp_event_dispatcher_func,                    // function
-                                                          &const_cast<bool&>(useReactor_in),             // argument
+    char* thread_name = NULL;
+    const char** thread_names = NULL;
+    thread_names = new(std::nothrow) const char*[numThreadPoolThreads_in];
+//    ACE_NEW_RETURN(thread_names,
+//                   const char*[numThreadPoolThreads_in],
+//                   false);
+    std::string buffer;
+    std::ostringstream converter;
+    for (unsigned int i = 0; i < numThreadPoolThreads_in; i++)
+    {
+      thread_name = NULL;
+      thread_name = new(std::nothrow) char[RPG_COMMON_BUFSIZE];
+//      ACE_NEW_NORETURN(thread_name,
+//                       char[RPG_COMMON_BUFSIZE]);
+      if (!thread_name)
+      {
+        ACE_DEBUG((LM_CRITICAL,
+                   ACE_TEXT("failed to allocate memory, aborting\n")));
+
+        // clean up
+        for (unsigned int j = 0; j < i; j++)
+          delete [] thread_names[j];
+        delete [] thread_names;
+
+        return false;
+      } // end IF
+      converter.clear();
+      converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+      converter << (i + 1);
+      buffer = RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_NAME;
+      buffer += ACE_TEXT_ALWAYS_CHAR(" #");
+      buffer += converter.str();
+      ACE_OS::memset(thread_name, 0, sizeof(thread_name));
+      ACE_OS::strcpy(thread_name, buffer.c_str());
+      thread_names[i] = thread_name;
+    } // end FOR
+    groupID_out = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,                          // # threads
+                                                          ::tp_event_dispatcher_func,                       // function
+                                                          &const_cast<bool&>(useReactor_in),                // argument
                                                           (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                          ACE_DEFAULT_THREAD_PRIORITY,                   // priority
-                                                          RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_GROUP_ID, // group id
-                                                          NULL,                                          // task
-                                                          NULL,                                          // handle(s)
-                                                          NULL,                                          // stack(s)
-                                                          NULL,                                          // stack size(s)
-                                                          NULL);                                         // name(s)
+                                                          ACE_DEFAULT_THREAD_PRIORITY,                      // priority
+                                                          RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_GROUP_ID,    // group id
+                                                          NULL,                                             // task
+                                                          NULL,                                             // handle(s)
+                                                          NULL,                                             // stack(s)
+                                                          NULL,                                             // stack size(s)
+                                                          thread_names);                                    // name(s)
     if (groupID_out == -1)
     {
       ACE_DEBUG((LM_ERROR,

@@ -21,7 +21,7 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_iconnectionmanager.h"
 
-#include <rpg_stream_iallocator.h>
+#include "rpg_stream_iallocator.h"
 
 #include <ace/Message_Block.h>
 

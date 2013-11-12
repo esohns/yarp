@@ -49,6 +49,11 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
 //              ACE_TEXT("spawning timer dispatch thread...\n")));
 
   // ok: spawn the dispatching worker thread
+  char thread_name[RPG_COMMON_BUFSIZE];
+  ACE_OS::memset(thread_name, 0, sizeof(thread_name));
+  ACE_OS::strcpy(thread_name, RPG_COMMON_DEF_TIMER_THREAD_NAME);
+  const char* thread_names[1];
+  thread_names[0] = thread_name;
   if (inherited::activate((THR_NEW_LWP | THR_JOINABLE),         // flags
                           1,                                    // # threads --> 1
                           0,                                    // force active ?
@@ -59,7 +64,7 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
                           NULL,                                 // stack(s)
                           NULL,                                 // stack size(s)
                           NULL,                                 // thread id(s)
-                          NULL) == -1)                          // thread name(s)
+                          thread_names) == -1)                  // thread name(s)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::activate(): \"%m\", continuing\n")));
    else
@@ -74,17 +79,52 @@ RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager"));
 
   // clean up
-	inherited::deactivate();
+  inherited::deactivate();
 
   inherited::mutex().lock();
-	fini_timers();
-	inherited::mutex().release();
+  fini_timers();
+  inherited::mutex().release();
 
   // make sure the dispatcher thread has joined...
   inherited::wait();
 
    ACE_DEBUG((LM_DEBUG,
               ACE_TEXT("joined timer dispatch thread...\n")));
+}
+
+void
+RPG_Common_Timer_Manager::start()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::start"));
+
+  ACE_ASSERT(false);
+  ACE_NOTREACHED(return;)
+}
+
+void
+RPG_Common_Timer_Manager::stop()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::stop"));
+
+  inherited::deactivate();
+
+  inherited::mutex().lock();
+  fini_timers();
+  inherited::mutex().release();
+
+  // make sure the dispatcher thread has joined...
+  inherited::wait();
+
+   ACE_DEBUG((LM_DEBUG,
+              ACE_TEXT("joined timer dispatch thread...\n")));
+}
+
+bool
+RPG_Common_Timer_Manager::isRunning() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::isRunning"));
+
+  return (inherited::thr_count() > 0);
 }
 
 void

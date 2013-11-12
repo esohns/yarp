@@ -47,7 +47,7 @@ class RPG_Net_AsynchSocketHandler_T
   virtual void addresses(const ACE_INET_Addr&,  // remote address
                          const ACE_INET_Addr&); // local address
   virtual int handle_close(ACE_HANDLE,        // (socket) handle
-						               ACE_Reactor_Mask); // reactor mask
+                           ACE_Reactor_Mask); // reactor mask
 
   // implement RPG_Net_IConnection
   virtual void init(const ConfigType&);
@@ -70,8 +70,8 @@ class RPG_Net_AsynchSocketHandler_T
 
   virtual void handle_write_stream(const ACE_Asynch_Write_Stream::Result&); // result
 
-  ConfigType 							myUserData;
-  bool       							myIsInitialized;
+  ConfigType 		  myUserData;
+  bool       		  myIsInitialized;
   ACE_Asynch_Write_Stream myOutputStream;
 
  private:
@@ -86,13 +86,13 @@ class RPG_Net_AsynchSocketHandler_T
   ACE_Message_Block* allocateMessage(const unsigned int&); // requested size
 
   ACE_Asynch_Read_Stream  myInputStream;
-	ACE_INET_Addr           myPeer;
+  ACE_INET_Addr           myPeer;
 
   // *NOTE*: we save this so we can de-register even when our "handle"
   // (getID()) has gone stale...
-  unsigned int						myID;
-  bool       							myIsRegistered;
-  MANAGER_t* 							myManager;
+  unsigned int	myID;
+  bool       	myIsRegistered;
+  MANAGER_t* 	myManager;
 };
 
 // include template definition

@@ -455,7 +455,6 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::start"));
 
-  // (try to) change state
   // --> start a worker thread
   changeState(inherited2::RUNNING);
 }

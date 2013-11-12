@@ -23,6 +23,7 @@
 
 #include "rpg_common_exports.h"
 #include "rpg_common.h"
+#include "rpg_common_icontrol.h"
 #include "rpg_common_idumpstate.h"
 
 #include <ace/Singleton.h>
@@ -31,6 +32,7 @@
 
 class RPG_Common_Export RPG_Common_Timer_Manager
  : public RPG_Common_TimerQueue_t,
+   public RPG_Common_IControl,
    public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors
@@ -41,11 +43,17 @@ class RPG_Common_Export RPG_Common_Timer_Manager
   void resetInterval(const long&,            // timer ID
                      const ACE_Time_Value&); // interval
 
+  // implement RPG_Common_IControl
+  virtual void stop();
+  virtual bool isRunning() const;
+
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  private:
   typedef RPG_Common_TimerQueue_t inherited;
+
+  virtual void start();
 
   // safety measures
   RPG_Common_Timer_Manager();

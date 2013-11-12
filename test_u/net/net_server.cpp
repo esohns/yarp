@@ -372,12 +372,13 @@ init_signals(const bool& allowUserRuntimeStats_in,
 //   signals_inout.push_back(SIGRTMAX);
 }
 
-bool
+void
 init_signalHandling(const std::vector<int>& signals_in,
                     Net_Server_SignalHandler& eventHandler_in,
                     ACE_Sig_Handlers& signalDispatcher_in,
                     std::vector<ACE_Sig_Action>& previousActions_out,
-                    std::vector<int>& sigKeys_out)
+                    std::vector<int>& sigKeys_out,
+                    const bool& useReactor_in)
 {
   RPG_TRACE(ACE_TEXT("::init_signalHandling"));
 
@@ -385,14 +386,14 @@ init_signalHandling(const std::vector<int>& signals_in,
   previousActions_out.clear();
   sigKeys_out.clear();
 
-  // step1: register signal handlers for the list of signals we want to catch
+  // step1: register signal handlers for the list of signals
 
   // specify (default) action...
   // *IMPORTANT NOTE* don't actually need to keep this around after registration
-  ACE_Sig_Action signalAction((ACE_SignalHandler)SIG_DFL, // default action (will be overridden below)...
-                              ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
-                                                          // --> block them all ! (except KILL off course...)
-                              (SA_RESTART | SA_SIGINFO)); // flags
+  ACE_Sig_Action signal_action(static_cast<ACE_SignalHandler>(SIG_DFL), // default action
+                               ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
+                                                                        // --> block them all (bar KILL/STOP; see manual)
+                               (SA_RESTART | SA_SIGINFO));              // default flags
 
   // register different signals...
   int sig_key = -1;
@@ -406,7 +407,7 @@ init_signalHandling(const std::vector<int>& signals_in,
     ACE_Sig_Action previous_action;
     sig_key = signalDispatcher_in.register_handler(*iterator,         // signal
                                                    &eventHandler_in,  // new handler
-                                                   &signalAction,     // new action
+                                                   &signal_action,    // new action
                                                    &previous_handler, // previous handler
                                                    &previous_action); // previous action
     if (sig_key == -1)
@@ -425,8 +426,7 @@ init_signalHandling(const std::vector<int>& signals_in,
                  sig_key));
   } // end FOR
 
-  // actually, there is only a single handler for ALL signals in the set...
-  // debug info
+//  // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("handling %d signal(s)...\n"),
 //              signals_inout.size()));
@@ -435,10 +435,10 @@ init_signalHandling(const std::vector<int>& signals_in,
   // suddenly disconnects (i.e. application/system crash, etc...)
   // --> specify ignore action
   // *IMPORTANT NOTE*: don't actually need to keep this around after registration
-  // *WARNING*: do NOT restart system calls in this case (see manual)
+  // *NOTE*: do NOT restart system calls in this case (see manual)
   ACE_Sig_Action ignore_action(static_cast<ACE_SignalHandler>(SIG_IGN), // ignore action
-                               ACE_Sig_Set(1),                          // mask of signals to be blocked when we're servicing
-                                                                        // --> block them all ! (except KILL off course...)
+                               ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
+                                                                        // --> block them all (bar KILL/STOP; see manual)
                                SA_SIGINFO);                             // flags
 //                               (SA_RESTART | SA_SIGINFO));              // flags
   ACE_Sig_Action previous_action;
@@ -448,14 +448,44 @@ init_signalHandling(const std::vector<int>& signals_in,
   previousActions_out.push_back(previous_action);
   sigKeys_out.push_back(-1);
 
-  return true;
+  // step3: block SIGRTMIN IFF on Linux AND using the ACE_POSIX_SIG_Proactor (the default)
+  // *IMPORTANT NOTE*: proactor implementation collects the signals in dispatching threads
+  if (RPG_Common_Tools::isLinux() && !useReactor_in)
+  {
+    sigset_t signal_set;
+    if (ACE_OS::sigemptyset(&signal_set) == - 1)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to ACE_OS::sigemptyset(): \"%m\", aborting\n")));
+
+      return;
+    } // end IF
+    for (int i = ACE_SIGRTMIN;
+         i <= ACE_SIGRTMAX;
+         i++)
+      if (ACE_OS::sigaddset(&signal_set, i) == -1)
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to ACE_OS::sigaddset(): \"%m\", aborting\n")));
+
+        return;
+      } // end IF
+    if (ACE_OS::thr_sigsetmask(SIG_BLOCK, &signal_set, NULL) == -1)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
+
+      return;
+    } // end IF
+  } // end IF
 }
 
 void
 fini_signalHandling(const std::vector<int>& signals_in,
                     ACE_Sig_Handlers& signalDispatcher_in,
                     const std::vector<ACE_Sig_Action>& actions_in,
-                    const std::vector<int> sigKeys_in)
+                    const std::vector<int> sigKeys_in,
+                    const bool& useReactor_in)
 {
   RPG_TRACE(ACE_TEXT("::fini_signalHandling"));
 
@@ -476,9 +506,7 @@ fini_signalHandling(const std::vector<int>& signals_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Sig_Handlers::remove_handler(\"%S\"): \"%m\", continuing\n"),
                  *iterator));
-
-    // debug info
-    if (success != -1)
+    else
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("restored handler for \"%S\" (key: %d)...\n"),
                  *iterator,
@@ -495,13 +523,10 @@ fini_signalHandling(const std::vector<int>& signals_in,
    ACE_DEBUG((LM_ERROR,
               ACE_TEXT("failed to ACE_Sig_Handlers::remove_handler(\"%S\"): \"%m\", continuing\n"),
               SIGPIPE));
-
- // debug info
- if (success != -1)
+ else
    ACE_DEBUG((LM_DEBUG,
-              ACE_TEXT("restored handler for \"%S\" (key: %d)...\n"),
-              SIGPIPE,
-              *key_iterator));
+              ACE_TEXT("restored handler for \"%S\"...\n"),
+              SIGPIPE));
 }
 
 void
@@ -525,17 +550,12 @@ do_work(const unsigned int& clientPingInterval_in,
                signalss);
   std::vector<ACE_Sig_Action> previous_actions;
   std::vector<int> sig_keys;
-  if (!init_signalHandling(signalss,
-                           signal_handler,
-                           signal_dispatcher,
-                           previous_actions,
-                           sig_keys))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init signal handlers, aborting\n")));
-
-    return;
-  } // end IF
+  init_signalHandling(signalss,
+                      signal_handler,
+                      signal_dispatcher,
+                      previous_actions,
+                      sig_keys,
+                      useReactor_in);
 
   // step2: init regular (global) stats reporting
   // event handler for timer
@@ -555,10 +575,12 @@ do_work(const unsigned int& clientPingInterval_in,
                  ACE_TEXT("failed to schedule timer: \"%m\", aborting\n")));
 
       // clean up
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
       fini_signalHandling(signalss,
                           signal_dispatcher,
                           previous_actions,
-                          sig_keys);
+                          sig_keys,
+                          useReactor_in);
 
       return;
     } // end IF
@@ -605,10 +627,12 @@ do_work(const unsigned int& clientPingInterval_in,
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    timerID));
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     fini_signalHandling(signalss,
                         signal_dispatcher,
                         previous_actions,
-                        sig_keys);
+                        sig_keys,
+                        useReactor_in);
 
     return;
   } // end IF
@@ -633,10 +657,12 @@ do_work(const unsigned int& clientPingInterval_in,
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                      timerID));
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
       fini_signalHandling(signalss,
                           signal_dispatcher,
                           previous_actions,
-                          sig_keys);
+                          sig_keys,
+                          useReactor_in);
 
       return;
     } // end IF
@@ -660,10 +686,12 @@ do_work(const unsigned int& clientPingInterval_in,
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                      timerID));
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
       fini_signalHandling(signalss,
                           signal_dispatcher,
                           previous_actions,
-                          sig_keys);
+                          sig_keys,
+                          useReactor_in);
 
       return;
     } // end IF
@@ -712,10 +740,12 @@ do_work(const unsigned int& clientPingInterval_in,
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                  timerID));
+  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
   fini_signalHandling(signalss,
                       signal_dispatcher,
                       previous_actions,
-                      sig_keys);
+                      sig_keys,
+                      useReactor_in);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -777,7 +807,7 @@ ACE_TMAIN(int argc,
   bool logToFile                           = false;
   std::string networkInterface             = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
   unsigned short listeningPortNumber       = RPG_NET_DEF_LISTENING_PORT;
-	bool useReactor                          = RPG_NET_DEF_SERVER_USES_REACTOR;
+  bool useReactor                          = RPG_NET_DEF_SERVER_USES_REACTOR;
   unsigned int statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                    = false;
   bool printVersionAndExit                 = false;

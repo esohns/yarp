@@ -28,7 +28,9 @@
 #define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH        64
 // *WARNING*: make sure group IDs are consistent !!!
 #define RPG_COMMON_DEF_TIMER_THREAD_GROUP_ID          0
+#define RPG_COMMON_DEF_TIMER_THREAD_NAME              "RPG timer dispatch"
 #define RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_GROUP_ID 1
+#define RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_NAME     "RPG event dispatch"
 // *NOTE*: use ACE_DEFAULT_TIMERS instead ?
 #define RPG_COMMON_MAX_TIMER_SLOTS                    1024
 // *IMPORTANT NOTE*: used for libc calls (i.e. char buffers, mostly)

@@ -24,6 +24,8 @@
 #include "rpg_net_asynchsockethandler_t.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Event_Handler.h>
+#include <ace/Reactor_Notification_Strategy.h>
 
 // forward declaration(s)
 class ACE_Message_Block;
@@ -33,23 +35,24 @@ template <typename ConfigType,
           typename StreamType>
 class RPG_Net_AsynchStreamHandler_T
  : public RPG_Net_AsynchSocketHandler_T<ConfigType,
-                                        StatisticsContainerType>
+                                        StatisticsContainerType>,
+   public ACE_Event_Handler
 {
  public:
   // convenient types
   typedef RPG_Net_IConnectionManager<ConfigType,
                                      StatisticsContainerType> MANAGER_t;
   RPG_Net_AsynchStreamHandler_T(MANAGER_t*);
-	// *TODO*: clean this up ASAP !!!!
+  // *TODO*: make this private !!!
   RPG_Net_AsynchStreamHandler_T();
   virtual ~RPG_Net_AsynchStreamHandler_T();
 
   // override some service methods
   virtual void open(ACE_HANDLE,          // (socket) handle
                     ACE_Message_Block&); // initial data (if any)
-	virtual int handle_output(ACE_HANDLE); // (socket) handle
+  virtual int handle_output(ACE_HANDLE); // (socket) handle
   virtual int handle_close(ACE_HANDLE,        // (socket) handle
-        					         ACE_Reactor_Mask); // (select) mask
+                           ACE_Reactor_Mask); // (select) mask
 
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate these to our stream
@@ -57,17 +60,17 @@ class RPG_Net_AsynchStreamHandler_T
   virtual void report() const;
 
  protected:
-	virtual void handle_read_stream(const ACE_Asynch_Read_Stream::Result&); // result
+  virtual void handle_read_stream(const ACE_Asynch_Read_Stream::Result&); // result
 
   // *NOTE*: (try to) handle short writes gracefully...
-  ACE_Message_Block* myBuffer;
-  StreamType         myStream;
+  ACE_Message_Block*                myBuffer;
+  StreamType                        myStream;
+  ACE_Reactor_Notification_Strategy myNotificationStrategy;
 
  private:
   typedef RPG_Net_AsynchSocketHandler_T<ConfigType,
-                                 				StatisticsContainerType> inherited;
+                                        StatisticsContainerType> inherited;
 
-	// *TODO*: clean this up ASAP !!!!
   //ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler_T());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler_T(const RPG_Net_AsynchStreamHandler_T&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler_T& operator=(const RPG_Net_AsynchStreamHandler_T&));

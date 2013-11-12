@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <ace/Reactor.h>
+
 template <typename ConfigType,
           typename StatisticsContainerType,
           typename StreamType>
@@ -25,10 +27,15 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
                               StatisticsContainerType,
                               StreamType>::RPG_Net_AsynchStreamHandler_T()
  : inherited(NULL),
-   myBuffer(NULL)
+   myBuffer(NULL),
+   myNotificationStrategy(ACE_Reactor::instance(),       // default reactor
+                          this,                          // event handler
+                          ACE_Event_Handler::WRITE_MASK) // handle output only
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::RPG_Net_AsynchStreamHandler_T"));
 
+  ACE_ASSERT(false);
+  ACE_NOTREACHED(return;)
 }
 
 template <typename ConfigType,
@@ -38,7 +45,10 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
                               StatisticsContainerType,
                               StreamType>::RPG_Net_AsynchStreamHandler_T(MANAGER_t* manager_in)
  : inherited(manager_in),
-   myBuffer(NULL)
+   myBuffer(NULL),
+   myNotificationStrategy(ACE_Reactor::instance(),       // default reactor
+                          this,                          // event handler
+                          ACE_Event_Handler::WRITE_MASK) // handle output only
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::RPG_Net_AsynchStreamHandler_T"));
 
@@ -96,8 +106,8 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
                  ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
                  inherited::myUserData.module->name()));
 
-			// clean up
-			delete this;
+      // clean up
+      delete this;
 
       return;
     } // end IF
@@ -107,8 +117,8 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init processing stream, aborting\n")));
 
-		// clean up
-		delete this;
+    // clean up
+    delete this;
 
     return;
   } // end IF
@@ -120,13 +130,15 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start processing stream, aborting\n")));
 
-		// clean up
-		delete this;
+    // clean up
+    delete this;
 
     return;
   } // end IF
 
-  // "borrow" message queue from stream head
+  // get notified when there is data to write
+  // *TODO*: should not be necessary, override reply() in the stream head module
+  // and invoke an asynch write directly
   ACE_Module<ACE_MT_SYNCH>* module = NULL;
   module = myStream.head();
   if (!module)
@@ -134,13 +146,14 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("no head module found, returning\n")));
 
-		// clean up
-		delete this;
+    // clean up
+    delete this;
 
     return;
   } // end IF
+  module->reader()->msg_queue()->notification_strategy(&myNotificationStrategy);
 /*  inherited::msg_queue(module->reader()->msg_queue());
-  inherited::msg_queue()->notification_strategy(&inherited::myNotificationStrategy);
+  inherited::msg_queue()->notification_strategy(&myNotificationStrategy);
 */
 
   // tweak socket, init & start I/O
@@ -152,8 +165,8 @@ template <typename ConfigType,
           typename StreamType>
 int
 RPG_Net_AsynchStreamHandler_T<ConfigType,
-						                  StatisticsContainerType,
-						                  StreamType>::handle_output(ACE_HANDLE handle_in)
+                              StatisticsContainerType,
+                              StreamType>::handle_output(ACE_HANDLE handle_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::handle_output"));
 
@@ -189,21 +202,21 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
   // start (asynch) write...
   if (inherited::myOutputStream.write(*myBuffer,           // data
-	 									          		    myBuffer->size(),    // bytes to write
-										          		    NULL,                // ACT
-										          		    0,                   // priority
-										          		    ACE_SIGRTMIN) == -1) // signal number
-	{
+                                      myBuffer->size(),    // bytes to write
+                                      NULL,                // ACT
+                                      0,                   // priority
+                                      ACE_SIGRTMIN) == -1) // signal number
+  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Write_Stream::write(%u): \"%m\", aborting\n"),
                myBuffer->size()));
 
-		// clean up
-		myBuffer->release();
-		myBuffer = NULL;
-		
-		return -1;
-	}
+    // clean up
+    myBuffer->release();
+    myBuffer = NULL;
+
+    return -1;
+    }
 
   return 0;
 }
@@ -213,9 +226,9 @@ template <typename ConfigType,
           typename StreamType>
 int
 RPG_Net_AsynchStreamHandler_T<ConfigType,
-						                  StatisticsContainerType,
-						                  StreamType>::handle_close(ACE_HANDLE handle_in,
-						                                            ACE_Reactor_Mask mask_in)
+                              StatisticsContainerType,
+                              StreamType>::handle_close(ACE_HANDLE handle_in,
+                                                        ACE_Reactor_Mask mask_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::handle_close"));
 
@@ -241,8 +254,8 @@ template <typename ConfigType,
           typename StreamType>
 bool
 RPG_Net_AsynchStreamHandler_T<ConfigType,
-						                  StatisticsContainerType,
-						                  StreamType>::collect(StatisticsContainerType& data_out) const
+                              StatisticsContainerType,
+                              StreamType>::collect(StatisticsContainerType& data_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::collect"));
 
@@ -264,8 +277,8 @@ template <typename ConfigType,
           typename StreamType>
 void
 RPG_Net_AsynchStreamHandler_T<ConfigType,
-						                  StatisticsContainerType,
-						                  StreamType>::report() const
+                              StatisticsContainerType,
+                              StreamType>::report() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::report"));
 
@@ -285,12 +298,12 @@ template <typename ConfigType,
           typename StreamType>
 void
 RPG_Net_AsynchStreamHandler_T<ConfigType,
-						                  StatisticsContainerType,
-						                  StreamType>::handle_read_stream(const ACE_Asynch_Read_Stream::Result& result)
+                              StatisticsContainerType,
+                              StreamType>::handle_read_stream(const ACE_Asynch_Read_Stream::Result& result)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::handle_read_stream"));
 
-	ACE_DEBUG((LM_DEBUG, "********************\n"));
+  ACE_DEBUG((LM_DEBUG, "********************\n"));
   ACE_DEBUG((LM_DEBUG, "%s = %d\n", "bytes_to_read", result.bytes_to_read()));
   ACE_DEBUG((LM_DEBUG, "%s = %d\n", "handle", result.handle()));
   ACE_DEBUG((LM_DEBUG, "%s = %d\n", "bytes_transfered", result.bytes_transferred()));
@@ -309,16 +322,16 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 	ACE_DEBUG ((LM_DEBUG, "%s = %s\n", "message_block", result.message_block ().rd_ptr ()));
 #endif /* 0 */
 
-	// sanity check
+  // sanity check
   if (result.success() == 0)
   {
     // connection reset by peer ? --> not an error
     if ((ACE_OS::last_error() != ECONNRESET) &&
         (ACE_OS::last_error() != EPIPE))
-			ACE_DEBUG((LM_ERROR,
-  		           ACE_TEXT("failed to read from input stream (%d): %d, \"%m\", aborting\n"),
-    		         result.handle(),
-      		       result.error()));
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to read from input stream (%d): %d, \"%m\", aborting\n"),
+                 result.handle(),
+                 result.error()));
 
     // clean up
     result.message_block().release();
@@ -333,16 +346,16 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
       // connection reset by peer ? --> not an error
       if ((ACE_OS::last_error() != ECONNRESET) &&
           (ACE_OS::last_error() != EPIPE))
-				ACE_DEBUG((LM_ERROR,
-  			           ACE_TEXT("failed to read from input stream (%d): %d, \"%m\", aborting\n"),
-    			         result.handle(),
-      			       result.error()));
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to read from input stream (%d): %d, \"%m\", aborting\n"),
+                   result.handle(),
+                   result.error()));
 
-			// clean up
-			result.message_block().release();
+      // clean up
+      result.message_block().release();
 
       break;
-		}
+    }
     // *** GOOD CASES ***
     case 0:
     {
@@ -350,10 +363,10 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 //                  ACE_TEXT("[%u]: socket was closed by the peer...\n"),
 //                  myHandle));
 
-			// clean up
-			result.message_block().release();
+      // clean up
+      result.message_block().release();
 
-			break;
+      break;
     }
     default:
     {
@@ -362,22 +375,22 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 //                  result.handle(),
 //                  result.bytes_transferred()));
 
-			// push the buffer onto our stream for processing
-			if (myStream.put(&result.message_block(), NULL) == -1)
-			{
-				ACE_DEBUG((LM_ERROR,
-				           ACE_TEXT("failed to ACE_Stream::put(): \"%m\", aborting\n")));
+      // push the buffer onto our stream for processing
+      if (myStream.put(&result.message_block(), NULL) == -1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Stream::put(): \"%m\", aborting\n")));
 
-				// clean up
-				result.message_block().release();
-				
+	// clean up
+	result.message_block().release();
+
         return;
-			}
+      }
 
-			// initiate next read from the stream
-			inherited::initiate_read_stream();
+      // initiate next read from the stream
+      inherited::initiate_read_stream();
 
       break;
     }
-	}
+  } // end SWITCH
 }

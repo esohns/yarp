@@ -25,8 +25,8 @@
 #include "rpg_common_defines.h"
 #include "rpg_common_environment_incl.h"
 
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#include "Security.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include <Security.h>
 #endif
 
 #include <ace/OS.h>

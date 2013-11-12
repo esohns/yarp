@@ -31,7 +31,7 @@
 Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHostname_in,
                                                    const unsigned short& serverPort_in,
                                                    RPG_Net_Client_Connector* connector_in)
- : inherited(ACE_Reactor::instance(),         // corresp. reactor
+ : inherited(ACE_Reactor::instance(),         // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myPeerAddress(serverPort_in,
                  serverHostname_in.c_str()),
@@ -45,7 +45,7 @@ Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHost
 Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHostname_in,
                                                    const unsigned short& serverPort_in,
                                                    RPG_Net_Client_AsynchConnector* connector_in)
- : inherited(ACE_Reactor::instance(),         // corresp. reactor
+ : inherited(ACE_Reactor::instance(),         // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myPeerAddress(serverPort_in,
                  serverHostname_in.c_str()),
@@ -67,7 +67,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
                                         siginfo_t* info_in,
                                         ucontext_t* context_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
+  RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::handle_signal"));
 
   ACE_UNUSED_ARG(context_in);
 
@@ -103,7 +103,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
     case SIGINT:
     case SIGTERM:
 // *PORTABILITY*: this isn't portable: on Windows SIGQUIT and SIGHUP are not defined...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     case SIGHUP:
     case SIGQUIT:
 #endif
@@ -119,7 +119,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
     }
 // *PORTABILITY*: this isn't portable: on Windows SIGUSR1 and SIGUSR2 are not defined,
 // so we handle SIGBREAK (21) and SIGABRT (22) instead...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     case SIGUSR1:
 #else
     case SIGBREAK:
@@ -130,7 +130,7 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 
       break;
     }
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     case SIGUSR2:
 #else
     case SIGABRT:

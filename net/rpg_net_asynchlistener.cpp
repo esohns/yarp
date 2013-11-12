@@ -90,18 +90,19 @@ RPG_Net_AsynchListener::start()
   } // end IF
 
   // not running --> start listening
-  if (inherited::open(ACE_INET_Addr(myListeningPort, // local SAP
-																	  // *PORTABILITY*: needed to disambiguate this under Windows :-(
-																		// *TODO*: bind to specific interface/address ?
-												            static_cast<ACE_UINT32>(INADDR_ANY)), // address
-                      0,                                                  // bytes_to_read
-                      1,                                                  // pass_addresses
-											ACE_DEFAULT_ASYNCH_BACKLOG,                         // backlog
-                      1,                                                  // reuse_addr
-                      NULL,                                               // proactor
-                      true,                                               // validate_new_connection
-                      1,                                                  // reissue_accept
-                      -1) == -1)                                          // number_of_initial_accepts
+  ACE_INET_Addr local_SAP(myListeningPort, // local SAP
+                          // *PORTABILITY*: needed to disambiguate this under Windows :-(
+                          // *TODO*: bind to specific interface/address ?
+                          static_cast<ACE_UINT32>(INADDR_ANY));
+  if (inherited::open(local_SAP,                  // local SAP
+                      0,                          // bytes_to_read
+                      1,                          // pass_addresses
+                      ACE_DEFAULT_ASYNCH_BACKLOG, // backlog
+                      1,                          // reuse_addr
+                      NULL,                       // proactor
+                      true,                       // validate_new_connection
+                      1,                          // reissue_accept
+                      -1) == -1)                  // number_of_initial_accepts
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Acceptor::open(%u): \"%m\", returning\n"),
@@ -131,15 +132,15 @@ RPG_Net_AsynchListener::stop()
     return;
   } // end IF
 
-	if (inherited::cancel() == -1)
+  if (inherited::cancel() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Acceptor::cancel(): \"%m\", continuing\n")));
-	else
-		ACE_DEBUG((LM_DEBUG,
-  		         ACE_TEXT("stopped listening (port: %u)...\n"),
-    		       myListeningPort));
+  else
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("stopped listening (port: %u)...\n"),
+               myListeningPort));
 
-	myIsListening = false;
+  myIsListening = false;
 }
 
 bool
@@ -164,10 +165,10 @@ RPG_Net_AsynchListener::make_handler(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::make_handler"));
 
-	// init return value(s)
-	RPG_Net_StreamHandler_t* handler_out = NULL;
+  // init return value(s)
+  RPG_Net_StreamHandler_t* handler_out = NULL;
 
-	// default behavior
+  // default behavior
   ACE_NEW_NORETURN(handler_out,
                    RPG_Net_StreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
 
