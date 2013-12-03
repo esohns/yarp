@@ -30,7 +30,7 @@ AC_PROG_MAKE_SET
 
 # init other tools.
 #AM_INIT_AUTOMAKE([gnu nostdinc -Wall])
-AM_INIT_AUTOMAKE(test_u, 0.1)
+AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
@@ -79,7 +79,7 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, ACE SDL xerces-c SDL_ttf SDL_mixer libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
+PKG_CHECK_MODULES(pkg_libs, ACE SDL xerces-c png SDL_ttf SDL_mixer libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 

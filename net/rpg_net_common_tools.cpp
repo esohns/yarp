@@ -1391,14 +1391,13 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   if (ACE_OS::setsockopt(handle_in,
                          SOL_SOCKET,
                          option_in,
-                         reinterpret_cast<const char*> (&size),
+                         reinterpret_cast<const char*>(&size),
                          sizeof(int)))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::setsockopt(%u, %s): \"%s\", aborting\n"),
+               ACE_TEXT("failed to ACE_OS::setsockopt(%u, %s): \"%m\", aborting\n"),
                handle_in,
-               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 
     return false;
   } // end IF
@@ -1409,14 +1408,13 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   if (ACE_OS::getsockopt(handle_in,
                          SOL_SOCKET,
                          option_in,
-                         reinterpret_cast<char*> (&size),
+                         reinterpret_cast<char*>(&size),
                          &retsize))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getsockopt(%u, %s): \"%s\", aborting\n"),
+               ACE_TEXT("failed to ACE_OS::getsockopt(%u, %s): \"%m\", aborting\n"),
                handle_in,
-               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 
     return false;
   } // end IF
@@ -1437,13 +1435,13 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
       return false;
   } // end IF
 
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("set \"%s\" option of socket (ID: %d) to: %d\n"),
-//              ((buffer_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
-//                                        : ACE_TEXT("SO_SNDBUF")),
-//              handle_in,
-//              size));
+  // debug info
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("set \"%s\" option of socket (ID: %d) to: %d\n"),
+             ((option_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
+                                       : ACE_TEXT("SO_SNDBUF")),
+             handle_in,
+             size));
 
   return true;
 }
@@ -1458,13 +1456,12 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
   if (ACE_OS::setsockopt(handle_in,
                          IPPROTO_TCP,
                          TCP_NODELAY,
-                         reinterpret_cast<const char*> (&value),
+                         reinterpret_cast<const char*>(&value),
                          sizeof(int)))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::setsockopt(%u, TCP_NODELAY): \"%s\", aborting\n"),
-               handle_in,
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_OS::setsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
+               handle_in));
 
     return false;
   } // end IF
@@ -1475,17 +1472,22 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
   if (ACE_OS::getsockopt(handle_in,
                          IPPROTO_TCP,
                          TCP_NODELAY,
-                         reinterpret_cast<char*> (&value),
+                         reinterpret_cast<char*>(&value),
                          &retsize) ||
       (retsize != sizeof(int)))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%s\", aborting\n"),
-               handle_in,
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
+               handle_in));
 
     return false;
   } // end IF
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("setsockopt(%u, TCP_NODELAY): %s...\n"),
+             handle_in,
+             (noDelay_in ? ((value == 1) ? "on" : "off")
+                         : ((value == 0) ? "off" : "on"))));
 
   return (noDelay_in ? (value == 1) : (value == 0));
 }

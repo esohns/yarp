@@ -58,6 +58,7 @@ class RPG_Net_Module_SocketHandler
   // user interface
   // info
   bool isInitialized() const;
+  unsigned int getSessionID() const;
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Message*&, // data message handle

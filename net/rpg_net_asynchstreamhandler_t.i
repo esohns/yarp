@@ -216,7 +216,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
     myBuffer = NULL;
 
     return -1;
-    }
+  } // end IF
 
   return 0;
 }
@@ -316,13 +316,14 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
   // This can overrun the ACE_Log_Msg buffer and do bad things.
   // Re-enable it at your risk.
 
-	// Reset pointers.
+  // Reset pointers.
   result.message_block ().rd_ptr ()[result.bytes_transferred ()] = '\0';
 
-	ACE_DEBUG ((LM_DEBUG, "%s = %s\n", "message_block", result.message_block ().rd_ptr ()));
+  ACE_DEBUG ((LM_DEBUG, "%s = %s\n", "message_block", result.message_block ().rd_ptr ()));
 #endif /* 0 */
 
   // sanity check
+  // *TODO*: can this happen in asynch I/O scenarios ?
   if (result.success() == 0)
   {
     // connection reset by peer ? --> not an error
@@ -335,6 +336,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
     // clean up
     result.message_block().release();
+    delete this; // close connection
 
     return;
   } // end IF
@@ -344,6 +346,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
     case -1:
     {
       // connection reset by peer ? --> not an error
+      // *TODO*: can this happen in asynch I/O scenarios ?
       if ((ACE_OS::last_error() != ECONNRESET) &&
           (ACE_OS::last_error() != EPIPE))
         ACE_DEBUG((LM_ERROR,
@@ -353,6 +356,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
       // clean up
       result.message_block().release();
+      delete this; // close connection
 
       break;
     }
@@ -365,6 +369,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
       // clean up
       result.message_block().release();
+      delete this; // close connection
 
       break;
     }
@@ -381,13 +386,14 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Stream::put(): \"%m\", aborting\n")));
 
-	// clean up
-	result.message_block().release();
+        // clean up
+        result.message_block().release();
+        delete this; // close connection
 
         return;
-      }
+      } // end IF
 
-      // initiate next read from the stream
+      // start next read
       inherited::initiate_read_stream();
 
       break;

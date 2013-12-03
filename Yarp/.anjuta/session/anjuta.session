@@ -4,10 +4,10 @@ Geometry=1280x776+0+24
 
 [Project Manager]
 Shortcut=Yarp//chance//dice//libRPG_Dice.la%%%Yarp//chance//libRPG_Chance.la%%%Yarp//common//libRPG_Common.la%%%Yarp//magic//libRPG_Magic.la%%%Yarp//item//libRPG_Item.la%%%Yarp//character//player//libRPG_Player.la%%%Yarp//character//monster//libRPG_Monster.la%%%Yarp//character//libRPG_Character.la%%%Yarp//combat//libRPG_Combat.la%%%Yarp//map//libRPG_Map.la%%%Yarp//graphics//libRPG_Graphics.la%%%Yarp//sound//libRPG_Sound.la%%%Yarp//engine//libRPG_Engine.la%%%Yarp//net//stream//libRPG_Stream.la%%%Yarp//net//protocol//libRPG_Net_Protocol.la%%%Yarp//net//client//libRPG_Net_Client.la%%%Yarp//net//libRPG_Net.la%%%Yarp//client//libRPG_Client_GUI.la%%%Yarp//test_u//chance//chance_dice%%%Yarp//test_u//chance//chance_rangeToRoll%%%Yarp//test_u//character//player//character_generator%%%Yarp//test_u//character//player//character_generator_gui%%%Yarp//test_u//character//player//character_parser%%%Yarp//test_u//character//monster//monster_parser%%%Yarp//test_u//client//client_gui%%%Yarp//test_u//combat//combat_simulator%%%Yarp//test_u//graphics//graphics_parser%%%Yarp//test_u//graphics//SDL_gui%%%Yarp//test_u//item//item_parser%%%Yarp//test_u//magic//magic_parser%%%Yarp//test_u//map//map_generator%%%Yarp//test_u//map//path_finder%%%Yarp//test_u//net//protocol//IRC_client%%%Yarp//test_u//net//protocol//IRC_client_gui%%%Yarp//test_u//net//net_client%%%Yarp//test_u//net//net_server%%%Yarp//test_u//sound//sound_parser
-Expand=net_server%%%Yarp
+Expand=Yarp%%%Yarp//net
 
 [File Loader]
-Files=../../net/rpg_net_asynchstreamhandler_t.i#14%%%../../test_u/net/net_server.cpp#1%%%../../test_u/net/net_client.cpp#363
+Files=../../test_u/net/net_server.cpp#1%%%../../test_u/net/net_client.cpp#582%%%../../../../../../../usr/local/src/ACE_wrappers/ace/POSIX_Asynch_IO.cpp#1441%%%../../net/client/rpg_net_client_asynchconnector.cpp#1
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n

@@ -29,7 +29,7 @@ AC_PROG_MAKE_SET
 # AM_PROG_LIBTOOL
 
 # init other tools.
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
@@ -51,12 +51,10 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-#  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
-  CXXFLAGS="-g3 -O0 -Wall"
+  CXXFLAGS="-g3 -O0 -Wall -Werror"
   AC_MSG_RESULT(yes)
 else
-#  CXXFLAGS="${CXXFLAGS} -O3 -march=native -DRPG_NTRACE=0"
-  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0"
+  CXXFLAGS="-O3 -march=native -Wall -Werror -DRPG_NTRACE=0"
   AC_MSG_RESULT(no)
 fi
 

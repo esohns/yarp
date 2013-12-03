@@ -62,16 +62,16 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] second(s))") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]  : listening port ([") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-r          : use reactor ([") << RPG_NET_DEF_SERVER_USES_REACTOR << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval [") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]  : listening port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-r          : use reactor [") << RPG_NET_DEF_SERVER_USES_REACTOR << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval ([") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads ([") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads [") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -157,7 +157,7 @@ process_arguments(const int argc_in,
 
         break;
       }
-			case 's':
+      case 's':
       {
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -530,7 +530,7 @@ fini_signalHandling(const std::vector<int>& signals_in,
 }
 
 void
-do_work(const unsigned int& clientPingInterval_in,
+do_work(const unsigned int& pingInterval_in,
         const std::string& networkInterface_in,
         const unsigned short& listeningPortNumber_in,
         const bool& useReactor_in,
@@ -594,10 +594,12 @@ do_work(const unsigned int& clientPingInterval_in,
   ACE_OS::memset(&config,
                  0,
                  sizeof(RPG_Net_ConfigPOD));
-  config.clientPingInterval = clientPingInterval_in;
+  config.pingInterval = pingInterval_in;
+  config.printPongMessages = false;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.defaultBufferSize = RPG_NET_DEF_NETWORK_BUFFER_SIZE;
+  config.useThreadPerConnection = false;
   config.module = NULL; // just use the default stream...
   // *WARNING*: set at runtime, by the appropriate connection handler
   config.sessionID = 0; // (== socket handle !)
@@ -802,7 +804,7 @@ ACE_TMAIN(int argc,
 #endif
 
   // step1a set defaults
-  unsigned int clientPingInterval          = RPG_NET_DEF_PING_INTERVAL;
+  unsigned int pingInterval                = RPG_NET_DEF_PING_INTERVAL;
   unsigned int keepAliveTimeout            = RPG_NET_DEF_KEEPALIVE;
   bool logToFile                           = false;
   std::string networkInterface             = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
@@ -816,7 +818,7 @@ ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
-                          clientPingInterval,
+                          pingInterval,
                           keepAliveTimeout,
                           logToFile,
                           networkInterface,
@@ -930,7 +932,7 @@ ACE_TMAIN(int argc,
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(clientPingInterval,
+  do_work(pingInterval,
           networkInterface,
           listeningPortNumber,
           useReactor,

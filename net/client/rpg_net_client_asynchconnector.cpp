@@ -44,17 +44,17 @@ RPG_Net_Client_AsynchConnector::~RPG_Net_Client_AsynchConnector()
 
 }
 
-RPG_Net_StreamHandler_t*
+RPG_Net_AsynchStreamHandler_t*
 RPG_Net_Client_AsynchConnector::make_handler(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::make_handler"));
 
   // init return value(s)
-  RPG_Net_StreamHandler_t* handler_out = NULL;
+  RPG_Net_AsynchStreamHandler_t* handler_out = NULL;
 
   // default behavior
   ACE_NEW_NORETURN(handler_out,
-                   RPG_Net_StreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
+                   RPG_Net_AsynchStreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
 
   return handler_out;
 }

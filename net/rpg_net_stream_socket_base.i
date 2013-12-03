@@ -62,7 +62,7 @@ RPG_Net_StreamSocketBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
 
-  // sanity check
+  // sanity check(s)
   ACE_ASSERT(arg_in);
   // *NOTE*: we should have initialized by now...
   // --> make sure this was successful before we proceed
@@ -111,20 +111,23 @@ RPG_Net_StreamSocketBase<ConfigType,
     return -1;
   } // end IF
 
-  // "borrow" message queue from stream head
-  ACE_Module<ACE_MT_SYNCH>* module = NULL;
-  module = myStream.head();
-  if (!module)
+  if (!inherited::myUserData.useThreadPerConnection)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, returning\n")));
+    // "borrow" message queue from stream head
+    ACE_Module<ACE_MT_SYNCH>* module = NULL;
+    module = myStream.head();
+    if (!module)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("no head module found, returning\n")));
 
-    // reactor will invoke close() --> handle_close()
-    return -1;
+      // reactor will invoke close() --> handle_close()
+      return -1;
+    } // end IF
+    inherited::msg_queue(module->reader()->msg_queue());
+    ACE_Reactor_Notification_Strategy& strategy = inherited::myNotificationStrategy;
+    inherited::msg_queue()->notification_strategy(&strategy);
   } // end IF
-  inherited::msg_queue(module->reader()->msg_queue());
-  ACE_Reactor_Notification_Strategy& strategy = inherited::myNotificationStrategy;
-  inherited::msg_queue()->notification_strategy(&strategy);
 
   // step2: register our handle with the reactor
   // *NOTE*: --> done by the base class
@@ -331,7 +334,7 @@ RPG_Net_StreamSocketBase<ConfigType,
 //                 bytes_sent));
 
       // finished with this buffer ?
-      if (static_cast<size_t> (bytes_sent) == myCurrentWriteBuffer->length())
+      if (static_cast<size_t>(bytes_sent) == myCurrentWriteBuffer->length())
       {
         // clean up
         myCurrentWriteBuffer->release();

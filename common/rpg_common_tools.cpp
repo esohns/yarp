@@ -854,61 +854,75 @@ RPG_Common_Tools::isLinux()
   return (kernel.find(ACE_TEXT_ALWAYS_CHAR("Linux"), 0) == 0);
 }
 
-bool
-RPG_Common_Tools::getUserName(std::string& username_out,
-                              std::string& realname_out)
+void
+RPG_Common_Tools::getCurrentUserName(std::string& username_out,
+                                     std::string& realname_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getUserName"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getCurrentUserName"));
 
   // init return value(s)
   username_out.clear();
   realname_out.clear();
 
   char user_name[ACE_MAX_USERID];
+  ACE_OS::memset(user_name, 0, ACE_MAX_USERID);
   if (ACE_OS::cuserid(user_name, ACE_MAX_USERID) == NULL)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::cuserid(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to ACE_OS::cuserid(): \"%m\", falling back\n")));
 
-    return false;
+    username_out = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_USER_LOGIN_BASE)));
+
+    return;
   } // end IF
   username_out = user_name;
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  char pw_buf[BUFSIZ];
-  struct passwd pw_struct;
-  struct passwd* result = NULL;
-  if (ACE_OS::getpwnam_r(user_name,
-                         &pw_struct,
-                         pw_buf,
-                         sizeof(pw_buf),
-						             &result) ||
-	  (result == NULL))
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  int            success = -1;
+  struct passwd  pwd;
+  struct passwd* pwd_result = NULL;
+  char           buffer[RPG_COMMON_BUFSIZE];
+  ACE_OS::memset(buffer, 0, sizeof(RPG_COMMON_BUFSIZE));
+//  size_t         bufsize = 0;
+//  bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
+//  if (bufsize == -1)        /* Value was indeterminate */
+//    bufsize = 16384;        /* Should be more than enough */
+
+  uid_t user_id = ACE_OS::geteuid();
+  success = ::getpwuid_r(user_id,            // user id
+                         &pwd,               // passwd entry
+                         buffer,             // buffer
+                         RPG_COMMON_BUFSIZE, // buffer size
+                         &pwd_result);       // result (handle)
+  if (pwd_result == NULL)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getpwnam_r(): \"%m\", aborting\n")));
-
-    return false;
-  } // end IF
-  realname_out = pw_struct.pw_gecos;
-#else
-  TCHAR infoBuf[BUFSIZ];
-  DWORD  bufCharCount = BUFSIZ;
-  if (!GetUserNameEx(NameDisplay,
-                     infoBuf,
-                     &bufCharCount))
-    if (GetLastError() == ERROR_NONE_MAPPED)
-      realname_out = username_out;
-    else
-    {
+    if (success == 0)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to GetUserNameEx(): \"%m\", aborting\n")));
-
-      return false;
-    } // end IF
+                 ACE_TEXT("user \"%u\" not found, falling back\n"),
+                 user_id));
+    else
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::getpwuid_r(%u): \"%m\", falling back\n"),
+                 user_id));
+    username_out = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_USER_LOGIN_BASE)));
+  } // end IF
+  else
+    realname_out = pwd.pw_gecos;
+#else
+  TCHAR buffer[RPG_COMMON_BUFSIZE];
+  ACE_OS::memset(buffer, 0, RPG_COMMON_BUFSIZE * sizeof(TCHAR));
+  DWORD buffer_size = 0;
+  if (GetUserNameEx(EXTENDED_NAME_FORMAT::NameDisplay,
+                    buffer,
+                    &buffer_size) == 0)
+  {
+    if (GetLastError() != ERROR_NONE_MAPPED)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to GetUserNameEx(): \"%m\", continuing\n")));
+  } // end IF
+  else
+    realname_out = buffer;
 #endif
-
-  return true;
 }
 
 std::string
@@ -919,11 +933,10 @@ RPG_Common_Tools::getHostName()
   std::string result;
 
   ACE_TCHAR host_name[MAXHOSTNAMELEN];
+  ACE_OS::memset(host_name, 0, sizeof(host_name));
   if (ACE_OS::hostname(host_name, sizeof(host_name)) == -1)
-  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::hostname(): \"%m\", aborting\n")));
-  } // end IF
   else
     result = host_name;
 

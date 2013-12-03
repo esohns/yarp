@@ -35,8 +35,8 @@ class RPG_Stream_Module;
 
 struct RPG_Net_RuntimeStatistic
 {
-  unsigned long numDataMessages; // (protocol) messages
-  double        numBytes;        // amount of processed data
+  unsigned int numDataMessages; // (protocol) messages
+  double       numBytes;        // amount of processed data
 
   // convenience
   inline RPG_Net_RuntimeStatistic operator+=(const RPG_Net_RuntimeStatistic& rhs)
@@ -51,14 +51,16 @@ struct RPG_Net_RuntimeStatistic
 struct RPG_Net_ConfigPOD
 {
   // ************ connection config data ************
-  unsigned long            clientPingInterval; // used by the server...
+  unsigned int             pingInterval;
+  bool                     printPongMessages;
   int                      socketBufferSize;
   RPG_Stream_IAllocator*   messageAllocator;
-  unsigned long            defaultBufferSize;
+  unsigned int             defaultBufferSize;
+  bool                     useThreadPerConnection;
   // ************ stream config data ************
   RPG_Stream_Module*       module;
-  unsigned long            sessionID; // (== socket handle !)
-  unsigned long            statisticsReportingInterval;
+  unsigned int             sessionID; // (== socket handle !)
+  unsigned int             statisticsReportingInterval;
   // ************ runtime data ************
   RPG_Net_RuntimeStatistic currentStatistics;
   ACE_Time_Value           lastCollectionTimestamp;

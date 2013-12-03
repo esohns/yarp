@@ -160,17 +160,17 @@ RPG_Net_AsynchListener::dump_state() const
   ACE_ASSERT(false);
 }
 
-RPG_Net_StreamHandler_t*
+RPG_Net_AsynchStreamHandler_t*
 RPG_Net_AsynchListener::make_handler(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::make_handler"));
 
   // init return value(s)
-  RPG_Net_StreamHandler_t* handler_out = NULL;
+  RPG_Net_AsynchStreamHandler_t* handler_out = NULL;
 
   // default behavior
   ACE_NEW_NORETURN(handler_out,
-                   RPG_Net_StreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
+                   RPG_Net_AsynchStreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
 
   return handler_out;
 }

@@ -29,7 +29,7 @@ dnl AC_PROG_RANLIB
 AC_PROG_MKDIR_P
 
 # init other tools
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
@@ -65,7 +65,7 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, sdl libpng)
+PKG_CHECK_MODULES(pkg_libs, SDL libpng)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 

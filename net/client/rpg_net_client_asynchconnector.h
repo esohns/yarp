@@ -28,17 +28,17 @@
 #include <ace/Asynch_Connector.h>
 
 class RPG_Net_Export RPG_Net_Client_AsynchConnector
- : public ACE_Asynch_Connector<RPG_Net_StreamHandler_t>
+ : public ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t>
 {
  public:
   RPG_Net_Client_AsynchConnector();
   virtual ~RPG_Net_Client_AsynchConnector();
 
   // override default creation strategy
-  virtual RPG_Net_StreamHandler_t* make_handler(void);
+  virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
 
  private:
-  typedef ACE_Asynch_Connector<RPG_Net_StreamHandler_t> inherited;
+  typedef ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector(const RPG_Net_Client_AsynchConnector&));

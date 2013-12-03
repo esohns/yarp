@@ -21,7 +21,7 @@
 #ifndef NET_CLIENT_TIMEOUTHANDLER_H
 #define NET_CLIENT_TIMEOUTHANDLER_H
 
-#include "rpg_net_client_common.h"
+#include "rpg_net_client_connector.h"
 #include "rpg_net_client_asynchconnector.h"
 
 #include <ace/Global_Macros.h>

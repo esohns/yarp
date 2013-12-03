@@ -1806,7 +1806,8 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 /* %endif */
 {
 	register int yy_is_jam;
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner; /* This var may be unused depending upon options. */
+      // *EDIT*
+    //struct yyguts_t * yyg = (struct yyguts_t*)yyscanner; /* This var may be unused depending upon options. */
 /* %% [17.0] code to find the next state, and perhaps do backing up, goes here */
 
 	yy_current_state = yy_NUL_trans[yy_current_state];

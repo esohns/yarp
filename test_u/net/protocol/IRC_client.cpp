@@ -951,14 +951,8 @@ ACE_TMAIN(int argc,
   config.lastCollectionTimestamp = ACE_Time_Value::zero;
 
   // populate user/realname
-  if (!RPG_Common_Tools::getUserName(config.loginOptions.user.username,
-                                     config.loginOptions.user.realname))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::getUserName(), aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
+  RPG_Common_Tools::getCurrentUserName(config.loginOptions.user.username,
+                                       config.loginOptions.user.realname);
 
   // step1db: parse config file (if any)
   std::string serverHostname      = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_SERVER_HOSTNAME);

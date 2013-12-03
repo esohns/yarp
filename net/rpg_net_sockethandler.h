@@ -41,7 +41,7 @@ class RPG_Net_Export RPG_Net_SocketHandler
   virtual int svc(void);
   virtual int open(void* = NULL); // args
 
-  // *NOTE*: enqueue any received data onto our stream for further processing
+//  // *NOTE*: enqueue any received data onto our stream for further processing
 //   virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);
   // *NOTE*: this is called when:
   // - handle_xxx() returns -1

@@ -21,13 +21,13 @@
 #ifndef RPG_NET_CLIENT_COMMON_H
 #define RPG_NET_CLIENT_COMMON_H
 
-#include "rpg_net_client_sockethandler.h"
+//#include "rpg_net_client_sockethandler.h"
 
-#include <ace/Connector.h>
-#include <ace/SOCK_Connector.h>
+//#include <ace/Connector.h>
+//#include <ace/SOCK_Connector.h>
 
 // define implementation-specific connector...
-typedef ACE_Connector<RPG_Net_Client_SocketHandler,
-                      ACE_SOCK_CONNECTOR> RPG_Net_Client_Connector;
+//typedef ACE_Connector<RPG_Net_Client_SocketHandler,
+//                      ACE_SOCK_CONNECTOR> RPG_Net_Client_Connector;
 
 #endif

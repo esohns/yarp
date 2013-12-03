@@ -32,7 +32,7 @@
 #include <ace/Singleton.h>
 
 class RPG_Net_Export RPG_Net_AsynchListener
- : public ACE_Asynch_Acceptor<RPG_Net_StreamHandler_t>,
+ : public ACE_Asynch_Acceptor<RPG_Net_AsynchStreamHandler_t>,
    public RPG_Common_IControl
 {
   // singleton needs access to the ctor/dtors
@@ -40,10 +40,10 @@ class RPG_Net_Export RPG_Net_AsynchListener
                              ACE_Recursive_Thread_Mutex>;
 
  public:
-	// override default creation strategy
-	virtual RPG_Net_StreamHandler_t* make_handler(void);
+  // override default creation strategy
+  virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
 
-	// configuration / initialization
+  // configuration / initialization
   void init(const unsigned short&); // port number
   const bool isInitialized() const;
 
@@ -57,7 +57,7 @@ class RPG_Net_Export RPG_Net_AsynchListener
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Asynch_Acceptor<RPG_Net_StreamHandler_t> inherited;
+  typedef ACE_Asynch_Acceptor<RPG_Net_AsynchStreamHandler_t> inherited;
 
   // safety measures
   RPG_Net_AsynchListener();
