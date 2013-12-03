@@ -74,7 +74,7 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
   int success = -1;
   if (myConnector)
   {
-    RPG_Net_Client_SocketHandler* handler = NULL;
+    RPG_Net_SocketHandler* handler = NULL;
     success = myConnector->connect(handler,                                // service handler
                                    myPeerAddress,                          // remote SAP
                                    ACE_Synch_Options::defaults,            // synch options

@@ -23,6 +23,11 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "Userenv.h"
+#endif
 
 #include <ace/ACE.h>
 #include <ace/OS.h>
@@ -232,9 +237,7 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
   } // end IF
 
   // obtain file size
-  if (ACE_OS::fseek(fp,
-                    0,
-                    SEEK_END))
+  if (ACE_OS::fseek(fp, 0, SEEK_END))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to seek file(\"%s\"): %m, aborting\n"),
@@ -328,10 +331,8 @@ RPG_Common_File_Tools::getWorkingDirectory()
   std::string result;
 
   // retrieve working directory
-  char cwd[MAXPATHLEN];
-  ACE_OS::memset(cwd,
-                 0,
-                 sizeof(cwd));
+  char cwd[PATH_MAX];
+  ACE_OS::memset(cwd, 0, sizeof(cwd));
   if (ACE_OS::getcwd(cwd, sizeof(cwd)) == NULL)
   {
     ACE_DEBUG((LM_ERROR,
@@ -387,49 +388,34 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getUserHomeDirectory"));
 
+  // init result value(s)
   std::string result;
 
-  std::string    user = user_in;
+  std::string user_name = user_in;
+  if (user_name.empty())
+  {
+    std::string real_name;
+    RPG_Common_Tools::getCurrentUserName(user_name, real_name);
+    if (user_name.empty())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_Tools::getCurrentUserName(), falling back\n")));
+
+      // fallback
+      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+      return result;
+    } // end IF
+  } // end IF
+
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
   int            success = -1;
   struct passwd  pwd;
   struct passwd* pwd_result = NULL;
-  char           buf[RPG_COMMON_BUFSIZE];
-//  size_t         bufsize = 0;
-  //    bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
-  //    if (bufsize == -1)          /* Value was indeterminate */
-  //        bufsize = 16384;        /* Should be more than enough */
-
-  if (user.empty())
-  {
-//    uid_t user_id = ACE_OS::geteuid();
-//    success = ACE_OS::getpwuid_r(user_id,            // user id
-//                                 &pwd,               // passwd entry
-//                                 buf,                // buffer
-//                                 RPG_COMMON_BUFSIZE, // buffer size
-//                                 &pwd_result);       // result (handle)
-//    if (pwd_result == NULL)
-//    {
-//      if (success == 0)
-//        ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("user \"%u\" not found, falling back\n"),
-//                   user_id));
-//      else
-//        ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("failed to ACE_OS::getpwuid_r(%u): \"%m\", falling back\n"),
-//                   user_id));
-
-//      // fallback
-//      result = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE));
-//    } // end IF
-//    else result = ACE_TEXT_ALWAYS_CHAR(pwd.pw_dir);
-
-//    return result;
-    user = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_USER_LOGIN_BASE)));
-  } // end IF
-
-  success = ACE_OS::getpwnam_r(user.c_str(),       // user name
+  char           buffer[RPG_COMMON_BUFSIZE];
+  ACE_OS::memset(buffer, 0, sizeof(RPG_COMMON_BUFSIZE));
+  success = ACE_OS::getpwnam_r(user_name.c_str(),  // user name
                                &pwd,               // passwd entry
-                               buf,                // buffer
+                               buffer,             // buffer
                                RPG_COMMON_BUFSIZE, // buffer size
                                &pwd_result);       // result (handle)
   if (pwd_result == NULL)
@@ -437,16 +423,53 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
     if (success == 0)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("user \"%s\" not found, falling back\n"),
-                 user.c_str()));
+                 user_name.c_str()));
     else
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_OS::getpwnam_r(\"%s\"): \"%m\", falling back\n"),
-                 user.c_str()));
+                 user_name.c_str()));
 
     // fallback
     result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
   } // end IF
   else result = ACE_TEXT_ALWAYS_CHAR(pwd.pw_dir);
+#else
+  HANDLE token = 0;
+  if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &token) == 0)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to OpenProcessToken(), falling back\n")));
+
+    // fallback
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    return result;
+  } // end IF
+
+  TCHAR buffer[PATH_MAX];
+  ACE_OS::memset(buffer, 0, sizeof(buffer));
+  DWORD buffer_size = PATH_MAX;
+  if (!GetUserProfileDirectory(token, buffer, &buffer_size))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to GetUserProfileDirectory(), falling back\n")));
+
+    // clean up
+    if (!CloseHandle(token))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to CloseHandle(), continuing\n")));
+
+    // fallback
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    return result;
+  } // end IF
+
+  // clean up
+  if (!CloseHandle(token))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to CloseHandle(), continuing\n")));
+
+  result = ACE_TEXT_ALWAYS_CHAR(buffer);
+#endif
 
   return result;
 }
@@ -458,66 +481,58 @@ RPG_Common_File_Tools::getUserGameDirectory(const std::string& user_in)
 
   std::string result;
 
-  std::string    user = user_in;
-  if (user.empty())
+  std::string user_name = user_in;
+  if (user_name.empty())
   {
-//    uid_t user_id = ACE_OS::geteuid();
-//    success = ACE_OS::getpwuid_r(user_id,            // user id
-//                                 &pwd,               // passwd entry
-//                                 buf,                // buffer
-//                                 RPG_COMMON_BUFSIZE, // buffer size
-//                                 &pwd_result);       // result (handle)
-//    if (pwd_result == NULL)
-//    {
-//      if (success == 0)
-//        ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("user \"%u\" not found, falling back\n"),
-//                   user_id));
-//      else
-//        ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("failed to ACE_OS::getpwuid_r(%u): \"%m\", falling back\n"),
-//                   user_id));
+    std::string real_name;
+    RPG_Common_Tools::getCurrentUserName(user_name, real_name);
+    if (user_name.empty())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_Tools::getCurrentUserName(), falling back\n")));
 
-//      // fallback
-//      result = ACE_OS::getenv(ACE_TEXT(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE));
-//    } // end IF
-//    else result = ACE_TEXT_ALWAYS_CHAR(pwd.pw_dir);
-
-//    return result;
-    user = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_USER_LOGIN_BASE)));
+      // fallback
+      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+      return result;
+    } // end IF
   } // end IF
 
-  result = RPG_Common_File_Tools::getUserHomeDirectory(user);
+  result = RPG_Common_File_Tools::getUserHomeDirectory(user_name);
   if (result.empty())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::getUserHomeDirectory(\"%s\"), falling back\n"),
-               user.c_str()));
+               user_name.c_str()));
 
     // fallback
     result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
-
     return result;
   } // end IF
 
-#ifdef META_PACKAGE
+#if defined(META_PACKAGE_NAME)
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
   result += ACE_TEXT_ALWAYS_CHAR(".");
-  result += ACE_TEXT_ALWAYS_CHAR(META_PACKAGE);
-  if (!RPG_Common_File_Tools::createDirectory(result))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
-               result.c_str()));
-
-    // fallback
-    result = RPG_Common_File_Tools::getUserHomeDirectory(user);
-  } // end IF
-  else
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("created game directory \"%s\"\n"),
-               result.c_str()));
 #endif
+  result += ACE_TEXT_ALWAYS_CHAR(META_PACKAGE_NAME);
+#endif
+
+  if (!RPG_Common_File_Tools::isDirectory(result))
+  {
+    if (!RPG_Common_File_Tools::createDirectory(result))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                 result.c_str()));
+
+      // fallback
+      result = RPG_Common_File_Tools::getUserHomeDirectory(user_name);
+    } // end IF
+    else
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("created game directory \"%s\"\n"),
+                 result.c_str()));
+  } // end IF
 
   return result;
 }

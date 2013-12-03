@@ -57,6 +57,8 @@ class RPG_Net_Export RPG_Net_Stream
   // init stream
   bool init(const RPG_Net_ConfigPOD&); // stream/module configuration
 
+  unsigned int getSessionID() const;
+
   // implement RPG_Common_IStatistic
   // *NOTE*: delegate this to myRuntimeStatistic
   virtual bool collect(RPG_Net_RuntimeStatistic&) const; // return value: statistic data

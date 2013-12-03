@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: Yarp
+Description: Yarp libraries
+Requires: ACE xerces-c libpng SDL SDL_ttf SDL_mixer
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lRPG_Engine -lRPG_Graphics -lRPG_Sound -lRPG_Map -lRPG_Monster -lRPG_Combat -lRPG_Player -lRPG_Character -lRPG_Item -lRPG_Magic -lRPG_Chance -lRPG_Common -lRPG_Dice
+Cflags:
+

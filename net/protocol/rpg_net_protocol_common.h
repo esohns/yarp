@@ -23,7 +23,7 @@
 
 #include "rpg_net_protocol_exports.h"
 
-#include <rpg_net_connection_manager.h>
+#include "rpg_net_connection_manager.h"
 
 #include <ace/Time_Value.h>
 #include <ace/Date_Time.h>
@@ -159,16 +159,16 @@ typedef std::multimap<std::string, RPG_Net_Protocol_ConnectionEntry> RPG_Net_Pro
 typedef RPG_Net_Protocol_Servers_t::const_iterator RPG_Net_Protocol_ServersIterator_t;
 struct RPG_Net_Protocol_PhoneBook
 {
-  ACE_Date_Time  timestamp;
+  ACE_Date_Time               timestamp;
   // *NOTE*: this member is redundant (but still useful ?)...
   RPG_Net_Protocol_Networks_t networks;
-  RPG_Net_Protocol_Servers_t servers;
+  RPG_Net_Protocol_Servers_t  servers;
 };
 
 struct RPG_Net_Protocol_RuntimeStatistic
 {
-  unsigned long numDataMessages; // (protocol) messages
-  double        numBytes;        // amount of processed data
+  unsigned int numDataMessages; // (protocol) messages
+  double       numBytes;        // amount of processed data
 
   // convenience
   inline RPG_Net_Protocol_RuntimeStatistic operator+=(const RPG_Net_Protocol_RuntimeStatistic& rhs_in)
@@ -185,17 +185,18 @@ struct RPG_Net_Protocol_ConfigPOD
   // ************ connection config data ************
   int                               socketBufferSize;
   RPG_Stream_IAllocator*            messageAllocator;
-  unsigned long                     defaultBufferSize;
+  unsigned int                      defaultBufferSize;
+  bool                              useThreadPerConnection; // used by the server...
   // ************ protocol config data **************
-  unsigned long                     clientPingInterval; // used by the server...
+  unsigned int                      clientPingInterval; // used by the server...
   RPG_Net_Protocol_IRCLoginOptions  loginOptions;
   // ************ stream config data ****************
   RPG_Stream_Module*                module;
   bool                              crunchMessageBuffers;
   bool                              debugScanner;
   bool                              debugParser;
-  unsigned long                     sessionID; // (== socket handle !)
-  unsigned long                     statisticsReportingInterval;
+  unsigned int                      sessionID; // (== socket handle !)
+  unsigned int                      statisticsReportingInterval;
   // ************ runtime statistics data ***********
   RPG_Net_Protocol_RuntimeStatistic currentStatistics;
   ACE_Time_Value                    lastCollectionTimestamp;
@@ -206,6 +207,6 @@ typedef RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
 typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 RPG_PROTOCOL_SINGLETON_DECLARE(ACE_Singleton,
-															 RPG_Net_Protocol_Connection_Manager_t,
-															 ACE_Recursive_Thread_Mutex);
+			       RPG_Net_Protocol_Connection_Manager_t,
+			       ACE_Recursive_Thread_Mutex);
 #endif

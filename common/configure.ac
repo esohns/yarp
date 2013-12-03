@@ -9,8 +9,8 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # define meta-package
-META_PACKAGE=RPG
-AC_DEFINE([META_PACKAGE], ["RPG"], [meta-package])
+META_PACKAGE_NAME=RPG
+AC_DEFINE([META_PACKAGE_NAME], ["RPG"], [meta-package-name])
 
 # get system information
 AC_CANONICAL_TARGET
@@ -29,7 +29,7 @@ AC_PROG_MAKE_SET
 # AM_PROG_LIBTOOL
 
 # init other tools.
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
@@ -37,8 +37,6 @@ LT_INIT
 # prefix config.h
 AX_PREFIX_CONFIG_H
 
-# get the cpp compiler flags
-#CXXFLAGS="${CXXFLAGS=}"
 # reset the cpp compiler flags
 CXXFLAGS=
 # this macro is used to get the arguments supplied
@@ -51,17 +49,15 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-#  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
-  CXXFLAGS="-g3 -O0 -Wall"
+  CXXFLAGS="-g3 -O0 -Wall -Werror"
   AC_MSG_RESULT(yes)
 else
-#  CXXFLAGS="${CXXFLAGS} -O3 -march=native -DRPG_NTRACE=0"
-  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0"
+  CXXFLAGS="-O3 -Wall -Werror -march=native -DRPG_NTRACE=0"
   AC_MSG_RESULT(no)
 fi
 
 # export variables (so Makefile substitutions can be made)
-AC_SUBST(META_PACKAGE)
+AC_SUBST(META_PACKAGE_NAME)
 AC_SUBST(CXXFLAGS)
 
 # Checks for libraries.

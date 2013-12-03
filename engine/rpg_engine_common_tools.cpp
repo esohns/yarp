@@ -1329,7 +1329,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
   RPG_Dice_RollResult_t result;
   int attack_roll = 0;
   int currentAttackBonus = 0;
-  bool is_offhand = false; // *TODO* implement this rule
+  //bool is_offhand = false; // *TODO* implement this rule
   RPG_Item_WeaponType weapon_type = RPG_ITEM_WEAPONTYPE_INVALID;
   RPG_Item_WeaponProperties weapon_properties;
   bool is_threat = false;
@@ -1378,7 +1378,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
       if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
         return false; // done (no weapon equipped)
 
-      is_offhand = true;
+      //is_offhand = true; // *TODO* implement this rule
     } // end IF
     weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
     // consider range penalty...

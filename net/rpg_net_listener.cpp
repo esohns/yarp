@@ -128,14 +128,14 @@ RPG_Net_Listener::start()
 
   // not running --> start listening
   if (open(ACE_INET_Addr(myListeningPort, // local SAP
-												 // *PORTABILITY*: needed to disambiguate this under Windows :-(
-												 // *TODO*: bind to specific interface/address ?
+                         // *PORTABILITY*: needed to disambiguate this under Windows :-(
+                         // *TODO*: bind to specific interface/address ?
                          static_cast<ACE_UINT32>(INADDR_ANY)),
-												 ACE_Reactor::instance(),       // corresp. reactor
-												 ACE_NONBLOCK,                  // flags (use non-blocking sockets !)
-				 	               //0,                             // flags (default is blocking sockets)
-												 1,                             // always accept ALL pending connections
-												 1) == -1)                      // try to re-use address
+           ACE_Reactor::instance(),       // corresp. reactor
+           ACE_NONBLOCK,                  // flags (use non-blocking sockets !)
+           //0,                             // flags (default is blocking sockets)
+           1,                             // always accept ALL pending connections
+           1) == -1)                      // try to re-use address
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Acceptor::open(): \"%s\", returning\n"),

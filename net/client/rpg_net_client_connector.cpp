@@ -17,32 +17,40 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
-#ifndef RPG_Net_Client_AsynchConnector_H
-#define RPG_Net_Client_AsynchConnector_H
+#include "rpg_net_client_connector.h"
 
-#include "rpg_net_exports.h"
-#include "rpg_net_stream_common.h"
+#include "rpg_net_common.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Asynch_Connector.h>
+#include "rpg_common_macros.h"
 
-class RPG_Net_Export RPG_Net_Client_AsynchConnector
- : public ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t>
+RPG_Net_Client_Connector::RPG_Net_Client_Connector()
+ : inherited(ACE_Reactor::instance(), // default reactor
+             ACE_NONBLOCK)            // flags: non-blocking I/O
+             //0)                       // flags
 {
- public:
-  RPG_Net_Client_AsynchConnector();
-  virtual ~RPG_Net_Client_AsynchConnector();
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::RPG_Net_Client_Connector"));
 
-  // override default creation strategy
-  virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
+}
 
- private:
-  typedef ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t> inherited;
+RPG_Net_Client_Connector::~RPG_Net_Client_Connector()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::~RPG_Net_Client_Connector"));
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector(const RPG_Net_Client_AsynchConnector&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector& operator=(const RPG_Net_Client_AsynchConnector&));
-};
+}
 
-#endif
+int
+RPG_Net_Client_Connector::make_svc_handler(RPG_Net_StreamHandler_t*& handler_inout)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::make_svc_handler"));
+
+  // init return value(s)
+  handler_inout = NULL;
+
+  // default behavior
+  ACE_NEW_NORETURN(handler_inout,
+                   RPG_Net_StreamHandler_t());
+
+  return ((handler_inout == NULL) ? -1 : 0);
+}

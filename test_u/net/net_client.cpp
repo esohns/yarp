@@ -32,7 +32,7 @@
 #include "rpg_net_common_tools.h"
 #include "rpg_net_connection_manager.h"
 #include "rpg_net_stream_messageallocator.h"
-#include "rpg_net_client_common.h"
+#include "rpg_net_client_connector.h"
 #include "rpg_net_client_asynchconnector.h"
 
 #include "rpg_common_defines.h"
@@ -59,6 +59,7 @@
 
 #define NET_CLIENT_DEF_SERVER_HOSTNAME         ACE_LOCALHOST
 #define NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL 0
+#define NET_CLIENT_DEF_SERVER_PING_INTERVAL    0
 #define NET_CLIENT_DEF_CLIENT_USES_REACTOR     false
 #define NET_CLIENT_DEF_NUM_TP_THREADS          2
 
@@ -77,6 +78,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-l         : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE] : server port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r         : use reactor") << ACE_TEXT(" [") << NET_CLIENT_DEF_CLIENT_USES_REACTOR << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE] : ping interval ([") << NET_CLIENT_DEF_SERVER_PING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-x [VALUE] : #thread pool threads")  << ACE_TEXT(" [") << NET_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
@@ -90,6 +92,7 @@ process_arguments(const int argc_in,
                   bool& logToFile_out,
                   unsigned short& serverPortNumber_out,
                   bool& useReactor_out,
+                  unsigned int& pingInterval_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
                   unsigned int& numThreadPoolThreads_out)
@@ -102,13 +105,14 @@ process_arguments(const int argc_in,
   logToFile_out = false;
   serverPortNumber_out = RPG_NET_DEF_LISTENING_PORT;
   useReactor_out = NET_CLIENT_DEF_CLIENT_USES_REACTOR;
+  pingInterval_out = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   traceInformation_out = false;
   printVersionAndExit_out = false;
   numThreadPoolThreads_out = NET_CLIENT_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("h:i:lp:rtvx:"),
+                             ACE_TEXT("h:i:lp:rs:tvx:"),
                              1, // skip command name
                              1, // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -153,6 +157,15 @@ process_arguments(const int argc_in,
       case 'r':
       {
         useReactor_out = true;
+
+        break;
+      }
+      case 's':
+      {
+        converter.clear();
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << argumentParser.opt_arg();
+        converter >> pingInterval_out;
 
         break;
       }
@@ -442,6 +455,7 @@ do_work(const std::string& serverHostname_in,
         const unsigned int& connectionInterval_in,
         const unsigned short& serverPortNumber_in,
         const bool& useReactor_in,
+        const unsigned int& pingInterval_in,
         const unsigned int& numThreadPoolThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
@@ -450,9 +464,7 @@ do_work(const std::string& serverHostname_in,
   RPG_Net_Client_Connector* connector = NULL;
   RPG_Net_Client_AsynchConnector* asynch_connector = NULL;
   if (useReactor_in)
-    connector = new(std::nothrow) RPG_Net_Client_Connector(ACE_Reactor::instance(), // default reactor
-                                                           ACE_NONBLOCK);           // flags: non-blocking I/O
-//                                                           0);                      // flags
+    connector = new(std::nothrow) RPG_Net_Client_Connector();
   else
     asynch_connector = new(std::nothrow) RPG_Net_Client_AsynchConnector();
   ACE_ASSERT(connector || asynch_connector);
@@ -509,10 +521,12 @@ do_work(const std::string& serverHostname_in,
   ACE_OS::memset(&config,
                  0,
                  sizeof(RPG_Net_ConfigPOD));
-  config.clientPingInterval = 0; // servers do this...
+  config.pingInterval = pingInterval_in;
+  config.printPongMessages = true;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.defaultBufferSize = RPG_NET_DEF_NETWORK_BUFFER_SIZE;
+  config.useThreadPerConnection = false;
   config.module = NULL; // just use the default stream...
   // *WARNING*: set at runtime, by the appropriate connection handler
   config.sessionID = 0; // (== socket handle !)
@@ -523,7 +537,6 @@ do_work(const std::string& serverHostname_in,
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
   // step4a: init timer...
-  long timerID = -1;
   Net_Client_TimeoutHandler* timeout_handler = NULL;
   if (useReactor_in)
     timeout_handler = new(std::nothrow) Net_Client_TimeoutHandler(serverHostname_in,
@@ -545,16 +558,16 @@ do_work(const std::string& serverHostname_in,
 
     return;
   } // end IF
-
+  long timer_id = -1;
   if (connectionInterval_in)
   {
     // schedule server query interval timer
     ACE_Time_Value interval(connectionInterval_in, 0);
-    timerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timeout_handler,
-                                                                      NULL,
-                                                                      ACE_OS::gettimeofday () + interval,
-                                                                      interval);
-    if (timerID == -1)
+    timer_id = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timeout_handler,
+                                                                       NULL,
+                                                                       ACE_OS::gettimeofday () + interval,
+                                                                       interval);
+    if (timer_id == -1)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to schedule timer: \"%m\", aborting\n")));
@@ -580,7 +593,7 @@ do_work(const std::string& serverHostname_in,
     int success = -1;
     if (useReactor_in)
     {
-      RPG_Net_Client_SocketHandler* handler = NULL;
+      RPG_Net_SocketHandler* handler = NULL;
       success = connector->connect(handler,                                // service handler
                                    remote_address,                         // remote SAP
                                    ACE_Synch_Options::defaults,            // synch options
@@ -639,10 +652,10 @@ do_work(const std::string& serverHostname_in,
     // clean up
     if (connectionInterval_in)
     {
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id, NULL) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   timerID));
+                   timer_id));
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     } // end IF
     fini_signalHandling(signalss,
@@ -689,10 +702,10 @@ do_work(const std::string& serverHostname_in,
   // step4: clean up
   if (connectionInterval_in)
   {
-    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id, NULL) <= 0)
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                 timerID));
+                 timer_id));
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
   } // end IF
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
@@ -765,6 +778,7 @@ ACE_TMAIN(int argc,
   bool logToFile                    = false;
   unsigned short serverPortNumber   = RPG_NET_DEF_LISTENING_PORT;
   bool useReactor                   = NET_CLIENT_DEF_CLIENT_USES_REACTOR;
+  unsigned int pingInterval         = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   bool traceInformation             = false;
   bool printVersionAndExit          = false;
   unsigned int numThreadPoolThreads = NET_CLIENT_DEF_NUM_TP_THREADS;
@@ -777,6 +791,7 @@ ACE_TMAIN(int argc,
                           logToFile,
                           serverPortNumber,
                           useReactor,
+                          pingInterval,
                           traceInformation,
                           printVersionAndExit,
                           numThreadPoolThreads)))
@@ -841,6 +856,7 @@ ACE_TMAIN(int argc,
           connectionInterval,
           serverPortNumber,
           useReactor,
+          pingInterval,
           numThreadPoolThreads);
   timer.stop();
 

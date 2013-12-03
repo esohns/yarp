@@ -35,9 +35,9 @@ class RPG_Common_Export RPG_Common_File_Tools
   static bool isDirectory(const std::string&); // directory
   static bool createDirectory(const std::string&); // directory
   static bool deleteFile(const std::string&); // FQ filename
-  // *NOTE*: user needs to free (delete[] !) the returned memory
+  // *NOTE*: users need to free (delete[]) the returned buffer
   static bool loadFile(const std::string&, // FQ filename
-                       unsigned char*&);   // return value: memory (array)
+                       unsigned char*&);   // return value: memory buffer (array)
 
   static std::string realPath(const std::string&); // path
 
@@ -48,6 +48,7 @@ class RPG_Common_Export RPG_Common_File_Tools
                                             const bool&);       // config ? : data
 
   static std::string getUserHomeDirectory(const std::string&); // user
+  // *NOTE*: (try to) create the directory if it doesn't exist
   static std::string getUserGameDirectory(const std::string&); // user
 
  private:

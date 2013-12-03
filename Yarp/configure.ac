@@ -12,6 +12,10 @@ AC_CONFIG_MACRO_DIR([m4])
 META_PACKAGE=RPG
 AC_DEFINE([META_PACKAGE], ["RPG"], [meta-package])
 
+# define version information
+AC_SUBST([YARP_SO_VERSION], [0:0:0])
+AC_SUBST([YARP_API_VERSION], [0.1])
+
 # get system information
 AC_CANONICAL_TARGET
 
@@ -28,11 +32,10 @@ AC_PROG_MAKE_SET
 # AC_PROG_RANLIB
 
 # init other tools.
-#AM_INIT_AUTOMAKE([gnu nostdinc -Wall])
-AM_INIT_AUTOMAKE(yarp, 0.1)
+AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
-LT_INIT
+LT_INIT([disable-static])
 
 # prefix config.h
 AX_PREFIX_CONFIG_H([rpg_config.h], [RPG])
@@ -49,10 +52,10 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-  CXXFLAGS="${CXXFLAGS} -g -O0 -Wall -D_DEBUG"
+  CXXFLAGS="-g -O0 -Wall -Werror -D_DEBUG"
   AC_MSG_RESULT(yes)
 else
-  CXXFLAGS="${CXXFLAGS} -O3 -march=native"
+  CXXFLAGS="-O3 -march=native -Wall -Werror"
   AC_MSG_RESULT(no)
 fi
 
@@ -79,9 +82,8 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, ACE xerces-c sdl SDL_ttf libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
-dnl AC_SUBST(pkg_libs_CFLAGS)
-dnl AC_SUBST(pkg_libs_LIBS)
+PKG_CHECK_MODULES(pkg_libs, ACE xerces-c libpng sdl SDL_ttf libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
+AC_SEARCH_LIBS([Mix_Init], [SDL_mixer])
 
 # checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lACE':
@@ -100,6 +102,7 @@ AC_HEADER_STDBOOL
 AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile
+                 Yarp-${YARP_API_VERSION}.pc:scripts/Yarp.pc.in
                  chance/Makefile
                  chance/dice/Makefile
                  common/Makefile
@@ -135,12 +138,12 @@ AC_CONFIG_FILES([Makefile
                  test_u/Makefile
                  test_u/chance/Makefile
                  test_u/character/Makefile
-								 test_u/character/player/Makefile
-								 test_u/character/monster/Makefile
+                 test_u/character/player/Makefile
+                 test_u/character/monster/Makefile
                  test_u/client/Makefile
                  test_u/combat/Makefile
                  test_u/graphics/Makefile
-								 test_u/item/Makefile
+                 test_u/item/Makefile
                  test_u/magic/Makefile
                  test_u/map/Makefile
                  test_u/net/Makefile

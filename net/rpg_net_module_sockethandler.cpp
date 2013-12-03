@@ -62,7 +62,7 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 
 bool
 RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
-//                                    const unsigned long& connectionID_in,
+//                                    const unsigned int& connectionID_in,
                                    const unsigned int& statisticsCollectionInterval_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
@@ -122,6 +122,14 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
   myIsInitialized = true;
 
   return myIsInitialized;
+}
+
+unsigned int
+RPG_Net_Module_SocketHandler::getSessionID() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::getSessionID"));
+
+  return mySessionID;
 }
 
 void

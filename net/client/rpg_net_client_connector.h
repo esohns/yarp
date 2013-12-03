@@ -18,31 +18,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_Net_Client_AsynchConnector_H
-#define RPG_Net_Client_AsynchConnector_H
+#ifndef RPG_Net_Client_Connector_H
+#define RPG_Net_Client_Connector_H
 
 #include "rpg_net_exports.h"
 #include "rpg_net_stream_common.h"
 
 #include <ace/Global_Macros.h>
-#include <ace/Asynch_Connector.h>
+#include <ace/Connector.h>
+#include <ace/SOCK_Connector.h>
 
-class RPG_Net_Export RPG_Net_Client_AsynchConnector
- : public ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t>
+class RPG_Net_Export RPG_Net_Client_Connector
+ : public ACE_Connector<RPG_Net_StreamHandler_t,
+                        ACE_SOCK_CONNECTOR>
 {
  public:
-  RPG_Net_Client_AsynchConnector();
-  virtual ~RPG_Net_Client_AsynchConnector();
+  RPG_Net_Client_Connector();
+  virtual ~RPG_Net_Client_Connector();
 
   // override default creation strategy
-  virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
+  virtual int make_svc_handler(RPG_Net_StreamHandler_t*&);
 
  private:
-  typedef ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t> inherited;
+  typedef ACE_Connector<RPG_Net_StreamHandler_t,
+                        ACE_SOCK_CONNECTOR> inherited;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector(const RPG_Net_Client_AsynchConnector&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector& operator=(const RPG_Net_Client_AsynchConnector&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_Connector(const RPG_Net_Client_Connector&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_Connector& operator=(const RPG_Net_Client_Connector&));
 };
 
 #endif

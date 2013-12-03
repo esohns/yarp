@@ -72,8 +72,8 @@ class RPG_Common_Export RPG_Common_Tools
 
   static bool isLinux();
 
-  static bool getUserName(std::string&,  // return value: username
-                          std::string&); // return value: "real" name
+  static void getCurrentUserName(std::string&,  // return value: username
+                                 std::string&); // return value: "real" name
   static std::string getHostName(); // return value: hostname
 
  private:

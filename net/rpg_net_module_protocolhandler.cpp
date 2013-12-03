@@ -24,24 +24,24 @@
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
 
-#include <rpg_stream_iallocator.h>
+#include "rpg_stream_iallocator.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_timer_manager.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_timer_manager.h"
 
 #include <iostream>
 
 RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
  : //inherited(),
-   myClientPingHandler(this,   // dispatch ourselves
-                       false), // ping client at REGULAR intervals...
-   myClientPingTimerID(-1),
+   myPingHandler(this,   // dispatch ourselves
+                 false), // ping peer at REGULAR intervals...
+   myPingTimerID(-1),
    myAllocator(NULL),
+   mySessionID(0),
    myCounter(1),
-   myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
+   myAutomaticPong(true), // *NOTE*: the idea really is not to play PONG...
    myPrintPongDot(false),
-   myIsInitialized(false)//,
-//    mySessionID(0)
+   myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler"));
 
@@ -52,23 +52,24 @@ RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler"));
 
   // clean up timer if necessary
-  if (myClientPingTimerID != -1)
-    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myClientPingTimerID) == -1)
+  if (myPingTimerID != -1)
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID) == -1)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                 myClientPingTimerID));
+                 ACE_TEXT("failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
+                 myPingTimerID));
 }
 
 bool
 RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
-                                     const unsigned int& clientPingInterval_in,
+                                     const unsigned int& sessionID_in,
+                                     const unsigned int& pingInterval_in,
                                      const bool& autoAnswerPings_in,
                                      const bool& printPongDot_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::init"));
 
   // sanity check(s)
-  ACE_ASSERT(allocator_in);
+  ACE_ASSERT(allocator_in && sessionID_in);
 
   if (myIsInitialized)
   {
@@ -76,32 +77,34 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
                ACE_TEXT("re-initializing...\n")));
 
     // reset state
-    if (myClientPingTimerID != -1)
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myClientPingTimerID) == -1)
+    if (myPingTimerID != -1)
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID) == -1)
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   myClientPingTimerID));
-    myClientPingTimerID = -1;
+                   ACE_TEXT("failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
+                   myPingTimerID));
+    myPingTimerID = -1;
     myAllocator = NULL;
+    mySessionID = sessionID_in;
     myCounter = 1;
-    myAutomaticPong = false;
+    myAutomaticPong = true;
     myPrintPongDot = false;
 
     myIsInitialized = false;
   } // end IF
 
   myAllocator = allocator_in;
+  mySessionID = sessionID_in;
 
-  if (clientPingInterval_in)
+  if (pingInterval_in)
   {
     // schedule ourselves...
-    ACE_Time_Value clientPing_interval(clientPingInterval_in, 0);
-    ACE_ASSERT(myClientPingTimerID == -1);
-    myClientPingTimerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myClientPingHandler,                          // handler
-                                                                                  NULL,                                          // act
-                                                                                  ACE_OS::gettimeofday () + clientPing_interval, // wakeup time
-                                                                                  clientPing_interval);                          // interval
-    if (myClientPingTimerID == -1)
+    ACE_Time_Value ping_interval(pingInterval_in, 0);
+    ACE_ASSERT(myPingTimerID == -1);
+    myPingTimerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myPingHandler,                          // handler
+                                                                            NULL,                                          // act
+                                                                            ACE_OS::gettimeofday () + ping_interval, // wakeup time
+                                                                            ping_interval);                          // interval
+    if (myPingTimerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
@@ -109,16 +112,17 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
       return false;
     } // end IF
 
-//     // debug info
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("scheduled client ping (interval: %u second(s))...\n"),
-//                clientPingInterval_in));
+     // debug info
+     ACE_DEBUG((LM_DEBUG,
+                ACE_TEXT("scheduled \"ping\" timer (ID: %d), interval: %u second(s)...\n"),
+                myPingTimerID,
+                pingInterval_in));
   } // end IF
 
   myAutomaticPong = autoAnswerPings_in;
-//   if (myAutomaticPong)
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("auto-answering ping messages...\n")));
+  if (myAutomaticPong)
+     ACE_DEBUG((LM_DEBUG,
+                ACE_TEXT("auto-answering \"ping\" messages...\n")));
   myPrintPongDot = printPongDot_in;
 
   myIsInitialized = true;
@@ -141,6 +145,10 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
   {
     case RPG_Net_Remote_Comm::RPG_NET_PING:
     {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("received PING (connection ID: %u)...\n"),
+                 mySessionID));
+
       // auto-answer ?
       if (myAutomaticPong)
       {
@@ -176,18 +184,23 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
 
           return;
         } // end IF
-      } // end IF
 
-      if (myPrintPongDot)
-      {
-        std::clog << '.';
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("sent PONG to client (connection ID: %u)...\n"),
+                   mySessionID));
       } // end IF
 
       break;
     }
     case RPG_Net_Remote_Comm::RPG_NET_PONG:
     {
-      // nothing to do...
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("received PONG (connection ID: %u)...\n"),
+                 mySessionID));
+
+      if (myPrintPongDot)
+        std::clog << '.';
+
       break;
     }
     default:

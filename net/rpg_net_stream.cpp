@@ -89,7 +89,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!runtimeStatistic_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic) failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic> failed> (aborting\n")));
 
     return false;
   } // end IF
@@ -119,15 +119,15 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!protocolHandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_ProtocolHandler) failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_ProtocolHandler> failed> (aborting\n")));
 
     return false;
   } // end IF
   if (!protocolHandler_impl->init(config_in.messageAllocator,
-                                  config_in.clientPingInterval,
-                                  (config_in.clientPingInterval ? false // servers shouldn't receive "pings" in the first place
-                                                                : RPG_NET_DEF_CLIENT_PING_PONG), // auto-answer "ping" as a client ?...
-                                  (config_in.clientPingInterval == 0))) // clients print ('.') dots for received "pings"...
+                                  config_in.sessionID,
+                                  config_in.pingInterval,
+                                  RPG_NET_DEF_CLIENT_PING_PONG,   // auto-answer "ping"s ?...
+                                  config_in.printPongMessages)) // print ('.') dots for received "pongs"...
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -152,7 +152,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!headerParser_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_HeaderParser) failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_HeaderParser> failed> (aborting\n")));
 
     return false;
   } // end IF
@@ -181,7 +181,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!socketHandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_SocketHandler) failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_SocketHandler> failed> (aborting\n")));
 
     return false;
   } // end IF
@@ -221,6 +221,26 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 //   inherited::dump_state();
 
   return true;
+}
+
+unsigned int
+RPG_Net_Stream::getSessionID() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Stream::getSessionID"));
+
+  // *TODO*: clean this up
+  ACE_Module<ACE_MT_SYNCH, ACE_System_Time_Policy>* module = &const_cast<RPG_Net_Module_SocketHandler_Module&>(mySocketHandler);
+  RPG_Net_Module_SocketHandler* socketHandler_impl = NULL;
+  socketHandler_impl = dynamic_cast<RPG_Net_Module_SocketHandler*>(module->writer());
+  if (!socketHandler_impl)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_SocketHandler> failed> (aborting\n")));
+
+    return 0;
+  } // end IF
+
+  return socketHandler_impl->getSessionID();
 }
 
 bool

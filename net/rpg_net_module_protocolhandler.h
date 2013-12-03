@@ -21,11 +21,11 @@
 #ifndef RPG_NET_MODULE_PROTOCOLHANDLER_H
 #define RPG_NET_MODULE_PROTOCOLHANDLER_H
 
-#include <rpg_common_timerhandler.h>
-#include <rpg_common_itimer.h>
+#include "rpg_common_timerhandler.h"
+#include "rpg_common_itimer.h"
 
-#include <rpg_stream_task_base_synch.h>
-#include <rpg_stream_streammodule.h>
+#include "rpg_stream_task_base_synch.h"
+#include "rpg_stream_streammodule.h"
 
 #include <ace/Time_Value.h>
 #include <ace/Reactor.h>
@@ -46,9 +46,10 @@ class RPG_Net_Module_ProtocolHandler
 
   // initialization
   bool init(RPG_Stream_IAllocator*,  // message allocator
-            const unsigned int& = 0, // client "ping" interval (server) [0 --> OFF]
-            const bool& = false,     // automatically answer "ping" messages (client)
-            const bool& = false);    // print dot ('.') for every answered PING to stderr (client)
+            const unsigned int&,     // session ID
+            const unsigned int& = 0, // peer "ping" interval (i.e. keep-alive) [0 --> OFF]
+            const bool& = true,      // automatically reply to "ping" messages (auto-"pong")
+            const bool& = false);    // print dot ('.') for every received "pong" to stderr
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
@@ -74,15 +75,15 @@ class RPG_Net_Module_ProtocolHandler
   RPG_Net_Message* allocateMessage(const unsigned int&); // requested size
 
   // timer stuff
-  RPG_Common_TimerHandler myClientPingHandler;
-  long                    myClientPingTimerID;
+  RPG_Common_TimerHandler myPingHandler;
+  long                    myPingTimerID;
 
   RPG_Stream_IAllocator*  myAllocator;
+  unsigned int            mySessionID;
   unsigned int            myCounter;
   bool                    myAutomaticPong;
   bool                    myPrintPongDot;
   bool                    myIsInitialized;
-//  unsigned int            mySessionID;
 };
 
 // declare module

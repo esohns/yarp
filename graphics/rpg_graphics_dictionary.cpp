@@ -25,9 +25,9 @@
 #include "rpg_graphics_XML_parser.h"
 #include "rpg_graphics_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_xsderrorhandler.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_xsderrorhandler.h"
 
 #include <ace/Log_Msg.h>
 
@@ -144,7 +144,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 //              filename_in.c_str()));
 }
 
-const RPG_Graphics_t&
+const RPG_Graphics_t
 RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::get"));

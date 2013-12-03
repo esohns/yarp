@@ -50,6 +50,10 @@ RPG_Net_SocketHandler::svc(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::svc"));
 
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("(%t) worker (connection: %u) starting...\n"),
+             myStream.getSessionID()));
+
   ssize_t bytes_sent = 0;
   while (true)
   {
@@ -76,7 +80,7 @@ RPG_Net_SocketHandler::svc(void)
 //                  peer_.get_handle()));
 
       // leave loop, we're finished
-      return 0;
+      break;
     } // end IF
 
     // put some data into the socket...
@@ -123,7 +127,7 @@ RPG_Net_SocketHandler::svc(void)
 //                   bytes_sent));
 
         // finished with this buffer ?
-        if (static_cast<size_t> (bytes_sent) == myCurrentWriteBuffer->length())
+        if (static_cast<size_t>(bytes_sent) == myCurrentWriteBuffer->length())
         {
           // get the next one...
           myCurrentWriteBuffer->release();
@@ -141,11 +145,11 @@ RPG_Net_SocketHandler::svc(void)
   } // end WHILE
 
   // debug info
-  ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("worker thread (ID: %t) failed to ACE_Stream::get(): \"%m\", aborting\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("(%t) worker (connection: %u) joining...\n"),
+             myStream.getSessionID()));
 
-  ACE_ASSERT(false);
-  ACE_NOTREACHED(return -1;)
+  return 0;
 }
 
 int
@@ -155,7 +159,8 @@ RPG_Net_SocketHandler::open(void* arg_in)
 
   // init/start stream, register reading data with reactor...
   // --> done by the base class
-  if (inherited::open(arg_in))
+  int result = inherited::open(arg_in);
+  if (result == -1)
   {
     // debug info
     ACE_DEBUG((LM_ERROR,
@@ -167,23 +172,28 @@ RPG_Net_SocketHandler::open(void* arg_in)
     return -1;
   } // end IF
 
-  // OK: start a worker
-  if (activate((THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-               1,                           // # threads
-               0,                           // force spawning
-               ACE_DEFAULT_THREAD_PRIORITY, // priority
-               -1,                          // group id
-               NULL,                        // corresp. task --> use 'this'
-               NULL,                        // thread handle(s)
-               NULL,                        // thread stack(s)
-               NULL,                        // thread stack size(s)
-               NULL))                       // thread id(s)
+  // OK: start a worker ?
+  if (inherited::myUserData.useThreadPerConnection)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to activate(): \"%m\", aborting\n")));
+    if (activate((THR_NEW_LWP |
+                  THR_JOINABLE |
+                  THR_INHERIT_SCHED),                            // flags
+                 1,                                              // # threads
+                 0,                                              // force spawning
+                 ACE_DEFAULT_THREAD_PRIORITY,                    // priority
+                 RPG_NET_DEF_CONNECTION_HANDLER_THREAD_GROUP_ID, // group id
+                 NULL,                                           // corresp. task --> use 'this'
+                 NULL,                                           // thread handle(s)
+                 NULL,                                           // thread stack(s)
+                 NULL,                                           // thread stack size(s)
+                 NULL))                                          // thread id(s)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to activate(): \"%m\", aborting\n")));
 
-    // reactor will invoke close() --> handle_close()
-    return -1;
+      // reactor will invoke close() --> handle_close()
+      return -1;
+    } // end IF
   } // end IF
 
   return 0;

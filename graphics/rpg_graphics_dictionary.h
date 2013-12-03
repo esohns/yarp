@@ -31,7 +31,7 @@
 #include <string>
 
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_Export RPG_Graphics_Dictionary
 {
@@ -43,7 +43,7 @@ class RPG_Graphics_Export RPG_Graphics_Dictionary
   void init(const std::string&,   // (XML) dictionary file
             const bool& = false); // validate XML ?
 
-  const RPG_Graphics_t& get(const RPG_Graphics_GraphicTypeUnion&) const; // type
+  const RPG_Graphics_t get(const RPG_Graphics_GraphicTypeUnion&) const; // type
   RPG_Graphics_Fonts_t getFonts() const;
 
   // debug info

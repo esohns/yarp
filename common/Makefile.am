@@ -1,7 +1,7 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -DRPG_COMMON_BUILD_DLL -DMETA_PACKAGE=\"@META_PACKAGE@\" \
+AM_CPPFLAGS = -DRPG_COMMON_BUILD_DLL -DMETA_PACKAGE_NAME=\"@META_PACKAGE_NAME@\" \
   -I$(srcdir)/../chance/dice
 
 noinst_HEADERS = stdafx.h
@@ -54,7 +54,7 @@ libRPG_Common_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h \
   rpg_common_effectduration.h rpg_common_track.h rpg_common_timeofday.h \
   rpg_common_ambientlighting.h
 
-pkgdatadir = $(datadir)/@META_PACKAGE@
+pkgdatadir = $(datadir)/@META_PACKAGE_NAME@
 configdir = $(pkgdatadir)/config
 config_DATA = rpg_common.xsd rpg_common_environment.xsd
 

@@ -27,9 +27,9 @@
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_tools.h"
 
-#include <rpg_stream_iallocator.h>
+#include "rpg_stream_iallocator.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <iostream>
 #include <sstream>

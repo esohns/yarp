@@ -32,9 +32,16 @@
 #include <iostream>
 
 RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler()
- : inherited(NULL,                    // thread manager
-             NULL,                    // message queue
-             ACE_Reactor::instance()) // default reactor
+ : inherited(NULL)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
+
+  // *TODO*: clean this up !!!
+  ACE_ASSERT(false);
+}
+
+RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler(MANAGER_t* manager_in)
+ : inherited(manager_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
 
@@ -71,31 +78,31 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
 //    return -1;
 //  } // end IF
 
-  // debug info
-  ACE_INET_Addr localAddress;
-  if (peer().get_local_addr(localAddress) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", aborting\n")));
+//  // debug info
+//  ACE_INET_Addr localAddress;
+//  if (peer().get_local_addr(localAddress) == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", aborting\n")));
 
-    return -1;
-  } // end IF
-  ACE_INET_Addr remoteAddress;
-  if (peer().get_remote_addr(remoteAddress) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", aborting\n")));
+//    return -1;
+//  } // end IF
+//  ACE_INET_Addr remoteAddress;
+//  if (peer().get_remote_addr(remoteAddress) == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", aborting\n")));
 
-    return -1;
-  } // end IF
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("connected (handle: %d) \"%s\" | \"%s:%u\" <--> \"%s:%u\"\n"),
-             peer().get_handle(),
-             localAddress.get_host_name(),
-             localAddress.get_host_addr(),
-             localAddress.get_port_number(),
-             remoteAddress.get_host_name(),
-             remoteAddress.get_port_number()));
+//    return -1;
+//  } // end IF
+//  ACE_DEBUG((LM_DEBUG,
+//             ACE_TEXT("connected (handle: %d) \"%s\" | \"%s:%u\" <--> \"%s:%u\"\n"),
+//             peer().get_handle(),
+//             localAddress.get_host_name(),
+//             localAddress.get_host_addr(),
+//             localAddress.get_port_number(),
+//             remoteAddress.get_host_name(),
+//             remoteAddress.get_port_number()));
 
   return 0;
 }
@@ -142,8 +149,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
     case -1:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_SOCK_Stream::recv_n(): \"%s\", aborting\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT("failed to ACE_SOCK_Stream::recv_n(): \"%m\", aborting\n")));
 
       // --> reactor will invoke handle_close() --> close the socket
       return -1;
@@ -187,8 +193,8 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
       reply.messageHeader.messageLength = sizeof(RPG_Net_Remote_Comm::PongMessage) - sizeof(unsigned long);
       reply.messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PONG;
 
-        // step2: send it over the net...
-      size_t bytes_sent = peer().send_n(static_cast<const void*> (&reply),                                  // buffer
+      // step2: send it over the net...
+      size_t bytes_sent = peer().send_n(static_cast<const void*>(&reply),         // buffer
                                         sizeof(RPG_Net_Remote_Comm::PongMessage), // length
                                         NULL,                                     // timeout --> block
                                         &bytes_sent);                             // number of sent bytes
@@ -199,8 +205,7 @@ RPG_Net_Client_SocketHandler::handle_input(ACE_HANDLE handle_in)
         case -1:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to ACE_SOCK_Stream::send_n(): \"%s\", aborting\n"),
-                     ACE_OS::strerror(ACE_OS::last_error())));
+                     ACE_TEXT("failed to ACE_SOCK_Stream::send_n(): \"%m\", aborting\n")));
 
           // --> reactor will invoke handle_close() --> close the socket
           return -1;
@@ -264,4 +269,24 @@ RPG_Net_Client_SocketHandler::handle_close(ACE_HANDLE handle_in,
 
   return inherited::handle_close(handle_in,
                                  mask_in);
+}
+
+bool
+RPG_Net_Client_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::collect"));
+
+  // *TODO*
+  ACE_ASSERT(false);
+
+  return false;
+}
+
+void
+RPG_Net_Client_SocketHandler::report() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::report"));
+
+  // *TODO*
+  ACE_ASSERT(false);
 }

@@ -22,12 +22,15 @@
 #define RPG_NET_STREAM_COMMON_H
 
 #include "rpg_net_exports.h"
+#include "rpg_net_sockethandler.h"
 #include "rpg_net_common.h"
 #include "rpg_net_asynchstreamhandler_t.h"
 #include "rpg_net_stream.h"
 
+typedef RPG_Net_SocketHandler RPG_Net_StreamHandler_t;
+
 typedef RPG_Net_AsynchStreamHandler_T<RPG_Net_ConfigPOD,
                                       RPG_Net_RuntimeStatistic,
-                                      RPG_Net_Stream> RPG_Net_StreamHandler_t;
+                                      RPG_Net_Stream> RPG_Net_AsynchStreamHandler_t;
 
 #endif

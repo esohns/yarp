@@ -45,6 +45,8 @@ libRPG_Graphics_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h 
   rpg_graphics_tiletype.h rpg_graphics_toplevel.cpp rpg_graphics_toplevel.h \
   rpg_graphics_wallstyle.h rpg_graphics_exports.h rpg_graphics_windowtype.h
 libRPG_Graphics_la_CPPFLAGS	= $(AM_CPPFLAGS) $(pkg_libs_CFLAGS)
+libRPG_Graphics_la_LDFLAGS	= $(pkg_libs_LDFLAGS)
+libRPG_Graphics_la_LIBADD	= $(pkg_libs_LIBS)
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
