@@ -17,6 +17,8 @@ enum RPG_Graphics_Font
   RPG_GRAPHICS_FONT_INVALID
 };
 
+#include "rpg_graphics_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -25,7 +27,7 @@ enum RPG_Graphics_Font
 typedef std::map<RPG_Graphics_Font, std::string> RPG_Graphics_FontToStringTable_t;
 typedef RPG_Graphics_FontToStringTable_t::const_iterator RPG_Graphics_FontToStringTableIterator_t;
 
-class RPG_Graphics_FontHelper
+class RPG_Graphics_Export RPG_Graphics_FontHelper
 {
  public:
   inline static void init()

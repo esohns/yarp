@@ -46,7 +46,7 @@ RPG_Item_Commodity::~RPG_Item_Commodity()
 
 }
 
-const RPG_Item_CommodityType&
+const RPG_Item_CommodityType
 RPG_Item_Commodity::getCommodityType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Commodity::getCommodityType"));
@@ -54,7 +54,7 @@ RPG_Item_Commodity::getCommodityType() const
   return myCommodityType;
 }
 
-const RPG_Item_CommodityUnion&
+const RPG_Item_CommodityUnion
 RPG_Item_Commodity::getCommoditySubType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Commodity::getCommoditySubType"));

@@ -40,7 +40,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <CXX_Parser_Mapping_RuleBeforeTargets />
     <CXX_Parser_Mapping_RuleAfterTargets>CustomBuildStep</CXX_Parser_Mapping_RuleAfterTargets>

@@ -19,9 +19,9 @@
 #ifndef SDL_GUI_MINIMAPWINDOW_H
 #define SDL_GUI_MINIMAPWINDOW_H
 
-#include <rpg_graphics_SDL_window_sub.h>
+#include "rpg_graphics_SDL_window_sub.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 

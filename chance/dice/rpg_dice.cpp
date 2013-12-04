@@ -27,7 +27,7 @@
 #include "rpg_dice_defines.h"
 #include "rpg_dice_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/OS.h>
 #include <ace/Time_Value.h>

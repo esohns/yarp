@@ -25,13 +25,13 @@
 #include "rpg_sound_dictionary.h"
 #include "rpg_sound_event_manager.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_file_tools.h"
 
-#include <rpg_dice_common.h>
-#include <rpg_dice.h>
+#include "rpg_dice_common.h"
+#include "rpg_dice.h"
 
-#include <SDL/SDL_mixer.h>
+#include <SDL_mixer.h>
 
 #include <ace/Log_Msg.h>
 

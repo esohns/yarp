@@ -93,6 +93,8 @@ enum RPG_Character_Ability
   RPG_CHARACTER_ABILITY_INVALID
 };
 
+#include "rpg_character_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -101,7 +103,7 @@ enum RPG_Character_Ability
 typedef std::map<RPG_Character_Ability, std::string> RPG_Character_AbilityToStringTable_t;
 typedef RPG_Character_AbilityToStringTable_t::const_iterator RPG_Character_AbilityToStringTableIterator_t;
 
-class RPG_Character_AbilityHelper
+class RPG_Character_Export RPG_Character_AbilityHelper
 {
  public:
   inline static void init()

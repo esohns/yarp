@@ -252,7 +252,11 @@ RPG_Stream_TaskAsynch::svc(void)
              ACE_TEXT("worker thread (ID: %t) failed to ACE_Task::getq(): \"%m\", aborting\n")));
 
   ACE_ASSERT(false);
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 void

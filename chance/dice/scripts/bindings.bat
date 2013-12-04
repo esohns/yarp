@@ -8,10 +8,10 @@
 @rem #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
 @rem generate exports file
-C:\Perl\bin\perl.exe "C:\Temp\ACE_wrappers\bin\generate_export_file.pl" -n RPG_Dice > .\..\rpg_dice_exports.h
+C:\Perl\bin\perl.exe C:\Temp\ACE_wrappers\bin\generate_export_file.pl -n RPG_Dice > .\..\rpg_dice_exports.h
 
 @rem C++ "glue code"
-C:\Temp\yarp\tools\XML2CppCode\Debug\XML2CppCode.exe -d RPG_Dice_Export -e -f .\..\rpg_dice.xsd -i -o .\.. -s -u -x RPG_Dice
+C:\Tools\XML2CppCode.exe -d RPG_Dice_Export -e -f .\..\rpg_dice.xsd -i -o .\.. -s -u -x RPG_Dice
 
 @rem generate "XMLSchema" namespace include file (rpg_dice.xsd)
 "C:\Program Files\CodeSynthesis XSD 3.3\bin\xsd.exe" cxx-parser --char-type char --output-dir .\.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_types.xsd

@@ -28,7 +28,7 @@
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_iwindow.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>

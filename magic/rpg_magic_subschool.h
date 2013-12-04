@@ -27,6 +27,8 @@ enum RPG_Magic_SubSchool
   RPG_MAGIC_SUBSCHOOL_INVALID
 };
 
+#include "rpg_magic_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -35,7 +37,7 @@ enum RPG_Magic_SubSchool
 typedef std::map<RPG_Magic_SubSchool, std::string> RPG_Magic_SubSchoolToStringTable_t;
 typedef RPG_Magic_SubSchoolToStringTable_t::const_iterator RPG_Magic_SubSchoolToStringTableIterator_t;
 
-class RPG_Magic_SubSchoolHelper
+class RPG_Magic_Export RPG_Magic_SubSchoolHelper
 {
  public:
   inline static void init()

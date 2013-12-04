@@ -105,6 +105,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chance", "..\chance\chance.vcxproj", "{680D55C6-2821-4D27-ACD2-88873D145794}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5633F302-FF53-4014-8587-7BB1F35561CD} = {5633F302-FF53-4014-8587-7BB1F35561CD}
+		{371EAC10-4D0B-4F1D-8DEA-351DC54C7433} = {371EAC10-4D0B-4F1D-8DEA-351DC54C7433}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dice", "..\chance\dice\dice.vcxproj", "{371EAC10-4D0B-4F1D-8DEA-351DC54C7433}"
@@ -130,6 +131,13 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "map", "..\map\map.vcxproj", "{E1B4AAC5-F8C0-469F-9BE3-E3A93B01ED84}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sound", "..\sound\sound.vcxproj", "{D55B85FF-FD26-43DE-A8B1-8833AC97B05C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net_client", "..\net\net_client.vcxproj", "{47DB7C91-607E-4773-B139-A45ABAF3CA00}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5633F302-FF53-4014-8587-7BB1F35561CD} = {5633F302-FF53-4014-8587-7BB1F35561CD}
+		{AA720739-6711-4CFE-8E54-0D5ABFA83963} = {AA720739-6711-4CFE-8E54-0D5ABFA83963}
+		{EF66F896-AED2-4E31-8222-4424970E4357} = {EF66F896-AED2-4E31-8222-4424970E4357}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -246,7 +254,6 @@ Global
 		{5F031420-E549-4442-AE91-91D7307FE212}.Release|Win32.ActiveCfg = Release|Win32
 		{5F031420-E549-4442-AE91-91D7307FE212}.Release|Win32.Build.0 = Release|Win32
 		{A7E58929-F8EE-41C9-B1A8-29889E371B08}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A7E58929-F8EE-41C9-B1A8-29889E371B08}.Debug|Win32.Build.0 = Debug|Win32
 		{A7E58929-F8EE-41C9-B1A8-29889E371B08}.Release|Win32.ActiveCfg = Release|Win32
 		{A7E58929-F8EE-41C9-B1A8-29889E371B08}.Release|Win32.Build.0 = Release|Win32
 		{680D55C6-2821-4D27-ACD2-88873D145794}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -301,6 +308,10 @@ Global
 		{D55B85FF-FD26-43DE-A8B1-8833AC97B05C}.Debug|Win32.Build.0 = Debug|Win32
 		{D55B85FF-FD26-43DE-A8B1-8833AC97B05C}.Release|Win32.ActiveCfg = Release|Win32
 		{D55B85FF-FD26-43DE-A8B1-8833AC97B05C}.Release|Win32.Build.0 = Release|Win32
+		{47DB7C91-607E-4773-B139-A45ABAF3CA00}.Debug|Win32.ActiveCfg = Debug|Win32
+		{47DB7C91-607E-4773-B139-A45ABAF3CA00}.Debug|Win32.Build.0 = Debug|Win32
+		{47DB7C91-607E-4773-B139-A45ABAF3CA00}.Release|Win32.ActiveCfg = Release|Win32
+		{47DB7C91-607E-4773-B139-A45ABAF3CA00}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

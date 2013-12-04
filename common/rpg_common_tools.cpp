@@ -912,7 +912,7 @@ RPG_Common_Tools::getCurrentUserName(std::string& username_out,
   TCHAR buffer[RPG_COMMON_BUFSIZE];
   ACE_OS::memset(buffer, 0, RPG_COMMON_BUFSIZE * sizeof(TCHAR));
   DWORD buffer_size = 0;
-  if (GetUserNameEx(EXTENDED_NAME_FORMAT::NameDisplay,
+  if (GetUserNameEx(NameDisplay, // EXTENDED_NAME_FORMAT
                     buffer,
                     &buffer_size) == 0)
   {

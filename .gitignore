@@ -86,3 +86,6 @@ IRCbisect_scanner_report.txt
 
 Debug
 ipch
+
+/tools/XML2CppCode/XML2CppCode.suo
+/tools/XML2CppCode/XML2CppCode.sdf

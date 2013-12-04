@@ -21,10 +21,10 @@
 
 #include "rpg_character_XML_tools.h"
 
-#include <rpg_character_feat.h>
+#include "rpg_character_feat.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_skill.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_skill.h"
 
 #include <ace/Log_Msg.h>
 

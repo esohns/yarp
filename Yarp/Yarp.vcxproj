@@ -51,7 +51,7 @@
       <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>"E:\Program Files\NSIS\makensis.exe" .\scripts\Yarp.nsi
+      <Command>"C:\Program Files\NSIS\makensis.exe" .\scripts\Yarp.nsi
 move /Y .\scripts\Yarp.exe .\releases</Command>
       <Message>generating installer...</Message>
     </PreBuildEvent>

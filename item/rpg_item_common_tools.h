@@ -28,10 +28,10 @@
 #include "rpg_item_commodityunion.h"
 #include "rpg_item_instance_common.h"
 
-#include <rpg_character_common.h>
-#include <rpg_character_offhand.h>
+#include "rpg_character_common.h"
+#include "rpg_character_offhand.h"
 
-#include <rpg_common.h>
+#include "rpg_common.h"
 
 #include <ace/Global_Macros.h>
 

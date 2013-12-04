@@ -21,9 +21,9 @@
 #ifndef RPG_CHARACTER_COMMON_H
 #define RPG_CHARACTER_COMMON_H
 
-#include <rpg_common_condition.h>
+#include "rpg_common_condition.h"
 
-#include <rpg_character_equipmentslot.h>
+#include "rpg_character_equipmentslot.h"
 
 #include <set>
 #include <vector>

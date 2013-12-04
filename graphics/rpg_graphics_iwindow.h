@@ -25,7 +25,7 @@
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_SDL_tools.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 class RPG_Graphics_IWindow
 {

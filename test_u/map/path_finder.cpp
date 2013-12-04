@@ -21,22 +21,22 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_engine_defines.h>
+#include "rpg_engine_defines.h"
 
-#include <rpg_map_common.h>
-#include <rpg_map_level.h>
-#include <rpg_map_common_tools.h>
-#include <rpg_map_pathfinding_tools.h>
+#include "rpg_map_common.h"
+#include "rpg_map_level.h"
+#include "rpg_map_common_tools.h"
+#include "rpg_map_pathfinding_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/High_Res_Timer.h>

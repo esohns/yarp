@@ -321,7 +321,11 @@ RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in
 
   ACE_ASSERT(false);
   RPG_Magic_Spell_Properties dummy;
+#if defined (_MSC_VER)
+  return dummy;
+#else
   ACE_NOTREACHED(return dummy;)
+#endif
 }
 
 RPG_Magic_SpellTypes_t

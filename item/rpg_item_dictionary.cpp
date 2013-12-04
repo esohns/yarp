@@ -212,14 +212,16 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
       const RPG_Item_Armor* armor = dynamic_cast<const RPG_Item_Armor*>(item_in);
       ACE_ASSERT(armor);
 
-      return getArmorProperties(armor->getArmorType());
+      RPG_Item_ArmorProperties properties = getArmorProperties(armor->getArmorType());
+      return properties;
     }
     case ITEM_COMMODITY:
     {
       const RPG_Item_Commodity* commodity = dynamic_cast<const RPG_Item_Commodity*>(item_in);
       ACE_ASSERT(commodity);
 
-      return getCommodityProperties(commodity->getCommoditySubType());
+      RPG_Item_CommodityProperties properties = getCommodityProperties(commodity->getCommoditySubType());
+      return properties;
     }
     case ITEM_OTHER:
     case ITEM_VALUABLE:
@@ -234,7 +236,8 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
       const RPG_Item_Weapon* weapon = dynamic_cast<const RPG_Item_Weapon*>(item_in);
       ACE_ASSERT(weapon);
 
-      return getWeaponProperties(weapon->getWeaponType());
+      RPG_Item_WeaponProperties properties = getWeaponProperties(weapon->getWeaponType());
+      return properties;
     }
     default:
     {
@@ -249,7 +252,11 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
   ACE_ASSERT(false);
   // *TODO*: clean this up
   RPG_Item_PropertiesBase* dummy = new(std::nothrow) RPG_Item_PropertiesBase;
+#if defined (_MSC_VER)
+  return *dummy;
+#else
   ACE_NOTREACHED(return *dummy;)
+#endif
 }
 
 const RPG_Item_CommodityProperties
@@ -299,7 +306,18 @@ RPG_Item_Dictionary::getCommodityProperties(const RPG_Item_CommodityUnion& commo
 
   ACE_ASSERT(false);
   RPG_Item_CommodityProperties dummy;
+  dummy.aura = RPG_MAGIC_SCHOOL_INVALID;
+  dummy.baseStorePrice.numGoldPieces = 0;
+  dummy.baseStorePrice.numSilverPieces = 0;
+  dummy.baseWeight = 0;
+  dummy.costToCreate.numExperiencePoints = 0;
+  dummy.costToCreate.numGoldPieces = 0;
+  dummy.prerequisites.minCasterLevel = 0;
+#if defined (_MSC_VER)
+  return dummy;
+#else
   ACE_NOTREACHED(return dummy;)
+#endif
 }
 
 const RPG_Item_ArmorProperties
@@ -316,7 +334,25 @@ RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) 
 
     ACE_ASSERT(false);
     RPG_Item_ArmorProperties dummy;
+    dummy.aura = RPG_MAGIC_SCHOOL_INVALID;
+    dummy.baseStorePrice.numGoldPieces = 0;
+    dummy.baseStorePrice.numSilverPieces = 0;
+    dummy.baseWeight = 0;
+    dummy.costToCreate.numExperiencePoints = 0;
+    dummy.costToCreate.numGoldPieces = 0;
+    dummy.prerequisites.minCasterLevel = 0;
+    dummy.arcaneSpellFailure = 0;
+    dummy.baseBonus = 0;
+    dummy.baseSpeed = 0;
+    dummy.category = RPG_ITEM_ARMORCATEGORY_INVALID;
+    dummy.checkPenalty = 0;
+    dummy.defenseModifier = 0;
+    dummy.maxDexterityBonus = 0;
+#if defined (_MSC_VER)
+    return dummy;
+#else
     ACE_NOTREACHED(return dummy;)
+#endif
   } // end IF
 
   return iterator->second;
@@ -336,7 +372,31 @@ RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_i
 
     ACE_ASSERT(false);
     RPG_Item_WeaponProperties dummy;
+    dummy.aura = RPG_MAGIC_SCHOOL_INVALID;
+    dummy.baseStorePrice.numGoldPieces = 0;
+    dummy.baseStorePrice.numSilverPieces = 0;
+    dummy.baseWeight = 0;
+    dummy.costToCreate.numExperiencePoints = 0;
+    dummy.costToCreate.numGoldPieces = 0;
+    dummy.prerequisites.minCasterLevel = 0;
+    dummy.baseDamage.modifier = 0;
+    dummy.baseDamage.numDice = 0;
+    dummy.baseDamage.typeDice = RPG_DICE_DIETYPE_INVALID;
+    dummy.category = RPG_ITEM_WEAPONCATEGORY_INVALID;
+    dummy.criticalHit.damageModifier = 0;
+    dummy.criticalHit.minToHitRoll = 0;
+    dummy.isDoubleWeapon = false;
+    dummy.isNonLethal = false;
+    dummy.isReachWeapon = false;
+    dummy.rangeIncrement = 0;
+    dummy.toHitModifier = 0;
+    dummy.typeOfDamage = 0;
+    dummy.weaponClass = RPG_ITEM_WEAPONCLASS_INVALID;
+#if defined (_MSC_VER)
+    return dummy;
+#else
     ACE_NOTREACHED(return dummy;)
+#endif
   } // end IF
 
   return iterator->second;

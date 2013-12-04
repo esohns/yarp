@@ -23,20 +23,20 @@
 
 #include "rpg_client_defines.h"
 
-#include <rpg_sound_defines.h>
-#include <rpg_sound_dictionary.h>
-#include <rpg_sound_common_tools.h>
+#include "rpg_sound_defines.h"
+#include "rpg_sound_dictionary.h"
+#include "rpg_sound_common_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_dictionary.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_common_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_common_tools.h"
 
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_map_common_tools.h>
+#include "rpg_map_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 bool
 RPG_Client_Common_Tools::init(const RPG_Sound_SDLConfig_t& audioConfig_in,

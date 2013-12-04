@@ -21,14 +21,14 @@
 #ifndef RPG_Net_Client_Connector_H
 #define RPG_Net_Client_Connector_H
 
-#include "rpg_net_exports.h"
+#include "rpg_net_client_exports.h"
 #include "rpg_net_stream_common.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Connector.h>
 #include <ace/SOCK_Connector.h>
 
-class RPG_Net_Export RPG_Net_Client_Connector
+class RPG_Net_Client_Export RPG_Net_Client_Connector
  : public ACE_Connector<RPG_Net_StreamHandler_t,
                         ACE_SOCK_CONNECTOR>
 {

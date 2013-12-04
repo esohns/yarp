@@ -7,7 +7,9 @@
 #ifndef RPG_COMBAT_RANGEDATTACKPROPERTIES_H
 #define RPG_COMBAT_RANGEDATTACKPROPERTIES_H
 
-struct RPG_Combat_RangedAttackProperties
+#include "rpg_combat_exports.h"
+
+struct RPG_Combat_Export RPG_Combat_RangedAttackProperties
 {
   unsigned char maxRange;
   unsigned char increment;

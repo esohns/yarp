@@ -217,7 +217,11 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
   RPG_Graphics_t dummy;
   dummy.category = RPG_GRAPHICS_CATEGORY_INVALID;
   dummy.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+#if defined (_MSC_VER)
+  return dummy;
+#else
   ACE_NOTREACHED(return dummy;)
+#endif
 }
 
 RPG_Graphics_Fonts_t

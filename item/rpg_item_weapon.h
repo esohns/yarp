@@ -41,7 +41,7 @@ class RPG_Item_Export RPG_Item_Weapon
 
  public:
   // what am I ?
-  const RPG_Item_WeaponType& getWeaponType() const;
+  const RPG_Item_WeaponType getWeaponType() const;
 
   virtual void dump() const;
 

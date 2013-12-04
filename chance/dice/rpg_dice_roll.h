@@ -7,13 +7,17 @@
 #ifndef RPG_DICE_ROLL_H
 #define RPG_DICE_ROLL_H
 
-struct RPG_Dice_Roll
-{
-  unsigned int numDice;
-  RPG_Dice_DieType typeDice;
-  int modifier;
+#include "rpg_dice_exports.h"
 
-	RPG_Dice_Roll& operator*=(int);
-};
+ struct RPG_Dice_Export RPG_Dice_Roll
+ {
+   unsigned int numDice;
+   RPG_Dice_DieType typeDice;
+   int modifier;
+
+   // *TODO* will be clobbered by subsequent updates of the schema
+   // (refer to rpg_dice_common.h for a template)
+   RPG_Dice_Roll& operator*=(int);
+ };
 
 #endif

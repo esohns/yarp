@@ -358,7 +358,11 @@ RPG_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
 
   ACE_ASSERT(false);
   RPG_Character_BaseAttackBonus_t result;
+#if defined (_MSC_VER)
+  return result;
+#else
   ACE_NOTREACHED(return result;)
+#endif
 }
 
 signed char
@@ -368,5 +372,9 @@ RPG_Monster::getShieldBonus() const
 
   ACE_ASSERT(false);
   signed char result = 0;
+#if defined (_MSC_VER)
+  return result;
+#else
   ACE_NOTREACHED(return result;)
+#endif
 }

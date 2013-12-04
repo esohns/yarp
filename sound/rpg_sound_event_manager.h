@@ -24,10 +24,10 @@
 #include "rpg_sound_exports.h"
 #include "rpg_sound_defines.h"
 
-#include <rpg_common_itimer.h>
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_itimer.h"
+#include "rpg_common_idumpstate.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>

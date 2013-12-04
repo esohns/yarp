@@ -43,8 +43,8 @@ class RPG_Item_Export RPG_Item_Commodity
 
  public:
   // what am I ?
-  const RPG_Item_CommodityType& getCommodityType() const;
-  const RPG_Item_CommodityUnion& getCommoditySubType() const;
+  const RPG_Item_CommodityType getCommodityType() const;
+  const RPG_Item_CommodityUnion getCommoditySubType() const;
 
   virtual void dump() const;
 

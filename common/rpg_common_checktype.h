@@ -17,6 +17,8 @@ enum RPG_Common_CheckType
   RPG_COMMON_CHECKTYPE_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -25,7 +27,7 @@ enum RPG_Common_CheckType
 typedef std::map<RPG_Common_CheckType, std::string> RPG_Common_CheckTypeToStringTable_t;
 typedef RPG_Common_CheckTypeToStringTable_t::const_iterator RPG_Common_CheckTypeToStringTableIterator_t;
 
-class RPG_Common_CheckTypeHelper
+class RPG_Common_Export RPG_Common_CheckTypeHelper
 {
  public:
   inline static void init()

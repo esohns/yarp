@@ -21,7 +21,7 @@
 #ifndef IRC_CLIENT_TOOLS_H
 #define IRC_CLIENT_TOOLS_H
 
-#include <rpg_net_protocol_common.h>
+#include "rpg_net_protocol_common.h"
 
 #include <gtk/gtk.h>
 

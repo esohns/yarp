@@ -46,7 +46,7 @@ RPG_Item_Weapon::~RPG_Item_Weapon()
 
 }
 
-const RPG_Item_WeaponType&
+const RPG_Item_WeaponType
 RPG_Item_Weapon::getWeaponType() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Weapon::getWeaponType"));

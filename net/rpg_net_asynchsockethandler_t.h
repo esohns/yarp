@@ -46,8 +46,8 @@ class RPG_Net_AsynchSocketHandler_T
                     ACE_Message_Block&); // initial data (if any)
   virtual void addresses(const ACE_INET_Addr&,  // remote address
                          const ACE_INET_Addr&); // local address
-  virtual int handle_close(ACE_HANDLE,        // (socket) handle
-                           ACE_Reactor_Mask); // reactor mask
+  virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
+                           ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
   // implement RPG_Net_IConnection
   virtual void init(const ConfigType&);

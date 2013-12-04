@@ -48,6 +48,8 @@
 #define MAP_PARSER_DEF_DEBUG_SCANNER false
 #define MAP_PARSER_DEF_DEBUG_PARSER  false
 
+#define MAP_GENERATOR_DEF_LEVEL      false
+
 void
 print_usage(const std::string& programName_in)
 {

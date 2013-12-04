@@ -23,8 +23,8 @@
 
 #include "rpg_graphics_incl.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 #include <ace/Log_Msg.h>
 

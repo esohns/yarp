@@ -26,7 +26,7 @@
 #include "rpg_sound_defines.h"
 #include "rpg_sound_common.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>

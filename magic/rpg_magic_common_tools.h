@@ -21,17 +21,17 @@
 #ifndef RPG_MAGIC_COMMON_TOOLS_H
 #define RPG_MAGIC_COMMON_TOOLS_H
 
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
-#include <rpg_common_environment_incl.h>
-#include <rpg_character_incl.h>
+#include "rpg_dice_incl.h"
+#include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
+#include "rpg_character_incl.h"
 #include "rpg_magic_incl.h"
 
 #include "rpg_magic_exports.h"
 #include "rpg_magic_common.h"
 #include "rpg_magic_dictionary.h"
 
-#include <rpg_character_class_common.h>
+#include "rpg_character_class_common.h"
 
 #include <ace/Global_Macros.h>
 

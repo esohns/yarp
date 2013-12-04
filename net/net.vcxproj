@@ -44,7 +44,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;$(ProjectDir)..\chance\dice;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)stream;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_NET_BUILD_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -53,7 +53,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ACEd.lib</AdditionalDependencies>
     </Link>
     <ProjectReference>
@@ -93,6 +93,8 @@ popd</Command>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="rpg_net_asynchsockethandler_t.i" />
+    <None Include="rpg_net_asynchstreamhandler_t.i" />
     <None Include="rpg_net_connection_manager.i" />
     <None Include="rpg_net_module_runtimestatistic.i" />
     <None Include="rpg_net_sockethandler_base.i" />
@@ -101,7 +103,9 @@ popd</Command>
     <None Include="scripts\exports.bat" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rpg_net_client_sockethandler.cpp" />
+    <ClCompile Include="rpg_net_asynchlistener.cpp" />
+    <ClCompile Include="rpg_net_asynchsockethandler_t.cpp" />
+    <ClCompile Include="rpg_net_asynchstreamhandler_t.cpp" />
     <ClCompile Include="rpg_net_common_tools.cpp" />
     <ClCompile Include="rpg_net_connection_manager.cpp" />
     <ClCompile Include="rpg_net_controller_base.cpp" />
@@ -128,8 +132,11 @@ popd</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rpg_net_client_sockethandler.h" />
+    <ClInclude Include="rpg_net_asynchlistener.h" />
+    <ClInclude Include="rpg_net_asynchsockethandler_t.h" />
+    <ClInclude Include="rpg_net_asynchstreamhandler_t.h" />
     <ClInclude Include="rpg_net_common.h" />
+    <ClInclude Include="rpg_net_common_modules.h" />
     <ClInclude Include="rpg_net_common_tools.h" />
     <ClInclude Include="rpg_net_connection_manager.h" />
     <ClInclude Include="rpg_net_controller_base.h" />
@@ -154,6 +161,7 @@ popd</Command>
     <ClInclude Include="rpg_net_sockethandler_base.h" />
     <ClInclude Include="rpg_net_statistichandler.h" />
     <ClInclude Include="rpg_net_stream.h" />
+    <ClInclude Include="rpg_net_stream_common.h" />
     <ClInclude Include="rpg_net_stream_config.h" />
     <ClInclude Include="rpg_net_stream_messageallocator.h" />
     <ClInclude Include="rpg_net_stream_socket_base.h" />
@@ -169,9 +177,6 @@ popd</Command>
     <ProjectReference Include="stream\stream.vcxproj">
       <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

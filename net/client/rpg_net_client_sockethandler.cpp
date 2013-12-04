@@ -262,7 +262,7 @@ RPG_Net_Client_SocketHandler::handle_close(ACE_HANDLE handle_in,
   // - client closed() handler itself (failure to connect ?)
 
   // debug info
-  if (handle_in != -1)
+  if (handle_in != ACE_INVALID_HANDLE)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("lost connection %d to server...\n"),
                handle_in));

@@ -7,7 +7,9 @@
 #ifndef RPG_MAGIC_SPELL_CASTINGTIME_H
 #define RPG_MAGIC_SPELL_CASTINGTIME_H
 
-struct RPG_Magic_Spell_CastingTime
+#include "rpg_magic_exports.h"
+
+struct RPG_Magic_Export RPG_Magic_Spell_CastingTime
 {
   unsigned int rounds;
   RPG_Common_ActionType action;

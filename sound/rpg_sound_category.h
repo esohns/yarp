@@ -19,6 +19,8 @@ enum RPG_Sound_Category
   RPG_SOUND_CATEGORY_INVALID
 };
 
+#include "rpg_sound_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -27,7 +29,7 @@ enum RPG_Sound_Category
 typedef std::map<RPG_Sound_Category, std::string> RPG_Sound_CategoryToStringTable_t;
 typedef RPG_Sound_CategoryToStringTable_t::const_iterator RPG_Sound_CategoryToStringTableIterator_t;
 
-class RPG_Sound_CategoryHelper
+class RPG_Sound_Export RPG_Sound_CategoryHelper
 {
  public:
   inline static void init()
