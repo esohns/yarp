@@ -24,6 +24,7 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
+#include "rpg_client_common_tools.h"
 
 #include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
@@ -1312,8 +1313,9 @@ dirent_selector_profiles(const dirent* entry_in)
   // *NOTE*: select player profiles
   std::string filename(entry_in->d_name);
   std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT));
-  if (filename.rfind(extension,
-                     std::string::npos) != (filename.size() - extension.size()))
+	std::string::size_type position = filename.rfind(extension, std::string::npos);
+  if ((position == std::string::npos) ||
+		  (position != (filename.size() - extension.size())))
 //                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -1334,8 +1336,9 @@ dirent_selector_maps(const dirent* entry_in)
   // *NOTE*: select maps
   std::string filename(entry_in->d_name);
   std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT));
-  if (filename.rfind(extension,
-                     std::string::npos) != (filename.size() - extension.size()))
+	std::string::size_type position = filename.rfind(extension, std::string::npos);
+  if ((position == std::string::npos) ||
+		  (position != (filename.size() - extension.size())))
 //                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -1706,10 +1709,9 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
-  std::string user_name; // *NOTE*: empty --> use current user
-  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+  std::string profiles_directory = RPG_Client_Common_Tools::getPlayerProfilesDirectory();
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
-                                      ACE_TEXT(game_directory.c_str()));
+                                      ACE_TEXT(profiles_directory.c_str()));
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               data->entity_filter);
 
@@ -1809,9 +1811,8 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->entity.character);
 
   // assemble target filename
-  std::string user_name; // *NOTE*: empty --> use current user
-  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
-  std::string filename = game_directory;
+  std::string profiles_directory = RPG_Client_Common_Tools::getPlayerProfilesDirectory();
+  std::string filename = profiles_directory;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->entity.character->getName();
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
@@ -1892,9 +1893,8 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // construct filename
-  std::string user_name; // *NOTE*: empty --> use current user
-  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
-  std::string filename = game_directory;
+  std::string profiles_directory = RPG_Client_Common_Tools::getPlayerProfilesDirectory();
+  std::string filename = profiles_directory;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
@@ -1958,8 +1958,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load profile data
-  std::string user_name; // *NOTE*: empty --> use current user
-  unsigned int num_entries = ::load_files(RPG_Common_File_Tools::getUserGameDirectory(user_name),
+  unsigned int num_entries = ::load_files(RPG_Client_Common_Tools::getPlayerProfilesDirectory(),
                                           true,
                                           GTK_LIST_STORE(model));
 
@@ -2182,8 +2181,9 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
+	std::string maps_directory = RPG_Client_Common_Tools::getMapsDirectory();
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
+                                      ACE_TEXT(maps_directory.c_str()));
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               data->map_filter);
 
@@ -2251,11 +2251,7 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
   ACE_ASSERT(data->xml);
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY);
-#else
-  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
-#endif
+  std::string filename = RPG_Client_Common_Tools::getMapsDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->level_engine->getMeta(true).name;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
@@ -2320,11 +2316,7 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   g_value_unset(&value);
 
   // construct filename
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string filename = ACE_TEXT(RPG_MAP_DEF_REPOSITORY);
-#else
-  std::string filename = ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY));
-#endif
+  std::string filename = RPG_Client_Common_Tools::getMapsDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
@@ -2366,11 +2358,7 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load maps data
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  unsigned int num_entries = ::load_files(ACE_TEXT(RPG_MAP_DEF_REPOSITORY),
-#else
-  unsigned int num_entries = ::load_files(ACE_OS::getenv(ACE_TEXT(RPG_MAP_DEF_REPOSITORY)),
-#endif
+  unsigned int num_entries = ::load_files(RPG_Client_Common_Tools::getMapsDirectory(),
                                           false,
                                           GTK_LIST_STORE(model));
 

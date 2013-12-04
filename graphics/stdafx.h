@@ -34,11 +34,11 @@
 #include <functional>
 
 // Local Library Header Files
-#include <SDL/SDL_ttf.h>
-#include <SDL/SDL.h>
+#include <SDL_ttf.h>
+#include <SDL.h>
 #include <png.h>
 #include <xsd/cxx/pre.hxx>
 #include <xsd/cxx/config.hxx>
 
 // Local Header Files
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"

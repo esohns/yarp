@@ -25,12 +25,12 @@
 #include "rpg_client_common.h"
 #include "rpg_client_iwindow_level.h"
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_SDL_window_base.h>
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_SDL_window_base.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Thread_Mutex.h>

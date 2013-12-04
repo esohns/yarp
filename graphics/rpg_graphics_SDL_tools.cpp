@@ -124,7 +124,7 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
   videoInfo = SDL_GetVideoInfo();
   ACE_ASSERT(videoInfo);
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nhardware surfaces: \"%s\"\nwindow manager: \"%s\"\nhardware to hardware blits accelerated: \"%s\"\nhardware to hardware colorkey blits accelerated: \"%s\"\nhardware to hardware alpha blits accelerated: \"%s\"\nsoftware to hardware blits accelerated: \"%s\"\nsoftware to hardware colorkey blits accelerated: \"%s\"\nsoftware to hardware alpha blits accelerated: \"%s\"\ncolor fills accelerated: \"%s\"\nvideo memory: %d kBytes\n*** (suggested) video mode ***\npalette: %@\nbits[bytes]/pixel: %d[%d]\nmask[RGBA]: %x %x %x %x\nshift[RGBA]: %d %d %d %d\nloss[RGBA]: %d %d %d %d\ntransparent colorkey: %d\noverall surface alpha: %d\n"),
+             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nhardware surfaces:\t\t\t\t\t\"%s\"\nwindow manager:\t\t\t\t\t\t\"%s\"\nhardware to hardware blits accelerated:\t\t\t\"%s\"\nhardware to hardware colorkey blits accelerated:\t\"%s\"\nhardware to hardware alpha blits accelerated:\t\t\"%s\"\nsoftware to hardware blits accelerated:\t\t\t\"%s\"\nsoftware to hardware colorkey blits accelerated:\t\"%s\"\nsoftware to hardware alpha blits accelerated:\t\t\"%s\"\ncolor fills accelerated:\t\t\t\t\"%s\"\nvideo memory:\t\t\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t%@\nbits[bytes]/pixel:\t%d[%d]\nmask[RGBA]:\t\t%x %x %x %x\nshift[RGBA]:\t\t%d %d %d %d\nloss[RGBA]:\t\t%d %d %d %d\ntransparent colorkey:\t%d\noverall surface alpha:\t%d\n"),
              driver,
              (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
              (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
@@ -240,7 +240,7 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** screen flags ***\nsurface: %sRAM\nasynch blits: \"%s\"\nany video depth/pixel-format: \"%s\"\nsurface has exclusive palette: \"%s\"\ndouble-buffered: \"%s\"\nblit uses hardware acceleration: \"%s\"\nblit uses a source color key: \"%s\"\nsurface is RLE encoded: \"%s\"\nblit uses source alpha blending: \"%s\"\nsurface uses preallocated memory: \"%s\"\n"),
+             ACE_TEXT("*** screen flags ***\nsurface:\t\t\t\t%sRAM\nasynch blits:\t\t\t\t\"%s\"\nany video depth/pixel-format:\t\t\"%s\"\nsurface has exclusive palette:\t\t\"%s\"\ndouble-buffered:\t\t\t\"%s\"\nblit uses hardware acceleration:\t\"%s\"\nblit uses a source color key:\t\t\"%s\"\nsurface is RLE encoded:\t\t\t\"%s\"\nblit uses source alpha blending:\t\"%s\"\nsurface uses preallocated memory:\t\"%s\"\n"),
              ((screen->flags & SDL_HWSURFACE) ? ACE_TEXT("Video") : ACE_TEXT("")),
              ((screen->flags & SDL_ASYNCBLIT) ? ACE_TEXT("yes") : ACE_TEXT("no")),
              ((screen->flags & SDL_ANYFORMAT) ? ACE_TEXT("yes") : ACE_TEXT("no")),

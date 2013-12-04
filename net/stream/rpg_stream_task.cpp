@@ -57,7 +57,11 @@ RPG_Stream_Task::open(void* args_in)
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 int
@@ -70,7 +74,11 @@ RPG_Stream_Task::close(u_long arg_in)
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 int
@@ -81,7 +89,11 @@ RPG_Stream_Task::module_closed(void)
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 int
@@ -96,7 +108,11 @@ RPG_Stream_Task::put(ACE_Message_Block* mb_in,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 int
@@ -107,7 +123,11 @@ RPG_Stream_Task::svc(void)
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 // *** END dummy stub methods ***
 

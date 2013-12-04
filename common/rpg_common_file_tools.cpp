@@ -27,6 +27,7 @@
 
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #include "Userenv.h"
+#include "Shlobj.h"
 #endif
 
 #include <ace/ACE.h>
@@ -451,7 +452,7 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
   if (!GetUserProfileDirectory(token, buffer, &buffer_size))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to GetUserProfileDirectory(), falling back\n")));
+               ACE_TEXT("failed to GetUserProfileDirectory(): \"%s\", falling back\n")));
 
     // clean up
     if (!CloseHandle(token))
@@ -475,26 +476,24 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
 }
 
 std::string
-RPG_Common_File_Tools::getUserGameDirectory(const std::string& user_in)
+RPG_Common_File_Tools::getUserGameDirectory()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getUserGameDirectory"));
 
   std::string result;
 
-  std::string user_name = user_in;
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  std::string user_name;
+  std::string real_name;
+  RPG_Common_Tools::getCurrentUserName(user_name, real_name);
   if (user_name.empty())
   {
-    std::string real_name;
-    RPG_Common_Tools::getCurrentUserName(user_name, real_name);
-    if (user_name.empty())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_Tools::getCurrentUserName(), falling back\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::getCurrentUserName(), falling back\n")));
 
-      // fallback
-      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
-      return result;
-    } // end IF
+    // fallback
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    return result;
   } // end IF
 
   result = RPG_Common_File_Tools::getUserHomeDirectory(user_name);
@@ -509,13 +508,43 @@ RPG_Common_File_Tools::getUserGameDirectory(const std::string& user_in)
     return result;
   } // end IF
 
-#if defined(META_PACKAGE_NAME)
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
   result += ACE_TEXT_ALWAYS_CHAR(".");
+#else
+  TCHAR buffer[PATH_MAX];
+  ACE_OS::memset(buffer, 0, sizeof(buffer));
+
+	HRESULT win_result = SHGetFolderPath(NULL,                                   // hwndOwner
+																			 CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, // nFolder
+																			 NULL,                                   // hToken
+																			 SHGFP_TYPE_CURRENT,                     // dwFlags
+																			 buffer);                                // pszPath
+	if (FAILED(win_result))
+	{
+		ACE_OS::memset(buffer, 0, sizeof(buffer));
+		if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,                // dwFlags
+			                NULL,                                      // lpSource
+										  win_result,                                // dwMessageId
+											MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // dwLanguageId
+											buffer,                                    // lpBuffer
+											PATH_MAX,                                  // nSize
+											NULL) == 0)                                // Arguments
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to FormatMessage(%d): \"%m\", continuing\n"),
+                 win_result));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SHGetFolderPath(CSIDL_APPDATA): \"%s\", falling back\n"),
+               buffer));
+
+    // fallback
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    return result;
+	} // end IF
+
+  result = ACE_TEXT_ALWAYS_CHAR(buffer);
+  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   result += ACE_TEXT_ALWAYS_CHAR(META_PACKAGE_NAME);
-#endif
 
   if (!RPG_Common_File_Tools::isDirectory(result))
   {
@@ -526,7 +555,7 @@ RPG_Common_File_Tools::getUserGameDirectory(const std::string& user_in)
                  result.c_str()));
 
       // fallback
-      result = RPG_Common_File_Tools::getUserHomeDirectory(user_name);
+      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
     } // end IF
     else
       ACE_DEBUG((LM_DEBUG,

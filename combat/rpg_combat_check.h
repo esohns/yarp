@@ -7,7 +7,9 @@
 #ifndef RPG_COMBAT_CHECK_H
 #define RPG_COMBAT_CHECK_H
 
-struct RPG_Combat_Check
+#include "rpg_combat_exports.h"
+
+struct RPG_Combat_Export RPG_Combat_Check
 {
   RPG_Combat_CheckTypeUnion type;
   RPG_Common_Attribute attribute;

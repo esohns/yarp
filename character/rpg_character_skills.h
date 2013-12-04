@@ -7,7 +7,9 @@
 #ifndef RPG_CHARACTER_SKILLS_H
 #define RPG_CHARACTER_SKILLS_H
 
-struct RPG_Character_Skills
+#include "rpg_character_exports.h"
+
+struct RPG_Character_Export RPG_Character_Skills
 {
   std::vector<RPG_Character_SkillValue> skills;
 };

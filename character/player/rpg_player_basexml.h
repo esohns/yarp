@@ -7,7 +7,9 @@
 #ifndef RPG_PLAYER_BASEXML_H
 #define RPG_PLAYER_BASEXML_H
 
-struct RPG_Player_BaseXML
+#include "rpg_player_exports.h"
+
+struct RPG_Player_Export RPG_Player_BaseXML
 {
   std::string name;
   RPG_Character_Alignment alignment;

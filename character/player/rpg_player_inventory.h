@@ -23,7 +23,7 @@
 
 #include "rpg_player_exports.h"
 
-#include <rpg_item_instance_common.h>
+#include "rpg_item_instance_common.h"
 
 #include <ace/Global_Macros.h>
 

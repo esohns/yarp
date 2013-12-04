@@ -30,8 +30,6 @@
 #include "rpg_magic_exports.h"
 #include "rpg_magic_common.h"
 
-#include <xsd/cxx/xml/error-handler.hxx>
-
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -68,23 +66,10 @@ class RPG_Magic_Export RPG_Magic_Dictionary
   ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Dictionary(const RPG_Magic_Dictionary&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Dictionary& operator=(const RPG_Magic_Dictionary&));
 
-  // private error handler
-  class XSD_Error_Handler
-   : public ::xsd::cxx::xml::error_handler<char>
-  {
-   public:
-    virtual bool handle(const std::string&,                             // id
-                        unsigned long,                                  // line
-                        unsigned long,                                  // column
-                        ::xsd::cxx::xml::error_handler<char>::severity, // severity
-                        const std::string&);                            // message
-  };
-
   // helper methods
   void dumpLevels() const;
 
   RPG_Magic_Dictionary_t myDictionary;
-  XSD_Error_Handler      myXSDErrorHandler;
 };
 
 typedef ACE_Singleton<RPG_Magic_Dictionary,

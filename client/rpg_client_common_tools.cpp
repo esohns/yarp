@@ -23,20 +23,26 @@
 
 #include "rpg_client_defines.h"
 
-#include <rpg_sound_defines.h>
-#include <rpg_sound_dictionary.h>
-#include <rpg_sound_common_tools.h>
+#include "rpg_sound_defines.h"
+#include "rpg_sound_dictionary.h"
+#include "rpg_sound_common_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_dictionary.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_common_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_common_tools.h"
 
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_map_common_tools.h>
+#include "rpg_map_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_player_defines.h"
+
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+
+#include <ace/Global_Macros.h>
 
 bool
 RPG_Client_Common_Tools::init(const RPG_Sound_SDLConfig_t& audioConfig_in,
@@ -734,6 +740,81 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
         RPG_Map_Common_Tools::isAdjacent(entity_position,
                                          position_in))
       return CURSOR_DOOR_OPEN;
+  } // end IF
+
+  return result;
+}
+
+std::string
+RPG_Client_Common_Tools::getPlayerProfilesDirectory()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::getPlayerProfilesDirectory"));
+
+  std::string result = RPG_Common_File_Tools::getUserGameDirectory();
+	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_PROFILES_SUB);
+
+  if (!RPG_Common_File_Tools::isDirectory(result))
+  {
+    if (!RPG_Common_File_Tools::createDirectory(result))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                 result.c_str()));
+
+      // fallback
+      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    } // end IF
+    else
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("created player profiles directory \"%s\"\n"),
+                 result.c_str()));
+  } // end IF
+
+  return result;
+}
+
+std::string
+RPG_Client_Common_Tools::getMapsDirectory()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::getMapsDirectory"));
+
+  std::string result;
+
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
+	result = data_path;
+	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_SUB);
+	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#else
+  result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+#endif
+
+  if (!RPG_Common_File_Tools::isDirectory(result))
+  {
+    if (!RPG_Common_File_Tools::createDirectory(result))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                 result.c_str()));
+
+      // fallback
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+      result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+#else
+      result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+#endif
+    } // end IF
+    else
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("created maps directory \"%s\"\n"),
+                 result.c_str()));
   } // end IF
 
   return result;

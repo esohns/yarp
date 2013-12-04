@@ -51,10 +51,18 @@
       <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>"E:\Program Files\NSIS\makensis.exe" .\scripts\Yarp.nsi
-move /Y .\scripts\Yarp.exe .\releases</Command>
-      <Message>generating installer...</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>"C:\Program Files\NSIS\makensis.exe" /Drelease=$(Configuration) .\scripts\Yarp.nsi
+move /Y .\scripts\Yarp*.exe .\releases</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>generating installer...</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

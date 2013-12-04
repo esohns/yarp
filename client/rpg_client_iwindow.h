@@ -21,7 +21,7 @@
 #ifndef RPG_CLIENT_IWINDOW_H
 #define RPG_CLIENT_IWINDOW_H
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 class RPG_Client_IWindow
 {

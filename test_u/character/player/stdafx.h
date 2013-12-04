@@ -15,7 +15,7 @@
 // System Library Header Files
 #include <glade/glade.h>
 #include <gtk/gtk.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <png.h>
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
@@ -25,4 +25,4 @@
 #include <iostream>
 
 // Local Header Files
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"

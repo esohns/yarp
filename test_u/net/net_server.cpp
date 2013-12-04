@@ -792,16 +792,16 @@ ACE_TMAIN(int argc,
   process_profile.start();
 
   // step1: init
-  // *PORTABILITY*: on Windows, we need to init ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::init() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//  // *PORTABILITY*: on Windows, we need to init ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::init() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   // step1a set defaults
   unsigned int pingInterval                = RPG_NET_DEF_PING_INTERVAL;
@@ -951,17 +951,17 @@ ACE_TMAIN(int argc,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              working_time_string.c_str()));
 
-  // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::fini() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//  // *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::fini() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::fini(): \"%s\", aborting\n"),
+//               ACE_OS::strerror(ACE_OS::last_error())));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   // stop profile timer...
   process_profile.stop();

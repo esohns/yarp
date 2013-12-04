@@ -7,7 +7,9 @@
 #ifndef RPG_MAGIC_SPELL_TYPE_H
 #define RPG_MAGIC_SPELL_TYPE_H
 
-struct RPG_Magic_Spell_Type
+#include "rpg_magic_exports.h"
+
+struct RPG_Magic_Export RPG_Magic_Spell_Type
 {
   RPG_Magic_SpellType type;
   RPG_Magic_School school;

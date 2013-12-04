@@ -25,10 +25,10 @@
 #include "rpg_player_common.h"
 #include "rpg_player_XML_tree.h"
 
-#include <rpg_character_common.h>
-#include <rpg_character_skills_common.h>
+#include "rpg_character_common.h"
+#include "rpg_character_skills_common.h"
 
-#include <rpg_magic_common.h>
+#include "rpg_magic_common.h"
 
 class RPG_Player_Export RPG_Player_Common_Tools
 {

@@ -31,11 +31,11 @@
 #include <functional>
 
 // Local Library Header Files
-#include <SDL/SDL_mixer.h>
-#include <SDL/SDL.h>
+#include <SDL_mixer.h>
+#include <SDL.h>
 #include <xsd/cxx/pre.hxx>
 #include <xsd/cxx/config.hxx>
 #include <xsd/cxx/xml/error-handler.hxx>
 
 // Local Header Files
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"

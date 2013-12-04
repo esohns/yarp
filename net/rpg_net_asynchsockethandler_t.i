@@ -468,9 +468,9 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 
   // call baseclass - will clean everything (including ourselves !) up
   // --> triggers handle_close()
-  if (close(1) == -1)
+  if (handle_close() == -1)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_AsynchSocketHandler_T::close(1): \"%m\", continuing\n")));
+               ACE_TEXT("failed to RPG_Net_AsynchSocketHandler_T::handle_close(): \"%m\", continuing\n")));
 }
 
 template <typename ConfigType,

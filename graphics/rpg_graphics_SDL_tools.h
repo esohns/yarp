@@ -23,7 +23,7 @@
 
 #include "rpg_graphics_exports.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 

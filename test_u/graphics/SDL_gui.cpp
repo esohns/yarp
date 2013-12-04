@@ -21,51 +21,51 @@
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
 #include "SDL_gui_defines.h"
 #include "SDL_gui_mainwindow.h"
 #include "SDL_gui_levelwindow.h"
 
-#include <rpg_client_defines.h>
+#include "rpg_client_defines.h"
 
-#include <rpg_engine_defines.h>
-#include <rpg_engine.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine_defines.h"
+#include "rpg_engine.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_map_defines.h>
-#include <rpg_map_common_tools.h>
+#include "rpg_map_defines.h"
+#include "rpg_map_common_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_dictionary.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_common_tools.h>
-#include <rpg_graphics_SDL_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_player_defines.h>
+#include "rpg_player_defines.h"
 
-#include <rpg_character_common_tools.h>
+#include "rpg_character_common_tools.h"
 
-#include <rpg_item_defines.h>
-#include <rpg_item_dictionary.h>
-#include <rpg_item_common_tools.h>
+#include "rpg_item_defines.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_common_tools.h"
 
-#include <rpg_magic_defines.h>
-#include <rpg_magic_dictionary.h>
-#include <rpg_magic_common_tools.h>
+#include "rpg_magic_defines.h"
+#include "rpg_magic_dictionary.h"
+#include "rpg_magic_common_tools.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -1436,16 +1436,16 @@ ACE_TMAIN(int argc,
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step0: init ACE
-  // *PORTABILITY*: on Windows, we need to init ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::init() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//  // *PORTABILITY*: on Windows, we need to init ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::init() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   // step1: init
   // step1a set defaults
@@ -1562,12 +1562,12 @@ ACE_TMAIN(int argc,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
 
-    // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+//    // *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1586,12 +1586,12 @@ ACE_TMAIN(int argc,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
 
-    // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+//    // *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1634,6 +1634,13 @@ ACE_TMAIN(int argc,
   {
     do_printVersion(std::string(ACE::basename(argv[0])));
 
+//    // *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+//#endif
+
     return EXIT_SUCCESS;
   } // end IF
 
@@ -1646,12 +1653,12 @@ ACE_TMAIN(int argc,
                ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
                SDL_GetError()));
 
-    // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+//    // *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1672,12 +1679,12 @@ ACE_TMAIN(int argc,
                SDL_GetError()));
 
     SDL_Quit();
-    // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+//    // *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1733,16 +1740,16 @@ ACE_TMAIN(int argc,
   TTF_Quit();
   SDL_Quit();
 
-  // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::fini() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//  // *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::fini() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   return EXIT_SUCCESS;
 } // end main

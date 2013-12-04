@@ -74,11 +74,12 @@
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
 //#include <SDL/SDL_framerate.h>
 
 #include <ace/ACE.h>
+#include <ace/Global_Macros.h>
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
 #include <ace/Profile_Timer.h>
@@ -258,7 +259,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-a          : no audio") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("client");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -266,7 +267,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -276,7 +277,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-e [FILE]   : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("map");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("data");
@@ -307,7 +308,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -315,14 +316,14 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-m [FILE]   : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-n          : use SDL_VIDEODRIVER environment") << ACE_TEXT(" [") << RPG_CLIENT_DEF_VIDEO_INIT << ACE_TEXT("]") << std::endl;
   path = config_path;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
   std::cout << ACE_TEXT("-r [DIR]    : schema repository") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -331,7 +332,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("client");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -376,7 +377,7 @@ process_arguments(const int& argc_in,
 
   iniFile_out = config_path;
   iniFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   iniFile_out += ACE_TEXT_ALWAYS_CHAR("client");
   iniFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -384,7 +385,7 @@ process_arguments(const int& argc_in,
 
   monsterDictionary_out = config_path;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -394,10 +395,10 @@ process_arguments(const int& argc_in,
 
   floorPlan_out = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR("map");
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR("data");
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
@@ -408,7 +409,7 @@ process_arguments(const int& argc_in,
 
   graphicsDictionary_out = config_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -416,7 +417,7 @@ process_arguments(const int& argc_in,
 
   itemDictionary_out = config_path;
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -426,7 +427,7 @@ process_arguments(const int& argc_in,
 
   magicDictionary_out = config_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -435,14 +436,14 @@ process_arguments(const int& argc_in,
   videoDriverEnv_out = RPG_CLIENT_DEF_VIDEO_INIT;
 
   schemaRepository_out = config_path;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   schemaRepository_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schemaRepository_out += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   soundDictionary_out = config_path;
   soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   soundDictionary_out += ACE_TEXT_ALWAYS_CHAR("sound");
   soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -452,7 +453,7 @@ process_arguments(const int& argc_in,
 
   UIfile_out = config_path;
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   UIfile_out += ACE_TEXT_ALWAYS_CHAR("client");
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -911,9 +912,8 @@ do_initGUI(const std::string& UIfile_in,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
 
-  std::string user_name; // *NOTE*: empty --> use current user
-  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
-  if (::load_files(game_directory,
+  std::string profiles_directory = RPG_Client_Common_Tools::getPlayerProfilesDirectory();
+  if (::load_files(profiles_directory,
                    true,
                    list))
     gtk_widget_set_sensitive(GTK_WIDGET(combobox),
@@ -972,11 +972,7 @@ do_initGUI(const std::string& UIfile_in,
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  if (::load_files(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY),
-#else
-  if (::load_files(ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY)),
-#endif
+  if (::load_files(RPG_Client_Common_Tools::getMapsDirectory(),
                    false,
                    list))
     gtk_widget_set_sensitive(GTK_WIDGET(combobox),
@@ -1679,12 +1675,12 @@ do_work(const RPG_Client_Config& config_in,
           }
         } // end SWITCH
         window = main_window.getWindow(mouse_position);
-        ACE_ASSERT(window);
 
         // first steps on mouse motion:
         // 0. restore cursor BG
         // 1. notify previously "active" window upon losing "focus"
-        if (sdl_event.type == SDL_MOUSEMOTION)
+        if ((window || previous_window) &&
+					  (sdl_event.type == SDL_MOUSEMOTION))
         {
           // step0: restore cursor BG
           client_action.command = COMMAND_CURSOR_RESTORE_BG;
@@ -1730,18 +1726,21 @@ do_work(const RPG_Client_Config& config_in,
         // remember last "active" window
         previous_window = window;
 
-        // notify "active" window
-        try
-        {
-          window->handleEvent(sdl_event,
-                              window,
-                              schedule_redraw);
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-        }
+        // 2. notify "active" window (if any)
+				if (window)
+				{
+          try
+          {
+            window->handleEvent(sdl_event,
+                                window,
+                                schedule_redraw);
+          }
+          catch (...)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+          }
+				} // end IF
 
         break;
       }
@@ -1891,10 +1890,10 @@ do_parseIniFile(const std::string& iniFilename_in,
 
   // init return value(s)
   //config_out.audio_config.mute = false;
-  config_out.audio_config.sdl_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  config_out.audio_config.sdl_config.format = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  config_out.audio_config.sdl_config.channels = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  config_out.audio_config.sdl_config.chunksize = RPG_CLIENT_DEF_AUDIO_CHUNKSIZE;
+  config_out.audio_config.sdl_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
+  config_out.audio_config.sdl_config.format = RPG_SOUND_DEF_AUDIO_FORMAT;
+  config_out.audio_config.sdl_config.channels = RPG_SOUND_DEF_AUDIO_CHANNELS;
+  config_out.audio_config.sdl_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
   config_out.audio_config.use_CD = RPG_SOUND_DEF_AMBIENT_USE_CD;
 
   config_out.video_config.screen_width = RPG_CLIENT_DEF_VIDEO_W;
@@ -2190,16 +2189,16 @@ ACE_TMAIN(int argc_in,
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init ACE
-// *PORTABILITY*: on Windows, we need to init ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::init() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//// *PORTABILITY*: on Windows, we need to init ACE...
+//#if defined(ACE_WIN32) || defined(ACE_WIN64)
+//  if (ACE::init() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
@@ -2220,7 +2219,7 @@ ACE_TMAIN(int argc_in,
   bool mute_sound = false;
   std::string iniFile = config_path;
   iniFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   iniFile += ACE_TEXT_ALWAYS_CHAR("client");
   iniFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -2228,7 +2227,7 @@ ACE_TMAIN(int argc_in,
 
   std::string monsterDictionary = config_path;
   monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   monsterDictionary += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -2238,7 +2237,7 @@ ACE_TMAIN(int argc_in,
 
   std::string graphicsDictionary = config_path;
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   graphicsDictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -2246,7 +2245,7 @@ ACE_TMAIN(int argc_in,
 
   std::string itemDictionary = config_path;
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   itemDictionary += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -2254,7 +2253,7 @@ ACE_TMAIN(int argc_in,
 
   std::string magicDictionary = config_path;
   magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   magicDictionary += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -2264,7 +2263,7 @@ ACE_TMAIN(int argc_in,
 
   std::string soundDictionary = config_path;
   soundDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   soundDictionary += ACE_TEXT_ALWAYS_CHAR("sound");
   soundDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -2272,24 +2271,24 @@ ACE_TMAIN(int argc_in,
 
   std::string UIfile = config_path;
   UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   UIfile += ACE_TEXT_ALWAYS_CHAR("client");
   UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   UIfile += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_UI_FILE);
 
   std::string schemaRepository = config_path;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   std::string floorPlan = data_path;
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   floorPlan += ACE_TEXT_ALWAYS_CHAR("map");
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan += ACE_TEXT_ALWAYS_CHAR("data");
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
   floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
@@ -2302,23 +2301,23 @@ ACE_TMAIN(int argc_in,
   bool traceInformation             = false;
   bool printVersionAndExit          = false;
   unsigned int numThreadPoolThreads = RPG_CLIENT_DEF_NUM_TP_THREADS;
-  if (!(process_arguments(argc_in,
-                          argv_in,
-                          mute_sound,
-                          iniFile,
-                          monsterDictionary,
-                          floorPlan,
-                          graphicsDictionary,
-                          itemDictionary,
-                          logToFile,
-                          magicDictionary,
-                          videoDriverEnv,
-                          schemaRepository,
-                          soundDictionary,
-                          traceInformation,
-                          UIfile,
-                          printVersionAndExit,
-                          numThreadPoolThreads)))
+  if (!process_arguments(argc_in,
+                         argv_in,
+                         mute_sound,
+                         iniFile,
+                         monsterDictionary,
+                         floorPlan,
+                         graphicsDictionary,
+                         itemDictionary,
+                         logToFile,
+                         magicDictionary,
+                         videoDriverEnv,
+                         schemaRepository,
+                         soundDictionary,
+                         traceInformation,
+                         UIfile,
+                         printVersionAndExit,
+                         numThreadPoolThreads))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
@@ -2399,14 +2398,14 @@ ACE_TMAIN(int argc_in,
 
   // *** sound ***
   config.audio_config.mute                 = mute_sound;
-  config.audio_config.sdl_config.frequency = RPG_CLIENT_DEF_AUDIO_FREQUENCY;
-  config.audio_config.sdl_config.format    = RPG_CLIENT_DEF_AUDIO_FORMAT;
-  config.audio_config.sdl_config.channels  = RPG_CLIENT_DEF_AUDIO_CHANNELS;
-  config.audio_config.sdl_config.chunksize = RPG_CLIENT_DEF_AUDIO_CHUNKSIZE;
+  config.audio_config.sdl_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
+  config.audio_config.sdl_config.format    = RPG_SOUND_DEF_AUDIO_FORMAT;
+  config.audio_config.sdl_config.channels  = RPG_SOUND_DEF_AUDIO_CHANNELS;
+  config.audio_config.sdl_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
   config.audio_config.use_CD               = RPG_SOUND_DEF_AMBIENT_USE_CD;
   config.audio_config.repository = data_path;
   config.audio_config.repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR("sound");
   config.audio_config.repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
@@ -2425,7 +2424,7 @@ ACE_TMAIN(int argc_in,
   config.video_config.initVideo            = videoDriverEnv;
   config.graphics_directory = data_path;
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
@@ -2514,7 +2513,9 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step2b: init GLIB / G(D|T)K[+] / GNOME
-//  g_thread_init(NULL);
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  g_thread_init(NULL);
+#endif
   gdk_threads_init();
   gtk_init(&argc_in,
            &argv_in);
@@ -2617,16 +2618,16 @@ ACE_TMAIN(int argc_in,
              ACE_TEXT(system_time_string.c_str())));
 #endif
 
-// *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::fini() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//// *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::fini() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   return EXIT_SUCCESS;
 } // end main

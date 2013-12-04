@@ -7,7 +7,9 @@
 #ifndef RPG_PLAYER_SPELLS_H
 #define RPG_PLAYER_SPELLS_H
 
-struct RPG_Player_Spells
+#include "rpg_player_exports.h"
+
+struct RPG_Player_Export RPG_Player_Spells
 {
   std::vector<RPG_Magic_SpellType> spells;
 };

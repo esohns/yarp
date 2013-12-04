@@ -34,15 +34,10 @@
 
 #define RPG_MAP_FILE_EXT           ".txt"
 
+#define RPG_MAP_DEF_MAP_SUB        "map"
 // default (maps) data directory tree organization
 #define RPG_MAP_DEF_MAPS_SUB       "maps"
 
 #define RPG_MAP_DEF_MAP_FILE       "dungeon_one"
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-#define RPG_MAP_DEF_REPOSITORY     "/var/tmp"
-#else
-#define RPG_MAP_DEF_REPOSITORY     "TEMP" // environment
-#endif
 
 #endif
-

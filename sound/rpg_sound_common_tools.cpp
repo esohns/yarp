@@ -25,13 +25,13 @@
 #include "rpg_sound_dictionary.h"
 #include "rpg_sound_event_manager.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_file_tools.h"
 
-#include <rpg_dice_common.h>
-#include <rpg_dice.h>
+#include "rpg_dice_common.h"
+#include "rpg_dice.h"
 
-#include <SDL/SDL_mixer.h>
+#include <SDL_mixer.h>
 
 #include <ace/Log_Msg.h>
 
@@ -91,15 +91,18 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
 
     return false;
   } // end IF
-/*  if (Mix_AllocateChannels(config_in.channels) != config_in.channels)
+  if (Mix_AllocateChannels(RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS) != RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
-               config_in.channels,
+               RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS,
                Mix_GetError()));
 
     return false;
-  } // end IF*/
+  } // end IF
+	ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("allocated %d audio channel(s)...\n"),
+             RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS));
 
   RPG_Sound_Common_Tools::myConfig.frequency = 0;
   RPG_Sound_Common_Tools::myConfig.format = 0;
@@ -154,12 +157,27 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
                                                       useCD_in);
 
   ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency: %d\nformat: %s\nchannels: %d\nCD: %s\n"),
+             ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency:\t%d\nformat:\t\t%s\nchannels:\t%d\nCD:\t\t%s\n"),
              ACE_TEXT(driver),
              RPG_Sound_Common_Tools::myConfig.frequency,
              ACE_TEXT(format_string.c_str()),
              RPG_Sound_Common_Tools::myConfig.channels,
              (useCD_in ? ACE_TEXT(SDL_CDName(0)) : ACE_TEXT("N/A"))));
+
+  int total = Mix_GetNumChunkDecoders();
+	ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("*** audio decoders (effects) ***\n")));
+  for (int i = 0; i < total; i++)
+	  ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("chunk decoder: [%s]\n"),
+							 Mix_GetChunkDecoder(i)));
+  total = Mix_GetNumMusicDecoders();
+	ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("*** audio decoders (music) ***\n")));
+  for (int i = 0; i < total; i++)
+	  ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("music decoder: [%s]\n"),
+							 Mix_GetMusicDecoder(i)));
 
   myIsMuted = mute_in;
   if (!directory_in.empty())
@@ -317,11 +335,21 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in,
 
         return result;
       } // end IF
-      node.chunk = Mix_LoadWAV(node.sound_file.c_str());
+			SDL_RWops* rw_ops = SDL_RWFromFile(node.sound_file.c_str(), "rb");
+      if (!rw_ops)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to SDL_RWFromFile(\"%s\"): \"%s\", aborting\n"),
+                   ACE_TEXT(node.sound_file.c_str()),
+                   SDL_GetError()));
+
+        return result;
+      } // end IF
+      node.chunk = Mix_LoadWAV_RW(rw_ops, 1);
       if (!node.chunk)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to Mix_LoadWAV(\"%s\"): \"%s\", aborting\n"),
+                   ACE_TEXT("failed to Mix_LoadWAV_RW(\"%s\"): \"%s\", aborting\n"),
                    ACE_TEXT(node.sound_file.c_str()),
                    SDL_GetError()));
 

@@ -21,9 +21,9 @@
 #ifndef NET_SERVER_SIGNALHANDLER_H
 #define NET_SERVER_SIGNALHANDLER_H
 
-#include <rpg_net_common.h>
+#include "rpg_net_common.h"
 
-#include <rpg_common_istatistic.h>
+#include "rpg_common_istatistic.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>

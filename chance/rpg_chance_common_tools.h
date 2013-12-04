@@ -23,7 +23,7 @@
 
 #include "rpg_chance_exports.h"
 
-#include <rpg_dice_dietype.h>
+#include "rpg_dice_dietype.h"
 
 #include <ace/Global_Macros.h>
 

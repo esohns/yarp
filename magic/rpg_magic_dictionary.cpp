@@ -24,15 +24,17 @@
 #include "rpg_magic_XML_parser.h"
 #include "rpg_magic_common_tools.h"
 
-#include <rpg_character_XML_parser.h>
+#include "rpg_character_XML_parser.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_XML_parser.h>
-#include <rpg_common_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+//#include "rpg_common_xsderrorhandler.h"
+#include "rpg_common_XML_tools.h"
+#include "rpg_common_XML_parser.h"
+#include "rpg_common_tools.h"
 
-#include <rpg_dice_XML_parser.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice_XML_parser.h"
+#include "rpg_dice_common_tools.h"
 
 #include <ace/Log_Msg.h>
 
@@ -235,9 +237,10 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
 
   // Parse the document to obtain the object model.
   //
-  ::xml_schema::document doc_p(dictionary_p,
-                               ACE_TEXT_ALWAYS_CHAR("urn:rpg"),
-                               ACE_TEXT_ALWAYS_CHAR("spellDictionary"));
+  ::xml_schema::document doc_p(dictionary_p,                                          // parser
+                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE), // namespace
+                               ACE_TEXT_ALWAYS_CHAR("spellDictionary"),               // root element name
+															 false);                                                // polymorphic ?
 
   dictionary_p.pre();
 
@@ -245,11 +248,17 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
   ::xml_schema::flags flags;
   if (!validateXML_in)
     flags = flags | ::xml_schema::flags::dont_validate;
+	::xml_schema::properties properties;
   try
   {
-    doc_p.parse(filename_in,
-                myXSDErrorHandler,
-                flags);
+    //doc_p.parse(filename_in,
+    //            RPG_XSDErrorHandler,
+    //            flags,
+				//				properties);
+	  doc_p.parse(filename_in,
+                *RPG_Common_XML_Tools::parser(),
+                flags,
+                properties);
   }
   catch (const ::xml_schema::parsing& exception)
   {
@@ -321,7 +330,11 @@ RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in
 
   ACE_ASSERT(false);
   RPG_Magic_Spell_Properties dummy;
+#if defined (_MSC_VER)
+  return dummy;
+#else
   ACE_NOTREACHED(return dummy;)
+#endif
 }
 
 RPG_Magic_SpellTypes_t
@@ -392,74 +405,6 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
     } // end FOR
 
   return result;
-}
-
-bool
-RPG_Magic_Dictionary::XSD_Error_Handler::handle(const std::string& id_in,
-                                                unsigned long line_in,
-                                                unsigned long column_in,
-                                                ::xsd::cxx::xml::error_handler<char>::severity severity_in,
-                                                const std::string& message_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::XSD_Error_Handler::handle"));
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-//              id_in.c_str(),
-//              line_in,
-//              column_in,
-//              message_in.c_str()));
-
-  switch (severity_in)
-  {
-    case ::xml_schema::error_handler::severity::warning:
-    {
-      ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("WARNING: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    case ::xml_schema::error_handler::severity::error:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("ERROR: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    case ::xml_schema::error_handler::severity::fatal:
-    {
-      ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("FATAL: error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("unkown error occured (ID: \"%s\", location: %d, %d): \"%s\", continuing\n"),
-                 id_in.c_str(),
-                 line_in,
-                 column_in,
-                 message_in.c_str()));
-
-      break;
-    }
-  } // end SWITCH
-
-  // try to continue anyway...
-  return true;
 }
 
 void

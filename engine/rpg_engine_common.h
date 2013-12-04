@@ -35,7 +35,7 @@
 #include "rpg_common_environment.h"
 #include "rpg_common_condition.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Time_Value.h>
 #include <ace/Log_Msg.h>

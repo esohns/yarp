@@ -7,7 +7,9 @@
 #ifndef RPG_CHARACTER_CHECKTYPEUNION_H
 #define RPG_CHARACTER_CHECKTYPEUNION_H
 
-struct RPG_Character_CheckTypeUnion
+#include "rpg_character_exports.h"
+
+struct RPG_Character_Export RPG_Character_CheckTypeUnion
 {
   union
   {

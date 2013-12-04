@@ -1255,16 +1255,16 @@ ACE_TMAIN(int argc,
 //   RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init libraries
-  // *PORTABILITY*: on Windows, we need to init ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::init() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//  // *PORTABILITY*: on Windows, we need to init ACE...
+//#if defined(ACE_WIN32) || defined(ACE_WIN64)
+//  if (ACE::init() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
@@ -1506,16 +1506,16 @@ ACE_TMAIN(int argc,
 #endif
 
   // step4: fini libraries
-  // *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::fini() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//  // *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::fini() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   return EXIT_SUCCESS;
 } // end main

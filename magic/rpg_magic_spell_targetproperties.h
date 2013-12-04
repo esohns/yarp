@@ -7,7 +7,9 @@
 #ifndef RPG_MAGIC_SPELL_TARGETPROPERTIES_H
 #define RPG_MAGIC_SPELL_TARGETPROPERTIES_H
 
-struct RPG_Magic_Spell_TargetProperties
+#include "rpg_magic_exports.h"
+
+struct RPG_Magic_Export RPG_Magic_Spell_TargetProperties
 {
   RPG_Common_Amount base;
   unsigned char levelIncrement;

@@ -25,8 +25,8 @@
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_file_tools.h"
 
 #include <ace/OS.h>
 #include <ace/ACE.h>

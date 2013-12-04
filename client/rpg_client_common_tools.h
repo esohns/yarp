@@ -24,11 +24,11 @@
 #include "rpg_client_exports.h"
 #include "rpg_client_common.h"
 
-#include <rpg_engine.h>
+#include "rpg_engine.h"
 
-#include <rpg_graphics_common.h>
+#include "rpg_graphics_common.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
 #include <ace/Global_Macros.h>
 
@@ -86,6 +86,9 @@ class RPG_Client_Export RPG_Client_Common_Tools
                                        const RPG_Client_SelectionMode&, // current selection mode
                                        const RPG_Engine&,               // state / engine
                                        const bool& = true);             // locked access ?
+
+	static std::string getPlayerProfilesDirectory();
+	static std::string getMapsDirectory();
 
  private:
   // safety measures

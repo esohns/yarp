@@ -18,6 +18,8 @@ enum RPG_Common_Climate
   RPG_COMMON_CLIMATE_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -26,7 +28,7 @@ enum RPG_Common_Climate
 typedef std::map<RPG_Common_Climate, std::string> RPG_Common_ClimateToStringTable_t;
 typedef RPG_Common_ClimateToStringTable_t::const_iterator RPG_Common_ClimateToStringTableIterator_t;
 
-class RPG_Common_ClimateHelper
+class RPG_Common_Export RPG_Common_ClimateHelper
 {
  public:
   inline static void init()

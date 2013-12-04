@@ -16,6 +16,8 @@ enum RPG_Common_CounterMeasure
   RPG_COMMON_COUNTERMEASURE_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -24,7 +26,7 @@ enum RPG_Common_CounterMeasure
 typedef std::map<RPG_Common_CounterMeasure, std::string> RPG_Common_CounterMeasureToStringTable_t;
 typedef RPG_Common_CounterMeasureToStringTable_t::const_iterator RPG_Common_CounterMeasureToStringTableIterator_t;
 
-class RPG_Common_CounterMeasureHelper
+class RPG_Common_Export RPG_Common_CounterMeasureHelper
 {
  public:
   inline static void init()

@@ -56,11 +56,6 @@
 #define RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF         true
 #define RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE              DOORSTYLE_WOOD
 
-#define RPG_CLIENT_DEF_AUDIO_FREQUENCY                 44100
-#define RPG_CLIENT_DEF_AUDIO_FORMAT                    AUDIO_S16SYS
-#define RPG_CLIENT_DEF_AUDIO_CHANNELS                  5
-#define RPG_CLIENT_DEF_AUDIO_CHUNKSIZE                 4096
-
 #define RPG_CLIENT_DEF_VIDEO_W                         1024
 #define RPG_CLIENT_DEF_VIDEO_H                         786
 #define RPG_CLIENT_DEF_VIDEO_BPP                       32

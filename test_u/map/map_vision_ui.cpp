@@ -21,60 +21,62 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_client_defines.h>
-#include <rpg_client_common.h>
-#include <rpg_client_engine.h>
-#include <rpg_client_entity_manager.h>
-#include <rpg_client_window_main.h>
-#include <rpg_client_window_level.h>
-#include <rpg_client_common_tools.h>
-#include <rpg_client_ui_tools.h>
+#include "rpg_client_defines.h"
+#include "rpg_client_common.h"
+#include "rpg_client_engine.h"
+#include "rpg_client_entity_manager.h"
+#include "rpg_client_window_main.h"
+#include "rpg_client_window_level.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_ui_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_dictionary.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_common_tools.h>
-#include <rpg_graphics_SDL_tools.h>
+#include "rpg_sound_defines.h"
 
-#include <rpg_engine_defines.h>
-#include <rpg_engine.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_map_defines.h>
-#include <rpg_map_common.h>
-#include <rpg_map_common_tools.h>
-#include <rpg_map_pathfinding_tools.h>
+#include "rpg_engine_defines.h"
+#include "rpg_engine.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_monster_defines.h>
-#include <rpg_monster_dictionary.h>
+#include "rpg_map_defines.h"
+#include "rpg_map_common.h"
+#include "rpg_map_common_tools.h"
+#include "rpg_map_pathfinding_tools.h"
 
-#include <rpg_player_defines.h>
+#include "rpg_monster_defines.h"
+#include "rpg_monster_dictionary.h"
 
-#include <rpg_item_defines.h>
-#include <rpg_item_commodity.h>
-#include <rpg_item_instance_manager.h>
+#include "rpg_player_defines.h"
 
-#include <rpg_character_defines.h>
+#include "rpg_item_defines.h"
+#include "rpg_item_commodity.h"
+#include "rpg_item_instance_manager.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_character_defines.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
+
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/High_Res_Timer.h>
 #include <ace/Get_Opt.h>
 #include <ace/Log_Msg.h>
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <string>
 #include <sstream>
@@ -158,8 +160,8 @@ print_usage(const std::string& programName_in)
 #ifdef BASEDIR
   base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
 #endif
-  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
-                                                                    true);
+  std::string config_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
+                                                                          true);
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -199,9 +201,9 @@ print_usage(const std::string& programName_in)
   path += RPG_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  path = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+  path = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE);
 #else
-  path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+  path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE));
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
@@ -228,8 +230,8 @@ process_arguments(const int argc_in,
 #ifdef BASEDIR
   base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
 #endif
-  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
-                                                                    true);
+  std::string config_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
+                                                                          true);
 
   // init results
   graphicsDictionary_out = config_path;
@@ -268,9 +270,9 @@ process_arguments(const int argc_in,
   monsterDictionary_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  entityProfile_out = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+  entityProfile_out = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE);
 #else
-  entityProfile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+  entityProfile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE));
 #endif
   entityProfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
@@ -438,6 +440,7 @@ do_initGUI(const std::string& graphicsDictionary_in,
                                                           videoConfig_in.screen_height,
                                                           videoConfig_in.screen_colordepth,
                                                           videoConfig_in.doubleBuffer,
+                                                          videoConfig_in.useOpenGL,
                                                           videoConfig_in.fullScreen);
   if (!userData_in.screen)
   {
@@ -463,7 +466,8 @@ do_work(const RPG_Client_Config& config_in,
 
   std::string empty;
   // step0: init: random seed, string conversion facilities, ...
-  RPG_Engine_Common_Tools::init(config_in.magic_dictionary,
+  RPG_Engine_Common_Tools::init(schemaRepository_in,
+                                config_in.magic_dictionary,
                                 config_in.item_dictionary,
                                 config_in.monster_dictionary);
 
@@ -523,10 +527,15 @@ do_work(const RPG_Client_Config& config_in,
   ACE_ASSERT(userData.screen);
   //ACE_ASSERT(userData.xml);
 
-  RPG_Client_Common_Tools::init(config_in.sound_dictionary,
-                                config_in.sound_directory,
-                                config_in.graphics_dictionary,
+  RPG_Client_Common_Tools::init(config_in.audio_config.sdl_config,
+                                config_in.audio_config.repository,
+                                config_in.audio_config.use_CD,
+                                RPG_SOUND_DEF_CACHESIZE,
+                                config_in.audio_config.mute,
+                                config_in.audio_config.dictionary,
                                 config_in.graphics_directory,
+                                RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+                                config_in.graphics_dictionary,
                                 true);
 
   userData.entity                = RPG_Engine_Common_Tools::loadEntity(playerProfile_in,
@@ -577,11 +586,11 @@ do_work(const RPG_Client_Config& config_in,
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
   std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
-  RPG_Client_WindowMain mainWindow(RPG_Graphics_Size_t(userData.screen->w,
-                                                       userData.screen->h), // size
-                                   type,                                    // interface elements
-                                   title,                                   // title (== caption)
-                                   FONT_MAIN_LARGE);                        // title font
+  RPG_Client_Window_Main mainWindow(RPG_Graphics_Size_t(userData.screen->w,
+                                                        userData.screen->h), // size
+                                    type,                                    // interface elements
+                                    title,                                   // title (== caption)
+                                    FONT_MAIN_LARGE);                        // title font
   mainWindow.setScreen(userData.screen);
   mainWindow.init(&client_engine,
                   RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL,
@@ -590,7 +599,7 @@ do_work(const RPG_Client_Config& config_in,
 
   // step5e: client engine
   client_engine.init(&level_engine,
-                     mainWindow.getChild(WINDOW_MAP),
+                     mainWindow.child(WINDOW_MAP),
                      userData.xml);
 
   // step5f: trigger initial drawing
@@ -604,7 +613,7 @@ do_work(const RPG_Client_Config& config_in,
   client_action.window = &mainWindow;
   client_engine.action(client_action);
 
-  RPG_Client_WindowLevel* level_window = dynamic_cast<RPG_Client_WindowLevel*>(mainWindow.getChild(WINDOW_MAP));
+  RPG_Client_Window_Level* level_window = dynamic_cast<RPG_Client_Window_Level*>(mainWindow.child(WINDOW_MAP));
   ACE_ASSERT(level_window);
 
   // activate the current character
@@ -772,7 +781,9 @@ do_work(const RPG_Client_Config& config_in,
                   continue;
 
                 // OK: equip this item (into the off-hand)
-                player_base->getEquipment().equip(*iterator, slot);
+                player_base->getEquipment().equip(*iterator,
+                                                  player_base->getOffHand(),
+                                                  slot);
 
                 break;
               } // end FOR
@@ -1111,25 +1122,25 @@ ACE_TMAIN(int argc_in,
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step1: init ACE
-// *PORTABILITY*: on Windows, we need to init ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::init() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//// *PORTABILITY*: on Windows, we need to init ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::init() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   std::string base_path;
 #ifdef BASEDIR
   base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
 #endif
-  std::string config_path = RPG_Common_File_Tools::getDataDirectory(base_path,
-                                                                    true);
-  std::string base_data_path = RPG_Common_File_Tools::getDataDirectory(base_path,
-                                                                       false);
+  std::string config_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
+                                                                          true);
+  std::string base_data_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
+                                                                             false);
 
   // step1: init
   // step1a set defaults
@@ -1169,9 +1180,9 @@ ACE_TMAIN(int argc_in,
   levelMap += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string entityProfile = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY);
+  std::string entityProfile = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE);
 #else
-  std::string entityProfile = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY));
+  std::string entityProfile = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE));
 #endif
   entityProfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
@@ -1401,16 +1412,16 @@ ACE_TMAIN(int argc_in,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              working_time_string.c_str()));
 
-// *PORTABILITY*: on Windows, we must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::fini() == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//// *PORTABILITY*: on Windows, we must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::fini() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+//
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   return EXIT_SUCCESS;
 } // end main

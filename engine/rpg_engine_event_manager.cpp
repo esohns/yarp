@@ -203,7 +203,11 @@ RPG_Engine_Event_Manager::svc(void)
   } // end WHILE
 
   ACE_ASSERT(false);
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 void

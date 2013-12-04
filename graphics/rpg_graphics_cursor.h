@@ -29,6 +29,8 @@ enum RPG_Graphics_Cursor
   RPG_GRAPHICS_CURSOR_INVALID
 };
 
+#include "rpg_graphics_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -37,7 +39,7 @@ enum RPG_Graphics_Cursor
 typedef std::map<RPG_Graphics_Cursor, std::string> RPG_Graphics_CursorToStringTable_t;
 typedef RPG_Graphics_CursorToStringTable_t::const_iterator RPG_Graphics_CursorToStringTableIterator_t;
 
-class RPG_Graphics_CursorHelper
+class RPG_Graphics_Export RPG_Graphics_CursorHelper
 {
  public:
   inline static void init()

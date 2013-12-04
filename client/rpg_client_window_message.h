@@ -21,10 +21,10 @@
 
 #include "rpg_client_common.h"
 
-#include <rpg_graphics_SDL_window_sub.h>
-#include <rpg_graphics_font.h>
+#include "rpg_graphics_SDL_window_sub.h"
+#include "rpg_graphics_font.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>

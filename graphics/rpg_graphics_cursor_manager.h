@@ -26,9 +26,9 @@
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_iwindow.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>

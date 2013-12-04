@@ -19,9 +19,9 @@
 #ifndef RPG_CLIENT_WINDOW_MINIMAP_H
 #define RPG_CLIENT_WINDOW_MINIMAP_H
 
-#include <rpg_graphics_SDL_window_base.h>
+#include "rpg_graphics_SDL_window_base.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 

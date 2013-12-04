@@ -25,7 +25,7 @@
 #include "rpg_graphics_incl.h"
 #include "rpg_graphics_common.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
 #include <png.h>
 

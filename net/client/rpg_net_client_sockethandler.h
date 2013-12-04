@@ -21,6 +21,7 @@
 #ifndef RPG_NET_CLIENT_SOCKETHANDLER_H
 #define RPG_NET_CLIENT_SOCKETHANDLER_H
 
+#include "rpg_net_client_exports.h"
 #include "rpg_net_common.h"
 #include "rpg_net_sockethandler_base.h"
 
@@ -29,7 +30,7 @@
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
 
-class RPG_Net_Client_SocketHandler
+class RPG_Net_Client_Export RPG_Net_Client_SocketHandler
  : public RPG_Net_SocketHandlerBase<RPG_Net_ConfigPOD,
                                     RPG_Net_RuntimeStatistic>
 {

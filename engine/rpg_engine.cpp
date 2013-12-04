@@ -212,7 +212,11 @@ RPG_Engine::svc(void)
   } // end WHILE
 
   ACE_ASSERT(false);
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 void
@@ -293,7 +297,7 @@ RPG_Engine::stop()
 
   // stop AI (&& monster spawning)
   ACE_ASSERT(inherited2::myLevelMeta.spawn_timer != -1);
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(inherited2::myLevelMeta.spawn_timer);
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->cancel(inherited2::myLevelMeta.spawn_timer);
   inherited2::myLevelMeta.spawn_timer = -1;
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->stop();
 

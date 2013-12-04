@@ -20,6 +20,8 @@ enum RPG_Item_Money
   RPG_ITEM_MONEY_INVALID
 };
 
+#include "rpg_item_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -28,7 +30,7 @@ enum RPG_Item_Money
 typedef std::map<RPG_Item_Money, std::string> RPG_Item_MoneyToStringTable_t;
 typedef RPG_Item_MoneyToStringTable_t::const_iterator RPG_Item_MoneyToStringTableIterator_t;
 
-class RPG_Item_MoneyHelper
+class RPG_Item_Export RPG_Item_MoneyHelper
 {
  public:
   inline static void init()

@@ -18,6 +18,8 @@ enum RPG_Character_Gender
   RPG_CHARACTER_GENDER_INVALID
 };
 
+#include "rpg_character_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -26,7 +28,7 @@ enum RPG_Character_Gender
 typedef std::map<RPG_Character_Gender, std::string> RPG_Character_GenderToStringTable_t;
 typedef RPG_Character_GenderToStringTable_t::const_iterator RPG_Character_GenderToStringTableIterator_t;
 
-class RPG_Character_GenderHelper
+class RPG_Character_Export RPG_Character_GenderHelper
 {
  public:
   inline static void init()

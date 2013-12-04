@@ -17,6 +17,8 @@ enum RPG_Magic_Spell_AreaOfEffect
   RPG_MAGIC_SPELL_AREAOFEFFECT_INVALID
 };
 
+#include "rpg_magic_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -25,7 +27,7 @@ enum RPG_Magic_Spell_AreaOfEffect
 typedef std::map<RPG_Magic_Spell_AreaOfEffect, std::string> RPG_Magic_Spell_AreaOfEffectToStringTable_t;
 typedef RPG_Magic_Spell_AreaOfEffectToStringTable_t::const_iterator RPG_Magic_Spell_AreaOfEffectToStringTableIterator_t;
 
-class RPG_Magic_Spell_AreaOfEffectHelper
+class RPG_Magic_Export RPG_Magic_Spell_AreaOfEffectHelper
 {
  public:
   inline static void init()

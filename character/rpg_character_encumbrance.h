@@ -17,6 +17,8 @@ enum RPG_Character_Encumbrance
   RPG_CHARACTER_ENCUMBRANCE_INVALID
 };
 
+#include "rpg_character_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -25,7 +27,7 @@ enum RPG_Character_Encumbrance
 typedef std::map<RPG_Character_Encumbrance, std::string> RPG_Character_EncumbranceToStringTable_t;
 typedef RPG_Character_EncumbranceToStringTable_t::const_iterator RPG_Character_EncumbranceToStringTableIterator_t;
 
-class RPG_Character_EncumbranceHelper
+class RPG_Character_Export RPG_Character_EncumbranceHelper
 {
  public:
   inline static void init()

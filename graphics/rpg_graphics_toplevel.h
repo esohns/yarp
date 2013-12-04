@@ -31,7 +31,7 @@
 #include "rpg_graphics_graphictypeunion.h"
 #include "rpg_graphics_SDL_window_base.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 

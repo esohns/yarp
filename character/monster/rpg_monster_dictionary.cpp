@@ -23,22 +23,23 @@
 
 #include "rpg_monster_common_tools.h"
 
-#include <rpg_dice_XML_parser.h>
-#include <rpg_common_XML_parser.h>
-#include <rpg_character_XML_parser.h>
-#include <rpg_magic_XML_parser.h>
-#include <rpg_combat_XML_parser.h>
+#include "rpg_dice_XML_parser.h"
+#include "rpg_common_XML_parser.h"
+#include "rpg_character_XML_parser.h"
+#include "rpg_magic_XML_parser.h"
+#include "rpg_combat_XML_parser.h"
 #include "rpg_monster_XML_parser.h"
 
-#include <rpg_character_common_tools.h>
-#include <rpg_character_skills_common_tools.h>
+#include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_xsderrorhandler.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_XML_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+//#include "rpg_common_xsderrorhandler.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_XML_tools.h"
 
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice_common_tools.h"
 
 #include <ace/Log_Msg.h>
 
@@ -366,9 +367,10 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
 
   // Parse the document to obtain the object model.
   //
-  ::xml_schema::document doc_p(dictionary_p,
-                               ACE_TEXT_ALWAYS_CHAR("urn:rpg"),
-                               ACE_TEXT_ALWAYS_CHAR("monsterDictionary"));
+  ::xml_schema::document doc_p(dictionary_p,                                          // parser
+                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE), // namespace
+                               ACE_TEXT_ALWAYS_CHAR("monsterDictionary"),             // root element name
+															 false);                                                // polymorphic ?
 
   dictionary_p.pre();
 
@@ -396,14 +398,14 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
                ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred: \"%s\", returning\n"),
                text.c_str()));
 
-    throw(exception);
+    return;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred, returning\n")));
 
-    throw;
+    return;
   }
 
   dictionary_p.post_RPG_Monster_Dictionary_Type();

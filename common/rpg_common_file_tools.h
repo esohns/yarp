@@ -49,7 +49,7 @@ class RPG_Common_Export RPG_Common_File_Tools
 
   static std::string getUserHomeDirectory(const std::string&); // user
   // *NOTE*: (try to) create the directory if it doesn't exist
-  static std::string getUserGameDirectory(const std::string&); // user
+  static std::string getUserGameDirectory();
 
  private:
   // safety measures

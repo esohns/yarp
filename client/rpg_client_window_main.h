@@ -24,16 +24,16 @@
 #include "rpg_client_exports.h"
 #include "rpg_client_iwindow.h"
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_cursor.h>
-#include <rpg_graphics_font.h>
-#include <rpg_graphics_image.h>
-#include <rpg_graphics_tilegraphic.h>
-#include <rpg_graphics_tilesetgraphic.h>
-#include <rpg_graphics_graphictypeunion.h>
-#include <rpg_graphics_toplevel.h>
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_font.h"
+#include "rpg_graphics_image.h"
+#include "rpg_graphics_tilegraphic.h"
+#include "rpg_graphics_tilesetgraphic.h"
+#include "rpg_graphics_graphictypeunion.h"
+#include "rpg_graphics_toplevel.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 

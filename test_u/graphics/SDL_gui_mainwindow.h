@@ -21,18 +21,18 @@
 #ifndef SDL_GUI_MAINWINDOW_H
 #define SDL_GUI_MAINWINDOW_H
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_cursor.h>
-#include <rpg_graphics_font.h>
-#include <rpg_graphics_image.h>
-#include <rpg_graphics_tilegraphic.h>
-#include <rpg_graphics_tilesetgraphic.h>
-#include <rpg_graphics_graphictypeunion.h>
-#include <rpg_graphics_toplevel.h>
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_font.h"
+#include "rpg_graphics_image.h"
+#include "rpg_graphics_tilegraphic.h"
+#include "rpg_graphics_tilesetgraphic.h"
+#include "rpg_graphics_graphictypeunion.h"
+#include "rpg_graphics_toplevel.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Global_Macros.h>
 

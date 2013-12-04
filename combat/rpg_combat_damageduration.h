@@ -7,7 +7,9 @@
 #ifndef RPG_COMBAT_DAMAGEDURATION_H
 #define RPG_COMBAT_DAMAGEDURATION_H
 
-struct RPG_Combat_DamageDuration
+#include "rpg_combat_exports.h"
+
+struct RPG_Combat_Export RPG_Combat_DamageDuration
 {
   RPG_Dice_Roll incubationPeriod;
   RPG_Dice_Roll totalPeriod;

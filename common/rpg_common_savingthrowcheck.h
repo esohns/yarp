@@ -7,7 +7,9 @@
 #ifndef RPG_COMMON_SAVINGTHROWCHECK_H
 #define RPG_COMMON_SAVINGTHROWCHECK_H
 
-struct RPG_Common_SavingThrowCheck
+#include "rpg_common_exports.h"
+
+struct RPG_Common_Export RPG_Common_SavingThrowCheck
 {
   RPG_Common_SavingThrow type;
   RPG_Common_Attribute attribute;

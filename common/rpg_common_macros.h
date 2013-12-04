@@ -44,4 +44,6 @@
 #define COMPILER_NAME ACE::compiler_name()
 #define COMPILER_VERSION (ACE::compiler_major_version() * 10000 + ACE::compiler_minor_version() * 100 + ACE::compiler_beta_version())
 
+#define RPG_STRINGIZE(X) #X
+
 #endif

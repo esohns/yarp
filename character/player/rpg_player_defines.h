@@ -21,19 +21,15 @@
 #ifndef RPG_PLAYER_DEFINES_H
 #define RPG_PLAYER_DEFINES_H
 
-#define RPG_PLAYER_START_MONEY                0
-#define RPG_PLAYER_ATTR_MIN_SUM               80
+#define RPG_PLAYER_START_MONEY      0 // GP
+#define RPG_PLAYER_ATTR_MIN_SUM     80
 
 // XML-specific
-#define RPG_PLAYER_SCHEMA_FILE                "rpg_player.xsd"
-#define RPG_PLAYER_PROFILE_EXT                ".player"
+#define RPG_PLAYER_SCHEMA_FILE      "rpg_player.xsd"
+#define RPG_PLAYER_PROFILE_EXT      ".player"
 
-#define RPG_PLAYER_DEF_ENTITY                 "default_player"
+#define RPG_PLAYER_DEF_ENTITY       "default player"
 
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-#define RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE "HOME" // environment
-#else
-#define RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE "HOMEPATH" // environment
-#endif
+#define RPG_PLAYER_DEF_PROFILES_SUB "profiles"
 
 #endif

@@ -25,9 +25,10 @@
 #include "rpg_sound_XML_parser.h"
 #include "rpg_sound_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_xsderrorhandler.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+//#include "rpg_common_xsderrorhandler.h"
+#include "rpg_common_XML_tools.h"
 
 #include <ace/Log_Msg.h>
 
@@ -70,9 +71,10 @@ RPG_Sound_Dictionary::init(const std::string& filename_in,
 
   // Parse the document to obtain the object model.
   //
-  ::xml_schema::document doc_p(dictionary_p,
-                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
-                               ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_INSTANCE));
+  ::xml_schema::document doc_p(dictionary_p,                                            // parser
+                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),   // namespace
+                               ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_INSTANCE), // root element name
+															 false);                                                  // polymorphic ?
 
   dictionary_p.pre();
 
@@ -80,11 +82,16 @@ RPG_Sound_Dictionary::init(const std::string& filename_in,
   ::xml_schema::flags flags;
   if (!validateXML_in)
     flags = flags | ::xml_schema::flags::dont_validate;
+  ::xml_schema::properties properties;
   try
   {
+    //doc_p.parse(filename_in,
+    //            RPG_XSDErrorHandler,
+    //            flags);
     doc_p.parse(filename_in,
-                RPG_XSDErrorHandler,
-                flags);
+                *RPG_Common_XML_Tools::parser(),
+                flags,
+                properties);
   }
   catch (const ::xml_schema::parsing& exception)
   {
@@ -95,14 +102,14 @@ RPG_Sound_Dictionary::init(const std::string& filename_in,
                ACE_TEXT("RPG_Sound_Dictionary::init(): exception occurred: \"%s\", returning\n"),
                text.c_str()));
 
-    throw(exception);
+    return;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Sound_Dictionary::init(): exception occurred, returning\n")));
 
-    throw;
+    return;
   }
 
   dictionary_p.post_RPG_Sound_Dictionary_Type();

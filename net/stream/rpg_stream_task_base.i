@@ -61,7 +61,11 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 template <typename SessionMessageType,
@@ -77,7 +81,11 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 template <typename SessionMessageType,
@@ -91,7 +99,11 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 template <typename SessionMessageType,
@@ -109,7 +121,11 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 
 template <typename SessionMessageType,
@@ -123,7 +139,11 @@ RPG_Stream_TaskBase<SessionMessageType,
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
 
+#if defined (_MSC_VER)
+  return -1;
+#else
   ACE_NOTREACHED(return -1;)
+#endif
 }
 // *** END dummy stub methods ***
 

@@ -33,6 +33,7 @@
 
 // Begin prologue.
 //
+#include "stdafx.h"
 //
 // End prologue.
 
@@ -571,6 +572,21 @@ offhand (::std::auto_ptr< offhand_type > x)
 
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
+
+#include <xsd/cxx/tree/type-factory-map.hxx>
+
+#include <xsd/cxx/tree/comparison-map.hxx>
+
+namespace _xsd
+{
+  static
+  const ::xsd::cxx::tree::type_factory_plate< 0, char >
+  type_factory_plate_init;
+
+  static
+  const ::xsd::cxx::tree::comparison_plate< 0, char >
+  comparison_plate_init;
+}
 
 // RPG_Player_Abilities_XMLTree_Type
 //
@@ -1518,6 +1534,15 @@ operator!= (const RPG_Player_PlayerXML_XMLTree_Type& x, const RPG_Player_PlayerX
 
 #include <ostream>
 
+#include <xsd/cxx/tree/std-ostream-map.hxx>
+
+namespace _xsd
+{
+  static
+  const ::xsd::cxx::tree::std_ostream_plate< 0, char >
+  std_ostream_plate_init;
+}
+
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Player_Abilities_XMLTree_Type& i)
 {
@@ -1903,6 +1928,15 @@ player_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
 #include <ostream>
 #include <xsd/cxx/tree/error-handler.hxx>
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
+
+#include <xsd/cxx/tree/type-serializer-map.hxx>
+
+namespace _xsd
+{
+  static
+  const ::xsd::cxx::tree::type_serializer_plate< 0, char >
+  type_serializer_plate_init;
+}
 
 void
 operator<< (::xercesc::DOMElement& e, const RPG_Player_Abilities_XMLTree_Type& i)

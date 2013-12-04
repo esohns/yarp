@@ -21,21 +21,21 @@
 #ifndef RPG_CLIENT_COMMON_H
 #define RPG_CLIENT_COMMON_H
 
-#include <rpg_engine_common.h>
-#include <rpg_engine.h>
+#include "rpg_engine_common.h"
+#include "rpg_engine.h"
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_iwindow.h>
-#include <rpg_graphics_cursor.h>
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_iwindow.h"
+#include "rpg_graphics_cursor.h"
 
-#include <rpg_sound_common.h>
-#include <rpg_sound_event.h>
+#include "rpg_sound_common.h"
+#include "rpg_sound_event.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
 #include <glade/glade.h>
 #include <gtk/gtk.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include <ace/Synch.h>
 

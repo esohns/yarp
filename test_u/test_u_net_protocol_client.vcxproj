@@ -44,15 +44,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;$(ProjectDir)..\chance\dice;%(AdditionalIncludeDirectories);C:\Temp\yarp\3rd_party;C:\Temp\Gtk\include\gtk-2.0;C:\Temp\Gtk\include\atk-1.0;C:\Temp\Gtk\include\gdk-pixbuf-2.0;C:\Temp\Gtk\include\pango-1.0;C:\Temp\Gtk\include\cairo;C:\Temp\Gtk\include\glib-2.0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;C:\Temp\lpng157;C:\Temp\SDL\include;C:\Temp\Gtk\include\glib-2.0;C:\Temp\Gtk\include\cairo;C:\Temp\Gtk\include\pango-1.0;C:\Temp\Gtk\include\gdk-pixbuf-2.0;C:\Temp\Gtk\include\atk-1.0;C:\Temp\Gtk\include\gtk-2.0;C:\Temp\Gtk\lib\glib-2.0\include;C:\Temp\Gtk\lib\gtk-2.0\include;C:\Temp\libglade\include\libglade-2.0;$(ProjectDir)..\3rd_party;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\character;$(ProjectDir)..\magic;$(ProjectDir)..\item;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\combat;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\sound;$(ProjectDir)..\engine;$(ProjectDir)..\net\stream;$(ProjectDir)..\net;$(ProjectDir)..\net\protocol;$(ProjectDir)..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <BrowseInformation>false</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Gtk\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glib-2.0.lib;ACEd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Temp\SDL\lib\x86;C:\Temp\Gtk\lib;C:\Temp\libglade\lib;C:\Temp\libgnome-dev_2.24.1-1_win32\lib;C:\Temp\libgnomeui-dev-2.22.1\lib;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;glib-2.0.lib</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -115,9 +116,6 @@
     <ProjectReference Include="..\net\stream\stream.vcxproj">
       <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\Yarp\scripts\version.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

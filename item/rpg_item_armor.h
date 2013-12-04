@@ -41,7 +41,7 @@ class RPG_Item_Export RPG_Item_Armor
 
  public:
   // what am I ?
-  const RPG_Item_ArmorType& getArmorType() const;
+  const RPG_Item_ArmorType getArmorType() const;
 
   virtual void dump() const;
 

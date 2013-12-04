@@ -21,45 +21,45 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_engine_defines.h>
-#include <rpg_engine_common.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine_defines.h"
+#include "rpg_engine_common.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_graphics_common_tools.h>
+#include "rpg_graphics_common_tools.h"
 
-#include <rpg_player_defines.h>
-#include <rpg_player.h>
+#include "rpg_player_defines.h"
+#include "rpg_player.h"
 
-#include <rpg_character_alignmentcivic.h>
-#include <rpg_character_alignmentethic.h>
-#include <rpg_character_alignment.h>
-#include <rpg_character_offhand.h>
-#include <rpg_character_common_tools.h>
-#include <rpg_character_class_common_tools.h>
-#include <rpg_character_skills_common_tools.h>
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+#include "rpg_character_offhand.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_class_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 
-#include <rpg_item_defines.h>
-#include <rpg_item_weapon.h>
-#include <rpg_item_armor.h>
-#include <rpg_item_common_tools.h>
-#include <rpg_item_dictionary.h>
+#include "rpg_item_defines.h"
+#include "rpg_item_weapon.h"
+#include "rpg_item_armor.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
 
-#include <rpg_magic_defines.h>
-#include <rpg_magic_dictionary.h>
-#include <rpg_magic_common_tools.h>
+#include "rpg_magic_defines.h"
+#include "rpg_magic_dictionary.h"
+#include "rpg_magic_common_tools.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice.h"
+#include "rpg_dice_dietype.h"
+#include "rpg_dice_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
-#include <rpg_common_subclass.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_subclass.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
