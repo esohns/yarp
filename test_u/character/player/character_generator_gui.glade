@@ -3,15 +3,16 @@
   <!-- interface-requires gtk+ 2.20 -->
   <!-- interface-naming-policy project-wide -->
   <widget class="GtkFileChooserDialog" id="filechooser_dialog">
+    <property name="no_show_all">True</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Choose a file...</property>
+    <property name="title" translatable="yes">please choose a file...</property>
     <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
     <property name="deletable">False</property>
-    <property name="create_folders">False</property>
+    <property name="has_separator">False</property>
     <property name="preview_widget_active">False</property>
-    <signal name="file_activated" handler="character_file_activated_GTK_cb"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="filechooser_vbox">
         <property name="visible">True</property>
@@ -35,6 +36,7 @@
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
@@ -43,10 +45,12 @@
     </child>
   </widget>
   <widget class="GtkAboutDialog" id="about_dialog">
+    <property name="no_show_all">True</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">About</property>
+    <property name="title" translatable="yes">about</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
     <property name="deletable">False</property>
@@ -54,11 +58,9 @@
     <property name="version">0.1</property>
     <property name="authors">Erik Sohns</property>
     <property name="wrap_license">True</property>
-    <signal name="response" handler="gtk_widget_hide"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="about_vbox">
         <property name="visible">True</property>
-        <property name="spacing">2</property>
         <child>
           <placeholder/>
         </child>
@@ -72,6 +74,7 @@
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
@@ -85,12 +88,11 @@
     <property name="title" translatable="yes">character generator</property>
     <property name="resizable">False</property>
     <property name="type_hint">normal</property>
-    <signal name="delete_event" handler="quit_activated_GTK_cb"/>
+    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
         <child>
           <widget class="GtkHBox" id="hbox">
             <property name="visible">True</property>
@@ -114,13 +116,13 @@
                         <property name="layout_style">spread</property>
                         <child>
                           <widget class="GtkButton" id="create">
-                            <property name="label" translatable="yes">_Create</property>
+                            <property name="label" translatable="yes">gtk-new</property>
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
                             <property name="focus_on_click">False</property>
                             <signal name="clicked" handler="create_character_actived_GTK_cb"/>
                           </widget>
@@ -132,13 +134,14 @@
                         </child>
                         <child>
                           <widget class="GtkButton" id="drop">
-                            <property name="label" translatable="yes">_Drop</property>
+                            <property name="label" translatable="yes">gtk-delete</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
                             <property name="focus_on_click">False</property>
                             <signal name="clicked" handler="drop_character_actived_GTK_cb"/>
                           </widget>
@@ -150,13 +153,14 @@
                         </child>
                         <child>
                           <widget class="GtkButton" id="save">
-                            <property name="label" translatable="yes">_Save</property>
+                            <property name="label" translatable="yes">gtk-save</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
                             <property name="focus_on_click">False</property>
                             <signal name="clicked" handler="save_character_actived_GTK_cb"/>
                           </widget>
@@ -168,15 +172,15 @@
                         </child>
                         <child>
                           <widget class="GtkButton" id="load">
-                            <property name="label" translatable="yes">_Load</property>
+                            <property name="label" translatable="yes">gtk-open</property>
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="can_default">True</property>
                             <property name="has_default">True</property>
                             <property name="receives_default">True</property>
                             <property name="relief">half</property>
                             <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
                             <property name="focus_on_click">False</property>
                             <signal name="clicked" handler="load_character_actived_GTK_cb"/>
                           </widget>
@@ -1135,7 +1139,6 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">&lt;b&gt;Character&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
-                    <property name="track_visited_links">False</property>
                   </widget>
                   <packing>
                     <property name="type">label_item</property>
@@ -1148,34 +1151,16 @@
             </child>
           </widget>
           <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkTextView" id="log_view">
-            <property name="visible">True</property>
-            <property name="sensitive">False</property>
-            <property name="can_focus">True</property>
-            <property name="editable">False</property>
-            <property name="wrap_mode">word</property>
-            <property name="cursor_visible">False</property>
-            <property name="accepts_tab">False</property>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">1</property>
-          </packing>
+          <placeholder/>
         </child>
         <child>
-          <widget class="GtkStatusbar" id="statusbar">
-            <property name="visible">True</property>
-            <property name="spacing">2</property>
-            <property name="has_resize_grip">False</property>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">2</property>
-          </packing>
+          <placeholder/>
         </child>
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="general_actions">
@@ -1216,8 +1201,44 @@
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="pack_type">end</property>
-            <property name="position">3</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkMessageDialog" id="confirmation_dialog">
+    <property name="no_show_all">True</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">please confirm...</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">normal</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="deletable">False</property>
+    <property name="message_type">question</property>
+    <property name="buttons">ok-cancel</property>
+    <property name="text">are you sure ?</property>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="confirmation_vbox">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="confirmation_actions">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
+            <property name="is_focus">True</property>
+            <property name="layout_style">end</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </widget>

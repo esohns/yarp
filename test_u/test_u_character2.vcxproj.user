@@ -3,6 +3,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-e -g $(ProjectDir)..\graphics\rpg_graphics.xml -i $(ProjectDir)..\item\rpg_item.xml -m $(ProjectDir)..\magic\rpg_magic.xml -n 0 -r -t</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-e -n 0 -r -t</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

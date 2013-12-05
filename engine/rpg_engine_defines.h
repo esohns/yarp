@@ -45,6 +45,7 @@
 #define RPG_ENGINE_DEF_CLIMATE              CLIMATE_TEMPERATE
 #define RPG_ENGINE_DEF_TIMEOFDAY            RPG_COMMON_TIMEOFDAY_INVALID
 #define RPG_ENGINE_DEF_LIGHTING             AMBIENCE_DARKNESS
+#define RPG_ENGINE_DEF_OUTDOORS             false
 
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE              "rpg_engine.xsd"
@@ -52,6 +53,8 @@
 #define RPG_ENGINE_DEF_LEVEL_NAME           "default level"
 #define RPG_ENGINE_DEF_LEVEL_FILE           "dungeon_one"
 #define RPG_ENGINE_LEVEL_FILE_EXT           ".level"
-#define RPG_ENGINE_ENTITY_FILE_EXT          ".entity"
+// *TODO*: convert if necessary...
+#define RPG_ENGINE_ENTITY_DEF_FILE          "default_player"
+#define RPG_ENGINE_ENTITY_PROFILE_EXT       ".entity"
 
 #endif

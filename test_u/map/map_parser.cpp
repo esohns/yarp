@@ -68,7 +68,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("map");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("data");
@@ -110,7 +110,7 @@ process_arguments(const int argc_in,
 
   mapFile_out = data_path;
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   mapFile_out += ACE_TEXT_ALWAYS_CHAR("map");
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   mapFile_out += ACE_TEXT_ALWAYS_CHAR("data");
@@ -280,7 +280,7 @@ ACE_TMAIN(int argc,
   bool debugParser                 = MAP_PARSER_DEF_DEBUG_PARSER;
   std::string mapFile = data_path;
   mapFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   mapFile += ACE_TEXT_ALWAYS_CHAR("map");
   mapFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   mapFile += ACE_TEXT_ALWAYS_CHAR("data");

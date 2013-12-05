@@ -96,8 +96,11 @@ RPG_Sound_Event_Manager::init(const std::string& repository_in,
 
   // sanity check(s)
   std::string path = repository_in;
-  path += ACE_DIRECTORY_SEPARATOR_STR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_AMBIENT_SUB);
+	if (!path.empty())
+	{
+   path += ACE_DIRECTORY_SEPARATOR_STR_A;
+   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_AMBIENT_SUB);
+	} // end IF
 
   // sanity check(s)
   if (!RPG_Common_File_Tools::isDirectory(path))

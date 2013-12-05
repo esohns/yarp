@@ -21,19 +21,19 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_item_defines.h>
-#include <rpg_item_common_tools.h>
-#include <rpg_item_dictionary.h>
+#include "rpg_item_defines.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
 
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice_common_tools.h"
 
-#include <rpg_common_defines.h>
-#include <rpg_common_macros.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/Get_Opt.h>
@@ -60,7 +60,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d       : dump item dictionary") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -91,7 +91,7 @@ process_arguments(const int argc_in,
 
   itemDictionaryFilename_out = config_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -263,7 +263,7 @@ ACE_TMAIN(int argc,
 
   std::string itemDictionaryFilename = config_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif

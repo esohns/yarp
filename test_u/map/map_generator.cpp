@@ -85,7 +85,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-m          : maximize room-size(s)") << ACE_TEXT(" [") << MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE << ACE_TEXT("]") << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("map");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("data");
@@ -94,7 +94,8 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  path += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE)
+	                               	: ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
   path += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
                                    : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
   std::cout << ACE_TEXT("-o <[FILE]> : output file") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
@@ -139,9 +140,9 @@ process_arguments(const int argc_in,
   maxNumDoorsPerRoom_out = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   maximizeRoomSize_out = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
 
-  outputFile_out = data_path;
+	outputFile_out = data_path;
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   outputFile_out += ACE_TEXT_ALWAYS_CHAR("map");
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   outputFile_out += ACE_TEXT_ALWAYS_CHAR("data");
@@ -150,12 +151,11 @@ process_arguments(const int argc_in,
   outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
-  outputFile_out += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
-                                             : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
+  std::string default_output_path = outputFile_out;
+
+  dump_out = MAP_GENERATOR_DEF_DUMP;
 
   numAreas_out = MAP_GENERATOR_DEF_NUM_AREAS;
-  dump_out = MAP_GENERATOR_DEF_DUMP;
   squareRooms_out = MAP_GENERATOR_DEF_SQUARE_ROOMS;
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -288,6 +288,14 @@ process_arguments(const int argc_in,
     } // end SWITCH
   } // end WHILE
 
+  if (default_output_path == outputFile_out)
+	{
+    outputFile_out += (level_out ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE)
+		                             : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
+    outputFile_out += (level_out ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
+                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
+	} // end IF
+
   return true;
 }
 
@@ -320,6 +328,7 @@ do_work(const std::string& name_in,
     level.level_meta.environment.climate = RPG_ENGINE_DEF_CLIMATE;
     level.level_meta.environment.time = RPG_ENGINE_DEF_TIMEOFDAY;
     level.level_meta.environment.lighting = RPG_ENGINE_DEF_LIGHTING;
+		level.level_meta.environment.outdoors = RPG_ENGINE_DEF_OUTDOORS;
     level.level_meta.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
     level.level_meta.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
     level.level_meta.spawn_probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
@@ -434,7 +443,7 @@ ACE_TMAIN(int argc,
 
   std::string outputFile = data_path;
   outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   outputFile += ACE_TEXT_ALWAYS_CHAR("map");
   outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   outputFile += ACE_TEXT_ALWAYS_CHAR("data");
@@ -443,10 +452,12 @@ ACE_TMAIN(int argc,
   outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
   outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  outputFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
-  outputFile += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
-                                         : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
   std::string default_output_file = outputFile;
+  default_output_file += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE)
+		                                              : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
+  default_output_file += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
+                                                  : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
+  outputFile = default_output_file;
 
   bool dumpResult                 = MAP_GENERATOR_DEF_DUMP;
   bool squareRooms                = MAP_GENERATOR_DEF_SQUARE_ROOMS;
@@ -493,11 +504,6 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
-
-  // handle extension
-  if (outputFile == default_output_file)
-    outputFile += (generateLevel ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
-                                 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
 
   // step1c: set correct trace level
   //ACE_Trace::start_tracing();

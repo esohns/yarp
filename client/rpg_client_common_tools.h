@@ -87,9 +87,6 @@ class RPG_Client_Export RPG_Client_Common_Tools
                                        const RPG_Engine&,               // state / engine
                                        const bool& = true);             // locked access ?
 
-	static std::string getPlayerProfilesDirectory();
-	static std::string getMapsDirectory();
-
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools());

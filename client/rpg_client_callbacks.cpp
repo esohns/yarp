@@ -24,7 +24,6 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
-#include "rpg_client_common_tools.h"
 
 #include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
@@ -43,6 +42,7 @@
 #include "rpg_map_common_tools.h"
 
 #include "rpg_player_defines.h"
+#include "rpg_player_common_tools.h"
 
 #include "rpg_item_armor.h"
 #include "rpg_item_commodity.h"
@@ -1312,7 +1312,7 @@ dirent_selector_profiles(const dirent* entry_in)
 
   // *NOTE*: select player profiles
   std::string filename(entry_in->d_name);
-  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT));
+  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT));
 	std::string::size_type position = filename.rfind(extension, std::string::npos);
   if ((position == std::string::npos) ||
 		  (position != (filename.size() - extension.size())))
@@ -1401,7 +1401,7 @@ load_files(const std::string& repository_in,
 
   // iterate over entries
   std::string entry;
-  std::string extension = (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT)
+  std::string extension = (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT)
                                                  : ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT));
   GtkTreeIter iter;
   size_t position = -1;
@@ -1569,11 +1569,6 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
   ::update_entity_profile(data->entity,
                           data->xml);
 
-  // if necessary, update starting position
-  if (data->entity.position == std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                              std::numeric_limits<unsigned int>::max()))
-    data->entity.position = data->level_engine->getStartPosition();
-
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
                                                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
@@ -1709,9 +1704,10 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
-  std::string profiles_directory = RPG_Client_Common_Tools::getPlayerProfilesDirectory();
+  std::string profiles_directory = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
                                       ACE_TEXT(profiles_directory.c_str()));
+	// *TODO*: this crashes on WIN
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               data->entity_filter);
 
@@ -1811,11 +1807,11 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->entity.character);
 
   // assemble target filename
-  std::string profiles_directory = RPG_Client_Common_Tools::getPlayerProfilesDirectory();
+  std::string profiles_directory = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   std::string filename = profiles_directory;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->entity.character->getName();
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
@@ -1893,11 +1889,11 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // construct filename
-  std::string profiles_directory = RPG_Client_Common_Tools::getPlayerProfilesDirectory();
+  std::string profiles_directory = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   std::string filename = profiles_directory;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   // load player profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
@@ -1958,7 +1954,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load profile data
-  unsigned int num_entries = ::load_files(RPG_Client_Common_Tools::getPlayerProfilesDirectory(),
+  unsigned int num_entries = ::load_files(RPG_Player_Common_Tools::getPlayerProfilesDirectory(),
                                           true,
                                           GTK_LIST_STORE(model));
 
@@ -2181,7 +2177,7 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
-	std::string maps_directory = RPG_Client_Common_Tools::getMapsDirectory();
+	std::string maps_directory = RPG_Map_Common_Tools::getMapsDirectory();
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
                                       ACE_TEXT(maps_directory.c_str()));
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
@@ -2251,7 +2247,7 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(data);
   ACE_ASSERT(data->xml);
 
-  std::string filename = RPG_Client_Common_Tools::getMapsDirectory();
+  std::string filename = RPG_Map_Common_Tools::getMapsDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->level_engine->getMeta(true).name;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
@@ -2316,7 +2312,7 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   g_value_unset(&value);
 
   // construct filename
-  std::string filename = RPG_Client_Common_Tools::getMapsDirectory();
+  std::string filename = RPG_Map_Common_Tools::getMapsDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
@@ -2358,7 +2354,7 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load maps data
-  unsigned int num_entries = ::load_files(RPG_Client_Common_Tools::getMapsDirectory(),
+  unsigned int num_entries = ::load_files(RPG_Map_Common_Tools::getMapsDirectory(),
                                           false,
                                           GTK_LIST_STORE(model));
 

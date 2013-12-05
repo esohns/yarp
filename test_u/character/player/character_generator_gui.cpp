@@ -43,6 +43,7 @@
 #include "rpg_sound_common.h"
 
 #include "rpg_player_defines.h"
+#include "rpg_player_common_tools.h"
 
 #include "rpg_item_defines.h"
 
@@ -95,7 +96,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
@@ -105,7 +106,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d [DIR]    : graphics directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -113,7 +114,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -122,7 +123,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -131,7 +132,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("test_u");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("character");
@@ -170,7 +171,7 @@ process_arguments(const int argc_in,
 
   graphicsDictionary_out = config_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -178,7 +179,7 @@ process_arguments(const int argc_in,
 
   itemDictionary_out = config_path;
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -188,7 +189,7 @@ process_arguments(const int argc_in,
 
   magicDictionary_out = config_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -198,7 +199,7 @@ process_arguments(const int argc_in,
 
   UIfile_out = config_path;
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   UIfile_out += ACE_TEXT_ALWAYS_CHAR("test_u");
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UIfile_out += ACE_TEXT_ALWAYS_CHAR("character");
@@ -210,7 +211,7 @@ process_arguments(const int argc_in,
 
   graphicsDirectory_out = data_path;
   graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
@@ -386,27 +387,10 @@ do_initGUI(const std::string& graphicsDirectory_in,
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  std::string user_name; // *NOTE*: empty --> use current user
-  std::string game_directory = RPG_Common_File_Tools::getUserGameDirectory(user_name);
-  if (::load_files(game_directory,
-                   true,
-                   list))
-    gtk_widget_set_sensitive(GTK_WIDGET(combobox),
-                             TRUE);
-  else
-  {
-    // make create button sensitive (if it's not already)
-    GtkButton* button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
-                                                        ACE_TEXT_ALWAYS_CHAR("create")));
-    ACE_ASSERT(button);
-    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
-
-    // make load button sensitive (if it's not already)
-    button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
-                                             ACE_TEXT_ALWAYS_CHAR("load")));
-    ACE_ASSERT(button);
-    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
-  } // end ELSE
+  std::string profiles_directory = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+	unsigned int num_entries = ::load_files(profiles_directory,
+																					true,
+																					list);
 
   // step4a: connect default signals
   gpointer userData_p = const_cast<GTK_cb_data_t*>(&userData_in);
@@ -439,11 +423,30 @@ do_initGUI(const std::string& graphicsDirectory_in,
                    G_CALLBACK(drop_character_clicked_GTK_cb),
                    userData_p);
 
-  GtkFileChooser* filechooser = NULL;
-  filechooser = GTK_FILE_CHOOSER(glade_xml_get_widget(userData_in.xml,
-                                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
-  ACE_ASSERT(filechooser);
-  g_signal_connect(filechooser,
+  GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(userData_in.xml,
+                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
+  ACE_ASSERT(filechooser_dialog);
+	GtkFileFilter* file_filter = gtk_file_filter_new();
+  ACE_ASSERT(file_filter);
+  if (!file_filter)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
+
+    // clean up
+    g_object_unref(G_OBJECT(userData_in.xml));
+    userData_in.xml = NULL;
+
+    return false;
+  } // end IF
+	gtk_file_filter_set_name(file_filter, ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT));
+  std::string pattern = ACE_TEXT_ALWAYS_CHAR("*");
+  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  gtk_file_filter_add_pattern(file_filter, ACE_TEXT(pattern.c_str()));
+  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), file_filter);
+  //gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
+  //                                    ACE_TEXT(profiles_directory.c_str()));
+  g_signal_connect(filechooser_dialog,
                    ACE_TEXT_ALWAYS_CHAR("file-activated"),
                    G_CALLBACK(character_file_activated_GTK_cb),
                    userData_p);
@@ -524,8 +527,23 @@ do_initGUI(const std::string& graphicsDirectory_in,
   gtk_widget_show_all(main_dialog);
 
   // step7: activate first repository entry (if any)
-  if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
+	gtk_widget_set_sensitive(GTK_WIDGET(combobox), (num_entries > 0));
+  if (num_entries > 0)
     gtk_combo_box_set_active(combobox, 0);
+  else
+  {
+    // make create button sensitive (if it's not already)
+    GtkButton* button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                                        ACE_TEXT_ALWAYS_CHAR("create")));
+    ACE_ASSERT(button);
+    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+
+    // make load button sensitive (if it's not already)
+    button = GTK_BUTTON(glade_xml_get_widget(userData_in.xml,
+                                             ACE_TEXT_ALWAYS_CHAR("load")));
+    ACE_ASSERT(button);
+    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  } // end ELSE
 
   return true;
 }
@@ -535,7 +553,6 @@ do_work(const std::string& schemaDirectory_in,
       	const std::string& magicDictionary_in,
         const std::string& itemDictionary_in,
         const std::string& graphicsDictionary_in,
-        const std::string& schemaRepository_in,
         const std::string& graphicsDirectory_in,
         const std::string& UIFile_in)
 {
@@ -554,19 +571,19 @@ do_work(const std::string& schemaDirectory_in,
 	sound_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
   RPG_Client_Common_Tools::init(sound_config,
                                 empty,
-                                false,
-                                0,
+                                RPG_SOUND_DEF_AMBIENT_USE_CD,
+                                RPG_SOUND_DEF_CACHESIZE,
                                 false,
                                 empty,
                                 //
                                 graphicsDirectory_in,
-																0,
+																RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
                                 graphicsDictionary_in,
                                 false); // don't init SDL
 
   GTK_cb_data_t userData;
   userData.xml              = NULL;
-  userData.schemaRepository = schemaRepository_in;
+  userData.schemaRepository = schemaDirectory_in;
   userData.entity.character = NULL;
   userData.entity.position  = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                              std::numeric_limits<unsigned int>::max());
@@ -574,13 +591,13 @@ do_work(const std::string& schemaDirectory_in,
   userData.entity.actions.clear();
   userData.entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   userData.entity.is_spawned = false;
-
   // init sprite gallery
   for (int index = 0;
        index < RPG_GRAPHICS_SPRITE_MAX;
        index++)
     userData.sprite_gallery.push_back(static_cast<RPG_Graphics_Sprite>(index));
-  userData.current_sprite   = userData.sprite_gallery.begin();
+  userData.current_sprite = userData.sprite_gallery.begin();
+  userData.is_transient = false;
 
   GDK_THREADS_ENTER();
   if (!do_initGUI(graphicsDirectory_in, // graphics directory
@@ -674,7 +691,7 @@ ACE_TMAIN(int argc_in,
   // step1a: process commandline arguments
   std::string graphicsDictionary = config_path;
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   graphicsDictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -682,7 +699,7 @@ ACE_TMAIN(int argc_in,
 
   std::string itemDictionary = config_path;
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   itemDictionary += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -690,7 +707,7 @@ ACE_TMAIN(int argc_in,
 
   std::string magicDictionary = config_path;
   magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   magicDictionary += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -698,7 +715,7 @@ ACE_TMAIN(int argc_in,
 
   std::string UIfile = config_path;
   UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   UIfile += ACE_TEXT_ALWAYS_CHAR("test_u");
   UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UIfile += ACE_TEXT_ALWAYS_CHAR("character");
@@ -709,14 +726,14 @@ ACE_TMAIN(int argc_in,
   UIfile += RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_FILE;
 
   std::string schemaRepository = config_path;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   std::string graphicsDirectory = data_path;
   graphicsDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #else
   graphicsDirectory += ACE_TEXT_ALWAYS_CHAR("graphics");
@@ -738,16 +755,16 @@ ACE_TMAIN(int argc_in,
   bool logToFile                     = false;
   bool traceInformation              = false;
   bool printVersionAndExit           = false;
-  if (!(process_arguments(argc_in,
-                          argv_in,
-                          graphicsDictionary,
-                          itemDictionary,
-                          logToFile,
-                          magicDictionary,
-                          traceInformation,
-                          UIfile,
-                          graphicsDirectory,
-                          printVersionAndExit)))
+  if (!process_arguments(argc_in,
+                         argv_in,
+                         graphicsDictionary,
+                         itemDictionary,
+                         logToFile,
+                         magicDictionary,
+                         traceInformation,
+                         UIfile,
+                         graphicsDirectory,
+                         printVersionAndExit))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
@@ -801,7 +818,9 @@ ACE_TMAIN(int argc_in,
                              ACE_Log_Msg::PROCESS);
 
   // step2b: init GLIB / G(D|T)K[+] / GNOME
-//  g_thread_init(NULL);
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  g_thread_init(NULL);
+#endif
   gdk_threads_init();
   gtk_init(&argc_in,
            &argv_in);
@@ -826,11 +845,10 @@ ACE_TMAIN(int argc_in,
   ACE_High_Res_Timer timer;
   timer.start();
   // step3: do actual work
-  do_work(config_path,
+  do_work(schemaRepository,
           magicDictionary,
           itemDictionary,
           graphicsDictionary,
-          schemaRepository,
           graphicsDirectory,
           UIfile);
   timer.stop();

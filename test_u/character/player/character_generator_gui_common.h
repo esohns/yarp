@@ -40,6 +40,7 @@ struct GTK_cb_data_t
   RPG_Engine_Entity                               entity;
   Character_Generator_GUI_SpriteGalleryIterator_t current_sprite;
   Character_Generator_GUI_SpriteGallery_t         sprite_gallery;
+	bool                                            is_transient;
 };
 
 #endif

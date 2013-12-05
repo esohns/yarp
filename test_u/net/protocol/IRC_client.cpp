@@ -78,7 +78,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -112,7 +112,7 @@ process_arguments(const int argc_in,
   // init configuration
   configFile_out = config_path;
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   configFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -817,7 +817,7 @@ ACE_TMAIN(int argc,
 
   std::string configFile = config_path;
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   configFile += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif

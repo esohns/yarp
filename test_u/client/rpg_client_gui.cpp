@@ -59,6 +59,7 @@
 
 #include "rpg_player_defines.h"
 #include "rpg_player.h"
+#include "rpg_player_common_tools.h"
 
 #include "rpg_item_defines.h"
 
@@ -787,9 +788,9 @@ do_initGUI(const std::string& UIfile_in,
     return false;
   } // end IF
 
-  // step2: retrieve dialog handles
+  // step2: init dialog windows
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(userData_in.xml,
-                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
+                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
   ACE_ASSERT(filechooser_dialog);
   userData_in.map_filter = gtk_file_filter_new();
   ACE_ASSERT(userData_in.map_filter);
@@ -804,11 +805,12 @@ do_initGUI(const std::string& UIfile_in,
 
     return false;
   } // end IF
+	gtk_file_filter_set_name(userData_in.map_filter, ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT));
   std::string pattern = ACE_TEXT_ALWAYS_CHAR("*");
   pattern += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
-  gtk_file_filter_add_pattern(userData_in.map_filter, pattern.c_str());
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.map_filter);
-  g_object_unref(G_OBJECT(userData_in.map_filter));
+  gtk_file_filter_add_pattern(userData_in.map_filter, ACE_TEXT(pattern.c_str()));
+  //gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.map_filter);
+  //g_object_ref(G_OBJECT(userData_in.map_filter));
   userData_in.entity_filter = gtk_file_filter_new();
   ACE_ASSERT(userData_in.entity_filter);
   if (!userData_in.entity_filter)
@@ -822,11 +824,12 @@ do_initGUI(const std::string& UIfile_in,
 
     return false;
   } // end IF
+	gtk_file_filter_set_name(userData_in.entity_filter, ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT));
   pattern = ACE_TEXT_ALWAYS_CHAR("*");
-  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
-  gtk_file_filter_add_pattern(userData_in.entity_filter, pattern.c_str());
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.entity_filter);
-  g_object_unref(G_OBJECT(userData_in.entity_filter));
+  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  gtk_file_filter_add_pattern(userData_in.entity_filter, ACE_TEXT(pattern.c_str()));
+  //gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.entity_filter);
+  //g_object_ref(G_OBJECT(userData_in.entity_filter));
 
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME)));
@@ -912,7 +915,7 @@ do_initGUI(const std::string& UIfile_in,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
 
-  std::string profiles_directory = RPG_Client_Common_Tools::getPlayerProfilesDirectory();
+  std::string profiles_directory = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   if (::load_files(profiles_directory,
                    true,
                    list))
@@ -972,7 +975,7 @@ do_initGUI(const std::string& UIfile_in,
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  if (::load_files(RPG_Client_Common_Tools::getMapsDirectory(),
+  if (::load_files(RPG_Map_Common_Tools::getMapsDirectory(),
                    false,
                    list))
     gtk_widget_set_sensitive(GTK_WIDGET(combobox),
@@ -1474,9 +1477,6 @@ do_work(const RPG_Client_Config& config_in,
   // - perform (signal handling, socket I/O, ...) --> ACE_Reactor
   // - UI events --> GTK main loop [--> SDL event handler]
 
-//   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
-//   ACE_Reactor::instance()->restart(1);
-
 //   // setup dispatch of SDL events from the GTK (== "main") thread
 //   user_data.previous_window = NULL;
 //   user_data.main_window = &mainWindow;
@@ -1504,6 +1504,10 @@ do_work(const RPG_Client_Config& config_in,
 //              quitHandlerID));
 
   // setup dispatch of network events
+
+//   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
+//   ACE_Reactor::instance()->restart(1);
+
   // *CONSIDER*: potential source for races here
   // --> network connection events arrive before dispatch of events begins
   // start a (group of) worker thread(s)...

@@ -174,7 +174,8 @@ RPG_Client_Engine::start()
                             thread_handles,              // thread handle(s)
                             NULL,                        // thread stack(s)
                             NULL,                        // thread stack size(s)
-                            thread_ids);                 // thread id(s)
+                            thread_ids,                  // thread id(s)
+														NULL);                       // thread name(s)
   if (ret == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));

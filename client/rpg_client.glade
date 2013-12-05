@@ -11,8 +11,8 @@
     <property name="type_hint">normal</property>
     <property name="deletable">False</property>
     <property name="use_preview_label">False</property>
-    <property name="local_only">False</property>
     <property name="preview_widget_active">False</property>
+    <property name="local_only">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="filechooser_vbox">
         <property name="visible">True</property>
@@ -134,6 +134,7 @@
     <property name="destroy_with_parent">True</property>
     <property name="icon">../data/graphic/images/image_icon.png</property>
     <property name="type_hint">normal</property>
+    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
@@ -166,12 +167,13 @@
                             <property name="layout_style">spread</property>
                             <child>
                               <widget class="GtkButton" id="create">
-                                <property name="label" translatable="yes">_Create</property>
+                                <property name="label" translatable="yes">gtk-new</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_underline">True</property>
+                                <property name="use_stock">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="create_character_clicked_GTK_cb"/>
                               </widget>
@@ -183,13 +185,14 @@
                             </child>
                             <child>
                               <widget class="GtkButton" id="drop">
-                                <property name="label" translatable="yes">_Drop</property>
+                                <property name="label" translatable="yes">gtk-delete</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_underline">True</property>
+                                <property name="use_stock">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="drop_character_clicked_GTK_cb"/>
                               </widget>
@@ -201,12 +204,13 @@
                             </child>
                             <child>
                               <widget class="GtkButton" id="load">
-                                <property name="label" translatable="yes">_Load</property>
+                                <property name="label" translatable="yes">gtk-open</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_underline">True</property>
+                                <property name="use_stock">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="load_character_clicked_GTK_cb"/>
                               </widget>
@@ -218,13 +222,14 @@
                             </child>
                             <child>
                               <widget class="GtkButton" id="save">
-                                <property name="label" translatable="yes">_Save</property>
+                                <property name="label" translatable="yes">gtk-save</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_underline">True</property>
+                                <property name="use_stock">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="save_character_clicked_GTK_cb"/>
                               </widget>
@@ -335,12 +340,13 @@
                                 <property name="homogeneous">True</property>
                                 <child>
                                   <widget class="GtkButton" id="map_create_button">
-                                    <property name="label" translatable="yes">_Create</property>
+                                    <property name="label" translatable="yes">gtk-new</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="relief">half</property>
                                     <property name="use_underline">True</property>
+                                    <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="create_map_clicked_GTK_cb"/>
                                   </widget>
@@ -352,13 +358,14 @@
                                 </child>
                                 <child>
                                   <widget class="GtkButton" id="map_drop_button">
-                                    <property name="label" translatable="yes">_Drop</property>
+                                    <property name="label" translatable="yes">gtk-delete</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="relief">half</property>
                                     <property name="use_underline">True</property>
+                                    <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="drop_map_clicked_GTK_cb"/>
                                   </widget>
@@ -370,12 +377,13 @@
                                 </child>
                                 <child>
                                   <widget class="GtkButton" id="map_load_button">
-                                    <property name="label" translatable="yes">_Load</property>
+                                    <property name="label" translatable="yes">gtk-open</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="relief">half</property>
                                     <property name="use_underline">True</property>
+                                    <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="load_map_clicked_GTK_cb"/>
                                   </widget>
@@ -387,13 +395,14 @@
                                 </child>
                                 <child>
                                   <widget class="GtkButton" id="map_save_button">
-                                    <property name="label" translatable="yes">_Save</property>
+                                    <property name="label" translatable="yes">gtk-save</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="relief">half</property>
                                     <property name="use_underline">True</property>
+                                    <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="save_map_clicked_GTK_cb"/>
                                   </widget>
@@ -516,7 +525,7 @@
                             <property name="layout_style">spread</property>
                             <child>
                               <widget class="GtkButton" id="join">
-                                <property name="label" translatable="yes">_Join</property>
+                                <property name="label" translatable="yes">gtk-connect</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
@@ -525,6 +534,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_underline">True</property>
+                                <property name="use_stock">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="join_game_clicked_GTK_cb"/>
                               </widget>
@@ -536,13 +546,14 @@
                             </child>
                             <child>
                               <widget class="GtkButton" id="part">
-                                <property name="label" translatable="yes">_Part</property>
+                                <property name="label" translatable="yes">gtk-disconnect</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
                                 <property name="use_underline">True</property>
+                                <property name="use_stock">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="part_game_clicked_GTK_cb"/>
                               </widget>

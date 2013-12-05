@@ -256,7 +256,7 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
   } // end lock scope
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("scheduled activation event (ID: %d [%#T]) for entity %u\n"),
+             ACE_TEXT("scheduled activation event (ID: %d [%#T]) for entity (ID: %u)\n"),
              timer_id,
              &activationInterval_in,
              id_in));

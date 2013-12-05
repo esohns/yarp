@@ -36,9 +36,6 @@
     <ProjectReference Include="..\character\player\player.vcxproj">
       <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\client\client.vcxproj">
-      <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\common\common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>

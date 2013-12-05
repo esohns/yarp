@@ -32,6 +32,7 @@
 #define RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME           "main_dialog"
 #define RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME          "about_dialog"
 #define RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME    "filechooser_dialog"
+#define RPG_CLIENT_DEF_GNOME_CONFIRMATIONDIALOG_NAME   "confirmation_dialog"
 #define RPG_CLIENT_DEF_GNOME_EQUIPMENTDIALOG_NAME      "equipment_dialog"
 #define RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME            "character_frame"
 #define RPG_CLIENT_DEF_GNOME_CHARBOX_NAME              "character_repository_combobox"

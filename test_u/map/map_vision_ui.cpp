@@ -207,8 +207,8 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
-  std::cout << ACE_TEXT("-p [FILE]: entity profile (*") << ACE_TEXT(RPG_ENGINE_ENTITY_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  std::cout << ACE_TEXT("-p [FILE]: entity profile (*") << ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
 } // end print_usage
@@ -276,7 +276,7 @@ process_arguments(const int argc_in,
 #endif
   entityProfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
+  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
@@ -1186,7 +1186,7 @@ ACE_TMAIN(int argc_in,
 #endif
   entityProfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_FILE_EXT);
+  entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   bool traceInformation    = false;
   bool printVersionAndExit = false;

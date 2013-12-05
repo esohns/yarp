@@ -91,6 +91,8 @@ class RPG_Map_Export RPG_Map_Common_Tools
                           const bool&,               // fill area ?
                           RPG_Map_Positions_t&);     // return value: area
 
+	static std::string getMapsDirectory();
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools());

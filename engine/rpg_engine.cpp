@@ -124,28 +124,22 @@ RPG_Engine::close(u_long arg_in)
   RPG_TRACE(ACE_TEXT("RPG_Engine::close"));
 
   // *IMPORTANT NOTE*: this method may be invoked
-  // [- by an external thread closing down the active object]
-  // - by the worker thread which calls this after returning from svc()
+  // [- by an external thread closing down the active object: arg_in: 1]
+  // - by the worker thread which calls this after returning from svc(): arg_in: 0
   //    --> in this case, this should be a NOP...
   switch (arg_in)
   {
-    // called from ACE_Task_Base on clean-up
     case 0:
     {
+      // called from ACE_Task_Base on clean-up
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("(state engine) worker thread (ID: %t) leaving...\n")));
 
       // don't do anything...
-      break;
+      return 0;
     }
     case 1:
     {
-      ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("should never get here, returning\n")));
-
-      ACE_ASSERT(false);
-
-      // what else can we do ?
       break;
     }
     default:
@@ -154,12 +148,16 @@ RPG_Engine::close(u_long arg_in)
                  ACE_TEXT("invalid argument (was: %u), returning\n"),
                  arg_in));
 
-      // what else can we do ?
       break;
     }
   } // end SWITCH
 
-  return 0;
+  ACE_ASSERT(false);
+#if defined (_MSC_VER)
+  return -1;
+#else
+  ACE_NOTREACHED(return -1;)
+#endif
 }
 
 int
@@ -247,7 +245,8 @@ RPG_Engine::start()
                             thread_handles,              // thread handle(s)
                             NULL,                        // thread stack(s)
                             NULL,                        // thread stack size(s)
-                            thread_ids);                 // thread id(s)
+                            thread_ids,                  // thread id(s)
+														NULL);                       // thread names(s)
   if (ret == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
@@ -777,43 +776,6 @@ RPG_Engine::hasMode(const RPG_Engine_EntityMode& mode_in) const
 
   return ((*iterator).second->modes.find(mode_in) != (*iterator).second->modes.end());
 }
-
-//const SDL_Surface*
-//RPG_Engine::getGraphics(const RPG_Engine_EntityID_t& id_in) const
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Engine::getGraphics"));
-//
-//  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-//
-//  RPG_Engine_EntitiesConstIterator_t iterator = myEntities.find(id_in);
-//  if (iterator == myEntities.end())
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
-//               id_in));
-//
-//    return NULL;
-//  } // end IF
-//
-//  return (*iterator).second->graphic;
-//}
-//
-//RPG_Engine_EntityGraphics_t
-//RPG_Engine::getGraphics() const
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Engine::getGraphics"));
-//
-//  RPG_Engine_EntityGraphics_t graphics;
-//
-//  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-//
-//  for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
-//       iterator != myEntities.end();
-//       iterator++)
-//    graphics.insert(std::make_pair((*iterator).second->position, (*iterator).second->graphic));
-//
-//  return graphics;
-//}
 
 RPG_Map_Position_t
 RPG_Engine::getPosition(const RPG_Engine_EntityID_t& id_in,

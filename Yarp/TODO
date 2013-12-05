@@ -1,0 +1,5 @@
+known issues:
+- [magic] implement more low-level spells, player generation fails sometimes...
+- [map] map generation seems to hang sometimes ("segmenting area...")
+- [net] proactor support is broken on UNIX and flaky on WINDOWS
+- [test_u_client_gui] shutdown sequence is broken

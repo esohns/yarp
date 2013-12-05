@@ -29,10 +29,11 @@
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_pathfinding_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
 
-#include <rpg_dice.h>
+#include "rpg_dice.h"
 
 #include <ace/Time_Value.h>
 #include <ace/Log_Msg.h>
@@ -4028,6 +4029,52 @@ RPG_Map_Common_Tools::countAdjacentDoors(const RPG_Map_Positions_t& area_in,
         result++;
         continue;
       } // end IF
+
+  return result;
+}
+
+std::string
+RPG_Map_Common_Tools::getMapsDirectory()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::getMapsDirectory"));
+
+  std::string result;
+
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
+	result = data_path;
+	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_SUB);
+	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+#else
+  result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+#endif
+
+  if (!RPG_Common_File_Tools::isDirectory(result))
+  {
+    if (!RPG_Common_File_Tools::createDirectory(result))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                 result.c_str()));
+
+      // fallback
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+      result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+#else
+      result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+#endif
+    } // end IF
+    else
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("created maps directory \"%s\"\n"),
+                 result.c_str()));
+  } // end IF
 
   return result;
 }

@@ -95,7 +95,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -106,7 +106,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-r [VALUE]: reporting interval (seconds: 0 --> OFF)") << ACE_TEXT(" [") << IRC_CLIENT_DEF_STATSINTERVAL << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -115,7 +115,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-t        : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("protocol");
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   std::cout << ACE_TEXT("-u [DIR]  : UI file directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
@@ -147,7 +147,7 @@ process_arguments(const int argc_in,
   // init results
   configFile_out = config_path;
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   configFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -159,7 +159,7 @@ process_arguments(const int argc_in,
 
   serverConfigFile_out = config_path;
   serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   serverConfigFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
   serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -168,7 +168,7 @@ process_arguments(const int argc_in,
   traceInformation_out     = false;
 
   UIFileDirectory_out = config_path;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   UIFileDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UIFileDirectory_out += ACE_TEXT_ALWAYS_CHAR("protocol");
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -1287,7 +1287,7 @@ ACE_TMAIN(int argc,
 
   std::string configFile = config_path;
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   configFile += ACE_TEXT_ALWAYS_CHAR("protocol");
   configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -1299,7 +1299,7 @@ ACE_TMAIN(int argc,
 
   std::string serverConfigFile = config_path;
   serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   serverConfigFile += ACE_TEXT_ALWAYS_CHAR("protocol");
   serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -1309,7 +1309,7 @@ ACE_TMAIN(int argc,
 
   std::string UIFileDirectory = config_path;
   UIFileDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) || defined(DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   UIFileDirectory += ACE_TEXT_ALWAYS_CHAR("protocol");
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
 

@@ -75,7 +75,7 @@ popd</Command>
       <Outputs>rpg_XMLSchema_XML_tree.h;rpg_engine_XML_tree.cpp;rpg_engine_XML_tree.h;rpg_engine_incl.h;rpg_engine_exports.h;%(Outputs)</Outputs>
     </CustomBuildStep>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Temp\yarp\Yarp</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
