@@ -110,12 +110,12 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage(RPG_Net_Protocol_Message*& 
 //     message->dump_state();
 
     // step1: get a new message buffer
-    message = allocateMessage(RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE);
+    message = allocateMessage(RPG_NET_PROTOCOL_BUFFER_SIZE);
     if (message == NULL)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to allocate message(%u), aborting\n"),
-                 RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE));
+                 RPG_NET_PROTOCOL_BUFFER_SIZE));
 
       return;
     } // end IF

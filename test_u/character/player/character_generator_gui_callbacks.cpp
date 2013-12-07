@@ -138,7 +138,7 @@ about_clicked_GTK_cb(GtkWidget* widget_in,
 
   // retrieve about dialog handle
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                                            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME)));
+                                                            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_ABOUTDIALOG_NAME)));
   ACE_ASSERT(about_dialog);
 
   gtk_dialog_run(GTK_DIALOG(about_dialog));
@@ -202,7 +202,7 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
   // make drop button sensitive (if it's not already)
@@ -242,7 +242,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 	{
 		// retrieve confirmation dialog handle
 		GtkWidget* confirmation_dialog = GTK_WIDGET(glade_xml_get_widget(data->xml,
-														                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CONFIRMATIONDIALOG_NAME)));
+														                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CONFIRMATIONDIALOG_NAME)));
 		ACE_ASSERT(confirmation_dialog);
 		gint response = gtk_dialog_run(GTK_DIALOG(confirmation_dialog));
     gtk_widget_hide(confirmation_dialog);
@@ -250,7 +250,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 		{
 			// retrieve active item
 			GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
-																																						ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
+																																						ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
 			ACE_ASSERT(repository_combobox);
 			std::string active_item;
 			GtkTreeIter selected;
@@ -326,7 +326,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 	// load active combobox entry (if any)
 	bool desensitize_frame = false;
 	GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
-																																				ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
+																																				ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
 	ACE_ASSERT(repository_combobox);
 	if (gtk_combo_box_get_active(repository_combobox) >= 0)
 		g_signal_emit_by_name(repository_combobox,
@@ -339,7 +339,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 	if (desensitize_frame)
 	{
 		GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-		                                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
+		                                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
     ACE_ASSERT(character_frame);
     gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
 	} // end IF
@@ -382,13 +382,13 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->xml,
-                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
+                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_FILECHOOSERDIALOG_NAME)));
   ACE_ASSERT(filechooser_dialog);
   if (!filechooser_dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
+               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_FILECHOOSERDIALOG_NAME)));
 
     return FALSE;
   } // end IF
@@ -417,7 +417,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 
   // retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->xml,
-                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
+                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_FILECHOOSERDIALOG_NAME)));
   ACE_ASSERT(filechooser_dialog);
 
   // hide widget
@@ -450,7 +450,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
   // make create button in-sensitive (if it's not already)
@@ -580,7 +580,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
   // make drop button sensitive (if it's not already)
@@ -612,7 +612,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 
   // retrieve tree model
   GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->xml,
-                                                                        ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
+                                                                        ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
   ACE_ASSERT(repository_combobox);
   GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
   ACE_ASSERT(model);
@@ -625,7 +625,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 
   // set sensitive as appropriate
   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->xml,
-                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARFRAME_NAME)));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
   ACE_ASSERT(character_frame);
 
   // ... sensitize/activate widgets as appropriate

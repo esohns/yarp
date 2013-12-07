@@ -1574,9 +1574,9 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       // debug info
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-      std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+      std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 #else
-      std::string dump_path_base = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+      std::string dump_path_base = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
 #endif
       dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       std::string dump_path;
@@ -1886,7 +1886,7 @@ SDL_GUI_LevelWindow::initWallBlend(const bool& halfHeightWalls_in)
   } // end IF
 
 //   // debug info
-//   std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+//   std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 //   dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //   std::string dump_path = dump_path_base;
 //   dump_path += ACE_TEXT("wall_blend.png");

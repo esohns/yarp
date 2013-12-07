@@ -24,8 +24,7 @@
 class RPG_Common_ITimer
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Common_ITimer() {}
 
   // exposed interface
   virtual void handleTimeout(const void*) = 0; // argument

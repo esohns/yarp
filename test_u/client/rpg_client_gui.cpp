@@ -19,65 +19,9 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
-#include "rpg_client_defines.h"
-#include "rpg_client_common.h"
-#include "rpg_client_callbacks.h"
-#include "rpg_client_window_main.h"
-#include "rpg_client_window_level.h"
-#include "rpg_client_engine.h"
-#include "rpg_client_entity_manager.h"
-#include "rpg_client_common_tools.h"
-#include "rpg_client_ui_tools.h"
-
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_cursor_manager.h"
-#include "rpg_graphics_surface.h"
-#include "rpg_graphics_SDL_tools.h"
-#include "rpg_graphics_common_tools.h"
-#include "rpg_graphics_cursor.h"
-
-#include "rpg_sound_defines.h"
-#include "rpg_sound_common.h"
-#include "rpg_sound_dictionary.h"
-#include "rpg_sound_common_tools.h"
-
-#include "rpg_map_defines.h"
-#include "rpg_map_common_tools.h"
-#include "rpg_map_level.h"
-
-#include "rpg_engine_defines.h"
-#include "rpg_engine.h"
-#include "rpg_engine_common_tools.h"
-
-#include "rpg_monster_defines.h"
-
-#include "rpg_player_defines.h"
-#include "rpg_player.h"
-#include "rpg_player_common_tools.h"
-
-#include "rpg_item_defines.h"
-
-#include "rpg_magic_defines.h"
-
-#include "rpg_character_defines.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-
-#include <glade/glade.h>
-#include <gtk/gtk.h>
-
-#include <SDL.h>
-#include <SDL_mixer.h>
-//#include <SDL/SDL_framerate.h>
+#include <string>
+#include <iostream>
+#include <sstream>
 
 #include <ace/ACE.h>
 #include <ace/Global_Macros.h>
@@ -94,9 +38,72 @@
 #include <ace/Configuration_Import_Export.h>
 #include <ace/Thread_Manager.h>
 
-#include <string>
-#include <iostream>
-#include <sstream>
+// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_timer_manager.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
+
+#include "rpg_character_defines.h"
+
+#include "rpg_magic_defines.h"
+
+#include "rpg_item_defines.h"
+
+#include "rpg_player_defines.h"
+#include "rpg_player.h"
+#include "rpg_player_common_tools.h"
+
+#include "rpg_monster_defines.h"
+
+#include "rpg_map_defines.h"
+#include "rpg_map_common_tools.h"
+#include "rpg_map_level.h"
+
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_SDL_tools.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor.h"
+
+#include "rpg_engine_defines.h"
+#include "rpg_engine.h"
+#include "rpg_engine_common_tools.h"
+
+#include "rpg_sound_defines.h"
+#include "rpg_sound_common.h"
+#include "rpg_sound_dictionary.h"
+#include "rpg_sound_common_tools.h"
+
+#include <SDL.h>
+#include <SDL_mixer.h>
+//#include <SDL/SDL_framerate.h>
+
+#include <glade/glade.h>
+#include <gtk/gtk.h>
+
+#include "rpg_stream_allocatorheap.h"
+
+#include "rpg_net_stream_messageallocator.h"
+
+#include "rpg_net_client_defines.h"
+
+#include "rpg_client_defines.h"
+#include "rpg_client_common.h"
+#include "rpg_client_callbacks.h"
+#include "rpg_client_window_main.h"
+#include "rpg_client_window_level.h"
+#include "rpg_client_engine.h"
+#include "rpg_client_entity_manager.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_ui_tools.h"
 
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
@@ -257,7 +264,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-a          : no audio") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-a        : no audio") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -265,7 +272,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_INI_FILE);
-  std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-c [FILE] : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -275,7 +282,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-e [FILE]   : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-e [FILE] : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -284,12 +291,12 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("data");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT("-f [FILE]   : level plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-f [FILE] : level plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -297,7 +304,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-g [FILE] : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (_DEBUG) || defined(DEBUG_RELEASE)
@@ -305,8 +312,8 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-i [FILE]   : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-l        : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -314,33 +321,33 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE]   : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-n          : use SDL_VIDEODRIVER environment") << ACE_TEXT(" [") << RPG_CLIENT_DEF_VIDEO_INIT << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-m [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-n        : use SDL_VIDEODRIVER environment") << ACE_TEXT(" [") << RPG_CLIENT_DEF_VIDEO_INIT << ACE_TEXT("]") << std::endl;
   path = config_path;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
-  std::cout << ACE_TEXT("-r [DIR]    : schema repository") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-r [DIR]  : schema repository") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-s [FILE]   : sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
+  std::cout << ACE_TEXT("-s [FILE] : sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-t        : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("client");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_UI_FILE);
-  std::cout << ACE_TEXT("-u [FILE]   : UI file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads ([") << RPG_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_UI_FILE);
+  std::cout << ACE_TEXT("-u [FILE] : UI file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-v        : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE]: #thread pool threads ([") << RPG_NET_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -399,7 +406,7 @@ process_arguments(const int& argc_in,
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR("map");
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
@@ -448,7 +455,7 @@ process_arguments(const int& argc_in,
   soundDictionary_out += ACE_TEXT_ALWAYS_CHAR("sound");
   soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  soundDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
+  soundDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
 
   traceInformation_out     = false;
 
@@ -458,11 +465,11 @@ process_arguments(const int& argc_in,
   UIfile_out += ACE_TEXT_ALWAYS_CHAR("client");
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  UIfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_UI_FILE);
+  UIfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_UI_FILE);
 
   printVersionAndExit_out  = false;
 
-  numThreadPoolThreads_out = RPG_CLIENT_DEF_NUM_TP_THREADS;
+  numThreadPoolThreads_out = RPG_NET_CLIENT_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -610,79 +617,6 @@ process_arguments(const int& argc_in,
 }
 
 bool
-init_threadPool(const bool& useReactor_in,
-                const unsigned int& numThreadPoolThreads_in)
-{
-  RPG_TRACE(ACE_TEXT("::init_threadPool"));
-
-  if (useReactor_in && (numThreadPoolThreads_in > 1))
-    {
-      ACE_TP_Reactor* threadpool_reactor = NULL;
-      ACE_NEW_RETURN(threadpool_reactor,
-                     ACE_TP_Reactor(),
-                     false);
-      ACE_Reactor* new_reactor = NULL;
-      ACE_NEW_RETURN(new_reactor,
-                     ACE_Reactor(threadpool_reactor, 1), // delete in dtor
-                     false);
-      // make this the "default" reactor...
-      ACE_Reactor::instance(new_reactor, 1); // delete in dtor
-    } // end IF
-  else
-    {
-      ACE_Proactor* proactor = NULL;
-      ACE_NEW_RETURN(proactor,
-                     ACE_Proactor(NULL, false, NULL),
-                     false);
-      // make this the "default" proactor...
-      ACE_Proactor::instance(proactor, 1); // delete in dtor
-    } // end ELSE
-
-  return true;
-}
-
-static
-ACE_THR_FUNC_RETURN
-tp_worker_func(void* args_in)
-{
-  RPG_TRACE(ACE_TEXT("::tp_worker_func"));
-
-  bool use_reactor = *reinterpret_cast<bool*>(args_in);
-
-  // *NOTE*: asynchronous writing to a closed socket triggers the
-  // SIGPIPE signal (default action: abort).
-  // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
-  ACE_Sig_Action original_action;
-  no_sigpipe.register_action(SIGPIPE, &original_action);
-
-  int success = 0;
-  // handle any events...
-  if (use_reactor)
-  {
-    // assume ownership over the reactor...
-    ACE_Reactor::instance()->owner(ACE_OS::thr_self(),
-                                   NULL);
-    success = ACE_Reactor::instance()->run_reactor_event_loop(0);
-  }
-  else
-    success = ACE_Proactor::instance()->proactor_run_event_loop(0);
-  if (success == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("(%t) worker leaving...\n")));
-
-  // clean up
-  no_sigpipe.restore_action(SIGPIPE, original_action);
-
-  // *PORTABILITY*
-  // *TODO*
-  return (success == 0 ? NULL : NULL);
-}
-
-bool
 do_initGUI(const std::string& UIfile_in,
            RPG_Client_GTK_CBData_t& userData_in,
            const RPG_Client_SDL_VideoConfig_t& videoConfig_in)
@@ -790,7 +724,7 @@ do_initGUI(const std::string& UIfile_in,
 
   // step2: init dialog windows
   GtkFileChooserDialog* filechooser_dialog = GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(userData_in.xml,
-                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_FILECHOOSERDIALOG_NAME)));
+                                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_FILECHOOSERDIALOG_NAME)));
   ACE_ASSERT(filechooser_dialog);
   userData_in.map_filter = gtk_file_filter_new();
   ACE_ASSERT(userData_in.map_filter);
@@ -832,15 +766,15 @@ do_initGUI(const std::string& UIfile_in,
   //g_object_ref(G_OBJECT(userData_in.entity_filter));
 
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_ABOUTDIALOG_NAME)));
+                                                            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_ABOUTDIALOG_NAME)));
   ACE_ASSERT(about_dialog);
 
   GtkWidget* equipment_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_EQUIPMENTDIALOG_NAME)));
+                                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_EQUIPMENTDIALOG_NAME)));
   ACE_ASSERT(equipment_dialog);
 
   GtkWidget* main_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINDIALOG_NAME)));
+                                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAINDIALOG_NAME)));
   ACE_ASSERT(main_dialog);
   GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());
   ACE_ASSERT(image_icon);
@@ -851,10 +785,10 @@ do_initGUI(const std::string& UIfile_in,
   //                     caption.c_str());
 
   GtkWidget* main_entry_dialog = GTK_WIDGET(glade_xml_get_widget(userData_in.xml,
-                                                                 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOG_NAME)));
+                                                                 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAINENTRYDIALOG_NAME)));
   ACE_ASSERT(main_entry_dialog);
   GtkEntry* entry = GTK_ENTRY(glade_xml_get_widget(userData_in.xml,
-                                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAINENTRYDIALOGENTRY_NAME)));
+                                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAINENTRYDIALOGENTRY_NAME)));
   ACE_ASSERT(entry);
   GtkEntryBuffer* entry_buffer = gtk_entry_buffer_new(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME), // text
                                                       -1);                                             // length in bytes (-1: \0-terminated)
@@ -876,7 +810,7 @@ do_initGUI(const std::string& UIfile_in,
   // step3: populate comboboxes
   // step3a: character repository
   GtkComboBox* combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
   ACE_ASSERT(combobox);
   gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
   GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
@@ -937,7 +871,7 @@ do_initGUI(const std::string& UIfile_in,
   } // end ELSE
   // step3b: maps repository
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(combobox);
   gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
   renderer = gtk_cell_renderer_text_new();
@@ -1055,7 +989,7 @@ do_initGUI(const std::string& UIfile_in,
                    userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -1103,7 +1037,7 @@ do_initGUI(const std::string& UIfile_in,
                    userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -1151,7 +1085,7 @@ do_initGUI(const std::string& UIfile_in,
                    userData_p);
 
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(userData_in.xml,
-                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_SERVERBOX_NAME)));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_SERVERBOX_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -1258,7 +1192,7 @@ do_work(const RPG_Client_Config& config_in,
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-  // step0a: init RPG engine
+  // step1: init RPG engine
   RPG_Engine_Common_Tools::init(schemaRepository_in,
                                 config_in.magic_dictionary,
                                 config_in.item_dictionary,
@@ -1279,21 +1213,6 @@ do_work(const RPG_Client_Config& config_in,
 
     return;
   } // end IF
-
-  // step0: (if necessary) init the thread pool
-  if (!init_threadPool(RPG_CLIENT_DEF_USES_REACTOR, config_in.num_threadpool_threads))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init thread pool, aborting\n")));
-
-    // clean up
-    RPG_Client_Common_Tools::fini();
-    RPG_Engine_Common_Tools::fini();
-
-    return;
-  } // end IF
-
-  // step1: init audio
 
   // step2: init UI
   RPG_Client_GTK_CBData_t user_data;
@@ -1450,12 +1369,12 @@ do_work(const RPG_Client_Config& config_in,
 
   // step6: activate first repository entry (if any)
   GtkComboBox* combobox = GTK_COMBO_BOX(glade_xml_get_widget(user_data.xml,
-                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_CHARBOX_NAME)));
+                                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
   ACE_ASSERT(combobox);
   if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
     gtk_combo_box_set_active(combobox, 0);
   combobox = GTK_COMBO_BOX(glade_xml_get_widget(user_data.xml,
-                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_MAPBOX_NAME)));
+                                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
   ACE_ASSERT(combobox);
   if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
     gtk_combo_box_set_active(combobox, 0);
@@ -1503,34 +1422,39 @@ do_work(const RPG_Client_Config& config_in,
 //              ACE_TEXT("installed GTK quit handler (ID: %u)...\n"),
 //              quitHandlerID));
 
-  // setup dispatch of network events
+  // step7: setup dispatch of network events
+  // step7a: init stream configuration object
+  RPG_Stream_AllocatorHeap heapAllocator;
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
+                                                  &heapAllocator);
+  RPG_Net_ConfigPOD config;
+  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
+  config.pingInterval = 0; // *NOTE*: don't ping the server...
+	config.pingAutoAnswer = true;
+  config.printPongMessages = false;
+  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.messageAllocator = &messageAllocator;
+  config.defaultBufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  config.useThreadPerConnection = false;
+  config.module = NULL; // just use the default stream...
+  // *WARNING*: set at runtime, by the appropriate connection handler
+  config.sessionID = 0; // (== socket handle !)
+  config.statisticsReportingInterval = 0; // == off
 
-//   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
-//   ACE_Reactor::instance()->restart(1);
+  // step7b: init connection manager
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
-  // *CONSIDER*: potential source for races here
-  // --> network connection events arrive before dispatch of events begins
-  // start a (group of) worker thread(s)...
-  bool thread_argument = RPG_CLIENT_DEF_USES_REACTOR;
-  int grp_id = -1;
-  grp_id = ACE_Thread_Manager::instance()->spawn_n(config_in.num_threadpool_threads, // # threads
-                                                   ::tp_worker_func,                 // function
-                                                   &thread_argument,                 // argument
-                                                   (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                   ACE_DEFAULT_THREAD_PRIORITY,      // priority
-                                                   -1,                               // group id --> create new
-                                                   NULL,                             // task
-                                                   NULL,                             // handle(s)
-                                                   NULL,                             // stack(s)
-                                                   NULL,                             // stack size(s)
-                                                   NULL);                            // name(s)
-  if (grp_id == -1)
+  // step7c: init worker(s)
+  int group_id = -1;
+  if (!RPG_Net_Common_Tools::initEventDispatch(RPG_NET_USES_REACTOR,
+                                               config_in.num_threadpool_threads,
+                                               group_id))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
-               config_in.num_threadpool_threads));
+               ACE_TEXT("failed to init network event dispatch, aborting\n")));
 
-    // clean up
+		// clean up
     if (!SDL_RemoveTimer(user_data.event_timer))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
@@ -1543,12 +1467,9 @@ do_work(const RPG_Client_Config& config_in,
     return;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("spawned %u event handler(s) (group ID: %u)...\n"),
-             config_in.num_threadpool_threads,
-             grp_id));
+  // *NOTE*: from this point on, we need to clean up any remote connections !
 
-  // step7: dispatch SDL (and GTK) events
+  // step8: dispatch SDL (and GTK) events
 //   gtk_main();
   SDL_Event sdl_event;
   bool done = false;
@@ -1854,33 +1775,23 @@ do_work(const RPG_Client_Config& config_in,
              ACE_TEXT("left GTK/SDL event loop...\n")));
 
   // step8: clean up
-  // stop reactor
-  if (RPG_CLIENT_DEF_USES_REACTOR)
-  {
-    if (ACE_Reactor::instance()->end_event_loop() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
-  }
-  else
-    if (ACE_Proactor::instance()->end_event_loop() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Proactor::end_event_loop(): \"%m\", continuing\n")));
-
-  // ... wait for the reactor worker(s) to join
-  ACE_Thread_Manager::instance()->wait_grp(grp_id);
-
-  // no more data will arrive from here on...
-
   if (!SDL_RemoveTimer(user_data.event_timer))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                ACE_TEXT(SDL_GetError())));
   level_engine.stop();
   client_engine.stop();
+	RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
   RPG_Client_Common_Tools::fini();
   RPG_Engine_Common_Tools::fini();
-
   // done handling UI events
+
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+	RPG_Net_Common_Tools::finiEventDispatch(RPG_NET_USES_REACTOR,
+		                                      !RPG_NET_USES_REACTOR,
+																					group_id);
+  // no more data will arrive from here on...
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -1906,13 +1817,13 @@ do_parseIniFile(const std::string& iniFilename_in,
   config_out.video_config.fullScreen = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
   config_out.video_config.doubleBuffer = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
 
-  config_out.network_config.server = RPG_CLIENT_DEF_NETWORK_SERVER;
-  config_out.network_config.port = RPG_CLIENT_DEF_NETWORK_PORT;
-  config_out.network_config.password = RPG_CLIENT_DEF_NETWORK_PASSWORD;
-  config_out.network_config.nick = RPG_CLIENT_DEF_NETWORK_NICK;
-  config_out.network_config.user = RPG_CLIENT_DEF_NETWORK_USER;
-  config_out.network_config.realname = RPG_CLIENT_DEF_NETWORK_REALNAME;
-  config_out.network_config.channel = RPG_CLIENT_DEF_NETWORK_CHANNEL;
+  config_out.network_config.server = RPG_ENGINE_DEF_NETWORK_SERVER;
+  config_out.network_config.port = RPG_ENGINE_DEF_NETWORK_PORT;
+  config_out.network_config.password = RPG_ENGINE_DEF_NETWORK_PASSWORD;
+  config_out.network_config.nick = RPG_ENGINE_DEF_NETWORK_NICK;
+  config_out.network_config.user = RPG_ENGINE_DEF_NETWORK_USER;
+  config_out.network_config.realname = RPG_ENGINE_DEF_NETWORK_REALNAME;
+  config_out.network_config.channel = RPG_ENGINE_DEF_NETWORK_CHANNEL;
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -2271,7 +2182,7 @@ ACE_TMAIN(int argc_in,
   soundDictionary += ACE_TEXT_ALWAYS_CHAR("sound");
   soundDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  soundDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
+  soundDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
 
   std::string UIfile = config_path;
   UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -2279,7 +2190,7 @@ ACE_TMAIN(int argc_in,
   UIfile += ACE_TEXT_ALWAYS_CHAR("client");
   UIfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  UIfile += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_UI_FILE);
+  UIfile += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_UI_FILE);
 
   std::string schemaRepository = config_path;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -2292,10 +2203,10 @@ ACE_TMAIN(int argc_in,
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   floorPlan += ACE_TEXT_ALWAYS_CHAR("map");
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
@@ -2304,7 +2215,7 @@ ACE_TMAIN(int argc_in,
   bool logToFile                    = false;
   bool traceInformation             = false;
   bool printVersionAndExit          = false;
-  unsigned int numThreadPoolThreads = RPG_CLIENT_DEF_NUM_TP_THREADS;
+  unsigned int numThreadPoolThreads = RPG_NET_CLIENT_DEF_NUM_TP_THREADS;
   if (!process_arguments(argc_in,
                          argv_in,
                          mute_sound,
@@ -2412,9 +2323,9 @@ ACE_TMAIN(int argc_in,
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR("sound");
   config.audio_config.repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
-  config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
+  config.audio_config.repository += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
 #endif
   config.audio_config.dictionary = soundDictionary;
 
@@ -2431,20 +2342,20 @@ ACE_TMAIN(int argc_in,
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #endif
   config.graphics_dictionary               = graphicsDictionary;
 
   // *** network ***
-  config.network_config.server   = RPG_CLIENT_DEF_NETWORK_SERVER;
-  config.network_config.port     = RPG_CLIENT_DEF_NETWORK_PORT;
-  config.network_config.password = RPG_CLIENT_DEF_NETWORK_PASSWORD;
-  config.network_config.nick     = RPG_CLIENT_DEF_NETWORK_NICK;
-  config.network_config.user     = RPG_CLIENT_DEF_NETWORK_USER;
-  config.network_config.realname = RPG_CLIENT_DEF_NETWORK_REALNAME;
-  config.network_config.channel  = RPG_CLIENT_DEF_NETWORK_CHANNEL;
+  config.network_config.server   = RPG_ENGINE_DEF_NETWORK_SERVER;
+  config.network_config.port     = RPG_ENGINE_DEF_NETWORK_PORT;
+  config.network_config.password = RPG_ENGINE_DEF_NETWORK_PASSWORD;
+  config.network_config.nick     = RPG_ENGINE_DEF_NETWORK_NICK;
+  config.network_config.user     = RPG_ENGINE_DEF_NETWORK_USER;
+  config.network_config.realname = RPG_ENGINE_DEF_NETWORK_REALNAME;
+  config.network_config.channel  = RPG_ENGINE_DEF_NETWORK_CHANNEL;
 
   // *** magic ***
   config.magic_dictionary                  = magicDictionary;
@@ -2513,6 +2424,9 @@ ACE_TMAIN(int argc_in,
                ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
                ACE_TEXT(SDL_GetError())));
 
+		// clean up
+		SDL_Quit();
+
     return EXIT_FAILURE;
   } // end IF
 
@@ -2528,7 +2442,7 @@ ACE_TMAIN(int argc_in,
 //   ACE_ASSERT(gnomeSession);
 //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
 //  GnomeProgram* gnomeProgram = NULL;
-//  gnomeProgram = gnome_program_init(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GNOME_APPLICATION_ID), // app ID
+//  gnomeProgram = gnome_program_init(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_APPLICATION_ID), // app ID
 //#ifdef HAVE_CONFIG_H
 ////                                     ACE_TEXT_ALWAYS_CHAR(VERSION),    // version
 //                                    ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),   // version

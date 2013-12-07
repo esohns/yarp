@@ -21,14 +21,15 @@
 
 #include "rpg_stream_tools.h"
 
-#include "rpg_stream_defines.h"
-
-#include <rpg_common_macros.h>
+#include <sstream>
 
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
-#include <sstream>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+
+#include "rpg_stream_defines.h"
 
 const std::string
 RPG_Stream_Tools::timestamp2LocalString(const ACE_Time_Value& timestamp_in)
@@ -74,9 +75,9 @@ RPG_Stream_Tools::timestamp2LocalString(const ACE_Time_Value& timestamp_in)
   // step2: create string
   // Note: '\0' doesn't count: 4 + 2 + 2 + 2 + 2 + 2 + 5 blanks
   // *TODO*: rewrite this in C++...
-  char time_string[RPG_STREAM_DEF_MAX_TIMESTAMP_STRING_LENGTH];
+  char time_string[RPG_COMMON_BUFSIZE];
   if (ACE_OS::strftime(time_string,
-                       (RPG_STREAM_DEF_MAX_TIMESTAMP_STRING_LENGTH * sizeof(char)),
+                       sizeof(time_string),
                        ACE_TEXT_ALWAYS_CHAR("%Y_%m_%d_%H_%M_%S"),
                        &time_local) != 19)
   {

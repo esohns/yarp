@@ -19,36 +19,40 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_net_listener.h"
+#include "rpg_net_server_listener.h"
 
 #include <ace/OS.h>
 #include <ace/INET_Addr.h>
 #include <ace/Reactor.h>
 
-RPG_Net_Listener::RPG_Net_Listener()
+#include "rpg_common_macros.h"
+
+#include "rpg_net_server_defines.h"
+
+RPG_Net_Server_Listener::RPG_Net_Server_Listener()
  : inherited(ACE_Reactor::instance(), // use global (default) reactor
              1),                      // always accept ALL pending connections
    myIsInitialized(false),
    myIsListening(false),
    myIsOpen(false),
-   myListeningPort(0)
+   myListeningPort(RPG_NET_SERVER_DEF_LISTENING_PORT)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::RPG_Net_Listener"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::RPG_Net_Server_Listener"));
 
 }
 
-RPG_Net_Listener::~RPG_Net_Listener()
+RPG_Net_Server_Listener::~RPG_Net_Server_Listener()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::~RPG_Net_Listener"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::~RPG_Net_Server_Listener"));
 
   if (myIsOpen)
     close();
 }
 
 void
-RPG_Net_Listener::init(const unsigned short& listeningPort_in)
+RPG_Net_Server_Listener::init(const unsigned short& listeningPort_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::init"));
 
   // *NOTE*: changes won't become active until the listener is "restarted"...
   myListeningPort = listeningPort_in;
@@ -62,17 +66,17 @@ RPG_Net_Listener::init(const unsigned short& listeningPort_in)
 }
 
 const bool
-RPG_Net_Listener::isInitialized() const
+RPG_Net_Server_Listener::isInitialized() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::isInitialized"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::isInitialized"));
 
   return myIsInitialized;
 }
 
 int
-RPG_Net_Listener::handle_accept_error(void)
+RPG_Net_Server_Listener::handle_accept_error(void)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::handle_accept_error"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::handle_accept_error"));
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("failed to accept connection...\n")));
@@ -85,9 +89,9 @@ RPG_Net_Listener::handle_accept_error(void)
 }
 
 void
-RPG_Net_Listener::start()
+RPG_Net_Server_Listener::start()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::start"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::start"));
 
   if (myIsListening)
   {
@@ -155,9 +159,9 @@ RPG_Net_Listener::start()
 }
 
 void
-RPG_Net_Listener::stop()
+RPG_Net_Server_Listener::stop()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::stop"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::stop"));
 
   if (!myIsListening)
   {
@@ -185,17 +189,17 @@ RPG_Net_Listener::stop()
 }
 
 bool
-RPG_Net_Listener::isRunning() const
+RPG_Net_Server_Listener::isRunning() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::isRunning"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::isRunning"));
 
   return myIsListening;
 }
 
 void
-RPG_Net_Listener::dump_state() const
+RPG_Net_Server_Listener::dump_state() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Listener::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::dump_state"));
 
   // *TODO*: do something meaningful here...
   ACE_ASSERT(false);

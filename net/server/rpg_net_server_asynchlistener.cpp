@@ -19,34 +19,36 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_net_asynchlistener.h"
-
-#include "rpg_net_defines.h"
-#include "rpg_net_common.h"
+#include "rpg_net_server_asynchlistener.h"
 
 #include <ace/OS.h>
 #include <ace/INET_Addr.h>
 
-RPG_Net_AsynchListener::RPG_Net_AsynchListener()
+//#include "rpg_net_defines.h"
+#include "rpg_net_common.h"
+
+#include "rpg_net_server_defines.h"
+
+RPG_Net_Server_AsynchListener::RPG_Net_Server_AsynchListener()
  : //inherited(),
    myIsInitialized(false),
    myIsListening(false),
-   myListeningPort(RPG_NET_DEF_LISTENING_PORT)
+   myListeningPort(RPG_NET_SERVER_DEF_LISTENING_PORT)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::RPG_Net_AsynchListener"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::RPG_Net_Server_AsynchListener"));
 
 }
 
-RPG_Net_AsynchListener::~RPG_Net_AsynchListener()
+RPG_Net_Server_AsynchListener::~RPG_Net_Server_AsynchListener()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::~RPG_Net_AsynchListener"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::~RPG_Net_Server_AsynchListener"));
 
 }
 
 void
-RPG_Net_AsynchListener::init(const unsigned short& listeningPort_in)
+RPG_Net_Server_AsynchListener::init(const unsigned short& listeningPort_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::init"));
 
   // *NOTE*: changes won't become active until the listener is "restarted"...
   myListeningPort = listeningPort_in;
@@ -60,17 +62,17 @@ RPG_Net_AsynchListener::init(const unsigned short& listeningPort_in)
 }
 
 const bool
-RPG_Net_AsynchListener::isInitialized() const
+RPG_Net_Server_AsynchListener::isInitialized() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::isInitialized"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::isInitialized"));
 
   return myIsInitialized;
 }
 
 void
-RPG_Net_AsynchListener::start()
+RPG_Net_Server_AsynchListener::start()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::start"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::start"));
 
   if (myIsListening)
   {
@@ -120,9 +122,9 @@ RPG_Net_AsynchListener::start()
 }
 
 void
-RPG_Net_AsynchListener::stop()
+RPG_Net_Server_AsynchListener::stop()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::stop"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::stop"));
 
   if (!myIsListening)
   {
@@ -144,26 +146,26 @@ RPG_Net_AsynchListener::stop()
 }
 
 bool
-RPG_Net_AsynchListener::isRunning() const
+RPG_Net_Server_AsynchListener::isRunning() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::isRunning"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::isRunning"));
 
   return myIsListening;
 }
 
 void
-RPG_Net_AsynchListener::dump_state() const
+RPG_Net_Server_AsynchListener::dump_state() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::dump_state"));
 
   // *TODO*: do something meaningful here...
   ACE_ASSERT(false);
 }
 
 RPG_Net_AsynchStreamHandler_t*
-RPG_Net_AsynchListener::make_handler(void)
+RPG_Net_Server_AsynchListener::make_handler(void)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchListener::make_handler"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::make_handler"));
 
   // init return value(s)
   RPG_Net_AsynchStreamHandler_t* handler_out = NULL;

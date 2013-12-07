@@ -21,12 +21,12 @@
 
 #include "rpg_stream_counter.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Guard_T.h>
 #include <ace/Synch.h>
 
-RPG_Stream_Counter::RPG_Stream_Counter(const unsigned long& initCount_in)
+RPG_Stream_Counter::RPG_Stream_Counter(const unsigned int& initCount_in)
  : myCounter(initCount_in),
    myCondition(myLock)
 {
@@ -67,7 +67,7 @@ RPG_Stream_Counter::decrease()
   } // end IF
 }
 
-const unsigned long
+unsigned int
 RPG_Stream_Counter::refcount()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::refcount"));

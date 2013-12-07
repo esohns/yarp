@@ -18,34 +18,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_ASYNCHLISTENER_H
-#define RPG_NET_ASYNCHLISTENER_H
+#ifndef RPG_NET_SERVER_LISTENER_H
+#define RPG_NET_SERVER_LISTENER_H
 
-#include "rpg_net_exports.h"
-#include "rpg_net_stream_common.h"
+#include "rpg_net_server_exports.h"
+
+#include "rpg_net_sockethandler.h"
 
 #include "rpg_common_icontrol.h"
 #include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
-#include <ace/Asynch_Acceptor.h>
+#include <ace/Acceptor.h>
+#include <ace/SOCK_Acceptor.h>
 #include <ace/Singleton.h>
+#include <ace/Synch.h>
 
-class RPG_Net_Export RPG_Net_AsynchListener
- : public ACE_Asynch_Acceptor<RPG_Net_AsynchStreamHandler_t>,
-   public RPG_Common_IControl
+class RPG_Net_Server_Export RPG_Net_Server_Listener
+ : public ACE_Acceptor<RPG_Net_SocketHandler,
+                       ACE_SOCK_ACCEPTOR>,
+    public RPG_Common_IControl
 {
   // singleton needs access to the ctor/dtors
-  friend class ACE_Singleton<RPG_Net_AsynchListener,
+  friend class ACE_Singleton<RPG_Net_Server_Listener,
                              ACE_Recursive_Thread_Mutex>;
 
  public:
-  // override default creation strategy
-  virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
-
   // configuration / initialization
   void init(const unsigned short&); // port number
   const bool isInitialized() const;
+
+  // override some methods from ACE_Acceptor
+  // *NOTE*: "in the event that an accept fails, this method will be called and
+  // the return value will be returned from handle_input()."
+  virtual int handle_accept_error(void);
 
   // implement RPG_Common_IControl
   // *WARNING*: this API is NOT re-entrant !
@@ -57,21 +63,24 @@ class RPG_Net_Export RPG_Net_AsynchListener
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Asynch_Acceptor<RPG_Net_AsynchStreamHandler_t> inherited;
+  typedef ACE_Acceptor<RPG_Net_SocketHandler,
+//                        RPG_Net_StreamSocketBase<RPG_Net_Stream>,
+                       ACE_SOCK_ACCEPTOR> inherited;
 
   // safety measures
-  RPG_Net_AsynchListener();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchListener(const RPG_Net_AsynchListener&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchListener& operator=(const RPG_Net_AsynchListener&));
-  virtual ~RPG_Net_AsynchListener();
+  RPG_Net_Server_Listener();
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Listener(const RPG_Net_Server_Listener&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Listener& operator=(const RPG_Net_Server_Listener&));
+  virtual ~RPG_Net_Server_Listener();
 
   bool           myIsInitialized;
   bool           myIsListening;
+  bool           myIsOpen;
   unsigned short myListeningPort;
 };
 
-typedef ACE_Singleton<RPG_Net_AsynchListener,
-                      ACE_Recursive_Thread_Mutex> RPG_NET_ASYNCHLISTENER_SINGLETON;
-RPG_NET_SINGLETON_DECLARE(ACE_Singleton, RPG_Net_AsynchListener, ACE_Recursive_Thread_Mutex);
+typedef ACE_Singleton<RPG_Net_Server_Listener,
+                      ACE_Recursive_Thread_Mutex> RPG_NET_SERVER_LISTENER_SINGLETON;
+RPG_NET_SERVER_SINGLETON_DECLARE(ACE_Singleton, RPG_Net_Server_Listener, ACE_Recursive_Thread_Mutex);
 
 #endif

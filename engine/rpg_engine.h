@@ -29,6 +29,8 @@
 #include "rpg_engine_level.h"
 #include "rpg_engine_event_manager.h"
 
+#include "rpg_net_client_iconnector.h"
+
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"
 
@@ -92,7 +94,7 @@ class RPG_Engine_Export RPG_Engine
   RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&,
                                  const bool& = true) const; // locked access ?
   RPG_Map_Position_t findValid(const RPG_Map_Position_t&,  // center
-                               const unsigned int&) const; // max (square !) radius
+                               const unsigned int& = 0) const; // max (square !) radius [0: whereever]
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&,
                                   const bool& = true) const; // locked access ?
   RPG_Engine_EntityList_t entities(const RPG_Map_Position_t&, // sort: position (closest first)
@@ -200,5 +202,6 @@ class RPG_Engine_Export RPG_Engine
   RPG_Engine_EntityID_t                       myActivePlayer;
 
   RPG_Engine_IClient*                         myClient;
+	RPG_Net_Client_IConnector*                  myConnector;
 };
 #endif

@@ -8,4 +8,4 @@
 @rem #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
 @rem generate exports file
-"E:\ACE_wrappers\bin\generate_export_file.pl" -n RPG_Protocol > .\..\rpg_net_protocol_exports.h
+C:\Perl\bin\perl.exe C:\Temp\ACE_wrappers\bin\generate_export_file.pl -n RPG_Protocol > .\..\rpg_net_protocol_exports.h

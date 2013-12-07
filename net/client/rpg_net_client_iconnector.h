@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Erik Sohns   *
+ *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,47 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "stdafx.h"
 
-#include "rpg_net_server_sockethandler.h"
+#ifndef RPG_NET_CLIENT_ICONNECTOR_H
+#define RPG_NET_CLIENT_ICONNECTOR_H
 
-RPG_Net_Server_SocketHandler::RPG_Net_Server_SocketHandler()
- : myHandle(ACE_INVALID_HANDLE)
+#include <ace/INET_Addr.h>
+
+class RPG_Net_Client_IConnector
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::RPG_Net_Server_SocketHandler"));
+ public:
+  virtual ~RPG_Net_Client_IConnector() {}
 
-}
+  virtual void connect(const ACE_INET_Addr&) = 0;
+};
 
-RPG_Net_Server_SocketHandler::~RPG_Net_Server_SocketHandler()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::~RPG_Net_Server_SocketHandler"));
-
-}
-
-void
-RPG_Net_Server_SocketHandler::open(ACE_HANDLE handle_in,
-                                   ACE_Message_Block& message_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::open"));
-
-	// *TODO*
-	ACE_ASSERT(false);
-}
-
-void
-RPG_Net_Server_SocketHandler::handle_read_stream(const ACE_Asynch_Read_Stream::Result& result_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::handle_read_stream"));
-
-	// *TODO*
-	ACE_ASSERT(false);
-}
-
-void
-RPG_Net_Server_SocketHandler::handle_write_stream(const ACE_Asynch_Write_Stream::Result& result_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::handle_write_stream"));
-
-	// *TODO*
-	ACE_ASSERT(false);
-}
+#endif

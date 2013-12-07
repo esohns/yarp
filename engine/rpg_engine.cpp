@@ -21,36 +21,41 @@
 
 #include "rpg_engine.h"
 
-#include "rpg_engine_defines.h"
-#include "rpg_engine_event_manager.h"
-#include "rpg_engine_common_tools.h"
+#include <cmath>
 
-#include "rpg_map_common_tools.h"
-#include "rpg_map_pathfinding_tools.h"
-
-#include "rpg_item_dictionary.h"
-#include "rpg_item_common_tools.h"
-
-#include "rpg_character_race_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_tools.h"
+#include <ace/Log_Msg.h>
 
 #include "rpg_dice_common.h"
 #include "rpg_dice.h"
 
-#include <ace/Log_Msg.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
-#include <cmath>
+#include "rpg_character_race_common_tools.h"
+
+#include "rpg_item_dictionary.h"
+#include "rpg_item_common_tools.h"
+
+#include "rpg_map_common_tools.h"
+#include "rpg_map_pathfinding_tools.h"
+
+#include "rpg_net_defines.h"
+#include "rpg_net_client_connector.h"
+#include "rpg_net_client_asynchconnector.h"
+
+#include "rpg_engine_defines.h"
+#include "rpg_engine_event_manager.h"
+#include "rpg_engine_common_tools.h"
 
 // init statics
 ACE_Atomic_Op<ACE_Thread_Mutex, RPG_Engine_EntityID_t> RPG_Engine::myCurrentID = 1;
 
 RPG_Engine::RPG_Engine()
- : myQueue(RPG_ENGINE_DEF_MAX_QUEUE_SLOTS),
+ : myQueue(RPG_ENGINE_MAX_QUEUE_SLOTS),
 //    myEntities(),
    myActivePlayer(0),
-   myClient(NULL)
+   myClient(NULL),
+	 myConnector(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::RPG_Engine"));
 
@@ -58,14 +63,32 @@ RPG_Engine::RPG_Engine()
   inherited::msg_queue(&myQueue);
 
   // set group ID for worker thread(s)
-  inherited::grp_id(RPG_ENGINE_DEF_TASK_GROUP_ID);
+  inherited::grp_id(RPG_ENGINE_TASK_GROUP_ID);
+
+  // init network connector
+  if (RPG_NET_USES_REACTOR)
+    myConnector = new(std::nothrow) RPG_Net_Client_Connector();
+  else
+    myConnector = new(std::nothrow) RPG_Net_Client_AsynchConnector();
+  ACE_ASSERT(myConnector);
+  if (!myConnector)
+  {
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory, aborting\n")));
+
+    return;
+  } // end IF
 }
 
 RPG_Engine::~RPG_Engine()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::~RPG_Engine"));
 
+	if (isRunning())
+		stop();
+
   // clean up
+	delete myConnector;
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
     for (RPG_Engine_EntitiesIterator_t iterator = myEntities.begin();
@@ -135,7 +158,6 @@ RPG_Engine::close(u_long arg_in)
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("(state engine) worker thread (ID: %t) leaving...\n")));
 
-      // don't do anything...
       return 0;
     }
     case 1:
@@ -166,7 +188,7 @@ RPG_Engine::svc(void)
   RPG_TRACE(ACE_TEXT("RPG_Engine::svc"));
 
   ACE_Message_Block* ace_mb          = NULL;
-  ACE_Time_Value     peek_delay(0, (RPG_ENGINE_DEF_EVENT_PEEK_INTERVAL * 1000));
+  ACE_Time_Value     peek_delay(0, (RPG_ENGINE_EVENT_PEEK_INTERVAL * 1000));
   ACE_Time_Value     delay;
   bool               stop_processing = false;
 
@@ -227,26 +249,25 @@ RPG_Engine::start()
     return;
 
   // OK: start worker thread
-  ACE_thread_t thread_ids[1];
-  thread_ids[0] = 0;
   ACE_hthread_t thread_handles[1];
   thread_handles[0] = 0;
-
-  // *IMPORTANT NOTE*: MUST be THR_JOINABLE !!!
-  int ret = 0;
-  ret = inherited::activate((THR_NEW_LWP |
-                             THR_JOINABLE |
-                             THR_INHERIT_SCHED),         // flags
-                            1,                           // number of threads
-                            0,                           // force spawning
-                            ACE_DEFAULT_THREAD_PRIORITY, // priority
-                            inherited::grp_id(),         // group id --> has been set (see above)
-                            NULL,                        // corresp. task --> use 'this'
-                            thread_handles,              // thread handle(s)
-                            NULL,                        // thread stack(s)
-                            NULL,                        // thread stack size(s)
-                            thread_ids,                  // thread id(s)
-														NULL);                       // thread names(s)
+  ACE_thread_t thread_ids[1];
+  thread_ids[0] = 0;
+	const char* thread_names[1];
+	thread_names[0] = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_TASK_THREAD_NAME);
+  int ret = inherited::activate((THR_NEW_LWP |
+																 THR_JOINABLE |
+																 THR_INHERIT_SCHED),         // flags
+																1,                           // number of threads
+																0,                           // force spawning
+																ACE_DEFAULT_THREAD_PRIORITY, // priority
+																inherited::grp_id(),         // group id --> has been set (see above)
+																NULL,                        // corresp. task --> use 'this'
+																thread_handles,              // thread handle(s)
+																NULL,                        // thread stack(s)
+																NULL,                        // thread stack size(s)
+																thread_ids,                  // thread id(s)
+																thread_names);               // thread names(s)
   if (ret == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
@@ -282,6 +303,10 @@ RPG_Engine::start()
     if (inherited2::myLevelMeta.spawn_timer == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to schedule spawn event, continuing\n")));
+
+		ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("scheduled spawn event (ID: %d)...\n"),
+							 inherited2::myLevelMeta.spawn_timer));
   } // end IF
 }
 
@@ -297,6 +322,9 @@ RPG_Engine::stop()
   // stop AI (&& monster spawning)
   ACE_ASSERT(inherited2::myLevelMeta.spawn_timer != -1);
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->cancel(inherited2::myLevelMeta.spawn_timer);
+	ACE_DEBUG((LM_DEBUG,
+            ACE_TEXT("cancelled spawn event (ID: %d)...\n"),
+						inherited2::myLevelMeta.spawn_timer));
   inherited2::myLevelMeta.spawn_timer = -1;
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->stop();
 
@@ -344,7 +372,7 @@ RPG_Engine::stop()
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("worker thread has joined...\n")));
+             ACE_TEXT("joined (state engine) worker thread...\n")));
 
   clearEntityActions(0);
 }
@@ -363,7 +391,7 @@ RPG_Engine::wait_all()
   RPG_TRACE(ACE_TEXT("RPG_Engine::wait_all"));
 
   // ... wait for ALL worker(s) to join
-  if (ACE_Thread_Manager::instance()->wait_grp(RPG_ENGINE_DEF_TASK_GROUP_ID) == -1)
+  if (ACE_Thread_Manager::instance()->wait_grp(RPG_ENGINE_TASK_GROUP_ID) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(): \"%m\", returning\n")));
 }
@@ -452,7 +480,7 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
   temp *= RPG_ENGINE_ROUND_INTERVAL;
   float squares_per_round = temp;
   squares_per_round = (1.0F / squares_per_round);
-  squares_per_round *= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
+  squares_per_round *= static_cast<float>(RPG_ENGINE_SPEED_MODIFIER);
   float fractional = std::modf(squares_per_round, &squares_per_round);
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->add(id,
                                                       ACE_Time_Value(static_cast<time_t>(squares_per_round),
@@ -830,8 +858,10 @@ RPG_Engine::findValid(const RPG_Map_Position_t& center_in,
     occupied.insert((*iterator).second->position);
   std::vector<RPG_Map_Position_t> difference;
   std::vector<RPG_Map_Position_t>::iterator difference_end;
+	unsigned int max_radius = ((myMap.plan.size_x > myMap.plan.size_x) ? myMap.plan.size_x
+		                                                                 : myMap.plan.size_y);
   for (unsigned int i = 0;
-       i < radius_in;
+		   i < (radius_in ? radius_in : max_radius);
        i++)
   {
     valid.clear();
@@ -855,7 +885,7 @@ RPG_Engine::findValid(const RPG_Map_Position_t& center_in,
 
   if (possible.empty())
   {
-    ACE_DEBUG((LM_ERROR,
+    ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("could not find a valid position around [%u,%u] (radius: %u), aborting\n"),
                center_in.first, center_in.second,
                radius_in));
@@ -1712,7 +1742,7 @@ RPG_Engine::handleEntities()
             temp *= RPG_ENGINE_ROUND_INTERVAL;
             float squares_per_round = temp;
             squares_per_round = (1.0F / squares_per_round);
-            squares_per_round *= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
+            squares_per_round *= static_cast<float>(RPG_ENGINE_SPEED_MODIFIER);
             float fractional = std::modf(squares_per_round, &squares_per_round);
             RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->reschedule((*iterator).first,
                                                                        ACE_Time_Value(static_cast<time_t>(squares_per_round),
@@ -1731,7 +1761,7 @@ RPG_Engine::handleEntities()
             temp *= RPG_ENGINE_ROUND_INTERVAL;
             float squares_per_round = temp;
             squares_per_round = 1.0F / squares_per_round;
-            squares_per_round /= static_cast<float>(RPG_ENGINE_DEF_SPEED_MODIFIER);
+            squares_per_round /= static_cast<float>(RPG_ENGINE_SPEED_MODIFIER);
             float fractional = std::modf(squares_per_round, &squares_per_round);
             RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->reschedule((*iterator).first,
                                                                        ACE_Time_Value(static_cast<time_t>(squares_per_round),

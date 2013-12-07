@@ -24,13 +24,12 @@
 class RPG_Common_IRefCount
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Common_IRefCount() {}
 
   // exposed interface
   virtual void increase() = 0;
   virtual void decrease() = 0;
-  virtual const unsigned long refcount() = 0;
+  virtual unsigned int refcount() = 0;
   // *NOTE*: this call should block IF the count is > 0 and wait
   // until the count reaches 0 the next time
   virtual void waitcount() = 0;

@@ -15,42 +15,45 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\net\client\stdafx.h">
+    <ClInclude Include="rpg_net_server_common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\net\client\rpg_net_client_asynchconnector.h">
+    <ClInclude Include="rpg_net_server_defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\net\client\rpg_net_client_common.h">
+    <ClInclude Include="rpg_net_server_sockethandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\net\client\rpg_net_client_connector.h">
+    <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\net\client\rpg_net_client_sockethandler.h">
+    <ClInclude Include="rpg_net_server_common_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="client\rpg_net_client_exports.h">
+    <ClInclude Include="rpg_net_server_listener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="client\rpg_net_client_defines.h">
+    <ClInclude Include="rpg_net_server_asynchlistener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="client\rpg_net_client_iconnector.h">
+    <ClInclude Include="rpg_net_server_exports.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\net\client\rpg_net_client_asynchconnector.cpp">
+    <ClCompile Include="rpg_net_server_sockethandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\net\client\rpg_net_client_connector.cpp">
+    <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\net\client\rpg_net_client_sockethandler.cpp">
+    <ClCompile Include="rpg_net_server_common_tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\net\client\stdafx.cpp">
+    <ClCompile Include="rpg_net_server_asynchlistener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_net_server_listener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

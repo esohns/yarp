@@ -26,8 +26,8 @@
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 
-#include <rpg_stream_task_base_synch.h>
-#include <rpg_stream_streammodule.h>
+#include "rpg_stream_task_base_synch.h"
+#include "rpg_stream_streammodule.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Condition_T.h>
@@ -51,9 +51,9 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
 
   // initialization
   const bool init(RPG_Stream_IAllocator*, // message allocator
-                  const unsigned long&,   // default (message) buffer size
-                  const bool& = false,    // automatically answer "ping" messages (client)
-                  const bool& = false);   // print dot ('.') for every answered PING to stdlog (client)
+                  const unsigned int&,    // default (message) buffer size
+                  const bool& = false,    // automatically answer "ping" messages
+                  const bool& = false);   // print dot ('.') for every answered PING to stdlog
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
@@ -108,7 +108,7 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCHandler& operator=(const RPG_Net_Protocol_Module_IRCHandler&));
 
   // helper methods
-  RPG_Net_Protocol_Message* allocateMessage(const unsigned long&); // requested size
+  RPG_Net_Protocol_Message* allocateMessage(const unsigned int&); // requested size
   // *NOTE*: "fire-and-forget" - the argument is consumed
   void sendMessage(RPG_Net_Protocol_IRCMessage*&); // command handle
 
@@ -125,7 +125,7 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
   Subscribers_t                          mySubscribers;
 
   RPG_Stream_IAllocator*                 myAllocator;
-  unsigned long                          myDefaultBufferSize;
+  unsigned int                           myDefaultBufferSize;
   bool                                   myAutomaticPong;
   bool                                   myPrintPingPongDot;
   bool                                   myIsInitialized;

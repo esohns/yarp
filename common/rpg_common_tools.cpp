@@ -806,15 +806,15 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
   int minutes = static_cast<int>(temp.sec()) / 60;
   temp.sec(temp.sec() % 60);
 
-  char time_string[RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH];
+  char time_string[RPG_COMMON_BUFSIZE];
   // *TODO*: rewrite this in C++...
   if (ACE_OS::snprintf(time_string,
-                      sizeof(time_string),
-                      ACE_TEXT_ALWAYS_CHAR("%d:%d:%d.%d"),
-                      hours,
-                      minutes,
-                      static_cast<int>(temp.sec()),
-                      static_cast<int>(temp.usec())) < 0)
+                       sizeof(time_string),
+                       ACE_TEXT_ALWAYS_CHAR("%d:%d:%d.%d"),
+                       hours,
+                       minutes,
+                       static_cast<int>(temp.sec()),
+                       static_cast<int>(temp.usec())) < 0)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::snprintf(): \"%m\", aborting\n")));

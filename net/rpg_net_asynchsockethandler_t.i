@@ -18,21 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_net_defines.h"
-#include "rpg_net_common_tools.h"
-
-#include "rpg_stream_iallocator.h"
-
-#include "rpg_common_macros.h"
-
 #include <ace/Proactor.h>
 #include <ace/Message_Block.h>
 #include <ace/INET_Addr.h>
 
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+
+#include "rpg_stream_iallocator.h"
+
+#include "rpg_net_defines.h"
+#include "rpg_net_common_tools.h"
+
 template <typename ConfigType,
           typename StatisticsContainerType>
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T(MANAGER_t* manager_in)
+		                      StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T(MANAGER_t* manager_in)
  : inherited(),
 //    myUserData(),
    myIsInitialized(false),
@@ -71,7 +72,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 template <typename ConfigType,
           typename StatisticsContainerType>
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::~RPG_Net_AsynchSocketHandler_T()
+		                      StatisticsContainerType>::~RPG_Net_AsynchSocketHandler_T()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::~RPG_Net_AsynchSocketHandler_T"));
 
@@ -100,8 +101,8 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::open(ACE_HANDLE handle_in,
-                  																					 ACE_Message_Block& messageBlock_in)
+		                      StatisticsContainerType>::open(ACE_HANDLE handle_in,
+                  											 ACE_Message_Block& messageBlock_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::open"));
 
@@ -143,12 +144,12 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     } // end IF
   } // end IF
   if (!RPG_Net_Common_Tools::setNoDelay(handle_in,
-                                        RPG_NET_DEF_SOCK_NODELAY))
+                                        RPG_NET_SOCK_NODELAY))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
                handle_in,
-               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
+               (RPG_NET_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
 
 		// clean up
 		delete this;
@@ -236,7 +237,7 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::addresses(const ACE_INET_Addr& remoteAddress_in,
+		                      StatisticsContainerType>::addresses(const ACE_INET_Addr& remoteAddress_in,
                                                                   const ACE_INET_Addr& localAddress_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::addresses"));
@@ -346,7 +347,7 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 ACE_Message_Block*
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::allocateMessage(const unsigned int& requestedSize_in)
+		                      StatisticsContainerType>::allocateMessage(const unsigned int& requestedSize_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::allocateMessage"));
 
@@ -380,7 +381,7 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::handle_write_stream(const ACE_Asynch_Write_Stream::Result& result)
+		                      StatisticsContainerType>::handle_write_stream(const ACE_Asynch_Write_Stream::Result& result)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::handle_write_stream"));
 
@@ -420,37 +421,37 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::initiate_read_stream()
+		                      StatisticsContainerType>::initiate_read_stream()
 {
-	RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::initiate_read_stream"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::initiate_read_stream"));
 
-	// allocate a data buffer
-  ACE_Message_Block* message_block = allocateMessage(RPG_NET_DEF_NETWORK_BUFFER_SIZE);
+  // allocate a data buffer
+  ACE_Message_Block* message_block = allocateMessage(RPG_NET_STREAM_BUFFER_SIZE);
   if (!message_block)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Net_AsynchSocketHandler_T::allocateMessage(%u), aborting\n"),
-               RPG_NET_DEF_NETWORK_BUFFER_SIZE));
+               RPG_NET_STREAM_BUFFER_SIZE));
   } // end IF
 
-	// start (asynch) read...
+  // start (asynch) read...
   if (myInputStream.read(*message_block,
-                    		 message_block->size()) == -1)
-	{
+                   		 message_block->size()) == -1)
+  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Read_Stream::read(%u): \"%m\", aborting\n"),
                message_block->size()));
 
-		// clean up
-		message_block->release();
-	}
+	// clean up
+	message_block->release();
+  } // end IF
 }
 
 template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::init(const ConfigType& userData_in)
+		                      StatisticsContainerType>::init(const ConfigType& userData_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::init"));
 
@@ -462,7 +463,7 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::abort()
+		                      StatisticsContainerType>::abort()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::abort"));
 
@@ -477,7 +478,7 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 unsigned int
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::getID() const
+		                      StatisticsContainerType>::getID() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::getID"));
 
@@ -494,17 +495,14 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-		                          StatisticsContainerType>::dump_state() const
+		                      StatisticsContainerType>::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::dump_state"));
 
   // debug info
-  ACE_TCHAR buf[BUFSIZ];
-  ACE_OS::memset(buf,
-                 0,
-                 (BUFSIZ * sizeof(ACE_TCHAR)));
-  std::string remoteAddress;
-  if (myPeer.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
+  ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
+  ACE_OS::memset(buffer, 0, sizeof(buffer));
+  if (myPeer.addr_to_string(buffer, sizeof(buffer)) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", aborting\n")));
@@ -515,5 +513,5 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connection [%u]: --> (\"%s\")\n"),
              getID(),
-             buf));
+             buffer));
 }

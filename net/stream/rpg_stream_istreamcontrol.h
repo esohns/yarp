@@ -27,8 +27,7 @@ class RPG_Stream_IStreamControl
  : public RPG_Common_IControl
 {
  public:
-  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Stream_IStreamControl() {}
 
   // exposed interface
   virtual void pause() = 0;

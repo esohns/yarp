@@ -71,10 +71,10 @@ RPG_Sound_Dictionary::init(const std::string& filename_in,
 
   // Parse the document to obtain the object model.
   //
-  ::xml_schema::document doc_p(dictionary_p,                                            // parser
-                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),   // namespace
-                               ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_INSTANCE), // root element name
-															 false);                                                  // polymorphic ?
+  ::xml_schema::document doc_p(dictionary_p,                                          // parser
+                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE), // namespace
+                               ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_INSTANCE),   // root element name
+															 false);                                                // polymorphic ?
 
   dictionary_p.pre();
 

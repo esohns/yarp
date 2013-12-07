@@ -18,17 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_Net_Client_AsynchConnector_H
-#define RPG_Net_Client_AsynchConnector_H
+#ifndef RPG_NET_CLIENT_ASYNCHCONNECTOR_H
+#define RPG_NET_CLIENT_ASYNCHCONNECTOR_H
 
 #include "rpg_net_client_exports.h"
+
 #include "rpg_net_stream_common.h"
+#include "rpg_net_client_iconnector.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Asynch_Connector.h>
 
 class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
- : public ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t>
+ : public ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t>,
+   public RPG_Net_Client_IConnector
 {
  public:
   RPG_Net_Client_AsynchConnector();
@@ -36,6 +39,9 @@ class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
 
   // override default creation strategy
   virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
+
+	// implement RPG_Net_Client_IConnector
+  virtual void connect(const ACE_INET_Addr&);
 
  private:
   typedef ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t> inherited;

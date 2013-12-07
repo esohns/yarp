@@ -19,27 +19,10 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
-#include "net_common.h"
-#include "net_client_timeouthandler.h"
-#include "net_client_signalhandler.h"
-
-#include "rpg_net_defines.h"
-#include "rpg_net_common_tools.h"
-#include "rpg_net_connection_manager.h"
-#include "rpg_net_stream_messageallocator.h"
-#include "rpg_net_client_connector.h"
-#include "rpg_net_client_asynchconnector.h"
-
-#include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_timer_manager.h"
-
-#include "rpg_stream_allocatorheap.h"
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <list>
 
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
@@ -52,16 +35,35 @@
 #include <ace/SOCK_Connector.h>
 #include <ace/High_Res_Timer.h>
 
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <list>
+// *NOTE*: need this to import correct VERSION !
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_timer_manager.h"
+
+#include "rpg_stream_allocatorheap.h"
+
+#include "rpg_net_defines.h"
+#include "rpg_net_common_tools.h"
+#include "rpg_net_connection_manager.h"
+#include "rpg_net_stream_messageallocator.h"
+
+#include "rpg_net_client_defines.h"
+#include "rpg_net_client_connector.h"
+#include "rpg_net_client_asynchconnector.h"
+
+#include "rpg_net_server_defines.h"
+
+#include "net_common.h"
+#include "net_client_timeouthandler.h"
+#include "net_client_signalhandler.h"
 
 #define NET_CLIENT_DEF_SERVER_HOSTNAME         ACE_LOCALHOST
 #define NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL 0
 #define NET_CLIENT_DEF_SERVER_PING_INTERVAL    0
-#define NET_CLIENT_DEF_CLIENT_USES_REACTOR     false
-#define NET_CLIENT_DEF_NUM_TP_THREADS          2
 
 void
 print_usage(const std::string& programName_in)
@@ -76,12 +78,12 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-h [STRING]: server (host)name [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
   std::cout << ACE_TEXT("-i [VALUE] : connection interval ([") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l         : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE] : server port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-r         : use reactor") << ACE_TEXT(" [") << NET_CLIENT_DEF_CLIENT_USES_REACTOR << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE] : server port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-r         : use reactor") << ACE_TEXT(" [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s [VALUE] : ping interval ([") << NET_CLIENT_DEF_SERVER_PING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE] : #thread pool threads")  << ACE_TEXT(" [") << NET_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE] : #thread pool threads")  << ACE_TEXT(" [") << RPG_NET_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -103,12 +105,12 @@ process_arguments(const int argc_in,
   serverHostname_out = NET_CLIENT_DEF_SERVER_HOSTNAME;
   connectionInterval_out = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
   logToFile_out = false;
-  serverPortNumber_out = RPG_NET_DEF_LISTENING_PORT;
-  useReactor_out = NET_CLIENT_DEF_CLIENT_USES_REACTOR;
+  serverPortNumber_out = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  useReactor_out = RPG_NET_USES_REACTOR;
   pingInterval_out = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   traceInformation_out = false;
   printVersionAndExit_out = false;
-  numThreadPoolThreads_out = NET_CLIENT_DEF_NUM_TP_THREADS;
+  numThreadPoolThreads_out = RPG_NET_CLIENT_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -461,14 +463,12 @@ do_work(const std::string& serverHostname_in,
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step1: init client connector
-  RPG_Net_Client_Connector* connector = NULL;
-  RPG_Net_Client_AsynchConnector* asynch_connector = NULL;
+  RPG_Net_Client_IConnector* connector = NULL;
   if (useReactor_in)
     connector = new(std::nothrow) RPG_Net_Client_Connector();
   else
-    asynch_connector = new(std::nothrow) RPG_Net_Client_AsynchConnector();
-  ACE_ASSERT(connector || asynch_connector);
-  if ((connector == NULL) && (asynch_connector == NULL))
+    connector = new(std::nothrow) RPG_Net_Client_AsynchConnector();
+  if (!connector)
   {
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory, aborting\n")));
@@ -478,27 +478,9 @@ do_work(const std::string& serverHostname_in,
 
   // step2: signal handling
   // event handler for signals
-  Net_Client_SignalHandler* signal_handler = NULL;
-  if (useReactor_in)
-    signal_handler = new(std::nothrow) Net_Client_SignalHandler(serverHostname_in,   // target hostname
-                                                                serverPortNumber_in, // target port
-                                                                connector);          // connector
-  else
-    signal_handler = new(std::nothrow) Net_Client_SignalHandler(serverHostname_in,   // target hostname
-                                                                serverPortNumber_in, // target port
-                                                                asynch_connector);   // connector
-  ACE_ASSERT(signal_handler);
-  if (!signal_handler)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory, aborting\n")));
-
-    // clean up
-    delete signal_handler;
-    delete connector; delete asynch_connector;
-
-    return;
-  } // end IF
+  Net_Client_SignalHandler signal_handler(serverHostname_in,   // target hostname
+                                          serverPortNumber_in, // target port
+                                          connector);          // connector
   ACE_Sig_Handlers signal_dispatcher;
   // *WARNING*: 'signals' appears to be a keyword in some contexts...
   std::vector<int> signalss;
@@ -507,7 +489,7 @@ do_work(const std::string& serverHostname_in,
   std::vector<ACE_Sig_Action> previous_actions;
   std::vector<int> sig_keys;
   init_signalHandling(signalss,
-                      *signal_handler,
+                      signal_handler,
                       signal_dispatcher,
                       previous_actions,
                       sig_keys,
@@ -515,17 +497,16 @@ do_work(const std::string& serverHostname_in,
 
   // step3a: init stream configuration object
   RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
-  ACE_OS::memset(&config,
-                 0,
-                 sizeof(RPG_Net_ConfigPOD));
+  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
   config.pingInterval = pingInterval_in;
+	config.pingAutoAnswer = true;
   config.printPongMessages = true;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
-  config.defaultBufferSize = RPG_NET_DEF_NETWORK_BUFFER_SIZE;
+  config.defaultBufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   config.useThreadPerConnection = false;
   config.module = NULL; // just use the default stream...
   // *WARNING*: set at runtime, by the appropriate connection handler
@@ -537,33 +518,15 @@ do_work(const std::string& serverHostname_in,
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
   // step4a: init timer...
-  Net_Client_TimeoutHandler* timeout_handler = NULL;
-  if (useReactor_in)
-    timeout_handler = new(std::nothrow) Net_Client_TimeoutHandler(serverHostname_in,
-                                                                  serverPortNumber_in,
-                                                                  connector);
-  else
-    timeout_handler = new(std::nothrow) Net_Client_TimeoutHandler(serverHostname_in,
-                                                                  serverPortNumber_in,
-                                                                  asynch_connector);
-  ACE_ASSERT(timeout_handler);
-  if (!timeout_handler)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory, aborting\n")));
-
-    // clean up
-    delete signal_handler;
-    delete connector; delete asynch_connector;
-
-    return;
-  } // end IF
+  Net_Client_TimeoutHandler timeout_handler(serverHostname_in,
+                                            serverPortNumber_in,
+                                            connector);
   long timer_id = -1;
   if (connectionInterval_in)
   {
     // schedule server query interval timer
     ACE_Time_Value interval(connectionInterval_in, 0);
-    timer_id = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timeout_handler,
+    timer_id = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&timeout_handler,
                                                                        NULL,
                                                                        ACE_OS::gettimeofday () + interval,
                                                                        interval);
@@ -579,8 +542,6 @@ do_work(const std::string& serverHostname_in,
                           previous_actions,
                           sig_keys,
                           useReactor_in);
-      delete timeout_handler; delete signal_handler;
-      delete connector; delete asynch_connector;
 
       return;
     } // end IF
@@ -588,52 +549,9 @@ do_work(const std::string& serverHostname_in,
   else
   {
     // step4b: ...or connect to the server immediately
-    ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
-                                 serverHostname_in.c_str());
-    int success = -1;
-    if (useReactor_in)
-    {
-      RPG_Net_SocketHandler* handler = NULL;
-      success = connector->connect(handler,                                // service handler
-                                   remote_address,                         // remote SAP
-                                   ACE_Synch_Options::defaults,            // synch options
-                                   ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
-                                   1,                                      // re-use address (SO_REUSEADDR) ?
-                                   O_RDWR,                                 // flags
-                                   0);                                     // perms
-    } // end IF
-    else
-      success = asynch_connector->connect(remote_address,                         // remote SAP
-                                          ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
-                                          1,                                      // re-use address (SO_REUSEADDR) ?
-                                          NULL);                                  // ACT
-    if (success == -1)
-    {
-      ACE_TCHAR buf[RPG_COMMON_BUFSIZE];
-      ACE_OS::memset(buf,
-                     0,
-                     (RPG_COMMON_BUFSIZE * sizeof(ACE_TCHAR)));
-      if (remote_address.addr_to_string(buf,
-                                        (RPG_COMMON_BUFSIZE * sizeof(ACE_TCHAR))) == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
-                 buf));
-
-      // clean up
-      fini_signalHandling(signalss,
-                          signal_dispatcher,
-                          previous_actions,
-                          sig_keys,
-                          useReactor_in);
-      delete timeout_handler; delete signal_handler;
-      delete connector; delete asynch_connector;
-
-      delete connector; delete asynch_connector;
-
-      return;
-    } // end IF
+    ACE_INET_Addr peer_address(serverPortNumber_in,
+                               serverHostname_in.c_str());
+		connector->connect(peer_address);
   } // end ELSE
 
   // event loop:
@@ -663,8 +581,6 @@ do_work(const std::string& serverHostname_in,
                         previous_actions,
                         sig_keys,
                         useReactor_in);
-    delete timeout_handler; delete signal_handler;
-    delete connector; delete asynch_connector;
 
     return;
   } // end IF
@@ -672,13 +588,10 @@ do_work(const std::string& serverHostname_in,
   // *NOTE*: from this point on, we need to clean up any remote connections !
 
   // *NOTE*: when using a thread pool, handle things differently...
-  if (numThreadPoolThreads_in)
-  {
-    if (ACE_Thread_Manager::instance()->wait_grp(group_id) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(%d): \"%m\", continuing\n"),
-                 group_id));
-  } // end IF
+  if (numThreadPoolThreads_in > 1)
+		RPG_Net_Common_Tools::finiEventDispatch(false,
+																						false,
+																						group_id);
   else
   {
     if (useReactor_in)
@@ -715,8 +628,6 @@ do_work(const std::string& serverHostname_in,
                       previous_actions,
                       sig_keys,
                       useReactor_in);
-  delete timeout_handler; delete signal_handler;
-  delete connector; delete asynch_connector;
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -776,12 +687,12 @@ ACE_TMAIN(int argc,
   std::string serverHostname        = NET_CLIENT_DEF_SERVER_HOSTNAME;
   unsigned int connectionInterval   = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
   bool logToFile                    = false;
-  unsigned short serverPortNumber   = RPG_NET_DEF_LISTENING_PORT;
-  bool useReactor                   = NET_CLIENT_DEF_CLIENT_USES_REACTOR;
+  unsigned short serverPortNumber   = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  bool useReactor                   = RPG_NET_USES_REACTOR;
   unsigned int pingInterval         = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   bool traceInformation             = false;
   bool printVersionAndExit          = false;
-  unsigned int numThreadPoolThreads = NET_CLIENT_DEF_NUM_TP_THREADS;
+  unsigned int numThreadPoolThreads = RPG_NET_CLIENT_DEF_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,

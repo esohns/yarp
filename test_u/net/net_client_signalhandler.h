@@ -21,8 +21,7 @@
 #ifndef NET_CLIENT_SIGNALHANDLER_H
 #define NET_CLIENT_SIGNALHANDLER_H
 
-#include "rpg_net_client_connector.h"
-#include "rpg_net_client_asynchconnector.h"
+#include "rpg_net_client_iconnector.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>
@@ -34,12 +33,9 @@ class Net_Client_SignalHandler
  : public ACE_Event_Handler
 {
  public:
-  Net_Client_SignalHandler(const std::string&,         // target hostname
-                           const unsigned short&,      // target port number
-                           RPG_Net_Client_Connector*); // connector
-  Net_Client_SignalHandler(const std::string&,               // target hostname
-                           const unsigned short&,            // target port number
-                           RPG_Net_Client_AsynchConnector*); // connector
+  Net_Client_SignalHandler(const std::string&,          // target hostname
+                           const unsigned short&,       // target port number
+                           RPG_Net_Client_IConnector*); // connector
   virtual ~Net_Client_SignalHandler();
 
   // implement specific behaviour
@@ -55,9 +51,8 @@ class Net_Client_SignalHandler
   ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler(const Net_Client_SignalHandler&));
   ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler& operator=(const Net_Client_SignalHandler&));
 
-  ACE_INET_Addr                   myPeerAddress;
-  RPG_Net_Client_Connector*       myConnector;
-  RPG_Net_Client_AsynchConnector* myAsynchConnector;
+  ACE_INET_Addr              myPeerAddress;
+  RPG_Net_Client_IConnector* myConnector;
 };
 
 #endif

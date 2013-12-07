@@ -24,12 +24,13 @@
 #include "rpg_player_exports.h"
 #include "rpg_player_equipment_common.h"
 
-#include <rpg_character_offhand.h>
-#include <rpg_character_equipmentslot.h>
+#include "rpg_character_offhand.h"
+#include "rpg_character_equipmentslot.h"
 
-#include <rpg_item_instance_common.h>
-#include <rpg_item_weapontype.h>
-#include <rpg_item_armortype.h>
+#include "rpg_item_instance_common.h"
+#include "rpg_item_weapontype.h"
+#include "rpg_item_armortype.h"
+#include "rpg_item_commoditylight.h"
 
 #include <ace/Global_Macros.h>
 

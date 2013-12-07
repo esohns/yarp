@@ -22,23 +22,22 @@
 #define RPG_ENGINE_DEFINES_H
 
 // task-specific
-#define RPG_ENGINE_DEF_TASK_GROUP_ID        1
-#define RPG_ENGINE_DEF_AI_TASK_GROUP_ID     2
-#define RPG_ENGINE_DEF_MAX_QUEUE_SLOTS      100
-#define RPG_ENGINE_DEF_EVENT_PEEK_INTERVAL  50 // ms
+#define RPG_ENGINE_TASK_GROUP_ID            102
+#define RPG_ENGINE_AI_TASK_GROUP_ID         103
+#define RPG_ENGINE_TASK_THREAD_NAME         "RPG state engine"
+#define RPG_ENGINE_MAX_QUEUE_SLOTS          100
+#define RPG_ENGINE_EVENT_PEEK_INTERVAL      50 // ms
 
-#define RPG_ENGINE_DEF_SPEED_MODIFIER       20 // --> 1/20 speed <==> normal
+#define RPG_ENGINE_SPEED_MODIFIER           20 // --> 1/20 speed <==> normal
 #define RPG_ENGINE_ROUND_INTERVAL           6 // s
 #define RPG_ENGINE_FEET_PER_SQUARE          5
 
-#define RPG_ENGINE_DEF_MAX_NUM_SPAWNED      0 // don't auto-spawn
-#define RPG_ENGINE_DEF_MAX_RAD_SPAWNED      5
 #define RPG_ENGINE_DEF_ENTITY_SPRITE        SPRITE_HUMAN
-#define RPG_ENGINE_DEF_AI_SPAWN_TYPE        "Bugbear"
-#define RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC   10
-#define RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY 0.3F
-#define RPG_ENGINE_DEF_AI_MAX_SPAWNED       20
-#define RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY 0.5F
+//#define RPG_ENGINE_DEF_AI_SPAWN_TYPE        "Bugbear"
+//#define RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC   10
+//#define RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY 0.3F
+//#define RPG_ENGINE_DEF_AI_MAX_SPAWNED       20
+//#define RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY 0.5F
 
 #define RPG_ENGINE_DEF_PLANE                PLANE_MATERIAL
 #define RPG_ENGINE_DEF_TERRAIN              TERRAIN_UNDER_GROUND
@@ -56,5 +55,14 @@
 // *TODO*: convert if necessary...
 #define RPG_ENGINE_ENTITY_DEF_FILE          "default_player"
 #define RPG_ENGINE_ENTITY_PROFILE_EXT       ".entity"
+
+// network-specific
+#define RPG_ENGINE_DEF_NETWORK_SERVER       "localhost"
+#define RPG_ENGINE_DEF_NETWORK_PORT         6667
+#define RPG_ENGINE_DEF_NETWORK_PASSWORD     "secretpasswordhere"
+#define RPG_ENGINE_DEF_NETWORK_NICK         "Wiz"
+#define RPG_ENGINE_DEF_NETWORK_USER         "user"
+#define RPG_ENGINE_DEF_NETWORK_REALNAME     "Ronnie Reagan"
+#define RPG_ENGINE_DEF_NETWORK_CHANNEL      "#foobar"
 
 #endif

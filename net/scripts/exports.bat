@@ -10,3 +10,4 @@
 @rem generate exports file(s)
 C:\Perl\bin\perl.exe C:\Temp\ACE_wrappers\bin\generate_export_file.pl -n RPG_Net > .\..\rpg_net_exports.h
 C:\Perl\bin\perl.exe C:\Temp\ACE_wrappers\bin\generate_export_file.pl -n RPG_Net_Client > .\..\client\rpg_net_client_exports.h
+C:\Perl\bin\perl.exe C:\Temp\ACE_wrappers\bin\generate_export_file.pl -n RPG_Net_Server > .\..\server\rpg_net_server_exports.h

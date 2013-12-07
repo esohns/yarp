@@ -48,7 +48,7 @@ RPG_Engine_Event_Manager::RPG_Engine_Event_Manager()
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::RPG_Engine_Event_Manager"));
 
   // set group ID for worker thread(s)
-  inherited::grp_id(RPG_ENGINE_DEF_AI_TASK_GROUP_ID);
+  inherited::grp_id(RPG_ENGINE_AI_TASK_GROUP_ID);
 }
 
 RPG_Engine_Event_Manager::~RPG_Engine_Event_Manager()
@@ -159,7 +159,7 @@ RPG_Engine_Event_Manager::svc(void)
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::svc"));
 
   ACE_Message_Block* ace_mb          = NULL;
-  ACE_Time_Value     peek_delay(0, (RPG_ENGINE_DEF_EVENT_PEEK_INTERVAL * 1000));
+  ACE_Time_Value     peek_delay(0, (RPG_ENGINE_EVENT_PEEK_INTERVAL * 1000));
   ACE_Time_Value     delay;
   bool               stop_processing = false;
 
@@ -255,8 +255,9 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
     myEntityTimers[id_in] = timer_id;
   } // end lock scope
 
+	// *NOTE*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"; that's OK...
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("scheduled activation event (ID: %d [%#T]) for entity (ID: %u)\n"),
+		         ACE_TEXT("scheduled activation event (ID: %d [%#T]) for entity (ID: %u)\n"),
              timer_id,
              &activationInterval_in,
              id_in));
@@ -385,10 +386,14 @@ RPG_Engine_Event_Manager::stop()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::stop"));
 
+	// cancel all events
+	cancel_all();
+
   // stop/fini game clock
   ACE_Time_Value elapsed = ACE_OS::gettimeofday() - myGameClockStart;
+	// *NOTE*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"; that's OK...
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("stopping game clock: \"%#T\"\n"),
+             ACE_TEXT("stopped game clock: \"%#T\"\n"),
              &elapsed));
 
   //// sanity check
@@ -450,16 +455,16 @@ RPG_Engine_Event_Manager::isRunning() const
   return (inherited::thr_count() > 0);
 }
 
-void
-RPG_Engine_Event_Manager::wait_all()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::wait_all"));
-
-  // ... wait for ALL worker(s) to join
-  if (ACE_Thread_Manager::instance()->wait_grp(RPG_ENGINE_DEF_AI_TASK_GROUP_ID) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(): \"%m\", returning\n")));
-}
+//void
+//RPG_Engine_Event_Manager::wait_all()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::wait_all"));
+//
+//  // ... wait for ALL worker(s) to join
+//  if (ACE_Thread_Manager::instance()->wait_grp(RPG_ENGINE_AI_TASK_GROUP_ID) == -1)
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(): \"%m\", returning\n")));
+//}
 
 void
 RPG_Engine_Event_Manager::dump_state() const
@@ -541,6 +546,7 @@ RPG_Engine_Event_Manager::cancel(const long& id_in)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                id_in));
+	ACE_ASSERT(act);
 
 	// clean up
 	{
@@ -561,6 +567,34 @@ RPG_Engine_Event_Manager::cancel(const long& id_in)
 		delete (*iterator).second;
 		myTimers.erase((*iterator).first);
 	} // end lock scope
+}
+
+void
+RPG_Engine_Event_Manager::cancel_all()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::cancel_all"));
+
+	const void* act = NULL;
+
+	ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+	for (RPG_Engine_EventTimersConstIterator_t iterator = myTimers.begin();
+       iterator != myTimers.end();
+			 iterator++)
+  {
+		act = NULL;
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel((*iterator).first, &act) <= 0)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                 (*iterator).first));
+		else
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("cancelled timer (ID: %d)...\n"),
+                 (*iterator).first));
+	  ACE_ASSERT(act == (*iterator).second); 
+	  delete (*iterator).second;
+  } // end IF
+
+	myTimers.clear();
 }
 
 void
@@ -909,19 +943,13 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
                                       1,
                                       roll_result);
       std::advance(iterator, roll_result.front() - 1);
-      entity->position = myEngine->findValid(*iterator,
-                                             RPG_ENGINE_DEF_MAX_RAD_SPAWNED);
-      ACE_ASSERT(entity->position != std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                    std::numeric_limits<unsigned int>::max()));
+      entity->position = myEngine->findValid(*iterator, 0);
       if (entity->position == std::make_pair(std::numeric_limits<unsigned int>::max(),
                                              std::numeric_limits<unsigned int>::max()))
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Engine::findValid([%u,%u], %u), aborting\n"),
-                   (*iterator).first, (*iterator).second,
-                   RPG_ENGINE_DEF_MAX_RAD_SPAWNED));
+				// --> map is full !
 
-        // clean up
+				// clean up
         delete entity;
 
         return;

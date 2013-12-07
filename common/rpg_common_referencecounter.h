@@ -37,7 +37,7 @@ class RPG_Common_Export RPG_Common_ReferenceCounter
   // implement RPG_Common_IRefCount
   virtual void increase();
   virtual void decrease();
-  virtual const unsigned long refcount();
+  virtual unsigned int refcount();
   virtual void waitcount();
 
   // implement RPG_Common_IDumpState
@@ -47,8 +47,8 @@ class RPG_Common_Export RPG_Common_ReferenceCounter
   // safety measures: meant to be subclassed
   // *TODO*: "destroy on 0" may not work predictably if there are
   // any waiters (or in ANY multithreaded context, for that matter)...
-  RPG_Common_ReferenceCounter(const unsigned long& = 1, // initial reference count
-                              const bool& = true);      // destroy on 0 --> delete this ?
+  RPG_Common_ReferenceCounter(const unsigned int& = 1, // initial reference count
+                              const bool& = true);     // destroy on 0 --> delete this ?
   RPG_Common_ReferenceCounter(const RPG_Common_ReferenceCounter&);
   // *TODO*: should be 'private'
   virtual ~RPG_Common_ReferenceCounter();
@@ -58,7 +58,7 @@ class RPG_Common_Export RPG_Common_ReferenceCounter
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounter());
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounter& operator=(const RPG_Common_ReferenceCounter&));
 
-  unsigned long                             myCounter;
+  unsigned int                              myCounter;
   bool                                      myDeleteOnZero;
   // make our API re-entrant
   mutable ACE_Recursive_Thread_Mutex        myLock;

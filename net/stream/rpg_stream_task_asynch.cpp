@@ -21,19 +21,19 @@
 
 #include "rpg_stream_task_asynch.h"
 
-#include "rpg_stream_defines.h"
-
-#include <rpg_common_macros.h>
+#include <string>
 
 #include <ace/OS.h>
 #include <ace/Message_Block.h>
 #include <ace/Time_Value.h>
 
-#include <string>
+#include "rpg_common_macros.h"
+
+#include "rpg_stream_defines.h"
 
 RPG_Stream_TaskAsynch::RPG_Stream_TaskAsynch()
  : myThreadID(0),
-   myQueue(RPG_STREAM_DEF_MAX_QUEUE_SLOTS)
+   myQueue(RPG_STREAM_MAX_QUEUE_SLOTS)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskAsynch::RPG_Stream_TaskAsynch"));
 
@@ -41,8 +41,7 @@ RPG_Stream_TaskAsynch::RPG_Stream_TaskAsynch()
   msg_queue(&myQueue);
 
   // set group ID for worker thread(s)
-  // *TODO*: pass this in from outside...
-  grp_id(RPG_STREAM_DEF_GROUP_ID_TASK);
+  grp_id(RPG_STREAM_TASK_GROUP_ID);
 }
 
 RPG_Stream_TaskAsynch::~RPG_Stream_TaskAsynch()

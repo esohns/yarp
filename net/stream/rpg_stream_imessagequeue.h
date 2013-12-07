@@ -24,8 +24,7 @@
 class RPG_Stream_IMessageQueue
 {
  public:
-  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Stream_IMessageQueue() {}
 
   // exposed interface
   virtual void waitForIdleState() const = 0;

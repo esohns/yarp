@@ -378,7 +378,7 @@ RPG_Common_File_Tools::getConfigDataDirectory(const std::string& baseDir_in,
 #if !defined(_DEBUG) && !defined(DEBUG_RELEASE)
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   result += (isConfig_in ? ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB)
-                         : ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB));
+                         : ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB));
 #endif
 
   return result;
@@ -403,7 +403,7 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
                  ACE_TEXT("failed to RPG_Common_Tools::getCurrentUserName(), falling back\n")));
 
       // fallback
-      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
       return result;
     } // end IF
   } // end IF
@@ -431,7 +431,7 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
                  user_name.c_str()));
 
     // fallback
-    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
   } // end IF
   else result = ACE_TEXT_ALWAYS_CHAR(pwd.pw_dir);
 #else
@@ -442,7 +442,7 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
                ACE_TEXT("failed to OpenProcessToken(), falling back\n")));
 
     // fallback
-    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
     return result;
   } // end IF
 
@@ -460,7 +460,7 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
                  ACE_TEXT("failed to CloseHandle(), continuing\n")));
 
     // fallback
-    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
     return result;
   } // end IF
 
@@ -492,7 +492,7 @@ RPG_Common_File_Tools::getUserGameDirectory()
                ACE_TEXT("failed to RPG_Common_Tools::getCurrentUserName(), falling back\n")));
 
     // fallback
-    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
     return result;
   } // end IF
 
@@ -504,7 +504,7 @@ RPG_Common_File_Tools::getUserGameDirectory()
                user_name.c_str()));
 
     // fallback
-    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
     return result;
   } // end IF
 
@@ -537,7 +537,7 @@ RPG_Common_File_Tools::getUserGameDirectory()
                buffer));
 
     // fallback
-    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+    result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
     return result;
 	} // end IF
 
@@ -555,7 +555,7 @@ RPG_Common_File_Tools::getUserGameDirectory()
                  result.c_str()));
 
       // fallback
-      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
     } // end IF
     else
       ACE_DEBUG((LM_DEBUG,

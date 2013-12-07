@@ -25,7 +25,7 @@
 
 #include <ace/Guard_T.h>
 
-RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter(const unsigned long& initCount_in,
+RPG_Common_ReferenceCounter::RPG_Common_ReferenceCounter(const unsigned int& initCount_in,
                                                          const bool& deleteOnZero_in)
  : myCounter(initCount_in),
    myDeleteOnZero(deleteOnZero_in),
@@ -87,7 +87,7 @@ RPG_Common_ReferenceCounter::decrease()
     delete this; // bye bye...
 }
 
-const unsigned long
+unsigned int
 RPG_Common_ReferenceCounter::refcount()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounter::refcount"));

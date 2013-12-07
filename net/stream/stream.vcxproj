@@ -110,7 +110,6 @@ popd</Command>
     <ClInclude Include="rpg_stream_headmoduletask_base.h" />
     <ClInclude Include="rpg_stream_iallocator.h" />
     <ClInclude Include="rpg_stream_imessagequeue.h" />
-    <ClInclude Include="rpg_stream_irefcount.h" />
     <ClInclude Include="rpg_stream_istreamcontrol.h" />
     <ClInclude Include="rpg_stream_itask.h" />
     <ClInclude Include="rpg_stream_itask_base.h" />

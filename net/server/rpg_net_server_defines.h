@@ -18,22 +18,24 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_STREAM_IREFCOUNT_H
-#define RPG_STREAM_IREFCOUNT_H
+#ifndef RPG_NET_SERVER_DEFINES_H
+#define RPG_NET_SERVER_DEFINES_H
 
-class RPG_Stream_IRefCount
-{
- public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+// *** trace log ***
+#define RPG_NET_SERVER_LOG_FILENAME_PREFIX               "rpg_net_server"
 
-  // exposed interface
-  virtual void increase() = 0;
-  virtual void decrease() = 0;
-  virtual const unsigned long refcount() = 0;
-  // *NOTE*: this call should block IF the count is > 0 and wait
-  // until the count reaches 0 the next time
-  virtual void waitcount() = 0;
-};
+// - WARNING: current implementation cannot support numbers that have
+//   more than 7 digits !!!
+// - WARNING: current implementation cannot support 0 !!!
+#define RPG_NET_SERVER_LOG_MAXNUMFILES                   5
+
+#define RPG_NET_SERVER_DEF_NUM_TP_THREADS                10
+
+#define RPG_NET_SERVER_DEF_LISTENING_PORT                10101
+#define RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS          100
+
+#define RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL 3600 // seconds [0 --> OFF]
+
+#define RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL          10 // seconds [0 --> OFF]
 
 #endif

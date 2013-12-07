@@ -29,8 +29,7 @@ class RPG_Stream_SessionMessage;
 class RPG_Stream_ITask
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Stream_ITask() {}
 
   // *NOTE*: pipelined "stream tasks" generally need not worry about the lifecycle of the
   // messages passed to them; any filtering functionality however needs to set the second

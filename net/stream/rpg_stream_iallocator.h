@@ -29,6 +29,8 @@ class RPG_Stream_IAllocator
 //  : public virtual ACE_Allocator
 {
  public:
+  virtual ~RPG_Stream_IAllocator() {}
+
   virtual void* malloc(size_t) = 0; // bytes
   virtual void free(void*) = 0; // handle
 

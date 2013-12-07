@@ -38,7 +38,7 @@ RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler()
  : //inherited(),
 //    mySubscribers(),
    myAllocator(NULL),
-   myDefaultBufferSize(RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE),
+   myDefaultBufferSize(RPG_NET_PROTOCOL_BUFFER_SIZE),
    myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
    myPrintPingPongDot(false),
    myIsInitialized(false),
@@ -58,7 +58,7 @@ RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler()
 
 const bool
 RPG_Net_Protocol_Module_IRCHandler::init(RPG_Stream_IAllocator* allocator_in,
-                                         const unsigned long& defaultBufferSize_in,
+                                         const unsigned int& defaultBufferSize_in,
                                          const bool& autoAnswerPings_in,
                                          const bool& printPingPongDot_in)
 {
@@ -74,7 +74,7 @@ RPG_Net_Protocol_Module_IRCHandler::init(RPG_Stream_IAllocator* allocator_in,
 
     // reset state
     myAllocator = NULL;
-    myDefaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
+    myDefaultBufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
     myAutomaticPong = false;
     myPrintPingPongDot = false;
     myIsInitialized = false;
@@ -1244,7 +1244,7 @@ RPG_Net_Protocol_Module_IRCHandler::dump_state() const
 }
 
 RPG_Net_Protocol_Message*
-RPG_Net_Protocol_Module_IRCHandler::allocateMessage(const unsigned long& requestedSize_in)
+RPG_Net_Protocol_Module_IRCHandler::allocateMessage(const unsigned int& requestedSize_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::allocateMessage"));
 
@@ -1253,7 +1253,7 @@ RPG_Net_Protocol_Module_IRCHandler::allocateMessage(const unsigned long& request
 
   try
   {
-    message_out = static_cast<RPG_Net_Protocol_Message*> (myAllocator->malloc(requestedSize_in));
+    message_out = static_cast<RPG_Net_Protocol_Message*>(myAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {

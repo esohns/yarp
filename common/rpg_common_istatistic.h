@@ -25,8 +25,7 @@ template <typename StatisticsInfoContainer_Type>
 class RPG_Common_IStatistic
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Common_IStatistic() {}
 
   // exposed interface
   // *NOTE*: the argument MAY act both as input/output,

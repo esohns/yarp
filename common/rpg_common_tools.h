@@ -21,7 +21,7 @@
 #ifndef RPG_COMMON_TOOLS_H
 #define RPG_COMMON_TOOLS_H
 
-#include <rpg_dice_incl.h>
+#include "rpg_dice_incl.h"
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
 

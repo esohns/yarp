@@ -97,7 +97,8 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   // implement RPG_Common_ITimer interface
   virtual void handleTimeout(const void*); // ACT (if any)
 
-  static void wait_all();
+	void cancel_all();
+  //void wait_all();
 
   //// trigger (one round of) entity actions
   //void handleEntities();

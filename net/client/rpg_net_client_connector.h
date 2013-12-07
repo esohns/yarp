@@ -18,11 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_Net_Client_Connector_H
-#define RPG_Net_Client_Connector_H
+#ifndef RPG_NET_CLIENT_CONNECTOR_H
+#define RPG_NET_CLIENT_CONNECTOR_H
 
 #include "rpg_net_client_exports.h"
+
 #include "rpg_net_stream_common.h"
+#include "rpg_net_client_iconnector.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Connector.h>
@@ -30,7 +32,8 @@
 
 class RPG_Net_Client_Export RPG_Net_Client_Connector
  : public ACE_Connector<RPG_Net_StreamHandler_t,
-                        ACE_SOCK_CONNECTOR>
+                        ACE_SOCK_CONNECTOR>,
+	 public RPG_Net_Client_IConnector
 {
  public:
   RPG_Net_Client_Connector();
@@ -38,6 +41,9 @@ class RPG_Net_Client_Export RPG_Net_Client_Connector
 
   // override default creation strategy
   virtual int make_svc_handler(RPG_Net_StreamHandler_t*&);
+
+	// implement RPG_Net_Client_IConnector
+  virtual void connect(const ACE_INET_Addr&);
 
  private:
   typedef ACE_Connector<RPG_Net_StreamHandler_t,

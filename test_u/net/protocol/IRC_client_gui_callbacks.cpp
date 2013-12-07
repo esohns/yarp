@@ -205,9 +205,9 @@ connect_clicked_cb(GtkWidget* button_in,
     return;
   } // end IF
   if (!IRChandler_impl->init(data->allocator,              // message allocator
-                             RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE,
-                             RPG_NET_DEF_CLIENT_PING_PONG, // auto-answer "ping" as a client ?...
-                             false))                       // clients print ('.') dots for received "pings"...
+                             RPG_NET_PROTOCOL_BUFFER_SIZE, // buffer size (bytes)
+                             true,                         // auto-answer server "ping"s ?
+                             false))                       // print ('.') dots for received "pings"...
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),

@@ -67,7 +67,7 @@ class RPG_Common_Export RPG_Common_Timer_Manager
   // *IMPORTANT NOTE*: this is only the functor, individual handlers are
   //                   managed in the queue
   RPG_Common_TimeoutUpcall_t myTimerHandler;
-  RPG_Common_TimerHeap_t     myTimerQueue;
+	RPG_Common_TimerHeap_t*    myTimerQueue;
 };
 
 typedef ACE_Singleton<RPG_Common_Timer_Manager,

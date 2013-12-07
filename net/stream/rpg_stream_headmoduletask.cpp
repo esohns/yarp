@@ -35,7 +35,7 @@ RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask(const bool autoStart_in)
    mySessionID(0),
    myCondition(myLock),
    myIsFinished(true),
-   myQueue(RPG_STREAM_DEF_MAX_QUEUE_SLOTS),
+   myQueue(RPG_STREAM_MAX_QUEUE_SLOTS),
    myAutoStart(autoStart_in),
    myUserData(NULL)
 {
@@ -45,8 +45,7 @@ RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask(const bool autoStart_in)
   msg_queue(&myQueue);
 
   // set group ID for worker thread(s)
-  // *TODO*: pass this in from outside...
-  grp_id(RPG_STREAM_DEF_GROUP_ID_TASK);
+  grp_id(RPG_STREAM_TASK_GROUP_ID);
 }
 
 RPG_Stream_HeadModuleTask::~RPG_Stream_HeadModuleTask()

@@ -207,6 +207,7 @@ typedef RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
 typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 RPG_PROTOCOL_SINGLETON_DECLARE(ACE_Singleton,
-			       RPG_Net_Protocol_Connection_Manager_t,
-			       ACE_Recursive_Thread_Mutex);
+															 RPG_Net_Protocol_Connection_Manager_t,
+															 ACE_Recursive_Thread_Mutex);
+
 #endif

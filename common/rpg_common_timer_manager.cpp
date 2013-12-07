@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "stdafx.h"
 
+#include <ace/Log_Msg.h>
+
 #include "rpg_common_defines.h"
 #include "rpg_common_timer_manager.h"
 
@@ -27,17 +29,25 @@
 
 RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
  : inherited(ACE_Thread_Manager::instance(), // thread manager --> use default
-             NULL),                          // timer queue --> allocate (dummy) temp :(
+             NULL),                          // timer queue --> allocate (dummy) temp first :( *TODO*
    myTimerHandler(),
-   myTimerQueue(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
-                true,                       // preallocate timer nodes
-                &myTimerHandler,            // upcall functor
-                NULL)                       // freelist --> allocate
+	 myTimerQueue(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::RPG_Common_Timer_Manager"));
 
   // set time queue
-  if (inherited::timer_queue(&myTimerQueue) == -1)
+	myTimerQueue = new(std::nothrow) RPG_Common_TimerHeap_t(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
+																													true,                       // preallocate timer nodes
+																													&myTimerHandler,            // upcall functor
+																													NULL);                      // freelist --> allocate
+	if (!myTimerQueue)
+	{
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory, aborting\n")));
+
+    return;
+  } // end IF
+  if (inherited::timer_queue(myTimerQueue) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::timer_queue(): \"%m\", aborting\n")));
@@ -45,51 +55,51 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
     return;
   } // end IF
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("spawning timer dispatch thread...\n")));
-
-  // ok: spawn the dispatching worker thread
+  // OK: spawn the dispatching worker thread
+	ACE_thread_t thread_ids[1];
+  thread_ids[0] = 0;
+  ACE_hthread_t thread_handles[1];
+  thread_handles[0] = 0;
   char thread_name[RPG_COMMON_BUFSIZE];
   ACE_OS::memset(thread_name, 0, sizeof(thread_name));
-  ACE_OS::strcpy(thread_name, RPG_COMMON_DEF_TIMER_THREAD_NAME);
+  ACE_OS::strcpy(thread_name, RPG_COMMON_TIMER_THREAD_NAME);
   const char* thread_names[1];
   thread_names[0] = thread_name;
-  if (inherited::activate((THR_NEW_LWP | THR_JOINABLE),         // flags
-                          1,                                    // # threads --> 1
-                          0,                                    // force active ?
-                          ACE_DEFAULT_THREAD_PRIORITY,          // priority
-                          RPG_COMMON_DEF_TIMER_THREAD_GROUP_ID, // group id
-                          NULL,                                 // task base
-                          NULL,                                 // thread handle(s)
-                          NULL,                                 // stack(s)
-                          NULL,                                 // stack size(s)
-                          NULL,                                 // thread id(s)
-                          thread_names) == -1)                  // thread name(s)
+  if (inherited::activate((THR_NEW_LWP |
+		                       THR_JOINABLE |
+													 THR_INHERIT_SCHED),              // flags
+                          1,                                // # threads --> 1
+                          0,                                // force active ?
+                          ACE_DEFAULT_THREAD_PRIORITY,      // priority
+                          RPG_COMMON_TIMER_THREAD_GROUP_ID, // group id
+                          NULL,                             // task base
+                          thread_handles,                   // thread handle(s)
+                          NULL,                             // stack(s)
+                          NULL,                             // stack size(s)
+                          thread_ids,                       // thread id(s)
+                          thread_names) == -1)              // thread name(s)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::activate(): \"%m\", continuing\n")));
    else
      ACE_DEBUG((LM_DEBUG,
-                ACE_TEXT("spawned timer dispatch thread (ID: %t, group: %d)\n"),
-                inherited::thr_id(),
-               RPG_COMMON_DEF_TIMER_THREAD_GROUP_ID));
+                ACE_TEXT("spawned timer dispatch thread (ID: %u, group: %d)\n"),
+                thread_ids[0],
+                RPG_COMMON_TIMER_THREAD_GROUP_ID));
 }
 
 RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager"));
 
-  // clean up
-  inherited::deactivate();
+	if (isRunning())
+    stop();
 
-  inherited::mutex().lock();
-  fini_timers();
-  inherited::mutex().release();
-
-  // make sure the dispatcher thread has joined...
-  inherited::wait();
-
-   ACE_DEBUG((LM_DEBUG,
-              ACE_TEXT("joined timer dispatch thread...\n")));
+	// *NOTE*: yes, this is the proper shutdown procedure...
+  if (inherited::timer_queue(NULL) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::timer_queue(): \"%m\", aborting\n")));
+	delete myTimerQueue;
+	myTimerQueue = NULL;
 }
 
 void
@@ -107,6 +117,8 @@ RPG_Common_Timer_Manager::stop()
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::stop"));
 
   inherited::deactivate();
+	// *TODO*: yes, this is flaky (but it works)
+	ACE_OS::sleep(ACE_Time_Value(1, 0));
 
   inherited::mutex().lock();
   fini_timers();
@@ -115,8 +127,8 @@ RPG_Common_Timer_Manager::stop()
   // make sure the dispatcher thread has joined...
   inherited::wait();
 
-   ACE_DEBUG((LM_DEBUG,
-              ACE_TEXT("joined timer dispatch thread...\n")));
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("joined timer dispatch thread...\n")));
 }
 
 bool
@@ -133,16 +145,22 @@ RPG_Common_Timer_Manager::fini_timers()
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::fini_timers"));
 
   const void* act = NULL;
+	long timer_id = 0;
   RPG_Common_TimerHeapIterator_t iterator(*inherited::timer_queue());
   for (iterator.first();
        !iterator.isdone();
        iterator.next())
   {
     act = NULL;
-    if (inherited::cancel(iterator.item()->get_timer_id(), &act) == -1)
+		timer_id = iterator.item()->get_timer_id();
+    if (inherited::cancel(timer_id, &act) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                 iterator.item()->get_timer_id()));
+                 timer_id));
+		else
+  	  ACE_DEBUG((LM_WARNING,
+                 ACE_TEXT("cancelled timer (ID: %d)...\n"),
+                 timer_id));
   } // end FOR
 }
 

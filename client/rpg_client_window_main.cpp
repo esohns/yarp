@@ -350,9 +350,9 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
           std::ostringstream converter;
           converter << myScreenshotIndex++;
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-          std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+          std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 #else
-          std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+          std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
 #endif
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
           dump_path += ACE_TEXT(RPG_CLIENT_DEF_SCREENSHOT_PREFIX);

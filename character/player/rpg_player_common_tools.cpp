@@ -591,7 +591,7 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory()
                  result.c_str()));
 
       // fallback
-      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DUMP_DIR)));
+      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
     } // end IF
     else
       ACE_DEBUG((LM_DEBUG,

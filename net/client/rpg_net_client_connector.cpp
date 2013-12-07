@@ -24,6 +24,7 @@
 #include "rpg_net_common.h"
 
 #include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
 
 RPG_Net_Client_Connector::RPG_Net_Client_Connector()
  : inherited(ACE_Reactor::instance(), // default reactor
@@ -53,4 +54,33 @@ RPG_Net_Client_Connector::make_svc_handler(RPG_Net_StreamHandler_t*& handler_ino
                    RPG_Net_StreamHandler_t());
 
   return ((handler_inout == NULL) ? -1 : 0);
+}
+
+void
+RPG_Net_Client_Connector::connect(const ACE_INET_Addr& peer_address)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::connect"));
+
+  RPG_Net_SocketHandler* handler = NULL;
+	int result = inherited::connect(handler,                                // service handler
+																	peer_address,                           // remote SAP
+																	ACE_Synch_Options::defaults,            // synch options
+																	ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
+																	1,                                      // re-use address (SO_REUSEADDR) ?
+																	O_RDWR,                                 // flags
+																	0);                                     // perms
+	if (result == -1)
+	{
+    ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
+    ACE_OS::memset(buffer,
+                    0,
+                    (RPG_COMMON_BUFSIZE * sizeof(ACE_TCHAR)));
+    if (peer_address.addr_to_string(buffer,
+                                    sizeof(buffer)) == -1)
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
+               buffer));
+	} // end IF
 }

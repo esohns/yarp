@@ -19,23 +19,11 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
-#include "net_server_signalhandler.h"
-
-#include "rpg_net_defines.h"
-#include "rpg_net_common.h"
-#include "rpg_net_listener.h"
-#include "rpg_net_asynchlistener.h"
-#include "rpg_net_common_tools.h"
-#include "rpg_net_stream_messageallocator.h"
-
-#include "rpg_common_tools.h"
-
-#include "rpg_stream_allocatorheap.h"
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
 
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
@@ -46,11 +34,26 @@
 #include <ace/Sig_Handler.h>
 #include <ace/High_Res_Timer.h>
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
+// *NOTE*: need this to import correct VERSION !
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
+#include "rpg_common_tools.h"
+
+#include "rpg_stream_allocatorheap.h"
+
+#include "rpg_net_defines.h"
+#include "rpg_net_common.h"
+#include "rpg_net_common_tools.h"
+#include "rpg_net_stream_messageallocator.h"
+
+#include "rpg_net_server_defines.h"
+#include "rpg_net_server_listener.h"
+#include "rpg_net_server_asynchlistener.h"
+#include "rpg_net_server_common_tools.h"
+
+#include "net_server_signalhandler.h"
 
 void
 print_usage(const std::string& programName_in)
@@ -62,16 +65,16 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_DEF_PING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
-  std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_DEF_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_SOCK_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]  : listening port [") << RPG_NET_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-r          : use reactor [") << RPG_NET_DEF_SERVER_USES_REACTOR << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval ([") << RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]  : listening port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-r          : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval ([") << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads [") << RPG_NET_DEF_SERVER_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads [") << RPG_NET_SERVER_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -91,16 +94,16 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-  clientPingInterval_out = RPG_NET_DEF_PING_INTERVAL;
-  keepAliveTimeout_out = RPG_NET_DEF_KEEPALIVE;
+  clientPingInterval_out = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
+  keepAliveTimeout_out = RPG_NET_SOCK_KEEPALIVE;
   logToFile_out = false;
   networkInterface_out = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
-  listeningPortNumber_out = RPG_NET_DEF_LISTENING_PORT;
-	useReactor_out = RPG_NET_DEF_SERVER_USES_REACTOR;
-  statisticsReportingInterval_out = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
+  listeningPortNumber_out = RPG_NET_SERVER_DEF_LISTENING_PORT;
+	useReactor_out = RPG_NET_USES_REACTOR;
+  statisticsReportingInterval_out = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
   printVersionAndExit_out = false;
-  numThreadPoolThreads_out = RPG_NET_DEF_SERVER_NUM_TP_THREADS;
+  numThreadPoolThreads_out = RPG_NET_SERVER_DEF_NUM_TP_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -217,9 +220,8 @@ init_fileLogging(std::ofstream& stream_in)
 
   // retrieve fully-qualified (FQ) filename
   std::string logfilename;
-  if (!RPG_Net_Common_Tools::getNextLogFilename(true, // we're a server
-                                                std::string(RPG_NET_DEF_LOG_DIRECTORY),
-                                                logfilename))
+  if (!RPG_Net_Server_Common_Tools::getNextLogFilename(std::string(RPG_COMMON_DEF_LOG_DIRECTORY),
+                                                       logfilename))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Net_Common_Tools::getNextLogFilename(), aborting\n")));
@@ -541,7 +543,7 @@ do_work(const unsigned int& pingInterval_in,
 
   // step1: signal handling
   // event handler for signals
-  Net_Server_SignalHandler signal_handler(RPG_NET_ASYNCHLISTENER_SINGLETON::instance(),
+  Net_Server_SignalHandler signal_handler(RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance(),
                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
   ACE_Sig_Handlers signal_dispatcher;
   // *WARNING*: 'signals' appears to be a keyword in some contexts...
@@ -588,24 +590,25 @@ do_work(const unsigned int& pingInterval_in,
 
   // step3a: init stream configuration object
   RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config,
                  0,
                  sizeof(RPG_Net_ConfigPOD));
   config.pingInterval = pingInterval_in;
+	config.pingAutoAnswer = true;
   config.printPongMessages = false;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
-  config.defaultBufferSize = RPG_NET_DEF_NETWORK_BUFFER_SIZE;
+  config.defaultBufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   config.useThreadPerConnection = false;
   config.module = NULL; // just use the default stream...
   // *WARNING*: set at runtime, by the appropriate connection handler
   config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
   // step3b: init connection manager
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS);
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS);
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
@@ -642,9 +645,9 @@ do_work(const unsigned int& pingInterval_in,
   // step4b: start listening
   if (useReactor_in)
   {
-    RPG_NET_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
-    RPG_NET_LISTENER_SINGLETON::instance()->start();
-    if (!RPG_NET_LISTENER_SINGLETON::instance()->isRunning())
+    RPG_NET_SERVER_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
+    RPG_NET_SERVER_LISTENER_SINGLETON::instance()->start();
+    if (!RPG_NET_SERVER_LISTENER_SINGLETON::instance()->isRunning())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to start listener (port: %u), aborting\n"),
@@ -671,9 +674,9 @@ do_work(const unsigned int& pingInterval_in,
   }
   else
   {
-    RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
-    RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->start();
-    if (!RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->isRunning())
+    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
+    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->start();
+    if (!RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->isRunning())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to start listener (port: %u), aborting\n"),
@@ -731,9 +734,9 @@ do_work(const unsigned int& pingInterval_in,
 
   // clean up
   if (useReactor_in)
-    RPG_NET_LISTENER_SINGLETON::instance()->stop();
+    RPG_NET_SERVER_LISTENER_SINGLETON::instance()->stop();
   else
-    RPG_NET_ASYNCHLISTENER_SINGLETON::instance()->stop();
+    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->stop();
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
@@ -804,16 +807,16 @@ ACE_TMAIN(int argc,
 //#endif
 
   // step1a set defaults
-  unsigned int pingInterval                = RPG_NET_DEF_PING_INTERVAL;
-  unsigned int keepAliveTimeout            = RPG_NET_DEF_KEEPALIVE;
+  unsigned int pingInterval                = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
+  unsigned int keepAliveTimeout            = RPG_NET_SOCK_KEEPALIVE;
   bool logToFile                           = false;
   std::string networkInterface             = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
-  unsigned short listeningPortNumber       = RPG_NET_DEF_LISTENING_PORT;
-  bool useReactor                          = RPG_NET_DEF_SERVER_USES_REACTOR;
-  unsigned int statisticsReportingInterval = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL;
+  unsigned short listeningPortNumber       = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  bool useReactor                          = RPG_NET_USES_REACTOR;
+  unsigned int statisticsReportingInterval = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                    = false;
   bool printVersionAndExit                 = false;
-  unsigned int numThreadPoolThreads        = RPG_NET_DEF_SERVER_NUM_TP_THREADS;
+  unsigned int numThreadPoolThreads        = RPG_NET_SERVER_DEF_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,

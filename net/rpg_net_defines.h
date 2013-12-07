@@ -21,24 +21,8 @@
 #ifndef RPG_NET_DEFINES_H
 #define RPG_NET_DEFINES_H
 
-// *** trace log ***
-// *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#define RPG_NET_DEF_LOG_DIRECTORY                      "TEMP"
-#else
-#define RPG_NET_DEF_LOG_DIRECTORY                      "/var/tmp"
-#endif
-#define RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX         "net_server"
-#define RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX         "net_client"
-#define RPG_NET_DEF_LOG_FILENAME_SUFFIX                ".log"
-
 // CONFIGDIR-specific
-#define RPG_NET_DEF_CONFIG_SUB                         "net"
-
-// - WARNING: current implementation cannot support numbers that have
-//   more than 7 digits !!!
-// - WARNING: current implementation cannot support 0 !!!
-#define RPG_NET_DEF_LOG_MAXNUMFILES                    5
+#define RPG_NET_CONFIG_SUB                             "net"
 
 // *** network-related ***
 // *PORTABILITY*: interface names are not portable, so we let the
@@ -50,38 +34,30 @@
 #endif
 
 // default event handler (default: use asynch I/O (proactor))
-#define RPG_NET_DEF_SERVER_USES_REACTOR                false
-// use a thread pool for handling data ?
-#define RPG_NET_DEF_SERVER_USES_TP                     false
-#define RPG_NET_DEF_SERVER_NUM_TP_THREADS              10
+#define RPG_NET_USES_REACTOR                           false
 #define RPG_NET_DEF_CONNECTION_HANDLER_THREAD_GROUP_ID 2
 
 // 1024 * 1024 --> 1 MByte
-// *NOTE*: make this an even number so we can cope with Linux oddities...
+// *NOTE*: make this an even number to (gracefully) cope with Linux oddities...
 #define RPG_NET_DEF_SOCK_RECVBUF_SIZE                  131072 // 128Kb
 // #define RPG_NET_DEF_SOCK_RECVBUF_SIZE             1048576 // 1Mb
-#define RPG_NET_DEF_SOCK_NODELAY                       true
+#define RPG_NET_SOCK_NODELAY                           true
+#define RPG_NET_SOCK_KEEPALIVE                         60 // seconds
 
-#define RPG_NET_DEF_KEEPALIVE                          60
-#define RPG_NET_DEF_LISTENING_PORT                     10101
-#define RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS           10
+#define RPG_NET_MAX_NUM_OPEN_CONNECTIONS               10
 // *WARNING*: this needs to be AT LEAST sizeof(RPG_Net_Remote_Comm::MessageHeader)
-#define RPG_NET_DEF_NETWORK_BUFFER_SIZE                1024 // 1 kB
+#define RPG_NET_STREAM_BUFFER_SIZE                     1024 // 1 kB
 
 // *** protocol-related ***
-#define RPG_NET_DEF_PING_INTERVAL                      5 // (server) [0 --> OFF]
-#define RPG_NET_DEF_CLIENT_PING_PONG                   true // (client) as a client, play "PONG"
+#define RPG_NET_PING_AUTO_ANSWER                       true // auto-send "PONG"s
 
+// *** pro/reactor-related ***
+#define RPG_NET_TASK_GROUP_ID                          11
 // *** stream-related ***
-#define RPG_NET_DEF_GROUP_ID_TASK                      11
-// *IMPORTANT NOTE*: set to too small a value, any of these MAY seriously
-// affect performance !!!
-#define RPG_NET_DEF_MAX_QUEUE_SLOTS                    1000
-#define RPG_NET_DEF_MAX_MESSAGES                       100
+// *IMPORTANT NOTE*: any of these COULD seriously affect performance
+#define RPG_NET_MAX_QUEUE_SLOTS                        1000
+#define RPG_NET_MAX_MESSAGES                           100
 
-// seconds, 0 --> OFF
-#define RPG_NET_DEF_STATISTICS_COLLECT_INTERVAL        0
-// seconds, 0 --> OFF
-#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL      3600 // 1 hour
+#define RPG_NET_STATISTICS_COLLECT_INTERVAL            60 // seconds [0 --> OFF]
 
 #endif

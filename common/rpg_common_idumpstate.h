@@ -24,8 +24,7 @@
 class RPG_Common_IDumpState
 {
  public:
-  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Common_IDumpState() {}
 
   // exposed interface
   virtual void dump_state() const = 0;

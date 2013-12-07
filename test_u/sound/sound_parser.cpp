@@ -143,9 +143,9 @@ print_usage(const std::string& programName_in)
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   std::cout << ACE_TEXT("-f [DIR] : data directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-r       : play random sounds") << ACE_TEXT(" [") << SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS << ACE_TEXT("]") << std::endl;
@@ -155,7 +155,7 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-s [FILE]: sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
@@ -192,9 +192,9 @@ process_arguments(const int argc_in,
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   directory_out += ACE_TEXT_ALWAYS_CHAR("sound");
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
+  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
 
   playRandomSounds_out = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
@@ -205,7 +205,7 @@ process_arguments(const int argc_in,
   filename_out += ACE_TEXT_ALWAYS_CHAR("sound");
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
+  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
 
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -478,9 +478,9 @@ ACE_TMAIN(int argc,
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   soundDirectory += ACE_TEXT_ALWAYS_CHAR("sound");
   soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
-  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
+  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
 
   bool playRandomSounds = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
@@ -497,7 +497,7 @@ ACE_TMAIN(int argc,
   filename += ACE_TEXT_ALWAYS_CHAR("sound");
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DICTIONARY_FILE);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
 
   bool traceInformation = false;
   bool printVersionAndExit = false;

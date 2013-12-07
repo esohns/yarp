@@ -4048,11 +4048,11 @@ RPG_Map_Common_Tools::getMapsDirectory()
 	result = data_path;
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-	result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_SUB);
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAP_SUB);
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	result += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
-  result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
 #endif
 
   if (!RPG_Common_File_Tools::isDirectory(result))
@@ -4065,9 +4065,9 @@ RPG_Map_Common_Tools::getMapsDirectory()
 
       // fallback
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-      result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR);
+      result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 #else
-      result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DUMP_DIR));
+      result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
 #endif
     } // end IF
     else

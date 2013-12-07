@@ -46,16 +46,10 @@ class RPG_Net_Export RPG_Net_Common_Tools
                                 const bool&,  // stop proactor
                                 const int&);  // group ID (>= 0 ? join threads)
 
-  // *NOTE*: this implements log rotation...
-  static bool getNextLogFilename(const bool&,        // server ?
-                                 const std::string&, // log directory
-                                 std::string&);      // return value: FQ current log filename
-  static unsigned long myMaxNumberOfLogFiles;
-
   // --- general tools ---
   // *NOTE*: if (the first argument == 0), the trailing ":0" will be cropped from the return value !
   static std::string IPAddress2String(const unsigned short&, // port (network byte order !)
-                                      const unsigned long&); // IP address (network byte order !)
+                                      const unsigned int&); // IP address (network byte order !)
   static std::string IPProtocol2String(const unsigned char&); // protocol
   static std::string MACAddress2String(const char* const); // pointer to message data (START of ethernet header address field !)
   static std::string EthernetProtocolTypeID2String(const unsigned short&); // ethernet frame type (network byte order !)
@@ -83,12 +77,6 @@ class RPG_Net_Export RPG_Net_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools(const RPG_Net_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools& operator=(const RPG_Net_Common_Tools&));
-
-  // callback used for scandir...
-  static int client_selector(const dirent*); // directory entry
-  static int server_selector(const dirent*); // directory entry
-  static int comparator(const dirent**,  // directory entry
-                        const dirent**); // directory entry
 };
 
 #endif

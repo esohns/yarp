@@ -145,12 +145,12 @@ RPG_Net_SocketHandlerBase<ConfigType,
     } // end IF
   } // end IF
   if (!RPG_Net_Common_Tools::setNoDelay(get_handle(),
-                                        RPG_NET_DEF_SOCK_NODELAY))
+                                        RPG_NET_SOCK_NODELAY))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
                get_handle(),
-               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
+               (RPG_NET_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
 
       // reactor will invoke handle_close()
     return -1;

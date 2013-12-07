@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Erik Sohns   *
+ *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,47 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "stdafx.h"
 
-#include "rpg_net_server_sockethandler.h"
+#ifndef RPG_NET_SERVER_COMMON_TOOLS_H
+#define RPG_NET_SERVER_COMMON_TOOLS_H
 
-RPG_Net_Server_SocketHandler::RPG_Net_Server_SocketHandler()
- : myHandle(ACE_INVALID_HANDLE)
+#include "rpg_net_server_exports.h"
+
+#include <ace/Global_Macros.h>
+
+#include <string>
+
+// forward declaration(s)
+struct dirent;
+
+class RPG_Net_Server_Export RPG_Net_Server_Common_Tools
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::RPG_Net_Server_SocketHandler"));
+ public:
+	// *NOTE*: implements log rotation
+  static bool getNextLogFilename(const std::string&, // directory
+                                 std::string&);      // return value: log filename
 
-}
+ private:
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Server_Common_Tools());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Common_Tools(const RPG_Net_Server_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Common_Tools& operator=(const RPG_Net_Server_Common_Tools&));
 
-RPG_Net_Server_SocketHandler::~RPG_Net_Server_SocketHandler()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::~RPG_Net_Server_SocketHandler"));
+	// *NOTE*: implements log rotation
+  // callbacks used for scandir...
+  static int selector(const dirent*); // directory entry
+  static int comparator(const dirent**,  // directory entry
+                        const dirent**); // directory entry
+	static unsigned int myMaxNumberOfLogFiles;
+};
 
-}
-
-void
-RPG_Net_Server_SocketHandler::open(ACE_HANDLE handle_in,
-                                   ACE_Message_Block& message_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::open"));
-
-	// *TODO*
-	ACE_ASSERT(false);
-}
-
-void
-RPG_Net_Server_SocketHandler::handle_read_stream(const ACE_Asynch_Read_Stream::Result& result_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::handle_read_stream"));
-
-	// *TODO*
-	ACE_ASSERT(false);
-}
-
-void
-RPG_Net_Server_SocketHandler::handle_write_stream(const ACE_Asynch_Write_Stream::Result& result_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_SocketHandler::handle_write_stream"));
-
-	// *TODO*
-	ACE_ASSERT(false);
-}
+#endif

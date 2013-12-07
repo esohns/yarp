@@ -22,23 +22,23 @@
 #define RPG_STREAM_COUNTER_H
 
 #include "rpg_stream_exports.h"
-#include "rpg_stream_irefcount.h"
 
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_irefcount.h"
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
 class RPG_Stream_Export RPG_Stream_Counter
- : public RPG_Stream_IRefCount,
+ : public RPG_Common_IRefCount,
    public RPG_Common_IDumpState
 {
  public:
   // implement RPG_Stream_IRefCount
   virtual void increase();
   virtual void decrease();
-  virtual const unsigned long refcount();
+  virtual unsigned int refcount();
   virtual void waitcount();
 
   // implement RPG_Common_IDumpState
@@ -48,7 +48,7 @@ class RPG_Stream_Export RPG_Stream_Counter
   mutable ACE_Recursive_Thread_Mutex        myLock;
 
   // safety measures: this is meant to be a subclass !
-  RPG_Stream_Counter(const unsigned long&); // initial reference count
+  RPG_Stream_Counter(const unsigned int&); // initial reference count
   virtual ~RPG_Stream_Counter();
 
  private:

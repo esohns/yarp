@@ -1292,13 +1292,13 @@ ACE_TMAIN(int argc_in,
 //  config.sound_directory = base_data_path;
 //  config.sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#ifdef DATADIR
-//  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+//  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 //  config.sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
+//  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
 //#else
-//  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_DATA_SUB);
+//  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
 //  config.sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+//  config.sound_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 //#endif
 //  config.sound_cache_size                  = RPG_CLIENT_DEF_SOUND_CACHESIZE;
 //  config.sound_dictionary                  = soundDictionary;
@@ -1312,13 +1312,13 @@ ACE_TMAIN(int argc_in,
   config.graphics_directory = base_data_path;
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #ifdef BASEDIR
-  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #else
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DATA_SUB);
+  config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #endif
   config.graphics_dictionary               = graphicsDictionary;
 

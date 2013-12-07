@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_stream_defines.h"
-
-#include <rpg_common_macros.h>
-
 #include <ace/Malloc_Base.h>
 #include <ace/Log_Msg.h>
+
+#include "rpg_common_macros.h"
+
+#include "rpg_stream_defines.h"
 
 template <typename DataType>
 RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(DataType*& data_inout)
@@ -80,7 +80,7 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Allocator* 
 
 template <typename DataType>
 RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Data_Block* dataBlock_in,
-                                                         ACE_Allocator* messageAllocator_in)
+                                                                 ACE_Allocator* messageAllocator_in)
  : inherited(dataBlock_in,
              messageAllocator_in),
    myData(NULL),
@@ -122,7 +122,7 @@ RPG_Stream_DataMessageBase<DataType>::~RPG_Stream_DataMessageBase()
 template <typename DataType>
 void
 RPG_Stream_DataMessageBase<DataType>::init(DataType*& data_inout,
-                                       ACE_Data_Block* dataBlock_in)
+                                           ACE_Data_Block* dataBlock_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::init"));
 
@@ -189,7 +189,7 @@ RPG_Stream_DataMessageBase<DataType>::duplicate(void) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::duplicate"));
 
-  RPG_Stream_DataMessageBase<DataType>* nb = NULL;
+  RPG_Stream_DataMessageBase<DataType>* new_message = NULL;
 
   // create a new <RPG_Stream_DataMessageBase> that contains unique copies of
   // the message block fields, but a reference counted duplicate of
@@ -197,31 +197,29 @@ RPG_Stream_DataMessageBase<DataType>::duplicate(void) const
 
   // if there is no allocator, use the standard new and delete calls.
   if (message_block_allocator_ == NULL)
-  {
-    ACE_NEW_RETURN(nb,
+    ACE_NEW_RETURN(new_message,
                    RPG_Stream_DataMessageBase<DataType>(*this), // invoke copy ctor
                    NULL);
-  } // end IF
 
-  ACE_NEW_MALLOC_RETURN(nb,
-                        static_cast<RPG_Stream_DataMessageBase<DataType>*> (message_block_allocator_->malloc(RPG_STREAM_DEF_BUFFER_SIZE)),
+  ACE_NEW_MALLOC_RETURN(new_message,
+                        static_cast<RPG_Stream_DataMessageBase<DataType>*>(message_block_allocator_->malloc(capacity())),
                         RPG_Stream_DataMessageBase<DataType>(*this), // invoke copy ctor
                         NULL);
 
   // increment the reference counts of all the continuation messages
   if (cont_)
   {
-    nb->cont_ = cont_->duplicate();
+    new_message->cont_ = cont_->duplicate();
 
-    // If things go wrong, release all of our resources and return
-    if (nb->cont_ == 0)
+    // if things go wrong, release all of our resources and return
+    if (new_message->cont_ == 0)
     {
-      nb->release();
-      nb = NULL;
+      new_message->release();
+      new_message = NULL;
     } // end IF
   } // end IF
 
   // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
 
-  return nb;
+  return new_message;
 }

@@ -104,13 +104,11 @@ popd</Command>
     <None Include="scripts\exports.bat" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rpg_net_asynchlistener.cpp" />
     <ClCompile Include="rpg_net_asynchsockethandler_t.cpp" />
     <ClCompile Include="rpg_net_asynchstreamhandler_t.cpp" />
     <ClCompile Include="rpg_net_common_tools.cpp" />
     <ClCompile Include="rpg_net_connection_manager.cpp" />
     <ClCompile Include="rpg_net_controller_base.cpp" />
-    <ClCompile Include="rpg_net_listener.cpp" />
     <ClCompile Include="rpg_net_message.cpp" />
     <ClCompile Include="rpg_net_module_headerparser.cpp" />
     <ClCompile Include="rpg_net_module_protocolhandler.cpp" />
@@ -133,7 +131,6 @@ popd</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rpg_net_asynchlistener.h" />
     <ClInclude Include="rpg_net_asynchsockethandler_t.h" />
     <ClInclude Include="rpg_net_asynchstreamhandler_t.h" />
     <ClInclude Include="rpg_net_common.h" />
@@ -146,7 +143,6 @@ popd</Command>
     <ClInclude Include="rpg_net_iconnection.h" />
     <ClInclude Include="rpg_net_iconnectionmanager.h" />
     <ClInclude Include="rpg_net_icounter.h" />
-    <ClInclude Include="rpg_net_listener.h" />
     <ClInclude Include="rpg_net_message.h" />
     <ClInclude Include="rpg_net_module_headerparser.h" />
     <ClInclude Include="rpg_net_module_protocolhandler.h" />

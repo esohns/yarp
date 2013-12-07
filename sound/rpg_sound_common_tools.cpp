@@ -62,124 +62,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
   // init string conversion facilities
   RPG_Sound_Common_Tools::initStringConversionTables();
 
-  // init SDL audio handling
-//   SDL_AudioSpec wanted;
-//   wanted.freq = audioConfig_in.frequency;
-//   wanted.format = audioConfig_in.format;
-//   wanted.channels = audioConfig_in.channels;
-//   wanted.samples = audioConfig_in.chunksize;
-// //   wanted.callback = fill_audio;
-// //   wanted.userdata = NULL;
-//
-//   // Open the audio device, forcing the desired format
-//   if (SDL_OpenAudio(&wanted, NULL) < 0)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to SDL_OpenAudio(): \"%s\", aborting\n"),
-//                SDL_GetError()));
-//
-//     return;
-//   } // end IF
-  if (Mix_OpenAudio(config_in.frequency,
-                    config_in.format,
-                    config_in.channels,
-                    config_in.chunksize) < 0)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
-               Mix_GetError()));
-
-    return false;
-  } // end IF
-  if (Mix_AllocateChannels(RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS) != RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
-               RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS,
-               Mix_GetError()));
-
-    return false;
-  } // end IF
-	ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("allocated %d audio channel(s)...\n"),
-             RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS));
-
-  RPG_Sound_Common_Tools::myConfig.frequency = 0;
-  RPG_Sound_Common_Tools::myConfig.format = 0;
-  RPG_Sound_Common_Tools::myConfig.channels = 0;
-  RPG_Sound_Common_Tools::myConfig.chunksize = 0;
-  std::string format_string;
-  if (Mix_QuerySpec(&RPG_Sound_Common_Tools::myConfig.frequency,
-                    &RPG_Sound_Common_Tools::myConfig.format,
-                    &RPG_Sound_Common_Tools::myConfig.channels) == 0)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
-               Mix_GetError()));
-
-    return false;
-  } // end IF
-  switch (RPG_Sound_Common_Tools::myConfig.format)
-  {
-    case AUDIO_U8:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U8"); break;
-    case AUDIO_S8:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S8"); break;
-    case AUDIO_U16LSB:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16LSB"); break;
-    case AUDIO_S16LSB:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16LSB"); break;
-    case AUDIO_U16MSB:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16MSB"); break;
-    case AUDIO_S16MSB:
-      format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16MSB"); break;
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid audio format (was: %u), aborting\n"),
-                 RPG_Sound_Common_Tools::myConfig.format));
-
-      return false;
-    }
-  } // end SWITCH
-  char driver[MAXPATHLEN];
-  if (!SDL_AudioDriverName(driver,
-                           sizeof(driver)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
-               SDL_GetError()));
-
-    return false;
-  } // end IF
-
-  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->init(directory_in,
-                                                      useCD_in);
-
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency:\t%d\nformat:\t\t%s\nchannels:\t%d\nCD:\t\t%s\n"),
-             ACE_TEXT(driver),
-             RPG_Sound_Common_Tools::myConfig.frequency,
-             ACE_TEXT(format_string.c_str()),
-             RPG_Sound_Common_Tools::myConfig.channels,
-             (useCD_in ? ACE_TEXT(SDL_CDName(0)) : ACE_TEXT("N/A"))));
-
-  int total = Mix_GetNumChunkDecoders();
-	ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** audio decoders (effects) ***\n")));
-  for (int i = 0; i < total; i++)
-	  ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("chunk decoder: [%s]\n"),
-							 Mix_GetChunkDecoder(i)));
-  total = Mix_GetNumMusicDecoders();
-	ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** audio decoders (music) ***\n")));
-  for (int i = 0; i < total; i++)
-	  ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("music decoder: [%s]\n"),
-							 Mix_GetMusicDecoder(i)));
-
-  myIsMuted = mute_in;
+	myIsMuted = mute_in;
   if (!directory_in.empty())
   {
     // sanity check(s)
@@ -198,20 +81,128 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
     } // end IF
     mySoundDirectory = directory_in;
   } // end IF
-
+	myConfig = config_in;
   myCacheSize = cacheSize_in;
 
-  if (myInitialized)
-  {
-    // clean up
-    fini();
+  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->init(directory_in,
+                                                      (mute_in ? false : useCD_in));
 
-    myInitialized = false;
+  // init SDL audio handling
+	if (!mute_in)
+	{
+	//   SDL_AudioSpec wanted;
+	//   wanted.freq = audioConfig_in.frequency;
+	//   wanted.format = audioConfig_in.format;
+	//   wanted.channels = audioConfig_in.channels;
+	//   wanted.samples = audioConfig_in.chunksize;
+	// //   wanted.callback = fill_audio;
+	// //   wanted.userdata = NULL;
+	//
+	//   // Open the audio device, forcing the desired format
+	//   if (SDL_OpenAudio(&wanted, NULL) < 0)
+	//   {
+	//     ACE_DEBUG((LM_ERROR,
+	//                ACE_TEXT("failed to SDL_OpenAudio(): \"%s\", aborting\n"),
+	//                SDL_GetError()));
+	//
+	//     return;
+	//   } // end IF
+		if (Mix_OpenAudio(config_in.frequency,
+											config_in.format,
+											config_in.channels,
+											config_in.chunksize) < 0)
+		{
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
+								 Mix_GetError()));
+
+			return false;
+		} // end IF
+		if (Mix_AllocateChannels(RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS) != RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS)
+		{
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
+								 RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS,
+								 Mix_GetError()));
+
+			return false;
+		} // end IF
+		ACE_DEBUG((LM_DEBUG,
+							 ACE_TEXT("allocated %d audio channel(s)...\n"),
+							 RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS));
+
+		RPG_Sound_Common_Tools::myConfig.frequency = 0;
+		RPG_Sound_Common_Tools::myConfig.format = 0;
+		RPG_Sound_Common_Tools::myConfig.channels = 0;
+		RPG_Sound_Common_Tools::myConfig.chunksize = 0;
+		std::string format_string;
+		if (Mix_QuerySpec(&RPG_Sound_Common_Tools::myConfig.frequency,
+											&RPG_Sound_Common_Tools::myConfig.format,
+											&RPG_Sound_Common_Tools::myConfig.channels) == 0)
+		{
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
+								 Mix_GetError()));
+
+			return false;
+		} // end IF
+		switch (RPG_Sound_Common_Tools::myConfig.format)
+		{
+			case AUDIO_U8:
+				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U8"); break;
+			case AUDIO_S8:
+				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S8"); break;
+			case AUDIO_U16LSB:
+				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16LSB"); break;
+			case AUDIO_S16LSB:
+				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16LSB"); break;
+			case AUDIO_U16MSB:
+				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16MSB"); break;
+			case AUDIO_S16MSB:
+				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16MSB"); break;
+			default:
+			{
+				ACE_DEBUG((LM_ERROR,
+									 ACE_TEXT("invalid audio format (was: %u), aborting\n"),
+									 RPG_Sound_Common_Tools::myConfig.format));
+
+				return false;
+			}
+		} // end SWITCH
+		char driver[MAXPATHLEN];
+		if (!SDL_AudioDriverName(driver,
+														 sizeof(driver)))
+		{
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
+								 SDL_GetError()));
+
+			return false;
+		} // end IF
+
+		ACE_DEBUG((LM_INFO,
+							 ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency:\t%d\nformat:\t\t%s\nchannels:\t%d\nCD:\t\t%s\n"),
+							 ACE_TEXT(driver),
+							 RPG_Sound_Common_Tools::myConfig.frequency,
+							 ACE_TEXT(format_string.c_str()),
+							 RPG_Sound_Common_Tools::myConfig.channels,
+							 (useCD_in ? ACE_TEXT(SDL_CDName(0)) : ACE_TEXT("N/A"))));
+
+		int total = Mix_GetNumChunkDecoders();
+		ACE_DEBUG((LM_DEBUG,
+							 ACE_TEXT("*** audio decoders (effects) ***\n")));
+		for (int i = 0; i < total; i++)
+			ACE_DEBUG((LM_DEBUG,
+								 ACE_TEXT("chunk decoder: [%s]\n"),
+								 Mix_GetChunkDecoder(i)));
+		total = Mix_GetNumMusicDecoders();
+		ACE_DEBUG((LM_DEBUG,
+							 ACE_TEXT("*** audio decoders (music) ***\n")));
+		for (int i = 0; i < total; i++)
+			ACE_DEBUG((LM_DEBUG,
+								 ACE_TEXT("music decoder: [%s]\n"),
+								 Mix_GetMusicDecoder(i)));
   } // end IF
-  else
-  {
-
-  } // end ELSE
 
   myInitialized = true;
 
@@ -240,6 +231,8 @@ RPG_Sound_Common_Tools::fini()
 
   RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->fini();
 
+	Mix_CloseAudio();
+
   myInitialized = false;
 }
 
@@ -259,7 +252,7 @@ RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
     case CATEGORY_EFFECT_INTERVAL:
     {
       // assemble path
-      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_EFFECT_SUB);
+      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_EFFECT_SUB);
       file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += sound_in.file;
 
@@ -269,7 +262,7 @@ RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
     case CATEGORY_MUSIC_AMBIENT:
     {
       // assemble path
-      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_AMBIENT_SUB);
+      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_AMBIENT_SUB);
       file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += sound_in.file;
 
@@ -384,7 +377,6 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in,
     milliseconds *= 1000;
     milliseconds /= RPG_Sound_Common_Tools::myConfig.frequency;
     length_out.msec(static_cast<int>(milliseconds));
-    length_out.msec(milliseconds);
 
     if (!myIsMuted)
     {

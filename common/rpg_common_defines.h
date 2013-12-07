@@ -21,41 +21,49 @@
 #ifndef RPG_COMMON_DEFINES_H
 #define RPG_COMMON_DEFINES_H
 
-#define RPG_COMMON_MAX_SPELL_LEVEL                    9
-#define RPG_COMMON_MAX_CLASS_LEVEL                    20
+// *** trace log ***
+// *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#define RPG_COMMON_DEF_LOG_DIRECTORY              "TEMP"
+#else
+#define RPG_COMMON_DEF_LOG_DIRECTORY              "/var/tmp"
+#endif
+#define RPG_COMMON_LOG_FILENAME_SUFFIX            ".log"
+
+#define RPG_COMMON_MAX_SPELL_LEVEL                9
+#define RPG_COMMON_MAX_CLASS_LEVEL                20
 
 // general stuff
-#define RPG_COMMON_MAX_TIMESTAMP_STRING_LENGTH        64
 // *WARNING*: make sure group IDs are consistent !!!
-#define RPG_COMMON_DEF_TIMER_THREAD_GROUP_ID          0
-#define RPG_COMMON_DEF_TIMER_THREAD_NAME              "RPG timer dispatch"
-#define RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_GROUP_ID 1
-#define RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_NAME     "RPG event dispatch"
+#define RPG_COMMON_TIMER_THREAD_GROUP_ID          100
+#define RPG_COMMON_TIMER_THREAD_NAME              "RPG timer dispatch"
+#define RPG_COMMON_EVENT_DISPATCH_THREAD_GROUP_ID 101
+#define RPG_COMMON_EVENT_DISPATCH_THREAD_NAME     "RPG event dispatch"
 // *NOTE*: use ACE_DEFAULT_TIMERS instead ?
-#define RPG_COMMON_MAX_TIMER_SLOTS                    1024
+#define RPG_COMMON_MAX_TIMER_SLOTS                1024
 // *IMPORTANT NOTE*: used for libc calls (i.e. char buffers, mostly)
-#define RPG_COMMON_BUFSIZE                            512
+#define RPG_COMMON_BUFSIZE                        512 // bytes
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_COMMON_XML_SCHEMA_CHARSET                 "UTF-8"
-#define RPG_COMMON_XML_TARGET_NAMESPACE               "urn:rpg"
-#define RPG_COMMON_XML_SCHEMA_FILE_EXT                ".xsd"
+#define RPG_COMMON_XML_SCHEMA_CHARSET             "UTF-8"
+#define RPG_COMMON_XML_TARGET_NAMESPACE           "urn:rpg"
+#define RPG_COMMON_XML_SCHEMA_FILE_EXT            ".xsd"
 
 // BASEDIR-specific
-#define RPG_COMMON_DEF_DATA_SUB                       "data"
-#define RPG_COMMON_DEF_CONFIG_SUB                     "config"
+#define RPG_COMMON_DATA_SUB                       "data"
+#define RPG_COMMON_CONFIG_SUB                     "config"
 
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-#define RPG_COMMON_DUMP_DIR                           "/var/tmp"
+#define RPG_COMMON_DEF_DUMP_DIR                   "/var/tmp"
 #else
-#define RPG_COMMON_DUMP_DIR                           "TEMP" // environment
+#define RPG_COMMON_DEF_DUMP_DIR                   "TEMP" // environment
 #endif
 
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-#define RPG_COMMON_DEF_USER_LOGIN_BASE                "LOGNAME" // environment
+#define RPG_COMMON_DEF_USER_LOGIN_BASE            "LOGNAME" // environment
 #else
-#define RPG_COMMON_DEF_USER_LOGIN_BASE                "USERNAME" // environment
+#define RPG_COMMON_DEF_USER_LOGIN_BASE            "USERNAME" // environment
 #endif
 
 #endif

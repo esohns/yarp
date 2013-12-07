@@ -34,9 +34,9 @@
 
 #define RPG_MAP_FILE_EXT           ".txt"
 
-#define RPG_MAP_DEF_MAP_SUB        "map"
+#define RPG_MAP_MAP_SUB            "map"
 // default (maps) data directory tree organization
-#define RPG_MAP_DEF_MAPS_SUB       "maps"
+#define RPG_MAP_MAPS_SUB           "maps"
 
 #define RPG_MAP_DEF_MAP_FILE       "dungeon_one"
 

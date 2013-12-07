@@ -52,6 +52,7 @@ struct RPG_Net_ConfigPOD
 {
   // ************ connection config data ************
   unsigned int             pingInterval;
+	bool                     pingAutoAnswer;
   bool                     printPongMessages;
   int                      socketBufferSize;
   RPG_Stream_IAllocator*   messageAllocator;

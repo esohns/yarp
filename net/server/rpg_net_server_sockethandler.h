@@ -21,12 +21,14 @@
 #ifndef RPG_Net_Server_SocketHandler_H
 #define RPG_Net_Server_SocketHandler_H
 
-#include "rpg_net_exports.h"
+#include "rpg_net_server_exports.h"
+
 #include "rpg_net_stream_socket_base.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Asynch_IO.h>
 
-class RPG_Net_Export RPG_Net_Server_SocketHandler
+class RPG_Net_Server_Export RPG_Net_Server_SocketHandler
  : public ACE_Service_Handler
 {
  public:

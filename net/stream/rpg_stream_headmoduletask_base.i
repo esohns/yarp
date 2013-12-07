@@ -33,7 +33,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
    mySessionID(0),
    myCondition(myLock),
    myIsFinished(true),
-   myQueue(RPG_STREAM_DEF_MAX_QUEUE_SLOTS),
+   myQueue(RPG_STREAM_MAX_QUEUE_SLOTS),
    myAutoStart(autoStart_in)//,
    //myUserData(),
 {
@@ -48,8 +48,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   inherited::msg_queue(&myQueue);
 
   // set group ID for worker thread(s)
-  // *TODO*: pass this in from outside...
-  inherited::grp_id(RPG_STREAM_DEF_GROUP_ID_TASK);
+  inherited::grp_id(RPG_STREAM_TASK_GROUP_ID);
 }
 
 template <typename DataType,

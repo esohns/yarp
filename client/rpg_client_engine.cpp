@@ -59,12 +59,17 @@ RPG_Client_Engine::RPG_Client_Engine()
 
   // use member message queue...
 //   inherited::msg_queue(&myQueue);
+
+	// set group ID for worker thread(s)
+  inherited::grp_id(RPG_CLIENT_TASK_GROUP_ID);
 }
 
 RPG_Client_Engine::~RPG_Client_Engine()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::~RPG_Client_Engine"));
 
+	if (isRunning())
+		stop();
 }
 
 int
@@ -84,17 +89,10 @@ RPG_Client_Engine::close(u_long arg_in)
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("(graphics engine) worker thread (ID: %t) leaving...\n")));
 
-      // don't do anything...
-      break;
+      return 0;
     }
     case 1:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("should never get here, returning\n")));
-
-      ACE_ASSERT(false);
-
-      // what else can we do ?
       break;
     }
     default:
@@ -108,7 +106,12 @@ RPG_Client_Engine::close(u_long arg_in)
     }
   } // end SWITCH
 
-  return 0;
+  ACE_ASSERT(false);
+#if defined (_MSC_VER)
+  return -1;
+#else
+  ACE_NOTREACHED(return -1;)
+#endif
 }
 
 int
@@ -140,10 +143,12 @@ RPG_Client_Engine::svc(void)
     myLock.release();
   } // end WHILE
 
-  // SHOULD NEVER-EVER GET HERE !
   ACE_ASSERT(false);
-
+#if defined (_MSC_VER)
   return -1;
+#else
+  ACE_NOTREACHED(return -1;)
+#endif
 }
 
 void
@@ -156,11 +161,12 @@ RPG_Client_Engine::start()
     return;
 
   // OK: start worker thread
-  ACE_thread_t thread_ids[1];
-  thread_ids[0] = 0;
   ACE_hthread_t thread_handles[1];
   thread_handles[0] = 0;
-
+  ACE_thread_t thread_ids[1];
+  thread_ids[0] = 0;
+	const char* thread_names[1];
+	thread_names[0] = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_TASK_THREAD_NAME);
   // *IMPORTANT NOTE*: MUST be THR_JOINABLE !!!
   int ret = 0;
   ret = inherited::activate((THR_NEW_LWP |
@@ -169,19 +175,20 @@ RPG_Client_Engine::start()
                             1,                           // number of threads
                             0,                           // force spawning
                             ACE_DEFAULT_THREAD_PRIORITY, // priority
-                            -1,                          // no group id
+                            inherited::grp_id(),         // group id --> has been set (see above)
                             NULL,                        // corresp. task --> use 'this'
                             thread_handles,              // thread handle(s)
                             NULL,                        // thread stack(s)
                             NULL,                        // thread stack size(s)
                             thread_ids,                  // thread id(s)
-														NULL);                       // thread name(s)
+														thread_names);               // thread name(s)
   if (ret == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
   else
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("(graphics engine) started worker thread (id: %u)...\n"),
+               ACE_TEXT("(graphics engine) started worker thread (group: %d, id: %u)...\n"),
+               inherited::grp_id(),
                thread_ids[0]));
 }
 
@@ -213,7 +220,7 @@ RPG_Client_Engine::stop()
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("worker thread has joined...\n")));
+             ACE_TEXT("joined (graphics engine) worker thread...\n")));
 }
 
 bool

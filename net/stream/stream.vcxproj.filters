@@ -66,9 +66,6 @@
     <ClInclude Include="rpg_stream_imessagequeue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rpg_stream_irefcount.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rpg_stream_istreamcontrol.h">
       <Filter>Header Files</Filter>
     </ClInclude>

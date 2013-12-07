@@ -21,13 +21,11 @@
 
 #include "rpg_net_common_tools.h"
 
-#include "rpg_net_defines.h"
-#include "rpg_net_packet_headers.h"
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+#include <netinet/ether.h>
+#endif
 
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
+#include <sstream>
 
 #include <ace/Log_Msg.h>
 #include <ace/INET_Addr.h>
@@ -36,14 +34,13 @@
 #include <ace/TP_Reactor.h>
 #include <ace/Proactor.h>
 
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-#include <netinet/ether.h>
-#endif
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
-#include <sstream>
-
-// init statics
-unsigned long RPG_Net_Common_Tools::myMaxNumberOfLogFiles = RPG_NET_DEF_LOG_MAXNUMFILES;
+#include "rpg_net_defines.h"
+#include "rpg_net_packet_headers.h"
 
 ACE_THR_FUNC_RETURN
 tp_event_dispatcher_func(void* args_in)
@@ -61,7 +58,7 @@ tp_event_dispatcher_func(void* args_in)
   // *IMPORTANT NOTE*: don't actually need to keep this around after registration
   // *WARNING*: do NOT restart system calls in this case (see manual)
   ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN),
-                            ACE_Sig_Set(1),                          // mask of signals to be blocked when we're servicing
+                            ACE_Sig_Set(1),                          // mask of signals to be blocked while servicing
                                                                      // --> block them all ! (except KILL off course...)
                             SA_SIGINFO);                             // flags
 //                            (SA_RESTART | SA_SIGINFO));              // flags
@@ -119,27 +116,53 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
   } // end IF
   else
   {
-    ACE_Proactor* proactor = NULL;
-    ACE_NEW_RETURN(proactor,
-                   ACE_Proactor(NULL, true, NULL),
-                   false);
-    // make this the "default" proactor...
-    ACE_Proactor::instance(proactor, 1); // delete in dtor
+		// *NOTE* using default platform proactor...
+  //  ACE_Proactor* proactor = NULL;
+  //  ACE_NEW_RETURN(proactor,
+  //                 ACE_Proactor(NULL, true, NULL),
+  //                 false);
+  //  // make this the "default" proactor...
+		//ACE_Proactor* previous_proactor = ACE_Proactor::instance(proactor,
+		//	                                                       1);       // delete in dtor
+		//delete previous_proactor;
   } // end ELSE
 
   // step2: spawn worker(s) ?
   if (numThreadPoolThreads_in > 1)
   {
     // start a (group of) worker thread(s)...
-    char* thread_name = NULL;
+		ACE_hthread_t* thread_handles = NULL;
+		thread_handles = new(std::nothrow) ACE_hthread_t[numThreadPoolThreads_in];
+//    ACE_NEW_NORETURN(thread_handles,
+//                     ACE_hthread_t[numThreadPoolThreads_in]);
+    if (!thread_handles)
+    {
+      ACE_DEBUG((LM_CRITICAL,
+                 ACE_TEXT("failed to allocate memory, aborting\n")));
+
+      return false;
+    } // end IF
+		ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
     const char** thread_names = NULL;
     thread_names = new(std::nothrow) const char*[numThreadPoolThreads_in];
-//    ACE_NEW_RETURN(thread_names,
-//                   const char*[numThreadPoolThreads_in],
-//                   false);
-    std::string buffer;
+//    ACE_NEW_NORETURN(thread_names,
+//                     const char*[numThreadPoolThreads_in]);
+    if (!thread_names)
+    {
+      ACE_DEBUG((LM_CRITICAL,
+                 ACE_TEXT("failed to allocate memory, aborting\n")));
+
+			// clean up
+			delete [] thread_handles;
+
+      return false;
+    } // end IF
+    char* thread_name = NULL;
+		std::string buffer;
     std::ostringstream converter;
-    for (unsigned int i = 0; i < numThreadPoolThreads_in; i++)
+    for (unsigned int i = 0;
+			   i < numThreadPoolThreads_in;
+				 i++)
     {
       thread_name = NULL;
       thread_name = new(std::nothrow) char[RPG_COMMON_BUFSIZE];
@@ -151,7 +174,8 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
                    ACE_TEXT("failed to allocate memory, aborting\n")));
 
         // clean up
-        for (unsigned int j = 0; j < i; j++)
+				delete [] thread_handles;
+				for (unsigned int j = 0; j < i; j++)
           delete [] thread_names[j];
         delete [] thread_names;
 
@@ -160,32 +184,46 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << (i + 1);
-      buffer = RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_NAME;
+      buffer = RPG_COMMON_EVENT_DISPATCH_THREAD_NAME;
       buffer += ACE_TEXT_ALWAYS_CHAR(" #");
       buffer += converter.str();
       ACE_OS::memset(thread_name, 0, sizeof(thread_name));
       ACE_OS::strcpy(thread_name, buffer.c_str());
       thread_names[i] = thread_name;
     } // end FOR
-    groupID_out = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,                          // # threads
-                                                          ::tp_event_dispatcher_func,                       // function
-                                                          &const_cast<bool&>(useReactor_in),                // argument
-                                                          (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                          ACE_DEFAULT_THREAD_PRIORITY,                      // priority
-                                                          RPG_COMMON_DEF_EVENT_DISPATCH_THREAD_GROUP_ID,    // group id
-                                                          NULL,                                             // task
-                                                          NULL,                                             // handle(s)
-                                                          NULL,                                             // stack(s)
-                                                          NULL,                                             // stack size(s)
-                                                          thread_names);                                    // name(s)
+    groupID_out = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,                   // # threads
+                                                          ::tp_event_dispatcher_func,                // function
+                                                          &const_cast<bool&>(useReactor_in),         // argument
+                                                          (THR_NEW_LWP |
+																													 THR_JOINABLE |
+																													 THR_INHERIT_SCHED),                       // flags
+                                                          ACE_DEFAULT_THREAD_PRIORITY,               // priority
+                                                          RPG_COMMON_EVENT_DISPATCH_THREAD_GROUP_ID, // group id
+                                                          NULL,                                      // task
+                                                          thread_handles,                            // handle(s)
+                                                          NULL,                                      // stack(s)
+                                                          NULL,                                      // stack size(s)
+                                                          thread_names);                             // name(s)
     if (groupID_out == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
                  numThreadPoolThreads_in));
 
+      // clean up
+			delete [] thread_handles;
+			for (unsigned int i = 0; i < numThreadPoolThreads_in; i++)
+        delete [] thread_names[i];
+      delete [] thread_names;
+
       return false;
     } // end IF
+
+    // clean up
+		delete [] thread_handles;
+		for (unsigned int i = 0; i < numThreadPoolThreads_in; i++)
+      delete [] thread_names[i];
+    delete [] thread_names;
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("spawned %u event handlers (group ID: %d)...\n"),
@@ -204,7 +242,9 @@ RPG_Net_Common_Tools::finiEventDispatch(const bool& stopReactor_in,
   RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::finiEventDispatch"));
 
   // step1: stop reactor/proactor
-  if (stopReactor_in)
+	// *IMPORTANT NOTE*: current proactor implementations start a pseudo-task that runs the
+	// reactor --> stop that as well
+  if (stopReactor_in || stopProactor_in)
     if (ACE_Reactor::instance()->end_event_loop() == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Reactor::end_event_loop: \"%m\", continuing\n")));
@@ -222,224 +262,9 @@ RPG_Net_Common_Tools::finiEventDispatch(const bool& stopReactor_in,
                  groupID_in));
 }
 
-bool
-RPG_Net_Common_Tools::getNextLogFilename(const bool& isServerProcess_in,
-                                         const std::string& directory_in,
-                                         std::string& FQLogFilename_out)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::getNextLogFilename"));
-
-  // sanity check(s)
-  ACE_ASSERT(RPG_Net_Common_Tools::myMaxNumberOfLogFiles >= 1);
-
-  // init return value(s)
-  FQLogFilename_out.resize(0);
-
-  // sanity check(s): log directory exists ?
-  // No ? --> try to create it then !
-  if (!RPG_Common_File_Tools::isDirectory(directory_in))
-  {
-    if (!RPG_Common_File_Tools::createDirectory(directory_in))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), aborting\n"),
-                 directory_in.c_str()));
-
-      return false;
-    } // end IF
-
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("created directory: \"%s\"...\n"),
-//                directory_in.c_str()));
-  } // end IF
-
-  // construct correct logfilename...
-  FQLogFilename_out = directory_in;
-  FQLogFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  std::string logFileName = (isServerProcess_in ? ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)
-                                                : ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX));
-  logFileName += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_FILENAME_SUFFIX);
-  FQLogFilename_out += logFileName;
-
-  // retrieve all existing logs and sort them alphabetically...
-  ACE_Dirent_Selector entries;
-  if (entries.open(directory_in.c_str(),
-                   (isServerProcess_in ? &RPG_Net_Common_Tools::server_selector
-                                       : &RPG_Net_Common_Tools::client_selector),
-                   &RPG_Net_Common_Tools::comparator) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%s\", aborting\n"),
-               directory_in.c_str(),
-               ACE_OS::strerror(ACE_OS::last_error())));
-
-    return false;
-  } // end IF
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("found %d logfiles...\n"),
-//              entries.length()));
-
-  // OK: iterate over the entries and perform some magic...
-  // *NOTE*: entries have been sorted alphabetically:
-  //         1 current 2 4 3 --> current 1 2 3 4
-  // *TODO*: some malicious user could inject "fake" logfiles which can
-  //         "confuse" this algorithm...
-  // skip handling of "<PREFIX><SUFFIX>" (if found)...
-  // *NOTE*: <PREFIX><SUFFIX> will become <PREFIX>_1<SUFFIX>...
-  bool found_current = false;
-  // sscanf settings
-  int number = 0;
-  int return_val = -1;
-  std::string format_string("%d");
-  format_string += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_FILENAME_SUFFIX);
-  std::stringstream converter;
-  for (int i = entries.length() - 1, index = RPG_Net_Common_Tools::myMaxNumberOfLogFiles - 1;
-       i >= 0;
-       i--)
-  {
-    // perform "special treatment" if "<PREFIX><SUFFIX>" found...
-    // *TODO*: do this in C++...
-    if (ACE_OS::strcmp(entries[i]->d_name,
-                       logFileName.c_str()) == 0)
-    {
-      found_current = true;
-
-      // skip this one for now
-      continue;
-    } // end IF
-
-    // scan number...
-    try
-    {
-      // *TODO*: do this in C++...
-      return_val = ::sscanf(entries[i]->d_name +
-                            // skip some characters...
-                            (ACE_OS::strlen((isServerProcess_in ? ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)
-                                                                : ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX))) + 1),
-                            format_string.c_str(),
-                            &number);
-      if (return_val != 1)
-      {
-        if (return_val != 0)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("::sscanf() failed for \"%s\": \"%s\", continuing\n"),
-                     entries[i]->d_name,
-                     ACE_OS::strerror(ACE_OS::last_error())));
-        } // end IF
-
-        continue;
-      } // end IF
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in ::sscanf() for \"%s\": \"%s\", continuing\n"),
-                 entries[i]->d_name,
-                 ACE_OS::strerror(ACE_OS::last_error())));
-
-      continue;
-    }
-
-    // adjust the index, if the number is smaller than max
-    if (number < index)
-      index = number + 1;
-
-    // if the number is bigger than the max AND we have more than enough logs --> delete it !
-    if ((static_cast<unsigned long> (number) >= (RPG_Net_Common_Tools::myMaxNumberOfLogFiles - 1)) &&
-        (static_cast<unsigned long> (entries.length()) >= RPG_Net_Common_Tools::myMaxNumberOfLogFiles))
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("removing surplus logfile \"%s\"...\n"),
-                 entries[i]->d_name));
-
-      // clean up
-      std::string FQfilename = directory_in;
-      FQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-      FQfilename += entries[i]->d_name;
-      RPG_Common_File_Tools::deleteFile(FQfilename);
-
-      continue;
-    } // end IF
-
-    // logrotate file...
-    std::string oldFQfilename = directory_in;
-    oldFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    oldFQfilename += entries[i]->d_name;
-
-    std::string newFQfilename = directory_in;
-    newFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    newFQfilename += (isServerProcess_in ? ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)
-                                         : ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX));
-    newFQfilename += "_";
-
-    converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << index;
-
-    newFQfilename += converter.str();
-    newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_FILENAME_SUFFIX);
-    // *IMPORTANT NOTE*: last parameter affects Win32 behaviour only,
-    // see "ace/OS_NS_stdio.inl" !
-    if (ACE_OS::rename(oldFQfilename.c_str(),
-                       newFQfilename.c_str(),
-                       -1))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%s\", aborting\n"),
-                 oldFQfilename.c_str(),
-                 newFQfilename.c_str(),
-                 ACE_OS::strerror(ACE_OS::last_error())));
-
-      return false;
-    } // end IF
-
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("renamed file \"%s\" to \"%s\"...\n"),
-               oldFQfilename.c_str(),
-               newFQfilename.c_str()));
-
-    index--;
-  } // end FOR
-
-  if (found_current)
-  {
-    std::string newFQfilename = directory_in;
-    newFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    newFQfilename += (isServerProcess_in ? ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX)
-                                         : ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX));
-    newFQfilename += "_1";
-    newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_FILENAME_SUFFIX);
-
-    // *TODO*: last parameter affects Win32 behaviour only, see "ace/OS_NS_stdio.inl" !
-    if (ACE_OS::rename(FQLogFilename_out.c_str(),
-                       newFQfilename.c_str(),
-                       -1))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%s\", aborting\n"),
-                 FQLogFilename_out.c_str(),
-                 newFQfilename.c_str(),
-                 ACE_OS::strerror(ACE_OS::last_error())));
-
-      return false;
-    } // end IF
-
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("renamed file \"%s\" to \"%s\"...\n"),
-               FQLogFilename_out.c_str(),
-               newFQfilename.c_str()));
-  } // end IF
-
-  return true;
-}
-
 std::string
 RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
-                                       const unsigned long& IPAddress_in)
+                                       const unsigned int& IPAddress_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::IPAddress2String"));
 
@@ -448,17 +273,14 @@ RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
 
   ACE_INET_Addr inet_addr;
   ACE_TCHAR buffer[32]; // "xxx.xxx.xxx.xxx:yyyyy\0"
-  ACE_OS::memset(&buffer,
-                 0,
-                 sizeof(buffer));
+  ACE_OS::memset(&buffer, 0, sizeof(buffer));
   if (inet_addr.set(port_in,
                     IPAddress_in,
                     0,  // no need to encode, data IS in network byte order !
                     0)) // only needed for IPv6...
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Inet_Addr::set: \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_Inet_Addr::set: \"%m\", aborting\n")));
 
     return std::string(ACE_TEXT("invalid_IP_address"));
   }
@@ -467,8 +289,7 @@ RPG_Net_Common_Tools::IPAddress2String(const unsigned short& port_in,
                                1)) // want IP address, not hostname !
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Inet_Addr::addr_to_string: \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_Inet_Addr::addr_to_string: \"%m\", aborting\n")));
 
     return std::string(ACE_TEXT("invalid_IP_address"));
   }
@@ -1824,62 +1645,4 @@ RPG_Net_Common_Tools::retrieveSignalInfo(const int& signal_in,
 
   // OK: set return value
   information_out = information.str();
-}
-
-int
-RPG_Net_Common_Tools::client_selector(const dirent* dirEntry_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::client_selector"));
-
-  // *IMPORTANT NOTE*: we need to select those files which follow our naming
-  // schema for logfiles: "<PREFIX>[_<NUMBER>]<SUFFIX>"
-
-  // sanity check --> prefix ok ?
-  if (ACE_OS::strncmp(dirEntry_in->d_name,
-                      ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX),
-                      ACE_OS::strlen(ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_CLIENT_FILENAME_PREFIX))) != 0)
-  {
-//     // debug info
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("ignoring \"%s\"...\n"),
-//                dirEntry_in->d_name));
-
-    return 0;
-  } // end IF
-
-  return 1;
-}
-
-int
-RPG_Net_Common_Tools::server_selector(const dirent* dirEntry_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::server_selector"));
-
-  // *IMPORTANT NOTE*: we need to select those files which follow our naming
-  // schema for logfiles: "<PREFIX>[_<NUMBER>]<SUFFIX>"
-
-  // sanity check --> prefix ok ?
-  if (ACE_OS::strncmp(dirEntry_in->d_name,
-                      ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX),
-                      ACE_OS::strlen(ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_LOG_SERVER_FILENAME_PREFIX))) != 0)
-  {
-//     // debug info
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("ignoring \"%s\"...\n"),
-//                dirEntry_in->d_name));
-
-    return 0;
-  } // end IF
-
-  return 1;
-}
-
-int
-RPG_Net_Common_Tools::comparator(const dirent** d1,
-                                 const dirent** d2)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::comparator"));
-
-  return ACE_OS::strcmp((*d1)->d_name,
-                        (*d2)->d_name);
 }

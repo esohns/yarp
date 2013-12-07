@@ -40,7 +40,7 @@
 // *WARNING*: be aware that a single read from the connected socket may well
 // cover MORE than one complete message at a time, so this value is just a
 // (somewhat qualified) suggestion...
-#define RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE       (RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
+#define RPG_NET_PROTOCOL_BUFFER_SIZE                   (RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
 
 // "crunch" messages for easier parsing ?
 // *NOTE*: comes at the cost of alloc/free, memcopy and locking per fragmented

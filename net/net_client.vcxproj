@@ -47,6 +47,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>RPG_NET_CLIENT_BUILD_DLL;RPG_NET_HAS_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;ACE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BrowseInformation>false</BrowseInformation>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -74,7 +76,9 @@
     <ClInclude Include="..\net\client\rpg_net_client_connector.h" />
     <ClInclude Include="..\net\client\rpg_net_client_sockethandler.h" />
     <ClInclude Include="..\net\client\stdafx.h" />
+    <ClInclude Include="client\rpg_net_client_defines.h" />
     <ClInclude Include="client\rpg_net_client_exports.h" />
+    <ClInclude Include="client\rpg_net_client_iconnector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\net\client\rpg_net_client_asynchconnector.cpp" />

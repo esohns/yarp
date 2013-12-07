@@ -35,13 +35,12 @@
 
 #define RPG_SOUND_DEF_FILE_EXT            ".ogg"
 
-#define RPG_SOUND_DEF_DICTIONARY_FILE     "rpg_sound.xml"
-#define RPG_SOUND_DEF_DICTIONARY_INSTANCE "soundDictionary"
+#define RPG_SOUND_DICTIONARY_FILE         "rpg_sound.xml"
+#define RPG_SOUND_DICTIONARY_INSTANCE     "soundDictionary"
 
 // BASEDIR-specific
-#define RPG_SOUND_DEF_DATA_SUB            "sound"
-
-#define RPG_SOUND_DEF_AMBIENT_SUB         "ambient"
-#define RPG_SOUND_DEF_EFFECT_SUB          "effect"
+#define RPG_SOUND_DATA_SUB                "sound"
+#define RPG_SOUND_AMBIENT_SUB             "ambient"
+#define RPG_SOUND_EFFECT_SUB              "effect"
 
 #endif

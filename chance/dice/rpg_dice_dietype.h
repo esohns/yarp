@@ -27,7 +27,6 @@
    RPG_DICE_DIETYPE_INVALID
  };
 
-
 #include "rpg_dice_exports.h"
 
 #include <ace/Global_Macros.h>

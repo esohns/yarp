@@ -30,7 +30,7 @@ RPG_Net_Connection_Manager<ConfigType,
  : myCondition(myLock),
 //                ACE_TEXT_ALWAYS_CHAR(""),
 //                NULL),
-   myMaxNumConnections(RPG_NET_DEF_MAX_NUM_OPEN_CONNECTIONS),
+   myMaxNumConnections(RPG_NET_MAX_NUM_OPEN_CONNECTIONS),
    myUserData(),
    myIsInitialized(false)
 {
