@@ -32,6 +32,7 @@
 
 #include "rpg_player_defines.h"
 #include "rpg_player.h"
+#include "rpg_player_common_tools.h"
 
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
@@ -86,12 +87,11 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::string user_name; // *NOTE*: empty --> use current user
-  std::string path = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+	std::string path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-  std::cout << ACE_TEXT("-f [FILE]: player profile (*") << ACE_TEXT(RPG_PLAYER_PROFILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  std::cout << ACE_TEXT("-f [FILE]: player profile (*") << ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT) << ACE_TEXT("|*") << ACE_TEXT(RPG_PLAYER_PROFILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -130,11 +130,10 @@ process_arguments(const int argc_in,
 #endif // #ifdef BASEDIR
 
   // init configuration
-  std::string user_name; // *NOTE*: empty --> use current user
-  playerFilename_out = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+	playerFilename_out = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   playerFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  playerFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  playerFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  playerFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
+  playerFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   itemDictionaryFilename_out = config_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -350,11 +349,10 @@ ACE_TMAIN(int argc,
 #endif // #ifdef BASEDIR
 
   // init configuration
-  std::string user_name; // *NOTE*: empty --> use current user
-  std::string playerFilename = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+	std::string playerFilename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   playerFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  playerFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  playerFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  playerFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
+  playerFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   std::string itemDictionaryFilename = config_path;
   itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;

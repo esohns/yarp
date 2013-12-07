@@ -58,16 +58,27 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d        : debug parser") << ACE_TEXT(" [") << MAP_VISION_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  std::string path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("map");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR("data");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-p [FILE] : level plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
@@ -84,16 +95,27 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
+
   // init results
   debugParser_out         = MAP_VISION_DEF_DEBUG_PARSER;
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  floorPlan_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  floorPlan_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  floorPlan_out = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR("map");
+  floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR("data");
+  floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
@@ -347,28 +369,35 @@ ACE_TMAIN(int argc,
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
+
   // step1: init
   // step1a set defaults
   bool debugParser         = MAP_VISION_DEF_DEBUG_PARSER;
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string floorPlan = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  std::string floorPlan = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  std::string floorPlan = data_path;
   floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_DEF_FLOOR_PLAN);
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  floorPlan += ACE_TEXT_ALWAYS_CHAR("map");
+  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  floorPlan += ACE_TEXT_ALWAYS_CHAR("data");
+  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
-  std::string base_path;
-#ifdef BASEDIR
-  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
-#endif
-  std::string config_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
-                                                                          true);
-
   std::string schemaRepository = config_path;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif

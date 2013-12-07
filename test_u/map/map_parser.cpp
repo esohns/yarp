@@ -74,7 +74,7 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("data");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
@@ -116,7 +116,7 @@ process_arguments(const int argc_in,
   mapFile_out += ACE_TEXT_ALWAYS_CHAR("data");
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);

@@ -56,6 +56,7 @@
 #include "rpg_monster_dictionary.h"
 
 #include "rpg_player_defines.h"
+#include "rpg_player_common_tools.h"
 
 #include "rpg_item_defines.h"
 #include "rpg_item_commodity.h"
@@ -156,18 +157,20 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string base_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
-#endif
-  std::string config_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
-                                                                          true);
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -175,24 +178,29 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  path = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("map");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR("data");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-l [FILE]: level map (*") << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -200,13 +208,10 @@ print_usage(const std::string& programName_in)
 #endif
   path += RPG_MONSTER_DEF_DICTIONARY_FILE;
   std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  path = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE);
-#else
-  path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE));
-#endif
+	path = data_path;
+	path += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
   std::cout << ACE_TEXT("-p [FILE]: entity profile (*") << ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
@@ -226,12 +231,14 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
-  std::string base_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
-#endif
-  std::string config_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
-                                                                          true);
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
 
   // init results
   graphicsDictionary_out = config_path;
@@ -250,13 +257,18 @@ process_arguments(const int argc_in,
 #endif
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  levelMap_out = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  levelMap_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  levelMap_out = data_path;
   levelMap_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  levelMap_out += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  levelMap_out += ACE_TEXT_ALWAYS_CHAR("map");
+  levelMap_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  levelMap_out += ACE_TEXT_ALWAYS_CHAR("data");
+  levelMap_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  levelMap_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   monsterDictionary_out = config_path;
@@ -269,13 +281,10 @@ process_arguments(const int argc_in,
 #endif
   monsterDictionary_out += RPG_MONSTER_DEF_DICTIONARY_FILE;
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  entityProfile_out = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE);
-#else
-  entityProfile_out = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE));
-#endif
+	entityProfile_out = data_path;
+	entityProfile_out += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityProfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
   entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   traceInformation_out    = false;
@@ -1133,14 +1142,14 @@ ACE_TMAIN(int argc_in,
 //  } // end IF
 //#endif
 
-  std::string base_path;
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  base_path = ACE_TEXT_ALWAYS_CHAR(BASEDIR);
-#endif
-  std::string config_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
-                                                                          true);
-  std::string base_data_path = RPG_Common_File_Tools::getConfigDataDirectory(base_path,
-                                                                             false);
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                            false);
+#endif // #ifdef BASEDIR
 
   // step1: init
   // step1a set defaults
@@ -1170,22 +1179,24 @@ ACE_TMAIN(int argc_in,
 #endif
   graphicsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string levelMap = ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY);
-#else
-  std::string levelMap = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_REPOSITORY));
-#endif
+  std::string levelMap = data_path;
   levelMap += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  levelMap += ACE_TEXT_ALWAYS_CHAR(MAP_VISION_UI_DEF_FLOOR_PLAN);
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  levelMap += ACE_TEXT_ALWAYS_CHAR("map");
+  levelMap += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  levelMap += ACE_TEXT_ALWAYS_CHAR("data");
+  levelMap += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  levelMap += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  levelMap += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  levelMap += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   levelMap += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string entityProfile = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE);
-#else
-  std::string entityProfile = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY_REPOSITORY_BASE));
-#endif
+	std::string entityProfile = data_path;
+	entityProfile += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityProfile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
+  entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
   entityProfile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   bool traceInformation    = false;

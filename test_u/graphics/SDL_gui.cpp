@@ -45,6 +45,7 @@
 #include "rpg_graphics_SDL_tools.h"
 
 #include "rpg_player_defines.h"
+#include "rpg_player_common_tools.h"
 
 #include "rpg_character_common_tools.h"
 
@@ -285,9 +286,9 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-  std::cout << ACE_TEXT("-c ([FILE]): character profile (*") << ACE_TEXT(RPG_PLAYER_PROFILE_EXT) << ACE_TEXT(") [") << path.c_str() << ACE_TEXT("]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  std::cout << ACE_TEXT("-c ([FILE]): player profile (*") << ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT) << ACE_TEXT(") [") << path.c_str() << ACE_TEXT("]") << std::endl;
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -332,7 +333,7 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("data");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
@@ -407,11 +408,10 @@ process_arguments(const int argc_in,
 #endif
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
-  std::string user_name; // *NOTE*: empty --> use current user
-  entityFile_out = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+  entityFile_out = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
+  entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   mapFile_out = data_path;
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -421,7 +421,7 @@ process_arguments(const int argc_in,
   mapFile_out += ACE_TEXT_ALWAYS_CHAR("data");
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
@@ -876,8 +876,7 @@ do_UI(RPG_Engine_Entity& entity_in,
         {
           case SDLK_e:
           {
-            std::string user_name; // *NOTE*: empty --> use current user
-            std::string dump_path = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+						std::string dump_path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             dump_path += entity_in.character->getName();
             dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
@@ -1496,11 +1495,10 @@ ACE_TMAIN(int argc,
 
   mode_t mode = SDL_GUI_DEF_MODE;
 
-  std::string user_name; // *NOTE*: empty --> use current user
-  std::string entityFilename = RPG_Common_File_Tools::getUserGameDirectory(user_name);
+  std::string entityFilename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_ENTITY);
-  entityFilename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  entityFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
+  entityFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
   std::string mapFilename = data_path;
   mapFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1510,7 +1508,7 @@ ACE_TMAIN(int argc,
   mapFilename += ACE_TEXT_ALWAYS_CHAR("data");
   mapFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   mapFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);

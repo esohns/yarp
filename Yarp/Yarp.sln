@@ -15,6 +15,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_chance_rangeToRoll", "..\test_u\test_u_chance2.vcxproj", "{27628C8D-C6E9-4213-B897-56BF29EFE65F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_character_parser", "..\test_u\test_u_character.vcxproj", "{C795B3BB-F6DC-4857-8CAE-A6C1173F6D7E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C0095F69-560D-4C7D-82DE-078644135735} = {C0095F69-560D-4C7D-82DE-078644135735}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_character_generator", "..\test_u\test_u_character2.vcxproj", "{C282B304-AF0F-4C27-9F17-9344C46E93AC}"
 EndProject
@@ -39,6 +42,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_graphics_parser", "..\test_u\test_u_graphics_parser.vcxproj", "{F86FE815-92D2-4936-84DA-DB19BA1961AD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_graphics_SDL_gui", "..\test_u\test_u_graphics_SDL_gui.vcxproj", "{B5C8BFE1-0C3F-41D3-8E43-08DBA07B61A8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DF9CE33E-5060-48A6-B105-0B61FEDF6AE6} = {DF9CE33E-5060-48A6-B105-0B61FEDF6AE6}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_item_parser", "..\test_u\test_u_item_parser.vcxproj", "{63F45860-AC44-484E-B8CC-BCC2C4799C8B}"
 EndProject
@@ -69,10 +75,20 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_sound_parser", "..\test_u\test_u_sound_parser.vcxproj", "{5C4ACB74-6577-4733-A2F5-F97F98D64E6F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_path_finder_gui", "..\test_u\test_u_path_finder_gui.vcxproj", "{10A14AEB-4BBD-4C77-9D12-424125C4428C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DF9CE33E-5060-48A6-B105-0B61FEDF6AE6} = {DF9CE33E-5060-48A6-B105-0B61FEDF6AE6}
+		{C0095F69-560D-4C7D-82DE-078644135735} = {C0095F69-560D-4C7D-82DE-078644135735}
+		{63173994-11A3-40D3-B835-63A0E9A8BFE3} = {63173994-11A3-40D3-B835-63A0E9A8BFE3}
+		{D93F14B1-CFE8-45DF-816D-06AB1CA74CD6} = {D93F14B1-CFE8-45DF-816D-06AB1CA74CD6}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_vision", "..\test_u\map_vision.vcxproj", "{837B8F9A-A2FC-4B60-A716-C6EB6FCEAE40}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_vision_gui", "..\test_u\test_u_map_vision_gui.vcxproj", "{5F031420-E549-4442-AE91-91D7307FE212}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DF9CE33E-5060-48A6-B105-0B61FEDF6AE6} = {DF9CE33E-5060-48A6-B105-0B61FEDF6AE6}
+		{47DB7C91-607E-4773-B139-A45ABAF3CA00} = {47DB7C91-607E-4773-B139-A45ABAF3CA00}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Yarp", "Yarp.vcxproj", "{A7E58929-F8EE-41C9-B1A8-29889E371B08}"
 EndProject
