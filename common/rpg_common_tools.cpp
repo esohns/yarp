@@ -21,20 +21,20 @@
 
 #include "rpg_common_tools.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_environment_incl.h"
+#include <sstream>
+#include <algorithm>
+#include <locale>
+
+#include <ace/OS.h>
+#include <ace/Log_Msg.h>
 
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #include <Security.h>
 #endif
 
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
-
-#include <sstream>
-#include <algorithm>
-#include <locale>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_environment_incl.h"
 
 // init statics
 RPG_Common_CreatureMetaTypeToStringTable_t RPG_Common_CreatureMetaTypeHelper::myRPG_Common_CreatureMetaTypeToStringTable;

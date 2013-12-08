@@ -37,7 +37,7 @@
 class RPG_Net_Server_Export RPG_Net_Server_Listener
  : public ACE_Acceptor<RPG_Net_SocketHandler,
                        ACE_SOCK_ACCEPTOR>,
-    public RPG_Common_IControl
+   public RPG_Common_IControl
 {
   // singleton needs access to the ctor/dtors
   friend class ACE_Singleton<RPG_Net_Server_Listener,
@@ -45,8 +45,9 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
 
  public:
   // configuration / initialization
-  void init(const unsigned short&); // port number
-  const bool isInitialized() const;
+  void init(const unsigned short&, // port number
+		        const bool& = false);  // use loopback device ?
+  bool isInitialized() const;
 
   // override some methods from ACE_Acceptor
   // *NOTE*: "in the event that an accept fails, this method will be called and
@@ -77,6 +78,7 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
   bool           myIsListening;
   bool           myIsOpen;
   unsigned short myListeningPort;
+	bool           myUseLoopback;
 };
 
 typedef ACE_Singleton<RPG_Net_Server_Listener,

@@ -91,25 +91,6 @@ RPG_Net_StreamSocketBase<ConfigType,
       return -1;
     } // end IF
   } // end IF
-  if (!myStream.init(inherited::myUserData))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init processing stream, aborting\n")));
-
-    // reactor will invoke close() --> handle_close()
-    return -1;
-  } // end IF
-
-//   myStream.dump_state();
-  myStream.start();
-  if (!myStream.isRunning())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start processing stream, aborting\n")));
-
-    // reactor will invoke close() --> handle_close()
-    return -1;
-  } // end IF
 
   if (!inherited::myUserData.useThreadPerConnection)
   {
@@ -129,11 +110,31 @@ RPG_Net_StreamSocketBase<ConfigType,
     inherited::msg_queue()->notification_strategy(&strategy);
   } // end IF
 
+  if (!myStream.init(inherited::myUserData))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init processing stream, aborting\n")));
+
+    // reactor will invoke close() --> handle_close()
+    return -1;
+  } // end IF
+  //myStream.dump_state();
+
+  // *NOTE*: as soon as this returns, data MAY start arriving at handle_output()
+  myStream.start();
+  if (!myStream.isRunning())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to start processing stream, aborting\n")));
+
+    // reactor will invoke close() --> handle_close()
+    return -1;
+  } // end IF
+
   // step2: register our handle with the reactor
-  // *NOTE*: --> done by the base class
-  // *WARNING*: as soon as this returns, data MAY start arriving
-  // at handle_input() and fill our stream (even more so on multithreaded
-  // reactors)
+  // *NOTE*: this is done by the base class
+  // *NOTE*: as soon as this returns, data MAY start arriving
+  // at handle_input() and fill the stream
   int result = inherited::open(arg_in);
   if (result == -1)
   {
@@ -371,9 +372,8 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   // clean up
   if (myStream.isRunning())
-  {
     myStream.stop();
-  } // end IF
+
   if (myCurrentReadBuffer)
   {
     myCurrentReadBuffer->release();

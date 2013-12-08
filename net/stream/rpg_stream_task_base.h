@@ -23,7 +23,7 @@
 
 #include "rpg_stream_itask_base.h"
 
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
@@ -86,11 +86,11 @@ class RPG_Stream_TaskBase
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
   typedef RPG_Stream_ITaskBase<SessionMessageType,
-                           ProtocolMessageType> inherited2;
+                               ProtocolMessageType> inherited2;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase(const RPG_Stream_TaskBase<SessionMessageType,
-                                                               ProtocolMessageType>&));
+                                                                       ProtocolMessageType>&));
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase<SessionMessageType,
 //                                          ProtocolMessageType>& operator=(const RPG_Stream_TaskBase<SessionMessageType,
 //                                                                                                ProtocolMessageType>&));

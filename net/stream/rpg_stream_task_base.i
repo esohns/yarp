@@ -28,7 +28,7 @@
 template <typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::RPG_Stream_TaskBase()
+                    ProtocolMessageType>::RPG_Stream_TaskBase()
  : inherited(NULL, // thread manager instance
              NULL) // queue handle
 {
@@ -41,7 +41,7 @@ RPG_Stream_TaskBase<SessionMessageType,
 template <typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::~RPG_Stream_TaskBase()
+                    ProtocolMessageType>::~RPG_Stream_TaskBase()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::~RPG_Stream_TaskBase"));
 
@@ -52,7 +52,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::open(void* args_in)
+                    ProtocolMessageType>::open(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::open"));
 
@@ -72,7 +72,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::close(u_long arg_in)
+                    ProtocolMessageType>::close(u_long arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::close"));
 
@@ -92,7 +92,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::module_closed(void)
+                    ProtocolMessageType>::module_closed(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::module_closed"));
 
@@ -110,8 +110,8 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::put(ACE_Message_Block* mb_in,
-                                          ACE_Time_Value* tv_in)
+                    ProtocolMessageType>::put(ACE_Message_Block* mb_in,
+                                              ACE_Time_Value* tv_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::put"));
 
@@ -132,7 +132,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::svc(void)
+                    ProtocolMessageType>::svc(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::svc"));
 
@@ -245,7 +245,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::handleProcessingError(const ACE_Message_Block* const message_in)
+                    ProtocolMessageType>::handleProcessingError(const ACE_Message_Block* const message_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleProcessingError"));
 
@@ -268,7 +268,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::dump_state() const
+                    ProtocolMessageType>::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::dump_state"));
 

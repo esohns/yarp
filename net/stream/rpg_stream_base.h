@@ -31,8 +31,6 @@
 #include <ace/Containers_T.h>
 #include <ace/Stream.h>
 
-// #include <vector>
-
 // forward declaration(s)
 class RPG_Stream_IAllocator;
 

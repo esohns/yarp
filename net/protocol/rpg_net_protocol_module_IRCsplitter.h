@@ -57,13 +57,14 @@ class RPG_Net_Protocol_Module_IRCSplitter
   // configuration / initialization
   bool init(// *** base class initializers ***
             RPG_Stream_IAllocator*,  // message allocator
+						const bool& = false,     // active object ?
             // *** base class initializers END ***
             // *NOTE*: this option may be useful for (downstream) parsers that
             // only work on one CONTIGUOUS buffer (i.e. cannot parse unaligned bits and pieces)
             // *WARNING*: will NOT work with multithreaded stream processing --> USE WITH CAUTION !
             const bool& = false,     // "crunch" completed messages ?
             const unsigned int& = 0, // statistics collecting interval (second(s))
-                                      // 0 --> DON'T collect statistics
+                                     // 0 --> DON'T collect statistics
             const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING); // trace scanning ?
 
   // implement (part of) RPG_Stream_ITaskBase
@@ -102,7 +103,6 @@ class RPG_Net_Protocol_Module_IRCSplitter
   void scan_end();
 
   bool                      myCrunchMessages;
-  unsigned int              mySessionID;
 
   // timer stuff
   STATISTICHANDLER_TYPE     myStatCollectHandler;

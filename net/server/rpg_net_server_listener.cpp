@@ -35,7 +35,8 @@ RPG_Net_Server_Listener::RPG_Net_Server_Listener()
    myIsInitialized(false),
    myIsListening(false),
    myIsOpen(false),
-   myListeningPort(RPG_NET_SERVER_DEF_LISTENING_PORT)
+   myListeningPort(RPG_NET_SERVER_DEF_LISTENING_PORT),
+	 myUseLoopback(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::RPG_Net_Server_Listener"));
 
@@ -50,14 +51,15 @@ RPG_Net_Server_Listener::~RPG_Net_Server_Listener()
 }
 
 void
-RPG_Net_Server_Listener::init(const unsigned short& listeningPort_in)
+RPG_Net_Server_Listener::init(const unsigned short& listeningPort_in,
+                              const bool& useLoopback_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::init"));
 
   // *NOTE*: changes won't become active until the listener is "restarted"...
   myListeningPort = listeningPort_in;
+	myUseLoopback = useLoopback_in;
 
-  // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("set listening port: %u\n"),
 //              myListeningPort));
@@ -65,7 +67,7 @@ RPG_Net_Server_Listener::init(const unsigned short& listeningPort_in)
   myIsInitialized = true;
 }
 
-const bool
+bool
 RPG_Net_Server_Listener::isInitialized() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::isInitialized"));
@@ -105,11 +107,8 @@ RPG_Net_Server_Listener::start()
   {
     // OK: already open (maybe suspended ?) --> try to resume listening...
     if (resume() == -1)
-    {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Acceptor::resume(): \"%s\", returning\n"),
-                 ACE_OS::strerror(ACE_OS::last_error())));
-    } // end IF
+                 ACE_TEXT("failed to ACE_Acceptor::resume(): \"%m\", returning\n")));
     else
     {
       myIsListening = true;
@@ -131,19 +130,30 @@ RPG_Net_Server_Listener::start()
   } // end IF
 
   // not running --> start listening
-  if (open(ACE_INET_Addr(myListeningPort, // local SAP
-                         // *PORTABILITY*: needed to disambiguate this under Windows :-(
-                         // *TODO*: bind to specific interface/address ?
-                         static_cast<ACE_UINT32>(INADDR_ANY)),
-           ACE_Reactor::instance(),       // corresp. reactor
-           ACE_NONBLOCK,                  // flags (use non-blocking sockets !)
-           //0,                             // flags (default is blocking sockets)
-           1,                             // always accept ALL pending connections
-           1) == -1)                      // try to re-use address
+	ACE_INET_Addr local_sap;
+	if (myUseLoopback)
+		local_sap.set(myListeningPort, // local SAP
+                  // *PORTABILITY*: needed to disambiguate this under Windows :-(
+                  // *TODO*: bind to specific interface/address ?
+                  ACE_LOCALHOST,   // hostname
+									1,               // encode ?
+									AF_INET);        // address family
+	else
+		local_sap.set(myListeningPort,                     // local SAP
+                  // *PORTABILITY*: needed to disambiguate this under Windows :-(
+                  // *TODO*: bind to specific interface/address ?
+                  static_cast<ACE_UINT32>(INADDR_ANY), // hostname
+									1,                                   // encode ?
+									0);                                  // map ?
+  if (open(local_sap,               // local SAP
+           ACE_Reactor::instance(), // corresp. reactor
+           ACE_NONBLOCK,            // flags (use non-blocking sockets !)
+           //0,                       // flags (default is blocking sockets)
+           1,                       // always accept ALL pending connections
+           1) == -1)                // try to re-use address
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Acceptor::open(): \"%s\", returning\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_Acceptor::open(): \"%m\", returning\n")));
 
     return;
   } // end IF
@@ -174,11 +184,8 @@ RPG_Net_Server_Listener::stop()
   // *NOTE*: MUST be open (otherwise there's some logic error somewhere...)
   // OK: already open --> try to suspend listening...
   if (suspend() == -1)
-  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Acceptor::suspend(): \"%s\", returning\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
-  } // end IF
+               ACE_TEXT("failed to ACE_Acceptor::suspend(): \"%m\", returning\n")));
   else
   {
     myIsListening = false;

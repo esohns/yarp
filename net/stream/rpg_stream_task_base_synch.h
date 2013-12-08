@@ -33,7 +33,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_TaskBaseSynch
  : public RPG_Stream_TaskBase<SessionMessageType,
-                          ProtocolMessageType>
+                              ProtocolMessageType>
 {
  public:
   virtual ~RPG_Stream_TaskBaseSynch();
@@ -45,7 +45,7 @@ class RPG_Stream_TaskBaseSynch
   virtual int close(u_long = 0);
   virtual int module_closed(void);
 
-  // this is a NOP, we're not an active object
+  // this is a NOP, not an active object
   virtual void waitForIdleState() const;
 
  protected:
@@ -54,11 +54,11 @@ class RPG_Stream_TaskBaseSynch
 
  private:
   typedef RPG_Stream_TaskBase<SessionMessageType,
-                          ProtocolMessageType> inherited;
+                              ProtocolMessageType> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseSynch(const RPG_Stream_TaskBaseSynch<SessionMessageType,
-                                                                         ProtocolMessageType>&));
+                                                                                 ProtocolMessageType>&));
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseSynch<SessionMessageType,
 //                                               ProtocolMessageType>& operator=(const RPG_Stream_TaskBaseSynch<SessionMessageType,
 //                                                                                                          ProtocolMessageType>&));

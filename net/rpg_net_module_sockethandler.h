@@ -51,7 +51,7 @@ class RPG_Net_Module_SocketHandler
 
   // configuration / initialization
   bool init(RPG_Stream_IAllocator*,   // message allocator
-//            const unsigned int&,      // connection ID
+		        const bool& = false,      // active object ?
             const unsigned int& = 0); // statistics collecting interval (second(s))
                                       // 0 --> DON'T collect statistics
 
@@ -85,12 +85,11 @@ class RPG_Net_Module_SocketHandler
 
   // helper methods
   bool bisectMessages(RPG_Net_Message*&); // return value: complete message (chain)
-//   RPG_Net_Message* allocateMessage(const unsigned long&); // requested size
+//   RPG_Net_Message* allocateMessage(const unsigned int&); // requested size
   bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                             const ACE_Time_Value&) const;    // statistics generation time
 
   bool                               myIsInitialized;
-  unsigned int                       mySessionID;
 
   // timer stuff
   RPG_Net_StatisticHandler_Reactor_t myStatCollectHandler;

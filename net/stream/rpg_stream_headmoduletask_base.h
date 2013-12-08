@@ -75,7 +75,8 @@ class RPG_Stream_HeadModuleTaskBase
 
  protected:
   // needs to be subclassed...
-  RPG_Stream_HeadModuleTaskBase(const bool); // auto-start ?
+  RPG_Stream_HeadModuleTaskBase(const bool& = false,  // active object ?
+		                            const bool& = false); // auto-start ?
 
   // override: handle MB_STOP control messages to trigger shutdown
   // of the worker thread...
@@ -101,18 +102,16 @@ class RPG_Stream_HeadModuleTaskBase
   // *NOTE*: this method is threadsafe
   virtual void onStateChange(const Control_StateType&); // new state
 
-  // *TODO*: try to remove this !
-  // functionally, this does the same as stop(), with the tiny
-  // difference, that stop() will blocking wait for our worker
-  // thread to die...
-  // --> i.e. stop() MUST NOT be called from WITHIN the worker thread !
-  // but what if we need to do exactly that ?
-  // That's right --> use this !
+  // *NOTE*: functionally, this does the same as stop(), with the
+  // difference that stop() will wait for any worker(s)
+	// --> i.e. stop() MUST NOT be called within a worker thread itself
+  // so it calls this to signal an end
   virtual void finished();
 
-  // *WARNING*: children need to set this during initialization !
+  // *IMPORTANT NOTE*: children SHOULD set these during initialization !
   RPG_Stream_IAllocator*                    myAllocator;
   unsigned int                              mySessionID;
+	bool                                      myIsActive;
 
  private:
   typedef RPG_Stream_TaskBase<SessionMessageType,

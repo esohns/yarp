@@ -69,7 +69,9 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_SOCK_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]  : listening port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
+	// *TODO*: this doesn't really make sense (yet)
+	std::cout << ACE_TEXT("-o          : use loopback [") << false << ACE_TEXT("]") << std::endl;
+	std::cout << ACE_TEXT("-p [VALUE]  : listening port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r          : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval ([") << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
@@ -84,6 +86,7 @@ process_arguments(const int argc_in,
                   unsigned int& keepAliveTimeout_out,
                   bool& logToFile_out,
                   std::string& networkInterface_out,
+									bool& useLoopback_out,
                   unsigned short& listeningPortNumber_out,
                   bool& useReactor_out,
                   unsigned int& statisticsReportingInterval_out,
@@ -98,6 +101,7 @@ process_arguments(const int argc_in,
   keepAliveTimeout_out = RPG_NET_SOCK_KEEPALIVE;
   logToFile_out = false;
   networkInterface_out = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
+	useLoopback_out = false;
   listeningPortNumber_out = RPG_NET_SERVER_DEF_LISTENING_PORT;
 	useReactor_out = RPG_NET_USES_REACTOR;
   statisticsReportingInterval_out = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
@@ -107,7 +111,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:k:ln:p:rs:tvx:"));
+                             ACE_TEXT("i:k:ln:op:rs:tvx:"));
 
   int option = 0;
   std::stringstream converter;
@@ -142,6 +146,12 @@ process_arguments(const int argc_in,
       case 'n':
       {
         networkInterface_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'o':
+      {
+        useLoopback_out = true;
 
         break;
       }
@@ -306,9 +316,8 @@ init_coreDumping()
              core_limit.rlim_cur,
              core_limit.rlim_max));
 #else
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("corefile limits have not been implemented on this platform, continuing\n")));
+  //ACE_DEBUG((LM_DEBUG,
+  //           ACE_TEXT("corefile limits have not been implemented on this platform, continuing\n")));
 #endif
 
   return true;
@@ -534,6 +543,7 @@ fini_signalHandling(const std::vector<int>& signals_in,
 void
 do_work(const unsigned int& pingInterval_in,
         const std::string& networkInterface_in,
+				const bool& useLoopback_in,
         const unsigned short& listeningPortNumber_in,
         const bool& useReactor_in,
         const unsigned int& statisticsReportingInterval_in,
@@ -593,9 +603,7 @@ do_work(const unsigned int& pingInterval_in,
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
-  ACE_OS::memset(&config,
-                 0,
-                 sizeof(RPG_Net_ConfigPOD));
+  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
   config.pingInterval = pingInterval_in;
 	config.pingAutoAnswer = true;
   config.printPongMessages = false;
@@ -645,7 +653,8 @@ do_work(const unsigned int& pingInterval_in,
   // step4b: start listening
   if (useReactor_in)
   {
-    RPG_NET_SERVER_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
+    RPG_NET_SERVER_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in,
+			                                                  useLoopback_in);
     RPG_NET_SERVER_LISTENER_SINGLETON::instance()->start();
     if (!RPG_NET_SERVER_LISTENER_SINGLETON::instance()->isRunning())
     {
@@ -674,7 +683,8 @@ do_work(const unsigned int& pingInterval_in,
   }
   else
   {
-    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->init(listeningPortNumber_in);
+    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->init(listeningPortNumber_in,
+			                                                        useLoopback_in);
     RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->start();
     if (!RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->isRunning())
     {
@@ -811,6 +821,7 @@ ACE_TMAIN(int argc,
   unsigned int keepAliveTimeout            = RPG_NET_SOCK_KEEPALIVE;
   bool logToFile                           = false;
   std::string networkInterface             = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
+	bool useLoopback                         = false;
   unsigned short listeningPortNumber       = RPG_NET_SERVER_DEF_LISTENING_PORT;
   bool useReactor                          = RPG_NET_USES_REACTOR;
   unsigned int statisticsReportingInterval = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
@@ -825,6 +836,7 @@ ACE_TMAIN(int argc,
                           keepAliveTimeout,
                           logToFile,
                           networkInterface,
+													useLoopback,
                           listeningPortNumber,
                           useReactor,
                           statisticsReportingInterval,
@@ -937,6 +949,7 @@ ACE_TMAIN(int argc,
   // step2: do actual work
   do_work(pingInterval,
           networkInterface,
+					useLoopback,
           listeningPortNumber,
           useReactor,
           statisticsReportingInterval,

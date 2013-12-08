@@ -275,7 +275,6 @@ RPG_Stream_Base<DataType,
   // sanity check: is running ?
   if (!isRunning())
   {
-//     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("not running --> nothing to do, returning\n")));
 
@@ -313,8 +312,13 @@ RPG_Stream_Base<DataType,
     return;
   } // end IF
 
+  // *WARNING*: cannot flush(), as this deactivates() the queue as well,
+  // which causes mayhem for our (blocked) worker...
+  // *TODO*: consider optimizing this...
+  //module->reader()->flush();
+
   RPG_Stream_IStreamControl* control_impl = NULL;
-  control_impl = dynamic_cast<RPG_Stream_IStreamControl*> (module->writer());
+  control_impl = dynamic_cast<RPG_Stream_IStreamControl*>(module->writer());
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
@@ -562,7 +566,6 @@ RPG_Stream_Base<DataType,
     return;
   } // end IF
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("waiting for module (\"%s\") to finish processing...\n"),
 //              ACE_TEXT_ALWAYS_CHAR(module->name())));
@@ -585,7 +588,6 @@ RPG_Stream_Base<DataType,
     return;
   }
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("waiting for module (\"%s\") to finish processing...DONE\n"),
 //              ACE_TEXT_ALWAYS_CHAR(module->name())));
@@ -607,7 +609,7 @@ RPG_Stream_Base<DataType,
 //                ACE_TEXT("waiting for module (\"%s\") to finish processing...\n"),
 //                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
-    // OK: we've got a handle... wait
+    // OK: got a handle... wait
     const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->writer()->wait();
 
 //     ACE_DEBUG((LM_DEBUG,

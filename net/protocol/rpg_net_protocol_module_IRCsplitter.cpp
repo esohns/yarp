@@ -21,18 +21,18 @@
 
 #include "rpg_net_protocol_module_IRCsplitter.h"
 
+#include "rpg_common_timer_manager.h"
+
+#include "rpg_stream_iallocator.h"
+
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 
-#include <rpg_common_timer_manager.h>
-
-#include <rpg_stream_iallocator.h>
-
 RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
- : inherited(false), // DON'T auto-start !
+ : inherited(false,  // inactive by default
+             false), // DON'T auto-start !
    myCrunchMessages(false),
-   mySessionID(0),
    myStatCollectHandler(this,
                         STATISTICHANDLER_TYPE::ACTION_COLLECT),
    myStatCollectHandlerID(-1),
@@ -76,6 +76,7 @@ RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
 
 bool
 RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
+                                          const bool& isActive_in,
                                           const bool& crunchMessages_in,
                                           const unsigned int& statisticsCollectionInterval_in,
                                           const bool& traceScanning_in)
@@ -92,7 +93,6 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
 
     // clean up
     myCrunchMessages = false;
-    mySessionID = 0;
     if (myStatCollectHandlerID != -1)
       if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
         ACE_DEBUG((LM_ERROR,
@@ -114,6 +114,8 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
 
   // set base class initializer(s)
   inherited::myAllocator = allocator_in;
+	inherited::mySessionID = 0;
+	inherited::myIsActive = isActive_in;
 
   myCrunchMessages = crunchMessages_in;
 
@@ -452,7 +454,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_Sessi
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // remember session ID for reporting...
-      mySessionID = message_inout->getConfig()->getUserData().sessionID;
+      inherited::mySessionID = message_inout->getConfig()->getUserData().sessionID;
 
       // start profile timer...
 //       myProfile.start();
@@ -479,9 +481,7 @@ RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& 
   ACE_ASSERT(myIsInitialized);
 
   // step0: init info container POD
-  ACE_OS::memset(&data_out,
-                 0,
-                 sizeof(RPG_Net_Protocol_RuntimeStatistic));
+  ACE_OS::memset(&data_out, 0, sizeof(RPG_Net_Protocol_RuntimeStatistic));
 
   // step1: *TODO*: collect info
 
@@ -520,17 +520,15 @@ RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_Protocol
 
   // step1: init info POD
   RPG_Net_Protocol_ConfigPOD data;
-  ACE_OS::memset(&data,
-                 0,
-                 sizeof(RPG_Net_Protocol_ConfigPOD));
+  ACE_OS::memset(&data, 0, sizeof(RPG_Net_Protocol_ConfigPOD));
   data.currentStatistics = info_in;
   data.lastCollectionTimestamp = collectionTime_in;
 
   // step2: allocate config container
-  SESSIONCONFIG_TYPE* config = NULL;
-  ACE_NEW_NORETURN(config,
+  SESSIONCONFIG_TYPE* session_config = NULL;
+  ACE_NEW_NORETURN(session_config,
                    SESSIONCONFIG_TYPE(data));
-  if (!config)
+  if (!session_config)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocate Stream_SessionConfigBase: \"%m\", aborting\n")));
@@ -539,11 +537,10 @@ RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_Protocol
   } // end IF
 
   // step3: send the data downstream...
-  // *NOTE*: this is a "fire-and-forget" API, so we don't need to
-  // worry about config any longer !
-  return inherited::putSessionMessage(mySessionID,
+  // *NOTE*: "fire-and-forget"-API for session_config
+  return inherited::putSessionMessage(inherited::mySessionID,
                                       RPG_Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
-                                      config,
+                                      session_config,
                                       inherited::myAllocator);
 }
 

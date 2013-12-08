@@ -21,18 +21,18 @@
 
 #include "rpg_net_module_sockethandler.h"
 
+#include "rpg_common_timer_manager.h"
+
 #include "rpg_net_defines.h"
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
 #include "rpg_net_remote_comm.h"
 #include "rpg_net_stream_config.h"
 
-#include "rpg_common_timer_manager.h"
-
 RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
- : inherited(false), // DON'T auto-start !
+ : inherited(false,  // inactive by default
+             false), // DON'T auto-start !
    myIsInitialized(false),
-   mySessionID(0),
    myStatCollectHandler(this,
                         RPG_Net_StatisticHandler_Reactor_t::ACTION_COLLECT),
    myStatCollectHandlerID(-1),
@@ -62,6 +62,7 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 
 bool
 RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
+                                   const bool& isActive_in,
 //                                    const unsigned int& connectionID_in,
                                    const unsigned int& statisticsCollectionInterval_in)
 {
@@ -69,13 +70,13 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
 
   // sanity check(s)
   ACE_ASSERT(allocator_in);
+
   if (myIsInitialized)
   {
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("re-initializing...\n")));
 
     // clean up
-    mySessionID = 0;
     if (myStatCollectHandlerID != -1)
       if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
         ACE_DEBUG((LM_ERROR,
@@ -104,7 +105,6 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
-      // what else can we do ?
       return false;
     } // end IF
 //     ACE_DEBUG((LM_DEBUG,
@@ -115,8 +115,9 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
 
   // *NOTE*: need to clean up timer beyond this point !
 
-//   myConnectionID = connectionID_in;
   inherited::myAllocator = allocator_in;
+	inherited::mySessionID = 0;
+	inherited::myIsActive = isActive_in;
 
   // OK: all's well...
   myIsInitialized = true;
@@ -129,7 +130,7 @@ RPG_Net_Module_SocketHandler::getSessionID() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::getSessionID"));
 
-  return mySessionID;
+  return inherited::mySessionID;
 }
 
 void
@@ -197,7 +198,7 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // remember session ID for reporting...
-      mySessionID = message_inout->getConfig()->getUserData().sessionID;
+      inherited::mySessionID = message_inout->getConfig()->getUserData().sessionID;
 
       // start profile timer...
 //       myProfile.start();
@@ -206,7 +207,6 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
     }
     default:
     {
-      // don't do anything...
       break;
     }
   } // end SWITCH
@@ -224,9 +224,7 @@ RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out) const
   ACE_ASSERT(myIsInitialized);
 
   // step0: init info container POD
-  ACE_OS::memset(&data_out,
-                 0,
-                 sizeof(RPG_Net_RuntimeStatistic));
+  ACE_OS::memset(&data_out, 0, sizeof(RPG_Net_RuntimeStatistic));
 
   // step1: *TODO*: collect info
 
@@ -308,7 +306,6 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
     myCurrentMessageLength = message_header->messageLength + sizeof(unsigned int);
   } // end IF
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("[%u]: received %u bytes [current: %u, total: %u]...\n"),
 //              myConnectionID,
@@ -401,7 +398,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 }
 
 // RPG_Net_Message*
-// RPG_Net_Module_SocketHandler::allocateMessage(const unsigned long& requestedSize_in)
+// RPG_Net_Module_SocketHandler::allocateMessage(const unsigned int& requestedSize_in)
 // {
 //   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::allocateMessage"));
 //
@@ -410,7 +407,7 @@ RPG_Net_Module_SocketHandler::bisectMessages(RPG_Net_Message*& message_out)
 //
 //   try
 //   {
-//     message_out = static_cast<RPG_Net_Message*> (//inherited::myAllocator->malloc(requestedSize_in));
+//     message_out = static_cast<RPG_Net_Message*>(//inherited::myAllocator->malloc(requestedSize_in));
 //   }
 //   catch (...)
 //   {
@@ -436,9 +433,7 @@ RPG_Net_Module_SocketHandler::putStatisticsMessage(const RPG_Net_RuntimeStatisti
 
   // step1: init info POD
   RPG_Net_ConfigPOD data;
-  ACE_OS::memset(&data,
-                 0,
-                 sizeof(RPG_Net_ConfigPOD));
+  ACE_OS::memset(&data, 0, sizeof(RPG_Net_ConfigPOD));
   data.currentStatistics = info_in;
   data.lastCollectionTimestamp = collectionTime_in;
 

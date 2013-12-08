@@ -54,8 +54,8 @@ class RPG_Net_Module_ProtocolHandler
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
                                  bool&);            // return value: pass message downstream ?
-//   virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
-//                                     bool&);                   // return value: pass message downstream ?
+  virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
+                                    bool&);                   // return value: pass message downstream ?
 
   // implement RPG_Common_ITimer
   virtual void handleTimeout(const void*); // asynchronous completion token
@@ -81,6 +81,7 @@ class RPG_Net_Module_ProtocolHandler
   RPG_Stream_IAllocator*  myAllocator;
   unsigned int            mySessionID;
   unsigned int            myCounter;
+	unsigned int            myPingInterval;
   bool                    myAutomaticPong;
   bool                    myPrintPongDot;
   bool                    myIsInitialized;

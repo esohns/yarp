@@ -24,7 +24,7 @@
 template <typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_TaskBaseSynch<SessionMessageType,
-                     ProtocolMessageType>::RPG_Stream_TaskBaseSynch()
+                         ProtocolMessageType>::RPG_Stream_TaskBaseSynch()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::RPG_Stream_TaskBaseSynch"));
 
@@ -33,7 +33,7 @@ RPG_Stream_TaskBaseSynch<SessionMessageType,
 template <typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_TaskBaseSynch<SessionMessageType,
-                     ProtocolMessageType>::~RPG_Stream_TaskBaseSynch()
+                         ProtocolMessageType>::~RPG_Stream_TaskBaseSynch()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::~RPG_Stream_TaskBaseSynch"));
 
@@ -43,8 +43,8 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBaseSynch<SessionMessageType,
-                     ProtocolMessageType>::put(ACE_Message_Block* mb_in,
-                                               ACE_Time_Value* tv_in)
+                         ProtocolMessageType>::put(ACE_Message_Block* mb_in,
+                                                   ACE_Time_Value* tv_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::put"));
 
@@ -64,7 +64,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBaseSynch<SessionMessageType,
-                     ProtocolMessageType>::open(void* args_in)
+                         ProtocolMessageType>::open(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::open"));
 
@@ -91,7 +91,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBaseSynch<SessionMessageType,
-                     ProtocolMessageType>::close(u_long arg_in)
+                         ProtocolMessageType>::close(u_long arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::close"));
 
@@ -105,7 +105,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 int
 RPG_Stream_TaskBaseSynch<SessionMessageType,
-                     ProtocolMessageType>::module_closed(void)
+                         ProtocolMessageType>::module_closed(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::module_closed"));
 
@@ -120,9 +120,9 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBaseSynch<SessionMessageType,
-                     ProtocolMessageType>::waitForIdleState() const
+                         ProtocolMessageType>::waitForIdleState() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::waitForIdleState"));
 
-  // just a stub, there's nothing to do...
+  // *NOTE*: just a stub, there's nothing to do...
 }

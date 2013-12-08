@@ -934,7 +934,7 @@ RPG_Net_Common_Tools::EthernetProtocolTypeID2String(const unsigned short& frameT
     default:
     {
       ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("invalid/unknown ethernet frame type: \"0x%x\" --> check implementation !, continuing\n"),
+                 ACE_TEXT("invalid/unknown ethernet frame type: \"0x%x\", continuing\n"),
                  ACE_NTOHS(frameType_in)));
 
       // IEEE 802.3 ? --> change result string...
@@ -1102,9 +1102,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
        i++)
   {
     // reset buffer
-    ACE_OS::memset(&ip,
-                   0,
-                   sizeof(ip));
+    ACE_OS::memset(&ip, 0, sizeof(ip));
 
     // reset address handle
 //     addr_handle = NULL;
@@ -1144,7 +1142,7 @@ RPG_Net_Common_Tools::retrieveLocalIPAddress(const std::string& interfaceIdentif
 //                ACE_TEXT("found host address: \"%s\"...\n"),
 //                ip));
 
-//     addr_handle = static_cast<sockaddr_in*> (//                                   addr_array[i].get_addr());
+//     addr_handle = static_cast<sockaddr_in*> (// addr_array[i].get_addr());
 
     IPaddress_out = ip;
   } // end FOR
@@ -1165,14 +1163,11 @@ RPG_Net_Common_Tools::retrieveLocalHostname(std::string& hostname_out)
   hostname_out.resize(0);
 
   ACE_TCHAR host[MAXHOSTNAMELEN + 1];
-  ACE_OS::memset(&host,
-                 0,
-                 MAXHOSTNAMELEN + 1);
+  ACE_OS::memset(&host, 0, MAXHOSTNAMELEN + 1);
   if (ACE_OS::hostname(host, MAXHOSTNAMELEN))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::hostname(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_OS::hostname(): \"%m\", aborting\n")));
 
     return false;
   } // end IF
@@ -1256,13 +1251,12 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
       return false;
   } // end IF
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("set \"%s\" option of socket (ID: %d) to: %d\n"),
-             ((option_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
-                                       : ACE_TEXT("SO_SNDBUF")),
-             handle_in,
-             size));
+  //ACE_DEBUG((LM_DEBUG,
+  //           ACE_TEXT("set \"%s\" option of socket (ID: %d) to: %d\n"),
+  //           ((option_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
+  //                                     : ACE_TEXT("SO_SNDBUF")),
+  //           handle_in,
+  //           size));
 
   return true;
 }
@@ -1304,11 +1298,11 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
     return false;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("setsockopt(%u, TCP_NODELAY): %s...\n"),
-             handle_in,
-             (noDelay_in ? ((value == 1) ? "on" : "off")
-                         : ((value == 0) ? "off" : "on"))));
+  //ACE_DEBUG((LM_DEBUG,
+  //           ACE_TEXT("setsockopt(%u, TCP_NODELAY): %s\n"),
+  //           handle_in,
+  //           (noDelay_in ? ((value == 1) ? "on" : "off")
+  //                       : ((value == 0) ? "off" : "on"))));
 
   return (noDelay_in ? (value == 1) : (value == 0));
 }

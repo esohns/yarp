@@ -34,7 +34,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
                                                                                                          StatisticsContainerType>* manager_in)
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
-             ACE_Reactor::instance()), // reactor
+             ACE_Reactor::instance()), // default reactor
 //    myUserData(),
    myIsInitialized(false),
    myNotificationStrategy(ACE_Reactor::instance(),        // reactor

@@ -35,7 +35,8 @@
 
 // default event handler (default: use asynch I/O (proactor))
 #define RPG_NET_USES_REACTOR                           false
-#define RPG_NET_DEF_CONNECTION_HANDLER_THREAD_GROUP_ID 2
+#define RPG_NET_CONNECTION_HANDLER_THREAD_NAME         "RPG connection dispatch"
+#define RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID     2
 
 // 1024 * 1024 --> 1 MByte
 // *NOTE*: make this an even number to (gracefully) cope with Linux oddities...

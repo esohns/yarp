@@ -24,7 +24,6 @@
 #include <ace/OS.h>
 #include <ace/INET_Addr.h>
 
-//#include "rpg_net_defines.h"
 #include "rpg_net_common.h"
 
 #include "rpg_net_server_defines.h"
@@ -33,7 +32,8 @@ RPG_Net_Server_AsynchListener::RPG_Net_Server_AsynchListener()
  : //inherited(),
    myIsInitialized(false),
    myIsListening(false),
-   myListeningPort(RPG_NET_SERVER_DEF_LISTENING_PORT)
+   myListeningPort(RPG_NET_SERVER_DEF_LISTENING_PORT),
+	 myUseLoopback(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::RPG_Net_Server_AsynchListener"));
 
@@ -46,14 +46,15 @@ RPG_Net_Server_AsynchListener::~RPG_Net_Server_AsynchListener()
 }
 
 void
-RPG_Net_Server_AsynchListener::init(const unsigned short& listeningPort_in)
+RPG_Net_Server_AsynchListener::init(const unsigned short& listeningPort_in,
+                                    const bool& useLoopback_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::init"));
 
   // *NOTE*: changes won't become active until the listener is "restarted"...
   myListeningPort = listeningPort_in;
+	myUseLoopback = useLoopback_in;
 
-  // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("set listening port: %u\n"),
 //              myListeningPort));
@@ -92,16 +93,27 @@ RPG_Net_Server_AsynchListener::start()
   } // end IF
 
   // not running --> start listening
-  ACE_INET_Addr local_SAP(myListeningPort, // local SAP
-                          // *PORTABILITY*: needed to disambiguate this under Windows :-(
-                          // *TODO*: bind to specific interface/address ?
-                          static_cast<ACE_UINT32>(INADDR_ANY));
-  if (inherited::open(local_SAP,                  // local SAP
+  ACE_INET_Addr local_sap;
+	if (myUseLoopback)
+		local_sap.set(myListeningPort, // port
+                  // *PORTABILITY*: needed to disambiguate this under Windows :-(
+                  // *TODO*: bind to specific interface/address ?
+                  ACE_LOCALHOST,   // hostname
+									1,               // encode ?
+									AF_INET);        // address family
+	else
+		local_sap.set(myListeningPort,                     // port
+                  // *PORTABILITY*: needed to disambiguate this under Windows :-(
+                  // *TODO*: bind to specific interface/address ?
+                  static_cast<ACE_UINT32>(INADDR_ANY), // hostname
+									1,                                   // encode ?
+									0);                                  // map ?
+  if (inherited::open(local_sap,                  // local SAP
                       0,                          // bytes_to_read
                       1,                          // pass_addresses
                       ACE_DEFAULT_ASYNCH_BACKLOG, // backlog
                       1,                          // reuse_addr
-                      NULL,                       // proactor
+											ACE_Proactor::instance(),   // default proactor
                       true,                       // validate_new_connection
                       1,                          // reissue_accept
                       -1) == -1)                  // number_of_initial_accepts

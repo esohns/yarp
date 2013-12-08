@@ -21,10 +21,12 @@
 
 #include "rpg_net_sockethandler.h"
 
+#include <ace/Message_Block.h>
+
+#include "rpg_common_defines.h"
+
 #include "rpg_net_defines.h"
 #include "rpg_net_connection_manager.h"
-
-#include <ace/Message_Block.h>
 
 RPG_Net_SocketHandler::RPG_Net_SocketHandler()
  : inherited(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance())
@@ -38,11 +40,10 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::~RPG_Net_SocketHandler"));
 
   // wait for our worker (if any)
-
-  // *WARNING*: cannot use wait(), as this dtor is invoked by the reactor itself
-  // on ACE_Svc_Handler::destroy() --> apparently, this deadlocks on some
-  // internal (non-recursive) lock...
-  wait();
+  if (inherited::myUserData.useThreadPerConnection)
+		if (inherited::wait() == -1)
+			ACE_DEBUG((LM_ERROR,
+			           ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 }
 
 int
@@ -58,7 +59,6 @@ RPG_Net_SocketHandler::svc(void)
   while (true)
   {
     if (myCurrentWriteBuffer == NULL)
-    {
       if (myStream.get(myCurrentWriteBuffer, NULL) == -1) // block
       {
         ACE_DEBUG((LM_ERROR,
@@ -67,7 +67,6 @@ RPG_Net_SocketHandler::svc(void)
         // what else can we do ?
         return -1;
       } // end IF
-    } // end IF
 
     // finished ?
     if (myCurrentWriteBuffer->msg_type() == ACE_Message_Block::MB_STOP)
@@ -120,7 +119,6 @@ RPG_Net_SocketHandler::svc(void)
       }
       default:
       {
-//         // debug info
 //         ACE_DEBUG((LM_DEBUG,
 //                   ACE_TEXT("[%u]: sent %u bytes...\n"),
 //                   peer_.get_handle(),
@@ -144,10 +142,9 @@ RPG_Net_SocketHandler::svc(void)
     } // end SWITCH
   } // end WHILE
 
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("(%t) worker (connection: %u) joining...\n"),
-             myStream.getSessionID()));
+  //ACE_DEBUG((LM_DEBUG,
+  //           ACE_TEXT("(%t) worker (connection: %u) joining...\n"),
+  //           myStream.getSessionID()));
 
   return 0;
 }
@@ -162,9 +159,8 @@ RPG_Net_SocketHandler::open(void* arg_in)
   int result = inherited::open(arg_in);
   if (result == -1)
   {
-    // debug info
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to RPG_Net_StreamSocketBase::open(): \"%m\", aborting\n")));
 
     // MOST PROBABLE REASON: too many open connections...
 
@@ -175,21 +171,31 @@ RPG_Net_SocketHandler::open(void* arg_in)
   // OK: start a worker ?
   if (inherited::myUserData.useThreadPerConnection)
   {
-    if (activate((THR_NEW_LWP |
-                  THR_JOINABLE |
-                  THR_INHERIT_SCHED),                            // flags
-                 1,                                              // # threads
-                 0,                                              // force spawning
-                 ACE_DEFAULT_THREAD_PRIORITY,                    // priority
-                 RPG_NET_DEF_CONNECTION_HANDLER_THREAD_GROUP_ID, // group id
-                 NULL,                                           // corresp. task --> use 'this'
-                 NULL,                                           // thread handle(s)
-                 NULL,                                           // thread stack(s)
-                 NULL,                                           // thread stack size(s)
-                 NULL))                                          // thread id(s)
+		ACE_thread_t thread_ids[1];
+		thread_ids[0] = 0;
+		ACE_hthread_t thread_handles[1];
+		thread_handles[0] = 0;
+		char thread_name[RPG_COMMON_BUFSIZE];
+		ACE_OS::memset(thread_name, 0, sizeof(thread_name));
+		ACE_OS::strcpy(thread_name, RPG_NET_CONNECTION_HANDLER_THREAD_NAME);
+		const char* thread_names[1];
+		thread_names[0] = thread_name;
+    if (inherited::activate((THR_NEW_LWP |
+														 THR_JOINABLE |
+														 THR_INHERIT_SCHED),                        // flags
+														1,                                          // # threads
+														0,                                          // force spawning
+														ACE_DEFAULT_THREAD_PRIORITY,                // priority
+														RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID, // group id
+														NULL,                                       // corresp. task --> use 'this'
+														thread_handles,                             // thread handle(s)
+														NULL,                                       // thread stack(s)
+														NULL,                                       // thread stack size(s)
+														thread_ids,                                 // thread id(s)
+														thread_names) == -1)                        // thread name(s)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to activate(): \"%m\", aborting\n")));
+                 ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", aborting\n")));
 
       // reactor will invoke close() --> handle_close()
       return -1;
@@ -298,26 +304,9 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_close"));
 
-  // deal with our worker
-  if (thr_count())
-  { // stop worker
-    try
-    {
-      // *NOTE*: cannot flush(), as this deactivates() the queue as well,
-      // which causes mayhem for our (blocked) worker...
-//       myStream.head()->reader()->flush();
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in ACE_Task::flush(): \"%m\", continuing\n")));
-
-      // *NOTE*: what else can we do ?
-    }
-    shutdown();
-
-    // *NOTE*: we defer waiting for our worker to the dtor
-  } // end IF
+  // deal with our worker, if any
+  if (inherited::myUserData.useThreadPerConnection)
+		shutdown();
 
   // invoke base class maintenance
   // *NOTE*: in the end, this will "delete this"...
@@ -330,46 +319,34 @@ RPG_Net_SocketHandler::shutdown()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::shutdown"));
 
-  ACE_Message_Block* stop_mb = NULL;
-  ACE_NEW_NORETURN(stop_mb,
-                   ACE_Message_Block(0,                                  // size
-                                     ACE_Message_Block::MB_STOP,         // type
-                                     NULL,                               // continuation
-                                     NULL,                               // data
-                                     NULL,                               // buffer allocator
-                                     NULL,                               // locking strategy
-                                     ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-                                     ACE_Time_Value::zero,               // execution time
-                                     ACE_Time_Value::max_time,           // deadline time
-                                     NULL,                               // data block allocator
-                                     NULL));                             // message allocator)
-  if (!stop_mb)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
+	ACE_Message_Block* stop_mb = NULL;
+	ACE_NEW_NORETURN(stop_mb,
+									 ACE_Message_Block(0,                                  // size
+																		 ACE_Message_Block::MB_STOP,         // type
+																		 NULL,                               // continuation
+																		 NULL,                               // data
+																		 NULL,                               // buffer allocator
+																		 NULL,                               // locking strategy
+																		 ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+																		 ACE_Time_Value::zero,               // execution time
+																		 ACE_Time_Value::max_time,           // deadline time
+																		 NULL,                               // data block allocator
+																		 NULL));                             // message allocator)
+	if (!stop_mb)
+	{
+		ACE_DEBUG((LM_ERROR,
+								ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
-    // what else can we do ?
-    return;
-  } // end IF
+		return;
+	} // end IF
 
-  try
-  {
-    if (myStream.head()->reader()->put(stop_mb, NULL) == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to ACE_Task::put(): \"%m\", continuing\n")));
+	if (inherited::putq(stop_mb, NULL) == -1)
+	{
+		ACE_DEBUG((LM_ERROR,
+							ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
 
-      stop_mb->release();
-    } // end IF
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in ACE_Task::put(): \"%m\", aborting\n")));
+		stop_mb->release();
+	} // end IF
 
-    stop_mb->release();
-
-    // what else can we do ?
-    return;
-  }
+  // *NOTE*: defer waiting for any worker(s) to the dtor
 }
