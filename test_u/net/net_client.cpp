@@ -75,7 +75,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-h [STRING]: server (host)name [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
+  std::cout << ACE_TEXT("-h [STRING]: server hostname [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
   std::cout << ACE_TEXT("-i [VALUE] : connection interval ([") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l         : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE] : server port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
@@ -115,10 +115,10 @@ process_arguments(const int argc_in,
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
                              ACE_TEXT("h:i:lp:rs:tvx:"),
-                             1, // skip command name
-                             1, // report parsing errors
-                             ACE_Get_Opt::PERMUTE_ARGS, // ordering
-                             0); // for now, don't use long options
+                             1,                          // skip command name
+                             1,                          // report parsing errors
+                             ACE_Get_Opt::PERMUTE_ARGS,  // ordering
+                             0);                         // for now, don't use long options
 
   int option = 0;
   std::stringstream converter;
@@ -349,7 +349,6 @@ init_signalHandling(const std::vector<int>& signals_in,
   } // end FOR
 
   // actually, there is only a single handler for ALL signals in the set...
-  // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("handling %d signal(s)...\n"),
 //              signals_inout.size()));
@@ -550,7 +549,8 @@ do_work(const std::string& serverHostname_in,
   {
     // step4b: ...or connect to the server immediately
     ACE_INET_Addr peer_address(serverPortNumber_in,
-                               serverHostname_in.c_str());
+                               serverHostname_in.c_str(),
+															 AF_INET);
 		connector->connect(peer_address);
   } // end ELSE
 
@@ -695,17 +695,17 @@ ACE_TMAIN(int argc,
   unsigned int numThreadPoolThreads = RPG_NET_CLIENT_DEF_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
-  if (!(process_arguments(argc,
-                          argv,
-                          serverHostname,
-                          connectionInterval,
-                          logToFile,
-                          serverPortNumber,
-                          useReactor,
-                          pingInterval,
-                          traceInformation,
-                          printVersionAndExit,
-                          numThreadPoolThreads)))
+  if (!process_arguments(argc,
+                         argv,
+                         serverHostname,
+                         connectionInterval,
+                         logToFile,
+                         serverPortNumber,
+                         useReactor,
+                         pingInterval,
+                         traceInformation,
+                         printVersionAndExit,
+                         numThreadPoolThreads))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));

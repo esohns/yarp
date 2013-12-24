@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "rpg_common_defines.h"
+
 #include "rpg_stream_defines.h"
 #include "rpg_stream_iallocator.h"
-
-#include "rpg_common_defines.h"
 
 template <typename DataType,
           typename SessionConfigType,
@@ -35,7 +35,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
  : myAllocator(NULL),
    mySessionID(0),
    myCondition(myLock),
-   myIsFinished(true),
+   myCurrentNumThreads(RPG_STREAM_DEF_NUM_STREAM_HEAD_THREADS),
    myQueue(RPG_STREAM_MAX_QUEUE_SLOTS),
    myAutoStart(autoStart_in),
    myIsActive(isActive_in)//,
@@ -284,6 +284,14 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   ACE_Message_Block* ace_mb          = NULL;
   bool               stop_processing = false;
 
+  // step0: increment thread count
+  {
+//    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+    myCurrentNumThreads++;
+  } // end IF
+
   // step1: send initial session message downstream...
   if (!putSessionMessage(mySessionID,
                          RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN,
@@ -354,10 +362,8 @@ RPG_Stream_HeadModuleTaskBase<DataType,
                          myUserData,
                          ACE_Time_Value::zero, // N/A
                          false))               // N/A
-  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
-  } // end IF
 
   // signal the controller
   finished();
@@ -509,10 +515,19 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 
   if (myIsActive)
   {
-    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+    // step1: wait for workers to finish
+    {
+//    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    while (!myIsFinished)
-      myCondition.wait();
+      while (myCurrentNumThreads)
+        myCondition.wait();
+    } // end IF
+
+	// step2: wait for workers to join
+    if (inherited::wait() == -1)
+	  ACE_DEBUG((LM_ERROR,
+		         ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
   } // end IF
 }
 
@@ -620,14 +635,21 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 		  break;
 		} // end IF
 	  } // end IF
+	  else
+	  {
+		// send initial session message downstream...
+		if (!putSessionMessage(mySessionID,
+							   RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN,
+							   myUserData,
+							   ACE_OS::gettimeofday(), // start of session
+							   false))                 // N/A
+		{
+		  ACE_DEBUG((LM_ERROR,
+			  	     ACE_TEXT("putSessionMessage(SESSION_BEGIN) failed, aborting\n")));
 
-      {
-        // synchronize access to myIsFinished
-        // *TODO*: synchronize access to state logic to make the API re-entrant...
-        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
-
-        myIsFinished = false;
-      } // end lock scope
+		  break;
+		} // end IF
+	  } // end ELSE
 
 //       // debug info
 //       if (inherited::module())
@@ -684,6 +706,20 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 		  stop_mb->release();
         } // end IF
 	  } // end IF
+	  else
+	  {
+		// send final session message downstream...
+		if (!putSessionMessage(mySessionID,
+		 					   RPG_Stream_SessionMessage::MB_STREAM_SESSION_END,
+							   myUserData,
+							   ACE_Time_Value::zero, // N/A
+							   false))               // N/A
+		  ACE_DEBUG((LM_ERROR,
+			  	     ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
+
+	    // signal the controller
+		finished();
+	  } // end ELSE
 
       break;
     }
@@ -691,15 +727,14 @@ RPG_Stream_HeadModuleTaskBase<DataType,
     {
       // signal waiting thread(s)
       {
-        // grab condition lock...
-        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+//        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        myIsFinished = true;
+        myCurrentNumThreads--;
 
         myCondition.broadcast();
       } // end lock scope
 
-      // OK: (re-)initialized
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("finished successfully !\n")));
 

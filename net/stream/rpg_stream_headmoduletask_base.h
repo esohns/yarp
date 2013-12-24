@@ -31,6 +31,7 @@
 
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
+#include <ace/Synch.h>
 
 // forward declaration(s)
 class ACE_Message_Block;
@@ -70,6 +71,7 @@ class RPG_Stream_HeadModuleTaskBase
   virtual void stop();
   virtual void pause();
   virtual void rewind();
+	// *NOTE*: for the time being, this simply waits for any worker threads to join
   virtual void waitForCompletion();
   virtual bool isRunning() const;
 
@@ -132,9 +134,11 @@ class RPG_Stream_HeadModuleTaskBase
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>& operator=(const RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>&));
 
   // allow blocking wait in waitForCompletion()
-  ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
-  ACE_Recursive_Thread_Mutex                myLock;
-  bool                                      myIsFinished;
+//  ACE_Recursive_Thread_Mutex                myLock;
+	ACE_Thread_Mutex                          myLock;
+	//  ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
+	ACE_Condition<ACE_Thread_Mutex>           myCondition;
+  unsigned int                              myCurrentNumThreads;
   RPG_Stream_MessageQueue                   myQueue;
   bool                                      myAutoStart;
   DataType                                  myUserData;

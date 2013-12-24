@@ -76,17 +76,17 @@ class RPG_Stream_HeadModuleTask
 
   // convenience methods to send (session-specific) notifications downstream
   // *WARNING*: - handle with care -
-  const bool putSessionMessage(const unsigned long&,                             // session ID
+  const bool putSessionMessage(const unsigned long&,                                 // session ID
                                const RPG_Stream_SessionMessage::SessionMessageType&, // session message type
                                RPG_Stream_SessionConfig*&,                           // data
                                RPG_Stream_IAllocator* = NULL) const;                 // allocator (NULL ? --> use "new")
   // *NOTE*: session message assumes lifetime responsibility for data
   // --> method implements a "fire-and-forget" strategy !
-  const bool putSessionMessage(const unsigned long&,                             // session ID
+  const bool putSessionMessage(const unsigned long&,                                 // session ID
                                const RPG_Stream_SessionMessage::SessionMessageType&, // session message type
-                               const void* = NULL,                               // user data
-                               const ACE_Time_Value& = ACE_Time_Value::zero,     // start of session
-                               const bool& = false) const;                       // user abort ?
+                               const void* = NULL,                                   // user data
+                               const ACE_Time_Value& = ACE_Time_Value::zero,         // start of session
+                               const bool& = false) const;                           // user abort ?
 
   // implement state machine callback
   // *NOTE*: this method is threadsafe

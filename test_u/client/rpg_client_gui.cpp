@@ -409,7 +409,7 @@ process_arguments(const int& argc_in,
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);

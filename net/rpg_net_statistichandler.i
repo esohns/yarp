@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_common_macros.h"
-
 #include <ace/Reactor.h>
 #include <ace/Proactor.h>
 #include <ace/Log_Msg.h>
+
+#include "rpg_common_macros.h"
 
 template <typename StatisticsInfoContainer_t>
 RPG_Net_StatisticHandler_Reactor_T<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler_Reactor_T(const COLLECTOR_TYPE* interface_in,
@@ -58,17 +58,13 @@ RPG_Net_StatisticHandler_Reactor_T<StatisticsInfoContainer_t>::handle_timeout(co
     case ACTION_COLLECT:
     {
       StatisticsInfoContainer_t result;
-      ACE_OS::memset(&result,
-                     0,
-                     sizeof(StatisticsInfoContainer_t));
+      ACE_OS::memset(&result, 0, sizeof(StatisticsInfoContainer_t));
 
       try
       {
         if (!myInterface->collect(result))
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Common_IStatistic::collect(), continuing\n")));
-        } // end IF
       }
       catch (...)
       {
@@ -143,17 +139,13 @@ RPG_Net_StatisticHandler_Proactor_T<StatisticsInfoContainer_t>::handle_time_out(
     case ACTION_COLLECT:
     {
       StatisticsInfoContainer_t result;
-      ACE_OS::memset(&result,
-                     0,
-                     sizeof(StatisticsInfoContainer_t));
+      ACE_OS::memset(&result, 0, sizeof(StatisticsInfoContainer_t));
 
       try
       {
         if (!myInterface->collect(result))
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Common_IStatistic::collect(), continuing\n")));
-        } // end IF
       }
       catch (...)
       {

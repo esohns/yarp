@@ -577,7 +577,9 @@ RPG_Stream_Base<DataType,
     head_task->waitForCompletion();
 
     // step2: wait for worker thread
-    head_task->wait();
+    if (head_task->wait() == -1)
+	  ACE_DEBUG((LM_ERROR,
+		         ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
   }
   catch (...)
   {
@@ -610,7 +612,9 @@ RPG_Stream_Base<DataType,
 //                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     // OK: got a handle... wait
-    const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->writer()->wait();
+    if (const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->writer()->wait() == -1)
+	  ACE_DEBUG((LM_ERROR,
+		         ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("waiting for module (\"%s\") to finish processing...DONE\n"),

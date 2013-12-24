@@ -99,39 +99,39 @@ class RPG_Net_Module_RuntimeStatistic
   void final_report() const;
   void fini_timers(const bool& = true); // cancel both timers ? (false --> cancel only myLocalReportingHandlerID)
 
-  bool                               myIsInitialized;
+  bool                         myIsInitialized;
 
   // timer stuff
-//   RPG_Net_TimerQueue_t               myTimerQueue;
-  RPG_Net_ResetCounterHandler        myResetTimeoutHandler;
-  long                               myResetTimeoutHandlerID;
-  STATISTICHANDLER_TYPE              myLocalReportingHandler;
-  long                               myLocalReportingHandlerID;
+//  RPG_Net_TimerQueue_t        myTimerQueue;
+  RPG_Net_ResetCounterHandler  myResetTimeoutHandler;
+  long                         myResetTimeoutHandlerID;
+  STATISTICHANDLER_TYPE        myLocalReportingHandler;
+  long                         myLocalReportingHandlerID;
 
   // *GENERIC STATS*
-  mutable ACE_Thread_Mutex           myLock;
-  unsigned int                       mySessionID;
+  mutable ACE_Thread_Mutex     myLock;
+  unsigned int                 mySessionID;
 
   // *NOTE*: data messages == (myNumTotalMessages - myNumSessionMessages)
-  unsigned int                       myNumInboundMessages;
-  unsigned int                       myNumOutboundMessages;
-  unsigned int                       myNumSessionMessages;
+  unsigned int                 myNumInboundMessages;
+  unsigned int                 myNumOutboundMessages;
+  unsigned int                 myNumSessionMessages;
   // used to compute message throughput...
-  unsigned int                       myMessageCounter;
+  unsigned int                 myMessageCounter;
   // *NOTE: support asynchronous collecting/reporting of data...
-  unsigned int                       myLastMessagesPerSecondCount;
+  unsigned int                 myLastMessagesPerSecondCount;
 
-  double                             myNumInboundBytes;
+  float                        myNumInboundBytes;
   // used to compute data throughput...
-  unsigned int                       myByteCounter;
+  unsigned int                 myByteCounter;
   // *NOTE: support asynchronous collecting/reporting of data...
-  unsigned int                       myLastBytesPerSecondCount;
+  unsigned int                 myLastBytesPerSecondCount;
 
   // *MESSAGE TYPE STATS*
-  MESSAGETYPE2COUNT_TYPE             myMessageTypeStatistics;
+  MESSAGETYPE2COUNT_TYPE       myMessageTypeStatistics;
 
   // *CACHE STATS*
-  const RPG_Stream_IAllocator*       myAllocator;
+  const RPG_Stream_IAllocator* myAllocator;
 };
 
 // // declare module

@@ -18,14 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_net_common_tools.h"
-
-#include <rpg_common_timer_manager.h>
-
-#include <rpg_stream_message_base.h>
-#include <rpg_stream_iallocator.h>
-
 #include <ace/Time_Value.h>
+
+#include "rpg_common_timer_manager.h"
+
+#include "rpg_stream_message_base.h"
+#include "rpg_stream_iallocator.h"
+
+#include "rpg_net_common_tools.h"
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
@@ -47,7 +47,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
    myNumSessionMessages(0),
    myMessageCounter(0),
    myLastMessagesPerSecondCount(0),
-   myNumInboundBytes(0.0),
+   myNumInboundBytes(0.0F),
    myByteCounter(0),
    myLastBytesPerSecondCount(0),
 // myMessageTypeStatistics.clear(),
@@ -66,7 +66,6 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
-    // what else can we do ?
     return;
   } // end IF
 //   ACE_DEBUG((LM_DEBUG,
@@ -122,7 +121,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
       myMessageCounter = 0;
       myLastMessagesPerSecondCount = 0;
 
-      myNumInboundBytes = 0.0;
+      myNumInboundBytes = 0.0F;
       myByteCounter = 0;
       myLastBytesPerSecondCount = 0;
 
@@ -132,7 +131,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     myIsInitialized = false;
   } // end IF
 
-  // want runtime statistics reporting at regular intervals ?...
+  // statistics reporting
   if (reportingInterval_in)
   {
     // schedule the reporting interval timer
@@ -157,8 +156,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
   } // end IF
   else
   {
-    // *NOTE*: even if we don't report them ourselves, we might still be triggered from
-    // outside...
+    // *NOTE*: even if this doesn't report, it might still be triggered from outside...
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("(local) statistics reporting has been disabled...\n")));
   } // end IF
@@ -231,7 +229,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::handleSessionMessage"));
 
-  // don't care (implies yes per default, if we're part of a stream)
+  // don't care (implies yes per default)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
   // sanity check(s)
@@ -252,7 +250,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
   {
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
-      // remember session ID for reporting...
+      // retain session ID for reporting...
       mySessionID = message_inout->getConfig()->getUserData().sessionID;
 
       break;
@@ -260,7 +258,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
       // session finished ? --> print overall statistics
-      // *TODO*: ...and don't forget to re-init internal counters ?
+      // *TODO*: re-init internal counters ?
       final_report();
 
       break;
@@ -270,21 +268,20 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
 //       // *NOTE*: protect access to statistics data
 //       // from asynchronous API calls (as well as local reporting)...
 //       {
-//         ACE_Guard<ACE_Thread_Mutex> aGuard(myPcapStatsLock);
+//         ACE_Guard<ACE_Thread_Mutex> aGuard(myStatsLock);
 //
-//         myCurrentPcapStats = message_inout->getConfig()->getPcapStats();
+//         myCurrentStats = message_inout->getConfig()->getStats();
 //
 //         // remember previous timestamp (so we can satisfy our asynchronous API)...
-//         myLastPcapStatsTimestamp = myCurrentPcapStatsTimestamp;
+//         myLastStatsTimestamp = myCurrentStatsTimestamp;
 //
-//         myCurrentPcapStatsTimestamp = message_inout->getConfig()->getStatGenerationTime();
+//         myCurrentStatsTimestamp = message_inout->getConfig()->getStatGenerationTime();
 //       } // end lock scope
 
       break;
     }
     default:
     {
-      // don't do anything...
       break;
     }
   } // end SWITCH
@@ -332,9 +329,7 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
   // --> fill the argument with meaningful values...
 
   // init return value(s)
-  ACE_OS::memset(&data_out,
-                 0,
-                 sizeof(StatisticsContainerType));
+  ACE_OS::memset(&data_out, 0, sizeof(StatisticsContainerType));
 
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
@@ -359,11 +354,11 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic::report"));
 
   // compute cache usage...
-//   unsigned long cache_used = 0;
-//   unsigned long cache_size = 0;
+//   unsigned int cache_used = 0;
+//   unsigned int cache_size = 0;
 //   double        cache_used_relative = 0.0;
-  unsigned long numMessagesOnline = 0;
-  unsigned long totalHeapBytesAllocated = 0;
+  unsigned int numMessagesOnline = 0;
+  unsigned int totalHeapBytesAllocated = 0;
   if (myAllocator)
   {
     numMessagesOnline = myAllocator->cache_depth();
@@ -378,8 +373,8 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("*** [%u] RUNTIME STATISTICS [%u] ***\n--> Stream Statistics <--\nmessages seen (last second): %u\nmessages seen (total [in/out]): %u/%u (data: %.2f %%)\n(inbound) data seen (last second): %u bytes\n(inbound)  data seen (total): %.0f bytes\ncurrent cache usage [%u messages / %u total allocated heap]\n*** RUNTIME STATISTICS ***\\END\n"),
-               mySessionID, mySessionID,
+               ACE_TEXT("*** [session: %u] RUNTIME STATISTICS ***\n--> Stream Statistics <--\nmessages seen (last second): %u\nmessages seen (total [in/out]): %u/%u (data: %.2f %%)\n(inbound) data seen (last second): %u bytes\n(inbound)  data seen (total): %.0f bytes\ncurrent cache usage [%u messages / %u total allocated heap]\n*** RUNTIME STATISTICS ***\\END\n"),
+               mySessionID,
                myLastMessagesPerSecondCount,
                myNumInboundMessages, myNumOutboundMessages,
                (((myNumInboundMessages + myNumOutboundMessages) - myNumSessionMessages) / 100.0),
@@ -413,8 +408,8 @@ RPG_Net_Module_RuntimeStatistic<SessionMessageType,
     {
       // write some output
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("*** [%u] SESSION STATISTICS [%u] ***\ntotal # data message(s) (as seen [in/out]): %u/%u\n --> Protocol Info <--\n"),
-                 mySessionID, mySessionID,
+                 ACE_TEXT("*** [session: %u] SESSION STATISTICS ***\ntotal # data message(s) (as seen [in/out]): %u/%u\n --> Protocol Info <--\n"),
+                 mySessionID,
                  (myNumInboundMessages - myNumSessionMessages),
                  myNumOutboundMessages));
 

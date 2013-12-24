@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_stream_message_base.h"
-#include "rpg_stream_session_message_base.h"
-
 #include <ace/Reactor.h>
 #include <ace/Message_Block.h>
 #include <ace/Time_Value.h>
+
+#include "rpg_stream_message_base.h"
+#include "rpg_stream_session_message_base.h"
 
 template <typename SessionMessageType,
           typename ProtocolMessageType>
@@ -185,13 +185,8 @@ RPG_Stream_TaskBase<SessionMessageType,
   switch (message_inout->getType())
   {
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_STEP:
-    {
-      // don't do anything...
-      break;
-    }
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
-      // don't do anything...
       break;
     }
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
@@ -203,39 +198,30 @@ RPG_Stream_TaskBase<SessionMessageType,
       }
       catch (...)
       {
-        // debug info
         if (module())
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": caught exception in dump_state(), continuing\n"),
                      ACE_TEXT_ALWAYS_CHAR(name())));
-        } // end IF
         else
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in dump_state(), continuing\n")));
-        } // end ELSE
       }
 
       break;
     }
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS:
     {
-      // don't do anything...
       break;
     }
     default:
     {
-      // debug info (see above)
       std::string type_string;
       RPG_Stream_SessionMessage::SessionMessageType2String(message_inout->getType(),
                                                        type_string);
-
       ACE_DEBUG((LM_WARNING,
                  ACE_TEXT("invalid/unknown session message (type: \"%s\")\n"),
                  type_string.c_str()));
 
-      // don't do anything...
       break;
     }
   } // end SWITCH
@@ -252,16 +238,12 @@ RPG_Stream_TaskBase<SessionMessageType,
   ACE_UNUSED_ARG(message_in);
 
   if (module())
-  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("module: \"%s\": failed to process message, continuing\n"),
                ACE_TEXT_ALWAYS_CHAR(name())));
-  } // end IF
   else
-  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to process message, continuing\n")));
-  } // end ELSE
 }
 
 template <typename SessionMessageType,
@@ -272,26 +254,21 @@ RPG_Stream_TaskBase<SessionMessageType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::dump_state"));
 
-//   // debug info
 //   if (module())
-//   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT(" ***** MODULE: \"%s\" has not implemented the dump_state() API *****\n"),
 //                ACE_TEXT_ALWAYS_CHAR(name())));
-//   } // end IF
 //   else
-//   {
 //     ACE_DEBUG((LM_WARNING,
 //                ACE_TEXT("dump_state() API not implemented\n")));
-//   } // end ELSE
 }
 
 template <typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<SessionMessageType,
-                ProtocolMessageType>::handleMessage(ACE_Message_Block* mb_in,
-                                                    bool& stopProcessing_out)
+                    ProtocolMessageType>::handleMessage(ACE_Message_Block* mb_in,
+                                                        bool& stopProcessing_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleMessage"));
 
@@ -318,21 +295,17 @@ RPG_Stream_TaskBase<SessionMessageType,
       {
         std::string type;
         RPG_Stream_MessageBase::MessageType2String(mb_in->msg_type(),
-                                               type);
+                                                   type);
 
         if (module())
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": dynamic_cast<RPG_Stream_MessageBase)> (type: \"%s\" failed, aborting\n"),
                      ACE_TEXT_ALWAYS_CHAR(module()->name()),
                      type.c_str()));
-        } // end IF
         else
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("dynamic_cast<RPG_Stream_MessageBase)> (type: \"%s\" failed, aborting\n"),
                      type.c_str()));
-        } // end ELSE
 
         // clean up
         mb_in->release();
@@ -354,18 +327,14 @@ RPG_Stream_TaskBase<SessionMessageType,
       catch (...)
       {
         if (module())
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": caught an exception in handleDataMessage() (message ID: %u), continuing\n"),
                      ACE_TEXT_ALWAYS_CHAR(name()),
                      message->getID()));
-        } // end IF
         else
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught an exception in handleDataMessage() (message ID: %u), continuing\n"),
                      message->getID()));
-        } // end ELSE
       }
 
       break;
@@ -388,18 +357,14 @@ RPG_Stream_TaskBase<SessionMessageType,
                                                type);
 
         if (module())
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": caught an exception in handleControlMessage() (type: \"%s\"), continuing\n"),
                      ACE_TEXT_ALWAYS_CHAR(name()),
                      type.c_str()));
-        } // end IF
         else
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught an exception in handleControlMessage() (type: \"%s\"), continuing\n"),
                      type.c_str()));
-        } // end ELSE
       }
 
       break;
@@ -414,8 +379,7 @@ RPG_Stream_TaskBase<SessionMessageType,
     if (!module())
     {
 //       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("cannot put_next(): not a module, continuing\n"),
-//                  ACE_OS::strerror(errno)));
+//                  ACE_TEXT("cannot put_next(): not a module, continuing\n")));
 
       // clean up
       mb_in->release();
@@ -455,20 +419,15 @@ RPG_Stream_TaskBase<SessionMessageType,
       sessionMessage = dynamic_cast<SessionMessageType*>(controlMessage_in);
       if (!sessionMessage)
       {
-        // debug info
         if (module())
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": dynamic_cast<type: %d) failed> (aborting\n"),
                      ACE_TEXT_ALWAYS_CHAR(name()),
                      controlMessage_in->msg_type()));
-        } // end IF
         else
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("dynamic_cast<type: %d) failed> (aborting\n"),
                      controlMessage_in->msg_type()));
-        } // end ELSE
 
         // clean up
         passMessageDownstream_out = false;
@@ -487,18 +446,13 @@ RPG_Stream_TaskBase<SessionMessageType,
       }
       catch (...)
       {
-        // debug info
         if (module())
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": caught an exception in handleSessionMessage(), continuing\n"),
                      ACE_TEXT_ALWAYS_CHAR(name())));
-        } // end IF
         else
-        {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught an exception in handleSessionMessage(), continuing\n")));
-        } // end ELSE
       }
 
       // *NOTE*: if this was a RPG_Stream_SessionMessage::SESSION_END, we need to
@@ -513,22 +467,17 @@ RPG_Stream_TaskBase<SessionMessageType,
     }
     default:
     {
-      // debug info
-      // *NOTE*: if someone defines his own control message type and enqueues it
+      // *NOTE*: if someone defines their own control message type and enqueues it
       // on the stream, it will land here (this is just a sanity check warning...)
       if (module())
-      {
         ACE_DEBUG((LM_WARNING,
                    ACE_TEXT("module \"%s\": received an unknown control message (type: %d), continuing\n"),
                    ACE_TEXT_ALWAYS_CHAR(name()),
                    controlMessage_in->msg_type()));
-      } // end IF
       else
-      {
         ACE_DEBUG((LM_WARNING,
                    ACE_TEXT("received an unknown control message (type: %d), continuing\n"),
                    controlMessage_in->msg_type()));
-      } // end ELSE
 
       break;
     }

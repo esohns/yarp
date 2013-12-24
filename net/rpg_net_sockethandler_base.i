@@ -18,14 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <ace/Reactor.h>
+#include <ace/INET_Addr.h>
+
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+
 #include "rpg_net_defines.h"
 #include "rpg_net_common_tools.h"
 #include "rpg_net_iconnectionmanager.h"
-
-#include <rpg_common_macros.h>
-
-#include <ace/Reactor.h>
-#include <ace/INET_Addr.h>
 
 template <typename ConfigType,
           typename StatisticsContainerType>
@@ -177,22 +178,36 @@ RPG_Net_SocketHandlerBase<ConfigType,
 //     return -1;
 //   } // end IF
 
-//   if (!myIsRegistered)
-//   {
-//     // too many connections...
-//
-//     clean up
-//     if (reactor()->remove_handler(this,
-//                                   (ACE_Event_Handler::ALL_EVENTS_MASK |
-//                                    ACE_Event_Handler::DONT_CALL)) == -1)
-//     {
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%s\", aborting\n"),
-//                  ACE_OS::strerror(ACE_OS::last_error())));
-//     } // end IF
-//
-//     return -1;
-//   } // end IF
+  // debug info
+  ACE_HANDLE handle = ACE_INVALID_HANDLE;
+  ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
+  ACE_OS::memset(buffer, 0, sizeof(buffer));
+  std::string localAddress;
+  ACE_INET_Addr local_SAP, remote_SAP;
+  info(handle, local_SAP, remote_SAP);
+  if (local_SAP.addr_to_string(buffer, sizeof(buffer)) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+  localAddress = buffer;
+  ACE_OS::memset(buffer, 0, sizeof(buffer));
+  if (remote_SAP.addr_to_string(buffer, sizeof(buffer)) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+
+  // *PORTABILITY*: this isn't entirely portable...
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("initialised connection [%u]: (\"%s\") <--> (\"%s\")...\n"),
+	  	     handle,
+			 localAddress.c_str(),
+			 buffer));
+#else
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("initialised connection [%@/%u]: (\"%s\") <--> (\"%s\")...\n"),
+			 handle, handle,
+			 localAddress.c_str(),
+			 buffer));
+#endif
 
   return 0;
 }
@@ -300,6 +315,25 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::info(ACE_HANDLE& handle_out,
+														 ACE_INET_Addr& localSAP_out,
+														 ACE_INET_Addr& remoteSAP_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::info"));
+
+  handle_out = get_handle();
+  if (peer().get_local_addr(localSAP_out) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
+  if (peer().get_remote_addr(remoteSAP_out) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+void
+RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::init(const ConfigType& userData_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::init"));
@@ -341,7 +375,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::getID"));
 
   // *PORTABILITY*: this isn't entirely portable...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
   return get_handle();
 #else
   // *TODO*: clean this up !
@@ -357,50 +391,29 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::dump_state"));
 
-  // debug info
-  ACE_TCHAR buf[BUFSIZ];
-  ACE_OS::memset(buf,
-                 0,
-                 (BUFSIZ * sizeof(ACE_TCHAR)));
+  ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
+  ACE_OS::memset(buffer, 0, sizeof(buffer));
   std::string localAddress;
   ACE_INET_Addr address;
   if (peer().get_local_addr(address) == -1)
-  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
-  else if (address.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
-  {
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
+  else if (address.addr_to_string(buffer, sizeof(buffer)) == -1)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+  localAddress = buffer;
 
-    return;
-  } // end IF
-  localAddress = buf;
-
-  ACE_OS::memset(buf,
-                 0,
-                 (BUFSIZ * sizeof(ACE_TCHAR)));
+  ACE_OS::memset(buffer, 0, sizeof(buffer));
   if (peer().get_remote_addr(address) == -1)
-  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
-  else if (address.addr_to_string(buf, (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
-  {
+               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
+  else if (address.addr_to_string(buffer, sizeof(buffer)) == -1)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connection [%u]: (\"%s\") <--> (\"%s\")\n"),
              getID(),
              localAddress.c_str(),
-             buf));
+             buffer));
 }

@@ -18,12 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_net_defines.h"
-#include "rpg_net_iconnectionmanager.h"
+#include <ace/Message_Block.h>
 
 #include "rpg_stream_iallocator.h"
 
-#include <ace/Message_Block.h>
+#include "rpg_net_defines.h"
+#include "rpg_net_iconnectionmanager.h"
 
 template <typename ConfigType,
           typename StatisticsContainerType,
@@ -81,7 +81,6 @@ RPG_Net_StreamSocketBase<ConfigType,
   // step1: init/start data processing stream
   inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
   if (inherited::myUserData.module)
-  {
     if (myStream.push(inherited::myUserData.module))
     {
       ACE_DEBUG((LM_ERROR,
@@ -90,7 +89,6 @@ RPG_Net_StreamSocketBase<ConfigType,
 
       return -1;
     } // end IF
-  } // end IF
 
   if (!inherited::myUserData.useThreadPerConnection)
   {
@@ -191,8 +189,9 @@ RPG_Net_StreamSocketBase<ConfigType,
     case -1:
     {
       // connection reset by peer ? --> not an error
-      if ((ACE_OS::last_error() != ECONNRESET) &&
-          (ACE_OS::last_error() != EPIPE))
+	  int error = ACE_OS::last_error();
+      if ((error != ECONNRESET) &&
+          (error != EPIPE))
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%m\", returning\n")));
 
@@ -300,9 +299,10 @@ RPG_Net_StreamSocketBase<ConfigType,
   {
     case -1:
     {
-        // connection reset by peer/broken pipe ? --> not an error
-      if ((ACE_OS::last_error() != ECONNRESET) &&
-          (ACE_OS::last_error() != EPIPE))
+      // connection reset by peer/broken pipe ? --> not an error
+	  int error = ACE_OS::last_error();
+      if ((error != ECONNRESET) &&
+          (error != EPIPE))
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", aborting\n")));
 

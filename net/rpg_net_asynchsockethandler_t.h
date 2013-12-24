@@ -50,6 +50,9 @@ class RPG_Net_AsynchSocketHandler_T
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
   // implement RPG_Net_IConnection
+  virtual void info(ACE_HANDLE&,     // handle
+		                ACE_INET_Addr&,  // local SAP
+										ACE_INET_Addr&); // remote SAP
   virtual void init(const ConfigType&);
 //   virtual const bool isRegistered() const;
   virtual void abort();
@@ -86,13 +89,14 @@ class RPG_Net_AsynchSocketHandler_T
   ACE_Message_Block* allocateMessage(const unsigned int&); // requested size
 
   ACE_Asynch_Read_Stream  myInputStream;
-  ACE_INET_Addr           myPeer;
+  ACE_INET_Addr           myLocalSAP;
+	ACE_INET_Addr           myRemoteSAP;
 
   // *NOTE*: we save this so we can de-register even when our "handle"
   // (getID()) has gone stale...
-  unsigned int	myID;
-  bool       	myIsRegistered;
-  MANAGER_t* 	myManager;
+  unsigned int	          myID;
+  bool       	            myIsRegistered;
+  MANAGER_t* 	            myManager;
 };
 
 // include template definition
