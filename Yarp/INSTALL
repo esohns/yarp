@@ -1,3 +1,69 @@
+Build/Install Instructions (Developers and Contributors)
+********************************************************
+1. install Perl (e.g. see also http://www.perl.org/get.html) and make sure
+ the executable is installed into your PATH environment
+
+2. obtain & install some useful tools using your distribution package manager
+ (yum, apt-get, etc.), or directly from the project pages:
+ - flex (see also: http://flex.sourceforge.net/#downloads)
+ - bison (see also: http://ftp.gnu.org/gnu/bison)
+ *NOTE* for Windows users*: these tools are also part of the CygWin environment
+ (see also: http://cygwin.com/install.html)
+
+3. install your favourite git engine and client (see also
+ http://git-scm.com/downloads and e.g.
+ http://code.google.com/p/tortoisegit/wiki/Download).
+
+4. "git-clone" the Yarp repository from github.com using this URL:
+https://github.com/esohns/yarp.git
+
+5. unpack and build ACE
+5.1. obtain the ACE wrappers toolkit using your distribution package manager
+ (yum, apt-get, etc.), or directly from the project page (see also
+ http://download.dre.vanderbilt.edu).
+[5.2. build & install ACE, if necessary (see also
+ http://www.dre.vanderbilt.edu/~schmidt/DOC_ROOT/ACE/ACE-INSTALL.html#aceinstall).
+ *NOTE*: use the following #defines in config.h when building ACE (these are
+ known to work):
+ - ACE_HAS_REACTOR_NOTIFICATION_QUEUE
+ - ACE_USE_SELECT_REACTOR_FOR_REACTOR_IMPL]
+
+6. obtain & install the CodeSynthesis xsd toolkit using your distribution
+ package manager (yum, apt-get, etc.), or directly from the project page (see
+ also http://www.codesynthesis.com/products/xsd/download.xhtml).
+
+7. build & install the XML2CppCode tool from the "tools/XML2CppCode" repository
+ subdirectory
+ - on Windows/MSVC platforms, you may use the .sln solution file provided for
+ this purpose.
+ - alternatively, use the standard GNU autotools approach (see below)
+
+[8. (re-)generate additional headers, XML data bindings, lex/yacc parsers, ...
+ - on Windows, open a command prompt and cd to the Yarp repository base
+ directory and run ".\Yarp\scripts\generate_all_bindings.cmd"
+ - alternatively, run "./Yarp/scripts/generate_all_bindings.sh" from a shell
+ in the same directory
+
+9. obtain & install the following libraries using your distribution
+ package manager (yum, apt-get, etc.), or directly from the project pages:
+ - libpng (see also: http://sourceforge.net/projects/libpng)
+ - SDL 1.2 (see also: http://www.libsdl.org/download-1.2.php)
+ - SDL_mixer (for SDL 1.2) (see also: http://www.libsdl.org/projects/SDL_mixer/release-1.2.html)
+ - SDL_ttf (for SDL 1.2) (see also: http://www.libsdl.org/projects/SDL_ttf/release-1.2.html)
+ - gtk+ 2.x (see also: http://www.gtk.org/download/win32.php)
+ - libglade (see also: http://ftp.gnome.org/pub/gnome/binaries/win32/libglade/2.6)
+
+10. obtain & install the following tools using your distribution
+ package manager (yum, apt-get, etc.), or directly from the project pages:
+ - glade (see also: http://sourceforge.net/projects/gladewin32/files/libglade-win32)
+
+11. build & install the Yarp framework
+ - on Windows/MSVC platforms, you may use the .sln solution file provided for
+ this purpose (see "Yarp" repository subdirectory).
+ - alternatively, use the standard GNU autotools approach (see below)
+
+--------------------------------------------------------------------------------
+
 Installation Instructions
 *************************
 

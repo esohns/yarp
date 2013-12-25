@@ -1,5 +1,5 @@
 @rem //%%%FILE%%%////////////////////////////////////////////////////////////////////
-@rem // File Name: bindings.bat
+@rem // File Name: exports.bat
 @rem //
 @rem #// History:
 @rem #//   Date   |Name | Description of modification

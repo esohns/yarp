@@ -290,7 +290,7 @@ RPG_Stream_TaskBase<SessionMessageType,
     {
       ProtocolMessageType* message = NULL;
       // downcast message
-      message = dynamic_cast<ProtocolMessageType*> (mb_in);
+      message = dynamic_cast<ProtocolMessageType*>(mb_in);
 //       // *OPTIMIZATION*: not as safe, but (arguably) a lot faster !...
 //       message = static_cast<RPG_Stream_MessageBase*> (//                                 mb_in);
       if (!message)

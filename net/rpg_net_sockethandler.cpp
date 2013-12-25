@@ -94,8 +94,9 @@ RPG_Net_SocketHandler::svc(void)
       case -1:
       {
         // connection reset by peer/broken pipe ? --> not an error
-        if ((ACE_OS::last_error() != ECONNRESET) &&
-            (ACE_OS::last_error() != EPIPE))
+				int error = ACE_OS::last_error();
+        if ((error != ECONNRESET) &&
+            (error != EPIPE))
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", returning\n")));
 

@@ -545,14 +545,6 @@ do_work(const std::string& serverHostname_in,
       return;
     } // end IF
   } // end IF
-  else
-  {
-    // step4b: ...or connect to the server immediately
-    ACE_INET_Addr peer_address(serverPortNumber_in,
-                               serverHostname_in.c_str(),
-															 AF_INET);
-		connector->connect(peer_address);
-  } // end ELSE
 
   // event loop:
   // - catch SIGINT/SIGQUIT/SIGTERM/... signals (connect / perform orderly shutdown)
@@ -584,6 +576,15 @@ do_work(const std::string& serverHostname_in,
 
     return;
   } // end IF
+
+	// step4b: connect immediately ?
+  if (connectionInterval_in == 0)
+  {
+    ACE_INET_Addr peer_address(serverPortNumber_in,
+                               serverHostname_in.c_str(),
+															 AF_INET);
+		connector->connect(peer_address);
+  } // end ELSE
 
   // *NOTE*: from this point on, we need to clean up any remote connections !
 

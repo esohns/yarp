@@ -93,8 +93,24 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::put"));
 
-  // drop the message into the queue...
-  return inherited::putq(mb_in, tv_in);
+  // if active, simply drop the message into the queue...
+  if (myIsActive)
+    return inherited::putq(mb_in, tv_in);
+
+  // otherwise, process manually...
+  bool stop_processing = false;
+  inherited::handleMessage(mb_in,
+                           stop_processing);
+
+  // finished ?
+  if (stop_processing)
+  {
+    // *WARNING*: mb_in has already been released() at this point !
+
+    stop();
+  } // end IF
+
+  return 0;
 }
 
 template <typename DataType,

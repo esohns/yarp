@@ -109,16 +109,20 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 		ACE_Reactor_Impl* reactor_implementation = NULL;
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     ACE_NEW_RETURN(reactor_implementation,
-                   ACE_TP_Reactor(NULL,                            // signal handler
+                   ACE_TP_Reactor(ACE::max_handles(),              // max num handles
+									                true,                            // restart after EINTR ?
+									                NULL,                            // signal handler
 									                NULL,                            // timer queue
-																	0,                               // mask signals
+																	true,                            // mask signals ?
 																	ACE_Select_Reactor_Token::FIFO), // signal queue
                    false);
 #else
     ACE_NEW_RETURN(reactor_implementation,
-                   ACE_TP_Reactor(NULL,                            // signal handler
+                   ACE_TP_Reactor(ACE::max_handles(),              // max num handles
+									                true,                            // restart after EINTR ?
+									                NULL,                            // signal handler
 									                NULL,                            // timer queue
-																	0,                               // mask signals
+																	true,                            // mask signals ?
 																	ACE_Select_Reactor_Token::FIFO), // signal queue
                   // ACE_WFMO_Reactor(ACE_WFMO_Reactor::DEFAULT_SIZE, // max num handles (62 [+ 2])
 									         //         0,                              // unused

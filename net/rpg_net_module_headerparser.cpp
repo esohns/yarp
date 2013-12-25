@@ -24,7 +24,7 @@
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 RPG_Net_Module_HeaderParser::RPG_Net_Module_HeaderParser()
  : //inherited(),
@@ -68,7 +68,7 @@ RPG_Net_Module_HeaderParser::handleDataMessage(RPG_Net_Message*& message_inout,
   // don't care (implies yes per default, if we're part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
-  // let's interpret the message header...
+  // interpret the message header...
 
   if (message_inout->length() < sizeof(RPG_Net_MessageHeader))
   {
@@ -90,7 +90,6 @@ RPG_Net_Module_HeaderParser::handleDataMessage(RPG_Net_Message*& message_inout,
 //   // OK: retrieve type of message and other details...
 //   RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*> (//                                                                message_inout->rd_ptr());
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("received protocol message (ID: %u): [length: %u; type: \"%s\"]...\n"),
 //              message_inout->getID(),

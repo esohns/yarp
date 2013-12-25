@@ -139,9 +139,9 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
   {
     case RPG_Net_Remote_Comm::RPG_NET_PING:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("received PING (connection ID: %u)...\n"),
-                 mySessionID));
+      //ACE_DEBUG((LM_DEBUG,
+      //           ACE_TEXT("received PING (connection ID: %u)...\n"),
+      //           mySessionID));
 
       // auto-answer ?
       if (myAutomaticPong)
@@ -177,9 +177,9 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
           return;
         } // end IF
 
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("sent PONG to client (connection ID: %u)...\n"),
-                   mySessionID));
+        //ACE_DEBUG((LM_DEBUG,
+        //           ACE_TEXT("sent PONG to client (connection ID: %u)...\n"),
+        //           mySessionID));
       } // end IF
 
       break;
