@@ -21,14 +21,14 @@
 
 #include "rpg_stream_headmoduletask.h"
 
+#include <ace/Message_Block.h>
+
+#include "rpg_common_macros.h"
+
 #include "rpg_stream_defines.h"
 #include "rpg_stream_message_base.h"
 #include "rpg_stream_session_config.h"
 #include "rpg_stream_iallocator.h"
-
-#include "rpg_common_macros.h"
-
-#include <ace/Message_Block.h>
 
 RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask(const bool autoStart_in)
  : myAllocator(NULL),

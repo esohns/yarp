@@ -18,10 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <ace/OS.h>
+
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+
 #include "rpg_net_defines.h"
 #include "rpg_net_iconnection.h"
-
-#include <ace/OS.h>
 
 template <typename ConfigType,
           typename StatisticsContainerType>
@@ -37,9 +40,7 @@ RPG_Net_Connection_Manager<ConfigType,
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::RPG_Net_Connection_Manager"));
 
 //   // init user data
-//   ACE_OS::memset(&myUserData,
-//                  0,
-//                  sizeof(ConfigType));
+//   ACE_OS::memset(&myUserData, 0, sizeof(ConfigType));
 }
 
 template <typename ConfigType,
@@ -109,17 +110,57 @@ RPG_Net_Connection_Manager<ConfigType,
     {
       // max reached
 //       ACE_DEBUG((LM_DEBUG,
-//                 ACE_TEXT("rejecting connection (maximum count of %u has been reached), aborting\n"),
-//                 myMaxNumConnections));
+//                  ACE_TEXT("rejecting connection (maximum count of %u has been reached), aborting\n"),
+//                  myMaxNumConnections));
 
       return false;
     } // end IF
 
     myConnections.insert_tail(connection_in);
 
+/*    // debug info
+	ACE_HANDLE handle = ACE_INVALID_HANDLE;
+    ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
+    ACE_OS::memset(buffer, 0, sizeof(buffer));
+    std::string localAddress;
+    ACE_INET_Addr local_SAP, remote_SAP;
+	try
+	{
+  	  connection_in->info(handle, local_SAP, remote_SAP);
+	}
+	catch (...)
+	{
+	  ACE_DEBUG((LM_ERROR,
+				 ACE_TEXT("caught exception in RPG_Net_IConnection::info(), continuing\n")));
+	}
+    if (local_SAP.addr_to_string(buffer, sizeof(buffer)) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+    localAddress = buffer;
+    ACE_OS::memset(buffer, 0, sizeof(buffer));
+    if (remote_SAP.addr_to_string(buffer, sizeof(buffer)) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+
+    // *PORTABILITY*: this isn't entirely portable...
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered connection %@ (total: %u)...\n"),
-               connection_in,
+               ACE_TEXT("registered connection [%u]: (\"%s\") <--> (\"%s\") (total: %u)...\n"),
+			   handle,
+			   localAddress.c_str(),
+			   buffer,
+               myConnections.size()));
+#else
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("registered connection [%@]: (\"%s\") <--> (\"%s\") (total: %u)...\n"),
+			   handle,
+			   localAddress.c_str(),
+			   buffer,
+               myConnections.size()));
+#endif */
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("registered connection [%@] (total: %u)...\n"),
+			   connection_in,
                myConnections.size()));
   } // end lock scope
 
@@ -133,18 +174,6 @@ RPG_Net_Connection_Manager<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Net_IConnection::init(), continuing\n")));
   }
-
-  // *WARNING*: can't get valid connection info at this stage...
-//   // debug information
-//   try
-//   {
-//     connection_in->dump_state();
-//   }
-//   catch (...)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("caught exception in RPG_Net_IConnection::dump_state(), continuing\n")));
-//   }
 
   return true;
 }

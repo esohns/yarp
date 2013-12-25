@@ -21,15 +21,15 @@
 
 #include "rpg_net_module_protocolhandler.h"
 
-#include "rpg_net_sessionmessage.h"
-#include "rpg_net_message.h"
-
-#include "rpg_stream_iallocator.h"
+#include <iostream>
 
 #include "rpg_common_macros.h"
 #include "rpg_common_timer_manager.h"
 
-#include <iostream>
+#include "rpg_stream_iallocator.h"
+
+#include "rpg_net_sessionmessage.h"
+#include "rpg_net_message.h"
 
 RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
  : //inherited(),

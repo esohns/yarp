@@ -35,7 +35,8 @@ Net_Client_SignalHandler::Net_Client_SignalHandler(const std::string& serverHost
  : inherited(ACE_Reactor::instance(),         // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myPeerAddress(serverPort_in,
-                 serverHostname_in.c_str()),
+                 serverHostname_in.c_str(),
+								 AF_INET),
    myConnector(connector_in)
 {
   RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::Net_Client_SignalHandler"));

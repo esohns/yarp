@@ -2,3 +2,6 @@ known issues:
 - [magic] implement more low-level spells, player generation fails sometimes...
 - [map] map generation seems to hang sometimes ("segmenting area...")
 - [net] proactor support is broken on UNIX and flaky on WINDOWS
+[- [XML] validation throws an exception (see https://issues.apache.org/jira/browse/XERCESC-1975)]
+
++ [net] connection cleanup is broken

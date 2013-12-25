@@ -31,7 +31,11 @@
 #include <ace/INET_Addr.h>
 #include <ace/Dirent_Selector.h>
 #include <ace/Reactor.h>
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
 #include <ace/TP_Reactor.h>
+#else
+#include <ace/WFMO_Reactor.h>
+#endif
 #include <ace/Proactor.h>
 
 #include "rpg_common_macros.h"
@@ -103,13 +107,26 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
   // step1: init reactor/proactor
   if (useReactor_in && (numThreadPoolThreads_in > 1))
   {
-    ACE_TP_Reactor* threadpool_reactor = NULL;
-    ACE_NEW_RETURN(threadpool_reactor,
-                   ACE_TP_Reactor(),
+		ACE_Reactor_Impl* reactor_implementation = NULL;
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+    ACE_NEW_RETURN(reactor_implementation,
+                   ACE_TP_Reactor(NULL,                            // signal handler
+									                NULL,                            // timer queue
+																	0,                               // mask signals
+																	ACE_Select_Reactor_Token::FIFO), // signal queue
                    false);
+#else
+    ACE_NEW_RETURN(reactor_implementation,
+                   ACE_WFMO_Reactor(ACE_WFMO_Reactor::DEFAULT_SIZE, // max num handles (62 [+ 2])
+									                  0,                              // unused
+																		NULL,                           // signal handler
+																		NULL,                           // timer queue
+																		NULL),                          // notification handler
+                   false);
+#endif
     ACE_Reactor* new_reactor = NULL;
     ACE_NEW_RETURN(new_reactor,
-                   ACE_Reactor(threadpool_reactor, 1), // delete in dtor
+                   ACE_Reactor(reactor_implementation, 1), // delete in dtor
                    false);
     // make this the "default" reactor...
     ACE_Reactor::instance(new_reactor, 1); // delete in dtor

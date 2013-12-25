@@ -50,10 +50,16 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 
   // clean up timer if necessary
   if (myStatCollectHandlerID != -1)
+	{
     if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                  myStatCollectHandlerID));
+		else
+		  ACE_DEBUG((LM_WARNING,
+								 ACE_TEXT("cancelled timer (ID: %d)\n"),
+								 myStatCollectHandlerID));
+	} // end IF
 
   // clean up any unprocessed (chained) buffer(s)
   if (myCurrentMessage)
@@ -63,7 +69,6 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 bool
 RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
                                    const bool& isActive_in,
-//                                    const unsigned int& connectionID_in,
                                    const unsigned int& statisticsCollectionInterval_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::init"));
@@ -91,29 +96,7 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
     myIsInitialized = false;
   } // end IF
 
-  if (statisticsCollectionInterval_in)
-  {
-    // schedule regular statistics collection...
-    ACE_Time_Value collecting_interval(statisticsCollectionInterval_in, 0);
-    ACE_ASSERT(myStatCollectHandlerID == -1);
-    myStatCollectHandlerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,                         // handler
-                                                                                     NULL,                                          // argument
-                                                                                     ACE_OS::gettimeofday () + collecting_interval, // wakeup time
-                                                                                     collecting_interval);                          // interval
-    if (myStatCollectHandlerID == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
-
-      return false;
-    } // end IF
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("scheduled statistics collecting timer (ID: %d) for intervals of %u second(s)...\n"),
-//                myStatCollectHandlerID,
-//                statisticsCollectionInterval_in));
-  } // end IF
-
-  // *NOTE*: need to clean up timer beyond this point !
+	myStatCollectionInterval = statisticsCollectionInterval_in;
 
   inherited::myAllocator = allocator_in;
 	inherited::mySessionID = 0;
@@ -197,14 +180,47 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
   {
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
-      // remember session ID for reporting...
+      // retain the session ID for reporting...
       inherited::mySessionID = message_inout->getConfig()->getUserData().sessionID;
+
+			if (myStatCollectionInterval)
+			{
+				// schedule regular statistics collection...
+				ACE_Time_Value collection_interval(myStatCollectionInterval, 0);
+				ACE_ASSERT(myStatCollectHandlerID == -1);
+				myStatCollectHandlerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,                         // handler
+																																												 NULL,                                          // argument
+																																												 ACE_OS::gettimeofday () + collection_interval, // wakeup time
+																																												 collection_interval);                          // interval
+				if (myStatCollectHandlerID == -1)
+				{
+					ACE_DEBUG((LM_ERROR,
+										 ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
+
+					return;
+				} // end IF
+		//     ACE_DEBUG((LM_DEBUG,
+		//                ACE_TEXT("scheduled statistics collecting timer (ID: %d) for intervals of %u second(s)...\n"),
+		//                myStatCollectHandlerID,
+		//                myStatCollectionInterval));
+			} // end IF
 
       // start profile timer...
 //       myProfile.start();
 
       break;
     }
+		case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
+		{
+			if (myStatCollectHandlerID != -1)
+				if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
+					ACE_DEBUG((LM_ERROR,
+										 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+										 myStatCollectHandlerID));
+			myStatCollectHandlerID = -1;
+
+			break;
+		}
     default:
     {
       break;

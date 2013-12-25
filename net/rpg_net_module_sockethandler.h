@@ -92,6 +92,7 @@ class RPG_Net_Module_SocketHandler
   bool                               myIsInitialized;
 
   // timer stuff
+	unsigned int                       myStatCollectionInterval; // seconds
   RPG_Net_StatisticHandler_Reactor_t myStatCollectHandler;
   long                               myStatCollectHandlerID;
 

@@ -39,7 +39,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
    myIsInitialized(false),
    myOutputStream(),
    myInputStream(),
-   myPeer(),
+   myLocalSAP(),
+   myRemoteSAP(),
    myID(0),
    myIsRegistered(false),
    myManager(manager_in)
@@ -47,9 +48,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::RPG_Net_AsynchSocketHandler_T"));
 
 //   // init user data
-//   ACE_OS::memset(&myUserData,
-//                  0,
-//                  sizeof(ConfigType));
+//   ACE_OS::memset(&myUserData, 0, sizeof(ConfigType));
 
   if (myManager)
   {
@@ -92,7 +91,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     } // end IF
   } // end IF
 
-	myInputStream.cancel();
+  myInputStream.cancel();
   myOutputStream.cancel();
   ACE_OS::closesocket(handle());
 }
@@ -116,8 +115,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 //                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
 //                getID()));
 
-		// clean up
-		delete this;
+	// clean up
+	delete this;
 
     return;
   } // end IF
@@ -137,8 +136,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                  myUserData.socketBufferSize,
                  handle_in));
 
-			// clean up
-			delete this;
+	  // clean up
+	  delete this;
 
       return;
     } // end IF
@@ -151,14 +150,14 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                handle_in,
                (RPG_NET_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
 
-		// clean up
-		delete this;
+	// clean up
+	delete this;
 
-		return;
+	return;
   } // end IF
 
-	// init i/o streams
-	inherited::proactor(ACE_Proactor::instance());
+  // init i/o streams
+  inherited::proactor(ACE_Proactor::instance());
   if (myInputStream.open(*this,
                        	 handle_in,
                          NULL,
@@ -168,11 +167,11 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                ACE_TEXT("failed to init input stream (handle: %u), aborting\n"),
                handle_in));
 
-		// clean up
-		delete this;
+	// clean up
+	delete this;
 
     return;
-  }
+  } // end IF
   if (myOutputStream.open(*this,
                         	handle_in,
                           NULL,
@@ -182,20 +181,20 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                ACE_TEXT("failed to init output stream (handle: %u), aborting\n"),
                handle_in));
 
-		// clean up
-		delete this;
+	// clean up
+	delete this;
 
     return;
-  }
+  } // end IF
 
   // need to pass any data ?
   if (messageBlock_in.length() == 0)
-	{
-		// init asynch reading
+  {
+	// init asynch reading
     initiate_read_stream();
 
     return;
-	}
+  } // end IF
 
   ACE_Message_Block& duplicate = *messageBlock_in.duplicate();
   // fake a result to emulate regular behavior
@@ -217,8 +216,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 		delete this;
 
     return;
-  }
-	size_t bytes_transferred = duplicate.length();
+  } // end IF
+  size_t bytes_transferred = duplicate.length();
   // <complete> for Accept would have already moved the <wr_ptr>
   // forward. Update it to the beginning position.
   duplicate.wr_ptr(duplicate.wr_ptr() - bytes_transferred);
@@ -242,7 +241,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::addresses"));
 
-	myPeer = remoteAddress_in;
+  myLocalSAP = localAddress_in;
+  myRemoteSAP = remoteAddress_in;
 }
 
 /*template <typename ConfigType,
@@ -340,7 +340,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   // - we reject the connection (too many open)
   delete this;
 
-	return 0;
+  return 0;
 }
 
 template <typename ConfigType,
@@ -354,8 +354,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   // init return value(s)
   ACE_Message_Block* message_out = NULL;
 
-	// sanity check
-	ACE_ASSERT(myIsInitialized);
+  // sanity check
+  ACE_ASSERT(myIsInitialized);
 
   try
   {
@@ -395,25 +395,24 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "error", result.error()));
   ACE_DEBUG ((LM_DEBUG, "********************\n"));
 
-	// sanity check
-	if (result.success() == 0)
-	{
-		ACE_DEBUG((LM_ERROR,
-		           ACE_TEXT("failed to write to output stream (%d): %d, \"%m\", continuing\n"),
-  		         result.handle(),
-    		       result.error()));
-	}
-	// sanity check: handle short writes gracefully ?
-	if (result.bytes_to_write() != result.bytes_transferred())
-	{
-		// *TODO*: handle short writes gracefully
-		ACE_DEBUG((LM_ERROR,
-		           ACE_TEXT("sent %u/%u byte(s) only, continuing\n"),
-		           result.bytes_transferred(),
-		           result.bytes_to_write()));
-	}
+  // sanity check
+  if (result.success() == 0)
+	ACE_DEBUG((LM_ERROR,
+	           ACE_TEXT("failed to write to output stream (%d): %d, \"%m\", continuing\n"),
+   	           result.handle(),
+    		   result.error()));
 
-	// clean up
+  // sanity check: handle short writes gracefully ?
+  if (result.bytes_to_write() != result.bytes_transferred())
+  {
+	// *TODO*: handle short writes gracefully
+	ACE_DEBUG((LM_ERROR,
+	           ACE_TEXT("sent %u/%u byte(s) only, continuing\n"),
+	           result.bytes_transferred(),
+	           result.bytes_to_write()));
+  } // end IF
+
+  // clean up
   result.message_block().release();
 }
 
@@ -445,6 +444,21 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 	// clean up
 	message_block->release();
   } // end IF
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+void
+RPG_Net_AsynchSocketHandler_T<ConfigType,
+                              StatisticsContainerType>::info(ACE_HANDLE& handle_out,
+													    	 ACE_INET_Addr& localSAP_out,
+														     ACE_INET_Addr& remoteSAP_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::info"));
+
+  handle_out = handle();
+  localSAP_out = myLocalSAP;
+  remoteSAP_out = myRemoteSAP;
 }
 
 template <typename ConfigType,
@@ -499,19 +513,23 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::dump_state"));
 
-  // debug info
   ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
   ACE_OS::memset(buffer, 0, sizeof(buffer));
-  if (myPeer.addr_to_string(buffer, sizeof(buffer)) == -1)
-  {
+  std::string localAddress;
+  ACE_INET_Addr address;
+  if (myLocalSAP.addr_to_string(buffer, sizeof(buffer)) == -1)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+  localAddress = buffer;
 
-    return;
-  } // end IF
+  ACE_OS::memset(buffer, 0, sizeof(buffer));
+  if (myRemoteSAP.addr_to_string(buffer, sizeof(buffer)) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("connection [%u]: --> (\"%s\")\n"),
+             ACE_TEXT("connection [%u]: (\"%s\") <--> (\"%s\")\n"),
              getID(),
+             localAddress.c_str(),
              buffer));
 }

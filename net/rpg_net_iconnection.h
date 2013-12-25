@@ -21,8 +21,10 @@
 #ifndef RPG_NET_ICONNECTION_H
 #define RPG_NET_ICONNECTION_H
 
-#include <rpg_common_istatistic.h>
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_istatistic.h"
+#include "rpg_common_idumpstate.h"
+
+#include <ace/INET_Addr.h>
 
 template <typename ConfigType,
           typename StatisticsContainerType>
@@ -35,6 +37,9 @@ class RPG_Net_IConnection
   // -Wno-non-virtual-dtor in the project settings...
 
   // API
+  virtual void info(ACE_HANDLE&,         // handle
+		                ACE_INET_Addr&,      // local SAP
+										ACE_INET_Addr&) = 0; // remote SAP
   virtual void init(const ConfigType&) = 0;
 //   virtual const bool isRegistered() const = 0;
   // *TODO*: this clashes with Event_Handler::close()...

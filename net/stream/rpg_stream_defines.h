@@ -22,13 +22,15 @@
 #define RPG_STREAM_DEFINES_H
 
 // queue / task / buffers
-#define RPG_STREAM_TASK_GROUP_ID   1000
+#define RPG_STREAM_TASK_GROUP_ID               1000
 // *IMPORTANT NOTE*: any of these COULD seriously affect performance
-#define RPG_STREAM_MAX_QUEUE_SLOTS 10000
+#define RPG_STREAM_MAX_QUEUE_SLOTS             10000
 // *IMPORTANT NOTE*: static heap memory consumption can probably be approximated
 // as RPG_STREAM_DEF_MAX_MESSAGES * sizeof(stream-message-type) bytes
-#define RPG_STREAM_MAX_MESSAGES    1000
+#define RPG_STREAM_MAX_MESSAGES                1000
 
-#define RPG_STREAM_BUFFER_SIZE     1024 // 1 kB
+#define RPG_STREAM_BUFFER_SIZE                 1024 // 1 kB
+
+#define RPG_STREAM_DEF_NUM_STREAM_HEAD_THREADS 1
 
 #endif
