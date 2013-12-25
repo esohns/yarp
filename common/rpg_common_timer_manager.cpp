@@ -183,7 +183,6 @@ RPG_Common_Timer_Manager::resetInterval(const long& timerID_in,
     } // end IF
   } // end lock scope
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("reset timer interval (ID: %u)...\n"),
 //              timerID_in));

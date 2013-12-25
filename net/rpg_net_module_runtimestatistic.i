@@ -18,14 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_net_common_tools.h"
-
-#include <rpg_common_timer_manager.h>
-
-#include <rpg_stream_message_base.h>
-#include <rpg_stream_iallocator.h>
-
 #include <ace/Time_Value.h>
+
+#include "rpg_common_macros.h"
+#include "rpg_common_timer_manager.h"
+
+#include "rpg_stream_message_base.h"
+#include "rpg_stream_iallocator.h"
+
+#include "rpg_net_common_tools.h"
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,

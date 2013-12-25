@@ -197,7 +197,6 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
     }
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("[%u]: unknown message type: \"%s\": protocol error, aborting\n"),
                  message_inout->getID(),
@@ -270,9 +269,7 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& me
 			break;
     }
     default:
-    {
       break;
-    }
   } // end SWITCH
 }
 
@@ -283,7 +280,6 @@ RPG_Net_Module_ProtocolHandler::handleTimeout(const void* arg_in)
 
   ACE_UNUSED_ARG(arg_in);
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("timer (ID: %d) expired...sending ping\n"),
 //              myTimerID));

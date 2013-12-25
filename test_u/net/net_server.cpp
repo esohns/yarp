@@ -830,19 +830,19 @@ ACE_TMAIN(int argc,
   unsigned int numThreadPoolThreads        = RPG_NET_SERVER_DEF_NUM_TP_THREADS;
 
   // step1b: parse/process/validate configuration
-  if (!(process_arguments(argc,
-                          argv,
-                          pingInterval,
-                          keepAliveTimeout,
-                          logToFile,
-                          networkInterface,
-													useLoopback,
-                          listeningPortNumber,
-                          useReactor,
-                          statisticsReportingInterval,
-                          traceInformation,
-                          printVersionAndExit,
-                          numThreadPoolThreads)))
+  if (!process_arguments(argc,
+                         argv,
+                         pingInterval,
+                         keepAliveTimeout,
+                         logToFile,
+                         networkInterface,
+											 	 useLoopback,
+                         listeningPortNumber,
+                         useReactor,
+                         statisticsReportingInterval,
+                         traceInformation,
+                         printVersionAndExit,
+                         numThreadPoolThreads))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -913,8 +913,7 @@ ACE_TMAIN(int argc,
                         NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Log_Msg::open(): \"%s\", aborting\n"),
-               ACE_OS::strerror(ACE_OS::last_error())));
+               ACE_TEXT("failed to ACE_Log_Msg::open(): \"%m\", aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF

@@ -133,18 +133,16 @@ RPG_Net_Server_Listener::start()
 	ACE_INET_Addr local_sap;
 	if (myUseLoopback)
 		local_sap.set(myListeningPort, // local SAP
-                  // *PORTABILITY*: needed to disambiguate this under Windows :-(
-                  // *TODO*: bind to specific interface/address ?
+                  // *PORTABILITY*: disambiguation needed under Windows
                   ACE_LOCALHOST,   // hostname
 									1,               // encode ?
 									AF_INET);        // address family
 	else
 		local_sap.set(myListeningPort,                     // local SAP
-                  // *PORTABILITY*: needed to disambiguate this under Windows :-(
                   // *TODO*: bind to specific interface/address ?
                   static_cast<ACE_UINT32>(INADDR_ANY), // hostname
 									1,                                   // encode ?
-									0);                                  // map ?
+									0);                                  // map IPv6 to IPv4 ?
   if (open(local_sap,               // local SAP
            ACE_Reactor::instance(), // corresp. reactor
            ACE_NONBLOCK,            // flags (use non-blocking sockets !)

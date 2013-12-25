@@ -21,7 +21,7 @@
 
 #include "rpg_stream_statemachine_control.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Guard_T.h>
 #include <ace/Synch.h>
@@ -281,7 +281,7 @@ RPG_Stream_StateMachine_Control::invokeCallback(const Control_StateType& newStat
 
 void
 RPG_Stream_StateMachine_Control::ControlState2String(const Control_StateType& state_in,
-                                                  std::string& stateString_out)
+                                                     std::string& stateString_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::ControlState2String"));
 

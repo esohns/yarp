@@ -228,7 +228,6 @@ RPG_Stream_Base<DataType,
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
   if (module == tail())
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
 

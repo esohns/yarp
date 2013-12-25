@@ -385,7 +385,7 @@ RPG_Stream_TaskBase<SessionMessageType,
       {
         std::string type;
         RPG_Stream_MessageBase::MessageType2String(mb_in->msg_type(),
-                                               type);
+                                                   type);
 
         if (module())
         {

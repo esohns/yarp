@@ -1376,9 +1376,9 @@ ACE_TMAIN(int argc,
                              ACE_Log_Msg::PROCESS);
 
   // init global (!) processing stream message allocator
-  RPG_Stream_CachedAllocatorHeap heapAllocator(RPG_NET_DEF_MAX_MESSAGES,
-                                               RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE);
-  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+  RPG_Stream_CachedAllocatorHeap heapAllocator(RPG_NET_MAX_MESSAGES,
+                                               RPG_NET_PROTOCOL_BUFFER_SIZE);
+  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
                                                      &heapAllocator);
 
   // step2d: init callback data

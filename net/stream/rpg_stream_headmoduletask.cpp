@@ -254,7 +254,7 @@ RPG_Stream_HeadModuleTask::svc(void)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("putSessionMessage(SESSION_BEGIN) failed, aborting\n")));
 
-    // signal the controller that we're about to die...
+    // signal the controller
     finished();
 
     return -1;
@@ -288,13 +288,13 @@ RPG_Stream_HeadModuleTask::svc(void)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
 
-        // signal the controller that we're about to die...
+        // signal the controller
         finished();
 
         return -1;
       } // end IF
 
-      // signal the controller that we're about to die...
+      // signal the controller
       finished();
 
       // leave loop and die !
@@ -305,10 +305,8 @@ RPG_Stream_HeadModuleTask::svc(void)
     ace_mb = NULL;
   } // end WHILE
 
-  // debug info
   ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("worker thread (ID: %t) failed to ACE_Task::getq(): \"%s\", aborting\n"),
-             ACE_OS::strerror(errno)));
+             ACE_TEXT("worker thread (ID: %t) failed to ACE_Task::getq(): \"%m\", aborting\n")));
 
   // step3: send final session message downstream...
   if (!putSessionMessage(mySessionID,
@@ -316,12 +314,10 @@ RPG_Stream_HeadModuleTask::svc(void)
                          myUserData,
                          ACE_Time_Value::zero, // N/A
                          false))               // N/A
-  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
-  } // end IF
 
-  // signal the controller that we're about to die...
+  // signal the controller
   finished();
 
   return -1;

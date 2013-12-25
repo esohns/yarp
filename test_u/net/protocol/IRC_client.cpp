@@ -888,7 +888,7 @@ ACE_TMAIN(int argc,
 
   // step1d: init configuration object
   RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_DEF_MAX_MESSAGES,
+  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
                                                      &heapAllocator);
   RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule(std::string("IRCHandler"),
                                                              NULL);
@@ -902,8 +902,8 @@ ACE_TMAIN(int argc,
     return EXIT_FAILURE;
   } // end IF
   if (!IRChandler_impl->init(&messageAllocator,
-                             RPG_NET_DEF_CLIENT_PING_PONG, // auto-answer "ping" as a client ?...
-                             true))                        // clients print ('.') dots for received "pings"...
+                             true,              // auto-answer "ping" as a client ?...
+                             true))             // clients print ('.') dots for received "pings"...
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -917,7 +917,7 @@ ACE_TMAIN(int argc,
   // ************ connection config data ************
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
-  config.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
+  config.defaultBufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   // ************ protocol config data **************
   config.clientPingInterval = 0; // servers do this...
 //   config.loginOptions.password = ;
