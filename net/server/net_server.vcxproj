@@ -83,6 +83,7 @@
     <ClInclude Include="rpg_net_server_common_tools.h" />
     <ClInclude Include="rpg_net_server_defines.h" />
     <ClInclude Include="rpg_net_server_exports.h" />
+    <ClInclude Include="rpg_net_server_ilistener.h" />
     <ClInclude Include="rpg_net_server_listener.h" />
     <ClInclude Include="rpg_net_server_sockethandler.h" />
     <ClInclude Include="stdafx.h" />

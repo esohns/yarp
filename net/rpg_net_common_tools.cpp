@@ -31,9 +31,8 @@
 #include <ace/INET_Addr.h>
 #include <ace/Dirent_Selector.h>
 #include <ace/Reactor.h>
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
 #include <ace/TP_Reactor.h>
-#else
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
 #include <ace/WFMO_Reactor.h>
 #endif
 #include <ace/Proactor.h>
@@ -117,11 +116,15 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
                    false);
 #else
     ACE_NEW_RETURN(reactor_implementation,
-                   ACE_WFMO_Reactor(ACE_WFMO_Reactor::DEFAULT_SIZE, // max num handles (62 [+ 2])
-									                  0,                              // unused
-																		NULL,                           // signal handler
-																		NULL,                           // timer queue
-																		NULL),                          // notification handler
+                   ACE_TP_Reactor(NULL,                            // signal handler
+									                NULL,                            // timer queue
+																	0,                               // mask signals
+																	ACE_Select_Reactor_Token::FIFO), // signal queue
+                  // ACE_WFMO_Reactor(ACE_WFMO_Reactor::DEFAULT_SIZE, // max num handles (62 [+ 2])
+									         //         0,                              // unused
+																		//NULL,                           // signal handler
+																		//NULL,                           // timer queue
+																		//NULL),                          // notification handler
                    false);
 #endif
     ACE_Reactor* new_reactor = NULL;

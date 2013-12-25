@@ -104,8 +104,7 @@ RPG_Net_StreamSocketBase<ConfigType,
       return -1;
     } // end IF
     inherited::msg_queue(module->reader()->msg_queue());
-    ACE_Reactor_Notification_Strategy& strategy = inherited::myNotificationStrategy;
-    inherited::msg_queue()->notification_strategy(&strategy);
+    inherited::msg_queue()->notification_strategy(&myNotificationStrategy);
   } // end IF
 
   if (!myStream.init(inherited::myUserData))

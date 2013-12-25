@@ -552,8 +552,13 @@ do_work(const unsigned int& pingInterval_in,
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step1: signal handling
+	RPG_Net_Server_IListener* listener_handle = NULL;
+	if (useReactor_in)
+		listener_handle = RPG_NET_SERVER_LISTENER_SINGLETON::instance();
+	else
+		listener_handle = RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance();
   // event handler for signals
-  Net_Server_SignalHandler signal_handler(RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance(),
+  Net_Server_SignalHandler signal_handler(listener_handle,
                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
   ACE_Sig_Handlers signal_dispatcher;
   // *WARNING*: 'signals' appears to be a keyword in some contexts...
@@ -651,65 +656,32 @@ do_work(const unsigned int& pingInterval_in,
   } // end IF
 
   // step4b: start listening
-  if (useReactor_in)
+  listener_handle->init(listeningPortNumber_in,
+		                    useLoopback_in);
+  listener_handle->start();
+  if (!listener_handle->isRunning())
   {
-    RPG_NET_SERVER_LISTENER_SINGLETON::instance()->init(listeningPortNumber_in,
-			                                                  useLoopback_in);
-    RPG_NET_SERVER_LISTENER_SINGLETON::instance()->start();
-    if (!RPG_NET_SERVER_LISTENER_SINGLETON::instance()->isRunning())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to start listener (port: %u), aborting\n"),
-                 listeningPortNumber_in));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to start listener (port: %u), aborting\n"),
+               listeningPortNumber_in));
 
-      // clean up
-      RPG_Net_Common_Tools::finiEventDispatch(useReactor_in,
-                                              !useReactor_in,
-                                              group_id);
-      if (statisticsReportingInterval_in)
-        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                     timerID));
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-      fini_signalHandling(signalss,
-                          signal_dispatcher,
-                          previous_actions,
-                          sig_keys,
-                          useReactor_in);
+    // clean up
+    RPG_Net_Common_Tools::finiEventDispatch(useReactor_in,
+                                            !useReactor_in,
+                                            group_id);
+    if (statisticsReportingInterval_in)
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                   timerID));
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+    fini_signalHandling(signalss,
+                        signal_dispatcher,
+                        previous_actions,
+                        sig_keys,
+                        useReactor_in);
 
-      return;
-    } // end IF
-  }
-  else
-  {
-    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->init(listeningPortNumber_in,
-			                                                        useLoopback_in);
-    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->start();
-    if (!RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->isRunning())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to start listener (port: %u), aborting\n"),
-                 listeningPortNumber_in));
-
-      // clean up
-      RPG_Net_Common_Tools::finiEventDispatch(useReactor_in,
-                                              !useReactor_in,
-                                              group_id);
-      if (statisticsReportingInterval_in)
-        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                     timerID));
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-      fini_signalHandling(signalss,
-                          signal_dispatcher,
-                          previous_actions,
-                          sig_keys,
-                          useReactor_in);
-
-      return;
-    } // end IF
+    return;
   } // end IF
 
   // *NOTE*: from this point on, clean up any remote connections !

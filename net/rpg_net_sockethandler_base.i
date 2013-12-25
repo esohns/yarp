@@ -70,6 +70,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
   } // end IF
 
   // register notification strategy
+	// *NOTE*: for the streamed socket handler, this doesn't make sense, as it needs
+	// to use the stream head modules' queue...
   msg_queue()->notification_strategy(&myNotificationStrategy);
 }
 

@@ -22,6 +22,8 @@
 #include <ace/Message_Block.h>
 #include <ace/Time_Value.h>
 
+#include "rpg_common_macros.h"
+
 #include "rpg_stream_message_base.h"
 #include "rpg_stream_session_message_base.h"
 
@@ -30,7 +32,7 @@ template <typename SessionMessageType,
 RPG_Stream_TaskBase<SessionMessageType,
                     ProtocolMessageType>::RPG_Stream_TaskBase()
  : inherited(NULL, // thread manager instance
-             NULL) // queue handle
+             NULL) // message queue handle
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::RPG_Stream_TaskBase"));
 

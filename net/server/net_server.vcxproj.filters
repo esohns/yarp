@@ -39,6 +39,9 @@
     <ClInclude Include="rpg_net_server_exports.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_net_server_ilistener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_net_server_sockethandler.cpp">

@@ -134,9 +134,9 @@ class RPG_Stream_HeadModuleTaskBase
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>& operator=(const RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>&));
 
   // allow blocking wait in waitForCompletion()
-//  ACE_Recursive_Thread_Mutex                myLock;
+ // ACE_Recursive_Thread_Mutex                myLock;
+	//ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 	ACE_Thread_Mutex                          myLock;
-	//  ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 	ACE_Condition<ACE_Thread_Mutex>           myCondition;
   unsigned int                              myCurrentNumThreads;
   RPG_Stream_MessageQueue                   myQueue;

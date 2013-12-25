@@ -26,10 +26,10 @@
 #include "rpg_net_statistichandler.h"
 #include "rpg_net_resetcounterhandler.h"
 
-#include <rpg_common_istatistic.h>
+#include "rpg_common_istatistic.h"
 
-#include <rpg_stream_task_base_synch.h>
-#include <rpg_stream_streammodule_base.h>
+#include "rpg_stream_task_base_synch.h"
+#include "rpg_stream_streammodule_base.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>

@@ -25,6 +25,7 @@ template <typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_TaskBaseSynch<SessionMessageType,
                          ProtocolMessageType>::RPG_Stream_TaskBaseSynch()
+ : inherited()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseSynch::RPG_Stream_TaskBaseSynch"));
 
