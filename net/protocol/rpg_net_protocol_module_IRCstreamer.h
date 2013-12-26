@@ -21,8 +21,8 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCSTREAMER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCSTREAMER_H
 
-#include <rpg_stream_task_base_synch.h>
-#include <rpg_stream_streammodule.h>
+#include "rpg_stream_task_base_synch.h"
+#include "rpg_stream_streammodule_base.h"
 
 #include <ace/Global_Macros.h>
 
@@ -52,6 +52,6 @@ class RPG_Net_Protocol_Module_IRCStreamer
 };
 
 // declare module
-DATASTREAM_MODULE(RPG_Net_Protocol_Module_IRCStreamer);
+DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Protocol_Module_IRCStreamer);
 
 #endif

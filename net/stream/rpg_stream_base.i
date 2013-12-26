@@ -22,7 +22,7 @@
 #include "rpg_stream_session_message_base.h"
 #include "rpg_stream_iallocator.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 template <typename DataType,
           typename SessionConfigType,
@@ -104,47 +104,51 @@ RPG_Stream_Base<DataType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::init"));
 
-  // *NOTE*: fini() invokes close() which will reset the writer/reader tasks
-  // of the enqueued modules --> reset this !
-  // *NOTE*: cannot write this - it confuses gcc...
-//   for (MODULE_CONTAINER_TYPE::const_iterator iter = myAvailableModules.begin();
-  RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  for (ACE_DLList_Iterator<RPG_Stream_Module::MODULE_TYPE> iterator(myAvailableModules);
-       iterator.next(module);
-       iterator.advance())
+  if (myIsInitialized)
   {
-    // need a downcast...
-    RPG_Stream_Module* stream_module = dynamic_cast<RPG_Stream_Module*>(module);
-    ACE_ASSERT(stream_module);
-    try
-    {
-      stream_module->resetReaderWriter();
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Stream_Module::resetReaderWriter(), continuing\n")));
-    }
-  } // end FOR
+	// *NOTE*: fini() invokes close() which will reset the writer/reader tasks
+	// of the enqueued modules --> reset this !
+	RPG_Stream_IModule* module_handle = NULL;
+	MODULE_TYPE* module = NULL;
+	// *NOTE*: cannot write this - it confuses gcc...
+//   for (MODULE_CONTAINER_TYPE::const_iterator iter = myAvailableModules.begin();
+	for (ACE_DLList_Iterator<MODULE_TYPE> iterator(myAvailableModules);
+		iterator.next(module);
+		iterator.advance())
+	{
+	  // need a downcast...
+	  module_handle = dynamic_cast<RPG_Stream_IModule*>(module);
+	  ACE_ASSERT(module_handle);
+	  try
+	  {
+		module_handle->reset();
+  	  }
+	  catch (...)
+	  {
+		ACE_DEBUG((LM_ERROR,
+				   ACE_TEXT("caught exception in RPG_Stream_IModule::reset(), continuing\n")));
+	  }
+	} // end FOR
+  } // end IF
 
   // delegate this to base class open()
-  int ret = -1;
+  int result = -1;
   try
   {
-    ret = inherited::open(NULL,  // argument to module open()
-                          NULL,  // no head module --> allocate !
-                          NULL); // no tail module --> allocate !
+    result = inherited::open(NULL,  // argument to module open()
+                             NULL,  // no head module --> allocate !
+                             NULL); // no tail module --> allocate !
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in ACE_Stream::open(), aborting\n")));
   }
-  if (ret == -1)
+  if (result == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::open(): \"%m\", aborting\n")));
 
-  return (ret == 0);
+  return (result == 0);
 }
 
 template <typename DataType,
@@ -160,7 +164,7 @@ RPG_Stream_Base<DataType,
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::fini"));
 
   // OK: delegate this to base class close(ACE_Module_Base::M_DELETE_NONE)
-  int ret = -1;
+  int result = -1;
   try
   {
     // *NOTE*: this will implicitly:
@@ -169,18 +173,18 @@ RPG_Stream_Base<DataType,
     // --> close()ing a module will module_closed() and flush() the associated tasks
     // --> flush()ing a task will close() its queue
     // --> close()ing a queue will deactivate() and flush() it
-    ret = inherited::close(ACE_Module_Base::M_DELETE_NONE);
+    result = inherited::close(ACE_Module_Base::M_DELETE_NONE);
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in ACE_Stream::close(M_DELETE_NONE), aborting\n")));
   }
-  if (ret == -1)
+  if (result == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::close(M_DELETE_NONE): \"%m\", aborting\n")));
 
-  return (ret == 0);
+  return (result == 0);
 }
 
 template <typename DataType,
@@ -798,9 +802,8 @@ RPG_Stream_Base<DataType,
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("deactivating offline module(s)...\n")));
 
-//   for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
-  RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  for (ACE_DLList_Iterator<RPG_Stream_Module::MODULE_TYPE> iterator(myAvailableModules);
+  MODULE_TYPE* module = NULL;
+  for (ACE_DLList_Iterator<MODULE_TYPE> iterator(myAvailableModules);
        iterator.next(module);
        iterator.advance())
   {

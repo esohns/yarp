@@ -340,7 +340,6 @@ init_signalHandling(const std::vector<int>& signals_in,
     previousActions_out.push_back(previous_action);
     sigKeys_out.push_back(sig_key);
 
-    // debug info
     if (sig_key != -1)
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("registered handler for \"%S\" (key: %d)...\n"),
@@ -417,7 +416,7 @@ fini_signalHandling(const std::vector<int>& signals_in,
   std::vector<int>::const_iterator key_iterator = sigKeys_in.begin();
   int success = -1;
   for (std::vector<int>::const_iterator iterator = signals_in.begin();
-       iterator != signals_in.end();
+       ((iterator != signals_in.end()) && (*iterator != -1));
        iterator++, action_iterator++, key_iterator++)
   {
     success = signalDispatcher_in.remove_handler(*iterator,                                      // signal
@@ -436,19 +435,18 @@ fini_signalHandling(const std::vector<int>& signals_in,
   } // end FOR
 
   // restore previous SIGPIPE handler
- action_iterator++; key_iterator++;
- success = signalDispatcher_in.remove_handler(SIGPIPE,                                         // signal
-                                              &const_cast<ACE_Sig_Action&>(*action_iterator),  // new (== previous) disposition
-                                              NULL,                                            // previous disposition, don't care
-                                              *key_iterator);                                  // sigkey
- if (success == -1)
-   ACE_DEBUG((LM_ERROR,
-              ACE_TEXT("failed to ACE_Sig_Handlers::remove_handler(\"%S\"): \"%m\", continuing\n"),
-              SIGPIPE));
- else
-   ACE_DEBUG((LM_DEBUG,
-              ACE_TEXT("restored handler for \"%S\"...\n"),
-              SIGPIPE));
+  success = signalDispatcher_in.remove_handler(SIGPIPE,                                         // signal
+                                               &const_cast<ACE_Sig_Action&>(*action_iterator),  // new (== previous) disposition
+                                               NULL,                                            // previous disposition, don't care
+                                               *key_iterator);                                  // sigkey
+  if (success == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Sig_Handlers::remove_handler(\"%S\"): \"%m\", continuing\n"),
+               SIGPIPE));
+  else
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("restored handler for \"%S\"...\n"),
+               SIGPIPE));
 }
 
 void
@@ -502,7 +500,7 @@ do_work(const std::string& serverHostname_in,
   ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
   config.pingInterval = pingInterval_in;
 	config.pingAutoAnswer = true;
-  config.printPongMessages = true;
+  config.printPingMessages = true;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.defaultBufferSize = RPG_NET_STREAM_BUFFER_SIZE;

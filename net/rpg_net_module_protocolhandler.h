@@ -25,7 +25,7 @@
 #include "rpg_common_itimer.h"
 
 #include "rpg_stream_task_base_synch.h"
-#include "rpg_stream_streammodule.h"
+#include "rpg_stream_streammodule_base.h"
 
 #include <ace/Time_Value.h>
 #include <ace/Reactor.h>
@@ -49,7 +49,7 @@ class RPG_Net_Module_ProtocolHandler
             const unsigned int&,     // session ID
             const unsigned int& = 0, // peer "ping" interval (i.e. keep-alive) [0 --> OFF]
             const bool& = true,      // automatically reply to "ping" messages (auto-"pong")
-            const bool& = false);    // print dot ('.') for every received "pong" to stderr
+            const bool& = false);    // print dot ('.') for every received "ping" to stderr
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
@@ -83,11 +83,11 @@ class RPG_Net_Module_ProtocolHandler
   unsigned int            myCounter;
 	unsigned int            myPingInterval;
   bool                    myAutomaticPong;
-  bool                    myPrintPongDot;
+  bool                    myPrintPingDot;
   bool                    myIsInitialized;
 };
 
 // declare module
-DATASTREAM_MODULE(RPG_Net_Module_ProtocolHandler);
+DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Module_ProtocolHandler);
 
 #endif

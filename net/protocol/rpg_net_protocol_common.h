@@ -29,6 +29,7 @@
 #include <ace/Date_Time.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
+#include <ace/Module.h>
 
 #include <string>
 #include <set>
@@ -41,6 +42,8 @@ class RPG_Stream_IAllocator;
 class RPG_Stream_Module;
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;
+
+typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
 
 struct RPG_Net_Protocol_IRCLoginOptions
 {
@@ -191,7 +194,7 @@ struct RPG_Net_Protocol_ConfigPOD
   unsigned int                      clientPingInterval; // used by the server...
   RPG_Net_Protocol_IRCLoginOptions  loginOptions;
   // ************ stream config data ****************
-  RPG_Stream_Module*                module;
+  MODULE_TYPE*                      module;
   bool                              crunchMessageBuffers;
   bool                              debugScanner;
   bool                              debugParser;

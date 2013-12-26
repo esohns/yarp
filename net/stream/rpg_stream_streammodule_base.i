@@ -18,35 +18,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
-template <typename WriterTaskType,
-          typename ReaderTaskType>
-RPG_Stream_StreamModuleBase<WriterTaskType,
-                        ReaderTaskType>::RPG_Stream_StreamModuleBase(const std::string& name_in,
-                                                                 RPG_Stream_IRefCount* refCount_in)
-  : inherited(name_in,     // name
-              &myWriter,   // initialize writer side task
-              &myReader,   // initialize reader side task
-              refCount_in) // arg passed to task open()
+template <typename ReaderTaskType, typename WriterTaskType>
+RPG_Stream_StreamModule_t<ReaderTaskType,
+                          WriterTaskType>::RPG_Stream_StreamModule_t(const std::string& name_in,
+                                                                     RPG_Stream_IRefCount* refCount_in)
+ : inherited(name_in,
+             &myWriter,   // initialize writer side task
+             &myReader,   // initialize reader side task
+             refCount_in) // arg passed to task open()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModuleBase::RPG_Stream_StreamModuleBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModule_t::RPG_Stream_StreamModule_t"));
 
-  // set links to ourselves...
-  // *NOTE*: essential to enable dereferencing (name-lookups, controlled shutdown, etc)
+  // set task links to the module...
+  // *NOTE*: essential for dereferencing (name-lookups, controlled shutdown, etc)
   myWriter.mod_ = this;
   myReader.mod_ = this;
+  //myReader.flags_ |= ACE_Task_Flags::ACE_READER;
 }
 
-template <typename WriterTaskType,
-          typename ReaderTaskType>
-RPG_Stream_StreamModuleBase<WriterTaskType,
-                        ReaderTaskType>::~RPG_Stream_StreamModuleBase()
+template <typename ReaderTaskType, typename WriterTaskType>
+RPG_Stream_StreamModule_t<ReaderTaskType,
+                          WriterTaskType>::~RPG_Stream_StreamModule_t()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModuleBase::~RPG_Stream_StreamModuleBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModule_t::~RPG_Stream_StreamModule_t"));
 
   // *NOTE*: the base class will invoke close() which will
   // invoke module_close() and flush on every task...
   // *WARNING*: all member tasks will be destroyed by the time that happens...
   // --> close() all modules in advance so it doesn't happen here !!!
+}
+
+// ----------------------------------------------------------------------------
+
+template <typename TaskType>
+RPG_Stream_StreamModuleInputOnly_t<TaskType>::RPG_Stream_StreamModuleInputOnly_t(const std::string& name_in,
+                                                                                 RPG_Stream_IRefCount* refCount_in)
+ : inherited(name_in,     // name
+             refCount_in) // arg passed to task open()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModuleInputOnly_t::RPG_Stream_StreamModuleInputOnly_t"));
+
+}
+
+template <typename TaskType>
+RPG_Stream_StreamModuleInputOnly_t<TaskType>::~RPG_Stream_StreamModuleInputOnly_t()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModuleInputOnly_t::~RPG_Stream_StreamModuleInputOnly_t"));
+
 }

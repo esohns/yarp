@@ -90,9 +90,6 @@
     <ClInclude Include="rpg_stream_messagequeue_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rpg_stream_module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rpg_stream_session_config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -106,12 +103,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_stream_statemachine_control.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_stream_streammodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_stream_streammodule_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_stream_task.h">
@@ -136,6 +127,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_stream_module_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_stream_streammodule_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_stream_imodule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -191,9 +191,6 @@
     <ClCompile Include="rpg_stream_messagequeue_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rpg_stream_module.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rpg_stream_session_config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -207,9 +204,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_stream_statemachine_control.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg_stream_streammodule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_stream_streammodule_base.cpp">
@@ -239,6 +233,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rpg_stream_module_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="rpg_stream_task_base_synch.i">
@@ -265,12 +262,6 @@
     <None Include="rpg_stream_session_message_base.i">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="rpg_stream_streammodule.i">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="rpg_stream_streammodule_base.i">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="rpg_stream_task_base.i">
       <Filter>Header Files</Filter>
     </None>
@@ -279,6 +270,12 @@
     </None>
     <None Include="scripts\exports.bat">
       <Filter>scripts</Filter>
+    </None>
+    <None Include="rpg_stream_module_base.i">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="rpg_stream_streammodule_base.i">
+      <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -22,7 +22,6 @@
 #define RPG_STREAM_H
 
 #include "rpg_stream_istreamcontrol.h"
-#include "rpg_stream_streammodule.h"
 
 #include "rpg_common_idumpstate.h"
 
@@ -41,7 +40,7 @@ class RPG_Stream
 {
  public:
   // define convenient (iterator) types
-  typedef RPG_Stream_Module MODULE_TYPE;
+  typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
 
   // *NOTE*: this will try to sanely close down the stream:
   // 1: tell all worker threads to exit gracefully
@@ -90,13 +89,13 @@ class RPG_Stream
 
   // *NOTE*: children need to set this IF their initialization succeeded; otherwise,
   // the dtor will NOT stop all worker threads before close()ing the modules...
-  bool                          myIsInitialized;
+  bool                   myIsInitialized;
 
   // *NOTE*: children need to add handles to ALL of their modules to this container !
-  MODULE_CONTAINER_TYPE         myAvailableModules;
+  MODULE_CONTAINER_TYPE  myAvailableModules;
 
   // *NOTE*: children need to set this during THEIR initialization !
-  RPG_Stream_IAllocator*            myAllocator;
+  RPG_Stream_IAllocator* myAllocator;
 
  private:
   typedef ACE_Stream<ACE_MT_SYNCH> inherited;

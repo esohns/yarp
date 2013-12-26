@@ -1431,7 +1431,7 @@ do_work(const RPG_Client_Config& config_in,
   ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
   config.pingInterval = 0; // *NOTE*: don't ping the server...
 	config.pingAutoAnswer = true;
-  config.printPongMessages = false;
+  config.printPingMessages = false;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.defaultBufferSize = RPG_NET_STREAM_BUFFER_SIZE;

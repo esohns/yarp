@@ -23,22 +23,22 @@
 
 #include "IRC_common.h"
 
-#include <rpg_net_defines.h>
-#include <rpg_net_connection_manager.h>
+#include "rpg_net_defines.h"
+#include "rpg_net_connection_manager.h"
 
-#include <rpg_net_protocol_defines.h>
+#include "rpg_net_protocol_defines.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
-const bool
+bool
 IRC_Client_Tools::connect(RPG_Stream_IAllocator* messageAllocator_in,
                           const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
                           const bool& debugScanner_in,
                           const bool& debugParser_in,
-                          const unsigned long& statisticsReportingInterval_in,
+                          const unsigned int& statisticsReportingInterval_in,
                           const std::string& serverHostname_in,
                           const unsigned short& serverPortNumber_in,
-                          RPG_Stream_Module* finalModule_in)
+                          MODULE_TYPE* finalModule_in)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_Tools::connect"));
 

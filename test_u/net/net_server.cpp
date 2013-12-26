@@ -256,7 +256,6 @@ init_fileLogging(std::ofstream& stream_in)
   ACE_LOG_MSG->msg_ostream(&stream_in, 0);
   ACE_LOG_MSG->set_flags(ACE_Log_Msg::OSTREAM);
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("logging to file: \"%s\"\n"),
              logfilename.c_str()));
@@ -611,7 +610,7 @@ do_work(const unsigned int& pingInterval_in,
   ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
   config.pingInterval = pingInterval_in;
 	config.pingAutoAnswer = true;
-  config.printPongMessages = false;
+  config.printPingMessages = false;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.defaultBufferSize = RPG_NET_STREAM_BUFFER_SIZE;

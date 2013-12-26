@@ -19,23 +19,23 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_stream_module.h"
+#include "rpg_common_macros.h"
 
-#include <rpg_common_macros.h>
-
-RPG_Stream_Module::RPG_Stream_Module(const std::string& name_in,
-                             TASK_TYPE* writerTask_in,
-                             TASK_TYPE* readerTask_in,
-                             RPG_Stream_IRefCount* refCount_in)
- : inherited(ACE_TEXT_CHAR_TO_TCHAR(name_in.c_str()),
-             writerTask_in,             // initialize writer side task
-             readerTask_in,             // initialize reader side task
-             refCount_in,               // arg passed to task open()
-             inherited::M_DELETE_NONE), // don't "delete" ANYTHING during close()
+template <typename ReaderTaskType, typename WriterTaskType>
+RPG_Stream_Module_Base_t<ReaderTaskType,
+                         WriterTaskType>::RPG_Stream_Module_Base_t(const std::string& name_in,
+																   WriterTaskType* writerTask_in,
+																   ReaderTaskType* readerTask_in,
+																   RPG_Stream_IRefCount* refCount_in)
+ : inherited(ACE_TEXT_CHAR_TO_TCHAR(name_in.c_str()), // name
+             writerTask_in,                           // initialize writer side task
+             readerTask_in,                           // initialize reader side task
+             refCount_in,                             // arg passed to task open()
+             inherited::M_DELETE_NONE),               // don't "delete" ANYTHING during close()
    myWriter(writerTask_in),
    myReader(readerTask_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Module::RPG_Stream_Module"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Module_Base_t::RPG_Stream_Module_Base_t"));
 
   // *WARNING*: apparently, we cannot use "this" at this stage
   // --> children must do this...
@@ -45,9 +45,11 @@ RPG_Stream_Module::RPG_Stream_Module(const std::string& name_in,
 //   myReader->mod_ = this;
 }
 
-RPG_Stream_Module::~RPG_Stream_Module()
+template <typename ReaderTaskType, typename WriterTaskType>
+RPG_Stream_Module_Base_t<ReaderTaskType,
+                         WriterTaskType>::~RPG_Stream_Module_Base_t()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Module::~RPG_Stream_Module"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Module_Base_t::~RPG_Stream_Module_Base_t"));
 
   // *NOTE*: the base class will invoke close() which will
   // invoke module_close() and flush on every task...
@@ -55,10 +57,12 @@ RPG_Stream_Module::~RPG_Stream_Module()
   // --> close() all modules in advance so it doesn't happen here !!!
 }
 
+template <typename ReaderTaskType, typename WriterTaskType>
 void
-RPG_Stream_Module::resetReaderWriter()
+RPG_Stream_Module_Base_t<ReaderTaskType,
+                         WriterTaskType>::reset()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Module::resetReaderWriter"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Module_Base_t::reset"));
 
   // OK: (re-)set our reader and writer tasks...
   inherited::writer(myWriter,

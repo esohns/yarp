@@ -26,33 +26,70 @@
 #include "rpg_net_statistichandler.h"
 #include "rpg_net_resetcounterhandler.h"
 
-#include "rpg_common_istatistic.h"
-
 #include "rpg_stream_task_base_synch.h"
 #include "rpg_stream_streammodule_base.h"
 
+#include "rpg_common_istatistic.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
+#include <ace/Stream_Modules.h>
 
 #include <set>
 #include <map>
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
+template <typename SessionMessageType,
+          typename ProtocolMessageType,
+          typename ProtocolCommandType,
+          typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic_t;
+
+template <typename SessionMessageType,
+	        typename ProtocolMessageType,
+          typename ProtocolCommandType,
+          typename StatisticsContainerType>
+class RPG_Net_Module_RuntimeStatisticReader_t
+ : public ACE_Thru_Task<ACE_MT_SYNCH>
+{
+ public:
+  RPG_Net_Module_RuntimeStatisticReader_t();
+  virtual ~RPG_Net_Module_RuntimeStatisticReader_t();
+
+  virtual int put(ACE_Message_Block*,      // message
+		              ACE_Time_Value* = NULL); // time
+
+ private:
+  typedef ACE_Thru_Task<ACE_MT_SYNCH> inherited;
+	typedef RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+		                                        ProtocolMessageType,
+	                                          ProtocolCommandType,
+	                                          StatisticsContainerType> TASK_TYPE;
+	typedef ProtocolMessageType MESSAGE_TYPE;
+	typedef ProtocolCommandType COMMAND_TYPE;
+
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatisticReader_t(const RPG_Net_Module_RuntimeStatisticReader_t&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatisticReader_t& operator=(const RPG_Net_Module_RuntimeStatisticReader_t&));
+};
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
-class RPG_Net_Module_RuntimeStatistic
+class RPG_Net_Module_RuntimeStatistic_t
  : public RPG_Stream_TaskBaseSynch<SessionMessageType,
                                    ProtocolMessageType>,
    public RPG_Net_ICounter,
    public RPG_Common_IStatistic<StatisticsContainerType>
 {
+ friend class RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
+                                                      ProtocolMessageType,
+                                                      ProtocolCommandType,
+                                                      StatisticsContainerType>;
  public:
-  RPG_Net_Module_RuntimeStatistic();
-  virtual ~RPG_Net_Module_RuntimeStatistic();
+  RPG_Net_Module_RuntimeStatistic_t();
+  virtual ~RPG_Net_Module_RuntimeStatistic_t();
 
   // initialization
   bool init(const unsigned int& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
@@ -82,9 +119,9 @@ class RPG_Net_Module_RuntimeStatistic
   typedef std::set<ProtocolCommandType> MESSAGETYPECONTAINER_TYPE;
   typedef typename MESSAGETYPECONTAINER_TYPE::const_iterator MESSAGETYPECONTAINER_CONSTITERATOR_TYPE;
   typedef std::map<ProtocolCommandType,
-                   unsigned long> MESSAGETYPE2COUNT_TYPE;
+                   unsigned int> MESSAGETYPE2COUNT_TYPE;
   typedef std::pair<ProtocolCommandType,
-                    unsigned long> MESSAGETYPE2COUNTPAIR_TYPE;
+                    unsigned int> MESSAGETYPE2COUNTPAIR_TYPE;
   typedef typename MESSAGETYPE2COUNT_TYPE::const_iterator MESSAGETYPE2COUNT_CONSTITERATOR_TYPE;
 
   // convenience types
@@ -92,8 +129,8 @@ class RPG_Net_Module_RuntimeStatistic
   typedef RPG_Net_StatisticHandler_Reactor_T<STATISTICINTERFACE_TYPE> STATISTICHANDLER_TYPE;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic(const RPG_Net_Module_RuntimeStatistic&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic& operator=(const RPG_Net_Module_RuntimeStatistic&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic_t(const RPG_Net_Module_RuntimeStatistic_t&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic_t& operator=(const RPG_Net_Module_RuntimeStatistic_t&));
 
   // helper method(s)
   void final_report() const;
@@ -133,10 +170,6 @@ class RPG_Net_Module_RuntimeStatistic
   // *CACHE STATS*
   const RPG_Stream_IAllocator* myAllocator;
 };
-
-// // declare module
-// DATASTREAM_MODULE_WRITER_ONLY_T(RPG_Net_Module_RuntimeStatistic<SessionMessageType>, // type
-//                                 RPG_Net_Module_RuntimeStatistic);                    // name
 
 // include template implementation
 #include "rpg_net_module_runtimestatistic.i"

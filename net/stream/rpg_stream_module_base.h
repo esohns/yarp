@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_STREAM_MODULE_H
-#define RPG_STREAM_MODULE_H
+#ifndef RPG_STREAM_MODULE_BASE_H
+#define RPG_STREAM_MODULE_BASE_H
 
-#include "rpg_stream_exports.h"
+#include "rpg_stream_imodule.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Module.h>
@@ -32,39 +32,39 @@
 // forward declaration(s)
 class RPG_Stream_IRefCount;
 
-class RPG_Stream_Export RPG_Stream_Module
- : public ACE_Module<ACE_MT_SYNCH>
+template <typename ReaderTaskType, typename WriterTaskType>
+class RPG_Stream_Module_Base_t
+ : public ACE_Module<ACE_MT_SYNCH>,
+   public RPG_Stream_IModule
 {
  public:
   // define convenient types
-  typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
-  typedef ACE_Task<ACE_MT_SYNCH> TASK_TYPE;
+  typedef ReaderTaskType READER_TASK_TYPE;
+  typedef WriterTaskType WRITER_TASK_TYPE;
 
-  RPG_Stream_Module(const std::string&,     // name
-                    TASK_TYPE*,             // handle to writer task
-                    TASK_TYPE*,             // handle to reader task
-                    RPG_Stream_IRefCount*); // object counter
-  virtual ~RPG_Stream_Module();
+  virtual ~RPG_Stream_Module_Base_t();
 
-  // *NOTE*: streams may call this to reset writer/reader tasks
-  // and re-use existing modules
-  // --> needed after call to MODULE_TYPE::close(), which cannot be
-  // overriden (not "virtual")
-  // *WARNING*: DON'T call this from within module_closed()
-  // --> creates endless loops (and eventually, stack overflows)...
-  void resetReaderWriter();
+  // implement RPG_Stream_IModule
+  virtual void reset();
 
  protected:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module(const RPG_Stream_Module&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module& operator=(const RPG_Stream_Module&));
+  RPG_Stream_Module_Base_t(const std::string&,     // name
+                           WRITER_TASK_TYPE*,      // handle to writer task
+                           READER_TASK_TYPE*,      // handle to reader task
+                           RPG_Stream_IRefCount*); // object counter
 
  private:
   typedef ACE_Module<ACE_MT_SYNCH> inherited;
 
-  TASK_TYPE* myWriter;
-  TASK_TYPE* myReader;
+  // safety measures
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t(const RPG_Stream_Module_Base_t&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t& operator=(const RPG_Stream_Module_Base_t&));
+
+  WRITER_TASK_TYPE* myWriter;
+  READER_TASK_TYPE* myReader;
 };
+
+#include "rpg_stream_module_base.i"
 
 #endif

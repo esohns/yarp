@@ -18,31 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <rpg_common_macros.h>
+#ifndef RPG_STREAM_IMODULE_H
+#define RPG_STREAM_IMODULE_H
 
-template <typename TaskType>
-RPG_Stream_StreamModule<TaskType>::RPG_Stream_StreamModule(const std::string& name_in,
-                                                   RPG_Stream_IRefCount* refCount_in)
- : inherited(name_in,
-             &myTask,     // initialize writer side task
-             &myReader,   // initialize reader side task
-             refCount_in) // arg passed to task open()
+class RPG_Stream_IModule
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModule::RPG_Stream_StreamModule"));
+ public:
+  virtual ~RPG_Stream_IModule() {}
 
-  // set links to ourselves...
-  // *NOTE*: essential to enable dereferencing (name-lookups, controlled shutdown, etc)
-  myTask.mod_ = this;
-  myReader.mod_ = this;
-}
+  // *NOTE*: streams may call this to reset writer/reader tasks
+  // and re-use existing modules
+  // --> needed after call to MODULE_TYPE::close(), which cannot be
+  // overriden (not "virtual")
+  // *WARNING*: DON'T call this from within module_closed()
+  // --> creates endless loops (and eventually, stack overflows)...
+  virtual void reset() = 0;
+};
 
-template <typename TaskType>
-RPG_Stream_StreamModule<TaskType>::~RPG_Stream_StreamModule()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModule::~RPG_Stream_StreamModule"));
-
-  // *NOTE*: the base class will invoke close() which will
-  // invoke module_close() and flush on every task...
-  // *WARNING*: all member tasks will be destroyed by the time that happens...
-  // --> close() all modules in advance so it doesn't happen here !!!
-}
+#endif

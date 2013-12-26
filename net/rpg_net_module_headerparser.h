@@ -21,8 +21,8 @@
 #ifndef RPG_NET_MODULE_HEADERPARSER_H
 #define RPG_NET_MODULE_HEADERPARSER_H
 
-#include <rpg_stream_task_base_synch.h>
-#include <rpg_stream_streammodule.h>
+#include "rpg_stream_task_base_synch.h"
+#include "rpg_stream_streammodule_base.h"
 
 // forward declaration(s)
 class RPG_Net_SessionMessage;
@@ -58,6 +58,6 @@ class RPG_Net_Module_HeaderParser
 };
 
 // declare module
-DATASTREAM_MODULE(RPG_Net_Module_HeaderParser);
+DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Module_HeaderParser);
 
 #endif

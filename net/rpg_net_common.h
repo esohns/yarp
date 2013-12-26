@@ -28,10 +28,13 @@
 #include <ace/Time_Value.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
+#include <ace/Module.h>
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
 class RPG_Stream_Module;
+
+typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
 
 struct RPG_Net_RuntimeStatistic
 {
@@ -53,13 +56,13 @@ struct RPG_Net_ConfigPOD
   // ************ connection config data ************
   unsigned int             pingInterval;
 	bool                     pingAutoAnswer;
-  bool                     printPongMessages;
+  bool                     printPingMessages;
   int                      socketBufferSize;
   RPG_Stream_IAllocator*   messageAllocator;
   unsigned int             defaultBufferSize;
   bool                     useThreadPerConnection;
   // ************ stream config data ************
-  RPG_Stream_Module*       module;
+  MODULE_TYPE*             module;
   unsigned int             sessionID; // (== socket handle !)
   unsigned int             statisticsReportingInterval;
   // ************ runtime data ************
@@ -74,8 +77,8 @@ typedef RPG_Net_Connection_Manager<RPG_Net_ConfigPOD,
 typedef ACE_Singleton<RPG_Net_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
 RPG_NET_SINGLETON_DECLARE(ACE_Singleton,
-			  RPG_Net_Connection_Manager_t,
-			  ACE_Recursive_Thread_Mutex);
+			                    RPG_Net_Connection_Manager_t,
+			                    ACE_Recursive_Thread_Mutex);
 
 typedef RPG_Net_StatisticHandler_Reactor_T<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Reactor_t;
 typedef RPG_Net_StatisticHandler_Proactor_T<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Proactor_t;

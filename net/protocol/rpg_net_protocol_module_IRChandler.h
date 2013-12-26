@@ -27,7 +27,7 @@
 #include "rpg_net_protocol_message.h"
 
 #include "rpg_stream_task_base_synch.h"
-#include "rpg_stream_streammodule.h"
+#include "rpg_stream_streammodule_base.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Condition_T.h>
@@ -140,6 +140,6 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
 };
 
 // declare module
-DATASTREAM_MODULE(RPG_Net_Protocol_Module_IRCHandler);
+DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Protocol_Module_IRCHandler);
 
 #endif

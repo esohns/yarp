@@ -24,21 +24,21 @@
 #include "rpg_net_common.h"
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
-#include "rpg_net_remote_comm.h"
+#include "rpg_net_module_runtimestatistic.h"
 
-#include "rpg_stream_streammodule.h"
-
-template <typename SessionMessageType,
-          typename ProtocolMessageType,
-          typename ProtocolCommandType,
-          typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic;
+#include "rpg_stream_streammodule_base.h"
 
 // declare module(s)
-typedef RPG_Net_Module_RuntimeStatistic<RPG_Net_SessionMessage,
-                                        RPG_Net_Message,
-                                        RPG_Net_MessageType,
-                                        RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICS_T;
-DATASTREAM_MODULE_T(RPG_NET_MODULE_RUNTIMESTATISTICS_T, // type
-                    RPG_Net_Module_RuntimeStatistic);   // name
+typedef RPG_Net_Module_RuntimeStatisticReader_t<RPG_Net_SessionMessage,
+                                                RPG_Net_Message,
+                                                RPG_Net_MessageType,
+                                                RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICSREADER_T;
+typedef RPG_Net_Module_RuntimeStatistic_t<RPG_Net_SessionMessage,
+                                          RPG_Net_Message,
+                                          RPG_Net_MessageType,
+                                          RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICS_T;
+DATASTREAM_MODULE_DUPLEX(RPG_NET_MODULE_RUNTIMESTATISTICSREADER_T, // reader type
+	                       RPG_NET_MODULE_RUNTIMESTATISTICS_T,       // writer type
+                         RPG_Net_Module_RuntimeStatistic);         // name
 
 #endif

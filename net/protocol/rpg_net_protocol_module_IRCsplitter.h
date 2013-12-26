@@ -27,11 +27,11 @@
 
 #include "rpg_net_statistichandler.h"
 
-#include "rpg_common_istatistic.h"
-
 #include "rpg_stream_headmoduletask_base.h"
 #include "rpg_stream_session_config_base.h"
-#include "rpg_stream_streammodule.h"
+#include "rpg_stream_streammodule_base.h"
+
+#include "rpg_common_istatistic.h"
 
 #include <ace/Global_Macros.h>
 
@@ -122,6 +122,6 @@ class RPG_Net_Protocol_Module_IRCSplitter
 };
 
 // declare module
-DATASTREAM_MODULE(RPG_Net_Protocol_Module_IRCSplitter);
+DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Protocol_Module_IRCSplitter);
 
 #endif

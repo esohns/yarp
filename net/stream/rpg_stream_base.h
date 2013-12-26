@@ -25,7 +25,7 @@
 #include "rpg_stream_streammodule_base.h"
 #include "rpg_stream_headmoduletask_base.h"
 
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Containers_T.h>
@@ -69,6 +69,7 @@ class RPG_Stream_Base
   bool isInitialized() const;
 
  protected:
+  typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
 //   // define convenient (iterator) types
 //   typedef std::vector<MODULE_TYPE*> MODULE_CONTAINER_TYPE;
   // *NOTE*: cannot write this - it confuses gcc...
@@ -92,30 +93,27 @@ class RPG_Stream_Base
 
   // *NOTE*: children need to set this IF their initialization succeeded; otherwise,
   // the dtor will NOT stop all worker threads before close()ing the modules...
-  bool                      myIsInitialized;
+  bool                    myIsInitialized;
 
   // *NOTE*: children need to add handles to ALL of their modules to this container !
 //   MODULE_CONTAINER_TYPE myAvailableModules;
-  ACE_DLList<RPG_Stream_Module::MODULE_TYPE> myAvailableModules;
+  ACE_DLList<MODULE_TYPE> myAvailableModules;
 
   // *NOTE*: children need to set this during THEIR initialization !
-  RPG_Stream_IAllocator*    myAllocator;
+  RPG_Stream_IAllocator*  myAllocator;
 
  private:
   typedef ACE_Stream<ACE_MT_SYNCH> inherited;
 
   // convenient typedefs
   typedef RPG_Stream_HeadModuleTaskBase<DataType,
-                                    SessionConfigType,
-                                    SessionMessageType,
-                                    ProtocolMessageType> HEADMODULETASK_BASETYPE;
+                                        SessionConfigType,
+                                        SessionMessageType,
+                                        ProtocolMessageType> HEADMODULETASK_BASETYPE;
 
   // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Base());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Base(const RPG_Stream_Base<DataType,
-                                                       SessionConfigType,
-                                                       SessionMessageType,
-                                                       ProtocolMessageType>&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Base(const RPG_Stream_Base&));
   // *TODO*: apparently, ACE_UNIMPLEMENTED_FUNC gets confused by template arguments...
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Base<DataType,SessionConfigType,SessionMessageType>& operator=(const RPG_Stream_Base<DataType,SessionConfigType,SessionMessageType>&));
 

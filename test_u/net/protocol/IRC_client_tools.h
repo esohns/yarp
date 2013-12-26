@@ -34,14 +34,14 @@ class RPG_Stream_Module;
 class IRC_Client_Tools
 {
  public:
-  static const bool connect(RPG_Stream_IAllocator*,                  // message allocator
-                            const RPG_Net_Protocol_IRCLoginOptions&, // login options
-                            const bool&,                             // debug scanner ?
-                            const bool&,                             // debug parser ?
-                            const unsigned long&,                    // statistics reporting interval (0: OFF)
-                            const std::string&,                      // hostname
-                            const unsigned short&,                   // port
-                            RPG_Stream_Module*);                     // final module
+  static bool connect(RPG_Stream_IAllocator*,                  // message allocator
+                      const RPG_Net_Protocol_IRCLoginOptions&, // login options
+                      const bool&,                             // debug scanner ?
+                      const bool&,                             // debug parser ?
+                      const unsigned int&,                     // statistics reporting interval (0: OFF)
+                      const std::string&,                      // hostname
+                      const unsigned short&,                   // port
+                      MODULE_TYPE*);                           // final module
 
  private:
   // safety measures

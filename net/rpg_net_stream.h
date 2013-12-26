@@ -83,8 +83,8 @@ class RPG_Net_Export RPG_Net_Stream
   // modules
   RPG_Net_Module_SocketHandler_Module    mySocketHandler;
   RPG_Net_Module_HeaderParser_Module     myHeaderParser;
-  RPG_Net_Module_ProtocolHandler_Module  myProtocolHandler;
   RPG_Net_Module_RuntimeStatistic_Module myRuntimeStatistic;
+  RPG_Net_Module_ProtocolHandler_Module  myProtocolHandler;
 };
 
 #endif

@@ -17,6 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "stdafx.h"
 
-#include "rpg_stream_streammodule.h"
+#ifndef RPG_NET_SERVER_ILISTENER_H
+#define RPG_NET_SERVER_ILISTENER_H
+
+#include <ace/INET_Addr.h>
+
+#include "rpg_common_icontrol.h"
+
+class RPG_Net_Server_IListener
+ : public RPG_Common_IControl
+{
+ public:
+  virtual ~RPG_Net_Server_IListener() {}
+
+  // exposed interface
+  virtual void init(const unsigned short&,    // port number
+		                const bool& = false) = 0; // use loopback device ?
+};
+
+#endif

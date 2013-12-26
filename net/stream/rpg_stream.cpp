@@ -21,6 +21,7 @@
 
 #include "rpg_stream.h"
 
+#include "rpg_stream_module_base.h"
 #include "rpg_stream_headmoduletask.h"
 #include "rpg_stream_session_config.h"
 #include "rpg_stream_session_message.h"
@@ -78,43 +79,50 @@ RPG_Stream::init()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream::init"));
 
-  // *NOTE*: fini() invokes close() which will reset the writer/reader tasks
-  // of the enqueued modules --> reset this !
-  for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
-       iter != myAvailableModules.end();
-       iter++)
-  {
-    try
-    {
-      (*iter)->resetReaderWriter();
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Stream_Module::resetReaderWriter(), continuing\n")));
-    }
-  } // end FOR
+	if (myIsInitialized)
+	{
+		// *NOTE*: fini() invokes close() which will reset the writer/reader tasks
+		// of the enqueued modules --> reset this !
+		RPG_Stream_IModule* module_handle = NULL;
+		MODULE_TYPE* module = NULL;
+		// *NOTE*: cannot write this - it confuses gcc...
+    for (MODULE_CONTAINERITERATOR_TYPE iterator = myAvailableModules.begin();
+			   iterator != myAvailableModules.end();
+			   iterator++)
+		{
+			// need a downcast...
+			module_handle = dynamic_cast<RPG_Stream_IModule*>(*iterator);
+			ACE_ASSERT(module_handle);
+			try
+			{
+			  module_handle->reset();
+  		}
+			catch (...)
+			{
+			  ACE_DEBUG((LM_ERROR,
+					      	 ACE_TEXT("caught exception in RPG_Stream_IModule::reset(), continuing\n")));
+			}
+		} // end FOR
+	} // end IF
 
   // delegate this to base class open()
-  int ret = -1;
+  int result = -1;
   try
   {
-    ret = inherited::open(NULL,  // argument to module open()
-                          NULL,  // no head module --> ACE_Stream_Head !
-                          NULL); // no tail module --> ACE_Stream_Tail !
+    result = inherited::open(NULL,  // argument to module open()
+														 NULL,  // no head module --> ACE_Stream_Head !
+														 NULL); // no tail module --> ACE_Stream_Tail !
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in ACE_Stream::open(), aborting\n")));
   }
-
-  // OK ?
-  if (ret == -1)
+  if (result == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::open(): \"%m\", aborting\n")));
 
-  return (ret == 0);
+  return (result == 0);
 }
 
 bool
@@ -157,17 +165,17 @@ RPG_Stream::start()
   if (!isInitialized())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not initialized, returning\n")));
+               ACE_TEXT("not initialized, aborting\n")));
 
     return;
   } // end IF
 
   // delegate to the head module
-  RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  if (top(module))
+  MODULE_TYPE* module = NULL;
+  if (top(module) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, returning\n")));
+               ACE_TEXT("failed to ACE_Stream::top(): \"%m\", aborting\n")));
 
     return;
   } // end IF
@@ -221,11 +229,11 @@ RPG_Stream::stop()
   } // end IF
 
   // delegate to the head module
-  RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  if (top(module))
+  MODULE_TYPE* module = NULL;
+  if (top(module) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, returning\n")));
+               ACE_TEXT("failed to ACE_Stream::top(): \"%m\", aborting\n")));
 
     return;
   } // end IF
@@ -279,11 +287,11 @@ RPG_Stream::pause()
   } // end IF
 
   // delegate to the head module
-  RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  if (top(module))
+  MODULE_TYPE* module = NULL;
+  if (top(module) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, returning\n")));
+               ACE_TEXT("failed to ACE_Stream::top(): \"%m\", aborting\n")));
 
     return;
   } // end IF
@@ -338,11 +346,11 @@ RPG_Stream::rewind()
   } // end IF
 
   // delegate to the head module
-  RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  if (top(module))
+  MODULE_TYPE* module = NULL;
+  if (top(module) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, returning\n")));
+               ACE_TEXT("failed to ACE_Stream::top(): \"%m\", aborting\n")));
 
     return;
   } // end IF
@@ -390,7 +398,7 @@ RPG_Stream::waitForCompletion()
   if (!isInitialized())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not initialized, returning\n")));
+               ACE_TEXT("not initialized, aborting\n")));
 
     return;
   } // end IF
@@ -400,22 +408,22 @@ RPG_Stream::waitForCompletion()
   // step2: wait for the pipelined messages to flush...
 
   // iterate over modules...
-  const RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  ACE_Stream_Iterator<ACE_MT_SYNCH> iter(*this);
+  const MODULE_TYPE* module = NULL;
+  ACE_Stream_Iterator<ACE_MT_SYNCH> iterator(*this);
   // skip over ACE_Stream_Head
-  if (!iter.advance())
+  if (iterator.advance())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, returning\n")));
+               ACE_TEXT("no ACE_Stream_Head module found: \"%m\", aborting\n")));
 
     return;
   } // end IF
 
   // get head module
-  if (!iter.next(module))
+  if (iterator.next(module))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, returning\n")));
+               ACE_TEXT("no head module found: \"%m\", aborting\n")));
 
     return;
   } // end IF
@@ -431,7 +439,7 @@ RPG_Stream::waitForCompletion()
 
   // need to downcast
   RPG_Stream_HeadModuleTask* head_task = NULL;
-  head_task = dynamic_cast<RPG_Stream_HeadModuleTask*>(const_cast<RPG_Stream_Module::MODULE_TYPE*>(module)->writer());
+  head_task = dynamic_cast<RPG_Stream_HeadModuleTask*>(const_cast<MODULE_TYPE*>(module)->writer());
   if (!head_task)
   {
     ACE_DEBUG((LM_ERROR,
@@ -469,9 +477,9 @@ RPG_Stream::waitForCompletion()
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("waiting for stream to flush...\n")));
 
-  for (iter.advance();
-       iter.next(module);
-       iter.advance())
+  for (iterator.advance();
+       iterator.next(module);
+       iterator.advance())
   {
     // skip stream tail (last module)
     if (module == tail())
@@ -485,7 +493,7 @@ RPG_Stream::waitForCompletion()
 //                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     // OK: we've got a handle... wait
-    const_cast<RPG_Stream_Module::MODULE_TYPE*>(module)->writer()->wait();
+    const_cast<MODULE_TYPE*>(module)->writer()->wait();
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("waiting for module (\"%s\") to finish processing...DONE\n"),
@@ -505,11 +513,11 @@ RPG_Stream::isRunning() const
   RPG_TRACE(ACE_TEXT("RPG_Stream::isRunning"));
 
   // delegate to the head module
-  RPG_Stream_Module::MODULE_TYPE* module = NULL;
+  MODULE_TYPE* module = NULL;
   if (const_cast<RPG_Stream*>(this)->top(module))
   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("no head module found, aborting\n")));
+    //ACE_DEBUG((LM_ERROR,
+    //           ACE_TEXT("no head module found: \"%m\", aborting\n")));
 
     return false;
   } // end IF
@@ -554,27 +562,22 @@ RPG_Stream::dump_state() const
   RPG_TRACE(ACE_TEXT("RPG_Stream::dump_state"));
 
   std::string stream_layout;
-
-  const RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  for (ACE_Stream_Iterator<ACE_MT_SYNCH> iter(*this);
-       iter.next(module);
-       iter.advance())
+  const MODULE_TYPE* module = NULL;
+  for (ACE_Stream_Iterator<ACE_MT_SYNCH> iterator(*this);
+       iterator.next(module);
+       iterator.advance())
   {
     // silently ignore ACE head/tail modules...
     if ((module == const_cast<RPG_Stream*>(this)->tail()) ||
         (module == const_cast<RPG_Stream*>(this)->head()))
-    {
       continue;
-    } // end IF
 
     stream_layout.append(ACE_TEXT_ALWAYS_CHAR(module->name()));
 
     // avoid trailing "-->"...
-    if (const_cast<RPG_Stream_Module::MODULE_TYPE*>(module)->next() !=
+    if (const_cast<MODULE_TYPE*>(module)->next() !=
         const_cast<RPG_Stream*>(this)->tail())
-    {
       stream_layout += ACE_TEXT_ALWAYS_CHAR(" --> ");
-    } // end IF
 
     module = NULL;
   } // end FOR

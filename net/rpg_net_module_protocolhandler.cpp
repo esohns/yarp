@@ -41,7 +41,7 @@ RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
    myCounter(1),
 	 myPingInterval(0), // [0: --> OFF]
    myAutomaticPong(true),
-   myPrintPongDot(false),
+   myPrintPingDot(false),
    myIsInitialized(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler"));
@@ -73,7 +73,7 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
                                      const unsigned int& sessionID_in,
                                      const unsigned int& pingInterval_in,
                                      const bool& autoAnswerPings_in,
-                                     const bool& printPongDot_in)
+                                     const bool& printPingDot_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_ProtocolHandler::init"));
 
@@ -105,7 +105,7 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
     myCounter = 1;
 		myPingInterval = 0;
     myAutomaticPong = true;
-    myPrintPongDot = false;
+    myPrintPingDot = false;
 
     myIsInitialized = false;
   } // end IF
@@ -117,7 +117,7 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
   //if (myAutomaticPong)
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("auto-answering \"ping\" messages\n")));
-  myPrintPongDot = printPongDot_in;
+  myPrintPingDot = printPingDot_in;
 
   myIsInitialized = true;
 
@@ -139,10 +139,6 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
   {
     case RPG_Net_Remote_Comm::RPG_NET_PING:
     {
-      //ACE_DEBUG((LM_DEBUG,
-      //           ACE_TEXT("received PING (connection ID: %u)...\n"),
-      //           mySessionID));
-
       // auto-answer ?
       if (myAutomaticPong)
       {
@@ -176,22 +172,18 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage(RPG_Net_Message*& message_inou
 
           return;
         } // end IF
-
-        //ACE_DEBUG((LM_DEBUG,
-        //           ACE_TEXT("sent PONG to client (connection ID: %u)...\n"),
-        //           mySessionID));
       } // end IF
+
+      if (myPrintPingDot)
+        std::clog << '.';
 
       break;
     }
     case RPG_Net_Remote_Comm::RPG_NET_PONG:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("received PONG (connection ID: %u)...\n"),
-                 mySessionID));
-
-      if (myPrintPongDot)
-        std::clog << '.';
+      //ACE_DEBUG((LM_DEBUG,
+      //           ACE_TEXT("received PONG (connection ID: %u)...\n"),
+      //           mySessionID));
 
       break;
     }

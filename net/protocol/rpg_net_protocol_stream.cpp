@@ -51,13 +51,11 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream()
 
   // fix ACE bug: modules should initialize their "next" member to NULL !
 //   for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
-  RPG_Stream_Module::MODULE_TYPE* module = NULL;
-  for (ACE_DLList_Iterator<RPG_Stream_Module::MODULE_TYPE> iterator(myAvailableModules);
+  inherited::MODULE_TYPE* module = NULL;
+  for (ACE_DLList_Iterator<inherited::MODULE_TYPE> iterator(myAvailableModules);
        iterator.next(module);
        iterator.advance())
-  {
     module->next(NULL);
-  } // end FOR
 }
 
 RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream()
