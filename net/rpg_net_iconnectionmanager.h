@@ -23,13 +23,15 @@
 
 #include "rpg_net_iconnection.h"
 
+#include "rpg_common_icontrol.h"
+
 template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_IConnectionManager
+ : public RPG_Common_IControl
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Net_IConnectionManager() {};
 
   // API
   virtual bool registerConnection(RPG_Net_IConnection<ConfigType,

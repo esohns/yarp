@@ -57,6 +57,16 @@ RPG_Net_Client_Connector::make_svc_handler(RPG_Net_StreamHandler_t*& handler_ino
 }
 
 void
+RPG_Net_Client_Connector::abort()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::abort"));
+
+	if (inherited::close() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Connector::close(): \"%m\", continuing\n")));
+}
+
+void
 RPG_Net_Client_Connector::connect(const ACE_INET_Addr& peer_address)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::connect"));

@@ -1320,7 +1320,7 @@ ACE_TMAIN(int argc_in,
   config.video_config.screen_colordepth    = RPG_CLIENT_DEF_VIDEO_BPP;
   config.video_config.fullScreen           = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
   config.video_config.doubleBuffer         = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
-  config.graphics_directory = base_data_path;
+  config.graphics_directory = data_path;
   config.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #ifdef BASEDIR
   config.graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);

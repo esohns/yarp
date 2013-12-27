@@ -85,7 +85,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="net\net_common.h" />
     <ClInclude Include="net\net_server_signalhandler.h" />
     <ClInclude Include="net\stdafx.h" />
   </ItemGroup>

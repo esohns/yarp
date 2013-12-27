@@ -41,16 +41,13 @@ RPG_Net_SocketHandlerBase<ConfigType,
    myNotificationStrategy(ACE_Reactor::instance(),        // reactor
                           this,                           // event handler
                           ACE_Event_Handler::WRITE_MASK), // handle output only
-   myID(0),
    myIsRegistered(false),
    myManager(manager_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase"));
 
-//   // init user data
-//   ACE_OS::memset(&myUserData,
-//                  0,
-//                  sizeof(ConfigType));
+  // init user data
+  ACE_OS::memset(&myUserData, 0, sizeof(ConfigType));
 
   if (myManager)
   {
@@ -70,8 +67,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
   } // end IF
 
   // register notification strategy
-	// *NOTE*: for the streamed socket handler, this doesn't make sense, as it needs
-	// to use the stream head modules' queue...
+	// *IMPORTANT NOTE*: the streamed socket handler uses the stream head modules' queue...
+	// --> this doesn't make sense...
   msg_queue()->notification_strategy(&myNotificationStrategy);
 }
 
@@ -98,12 +95,23 @@ RPG_Net_SocketHandlerBase<ConfigType,
     } // end IF
   } // end IF
 
-  // *NOTE*: should remove 'this' from the reactor as well...
+	//// *IMPORTANT NOTE*: the handle is removed by the reactor when an upcall returns -1
+	//// --> this has already happened for read, remove any scheduled notifications as well...
+	//if (peer_.get_handle() != ACE_INVALID_HANDLE)
+	//	if (reactor()->remove_handler(this,
+	//		                            (ACE_Event_Handler::ALL_EVENTS_MASK |
+	//	                               ACE_Event_Handler::DONT_CALL)) == -1)
+	//	{
+ //     ACE_DEBUG((LM_ERROR,
+ //                ACE_TEXT("failed to ACE_Reactor::remove_handler(%@): \"%m\", continuing\n"),
+ //                this));
+	//	} // end IF
+	// *IMPORTANT NOTE*: the streamed socket handler uses the stream head modules' queue
+	// --> this happens too late, as the stream/queue will have been deleted by now...
   if (reactor()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
                this));
-//   reactor()->remove_handler(this, ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL);
 }
 
 template <typename ConfigType,
@@ -127,33 +135,43 @@ RPG_Net_SocketHandlerBase<ConfigType,
     // acceptor/connector will invoke close() --> handle_close()
     return -1;
   } // end IF
-  ACE_ASSERT(myIsInitialized);
+	if (!myIsInitialized)
+  {
+    ACE_DEBUG((LM_ERROR,
+			         ACE_TEXT("socket handler not initialized (ID: %u), aborting\n"),
+							 getID()));
+
+    // acceptor/connector will invoke close() --> handle_close()
+    return -1;
+  } // end IF
 
   // step1: tweak socket
   // *TODO*: assumptions about ConfigType ?!?: clearly a design glitch
   // --> implement higher up !
   if (myUserData.socketBufferSize)
-  {
-    if (!RPG_Net_Common_Tools::setSocketBuffer(get_handle(),
+    if (!RPG_Net_Common_Tools::setSocketBuffer(peer_.get_handle(),
                                                SO_RCVBUF,
                                                myUserData.socketBufferSize))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to setSocketBuffer(%u) for %u, aborting\n"),
-                 myUserData.socketBufferSize,
-                 get_handle()));
+			int error = ACE_OS::last_error();
+			if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to setSocketBuffer(%u) for %u, aborting\n"),
+                   myUserData.socketBufferSize,
+                   getID()));
 
       // reactor will invoke close() --> handle_close()
       return -1;
     } // end IF
-  } // end IF
-  if (!RPG_Net_Common_Tools::setNoDelay(get_handle(),
+  if (!RPG_Net_Common_Tools::setNoDelay(peer_.get_handle(),
                                         RPG_NET_SOCK_NODELAY))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
-               get_handle(),
-               (RPG_NET_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
+		int error = ACE_OS::last_error();
+		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+			ACE_DEBUG((LM_ERROR,
+			           ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
+                 getID(),
+                 (RPG_NET_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
 
       // reactor will invoke handle_close()
     return -1;
@@ -162,8 +180,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
   // register with the reactor...
   if (inherited::open(arg_in) == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%m\", aborting\n")));
+		int error = ACE_OS::last_error();
+		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%m\", aborting\n")));
 
     return -1;
   } // end IF
@@ -200,15 +220,15 @@ RPG_Net_SocketHandlerBase<ConfigType,
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initialised connection [%u]: (\"%s\") <--> (\"%s\")...\n"),
-	  	     handle,
-			 localAddress.c_str(),
-			 buffer));
+						 handle,
+						 localAddress.c_str(),
+						 buffer));
 #else
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initialised connection [%@/%u]: (\"%s\") <--> (\"%s\")...\n"),
-			 handle, handle,
-			 localAddress.c_str(),
-			 buffer));
+						 handle, handle,
+						 localAddress.c_str(),
+						 buffer));
 #endif
 
   return 0;
@@ -230,8 +250,6 @@ RPG_Net_SocketHandlerBase<ConfigType,
   //        which was invoked by the reactor) - we override the default
   //        behavior of a ACE_Svc_Handler, which would call handle_close() AGAIN
   // - by the connector/acceptor when open() fails (e.g. too many connections !)
-  //    --> in this case, we WANT the default behavior (call handle_close())
-  // - by an external thread closing down the connection (see abort())
   //    --> close the socket !
 
   switch (arg_in)
@@ -257,21 +275,11 @@ RPG_Net_SocketHandlerBase<ConfigType,
       } // end IF
 
       // too many connections: invoke inherited default behavior
-      // --> close() --> handle_close() --> ... --> delete "this"
       // --> simply fall through to the next case
     }
-    // called by external thread wanting to close our connection (see abort())
+    // called by external (e.g. reactor) thread wanting to close the connection
     case 1:
-    {
-      // *NOTE*: this is NOT the elegant way to go about "aborting" a connection
-      // (even though it works), as it will confuse the reactor
-      // --> simply call handle_close instead...
-//       int result = inherited::peer_.close();
-//       if (result == -1)
-//         ACE_DEBUG((LM_ERROR,
-//                    ACE_TEXT("failed to ACE_SOCK_Stream::close(): \"%m\", returning\n")));
-      return inherited::close();
-    }
+			return inherited::close(arg_in);
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -286,48 +294,21 @@ RPG_Net_SocketHandlerBase<ConfigType,
   return 0;
 }
 
-// template <typename ConfigType,
-//           typename StatisticsContainerType>
-// int
-// RPG_Net_SocketHandlerBase<ConfigType,
-//                           StatisticsContainerType>::handle_close(ACE_HANDLE handle_in,
-//                                                                  ACE_Reactor_Mask mask_in)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
-//
-// //   // de-register with connection manager
-// //   // *NOTE*: we do it here, while our handle is still "valid"...
-// //   if (myIsRegistered)
-// //   {
-// //     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(getID());
-// //
-// //     // remember this...
-// //     myIsRegistered = false;
-// //   } // end IF
-//
-//   // *NOTE*: called when:
-//   // - the client closes the socket --> child handle_xxx() returns -1
-//   // - we reject the connection (too many open)
-//   // *NOTE*: will delete "this" in an ordered way...
-//   return inherited::handle_close(handle_in,
-//                                  mask_in);
-// }
-
 template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::info(ACE_HANDLE& handle_out,
-														 ACE_INET_Addr& localSAP_out,
-														 ACE_INET_Addr& remoteSAP_out)
+																												 ACE_INET_Addr& localSAP_out,
+																												 ACE_INET_Addr& remoteSAP_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::info"));
 
-  handle_out = get_handle();
-  if (peer().get_local_addr(localSAP_out) == -1)
+  handle_out = peer_.get_handle();
+  if (inherited::peer_.get_local_addr(localSAP_out) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
-  if (peer().get_remote_addr(remoteSAP_out) == -1)
+  if (inherited::peer_.get_remote_addr(remoteSAP_out) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
 }
@@ -344,14 +325,6 @@ RPG_Net_SocketHandlerBase<ConfigType,
   myIsInitialized = true;
 }
 
-// const bool
-// RPG_Net_SocketHandlerBase::isRegistered() const
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::isRegistered"));
-//
-//   return myIsRegistered;
-// }
-
 template <typename ConfigType,
           typename StatisticsContainerType>
 void
@@ -360,12 +333,12 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::abort"));
 
-  // call baseclass - will clean everything (including ourselves !) up
-  // --> triggers handle_close()
-  int result = close(1);
+	// close the socket, if any...
+  // *IMPORTANT NOTE*: the reactor cleans everything up...
+	int result = peer_.close();
   if (result == -1)
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_SocketHandlerBase::close(1): \"%m\", continuing\n")));
+               ACE_TEXT("failed to ACE_SOCK_IO::close(): \"%m\", continuing\n")));
 }
 
 template <typename ConfigType,
@@ -378,10 +351,9 @@ RPG_Net_SocketHandlerBase<ConfigType,
 
   // *PORTABILITY*: this isn't entirely portable...
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-  return get_handle();
+  return peer_.get_handle();
 #else
-  // *TODO*: clean this up !
-  return reinterpret_cast<unsigned int>(get_handle());
+  return reinterpret_cast<unsigned int>(peer_.get_handle());
 #endif
 }
 
@@ -397,7 +369,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
   ACE_OS::memset(buffer, 0, sizeof(buffer));
   std::string localAddress;
   ACE_INET_Addr address;
-  if (peer().get_local_addr(address) == -1)
+  if (inherited::peer_.get_local_addr(address) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
   else if (address.addr_to_string(buffer, sizeof(buffer)) == -1)
@@ -406,7 +378,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
   localAddress = buffer;
 
   ACE_OS::memset(buffer, 0, sizeof(buffer));
-  if (peer().get_remote_addr(address) == -1)
+  if (inherited::peer_.get_remote_addr(address) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
   else if (address.addr_to_string(buffer, sizeof(buffer)) == -1)

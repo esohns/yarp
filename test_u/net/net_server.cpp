@@ -65,6 +65,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+	std::cout << ACE_TEXT("-c [VALUE]  : #connections ([") << RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS << ACE_TEXT("])") << std::endl;
   std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_SOCK_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file [") << false << ACE_TEXT("]") << std::endl;
@@ -82,6 +83,7 @@ print_usage(const std::string& programName_in)
 bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
+									unsigned int& maxNumConnections_out,
                   unsigned int& clientPingInterval_out,
                   unsigned int& keepAliveTimeout_out,
                   bool& logToFile_out,
@@ -97,6 +99,7 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+	maxNumConnections_out = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
   clientPingInterval_out = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
   keepAliveTimeout_out = RPG_NET_SOCK_KEEPALIVE;
   logToFile_out = false;
@@ -111,7 +114,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("i:k:ln:op:rs:tvx:"));
+                             ACE_TEXT("c:i:k:ln:op:rs:tvx:"));
 
   int option = 0;
   std::stringstream converter;
@@ -119,6 +122,15 @@ process_arguments(const int argc_in,
   {
     switch (option)
     {
+      case 'c':
+      {
+        converter.clear();
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << argumentParser.opt_arg();
+        converter >> maxNumConnections_out;
+
+        break;
+      }
       case 'i':
       {
         converter.clear();
@@ -281,7 +293,6 @@ init_coreDumping()
     return false;
   } // end IF
 
-//   // debug info
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("corefile limits (before) [soft: \"%u\", hard: \"%u\"]...\n"),
 //              core_limit.rlim_cur,
@@ -309,7 +320,6 @@ init_coreDumping()
     return false;
   } // end IF
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("unset corefile limits [soft: %u, hard: %u]...\n"),
              core_limit.rlim_cur,
@@ -324,124 +334,104 @@ init_coreDumping()
 
 void
 init_signals(const bool& allowUserRuntimeStats_in,
-             std::vector<int>& signals_inout)
+             ACE_Sig_Set& signals_inout)
 {
   RPG_TRACE(ACE_TEXT("::init_signals"));
 
   // init return value(s)
-  signals_inout.clear();
+  if (signals_inout.empty_set() == -1)
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to ACE_Sig_Set::empty_set(): \"%m\", aborting\n")));
 
-  // init list of handled signals...
-  // *PORTABILITY*: on Windows SIGHUP and SIGQUIT are not defined,
-  // so we handle SIGBREAK (21) and SIGABRT (22) instead...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  // *NOTE*: don't handle SIGHUP !!!! --> program will hang !
-  //signals_inout.push_back(SIGHUP);
-#endif
-  signals_inout.push_back(SIGINT);
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  signals_inout.push_back(SIGQUIT);
-#endif
-//   signals_inout.push_back(SIGILL);
-//   signals_inout.push_back(SIGTRAP);
-  signals_inout.push_back(SIGABRT);
-//   signals_inout.push_back(SIGBUS);
-//   signals_inout.push_back(SIGFPE);
-//   signals_inout.push_back(SIGKILL); // cannot catch this one...
-  if (allowUserRuntimeStats_in)
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-    signals_inout.push_back(SIGUSR1);
+		return;
+	} // end IF
+
+  // *PORTABILITY*: on Windows most signals are not defined,
+  // and ACE_Sig_Set::fill_set() doesn't really work as specified
+	// --> add valid signals (see <signal.h>)...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  signals_inout.sig_add(SIGINT);         // 2       /* interrupt */
+	signals_inout.sig_add(SIGILL);         // 4       /* illegal instruction - invalid function image */
+	signals_inout.sig_add(SIGFPE);         // 8       /* floating point exception */
+	signals_inout.sig_add(SIGSEGV);        // 11      /* segment violation */
+	signals_inout.sig_add(SIGTERM);        // 15      /* Software termination signal from kill */
+  signals_inout.sig_add(SIGBREAK);       // 21      /* Ctrl-Break sequence */
+	signals_inout.sig_add(SIGABRT);        // 22      /* abnormal termination triggered by abort call */
+	signals_inout.sig_add(SIGABRT_COMPAT); // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
 #else
-    signals_inout.push_back(SIGBREAK);
+	if (signals_inout.fill_set() == -1)
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to ACE_Sig_Set::fill_set(): \"%m\", aborting\n")));
+
+		return;
+	} // end IF
 #endif
-//   signals_inout.push_back(SIGSEGV);
-//   signals_inout.push_back(SIGUSR2);
-//   signals_inout.push_back(SIGPIPE);
-//   signals_inout.push_back(SIGALRM);
-  signals_inout.push_back(SIGTERM);
-//   signals_inout.push_back(SIGSTKFLT);
-//   signals_inout.push_back(SIGCHLD);
-//   signals_inout.push_back(SIGCONT);
-//   signals_inout.push_back(SIGSTOP); // cannot catch this one...
-//   signals_inout.push_back(SIGTSTP);
-//   signals_inout.push_back(SIGTTIN);
-//   signals_inout.push_back(SIGTTOU);
-//   signals_inout.push_back(SIGURG);
-//   signals_inout.push_back(SIGXCPU);
-//   signals_inout.push_back(SIGXFSZ);
-//   signals_inout.push_back(SIGVTALRM);
-//   signals_inout.push_back(SIGPROF);
-//   signals_inout.push_back(SIGWINCH);
-//   signals_inout.push_back(SIGIO);
-//   signals_inout.push_back(SIGPWR);
-//   signals_inout.push_back(SIGSYS);
-//   signals_inout.push_back(SIGRTMIN);
-//   signals_inout.push_back(SIGRTMIN+1);
-// ...
-//   signals_inout.push_back(SIGRTMAX-1);
-//   signals_inout.push_back(SIGRTMAX);
+
+//  // init list of handled signals...
+//  // *PORTABILITY*: on Windows SIGHUP and SIGQUIT are not defined,
+//  // so we handle SIGBREAK (21) and SIGABRT (22) instead...
+//#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+//  // *NOTE*: don't handle SIGHUP !!!! --> program will hang !
+//  //signals_inout.sig_add(SIGHUP);
+//#endif
+//  signals_inout.sig_add(SIGINT);
+//#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+//  signals_inout.sig_add(SIGQUIT);
+//#endif
+////   signals_inout.sig_add(SIGILL);
+////   signals_inout.sig_add(SIGTRAP);
+//  signals_inout.sig_add(SIGABRT);
+////   signals_inout.sig_add(SIGBUS);
+////   signals_inout.sig_add(SIGFPE);
+////   signals_inout.sig_add(SIGKILL); // cannot catch this one...
+//  if (allowUserRuntimeStats_in)
+//#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+//    signals_inout.sig_add(SIGUSR1);
+//#else
+//    signals_inout.sig_add(SIGBREAK);
+//#endif
+////   signals_inout.sig_add(SIGSEGV);
+////   signals_inout.sig_add(SIGUSR2);
+////   signals_inout.sig_add(SIGPIPE);
+////   signals_inout.sig_add(SIGALRM);
+//  signals_inout.sig_add(SIGTERM);
+////   signals_inout.sig_add(SIGSTKFLT);
+////   signals_inout.sig_add(SIGCHLD);
+////   signals_inout.sig_add(SIGCONT);
+////   signals_inout.sig_add(SIGSTOP); // cannot catch this one...
+////   signals_inout.sig_add(SIGTSTP);
+////   signals_inout.sig_add(SIGTTIN);
+////   signals_inout.sig_add(SIGTTOU);
+////   signals_inout.sig_add(SIGURG);
+////   signals_inout.sig_add(SIGXCPU);
+////   signals_inout.sig_add(SIGXFSZ);
+////   signals_inout.sig_add(SIGVTALRM);
+////   signals_inout.sig_add(SIGPROF);
+////   signals_inout.sig_add(SIGWINCH);
+////   signals_inout.sig_add(SIGIO);
+////   signals_inout.sig_add(SIGPWR);
+////   signals_inout.sig_add(SIGSYS);
+////   signals_inout.sig_add(SIGRTMIN);
+////   signals_inout.sig_add(SIGRTMIN+1);
+//// ...
+////   signals_inout.sig_add(SIGRTMAX-1);
+////   signals_inout.sig_add(SIGRTMAX);
 }
 
 void
-init_signalHandling(const std::vector<int>& signals_in,
+init_signalHandling(ACE_Sig_Set& signals_in,
                     Net_Server_SignalHandler& eventHandler_in,
-                    ACE_Sig_Handlers& signalDispatcher_in,
-                    std::vector<ACE_Sig_Action>& previousActions_out,
-                    std::vector<int>& sigKeys_out,
                     const bool& useReactor_in)
 {
   RPG_TRACE(ACE_TEXT("::init_signalHandling"));
 
-  // init return value(s)
-  previousActions_out.clear();
-  sigKeys_out.clear();
+	// *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a multithreaded
+  //                   application, the disposition of a particular signal is the same for
+  //                   all threads." (see man 7 signal)
 
-  // step1: register signal handlers for the list of signals
-
-  // specify (default) action...
-  // *IMPORTANT NOTE* don't actually need to keep this around after registration
-  ACE_Sig_Action signal_action(static_cast<ACE_SignalHandler>(SIG_DFL), // default action
-                               ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
-                                                                        // --> block them all (bar KILL/STOP; see manual)
-                               (SA_RESTART | SA_SIGINFO));              // default flags
-
-  // register different signals...
-  int sig_key = -1;
-  ACE_Event_Handler* previous_handler = NULL;
-  for (std::vector<int>::const_iterator iterator = signals_in.begin();
-       iterator != signals_in.end();
-       iterator++)
-  {
-    sig_key = -1;
-    previous_handler = NULL;
-    ACE_Sig_Action previous_action;
-    sig_key = signalDispatcher_in.register_handler(*iterator,         // signal
-                                                   &eventHandler_in,  // new handler
-                                                   &signal_action,    // new action
-                                                   &previous_handler, // previous handler
-                                                   &previous_action); // previous action
-    if (sig_key == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\"): \"%m\", continuing\n"),
-                 *iterator));
-
-    previousActions_out.push_back(previous_action);
-    sigKeys_out.push_back(sig_key);
-
-    // debug info
-    if (sig_key != -1)
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("registered handler for \"%S\" (key: %d)...\n"),
-                 *iterator,
-                 sig_key));
-  } // end FOR
-
-//  // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("handling %d signal(s)...\n"),
-//              signals_inout.size()));
-
-  // step2: ignore SIGPIPE: need this to continue gracefully after a client
+  // step1: ignore SIGPIPE: need this to continue gracefully after a client
   // suddenly disconnects (i.e. application/system crash, etc...)
   // --> specify ignore action
   // *IMPORTANT NOTE*: don't actually need to keep this around after registration
@@ -455,11 +445,85 @@ init_signalHandling(const std::vector<int>& signals_in,
   if (ignore_action.register_action(SIGPIPE, &previous_action) == -1)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("failed to ACE_Sig_Action::register_action(SIGPIPE): \"%m\", continuing\n")));
-  previousActions_out.push_back(previous_action);
-  sigKeys_out.push_back(-1);
 
-  // step3: block SIGRTMIN IFF on Linux AND using the ACE_POSIX_SIG_Proactor (the default)
-  // *IMPORTANT NOTE*: proactor implementation collects the signals in dispatching threads
+  // step2: block SIGRTMIN IFF on Linux AND using the ACE_POSIX_SIG_Proactor (the default)
+  // *IMPORTANT NOTE*: proactor implementation dispatches the signals in worker thread(s)
+  if (RPG_Common_Tools::isLinux() && !useReactor_in)
+  {
+    sigset_t signal_set;
+    if (ACE_OS::sigemptyset(&signal_set) == - 1)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to ACE_OS::sigemptyset(): \"%m\", aborting\n")));
+
+      return;
+    } // end IF
+    for (int i = ACE_SIGRTMIN;
+         i <= ACE_SIGRTMAX;
+         i++)
+		{
+      if (ACE_OS::sigaddset(&signal_set, i) == -1)
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to ACE_OS::sigaddset(): \"%m\", aborting\n")));
+
+        return;
+      } // end IF
+			if (signals_in.sig_del(i) == -1)
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to ACE_Sig_Set::sig_del(%S): \"%m\", aborting\n"),
+									 i));
+
+        return;
+      } // end IF
+		} // end IF
+    if (ACE_OS::thr_sigsetmask(SIG_BLOCK, &signal_set, NULL) == -1)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
+
+      return;
+    } // end IF
+  } // end IF
+
+  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
+  ACE_Sig_Action new_action(static_cast<ACE_SignalHandler>(SIG_DFL), // default action
+                            ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
+                                                                     // --> block them all (bar KILL/STOP; see manual)
+                            (SA_RESTART | SA_SIGINFO));              // flags
+	if (ACE_Reactor::instance()->register_handler(signals_in,
+		                                            &eventHandler_in,
+																								&new_action) == -1)
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%m\", aborting\n")));
+
+		return;
+	} // end IF
+}
+
+void
+fini_signalHandling(ACE_Sig_Set& signals_in,
+                    const bool& useReactor_in)
+{
+  RPG_TRACE(ACE_TEXT("::fini_signalHandling"));
+
+  // step1: reset SIGPIPE handling to default behaviour
+  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
+  // *NOTE*: do NOT restart system calls in this case (see manual)
+  ACE_Sig_Action default_action(static_cast<ACE_SignalHandler>(SIG_DFL), // default action
+                                ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
+                                                                         // --> block them all (bar KILL/STOP; see manual)
+                                SA_SIGINFO);                             // flags
+//                               (SA_RESTART | SA_SIGINFO));              // flags
+  ACE_Sig_Action previous_action;
+  if (default_action.register_action(SIGPIPE, &previous_action) == -1)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to ACE_Sig_Action::register_action(SIGPIPE): \"%m\", continuing\n")));
+
+  // step2: unblock SIGRTMIN IFF on Linux AND using the ACE_POSIX_SIG_Proactor (the default)
+  // *IMPORTANT NOTE*: proactor implementation dispatches the signals in worker thread(s)
   if (RPG_Common_Tools::isLinux() && !useReactor_in)
   {
     sigset_t signal_set;
@@ -480,7 +544,7 @@ init_signalHandling(const std::vector<int>& signals_in,
 
         return;
       } // end IF
-    if (ACE_OS::thr_sigsetmask(SIG_BLOCK, &signal_set, NULL) == -1)
+    if (ACE_OS::thr_sigsetmask(SIG_UNBLOCK, &signal_set, NULL) == -1)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
@@ -488,59 +552,20 @@ init_signalHandling(const std::vector<int>& signals_in,
       return;
     } // end IF
   } // end IF
-}
-
-void
-fini_signalHandling(const std::vector<int>& signals_in,
-                    ACE_Sig_Handlers& signalDispatcher_in,
-                    const std::vector<ACE_Sig_Action>& actions_in,
-                    const std::vector<int> sigKeys_in,
-                    const bool& useReactor_in)
-{
-  RPG_TRACE(ACE_TEXT("::fini_signalHandling"));
 
   // restore previous signal handlers
-  // register different signals...
-  std::vector<ACE_Sig_Action>::const_iterator action_iterator = actions_in.begin();
-  std::vector<int>::const_iterator key_iterator = sigKeys_in.begin();
-  int success = -1;
-  for (std::vector<int>::const_iterator iterator = signals_in.begin();
-       iterator != signals_in.end();
-       iterator++, action_iterator++, key_iterator++)
-  {
-    success = signalDispatcher_in.remove_handler(*iterator,                                      // signal
-                                                 &const_cast<ACE_Sig_Action&>(*action_iterator), // new (== previous) disposition
-                                                 NULL,                                           // previous disposition, don't care
-                                                 *key_iterator);                                 // sigkey
-    if (success == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Sig_Handlers::remove_handler(\"%S\"): \"%m\", continuing\n"),
-                 *iterator));
-    else
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("restored handler for \"%S\" (key: %d)...\n"),
-                 *iterator,
-                 *key_iterator));
-  } // end FOR
+	if (ACE_Reactor::instance()->remove_handler(signals_in) == -1)
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%m\", aborting\n")));
 
-  // restore previous SIGPIPE handler
- action_iterator++; key_iterator++;
- success = signalDispatcher_in.remove_handler(SIGPIPE,                                         // signal
-                                              &const_cast<ACE_Sig_Action&>(*action_iterator),  // new (== previous) disposition
-                                              NULL,                                            // previous disposition, don't care
-                                              *key_iterator);                                  // sigkey
- if (success == -1)
-   ACE_DEBUG((LM_ERROR,
-              ACE_TEXT("failed to ACE_Sig_Handlers::remove_handler(\"%S\"): \"%m\", continuing\n"),
-              SIGPIPE));
- else
-   ACE_DEBUG((LM_DEBUG,
-              ACE_TEXT("restored handler for \"%S\"...\n"),
-              SIGPIPE));
+		return;
+	} // end IF
 }
 
 void
-do_work(const unsigned int& pingInterval_in,
+do_work(const unsigned int& maxNumConnections_in,
+        const unsigned int& pingInterval_in,
         const std::string& networkInterface_in,
 				const bool& useLoopback_in,
         const unsigned short& listeningPortNumber_in,
@@ -550,57 +575,45 @@ do_work(const unsigned int& pingInterval_in,
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-  // step1: signal handling
-	RPG_Net_Server_IListener* listener_handle = NULL;
-	if (useReactor_in)
-		listener_handle = RPG_NET_SERVER_LISTENER_SINGLETON::instance();
-	else
-		listener_handle = RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance();
-  // event handler for signals
-  Net_Server_SignalHandler signal_handler(listener_handle,
-                                          RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
-  ACE_Sig_Handlers signal_dispatcher;
-  // *WARNING*: 'signals' appears to be a keyword in some contexts...
-  std::vector<int> signalss;
-  init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK IF regular reporting is off
-               signalss);
-  std::vector<ACE_Sig_Action> previous_actions;
-  std::vector<int> sig_keys;
-  init_signalHandling(signalss,
-                      signal_handler,
-                      signal_dispatcher,
-                      previous_actions,
-                      sig_keys,
-                      useReactor_in);
-
-  // step2: init regular (global) stats reporting
-  // event handler for timer
-  long timerID = -1;
+  // step1: init regular (global) stats reporting
+  long timer_id = -1;
   RPG_Net_StatisticHandler_Reactor_t statistics_handler(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance(),
                                                         RPG_Net_StatisticHandler_Reactor_t::ACTION_REPORT);
   if (statisticsReportingInterval_in)
   {
     ACE_Time_Value interval(statisticsReportingInterval_in, 0);
-    timerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&statistics_handler,
-                                                                      NULL,
-                                                                      ACE_OS::gettimeofday () + interval,
-                                                                      interval);
-    if (timerID == -1)
+    timer_id = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&statistics_handler,
+                                                                       NULL,
+                                                                       ACE_OS::gettimeofday () + interval,
+                                                                       interval);
+    if (timer_id == -1)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to schedule timer: \"%m\", aborting\n")));
 
       // clean up
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-      fini_signalHandling(signalss,
-                          signal_dispatcher,
-                          previous_actions,
-                          sig_keys,
-                          useReactor_in);
 
       return;
     } // end IF
   } // end IF
+
+  // step2: signal handling
+	RPG_Net_Server_IListener* listener_handle = NULL;
+	if (useReactor_in)
+		listener_handle = RPG_NET_SERVER_LISTENER_SINGLETON::instance();
+	else
+		listener_handle = RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance();
+  // event handler for signals
+  Net_Server_SignalHandler signal_handler(timer_id,
+		                                      listener_handle,
+                                          RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
+	ACE_Sig_Set signal_set(0);
+	init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK IF regular reporting is off
+               signal_set);
+  init_signalHandling(signal_set,
+                      signal_handler,
+                      useReactor_in);
 
   // step3a: init stream configuration object
   RPG_Stream_AllocatorHeap heapAllocator;
@@ -620,7 +633,7 @@ do_work(const unsigned int& pingInterval_in,
   config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
   // step3b: init connection manager
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS);
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(maxNumConnections_in);
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
@@ -640,15 +653,12 @@ do_work(const unsigned int& pingInterval_in,
 
     // clean up
     if (statisticsReportingInterval_in)
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id, NULL) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   timerID));
+                   timer_id));
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-    fini_signalHandling(signalss,
-                        signal_dispatcher,
-                        previous_actions,
-                        sig_keys,
+    fini_signalHandling(signal_set,
                         useReactor_in);
 
     return;
@@ -669,15 +679,12 @@ do_work(const unsigned int& pingInterval_in,
                                             !useReactor_in,
                                             group_id);
     if (statisticsReportingInterval_in)
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id, NULL) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   timerID));
+                   timer_id));
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-    fini_signalHandling(signalss,
-                        signal_dispatcher,
-                        previous_actions,
-                        sig_keys,
+    fini_signalHandling(signal_set,
                         useReactor_in);
 
     return;
@@ -714,24 +721,11 @@ do_work(const unsigned int& pingInterval_in,
              ACE_TEXT("finished event dispatch...\n")));
 
   // clean up
-  if (useReactor_in)
-    RPG_NET_SERVER_LISTENER_SINGLETON::instance()->stop();
-  else
-    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance()->stop();
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-
-  if (statisticsReportingInterval_in)
-    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timerID, NULL) <= 0)
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                 timerID));
-  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-  fini_signalHandling(signalss,
-                      signal_dispatcher,
-                      previous_actions,
-                      sig_keys,
+	// *NOTE*: listener has stopped, interval timer has been cancelled,
+	// and connections have been aborted...
+  fini_signalHandling(signal_set,
                       useReactor_in);
+  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -788,6 +782,7 @@ ACE_TMAIN(int argc,
 //#endif
 
   // step1a set defaults
+	unsigned int maxNumConnections           = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
   unsigned int pingInterval                = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
   unsigned int keepAliveTimeout            = RPG_NET_SOCK_KEEPALIVE;
   bool logToFile                           = false;
@@ -803,6 +798,7 @@ ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!process_arguments(argc,
                          argv,
+												 maxNumConnections,
                          pingInterval,
                          keepAliveTimeout,
                          logToFile,
@@ -917,7 +913,8 @@ ACE_TMAIN(int argc,
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(pingInterval,
+  do_work(maxNumConnections,
+		      pingInterval,
           networkInterface,
 					useLoopback,
           listeningPortNumber,
@@ -932,7 +929,6 @@ ACE_TMAIN(int argc,
   timer.elapsed_time(working_time);
   RPG_Common_Tools::period2String(working_time,
                                   working_time_string);
-
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              working_time_string.c_str()));

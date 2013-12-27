@@ -32,8 +32,8 @@ class RPG_Stream_SessionConfigBase
 {
  public:
   RPG_Stream_SessionConfigBase(const DataType&,                              // user data
-                           const ACE_Time_Value& = ACE_Time_Value::zero, // "official" start of session
-                           const bool& = false);                         // session ended because of user abort ?
+                               const ACE_Time_Value& = ACE_Time_Value::zero, // "official" start of session
+                               const bool& = false);                         // session ended because of user abort ?
   virtual ~RPG_Stream_SessionConfigBase();
 
   // info

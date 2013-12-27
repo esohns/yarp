@@ -56,7 +56,7 @@ class RPG_Stream_Export RPG_Stream_Counter
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Counter(const RPG_Stream_Counter&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Counter& operator=(const RPG_Stream_Counter&));
 
-  unsigned long                             myCounter;
+  unsigned int                              myCounter;
   // implement blocking wait...
   ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 };

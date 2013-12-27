@@ -36,8 +36,8 @@ RPG_Stream_TaskBase<SessionMessageType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::RPG_Stream_TaskBase"));
 
-  // use the default reactor...
-  reactor(ACE_Reactor::instance());
+  //// use the default reactor...
+  //reactor(ACE_Reactor::instance());
 }
 
 template <typename SessionMessageType,
@@ -188,9 +188,7 @@ RPG_Stream_TaskBase<SessionMessageType,
   {
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_STEP:
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
-    {
       break;
-    }
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
       try
@@ -212,9 +210,7 @@ RPG_Stream_TaskBase<SessionMessageType,
       break;
     }
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS:
-    {
       break;
-    }
     default:
     {
       std::string type_string;

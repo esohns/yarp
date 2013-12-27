@@ -43,6 +43,7 @@ class RPG_Net_Client_Export RPG_Net_Client_Connector
   virtual int make_svc_handler(RPG_Net_StreamHandler_t*&);
 
 	// implement RPG_Net_Client_IConnector
+	virtual void abort();
   virtual void connect(const ACE_INET_Addr&);
 
  private:

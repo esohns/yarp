@@ -35,12 +35,13 @@ RPG_Net_Connection_Manager<ConfigType,
 //                NULL),
    myMaxNumConnections(RPG_NET_MAX_NUM_OPEN_CONNECTIONS),
    myUserData(),
-   myIsInitialized(false)
+   myIsInitialized(false),
+	 myIsActive(true)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::RPG_Net_Connection_Manager"));
 
-//   // init user data
-//   ACE_OS::memset(&myUserData, 0, sizeof(ConfigType));
+  // init user data
+  ACE_OS::memset(&myUserData, 0, sizeof(myUserData));
 }
 
 template <typename ConfigType,
@@ -57,7 +58,11 @@ RPG_Net_Connection_Manager<ConfigType,
 
     if (!myConnections.is_empty())
     {
-      // *NOTE*: we should NEVER get here; this is just a precaution !
+      // *NOTE*: we should NEVER get here !
+			ACE_DEBUG((LM_WARNING,
+								 ACE_TEXT("%u connections still open --> check implementation !, continuing\n"),
+								 myConnections.size()));
+
       abortConnections();
     } // end IF
   } // end lock scope
@@ -93,6 +98,45 @@ RPG_Net_Connection_Manager<ConfigType,
 
 template <typename ConfigType,
           typename StatisticsContainerType>
+void
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::start()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::start"));
+
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+  myIsActive = true;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+void
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::stop()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::stop"));
+
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+  myIsActive = false;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+bool
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::isRunning() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::stop"));
+
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+  return myIsActive;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
 bool
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::registerConnection(CONNECTION_TYPE* connection_in)
@@ -106,12 +150,15 @@ RPG_Net_Connection_Manager<ConfigType,
   {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
+		if (!myIsActive)
+			return false; // currently rejecting new connections...
+
     if (myConnections.size() >= myMaxNumConnections)
     {
       // max reached
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("rejecting connection (maximum count of %u has been reached), aborting\n"),
-//                  myMaxNumConnections));
+      //ACE_DEBUG((LM_DEBUG,
+      //           ACE_TEXT("rejecting connection (maximum count [%u] has been reached), aborting\n"),
+      //           myMaxNumConnections));
 
       return false;
     } // end IF
@@ -160,7 +207,7 @@ RPG_Net_Connection_Manager<ConfigType,
 #endif */
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("registered connection [%@] (total: %u)...\n"),
-			   connection_in,
+							 connection_in,
                myConnections.size()));
   } // end lock scope
 
@@ -192,13 +239,9 @@ RPG_Net_Connection_Manager<ConfigType,
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   CONNECTION_TYPE* connection = NULL;
-//   for (CONNECTIONLIST_ITERATOR_TYPE iter = myConnections.begin();
-//        iter != myConnections.end();
-//        iter++)
-  for (ACE_DLList_Iterator<CONNECTION_TYPE> iterator(myConnections);
+  for (CONNECTIONLIST_ITERATOR_TYPE iterator(myConnections);
        iterator.next(connection);
        iterator.advance())
-  {
     if (connection == connection_in)
     {
       found = true;
@@ -212,7 +255,6 @@ RPG_Net_Connection_Manager<ConfigType,
 
       break;
     } // end IF
-  } // end FOR
 
   if (!found)
   {
@@ -225,7 +267,7 @@ RPG_Net_Connection_Manager<ConfigType,
   } // end IF
   else
   {  // if there are no more connections, signal any waiters...
-    if (myConnections.is_empty())
+    if (myConnections.is_empty() == 1)
       myCondition.broadcast();
   } // end ELSE
 }
@@ -242,46 +284,34 @@ RPG_Net_Connection_Manager<ConfigType,
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   // sanity check: anything to do ?
-  if (myConnections.is_empty())
-  {
-    //ACE_DEBUG((LM_DEBUG,
-    //           ACE_TEXT("nothing to do, returning\n")));
-
+  if (myConnections.is_empty() == 1)
     return;
-  } // end IF
 
-  unsigned long num_clients = myConnections.size();
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("aborting %u connections(s)...\n"),
-             num_clients));
+             myConnections.size()));
 
   CONNECTION_TYPE* connection = NULL;
-//   for (ACE_DLList_Iterator<CONNECTION_TYPE> iterator(myConnections);
-//        iterator.next(connection);
-//        iterator.advance())
-//   CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
-  do
-  {
-    connection = NULL;
-    if (myConnections.get(connection) != -1)
+  for (CONNECTIONLIST_ITERATOR_TYPE iterator(myConnections);
+       iterator.next(connection);
+       iterator.advance())
+	{
+		ACE_ASSERT(connection);
+    try
     {
-      try
-      {
-        // close connection
-        // *NOTE*: implicitly, this invokes deregisterConnection
-        connection->abort();
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
-      }
-    } // end IF
-  } while (!myConnections.is_empty());
+      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a reactor thread, if any
+      connection->abort();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
+    }
+	} // end FOR
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("aborting %u connection(s)...DONE\n"),
-             num_clients));
+             myConnections.size()));
 }
 
 template <typename ConfigType,
@@ -296,7 +326,7 @@ RPG_Net_Connection_Manager<ConfigType,
     // need lock
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
-    while (!myConnections.is_empty())
+    while (myConnections.is_empty() == 0)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("waiting for (count: %d) connection(s) to close...\n"),
@@ -318,7 +348,7 @@ RPG_Net_Connection_Manager<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numConnections"));
 
-  unsigned long num_connections = 0;
+  size_t num_connections = 0;
   // synch access to myConnections
   {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
@@ -326,7 +356,7 @@ RPG_Net_Connection_Manager<ConfigType,
     num_connections = myConnections.size();
   } // end lock scope
 
-  return num_connections;
+  return static_cast<unsigned int>(num_connections);
 }
 
 template <typename ConfigType,
@@ -341,13 +371,8 @@ RPG_Net_Connection_Manager<ConfigType,
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   // sanity check: anything to do ?
-  if (myConnections.is_empty())
-  {
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("nothing to do, returning\n")));
-
+  if (myConnections.is_empty() == 1)
     return;
-  } // end IF
 
   // close "oldest" connection --> list head
   CONNECTION_TYPE* connection = NULL;
@@ -355,7 +380,40 @@ RPG_Net_Connection_Manager<ConfigType,
   {
     try
     {
-      // implicitly invokes deregisterConnection
+      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a reactor thread, if any
+      connection->abort();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
+    }
+  } // end IF
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+void
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::abortNewestConnection()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortNewestConnection"));
+
+  // synch access to myConnections
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+  // sanity check: anything to do ?
+  if (myConnections.is_empty() == 1)
+    return;
+
+  // close "newest" connection --> list tail
+  CONNECTION_TYPE* connection = NULL;
+	CONNECTIONLIST_REVERSEITERATOR_TYPE iterator(myConnections);
+  if (iterator.next(connection) == 1)
+  {
+    try
+    {
+      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a reactor thread, if any
       connection->abort();
     }
     catch (...)
@@ -375,28 +433,19 @@ RPG_Net_Connection_Manager<ConfigType,
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::collect"));
 
   // init result
-  ACE_OS::memset(&data_out,
-                 0,
-                 sizeof(StatisticsContainerType));
+  ACE_OS::memset(&data_out, 0, sizeof(data_out));
 
   StatisticsContainerType temp;
   // aggregate statistical data
   // *WARNING*: this assumes we're holding our lock !
   CONNECTION_TYPE* connection = NULL;
-  for (CONNECTIONLIST_ITERATOR_TYPE iterator(const_cast<ACE_DLList<CONNECTION_TYPE>&> (myConnections));
+  for (CONNECTIONLIST_ITERATOR_TYPE iterator(const_cast<CONNECTIONLIST_TYPE&>(myConnections));
        iterator.next(connection);
        iterator.advance())
-//   for (CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
-//        iter != myConnections.end();
-//        iter++)
   {
-    ACE_OS::memset(&temp,
-                   0,
-                   sizeof(StatisticsContainerType));
-
-    // collect information
+    ACE_OS::memset(&temp, 0, sizeof(temp));
     try
-    {
+    { // collect information
       connection->collect(temp);
     }
     catch (...)
@@ -421,22 +470,15 @@ RPG_Net_Connection_Manager<ConfigType,
 
   // init result
   StatisticsContainerType result;
-  ACE_OS::memset(&result,
-                 0,
-                 sizeof(StatisticsContainerType));
+  ACE_OS::memset(&result, 0, sizeof(result));
 
   // synch access to myConnections
   {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
     // sanity check: anything to do ?
-    if (myConnections.is_empty())
-    {
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("nothing to do, returning\n")));
-
+    if (myConnections.is_empty() == 1)
       return;
-    } // end IF
 
     // collect (aggregated) data from our active connections
     if (!collect(result))
@@ -448,7 +490,6 @@ RPG_Net_Connection_Manager<ConfigType,
       return;
     } // end IF
 
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("*** RUNTIME STATISTICS ***\n--> [%u] Connection(s) <--\n # data messages: %u (avg.: %u)\ndata: %.0f (avg.: %.2f) bytes\n*** RUNTIME STATISTICS ***\\END\n"),
                myConnections.size(),
@@ -471,16 +512,12 @@ RPG_Net_Connection_Manager<ConfigType,
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   CONNECTION_TYPE* connection = NULL;
-  for (CONNECTIONLIST_ITERATOR_TYPE iterator(const_cast<ACE_DLList<CONNECTION_TYPE>&> (myConnections));
+  for (CONNECTIONLIST_ITERATOR_TYPE iterator(const_cast<CONNECTIONLIST_TYPE&>(myConnections));
        iterator.next(connection);
        iterator.advance())
-//   for (CONNECTIONLIST_CONSTITERATOR_TYPE iter = myConnections.begin();
-//        iter != myConnections.end();
-//        iter++)
   {
-    // dump connection information
     try
-    {
+    { // dump connection information
       connection->dump_state();
     }
     catch (...)

@@ -25,19 +25,29 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common_icontrol.h"
+#include "rpg_common_timer_manager.h"
 
+#include <ace/Assert.h>
 #include <ace/Reactor.h>
 #include <ace/Proactor.h>
 #include <ace/Log_Msg.h>
 
+#include <string>
 #include <sstream>
 
-Net_Server_SignalHandler::Net_Server_SignalHandler(RPG_Common_IControl* control_in,
-                                                   RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* report_in)
- : inherited(ACE_Reactor::instance(),         // corresp. reactor
+Net_Server_SignalHandler::Net_Server_SignalHandler(const long& timerID_in,
+	                                                 RPG_Common_IControl* control_in,
+                                                   RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* report_in,
+																									 const bool& useReactor_in)
+ : inherited(NULL,                            // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
+	 myTimerID(timerID_in),
    myControl(control_in),
-   myReport(report_in)
+   myReport(report_in),
+   myUseReactor(useReactor_in),
+	 mySignal(-1),
+	 mySigInfo(ACE_INVALID_HANDLE),
+	 myUContext(-1)
 {
   RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::Net_Server_SignalHandler"));
 
@@ -58,33 +68,45 @@ Net_Server_SignalHandler::handle_signal(int signal_in,
 {
   RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::handle_signal"));
 
-  // debug info
-  if (info_in == NULL)
-  {
-    //// *PORTABILITY*: tracing in a signal handler context is not portable
-    //ACE_DEBUG((LM_DEBUG,
-    //           ACE_TEXT("%D: received [%S], but no siginfo_t was available, continuing\n"),
-    //           signal_in));
-  } // end IF
-  else
-  {
-    // collect some context information...
-    std::string information;
-    RPG_Net_Common_Tools::retrieveSignalInfo(signal_in,
-                                             *info_in,
-                                             context_in,
-                                             information);
+	// *IMPORTANT NOTE*: in signal context, most actions are forbidden, so save
+	// the state and notify the reactor/proactor for callback instead (see below)
 
-    //// *PORTABILITY*: tracing in a signal handler context is not portable
-    //ACE_DEBUG((LM_DEBUG,
-    //           ACE_TEXT("%D: received [%S]: %s\n"),
-    //           signal_in,
-    //           information.c_str()));
-  } // end ELSE
+	// save state
+	mySignal = signal_in;
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+	mySigInfo.si_handle_ = static_cast<ACE_HANDLE>(info_in);
+#else
+	mySigInfo = *info_in;
+#endif
+	if (context_in)
+	  myUContext = *context_in;
+
+	// schedule the reactor (see below)
+	ACE_Reactor::instance()->notify(this);
+
+	return 0;
+}
+
+int
+Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
+{
+  RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::handle_exception"));
+
+  // collect some context information...
+  std::string information;
+  RPG_Net_Common_Tools::retrieveSignalInfo(mySignal,
+                                           mySigInfo,
+                                           &myUContext,
+                                           information);
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("%D: received [%S]: %s\n"),
+             mySignal,
+             information.c_str()));
 
   bool stop_event_dispatching = false;
   bool report = false;
-  switch (signal_in)
+  switch (mySignal)
   {
     case SIGINT:
     case SIGTERM:
@@ -94,9 +116,8 @@ Net_Server_SignalHandler::handle_signal(int signal_in,
     case SIGQUIT:
 #endif
     {
-//       // *PORTABILITY*: tracing in a signal handler context is not portable
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("shutting down...\n")));
+      //ACE_DEBUG((LM_DEBUG,
+      //           ACE_TEXT("shutting down...\n")));
 
       // shutdown...
       stop_event_dispatching = true;
@@ -124,10 +145,9 @@ Net_Server_SignalHandler::handle_signal(int signal_in,
       break;
     default:
     {
-      //// *PORTABILITY*: tracing in a signal handler context is not portable
-      //ACE_DEBUG((LM_ERROR,
-      //           ACE_TEXT("received unknown signal: \"%S\", continuing\n"),
-      //           signal_in));
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("received invalid/unknown signal: \"%S\", continuing\n"),
+                 mySignal));
 
       break;
     }
@@ -156,20 +176,10 @@ Net_Server_SignalHandler::handle_signal(int signal_in,
   if (stop_event_dispatching)
   {
     // stop everything, i.e.
-    // - leave reactor event loop handling signals, sockets (listeners), maintenance timers...
-    // - break out of any (blocking) calls
+    // - leave reactor event loop handling signals, sockets, (maintenance) timers...
     // --> (try to) terminate in a well-behaved manner
 
-    // step1: stop reactor
-    if ((reactor()->end_event_loop() == -1) ||
-        (ACE_Proactor::instance()->end_event_loop() == -1))
-    {
-      //// *PORTABILITY*: tracing in a signal handler context is not portable
-      //ACE_DEBUG((LM_ERROR,
-      //           ACE_TEXT("failed to terminate event handling: \"%m\", continuing\n")));
-    } // end IF
-
-    // step2: invoke our controller (if any)
+		// step1: invoke our controller (if any)
     if (myControl)
     {
       try
@@ -178,15 +188,39 @@ Net_Server_SignalHandler::handle_signal(int signal_in,
       }
       catch (...)
       {
-        //// *PORTABILITY*: tracing in a signal handler context is not portable
-        //ACE_DEBUG((LM_ERROR,
-        //           ACE_TEXT("caught exception in RPG_Common_IControl::stop(), continuing\n")));
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Common_IControl::stop(), continuing\n")));
       }
     } // end IF
 
-    // de-register ourselves from the reactor...
-    return -1;
-  } // end IF
+		// step2: stop timer
+		if (myTimerID >= 0)
+		{
+			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myTimerID, NULL) <= 0)
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                   myTimerID));
+			myTimerID = -1;
+		} // end IF
+
+		// step3: stop/abort/wait for connections
+		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->stop();
+		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+
+    // step4: stop reactor (&& proactor, if applicable)
+		int result = ACE_Reactor::instance()->end_event_loop();
+    if (result == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
+    if (!myUseReactor)
+		{
+			result = ACE_Proactor::instance()->end_event_loop();
+      if (result == -1)
+				ACE_DEBUG((LM_ERROR,
+				           ACE_TEXT("failed to ACE_Proactor::end_event_loop(): \"%m\", continuing\n")));
+    } // end IF
+	} // end IF
 
   return 0;
 }

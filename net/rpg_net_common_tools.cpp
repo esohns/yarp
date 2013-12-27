@@ -55,21 +55,24 @@ tp_event_dispatcher_func(void* args_in)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("(%t) worker starting...\n")));
 
-  // ignore SIGPIPE: need this to continue gracefully after a client
-  // suddenly disconnects (i.e. application/system crash, etc...)
-  // --> specify ignore action
-  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
-  // *WARNING*: do NOT restart system calls in this case (see manual)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN),
-                            ACE_Sig_Set(1),                          // mask of signals to be blocked while servicing
-                                                                     // --> block them all ! (except KILL off course...)
-                            SA_SIGINFO);                             // flags
-//                            (SA_RESTART | SA_SIGINFO));              // flags
-  ACE_Sig_Action original_action;
-  if (no_sigpipe.register_action(SIGPIPE, &original_action) == -1)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("failed to ACE_Sig_Action::register_action(SIGPIPE): \"%m\", continuing\n")));
-
+	// *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a multithreaded
+  //                   application, the disposition of a particular signal is the same for
+  //                   all threads." (see man 7 signal)
+//  // ignore SIGPIPE: need this to continue gracefully after a client
+//  // suddenly disconnects (i.e. application/system crash, etc...)
+//  // --> specify ignore action
+//  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
+//  // *NOTE*: do NOT restart system calls in this case (see manual)
+//  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN), // ignore action
+//                            ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
+//                                                                     // --> block them all (bar KILL/STOP; see manual)
+//                            SA_SIGINFO);                             // flags
+////                               (SA_RESTART | SA_SIGINFO));              // flags
+//  ACE_Sig_Action original_action;
+//  if (no_sigpipe.register_action(SIGPIPE, &original_action) == -1)
+//    ACE_DEBUG((LM_DEBUG,
+//               ACE_TEXT("failed to ACE_Sig_Action::register_action(SIGPIPE): \"%m\", continuing\n")));
+//
   int success = -1;
   // handle any events...
   if (use_reactor)
@@ -80,16 +83,14 @@ tp_event_dispatcher_func(void* args_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
 
-  // clean up
-  if (no_sigpipe.restore_action(SIGPIPE, original_action) == -1)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("failed to ACE_Sig_Action::restore_action(SIGPIPE): \"%m\", continuing\n")));
+  //// clean up
+  //if (no_sigpipe.restore_action(SIGPIPE, original_action) == -1)
+  //  ACE_DEBUG((LM_DEBUG,
+  //             ACE_TEXT("failed to ACE_Sig_Action::restore_action(SIGPIPE): \"%m\", continuing\n")));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("(%t) worker leaving...\n")));
 
-  // *PORTABILITY*
-  // *TODO*
   return (success == 0 ? NULL : NULL);
 }
 
@@ -1220,12 +1221,10 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
     size /= 2;
 
     if (size_in % 2)
-    { // debug info
       ACE_DEBUG((LM_WARNING,
                  ACE_TEXT("requested %s buffer size %u is ODD...\n"),
                  ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
                  size_in));
-    } // end IF
   } // end IF
 
   if (ACE_OS::setsockopt(handle_in,
@@ -1234,10 +1233,12 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                          reinterpret_cast<const char*>(&size),
                          sizeof(int)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::setsockopt(%u, %s): \"%m\", aborting\n"),
-               handle_in,
-               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
+		int error = ACE_OS::last_error();
+		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::setsockopt(%u, %s): \"%m\", aborting\n"),
+                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+                 ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 
     return false;
   } // end IF
@@ -1251,10 +1252,12 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                          reinterpret_cast<char*>(&size),
                          &retsize))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getsockopt(%u, %s): \"%m\", aborting\n"),
-               handle_in,
-               ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
+		int error = ACE_OS::last_error();
+		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::getsockopt(%u, %s): \"%m\", aborting\n"),
+                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+                 ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 
     return false;
   } // end IF
@@ -1262,9 +1265,9 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   if (size != size_in)
   {
     ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("ACE_OS::getsockopt(%s) on handle (ID: %d) returned %d (expected: %d), aborting\n"),
+               ACE_TEXT("ACE_OS::getsockopt(%s) on handle %u returned %d (expected: %d), aborting\n"),
                ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
-               handle_in,
+               reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
                size,
                size_in));
 
@@ -1276,10 +1279,10 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   } // end IF
 
   //ACE_DEBUG((LM_DEBUG,
-  //           ACE_TEXT("set \"%s\" option of socket (ID: %d) to: %d\n"),
+  //           ACE_TEXT("set \"%s\" option of socket %u to: %d\n"),
   //           ((option_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
   //                                     : ACE_TEXT("SO_SNDBUF")),
-  //           handle_in,
+  //           static_cast<unsigned int>(handle_in),
   //           size));
 
   return true;
@@ -1298,9 +1301,11 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                          reinterpret_cast<const char*>(&value),
                          sizeof(int)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::setsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
-               handle_in));
+		int error = ACE_OS::last_error();
+		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::setsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
+                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
 
     return false;
   } // end IF
@@ -1315,16 +1320,18 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                          &retsize) ||
       (retsize != sizeof(int)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
-               handle_in));
+		int error = ACE_OS::last_error();
+		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
+                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
 
     return false;
   } // end IF
 
   //ACE_DEBUG((LM_DEBUG,
   //           ACE_TEXT("setsockopt(%u, TCP_NODELAY): %s\n"),
-  //           handle_in,
+  //           static_cast<unsigned int>(handle_in),
   //           (noDelay_in ? ((value == 1) ? "on" : "off")
   //                       : ((value == 0) ? "off" : "on"))));
 
@@ -1652,11 +1659,36 @@ RPG_Net_Common_Tools::retrieveSignalInfo(const int& signal_in,
     }
   } // end SWITCH
 #else
-  // under Windows(TM), we only have the handle(s)...
-  ACE_UNUSED_ARG(signal_in);
+  switch (signal_in)
+  {
+    case SIGINT:
+      information << ACE_TEXT("SIGINT"); break;
+    case SIGILL:
+      information << ACE_TEXT("SIGILL"); break;
+    case SIGFPE:
+      information << ACE_TEXT("SIGFPE"); break;
+    case SIGSEGV:
+      information << ACE_TEXT("SIGSEGV"); break;
+    case SIGTERM:
+      information << ACE_TEXT("SIGTERM"); break;
+    case SIGBREAK:
+      information << ACE_TEXT("SIGBREAK"); break;
+    case SIGABRT:
+      information << ACE_TEXT("SIGABRT"); break;
+    case SIGABRT_COMPAT:
+      information << ACE_TEXT("SIGABRT_COMPAT"); break;
+    default:
+	  {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid/unknown signal: %S, continuing\n"),
+                 signal_in));
 
-  //information << ACE_TEXT(", signalled handle: ");
-  //information << info_in.si_handle_;
+			break;
+		}
+	} // end SWITCH
+
+  information << ACE_TEXT(", signalled handle: ");
+  information << info_in.si_handle_;
   //information << ACE_TEXT(", array of signalled handle(s): ");
   //information << info_in.si_handles_;
 #endif

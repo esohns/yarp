@@ -32,9 +32,9 @@ RPG_Net_Client_AsynchConnector::RPG_Net_Client_AsynchConnector()
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::RPG_Net_Client_AsynchConnector"));
 
   // init base class
-  if (inherited::open(false,                    // pass addresses
-                      ACE_Proactor::instance(), // default proactor
-                      false) == -1)             // validate new connections
+  if (inherited::open(false,       // pass addresses ?
+                      NULL,        // default proactor
+                      true) == -1) // validate new connections ?
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Connector::open(): \"%m\", continuing\n")));
 }
@@ -61,21 +61,28 @@ RPG_Net_Client_AsynchConnector::make_handler(void)
 }
 
 void
+RPG_Net_Client_AsynchConnector::abort()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::abort"));
+
+	if (inherited::cancel() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Asynch_Connector::cancel(): \"%m\", continuing\n")));
+}
+
+void
 RPG_Net_Client_AsynchConnector::connect(const ACE_INET_Addr& peer_address)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::connect"));
 
-	int result = -1;
-	result = inherited::connect(peer_address,                           // remote SAP
-															ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
-															1,                                      // re-use address (SO_REUSEADDR) ?
-															NULL);                                  // ACT
+	int result = inherited::connect(peer_address,                           // remote SAP
+																	ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
+																	1,                                      // re-use address (SO_REUSEADDR) ?
+																	NULL);                                  // ACT
 	if (result == -1)
 	{
     ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
-    ACE_OS::memset(buffer,
-                    0,
-                    (RPG_COMMON_BUFSIZE * sizeof(ACE_TCHAR)));
+    ACE_OS::memset(buffer, 0, sizeof(buffer));
     if (peer_address.addr_to_string(buffer,
                                     sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
@@ -84,4 +91,16 @@ RPG_Net_Client_AsynchConnector::connect(const ACE_INET_Addr& peer_address)
                ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
                buffer));
 	} // end IF
+}
+
+int
+RPG_Net_Client_AsynchConnector::validate_connection(const ACE_Asynch_Connect::Result& result_in,
+                                                    const ACE_INET_Addr& remoteSAP_in,
+                                                    const ACE_INET_Addr& localSAP_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::validate_connection"));
+
+	return inherited::validate_connection(result_in,
+		                                    remoteSAP_in,
+																				localSAP_in);
 }

@@ -83,9 +83,6 @@ class RPG_Net_SocketHandlerBase
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase(const RPG_Net_SocketHandlerBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase& operator=(const RPG_Net_SocketHandlerBase&));
 
-  // *NOTE*: we save this so we can de-register even when our "handle"
-  // (getID()) has gone stale...
-  unsigned int                      myID;
   bool                              myIsRegistered;
   MANAGER_t*                        myManager;
 };

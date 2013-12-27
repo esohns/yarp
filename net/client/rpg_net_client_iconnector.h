@@ -28,6 +28,7 @@ class RPG_Net_Client_IConnector
  public:
   virtual ~RPG_Net_Client_IConnector() {}
 
+	virtual void abort() = 0; // shutdown
   virtual void connect(const ACE_INET_Addr&) = 0;
 };
 

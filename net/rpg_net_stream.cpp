@@ -52,7 +52,7 @@ RPG_Net_Stream::RPG_Net_Stream()
   myAvailableModules.insert_tail(&myRuntimeStatistic);
   myAvailableModules.insert_tail(&myProtocolHandler);
 
-  // fix ACE bug: modules should initialize their "next" member to NULL !
+  // *CHECK* fix ACE bug: modules should initialize their "next" member to NULL !
   inherited::MODULE_TYPE* module = NULL;
   for (ACE_DLList_Iterator<inherited::MODULE_TYPE> iterator(myAvailableModules);
        iterator.next(module);

@@ -32,7 +32,7 @@
 #include "rpg_net_message.h"
 
 RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
- : //inherited(),
+ : inherited(),
    myPingHandler(this,   // dispatch ourselves
                  false), // ping peer at REGULAR intervals...
    myPingTimerID(-1),

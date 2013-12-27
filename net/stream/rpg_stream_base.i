@@ -24,6 +24,8 @@
 
 #include "rpg_common_macros.h"
 
+#include <deque>
+
 template <typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
@@ -284,8 +286,8 @@ RPG_Stream_Base<DataType,
     return;
   } // end IF
 
-  // delegate to the head module
-  ACE_Module<ACE_MT_SYNCH>* module = NULL;
+  // delegate to the head module, skip over ACE_Stream_Head...
+  MODULE_TYPE* module = NULL;
   module = head();
   if (!module)
   {
@@ -294,8 +296,6 @@ RPG_Stream_Base<DataType,
 
     return;
   } // end IF
-
-  // skip over ACE_Stream_Head...
   module = module->next();
   if (!module)
   {
@@ -308,7 +308,6 @@ RPG_Stream_Base<DataType,
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
   if (module == tail())
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
 
@@ -514,29 +513,22 @@ RPG_Stream_Base<DataType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::waitForCompletion"));
 
-//   // sanity check: is initialized ?
-//   if (!isInitialized())
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("stream not initialized, continuing\n")));
-
   // OK: the logic here is this...
   // step1: wait for processing to finish
-  // step2: wait for the pipelined messages to flush...
+  // step2: wait for any pipelined messages to flush...
 
-  // step1
-  const ACE_Module<ACE_MT_SYNCH>* module = NULL;
-  ACE_Stream_Iterator<ACE_MT_SYNCH> iter(*this);
-  // skip over ACE_Stream_Head
-  if (!iter.advance())
+  // step1: get head module, skip over ACE_Stream_Head
+  ACE_Stream_Iterator<ACE_MT_SYNCH> iterator(*this);
+  if (iterator.advance() == 0)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("no head module found, returning\n")));
 
     return;
   } // end IF
-
-  // get head module
-  if (!iter.next(module))
+	std::deque<MODULE_TYPE*> module_stack;
+	const MODULE_TYPE* module = NULL;
+  if (iterator.next(module) == 0)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("no head module found, returning\n")));
@@ -547,19 +539,14 @@ RPG_Stream_Base<DataType,
   // sanity check: head == tail ?
   // --> reason: no modules have been push()ed (yet) !
   // --> stream hasn't been intialized (at all: too many connections ?)
-  // --> there is nothing to do !
+  // --> nothing to do !
   if (module == tail())
-  {
-//     // debug info
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
-
     return;
-  } // end IF
 
+	module_stack.push_front(const_cast<MODULE_TYPE*>(module));
   // need to downcast
   HEADMODULETASK_BASETYPE* head_task = NULL;
-  head_task = dynamic_cast<HEADMODULETASK_BASETYPE*>(const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->writer());
+  head_task = dynamic_cast<HEADMODULETASK_BASETYPE*>(const_cast<MODULE_TYPE*>(module)->writer());
   if (!head_task)
   {
     ACE_DEBUG((LM_ERROR,
@@ -569,17 +556,13 @@ RPG_Stream_Base<DataType,
     return;
   } // end IF
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("waiting for module (\"%s\") to finish processing...\n"),
-//              ACE_TEXT_ALWAYS_CHAR(module->name())));
-
   // OK: now that we've got a handler... wait on it
   try
   {
     // step1: wait for state switch (xxx --> FINISHED)
     head_task->waitForCompletion();
 
-    // step2: wait for worker thread
+    // step2: wait for any worker thread(s)
     if (head_task->wait() == -1)
 	  ACE_DEBUG((LM_ERROR,
 		         ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
@@ -593,42 +576,30 @@ RPG_Stream_Base<DataType,
     return;
   }
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("waiting for module (\"%s\") to finish processing...DONE\n"),
-//              ACE_TEXT_ALWAYS_CHAR(module->name())));
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("waiting for stream to flush...\n")));
-
-  for (iter.advance();
-       iter.next(module);
-       iter.advance())
+  for (iterator.advance();
+       (iterator.next(module) != 0);
+       iterator.advance())
   {
     // skip stream tail (last module)
     if (module == tail())
-    {
-      // skip last module (stream tail)
       continue;
-    } // end IF
 
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("waiting for module (\"%s\") to finish processing...\n"),
-//                ACE_TEXT_ALWAYS_CHAR(module->name())));
-
+		module_stack.push_front(const_cast<MODULE_TYPE*>(module));
     // OK: got a handle... wait
-    if (const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->writer()->wait() == -1)
-	  ACE_DEBUG((LM_ERROR,
-		         ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
-
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("waiting for module (\"%s\") to finish processing...DONE\n"),
-//                ACE_TEXT_ALWAYS_CHAR(module->name())));
+    if (const_cast<MODULE_TYPE*>(module)->writer()->wait() == -1)
+	    ACE_DEBUG((LM_ERROR,
+		             ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 
     module = NULL;
   } // end FOR
 
-  // OK: IF no new messages have been enqueued IN THE MEANTIME, the queue should be empty...
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("waiting for stream to flush...DONE\n")));
+	// step2: wait for any pipelined messages to flush...
+	for (std::deque<MODULE_TYPE*>::const_iterator iterator2 = module_stack.begin();
+		   iterator2 != module_stack.end();
+			 iterator2++)
+    if ((*iterator2)->reader()->wait() == -1)
+	    ACE_DEBUG((LM_ERROR,
+		             ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 }
 
 template <typename DataType,
@@ -643,9 +614,8 @@ RPG_Stream_Base<DataType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::isRunning"));
 
-  // delegate to the head module
-  ACE_Module<ACE_MT_SYNCH>* module = NULL;
-  module = const_cast<RPG_Stream_Base*>(this)->head();
+  // delegate to the head module, skip over ACE_Stream_Head...
+	MODULE_TYPE* module = const_cast<RPG_Stream_Base*>(this)->head();
   if (!module)
   {
     ACE_DEBUG((LM_ERROR,
@@ -653,8 +623,6 @@ RPG_Stream_Base<DataType,
 
     return false;
   } // end IF
-
-  // skip over ACE_Stream_Head...
   module = module->next();
   if (!module)
   {
@@ -667,7 +635,6 @@ RPG_Stream_Base<DataType,
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
   if (module == const_cast<RPG_Stream_Base*>(this)->tail())
   {
-    // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
 
@@ -713,26 +680,22 @@ RPG_Stream_Base<DataType,
 
   std::string stream_layout;
 
-  const ACE_Module<ACE_MT_SYNCH>* module = NULL;
+  const MODULE_TYPE* module = NULL;
   for (ACE_Stream_Iterator<ACE_MT_SYNCH> iter(*this);
-       iter.next(module);
+       (iter.next(module) != 0);
        iter.advance())
   {
     // silently ignore ACE head/tail modules...
     if ((module == const_cast<RPG_Stream_Base*>(this)->tail()) ||
         (module == const_cast<RPG_Stream_Base*>(this)->head()))
-    {
       continue;
-    } // end IF
 
     stream_layout.append(ACE_TEXT_ALWAYS_CHAR(module->name()));
 
     // avoid trailing "-->"...
-    if (const_cast<ACE_Module<ACE_MT_SYNCH>*>(module)->next() !=
+    if (const_cast<MODULE_TYPE*>(module)->next() !=
         const_cast<RPG_Stream_Base*>(this)->tail())
-    {
       stream_layout += ACE_TEXT_ALWAYS_CHAR(" --> ");
-    } // end IF
 
     module = NULL;
   } // end FOR
@@ -769,32 +732,30 @@ RPG_Stream_Base<DataType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::shutdown"));
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("shutting down stream...\n")));
-
-  // if we haven't properly initialized, we need to deactivate any hitherto enqueued
-  // ACTIVE modules, or we will wait forever during closure...
+  // step0: if not properly initialized, this needs to deactivate any hitherto
+	// enqueued ACTIVE modules, or the stream will wait forever during closure...
   // --> possible scenarios:
-  // - (re-)init() failed halfway through (i.e. MAYBE some modules push()ed correctly)
+  // - (re-)init() failed halfway through (i.e. MAYBE some modules push()ed
+	//   correctly)
+  MODULE_TYPE* module = NULL;
   if (!myIsInitialized)
   {
-    // sanity check: have we actually successfully pushed() any modules ?
-    if (head()->next() != tail())
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("not initialized - deactivating module(s)...\n")));
+    // sanity check: successfully pushed() ANY modules ?
+		module = head();
+		if (module)
+		{
+			module = module->next();
+			if (module && (module != tail()))
+			{
+				ACE_DEBUG((LM_WARNING,
+					         ACE_TEXT("not initialized - deactivating module(s)...\n")));
 
-      deactivateModules();
+				deactivateModules();
 
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("not initialized - deactivating module(s)...WAITING\n")));
-
-      // ...and wait for it to complete ?
-      // *NOTE*: children can synchronize by calling waitForCompletion...
-
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("not initialized - deactivating module(s)...DONE\n")));
-    } // end IF
+				ACE_DEBUG((LM_WARNING,
+					         ACE_TEXT("not initialized - deactivating module(s)...DONE\n")));
+			} // end IF
+		} // end IF
   } // end IF
 
   // step1: retrieve a list of modules which are NOT on the stream
@@ -802,16 +763,16 @@ RPG_Stream_Base<DataType,
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("deactivating offline module(s)...\n")));
 
-  MODULE_TYPE* module = NULL;
   for (ACE_DLList_Iterator<MODULE_TYPE> iterator(myAvailableModules);
-       iterator.next(module);
+       (iterator.next(module) != 0);
        iterator.advance())
   {
+		// sanity check: on the stream ?
     if (module->next() == NULL)
     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("manually closing module: \"%s\"\n"),
-//                  ACE_TEXT_ALWAYS_CHAR((*iter)->name())));
+      //ACE_DEBUG((LM_WARNING,
+      //           ACE_TEXT("manually closing module: \"%s\"\n"),
+      //           ACE_TEXT_ALWAYS_CHAR(module->name())));
 
       try
       {
@@ -836,19 +797,12 @@ RPG_Stream_Base<DataType,
   // objects in a different DLL where it was created...)
   // --> we need to do this ourselves !
   // all this does is call close() on each one (--> wait for the worker thread to return)
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("deactivating module(s)...\n")));
-
-  fini();
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("deactivating module(s)...DONE\n")));
+  if (!fini())
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Stream_Base::fini(): \"%m\", continuing\n")));
 
   // *NOTE*: every ACTIVE module will join with its worker thread in close()
   // --> ALL stream-related threads should have returned by now !
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("shutting down stream...FINISHED\n")));
 }
 
 template <typename DataType,
@@ -865,9 +819,7 @@ RPG_Stream_Base<DataType,
 
   // create (dummy) user data
   DataType data;
-  ACE_OS::memset(&data,
-                 0,
-                 sizeof(DataType));
+  ACE_OS::memset(&data, 0, sizeof(DataType));
 
   // create session config
   SessionConfigType* session_config = NULL;

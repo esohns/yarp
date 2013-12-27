@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="net\net_common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="net\net_server_signalhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>

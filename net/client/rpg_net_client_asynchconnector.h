@@ -41,7 +41,12 @@ class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
   virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
 
 	// implement RPG_Net_Client_IConnector
+	virtual void abort();
   virtual void connect(const ACE_INET_Addr&);
+
+  virtual int validate_connection(const ACE_Asynch_Connect::Result&, // result
+                                  const ACE_INET_Addr&,              // peer SAP
+                                  const ACE_INET_Addr&);             // local SAP
 
  private:
   typedef ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t> inherited;

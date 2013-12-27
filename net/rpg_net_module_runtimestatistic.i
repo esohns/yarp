@@ -88,7 +88,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic_t::~RPG_Net_Module_RuntimeStatistic_t"));
 
   // clean up
-  fini_timers();
+  fini_timers(true);
 }
 
 template <typename SessionMessageType,
@@ -240,9 +240,9 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 
     // update our counters...
     // *NOTE*: currently, session messages travel only downstream...
-    myNumInboundMessages++;
+    //myNumInboundMessages++;
     myNumSessionMessages++;
-    myMessageCounter++;
+    //myMessageCounter++;
   } // end lock scope
 
   switch (message_inout->getType())
@@ -280,9 +280,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
       break;
     }
     default:
-    {
       break;
-    }
   } // end SWITCH
 }
 
@@ -302,7 +300,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    // remember this result (so we can satisfy our asynchronous API)...
+    // remember this result (satisfies an asynchronous API)...
     myLastMessagesPerSecondCount = myMessageCounter;
     myLastBytesPerSecondCount = myByteCounter;
 
@@ -403,26 +401,24 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
     // synchronize access to statistics data
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    if ((myNumInboundMessages + myNumOutboundMessages) - myNumSessionMessages)
+    if ((myNumInboundMessages + myNumOutboundMessages))
     {
       // write some output
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("*** [session: %u] SESSION STATISTICS ***\ntotal # data message(s) (as seen [in/out]): %u/%u\n --> Protocol Info <--\n"),
                  mySessionID,
-                 (myNumInboundMessages - myNumSessionMessages),
+                 myNumInboundMessages,
                  myNumOutboundMessages));
 
       std::string protocol_string;
-      for (MESSAGETYPE2COUNT_CONSTITERATOR_TYPE iter = myMessageTypeStatistics.begin();
-           iter != myMessageTypeStatistics.end();
-           iter++)
-      {
+      for (MESSAGETYPE2COUNT_CONSTITERATOR_TYPE iterator = myMessageTypeStatistics.begin();
+           iterator != myMessageTypeStatistics.end();
+           iterator++)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("\"%s\": %u --> %.2f %%\n"),
-                   ProtocolMessageType::commandType2String(iter->first).c_str(),
-                   iter->second,
-                   static_cast<double>(((iter->second * 100.0) / (myNumInboundMessages - myNumSessionMessages)))));
-      } // end FOR
+                   ProtocolMessageType::commandType2String(iterator->first).c_str(),
+                   iterator->second,
+                   static_cast<double>(((iterator->second * 100.0) / myNumInboundMessages))));
     } // end IF
 
 //     double messages_per_sec = double (message_count) / et.real_time;
@@ -543,12 +539,13 @@ RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
     ACE_Guard<ACE_Thread_Mutex> aGuard(stream_task->myLock);
 
     // update counters...
-	stream_task->myNumOutboundMessages++;
+	  stream_task->myNumOutboundMessages++;
+		stream_task->myByteCounter += mb_in->total_length();
 
 //	// add message to statistic...
 //	// --> increment corresponding counter
 //	stream_task->myMessageTypeStatistics[static_cast<COMMAND_TYPE>(message->getCommand())]++;
   } // end lock scope
 
-  inherited::put(mb_in, tv_in);
+  return inherited::put(mb_in, tv_in);
 }

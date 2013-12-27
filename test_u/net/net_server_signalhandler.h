@@ -35,14 +35,18 @@ class Net_Server_SignalHandler
  : public ACE_Event_Handler
 {
  public:
-  Net_Server_SignalHandler(RPG_Common_IControl*,                                     // controller
-                           RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* = NULL); // reporter
+  Net_Server_SignalHandler(const long&,                                             // timer handle
+		                       RPG_Common_IControl*,                                    // controller
+                           RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* = NULL, // reporter
+													 const bool& = true);                                     // use reactor ?
   virtual ~Net_Server_SignalHandler();
 
+	// *NOTE*: just save state and notify the reactor
+  virtual int handle_signal(int,                 // signal
+                            siginfo_t* = NULL,   // not needed on UNIX
+                            ucontext_t* = NULL); // not used
   // implement specific behaviour
-  virtual int handle_signal(int,          // signal
-                            siginfo_t*,   // additional information
-                            ucontext_t*); // context
+	virtual int handle_exception(ACE_HANDLE = ACE_INVALID_HANDLE); // handle
 
  private:
   typedef ACE_Event_Handler inherited;
@@ -52,8 +56,13 @@ class Net_Server_SignalHandler
   ACE_UNIMPLEMENTED_FUNC(Net_Server_SignalHandler(const Net_Server_SignalHandler&));
   ACE_UNIMPLEMENTED_FUNC(Net_Server_SignalHandler& operator=(const Net_Server_SignalHandler&));
 
+	long                                             myTimerID;
   RPG_Common_IControl*                             myControl;
   RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* myReport;
+	bool                                             myUseReactor;
+	int                                              mySignal;
+	siginfo_t                                        mySigInfo;
+	ucontext_t                                       myUContext;
 };
 
 #endif

@@ -263,7 +263,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   if (isRunning())
   {
     ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("isRunning, continuing\n")));
+               ACE_TEXT("stream is still running --> check implementation !, continuing\n")));
 
     try
     {
@@ -277,10 +277,6 @@ RPG_Stream_HeadModuleTaskBase<DataType,
       return -1;
     }
   } // end IF
-
-//  // wait for any worker(s)
-//  // *NOTE*: should not be necessary at this point
-//  inherited::wait();
 
   return 0;
 }
@@ -688,54 +684,54 @@ RPG_Stream_HeadModuleTaskBase<DataType,
     }
     case inherited2::STOPPED:
     {
-	  if (myIsActive)
-	  {
-		// OK: drop a control message into the queue...
-		// *TODO*: use ACE_Stream::control() instead ?
-		ACE_Message_Block* stop_mb = NULL;
-		ACE_NEW_NORETURN(stop_mb,
-					     ACE_Message_Block(0,                                  // size
-						 				   ACE_Message_Block::MB_STOP,         // type
-										   NULL,                               // continuation
-										   NULL,                               // data
-										   NULL,                               // buffer allocator
-										   NULL,                               // locking strategy
-										   ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-										   ACE_Time_Value::zero,               // execution time
-										   ACE_Time_Value::max_time,           // deadline time
-										   NULL,                               // data block allocator
-										   NULL));                             // message allocator
-		if (!stop_mb)
-		{
-		  ACE_DEBUG((LM_ERROR,
-			 	     ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
+			if (myIsActive)
+			{
+				// OK: drop a control message into the queue...
+				// *TODO*: use ACE_Stream::control() instead ?
+				ACE_Message_Block* stop_mb = NULL;
+				ACE_NEW_NORETURN(stop_mb,
+									       ACE_Message_Block(0,                                  // size
+						 															 ACE_Message_Block::MB_STOP,         // type
+																					 NULL,                               // continuation
+																					 NULL,                               // data
+																					 NULL,                               // buffer allocator
+																					 NULL,                               // locking strategy
+																					 ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+																					 ACE_Time_Value::zero,               // execution time
+																					 ACE_Time_Value::max_time,           // deadline time
+																					 NULL,                               // data block allocator
+																					 NULL));                             // message allocator
+				if (!stop_mb)
+				{
+					ACE_DEBUG((LM_ERROR,
+			 					     ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
-		  break;
-		} // end IF
+					break;
+				} // end IF
 
-		if (inherited::putq(stop_mb, NULL) == -1)
-		{
-		  ACE_DEBUG((LM_ERROR,
-			 	     ACE_TEXT("failed to putq(): \"%m\", continuing\n")));
+				if (putq(stop_mb, NULL) == -1)
+				{
+					ACE_DEBUG((LM_ERROR,
+			 					     ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
 
-		  // clean up
-		  stop_mb->release();
-        } // end IF
-	  } // end IF
-	  else
-	  {
-		// send final session message downstream...
-		if (!putSessionMessage(mySessionID,
-		 					   RPG_Stream_SessionMessage::MB_STREAM_SESSION_END,
-							   myUserData,
-							   ACE_Time_Value::zero, // N/A
-							   false))               // N/A
-		  ACE_DEBUG((LM_ERROR,
-			  	     ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
+					// clean up
+					stop_mb->release();
+				} // end IF
+			} // end IF
+			else
+			{
+				// send final session message downstream...
+				if (!putSessionMessage(mySessionID,
+		 													 RPG_Stream_SessionMessage::MB_STREAM_SESSION_END,
+															 myUserData,
+															 ACE_Time_Value::zero, // N/A
+															 false))               // N/A
+					ACE_DEBUG((LM_ERROR,
+			  					   ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
 
-	    // signal the controller
-		finished();
-	  } // end ELSE
+				// signal the controller
+				finished();
+			} // end ELSE
 
       break;
     }
@@ -808,7 +804,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   {
     try
     {
-	  // *IMPORTANT NOTE*: 0 --> session message !
+	    // *IMPORTANT NOTE*: 0 --> session message !
       message = static_cast<SessionMessageType*>(allocator_in->malloc(0));
     }
     catch (...)

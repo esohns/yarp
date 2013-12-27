@@ -49,7 +49,7 @@ RPG_Stream_StateMachine_Control::getState() const
   return myState;
 }
 
-const bool
+bool
 RPG_Stream_StateMachine_Control::changeState(const Control_StateType& newState_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_StateMachine_Control::changeState"));
@@ -99,16 +99,19 @@ RPG_Stream_StateMachine_Control::changeState(const Control_StateType& newState_i
         case RPG_Stream_StateMachine_Control::STOPPED:
         case RPG_Stream_StateMachine_Control::FINISHED:
         {
-          std::string newStateString;
-          ControlState2String(newState_in,
-                              newStateString);
+          //std::string newStateString;
+          //ControlState2String(newState_in,
+          //                    newStateString);
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("state switch: RUNNING --> %s\n"),
 //                      newStateString.c_str()));
 
           invokeCallback(newState_in);
 
-          myState = newState_in;
+					// *IMPORTANT NOTE*: make sure the transition to RUNNING [--> STOPPED] --> FINISHED
+					//                   works for the inactive (!) case as well...
+					if (myState != RPG_Stream_StateMachine_Control::FINISHED)
+            myState = newState_in;
 
           return true;
         }

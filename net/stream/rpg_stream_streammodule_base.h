@@ -51,8 +51,8 @@ class RPG_Stream_StreamModule_t
   typedef RPG_Stream_Module_Base_t<ReaderTaskType,
                                    WriterTaskType> inherited;
 
-  WriterTaskType myWriter;
   ReaderTaskType myReader;
+  WriterTaskType myWriter;
 };
 
 template <typename TaskType>

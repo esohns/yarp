@@ -48,8 +48,27 @@ RPG_Net_StreamSocketBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::~RPG_Net_StreamSocketBase"));
 
-  // wait for all workers within the stream (if any)
+  // step1: wait for all workers within the stream (if any)
   myStream.waitForCompletion();
+
+	// step2: purge any pending notifications ?
+	if (!inherited::myUserData.useThreadPerConnection)
+    if (reactor()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
+                 this));
+
+	// clean up
+  if (myCurrentReadBuffer)
+  {
+    myCurrentReadBuffer->release();
+    myCurrentReadBuffer = NULL;
+  } // end IF
+  if (myCurrentWriteBuffer)
+  {
+    myCurrentWriteBuffer->release();
+    myCurrentWriteBuffer = NULL;
+  } // end IF
 }
 
 template <typename ConfigType,
@@ -93,7 +112,7 @@ RPG_Net_StreamSocketBase<ConfigType,
   if (!inherited::myUserData.useThreadPerConnection)
   {
     // "borrow" message queue from stream head
-    ACE_Module<ACE_MT_SYNCH>* module = NULL;
+    MODULE_TYPE* module = NULL;
     module = myStream.head();
     if (!module)
     {
@@ -117,7 +136,7 @@ RPG_Net_StreamSocketBase<ConfigType,
   } // end IF
   //myStream.dump_state();
 
-  // *NOTE*: as soon as this returns, data MAY start arriving at handle_output()
+  // *NOTE*: after this returns, data MAY start arriving at handle_output()
   myStream.start();
   if (!myStream.isRunning())
   {
@@ -128,16 +147,19 @@ RPG_Net_StreamSocketBase<ConfigType,
     return -1;
   } // end IF
 
-  // step2: register our handle with the reactor
+  // step2: register io handle with the reactor
   // *NOTE*: this is done by the base class
   // *NOTE*: as soon as this returns, data MAY start arriving
   // at handle_input() and fill the stream
   int result = inherited::open(arg_in);
   if (result == -1)
   {
-    // *NOTE*: this MAY have happened because there are too many
-    // open local connections... --> not an error !
-    if (ACE_OS::last_error() != EBUSY)
+    // *NOTE*: may have happened because:
+		// - too many open local connections
+		// - socket has been closed asynchronously
+		int error = ACE_OS::last_error();
+		if ((error != EBUSY) &&  // <-- too many open local connections
+			  (error != ENOTSOCK)) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
 
@@ -187,10 +209,14 @@ RPG_Net_StreamSocketBase<ConfigType,
   {
     case -1:
     {
-      // connection reset by peer ? --> not an error
-	  int error = ACE_OS::last_error();
-      if ((error != ECONNRESET) &&
-          (error != EPIPE))
+			// *IMPORTANT NOTE*: a number of issues can occur here:
+			// - connection reset by peer
+			// - connection aborted locally
+	    int error = ACE_OS::last_error();
+      if ((error != ECONNRESET) && // 
+          (error != EPIPE) &&      // <-- connection reset by peer
+					(error != ENOTSOCK) &&
+					(error != ECONNABORTED)) // <-- connection abort()ed (?) locally
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%m\", returning\n")));
 
@@ -261,21 +287,26 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   ACE_UNUSED_ARG(handle_in);
 
-  ssize_t bytes_sent = 0;
-
   if (myCurrentWriteBuffer == NULL)
   {
-    // get next data chunk from the stream...
-    // *NOTE*: should NEVER block (barring context switches...)
-    if (inherited::getq(myCurrentWriteBuffer, NULL) == -1)
+    // send next data chunk from the stream...
+    // *IMPORTANT NOTE*: NEVER block, as outbound data has been notified to the reactor
+		ACE_Time_Value no_wait(ACE_OS::gettimeofday());
+    if (getq(myCurrentWriteBuffer, &no_wait) == -1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")));
+			// *IMPORTANT NOTE*: a number of issues can occur here:
+			// - connection has been closed in the meantime
+	    int error = ACE_OS::last_error();
+      if ((error != ESHUTDOWN) &&
+				  (error != ENOTSOCK)) // <-- connection has been closed in the meantime
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")));
 
       // reactor will invoke handle_close()
       return -1;
     } // end IF
   } // end IF
+	ACE_ASSERT(myCurrentWriteBuffer);
 
   // finished ?
   if (myCurrentWriteBuffer->msg_type() == ACE_Message_Block::MB_STOP)
@@ -292,14 +323,14 @@ RPG_Net_StreamSocketBase<ConfigType,
   } // end IF
 
   // put some data into the socket...
-  bytes_sent = inherited::peer_.send(myCurrentWriteBuffer->rd_ptr(),
-                                     myCurrentWriteBuffer->length());
+  ssize_t bytes_sent = inherited::peer_.send(myCurrentWriteBuffer->rd_ptr(),
+                                             myCurrentWriteBuffer->length());
   switch (bytes_sent)
   {
     case -1:
     {
       // connection reset by peer/broken pipe ? --> not an error
-	  int error = ACE_OS::last_error();
+			int error = ACE_OS::last_error();
       if ((error != ECONNRESET) &&
           (error != EPIPE))
         ACE_DEBUG((LM_ERROR,
@@ -334,26 +365,31 @@ RPG_Net_StreamSocketBase<ConfigType,
 //                 bytes_sent));
 
       // finished with this buffer ?
-      if (static_cast<size_t>(bytes_sent) == myCurrentWriteBuffer->length())
-      {
-        // clean up
-        myCurrentWriteBuffer->release();
-        myCurrentWriteBuffer = NULL;
-      } // end IF
-      else
-      {
-        // there's more data --> adjust read pointer
-        myCurrentWriteBuffer->rd_ptr(bytes_sent);
-      } // end ELSE
+			myCurrentWriteBuffer->rd_ptr(static_cast<size_t>(bytes_sent));
+      if (myCurrentWriteBuffer->length() > 0)
+				break; // there's more data
+
+			// clean up
+      myCurrentWriteBuffer->release();
+      myCurrentWriteBuffer = NULL;
 
       break;
     }
   } // end SWITCH
 
   // immediately reschedule sending ?
-  if (myCurrentWriteBuffer)
-    inherited::reactor()->schedule_wakeup(this,
-                                          ACE_Event_Handler::WRITE_MASK);
+  if ((myCurrentWriteBuffer == NULL) && msg_queue()->is_empty())
+	{
+		if (reactor()->cancel_wakeup(this,
+                                 ACE_Event_Handler::WRITE_MASK) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::cancel_wakeup(): \"%m\", continuing\n")));
+	} // end IF
+	else
+		if (reactor()->schedule_wakeup(this,
+                                   ACE_Event_Handler::WRITE_MASK) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::schedule_wakeup(): \"%m\", continuing\n")));
 
   return 0;
 }

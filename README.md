@@ -1,4 +1,4 @@
-Welcome to the **Yarp** wiki!
+Welcome to the **Yarp** project!
 
 **Some notes from the (only) contributor**
 

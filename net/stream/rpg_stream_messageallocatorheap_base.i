@@ -74,7 +74,7 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
   try
   {
     ACE_ALLOCATOR_NORETURN(data_block,
-                           static_cast<ACE_Data_Block*> (myDataBlockAllocator.malloc(bytes_in)));
+                           static_cast<ACE_Data_Block*>(myDataBlockAllocator.malloc(bytes_in)));
   }
   catch (...)
   {
@@ -82,7 +82,6 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                ACE_TEXT("caught exception in ACE_ALLOCATOR_NORETURN(ACE_Data_Block(%u)), aborting\n"),
                bytes_in));
 
-    // *TODO*: what else can we do ?
     return NULL;
   }
   if (!data_block)
@@ -91,7 +90,6 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
                ACE_TEXT("unable to allocate ACE_Data_Block(%u), aborting\n"),
                bytes_in));
 
-    // *TODO*: what else can we do ?
     return NULL;
   } // end IF
 
@@ -105,12 +103,12 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
     // on the allocated space
     if (bytes_in)
       ACE_NEW_MALLOC_NORETURN(message,
-                              static_cast<MessageType*> (inherited::malloc(sizeof(MessageType))),
+                              static_cast<MessageType*>(inherited::malloc(sizeof(MessageType))),
                               MessageType(data_block, // use the data block we just allocated
                                           this));     // remember us upon destruction...
     else
       ACE_NEW_MALLOC_NORETURN(message,
-                              static_cast<SessionMessageType*> (inherited::malloc(sizeof(SessionMessageType))),
+                              static_cast<SessionMessageType*>(inherited::malloc(sizeof(SessionMessageType))),
                               SessionMessageType(data_block, // use the data block we just allocated
                                                  this));     // remember us upon destruction...
   }
@@ -123,7 +121,6 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
     // clean up
     data_block->release();
 
-    // *TODO*: what else can we do ?
     return NULL;
   }
   if (!message)
@@ -135,7 +132,6 @@ RPG_Stream_MessageAllocatorHeapBase<MessageType,
     // clean up
     data_block->release();
 
-    // *TODO*: what else can we do ?
     return NULL;
   } // end IF
 

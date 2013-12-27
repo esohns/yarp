@@ -56,7 +56,7 @@ class RPG_Stream_Export RPG_Stream_StateMachine_Control
   // *WARNING*: PAUSED --> PAUSED is silently remapped to PAUSED --> RUNNING
   // in order to resemble a traditional tape recorder...
   // --> children must implement the corresponding behavior !
-  const bool changeState(const Control_StateType&); // new state
+  bool changeState(const Control_StateType&); // new state
 
   // callback invoked on change of state
   // *TODO*: make this an interface !

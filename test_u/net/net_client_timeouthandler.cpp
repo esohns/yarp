@@ -25,16 +25,15 @@
 
 #include "rpg_common_defines.h"
 
-#include <ace/Reactor.h>
+#include <ace/Event_Handler.h>
 
-Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const std::string& serverHostname_in,
-                                                     const unsigned short& serverPort_in,
+Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const unsigned int& maxNumConnections_in,
+	                                                   const ACE_INET_Addr& remoteSAP_in,
                                                      RPG_Net_Client_IConnector* connector_in)
- : inherited(ACE_Reactor::instance(),         // default reactor
+ : inherited(NULL,                            // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
-   myPeerAddress(serverPort_in,
-                 serverHostname_in.c_str(),
-								 AF_INET),
+   myMaxNumConnections(maxNumConnections_in),
+   myPeerAddress(remoteSAP_in),
    myConnector(connector_in)
 {
   RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
@@ -55,6 +54,12 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);
+
+	// sanity check: max num connections already reached ?
+	// --> abort the oldest one first
+	if (myMaxNumConnections &&
+		  (RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections() >= myMaxNumConnections))
+		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortNewestConnection();
 
 	ACE_ASSERT(myConnector);
   try

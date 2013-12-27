@@ -24,8 +24,8 @@
 #include "rpg_net_iconnectionmanager.h"
 #include "rpg_net_sockethandler_base.h"
 
-#include <rpg_common_istatistic.h>
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_istatistic.h"
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -56,6 +56,11 @@ class RPG_Net_Connection_Manager
   // *NOTE*: argument is passed in init() to EVERY new connection during registration
   void set(const ConfigType&); // (user) data
 
+	// implement RPG_Common_IControl
+	virtual void start();
+  virtual void stop();
+  virtual bool isRunning() const;
+
   // *NOTE*: users of this method should be aware of potential race
   //         conditions with this method and (de-)registerConnection.
   // Scenario: well-behaved shutdown going on WHILE client closes a connection.
@@ -67,6 +72,7 @@ class RPG_Net_Connection_Manager
 
   // *WARNING*: to be used for testing ONLY !
   void abortOldestConnection();
+  void abortNewestConnection();
 
   // implement RPG_Common_IStatistic
   virtual void report() const;
@@ -76,11 +82,9 @@ class RPG_Net_Connection_Manager
 
  private:
   typedef RPG_Net_IConnection<ConfigType, StatisticsContainerType> CONNECTION_TYPE;
-//   typedef std::list<CONNECTION_TYPE*> CONNECTIONLIST_TYPE;
-  // *NOTE*: cannot write this - it confuses gcc...
-//   typedef CONNECTIONLIST_TYPE::const_iterator CONNECTIONLIST_CONSTITERATOR_TYPE;
-//   typedef CONNECTIONLIST_TYPE::iterator CONNECTIONLIST_ITERATOR_TYPE;
+	typedef ACE_DLList<CONNECTION_TYPE> CONNECTIONLIST_TYPE;
   typedef ACE_DLList_Iterator<CONNECTION_TYPE> CONNECTIONLIST_ITERATOR_TYPE;
+  typedef ACE_DLList_Reverse_Iterator<CONNECTION_TYPE> CONNECTIONLIST_REVERSEITERATOR_TYPE;
 
   // *NOTE*: these are used by RPG_Net_SocketHandler_Base
   virtual bool registerConnection(CONNECTION_TYPE*); // connection
@@ -104,13 +108,10 @@ class RPG_Net_Connection_Manager
   mutable ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 
   unsigned int                                      myMaxNumConnections;
-//   CONNECTIONLIST_TYPE                               myConnections;
-  ACE_DLList<CONNECTION_TYPE>                       myConnections;
-
-  // handler data
-  ConfigType                                        myUserData;
-
+	CONNECTIONLIST_TYPE                               myConnections;
+  ConfigType                                        myUserData; // handler data
   bool                                              myIsInitialized;
+	bool                                              myIsActive;
 };
 
 // include template implementation
