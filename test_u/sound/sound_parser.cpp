@@ -53,7 +53,7 @@
 #define SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS false
 #define SDL_TIMEREVENT                     SDL_USEREVENT
 
-static SDL_CD* cdrom = NULL;
+//static SDL_CD* cdrom = NULL;
 
 Uint32
 timer_SDL_cb(Uint32 interval_in,
@@ -503,22 +503,22 @@ ACE_TMAIN(int argc,
   bool printVersionAndExit = false;
   bool validateXML = true;
 
-  RPG_Sound_SDLConfig_t audio_config;
-  audio_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
-  audio_config.format    = RPG_SOUND_DEF_AUDIO_FORMAT;
-  audio_config.channels  = RPG_SOUND_DEF_AUDIO_CHANNELS;
-  audio_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
+//  RPG_Sound_SDLConfig_t audio_config;
+//  audio_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
+//  audio_config.format    = RPG_SOUND_DEF_AUDIO_FORMAT;
+//  audio_config.channels  = RPG_SOUND_DEF_AUDIO_CHANNELS;
+//  audio_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
 
   // step1b: parse/process/validate configuration
-  if (!(process_arguments(argc,
-                          argv,
-                          dumpDictionary,
-                          soundDirectory,
-                          playRandomSounds,
-                          filename,
-                          traceInformation,
-                          printVersionAndExit,
-                          validateXML)))
+  if (!process_arguments(argc,
+                         argv,
+                         dumpDictionary,
+                         soundDirectory,
+                         playRandomSounds,
+                         filename,
+                         traceInformation,
+                         printVersionAndExit,
+                         validateXML))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));

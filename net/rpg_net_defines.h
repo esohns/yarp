@@ -60,5 +60,6 @@
 #define RPG_NET_MAX_MESSAGES                           100
 
 #define RPG_NET_STATISTICS_COLLECT_INTERVAL            60 // seconds [0 --> OFF]
+#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL      0  // seconds [0 --> OFF]
 
 #endif

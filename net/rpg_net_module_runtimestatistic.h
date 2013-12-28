@@ -46,7 +46,7 @@ template <typename SessionMessageType,
           typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic_t;
 
 template <typename SessionMessageType,
-	        typename ProtocolMessageType,
+          typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 class RPG_Net_Module_RuntimeStatisticReader_t
@@ -57,16 +57,16 @@ class RPG_Net_Module_RuntimeStatisticReader_t
   virtual ~RPG_Net_Module_RuntimeStatisticReader_t();
 
   virtual int put(ACE_Message_Block*,      // message
-		              ACE_Time_Value* = NULL); // time
+                  ACE_Time_Value* = NULL); // time
 
  private:
   typedef ACE_Thru_Task<ACE_MT_SYNCH> inherited;
-	typedef RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
-		                                        ProtocolMessageType,
-	                                          ProtocolCommandType,
-	                                          StatisticsContainerType> TASK_TYPE;
-	typedef ProtocolMessageType MESSAGE_TYPE;
-	typedef ProtocolCommandType COMMAND_TYPE;
+  typedef RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+                                            ProtocolMessageType,
+                                            ProtocolCommandType,
+                                            StatisticsContainerType> TASK_TYPE;
+  typedef ProtocolMessageType MESSAGE_TYPE;
+  typedef ProtocolCommandType COMMAND_TYPE;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatisticReader_t(const RPG_Net_Module_RuntimeStatisticReader_t&));

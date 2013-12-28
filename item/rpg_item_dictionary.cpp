@@ -200,10 +200,14 @@ RPG_Item_Dictionary::init(const std::string& filename_in,
 //              filename_in.c_str()));
 }
 
-const RPG_Item_PropertiesBase&
-RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
+void
+RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
+                                   RPG_Item_PropertiesBase*& properties_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getProperties"));
+
+  // init return value(s)
+  properties_out = NULL;
 
   ACE_ASSERT(item_in);
 
@@ -213,17 +217,17 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
     {
       const RPG_Item_Armor* armor = dynamic_cast<const RPG_Item_Armor*>(item_in);
       ACE_ASSERT(armor);
-
-      RPG_Item_ArmorProperties properties = getArmorProperties(armor->getArmorType());
-      return properties;
+      ACE_NEW_NORETURN(properties_out,
+                       RPG_Item_ArmorProperties(getArmorProperties(armor->getArmorType())));
+      break;
     }
     case ITEM_COMMODITY:
     {
       const RPG_Item_Commodity* commodity = dynamic_cast<const RPG_Item_Commodity*>(item_in);
       ACE_ASSERT(commodity);
-
-      RPG_Item_CommodityProperties properties = getCommodityProperties(commodity->getCommoditySubType());
-      return properties;
+      ACE_NEW_NORETURN(properties_out,
+                       RPG_Item_CommodityProperties(getCommodityProperties(commodity->getCommoditySubType())));
+      break;
     }
     case ITEM_OTHER:
     case ITEM_VALUABLE:
@@ -237,9 +241,9 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
     {
       const RPG_Item_Weapon* weapon = dynamic_cast<const RPG_Item_Weapon*>(item_in);
       ACE_ASSERT(weapon);
-
-      RPG_Item_WeaponProperties properties = getWeaponProperties(weapon->getWeaponType());
-      return properties;
+      ACE_NEW_NORETURN(properties_out,
+                       RPG_Item_WeaponProperties(getWeaponProperties(weapon->getWeaponType())));
+      break;
     }
     default:
     {
@@ -251,17 +255,14 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in) const
     }
   } // end SWITCH
 
-  ACE_ASSERT(false);
-  // *TODO*: clean this up
-  RPG_Item_PropertiesBase* dummy = new(std::nothrow) RPG_Item_PropertiesBase;
-#if defined (_MSC_VER)
-  return *dummy;
-#else
-  ACE_NOTREACHED(return *dummy;)
-#endif
+  // sanity check
+  if (!properties_out)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to retrieve item properties (type was: \"%s\"), aborting\n"),
+               RPG_Item_TypeHelper::RPG_Item_TypeToString(item_in->getType()).c_str()));
 }
 
-const RPG_Item_CommodityProperties
+RPG_Item_CommodityProperties
 RPG_Item_Dictionary::getCommodityProperties(const RPG_Item_CommodityUnion& commoditySubType_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getCommodityProperties"));
@@ -322,7 +323,7 @@ RPG_Item_Dictionary::getCommodityProperties(const RPG_Item_CommodityUnion& commo
 #endif
 }
 
-const RPG_Item_ArmorProperties
+RPG_Item_ArmorProperties
 RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
@@ -360,7 +361,7 @@ RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) 
   return iterator->second;
 }
 
-const RPG_Item_WeaponProperties
+RPG_Item_WeaponProperties
 RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));

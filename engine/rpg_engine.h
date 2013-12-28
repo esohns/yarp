@@ -45,7 +45,7 @@
 #include <string>
 
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+        @author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Engine_Export RPG_Engine
  : public ACE_Task<ACE_MT_SYNCH>,

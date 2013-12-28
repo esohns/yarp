@@ -28,7 +28,6 @@
 #include "rpg_net_module_sockethandler.h"
 #include "rpg_net_module_headerparser.h"
 #include "rpg_net_module_protocolhandler.h"
-#include "rpg_net_module_runtimestatistic.h"
 
 #include "rpg_common_istatistic.h"
 

@@ -1233,11 +1233,15 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                          reinterpret_cast<const char*>(&size),
                          sizeof(int)))
   {
-		int error = ACE_OS::last_error();
-		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+    int error = ACE_OS::last_error();
+    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_OS::setsockopt(%u, %s): \"%m\", aborting\n"),
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
                  reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+#else
+                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+#endif
                  ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 
     return false;
@@ -1252,11 +1256,15 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                          reinterpret_cast<char*>(&size),
                          &retsize))
   {
-		int error = ACE_OS::last_error();
-		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+    int error = ACE_OS::last_error();
+    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_OS::getsockopt(%u, %s): \"%m\", aborting\n"),
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
                  reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+#else
+                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+#endif
                  ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 
     return false;
@@ -1267,7 +1275,11 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("ACE_OS::getsockopt(%s) on handle %u returned %d (expected: %d), aborting\n"),
                ((option_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
                reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+#else
+               static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+#endif
                size,
                size_in));
 
@@ -1301,11 +1313,15 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                          reinterpret_cast<const char*>(&value),
                          sizeof(int)))
   {
-		int error = ACE_OS::last_error();
-		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+    int error = ACE_OS::last_error();
+    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_OS::setsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
                  reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+#else
+                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+#endif
 
     return false;
   } // end IF
@@ -1320,11 +1336,15 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                          &retsize) ||
       (retsize != sizeof(int)))
   {
-		int error = ACE_OS::last_error();
-		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+    int error = ACE_OS::last_error();
+    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
                  reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+#else
+                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+#endif
 
     return false;
   } // end IF
@@ -1350,7 +1370,7 @@ RPG_Net_Common_Tools::retrieveSignalInfo(const int& signal_in,
   information_out.resize(0);
 
   std::ostringstream information;
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
   // step0: common information (on POSIX.1b)
   information << ACE_TEXT("PID/UID: ");
   information << info_in.si_pid;

@@ -42,9 +42,9 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
 
   // wait for our worker (if any)
   if (inherited::myUserData.useThreadPerConnection)
-		if (wait() == -1)
-			ACE_DEBUG((LM_ERROR,
-			           ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
+    if (wait() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 }
 
 int
@@ -173,28 +173,28 @@ RPG_Net_SocketHandler::open(void* arg_in)
   // OK: start a worker ?
   if (inherited::myUserData.useThreadPerConnection)
   {
-		ACE_thread_t thread_ids[1];
-		thread_ids[0] = 0;
-		ACE_hthread_t thread_handles[1];
-		thread_handles[0] = 0;
-		char thread_name[RPG_COMMON_BUFSIZE];
-		ACE_OS::memset(thread_name, 0, sizeof(thread_name));
-		ACE_OS::strcpy(thread_name, RPG_NET_CONNECTION_HANDLER_THREAD_NAME);
-		const char* thread_names[1];
-		thread_names[0] = thread_name;
+    ACE_thread_t thread_ids[1];
+    thread_ids[0] = 0;
+    ACE_hthread_t thread_handles[1];
+    thread_handles[0] = 0;
+    char thread_name[RPG_COMMON_BUFSIZE];
+    ACE_OS::memset(thread_name, 0, sizeof(thread_name));
+    ACE_OS::strcpy(thread_name, RPG_NET_CONNECTION_HANDLER_THREAD_NAME);
+    const char* thread_names[1];
+    thread_names[0] = thread_name;
     if (inherited::activate((THR_NEW_LWP |
-														 THR_JOINABLE |
-														 THR_INHERIT_SCHED),                        // flags
-														1,                                          // # threads
-														0,                                          // force spawning
-														ACE_DEFAULT_THREAD_PRIORITY,                // priority
-														RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID, // group id
-														NULL,                                       // corresp. task --> use 'this'
-														thread_handles,                             // thread handle(s)
-														NULL,                                       // thread stack(s)
-														NULL,                                       // thread stack size(s)
-														thread_ids,                                 // thread id(s)
-														thread_names) == -1)                        // thread name(s)
+                             THR_JOINABLE |
+                             THR_INHERIT_SCHED),                        // flags
+                            1,                                          // # threads
+                            0,                                          // force spawning
+                            ACE_DEFAULT_THREAD_PRIORITY,                // priority
+                            RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID, // group id
+                            NULL,                                       // corresp. task --> use 'this'
+                            thread_handles,                             // thread handle(s)
+                            NULL,                                       // thread stack(s)
+                            NULL,                                       // thread stack size(s)
+                            thread_ids,                                 // thread id(s)
+                            thread_names) == -1)                        // thread name(s)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", aborting\n")));

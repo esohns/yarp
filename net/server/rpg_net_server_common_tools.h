@@ -33,7 +33,7 @@ struct dirent;
 class RPG_Net_Server_Export RPG_Net_Server_Common_Tools
 {
  public:
-	// *NOTE*: implements log rotation
+  // *NOTE*: implements log rotation
   static bool getNextLogFilename(const std::string&, // directory
                                  std::string&);      // return value: log filename
 
@@ -44,12 +44,12 @@ class RPG_Net_Server_Export RPG_Net_Server_Common_Tools
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Common_Tools(const RPG_Net_Server_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Common_Tools& operator=(const RPG_Net_Server_Common_Tools&));
 
-	// *NOTE*: implements log rotation
+  // *NOTE*: implements log rotation
   // callbacks used for scandir...
   static int selector(const dirent*); // directory entry
   static int comparator(const dirent**,  // directory entry
                         const dirent**); // directory entry
-	static unsigned int myMaxNumberOfLogFiles;
+  static unsigned int myMaxNumberOfLogFiles;
 };
 
 #endif

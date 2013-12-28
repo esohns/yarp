@@ -266,8 +266,18 @@ RPG_Player_Inventory::getTotalWeight() const
     } // end IF
     ACE_ASSERT(base);
 
-    const RPG_Item_PropertiesBase& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getProperties(base);
-    result += properties.baseWeight;
+    RPG_Item_PropertiesBase* properties = NULL;
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->getProperties(base, properties);
+    if (!properties)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid item type (was: \"%s\"), continuing\n"),
+                 RPG_Item_TypeHelper::RPG_Item_TypeToString(base->getType()).c_str()));
+
+      continue;
+    } // end IF
+    result += properties->baseWeight;
+    delete properties;
   } // end FOR
 
   return result;

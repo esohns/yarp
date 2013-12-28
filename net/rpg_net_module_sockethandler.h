@@ -51,7 +51,7 @@ class RPG_Net_Module_SocketHandler
 
   // configuration / initialization
   bool init(RPG_Stream_IAllocator*,   // message allocator
-		        const bool& = false,      // active object ?
+            const bool& = false,      // active object ?
             const unsigned int& = 0); // statistics collecting interval (second(s))
                                       // 0 --> DON'T collect statistics
 
@@ -92,7 +92,7 @@ class RPG_Net_Module_SocketHandler
   bool                               myIsInitialized;
 
   // timer stuff
-	unsigned int                       myStatCollectionInterval; // seconds
+  unsigned int                       myStatCollectionInterval; // seconds
   RPG_Net_StatisticHandler_Reactor_t myStatCollectHandler;
   long                               myStatCollectHandlerID;
 

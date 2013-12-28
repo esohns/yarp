@@ -101,7 +101,7 @@ AC_CONFIG_FILES([Makefile
                  stream/Makefile
                  protocol/Makefile
                  protocol/scripts/Makefile
-                 client/Makefile])
+                 client/Makefile
+                 server/Makefile])
 
 AC_OUTPUT
-

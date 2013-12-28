@@ -38,7 +38,7 @@ typedef RPG_Net_Module_RuntimeStatistic_t<RPG_Net_SessionMessage,
                                           RPG_Net_MessageType,
                                           RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICS_T;
 DATASTREAM_MODULE_DUPLEX(RPG_NET_MODULE_RUNTIMESTATISTICSREADER_T, // reader type
-	                       RPG_NET_MODULE_RUNTIMESTATISTICS_T,       // writer type
+                         RPG_NET_MODULE_RUNTIMESTATISTICS_T,       // writer type
                          RPG_Net_Module_RuntimeStatistic);         // name
 
 #endif

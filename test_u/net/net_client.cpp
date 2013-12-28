@@ -526,9 +526,9 @@ do_work(const unsigned int& maxNumConnections_in,
   // step3: init timer...
   ACE_INET_Addr peer_address(serverPortNumber_in,
                              serverHostname_in.c_str(),
-  													 AF_INET);
+                             AF_INET);
   Net_Client_TimeoutHandler timeout_handler(maxNumConnections_in,
-		                                        peer_address,
+                                            peer_address,
                                             connector);
   long timer_id = -1;
   if (connectionInterval_in)
@@ -584,26 +584,26 @@ do_work(const unsigned int& maxNumConnections_in,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    timer_id));
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-		connector->abort();
-		delete connector;
+    connector->abort();
+    delete connector;
     fini_signalHandling(signal_set,
                         useReactor_in);
 
     return;
   } // end IF
 
-	// step5b: connect immediately ?
+  // step5b: connect immediately ?
   if (connectionInterval_in == 0)
-		connector->connect(peer_address);
+    connector->connect(peer_address);
 
   // *NOTE*: from this point on, we need to clean up any remote connections !
 
-	// step6: dispatch events
+  // step6: dispatch events
   // *NOTE*: when using a thread pool, handle things differently...
   if (numThreadPoolThreads_in > 1)
-		RPG_Net_Common_Tools::finiEventDispatch(false,
-																						false,
-																						group_id);
+    RPG_Net_Common_Tools::finiEventDispatch(false,
+                                            false,
+                                            group_id);
   else
   {
     if (useReactor_in)
@@ -625,11 +625,11 @@ do_work(const unsigned int& maxNumConnections_in,
              ACE_TEXT("finished event dispatch...\n")));
 
   // step7: clean up
-	// *NOTE*: interval timer has been cancelled, and connections have been aborted
+  // *NOTE*: interval timer has been cancelled, and connections have been aborted
   fini_signalHandling(signal_set,
                       useReactor_in);
   RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-	delete connector;
+  delete connector;
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -686,7 +686,7 @@ ACE_TMAIN(int argc,
 //#endif
 
   // step1a set defaults
-	unsigned int maxNumConnections    = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
+  unsigned int maxNumConnections    = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
   std::string serverHostname        = NET_CLIENT_DEF_SERVER_HOSTNAME;
   unsigned int connectionInterval   = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
   bool logToFile                    = false;
@@ -700,7 +700,7 @@ ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!process_arguments(argc,
                          argv,
-												 maxNumConnections,
+                         maxNumConnections,
                          serverHostname,
                          connectionInterval,
                          logToFile,

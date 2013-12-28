@@ -57,10 +57,12 @@ class RPG_Item_Export RPG_Item_Dictionary
   void init(const std::string&,   // filename
             const bool& = false); // validate XML ?
 
-  const RPG_Item_PropertiesBase& getProperties(const RPG_Item_Base*) const;
-  const RPG_Item_ArmorProperties getArmorProperties(const RPG_Item_ArmorType&) const;
-  const RPG_Item_CommodityProperties getCommodityProperties(const RPG_Item_CommodityUnion&) const;
-  const RPG_Item_WeaponProperties getWeaponProperties(const RPG_Item_WeaponType&) const;
+  // *NOTE*: caller is responsible for return value's lifecycle
+  void getProperties(const RPG_Item_Base*,             // type
+                     RPG_Item_PropertiesBase*&) const; // return value: properties
+  RPG_Item_ArmorProperties getArmorProperties(const RPG_Item_ArmorType&) const;
+  RPG_Item_CommodityProperties getCommodityProperties(const RPG_Item_CommodityUnion&) const;
+  RPG_Item_WeaponProperties getWeaponProperties(const RPG_Item_WeaponType&) const;
 
   // debug info
   void dump() const;

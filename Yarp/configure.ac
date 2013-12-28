@@ -134,6 +134,7 @@ AC_CONFIG_FILES([Makefile
                  net/protocol/Makefile
                  net/protocol/scripts/Makefile
                  net/client/Makefile
+                 net/server/Makefile
                  client/Makefile
                  test_u/Makefile
                  test_u/chance/Makefile

@@ -32,5 +32,6 @@
 #define RPG_STREAM_BUFFER_SIZE                 1024 // 1 kB
 
 #define RPG_STREAM_DEF_NUM_STREAM_HEAD_THREADS 1
+#define RPG_STREAM_DEF_HANDLER_THREAD_NAME     "RPG stream dispatch"
 
 #endif

@@ -31,21 +31,30 @@
 #include "rpg_net_common_tools.h"
 
 Net_Client_SignalHandler::Net_Client_SignalHandler(const long& timerID_in,
-	                                                 const ACE_INET_Addr& peerSAP_in,
+                                                   const ACE_INET_Addr& peerSAP_in,
                                                    RPG_Net_Client_IConnector* connector_in,
-																									 const bool& useReactor_in)
+                                                   const bool& useReactor_in)
  : inherited(NULL,                            // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
-	 myTimerID(timerID_in),
+   myTimerID(timerID_in),
    myPeerAddress(peerSAP_in),
    myConnector(connector_in),
-	 myUseReactor(useReactor_in),
-	 mySignal(-1),
-	 mySigInfo(ACE_INVALID_HANDLE),
-	 myUContext(-1)
+   myUseReactor(useReactor_in),
+   mySignal(-1)//,
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+   ,mySigInfo(ACE_INVALID_HANDLE),
+   myUContext(-1)
+#else
+   //mySigInfo(),
+   //myUContext()
+#endif
 {
   RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::Net_Client_SignalHandler"));
 
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  ACE_OS::memset(&mySigInfo, 0, sizeof(mySigInfo));
+  ACE_OS::memset(&myUContext, 0, sizeof(myUContext));
+#endif
 }
 
 Net_Client_SignalHandler::~Net_Client_SignalHandler()
@@ -61,23 +70,25 @@ Net_Client_SignalHandler::handle_signal(int signal_in,
 {
   RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::handle_signal"));
 
-	// *IMPORTANT NOTE*: in signal context, most actions are forbidden, so save
-	// the state and notify the reactor/proactor for callback instead (see below)
+  // *IMPORTANT NOTE*: in signal context, most actions are forbidden, so save
+  // the state and notify the reactor/proactor for callback instead (see below)
 
-	// save state
-	mySignal = signal_in;
+  // save state
+  mySignal = signal_in;
+  ACE_OS::memset(&mySigInfo, 0, sizeof(mySigInfo));
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-	mySigInfo.si_handle_ = static_cast<ACE_HANDLE>(info_in);
+  mySigInfo.si_handle_ = static_cast<ACE_HANDLE>(info_in);
 #else
-	mySigInfo = *info_in;
+  if (info_in)
+    mySigInfo = *info_in;
 #endif
-	if (context_in)
-	  myUContext = *context_in;
+  if (context_in)
+    myUContext = *context_in;
 
-	// schedule the reactor (see below)
-	ACE_Reactor::instance()->notify(this);
+  // schedule the reactor (see below)
+  ACE_Reactor::instance()->notify(this);
 
-	return 0;
+  return 0;
 }
 
 int
@@ -165,14 +176,14 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
   if (connect_to_server)
   {
     try
-		{
+    {
       myConnector->connect(myPeerAddress);
-		}
-		catch (...)
-		{
-		  ACE_DEBUG((LM_ERROR,
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in RPG_Net_IConnector::connect(), continuing\n")));
-		}
+    }
   } // end IF
 
   // ...shutdown ?
@@ -182,31 +193,31 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
     // - leave reactor event loop handling signals, sockets, (maintenance) timers...
     // --> (try to) terminate in a well-behaved manner
 
-		// stop interval timer (might spawn new connections)
-		if (myTimerID >= 0)
-		{
-			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myTimerID, NULL) <= 0)
+    // stop interval timer (might spawn new connections)
+    if (myTimerID >= 0)
+    {
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myTimerID, NULL) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    myTimerID));
-			myTimerID = -1;
-		} // end IF
-		myConnector->abort();
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->stop();
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+      myTimerID = -1;
+    } // end IF
+    myConnector->abort();
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->stop();
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // stop reactor (&& proactor, if applicable)
-		int result = ACE_Reactor::instance()->end_event_loop();
+    int result = ACE_Reactor::instance()->end_event_loop();
     if (result == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
     if (!myUseReactor)
-		{
-			result = ACE_Proactor::instance()->end_event_loop();
+    {
+      result = ACE_Proactor::instance()->end_event_loop();
       if (result == -1)
-				ACE_DEBUG((LM_ERROR,
-				           ACE_TEXT("failed to ACE_Proactor::end_event_loop(): \"%m\", continuing\n")));
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Proactor::end_event_loop(): \"%m\", continuing\n")));
     } // end IF
   } // end IF
 

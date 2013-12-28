@@ -31,7 +31,7 @@ template <typename SessionMessageType,
 RPG_Stream_TaskBaseAsynch<SessionMessageType,
                       ProtocolMessageType>::RPG_Stream_TaskBaseAsynch()
  : myThreadID(0),
-   myQueue(RPG_STREAM_DEF_MAX_QUEUE_SLOTS)
+   myQueue(RPG_STREAM_MAX_QUEUE_SLOTS)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::RPG_Stream_TaskBaseAsynch"));
 
@@ -40,7 +40,7 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
 
   // set group ID for worker thread(s)
   // *TODO*: pass this in from outside...
-  inherited::grp_id(RPG_STREAM_DEF_GROUP_ID_TASK);
+  inherited::grp_id(RPG_STREAM_TASK_GROUP_ID);
 }
 
 template <typename SessionMessageType,

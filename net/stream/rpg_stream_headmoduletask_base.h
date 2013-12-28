@@ -71,14 +71,14 @@ class RPG_Stream_HeadModuleTaskBase
   virtual void stop();
   virtual void pause();
   virtual void rewind();
-	// *NOTE*: for the time being, this simply waits for any worker threads to join
+  // *NOTE*: for the time being, this simply waits for any worker threads to join
   virtual void waitForCompletion();
   virtual bool isRunning() const;
 
  protected:
   // needs to be subclassed...
   RPG_Stream_HeadModuleTaskBase(const bool& = false,  // active object ?
-		                            const bool& = false); // auto-start ?
+                                const bool& = false); // auto-start ?
 
   // override: handle MB_STOP control messages to trigger shutdown
   // of the worker thread...
@@ -106,38 +106,38 @@ class RPG_Stream_HeadModuleTaskBase
 
   // *NOTE*: functionally, this does the same as stop(), with the
   // difference that stop() will wait for any worker(s)
-	// --> i.e. stop() MUST NOT be called within a worker thread itself
+  // --> i.e. stop() MUST NOT be called within a worker thread itself
   // so it calls this to signal an end
   virtual void finished();
 
   // *IMPORTANT NOTE*: children SHOULD set these during initialization !
   RPG_Stream_IAllocator*                    myAllocator;
   unsigned int                              mySessionID;
-	bool                                      myIsActive;
+  bool                                      myIsActive;
 
  private:
   typedef RPG_Stream_TaskBase<SessionMessageType,
                               ProtocolMessageType> inherited;
   typedef RPG_Stream_StateMachine_Control inherited2;
   typedef RPG_Stream_HeadModuleTaskBase<DataType,
-				                                SessionConfigType,
-				                                SessionMessageType,
-				                                ProtocolMessageType> own_type;
+                                        SessionConfigType,
+                                        SessionMessageType,
+                                        ProtocolMessageType> own_type;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase(const RPG_Stream_HeadModuleTaskBase<DataType,
-								                                                                           SessionConfigType,
-								                                                                           SessionMessageType,
-								                                                                           ProtocolMessageType>&));
+                                                       SessionConfigType,
+                                                       SessionMessageType,
+                                                       ProtocolMessageType>&));
   // *TODO*: apparently, ACE_UNIMPLEMENTED_FUNC gets confused by template arguments...
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>& operator=(const RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>&));
 
   // allow blocking wait in waitForCompletion()
  // ACE_Recursive_Thread_Mutex                myLock;
-	//ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
-	ACE_Thread_Mutex                          myLock;
-	ACE_Condition<ACE_Thread_Mutex>           myCondition;
+  //ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
+  ACE_Thread_Mutex                          myLock;
+  ACE_Condition<ACE_Thread_Mutex>           myCondition;
   unsigned int                              myCurrentNumThreads;
   RPG_Stream_MessageQueue                   myQueue;
   bool                                      myAutoStart;

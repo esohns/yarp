@@ -125,12 +125,12 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-n [VALUE] : generate (party of) #players") << ACE_TEXT(" [") << CHARACTER_GENERATOR_DEF_GENERATE_PARTY << ACE_TEXT("; 0:off]") << std::endl;
-	path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += (CHARACTER_GENERATOR_DEF_GENERATE_ENTITY ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE)
-		                                               : ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE));
+                                                   : ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE));
   path += (CHARACTER_GENERATOR_DEF_GENERATE_ENTITY ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT)
-		                                               : ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT));
+                                                   : ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT));
   std::cout << ACE_TEXT("-o <[FILE]>: output file") << ACE_TEXT(" [") << path.c_str() << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r         : random (non-interactive)") << ACE_TEXT(" [") << CHARACTER_GENERATOR_DEF_RANDOM << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << std::endl;
@@ -145,7 +145,7 @@ process_arguments(const int argc_in,
                   std::string& magicDictionary_out,
                   std::string& graphicsDictionary_out,
                   unsigned int& generateParty_out,
-									std::string& outputFile_out,
+                  std::string& outputFile_out,
                   bool& random_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out)
@@ -187,7 +187,7 @@ process_arguments(const int argc_in,
 
   generateParty_out = CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
 
-	outputFile_out = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  outputFile_out = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   std::string default_output_path = outputFile_out;
 

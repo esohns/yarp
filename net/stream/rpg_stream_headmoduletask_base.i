@@ -31,22 +31,20 @@ RPG_Stream_HeadModuleTaskBase<DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::RPG_Stream_HeadModuleTaskBase(const bool& isActive_in,
-							                                                      const bool& autoStart_in)
+                                                                                  const bool& autoStart_in)
  : myAllocator(NULL),
    mySessionID(0),
+   myIsActive(isActive_in),
    myCondition(myLock),
    myCurrentNumThreads(RPG_STREAM_DEF_NUM_STREAM_HEAD_THREADS),
    myQueue(RPG_STREAM_MAX_QUEUE_SLOTS),
-   myAutoStart(autoStart_in),
-   myIsActive(isActive_in)//,
-   //myUserData(),
+   myAutoStart(autoStart_in)//,
+   //myUserData()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::RPG_Stream_HeadModuleTaskBase"));
 
-//   // init user data
-//   ACE_OS::memset(&myUserData,
-//                  0,
-//                  sizeof(DataType));
+  // init user data
+  ACE_OS::memset(&myUserData, 0, sizeof(myUserData));
 
   // tell the task to use our message queue...
   inherited::msg_queue(&myQueue);
@@ -607,7 +605,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
       if (getState() == inherited2::PAUSED)
       {
         // resume worker ?
-		if (myIsActive)
+        if (myIsActive)
           if (inherited::resume() == -1)
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("failed to resume(): \"%m\", continuing\n")));
@@ -615,53 +613,53 @@ RPG_Stream_HeadModuleTaskBase<DataType,
         break;
       } // end IF
 
-	  if (myIsActive)
-	  {
-		// OK: start worker
-		ACE_hthread_t thread_handles[1];
-		thread_handles[0] = 0;
-		ACE_thread_t thread_ids[1];
-		thread_ids[0] = 0;
-		char thread_name[RPG_COMMON_BUFSIZE];
-		ACE_OS::memset(thread_name, 0, sizeof(thread_name));
-		ACE_OS::strcpy(thread_name, RPG_NET_CONNECTION_HANDLER_THREAD_NAME);
-		const char* thread_names[1];
-		thread_names[0] = thread_name;
-		if (inherited::activate((THR_NEW_LWP |
-							     THR_JOINABLE |
-								 THR_INHERIT_SCHED),         // flags
-								1,                           // number of threads
-								0,                           // force spawning
-								ACE_DEFAULT_THREAD_PRIORITY, // priority
-								inherited::grp_id(),         // group id (see above)
-								NULL,                        // corresp. task --> use 'this'
-								thread_handles,              // thread handle(s)
-								NULL,                        // thread stack(s)
-								NULL,                        // thread stack size(s)
-								thread_ids,                  // thread id(s)
-								thread_names) == -1)         // thread name(s)
-		{
-		  ACE_DEBUG((LM_ERROR,
-			 	     ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", aborting\n")));
+      if (myIsActive)
+      {
+        // OK: start worker
+        ACE_hthread_t thread_handles[1];
+        thread_handles[0] = 0;
+        ACE_thread_t thread_ids[1];
+        thread_ids[0] = 0;
+        char thread_name[RPG_COMMON_BUFSIZE];
+        ACE_OS::memset(thread_name, 0, sizeof(thread_name));
+        ACE_OS::strcpy(thread_name, RPG_STREAM_DEF_HANDLER_THREAD_NAME);
+        const char* thread_names[1];
+        thread_names[0] = thread_name;
+        if (inherited::activate((THR_NEW_LWP |
+                                 THR_JOINABLE |
+                                 THR_INHERIT_SCHED),         // flags
+                                1,                           // number of threads
+                                0,                           // force spawning
+                                ACE_DEFAULT_THREAD_PRIORITY, // priority
+                                inherited::grp_id(),         // group id (see above)
+                                NULL,                        // corresp. task --> use 'this'
+                                thread_handles,              // thread handle(s)
+                                NULL,                        // thread stack(s)
+                                NULL,                        // thread stack size(s)
+                                thread_ids,                  // thread id(s)
+                                thread_names) == -1)         // thread name(s)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", aborting\n")));
 
-		  break;
-		} // end IF
-	  } // end IF
-	  else
-	  {
-		// send initial session message downstream...
-		if (!putSessionMessage(mySessionID,
-							   RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN,
-							   myUserData,
-							   ACE_OS::gettimeofday(), // start of session
-							   false))                 // N/A
-		{
-		  ACE_DEBUG((LM_ERROR,
-			  	     ACE_TEXT("putSessionMessage(SESSION_BEGIN) failed, aborting\n")));
+          break;
+        } // end IF
+      } // end IF
+      else
+      {
+        // send initial session message downstream...
+        if (!putSessionMessage(mySessionID,
+                               RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN,
+                               myUserData,
+                               ACE_OS::gettimeofday(), // start of session
+                               false))                 // N/A
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("putSessionMessage(SESSION_BEGIN) failed, aborting\n")));
 
-		  break;
-		} // end IF
-	  } // end ELSE
+          break;
+        } // end IF
+      } // end ELSE
 
 //       // debug info
 //       if (inherited::module())
@@ -684,54 +682,54 @@ RPG_Stream_HeadModuleTaskBase<DataType,
     }
     case inherited2::STOPPED:
     {
-			if (myIsActive)
-			{
-				// OK: drop a control message into the queue...
-				// *TODO*: use ACE_Stream::control() instead ?
-				ACE_Message_Block* stop_mb = NULL;
-				ACE_NEW_NORETURN(stop_mb,
-									       ACE_Message_Block(0,                                  // size
-						 															 ACE_Message_Block::MB_STOP,         // type
-																					 NULL,                               // continuation
-																					 NULL,                               // data
-																					 NULL,                               // buffer allocator
-																					 NULL,                               // locking strategy
-																					 ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-																					 ACE_Time_Value::zero,               // execution time
-																					 ACE_Time_Value::max_time,           // deadline time
-																					 NULL,                               // data block allocator
-																					 NULL));                             // message allocator
-				if (!stop_mb)
-				{
-					ACE_DEBUG((LM_ERROR,
-			 					     ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
+      if (myIsActive)
+      {
+        // OK: drop a control message into the queue...
+        // *TODO*: use ACE_Stream::control() instead ?
+        ACE_Message_Block* stop_mb = NULL;
+        ACE_NEW_NORETURN(stop_mb,
+                         ACE_Message_Block(0,                                  // size
+                                           ACE_Message_Block::MB_STOP,         // type
+                                           NULL,                               // continuation
+                                           NULL,                               // data
+                                           NULL,                               // buffer allocator
+                                           NULL,                               // locking strategy
+                                           ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+                                           ACE_Time_Value::zero,               // execution time
+                                           ACE_Time_Value::max_time,           // deadline time
+                                           NULL,                               // data block allocator
+                                           NULL));                             // message allocator
+        if (!stop_mb)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
-					break;
-				} // end IF
+          break;
+        } // end IF
 
-				if (putq(stop_mb, NULL) == -1)
-				{
-					ACE_DEBUG((LM_ERROR,
-			 					     ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
+	if (inherited::putq(stop_mb, NULL) == -1)
+	{
+	  ACE_DEBUG((LM_ERROR,
+		     ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
 
-					// clean up
-					stop_mb->release();
-				} // end IF
-			} // end IF
-			else
-			{
-				// send final session message downstream...
-				if (!putSessionMessage(mySessionID,
-		 													 RPG_Stream_SessionMessage::MB_STREAM_SESSION_END,
-															 myUserData,
-															 ACE_Time_Value::zero, // N/A
-															 false))               // N/A
-					ACE_DEBUG((LM_ERROR,
-			  					   ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
+	  // clean up
+	  stop_mb->release();
+	} // end IF
+      } // end IF
+      else
+      {
+        // send final session message downstream...
+        if (!putSessionMessage(mySessionID,
+                               RPG_Stream_SessionMessage::MB_STREAM_SESSION_END,
+                               myUserData,
+                               ACE_Time_Value::zero, // N/A
+                               false))               // N/A
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
 
-				// signal the controller
-				finished();
-			} // end ELSE
+	// signal the controller
+	finished();
+      } // end ELSE
 
       break;
     }
@@ -755,7 +753,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
     case inherited2::PAUSED:
     {
       // suspend the worker ?
-	  if (myIsActive)
+      if (myIsActive)
         if (inherited::suspend() == -1)
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to suspend(): \"%m\", continuing\n")));
@@ -804,7 +802,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   {
     try
     {
-	    // *IMPORTANT NOTE*: 0 --> session message !
+      // *IMPORTANT NOTE*: 0 --> session message !
       message = static_cast<SessionMessageType*>(allocator_in->malloc(0));
     }
     catch (...)

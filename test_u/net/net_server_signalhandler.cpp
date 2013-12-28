@@ -36,23 +36,33 @@
 #include <sstream>
 
 Net_Server_SignalHandler::Net_Server_SignalHandler(const long& timerID_in,
-	                                                 RPG_Common_IControl* control_in,
+                                                   RPG_Common_IControl* control_in,
                                                    RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* report_in,
-																									 const bool& useReactor_in)
+                                                   const bool& useReactor_in)
  : inherited(NULL,                            // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
-	 myTimerID(timerID_in),
+   myTimerID(timerID_in),
    myControl(control_in),
    myReport(report_in),
    myUseReactor(useReactor_in),
-	 mySignal(-1),
-	 mySigInfo(ACE_INVALID_HANDLE),
-	 myUContext(-1)
+   mySignal(-1)//,
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+   ,mySigInfo(ACE_INVALID_HANDLE),
+   myUContext(-1)
+#else
+   //mySigInfo(),
+   //myUContext()
+#endif
 {
   RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::Net_Server_SignalHandler"));
 
   // sanity check
   ACE_ASSERT(myControl);
+
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  ACE_OS::memset(&mySigInfo, 0, sizeof(mySigInfo));
+  ACE_OS::memset(&myUContext, 0, sizeof(myUContext));
+#endif
 }
 
 Net_Server_SignalHandler::~Net_Server_SignalHandler()
@@ -68,23 +78,25 @@ Net_Server_SignalHandler::handle_signal(int signal_in,
 {
   RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::handle_signal"));
 
-	// *IMPORTANT NOTE*: in signal context, most actions are forbidden, so save
-	// the state and notify the reactor/proactor for callback instead (see below)
+  // *IMPORTANT NOTE*: in signal context, most actions are forbidden, so save
+  // the state and notify the reactor/proactor for callback instead (see below)
 
-	// save state
-	mySignal = signal_in;
+  // save state
+  mySignal = signal_in;
+  ACE_OS::memset(&mySigInfo, 0, sizeof(mySigInfo));
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-	mySigInfo.si_handle_ = static_cast<ACE_HANDLE>(info_in);
+  mySigInfo.si_handle_ = static_cast<ACE_HANDLE>(info_in);
 #else
-	mySigInfo = *info_in;
+  if (info_in)
+    mySigInfo = *info_in;
 #endif
-	if (context_in)
-	  myUContext = *context_in;
+  if (context_in)
+    myUContext = *context_in;
 
-	// schedule the reactor (see below)
-	ACE_Reactor::instance()->notify(this);
+  // schedule the reactor (see below)
+  ACE_Reactor::instance()->notify(this);
 
-	return 0;
+  return 0;
 }
 
 int

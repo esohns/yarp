@@ -36,10 +36,11 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::RPG_Common_Timer_Manager"));
 
   // set time queue
-	myTimerQueue = new(std::nothrow) RPG_Common_TimerHeap_t(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
-																													true,                       // preallocate timer nodes
-																													&myTimerHandler,            // upcall functor
-																													NULL);                      // freelist --> allocate
+	ACE_NEW_NORETURN(myTimerQueue,
+		               RPG_Common_TimerHeap_t(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
+																				  true,                       // preallocate timer nodes ?
+																				  &myTimerHandler,            // upcall functor
+																				  NULL));                     // freelist --> allocate
 	if (!myTimerQueue)
 	{
     ACE_DEBUG((LM_CRITICAL,

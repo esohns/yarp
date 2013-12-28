@@ -33,7 +33,7 @@
 class RPG_Net_Client_Export RPG_Net_Client_Connector
  : public ACE_Connector<RPG_Net_StreamHandler_t,
                         ACE_SOCK_CONNECTOR>,
-	 public RPG_Net_Client_IConnector
+    public RPG_Net_Client_IConnector
 {
  public:
   RPG_Net_Client_Connector();
@@ -42,8 +42,8 @@ class RPG_Net_Client_Export RPG_Net_Client_Connector
   // override default creation strategy
   virtual int make_svc_handler(RPG_Net_StreamHandler_t*&);
 
-	// implement RPG_Net_Client_IConnector
-	virtual void abort();
+  // implement RPG_Net_Client_IConnector
+  virtual void abort();
   virtual void connect(const ACE_INET_Addr&);
 
  private:

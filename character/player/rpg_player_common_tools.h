@@ -40,7 +40,7 @@ class RPG_Player_Export RPG_Player_Common_Tools
   // *WARNING*: result needs to be delete()d !
   static RPG_Player_PlayerXML_XMLTree_Type* playerToPlayerXML(const RPG_Player&);
 
-	static std::string getPlayerProfilesDirectory();
+  static std::string getPlayerProfilesDirectory();
 
  private:
   // safety measures

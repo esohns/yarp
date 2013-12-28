@@ -599,17 +599,17 @@ do_work(const unsigned int& maxNumConnections_in,
   } // end IF
 
   // step2: signal handling
-	RPG_Net_Server_IListener* listener_handle = NULL;
-	if (useReactor_in)
-		listener_handle = RPG_NET_SERVER_LISTENER_SINGLETON::instance();
-	else
-		listener_handle = RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance();
+  RPG_Net_Server_IListener* listener_handle = NULL;
+  if (useReactor_in)
+    listener_handle = RPG_NET_SERVER_LISTENER_SINGLETON::instance();
+  else
+    listener_handle = RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance();
   // event handler for signals
   Net_Server_SignalHandler signal_handler(timer_id,
-		                                      listener_handle,
+                                          listener_handle,
                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
-	ACE_Sig_Set signal_set(0);
-	init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK IF regular reporting is off
+  ACE_Sig_Set signal_set(0);
+  init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK IF regular reporting is off
                signal_set);
   init_signalHandling(signal_set,
                       signal_handler,

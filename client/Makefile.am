@@ -4,7 +4,8 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DRPG_CLIENT_BUILD_DLL -I$(srcdir)/../common \
               -I$(srcdir)/../chance/dice -I$(srcdir)/../character \
               -I$(srcdir)/../magic -I$(srcdir)/../item -I$(srcdir)/../combat \
-              -I$(srcdir)/../graphics -I$(srcdir)/../engine -I$(srcdir)/../map \
+              -I$(srcdir)/../graphics -I$(srcdir)/../net/client \
+              -I$(srcdir)/../engine -I$(srcdir)/../map \
               -I$(srcdir)/../character/monster -I$(srcdir)/../character/player \
               -I$(srcdir)/../sound
 

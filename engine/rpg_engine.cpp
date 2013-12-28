@@ -55,7 +55,7 @@ RPG_Engine::RPG_Engine()
 //    myEntities(),
    myActivePlayer(0),
    myClient(NULL),
-	 myConnector(NULL)
+   myConnector(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::RPG_Engine"));
 
@@ -67,10 +67,11 @@ RPG_Engine::RPG_Engine()
 
   // init network connector
   if (RPG_NET_USES_REACTOR)
-    myConnector = new(std::nothrow) RPG_Net_Client_Connector();
+    ACE_NEW_NORETURN(myConnector,
+                     RPG_Net_Client_Connector());
   else
-    myConnector = new(std::nothrow) RPG_Net_Client_AsynchConnector();
-  ACE_ASSERT(myConnector);
+    ACE_NEW_NORETURN(myConnector,
+                     RPG_Net_Client_AsynchConnector());
   if (!myConnector)
   {
     ACE_DEBUG((LM_CRITICAL,

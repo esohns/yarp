@@ -79,39 +79,38 @@ RPG_Stream::init()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream::init"));
 
-	if (myIsInitialized)
-	{
-		// *NOTE*: fini() invokes close() which will reset the writer/reader tasks
-		// of the enqueued modules --> reset this !
-		RPG_Stream_IModule* module_handle = NULL;
-		MODULE_TYPE* module = NULL;
-		// *NOTE*: cannot write this - it confuses gcc...
+  if (myIsInitialized)
+  {
+    // *NOTE*: fini() invokes close() which will reset the writer/reader tasks
+    // of the enqueued modules --> reset this !
+    RPG_Stream_IModule* module_handle = NULL;
+    // *NOTE*: cannot write this - it confuses gcc...
     for (MODULE_CONTAINERITERATOR_TYPE iterator = myAvailableModules.begin();
-			   iterator != myAvailableModules.end();
-			   iterator++)
-		{
-			// need a downcast...
-			module_handle = dynamic_cast<RPG_Stream_IModule*>(*iterator);
-			ACE_ASSERT(module_handle);
-			try
-			{
-			  module_handle->reset();
-  		}
-			catch (...)
-			{
-			  ACE_DEBUG((LM_ERROR,
-					      	 ACE_TEXT("caught exception in RPG_Stream_IModule::reset(), continuing\n")));
-			}
-		} // end FOR
-	} // end IF
+         iterator != myAvailableModules.end();
+         iterator++)
+    {
+      // need a downcast...
+      module_handle = dynamic_cast<RPG_Stream_IModule*>(*iterator);
+      ACE_ASSERT(module_handle);
+      try
+      {
+        module_handle->reset();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Stream_IModule::reset(), continuing\n")));
+      }
+    } // end FOR
+  } // end IF
 
   // delegate this to base class open()
   int result = -1;
   try
   {
     result = inherited::open(NULL,  // argument to module open()
-														 NULL,  // no head module --> ACE_Stream_Head !
-														 NULL); // no tail module --> ACE_Stream_Tail !
+                             NULL,  // no head module --> ACE_Stream_Head !
+                             NULL); // no tail module --> ACE_Stream_Tail !
   }
   catch (...)
   {
@@ -131,7 +130,7 @@ RPG_Stream::fini()
   RPG_TRACE(ACE_TEXT("RPG_Stream::fini"));
 
   // OK: delegate this to base class close(ACE_Module_Base::M_DELETE_NONE)
-  int ret = -1;
+  int result = -1;
   try
   {
     // *NOTE*: this will implicitly:
@@ -140,7 +139,7 @@ RPG_Stream::fini()
     // --> close()ing a module will module_closed() and flush() the associated tasks
     // --> flush()ing a task will close() its queue
     // --> close()ing a queue will deactivate() and flush() it
-    ret = inherited::close(ACE_Module_Base::M_DELETE_NONE);
+    result = inherited::close(ACE_Module_Base::M_DELETE_NONE);
   }
   catch (...)
   {
@@ -149,11 +148,11 @@ RPG_Stream::fini()
   }
 
   // OK ?
-  if (ret == -1)
+  if (result == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::close(M_DELETE_NONE): \"%m\", aborting\n")));
 
-  return (ret == 0);
+  return (result == 0);
 }
 
 void

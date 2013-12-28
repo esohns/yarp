@@ -32,17 +32,17 @@ class Net_Client_SignalHandler
 {
  public:
   Net_Client_SignalHandler(const long&,                // interval timer handle
-		                       const ACE_INET_Addr&,       // peer SAP
+                           const ACE_INET_Addr&,       // peer SAP
                            RPG_Net_Client_IConnector*, // connector
-													 const bool&);               // use reactor ?
+                           const bool&);               // use reactor ?
   virtual ~Net_Client_SignalHandler();
 
-	// *NOTE*: just save state and notify the reactor
+  // *NOTE*: just save state and notify the reactor
   virtual int handle_signal(int,                 // signal
                             siginfo_t* = NULL,   // not needed on UNIX
                             ucontext_t* = NULL); // not used
   // implement specific behaviour
-	virtual int handle_exception(ACE_HANDLE = ACE_INVALID_HANDLE); // handle
+  virtual int handle_exception(ACE_HANDLE = ACE_INVALID_HANDLE); // handle
 
  private:
   typedef ACE_Event_Handler inherited;
@@ -52,13 +52,13 @@ class Net_Client_SignalHandler
   ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler(const Net_Client_SignalHandler&));
   ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler& operator=(const Net_Client_SignalHandler&));
 
-	long                       myTimerID;
+  long                       myTimerID;
   ACE_INET_Addr              myPeerAddress;
   RPG_Net_Client_IConnector* myConnector;
-	bool                       myUseReactor;
-	int                        mySignal;
-	siginfo_t                  mySigInfo;
-	ucontext_t                 myUContext;
+  bool                       myUseReactor;
+  int                        mySignal;
+  siginfo_t                  mySigInfo;
+  ucontext_t                 myUContext;
 };
 
 #endif

@@ -45,9 +45,9 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
 
  public:
   // configuration / initialization
-	// implement RPG_Net_Server_IListener
+  // implement RPG_Net_Server_IListener
   virtual void init(const unsigned short&, // port number
-		                const bool& = false);  // use loopback interface ?
+                    const bool& = false);  // use loopback interface ?
   bool isInitialized() const;
 
   // override some methods from ACE_Acceptor
@@ -79,7 +79,7 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
   bool           myIsListening;
   bool           myIsOpen;
   unsigned short myListeningPort;
-	bool           myUseLoopback;
+  bool           myUseLoopback;
 };
 
 typedef ACE_Singleton<RPG_Net_Server_Listener,

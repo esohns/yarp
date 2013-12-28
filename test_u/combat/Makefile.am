@@ -10,7 +10,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/../common -I$(top_srcdir)/../engine \
 bin_PROGRAMS = combat_simulator
 
 combat_simulator_SOURCES = combat_simulator.cpp
-combat_simulator_CPPFLAGS = $(AM_CPPFLAGS) -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
+combat_simulator_CPPFLAGS = $(AM_CPPFLAGS) $(pkg_libs_CFLAGS) \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #combat_simulator_LDFLAGS = $(pkg_libs_LIBS)
 combat_simulator_LDADD = -lRPG_Engine -lRPG_Graphics -lRPG_Sound \
   -lRPG_Map -lRPG_Monster -lRPG_Player -lRPG_Combat -lRPG_Character -lRPG_Item \

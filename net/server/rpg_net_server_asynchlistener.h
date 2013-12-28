@@ -45,9 +45,9 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
   virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
 
   // configuration / initialization
-	// implement RPG_Net_Server_IListener
+  // implement RPG_Net_Server_IListener
   virtual void init(const unsigned short&, // port number
-		                const bool& = false);  // use loopback interface ?
+                    const bool& = false);  // use loopback interface ?
   const bool isInitialized() const;
 
   // implement RPG_Common_IControl
@@ -71,7 +71,7 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
   bool           myIsInitialized;
   bool           myIsListening;
   unsigned short myListeningPort;
-	bool           myUseLoopback;
+  bool           myUseLoopback;
 };
 
 typedef ACE_Singleton<RPG_Net_Server_AsynchListener,
