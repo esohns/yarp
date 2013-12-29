@@ -39,7 +39,7 @@ RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler()
    myAllocator(NULL),
    mySessionID(0),
    myCounter(1),
-	 myPingInterval(0), // [0: --> OFF]
+   myPingInterval(0), // [0: --> OFF]
    myAutomaticPong(true),
    myPrintPingDot(false),
    myIsInitialized(false)
@@ -54,18 +54,18 @@ RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler()
 
   // clean up timer if necessary
   if (myPingTimerID != -1)
-	{
+  {
     if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
-								 mySessionID,
+                 mySessionID,
                  myPingTimerID));
-		else
-			ACE_DEBUG((LM_WARNING,
-				         ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
-								 mySessionID,
-				         myPingTimerID));
-	} // end IF
+    else
+      ACE_DEBUG((LM_WARNING,
+                 ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
+                 mySessionID,
+                 myPingTimerID));
+  } // end IF
 }
 
 bool
@@ -87,23 +87,23 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
 
     // reset state
     if (myPingTimerID != -1)
-		{
+    {
       if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID) == -1)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
-									 mySessionID,
+                   mySessionID,
                    myPingTimerID));
-			else
-				ACE_DEBUG((LM_DEBUG,
-									 ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
-									 mySessionID,
-									 myPingTimerID));
+      else
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
+                   mySessionID,
+                   myPingTimerID));
       myPingTimerID = -1;
-		} // end IF
+    } // end IF
     myAllocator = NULL;
     mySessionID = 0;
     myCounter = 1;
-		myPingInterval = 0;
+    myPingInterval = 0;
     myAutomaticPong = true;
     myPrintPingDot = false;
 
@@ -112,7 +112,7 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
 
   myAllocator = allocator_in;
   mySessionID = sessionID_in;
-	myPingInterval = pingInterval_in;
+  myPingInterval = pingInterval_in;
   myAutomaticPong = autoAnswerPings_in;
   //if (myAutomaticPong)
   //   ACE_DEBUG((LM_DEBUG,
@@ -214,51 +214,51 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& me
 
   switch (message_inout->getType())
   {
-   	case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
-			if (myPingInterval)
-			{
-				// schedule ourselves...
-				ACE_Time_Value ping_interval(myPingInterval, 0);
-				ACE_ASSERT(myPingTimerID == -1);
-				myPingTimerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myPingHandler,                          // handler
-																																								NULL,                                    // act
-																																								ACE_OS::gettimeofday () + ping_interval, // wakeup time
-																																								ping_interval);                          // interval
-				if (myPingTimerID == -1)
-				{
-					ACE_DEBUG((LM_ERROR,
-										 ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
+      if (myPingInterval)
+      {
+        // schedule ourselves...
+        ACE_Time_Value ping_interval(myPingInterval, 0);
+        ACE_ASSERT(myPingTimerID == -1);
+        myPingTimerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myPingHandler,                          // handler
+                                                                                NULL,                                    // act
+                                                                                ACE_OS::gettimeofday () + ping_interval, // wakeup time
+                                                                                ping_interval);                          // interval
+        if (myPingTimerID == -1)
+        {
+           ACE_DEBUG((LM_ERROR,
+                      ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
-					return;
-				} // end IF
+           return;
+        } // end IF
 
-				 //ACE_DEBUG((LM_DEBUG,
-				 //           ACE_TEXT("scheduled \"ping\" timer (ID: %d), interval: %u second(s)...\n"),
-				 //           myPingTimerID,
-				 //           pingInterval_in));
-			} // end IF
+	//ACE_DEBUG((LM_DEBUG,
+	//           ACE_TEXT("scheduled \"ping\" timer (ID: %d), interval: %u second(s)...\n"),
+	//           myPingTimerID,
+	//           pingInterval_in));
+      } // end IF
 
-			break;
+      break;
     }
-		case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
+    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
-			if (myPingTimerID != -1)
-			{
-				if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID) == -1)
-					ACE_DEBUG((LM_ERROR,
-										 ACE_TEXT("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
-										 mySessionID,
-										 myPingTimerID));
-				//else
-				//	ACE_DEBUG((LM_DEBUG,
-				//						 ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
-				//						 mySessionID,
-				//						 myPingTimerID));
-				myPingTimerID = -1;
-			} // end IF
+      if (myPingTimerID != -1)
+      {
+        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID) == -1)
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
+                     mySessionID,
+                     myPingTimerID));
+        //else
+        //	ACE_DEBUG((LM_DEBUG,
+        //						 ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
+        //						 mySessionID,
+        //						 myPingTimerID));
+        myPingTimerID = -1;
+      } // end IF
 
-			break;
+      break;
     }
     default:
       break;

@@ -47,6 +47,9 @@ class RPG_Net_AsynchStreamHandler_T
   RPG_Net_AsynchStreamHandler_T();
   virtual ~RPG_Net_AsynchStreamHandler_T();
 
+  // implement (part of) RPG_Net_IConnection
+  virtual void ping();
+
   // override some service methods
   virtual void open(ACE_HANDLE,          // (socket) handle
                     ACE_Message_Block&); // initial data (if any)

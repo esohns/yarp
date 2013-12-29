@@ -40,8 +40,8 @@ class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
   // override default creation strategy
   virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
 
-	// implement RPG_Net_Client_IConnector
-	virtual void abort();
+  // implement RPG_Net_Client_IConnector
+  virtual void abort();
   virtual void connect(const ACE_INET_Addr&);
 
   virtual int validate_connection(const ACE_Asynch_Connect::Result&, // result

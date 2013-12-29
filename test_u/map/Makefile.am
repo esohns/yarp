@@ -13,9 +13,10 @@ bin_PROGRAMS = map_generator path_finder
 map_generator_SOURCES = map_generator.cpp
 map_generator_CPPFLAGS = $(AM_CPPFLAGS) $(pkg_libs_CFLAGS)
 #map_generator_LDFLAGS = $(pkg_libs_LIBS)
-map_generator_LDADD = -lRPG_Engine -lRPG_Graphics -lRPG_Map -lRPG_Monster \
-  -lRPG_Player -lRPG_Combat -lRPG_Magic -lRPG_Character -lRPG_Item -lRPG_Chance \
-  -lRPG_Common -lRPG_Dice $(pkg_libs_LIBS)
+map_generator_LDADD = -lRPG_Engine -lRPG_Net_Client -lRPG_Net -lRPG_Stream \
+  -lRPG_Graphics -lRPG_Map -lRPG_Monster -lRPG_Player -lRPG_Combat -lRPG_Magic \
+  -lRPG_Character -lRPG_Item -lRPG_Chance -lRPG_Common -lRPG_Dice \
+  $(pkg_libs_LIBS)
 
 path_finder_SOURCES = path_finder.cpp
 path_finder_CPPFLAGS = $(AM_CPPFLAGS)

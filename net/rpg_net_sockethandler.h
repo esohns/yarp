@@ -37,6 +37,9 @@ class RPG_Net_Export RPG_Net_SocketHandler
   RPG_Net_SocketHandler();
   virtual ~RPG_Net_SocketHandler();
 
+  // implement (part of) RPG_Net_IConnection
+  virtual void ping();
+
   // override some task-based members
   virtual int svc(void);
   virtual int open(void* = NULL); // args

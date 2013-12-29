@@ -65,6 +65,10 @@ class RPG_Net_Export RPG_Net_Common_Tools
   // *NOTE*: this should toggle Nagle's algorithm
   static bool setNoDelay(const ACE_HANDLE&, // socket handle
                          const bool&);      // TCP_NODELAY ?
+  static bool setKeepAlive(const ACE_HANDLE&,    // socket handle
+                           const bool&);         // SO_KEEPALIVE ?
+  static bool setLinger(const ACE_HANDLE&,    // socket handle
+                        const unsigned int&); // seconds {0 --> off}
 
   static void retrieveSignalInfo(const int&,        // signal
                                  const siginfo_t&,  // info

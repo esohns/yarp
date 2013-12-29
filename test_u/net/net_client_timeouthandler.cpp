@@ -21,23 +21,28 @@
 
 #include "net_client_timeouthandler.h"
 
+#include "rpg_dice.h"
+
 #include "rpg_net_common.h"
 
 #include "rpg_common_defines.h"
 
 #include <ace/Event_Handler.h>
 
-Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const unsigned int& maxNumConnections_in,
-	                                                   const ACE_INET_Addr& remoteSAP_in,
+Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const bool& runStressTest_in,
+                                                     const unsigned int& maxNumConnections_in,
+                                                     const ACE_INET_Addr& remoteSAP_in,
                                                      RPG_Net_Client_IConnector* connector_in)
  : inherited(NULL,                            // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
+   myRunStressTest(runStressTest_in),
    myMaxNumConnections(maxNumConnections_in),
    myPeerAddress(remoteSAP_in),
    myConnector(connector_in)
 {
   RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
 
+  ACE_ASSERT(myConnector);
 }
 
 Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler()
@@ -55,24 +60,65 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
   ACE_UNUSED_ARG(tv_in);
   ACE_UNUSED_ARG(arg_in);
 
-	// sanity check: max num connections already reached ?
-	// --> abort the oldest one first
-	if (myMaxNumConnections &&
-		  (RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections() >= myMaxNumConnections))
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortNewestConnection();
+  // sanity check: max num connections already reached ?
+  // --> abort the oldest one first
+  unsigned int num_connections = RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
+  if (myMaxNumConnections &&
+      (num_connections >= myMaxNumConnections))
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
 
-	ACE_ASSERT(myConnector);
+  // stress test ?
+  // --> allow some probability for closing a connection in between
+  if (myRunStressTest &&
+      RPG_Dice::probability(0.01F)) // 1%
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("closing oldest connection...\n")));
+
+    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+  } // end IF
+
+  // stress-test ? --> ping the server !
+  if (myRunStressTest)
+  {
+    // grab a (random) connection handler
+    RPG_Dice_RollResult_t result;
+    RPG_Dice::generateRandomNumbers(num_connections,
+                                    1,
+                                    result);
+    const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler = RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
+    if (!connection_handler)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to retrieve connection handler, aborting\n")));
+
+      return -1;
+    } // end IF
+
+    try
+    {
+      const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->ping();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
+
+      return -1;
+    }
+  } // end IF
+
   try
-	{
+  {
     myConnector->connect(myPeerAddress);
-	}
+  }
   catch (...)
-	{
+  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Net_IConnector::connect(), aborting\n")));
 
-		return -1;
-	}
+    return -1;
+  }
 
   return 0;
 }

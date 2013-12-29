@@ -1,13 +1,13 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -DRPG_ENGINE_BUILD_DLL -I$(srcdir)/../common \
-              -I$(srcdir)/../character/player -I$(srcdir)/../chance/dice \
-              -I$(srcdir)/../magic -I$(srcdir)/../character -I$(srcdir)/../item \
-              -I$(srcdir)/../map -I$(srcdir)/../graphics -I$(srcdir)/../combat \
-              -I$(srcdir)/../character/monster -I$(srcdir)/../chance \
-              -I$(srcdir)/../net/stream -I$(srcdir)/../net \
-              -I$(srcdir)/../net/client
+AM_CPPFLAGS = -DRPG_ENGINE_BUILD_DLL -DRPG_NET_CLIENT_HAS_DLL \
+  -I$(srcdir)/../common -I$(srcdir)/../character/player \
+  -I$(srcdir)/../chance/dice -I$(srcdir)/../magic -I$(srcdir)/../character \
+  -I$(srcdir)/../item -I$(srcdir)/../map -I$(srcdir)/../graphics \
+  -I$(srcdir)/../combat -I$(srcdir)/../character/monster \
+  -I$(srcdir)/../chance -I$(srcdir)/../net/stream -I$(srcdir)/../net \
+  -I$(srcdir)/../net/client
 
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h stdafx.h
 include_HEADERS = rpg_engine_XML_tree.h rpg_engine_common.h \

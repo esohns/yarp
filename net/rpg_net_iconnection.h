@@ -33,17 +33,16 @@ class RPG_Net_IConnection
    public RPG_Common_IDumpState                           // ...and dump some information
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Net_IConnection() {};
 
   // API
-  virtual void info(ACE_HANDLE&,         // handle
-		                ACE_INET_Addr&,      // local SAP
-										ACE_INET_Addr&) = 0; // remote SAP
+  virtual void info(ACE_HANDLE&,               // return value: i/o handle
+                    ACE_INET_Addr&,            // return value: local SAP
+                    ACE_INET_Addr&) const = 0; // return value: remote SAP
   virtual void init(const ConfigType&) = 0;
 //   virtual const bool isRegistered() const = 0;
-  // *TODO*: this clashes with Event_Handler::close()...
-  //virtual void close(void) = 0;
+
+  virtual void ping() = 0; // ping the peer !
   virtual void abort() = 0;
   virtual unsigned int getID() const = 0;
 };

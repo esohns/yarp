@@ -47,6 +47,14 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
                  ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 }
 
+void
+RPG_Net_SocketHandler::ping()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::ping"));
+
+  myStream.ping();
+}
+
 int
 RPG_Net_SocketHandler::svc(void)
 {
@@ -94,7 +102,7 @@ RPG_Net_SocketHandler::svc(void)
       case -1:
       {
         // connection reset by peer/broken pipe ? --> not an error
-				int error = ACE_OS::last_error();
+        int error = ACE_OS::last_error();
         if ((error != ECONNRESET) &&
             (error != EPIPE))
           ACE_DEBUG((LM_ERROR,
@@ -215,7 +223,7 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
 
   // connection shutting down --> deal with any worker(s)
   if (inherited::myUserData.useThreadPerConnection)
-		shutdown();
+    shutdown();
 
   // stop the stream, invoke base class maintenance
   // *IMPORTANT NOTE*: in the end, this will "delete this"...
@@ -228,34 +236,34 @@ RPG_Net_SocketHandler::shutdown()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::shutdown"));
 
-	ACE_Message_Block* stop_mb = NULL;
-	ACE_NEW_NORETURN(stop_mb,
-									 ACE_Message_Block(0,                                  // size
-																		 ACE_Message_Block::MB_STOP,         // type
-																		 NULL,                               // continuation
-																		 NULL,                               // data
-																		 NULL,                               // buffer allocator
-																		 NULL,                               // locking strategy
-																		 ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-																		 ACE_Time_Value::zero,               // execution time
-																		 ACE_Time_Value::max_time,           // deadline time
-																		 NULL,                               // data block allocator
-																		 NULL));                             // message allocator)
-	if (!stop_mb)
-	{
-		ACE_DEBUG((LM_ERROR,
-								ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
+  ACE_Message_Block* stop_mb = NULL;
+  ACE_NEW_NORETURN(stop_mb,
+                   ACE_Message_Block(0,                                  // size
+                                     ACE_Message_Block::MB_STOP,         // type
+                                     NULL,                               // continuation
+                                     NULL,                               // data
+                                     NULL,                               // buffer allocator
+                                     NULL,                               // locking strategy
+                                     ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+                                     ACE_Time_Value::zero,               // execution time
+                                     ACE_Time_Value::max_time,           // deadline time
+                                     NULL,                               // data block allocator
+                                     NULL));                             // message allocator)
+  if (!stop_mb)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
-		return;
-	} // end IF
+    return;
+  } // end IF
 
-	if (putq(stop_mb, NULL) == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-							ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
+  if (putq(stop_mb, NULL) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
 
-		stop_mb->release();
-	} // end IF
+    stop_mb->release();
+  } // end IF
 
   // *NOTE*: defer waiting for any worker(s) to the dtor
 }

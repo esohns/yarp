@@ -23,7 +23,7 @@
 
 #include "rpg_net_protocol_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Message_Block.h>
 #include <ace/Malloc_Base.h>
@@ -62,7 +62,7 @@ RPG_Net_Protocol_Message::~RPG_Net_Protocol_Message()
   // *NOTE*: will be called just BEFORE we're passed back to the allocator
 }
 
-const int
+int
 RPG_Net_Protocol_Message::getCommand() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::getCommand"));
@@ -97,7 +97,7 @@ RPG_Net_Protocol_Message::dump_state() const
   std::ostringstream converter;
 
   // count continuations
-  unsigned long count = 1;
+  unsigned int count = 1;
   std::string info;
   for (const ACE_Message_Block* source = this;
        source != NULL;
@@ -144,7 +144,6 @@ RPG_Net_Protocol_Message::crunch()
       ACE_DEBUG((LM_ERROR,
                 ACE_TEXT("failed to ACE_Message_Block::crunch(): \"%m\", aborting\n")));
 
-      // what can we do ?
       return;
     } // end IF
   } // end IF
@@ -163,7 +162,6 @@ RPG_Net_Protocol_Message::crunch()
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Message_Block::copy(): \"%m\", aborting\n")));
 
-      // what can we do ?
       return;
     } // end IF
 
@@ -196,7 +194,7 @@ RPG_Net_Protocol_Message::duplicate(void) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::duplicate"));
 
-  RPG_Net_Protocol_Message* nb = NULL;
+  RPG_Net_Protocol_Message* new_message = NULL;
 
   // create a new RPG_Net_Protocol_Message that contains unique copies of
   // the message block fields, but a (reference counted) shallow duplicate of
@@ -205,7 +203,7 @@ RPG_Net_Protocol_Message::duplicate(void) const
   // if there is no allocator, use the standard new and delete calls.
   if (message_block_allocator_ == NULL)
   {
-    ACE_NEW_RETURN(nb,
+    ACE_NEW_RETURN(new_message,
                    RPG_Net_Protocol_Message(*this), // invoke copy ctor
                    NULL);
   } // end IF
@@ -217,7 +215,7 @@ RPG_Net_Protocol_Message::duplicate(void) const
     // malloc() (instead of its internal "capacity()" !)
     // *TODO*: (depending on the allocator) we senselessly allocate a datablock
     // anyway, only to immediately release it again...
-    ACE_NEW_MALLOC_RETURN(nb,
+    ACE_NEW_MALLOC_RETURN(new_message,
 //                          static_cast<RPG_Net_Protocol_Message*>(message_block_allocator_->malloc(capacity())),
                           static_cast<RPG_Net_Protocol_Message*>(message_block_allocator_->malloc(sizeof(RPG_Net_Protocol_Message))),
                           RPG_Net_Protocol_Message(*this),
@@ -227,22 +225,22 @@ RPG_Net_Protocol_Message::duplicate(void) const
   // increment the reference counts of all the continuation messages
   if (cont_)
   {
-    nb->cont_ = cont_->duplicate();
+    new_message->cont_ = cont_->duplicate();
 
     // If things go wrong, release all of our resources and return
-    if (nb->cont_ == 0)
+    if (new_message->cont_ == NULL)
     {
-      nb->release();
-      nb = NULL;
+      new_message->release();
+      new_message = NULL;
     } // end IF
   } // end IF
 
   // *NOTE*: the "clone" always starts un-initialized --> use inherited::init()
 
-  return nb;
+  return new_message;
 }
 
-const std::string
+std::string
 RPG_Net_Protocol_Message::commandType2String(const RPG_Net_Protocol_CommandType_t& commandType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::commandType2String"));
@@ -315,7 +313,7 @@ RPG_Net_Protocol_Message::commandType2String(const RPG_Net_Protocol_CommandType_
       result = ACE_TEXT("PONG"); break;
 #if defined ACE_WIN32 || defined ACE_WIN64
 #pragma message("applying quirk code for this compiler...")
-	case RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR:
+    case RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR:
 #else
     case RPG_Net_Protocol_IRCMessage::ERROR:
 #endif

@@ -67,8 +67,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
   } // end IF
 
   // register notification strategy
-	// *IMPORTANT NOTE*: the streamed socket handler uses the stream head modules' queue...
-	// --> this doesn't make sense...
+  // *IMPORTANT NOTE*: the streamed socket handler uses the stream head modules' queue...
+  // --> this doesn't make sense...
   msg_queue()->notification_strategy(&myNotificationStrategy);
 }
 
@@ -95,19 +95,19 @@ RPG_Net_SocketHandlerBase<ConfigType,
     } // end IF
   } // end IF
 
-	//// *IMPORTANT NOTE*: the handle is removed by the reactor when an upcall returns -1
-	//// --> this has already happened for read, remove any scheduled notifications as well...
-	//if (peer_.get_handle() != ACE_INVALID_HANDLE)
-	//	if (reactor()->remove_handler(this,
-	//		                            (ACE_Event_Handler::ALL_EVENTS_MASK |
-	//	                               ACE_Event_Handler::DONT_CALL)) == -1)
-	//	{
+  //// *IMPORTANT NOTE*: the handle is removed by the reactor when an upcall returns -1
+  //// --> this has already happened for read, remove any scheduled notifications as well...
+  //if (peer_.get_handle() != ACE_INVALID_HANDLE)
+  //	if (reactor()->remove_handler(this,
+  //		                            (ACE_Event_Handler::ALL_EVENTS_MASK |
+  //	                               ACE_Event_Handler::DONT_CALL)) == -1)
+  //	{
  //     ACE_DEBUG((LM_ERROR,
  //                ACE_TEXT("failed to ACE_Reactor::remove_handler(%@): \"%m\", continuing\n"),
  //                this));
-	//	} // end IF
-	// *IMPORTANT NOTE*: the streamed socket handler uses the stream head modules' queue
-	// --> this happens too late, as the stream/queue will have been deleted by now...
+  //	} // end IF
+  // *IMPORTANT NOTE*: the streamed socket handler uses the stream head modules' queue
+  // --> this happens too late, as the stream/queue will have been deleted by now...
   if (reactor()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
@@ -132,16 +132,14 @@ RPG_Net_SocketHandlerBase<ConfigType,
 //                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
 //                getID()));
 
-    // acceptor/connector will invoke close() --> handle_close()
     return -1;
   } // end IF
-	if (!myIsInitialized)
+  if (!myIsInitialized)
   {
     ACE_DEBUG((LM_ERROR,
-			         ACE_TEXT("socket handler not initialized (ID: %u), aborting\n"),
-							 getID()));
+               ACE_TEXT("socket handler not initialized (ID: %u), aborting\n"),
+               getID()));
 
-    // acceptor/connector will invoke close() --> handle_close()
     return -1;
   } // end IF
 
@@ -153,37 +151,68 @@ RPG_Net_SocketHandlerBase<ConfigType,
                                                SO_RCVBUF,
                                                myUserData.socketBufferSize))
     {
-			int error = ACE_OS::last_error();
-			if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      int error = ACE_OS::last_error();
+      if (error != ENOTSOCK) // <-- socket has been closed asynchronously
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to setSocketBuffer(%u) for %u, aborting\n"),
                    myUserData.socketBufferSize,
                    getID()));
 
-      // reactor will invoke close() --> handle_close()
       return -1;
     } // end IF
   if (!RPG_Net_Common_Tools::setNoDelay(peer_.get_handle(),
-                                        RPG_NET_SOCK_NODELAY))
+                                        RPG_NET_DEF_SOCK_NODELAY))
   {
-		int error = ACE_OS::last_error();
-		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-			ACE_DEBUG((LM_ERROR,
-			           ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
+    int error = ACE_OS::last_error();
+    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
                  getID(),
-                 (RPG_NET_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
+                 (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
 
-      // reactor will invoke handle_close()
+    return -1;
+  } // end IF
+  if (!RPG_Net_Common_Tools::setKeepAlive(peer_.get_handle(),
+                                          RPG_NET_DEF_SOCK_KEEPALIVE))
+  {
+    int error = ACE_OS::last_error();
+    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
+                 getID(),
+                 (RPG_NET_DEF_SOCK_LINGER ? ACE_TEXT("true") : ACE_TEXT("false"))));
+
+    return -1;
+  } // end IF
+  if (!RPG_Net_Common_Tools::setLinger(peer_.get_handle(),
+                                       RPG_NET_DEF_SOCK_LINGER))
+  {
+    int error = ACE_OS::last_error();
+    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
+                 getID(),
+                 ((RPG_NET_DEF_SOCK_LINGER > 0) ? ACE_TEXT("true") : ACE_TEXT("false"))));
+
     return -1;
   } // end IF
 
   // register with the reactor...
   if (inherited::open(arg_in) == -1)
   {
-		int error = ACE_OS::last_error();
-		if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+    // *IMPORTANT NOTE*: this could happen due to a race:
+    // when a connection is abort()ed shortly before a new connection succeeds,
+    // the event handler (via its handle) may still be registered with the
+    // reactor at this stage, so the new connection inheriting the (old) handle
+    // that is being reused by the system (*NOTE*: doesn't happen on Windows, as
+    // it does not immediately reuse old handles) fails to register with the
+    // reactor here...
+    int error = ACE_OS::last_error();
+    if ((error != ESUCCESS) && // <-- race (see above)
+        (error != ENOTSOCK))   // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%m\", aborting\n")));
+                 ACE_TEXT("failed to ACE_Svc_Handler::open(%u): \"%m\", aborting\n"),
+                 getID()));
 
     return -1;
   } // end IF
@@ -217,19 +246,15 @@ RPG_Net_SocketHandlerBase<ConfigType,
                ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
 
   // *PORTABILITY*: this isn't entirely portable...
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("initialised connection [%u]: (\"%s\") <--> (\"%s\")...\n"),
-						 handle,
-						 localAddress.c_str(),
-						 buffer));
-#else
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("initialised connection [%@/%u]: (\"%s\") <--> (\"%s\")...\n"),
-						 handle, handle,
-						 localAddress.c_str(),
-						 buffer));
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+             this, handle,
+#else
+             handle, handle,
 #endif
+             localAddress.c_str(),
+             buffer));
 
   return 0;
 }
@@ -279,7 +304,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
     }
     // called by external (e.g. reactor) thread wanting to close the connection
     case 1:
-			return inherited::close(arg_in);
+      return inherited::close(arg_in);
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -299,18 +324,28 @@ template <typename ConfigType,
 void
 RPG_Net_SocketHandlerBase<ConfigType,
                           StatisticsContainerType>::info(ACE_HANDLE& handle_out,
-																												 ACE_INET_Addr& localSAP_out,
-																												 ACE_INET_Addr& remoteSAP_out)
+                                                         ACE_INET_Addr& localSAP_out,
+                                                         ACE_INET_Addr& remoteSAP_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::info"));
 
   handle_out = peer_.get_handle();
   if (inherited::peer_.get_local_addr(localSAP_out) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
+  {
+    // *NOTE*: socket already closed ? --> not an error
+    int error = ACE_OS::last_error();
+    if (error != EBADF)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
+  } // end IF
   if (inherited::peer_.get_remote_addr(remoteSAP_out) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
+  {
+    // *NOTE*: socket already closed ? --> not an error
+    int error = ACE_OS::last_error();
+    if (error != ENOTCONN)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
+  } // end IF
 }
 
 template <typename ConfigType,
@@ -333,9 +368,9 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::abort"));
 
-	// close the socket, if any...
+  // close the socket, if any...
   // *IMPORTANT NOTE*: the reactor cleans everything up...
-	int result = peer_.close();
+  int result = peer_.close();
   if (result == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_IO::close(): \"%m\", continuing\n")));
@@ -379,8 +414,13 @@ RPG_Net_SocketHandlerBase<ConfigType,
 
   ACE_OS::memset(buffer, 0, sizeof(buffer));
   if (inherited::peer_.get_remote_addr(address) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
+  {
+    // *NOTE*: socket already closed ? --> not an error
+    int error = ACE_OS::last_error();
+    if (error != ENOTCONN)   // <-- socket has been closed asynchronously
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
+  } // end IF
   else if (address.addr_to_string(buffer, sizeof(buffer)) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));

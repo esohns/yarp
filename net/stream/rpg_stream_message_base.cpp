@@ -21,12 +21,12 @@
 
 #include "rpg_stream_message_base.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 
 // init statics
-ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> RPG_Stream_MessageBase::myCurrentID = 1;
+ACE_Atomic_Op<ACE_Thread_Mutex, unsigned int> RPG_Stream_MessageBase::myCurrentID = 1;
 
 RPG_Stream_MessageBase::RPG_Stream_MessageBase(const RPG_Stream_MessageBase& message_in)
  : inherited(message_in.data_block_->duplicate(),  // make a "shallow" copy of the data block
@@ -45,8 +45,8 @@ RPG_Stream_MessageBase::RPG_Stream_MessageBase(const RPG_Stream_MessageBase& mes
 }
 
 RPG_Stream_MessageBase::RPG_Stream_MessageBase(ACE_Data_Block* dataBlock_in,
-                                       ACE_Allocator* messageAllocator_in,
-                                       const bool& incrementMessageCounter_in)
+                                               ACE_Allocator* messageAllocator_in,
+                                               const bool& incrementMessageCounter_in)
  : inherited(dataBlock_in,         // use (don't own (!) memory of-) this data block
              0,                    // flags --> also "free" our data block upon destruction !
              messageAllocator_in), // re-use the same allocator
@@ -55,9 +55,7 @@ RPG_Stream_MessageBase::RPG_Stream_MessageBase(ACE_Data_Block* dataBlock_in,
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
 
   if (incrementMessageCounter_in)
-  {
     myCurrentID++;
-  } // end IF
 
   // set correct message type
   msg_type(MB_STREAM_DATA);
@@ -67,16 +65,14 @@ RPG_Stream_MessageBase::RPG_Stream_MessageBase(ACE_Data_Block* dataBlock_in,
 }
 
 RPG_Stream_MessageBase::RPG_Stream_MessageBase(ACE_Allocator* messageAllocator_in,
-                                       const bool& incrementMessageCounter_in)
+                                               const bool& incrementMessageCounter_in)
  : inherited(messageAllocator_in), // re-use the same allocator
    myMessageID(myCurrentID.value())
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::RPG_Stream_MessageBase"));
 
   if (incrementMessageCounter_in)
-  {
     myCurrentID++;
-  } // end IF
 
   // *WARNING*: this wouldn't work, as we're assigned a different data block later...
   // --> do it in init()
@@ -114,7 +110,7 @@ RPG_Stream_MessageBase::init(ACE_Data_Block* dataBlock_in)
   //msg_execution_time();
 }
 
-const unsigned long
+unsigned int
 RPG_Stream_MessageBase::getID() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::getID"));
@@ -122,7 +118,7 @@ RPG_Stream_MessageBase::getID() const
   return myMessageID;
 }
 
-const int
+int
 RPG_Stream_MessageBase::getCommand() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::getCommand"));
@@ -135,7 +131,7 @@ RPG_Stream_MessageBase::duplicate(void) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::duplicate"));
 
-  RPG_Stream_MessageBase* nb = NULL;
+  RPG_Stream_MessageBase* new_message = NULL;
 
   // create a new RPG_Net_Message that contains unique copies of
   // the message block fields, but a (reference counted) shallow duplicate of
@@ -144,7 +140,7 @@ RPG_Stream_MessageBase::duplicate(void) const
   // if there is no allocator, use the standard new and delete calls.
   if (message_block_allocator_ == NULL)
   {
-    ACE_NEW_RETURN(nb,
+    ACE_NEW_RETURN(new_message,
                    RPG_Stream_MessageBase(*this),
                    NULL);
   } // end IF
@@ -152,7 +148,7 @@ RPG_Stream_MessageBase::duplicate(void) const
   {
     // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
     // a "shallow" copy which just references our data block...
-    ACE_NEW_MALLOC_RETURN(nb,
+    ACE_NEW_MALLOC_RETURN(new_message,
                           static_cast<RPG_Stream_MessageBase*> (message_block_allocator_->malloc(capacity())),
                           RPG_Stream_MessageBase(*this),
                           NULL);
@@ -161,19 +157,19 @@ RPG_Stream_MessageBase::duplicate(void) const
   // increment the reference counts of all the continuation messages
   if (cont_)
   {
-    nb->cont_ = cont_->duplicate();
+    new_message->cont_ = cont_->duplicate();
 
     // If things go wrong, release all of our resources and return
-    if (nb->cont_ == 0)
+    if (new_message->cont_ == NULL)
     {
-      nb->release();
-      nb = NULL;
+      new_message->release();
+      new_message = NULL;
     } // end IF
   } // end IF
 
   // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
 
-  return nb;
+  return new_message;
 }
 
 void
@@ -181,7 +177,6 @@ RPG_Stream_MessageBase::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::dump_state"));
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("message (ID: %u)...\n"),
              getID()));
@@ -200,7 +195,7 @@ RPG_Stream_MessageBase::resetMessageIDGenerator()
 
 void
 RPG_Stream_MessageBase::MessageType2String(const ACE_Message_Type& type_in,
-                                       std::string& typeString_out)
+                                           std::string& typeString_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::MessageType2String"));
 

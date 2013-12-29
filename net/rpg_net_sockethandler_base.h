@@ -55,10 +55,10 @@ class RPG_Net_SocketHandlerBase
 //   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
 //                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
-  // implement RPG_Net_IConnection
-  virtual void info(ACE_HANDLE&,     // handle
-                    ACE_INET_Addr&,  // local SAP
-                    ACE_INET_Addr&); // remote SAP
+  // implement (part of) RPG_Net_IConnection
+  virtual void info(ACE_HANDLE&,           // return value: handle
+                    ACE_INET_Addr&,        // return value: local SAP
+                    ACE_INET_Addr&) const; // return value: remote SAP
   virtual void init(const ConfigType&);
 //   virtual const bool isRegistered() const;
   virtual void abort();

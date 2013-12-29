@@ -73,6 +73,19 @@ template <typename ConfigType,
 void
 RPG_Net_AsynchStreamHandler_T<ConfigType,
                               StatisticsContainerType,
+                              StreamType>::ping()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::ping"));
+
+  myStream.ping();
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType,
+          typename StreamType>
+void
+RPG_Net_AsynchStreamHandler_T<ConfigType,
+                              StatisticsContainerType,
                               StreamType>::open(ACE_HANDLE handle_in,
                                                 ACE_Message_Block& messageBlock_in)
 {

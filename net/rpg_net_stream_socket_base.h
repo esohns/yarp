@@ -25,6 +25,7 @@
 #include "rpg_net_iconnectionmanager.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch.h>
 
 // forward declaration(s)
 class ACE_Message_Block;
@@ -64,6 +65,7 @@ class RPG_Net_StreamSocketBase
 
   StreamType         myStream;
   ACE_Message_Block* myCurrentReadBuffer;
+  ACE_Thread_Mutex   myLock;
   ACE_Message_Block* myCurrentWriteBuffer;
 
   // helper method(s)

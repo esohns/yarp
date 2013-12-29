@@ -61,7 +61,7 @@ RPG_Net_Client_Connector::abort()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::abort"));
 
-	if (inherited::close() == -1)
+  if (inherited::close() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Connector::close(): \"%m\", continuing\n")));
 }
@@ -71,16 +71,25 @@ RPG_Net_Client_Connector::connect(const ACE_INET_Addr& peer_address)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::connect"));
 
+  // reset errno
+  ACE_OS::last_error(0);
+
   RPG_Net_SocketHandler* handler = NULL;
-	int result = inherited::connect(handler,                                // service handler
-																	peer_address,                           // remote SAP
-																	ACE_Synch_Options::defaults,            // synch options
-																	ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
-																	1,                                      // re-use address (SO_REUSEADDR) ?
-																	O_RDWR,                                 // flags
-																	0);                                     // perms
-	if (result == -1)
-	{
+  int result = inherited::connect(handler,                          // service handler
+                                  peer_address,                     // remote SAP
+                                  ACE_Synch_Options::defaults,      // synch options
+                                  ACE_sap_any_cast(ACE_INET_Addr&), // local SAP
+                                  0,                                // re-use address (SO_REUSEADDR) ?
+                                  //1,                                // re-use address (SO_REUSEADDR) ?
+                                  O_RDWR,                           // flags
+                                  0);                               // perms
+  if (result == -1)
+  {
+    int error = ACE_OS::last_error();
+    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%m\", aborting\n")));
+
     ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
     ACE_OS::memset(buffer, 0, sizeof(buffer));
     if (peer_address.addr_to_string(buffer, sizeof(buffer)) == -1)
@@ -89,5 +98,5 @@ RPG_Net_Client_Connector::connect(const ACE_INET_Addr& peer_address)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Connector::connect(\"%s\"): \"%m\", aborting\n"),
                buffer));
-	} // end IF
+  } // end IF
 }

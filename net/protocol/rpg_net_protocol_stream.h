@@ -26,14 +26,13 @@
 #include "rpg_net_protocol_module_IRCsplitter.h"
 #include "rpg_net_protocol_module_IRCstreamer.h"
 #include "rpg_net_protocol_module_IRCparser.h"
-// #include "rpg_net_protocol_module_IRChandler.h"
 
-#include <rpg_net_module_runtimestatistic.h>
+#include "rpg_net_module_runtimestatistic.h"
 
-#include <rpg_common_istatistic.h>
+#include "rpg_common_istatistic.h"
 
-#include <rpg_stream_base.h>
-#include <rpg_stream_session_config_base.h>
+#include "rpg_stream_base.h"
+#include "rpg_stream_session_config_base.h"
 
 #include <ace/Global_Macros.h>
 
@@ -49,11 +48,10 @@ class RPG_Protocol_Export RPG_Net_Protocol_Stream
    public RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic>
 {
  public:
+  typedef RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic> StatisticsInterface_Type;
+
   RPG_Net_Protocol_Stream();
   virtual ~RPG_Net_Protocol_Stream();
-
-  // convenience types
-  typedef RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic> StatisticsInterface_Type;
 
   // init stream
   bool init(const RPG_Net_Protocol_ConfigPOD&); // stream/module configuration

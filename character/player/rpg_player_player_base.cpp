@@ -299,6 +299,7 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
   // retrieve equipped armor type
   RPG_Item_ArmorType type = myEquipment.getBodyArmor();
   RPG_Item_ArmorProperties properties;
+  ACE_OS::memset(&properties, 0, sizeof(properties));
   if (type != ARMOR_NONE)
   {
     properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);

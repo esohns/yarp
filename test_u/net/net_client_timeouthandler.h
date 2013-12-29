@@ -34,8 +34,9 @@ class Net_Client_TimeoutHandler
  : public ACE_Event_Handler
 {
  public:
-  Net_Client_TimeoutHandler(const unsigned int&,         // max #connections
-		                        const ACE_INET_Addr&,        // remote SAP
+  Net_Client_TimeoutHandler(const bool&,                 // run stress-test ?
+                            const unsigned int&,         // max #connections
+                            const ACE_INET_Addr&,        // remote SAP
                             RPG_Net_Client_IConnector*); // connector
   virtual ~Net_Client_TimeoutHandler();
 
@@ -51,7 +52,8 @@ class Net_Client_TimeoutHandler
   ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler(const Net_Client_TimeoutHandler&));
   ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler& operator=(const Net_Client_TimeoutHandler&));
 
-	unsigned int               myMaxNumConnections;
+  bool                       myRunStressTest;
+  unsigned int               myMaxNumConnections;
   ACE_INET_Addr              myPeerAddress;
   RPG_Net_Client_IConnector* myConnector;
 };

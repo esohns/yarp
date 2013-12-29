@@ -159,6 +159,14 @@ RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler()
 //   return return_value;
 // }
 
+void
+RPG_Net_Protocol_SocketHandler::ping()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::ping"));
+
+  ACE_ASSERT(false);
+}
+
 int
 RPG_Net_Protocol_SocketHandler::open(void* arg_in)
 {
@@ -167,14 +175,14 @@ RPG_Net_Protocol_SocketHandler::open(void* arg_in)
   // *NOTE*: fini() on the stream invokes close() which will reset any module's
   // writer/reader tasks --> in order to allow module reuse, reset this here !
   ACE_ASSERT(myUserData.module);
-	RPG_Stream_IModule* module_handle = dynamic_cast<RPG_Stream_IModule*>(myUserData.module);
-	if (!module_handle)
-	{
+  RPG_Stream_IModule* module_handle = dynamic_cast<RPG_Stream_IModule*>(myUserData.module);
+  if (!module_handle)
+  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to dynamic_cast<RPG_Stream_IModule>, aborting\n")));
 
-		return -1;
-	} // end IF
+    return -1;
+  } // end IF
   try
   {
     module_handle->reset();
@@ -184,7 +192,7 @@ RPG_Net_Protocol_SocketHandler::open(void* arg_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Stream_IModule::reset(), aborting\n")));
 
-		return -1;
+    return -1;
   }
 
   // init/start stream, register reading data with reactor...

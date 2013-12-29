@@ -39,25 +39,31 @@ template <typename ConfigType,
 template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_Connection_Manager
- : public RPG_Net_IConnectionManager<ConfigType, StatisticsContainerType>,
+ : public RPG_Net_IConnectionManager<ConfigType,
+                                     StatisticsContainerType>,
    public RPG_Common_IStatistic<StatisticsContainerType>,
    public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors
-  friend class ACE_Singleton<RPG_Net_Connection_Manager<ConfigType, StatisticsContainerType>,
+  friend class ACE_Singleton<RPG_Net_Connection_Manager<ConfigType,
+                                                        StatisticsContainerType>,
                              ACE_Recursive_Thread_Mutex>;
 
   // needs access to (de-)register itself with the singleton
-  friend class RPG_Net_SocketHandlerBase<ConfigType, StatisticsContainerType>;
+  friend class RPG_Net_SocketHandlerBase<ConfigType,
+                                         StatisticsContainerType>;
 
  public:
+  typedef RPG_Net_IConnection<ConfigType,
+                              StatisticsContainerType> CONNECTION_TYPE;
+
   // configuration / initialization
   void init(const unsigned int&); // maximum number of concurrent connections
   // *NOTE*: argument is passed in init() to EVERY new connection during registration
   void set(const ConfigType&); // (user) data
 
-	// implement RPG_Common_IControl
-	virtual void start();
+  // implement RPG_Common_IControl
+  virtual void start();
   virtual void stop();
   virtual bool isRunning() const;
 
@@ -71,6 +77,7 @@ class RPG_Net_Connection_Manager
   unsigned int numConnections() const;
 
   // *WARNING*: to be used for testing ONLY !
+  const CONNECTION_TYPE* operator[](unsigned int) const;
   void abortOldestConnection();
   void abortNewestConnection();
 
@@ -81,8 +88,7 @@ class RPG_Net_Connection_Manager
   virtual void dump_state() const;
 
  private:
-  typedef RPG_Net_IConnection<ConfigType, StatisticsContainerType> CONNECTION_TYPE;
-	typedef ACE_DLList<CONNECTION_TYPE> CONNECTIONLIST_TYPE;
+  typedef ACE_DLList<CONNECTION_TYPE> CONNECTIONLIST_TYPE;
   typedef ACE_DLList_Iterator<CONNECTION_TYPE> CONNECTIONLIST_ITERATOR_TYPE;
   typedef ACE_DLList_Reverse_Iterator<CONNECTION_TYPE> CONNECTIONLIST_REVERSEITERATOR_TYPE;
 
@@ -108,10 +114,10 @@ class RPG_Net_Connection_Manager
   mutable ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 
   unsigned int                                      myMaxNumConnections;
-	CONNECTIONLIST_TYPE                               myConnections;
+  CONNECTIONLIST_TYPE                               myConnections;
   ConfigType                                        myUserData; // handler data
   bool                                              myIsInitialized;
-	bool                                              myIsActive;
+  bool                                              myIsActive;
 };
 
 // include template implementation

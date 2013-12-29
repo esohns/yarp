@@ -27,8 +27,8 @@ IRC_client_gui_CPPFLAGS = $(AM_CPPFLAGS) $(pkg_libs_CFLAGS) \
 #IRC_client_gui_LDFLAGS = $(pkg_libs_LIBS)
 IRC_client_gui_LDADD = -lRPG_Client_GUI -lRPG_Engine -lRPG_Graphics -lRPG_Sound \
   -lRPG_Map -lRPG_Monster -lRPG_Player -lRPG_Combat -lRPG_Magic -lRPG_Character \
-  -lRPG_Item -lRPG_Net_Protocol -lRPG_Net -lRPG_Stream -lRPG_Common -lRPG_Chance \
-  -lRPG_Dice $(pkg_libs_LIBS) -lSDL_mixer
+  -lRPG_Item -lRPG_Net_Client -lRPG_Net_Protocol -lRPG_Net -lRPG_Stream \
+  -lRPG_Common -lRPG_Chance -lRPG_Dice $(pkg_libs_LIBS) -lSDL_mixer
 
 configdir = $(datadir)/@META_PACKAGE@/config
 config_DATA = IRC_client.ini IRC_client_channel_tab.glade \

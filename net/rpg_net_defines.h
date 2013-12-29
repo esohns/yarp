@@ -42,8 +42,9 @@
 // *NOTE*: make this an even number to (gracefully) cope with Linux oddities...
 #define RPG_NET_DEF_SOCK_RECVBUF_SIZE                  131072 // 128Kb
 // #define RPG_NET_DEF_SOCK_RECVBUF_SIZE             1048576 // 1Mb
-#define RPG_NET_SOCK_NODELAY                           true
-#define RPG_NET_SOCK_KEEPALIVE                         60 // seconds
+#define RPG_NET_DEF_SOCK_NODELAY                       true
+#define RPG_NET_DEF_SOCK_KEEPALIVE                     false
+#define RPG_NET_DEF_SOCK_LINGER                        10 // seconds {0 --> off}
 
 #define RPG_NET_MAX_NUM_OPEN_CONNECTIONS               10
 // *WARNING*: this needs to be AT LEAST sizeof(RPG_Net_Remote_Comm::MessageHeader)

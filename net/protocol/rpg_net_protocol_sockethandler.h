@@ -54,6 +54,10 @@ class RPG_Protocol_Export RPG_Net_Protocol_SocketHandler
                                    RPG_Net_Protocol_RuntimeStatistic,
                                    RPG_Net_Protocol_Stream> inherited;
 
+  // implement (part of) RPG_Net_IConnection
+  // *WARNING*: this is just a stub...
+  virtual void ping();
+
   // stop worker
   void shutdown();
 

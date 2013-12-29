@@ -36,7 +36,7 @@ RPG_Net_Connection_Manager<ConfigType,
    myMaxNumConnections(RPG_NET_MAX_NUM_OPEN_CONNECTIONS),
    myUserData(),
    myIsInitialized(false),
-	 myIsActive(true)
+   myIsActive(true)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::RPG_Net_Connection_Manager"));
 
@@ -59,9 +59,9 @@ RPG_Net_Connection_Manager<ConfigType,
     if (!myConnections.is_empty())
     {
       // *NOTE*: we should NEVER get here !
-			ACE_DEBUG((LM_WARNING,
-								 ACE_TEXT("%u connections still open --> check implementation !, continuing\n"),
-								 myConnections.size()));
+      ACE_DEBUG((LM_WARNING,
+                 ACE_TEXT("%u connections still open --> check implementation !, continuing\n"),
+                 myConnections.size()));
 
       abortConnections();
     } // end IF
@@ -150,8 +150,8 @@ RPG_Net_Connection_Manager<ConfigType,
   {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
-		if (!myIsActive)
-			return false; // currently rejecting new connections...
+    if (!myIsActive)
+      return false; // currently rejecting new connections...
 
     if (myConnections.size() >= myMaxNumConnections)
     {
@@ -207,7 +207,7 @@ RPG_Net_Connection_Manager<ConfigType,
 #endif */
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("registered connection [%@] (total: %u)...\n"),
-							 connection_in,
+               connection_in,
                myConnections.size()));
   } // end lock scope
 
@@ -235,6 +235,21 @@ RPG_Net_Connection_Manager<ConfigType,
 
   bool found = false;
 
+  // debug info
+  ACE_HANDLE handle = ACE_INVALID_HANDLE;
+  ACE_INET_Addr address1, address2;
+  try
+  {
+    connection_in->info(handle,
+                        address1,
+                        address2);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_IConnection::info(), continuing\n")));
+  }
+
   // synch access to myConnections
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -249,8 +264,13 @@ RPG_Net_Connection_Manager<ConfigType,
       iterator.remove();
 
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("deregistered connection (%@) (total: %u)\n"),
+                 ACE_TEXT("deregistered connection (%@/%u) (total: %u)\n"),
                  connection_in,
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+                 reinterpret_cast<unsigned int>(handle),
+#else
+                 static_cast<unsigned int>(handle),
+#endif
                  myConnections.size()));
 
       break;
@@ -361,6 +381,39 @@ RPG_Net_Connection_Manager<ConfigType,
 
 template <typename ConfigType,
           typename StatisticsContainerType>
+const typename RPG_Net_Connection_Manager<ConfigType,
+                                          StatisticsContainerType>::CONNECTION_TYPE*
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::operator[](unsigned int index_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::operator[]"));
+
+  // init result
+  CONNECTION_TYPE* result = NULL;
+
+  // synch access to myConnections
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+  // sanity check
+  if (index_in > myConnections.size())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("out of bounds (index was: %u), aborting"),
+               index_in));
+
+    return result;
+  } // end IF
+
+  CONNECTIONLIST_ITERATOR_TYPE iterator(const_cast<CONNECTIONLIST_TYPE&>(myConnections));
+  for (unsigned int i = 0;
+       iterator.next(result) && (i < index_in);
+       iterator.advance(), i++) {} // end FOR
+
+  return result;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
 void
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::abortOldestConnection()
@@ -408,7 +461,7 @@ RPG_Net_Connection_Manager<ConfigType,
 
   // close "newest" connection --> list tail
   CONNECTION_TYPE* connection = NULL;
-	CONNECTIONLIST_REVERSEITERATOR_TYPE iterator(myConnections);
+  CONNECTIONLIST_REVERSEITERATOR_TYPE iterator(myConnections);
   if (iterator.next(connection) == 1)
   {
     try

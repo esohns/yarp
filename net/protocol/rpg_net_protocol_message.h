@@ -42,7 +42,7 @@ class RPG_Net_Protocol_Message
   //   RPG_Net_Protocol_Message(ACE_Allocator*); // message allocator
   virtual ~RPG_Net_Protocol_Message();
 
-  virtual const int getCommand() const; // return value: (protocol) message type
+  virtual int getCommand() const; // return value: (protocol) message type
 
   // implement RPG_Net_IDumpState
   virtual void dump_state() const;
@@ -69,7 +69,7 @@ class RPG_Net_Protocol_Message
   // *NOTE*: this uses our allocator (if any) to create a new message
   virtual ACE_Message_Block* duplicate(void) const;
 
-  static const std::string commandType2String(const RPG_Net_Protocol_CommandType_t&);
+  static std::string commandType2String(const RPG_Net_Protocol_CommandType_t&);
 
  protected:
   // copy ctor to be used by duplicate() and child classes

@@ -24,7 +24,7 @@
 #include "rpg_stream_exports.h"
 #include "rpg_stream_messageallocatorheap.h"
 
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Message_Block.h>
@@ -64,8 +64,8 @@ class RPG_Stream_Export RPG_Stream_MessageBase
   virtual ~RPG_Stream_MessageBase();
 
   // info
-  const unsigned long getID() const;
-  virtual const int getCommand() const; // return value: (protocol) message type
+  unsigned int getID() const;
+  virtual int getCommand() const; // return value: (protocol) message type
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -107,9 +107,9 @@ class RPG_Stream_Export RPG_Stream_MessageBase
   virtual ACE_Message_Block* duplicate(void) const;
 
   // atomic ID generator
-  static ACE_Atomic_Op<ACE_Thread_Mutex, unsigned long> myCurrentID;
+  static ACE_Atomic_Op<ACE_Thread_Mutex, unsigned int> myCurrentID;
 
-  unsigned long myMessageID;
+  unsigned int myMessageID;
 };
 
 // convenient types

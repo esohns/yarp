@@ -56,6 +56,9 @@ class RPG_Net_Export RPG_Net_Stream
   // init stream
   bool init(const RPG_Net_ConfigPOD&); // stream/module configuration
 
+  // *TODO*: re-consider this API
+  void ping();
+
   unsigned int getSessionID() const;
 
   // implement RPG_Common_IStatistic

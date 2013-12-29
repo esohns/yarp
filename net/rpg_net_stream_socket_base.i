@@ -91,14 +91,12 @@ RPG_Net_StreamSocketBase<ConfigType,
     // (most probably) too many connections...
     ACE_OS::last_error(EBUSY);
 
-    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
 
+  // step1: init/start data processing stream
   // *TODO*: assumptions about ConfigType ?!?: clearly a design glitch
   // --> implement higher up !
-
-  // step1: init/start data processing stream
   inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
   if (inherited::myUserData.module)
     if (myStream.push(inherited::myUserData.module))
@@ -120,7 +118,6 @@ RPG_Net_StreamSocketBase<ConfigType,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("no head module found, returning\n")));
 
-      // reactor will invoke close() --> handle_close()
       return -1;
     } // end IF
     inherited::msg_queue(module->reader()->msg_queue());
@@ -132,7 +129,6 @@ RPG_Net_StreamSocketBase<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init processing stream, aborting\n")));
 
-    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
   //myStream.dump_state();
@@ -144,7 +140,6 @@ RPG_Net_StreamSocketBase<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start processing stream, aborting\n")));
 
-    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
 
@@ -167,7 +162,6 @@ RPG_Net_StreamSocketBase<ConfigType,
     // clean up
     myStream.stop();
 
-    // reactor will invoke close() --> handle_close()
     return -1;
   } // end IF
 
@@ -186,8 +180,6 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   ACE_UNUSED_ARG(handle_in);
 
-  size_t bytes_received = 0;
-
   // sanity check
   ACE_ASSERT(myCurrentReadBuffer == NULL);
 
@@ -199,25 +191,26 @@ RPG_Net_StreamSocketBase<ConfigType,
                ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
                inherited::myUserData.defaultBufferSize));
 
-    // reactor will invoke handle_close()
     return -1;
   } // end IF
 
   // read some data from the socket...
-  bytes_received = inherited::peer_.recv(myCurrentReadBuffer->wr_ptr(),
-                                         myCurrentReadBuffer->size());
+  size_t bytes_received = inherited::peer_.recv(myCurrentReadBuffer->wr_ptr(),
+                                                myCurrentReadBuffer->size());
   switch (bytes_received)
   {
     case -1:
     {
       // *IMPORTANT NOTE*: a number of issues can occur here:
       // - connection reset by peer
-      // - connection aborted locally
+      // - connection abort()ed locally
       int error = ACE_OS::last_error();
-      if ((error != ECONNRESET) && // 
+      if ((error != ECONNRESET) &&
           (error != EPIPE) &&      // <-- connection reset by peer
+          // -------------------------------------------------------------------
+          (error != EBADF) &&
           (error != ENOTSOCK) &&
-          (error != ECONNABORTED)) // <-- connection abort()ed (?) locally
+          (error != ECONNABORTED)) // <-- connection abort()ed locally
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_SOCK_Stream::recv(): \"%m\", returning\n")));
 
@@ -225,7 +218,6 @@ RPG_Net_StreamSocketBase<ConfigType,
       myCurrentReadBuffer->release();
       myCurrentReadBuffer = NULL;
 
-      // reactor will invoke handle_close()
       return -1;
     }
     // *** GOOD CASES ***
@@ -239,7 +231,6 @@ RPG_Net_StreamSocketBase<ConfigType,
       myCurrentReadBuffer->release();
       myCurrentReadBuffer = NULL;
 
-      // reactor will invoke handle_close()
       return -1;
     }
     default:
@@ -257,6 +248,7 @@ RPG_Net_StreamSocketBase<ConfigType,
   } // end SWITCH
 
   // push the buffer onto our stream for processing
+  // *NOTE*: the stream assumes ownership of the buffer
   if (myStream.put(myCurrentReadBuffer) == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -266,11 +258,8 @@ RPG_Net_StreamSocketBase<ConfigType,
     myCurrentReadBuffer->release();
     myCurrentReadBuffer = NULL;
 
-    // reactor will invoke handle_close()
     return -1;
   } // end IF
-
-  // ... bye bye
   myCurrentReadBuffer = NULL;
 
   return 0;
@@ -288,29 +277,41 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   ACE_UNUSED_ARG(handle_in);
 
+  // *IMPORTANT NOTE*: in a threaded environment, workers may be
+  // dispatching the reactor notification queue concurrently, which means that
+  // proper serialization is in order
+  if (!inherited::myUserData.useThreadPerConnection)
+    myLock.acquire();
+
   if (myCurrentWriteBuffer == NULL)
   {
     // send next data chunk from the stream...
-    // *IMPORTANT NOTE*: NEVER block, as outbound data has been notified to the reactor
-      ACE_Time_Value no_wait(ACE_OS::gettimeofday());
+    // *IMPORTANT NOTE*: this should NEVER block, as available outbound data has
+    // been notified to the reactor
+    ACE_Time_Value no_wait(ACE_OS::gettimeofday());
     if (inherited::getq(myCurrentWriteBuffer, &no_wait) == -1)
     {
-        // *IMPORTANT NOTE*: a number of issues can occur here:
-        // - connection has been closed in the meantime
-        int error = ACE_OS::last_error();
+      // *IMPORTANT NOTE*: a number of issues can occur here:
+      // - connection has been closed in the meantime
+      // *TODO*: validate these
+      int error = ACE_OS::last_error();
       if ((error != ESHUTDOWN) &&
           (error != ENOTSOCK)) // <-- connection has been closed in the meantime
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")));
 
-      // reactor will invoke handle_close()
+      // clean up
+      if (!inherited::myUserData.useThreadPerConnection)
+        myLock.release();
+
       return -1;
     } // end IF
   } // end IF
   ACE_ASSERT(myCurrentWriteBuffer);
 
   // finished ?
-  if (myCurrentWriteBuffer->msg_type() == ACE_Message_Block::MB_STOP)
+  if (inherited::myUserData.useThreadPerConnection &&
+      myCurrentWriteBuffer->msg_type() == ACE_Message_Block::MB_STOP)
   {
     myCurrentWriteBuffer->release();
     myCurrentWriteBuffer = NULL;
@@ -319,7 +320,6 @@ RPG_Net_StreamSocketBase<ConfigType,
 //                  ACE_TEXT("[%u]: finished sending...\n"),
 //                  peer_.get_handle()));
 
-    // finished
     return -1;
   } // end IF
 
@@ -330,18 +330,23 @@ RPG_Net_StreamSocketBase<ConfigType,
   {
     case -1:
     {
-      // connection reset by peer/broken pipe ? --> not an error
+      // *IMPORTANT NOTE*: a number of issues can occur here:
+      // - connection reset by peer
+      // - connection abort()ed locally
       int error = ACE_OS::last_error();
       if ((error != ECONNRESET) &&
-          (error != EPIPE))
+          (error != EPIPE) &&      // <-- connection reset by peer
+          // -------------------------------------------------------------------
+          (error != EBADF))        // <-- connection abort()ed locally
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", aborting\n")));
 
       // clean up
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
+      if (!inherited::myUserData.useThreadPerConnection)
+        myLock.release();
 
-      // reactor will invoke handle_close()
       return -1;
     }
     // *** GOOD CASES ***
@@ -354,8 +359,9 @@ RPG_Net_StreamSocketBase<ConfigType,
       // clean up
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
+      if (!inherited::myUserData.useThreadPerConnection)
+        myLock.release();
 
-      // reactor will invoke handle_close()
       return -1;
     }
     default:
@@ -366,11 +372,11 @@ RPG_Net_StreamSocketBase<ConfigType,
 //                 bytes_sent));
 
       // finished with this buffer ?
-			myCurrentWriteBuffer->rd_ptr(static_cast<size_t>(bytes_sent));
+      myCurrentWriteBuffer->rd_ptr(static_cast<size_t>(bytes_sent));
       if (myCurrentWriteBuffer->length() > 0)
-				break; // there's more data
+        break; // there's more data
 
-			// clean up
+      // clean up
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
 
@@ -379,18 +385,23 @@ RPG_Net_StreamSocketBase<ConfigType,
   } // end SWITCH
 
   // immediately reschedule sending ?
-  if ((myCurrentWriteBuffer == NULL) && inherited::msg_queue()->is_empty())
-  {
-    if (inherited::reactor()->cancel_wakeup(this,
-                                            ACE_Event_Handler::WRITE_MASK) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::cancel_wakeup(): \"%m\", continuing\n")));
-  } // end IF
-  else
+//  if ((myCurrentWriteBuffer == NULL) && inherited::msg_queue()->is_empty())
+//  {
+//    if (inherited::reactor()->cancel_wakeup(this,
+//                                            ACE_Event_Handler::WRITE_MASK) == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE_Reactor::cancel_wakeup(): \"%m\", continuing\n")));
+//  } // end IF
+//  else
+  if (myCurrentWriteBuffer != NULL)
     if (inherited::reactor()->schedule_wakeup(this,
                                               ACE_Event_Handler::WRITE_MASK) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Reactor::schedule_wakeup(): \"%m\", continuing\n")));
+
+  // clean up
+  if (!inherited::myUserData.useThreadPerConnection)
+    myLock.release();
 
   return 0;
 }

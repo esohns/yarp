@@ -46,7 +46,6 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream()
   // failed...)
   myAvailableModules.insert_tail(&myIRCMarshal);
   myAvailableModules.insert_tail(&myIRCParser);
-//   myAvailableModules.insert_tail(&myIRCHandler);
   myAvailableModules.insert_tail(&myRuntimeStatistic);
 
   // fix ACE bug: modules should initialize their "next" member to NULL !

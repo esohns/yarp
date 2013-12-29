@@ -55,6 +55,7 @@ struct RPG_Net_ConfigPOD
 {
   // ************ connection config data ************
   unsigned int             pingInterval;
+  unsigned int             keepAliveTimeout;
   bool                     pingAutoAnswer;
   bool                     printPingMessages;
   int                      socketBufferSize;

@@ -181,7 +181,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!socketHandler_impl->init(config_in.messageAllocator,
-		                            config_in.useThreadPerConnection,
+                                config_in.useThreadPerConnection,
                                 RPG_NET_STATISTICS_COLLECT_INTERVAL))
   {
     ACE_DEBUG((LM_ERROR,
@@ -215,6 +215,25 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 //   inherited::dump_state();
 
   return true;
+}
+
+void
+RPG_Net_Stream::ping()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Stream::ping"));
+
+  RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
+  protocolHandler_impl = dynamic_cast<RPG_Net_Module_ProtocolHandler*>(myProtocolHandler.writer());
+  if (!protocolHandler_impl)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_ProtocolHandler) failed> (aborting\n")));
+
+    return;
+  } // end IF
+
+  // delegate to this module...
+  protocolHandler_impl->handleTimeout(NULL);
 }
 
 unsigned int
@@ -253,7 +272,7 @@ RPG_Net_Stream::collect(RPG_Net_RuntimeStatistic& data_out) const
   } // end IF
 
   // delegate to this module...
-  return (runtimeStatistic_impl->collect(data_out));
+  return runtimeStatistic_impl->collect(data_out);
 }
 
 void

@@ -377,7 +377,7 @@ RPG_Common_File_Tools::getConfigDataDirectory(const std::string& baseDir_in,
 
 #if !defined(_DEBUG) && !defined(DEBUG_RELEASE)
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  result += (isConfig_in ? ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_CONFIG_SUB)
+  result += (isConfig_in ? ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_CONFIG_SUB)
                          : ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB));
 #endif
 

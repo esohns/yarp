@@ -1,7 +1,8 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -I$(srcdir)/../../common -I$(srcdir)/.. -I$(srcdir)/../stream
+AM_CPPFLAGS = -DRPG_NET_CLIENT_BUILD_DLL -I$(srcdir)/../../common \
+	-I$(srcdir)/.. -I$(srcdir)/../stream
 
 noinst_HEADERS = stdafx.h
 include_HEADERS = rpg_net_client_sockethandler.h \

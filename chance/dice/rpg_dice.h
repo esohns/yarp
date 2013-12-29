@@ -35,7 +35,7 @@
 /**
 emulate rolling an n-sided die
 
-	@author Erik Sohns <erik.sohns@web.de>
+@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Dice_Export RPG_Dice
 {
@@ -51,7 +51,7 @@ class RPG_Dice_Export RPG_Dice
   static void simulateRoll(const RPG_Dice_Roll&,    // specifics (number of dice, type, modifier)
                            const unsigned int&,     // number of rolls
                            RPG_Dice_RollResult_t&); // result(s)
-  static bool probability(const float&); // probability (0 - 1.0)
+  static bool probability(const float&); // probability ([0.0F, 1.0F], percentage)
 
   static void rollToRange(const RPG_Dice_Roll&,  // roll specifics
                           RPG_Dice_ValueRange&); // result

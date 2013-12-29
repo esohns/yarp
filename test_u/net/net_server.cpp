@@ -67,12 +67,12 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
 	std::cout << ACE_TEXT("-c [VALUE]  : #connections ([") << RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS << ACE_TEXT("])") << std::endl;
   std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
-  std::cout << ACE_TEXT("-k [VALUE]  : socket keep-alive timeout ([") << RPG_NET_SOCK_KEEPALIVE << ACE_TEXT("] second(s))") << std::endl;
+  std::cout << ACE_TEXT("-k [VALUE]  : client keep-alive timeout ([") << RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE << ACE_TEXT("] second(s) {0 --> no timeout})") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
-	// *TODO*: this doesn't really make sense (yet)
-	std::cout << ACE_TEXT("-o          : use loopback [") << false << ACE_TEXT("]") << std::endl;
-	std::cout << ACE_TEXT("-p [VALUE]  : listening port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
+  // *TODO*: this doesn't really make sense (yet)
+  std::cout << ACE_TEXT("-o          : use loopback [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]  : listening port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r          : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval ([") << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
@@ -83,12 +83,12 @@ print_usage(const std::string& programName_in)
 bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-									unsigned int& maxNumConnections_out,
+                  unsigned int& maxNumConnections_out,
                   unsigned int& clientPingInterval_out,
                   unsigned int& keepAliveTimeout_out,
                   bool& logToFile_out,
                   std::string& networkInterface_out,
-									bool& useLoopback_out,
+                  bool& useLoopback_out,
                   unsigned short& listeningPortNumber_out,
                   bool& useReactor_out,
                   unsigned int& statisticsReportingInterval_out,
@@ -99,14 +99,14 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
-	maxNumConnections_out = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
+  maxNumConnections_out = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
   clientPingInterval_out = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
-  keepAliveTimeout_out = RPG_NET_SOCK_KEEPALIVE;
+  keepAliveTimeout_out = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
   logToFile_out = false;
   networkInterface_out = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
-	useLoopback_out = false;
+  useLoopback_out = false;
   listeningPortNumber_out = RPG_NET_SERVER_DEF_LISTENING_PORT;
-	useReactor_out = RPG_NET_USES_REACTOR;
+  useReactor_out = RPG_NET_USES_REACTOR;
   statisticsReportingInterval_out = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
   printVersionAndExit_out = false;
@@ -340,33 +340,36 @@ init_signals(const bool& allowUserRuntimeStats_in,
 
   // init return value(s)
   if (signals_inout.empty_set() == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to ACE_Sig_Set::empty_set(): \"%m\", aborting\n")));
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Sig_Set::empty_set(): \"%m\", aborting\n")));
 
-		return;
-	} // end IF
+    return;
+  } // end IF
 
   // *PORTABILITY*: on Windows most signals are not defined,
   // and ACE_Sig_Set::fill_set() doesn't really work as specified
-	// --> add valid signals (see <signal.h>)...
+  // --> add valid signals (see <signal.h>)...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   signals_inout.sig_add(SIGINT);         // 2       /* interrupt */
-	signals_inout.sig_add(SIGILL);         // 4       /* illegal instruction - invalid function image */
-	signals_inout.sig_add(SIGFPE);         // 8       /* floating point exception */
-	signals_inout.sig_add(SIGSEGV);        // 11      /* segment violation */
-	signals_inout.sig_add(SIGTERM);        // 15      /* Software termination signal from kill */
+  signals_inout.sig_add(SIGILL);         // 4       /* illegal instruction - invalid function image */
+  signals_inout.sig_add(SIGFPE);         // 8       /* floating point exception */
+  signals_inout.sig_add(SIGSEGV);        // 11      /* segment violation */
+  signals_inout.sig_add(SIGTERM);        // 15      /* Software termination signal from kill */
   signals_inout.sig_add(SIGBREAK);       // 21      /* Ctrl-Break sequence */
-	signals_inout.sig_add(SIGABRT);        // 22      /* abnormal termination triggered by abort call */
-	signals_inout.sig_add(SIGABRT_COMPAT); // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
+  signals_inout.sig_add(SIGABRT);        // 22      /* abnormal termination triggered by abort call */
+  signals_inout.sig_add(SIGABRT_COMPAT); // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
 #else
-	if (signals_inout.fill_set() == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to ACE_Sig_Set::fill_set(): \"%m\", aborting\n")));
+  if (signals_inout.fill_set() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Sig_Set::fill_set(): \"%m\", aborting\n")));
 
-		return;
-	} // end IF
+    return;
+  } // end IF
+  // *NOTE*: cannot handle some signals
+  signals_inout.sig_del(SIGKILL);         // 9       /* Kill signal */
+  signals_inout.sig_del(SIGSTOP);         // 19      /* Stop process */
 #endif
 
 //  // init list of handled signals...
@@ -427,7 +430,7 @@ init_signalHandling(ACE_Sig_Set& signals_in,
 {
   RPG_TRACE(ACE_TEXT("::init_signalHandling"));
 
-	// *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a multithreaded
+  // *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a multithreaded
   //                   application, the disposition of a particular signal is the same for
   //                   all threads." (see man 7 signal)
 
@@ -461,7 +464,7 @@ init_signalHandling(ACE_Sig_Set& signals_in,
     for (int i = ACE_SIGRTMIN;
          i <= ACE_SIGRTMAX;
          i++)
-		{
+    {
       if (ACE_OS::sigaddset(&signal_set, i) == -1)
       {
         ACE_DEBUG((LM_DEBUG,
@@ -469,15 +472,15 @@ init_signalHandling(ACE_Sig_Set& signals_in,
 
         return;
       } // end IF
-			if (signals_in.sig_del(i) == -1)
+      if (signals_in.sig_del(i) == -1)
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to ACE_Sig_Set::sig_del(%S): \"%m\", aborting\n"),
-									 i));
+                   i));
 
         return;
       } // end IF
-		} // end IF
+    } // end IF
     if (ACE_OS::thr_sigsetmask(SIG_BLOCK, &signal_set, NULL) == -1)
     {
       ACE_DEBUG((LM_DEBUG,
@@ -492,15 +495,15 @@ init_signalHandling(ACE_Sig_Set& signals_in,
                             ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
                                                                      // --> block them all (bar KILL/STOP; see manual)
                             (SA_RESTART | SA_SIGINFO));              // flags
-	if (ACE_Reactor::instance()->register_handler(signals_in,
-		                                            &eventHandler_in,
-																								&new_action) == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%m\", aborting\n")));
+  if (ACE_Reactor::instance()->register_handler(signals_in,
+                                                &eventHandler_in,
+                                                &new_action) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%m\", aborting\n")));
 
-		return;
-	} // end IF
+    return;
+  } // end IF
 }
 
 void
@@ -554,20 +557,21 @@ fini_signalHandling(ACE_Sig_Set& signals_in,
   } // end IF
 
   // restore previous signal handlers
-	if (ACE_Reactor::instance()->remove_handler(signals_in) == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%m\", aborting\n")));
+  if (ACE_Reactor::instance()->remove_handler(signals_in) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%m\", aborting\n")));
 
-		return;
-	} // end IF
+    return;
+  } // end IF
 }
 
 void
 do_work(const unsigned int& maxNumConnections_in,
         const unsigned int& pingInterval_in,
+        const unsigned int& keepAliveTimeout_in,
         const std::string& networkInterface_in,
-				const bool& useLoopback_in,
+        const bool& useLoopback_in,
         const unsigned short& listeningPortNumber_in,
         const bool& useReactor_in,
         const unsigned int& statisticsReportingInterval_in,
@@ -622,7 +626,8 @@ do_work(const unsigned int& maxNumConnections_in,
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
   config.pingInterval = pingInterval_in;
-	config.pingAutoAnswer = true;
+  config.keepAliveTimeout = keepAliveTimeout_in,
+  config.pingAutoAnswer = true;
   config.printPingMessages = false;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
@@ -666,7 +671,7 @@ do_work(const unsigned int& maxNumConnections_in,
 
   // step4b: start listening
   listener_handle->init(listeningPortNumber_in,
-		                    useLoopback_in);
+                        useLoopback_in);
   listener_handle->start();
   if (!listener_handle->isRunning())
   {
@@ -782,12 +787,12 @@ ACE_TMAIN(int argc,
 //#endif
 
   // step1a set defaults
-	unsigned int maxNumConnections           = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
+  unsigned int maxNumConnections           = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
   unsigned int pingInterval                = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
-  unsigned int keepAliveTimeout            = RPG_NET_SOCK_KEEPALIVE;
+  unsigned int keepAliveTimeout            = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
   bool logToFile                           = false;
   std::string networkInterface             = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
-	bool useLoopback                         = false;
+  bool useLoopback                         = false;
   unsigned short listeningPortNumber       = RPG_NET_SERVER_DEF_LISTENING_PORT;
   bool useReactor                          = RPG_NET_USES_REACTOR;
   unsigned int statisticsReportingInterval = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
@@ -798,12 +803,12 @@ ACE_TMAIN(int argc,
   // step1b: parse/process/validate configuration
   if (!process_arguments(argc,
                          argv,
-												 maxNumConnections,
+                         maxNumConnections,
                          pingInterval,
                          keepAliveTimeout,
                          logToFile,
                          networkInterface,
-											 	 useLoopback,
+                         useLoopback,
                          listeningPortNumber,
                          useReactor,
                          statisticsReportingInterval,
@@ -914,9 +919,10 @@ ACE_TMAIN(int argc,
   timer.start();
   // step2: do actual work
   do_work(maxNumConnections,
-		      pingInterval,
+          pingInterval,
+          keepAliveTimeout,
           networkInterface,
-					useLoopback,
+          useLoopback,
           listeningPortNumber,
           useReactor,
           statisticsReportingInterval,

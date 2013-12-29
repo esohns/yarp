@@ -23,7 +23,7 @@
 
 #include "rpg_net_remote_comm.h"
 
-#include <rpg_stream_message_base.h>
+#include "rpg_stream_message_base.h"
 
 #include <ace/Global_Macros.h>
 
@@ -50,7 +50,7 @@ class RPG_Net_Message
   virtual void init(// Stream_MessageBase members
                     ACE_Data_Block*); // data block to use
 
-  virtual const int getCommand() const; // return value: (protocol) message type
+  virtual int getCommand() const; // return value: (protocol) message type
 
   // implement RPG_Net_IDumpState
   virtual void dump_state() const;
@@ -61,14 +61,14 @@ class RPG_Net_Message
   // some data may need to be COPIED.
   // --> if necessary, the missing data is taken from the continuation(s),
   // adjusting read/write pointers as necessary
-  const bool crunchForHeader(const unsigned long&); // header size
+  bool crunchForHeader(const unsigned int&); // header size
 
   // overrides from ACE_Message_Block
   // --> create a "shallow" copy of ourselves that references the same packet
   // *NOTE*: this uses our allocator (if any) to create a new message
   virtual ACE_Message_Block* duplicate(void) const;
 
-  static const std::string commandType2String(const RPG_Net_MessageType&);
+  static std::string commandType2String(const RPG_Net_MessageType&);
 
  protected:
   // copy ctor to be used by duplicate() and child classes

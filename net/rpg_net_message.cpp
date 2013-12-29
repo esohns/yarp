@@ -23,7 +23,7 @@
 
 #include "rpg_net_remote_comm.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Message_Block.h>
 #include <ace/Log_Msg.h>
@@ -82,7 +82,7 @@ RPG_Net_Message::init(ACE_Data_Block* dataBlock_in)
   myIsInitialized = true;
 }
 
-const int
+int
 RPG_Net_Message::getCommand() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Message::getCommand"));
@@ -90,7 +90,7 @@ RPG_Net_Message::getCommand() const
   // sanity check(s)
   ACE_ASSERT(length() >= sizeof(RPG_Net_MessageHeader));
 
-  RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*> (rd_ptr());
+  RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*>(rd_ptr());
 
   return message_header->messageType;
 }
@@ -310,16 +310,22 @@ RPG_Net_Message::dump_state() const
 //              sum_header_size));
 }
 
-const bool
-RPG_Net_Message::crunchForHeader(const unsigned long& headerSize_in)
+bool
+RPG_Net_Message::crunchForHeader(const unsigned int& headerSize_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Message::crunchForHeader"));
 
   // sanity check(s)
-  ACE_ASSERT(size() >= headerSize_in);         // enough space ?
-  ACE_ASSERT(total_length() >= headerSize_in); // enough data ?
+  ACE_ASSERT(size() >= headerSize_in); // enough space ?
+  if (total_length() < headerSize_in)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("not enough data (needed: %u, had: %u), aborting\n"),
+               headerSize_in,
+               total_length()));
 
-  // anything to do at all ?
+    return false;
+  } // end IF
   if (length() >= headerSize_in)
     return true; // nothing to do...
 
@@ -362,7 +368,7 @@ RPG_Net_Message::duplicate(void) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Message::duplicate"));
 
-  RPG_Net_Message* nb = NULL;
+  RPG_Net_Message* new_message = NULL;
 
   // create a new RPG_Net_Message that contains unique copies of
   // the message block fields, but a (reference counted) shallow duplicate of
@@ -371,7 +377,7 @@ RPG_Net_Message::duplicate(void) const
   // if there is no allocator, use the standard new and delete calls.
   if (message_block_allocator_ == NULL)
   {
-    ACE_NEW_RETURN(nb,
+    ACE_NEW_RETURN(new_message,
                    RPG_Net_Message(*this),
                    NULL);
   } // end IF
@@ -381,8 +387,8 @@ RPG_Net_Message::duplicate(void) const
     // a "shallow" copy which just references our data block...
     // *TODO*: (depending on the allocator) we senselessly allocate a datablock
     // anyway, only to immediately release it again...
-    ACE_NEW_MALLOC_RETURN(nb,
-                          static_cast<RPG_Net_Message*> (message_block_allocator_->malloc(capacity())),
+    ACE_NEW_MALLOC_RETURN(new_message,
+                          static_cast<RPG_Net_Message*>(message_block_allocator_->malloc(capacity())),
                           RPG_Net_Message(*this),
                           NULL);
   } // end ELSE
@@ -390,22 +396,22 @@ RPG_Net_Message::duplicate(void) const
   // increment the reference counts of all the continuation messages
   if (cont_)
   {
-    nb->cont_ = cont_->duplicate();
+    new_message->cont_ = cont_->duplicate();
 
     // If things go wrong, release all of our resources and return
-    if (nb->cont_ == 0)
+    if (new_message->cont_ == NULL)
     {
-      nb->release();
-      nb = NULL;
+      new_message->release();
+      new_message = NULL;
     } // end IF
   } // end IF
 
   // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
 
-  return nb;
+  return new_message;
 }
 
-const std::string
+std::string
 RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Message::commandType2String"));
@@ -420,7 +426,6 @@ RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
       result = ACE_TEXT("RPG_NET_PONG"); break;
     default:
     {
-      // debug info
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid message type (was %d), aborting\n"),
                  messageType_in));
@@ -499,7 +504,6 @@ RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 // //     }
 //     default:
 //     {
-//       // debug info
 //       std::string type_string;
 //       RPG_Net_Protocol_Layer::ProtocolLayer2String(headerType_in,
 //                                                           type_string);
