@@ -33,14 +33,8 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_SocketHandlerBase
  : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH>,
-   public RPG_Net_IConnection<ConfigType,
-                              StatisticsContainerType>
+   public RPG_Net_IConnection<StatisticsContainerType>
 {
- protected:
-  // convenient types
-  typedef RPG_Net_IConnectionManager<ConfigType,
-                                     StatisticsContainerType> MANAGER_t;
-
  public:
   virtual ~RPG_Net_SocketHandlerBase(); // we'll self-destruct !
 
@@ -59,8 +53,6 @@ class RPG_Net_SocketHandlerBase
   virtual void info(ACE_HANDLE&,           // return value: handle
                     ACE_INET_Addr&,        // return value: local SAP
                     ACE_INET_Addr&) const; // return value: remote SAP
-  virtual void init(const ConfigType&);
-//   virtual const bool isRegistered() const;
   virtual void abort();
   virtual unsigned int getID() const;
 
@@ -68,23 +60,23 @@ class RPG_Net_SocketHandlerBase
   virtual void dump_state() const;
 
  protected:
-  // meant to be sub-classed
-  RPG_Net_SocketHandlerBase(MANAGER_t*); // manager handle
+  typedef RPG_Net_IConnectionManager<ConfigType,
+                                     StatisticsContainerType> MANAGER_T;
+  RPG_Net_SocketHandlerBase(MANAGER_T*); // manager handle
 
-  ConfigType                        myUserData;
-  bool                              myIsInitialized;
   ACE_Reactor_Notification_Strategy myNotificationStrategy;
+  MANAGER_T*                        myManager;
+  ConfigType                        myUserData;
+  bool                              myIsRegistered;
 
  private:
-  typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> inherited;
+  typedef ACE_Svc_Handler<ACE_SOCK_STREAM,
+                          ACE_MT_SYNCH> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase(const RPG_Net_SocketHandlerBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase& operator=(const RPG_Net_SocketHandlerBase&));
-
-  bool                              myIsRegistered;
-  MANAGER_t*                        myManager;
 };
 
 // include template implementation

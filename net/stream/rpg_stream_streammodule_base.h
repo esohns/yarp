@@ -31,9 +31,12 @@
 // forward declaration(s)
 class RPG_Stream_IRefCount;
 
-template <typename ReaderTaskType, typename WriterTaskType>
+template <typename TaskSynchType,
+          typename ReaderTaskType,
+          typename WriterTaskType>
 class RPG_Stream_StreamModule_t
- : public RPG_Stream_Module_Base_t<ReaderTaskType,
+ : public RPG_Stream_Module_Base_t<TaskSynchType,
+                                   ReaderTaskType,
                                    WriterTaskType>
 {
  public:
@@ -48,16 +51,19 @@ class RPG_Stream_StreamModule_t
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_StreamModule_t& operator=(const RPG_Stream_StreamModule_t&));
 
  private:
-  typedef RPG_Stream_Module_Base_t<ReaderTaskType,
+  typedef RPG_Stream_Module_Base_t<TaskSynchType,
+                                   ReaderTaskType,
                                    WriterTaskType> inherited;
 
   ReaderTaskType myReader;
   WriterTaskType myWriter;
 };
 
-template <typename TaskType>
+template <typename TaskSynchType,
+          typename TaskType>
 class RPG_Stream_StreamModuleInputOnly_t
- : public RPG_Stream_StreamModule_t<ACE_Thru_Task<ACE_MT_SYNCH>, // through-task
+ : public RPG_Stream_StreamModule_t<TaskSynchType,
+                                    ACE_Thru_Task<TaskSynchType>, // through-task
                                     TaskType>
 {
  public:
@@ -68,11 +74,12 @@ class RPG_Stream_StreamModuleInputOnly_t
  protected:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_StreamModuleInputOnly_t());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_StreamModuleInputOnly_t(const RPG_Stream_StreamModuleInputOnly_t<TaskType>&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_StreamModuleInputOnly_t<TaskType>& operator=(const RPG_Stream_StreamModuleInputOnly_t<TaskType>&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_StreamModuleInputOnly_t(const RPG_Stream_StreamModuleInputOnly_t&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_StreamModuleInputOnly_t& operator=(const RPG_Stream_StreamModuleInputOnly_t&));
 
  private:
-  typedef RPG_Stream_StreamModule_t<ACE_Thru_Task<ACE_MT_SYNCH>, // through-task
+  typedef RPG_Stream_StreamModule_t<TaskSynchType,
+                                    ACE_Thru_Task<TaskSynchType>, // through-task
                                     TaskType> inherited;
 };
 
@@ -80,12 +87,18 @@ class RPG_Stream_StreamModuleInputOnly_t
 #include "rpg_stream_streammodule_base.i"
 
 // *NOTE*: use this macro to instantiate the module definitions
-// --> saves some typing...
-#define DATASTREAM_MODULE_INPUT_ONLY(TASKTYPE) typedef RPG_Stream_StreamModuleInputOnly_t<TASKTYPE> TASKTYPE##_Module
-#define DATASTREAM_MODULE_INPUT_ONLY_T(TASKTYPE, NAME) typedef RPG_Stream_StreamModuleInputOnly_t<TASKTYPE> NAME##_Module
-#define DATASTREAM_MODULE_DUPLEX(READER,\
-                                 WRITER,\
-                                 NAME) typedef RPG_Stream_StreamModule_t<READER,\
-                                                                         WRITER> NAME##_Module
+// *IMPORTANT NOTE*: TASK_SYNCH_TYPE is [ACE_MT_SYNCH | ACE_NULL_SYNCH] and must
+// correspond to the actual TASK_TYPE declaration !
+#define DATASTREAM_MODULE_INPUT_ONLY(TASK_SYNCH_TYPE,\
+                                     TASK_TYPE) typedef RPG_Stream_StreamModuleInputOnly_t<TASK_SYNCH_TYPE, TASK_TYPE> TASK_TYPE##_Module
+#define DATASTREAM_MODULE_INPUT_ONLY_T(TASK_SYNCH_TYPE,\
+                                       TASK_TYPE,\
+                                       NAME) typedef RPG_Stream_StreamModuleInputOnly_t<TASK_SYNCH_TYPE, TASK_TYPE> NAME##_Module
+#define DATASTREAM_MODULE_DUPLEX(TASK_SYNCH_TYPE,\
+                                 READER_TYPE,\
+                                 WRITER_TYPE,\
+                                 NAME) typedef RPG_Stream_StreamModule_t<TASK_SYNCH_TYPE,\
+                                                                         READER_TYPE,\
+                                                                         WRITER_TYPE> NAME##_Module
 
 #endif

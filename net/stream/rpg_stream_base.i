@@ -518,7 +518,7 @@ RPG_Stream_Base<DataType,
   // step2: wait for any pipelined messages to flush...
 
   // step1: get head module, skip over ACE_Stream_Head
-  ACE_Stream_Iterator<ACE_MT_SYNCH> iterator(*this);
+  STREAM_ITERATOR_TYPE iterator(*this);
   if (iterator.advance() == 0)
   {
     ACE_DEBUG((LM_ERROR,
@@ -526,8 +526,8 @@ RPG_Stream_Base<DataType,
 
     return;
   } // end IF
-	std::deque<MODULE_TYPE*> module_stack;
-	const MODULE_TYPE* module = NULL;
+  std::deque<MODULE_TYPE*> module_stack;
+  const MODULE_TYPE* module = NULL;
   if (iterator.next(module) == 0)
   {
     ACE_DEBUG((LM_ERROR,
@@ -543,7 +543,7 @@ RPG_Stream_Base<DataType,
   if (module == tail())
     return;
 
-	module_stack.push_front(const_cast<MODULE_TYPE*>(module));
+  module_stack.push_front(const_cast<MODULE_TYPE*>(module));
   // need to downcast
   HEADMODULETASK_BASETYPE* head_task = NULL;
   head_task = dynamic_cast<HEADMODULETASK_BASETYPE*>(const_cast<MODULE_TYPE*>(module)->writer());

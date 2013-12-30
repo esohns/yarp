@@ -18,51 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <ace/Reactor.h>
-#include <ace/Message_Block.h>
-#include <ace/Time_Value.h>
+#include "rpg_stream_session_message.h"
 
-#include "rpg_common_macros.h"
-
-#include "rpg_stream_message_base.h"
-#include "rpg_stream_session_message_base.h"
-
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::RPG_Stream_TaskBase()
+template <typename TaskSynchStrategyType>
+RPG_Stream_Task<TaskSynchStrategyType>::RPG_Stream_Task()
  : inherited(NULL, // thread manager instance
-             NULL) // message queue handle
+             NULL) // queue handle
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::RPG_Stream_TaskBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::RPG_Stream_Task"));
 
-  //// use the default reactor...
-  //reactor(ACE_Reactor::instance());
+  // use the default reactor...
+  inherited::reactor(ACE_Reactor::instance());
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::~RPG_Stream_TaskBase()
+template <typename TaskSynchStrategyType>
+RPG_Stream_Task<TaskSynchStrategyType>::~RPG_Stream_Task()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::~RPG_Stream_TaskBase"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::~RPG_Stream_Task"));
 
 }
 
 // *** dummy stub methods ***
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::open(void* args_in)
+RPG_Stream_Task<TaskSynchStrategyType>::open(void* args_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::open"));
 
   ACE_UNUSED_ARG(args_in);
 
@@ -76,15 +57,11 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 #endif
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::close(u_long arg_in)
+RPG_Stream_Task<TaskSynchStrategyType>::close(u_long arg_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::close"));
 
   ACE_UNUSED_ARG(arg_in);
 
@@ -98,15 +75,11 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 #endif
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::module_closed(void)
+RPG_Stream_Task<TaskSynchStrategyType>::module_closed(void)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::module_closed"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::module_closed"));
 
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
@@ -118,16 +91,12 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 #endif
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::put(ACE_Message_Block* mb_in,
-                                              ACE_Time_Value* tv_in)
+RPG_Stream_Task<TaskSynchStrategyType>::put(ACE_Message_Block* mb_in,
+                                            ACE_Time_Value* tv_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::put"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::put"));
 
   ACE_UNUSED_ARG(mb_in);
   ACE_UNUSED_ARG(tv_in);
@@ -142,15 +111,11 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 #endif
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::svc(void)
+RPG_Stream_Task<TaskSynchStrategyType>::svc(void)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::svc"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::svc"));
 
   // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
@@ -163,14 +128,11 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 }
 // *** END dummy stub methods ***
 
-// template <typename SessionMessageType,
-//           typename ProtocolMessageType>
 // void
-// RPG_Stream_TaskBase<SessionMessageType,
-//                 ProtocolMessageType>::handleDataMessage(ProtocolMessageType*& message_inout,
-//                                                         bool& passMessageDownstream_out)
+// RPG_Stream_Task::handleDataMessage(RPG_Stream_MessageBase*& message_inout,
+//                                bool& passMessageDownstream_out)
 // {
-//   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleDataMessage"));
+//   RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleDataMessage"));
 //
 //   // init return value(s)
 //   passMessageDownstream_out = true;
@@ -181,16 +143,12 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 //   ACE_UNUSED_ARG(message_inout);
 // }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 void
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::handleSessionMessage(SessionMessageType*& message_inout,
-                                                               bool& passMessageDownstream_out)
+RPG_Stream_Task<TaskSynchStrategyType>::handleSessionMessage(RPG_Stream_SessionMessage*& message_inout,
+                                                             bool& passMessageDownstream_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleSessionMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleSessionMessage"));
 
   // init return value(s)
   passMessageDownstream_out = true;
@@ -198,18 +156,18 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
   // sanity check(s)
   ACE_ASSERT(message_inout);
 
-  // *NOTE*: the default behavior is to simply dump our state at the
-  // end of a session...
+  // *NOTE*: the default behavior is to simply dump state at the end of a
+  // session...
   switch (message_inout->getType())
   {
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_STEP:
+      break;
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
       break;
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
       try
       {
-        // OK: dump some status info...
         dump_state();
       }
       catch (...)
@@ -231,7 +189,8 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
     {
       std::string type_string;
       RPG_Stream_SessionMessage::SessionMessageType2String(message_inout->getType(),
-                                                           type_string);
+                                                       type_string);
+
       ACE_DEBUG((LM_WARNING,
                  ACE_TEXT("invalid/unknown session message (type: \"%s\")\n"),
                  type_string.c_str()));
@@ -241,15 +200,11 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
   } // end SWITCH
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 void
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::handleProcessingError(const ACE_Message_Block* const message_in)
+RPG_Stream_Task<TaskSynchStrategyType>::handleProcessingError(const ACE_Message_Block* const message_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleProcessingError"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleProcessingError"));
 
   ACE_UNUSED_ARG(message_in);
 
@@ -262,35 +217,27 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
                ACE_TEXT("failed to process message, continuing\n")));
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 void
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::dump_state() const
+RPG_Stream_Task<TaskSynchStrategyType>::dump_state() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::dump_state"));
 
-//   if (module())
+//   if (inherited::module())
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT(" ***** MODULE: \"%s\" has not implemented the dump_state() API *****\n"),
-//                ACE_TEXT_ALWAYS_CHAR(name())));
+//                ACE_TEXT_ALWAYS_CHAR(inherited::name())));
 //   else
 //     ACE_DEBUG((LM_WARNING,
 //                ACE_TEXT("dump_state() API not implemented\n")));
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 void
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::handleMessage(ACE_Message_Block* mb_in,
-                                                        bool& stopProcessing_out)
+RPG_Stream_Task<TaskSynchStrategyType>::handleMessage(ACE_Message_Block* mb_in,
+                                                      bool& stopProcessing_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleMessage"));
 
   // sanity check
   ACE_ASSERT(mb_in);
@@ -306,25 +253,25 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
     case RPG_Stream_MessageBase::MB_STREAM_DATA:
     case RPG_Stream_MessageBase::MB_STREAM_OBJ:
     {
-      ProtocolMessageType* message = NULL;
+      RPG_Stream_MessageBase* message = NULL;
       // downcast message
-      message = dynamic_cast<ProtocolMessageType*>(mb_in);
+      message = dynamic_cast<RPG_Stream_MessageBase*> (mb_in);
 //       // *OPTIMIZATION*: not as safe, but (arguably) a lot faster !...
 //       message = static_cast<RPG_Stream_MessageBase*> (//                                 mb_in);
       if (!message)
       {
         std::string type;
         RPG_Stream_MessageBase::MessageType2String(mb_in->msg_type(),
-                                                   type);
+                                               type);
 
         if (inherited::module())
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("module \"%s\": dynamic_cast<RPG_Stream_MessageBase)> (type: \"%s\" failed, aborting\n"),
+                     ACE_TEXT("module \"%s\": dynamic_cast<RPG_Stream_MessageBase*)> (type: \"%s\" failed, aborting\n"),
                      ACE_TEXT_ALWAYS_CHAR(inherited::module()->name()),
                      type.c_str()));
         else
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("dynamic_cast<RPG_Stream_MessageBase)> (type: \"%s\" failed, aborting\n"),
+                     ACE_TEXT("dynamic_cast<RPG_Stream_MessageBase*)> (type: \"%s\" failed, aborting\n"),
                      type.c_str()));
 
         // clean up
@@ -337,12 +284,8 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
       try
       {
         // invoke specific implementation...
-        // *WARNING*: need to invoke our OWN implementation here, otherwise, the ld linker
-        // complains about a missing reference to StreamITaskBase::handleDataMessage...
-//         inherited2::handleDataMessage(message,
-//                                       passMessageDownstream);
-        this->handleDataMessage(message,
-                                passMessageDownstream);
+        handleDataMessage(message,
+                          passMessageDownstream);
       }
       catch (...)
       {
@@ -374,7 +317,7 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
       {
         std::string type;
         RPG_Stream_MessageBase::MessageType2String(mb_in->msg_type(),
-                                                   type);
+                                               type);
 
         if (inherited::module())
           ACE_DEBUG((LM_ERROR,
@@ -415,17 +358,13 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
   } // end IF
 }
 
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
+template <typename TaskSynchStrategyType>
 void
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::handleControlMessage(ACE_Message_Block* controlMessage_in,
-                                                               bool& stopProcessing_out,
-                                                               bool& passMessageDownstream_out)
+RPG_Stream_Task<TaskSynchStrategyType>::handleControlMessage(ACE_Message_Block* controlMessage_in,
+                                                             bool& stopProcessing_out,
+                                                             bool& passMessageDownstream_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleControlMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Task::handleControlMessage"));
 
   // init return value(s)
   stopProcessing_out = false;
@@ -436,9 +375,9 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
     // currently, we only use these...
     case RPG_Stream_MessageBase::MB_STREAM_SESSION:
     {
-      SessionMessageType* sessionMessage = NULL;
+      RPG_Stream_SessionMessage* sessionMessage = NULL;
       // downcast message
-      sessionMessage = dynamic_cast<SessionMessageType*>(controlMessage_in);
+      sessionMessage = dynamic_cast<RPG_Stream_SessionMessage*> (controlMessage_in);
       if (!sessionMessage)
       {
         if (inherited::module())
@@ -455,7 +394,6 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
         passMessageDownstream_out = false;
         controlMessage_in->release();
 
-        // what else can we do ?
         break;
       } // end IF
 
@@ -477,11 +415,11 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
                      ACE_TEXT("caught an exception in handleSessionMessage(), continuing\n")));
       }
 
-      // *NOTE*: if this was a RPG_Stream_SessionMessage::SESSION_END, we need to
+      // *NOTE*: if this was a RPG_Stream_SessionMessage::MB_STREAM_SESSION_END, we need to
       // stop processing (see above) !
       if (sessionMessage->getType() == RPG_Stream_SessionMessage::MB_STREAM_SESSION_END)
       {
-        // OK: tell our worker thread to stop whatever it's doing ASAP...
+        // OK: tell worker thread to stop whatever it's doing ASAP...
         stopProcessing_out = true;
       } // end IF
 
@@ -489,7 +427,7 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
     }
     default:
     {
-      // *NOTE*: if someone defines their own control message type and enqueues it
+      // *NOTE*: if someone defines his own control message type and enqueues it
       // on the stream, it will land here (this is just a sanity check warning...)
       if (inherited::module())
         ACE_DEBUG((LM_WARNING,

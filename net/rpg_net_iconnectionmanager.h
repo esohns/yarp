@@ -34,10 +34,9 @@ class RPG_Net_IConnectionManager
   virtual ~RPG_Net_IConnectionManager() {};
 
   // API
-  virtual bool registerConnection(RPG_Net_IConnection<ConfigType,
-                                                      StatisticsContainerType>*) = 0; // connection
-  virtual void deregisterConnection(const RPG_Net_IConnection<ConfigType,
-                                                              StatisticsContainerType>*) = 0; // connection
+  virtual void getConfig(ConfigType&) = 0; // return value: configuration
+  virtual bool registerConnection(RPG_Net_IConnection<StatisticsContainerType>*) = 0; // connection
+  virtual void deregisterConnection(const RPG_Net_IConnection<StatisticsContainerType>*) = 0; // connection
 };
 
 #endif

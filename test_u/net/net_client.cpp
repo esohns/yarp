@@ -267,6 +267,8 @@ init_signals(const bool& allowUserRuntimeConnect_in,
   // *NOTE*: cannot handle some signals
   signals_inout.sig_del(SIGKILL);         // 9       /* Kill signal */
   signals_inout.sig_del(SIGSTOP);         // 19      /* Stop process */
+  // *NOTE* don't care about SIGPIPE
+  signals_inout.sig_del(SIGPIPE);         // 12      /* Broken pipe: write to pipe with no readers */
 #endif
 
 //  // *PORTABILITY*: on Windows SIGHUP and SIGQUIT are not defined,

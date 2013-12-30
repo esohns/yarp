@@ -77,11 +77,30 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   ACE_ASSERT(!myIsInitialized);
 
   // things to be done here:
+  // - init notification strategy (if any)
+  // -------------------------------------------------------------
   // - create modules (done for the ones "owned" by the stream)
   // - init modules
   // - push them onto the stream (tail-first) !
+  // -------------------------------------------------------------
+  // - push the final module onto the stream (if any)
 
-	// ******************* Protocol Handler ************************
+  if (config_in.notificationStrategy)
+  {
+    MODULE_TYPE* module = head();
+    if (!module)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("no head module found, aborting\n")));
+
+      return false;
+    } // end IF
+    module->reader()->msg_queue()->notification_strategy(config_in.notificationStrategy);
+  } // end IF
+
+  // ---------------------------------------------------------------------------
+
+  // ******************* Protocol Handler ************************
   RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
   protocolHandler_impl = dynamic_cast<RPG_Net_Module_ProtocolHandler*>(myProtocolHandler.writer());
   if (!protocolHandler_impl)
@@ -108,7 +127,8 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (push(&myProtocolHandler) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
+               myProtocolHandler.name()));
 
     return false;
   } // end IF
@@ -137,7 +157,8 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (push(&myRuntimeStatistic) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
+               myRuntimeStatistic.name()));
 
     return false;
   } // end IF
@@ -165,7 +186,8 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (push(&myHeaderParser) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
+               myHeaderParser.name()));
 
     return false;
   } // end IF
@@ -198,20 +220,31 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (push(&mySocketHandler) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
+               mySocketHandler.name()));
 
     return false;
   } // end IF
 
+  // ---------------------------------------------------------------------------
+
+  if (config_in.module)
+    if (push(config_in.module) == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
+                 config_in.module->name()));
+
+      return false;
+    } // end IF
+
+  // ---------------------------------------------------------------------------
+
   // set (session) message allocator
-  // *TODO*: clean this up ! --> sanity check
-  ACE_ASSERT(config_in.messageAllocator);
   inherited::myAllocator = config_in.messageAllocator;
 
   // OK: all went well
   inherited::myIsInitialized = true;
-
-//   // debug info
 //   inherited::dump_state();
 
   return true;

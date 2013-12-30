@@ -29,6 +29,7 @@
 
 #include <ace/Time_Value.h>
 #include <ace/Reactor.h>
+#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
@@ -81,13 +82,14 @@ class RPG_Net_Module_ProtocolHandler
   RPG_Stream_IAllocator*  myAllocator;
   unsigned int            mySessionID;
   unsigned int            myCounter;
-	unsigned int            myPingInterval;
+  unsigned int            myPingInterval;
   bool                    myAutomaticPong;
   bool                    myPrintPingDot;
   bool                    myIsInitialized;
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Module_ProtocolHandler);
+DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                    // task synch type
+                             RPG_Net_Module_ProtocolHandler); // writer type
 
 #endif

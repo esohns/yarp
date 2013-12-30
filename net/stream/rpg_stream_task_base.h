@@ -33,11 +33,11 @@ class ACE_Message_Block;
 class ACE_Time_Value;
 class RPG_Stream_MessageBase;
 
-template <typename SessionMessageType,
+template <typename TaskSynchStrategyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_TaskBase
-   // *TODO*: minimize locking: synchronous children should be able to use ACE_NULL_SYNCH
- : public ACE_Task<ACE_MT_SYNCH>,
+ : public ACE_Task<TaskSynchStrategyType>,
    public RPG_Stream_ITaskBase<SessionMessageType,
                                ProtocolMessageType>,
    public RPG_Common_IDumpState
@@ -84,12 +84,13 @@ class RPG_Stream_TaskBase
                                     bool&);             // return value: pass message downstream ?
 
  private:
-  typedef ACE_Task<ACE_MT_SYNCH> inherited;
+  typedef ACE_Task<TaskSynchStrategyType> inherited;
   typedef RPG_Stream_ITaskBase<SessionMessageType,
                                ProtocolMessageType> inherited2;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase(const RPG_Stream_TaskBase<SessionMessageType,
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase(const RPG_Stream_TaskBase<TaskSynchStrategyType,
+                                                                       SessionMessageType,
                                                                        ProtocolMessageType>&));
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase<SessionMessageType,
 //                                          ProtocolMessageType>& operator=(const RPG_Stream_TaskBase<SessionMessageType,

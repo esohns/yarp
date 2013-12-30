@@ -29,7 +29,7 @@
 // *NOTE*: the message queue needs to be synched so that shutdown can be
 // asynchronous...
 class RPG_Stream_TaskAsynch
- : public RPG_Stream_Task
+ : public RPG_Stream_Task<ACE_MT_SYNCH>
 {
  public:
   virtual ~RPG_Stream_TaskAsynch();
@@ -49,11 +49,10 @@ class RPG_Stream_TaskAsynch
   // needs to be subclassed...
   RPG_Stream_TaskAsynch();
 
-//   ACE_hthread_t       myThreadID;
-  ACE_thread_t        myThreadID;
+  ACE_thread_t            myThreadID;
 
  private:
-  typedef RPG_Stream_Task inherited;
+  typedef RPG_Stream_Task<ACE_MT_SYNCH> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskAsynch(const RPG_Stream_TaskAsynch&));

@@ -31,6 +31,7 @@
 #include <ace/Module.h>
 
 // forward declaration(s)
+class ACE_Notification_Strategy;
 class RPG_Stream_IAllocator;
 class RPG_Stream_Module;
 
@@ -54,21 +55,22 @@ struct RPG_Net_RuntimeStatistic
 struct RPG_Net_ConfigPOD
 {
   // ************ connection config data ************
-  unsigned int             pingInterval;
-  unsigned int             keepAliveTimeout;
-  bool                     pingAutoAnswer;
-  bool                     printPingMessages;
-  int                      socketBufferSize;
-  RPG_Stream_IAllocator*   messageAllocator;
-  unsigned int             defaultBufferSize;
-  bool                     useThreadPerConnection;
+  unsigned int               pingInterval;
+  unsigned int               keepAliveTimeout;
+  bool                       pingAutoAnswer;
+  bool                       printPingMessages;
+  int                        socketBufferSize;
+  RPG_Stream_IAllocator*     messageAllocator;
+  unsigned int               defaultBufferSize;
+  bool                       useThreadPerConnection;
   // ************ stream config data ************
-  MODULE_TYPE*             module;
-  unsigned int             sessionID; // (== socket handle !)
-  unsigned int             statisticsReportingInterval;
+  ACE_Notification_Strategy* notificationStrategy;
+  MODULE_TYPE*               module;
+  unsigned int               sessionID; // (== socket handle !)
+  unsigned int               statisticsReportingInterval;
   // ************ runtime data ************
-  RPG_Net_RuntimeStatistic currentStatistics;
-  ACE_Time_Value           lastCollectionTimestamp;
+  RPG_Net_RuntimeStatistic   currentStatistics;
+  ACE_Time_Value             lastCollectionTimestamp;
 };
 
 template <typename ConfigType,

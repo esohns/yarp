@@ -23,20 +23,22 @@
 
 #include "rpg_stream_itask.h"
 
-#include <rpg_common_idumpstate.h>
+#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
 
 // forward declaration(s)
+class RPG_Stream_MessageBase;
 class RPG_Stream_SessionMessage;
 class ACE_Message_Block;
 class ACE_Time_Value;
 
+template <typename TaskSynchStrategyType>
 class RPG_Stream_Task
-   // *TODO*: minimize locking: synchronous children should be able to use ACE_NULL_SYNCH
- : public ACE_Task<ACE_MT_SYNCH>,
-   public RPG_Stream_ITask,
+ : public ACE_Task<TaskSynchStrategyType>,
+   public RPG_Stream_ITask<RPG_Stream_MessageBase,
+                           RPG_Stream_SessionMessage>,
    public RPG_Common_IDumpState
 {
  public:
@@ -57,7 +59,7 @@ class RPG_Stream_Task
 //   virtual void handleDataMessage(RPG_Stream_MessageBase*&, // data message handle
 //                                  bool&);               // return value: pass this message downstream ?
   virtual void handleSessionMessage(RPG_Stream_SessionMessage*&, // session message handle
-                                    bool&);                   // return value: pass this message downstream ?
+                                    bool&);                      // return value: pass this message downstream ?
   virtual void handleProcessingError(const ACE_Message_Block* const); // message handle
 
   // implement RPG_Common_IDumpState
@@ -79,11 +81,14 @@ class RPG_Stream_Task
                                     bool&);             // return value: pass message downstream ?
 
  private:
-  typedef ACE_Task<ACE_MT_SYNCH> inherited;
+  typedef ACE_Task<TaskSynchStrategyType> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Task(const RPG_Stream_Task&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Task& operator=(const RPG_Stream_Task&));
 };
+
+// include template implementation
+#include "rpg_stream_task.i"
 
 #endif

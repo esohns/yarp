@@ -23,9 +23,9 @@
 
 // forward declaration(s)
 class ACE_Message_Block;
-class RPG_Stream_MessageBase;
-class RPG_Stream_SessionMessage;
 
+template <typename RPG_Stream_MessageBaseType,
+          typename RPG_Stream_SessionMessageType>
 class RPG_Stream_ITask
 {
  public:
@@ -35,10 +35,10 @@ class RPG_Stream_ITask
   // messages passed to them; any filtering functionality however needs to set the second
   // parameter to false (--> default is "true" !), which makes the task assume lifecycle
   // responsibility for that message --> HANDLE WITH CARE !
-  virtual void handleDataMessage(RPG_Stream_MessageBase*&, // data message handle
-                                 bool&) = 0;           // return value: pass this message downstream ?
-  virtual void handleSessionMessage(RPG_Stream_SessionMessage*&, // session message handle
-                                    bool&) = 0;              // return value: pass this message downstream ?
+  virtual void handleDataMessage(RPG_Stream_MessageBaseType*&, // data message handle
+                                 bool&) = 0;                   // return value: pass this message downstream ?
+  virtual void handleSessionMessage(RPG_Stream_SessionMessageType*&, // session message handle
+                                    bool&) = 0;                      // return value: pass this message downstream ?
   virtual void handleProcessingError(const ACE_Message_Block* const) = 0; // corresp. message
 };
 

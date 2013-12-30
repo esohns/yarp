@@ -39,11 +39,11 @@ class RPG_Net_AsynchStreamHandler_T
    public ACE_Event_Handler
 {
  public:
-  // convenient types
   typedef RPG_Net_IConnectionManager<ConfigType,
-                                     StatisticsContainerType> MANAGER_t;
-  RPG_Net_AsynchStreamHandler_T(MANAGER_t*);
-  // *TODO*: make this private !!!
+                                     StatisticsContainerType> MANAGER_T;
+
+  RPG_Net_AsynchStreamHandler_T(MANAGER_T*);
+  // *TODO*: remove this stub
   RPG_Net_AsynchStreamHandler_T();
   virtual ~RPG_Net_AsynchStreamHandler_T();
 

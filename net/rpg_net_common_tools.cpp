@@ -1221,19 +1221,6 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
   } // end IF
 
   int optval = size_in;
-  // *NOTE*: for some reason, Linux will actually set TWICE the size value
-  // --> we pass it HALF the value so we get our will (see man 7 socket)
-  if (RPG_Common_Tools::isLinux())
-  {
-    optval /= 2;
-
-    if (size_in % 2)
-      ACE_DEBUG((LM_WARNING,
-                 ACE_TEXT("requested %s buffer size %u is ODD...\n"),
-                 ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF")
-                                            : ACE_TEXT("SO_RCVBUF")),
-                 size_in));
-  } // end IF
   int optlen = sizeof(optval);
   if (ACE_OS::setsockopt(handle_in,
                          SOL_SOCKET,
@@ -1279,7 +1266,11 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
 
   if (optval != size_in)
   {
-    ACE_DEBUG((LM_WARNING,
+    // *NOTE*: for some reason, Linux will actually set TWICE the size value...
+    if (RPG_Common_Tools::isLinux() && (optval == (size_in * 2)))
+      return true;
+
+    ACE_DEBUG((LM_ERROR,
                ACE_TEXT("ACE_OS::getsockopt(%s) on handle %u returned %d (expected: %d), aborting\n"),
                ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
@@ -1290,11 +1281,7 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                optval,
                size_in));
 
-    // *NOTE*: may happen on Linux systems (e.g. IF size_in is odd, see above)
-    if (RPG_Common_Tools::isLinux() && (size_in % 2))
-      return true; // this may lead to a false positive...
-
-      return false;
+    return false;
   } // end IF
 
   //ACE_DEBUG((LM_DEBUG,

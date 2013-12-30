@@ -164,21 +164,18 @@ RPG_Net_SocketHandler::open(void* arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::open"));
 
-  // init/start stream, register reading data with reactor...
-  // --> done by the base class
+  // step1: init/start stream, tweak socket, register reading data with reactor
+  // , ...
   int result = inherited::open(arg_in);
   if (result == -1)
   {
-    //ACE_DEBUG((LM_DEBUG,
-    //           ACE_TEXT("failed to RPG_Net_StreamSocketBase::open(): \"%m\", aborting\n")));
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to RPG_Net_StreamSocketBase::open(): \"%m\", aborting\n")));
 
-    // *IMPORTANT NOTE*: MOST PROBABLE REASON: too many open connections...
-
-    // acceptor will invoke close() --> handle_close()
     return -1;
   } // end IF
 
-  // OK: start a worker ?
+  // step2: start a worker ?
   if (inherited::myUserData.useThreadPerConnection)
   {
     ACE_thread_t thread_ids[1];
@@ -212,6 +209,28 @@ RPG_Net_SocketHandler::open(void* arg_in)
     } // end IF
   } // end IF
 
+  // step3: register this connection
+  if (inherited::myManager)
+  {
+    // (try to) register with the connection manager...
+    try
+    {
+      inherited::myIsRegistered = inherited::myManager->registerConnection(this);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::registerConnection(), continuing\n")));
+    }
+    if (!inherited::myIsRegistered)
+    {
+      // (most probably) too many connections...
+      ACE_OS::last_error(EBUSY);
+
+      return -1;
+    } // end IF
+  } // end IF
+
   return 0;
 }
 
@@ -225,8 +244,7 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
   if (inherited::myUserData.useThreadPerConnection)
     shutdown();
 
-  // stop the stream, invoke base class maintenance
-  // *IMPORTANT NOTE*: in the end, this will "delete this"...
+  // *IMPORTANT NOTE*: this MAY "delete this"...
   return inherited::handle_close(handle_in,
                                  mask_in);
 }

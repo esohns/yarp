@@ -28,6 +28,7 @@
 #include "rpg_stream_streammodule_base.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
@@ -76,6 +77,7 @@ class RPG_Net_Protocol_Module_IRCParser
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Protocol_Module_IRCParser);
+DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                       // task synch type
+                             RPG_Net_Protocol_Module_IRCParser); // writer type
 
 #endif

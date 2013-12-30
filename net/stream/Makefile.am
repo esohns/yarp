@@ -40,6 +40,7 @@ include_HEADERS = rpg_stream.h \
   rpg_stream_streammodule_base.h \
   rpg_stream_streammodule_base.i \
   rpg_stream_task.h \
+  rpg_stream_task.i \
   rpg_stream_task_asynch.h \
   rpg_stream_task_base.h \
   rpg_stream_task_base.i \
@@ -114,6 +115,7 @@ libRPG_Stream_la_SOURCES = rpg_stream.cpp \
 	rpg_stream_streammodule_base.h \
 	rpg_stream_streammodule_base.i \
 	rpg_stream_task.cpp \
+	rpg_stream_task.i \
 	rpg_stream_task.h \
 	rpg_stream_task_asynch.cpp \
 	rpg_stream_task_asynch.h \

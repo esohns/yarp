@@ -30,7 +30,7 @@
 #include "rpg_stream_session_config.h"
 #include "rpg_stream_iallocator.h"
 
-RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask(const bool autoStart_in)
+RPG_Stream_HeadModuleTask::RPG_Stream_HeadModuleTask(const bool& autoStart_in)
  : myAllocator(NULL),
    mySessionID(0),
    myCondition(myLock),

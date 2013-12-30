@@ -33,37 +33,32 @@
 template <typename ConfigType,
           typename StatisticsContainerType>
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-                              StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T(MANAGER_t* manager_in)
+                              StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T(MANAGER_T* manager_in)
  : inherited(),
 //    myUserData(),
-   myIsInitialized(false),
-   myOutputStream(),
    myInputStream(),
-   myLocalSAP(),
-   myRemoteSAP(),
-   myID(0),
+   myOutputStream(),
+   myManager(manager_in),
    myIsRegistered(false),
-   myManager(manager_in)
+   myLocalSAP(),
+   myRemoteSAP()//,
+   //myID(0)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::RPG_Net_AsynchSocketHandler_T"));
 
-//   // init user data
-//   ACE_OS::memset(&myUserData, 0, sizeof(ConfigType));
+  // init user data
+  ACE_OS::memset(&myUserData, 0, sizeof(ConfigType));
 
   if (myManager)
-  {
-    // (try to) register with the connection manager...
-    // *NOTE*: we do it here because we WANT to init() myUserData early...
-    // *WARNING*: as we register BEFORE the connection has fully opened, there
-    // may be a small window for races...
+  { // (try to) get user data from the connection manager...
     try
     {
-      myIsRegistered = myManager->registerConnection(this);
+      myManager->getConfig(myUserData);
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::registerConnection(), continuing\n")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::getConfig(), continuing\n")));
     }
   } // end IF
 }
@@ -75,25 +70,18 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::~RPG_Net_AsynchSocketHandler_T"));
 
-  if (myManager)
+  if (myManager && myIsRegistered)
   { // (try to) de-register with connection manager
-    if (myIsRegistered)
+    try
     {
-      try
-      {
-        myManager->deregisterConnection(this);
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Net_IConnectionManager::deregisterConnection(), continuing\n")));
-      }
-    } // end IF
+      myManager->deregisterConnection(this);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::deregisterConnection(), continuing\n")));
+    }
   } // end IF
-
-  myInputStream.cancel();
-  myOutputStream.cancel();
-  ACE_OS::closesocket(handle());
 }
 
 template <typename ConfigType,
@@ -105,26 +93,9 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::open"));
 
-  // sanity check(s)
-  if (!myIsRegistered)
-  {
-    // too many connections...
-    ACE_OS::last_error(EBUSY);
-
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to register connection (ID: %u), aborting\n"),
-//                getID()));
-
-    // clean up
-    delete this;
-
-    return;
-  } // end IF
-  ACE_ASSERT(myIsInitialized);
-
   // step1: tweak socket
-  // *TODO*: assumptions about ConfigType ?!?: clearly a design glitch
-  // --> implement higher up !
+  // *TODO*: there is a design glitch here: this class SHOULD NOT make
+  // assumptions about ConfigType !
   if (myUserData.socketBufferSize)
   {
     if (!RPG_Net_Common_Tools::setSocketBuffer(handle_in,
@@ -186,7 +157,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     return;
   } // end IF
 
-  // init i/o streams
+  // step2: init i/o streams
   inherited::proactor(ACE_Proactor::instance());
   if (myInputStream.open(*this,
                        	 handle_in,
@@ -217,49 +188,67 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     return;
   } // end IF
 
-  // need to pass any data ?
+  // step3: start reading (need to pass any data ?)
   if (messageBlock_in.length() == 0)
-  {
-    // init asynch reading
     initiate_read_stream();
-
-    return;
-  } // end IF
-
-  ACE_Message_Block& duplicate = *messageBlock_in.duplicate();
-  // fake a result to emulate regular behavior
-  ACE_Asynch_Read_Stream_Result_Impl* fake_result =
-    proactor()->create_asynch_read_stream_result(proxy(),            // handler proxy
-                                                 handle_in,          // socket handle
-                                                 duplicate,          // buffer
-                                                 duplicate.size(),   // (max) bytes to read
-                                                 NULL,               // ACT
-                                                 ACE_INVALID_HANDLE, // event
-                                                 0,                  // priority
-                                                 0);                 // signal number
-  if (!fake_result)
+  else
   {
-    ACE_ERROR((LM_ERROR,
-               ACE_TEXT("failed to ACE_Proactor::create_asynch_read_stream_result: \"%m\", aborting\n")));
+    ACE_Message_Block* duplicate = messageBlock_in.duplicate();
+    if (!duplicate)
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Message_Block::duplicate(): \"%m\", aborting\n")));
+
+      // clean up
+      delete this;
+
+      return;
+    } // end IF
+    // fake a result to emulate regular behavior...
+    ACE_Asynch_Read_Stream_Result_Impl* fake_result = proactor()->create_asynch_read_stream_result(proxy(),            // handler proxy
+                                                                                                   handle_in,          // socket handle
+                                                                                                   *duplicate,         // buffer
+                                                                                                   duplicate->size(),  // (max) bytes to read
+                                                                                                   NULL,               // ACT
+                                                                                                   ACE_INVALID_HANDLE, // event
+                                                                                                   0,                  // priority
+                                                                                                   0);                 // signal number
+    if (!fake_result)
+    {
+      ACE_ERROR((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Proactor::create_asynch_read_stream_result: \"%m\", aborting\n")));
+
+      // clean up
+      delete this;
+
+      return;
+    } // end IF
+    size_t bytes_transferred = duplicate->length();
+    // <complete> for Accept would have already moved the <wr_ptr>
+    // forward; update it to the beginning position
+    duplicate->wr_ptr(duplicate->wr_ptr() - bytes_transferred);
+    // invoke ourselves (see handle_read_stream)
+    fake_result->complete(duplicate->length(), // bytes read
+                          1,                   // success
+                          NULL,                // ACT
+                          0);                  // error
 
     // clean up
-    delete this;
+    delete fake_result;
+  }
 
-    return;
-  } // end IF
-  size_t bytes_transferred = duplicate.length();
-  // <complete> for Accept would have already moved the <wr_ptr>
-  // forward. Update it to the beginning position.
-  duplicate.wr_ptr(duplicate.wr_ptr() - bytes_transferred);
-
-  // invoke ourselves (see handle_read_stream)
-  fake_result->complete(duplicate.length(), // bytes read
-                        1,                  // success
-                        NULL,               // ACT
-                        0);                 // error
-
-  // clean up
-  delete fake_result;
+//  if (myManager)
+//  { // (try to) register with the connection manager...
+//    try
+//    {
+//      myManager->registerConnection(this);
+//    }
+//    catch (...)
+//    {
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::registerConnection(), continuing\n")));
+//    }
+//  } // end IF
 }
 
 template <typename ConfigType,
@@ -355,19 +344,14 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::handle_close"));
 
-  //   // de-register with connection manager
-  //   // *NOTE*: we do it here, while our handle is still "valid"...
-  //   if (myIsRegistered)
-  //   {
-  //     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->deregisterConnection(getID());
-  //
-  //     // remember this...
-  //     myIsRegistered = false;
-  //   } // end IF
+  // clean up
+  myInputStream.cancel();
+  myOutputStream.cancel();
 
   // *NOTE*: called when:
-  // - the client closes the socket --> child handle_xxx() returns -1
-  // - we reject the connection (too many open)
+  // - the client closes the socket (handle_xxx() returned -1)
+  // - the connection has been rejected (e.g. too many open)
+  // - the connection has been aborted locally
   delete this;
 
   return 0;
@@ -384,8 +368,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   // init return value(s)
   ACE_Message_Block* message_out = NULL;
 
-  // sanity check
-  ACE_ASSERT(myIsInitialized);
+  // sanity check(s)
+  ACE_ASSERT(myUserData.messageAllocator);
 
   try
   {
@@ -495,27 +479,15 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 void
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-                              StatisticsContainerType>::init(const ConfigType& userData_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::init"));
-
-  myUserData = userData_in;
-  myIsInitialized = true;
-}
-
-template <typename ConfigType,
-          typename StatisticsContainerType>
-void
-RPG_Net_AsynchSocketHandler_T<ConfigType,
                               StatisticsContainerType>::abort()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::abort"));
 
-  // call baseclass - will clean everything (including ourselves !) up
-  // --> triggers handle_close()
-  if (handle_close() == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_AsynchSocketHandler_T::handle_close(): \"%m\", continuing\n")));
+  ACE_HANDLE socket_handle = handle();
+  if (socket_handle != ACE_INVALID_HANDLE)
+    if (ACE_OS::closesocket(socket_handle) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::closesocket(): \"%m\", continuing\n")));
 }
 
 template <typename ConfigType,
@@ -527,10 +499,9 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::getID"));
 
   // *PORTABILITY*: this isn't entirely portable...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  return handle();
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  return static_cast<unsigned int>(handle());
 #else
-  // *TODO*: clean this up !
   return reinterpret_cast<unsigned int>(handle());
 #endif
 }
@@ -551,7 +522,6 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
   localAddress = buffer;
-
   ACE_OS::memset(buffer, 0, sizeof(buffer));
   if (myRemoteSAP.addr_to_string(buffer, sizeof(buffer)) == -1)
     ACE_DEBUG((LM_ERROR,

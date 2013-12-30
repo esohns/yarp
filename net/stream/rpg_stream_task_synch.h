@@ -30,7 +30,7 @@ class ACE_Message_Block;
 class ACE_Time_Value;
 
 class RPG_Stream_TaskSynch
- : public RPG_Stream_Task
+ : public RPG_Stream_Task<ACE_NULL_SYNCH>
 {
  public:
   virtual ~RPG_Stream_TaskSynch();
@@ -50,7 +50,7 @@ class RPG_Stream_TaskSynch
   RPG_Stream_TaskSynch();
 
  private:
-  typedef RPG_Stream_Task inherited;
+  typedef RPG_Stream_Task<ACE_NULL_SYNCH> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskSynch(const RPG_Stream_TaskSynch&));

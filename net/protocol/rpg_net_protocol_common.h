@@ -38,6 +38,7 @@
 #include <bitset>
 
 // forward declaration(s)
+class ACE_Notification_Strategy;
 class RPG_Stream_IAllocator;
 class RPG_Stream_Module;
 template <typename ConfigType,
@@ -194,6 +195,7 @@ struct RPG_Net_Protocol_ConfigPOD
   unsigned int                      clientPingInterval; // used by the server...
   RPG_Net_Protocol_IRCLoginOptions  loginOptions;
   // ************ stream config data ****************
+  ACE_Notification_Strategy*        notificationStrategy;
   MODULE_TYPE*                      module;
   bool                              crunchMessageBuffers;
   bool                              debugScanner;
@@ -210,7 +212,7 @@ typedef RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
 typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 RPG_PROTOCOL_SINGLETON_DECLARE(ACE_Singleton,
-															 RPG_Net_Protocol_Connection_Manager_t,
-															 ACE_Recursive_Thread_Mutex);
+			       RPG_Net_Protocol_Connection_Manager_t,
+			       ACE_Recursive_Thread_Mutex);
 
 #endif

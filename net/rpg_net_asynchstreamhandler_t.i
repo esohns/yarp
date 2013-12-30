@@ -34,6 +34,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::RPG_Net_AsynchStreamHandler_T"));
 
+  // *NOTE*: this is a stub...
   ACE_ASSERT(false);
   ACE_NOTREACHED(return;)
 }
@@ -43,7 +44,7 @@ template <typename ConfigType,
           typename StreamType>
 RPG_Net_AsynchStreamHandler_T<ConfigType,
                               StatisticsContainerType,
-                              StreamType>::RPG_Net_AsynchStreamHandler_T(MANAGER_t* manager_in)
+                              StreamType>::RPG_Net_AsynchStreamHandler_T(MANAGER_T* manager_in)
  : inherited(manager_in),
    myBuffer(NULL),
    myNotificationStrategy(ACE_Reactor::instance(),       // default reactor
@@ -63,8 +64,8 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::~RPG_Net_AsynchStreamHandler_T"));
 
-  // wait for all workers within the stream (if any)
-  myStream.waitForCompletion();
+  if (myBuffer)
+    myBuffer->release();
 }
 
 template <typename ConfigType,
@@ -91,40 +92,11 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::open"));
 
-  // sanity check
-  ACE_ASSERT(handle_in);
-  // *NOTE*: we should have initialized by now...
-  // --> make sure this was successful before we proceed
-  if (!inherited::myIsInitialized)
-  {
-    // (most probably) too many connections...
-    ACE_OS::last_error(EBUSY);
-
-    // clean up
-    delete this;
-
-    return;
-  } // end IF
-
-  // *TODO*: assumptions about ConfigType ?!?: clearly a design glitch
-  // --> implement higher up !
-
-  // step1: init/start data processing stream
+  // step1: init/start stream
   inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
-  if (inherited::myUserData.module)
-  {
-    if (myStream.push(inherited::myUserData.module))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-                 inherited::myUserData.module->name()));
-
-      // clean up
-      delete this;
-
-      return;
-    } // end IF
-  } // end IF
+  // connect stream head message queue with the reactor notification pipe ?
+  if (!inherited::myUserData.useThreadPerConnection)
+    inherited::myUserData.notificationStrategy = &myNotificationStrategy;
   if (!myStream.init(inherited::myUserData))
   {
     ACE_DEBUG((LM_ERROR,
@@ -135,8 +107,8 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
     return;
   } // end IF
-
-//   myStream.dump_state();
+  //myStream.dump_state();
+  // *NOTE*: as soon as this returns, data starts arriving at handle_output()[/msg_queue()]
   myStream.start();
   if (!myStream.isRunning())
   {
@@ -149,28 +121,36 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
     return;
   } // end IF
 
-  // get notified when there is data to write
-  // *TODO*: should not be necessary, override reply() in the stream head module
-  // and invoke an asynch write directly
-  ACE_Module<ACE_MT_SYNCH>* module = NULL;
-  module = myStream.head();
-  if (!module)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, returning\n")));
-
-    // clean up
-    delete this;
-
-    return;
-  } // end IF
-  module->reader()->msg_queue()->notification_strategy(&myNotificationStrategy);
-/*  inherited::msg_queue(module->reader()->msg_queue());
-  inherited::msg_queue()->notification_strategy(&myNotificationStrategy);
-*/
-
-  // tweak socket, init & start I/O
+  // step2: tweak socket, init & start reading
+  // *NOTE*: as soon as this returns, data starts arriving at handle_input()
   inherited::open(handle_in, messageBlock_in);
+
+  // step3: register this connection
+  if (inherited::myManager)
+  { // (try to) register with the connection manager...
+    try
+    {
+      inherited::myIsRegistered = inherited::myManager->registerConnection(this);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::registerConnection(), continuing\n")));
+    }
+    if (!inherited::myIsRegistered)
+    {
+      // (most probably) too many connections...
+      ACE_OS::last_error(EBUSY);
+
+      // clean up
+      myStream.stop();
+      inherited::myInputStream.cancel();
+      inherited::myOutputStream.cancel();
+      delete this;
+
+      return;
+    } // end IF
+  } // end IF
 }
 
 template <typename ConfigType,
@@ -187,9 +167,11 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
   if (myBuffer == NULL)
   {
-    // get next data chunk from the stream...
-    // *NOTE*: should NEVER block (barring context switches...)
-    if (myStream.get(myBuffer, NULL) == -1)
+    // send next data chunk from the stream...
+    // *IMPORTANT NOTE*: this should NEVER block, as available outbound data has
+    // been notified to the reactor
+    ACE_Time_Value no_wait(ACE_OS::gettimeofday());
+    if (myStream.get(myBuffer, &no_wait) == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n")));
@@ -245,18 +227,22 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::handle_close"));
 
-  // clean up
+  // step1: wait for all workers within the stream (if any)
   if (myStream.isRunning())
   {
     myStream.stop();
-  } // end IF
-  if (myBuffer)
-  {
-    myBuffer->release();
-    myBuffer = NULL;
+    myStream.waitForCompletion();
   } // end IF
 
-  // invoke base class maintenance
+  // step2: purge any pending notifications ?
+  // *WARNING: do this here, while still holding on to the current write buffer
+  if (!inherited::myUserData.useThreadPerConnection)
+    if (ACE_Reactor::instance()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
+                 this));
+
+  // step3: invoke base class maintenance
   // *NOTE*: in the end, this will "delete this"...
   return inherited::handle_close(handle_in,
                                  mask_in);

@@ -79,7 +79,8 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
   } // end IF
 
   // stress-test ? --> ping the server !
-  if (myRunStressTest)
+  if (myRunStressTest &&
+      (num_connections > 0))
   {
     // grab a (random) connection handler
     RPG_Dice_RollResult_t result;

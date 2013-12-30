@@ -31,6 +31,7 @@
 
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
+#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
@@ -103,6 +104,7 @@ class RPG_Net_Module_SocketHandler
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Module_SocketHandler);
+DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                  // task synch type
+                             RPG_Net_Module_SocketHandler); // writer type
 
 #endif

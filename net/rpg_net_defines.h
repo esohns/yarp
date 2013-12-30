@@ -21,6 +21,8 @@
 #ifndef RPG_NET_DEFINES_H
 #define RPG_NET_DEFINES_H
 
+#include <ace/Default_Constants.h>
+
 // CONFIGDIR-specific
 #define RPG_NET_CONFIG_SUB                             "net"
 
@@ -38,10 +40,7 @@
 #define RPG_NET_CONNECTION_HANDLER_THREAD_NAME         "RPG connection dispatch"
 #define RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID     2
 
-// 1024 * 1024 --> 1 MByte
-// *NOTE*: make this an even number to (gracefully) cope with Linux oddities...
-#define RPG_NET_DEF_SOCK_RECVBUF_SIZE                  131072 // 128Kb
-// #define RPG_NET_DEF_SOCK_RECVBUF_SIZE             1048576 // 1Mb
+#define RPG_NET_DEF_SOCK_RECVBUF_SIZE                  ACE_DEFAULT_MAX_SOCKET_BUFSIZ
 #define RPG_NET_DEF_SOCK_NODELAY                       true
 #define RPG_NET_DEF_SOCK_KEEPALIVE                     false
 #define RPG_NET_DEF_SOCK_LINGER                        10 // seconds {0 --> off}

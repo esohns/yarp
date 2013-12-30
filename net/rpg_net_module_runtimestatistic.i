@@ -470,11 +470,11 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-		  typename ProtocolCommandType,
+          typename ProtocolCommandType,
           typename StatisticsContainerType>
 RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
                                         ProtocolMessageType,
-										ProtocolCommandType,
+                                        ProtocolCommandType,
                                         StatisticsContainerType>::RPG_Net_Module_RuntimeStatisticReader_t()
  : inherited()
 {
@@ -485,11 +485,11 @@ RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
 
 template <typename SessionMessageType,
           typename ProtocolMessageType,
-		  typename ProtocolCommandType,
+          typename ProtocolCommandType,
           typename StatisticsContainerType>
 RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
                                         ProtocolMessageType,
-										ProtocolCommandType,
+                                        ProtocolCommandType,
                                         StatisticsContainerType>::~RPG_Net_Module_RuntimeStatisticReader_t()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatisticReader_t::~RPG_Net_Module_RuntimeStatisticReader_t"));
@@ -516,7 +516,7 @@ RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("no sibling task: \"%m\", aborting\n")));
 
-	return -1;
+    return -1;
   } // end IF
   TASK_TYPE* stream_task = dynamic_cast<TASK_TYPE*>(sibling_task);
   if (!stream_task)
@@ -524,7 +524,7 @@ RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to dynamic_cast<RPG_Net_Module_RuntimeStatistic_t>: \"%m\", aborting\n")));
 
-	return -1;
+    return -1;
   } // end IF
   ProtocolMessageType* message = dynamic_cast<MESSAGE_TYPE*>(mb_in);
   if (!message)
@@ -532,15 +532,15 @@ RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to dynamic_cast<RPG_Net_Message>: \"%m\", aborting\n")));
 
-	return -1;
+    return -1;
   } // end IF
 
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(stream_task->myLock);
 
     // update counters...
-	  stream_task->myNumOutboundMessages++;
-		stream_task->myByteCounter += mb_in->total_length();
+    stream_task->myNumOutboundMessages++;
+    stream_task->myByteCounter += mb_in->total_length();
 
 //	// add message to statistic...
 //	// --> increment corresponding counter

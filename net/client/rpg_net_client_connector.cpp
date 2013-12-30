@@ -79,8 +79,7 @@ RPG_Net_Client_Connector::connect(const ACE_INET_Addr& peer_address)
                                   peer_address,                     // remote SAP
                                   ACE_Synch_Options::defaults,      // synch options
                                   ACE_sap_any_cast(ACE_INET_Addr&), // local SAP
-                                  0,                                // re-use address (SO_REUSEADDR) ?
-                                  //1,                                // re-use address (SO_REUSEADDR) ?
+                                  1,                                // re-use address (SO_REUSEADDR) ?
                                   O_RDWR,                           // flags
                                   0);                               // perms
   if (result == -1)

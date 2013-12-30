@@ -33,8 +33,7 @@
 #include <ace/Containers_T.h>
 
 // forward declarations
-template <typename ConfigType,
-          typename StatisticsContainerType> class RPG_Net_IConnection;
+template <typename StatisticsContainerType> class RPG_Net_IConnection;
 
 template <typename ConfigType,
           typename StatisticsContainerType>
@@ -54,8 +53,7 @@ class RPG_Net_Connection_Manager
                                          StatisticsContainerType>;
 
  public:
-  typedef RPG_Net_IConnection<ConfigType,
-                              StatisticsContainerType> CONNECTION_TYPE;
+  typedef RPG_Net_IConnection<StatisticsContainerType> CONNECTION_TYPE;
 
   // configuration / initialization
   void init(const unsigned int&); // maximum number of concurrent connections
@@ -92,7 +90,8 @@ class RPG_Net_Connection_Manager
   typedef ACE_DLList_Iterator<CONNECTION_TYPE> CONNECTIONLIST_ITERATOR_TYPE;
   typedef ACE_DLList_Reverse_Iterator<CONNECTION_TYPE> CONNECTIONLIST_REVERSEITERATOR_TYPE;
 
-  // *NOTE*: these are used by RPG_Net_SocketHandler_Base
+  // implement RPG_Net_IConnectionManager
+  virtual void getConfig(ConfigType&); // return value: configuration
   virtual bool registerConnection(CONNECTION_TYPE*); // connection
   virtual void deregisterConnection(const CONNECTION_TYPE*); // connection
 

@@ -26,8 +26,7 @@
 
 #include <ace/INET_Addr.h>
 
-template <typename ConfigType,
-          typename StatisticsContainerType>
+template <typename StatisticsContainerType>
 class RPG_Net_IConnection
  : public RPG_Common_IStatistic<StatisticsContainerType>, // collect some stats
    public RPG_Common_IDumpState                           // ...and dump some information
@@ -39,9 +38,6 @@ class RPG_Net_IConnection
   virtual void info(ACE_HANDLE&,               // return value: i/o handle
                     ACE_INET_Addr&,            // return value: local SAP
                     ACE_INET_Addr&) const = 0; // return value: remote SAP
-  virtual void init(const ConfigType&) = 0;
-//   virtual const bool isRegistered() const = 0;
-
   virtual void ping() = 0; // ping the peer !
   virtual void abort() = 0;
   virtual unsigned int getID() const = 0;

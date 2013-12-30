@@ -20,8 +20,11 @@
 
 #include "rpg_common_macros.h"
 
-template <typename ReaderTaskType, typename WriterTaskType>
-RPG_Stream_StreamModule_t<ReaderTaskType,
+template <typename TaskSynchType,
+          typename ReaderTaskType,
+          typename WriterTaskType>
+RPG_Stream_StreamModule_t<TaskSynchType,
+                          ReaderTaskType,
                           WriterTaskType>::RPG_Stream_StreamModule_t(const std::string& name_in,
                                                                      RPG_Stream_IRefCount* refCount_in)
  : inherited(name_in,
@@ -38,8 +41,11 @@ RPG_Stream_StreamModule_t<ReaderTaskType,
   //myReader.flags_ |= ACE_Task_Flags::ACE_READER;
 }
 
-template <typename ReaderTaskType, typename WriterTaskType>
-RPG_Stream_StreamModule_t<ReaderTaskType,
+template <typename TaskSynchType,
+          typename ReaderTaskType,
+          typename WriterTaskType>
+RPG_Stream_StreamModule_t<TaskSynchType,
+                          ReaderTaskType,
                           WriterTaskType>::~RPG_Stream_StreamModule_t()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModule_t::~RPG_Stream_StreamModule_t"));
@@ -52,8 +58,10 @@ RPG_Stream_StreamModule_t<ReaderTaskType,
 
 // ----------------------------------------------------------------------------
 
-template <typename TaskType>
-RPG_Stream_StreamModuleInputOnly_t<TaskType>::RPG_Stream_StreamModuleInputOnly_t(const std::string& name_in,
+template <typename TaskSynchType,
+          typename TaskType>
+RPG_Stream_StreamModuleInputOnly_t<TaskSynchType,
+                                   TaskType>::RPG_Stream_StreamModuleInputOnly_t(const std::string& name_in,
                                                                                  RPG_Stream_IRefCount* refCount_in)
  : inherited(name_in,     // name
              refCount_in) // arg passed to task open()
@@ -62,8 +70,10 @@ RPG_Stream_StreamModuleInputOnly_t<TaskType>::RPG_Stream_StreamModuleInputOnly_t
 
 }
 
-template <typename TaskType>
-RPG_Stream_StreamModuleInputOnly_t<TaskType>::~RPG_Stream_StreamModuleInputOnly_t()
+template <typename TaskSynchType,
+          typename TaskType>
+RPG_Stream_StreamModuleInputOnly_t<TaskSynchType,
+                                   TaskType>::~RPG_Stream_StreamModuleInputOnly_t()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModuleInputOnly_t::~RPG_Stream_StreamModuleInputOnly_t"));
 

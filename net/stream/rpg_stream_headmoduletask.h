@@ -37,7 +37,7 @@ class RPG_Stream_SessionConfig;
 class RPG_Stream_IAllocator;
 
 class RPG_Stream_HeadModuleTask
- : public RPG_Stream_Task,
+ : public RPG_Stream_Task<ACE_MT_SYNCH>,
    public RPG_Stream_IStreamControl,
    public RPG_Stream_StateMachine_Control
 {
@@ -67,7 +67,7 @@ class RPG_Stream_HeadModuleTask
 
  protected:
   // needs to be subclassed...
-  RPG_Stream_HeadModuleTask(const bool); // auto-start ?
+  RPG_Stream_HeadModuleTask(const bool&); // auto-start ?
 
   // override: handle MB_STOP control messages to trigger shutdown of the stream...
   virtual void handleControlMessage(ACE_Message_Block*, // control message
@@ -103,10 +103,10 @@ class RPG_Stream_HeadModuleTask
 
   // *WARNING*: children need to set this during initialization !
   RPG_Stream_IAllocator*                    myAllocator;
-  unsigned long                             mySessionID;
+  unsigned int                              mySessionID;
 
  private:
-  typedef RPG_Stream_Task inherited;
+  typedef RPG_Stream_Task<ACE_MT_SYNCH> inherited;
   typedef RPG_Stream_StateMachine_Control inherited2;
 
   // safety measures

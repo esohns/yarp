@@ -141,7 +141,7 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR1:
 #else
-	  case SIGBREAK:
+    case SIGBREAK:
 #endif
     {
       // dump statistics
@@ -152,7 +152,7 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR2:
 #else
-	  case SIGABRT:
+    case SIGABRT:
 #endif
       break;
     default:

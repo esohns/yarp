@@ -31,8 +31,9 @@
 template <typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_TaskBaseAsynch
- : public RPG_Stream_TaskBase<SessionMessageType,
-                          ProtocolMessageType>
+ : public RPG_Stream_TaskBase<ACE_MT_SYNCH,
+                              SessionMessageType,
+                              ProtocolMessageType>
 {
  public:
   virtual ~RPG_Stream_TaskBaseAsynch();
@@ -49,19 +50,18 @@ class RPG_Stream_TaskBaseAsynch
   virtual void waitForIdleState() const;
 
  protected:
-  // needs to be subclassed...
   RPG_Stream_TaskBaseAsynch();
 
-//   ACE_hthread_t       myThreadID;
-  ACE_thread_t        myThreadID;
+  ACE_thread_t            myThreadID;
 
  private:
-  typedef RPG_Stream_TaskBase<SessionMessageType,
-                          ProtocolMessageType> inherited;
+  typedef RPG_Stream_TaskBase<ACE_MT_SYNCH,
+                              SessionMessageType,
+                              ProtocolMessageType> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseAsynch(const RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                                                                           ProtocolMessageType>&));
+                                                                                   ProtocolMessageType>&));
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseAsynch<SessionMessageType,
 //                                                ProtocolMessageType>& operator=(const RPG_Stream_TaskBaseAsynch<SessionMessageType,
 //                                                                                                            ProtocolMessageType>&));

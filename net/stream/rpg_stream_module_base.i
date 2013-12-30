@@ -21,12 +21,15 @@
 
 #include "rpg_common_macros.h"
 
-template <typename ReaderTaskType, typename WriterTaskType>
-RPG_Stream_Module_Base_t<ReaderTaskType,
+template <typename TaskSynchType,
+          typename ReaderTaskType,
+          typename WriterTaskType>
+RPG_Stream_Module_Base_t<TaskSynchType,
+                         ReaderTaskType,
                          WriterTaskType>::RPG_Stream_Module_Base_t(const std::string& name_in,
-																   WriterTaskType* writerTask_in,
-																   ReaderTaskType* readerTask_in,
-																   RPG_Stream_IRefCount* refCount_in)
+                                                                   WriterTaskType* writerTask_in,
+                                                                   ReaderTaskType* readerTask_in,
+                                                                   RPG_Stream_IRefCount* refCount_in)
  : inherited(ACE_TEXT_CHAR_TO_TCHAR(name_in.c_str()), // name
              writerTask_in,                           // initialize writer side task
              readerTask_in,                           // initialize reader side task
@@ -45,8 +48,11 @@ RPG_Stream_Module_Base_t<ReaderTaskType,
 //   myReader->mod_ = this;
 }
 
-template <typename ReaderTaskType, typename WriterTaskType>
-RPG_Stream_Module_Base_t<ReaderTaskType,
+template <typename TaskSynchType,
+          typename ReaderTaskType,
+          typename WriterTaskType>
+RPG_Stream_Module_Base_t<TaskSynchType,
+                         ReaderTaskType,
                          WriterTaskType>::~RPG_Stream_Module_Base_t()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Module_Base_t::~RPG_Stream_Module_Base_t"));
@@ -57,9 +63,12 @@ RPG_Stream_Module_Base_t<ReaderTaskType,
   // --> close() all modules in advance so it doesn't happen here !!!
 }
 
-template <typename ReaderTaskType, typename WriterTaskType>
+template <typename TaskSynchType,
+          typename ReaderTaskType,
+          typename WriterTaskType>
 void
-RPG_Stream_Module_Base_t<ReaderTaskType,
+RPG_Stream_Module_Base_t<TaskSynchType,
+                         ReaderTaskType,
                          WriterTaskType>::reset()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Module_Base_t::reset"));

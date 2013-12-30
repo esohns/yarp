@@ -32,9 +32,11 @@
 // forward declaration(s)
 class RPG_Stream_IRefCount;
 
-template <typename ReaderTaskType, typename WriterTaskType>
+template <typename TaskSynchType,
+          typename ReaderTaskType,
+          typename WriterTaskType>
 class RPG_Stream_Module_Base_t
- : public ACE_Module<ACE_MT_SYNCH>,
+ : public ACE_Module<TaskSynchType>,
    public RPG_Stream_IModule
 {
  public:
@@ -54,7 +56,7 @@ class RPG_Stream_Module_Base_t
                            RPG_Stream_IRefCount*); // object counter
 
  private:
-  typedef ACE_Module<ACE_MT_SYNCH> inherited;
+  typedef ACE_Module<TaskSynchType> inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t());

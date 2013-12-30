@@ -34,6 +34,7 @@
 #include "rpg_common_istatistic.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
@@ -122,6 +123,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Protocol_Module_IRCSplitter);
+DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                         // task synch type
+                             RPG_Net_Protocol_Module_IRCSplitter); // writer type
 
 #endif

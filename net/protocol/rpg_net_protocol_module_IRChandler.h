@@ -30,6 +30,7 @@
 #include "rpg_stream_streammodule_base.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
@@ -140,6 +141,7 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Protocol_Module_IRCHandler);
+DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                        // task synch type
+                             RPG_Net_Protocol_Module_IRCHandler); // writer type
 
 #endif

@@ -32,7 +32,9 @@ class ACE_Time_Value;
 template <typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_TaskBaseSynch
- : public RPG_Stream_TaskBase<SessionMessageType,
+// *TODO*: figure out how to use ACE_NULL_SYNCH in this case...
+ : public RPG_Stream_TaskBase<ACE_MT_SYNCH,
+                              SessionMessageType,
                               ProtocolMessageType>
 {
  public:
@@ -53,7 +55,8 @@ class RPG_Stream_TaskBaseSynch
   RPG_Stream_TaskBaseSynch();
 
  private:
-  typedef RPG_Stream_TaskBase<SessionMessageType,
+  typedef RPG_Stream_TaskBase<ACE_MT_SYNCH,
+                              SessionMessageType,
                               ProtocolMessageType> inherited;
 
   // safety measures

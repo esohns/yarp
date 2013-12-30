@@ -35,8 +35,7 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_AsynchSocketHandler_T
  : public ACE_Service_Handler,
-   public RPG_Net_IConnection<ConfigType,
-                              StatisticsContainerType>
+   public RPG_Net_IConnection<StatisticsContainerType>
 {
  public:
   virtual ~RPG_Net_AsynchSocketHandler_T();
@@ -49,12 +48,10 @@ class RPG_Net_AsynchSocketHandler_T
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
-  // implement RPG_Net_IConnection
+  // implement (part of) RPG_Net_IConnection
   virtual void info(ACE_HANDLE&,           // return value: handle
                     ACE_INET_Addr&,        // return value: local SAP
                     ACE_INET_Addr&) const; // return value: remote SAP
-  virtual void init(const ConfigType&);
-//   virtual const bool isRegistered() const;
   virtual void abort();
   virtual unsigned int getID() const;
 
@@ -62,11 +59,9 @@ class RPG_Net_AsynchSocketHandler_T
   virtual void dump_state() const;
 
  protected:
-  // convenient types
   typedef RPG_Net_IConnectionManager<ConfigType,
-                                     StatisticsContainerType> MANAGER_t;
-  // meant to be sub-classed
-  RPG_Net_AsynchSocketHandler_T(MANAGER_t*); // manager handle
+                                     StatisticsContainerType> MANAGER_T;
+  RPG_Net_AsynchSocketHandler_T(MANAGER_T*); // manager handle
 
   // helper method(s)
   void initiate_read_stream();
@@ -74,8 +69,10 @@ class RPG_Net_AsynchSocketHandler_T
   virtual void handle_write_stream(const ACE_Asynch_Write_Stream::Result&); // result
 
   ConfigType 		  myUserData;
-  bool       		  myIsInitialized;
+  ACE_Asynch_Read_Stream  myInputStream;
   ACE_Asynch_Write_Stream myOutputStream;
+  MANAGER_T* 	          myManager;
+  bool       	          myIsRegistered;
 
  private:
   typedef ACE_Service_Handler inherited;
@@ -88,15 +85,11 @@ class RPG_Net_AsynchSocketHandler_T
   // helper method(s)
   ACE_Message_Block* allocateMessage(const unsigned int&); // requested size
 
-  ACE_Asynch_Read_Stream  myInputStream;
   ACE_INET_Addr           myLocalSAP;
-	ACE_INET_Addr           myRemoteSAP;
-
-  // *NOTE*: we save this so we can de-register even when our "handle"
-  // (getID()) has gone stale...
-  unsigned int	          myID;
-  bool       	            myIsRegistered;
-  MANAGER_t* 	            myManager;
+  ACE_INET_Addr           myRemoteSAP;
+  // *NOTE*: keep this around to de-register when the socket descriptor
+  //  has gone stale...
+  //unsigned int	          myID;
 };
 
 // include template definition

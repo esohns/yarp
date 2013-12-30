@@ -24,6 +24,8 @@
 #include "rpg_stream_task_base_synch.h"
 #include "rpg_stream_streammodule_base.h"
 
+#include <ace/Synch_Traits.h>
+
 // forward declaration(s)
 class RPG_Net_SessionMessage;
 class RPG_Net_Message;
@@ -58,6 +60,7 @@ class RPG_Net_Module_HeaderParser
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(RPG_Net_Module_HeaderParser);
+DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                 // task synch type
+                             RPG_Net_Module_HeaderParser); // writer type
 
 #endif

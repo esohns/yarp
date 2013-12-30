@@ -28,6 +28,7 @@
 #include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 #include <ace/Containers_T.h>
 #include <ace/Stream.h>
 
@@ -69,11 +70,11 @@ class RPG_Stream_Base
   bool isInitialized() const;
 
  protected:
-  typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
-//   // define convenient (iterator) types
-//   typedef std::vector<MODULE_TYPE*> MODULE_CONTAINER_TYPE;
-  // *NOTE*: cannot write this - it confuses gcc...
-//   typedef std::vector<MODULE_TYPE*>::iterator MODULE_CONTAINERITERATOR_TYPE;
+  typedef ACE_Module<ACE_MT_SYNCH,
+                     ACE_System_Time_Policy> MODULE_TYPE;
+  typedef ACE_Task<ACE_MT_SYNCH,
+                   ACE_System_Time_Policy> TASK_TYPE;
+  typedef ACE_Stream_Iterator<ACE_MT_SYNCH> STREAM_ITERATOR_TYPE;
 
   // *NOTE*: need to subclass this !
   RPG_Stream_Base();
@@ -104,8 +105,6 @@ class RPG_Stream_Base
 
  private:
   typedef ACE_Stream<ACE_MT_SYNCH> inherited;
-
-  // convenient typedefs
   typedef RPG_Stream_HeadModuleTaskBase<DataType,
                                         SessionConfigType,
                                         SessionMessageType,

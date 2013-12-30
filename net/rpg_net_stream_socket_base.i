@@ -33,7 +33,9 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
                          StreamType>::RPG_Net_StreamSocketBase(MANAGER_t* manager_in)
  : inherited(manager_in),
+   //myStream(),
    myCurrentReadBuffer(NULL),
+   //myLock(),
    myCurrentWriteBuffer(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::RPG_Net_StreamSocketBase"));
@@ -49,27 +51,11 @@ RPG_Net_StreamSocketBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::~RPG_Net_StreamSocketBase"));
 
-  // step1: wait for all workers within the stream (if any)
-  myStream.waitForCompletion();
-
-  // step2: purge any pending notifications ?
-  if (!inherited::myUserData.useThreadPerConnection)
-    if (inherited::reactor()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
-                 this));
-
   // clean up
   if (myCurrentReadBuffer)
-  {
     myCurrentReadBuffer->release();
-    myCurrentReadBuffer = NULL;
-  } // end IF
   if (myCurrentWriteBuffer)
-  {
     myCurrentWriteBuffer->release();
-    myCurrentWriteBuffer = NULL;
-  } // end IF
 }
 
 template <typename ConfigType,
@@ -82,48 +68,22 @@ RPG_Net_StreamSocketBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
 
-  // sanity check(s)
-  ACE_ASSERT(arg_in);
-  // *NOTE*: we should have initialized by now...
-  // --> make sure this was successful before we proceed
-  if (!inherited::myIsInitialized)
-  {
-    // (most probably) too many connections...
-    ACE_OS::last_error(EBUSY);
-
-    return -1;
-  } // end IF
-
-  // step1: init/start data processing stream
-  // *TODO*: assumptions about ConfigType ?!?: clearly a design glitch
-  // --> implement higher up !
+  // step1: init/start stream
   inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
-  if (inherited::myUserData.module)
-    if (myStream.push(inherited::myUserData.module))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-                 inherited::myUserData.module->name()));
-
-      return -1;
-    } // end IF
-
+  // connect stream head message queue with the reactor notification pipe ?
   if (!inherited::myUserData.useThreadPerConnection)
   {
-    // "borrow" message queue from stream head
-    MODULE_TYPE* module = NULL;
-    module = myStream.head();
-    if (!module)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("no head module found, returning\n")));
-
-      return -1;
-    } // end IF
-    inherited::msg_queue(module->reader()->msg_queue());
-    inherited::msg_queue()->notification_strategy(&(inherited::myNotificationStrategy));
+    // *IMPORTANT NOTE*: enable the reference counting policy, as this will
+    // be registered with the reactor several times (1x READ_MASK, nx WRITE_MASK);
+    // therefore several threads MAY be dispatching notifications (yes, even
+    // concurrently, myLock enforces the proper sequence order, see handle_output())
+    // on the SAME handler. When the socket closes, the event handler should thus
+    // not be destroyed() immediately, but simply purge any pending notifications
+    // (see handle_close()) and de-register; after the last active
+    // notification has been dispatched, it will be safely deleted
+    inherited::reference_counting_policy().value(ACE_Event_Handler::Reference_Counting_Policy::ENABLED);
+    inherited::myUserData.notificationStrategy = &(inherited::myNotificationStrategy);
   } // end IF
-
   if (!myStream.init(inherited::myUserData))
   {
     ACE_DEBUG((LM_ERROR,
@@ -132,8 +92,7 @@ RPG_Net_StreamSocketBase<ConfigType,
     return -1;
   } // end IF
   //myStream.dump_state();
-
-  // *NOTE*: after this returns, data MAY start arriving at handle_output()
+  // *NOTE*: as soon as this returns, data starts arriving at handle_output()/msg_queue()
   myStream.start();
   if (!myStream.isRunning())
   {
@@ -143,27 +102,22 @@ RPG_Net_StreamSocketBase<ConfigType,
     return -1;
   } // end IF
 
-  // step2: register io handle with the reactor
-  // *NOTE*: this is done by the base class
-  // *NOTE*: as soon as this returns, data MAY start arriving
-  // at handle_input() and fill the stream
+  // step2: tweak socket, register io handle with the reactor, ...
+  // *NOTE*: as soon as this returns, data starts arriving at handle_input()
   int result = inherited::open(arg_in);
   if (result == -1)
   {
-    // *NOTE*: may have happened because:
-    // - too many open local connections
-    // - socket has been closed asynchronously
-    int error = ACE_OS::last_error();
-    if ((error != EBUSY) &&  // <-- too many open local connections
-        (error != ENOTSOCK)) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to inherited::open(): \"%m\", aborting\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Net_SocketHandlerBase::open(): \"%m\", aborting\n")));
 
     // clean up
     myStream.stop();
 
     return -1;
   } // end IF
+  // *IMPORTANT NOTE*: let the reactor manage this handler
+  if (!inherited::myUserData.useThreadPerConnection)
+    inherited::remove_reference();
 
   return 0;
 }
@@ -277,9 +231,9 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   ACE_UNUSED_ARG(handle_in);
 
-  // *IMPORTANT NOTE*: in a threaded environment, workers may be
-  // dispatching the reactor notification queue concurrently, which means that
-  // proper serialization is in order
+  // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
+  // dispatching the reactor notification queue concurrently (e.g. TP_Reactor),
+  // which means that proper serialization MUST be enforced
   if (!inherited::myUserData.useThreadPerConnection)
     myLock.acquire();
 
@@ -289,16 +243,20 @@ RPG_Net_StreamSocketBase<ConfigType,
     // *IMPORTANT NOTE*: this should NEVER block, as available outbound data has
     // been notified to the reactor
     ACE_Time_Value no_wait(ACE_OS::gettimeofday());
-    if (inherited::getq(myCurrentWriteBuffer, &no_wait) == -1)
+    int result = -1;
+    if (!inherited::myUserData.useThreadPerConnection)
+      result = myStream.get(myCurrentWriteBuffer, &no_wait);
+    else
+      result = inherited::getq(myCurrentWriteBuffer, &no_wait);
+    if (result == -1)
     {
       // *IMPORTANT NOTE*: a number of issues can occur here:
       // - connection has been closed in the meantime
-      // *TODO*: validate these
       int error = ACE_OS::last_error();
-      if ((error != ESHUTDOWN) &&
-          (error != ENOTSOCK)) // <-- connection has been closed in the meantime
+      if (error != EAGAIN) // <-- connection has been closed in the meantime
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")));
+                   (inherited::myUserData.useThreadPerConnection ? ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")
+                                                                 : ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n"))));
 
       // clean up
       if (!inherited::myUserData.useThreadPerConnection)
@@ -417,23 +375,42 @@ RPG_Net_StreamSocketBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::handle_close"));
 
-  // clean up
-  if (myStream.isRunning())
-    myStream.stop();
-
-  if (myCurrentReadBuffer)
+  switch (mask_in)
   {
-    myCurrentReadBuffer->release();
-    myCurrentReadBuffer = NULL;
-  } // end IF
-  if (myCurrentWriteBuffer)
-  {
-    myCurrentWriteBuffer->release();
-    myCurrentWriteBuffer = NULL;
-  } // end IF
+    case ACE_Event_Handler::READ_MASK:
+    {
+      // --> socket has been closed
 
-  // invoke base class maintenance
-  // *NOTE*: in the end, this will "delete this"...
+      // step1: wait for all workers within the stream (if any)
+      if (myStream.isRunning())
+      {
+        myStream.stop();
+        myStream.waitForCompletion();
+      } // end IF
+
+      // step2: purge any pending notifications ?
+      // *WARNING: do this here, while still holding on to the current write buffer
+      if (!inherited::myUserData.useThreadPerConnection)
+        if (inherited::reactor()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
+                     this));
+
+      break;
+    }
+    case ACE_Event_Handler::EXCEPT_MASK:
+      if (handle_in == ACE_INVALID_HANDLE) // <-- notification has completed (!useThreadPerConnection)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("notification completed, continuing\n")));
+      break;
+    // *NOTE*: happens when an accept fails (e.g. too many connections)
+    case ACE_Event_Handler::ALL_EVENTS_MASK:
+      break;
+    default:
+      break;
+  } // end SWITCH
+
+  // *NOTE*: this MAY "delete this"...
   return inherited::handle_close(handle_in,
                                  mask_in);
 }

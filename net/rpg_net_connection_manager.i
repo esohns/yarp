@@ -137,6 +137,20 @@ RPG_Net_Connection_Manager<ConfigType,
 
 template <typename ConfigType,
           typename StatisticsContainerType>
+void
+RPG_Net_Connection_Manager<ConfigType,
+                           StatisticsContainerType>::getConfig(ConfigType& config_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::getConfig"));
+
+  // sanity check
+  ACE_ASSERT(myIsInitialized);
+
+  config_out = myUserData;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
 bool
 RPG_Net_Connection_Manager<ConfigType,
                            StatisticsContainerType>::registerConnection(CONNECTION_TYPE* connection_in)
@@ -165,21 +179,23 @@ RPG_Net_Connection_Manager<ConfigType,
 
     myConnections.insert_tail(connection_in);
 
-/*    // debug info
-	ACE_HANDLE handle = ACE_INVALID_HANDLE;
+    // debug info
+    ACE_HANDLE handle = ACE_INVALID_HANDLE;
     ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
     ACE_OS::memset(buffer, 0, sizeof(buffer));
     std::string localAddress;
     ACE_INET_Addr local_SAP, remote_SAP;
-	try
-	{
-  	  connection_in->info(handle, local_SAP, remote_SAP);
-	}
-	catch (...)
-	{
-	  ACE_DEBUG((LM_ERROR,
-				 ACE_TEXT("caught exception in RPG_Net_IConnection::info(), continuing\n")));
-	}
+    try
+    {
+      connection_in->info(handle, local_SAP, remote_SAP);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::info(), aborting")));
+
+      return false;
+    }
     if (local_SAP.addr_to_string(buffer, sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
@@ -190,37 +206,17 @@ RPG_Net_Connection_Manager<ConfigType,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
 
     // *PORTABILITY*: this isn't entirely portable...
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("registered connection [%@/%u]: (\"%s\") <--> (\"%s\") (total: %u)...\n"),
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered connection [%u]: (\"%s\") <--> (\"%s\") (total: %u)...\n"),
-			   handle,
-			   localAddress.c_str(),
-			   buffer,
-               myConnections.size()));
+               connection_in, handle,
 #else
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered connection [%@]: (\"%s\") <--> (\"%s\") (total: %u)...\n"),
-			   handle,
-			   localAddress.c_str(),
-			   buffer,
-               myConnections.size()));
-#endif */
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered connection [%@] (total: %u)...\n"),
-               connection_in,
+               handle, reinterpret_cast<unsigned int>(handle),
+#endif
+               localAddress.c_str(),
+               buffer,
                myConnections.size()));
   } // end lock scope
-
-  // initialize registered connection...
-  try
-  {
-    connection_in->init(myUserData);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_IConnection::init(), continuing\n")));
-  }
 
   return true;
 }
@@ -286,7 +282,7 @@ RPG_Net_Connection_Manager<ConfigType,
     return;
   } // end IF
   else
-  {  // if there are no more connections, signal any waiters...
+  { // if there are no more connections, signal any waiters...
     if (myConnections.is_empty() == 1)
       myCondition.broadcast();
   } // end ELSE
@@ -315,8 +311,8 @@ RPG_Net_Connection_Manager<ConfigType,
   for (CONNECTIONLIST_ITERATOR_TYPE iterator(myConnections);
        iterator.next(connection);
        iterator.advance())
-	{
-		ACE_ASSERT(connection);
+  {
+    ACE_ASSERT(connection);
     try
     {
       // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a reactor thread, if any
@@ -325,9 +321,9 @@ RPG_Net_Connection_Manager<ConfigType,
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
     }
-	} // end FOR
+  } // end FOR
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("aborting %u connection(s)...DONE\n"),
@@ -349,7 +345,7 @@ RPG_Net_Connection_Manager<ConfigType,
     while (myConnections.is_empty() == 0)
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("waiting for (count: %d) connection(s) to close...\n"),
+                 ACE_TEXT("waiting for (count: %d) connection(s) to leave...\n"),
                  myConnections.size()));
 
       myCondition.wait();
