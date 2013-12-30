@@ -45,12 +45,13 @@ template <typename SessionMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic_t;
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+	        typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 class RPG_Net_Module_RuntimeStatisticReader_t
- : public ACE_Thru_Task<ACE_MT_SYNCH>
+ : public ACE_Thru_Task<TaskSynchType>
 {
  public:
   RPG_Net_Module_RuntimeStatisticReader_t();
@@ -60,7 +61,7 @@ class RPG_Net_Module_RuntimeStatisticReader_t
                   ACE_Time_Value* = NULL); // time
 
  private:
-  typedef ACE_Thru_Task<ACE_MT_SYNCH> inherited;
+  typedef ACE_Thru_Task<TaskSynchType> inherited;
   typedef RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
                                             ProtocolMessageType,
                                             ProtocolCommandType,
@@ -83,7 +84,8 @@ class RPG_Net_Module_RuntimeStatistic_t
    public RPG_Net_ICounter,
    public RPG_Common_IStatistic<StatisticsContainerType>
 {
- friend class RPG_Net_Module_RuntimeStatisticReader_t<SessionMessageType,
+ friend class RPG_Net_Module_RuntimeStatisticReader_t<ACE_MT_SYNCH,
+	                                                    SessionMessageType,
                                                       ProtocolMessageType,
                                                       ProtocolCommandType,
                                                       StatisticsContainerType>;
@@ -159,6 +161,7 @@ class RPG_Net_Module_RuntimeStatistic_t
   unsigned int                 myLastMessagesPerSecondCount;
 
   float                        myNumInboundBytes;
+	float                        myNumOutboundBytes;
   // used to compute data throughput...
   unsigned int                 myByteCounter;
   // *NOTE: support asynchronous collecting/reporting of data...

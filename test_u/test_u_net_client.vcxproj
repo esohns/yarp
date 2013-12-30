@@ -53,7 +53,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;net.lib;net_client.lib</AdditionalDependencies>
+      <AdditionalDependencies>ACEd.lib;dice.lib;net.lib;net_client.lib</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>

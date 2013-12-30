@@ -21,6 +21,9 @@
 #ifndef RPG_COMMON_DEFINES_H
 #define RPG_COMMON_DEFINES_H
 
+#include <ace/Default_Constants.h>
+//#include <limits>
+
 // *** trace log ***
 // *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -39,8 +42,13 @@
 #define RPG_COMMON_TIMER_THREAD_NAME              "RPG timer dispatch"
 #define RPG_COMMON_EVENT_DISPATCH_THREAD_GROUP_ID 101
 #define RPG_COMMON_EVENT_DISPATCH_THREAD_NAME     "RPG event dispatch"
-// *NOTE*: use ACE_DEFAULT_TIMERS instead ?
-#define RPG_COMMON_MAX_TIMER_SLOTS                1024
+// *IMPORTANT NOTE*: currently used for (initial) slot pre-allocation only;
+// ultimately, the total number of available concurrent slots depends on the
+// actual implementation --> check the code, don't rely on ACE_DEFAULT_TIMERS
+//#define RPG_COMMON_DEF_NUM_TIMER_SLOTS            std::numeric_limits<long>::max()
+#define RPG_COMMON_DEF_NUM_TIMER_SLOTS            ACE_DEFAULT_TIMERS
+#define RPG_COMMON_PREALLOCATE_TIMER_SLOTS        true
+
 // *IMPORTANT NOTE*: used for libc calls (i.e. char buffers, mostly)
 #define RPG_COMMON_BUFSIZE                        512 // bytes
 

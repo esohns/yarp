@@ -26,7 +26,8 @@ https://github.com/esohns/yarp.git
  *NOTE*: use the following #defines in config.h when building ACE (these are
  known to work):
  - ACE_HAS_REACTOR_NOTIFICATION_QUEUE
- - ACE_USE_SELECT_REACTOR_FOR_REACTOR_IMPL]
+ - ACE_USE_SELECT_REACTOR_FOR_REACTOR_IMPL
+ or simply use the file from the "3rd_party" repository subdirectory]
 
 6. obtain & install the CodeSynthesis xsd toolkit using your distribution
  package manager (yum, apt-get, etc.), or directly from the project page (see

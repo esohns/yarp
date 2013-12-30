@@ -57,6 +57,7 @@
       <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Temp\SDL\lib\x86;C:\Temp\Gtk\lib;C:\Temp\libglade\lib;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ACEd.lib;SDL.lib;gobject-2.0.lib;glib-2.0.lib;gdk-win32-2.0.lib;gtk-win32-2.0.lib;libglade-2.0.dll.a;map.lib;engine.lib;sound.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -84,6 +85,7 @@
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\libglade-dev_2.6.4-1_win32\lib;E:\Gtk\lib;E:\SDL-1.2.14\lib;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libglade-2.0.dll.a;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;glib-2.0.lib;SDL.lib;ACE.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Temp\yarp\Yarp</AdditionalIncludeDirectories>

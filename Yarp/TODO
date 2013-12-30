@@ -1,7 +1,12 @@
-known issues:
-- [magic] implement more low-level spells, player generation fails sometimes...
-- [map] map generation seems to hang sometimes ("segmenting area...")
-- [net] proactor support is broken on UNIX and flaky on WINDOWS
+known issues (hard and benign):
+- [map] map generation hangs/seems to hang sometimes ("segmenting area...")
+- [net UNIX/WIN] proactor support is broken on UNIX systems and flaky on WINDOWS
+? [net] race condition when operating at the maximum number of connections on UNIX:
+        when the acceptor/connector rejects a new connection due to this limit,
+        there is a gap between closing the socket and deregistering with the
+        event dispatcher (pro/reactor)
 [- [XML] validation throws an exception (see https://issues.apache.org/jira/browse/XERCESC-1975)]
 
+known issues (soft and juicy):
++ [magic] define more (low-level) spells, player generation fails sometimes...
 + [net] connection cleanup is broken

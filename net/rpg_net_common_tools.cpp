@@ -1228,16 +1228,18 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                          reinterpret_cast<const char*>(&optval),
                          optlen))
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::setsockopt(%u, %s): \"%m\", aborting\n"),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setsockopt(%@, %s): \"%m\", aborting\n"),
+               handle_in,
+               ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 #else
-                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setsockopt(%d, %s): \"%m\", aborting\n"),
+               handle_in,
+               ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 #endif
-                 ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 
     return false;
   } // end IF
@@ -1250,16 +1252,18 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
                          reinterpret_cast<char*>(&optval),
                          &optlen))
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::getsockopt(%u, %s): \"%m\", aborting\n"),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+		ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%@, %s): \"%m\", aborting\n"),
+               handle_in,
+               ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 #else
-                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
+		ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%d, %s): \"%m\", aborting\n"),
+               handle_in,
+               ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 #endif
-                 ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF"))));
 
     return false;
   } // end IF
@@ -1270,25 +1274,31 @@ RPG_Net_Common_Tools::setSocketBuffer(const ACE_HANDLE& handle_in,
     if (RPG_Common_Tools::isLinux() && (optval == (size_in * 2)))
       return true;
 
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_OS::getsockopt(%s) on handle %u returned %d (expected: %d), aborting\n"),
-               ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-               reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
-#else
-               static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in)),
-#endif
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_OS::getsockopt(%@, %s) returned %d (expected: %d), aborting\n"),
+               handle_in,
+               ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
                optval,
                size_in));
+#else
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("ACE_OS::getsockopt(%d, %s) returned %d (expected: %d), aborting\n"),
+               handle_in,
+               ((optname_in == SO_SNDBUF) ? ACE_TEXT("SO_SNDBUF") : ACE_TEXT("SO_RCVBUF")),
+               optval,
+               size_in));
+#endif
 
     return false;
   } // end IF
 
   //ACE_DEBUG((LM_DEBUG,
-  //           ACE_TEXT("set \"%s\" option of socket %u to: %d\n"),
+  //           ACE_TEXT("set \"%s\" option of socket %d to: %d\n"),
   //           ((optname_in == SO_RCVBUF) ? ACE_TEXT("SO_RCVBUF")
   //                                      : ACE_TEXT("SO_SNDBUF")),
-  //           static_cast<unsigned int>(handle_in),
+  //           handle_in,
   //           size_in));
 
   return true;
@@ -1308,14 +1318,15 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                          reinterpret_cast<const char*>(&optval),
                          optlen))
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::setsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setsockopt(%@, TCP_NODELAY): \"%m\", aborting\n"),
+               handle_in));
 #else
-                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setsockopt(%d, TCP_NODELAY): \"%m\", aborting\n"),
+               handle_in));
 #endif
 
     return false;
@@ -1329,22 +1340,23 @@ RPG_Net_Common_Tools::setNoDelay(const ACE_HANDLE& handle_in,
                          reinterpret_cast<char*>(&optval),
                          &optlen))
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::getsockopt(%u, TCP_NODELAY): \"%m\", aborting\n"),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%@, TCP_NODELAY): \"%m\", aborting\n"),
+               handle_in));
 #else
-                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%d, TCP_NODELAY): \"%m\", aborting\n"),
+               handle_in));
 #endif
 
     return false;
   } // end IF
 
   //ACE_DEBUG((LM_DEBUG,
-  //           ACE_TEXT("setsockopt(%u, TCP_NODELAY): %s\n"),
-  //           static_cast<unsigned int>(handle_in),
+  //           ACE_TEXT("setsockopt(%d, TCP_NODELAY): %s\n"),
+  //           handle_in,
   //           (noDelay_in ? ((optval == 1) ? "on" : "off")
   //                       : ((optval == 0) ? "off" : "on"))));
 
@@ -1365,14 +1377,15 @@ RPG_Net_Common_Tools::setKeepAlive(const ACE_HANDLE& handle_in,
                          reinterpret_cast<const char*>(&optval),
                          optlen))
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::setsockopt(%u, SO_KEEPALIVE): \"%m\", aborting\n"),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setsockopt(%@, SO_KEEPALIVE): \"%m\", aborting\n"),
+               handle_in));
 #else
-                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setsockopt(%d, SO_KEEPALIVE): \"%m\", aborting\n"),
+               handle_in));
 #endif
 
     return false;
@@ -1386,22 +1399,23 @@ RPG_Net_Common_Tools::setKeepAlive(const ACE_HANDLE& handle_in,
                          reinterpret_cast<char*>(&optval),
                          &optlen))
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::getsockopt(%u, SO_KEEPALIVE): \"%m\", aborting\n"),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%@, SO_KEEPALIVE): \"%m\", aborting\n"),
+               handle_in));
 #else
-                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%d, SO_KEEPALIVE): \"%m\", aborting\n"),
+               handle_in));
 #endif
 
     return false;
   } // end IF
 
   //ACE_DEBUG((LM_DEBUG,
-  //           ACE_TEXT("setsockopt(%u, SO_KEEPALIVE): %s\n"),
-  //           static_cast<unsigned int>(handle_in),
+  //           ACE_TEXT("setsockopt(%d, SO_KEEPALIVE): %s\n"),
+  //           handle_in,
   //           (keepAlive_in ? ((optval == 1) ? "on" : "off")
   //                         : ((optval == 0) ? "off" : "on"))));
 
@@ -1424,14 +1438,15 @@ RPG_Net_Common_Tools::setLinger(const ACE_HANDLE& handle_in,
                          reinterpret_cast<const char*>(&optval),
                          optlen))
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::setsockopt(%u, SO_LINGER): \"%m\", aborting\n"),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::setsockopt(%@, SO_LINGER): \"%m\", aborting\n"),
+                 handle_in));
 #else
-                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::setsockopt(%d, SO_LINGER): \"%m\", aborting\n"),
+                 handle_in));
 #endif
 
     return false;
@@ -1445,22 +1460,23 @@ RPG_Net_Common_Tools::setLinger(const ACE_HANDLE& handle_in,
                          reinterpret_cast<char*>(&optval),
                          &optlen))
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::getsockopt(%u, SO_LINGER): \"%m\", aborting\n"),
+    // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%@, SO_LINGER): \"%m\", aborting\n"),
+               handle_in));
 #else
-                 static_cast<unsigned int>(const_cast<ACE_HANDLE&>(handle_in))));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getsockopt(%d, SO_LINGER): \"%m\", aborting\n"),
+               handle_in));
 #endif
 
     return false;
   } // end IF
 
   //ACE_DEBUG((LM_DEBUG,
-  //           ACE_TEXT("setsockopt(%u, SO_LINGER): %s\n"),
-  //           static_cast<unsigned int>(handle_in),
+  //           ACE_TEXT("setsockopt(%d, SO_LINGER): %s\n"),
+  //           handle_in,
   //           ((seconds_in > 0) ? ((optval.l_onoff == 1) ? "on" : "off")
   //                             : ((optval.l_onoff == 0) ? "off" : "on"))));
 

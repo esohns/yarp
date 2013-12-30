@@ -31,7 +31,8 @@
 #include <ace/Synch_Traits.h>
 
 // declare module(s)
-typedef RPG_Net_Module_RuntimeStatisticReader_t<RPG_Net_SessionMessage,
+typedef RPG_Net_Module_RuntimeStatisticReader_t<ACE_MT_SYNCH,
+	                                              RPG_Net_SessionMessage,
                                                 RPG_Net_Message,
                                                 RPG_Net_MessageType,
                                                 RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICSREADER_T;

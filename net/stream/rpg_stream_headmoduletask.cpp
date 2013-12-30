@@ -24,6 +24,7 @@
 #include <ace/Message_Block.h>
 
 #include "rpg_common_macros.h"
+#include "rpg_common.h"
 
 #include "rpg_stream_defines.h"
 #include "rpg_stream_message_base.h"
@@ -59,11 +60,9 @@ RPG_Stream_HeadModuleTask::~RPG_Stream_HeadModuleTask()
   // *IMPORTANT NOTE*: this should NEVER happen !
   // debug info
   if (flushed_messages)
-  {
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("flushed %d message(s)...\n"),
                flushed_messages));
-  } // end IF
 
 //   // *TODO*: check if this sequence actually works...
 //   myQueue.deactivate();
@@ -111,16 +110,12 @@ RPG_Stream_HeadModuleTask::open(void* args_in)
   if (myAutoStart)
   {
     if (module())
-    {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("auto-starting \"%s\"...\n"),
                  ACE_TEXT_ALWAYS_CHAR(name())));
-    } // end IF
     else
-    {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("auto-starting...\n")));
-    } // end ELSE
 
     try
     {
@@ -131,7 +126,6 @@ RPG_Stream_HeadModuleTask::open(void* args_in)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in start() method, aborting\n")));
 
-      // what else can we do here ?
       return -1;
     }
   } // end IF
@@ -167,7 +161,6 @@ RPG_Stream_HeadModuleTask::close(u_long arg_in)
 //                    ACE_TEXT("worker thread (ID: %t) leaving...\n")));
 //       } // end ELSE
 
-      // don't do anything...
       break;
     }
     case 1:
@@ -176,7 +169,6 @@ RPG_Stream_HeadModuleTask::close(u_long arg_in)
       // --> module_closed() hook is implemented below !!!
       ACE_ASSERT(false);
 
-      // what else can we do ?
       return -1;
     }
     default:
@@ -185,7 +177,6 @@ RPG_Stream_HeadModuleTask::close(u_long arg_in)
                  ACE_TEXT("invalid argument: %u, aborting\n"),
                  arg_in));
 
-      // what else can we do ?
       return -1;
     }
   } // end SWITCH
@@ -222,7 +213,6 @@ RPG_Stream_HeadModuleTask::module_closed(void)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in stop(), aborting\n")));
 
-      // what else can we do here ?
       return -1;
     }
   } // end IF
@@ -248,8 +238,8 @@ RPG_Stream_HeadModuleTask::svc(void)
   if (!putSessionMessage(mySessionID,
                          RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN,
                          myUserData,
-                         ACE_OS::gettimeofday(), // start of session
-                         false))                 // N/A
+												 RPG_COMMON_TIME_POLICY(), // start of session
+                         false))                   // N/A
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("putSessionMessage(SESSION_BEGIN) failed, aborting\n")));
@@ -265,7 +255,7 @@ RPG_Stream_HeadModuleTask::svc(void)
 //              ACE_TEXT("entering processing loop...\n")));
 
   while (inherited::getq(ace_mb,
-         NULL) != -1)
+                         NULL) != -1)
   {
     inherited::handleMessage(ace_mb,
                              stop_processing);
@@ -297,7 +287,6 @@ RPG_Stream_HeadModuleTask::svc(void)
       // signal the controller
       finished();
 
-      // leave loop and die !
       return 0;
     } // end IF
 
@@ -341,8 +330,8 @@ RPG_Stream_HeadModuleTask::svc(void)
 
 void
 RPG_Stream_HeadModuleTask::handleControlMessage(ACE_Message_Block* controlMessage_in,
-                                            bool& stopProcessing_out,
-                                            bool& passMessageDownstream_out)
+                                                bool& stopProcessing_out,
+                                                bool& passMessageDownstream_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::handleControlMessage"));
 
@@ -431,9 +420,7 @@ RPG_Stream_HeadModuleTask::waitForCompletion()
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
     while (!myIsFinished)
-    {
       myCondition.wait();
-    }
   } // end lock scope
 
 //   ACE_DEBUG((LM_DEBUG,
@@ -501,24 +488,23 @@ RPG_Stream_HeadModuleTask::onStateChange(const Control_StateType& newState_in)
       thread_handles[0] = 0;
 
       // *IMPORTANT NOTE*: MUST be THR_JOINABLE !!!
-      int ret = 0;
-      ret = inherited::activate((THR_NEW_LWP |
-                                 THR_JOINABLE |
-                                 THR_INHERIT_SCHED),         // flags
-                                1,                           // number of threads
-                                0,                           // force spawning
-                                ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                grp_id(),                    // group id --> should have been set by now !
-                                NULL,                        // corresp. task --> use 'this'
-                                thread_handles,              // thread handle(s)
-                                NULL,                        // thread stack(s)
-                                NULL,                        // thread stack size(s)
-                                thread_ids);                 // thread id(s)
-      if (ret == -1)
+      int result = 0;
+      result = inherited::activate((THR_NEW_LWP |
+                                    THR_JOINABLE |
+                                    THR_INHERIT_SCHED),         // flags
+                                   1,                           // number of threads
+                                   0,                           // force spawning
+                                   ACE_DEFAULT_THREAD_PRIORITY, // priority
+                                   grp_id(),                    // group id --> should have been set by now !
+                                   NULL,                        // corresp. task --> use 'this'
+                                   thread_handles,              // thread handle(s)
+                                   NULL,                        // thread stack(s)
+                                   NULL,                        // thread stack size(s)
+                                   thread_ids);                 // thread id(s)
+      if (result == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to activate(): \"%s\", aborting\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to activate(): \"%m\", aborting\n")));
 
         // finished !
         break;
@@ -532,22 +518,17 @@ RPG_Stream_HeadModuleTask::onStateChange(const Control_StateType& newState_in)
         myIsFinished = false;
       } // end lock scope
 
-//       // debug info
 //       if (module())
-//       {
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("module \"%s\" started worker thread (group: %d, id: %u)...\n"),
 //                    ACE_TEXT_ALWAYS_CHAR(name()),
 //                    grp_id(),
 //                    thread_ids[0]));
-//       } // end IF
 //       else
-//       {
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("started worker thread (group: %d, id: %u)...\n"),
 //                    grp_id(),
 //                    thread_ids[0]));
-//       } // end ELSE
 
       break;
     }
@@ -571,23 +552,18 @@ RPG_Stream_HeadModuleTask::onStateChange(const Control_StateType& newState_in)
       if (!stop_mb)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to allocate ACE_Message_Block: \"%s\", aborting\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
-        // what else can we do ?
         break;
       } // end IF
 
       if (putq(stop_mb, NULL) == -1)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to putq(): \"%s\", continuing\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to putq(): \"%m\", continuing\n")));
 
         // clean up
         stop_mb->release();
-
-        // what else can we do ?
       } // end IF
 
       break;
@@ -614,11 +590,8 @@ RPG_Stream_HeadModuleTask::onStateChange(const Control_StateType& newState_in)
     {
       // suspend our worker thread
       if (inherited::suspend() == -1)
-      {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to suspend(): \"%s\", continuing\n"),
-                   ACE_OS::strerror(errno)));
-      } // end IF
+                   ACE_TEXT("failed to suspend(): \"%m\", continuing\n")));
 
       break;
     }
@@ -626,7 +599,6 @@ RPG_Stream_HeadModuleTask::onStateChange(const Control_StateType& newState_in)
     {
       // *NOTE*: if we get here, an invalid/unknown state change happened...
 
-      // debug info
       std::string currentStateString;
       std::string newStateString;
       ControlState2String(getState(),
@@ -643,11 +615,11 @@ RPG_Stream_HeadModuleTask::onStateChange(const Control_StateType& newState_in)
   } // end SWITCH
 }
 
-const bool
-RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
-                                         const RPG_Stream_SessionMessage::SessionMessageType& messageType_in,
-                                         RPG_Stream_SessionConfig*& config_inout,
-                                         RPG_Stream_IAllocator* allocator_in) const
+bool
+RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned int& sessionID_in,
+                                             const RPG_Stream_SessionMessage::SessionMessageType& messageType_in,
+                                             RPG_Stream_SessionConfig*& config_inout,
+                                             RPG_Stream_IAllocator* allocator_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::putSessionMessage"));
 
@@ -682,8 +654,7 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
   if (!message)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate RPG_Stream_SessionMessage: \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to allocate RPG_Stream_SessionMessage: \"%m\", aborting\n")));
 
     // clean up
     config_inout->decrease();
@@ -699,16 +670,14 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
   } // end IF
 
   // pass message downstream...
-  if (const_cast<RPG_Stream_HeadModuleTask*> (this)->put_next(message, NULL) == -1)
+  if (const_cast<RPG_Stream_HeadModuleTask*>(this)->put_next(message, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to put_next(): \"%s\", aborting\n"),
-               ACE_OS::strerror(errno)));
+               ACE_TEXT("failed to put_next(): \"%m\", aborting\n")));
 
     // clean up
     message->release();
 
-    // what else can we do ?
     return false;
   } // end IF
 
@@ -718,12 +687,12 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
   return true;
 }
 
-const bool
-RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
-                                         const RPG_Stream_SessionMessage::SessionMessageType& messageType_in,
-                                         const void* userData_in,
-                                         const ACE_Time_Value& startOfSession_in,
-                                         const bool& userAbort_in) const
+bool
+RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned int& sessionID_in,
+                                             const RPG_Stream_SessionMessage::SessionMessageType& messageType_in,
+                                             const void* userData_in,
+                                             const ACE_Time_Value& startOfSession_in,
+                                             const bool& userAbort_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::putSessionMessage"));
 
@@ -747,7 +716,6 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned long& sessionID_in,
                    ACE_TEXT("failed to allocate RPG_Stream_SessionConfig: \"%s\", aborting\n"),
                    ACE_OS::strerror(errno)));
 
-        // what else can we do ?
         return false;
       } // end IF
 

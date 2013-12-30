@@ -29,6 +29,7 @@
 #include "rpg_dice.h"
 
 #include "rpg_common_macros.h"
+#include "rpg_common.h"
 #include "rpg_common_tools.h"
 
 #include "rpg_character_race_common_tools.h"
@@ -195,7 +196,7 @@ RPG_Engine::svc(void)
 
   while (!stop_processing)
   {
-    delay = (ACE_OS::gettimeofday() + peek_delay);
+    delay = (RPG_COMMON_TIME_POLICY() + peek_delay);
     if (inherited::getq(ace_mb, &delay) != -1)
     {
       switch (ace_mb->msg_type())

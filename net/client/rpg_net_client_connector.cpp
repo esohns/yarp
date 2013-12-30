@@ -71,9 +71,6 @@ RPG_Net_Client_Connector::connect(const ACE_INET_Addr& peer_address)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::connect"));
 
-  // reset errno
-  ACE_OS::last_error(0);
-
   RPG_Net_SocketHandler* handler = NULL;
   int result = inherited::connect(handler,                          // service handler
                                   peer_address,                     // remote SAP
@@ -84,16 +81,14 @@ RPG_Net_Client_Connector::connect(const ACE_INET_Addr& peer_address)
                                   0);                               // perms
   if (result == -1)
   {
-    int error = ACE_OS::last_error();
-    if (error != ENOTSOCK) // <-- socket has been closed asynchronously
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%m\", aborting\n")));
-
     ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
     ACE_OS::memset(buffer, 0, sizeof(buffer));
     if (peer_address.addr_to_string(buffer, sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+//    // *NOTE*: connection refused ? --> not an error !
+//    int error = ACE_OS::last_error();
+//    if (error != ECONNREFUSED)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Connector::connect(\"%s\"): \"%m\", aborting\n"),
                buffer));

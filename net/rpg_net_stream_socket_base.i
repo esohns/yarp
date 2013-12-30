@@ -20,6 +20,8 @@
 
 #include <ace/Message_Block.h>
 
+#include "rpg_common.h"
+
 #include "rpg_stream_iallocator.h"
 
 #include "rpg_net_defines.h"
@@ -240,9 +242,9 @@ RPG_Net_StreamSocketBase<ConfigType,
   if (myCurrentWriteBuffer == NULL)
   {
     // send next data chunk from the stream...
-    // *IMPORTANT NOTE*: this should NEVER block, as available outbound data has
+    // *IMPORTANT NOTE*: should NEVER block, as available outbound data has
     // been notified to the reactor
-    ACE_Time_Value no_wait(ACE_OS::gettimeofday());
+    ACE_Time_Value no_wait(RPG_COMMON_TIME_POLICY());
     int result = -1;
     if (!inherited::myUserData.useThreadPerConnection)
       result = myStream.get(myCurrentWriteBuffer, &no_wait);
@@ -293,6 +295,7 @@ RPG_Net_StreamSocketBase<ConfigType,
       // - connection abort()ed locally
       int error = ACE_OS::last_error();
       if ((error != ECONNRESET) &&
+				  (error != ECONNABORTED) &&
           (error != EPIPE) &&      // <-- connection reset by peer
           // -------------------------------------------------------------------
           (error != EBADF))        // <-- connection abort()ed locally
@@ -399,9 +402,9 @@ RPG_Net_StreamSocketBase<ConfigType,
       break;
     }
     case ACE_Event_Handler::EXCEPT_MASK:
-      if (handle_in == ACE_INVALID_HANDLE) // <-- notification has completed (!useThreadPerConnection)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("notification completed, continuing\n")));
+      //if (handle_in == ACE_INVALID_HANDLE) // <-- notification has completed (!useThreadPerConnection)
+      //  ACE_DEBUG((LM_ERROR,
+      //             ACE_TEXT("notification completed, continuing\n")));
       break;
     // *NOTE*: happens when an accept fails (e.g. too many connections)
     case ACE_Event_Handler::ALL_EVENTS_MASK:

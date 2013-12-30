@@ -272,14 +272,21 @@ RPG_Net_SocketHandlerBase<ConfigType,
 
   handle_out = peer_.get_handle();
   if (inherited::peer_.get_local_addr(localSAP_out) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
+  {
+    // *NOTE*: socket already closed ? --> not an error
+    int error = ACE_OS::last_error();
+    if ((error != EBADF) &&
+			  (error != ENOTSOCK))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
+  } // end IF
   if (inherited::peer_.get_remote_addr(remoteSAP_out) == -1)
   {
     // *NOTE*: socket already closed ? --> not an error
     int error = ACE_OS::last_error();
     if ((error != ENOTCONN) &&
-        (error != EBADF))
+        (error != EBADF) &&
+				(error != ENOTSOCK))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
   } // end IF
@@ -330,8 +337,14 @@ RPG_Net_SocketHandlerBase<ConfigType,
   std::string localAddress;
   ACE_INET_Addr address;
   if (inherited::peer_.get_local_addr(address) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
+  {
+    // *NOTE*: socket already closed ? --> not an error
+    int error = ACE_OS::last_error();
+    if ((error != EBADF) &&
+			  (error != ENOTSOCK))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
+  } // end IF
   else if (address.addr_to_string(buffer, sizeof(buffer)) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
@@ -342,8 +355,9 @@ RPG_Net_SocketHandlerBase<ConfigType,
   {
     // *NOTE*: socket already closed ? --> not an error
     int error = ACE_OS::last_error();
-    if ((error != ENOTCONN) &&  // <-- socket has been closed asynchronously
-        (error != EBADF))
+    if ((error != ENOTCONN) &&
+        (error != EBADF) &&
+				(error != ENOTSOCK))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
   } // end IF

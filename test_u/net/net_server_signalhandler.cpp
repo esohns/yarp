@@ -121,12 +121,6 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
   switch (mySignal)
   {
     case SIGINT:
-    case SIGTERM:
-    // *PORTABILITY*: this isn't portable: on Windows SIGQUIT and SIGHUP are not defined...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-    case SIGHUP:
-    case SIGQUIT:
-#endif
     {
       //ACE_DEBUG((LM_DEBUG,
       //           ACE_TEXT("shutting down...\n")));
@@ -137,7 +131,7 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
       break;
     }
 // *PORTABILITY*: this isn't portable: on Windows SIGUSR1 and SIGUSR2 are not defined,
-// so we handle SIGBREAK (21) and SIGABRT (22) instead...
+// --> handle SIGBREAK (21) and SIGTERM (15) instead...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR1:
 #else
@@ -152,7 +146,7 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR2:
 #else
-    case SIGABRT:
+    case SIGTERM:
 #endif
       break;
     default:

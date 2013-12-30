@@ -30,6 +30,7 @@
 #include "rpg_stream_iallocator.h"
 
 #include "rpg_common_macros.h"
+#include "rpg_common.h"
 
 #include <iostream>
 #include <sstream>
@@ -593,8 +594,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
       // - connection to establish
       // [- the initial NOTICEs to arrive]
       // before proceeding...
-      ACE_Time_Value abs_deadline = ACE_OS::gettimeofday();
-      abs_deadline += RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY;
+      ACE_Time_Value abs_deadline = RPG_COMMON_TIME_POLICY() + ACE_Time_Value(RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY, 0);
       if ((myCondition.wait(&abs_deadline) == -1) &&
           (ACE_OS::last_error() != ETIME))
       {
@@ -624,8 +624,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 //
 //     // *NOTE*: can happen when trying to register IMMEDIATELY after connecting
 //     // --> allow a little delay for the welcome NOTICE to arrive before proceeding
-//     ACE_Time_Value abs_deadline = ACE_OS::gettimeofday();
-//     abs_deadline += RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY;
+//     ACE_Time_Value abs_deadline = RPG_COMMON_TIME_POLICY() + ACE_Time_Value(RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY, 0);
 //     if ((myCondition.wait(&abs_deadline) == -1) &&
 //         (ACE_OS::last_error() != ETIME))
 //     {

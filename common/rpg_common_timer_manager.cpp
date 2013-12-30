@@ -20,6 +20,7 @@
 #include "stdafx.h"
 
 #include <ace/Log_Msg.h>
+#include <ace/High_Res_Timer.h>
 
 #include "rpg_common_defines.h"
 #include "rpg_common_timer_manager.h"
@@ -37,10 +38,10 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
 
   // set time queue
 	ACE_NEW_NORETURN(myTimerQueue,
-		               RPG_Common_TimerHeap_t(RPG_COMMON_MAX_TIMER_SLOTS, // max timer slotes
-																				  true,                       // preallocate timer nodes ?
-																				  &myTimerHandler,            // upcall functor
-																				  NULL));                     // freelist --> allocate
+		               RPG_Common_TimerQueueImpl_t(RPG_COMMON_DEF_NUM_TIMER_SLOTS,     // preallocated slotes
+																				       RPG_COMMON_PREALLOCATE_TIMER_SLOTS, // preallocate timer nodes ?
+																				       &myTimerHandler,                    // upcall functor
+																				       NULL));                             // freelist --> allocate
 	if (!myTimerQueue)
 	{
     ACE_DEBUG((LM_CRITICAL,
@@ -48,6 +49,9 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
 
     return;
   } // end IF
+	// *NOTE*: use a high resolution timer for best accuracy & lowest latency
+	ACE_High_Res_Timer::global_scale_factor();
+	myTimerQueue->gettimeofday(&ACE_High_Res_Timer::gettimeofday_hr);
   if (inherited::timer_queue(myTimerQueue) == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -95,12 +99,11 @@ RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()
 	if (isRunning())
     stop();
 
-	// *NOTE*: yes, this is the proper shutdown procedure...
+	// *IMPORTANT NOTE*: avoid close()ing the timer queue in the base class dtor
   if (inherited::timer_queue(NULL) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::timer_queue(): \"%m\", aborting\n")));
 	delete myTimerQueue;
-	myTimerQueue = NULL;
 }
 
 void
@@ -118,18 +121,15 @@ RPG_Common_Timer_Manager::stop()
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::stop"));
 
   inherited::deactivate();
-	// *TODO*: yes, this is flaky (but it works)
-	ACE_OS::sleep(ACE_Time_Value(1, 0));
+  // make sure the dispatcher thread has joined...
+  inherited::wait();
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("joined timer dispatch thread...\n")));
 
+	// clean up
   inherited::mutex().lock();
   fini_timers();
   inherited::mutex().release();
-
-  // make sure the dispatcher thread has joined...
-  inherited::wait();
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("joined timer dispatch thread...\n")));
 }
 
 bool
@@ -147,7 +147,7 @@ RPG_Common_Timer_Manager::fini_timers()
 
   const void* act = NULL;
 	long timer_id = 0;
-  RPG_Common_TimerHeapIterator_t iterator(*inherited::timer_queue());
+  RPG_Common_TimerQueueImplIterator_t iterator(*inherited::timer_queue());
   for (iterator.first();
        !iterator.isdone();
        iterator.next())

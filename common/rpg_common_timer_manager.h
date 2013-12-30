@@ -27,7 +27,6 @@
 #include "rpg_common_idumpstate.h"
 
 #include <ace/Singleton.h>
-#include <ace/Event_Handler.h>
 #include <ace/Time_Value.h>
 
 class RPG_Common_Export RPG_Common_Timer_Manager
@@ -66,8 +65,8 @@ class RPG_Common_Export RPG_Common_Timer_Manager
 
   // *IMPORTANT NOTE*: this is only the functor, individual handlers are
   //                   managed in the queue
-  RPG_Common_TimeoutUpcall_t myTimerHandler;
-	RPG_Common_TimerHeap_t*    myTimerQueue;
+  RPG_Common_TimeoutUpcall_t   myTimerHandler;
+	RPG_Common_TimerQueueImpl_t* myTimerQueue;
 };
 
 typedef ACE_Singleton<RPG_Common_Timer_Manager,

@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "rpg_common.h"
 #include "rpg_common_defines.h"
 
 #include "rpg_stream_defines.h"
@@ -257,23 +258,15 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   // *NOTE*: when we get here, we SHOULD ALREADY BE in a final state...
 
   // sanity check
-  // *WARNING*: this check CANNOT prevent a potential race condition...
+  // *WARNING*: this check CAN NOT prevent a potential race condition...
   if (isRunning())
   {
+		// *NOTE*: MAY happen after application receives a SIGINT
+		// select() returns -1, reactor invokes remove_handler --> remove_reference --> delete this
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("stream is still running --> check implementation !, continuing\n")));
 
-    try
-    {
-      stop();
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in stop(), aborting\n")));
-
-      return -1;
-    }
+    stop();
   } // end IF
 
   return 0;
@@ -306,8 +299,8 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   if (!putSessionMessage(mySessionID,
                          RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN,
                          myUserData,
-                         ACE_OS::gettimeofday(), // start of session
-                         false))                 // N/A
+                         RPG_COMMON_TIME_POLICY(), // timestamp: start of session
+                         false))                   // N/A
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("putSessionMessage(SESSION_BEGIN) failed, aborting\n")));
@@ -651,8 +644,8 @@ RPG_Stream_HeadModuleTaskBase<DataType,
         if (!putSessionMessage(mySessionID,
                                RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN,
                                myUserData,
-                               ACE_OS::gettimeofday(), // start of session
-                               false))                 // N/A
+                               RPG_COMMON_TIME_POLICY(), // timestamp: start of session
+                               false))                   // N/A
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("putSessionMessage(SESSION_BEGIN) failed, aborting\n")));
@@ -661,22 +654,17 @@ RPG_Stream_HeadModuleTaskBase<DataType,
         } // end IF
       } // end ELSE
 
-//       // debug info
 //       if (inherited::module())
-//       {
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("module \"%s\" started worker thread (group: %d, id: %u)...\n"),
 //                    ACE_TEXT_ALWAYS_CHAR(inherited::name()),
 //                    inherited::grp_id(),
 //                    thread_ids[0]));
-//       } // end IF
 //       else
-//       {
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("started worker thread (group: %d, id: %u)...\n"),
 //                    inherited::grp_id(),
 //                    thread_ids[0]));
-//       } // end ELSE
 
       break;
     }
@@ -707,14 +695,14 @@ RPG_Stream_HeadModuleTaskBase<DataType,
           break;
         } // end IF
 
-	if (inherited::putq(stop_mb, NULL) == -1)
-	{
-	  ACE_DEBUG((LM_ERROR,
-		     ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
+				if (inherited::putq(stop_mb, NULL) == -1)
+				{
+					ACE_DEBUG((LM_ERROR,
+						         ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
 
-	  // clean up
-	  stop_mb->release();
-	} // end IF
+					// clean up
+					stop_mb->release();
+				} // end IF
       } // end IF
       else
       {
@@ -727,8 +715,8 @@ RPG_Stream_HeadModuleTaskBase<DataType,
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("putSessionMessage(SESSION_END) failed, aborting\n")));
 
-	// signal the controller
-	finished();
+				// signal the controller
+				finished();
       } // end ELSE
 
       break;

@@ -21,6 +21,7 @@
 
 #include "rpg_net_module_sockethandler.h"
 
+#include "rpg_common.h"
 #include "rpg_common_timer_manager.h"
 
 #include "rpg_net_defines.h"
@@ -186,12 +187,13 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
 			if (myStatCollectionInterval)
 			{
 				// schedule regular statistics collection...
-				ACE_Time_Value collection_interval(myStatCollectionInterval, 0);
+				ACE_Time_Value interval(myStatCollectionInterval, 0);
 				ACE_ASSERT(myStatCollectHandlerID == -1);
-				myStatCollectHandlerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,                         // handler
-																																												 NULL,                                          // argument
-																																												 ACE_OS::gettimeofday () + collection_interval, // wakeup time
-																																												 collection_interval);                          // interval
+				myStatCollectHandlerID =
+					RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,               // handler
+																																	NULL,                                // argument
+																																	RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
+																																	interval);                           // interval
 				if (myStatCollectHandlerID == -1)
 				{
 					ACE_DEBUG((LM_ERROR,
@@ -222,9 +224,7 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
 			break;
 		}
     default:
-    {
       break;
-    }
   } // end SWITCH
 }
 
@@ -242,11 +242,12 @@ RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out) const
   // step0: init info container POD
   ACE_OS::memset(&data_out, 0, sizeof(RPG_Net_RuntimeStatistic));
 
-  // step1: *TODO*: collect info
+  // *IMPORTANT NOTE*: information is collected by the statistic module
+	//                   (if any)
 
-  // step2: send this information downstream
-  if (!putStatisticsMessage(data_out,
-                            ACE_OS::gettimeofday()))
+  // step1: send the container downstream
+  if (!putStatisticsMessage(data_out,                  // data container
+                            RPG_COMMON_TIME_POLICY())) // timestamp
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to putSessionMessage(SESSION_STATISTICS), aborting\n")));
@@ -254,7 +255,6 @@ RPG_Net_Module_SocketHandler::collect(RPG_Net_RuntimeStatistic& data_out) const
     return false;
   } // end IF
 
-  // OK: all is well...
   return true;
 }
 
@@ -263,11 +263,6 @@ RPG_Net_Module_SocketHandler::report() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_SocketHandler::report"));
 
-  // sanity check(s)
-  ACE_ASSERT(myIsInitialized);
-
-  // *TODO*: support (local) reporting here as well ?
-  // --> leave this to any downstream modules...
   ACE_ASSERT(false);
 }
 

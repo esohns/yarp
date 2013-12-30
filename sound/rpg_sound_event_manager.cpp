@@ -23,12 +23,13 @@
 
 #include "rpg_sound_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_timerhandler.h>
-#include <rpg_common_timer_manager.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common.h"
+#include "rpg_common_timerhandler.h"
+#include "rpg_common_timer_manager.h"
+#include "rpg_common_file_tools.h"
 
-#include <rpg_dice.h>
+#include "rpg_dice.h"
 
 #include <ace/Dirent_Selector.h>
 #include <ace/Log_Msg.h>
@@ -169,10 +170,11 @@ RPG_Sound_Event_Manager::start()
   } // end IF
 
   // *NOTE*: this is a fire-and-forget API (assumes resp. for timer_handler)...
-  myTimerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,
-                                                                      NULL,
-                                                                      ACE_OS::gettimeofday(),
-                                                                      ACE_Time_Value::zero); // one-shot
+  myTimerID =
+		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,            // event handler handle
+                                                            NULL,                     // ACT
+                                                            RPG_COMMON_TIME_POLICY(), // expire immediately
+                                                            ACE_Time_Value::zero);    // one-shot
   if (myTimerID == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -338,10 +340,11 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
   } // end IF
 
   // *NOTE*: this is a fire-and-forget API (assumes resp. for timer_handler)...
-  myTimerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,
-                                                                      NULL,
-                                                                      (ACE_OS::gettimeofday() + length),
-                                                                      ACE_Time_Value::zero); // one-shot
+  myTimerID =
+		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,                     // event handler handle
+                                                            NULL,                              // ACT
+                                                            RPG_COMMON_TIME_POLICY() + length, // wakeup time
+                                                            ACE_Time_Value::zero);             // interval: one-shot
   if (myTimerID == -1)
   {
     ACE_DEBUG((LM_ERROR,

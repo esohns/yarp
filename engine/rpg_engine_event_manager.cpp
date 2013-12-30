@@ -32,6 +32,7 @@
 #include "rpg_monster_dictionary.h"
 
 #include "rpg_common_macros.h"
+#include "rpg_common.h"
 #include "rpg_common_timerhandler.h"
 #include "rpg_common_timer_manager.h"
 
@@ -165,7 +166,7 @@ RPG_Engine_Event_Manager::svc(void)
 
   while (!stop_processing)
   {
-    delay = (ACE_OS::gettimeofday() + peek_delay);
+    delay = RPG_COMMON_TIME_POLICY() + peek_delay;
     if (inherited::getq(ace_mb, &delay) != -1)
     {
       switch (ace_mb->msg_type())
@@ -341,7 +342,7 @@ RPG_Engine_Event_Manager::start()
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::start"));
 
   // init game clock
-  myGameClockStart = ACE_OS::gettimeofday();
+  myGameClockStart = RPG_COMMON_TIME_POLICY();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("started game clock: \"%#D\"\n"),
@@ -390,8 +391,9 @@ RPG_Engine_Event_Manager::stop()
 	cancel_all();
 
   // stop/fini game clock
-  ACE_Time_Value elapsed = ACE_OS::gettimeofday() - myGameClockStart;
-	// *NOTE*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"; that's OK...
+  ACE_Time_Value elapsed = RPG_COMMON_TIME_POLICY() - myGameClockStart;
+	// *TODO*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"
+	// --> that's OK for now...
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("stopped game clock: \"%#T\"\n"),
              &elapsed));
@@ -509,11 +511,12 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event* event_in,
 
   long timer_id = -1;
   // *NOTE*: fire&forget API for timer_handler...
-  timer_id = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,
-                                                                     event_in,
-                                                                     ACE_OS::gettimeofday () + interval_in,
-                                                                     (isOneShot_in ? ACE_Time_Value::zero
-                                                                                   : interval_in));
+  timer_id =
+		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,                          // event handler handle
+                                                            event_in,                               // ACT
+                                                            RPG_COMMON_TIME_POLICY() + interval_in, // first wakeup time
+                                                            (isOneShot_in ? ACE_Time_Value::zero    // interval
+                                                                          : interval_in));
   if (timer_id == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -542,7 +545,8 @@ RPG_Engine_Event_Manager::cancel(const long& id_in)
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::cancel"));
 
 	const void* act = NULL;
-  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(id_in, &act) <= 0)
+  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(id_in,
+		                                                        &act) <= 0)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                id_in));

@@ -59,6 +59,7 @@
       <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xerces-c_3D.lib;ACEd.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -92,6 +93,7 @@ popd</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xerces-c_3D.lib;ACE.lib</AdditionalDependencies>
+      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>

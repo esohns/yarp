@@ -24,6 +24,7 @@
 #include <iostream>
 
 #include "rpg_common_macros.h"
+#include "rpg_common.h"
 #include "rpg_common_timer_manager.h"
 
 #include "rpg_stream_iallocator.h"
@@ -219,12 +220,13 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& me
       if (myPingInterval)
       {
         // schedule ourselves...
-        ACE_Time_Value ping_interval(myPingInterval, 0);
+        ACE_Time_Value interval(myPingInterval, 0);
         ACE_ASSERT(myPingTimerID == -1);
-        myPingTimerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myPingHandler,                          // handler
-                                                                                NULL,                                    // act
-                                                                                ACE_OS::gettimeofday () + ping_interval, // wakeup time
-                                                                                ping_interval);                          // interval
+        myPingTimerID =
+					RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myPingHandler,                      // event handler handle
+                                                                  NULL,                                // ACT
+                                                                  RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
+                                                                  interval);                           // interval
         if (myPingTimerID == -1)
         {
            ACE_DEBUG((LM_ERROR,

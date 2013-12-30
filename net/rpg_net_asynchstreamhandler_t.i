@@ -20,6 +20,8 @@
 
 #include <ace/Reactor.h>
 
+#include "rpg_common.h"
+
 template <typename ConfigType,
           typename StatisticsContainerType,
           typename StreamType>
@@ -170,7 +172,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
     // send next data chunk from the stream...
     // *IMPORTANT NOTE*: this should NEVER block, as available outbound data has
     // been notified to the reactor
-    ACE_Time_Value no_wait(ACE_OS::gettimeofday());
+    ACE_Time_Value no_wait(RPG_COMMON_TIME_POLICY());
     if (myStream.get(myBuffer, &no_wait) == -1)
     {
       ACE_DEBUG((LM_ERROR,

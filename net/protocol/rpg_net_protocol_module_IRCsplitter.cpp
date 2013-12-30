@@ -21,6 +21,7 @@
 
 #include "rpg_net_protocol_module_IRCsplitter.h"
 
+#include "rpg_common.h"
 #include "rpg_common_timer_manager.h"
 
 #include "rpg_stream_iallocator.h"
@@ -122,18 +123,18 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
   if (statisticsCollectionInterval_in)
   {
     // schedule regular statistics collection...
-    ACE_Time_Value collecting_interval(statisticsCollectionInterval_in, 0);
+    ACE_Time_Value interval(statisticsCollectionInterval_in, 0);
     ACE_ASSERT(myStatCollectHandlerID == -1);
-    myStatCollectHandlerID = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,                         // handler
-                                                                                     NULL,                                          // act
-                                                                                     ACE_OS::gettimeofday () + collecting_interval, // wakeup time
-                                                                                     collecting_interval);                          // interval
+    myStatCollectHandlerID =
+			RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,               // handler
+                                                              NULL,                                // act
+                                                              RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
+                                                              interval);                           // interval
     if (myStatCollectHandlerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
-      // what else can we do ?
       return false;
     } // end IF
 //     ACE_DEBUG((LM_DEBUG,
@@ -155,15 +156,13 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
   //  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancelTimer(myStatCollectHandlerID);
   //  myStatCollectHandlerID = 0;
 
-  //  // what else can we do ?
   //  return false;
   //} // end IF
   RPG_Net_Protocol_IRCBisect_set_debug((traceScanning_in ? 1 : 0), myScannerContext);
 
-  // OK: all's well...
   myIsInitialized = true;
 
-  return myIsInitialized;
+  return true;
 }
 
 void
@@ -480,14 +479,15 @@ RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& 
   // sanity check(s)
   ACE_ASSERT(myIsInitialized);
 
-  // step0: init info container POD
+  // step1: init info container POD
   ACE_OS::memset(&data_out, 0, sizeof(RPG_Net_Protocol_RuntimeStatistic));
 
-  // step1: *TODO*: collect info
+  // *IMPORTANT NOTE*: information is collected by the statistic module
+	//                   (if any)
 
-  // step2: send this information downstream
-  if (!putStatisticsMessage(data_out,
-                            ACE_OS::gettimeofday()))
+  // step1: send the container downstream
+  if (!putStatisticsMessage(data_out,                  // data container
+                            RPG_COMMON_TIME_POLICY())) // timestamp
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to putSessionMessage(SESSION_STATISTICS), aborting\n")));
@@ -495,7 +495,6 @@ RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& 
     return false;
   } // end IF
 
-  // OK: all is well...
   return true;
 }
 

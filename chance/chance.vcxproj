@@ -55,6 +55,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>dice.lib</AdditionalDependencies>
+      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -80,6 +81,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>dice.lib</AdditionalDependencies>
+      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>

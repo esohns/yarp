@@ -206,16 +206,21 @@ RPG_Net_Connection_Manager<ConfigType,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
 
     // *PORTABILITY*: this isn't entirely portable...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("registered connection [%@/%u]: (\"%s\") <--> (\"%s\") (total: %u)...\n"),
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-               connection_in, handle,
-#else
                handle, reinterpret_cast<unsigned int>(handle),
-#endif
                localAddress.c_str(),
                buffer,
                myConnections.size()));
+#else
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("registered connection [%@/%u]: (\"%s\") <--> (\"%s\") (total: %u)...\n"),
+               connection_in, handle,
+               localAddress.c_str(),
+               buffer,
+               myConnections.size()));
+#endif
   } // end lock scope
 
   return true;
@@ -259,15 +264,18 @@ RPG_Net_Connection_Manager<ConfigType,
 
       iterator.remove();
 
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("deregistered connection (%@/%u) (total: %u)\n"),
-                 connection_in,
+      // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-                 reinterpret_cast<unsigned int>(handle),
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("deregistered connection %@/%u (total: %u)\n"),
+                 connection_in, reinterpret_cast<unsigned int>(handle),
+								 myConnections.size()));
 #else
-                 static_cast<unsigned int>(handle),
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("deregistered connection %d (total: %u)\n"),
+                 handle,
+								 myConnections.size()));
 #endif
-                 myConnections.size()));
 
       break;
     } // end IF

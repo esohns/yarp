@@ -42,6 +42,8 @@
 
 #include "rpg_dice.h"
 
+#include "rpg_common_macros.h"
+#include "rpg_common.h"
 #include "rpg_common_defines.h"
 #include "rpg_common_tools.h"
 #include "rpg_common_timer_manager.h"
@@ -264,65 +266,13 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 
     return;
   } // end IF
-  // *NOTE*: cannot handle some signals
+  // *NOTE*: cannot handle some signals --> registration fails for these...
   signals_inout.sig_del(SIGKILL);         // 9       /* Kill signal */
   signals_inout.sig_del(SIGSTOP);         // 19      /* Stop process */
+	// ---------------------------------------------------------------------------
   // *NOTE* don't care about SIGPIPE
   signals_inout.sig_del(SIGPIPE);         // 12      /* Broken pipe: write to pipe with no readers */
 #endif
-
-//  // *PORTABILITY*: on Windows SIGHUP and SIGQUIT are not defined,
-//  // so we handle SIGBREAK (21) and SIGABRT (22) instead...
-//#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-//  // *NOTE*: don't handle SIGHUP !!!! --> program will hang !
-//  //signals_inout.push_back(SIGHUP);
-//#endif
-//  signals_inout.sig_add(SIGINT);
-//#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-//  signals_inout.sig_add(SIGQUIT);
-//#endif
-////   signals_inout.sig_add(SIGILL);
-////   signals_inout.sig_add(SIGTRAP);
-////   signals_inout.sig_add(SIGBUS);
-////   signals_inout.sig_add(SIGFPE);
-////   signals_inout.sig_add(SIGKILL); // cannot catch this one...
-//  if (allowUserRuntimeConnect_in)
-//#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-//    signals_inout.sig_add(SIGUSR1);
-//#else
-//    signals_inout.sig_add(SIGBREAK);
-//#endif
-////   signals_inout.sig_add(SIGSEGV);
-//  if (allowUserRuntimeConnect_in)
-//#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-//    signals_inout.sig_add(SIGUSR2);
-//#else
-//    signals_inout.sig_add(SIGABRT);
-//#endif
-////   signals_inout.sig_add(SIGPIPE);
-////   signals_inout.sig_add(SIGALRM);
-//  signals_inout.sig_add(SIGTERM);
-////   signals_inout.sig_add(SIGSTKFLT);
-////   signals_inout.sig_add(SIGCHLD);
-////   signals_inout.sig_add(SIGCONT);
-////   signals_inout.sig_add(SIGSTOP); // cannot catch this one...
-////   signals_inout.sig_add(SIGTSTP);
-////   signals_inout.sig_add(SIGTTIN);
-////   signals_inout.sig_add(SIGTTOU);
-////   signals_inout.sig_add(SIGURG);
-////   signals_inout.sig_add(SIGXCPU);
-////   signals_inout.sig_add(SIGXFSZ);
-////   signals_inout.sig_add(SIGVTALRM);
-////   signals_inout.sig_add(SIGPROF);
-////   signals_inout.sig_add(SIGWINCH);
-////   signals_inout.sig_add(SIGIO);
-////   signals_inout.sig_add(SIGPWR);
-////   signals_inout.sig_add(SIGSYS);
-////   signals_inout.sig_add(SIGRTMIN);
-////   signals_inout.sig_add(SIGRTMIN+1);
-//// ...
-////   signals_inout.sig_add(SIGRTMAX-1);
-////   signals_inout.sig_add(SIGRTMAX);
 }
 
 void
@@ -545,10 +495,11 @@ do_work(const unsigned int& maxNumConnections_in,
                                               : connectionInterval_in),
                             (runStressTest_in ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL * 1000)
                                               : 0));
-    timer_id = RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&timeout_handler,
-                                                                       NULL,
-                                                                       ACE_OS::gettimeofday () + interval,
-                                                                       interval);
+    timer_id =
+			RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&timeout_handler,                    // event handler handle
+                                                              NULL,                                // ACT
+                                                              RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
+                                                              interval);                           // interval
     if (timer_id == -1)
     {
       ACE_DEBUG((LM_DEBUG,
