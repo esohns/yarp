@@ -43,6 +43,7 @@ class RPG_Net_Export RPG_Net_SocketHandler
   // override some task-based members
   virtual int svc(void);
   virtual int open(void* = NULL); // args
+	virtual int close(u_long = 0); // args
 
 //  // *NOTE*: enqueue any received data onto our stream for further processing
 //   virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);

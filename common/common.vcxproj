@@ -141,7 +141,7 @@ popd</Command>
     <ClInclude Include="rpg_common_macros.h" />
     <ClInclude Include="rpg_common_physicaldamagetype.h" />
     <ClInclude Include="rpg_common_plane.h" />
-    <ClInclude Include="rpg_common_referencecounter.h" />
+    <ClInclude Include="rpg_common_referencecounter_base.h" />
     <ClInclude Include="rpg_common_savereductiontype.h" />
     <ClInclude Include="rpg_common_savingthrow.h" />
     <ClInclude Include="rpg_common_savingthrowcheck.h" />
@@ -177,7 +177,7 @@ popd</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="rpg_common_file_tools.cpp" />
-    <ClCompile Include="rpg_common_referencecounter.cpp" />
+    <ClCompile Include="rpg_common_referencecounter_base.cpp" />
     <ClCompile Include="rpg_common_timerhandler.cpp" />
     <ClCompile Include="rpg_common_timer_manager.cpp" />
     <ClCompile Include="rpg_common_tools.cpp" />

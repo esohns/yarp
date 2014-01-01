@@ -87,7 +87,8 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
     RPG_Dice::generateRandomNumbers(num_connections,
                                     1,
                                     result);
-    const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler = RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
+    const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
+			RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
     if (!connection_handler)
     {
       ACE_DEBUG((LM_ERROR,
@@ -105,8 +106,14 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
 
+		  // clean up
+		  const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+
       return -1;
     }
+
+		// clean up
+		const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
   } // end IF
 
   try

@@ -37,15 +37,11 @@ class RPG_Net_StreamSocketBase
  : public RPG_Net_SocketHandlerBase<ConfigType,
                                     StatisticsContainerType>
 {
- protected:
-  // convenient types
-  typedef RPG_Net_IConnectionManager<ConfigType,
-                                     StatisticsContainerType> MANAGER_t;
-
  public:
   virtual ~RPG_Net_StreamSocketBase();
 
   virtual int open(void* = NULL); // args
+	virtual int close(u_long = 0); // args
   // *NOTE*: enqueue any received data onto our stream for further processing
   virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);
   // *NOTE*: send any enqueued data back to the client...
@@ -61,7 +57,9 @@ class RPG_Net_StreamSocketBase
   virtual void report() const;
 
  protected:
-  RPG_Net_StreamSocketBase(MANAGER_t*);
+  typedef RPG_Net_IConnectionManager<ConfigType,
+                                     StatisticsContainerType> MANAGER_T;
+  RPG_Net_StreamSocketBase(MANAGER_T*);
 
   StreamType         myStream;
   ACE_Message_Block* myCurrentReadBuffer;

@@ -54,8 +54,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;common.lib</AdditionalDependencies>
       <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
@@ -103,7 +103,6 @@ popd</Command>
     <ClInclude Include="rpg_stream_cacheddatablockallocatorheap.h" />
     <ClInclude Include="rpg_stream_cachedmessageallocatorheap.h" />
     <ClInclude Include="rpg_stream_cachedmessageallocatorheap_base.h" />
-    <ClInclude Include="rpg_stream_counter.h" />
     <ClInclude Include="rpg_stream_datablockallocatorheap.h" />
     <ClInclude Include="rpg_stream_data_message_base.h" />
     <ClInclude Include="rpg_stream_defines.h" />
@@ -145,7 +144,6 @@ popd</Command>
     <ClCompile Include="rpg_stream_cacheddatablockallocatorheap.cpp" />
     <ClCompile Include="rpg_stream_cachedmessageallocatorheap.cpp" />
     <ClCompile Include="rpg_stream_cachedmessageallocatorheap_base.cpp" />
-    <ClCompile Include="rpg_stream_counter.cpp" />
     <ClCompile Include="rpg_stream_datablockallocatorheap.cpp" />
     <ClCompile Include="rpg_stream_data_message_base.cpp" />
     <ClCompile Include="rpg_stream_headmoduletask.cpp" />

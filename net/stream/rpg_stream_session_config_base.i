@@ -18,15 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_stream_tools.h"
+#include "rpg_common_macros.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_stream_tools.h"
 
 template <typename DataType>
 RPG_Stream_SessionConfigBase<DataType>::RPG_Stream_SessionConfigBase(const DataType& userData_in,
-                                                             const ACE_Time_Value& startOfSession_in,
-                                                             const bool& userAbort_in)
- : inherited(1),
+                                                                     const ACE_Time_Value& startOfSession_in,
+                                                                     const bool& userAbort_in)
+ : inherited(1,     // initial count
+             true), // delete on zero ?
    myUserData(userData_in),
    myStartOfSession(startOfSession_in),
    myUserAbort(userAbort_in)
@@ -43,7 +44,7 @@ RPG_Stream_SessionConfigBase<DataType>::~RPG_Stream_SessionConfigBase()
 }
 
 template <typename DataType>
-const DataType
+DataType
 RPG_Stream_SessionConfigBase<DataType>::getUserData() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getUserData"));
@@ -52,7 +53,7 @@ RPG_Stream_SessionConfigBase<DataType>::getUserData() const
 }
 
 template <typename DataType>
-const ACE_Time_Value
+ACE_Time_Value
 RPG_Stream_SessionConfigBase<DataType>::getStartOfSession() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getStartOfSession"));
@@ -61,34 +62,12 @@ RPG_Stream_SessionConfigBase<DataType>::getStartOfSession() const
 }
 
 template <typename DataType>
-const bool
+bool
 RPG_Stream_SessionConfigBase<DataType>::getUserAbort() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::getUserAbort"));
 
   return myUserAbort;
-}
-
-template <typename DataType>
-void
-RPG_Stream_SessionConfigBase<DataType>::decrease()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfigBase::decrease"));
-
-  bool destroy = false;
-
-  {
-    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(inherited::myLock);
-
-    inherited::decrease();
-    destroy = (refcount() == 0);
-  } // end lock scope
-
-  if (destroy)
-  {
-    // self-destruct
-    delete this;
-  } // end IF
 }
 
 template <typename DataType>

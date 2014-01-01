@@ -21,32 +21,29 @@
 #ifndef RPG_STREAM_SESSION_CONFIG_H
 #define RPG_STREAM_SESSION_CONFIG_H
 
-#include "rpg_stream_counter.h"
+#include "rpg_common_referencecounter_base.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
 
 class RPG_Stream_SessionConfig
- : public RPG_Stream_Counter
+ : public RPG_Common_ReferenceCounterBase
 {
  public:
   RPG_Stream_SessionConfig(const void*,                                  // user data
-                       const ACE_Time_Value& = ACE_Time_Value::zero, // "official" start of session
-                       const bool& = false);                         // session ended because of user abort ?
+                           const ACE_Time_Value& = ACE_Time_Value::zero, // "official" start of session
+                           const bool& = false);                         // session ended because of user abort ?
 
   // info
   const void* getUserData() const;
-  const ACE_Time_Value getStartOfSession() const;
-  const bool getUserAbort() const;
-
-  // override RPG_Common_IRefCount
-  virtual void decrease();
+  ACE_Time_Value getStartOfSession() const;
+  bool getUserAbort() const;
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  private:
-  typedef RPG_Stream_Counter inherited;
+  typedef RPG_Common_ReferenceCounterBase inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_SessionConfig());

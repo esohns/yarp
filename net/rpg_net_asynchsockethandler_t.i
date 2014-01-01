@@ -35,14 +35,15 @@ template <typename ConfigType,
 RPG_Net_AsynchSocketHandler_T<ConfigType,
                               StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T(MANAGER_T* manager_in)
  : inherited(),
+   inherited2(1,     // initial count
+	            true), // delete on zero ?
 //    myUserData(),
    myInputStream(),
    myOutputStream(),
    myManager(manager_in),
    myIsRegistered(false),
    myLocalSAP(),
-   myRemoteSAP()//,
-   //myID(0)
+   myRemoteSAP()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::RPG_Net_AsynchSocketHandler_T"));
 
@@ -97,7 +98,6 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   // *TODO*: there is a design glitch here: this class SHOULD NOT make
   // assumptions about ConfigType !
   if (myUserData.socketBufferSize)
-  {
     if (!RPG_Net_Common_Tools::setSocketBuffer(handle_in,
                                                SO_RCVBUF,
                                                myUserData.socketBufferSize))
@@ -108,21 +108,21 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                  handle_in));
 
       // clean up
-      delete this;
+			inherited2::decrease();
 
       return;
     } // end IF
-  } // end IF
   if (!RPG_Net_Common_Tools::setNoDelay(handle_in,
                                         RPG_NET_DEF_SOCK_NODELAY))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
                handle_in,
-               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
+               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true")
+							                           : ACE_TEXT("false"))));
 
     // clean up
-    delete this;
+    inherited2::decrease();
 
     return;
   } // end IF
@@ -133,11 +133,12 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     if (error != ENOTSOCK) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
-                 getID(),
-                 (RPG_NET_DEF_SOCK_LINGER ? ACE_TEXT("true") : ACE_TEXT("false"))));
+                 id(),
+                 (RPG_NET_DEF_SOCK_LINGER ? ACE_TEXT("true")
+								                          : ACE_TEXT("false"))));
 
     // clean up
-    delete this;
+    inherited2::decrease();
 
     return;
   } // end IF
@@ -148,11 +149,12 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     if (error != ENOTSOCK) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
-                 getID(),
-                 ((RPG_NET_DEF_SOCK_LINGER > 0) ? ACE_TEXT("true") : ACE_TEXT("false"))));
+                 id(),
+                 ((RPG_NET_DEF_SOCK_LINGER > 0) ? ACE_TEXT("true")
+								                                : ACE_TEXT("false"))));
 
     // clean up
-    delete this;
+    inherited2::decrease();
 
     return;
   } // end IF
@@ -169,7 +171,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                handle_in));
 
     // clean up
-    delete this;
+    inherited2::decrease();
 
     return;
   } // end IF
@@ -183,7 +185,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                handle_in));
 
     // clean up
-    delete this;
+    inherited2::decrease();
 
     return;
   } // end IF
@@ -200,26 +202,27 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                  ACE_TEXT("failed to ACE_Message_Block::duplicate(): \"%m\", aborting\n")));
 
       // clean up
-      delete this;
+      inherited2::decrease();
 
       return;
     } // end IF
     // fake a result to emulate regular behavior...
-    ACE_Asynch_Read_Stream_Result_Impl* fake_result = proactor()->create_asynch_read_stream_result(proxy(),            // handler proxy
-                                                                                                   handle_in,          // socket handle
-                                                                                                   *duplicate,         // buffer
-                                                                                                   duplicate->size(),  // (max) bytes to read
-                                                                                                   NULL,               // ACT
-                                                                                                   ACE_INVALID_HANDLE, // event
-                                                                                                   0,                  // priority
-                                                                                                   0);                 // signal number
+    ACE_Asynch_Read_Stream_Result_Impl* fake_result =
+			proactor()->create_asynch_read_stream_result(proxy(),            // handler proxy
+                                                   handle_in,          // socket handle
+                                                   *duplicate,         // buffer
+                                                   duplicate->size(),  // (max) bytes to read
+                                                   NULL,               // ACT
+                                                   ACE_INVALID_HANDLE, // event
+                                                   0,                  // priority
+                                                   0);                 // signal number
     if (!fake_result)
     {
       ACE_ERROR((LM_ERROR,
                  ACE_TEXT("failed to ACE_Proactor::create_asynch_read_stream_result: \"%m\", aborting\n")));
 
       // clean up
-      delete this;
+      inherited2::decrease();
 
       return;
     } // end IF
@@ -352,7 +355,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   // - the client closes the socket (handle_xxx() returned -1)
   // - the connection has been rejected (e.g. too many open)
   // - the connection has been aborted locally
-  delete this;
+  inherited2::decrease();
 
   return 0;
 }
@@ -494,9 +497,9 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 unsigned int
 RPG_Net_AsynchSocketHandler_T<ConfigType,
-                              StatisticsContainerType>::getID() const
+                              StatisticsContainerType>::id() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::getID"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::id"));
 
   // *PORTABILITY*: this isn't entirely portable...
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
@@ -505,6 +508,50 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   return reinterpret_cast<unsigned int>(handle());
 #endif
 }
+
+//template <typename ConfigType,
+//          typename StatisticsContainerType>
+//void
+//RPG_Net_AsynchSocketHandler_T<ConfigType,
+//                              StatisticsContainerType>::increase()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::increase"));
+//
+//	myCounter.increase();
+//}
+//
+//template <typename ConfigType,
+//          typename StatisticsContainerType>
+//void
+//RPG_Net_AsynchSocketHandler_T<ConfigType,
+//                              StatisticsContainerType>::decrease()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::decrease"));
+//
+//	myCounter.decrease();
+//}
+//
+//template <typename ConfigType,
+//          typename StatisticsContainerType>
+//unsigned int
+//RPG_Net_AsynchSocketHandler_T<ConfigType,
+//                              StatisticsContainerType>::count()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::count"));
+//
+//	return myCounter.count();
+//}
+//
+//template <typename ConfigType,
+//          typename StatisticsContainerType>
+//void
+//RPG_Net_AsynchSocketHandler_T<ConfigType,
+//                              StatisticsContainerType>::wait()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::wait"));
+//
+//	myCounter.wait();
+//}
 
 template <typename ConfigType,
           typename StatisticsContainerType>
@@ -529,7 +576,7 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connection [%u]: (\"%s\") <--> (\"%s\")\n"),
-             getID(),
+             id(),
              localAddress.c_str(),
              buffer));
 }

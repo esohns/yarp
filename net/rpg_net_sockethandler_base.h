@@ -32,7 +32,8 @@
 template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_SocketHandlerBase
- : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH>,
+ : public ACE_Svc_Handler<ACE_SOCK_STREAM,
+                          ACE_MT_SYNCH>,
    public RPG_Net_IConnection<StatisticsContainerType>
 {
  public:
@@ -40,22 +41,20 @@ class RPG_Net_SocketHandlerBase
 
   //check if registration with the connection manager was OK...
   virtual int open(void* = NULL); // args
-  // *WARNING*: the default ACE_Svc_Handler implementation calls
-  // handle_close(), which we DON'T want in the case where we have our own
-  // worker (registered with the reactor, we would get "handle_closed" twice,
-  // leading to serious mayhem)
-  // *WARNING*: the current algorithm works only for 1 worker !!!
-  virtual int close(u_long = 0); // args
-//   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
-//                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
+  virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
+                           ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
   // implement (part of) RPG_Net_IConnection
   virtual void info(ACE_HANDLE&,           // return value: handle
                     ACE_INET_Addr&,        // return value: local SAP
                     ACE_INET_Addr&) const; // return value: remote SAP
   virtual void abort();
-  virtual unsigned int getID() const;
-
+  virtual unsigned int id() const;
+	// implement RPG_Common_IRefCount
+  virtual void increase();
+  virtual void decrease();
+  virtual unsigned int count();
+  virtual void wait_zero();
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 

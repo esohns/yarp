@@ -18,11 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_STREAM_COUNTER_H
-#define RPG_STREAM_COUNTER_H
+#ifndef RPG_COMMON_REFERENCECOUNTER_BASE_H
+#define RPG_COMMON_REFERENCECOUNTER_BASE_H
 
-#include "rpg_stream_exports.h"
-
+#include "rpg_common_exports.h"
 #include "rpg_common_irefcount.h"
 #include "rpg_common_idumpstate.h"
 
@@ -30,33 +29,38 @@
 #include <ace/Condition_T.h>
 #include <ace/Synch.h>
 
-class RPG_Stream_Export RPG_Stream_Counter
- : public RPG_Common_IRefCount,
+class RPG_Common_Export RPG_Common_ReferenceCounterBase
+ : virtual public RPG_Common_IRefCount,
    public RPG_Common_IDumpState
 {
  public:
-  // implement RPG_Stream_IRefCount
+  virtual ~RPG_Common_ReferenceCounterBase();
+
+  // implement RPG_Common_IRefCount
   virtual void increase();
   virtual void decrease();
-  virtual unsigned int refcount();
-  virtual void waitcount();
+  virtual unsigned int count();
+  virtual void wait_zero();
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  protected:
-  mutable ACE_Recursive_Thread_Mutex        myLock;
-
-  // safety measures: this is meant to be a subclass !
-  RPG_Stream_Counter(const unsigned int&); // initial reference count
-  virtual ~RPG_Stream_Counter();
+  // *WARNING*: "destroy on 0" may not work predictably if there are
+  // any waiters (or in ANY multithreaded context, for that matter)...
+  RPG_Common_ReferenceCounterBase(const unsigned int& = 1, // initial reference count
+                                  const bool& = true);     // destroy on 0 --> delete this ?
 
  private:
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Counter(const RPG_Stream_Counter&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Counter& operator=(const RPG_Stream_Counter&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounterBase());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounterBase(const RPG_Common_ReferenceCounterBase&););
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounterBase& operator=(const RPG_Common_ReferenceCounterBase&));
 
   unsigned int                              myCounter;
+  bool                                      myDeleteOnZero;
+  // make API re-entrant
+  mutable ACE_Recursive_Thread_Mutex        myLock;
   // implement blocking wait...
   ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 };

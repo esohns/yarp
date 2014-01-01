@@ -33,7 +33,7 @@ template <typename ConfigType,
           typename StreamType>
 RPG_Net_StreamSocketBase<ConfigType,
                          StatisticsContainerType,
-                         StreamType>::RPG_Net_StreamSocketBase(MANAGER_t* manager_in)
+                         StreamType>::RPG_Net_StreamSocketBase(MANAGER_T* manager_in)
  : inherited(manager_in),
    //myStream(),
    myCurrentReadBuffer(NULL),
@@ -71,14 +71,14 @@ RPG_Net_StreamSocketBase<ConfigType,
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
 
   // step1: init/start stream
-  inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
+  inherited::myUserData.sessionID = inherited::id(); // (== socket handle)
   // connect stream head message queue with the reactor notification pipe ?
   if (!inherited::myUserData.useThreadPerConnection)
   {
     // *IMPORTANT NOTE*: enable the reference counting policy, as this will
     // be registered with the reactor several times (1x READ_MASK, nx WRITE_MASK);
     // therefore several threads MAY be dispatching notifications (yes, even
-    // concurrently, myLock enforces the proper sequence order, see handle_output())
+    // concurrently; myLock enforces the proper sequence order, see handle_output())
     // on the SAME handler. When the socket closes, the event handler should thus
     // not be destroyed() immediately, but simply purge any pending notifications
     // (see handle_close()) and de-register; after the last active
@@ -104,7 +104,7 @@ RPG_Net_StreamSocketBase<ConfigType,
     return -1;
   } // end IF
 
-  // step2: tweak socket, register io handle with the reactor, ...
+  // step2: tweak socket, register I/O handle with the reactor, ...
   // *NOTE*: as soon as this returns, data starts arriving at handle_input()
   int result = inherited::open(arg_in);
   if (result == -1)
@@ -112,16 +112,64 @@ RPG_Net_StreamSocketBase<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Net_SocketHandlerBase::open(): \"%m\", aborting\n")));
 
-    // clean up
-    myStream.stop();
-
     return -1;
   } // end IF
-  // *IMPORTANT NOTE*: let the reactor manage this handler
+  // *IMPORTANT NOTE*: let the reactor manage this handler...
+	// *WARNING*: this has some implications (see close() below)
   if (!inherited::myUserData.useThreadPerConnection)
     inherited::remove_reference();
 
   return 0;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType,
+          typename StreamType>
+int
+RPG_Net_StreamSocketBase<ConfigType,
+                         StatisticsContainerType,
+                         StreamType>::close(u_long arg_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::close"));
+
+	// init return value(s)
+	int result = -1;
+
+  switch (arg_in)
+  {
+    // called by external (e.g. reactor) thread wanting to close the connection (e.g. too many connections)
+		// *NOTE*: this eventually calls handle_close() (see below)
+    case NORMAL_CLOSE_OPERATION:
+    case CLOSE_DURING_NEW_CONNECTION:
+		{
+			// *NOTE*: de-register from the reactor, close the socket, ...
+			// *IMPORTANT NOTE*: don't simply calldown, as the reactor removes the
+			// last reference too early --> add a reference temporarily
+			if (!inherited::myUserData.useThreadPerConnection)
+				inherited::add_reference();
+			result = inherited::close(arg_in);
+			if (result == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Net_SocketHandlerBase::close(%u): \"%m\", aborting\n"),
+									 arg_in));
+
+			// clean up
+			if (!inherited::myUserData.useThreadPerConnection)
+				inherited::remove_reference();
+
+			break;
+		}
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid argument: %u, aborting\n"),
+                 arg_in));
+
+      break;
+    }
+  } // end SWITCH
+
+  return result;
 }
 
 template <typename ConfigType,
@@ -298,7 +346,8 @@ RPG_Net_StreamSocketBase<ConfigType,
 				  (error != ECONNABORTED) &&
           (error != EPIPE) &&      // <-- connection reset by peer
           // -------------------------------------------------------------------
-          (error != EBADF))        // <-- connection abort()ed locally
+          (error != ENOTSOCK) &&
+					(error != EBADF))        // <-- connection abort()ed locally
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", aborting\n")));
 
@@ -355,10 +404,17 @@ RPG_Net_StreamSocketBase<ConfigType,
 //  } // end IF
 //  else
   if (myCurrentWriteBuffer != NULL)
-    if (inherited::reactor()->schedule_wakeup(this,
-                                              ACE_Event_Handler::WRITE_MASK) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::schedule_wakeup(): \"%m\", continuing\n")));
+	{
+    // clean up
+		if (!inherited::myUserData.useThreadPerConnection)
+      myLock.release();
+
+		return 1;
+	} // end IF
+    //if (inherited::reactor()->schedule_wakeup(this,
+    //                                          ACE_Event_Handler::WRITE_MASK) == -1)
+    //  ACE_DEBUG((LM_ERROR,
+    //             ACE_TEXT("failed to ACE_Reactor::schedule_wakeup(): \"%m\", continuing\n")));
 
   // clean up
   if (!inherited::myUserData.useThreadPerConnection)
@@ -380,9 +436,26 @@ RPG_Net_StreamSocketBase<ConfigType,
 
   switch (mask_in)
   {
-    case ACE_Event_Handler::READ_MASK:
+    case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
+		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> accept failed (e.g. too many connections) ?
     {
-      // --> socket has been closed
+			// sanity check: accept failed ?
+			if ((mask_in == ACE_Event_Handler::ALL_EVENTS_MASK) &&
+				  (handle_in != ACE_INVALID_HANDLE))
+			{
+      // *PORTABILITY*: this isn't entirely portable...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %u) --> check implementation !, continuing\n"),
+								   handle_in,
+								   mask_in));
+#else
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %u) --> check implementation !, continuing\n"),
+								   handle_in,
+								   mask_in));
+#endif
+			} // end IF
 
       // step1: wait for all workers within the stream (if any)
       if (myStream.isRunning())
@@ -394,7 +467,8 @@ RPG_Net_StreamSocketBase<ConfigType,
       // step2: purge any pending notifications ?
       // *WARNING: do this here, while still holding on to the current write buffer
       if (!inherited::myUserData.useThreadPerConnection)
-        if (inherited::reactor()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
+        if (inherited::reactor()->purge_pending_notifications(this,
+					                                                    ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
                      this));
@@ -406,10 +480,19 @@ RPG_Net_StreamSocketBase<ConfigType,
       //  ACE_DEBUG((LM_ERROR,
       //             ACE_TEXT("notification completed, continuing\n")));
       break;
-    // *NOTE*: happens when an accept fails (e.g. too many connections)
-    case ACE_Event_Handler::ALL_EVENTS_MASK:
-      break;
     default:
+      // *PORTABILITY*: this isn't entirely portable...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %u) --> check implementation !, continuing\n"),
+								 handle_in,
+								 mask_in));
+#else
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %u) --> check implementation !, continuing\n"),
+								 handle_in,
+								 mask_in));
+#endif
       break;
   } // end SWITCH
 

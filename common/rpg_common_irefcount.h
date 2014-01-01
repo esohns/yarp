@@ -29,10 +29,10 @@ class RPG_Common_IRefCount
   // exposed interface
   virtual void increase() = 0;
   virtual void decrease() = 0;
-  virtual unsigned int refcount() = 0;
+  virtual unsigned int count() = 0;
   // *NOTE*: this call should block IF the count is > 0 and wait
   // until the count reaches 0 the next time
-  virtual void waitcount() = 0;
+  virtual void wait_zero() = 0;
 };
 
 #endif

@@ -124,7 +124,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to setSocketBuffer(%u) for %u, aborting\n"),
                  myUserData.socketBufferSize,
-                 getID()));
+                 id()));
 
     return -1;
   } // end IF
@@ -133,8 +133,9 @@ RPG_Net_SocketHandlerBase<ConfigType,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
-               getID(),
-               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true") : ACE_TEXT("false"))));
+               id(),
+               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true")
+							                           : ACE_TEXT("false"))));
 
     return -1;
   } // end IF
@@ -143,8 +144,9 @@ RPG_Net_SocketHandlerBase<ConfigType,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
-               getID(),
-               (RPG_NET_DEF_SOCK_LINGER ? ACE_TEXT("true") : ACE_TEXT("false"))));
+               id(),
+               (RPG_NET_DEF_SOCK_LINGER ? ACE_TEXT("true")
+							                          : ACE_TEXT("false"))));
 
     return -1;
   } // end IF
@@ -153,8 +155,9 @@ RPG_Net_SocketHandlerBase<ConfigType,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
-               getID(),
-               ((RPG_NET_DEF_SOCK_LINGER > 0) ? ACE_TEXT("true") : ACE_TEXT("false"))));
+               id(),
+               ((RPG_NET_DEF_SOCK_LINGER > 0) ? ACE_TEXT("true")
+							                                : ACE_TEXT("false"))));
 
     return -1;
   } // end IF
@@ -164,7 +167,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Svc_Handler::open(%u): \"%m\", aborting\n"),
-               getID()));
+               id()));
 
     return -1;
   } // end IF
@@ -204,60 +207,63 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 int
 RPG_Net_SocketHandlerBase<ConfigType,
-                          StatisticsContainerType>::close(u_long arg_in)
+                          StatisticsContainerType>::handle_close(ACE_HANDLE handle_in,
+                                                                 ACE_Reactor_Mask mask_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::close"));
-  // [*NOTE*: hereby we override the default behavior of a ACE_Svc_Handler,
-  // which would call handle_close() AGAIN]
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
 
-  // *NOTE*: this method will be invoked
-  // - by the worker which calls this after returning from svc()
-  //    --> in this case, this should be a NOP (triggered from handle_close(),
-  //        which was invoked by the reactor) - we override the default
-  //        behavior of a ACE_Svc_Handler, which would call handle_close() AGAIN
-  // - by the connector/acceptor when open() fails (e.g. too many connections !)
-  //    --> close the socket !
-
-  switch (arg_in)
+  switch (mask_in)
   {
-    // called by:
-    // - any worker from ACE_Task_Base on clean-up
-    // - acceptor/connector if there are too many connections (i.e. open() returned -1)
-    case 0:
+		case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
+			break;
+    case ACE_Event_Handler::EXCEPT_MASK:
+      //if (handle_in == ACE_INVALID_HANDLE) // <-- notification has completed (!useThreadPerConnection)
+      //  ACE_DEBUG((LM_ERROR,
+      //             ACE_TEXT("notification completed, continuing\n")));
+      break;
+		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> accept failed (e.g. too many connections) ?
     {
-      // check specifically for the first case...
-      if (ACE_OS::thr_equal(ACE_Thread::self(), last_thread()))
-      {
-//       if (module())
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("\"%s\" worker thread (ID: %t) leaving...\n"),
-//                    ACE_TEXT_ALWAYS_CHAR(name())));
-//       else
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("worker thread (ID: %t) leaving...\n")));
+			// sanity check: accept failed ?
+			if ((mask_in == ACE_Event_Handler::ALL_EVENTS_MASK) &&
+				  (handle_in != ACE_INVALID_HANDLE))
+			{
+      // *PORTABILITY*: this isn't entirely portable...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %u) --> check implementation !, continuing\n"),
+								   handle_in,
+								   mask_in));
+#else
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %u) --> check implementation !, continuing\n"),
+								   handle_in,
+								   mask_in));
+#endif
+			} // end IF
 
-        // don't do anything...
-        break;
-      } // end IF
+			inherited::shutdown();
 
-      // too many connections: invoke inherited default behavior
-      // --> simply fall through to the next case
-    }
-    // called by external (e.g. reactor) thread wanting to close the connection (e.g. too many connections)
-    case 1:
-      return inherited::close(arg_in);
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid argument: %u, returning\n"),
-                 arg_in));
-
-      // what else can we do ?
       break;
     }
+    default:
+      // *PORTABILITY*: this isn't entirely portable...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %u) --> check implementation !, continuing\n"),
+								 handle_in,
+								 mask_in));
+#else
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %u) --> check implementation !, continuing\n"),
+								 handle_in,
+								 mask_in));
+#endif
+      break;
   } // end SWITCH
 
-  return 0;
+  // *NOTE*: this MAY "delete this"...
+  return inherited::handle_close(handle_in,
+                                 mask_in);
 }
 
 template <typename ConfigType,
@@ -312,9 +318,9 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 unsigned int
 RPG_Net_SocketHandlerBase<ConfigType,
-                          StatisticsContainerType>::getID() const
+                          StatisticsContainerType>::id() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::getID"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::id"));
 
   // *PORTABILITY*: this isn't entirely portable...
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
@@ -322,6 +328,56 @@ RPG_Net_SocketHandlerBase<ConfigType,
 #else
   return reinterpret_cast<unsigned int>(peer_.get_handle());
 #endif
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+void
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::increase()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::increase"));
+
+	// *TODO*: this doesn't work !
+	inherited::add_reference();
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+void
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::decrease()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::decrease"));
+
+	// *TODO*: this doesn't work !
+	inherited::remove_reference();
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+unsigned int
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::count()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::count"));
+
+	// *TODO*: implement this !
+  ACE_ASSERT(false);
+
+	return 0;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+void
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::wait_zero()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::wait_zero"));
+
+	// *TODO*: implement this !
+  ACE_ASSERT(false);
 }
 
 template <typename ConfigType,
@@ -345,7 +401,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Stream::get_local_addr(): \"%m\", continuing\n")));
   } // end IF
-  else if (address.addr_to_string(buffer, sizeof(buffer)) == -1)
+  else if (address.addr_to_string(buffer,
+		                              sizeof(buffer)) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
   localAddress = buffer;
@@ -361,13 +418,14 @@ RPG_Net_SocketHandlerBase<ConfigType,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Stream::get_remote_addr(): \"%m\", continuing\n")));
   } // end IF
-  else if (address.addr_to_string(buffer, sizeof(buffer)) == -1)
+  else if (address.addr_to_string(buffer,
+		                              sizeof(buffer)) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("connection [%u]: (\"%s\") <--> (\"%s\")\n"),
-             getID(),
+             id(),
              localAddress.c_str(),
              buffer));
 }

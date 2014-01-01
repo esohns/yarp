@@ -74,8 +74,11 @@ class RPG_Net_Connection_Manager
   void waitConnections() const;
   unsigned int numConnections() const;
 
-  // *WARNING*: to be used for testing ONLY !
-  const CONNECTION_TYPE* operator[](unsigned int) const;
+  // *TODO*: used for testing ONLY !
+	//void lock();
+	//void unlock();
+	const CONNECTION_TYPE* operator[](unsigned int) const;
+	// --------------------------------------------------------------------------
   void abortOldestConnection();
   void abortNewestConnection();
 

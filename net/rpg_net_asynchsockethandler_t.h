@@ -24,6 +24,8 @@
 #include "rpg_net_iconnection.h"
 #include "rpg_net_iconnectionmanager.h"
 
+#include "rpg_common_referencecounter_base.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Asynch_IO.h>
 #include <ace/INET_Addr.h>
@@ -35,7 +37,8 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_AsynchSocketHandler_T
  : public ACE_Service_Handler,
-   public RPG_Net_IConnection<StatisticsContainerType>
+   public RPG_Common_ReferenceCounterBase,
+   public RPG_Net_IConnection<StatisticsContainerType>	 
 {
  public:
   virtual ~RPG_Net_AsynchSocketHandler_T();
@@ -53,8 +56,12 @@ class RPG_Net_AsynchSocketHandler_T
                     ACE_INET_Addr&,        // return value: local SAP
                     ACE_INET_Addr&) const; // return value: remote SAP
   virtual void abort();
-  virtual unsigned int getID() const;
-
+  virtual unsigned int id() const;
+	// implement RPG_Common_IRefCount
+  using RPG_Common_ReferenceCounterBase::increase;
+  using RPG_Common_ReferenceCounterBase::decrease;
+  using RPG_Common_ReferenceCounterBase::count;
+  using RPG_Common_ReferenceCounterBase::wait_zero;
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
@@ -68,14 +75,15 @@ class RPG_Net_AsynchSocketHandler_T
 
   virtual void handle_write_stream(const ACE_Asynch_Write_Stream::Result&); // result
 
-  ConfigType 		  myUserData;
+  ConfigType 		          myUserData;
   ACE_Asynch_Read_Stream  myInputStream;
   ACE_Asynch_Write_Stream myOutputStream;
-  MANAGER_T* 	          myManager;
-  bool       	          myIsRegistered;
+  MANAGER_T* 	            myManager;
+  bool       	            myIsRegistered;
 
  private:
   typedef ACE_Service_Handler inherited;
+	typedef RPG_Common_ReferenceCounterBase inherited2;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler_T());
@@ -87,9 +95,6 @@ class RPG_Net_AsynchSocketHandler_T
 
   ACE_INET_Addr           myLocalSAP;
   ACE_INET_Addr           myRemoteSAP;
-  // *NOTE*: keep this around to de-register when the socket descriptor
-  //  has gone stale...
-  //unsigned int	          myID;
 };
 
 // include template definition

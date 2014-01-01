@@ -42,7 +42,7 @@ RPG_Net_SocketHandler::~RPG_Net_SocketHandler()
 
   // wait for our worker (if any)
   if (inherited::myUserData.useThreadPerConnection)
-    if (wait() == -1)
+    if (inherited::wait() == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 }
@@ -73,7 +73,6 @@ RPG_Net_SocketHandler::svc(void)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n")));
 
-        // what else can we do ?
         return -1;
       } // end IF
 
@@ -87,7 +86,6 @@ RPG_Net_SocketHandler::svc(void)
 //                  ACE_TEXT("[%u]: finished sending...\n"),
 //                  peer_.get_handle()));
 
-      // leave loop, we're finished
       break;
     } // end IF
 
@@ -104,6 +102,7 @@ RPG_Net_SocketHandler::svc(void)
         // connection reset by peer/broken pipe ? --> not an error
         int error = ACE_OS::last_error();
         if ((error != ECONNRESET) &&
+					  (error != ENOTSOCK) &&
             (error != EPIPE))
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", returning\n")));
@@ -230,6 +229,62 @@ RPG_Net_SocketHandler::open(void* arg_in)
       return -1;
     } // end IF
   } // end IF
+
+  return 0;
+}
+
+int
+RPG_Net_SocketHandler::close(u_long arg_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::close"));
+  // [*NOTE*: hereby we override the default behavior of a ACE_Svc_Handler,
+  // which would call handle_close() AGAIN]
+
+  // *NOTE*: this method will be invoked
+  // - by any worker after returning from svc()
+  //    --> in this case, this should be a NOP (triggered from handle_close(),
+  //        which was invoked by the reactor) - we override the default
+  //        behavior of a ACE_Svc_Handler, which would call handle_close() AGAIN
+  // - by the connector/acceptor when open() fails (e.g. too many connections !)
+  //    --> shutdown
+
+  switch (arg_in)
+  {
+    // called by:
+    // - any worker from ACE_Task_Base on clean-up
+    // - acceptor/connector if there are too many connections (i.e. open() returned -1)
+    case 0:
+    {
+      // check specifically for the first case...
+      if (ACE_OS::thr_equal(ACE_Thread::self(), last_thread()))
+      {
+//       if (module())
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("\"%s\" worker thread (ID: %t) leaving...\n"),
+//                    ACE_TEXT_ALWAYS_CHAR(name())));
+//       else
+//         ACE_DEBUG((LM_DEBUG,
+//                    ACE_TEXT("worker thread (ID: %t) leaving...\n")));
+
+        break;
+      } // end IF
+
+      // too many connections: invoke inherited default behavior
+      // --> simply fall through to the next case
+    }
+    // called by external (e.g. reactor) thread wanting to close the connection (e.g. too many connections)
+		// *NOTE*: this eventually calls handle_close() (see below)
+    case 1:
+      return inherited::close(arg_in);
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid argument: %u, returning\n"),
+                 arg_in));
+
+      break;
+    }
+  } // end SWITCH
 
   return 0;
 }

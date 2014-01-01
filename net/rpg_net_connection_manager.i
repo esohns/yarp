@@ -383,6 +383,28 @@ RPG_Net_Connection_Manager<ConfigType,
   return static_cast<unsigned int>(num_connections);
 }
 
+//template <typename ConfigType,
+//          typename StatisticsContainerType>
+//void
+//RPG_Net_Connection_Manager<ConfigType,
+//                           StatisticsContainerType>::lock()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::lock"));
+//	
+//	myLock.acquire();
+//}
+//
+//template <typename ConfigType,
+//          typename StatisticsContainerType>
+//void
+//RPG_Net_Connection_Manager<ConfigType,
+//                           StatisticsContainerType>::unlock()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::unlock"));
+//	
+//	myLock.release();
+//}
+
 template <typename ConfigType,
           typename StatisticsContainerType>
 const typename RPG_Net_Connection_Manager<ConfigType,
@@ -412,6 +434,9 @@ RPG_Net_Connection_Manager<ConfigType,
   for (unsigned int i = 0;
        iterator.next(result) && (i < index_in);
        iterator.advance(), i++) {} // end FOR
+
+	// increase refcount
+	result->increase();
 
   return result;
 }

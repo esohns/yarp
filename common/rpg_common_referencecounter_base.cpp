@@ -19,31 +19,41 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_stream_counter.h"
+#include "rpg_common_referencecounter_base.h"
 
 #include "rpg_common_macros.h"
 
 #include <ace/Guard_T.h>
-#include <ace/Synch.h>
 
-RPG_Stream_Counter::RPG_Stream_Counter(const unsigned int& initCount_in)
+RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase(const unsigned int& initCount_in,
+                                                                 const bool& deleteOnZero_in)
  : myCounter(initCount_in),
+   myDeleteOnZero(deleteOnZero_in),
    myCondition(myLock)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::RPG_Stream_Counter"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase"));
 
 }
 
-RPG_Stream_Counter::~RPG_Stream_Counter()
+//RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase(const RPG_Common_ReferenceCounterBase& counter_in)
+// : myCounter(counter_in.myCounter),
+//   myDeleteOnZero(counter_in.myDeleteOnZero),
+//   myCondition(counter_in.myLock) // *NOTE*: use the SAME lock !
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase"));
+//
+//}
+
+RPG_Common_ReferenceCounterBase::~RPG_Common_ReferenceCounterBase()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::~RPG_Stream_Counter"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::~RPG_Common_ReferenceCounterBase"));
 
 }
 
 void
-RPG_Stream_Counter::increase()
+RPG_Common_ReferenceCounterBase::increase()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::increase"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::increase"));
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -51,26 +61,36 @@ RPG_Stream_Counter::increase()
 }
 
 void
-RPG_Stream_Counter::decrease()
+RPG_Common_ReferenceCounterBase::decrease()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::decrease"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::decrease"));
 
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+  bool destroy = false;
 
-  myCounter--;
-
-  // awaken any waiters...
-  if (myCounter == 0)
+  // synch access
   {
-    // final signal
-    myCondition.broadcast();
-  } // end IF
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+
+    myCounter--;
+
+    // awaken any waiters...
+    if (myCounter == 0)
+    {
+      // final signal
+      myCondition.broadcast();
+
+      destroy = myDeleteOnZero;
+    } // end IF
+  } // end lock scope
+
+  if (destroy)
+    delete this; // bye bye...
 }
 
 unsigned int
-RPG_Stream_Counter::refcount()
+RPG_Common_ReferenceCounterBase::count()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::refcount"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::count"));
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
@@ -78,9 +98,9 @@ RPG_Stream_Counter::refcount()
 }
 
 void
-RPG_Stream_Counter::waitcount()
+RPG_Common_ReferenceCounterBase::wait_zero()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::waitcount"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::wait_zero"));
 
   {
     // need lock
@@ -89,7 +109,7 @@ RPG_Stream_Counter::waitcount()
     while (myCounter)
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("waiting (count: %d)...\n"),
+                 ACE_TEXT("waiting (count: %u)...\n"),
                  myCounter));
 
       myCondition.wait();
@@ -101,9 +121,9 @@ RPG_Stream_Counter::waitcount()
 }
 
 void
-RPG_Stream_Counter::dump_state() const
+RPG_Common_ReferenceCounterBase::dump_state() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Stream_Counter::dump_state"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::dump_state"));
 
   // dump an "atomic" state...
   {
@@ -111,7 +131,7 @@ RPG_Stream_Counter::dump_state() const
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("counter: %d\n"),
+               ACE_TEXT("count: %u\n"),
                myCounter));
   } // end lock scope
 }

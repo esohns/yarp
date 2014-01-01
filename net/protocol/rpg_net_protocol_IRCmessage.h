@@ -23,7 +23,7 @@
 
 #include "rpg_net_protocol_IRC_codes.h"
 
-#include <rpg_common_referencecounter.h>
+#include "rpg_common_referencecounter_base.h"
 
 #include <ace/Global_Macros.h>
 
@@ -46,7 +46,7 @@ typedef string_list_t RPG_Net_Protocol_Parameters_t;
 typedef string_list_const_iterator_t RPG_Net_Protocol_ParametersIterator_t;
 
 class RPG_Net_Protocol_IRCMessage
- : public RPG_Common_ReferenceCounter
+ : public RPG_Common_ReferenceCounterBase
 {
   public:
     enum CommandType
@@ -139,7 +139,7 @@ class RPG_Net_Protocol_IRCMessage
     list_items_ranges_t           list_param_ranges;
 
   private:
-   typedef RPG_Common_ReferenceCounter inherited;
+   typedef RPG_Common_ReferenceCounterBase inherited;
 
   // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCMessage());

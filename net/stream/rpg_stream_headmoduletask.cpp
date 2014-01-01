@@ -629,7 +629,7 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned int& sessionID_in,
   {
     try
     {
-      message = static_cast<RPG_Stream_SessionMessage*> (allocator_in->malloc(0)); // we want a session message !
+      message = static_cast<RPG_Stream_SessionMessage*>(allocator_in->malloc(0)); // we want a session message !
     }
     catch (...)
     {
@@ -647,8 +647,8 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned int& sessionID_in,
   { // *NOTE*: session message assumes responsibility for session_config !
     ACE_NEW_NORETURN(message,
                      RPG_Stream_SessionMessage(sessionID_in,
-                                           messageType_in,
-                                           config_inout));
+                                               messageType_in,
+                                               config_inout));
   } // end ELSE
 
   if (!message)
@@ -697,7 +697,7 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned int& sessionID_in,
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTask::putSessionMessage"));
 
   // create/collect session data
-  RPG_Stream_SessionConfig* config = NULL;
+  RPG_Stream_SessionConfig* session_configuration = NULL;
 
   // switch
   switch (messageType_in)
@@ -706,15 +706,14 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned int& sessionID_in,
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_STEP:
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
-      ACE_NEW_NORETURN(config,
+      ACE_NEW_NORETURN(session_configuration,
                        RPG_Stream_SessionConfig(userData_in,
-                                            startOfSession_in,
-                                            userAbort_in));
-      if (!config)
+                                                startOfSession_in,
+                                                userAbort_in));
+      if (!session_configuration)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to allocate RPG_Stream_SessionConfig: \"%s\", aborting\n"),
-                   ACE_OS::strerror(errno)));
+                   ACE_TEXT("failed to allocate RPG_Stream_SessionConfig: \"%m\", aborting\n")));
 
         return false;
       } // end IF
@@ -732,10 +731,9 @@ RPG_Stream_HeadModuleTask::putSessionMessage(const unsigned int& sessionID_in,
     }
   } // end SWITCH
 
-  // *NOTE*: this API is a "fire-and-forget", so we don't need to
-  // worry about config any longer
+  // *NOTE*: this API is a "fire-and-forget" for session_configuration
   return putSessionMessage(sessionID_in,
                            messageType_in,
-                           config,
+                           session_configuration,
                            myAllocator);
 }

@@ -110,9 +110,6 @@
     <ClInclude Include="rpg_common_plane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rpg_common_referencecounter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rpg_common_savereductiontype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -191,6 +188,9 @@
     <ClInclude Include="rpg_common_XML_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_common_referencecounter_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="rpg_common.map">
@@ -211,9 +211,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_common_file_tools.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg_common_referencecounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_common_timer_manager.cpp">
@@ -241,6 +238,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_common_XML_tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_common_referencecounter_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

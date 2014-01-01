@@ -21,17 +21,18 @@
 
 #include "rpg_stream_session_config.h"
 
-#include "rpg_stream_tools.h"
-
-#include <rpg_common_macros.h>
-
 #include <ace/Guard_T.h>
 #include <ace/Synch.h>
 
+#include "rpg_common_macros.h"
+
+#include "rpg_stream_tools.h"
+
 RPG_Stream_SessionConfig::RPG_Stream_SessionConfig(const void* data_in,
-												   const ACE_Time_Value& startOfSession_in,
-												   const bool& userAbort_in)
- : inherited(1),
+																									 const ACE_Time_Value& startOfSession_in,
+																									 const bool& userAbort_in)
+ : inherited(1,     // initial count
+             true), // delete on zero ?
    myUserData(data_in),
    myStartOfSession(startOfSession_in),
    myUserAbort(userAbort_in)
@@ -54,7 +55,7 @@ RPG_Stream_SessionConfig::getUserData() const
   return myUserData;
 }
 
-const ACE_Time_Value
+ACE_Time_Value
 RPG_Stream_SessionConfig::getStartOfSession() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::getStartOfSession"));
@@ -62,33 +63,12 @@ RPG_Stream_SessionConfig::getStartOfSession() const
   return myStartOfSession;
 }
 
-const bool
+bool
 RPG_Stream_SessionConfig::getUserAbort() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::getUserAbort"));
 
   return myUserAbort;
-}
-
-void
-RPG_Stream_SessionConfig::decrease()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_SessionConfig::decrease"));
-
-  bool destroy = false;
-
-  {
-    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(inherited::myLock);
-
-    inherited::decrease();
-    destroy = (refcount() == 0);
-  } // end lock scope
-
-  if (destroy)
-  {
-    // self-destruct
-    delete this;
-  } // end IF
 }
 
 void

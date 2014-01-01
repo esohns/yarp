@@ -95,7 +95,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::open"));
 
   // step1: init/start stream
-  inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
+  inherited::myUserData.sessionID = inherited::id(); // (== socket handle)
   // connect stream head message queue with the reactor notification pipe ?
   if (!inherited::myUserData.useThreadPerConnection)
     inherited::myUserData.notificationStrategy = &myNotificationStrategy;
