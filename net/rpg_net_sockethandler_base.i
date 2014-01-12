@@ -35,8 +35,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
              ACE_Reactor::instance()), // default reactor
-   myNotificationStrategy(ACE_Reactor::instance(),       // reactor
-                          this,                          // event handler
+	 inherited2(0,     // initial count
+	            true), // delete on zero ?
+   myNotificationStrategy(ACE_Reactor::instance(),        // reactor
+                          this,                           // event handler
                           ACE_Event_Handler::WRITE_MASK), // handle output only
    myManager(manager_in),
 //    myUserData(),
@@ -75,18 +77,18 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
 
-  if (myManager && myIsRegistered)
-  { // (try to) de-register with connection manager
-    try
-    {
-      myManager->deregisterConnection(this);
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::deregisterConnection(), continuing\n")));
-    }
-  } // end IF
+  //if (myManager && myIsRegistered)
+  //{ // (try to) de-register with connection manager
+  //  try
+  //  {
+  //    myManager->deregisterConnection(this);
+  //  }
+  //  catch (...)
+  //  {
+  //    ACE_DEBUG((LM_ERROR,
+  //               ACE_TEXT("caught exception in RPG_Net_IConnectionManager::deregisterConnection(), continuing\n")));
+  //  }
+  //} // end IF
 
 //  // *IMPORTANT NOTE*: the streamed socket handler uses the stream head modules' queue
 //  // --> this happens too late, as the stream/queue will have been deleted by now...
@@ -94,6 +96,38 @@ RPG_Net_SocketHandlerBase<ConfigType,
 //    ACE_DEBUG((LM_ERROR,
 //               ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
 //               this));
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+ACE_Event_Handler::Reference_Count
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::add_reference(void)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::add_reference"));
+
+	// init return value
+	ACE_Event_Handler::Reference_Count result = inherited::add_reference();
+	
+	inherited2::increase();
+
+  return result;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+ACE_Event_Handler::Reference_Count
+RPG_Net_SocketHandlerBase<ConfigType,
+                          StatisticsContainerType>::remove_reference(void)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::remove_reference"));
+
+	// init return value
+	ACE_Event_Handler::Reference_Count result = inherited::remove_reference();
+
+  inherited2::decrease();
+
+	return result;
 }
 
 template <typename ConfigType,
@@ -126,8 +160,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
                  myUserData.socketBufferSize,
                  id()));
 
-    return -1;
-  } // end IF
+			return -1;
+		} // end IF
   if (!RPG_Net_Common_Tools::setNoDelay(peer_.get_handle(),
                                         RPG_NET_DEF_SOCK_NODELAY))
   {
@@ -212,36 +246,85 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
 
+	// init return value
+	int result = 0;
+
   switch (mask_in)
   {
-		case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
-			break;
     case ACE_Event_Handler::EXCEPT_MASK:
       //if (handle_in == ACE_INVALID_HANDLE) // <-- notification has completed (!useThreadPerConnection)
       //  ACE_DEBUG((LM_ERROR,
       //             ACE_TEXT("notification completed, continuing\n")));
       break;
-		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> accept failed (e.g. too many connections) ?
+		case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
+			break;
+		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> connect failed (e.g. connection refused) /
+			                                       //     accept failed (e.g. too many connections) ?
     {
-			// sanity check: accept failed ?
-			if ((mask_in == ACE_Event_Handler::ALL_EVENTS_MASK) &&
-				  (handle_in != ACE_INVALID_HANDLE))
+			// sanity check: connect/accept failed ?
+			if (mask_in == ACE_Event_Handler::ALL_EVENTS_MASK)
 			{
-      // *PORTABILITY*: this isn't entirely portable...
+				if (handle_in != ACE_INVALID_HANDLE)
+			  {
+				  // *TODO*: connect case ?
+
+          // *PORTABILITY*: this isn't entirely portable...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %u) --> check implementation !, continuing\n"),
-								   handle_in,
-								   mask_in));
+					ACE_DEBUG((LM_ERROR,
+						         ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %d) --> check implementation !, continuing\n"),
+								     handle_in,
+								     mask_in));
 #else
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %u) --> check implementation !, continuing\n"),
-								   handle_in,
-								   mask_in));
+					ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %d) --> check implementation !, continuing\n"),
+								     handle_in,
+								     mask_in));
 #endif
+				} // end IF
+				else
+				{
+					// *TODO*: accept case ?
+
+					// *IMPORTANT NOTE*: when a connection attempt fails, the reactor close()s
+					// the connection although it was never open()ed; in that case there is
+					// no valid socket handle
+					result = inherited::peer_.close();
+					if (result == -1)
+						ACE_DEBUG((LM_ERROR,
+											 ACE_TEXT("failed to ACE_SOCK_Stream::close(): %m, continuing\n")));
+
+					// clean up
+					// invoke base-class maintenance
+					// *IMPORTANT NOTE*: make sure that the base-class dtor doesn't invoke
+					// shutdown() (see below)
+					inherited::closing_ = true;
+					decrease();
+
+					return result;
+				} // end ELSE
 			} // end IF
 
-			inherited::shutdown();
+			// *IMPORTANT NOTE*: the current implementation of
+			// ACE_Svc_Handler::shutdown references (amongst others) a recycler after
+			// removing the connection from the reactor. Since the current strategy
+			// involves references to connection handlers without connection
+			// recycling, this leads to a crash, since the connection is deleted
+			// prematurely
+			// --> as a workaround, reimplement only the relevant parts of the
+			//     current behaviour (in a feasible order, as remove_handler may
+			//     involve "delete this")
+			// *TODO*: report this to the ACE people
+			//inherited::shutdown();
+
+			ACE_ASSERT(inherited::reactor());
+			result = inherited::reactor()->remove_handler(this,
+																									  (mask_in |
+																									   ACE_Event_Handler::DONT_CALL));
+			if (result == -1)
+				ACE_DEBUG((LM_ERROR,
+									 ACE_TEXT("failed to ACE_Reactor::remove_handler(%@, %d), continuing\n"),
+									 this,
+									 mask_in));
 
       break;
     }
@@ -249,21 +332,41 @@ RPG_Net_SocketHandlerBase<ConfigType,
       // *PORTABILITY*: this isn't entirely portable...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %u) --> check implementation !, continuing\n"),
+                 ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %d) --> check implementation !, continuing\n"),
 								 handle_in,
 								 mask_in));
 #else
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %u) --> check implementation !, continuing\n"),
+                 ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %d) --> check implementation !, continuing\n"),
 								 handle_in,
 								 mask_in));
 #endif
       break;
   } // end SWITCH
 
-  // *NOTE*: this MAY "delete this"...
-  return inherited::handle_close(handle_in,
-                                 mask_in);
+  // invoke base-class maintenance
+	// *IMPORTANT NOTE*: make sure that the base-class dtor doesn't invoke
+	// shutdown() (see above)
+	inherited::closing_ = true;
+//  result = inherited::handle_close(handle_in,
+//                                   mask_in);
+//	if (result == -1)
+//	{
+//    // *PORTABILITY*: this isn't entirely portable...
+//#if defined(ACE_WIN32) || defined(ACE_WIN64)
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_Svc_Handler::handle_close(%@, %d): %m, continuing\n"),
+//						   handle_in,
+//						   mask_in));
+//#else
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_Svc_Handler::handle_close(%d, %d): %m, continuing\n"),
+//							 handle_in,
+//							 mask_in));
+//#endif
+//	} // end IF
+
+	return result;
 }
 
 template <typename ConfigType,
@@ -338,8 +441,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::increase"));
 
-	// *TODO*: this doesn't work !
 	inherited::add_reference();
+	inherited2::increase();
 }
 
 template <typename ConfigType,
@@ -350,34 +453,12 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::decrease"));
 
-	// *TODO*: this doesn't work !
+  // *IMPORTANT NOTE*: this sequence works as long as the reactor doesn't manage
+	// the lifecycle of the event handler. To avoid unforseen behavior, make sure
+	// that the event handler has been properly deregistered from the reactor
+	// before removing the last reference.
 	inherited::remove_reference();
-}
-
-template <typename ConfigType,
-          typename StatisticsContainerType>
-unsigned int
-RPG_Net_SocketHandlerBase<ConfigType,
-                          StatisticsContainerType>::count()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::count"));
-
-	// *TODO*: implement this !
-  ACE_ASSERT(false);
-
-	return 0;
-}
-
-template <typename ConfigType,
-          typename StatisticsContainerType>
-void
-RPG_Net_SocketHandlerBase<ConfigType,
-                          StatisticsContainerType>::wait_zero()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::wait_zero"));
-
-	// *TODO*: implement this !
-  ACE_ASSERT(false);
+	inherited2::decrease();
 }
 
 template <typename ConfigType,

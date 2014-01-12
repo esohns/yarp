@@ -46,22 +46,20 @@ class RPG_Common_Export RPG_Common_ReferenceCounterBase
   virtual void dump_state() const;
 
  protected:
-  // *WARNING*: "destroy on 0" may not work predictably if there are
+  // *WARNING*: "delete on 0" may not work predictably if there are
   // any waiters (or in ANY multithreaded context, for that matter)...
   RPG_Common_ReferenceCounterBase(const unsigned int& = 1, // initial reference count
-                                  const bool& = true);     // destroy on 0 --> delete this ?
+                                  const bool& = true);     // delete on 0 ?
+
+  mutable ACE_Recursive_Thread_Mutex        myLock;
+  unsigned int                              myCounter;
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounterBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounterBase(const RPG_Common_ReferenceCounterBase&););
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_ReferenceCounterBase& operator=(const RPG_Common_ReferenceCounterBase&));
 
-  unsigned int                              myCounter;
   bool                                      myDeleteOnZero;
-  // make API re-entrant
-  mutable ACE_Recursive_Thread_Mutex        myLock;
-  // implement blocking wait...
   ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 };
 

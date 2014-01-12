@@ -38,10 +38,10 @@ class RPG_Net_StreamSocketBase
                                     StatisticsContainerType>
 {
  public:
-  virtual ~RPG_Net_StreamSocketBase();
-
+  // override some task-based members
   virtual int open(void* = NULL); // args
-	virtual int close(u_long = 0); // args
+	//virtual int close(u_long = 0); // args
+
   // *NOTE*: enqueue any received data onto our stream for further processing
   virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);
   // *NOTE*: send any enqueued data back to the client...
@@ -60,6 +60,7 @@ class RPG_Net_StreamSocketBase
   typedef RPG_Net_IConnectionManager<ConfigType,
                                      StatisticsContainerType> MANAGER_T;
   RPG_Net_StreamSocketBase(MANAGER_T*);
+  virtual ~RPG_Net_StreamSocketBase();
 
   StreamType         myStream;
   ACE_Message_Block* myCurrentReadBuffer;

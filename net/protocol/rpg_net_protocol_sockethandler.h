@@ -25,7 +25,7 @@
 #include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_stream.h"
 
-#include <rpg_net_stream_socket_base.h>
+#include "rpg_net_stream_socket_base.h"
 
 #include <ace/Global_Macros.h>
 
@@ -44,7 +44,8 @@ class RPG_Protocol_Export RPG_Net_Protocol_SocketHandler
   // override some task-based members
 //   virtual int svc(void);
   virtual int open(void* = NULL); // args
-  // *NOTE*: this is called when:
+
+	// *NOTE*: this is called when:
   // - handle_xxx() returns -1
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK);
@@ -58,7 +59,7 @@ class RPG_Protocol_Export RPG_Net_Protocol_SocketHandler
   // *WARNING*: this is just a stub...
   virtual void ping();
 
-  // stop worker
+	// helper method(s)
   void shutdown();
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_SocketHandler(const RPG_Net_Protocol_SocketHandler&));

@@ -177,6 +177,7 @@ RPG_Net_Connection_Manager<ConfigType,
       return false;
     } // end IF
 
+		connection_in->increase();
     myConnections.insert_tail(connection_in);
 
     // debug info
@@ -187,7 +188,9 @@ RPG_Net_Connection_Manager<ConfigType,
     ACE_INET_Addr local_SAP, remote_SAP;
     try
     {
-      connection_in->info(handle, local_SAP, remote_SAP);
+      connection_in->info(handle,
+				                  local_SAP,
+													remote_SAP);
     }
     catch (...)
     {
@@ -196,12 +199,14 @@ RPG_Net_Connection_Manager<ConfigType,
 
       return false;
     }
-    if (local_SAP.addr_to_string(buffer, sizeof(buffer)) == -1)
+    if (local_SAP.addr_to_string(buffer,
+			                           sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
     localAddress = buffer;
     ACE_OS::memset(buffer, 0, sizeof(buffer));
-    if (remote_SAP.addr_to_string(buffer, sizeof(buffer)) == -1)
+    if (remote_SAP.addr_to_string(buffer,
+			                            sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
 
@@ -209,7 +214,7 @@ RPG_Net_Connection_Manager<ConfigType,
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("registered connection [%@/%u]: (\"%s\") <--> (\"%s\") (total: %u)...\n"),
-               handle, reinterpret_cast<unsigned int>(handle),
+               connection_in, reinterpret_cast<unsigned int>(handle),
                localAddress.c_str(),
                buffer,
                myConnections.size()));
@@ -267,12 +272,12 @@ RPG_Net_Connection_Manager<ConfigType,
       // *PORTABILITY*
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("deregistered connection %@/%u (total: %u)\n"),
+                 ACE_TEXT("deregistered connection [%@/%u] (total: %u)\n"),
                  connection_in, reinterpret_cast<unsigned int>(handle),
 								 myConnections.size()));
 #else
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("deregistered connection %d (total: %u)\n"),
+                 ACE_TEXT("deregistered connection [%d] (total: %u)\n"),
                  handle,
 								 myConnections.size()));
 #endif
@@ -282,18 +287,24 @@ RPG_Net_Connection_Manager<ConfigType,
 
   if (!found)
   {
+		// *IMPORTANT NOTE*: when a connection attempt fails, the reactor close()s
+		// the connection although it was never open()ed
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to remove connection (%@): not found, aborting\n"),
                connection_in));
 
-    // what else can we do ?
     return;
   } // end IF
-  else
-  { // if there are no more connections, signal any waiters...
-    if (myConnections.is_empty() == 1)
-      myCondition.broadcast();
-  } // end ELSE
+
+  // sanity check
+	// *NOTE*: at this stage, the connection should normally only be registered
+	// with the reactor (I/O [and notifications])...
+	ACE_ASSERT(connection->count() >= 2);
+	connection->decrease();
+
+	// if there are no more connections, signal any waiters...
+  if (myConnections.is_empty() == 1)
+    myCondition.broadcast();
 }
 
 template <typename ConfigType,
@@ -346,8 +357,8 @@ RPG_Net_Connection_Manager<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::waitConnections"));
 
+  // synch access to myConnections
   {
-    // need lock
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
     while (myConnections.is_empty() == 0)
@@ -372,7 +383,10 @@ RPG_Net_Connection_Manager<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numConnections"));
 
-  size_t num_connections = 0;
+	// init return value(s)
+	// *TODO*: is this necessary ?
+  unsigned int num_connections = 0;
+
   // synch access to myConnections
   {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
@@ -435,7 +449,7 @@ RPG_Net_Connection_Manager<ConfigType,
        iterator.next(result) && (i < index_in);
        iterator.advance(), i++) {} // end FOR
 
-	// increase refcount
+	// increase reference count
 	result->increase();
 
   return result;
@@ -568,7 +582,6 @@ RPG_Net_Connection_Manager<ConfigType,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_IStatistic::collect(), aborting\n")));
 
-      // nothing to report
       return;
     } // end IF
 

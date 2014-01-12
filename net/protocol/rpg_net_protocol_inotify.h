@@ -26,10 +26,8 @@
 class RPG_Net_Protocol_INotify
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
+  virtual ~RPG_Net_Protocol_INotify() {};
 
-  // exposed interface
   virtual void start() = 0;
   virtual void notify(const RPG_Net_Protocol_IRCMessage&) = 0; // data
   virtual void end() = 0;

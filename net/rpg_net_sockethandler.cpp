@@ -183,7 +183,8 @@ RPG_Net_SocketHandler::open(void* arg_in)
     thread_handles[0] = 0;
     char thread_name[RPG_COMMON_BUFSIZE];
     ACE_OS::memset(thread_name, 0, sizeof(thread_name));
-    ACE_OS::strcpy(thread_name, RPG_NET_CONNECTION_HANDLER_THREAD_NAME);
+    ACE_OS::strcpy(thread_name,
+			             RPG_NET_CONNECTION_HANDLER_THREAD_NAME);
     const char* thread_names[1];
     thread_names[0] = thread_name;
     if (inherited::activate((THR_NEW_LWP |
@@ -203,7 +204,6 @@ RPG_Net_SocketHandler::open(void* arg_in)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", aborting\n")));
 
-      // reactor will invoke close() --> handle_close()
       return -1;
     } // end IF
   } // end IF
@@ -256,7 +256,8 @@ RPG_Net_SocketHandler::close(u_long arg_in)
     case 0:
     {
       // check specifically for the first case...
-      if (ACE_OS::thr_equal(ACE_Thread::self(), last_thread()))
+      if (ACE_OS::thr_equal(ACE_Thread::self(),
+				                    last_thread()))
       {
 //       if (module())
 //         ACE_DEBUG((LM_DEBUG,
@@ -272,7 +273,8 @@ RPG_Net_SocketHandler::close(u_long arg_in)
       // too many connections: invoke inherited default behavior
       // --> simply fall through to the next case
     }
-    // called by external (e.g. reactor) thread wanting to close the connection (e.g. too many connections)
+    // called by external (e.g. reactor) thread wanting to close the connection
+		// (e.g. too many connections)
 		// *NOTE*: this eventually calls handle_close() (see below)
     case 1:
       return inherited::close(arg_in);
@@ -295,13 +297,43 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_close"));
 
-  // connection shutting down --> deal with any worker(s)
+  // step1: connection shutting down --> signal any worker(s)
   if (inherited::myUserData.useThreadPerConnection)
     shutdown();
 
-  // *IMPORTANT NOTE*: this MAY "delete this"...
-  return inherited::handle_close(handle_in,
-                                 mask_in);
+	// step2: de-register this connection
+  if (inherited::myManager &&
+		  inherited::myIsRegistered)
+  { // (try to) de-register with the connection manager...
+    try
+    {
+      inherited::myManager->deregisterConnection(this);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::deregisterConnection(), continuing\n")));
+    }
+  } // end IF
+
+	// step3: invoke base-class maintenance
+	int result = inherited::handle_close(handle_in, // event handle
+                                       mask_in);  // event mask
+	if (result == -1)
+    // *PORTABILITY*: this isn't entirely portable...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Net_StreamSocketBase::handle_close(%@, %d): \"%m\", continuing\n"),
+               handle_in,
+							 mask_in));
+#else
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Net_StreamSocketBase::handle_close(%d, %d): \"%m\", continuing\n"),
+               handle_in,
+							 mask_in));
+#endif
+
+	return result;
 }
 
 void
@@ -330,7 +362,7 @@ RPG_Net_SocketHandler::shutdown()
     return;
   } // end IF
 
-  if (putq(stop_mb, NULL) == -1)
+  if (inherited::putq(stop_mb, NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));

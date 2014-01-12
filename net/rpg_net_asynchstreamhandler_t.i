@@ -105,7 +105,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
                ACE_TEXT("failed to init processing stream, aborting\n")));
 
     // clean up
-    delete this;
+    inherited::decrease();
 
     return;
   } // end IF
@@ -118,7 +118,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
                ACE_TEXT("failed to start processing stream, aborting\n")));
 
     // clean up
-    delete this;
+    inherited::decrease();
 
     return;
   } // end IF
@@ -148,7 +148,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
       myStream.stop();
       inherited::myInputStream.cancel();
       inherited::myOutputStream.cancel();
-      delete this;
+      inherited::decrease();
 
       return;
     } // end IF
@@ -178,7 +178,6 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n")));
 
-      // reactor will invoke handle_close()
       return -1;
     } // end IF
   } // end IF
@@ -337,7 +336,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
     // clean up
     result.message_block().release();
-    delete this; // close connection
+    inherited::decrease();
 
     return;
   } // end IF
@@ -357,7 +356,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
       // clean up
       result.message_block().release();
-      delete this; // close connection
+      inherited::decrease();
 
       break;
     }
@@ -370,7 +369,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
       // clean up
       result.message_block().release();
-      delete this; // close connection
+      inherited::decrease();
 
       break;
     }
@@ -389,7 +388,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
         // clean up
         result.message_block().release();
-        delete this; // close connection
+        inherited::decrease();
 
         return;
       } // end IF

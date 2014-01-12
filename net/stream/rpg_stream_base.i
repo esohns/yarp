@@ -618,8 +618,10 @@ RPG_Stream_Base<DataType,
 	MODULE_TYPE* module = const_cast<RPG_Stream_Base*>(this)->head();
   if (!module)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no head module found, aborting\n")));
+		// *IMPORTANT NOTE*: this happens when no modules have been pushed onto the
+		// stream yet
+    //ACE_DEBUG((LM_ERROR,
+    //           ACE_TEXT("no head module found, aborting\n")));
 
     return false;
   } // end IF

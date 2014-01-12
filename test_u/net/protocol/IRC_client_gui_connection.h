@@ -23,9 +23,9 @@
 
 #include "IRC_client_gui_common.h"
 
-#include <rpg_net_protocol_common.h>
-#include <rpg_net_protocol_iIRCControl.h>
-#include <rpg_net_protocol_inotify.h>
+#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_iIRCControl.h"
+#include "rpg_net_protocol_inotify.h"
 
 #include <gtk/gtk.h>
 
@@ -78,19 +78,17 @@ class IRC_Client_GUI_Connection
   void terminateMessageHandler(const std::string&); // channel/nick
 
  private:
-  typedef RPG_Net_Protocol_INotify inherited;
-
-  typedef std::map<std::string, IRC_Client_GUI_MessageHandler*> message_handlers_t;
+  typedef std::map<std::string,
+		               IRC_Client_GUI_MessageHandler*> message_handlers_t;
   typedef message_handlers_t::iterator message_handlers_iterator_t;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection());
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection(const IRC_Client_GUI_Connection&));
   ACE_UNIMPLEMENTED_FUNC(IRC_Client_GUI_Connection& operator=(const IRC_Client_GUI_Connection&));
 
   // helper methods
-  const bool forward(const std::string&,  // channel/nick
-                     const std::string&); // message text
+  bool forward(const std::string&,  // channel/nick
+               const std::string&); // message text
   void log(const std::string&);
   void log(const RPG_Net_Protocol_IRCMessage&);
   void error(const RPG_Net_Protocol_IRCMessage&);
@@ -98,15 +96,15 @@ class IRC_Client_GUI_Connection
   IRC_Client_GUI_MessageHandler* getHandler(const std::string&); // id (channel/nick)
   void updateModeButtons();
 
-  std::string                  myUIFileDirectory;
-  connection_cb_data_t         myCBData;
-  bool                         myIsFirstUsersMsg;
+  std::string          myUIFileDirectory;
+  connection_cb_data_t myCBData;
+  bool                 myIsFirstUsersMsg;
 
-  ACE_Thread_Mutex             myLock;
-  message_handlers_t           myMessageHandlers;
+  ACE_Thread_Mutex     myLock;
+  message_handlers_t   myMessageHandlers;
 
-  GtkNotebook*                 myParent;
-  guint                        myContextID;
+  GtkNotebook*         myParent;
+  guint                myContextID;
 };
 
 #endif

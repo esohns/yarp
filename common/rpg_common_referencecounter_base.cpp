@@ -84,7 +84,7 @@ RPG_Common_ReferenceCounterBase::decrease()
   } // end lock scope
 
   if (destroy)
-    delete this; // bye bye...
+    delete this;
 }
 
 unsigned int

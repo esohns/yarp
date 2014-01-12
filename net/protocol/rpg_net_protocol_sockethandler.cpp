@@ -21,13 +21,13 @@
 
 #include "rpg_net_protocol_sockethandler.h"
 
-#include "rpg_net_protocol_common.h"
-
-#include "rpg_net_connection_manager.h"
+#include "rpg_common_macros.h"
 
 #include "rpg_stream_imodule.h"
 
-#include "rpg_common_macros.h"
+#include "rpg_net_connection_manager.h"
+
+#include "rpg_net_protocol_common.h"
 
 RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler()
  : inherited(RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance())
@@ -40,12 +40,7 @@ RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler"));
 
-  // wait for our worker (if any)
-
-  // *WARNING*: cannot use wait(), as this dtor is invoked by the reactor itself
-  // on ACE_Svc_Handler::destroy() --> apparently, this deadlocks on some
-  // internal (non-recursive) lock...
-  wait();
+	myStream.waitForCompletion();
 }
 
 // int
@@ -238,29 +233,11 @@ RPG_Net_Protocol_SocketHandler::handle_close(ACE_HANDLE handle_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::handle_close"));
 
-  // deal with our worker
-  if (thr_count())
-  { // stop worker
-    try
-    {
-      // *NOTE*: cannot flush(), as this deactivates() the queue as well,
-      // which causes mayhem for our (blocked) worker...
-//       myStream.head()->reader()->flush();
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in ACE_Task::flush(): \"%m\", continuing\n")));
-
-      // *NOTE*: what else can we do ?
-    }
+  // connection shuting down, signal any worker(s)
+  if (inherited::myUserData.useThreadPerConnection)
     shutdown();
 
-    // *NOTE*: we defer waiting for our worker to the dtor
-  } // end IF
-
-  // invoke base class maintenance
-  // *NOTE*: in the end, this will "delete this"...
+  // *NOTE*: this MAY "delete this"...
   return inherited::handle_close(handle_in,
                                  mask_in);
 }
@@ -288,7 +265,6 @@ RPG_Net_Protocol_SocketHandler::shutdown()
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
 
-    // what else can we do ?
     return;
   } // end IF
 
@@ -299,7 +275,8 @@ RPG_Net_Protocol_SocketHandler::shutdown()
       ACE_DEBUG((LM_ERROR,
                 ACE_TEXT("failed to ACE_Task::put(): \"%m\", continuing\n")));
 
-      stop_mb->release();
+			// clean up
+			stop_mb->release();
     } // end IF
   }
   catch (...)
@@ -307,9 +284,9 @@ RPG_Net_Protocol_SocketHandler::shutdown()
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in ACE_Task::put(): \"%m\", aborting\n")));
 
+		// clean up
     stop_mb->release();
 
-    // what else can we do ?
     return;
   }
 }

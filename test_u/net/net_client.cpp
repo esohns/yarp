@@ -562,9 +562,12 @@ do_work(const unsigned int& maxNumConnections_in,
   // step6: dispatch events
   // *NOTE*: when using a thread pool, handle things differently...
   if (RPG_NET_CLIENT_DEF_NUM_TP_THREADS > 1)
-    RPG_Net_Common_Tools::finiEventDispatch(false,
-                                            false,
-                                            group_id);
+	{
+    if (ACE_Thread_Manager::instance()->wait_grp(group_id) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Thread_Manager::wait_grp(%d): \"%m\", continuing\n"),
+                 group_id));
+	} // end IF
   else
   {
     if (useReactor_in)

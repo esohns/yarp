@@ -21,18 +21,18 @@
 
 #include "IRC_client_gui_connection.h"
 
+#include <sstream>
+
+#include "rpg_common_macros.h"
+#include "rpg_common_file_tools.h"
+
+#include "rpg_net_protocol_tools.h"
+
+#include "rpg_client_ui_tools.h"
+
 #include "IRC_client_gui_defines.h"
 #include "IRC_client_gui_messagehandler.h"
 #include "IRC_client_gui_callbacks.h"
-
-#include <rpg_client_ui_tools.h>
-
-#include <rpg_net_protocol_tools.h>
-
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
-
-#include <sstream>
 
 IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
                                                      RPG_Net_Protocol_IIRCControl* controller_in,
@@ -41,8 +41,11 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
                                                      const std::string& label_in,
                                                      const std::string& UIFileDirectory_in,
                                                      GtkNotebook* parent_in)
- : myUIFileDirectory(),
+ : //myUIFileDirectory(),
+   //myCBData(),
    myIsFirstUsersMsg(true),
+	 //myLock(),
+	 //myMessageHandlers(),
    myParent(parent_in),
    myContextID(0)
 {
@@ -331,24 +334,11 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection(GtkBuilder* builder_in,
                                                                               ACE_TEXT_ALWAYS_CHAR("server_tab_log_textview")));
   ACE_ASSERT(server_tab_log_textview);
   IRC_Client_GUI_MessageHandler* message_handler = NULL;
-  try
-  {
-    message_handler = new IRC_Client_GUI_MessageHandler(server_tab_log_textview);
-  }
-  catch (const std::bad_alloc& exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught std::bad_alloc: \"%s\", aborting\n"),
-               exception.what()));
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception, aborting\n")));
-  }
+	ACE_NEW_NORETURN(message_handler,
+		               IRC_Client_GUI_MessageHandler(server_tab_log_textview));
   if (!message_handler)
   {
-    ACE_DEBUG((LM_ERROR,
+    ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate IRC_Client_GUI_MessageHandler, aborting\n")));
 
     return;
@@ -775,7 +765,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           bool is_IRCoperator = ((*iterator).find(ACE_TEXT_ALWAYS_CHAR("*"), 1) == 1);
           bool is_operator = ((*iterator).find(ACE_TEXT_ALWAYS_CHAR("@"), 2) != std::string::npos);
           bool is_voiced = ((*iterator).find(ACE_TEXT_ALWAYS_CHAR("+"), 2) != std::string::npos);
-          unsigned long hop_count = 0;
+          unsigned int hop_count = 0;
           std::string real_name;
           std::stringstream converter;
           std::string::size_type ws_position = 0;
@@ -1317,7 +1307,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           break;
         }
         case RPG_Net_Protocol_IRCMessage::NOTICE:
-#if defined ACE_WIN32 || defined ACE_WIN64
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
         case RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR:
 #else
         case RPG_Net_Protocol_IRCMessage::ERROR:
@@ -1328,7 +1318,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           log(message_in);
 
-#if defined ACE_WIN32 || defined ACE_WIN64
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
           if (command == RPG_Net_Protocol_IRCMessage::__QUIRK__ERROR)
 #else
           if (command == RPG_Net_Protocol_IRCMessage::ERROR)
@@ -1361,7 +1351,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid command type (was: %u), aborting\n"),
+                 ACE_TEXT("unknown/invalid command type (was: %u), aborting\n"),
                  message_in.command.discriminator));
 
       break;
@@ -1377,7 +1367,7 @@ IRC_Client_GUI_Connection::end()
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("connection lost...\n")));
 
-  // commit suicide
+  // clean up
   delete this;
 }
 
@@ -1692,28 +1682,15 @@ IRC_Client_GUI_Connection::createMessageHandler(const std::string& id_in)
 
   // create new IRC_Client_GUI_MessageHandler
   IRC_Client_GUI_MessageHandler* message_handler = NULL;
-  try
-  {
-    message_handler = new IRC_Client_GUI_MessageHandler(this,
-                                                        myCBData.controller,
-                                                        id_in,
-                                                        myUIFileDirectory,
-                                                        server_tab_channel_tabs);
-  }
-  catch (const std::bad_alloc& exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught std::bad_alloc: \"%s\", aborting\n"),
-               exception.what()));
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception, aborting\n")));
-  }
+	ACE_NEW_NORETURN(message_handler,
+		               IRC_Client_GUI_MessageHandler(this,
+                                                 myCBData.controller,
+                                                 id_in,
+                                                 myUIFileDirectory,
+                                                 server_tab_channel_tabs));
   if (!message_handler)
   {
-    ACE_DEBUG((LM_ERROR,
+    ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate IRC_Client_GUI_MessageHandler, aborting\n")));
 
     return;

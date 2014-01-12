@@ -34,8 +34,9 @@ class RPG_Net_Export RPG_Net_SocketHandler
                                    RPG_Net_Stream>
 {
  public:
+  // *TODO*: make this private, make friends with corresponding acceptor and
+	// connector classes
   RPG_Net_SocketHandler();
-  virtual ~RPG_Net_SocketHandler();
 
   // implement (part of) RPG_Net_IConnection
   virtual void ping();
@@ -57,9 +58,10 @@ class RPG_Net_Export RPG_Net_SocketHandler
                                    RPG_Net_RuntimeStatistic,
                                    RPG_Net_Stream> inherited;
 
-  // stop worker
+  // stop worker, if any
   void shutdown();
 
+  virtual ~RPG_Net_SocketHandler();
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler(const RPG_Net_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler& operator=(const RPG_Net_SocketHandler&));
 };

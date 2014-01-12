@@ -212,7 +212,9 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 		// step3: stop/abort/wait for connections
 		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->stop();
 		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+		// *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
+		// dispatched by reactor thread(s), there is no real necessity to wait here)
+		//RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // step4: stop reactor (&& proactor, if applicable)
 		int result = ACE_Reactor::instance()->end_event_loop();

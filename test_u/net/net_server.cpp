@@ -654,7 +654,7 @@ do_work(const unsigned int& maxNumConnections_in,
   // *NOTE*: from this point on, clean up any remote connections !
 
   // *NOTE*: when using a thread pool, handle things differently...
-  if (numThreadPoolThreads_in)
+  if (numThreadPoolThreads_in > 1)
   {
     if (ACE_Thread_Manager::instance()->wait_grp(group_id) == -1)
       ACE_DEBUG((LM_ERROR,
