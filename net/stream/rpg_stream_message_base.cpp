@@ -118,13 +118,13 @@ RPG_Stream_MessageBase::getID() const
   return myMessageID;
 }
 
-int
-RPG_Stream_MessageBase::getCommand() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::getCommand"));
+//int
+//RPG_Stream_MessageBase::getCommand() const
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageBase::getCommand"));
 
-  return msg_type();
-}
+//  return msg_type();
+//}
 
 ACE_Message_Block*
 RPG_Stream_MessageBase::duplicate(void) const

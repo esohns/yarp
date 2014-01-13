@@ -25,8 +25,10 @@
 
 #include "rpg_stream_defines.h"
 
-template <typename DataType>
-RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(DataType*& data_inout)
+template <typename DataType,
+          typename CommandType>
+RPG_Stream_DataMessageBase<DataType,
+                           CommandType>::RPG_Stream_DataMessageBase(DataType*& data_inout)
  : inherited(0,                                  // size
              RPG_Stream_MessageBase::MB_STREAM_OBJ,  // type
              NULL,                               // continuation
@@ -43,12 +45,15 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(DataType*& data
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::RPG_Stream_DataMessageBase"));
 
-  // bye bye...
+  // clean up
   data_inout = NULL;
 }
 
-template <typename DataType>
-RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(const RPG_Stream_DataMessageBase<DataType>& message_in)
+template <typename DataType,
+          typename CommandType>
+RPG_Stream_DataMessageBase<DataType,
+                           CommandType>::RPG_Stream_DataMessageBase(const RPG_Stream_DataMessageBase<DataType,
+                                                                                                     CommandType>& message_in)
  : inherited(message_in),
    myData(NULL),
    myIsInitialized(false)
@@ -63,8 +68,10 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(const RPG_Strea
   wr_ptr(message_in.wr_ptr());
 }
 
-template <typename DataType>
-RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Allocator* messageAllocator_in)
+template <typename DataType,
+          typename CommandType>
+RPG_Stream_DataMessageBase<DataType,
+                           CommandType>::RPG_Stream_DataMessageBase(ACE_Allocator* messageAllocator_in)
  : inherited(messageAllocator_in), // message block allocator
    myData(NULL),
    myIsInitialized(false)
@@ -78,9 +85,11 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Allocator* 
   reset();
 }
 
-template <typename DataType>
-RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Data_Block* dataBlock_in,
-                                                                 ACE_Allocator* messageAllocator_in)
+template <typename DataType,
+          typename CommandType>
+RPG_Stream_DataMessageBase<DataType,
+                           CommandType>::RPG_Stream_DataMessageBase(ACE_Data_Block* dataBlock_in,
+                                                                    ACE_Allocator* messageAllocator_in)
  : inherited(dataBlock_in,
              messageAllocator_in),
    myData(NULL),
@@ -95,8 +104,10 @@ RPG_Stream_DataMessageBase<DataType>::RPG_Stream_DataMessageBase(ACE_Data_Block*
   reset();
 }
 
-template <typename DataType>
-RPG_Stream_DataMessageBase<DataType>::~RPG_Stream_DataMessageBase()
+template <typename DataType,
+          typename CommandType>
+RPG_Stream_DataMessageBase<DataType,
+                           CommandType>::~RPG_Stream_DataMessageBase()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::~RPG_Stream_DataMessageBase"));
 
@@ -119,10 +130,12 @@ RPG_Stream_DataMessageBase<DataType>::~RPG_Stream_DataMessageBase()
   myIsInitialized = false;
 }
 
-template <typename DataType>
+template <typename DataType,
+          typename CommandType>
 void
-RPG_Stream_DataMessageBase<DataType>::init(DataType*& data_inout,
-                                           ACE_Data_Block* dataBlock_in)
+RPG_Stream_DataMessageBase<DataType,
+                           CommandType>::init(DataType*& data_inout,
+                                              ACE_Data_Block* dataBlock_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::init"));
 
@@ -132,7 +145,7 @@ RPG_Stream_DataMessageBase<DataType>::init(DataType*& data_inout,
 
   myData = data_inout;
 
-  // bye bye...
+  // clean up
   data_inout = NULL;
 
   // set our data block (if any)
@@ -144,13 +157,14 @@ RPG_Stream_DataMessageBase<DataType>::init(DataType*& data_inout,
     msg_type(RPG_Stream_MessageBase::MB_STREAM_OBJ);
   } // end IF
 
-  // OK
   myIsInitialized = true;
 }
 
-template <typename DataType>
+template <typename DataType,
+          typename CommandType>
 const DataType* const
-RPG_Stream_DataMessageBase<DataType>::getData() const
+RPG_Stream_DataMessageBase<DataType,
+                           CommandType>::getData() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::getData"));
 
@@ -160,9 +174,11 @@ RPG_Stream_DataMessageBase<DataType>::getData() const
   return myData;
 }
 
-template <typename DataType>
+template <typename DataType,
+          typename CommandType>
 void
-RPG_Stream_DataMessageBase<DataType>::dump_state() const
+RPG_Stream_DataMessageBase<DataType,
+                           CommandType>::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::dump_state"));
 
@@ -183,43 +199,45 @@ RPG_Stream_DataMessageBase<DataType>::dump_state() const
 //   inherited::dump_state();
 }
 
-template <typename DataType>
-ACE_Message_Block*
-RPG_Stream_DataMessageBase<DataType>::duplicate(void) const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::duplicate"));
+//template <typename DataType,
+//          typename CommandType>
+//ACE_Message_Block*
+//RPG_Stream_DataMessageBase<DataType,
+//                           CommandType>::duplicate(void) const
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Stream_DataMessageBase::duplicate"));
 
-  RPG_Stream_DataMessageBase<DataType>* new_message = NULL;
+//  own_type* new_message = NULL;
 
-  // create a new <RPG_Stream_DataMessageBase> that contains unique copies of
-  // the message block fields, but a reference counted duplicate of
-  // the <ACE_Data_Block>.
+//  // create a new <RPG_Stream_DataMessageBase> that contains unique copies of
+//  // the message block fields, but a reference counted duplicate of
+//  // the <ACE_Data_Block>.
 
-  // if there is no allocator, use the standard new and delete calls.
-  if (message_block_allocator_ == NULL)
-    ACE_NEW_RETURN(new_message,
-                   RPG_Stream_DataMessageBase<DataType>(*this), // invoke copy ctor
-                   NULL);
+//  // if there is no allocator, use the standard new and delete calls.
+//  if (message_block_allocator_ == NULL)
+//    ACE_NEW_RETURN(new_message,
+//                   own_type(*this), // invoke copy ctor
+//                   NULL);
 
-  ACE_NEW_MALLOC_RETURN(new_message,
-                        static_cast<RPG_Stream_DataMessageBase<DataType>*>(message_block_allocator_->malloc(capacity())),
-                        RPG_Stream_DataMessageBase<DataType>(*this), // invoke copy ctor
-                        NULL);
+//  ACE_NEW_MALLOC_RETURN(new_message,
+//                        static_cast<own_type*>(message_block_allocator_->malloc(capacity())),
+//                        own_type(*this), // invoke copy ctor
+//                        NULL);
 
-  // increment the reference counts of all the continuation messages
-  if (cont_)
-  {
-    new_message->cont_ = cont_->duplicate();
+//  // increment the reference counts of all the continuation messages
+//  if (cont_)
+//  {
+//    new_message->cont_ = cont_->duplicate();
 
-    // if things go wrong, release all of our resources and return
-    if (new_message->cont_ == 0)
-    {
-      new_message->release();
-      new_message = NULL;
-    } // end IF
-  } // end IF
+//    // when things go wrong, release all resources and return
+//    if (new_message->cont_ == 0)
+//    {
+//      new_message->release();
+//      new_message = NULL;
+//    } // end IF
+//  } // end IF
 
-  // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
+//  // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
 
-  return new_message;
-}
+//  return new_message;
+//}

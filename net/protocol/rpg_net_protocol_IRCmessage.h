@@ -123,7 +123,7 @@ class RPG_Net_Protocol_IRCMessage
     {
       union
       {
-        std::string* string;
+        std::string*                               string;
         RPG_Net_Protocol_IRC_Codes::RFC1459Numeric numeric;
       };
       enum discriminator_t
@@ -141,7 +141,6 @@ class RPG_Net_Protocol_IRCMessage
   private:
    typedef RPG_Common_ReferenceCounterBase inherited;
 
-  // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCMessage());
    ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCMessage(const RPG_Net_Protocol_IRCMessage&));
    ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCMessage& operator=(const RPG_Net_Protocol_IRCMessage&));

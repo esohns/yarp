@@ -33,7 +33,8 @@ class ACE_Message_Block;
 class ACE_Data_Block;
 
 class RPG_Net_Protocol_Message
- : public RPG_Stream_DataMessageBase<RPG_Net_Protocol_IRCMessage>
+ : public RPG_Stream_DataMessageBase<RPG_Net_Protocol_IRCMessage,
+                                     int>
 {
  public:
   // *NOTE*: to be used by allocators...
@@ -42,7 +43,7 @@ class RPG_Net_Protocol_Message
   //   RPG_Net_Protocol_Message(ACE_Allocator*); // message allocator
   virtual ~RPG_Net_Protocol_Message();
 
-  virtual int getCommand() const; // return value: (protocol) message type
+  virtual int getCommand() const; // return value: message type
 
   // implement RPG_Net_IDumpState
   virtual void dump_state() const;
@@ -77,9 +78,9 @@ class RPG_Net_Protocol_Message
   RPG_Net_Protocol_Message(const RPG_Net_Protocol_Message&);
 
  private:
-  typedef RPG_Stream_DataMessageBase<RPG_Net_Protocol_IRCMessage> inherited;
+  typedef RPG_Stream_DataMessageBase<RPG_Net_Protocol_IRCMessage,
+                                     int> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message& operator=(const RPG_Net_Protocol_Message&));
 };

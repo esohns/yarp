@@ -64,15 +64,15 @@ class IRC_Client_GUI_Connection
   virtual void end();
 
   // *NOTE*: a return value of -1 indicates non-existence
-  const guint exists(const std::string&); // channel/nick
+  guint exists(const std::string&); // channel/nick
   void channels(string_list_t&); // return value: list of active channels
   RPG_Net_Protocol_IIRCControl* getController();
-  const std::string getNickname() const;
+  std::string getNickname() const;
 
   // *WARNING*: callers need protection
   // - by the main thread (servicing the gtk_main event loop)
   // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
-  const std::string getActiveID(); // *NOTE*: can be a channel/nick !
+  std::string getActiveID(); // *NOTE*: can be a channel/nick !
   IRC_Client_GUI_MessageHandler* getActiveHandler();
   void createMessageHandler(const std::string&); // channel/nick
   void terminateMessageHandler(const std::string&); // channel/nick

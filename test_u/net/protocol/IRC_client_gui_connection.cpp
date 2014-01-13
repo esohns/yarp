@@ -1401,7 +1401,7 @@ IRC_Client_GUI_Connection::getHandler(const std::string& id_in)
   return NULL;
 }
 
-const std::string
+std::string
 IRC_Client_GUI_Connection::getNickname() const
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getNickname"));
@@ -1412,7 +1412,7 @@ IRC_Client_GUI_Connection::getNickname() const
   return myCBData.nickname;
 }
 
-const std::string
+std::string
 IRC_Client_GUI_Connection::getActiveID()
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::getActiveID"));
@@ -1521,7 +1521,7 @@ IRC_Client_GUI_Connection::getActiveHandler()
   return NULL;
 }
 
-const bool
+bool
 IRC_Client_GUI_Connection::forward(const std::string& channel_in,
                                    const std::string& messageText_in)
 {
@@ -1607,7 +1607,7 @@ IRC_Client_GUI_Connection::error(const RPG_Net_Protocol_IRCMessage& message_in)
   } // end lock scope
 }
 
-const guint
+guint
 IRC_Client_GUI_Connection::exists(const std::string& id_in)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_Connection::exists"));

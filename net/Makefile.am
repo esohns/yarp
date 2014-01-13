@@ -18,6 +18,8 @@ include_HEADERS = rpg_net_common.h \
   rpg_net_iconnection.h \
   rpg_net_iconnectionmanager.h \
   rpg_net_icounter.h \
+  rpg_net_message_base.h \
+  rpg_net_message_base.i \
   rpg_net_message.h \
   rpg_net_module_headerparser.h \
   rpg_net_module_protocolhandler.h \
@@ -66,6 +68,9 @@ libRPG_Net_la_SOURCES = rpg_net_asynchsockethandler_t.h \
   rpg_net_iconnection.h \
   rpg_net_iconnectionmanager.h \
   rpg_net_icounter.h \
+  rpg_net_message_base.cpp \
+  rpg_net_message_base.h \
+  rpg_net_message_base.i \
   rpg_net_message.cpp \
   rpg_net_message.h \
   rpg_net_module_headerparser.cpp \

@@ -65,7 +65,7 @@ class RPG_Stream_Export RPG_Stream_MessageBase
 
   // info
   unsigned int getID() const;
-  virtual int getCommand() const; // return value: (protocol) message type
+  //virtual int getCommand() const; // return value: (protocol) message type
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
@@ -85,11 +85,11 @@ class RPG_Stream_Export RPG_Stream_MessageBase
    RPG_Stream_MessageBase(const RPG_Stream_MessageBase&);
 
   // *NOTE*: to be used by message allocators...
-  RPG_Stream_MessageBase(ACE_Data_Block*, // data block
-                     ACE_Allocator*, // message allocator
-                     const bool& = true); // increment running message counter ?
-  RPG_Stream_MessageBase(ACE_Allocator*,       // message allocator
-                     const bool& = true); // increment running message counter ?
+  RPG_Stream_MessageBase(ACE_Data_Block*,     // data block
+                         ACE_Allocator*,      // message allocator
+                         const bool& = true); // increment running message counter ?
+  RPG_Stream_MessageBase(ACE_Allocator*,      // message allocator
+                         const bool& = true); // increment running message counter ?
 
   // used for pre-allocated messages...
   void init(ACE_Data_Block*          // data block to use

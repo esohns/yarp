@@ -8,7 +8,6 @@ include_HEADERS = rpg_stream.h \
   rpg_stream_allocatorheap.h \
   rpg_stream_base.h \
   rpg_stream_base.i \
-  rpg_stream_counter.h \
   rpg_stream_data_message_base.h \
   rpg_stream_data_message_base.i \
   rpg_stream_datablockallocatorheap.h \
@@ -66,8 +65,6 @@ libRPG_Stream_la_SOURCES = rpg_stream.cpp \
 	rpg_stream_base.cpp \
 	rpg_stream_base.h \
 	rpg_stream_base.i \
-	rpg_stream_counter.cpp \
-	rpg_stream_counter.h \
 	rpg_stream_data_message_base.cpp \
 	rpg_stream_data_message_base.h \
 	rpg_stream_data_message_base.i \

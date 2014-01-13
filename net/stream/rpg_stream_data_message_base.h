@@ -29,7 +29,8 @@
 // forward declarations
 class ACE_Allocator;
 
-template <typename DataType>
+template <typename DataType,
+          typename CommandType>
 class RPG_Stream_DataMessageBase
  : public RPG_Stream_MessageBase
 {
@@ -37,14 +38,15 @@ class RPG_Stream_DataMessageBase
   virtual ~RPG_Stream_DataMessageBase();
 
   // initialization-after-construction
-  // *NOTE*: assume lifetime responsibility for the first argument !
+  // *NOTE*: assumes lifecycle responsibility for the first argument
   void init(DataType*&,              // data handle
             ACE_Data_Block* = NULL); // buffer
 
   // *TODO*: clean this up !
   const DataType* const getData() const;
+  virtual CommandType getCommand() const = 0; // return value: message type
 
-  // override RPG_Common_IDumpState
+  // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  protected:
@@ -54,24 +56,24 @@ class RPG_Stream_DataMessageBase
   // copy ctor, to be used by derived::duplicate()
   // *WARNING*: while the clone inherits a "shallow copy" of the referenced
   // data block, it will NOT inherit the attached data --> use init()...
-  RPG_Stream_DataMessageBase(const RPG_Stream_DataMessageBase<DataType>&);
+  RPG_Stream_DataMessageBase(const RPG_Stream_DataMessageBase&);
 
   // *NOTE*: to be used by message allocators...
-  // *WARNING*: these ctors are NOT threadsafe...
+  // *TODO*: these ctors are NOT threadsafe...
   RPG_Stream_DataMessageBase(ACE_Allocator*); // message allocator
   RPG_Stream_DataMessageBase(ACE_Data_Block*, // data block
-                         ACE_Allocator*); // message allocator
+                             ACE_Allocator*); // message allocator
 
  private:
   typedef RPG_Stream_MessageBase inherited;
+  typedef RPG_Stream_DataMessageBase<DataType,
+                                     CommandType> own_type;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_DataMessageBase());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_DataMessageBase<DataType>& operator=(const RPG_Stream_DataMessageBase<DataType>&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_DataMessageBase& operator=(const RPG_Stream_DataMessageBase&));
 
-  // overloaded from ACE_Message_Block
-  // *WARNING*: any children need to override this too !
-  virtual ACE_Message_Block* duplicate(void) const;
+  // overriden from ACE_Message_Block
+  virtual ACE_Message_Block* duplicate(void) const = 0;
 
   DataType* myData;
   bool      myIsInitialized;

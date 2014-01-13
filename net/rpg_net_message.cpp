@@ -21,17 +21,9 @@
 
 #include "rpg_net_message.h"
 
-#include "rpg_net_remote_comm.h"
-
-#include "rpg_common_macros.h"
-
-#include <ace/Message_Block.h>
-#include <ace/Log_Msg.h>
-
 // *NOTE*: this is implicitly invoked by duplicate() as well...
 RPG_Net_Message::RPG_Net_Message(const RPG_Net_Message& message_in)
- : inherited(message_in),
-   myIsInitialized(message_in.myIsInitialized)
+ : inherited(message_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 
@@ -39,50 +31,21 @@ RPG_Net_Message::RPG_Net_Message(const RPG_Net_Message& message_in)
 
 RPG_Net_Message::RPG_Net_Message(ACE_Data_Block* dataBlock_in,
                                  ACE_Allocator* messageAllocator_in)
- : inherited(dataBlock_in,         // use (don't own !) this data block
-             messageAllocator_in), // use this when destruction is imminent...
-   myIsInitialized(true)
+ : inherited(dataBlock_in,        // use (don't own !) this data block
+             messageAllocator_in) // use this when destruction is imminent...
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
 
 }
 
-// RPG_Net_Message::RPG_Net_Message(ACE_Allocator* messageAllocator_in)
-//  : inherited(messageAllocator_in,
-//              true), // usually, we want to increment the running message counter...
-//    myIsInitialized(false) // not initialized --> call init() !
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Net_Message::RPG_Net_Message"));
-//
-// }
-
 RPG_Net_Message::~RPG_Net_Message()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Message::~RPG_Net_Message"));
 
-  // *NOTE*: this will be called just BEFORE we're passed back
-  // to the allocator !!!
-
-  // clean up
-  myIsInitialized = false;
+  // *NOTE*: will be called just BEFORE this is passed back to the allocator
 }
 
-void
-RPG_Net_Message::init(ACE_Data_Block* dataBlock_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Message::init"));
-
-  // sanity check: shouldn't be initialized...
-  ACE_ASSERT(!myIsInitialized);
-
-  // init base class...
-  inherited::init(dataBlock_in);
-
-  // OK: we're initialized !
-  myIsInitialized = true;
-}
-
-int
+RPG_Net_MessageType
 RPG_Net_Message::getCommand() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Message::getCommand"));
@@ -93,6 +56,54 @@ RPG_Net_Message::getCommand() const
   RPG_Net_MessageHeader* message_header = reinterpret_cast<RPG_Net_MessageHeader*>(rd_ptr());
 
   return message_header->messageType;
+}
+
+ACE_Message_Block*
+RPG_Net_Message::duplicate(void) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Message::duplicate"));
+
+  RPG_Net_Message* new_message = NULL;
+
+  // create a new RPG_Net_Message that contains unique copies of
+  // the message block fields, but a (reference counted) shallow duplicate of
+  // the ACE_Data_Block.
+
+  // if there is no allocator, use the standard new and delete calls.
+  if (message_block_allocator_ == NULL)
+  {
+    ACE_NEW_RETURN(new_message,
+                   RPG_Net_Message(*this),
+                   NULL);
+  } // end IF
+  else // otherwise, use the existing message_block_allocator
+  {
+    // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
+    // a "shallow" copy which just references our data block...
+    // *TODO*: (depending on the allocator) we senselessly allocate a datablock
+    // anyway, only to immediately release it again...
+    ACE_NEW_MALLOC_RETURN(new_message,
+                          static_cast<RPG_Net_Message*>(message_block_allocator_->malloc(capacity())),
+                          RPG_Net_Message(*this),
+                          NULL);
+  } // end ELSE
+
+  // increment the reference counts of all the continuation messages
+  if (cont_)
+  {
+    new_message->cont_ = cont_->duplicate();
+
+    // when things go wrong, release all resources and return
+    if (new_message->cont_ == NULL)
+    {
+      new_message->release();
+      new_message = NULL;
+    } // end IF
+  } // end IF
+
+  // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
+
+  return new_message;
 }
 
 void
@@ -310,107 +321,6 @@ RPG_Net_Message::dump_state() const
 //              sum_header_size));
 }
 
-bool
-RPG_Net_Message::crunchForHeader(const unsigned int& headerSize_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Message::crunchForHeader"));
-
-  // sanity check(s)
-  ACE_ASSERT(size() >= headerSize_in); // enough space ?
-  if (total_length() < headerSize_in)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not enough data (needed: %u, had: %u), aborting\n"),
-               headerSize_in,
-               total_length()));
-
-    return false;
-  } // end IF
-  if (length() >= headerSize_in)
-    return true; // nothing to do...
-
-  ACE_Message_Block* source_block = this;
-  size_t missing_data = headerSize_in - length();
-  size_t amount = 0;
-  while (missing_data)
-  {
-    // *sigh*: copy some data from the chain...
-    source_block = cont();
-
-    // skip over any "empty" continuations...
-    while (source_block->length() == 0)
-      source_block = source_block->cont();
-
-    // copy some data... this adjusts our write pointer
-    amount = (source_block->length() < missing_data ? source_block->length() : missing_data);
-    if (copy(source_block->rd_ptr(), amount))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Message_Block::copy(): \"%m\", aborting\n")));
-
-      return false;
-    } // end IF
-
-    missing_data -= amount;
-
-    // adjust the continuation accordingly...
-    source_block->rd_ptr(amount);
-  } // end WHILE
-
-  // sanity check
-  ACE_ASSERT(length() == headerSize_in);
-
-  return true;
-}
-
-ACE_Message_Block*
-RPG_Net_Message::duplicate(void) const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Message::duplicate"));
-
-  RPG_Net_Message* new_message = NULL;
-
-  // create a new RPG_Net_Message that contains unique copies of
-  // the message block fields, but a (reference counted) shallow duplicate of
-  // the ACE_Data_Block.
-
-  // if there is no allocator, use the standard new and delete calls.
-  if (message_block_allocator_ == NULL)
-  {
-    ACE_NEW_RETURN(new_message,
-                   RPG_Net_Message(*this),
-                   NULL);
-  } // end IF
-  else // otherwise, use the existing message_block_allocator
-  {
-    // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
-    // a "shallow" copy which just references our data block...
-    // *TODO*: (depending on the allocator) we senselessly allocate a datablock
-    // anyway, only to immediately release it again...
-    ACE_NEW_MALLOC_RETURN(new_message,
-                          static_cast<RPG_Net_Message*>(message_block_allocator_->malloc(capacity())),
-                          RPG_Net_Message(*this),
-                          NULL);
-  } // end ELSE
-
-  // increment the reference counts of all the continuation messages
-  if (cont_)
-  {
-    new_message->cont_ = cont_->duplicate();
-
-    // If things go wrong, release all of our resources and return
-    if (new_message->cont_ == NULL)
-    {
-      new_message->release();
-      new_message = NULL;
-    } // end IF
-  } // end IF
-
-  // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
-
-  return new_message;
-}
-
 std::string
 RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 {
@@ -436,86 +346,3 @@ RPG_Net_Message::commandType2String(const RPG_Net_MessageType& messageType_in)
 
   return result;
 }
-
-// void
-// RPG_Net_Message::adjustDataOffset(const RPG_Net_MessageHeader_t& headerType_in)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Net_Message::adjustDataOffset"));
-//
-//   unsigned long dataOffset = 0;
-//
-//   // create header
-//   switch (headerType_in)
-//   {
-//     case RPG_Net_Protocol_Layer::ETHERNET:
-//     {
-//       // *NOTE*: Ethernet headers are 14 bytes long...
-//       dataOffset = ETH_HLEN;
-//
-//       break;
-//     }
-//     case RPG_Net_Protocol_Layer::FDDI_LLC_SNAP:
-//     {
-//       // *NOTE*:
-//       // - FDDI LLC headers are 13 bytes long...
-//       // - FDDI SNAP headers are 8 bytes long...
-//       dataOffset = FDDI_K_SNAP_HLEN;
-//
-//       break;
-//     }
-//     case RPG_Net_Protocol_Layer::IPv4:
-//     {
-//       // *NOTE*: IPv4 header field "Header Length" gives the size of the
-//       // IP header in 32 bit words...
-//       // *NOTE*: use our current offset...
-//       dataOffset = (reinterpret_cast<iphdr*> (//                                          rd_ptr())->ihl * 4);
-//
-//       break;
-//     }
-//     case RPG_Net_Protocol_Layer::TCP:
-//     {
-//       // *NOTE*: TCP header field "Data Offset" gives the size of the
-//       // TCP header in 32 bit words...
-//       // *NOTE*: use our current offset...
-//       dataOffset = (reinterpret_cast<tcphdr*> (//                                          rd_ptr())->doff * 4);
-//
-//       break;
-//     }
-//     case RPG_Net_Protocol_Layer::UDP:
-//     {
-//       // *NOTE*: UDP headers are 8 bytes long...
-//       dataOffset = 8;
-//
-//       break;
-//     }
-// //     case RPG_Net_Protocol_Layer::ASTERIX_offset:
-// //     {
-// //       // *NOTE*: ASTERIX "resilience" headers are 4 bytes long...
-// //       dataOffset = FLB_RPS_ASTERIX_RESILIENCE_BYTES;
-// //
-// //       break;
-// //     }
-// //     case RPG_Net_Protocol_Layer::ASTERIX:
-// //     {
-// //       // *NOTE*: ASTERIX headers are 3 bytes long...
-// //       dataOffset = FLB_RPS_ASTERIX_HEADER_SIZE;
-// //
-// //       break;
-// //     }
-//     default:
-//     {
-//       std::string type_string;
-//       RPG_Net_Protocol_Layer::ProtocolLayer2String(headerType_in,
-//                                                           type_string);
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("message (ID: %u) header (type: \"%s\") is currently unsupported, continuing\n"),
-//                  getID(),
-//                  type_string.c_str()));
-//
-//       break;
-//     }
-//   } // end SWITCH
-//
-//   // advance rd_ptr() to the start of the data (or to the next header in the stack)...
-//   rd_ptr(dataOffset);
-// }

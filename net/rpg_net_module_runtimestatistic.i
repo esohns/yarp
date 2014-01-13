@@ -212,7 +212,6 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
     myMessageCounter++;
 
 	  // add message to statistic...
-    // --> increment corresponding counter
     myMessageTypeStatistics[static_cast<ProtocolCommandType>(message_inout->getCommand())]++;
   } // end lock scope
 }
@@ -518,7 +517,7 @@ RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatisticReader_t::put"));
 
   // pass the message to the sibling
-  ACE_Task_Base* sibling_task = sibling();
+  ACE_Task_Base* sibling_task = inherited::sibling();
   if (!sibling_task)
   {
     ACE_DEBUG((LM_ERROR,
@@ -553,6 +552,9 @@ RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
 		stream_task->myByteCounter += mb_in->total_length();
 
 		stream_task->myMessageCounter++;
+
+    // add message to statistic...
+    stream_task->myMessageTypeStatistics[static_cast<ProtocolCommandType>(message->getCommand())]++;
 
     // *TODO*: add message to statistic...
   	//// --> increment corresponding counter

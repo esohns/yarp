@@ -52,7 +52,7 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-  CXXFLAGS="-g -O0 -Wall -Werror -D_DEBUG"
+  CXXFLAGS="-g -O0 -Wall -D_DEBUG"
   AC_MSG_RESULT(yes)
 else
   CXXFLAGS="-O3 -march=native -Wall -Werror"
