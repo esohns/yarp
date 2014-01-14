@@ -28,9 +28,9 @@
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
 #include <ace/Profile_Timer.h>
-#include <ace/Reactor.h>
-#include <ace/TP_Reactor.h>
-#include <ace/Proactor.h>
+//#include <ace/Reactor.h>
+//#include <ace/TP_Reactor.h>
+//#include <ace/Proactor.h>
 #include <ace/Signal.h>
 #include <ace/Sig_Handler.h>
 #include <ace/High_Res_Timer.h>
@@ -347,7 +347,7 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_UI_FILE);
   std::cout << ACE_TEXT("-u [FILE] : UI file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   std::cout << ACE_TEXT("-v        : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]: #thread pool threads ([") << RPG_NET_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE]: #dispatch threads ([") << RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -367,7 +367,7 @@ process_arguments(const int& argc_in,
                   bool& traceInformation_out,
                   std::string& UIfile_out,
                   bool& printVersionAndExit_out,
-                  unsigned int& numThreadPoolThreads_out)
+                  unsigned int& numDispatchThreads_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -469,7 +469,7 @@ process_arguments(const int& argc_in,
 
   printVersionAndExit_out  = false;
 
-  numThreadPoolThreads_out = RPG_NET_CLIENT_DEF_NUM_TP_THREADS;
+  numDispatchThreads_out = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -574,7 +574,7 @@ process_arguments(const int& argc_in,
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
-        converter >> numThreadPoolThreads_out;
+        converter >> numDispatchThreads_out;
 
         break;
       }
@@ -1423,6 +1423,25 @@ do_work(const RPG_Client_Config& config_in,
 //              quitHandlerID));
 
   // step7: setup dispatch of network events
+  if (!RPG_Net_Common_Tools::initEventDispatch(RPG_NET_USES_REACTOR,
+                                               config_in.num_dispatch_threads))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init network event dispatch, aborting\n")));
+
+    // clean up
+    if (!SDL_RemoveTimer(user_data.event_timer))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                 ACE_TEXT(SDL_GetError())));
+    level_engine.stop();
+    client_engine.stop();
+    RPG_Client_Common_Tools::fini();
+    RPG_Engine_Common_Tools::fini();
+
+    return;
+  } // end IF
+
   // step7a: init stream configuration object
   RPG_Stream_AllocatorHeap heapAllocator;
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
@@ -1445,14 +1464,14 @@ do_work(const RPG_Client_Config& config_in,
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
-  // step7c: init worker(s)
+  // step7c: start worker(s)
   int group_id = -1;
-  if (!RPG_Net_Common_Tools::initEventDispatch(RPG_NET_USES_REACTOR,
-                                               config_in.num_threadpool_threads,
-                                               group_id))
+  if (!RPG_Net_Common_Tools::startEventDispatch(RPG_NET_USES_REACTOR,
+                                                config_in.num_dispatch_threads,
+                                                group_id))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init network event dispatch, aborting\n")));
+               ACE_TEXT("failed to start network event dispatch, aborting\n")));
 
 		// clean up
     if (!SDL_RemoveTimer(user_data.event_timer))
@@ -1467,7 +1486,7 @@ do_work(const RPG_Client_Config& config_in,
     return;
   } // end IF
 
-  // *NOTE*: from this point on, we need to clean up any remote connections !
+  // *NOTE*: from this point on, clean up any connections !
 
   // step8: dispatch SDL (and GTK) events
 //   gtk_main();
@@ -2212,10 +2231,10 @@ ACE_TMAIN(int argc_in,
   floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
-  bool logToFile                    = false;
-  bool traceInformation             = false;
-  bool printVersionAndExit          = false;
-  unsigned int numThreadPoolThreads = RPG_NET_CLIENT_DEF_NUM_TP_THREADS;
+  bool logToFile                  = false;
+  bool traceInformation           = false;
+  bool printVersionAndExit        = false;
+  unsigned int numDispatchThreads = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
   if (!process_arguments(argc_in,
                          argv_in,
                          mute_sound,
@@ -2232,7 +2251,7 @@ ACE_TMAIN(int argc_in,
                          traceInformation,
                          UIfile,
                          printVersionAndExit,
-                         numThreadPoolThreads))
+                         numDispatchThreads))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
@@ -2305,7 +2324,7 @@ ACE_TMAIN(int argc_in,
   RPG_Client_Config config;
 
   // *** reactor ***
-  config.num_threadpool_threads            = numThreadPoolThreads;
+  config.num_dispatch_threads              = numDispatchThreads;
 
   // *** UI ***
   config.glade_file                        = UIfile;

@@ -120,7 +120,7 @@ struct RPG_Client_NetworkConfig_t
 struct RPG_Client_Config
 {
   // *** reactor ***
-  unsigned int                 num_threadpool_threads; // 0: don't use threadpool
+  unsigned int                 num_dispatch_threads; // 1: don't use a threadpool
   // *** UI ***
   std::string                  glade_file;
 //   GTK_cb_data_t      gtk_cb_data;
