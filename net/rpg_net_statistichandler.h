@@ -32,17 +32,16 @@ class RPG_Net_StatisticHandler_Reactor_T
  : public ACE_Event_Handler
 {
  public:
-   // define different types of Actions for this interface
-  enum ActionSpecifier
-  {
-    ACTION_REPORT = 0,
-    ACTION_COLLECT,
-  };
+	enum ActionSpecifier_t
+	{
+		ACTION_REPORT = 0,
+		ACTION_COLLECT
+	};
 
   typedef RPG_Common_IStatistic<StatisticsInfoContainer_t> COLLECTOR_TYPE;
 
-  RPG_Net_StatisticHandler_Reactor_T(const COLLECTOR_TYPE*,   // interface handle
-                                     const ActionSpecifier&); // action: collect/report
+  RPG_Net_StatisticHandler_Reactor_T(const COLLECTOR_TYPE*,     // interface handle
+                                     const ActionSpecifier_t&); // handler action
   virtual ~RPG_Net_StatisticHandler_Reactor_T();
 
   // implement specific behaviour
@@ -52,13 +51,12 @@ class RPG_Net_StatisticHandler_Reactor_T
  private:
   typedef ACE_Event_Handler inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Reactor_T());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Reactor_T(const RPG_Net_StatisticHandler_Reactor_T&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Reactor_T& operator=(const RPG_Net_StatisticHandler_Reactor_T&));
 
   const COLLECTOR_TYPE* myInterface;
-  ActionSpecifier       myAction;
+  ActionSpecifier_t     myAction;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,17 +66,16 @@ class RPG_Net_StatisticHandler_Proactor_T
  : public ACE_Handler
 {
  public:
-   // define different types of Actions for this interface
-  enum ActionSpecifier
-  {
-    ACTION_REPORT = 0,
-    ACTION_COLLECT,
-  };
+	enum ActionSpecifier_t
+	{
+		ACTION_REPORT = 0,
+		ACTION_COLLECT
+	};
 
   typedef RPG_Common_IStatistic<StatisticsInfoContainer_t> COLLECTOR_TYPE;
 
-  RPG_Net_StatisticHandler_Proactor_T(const COLLECTOR_TYPE*,   // interface handle
-                                      const ActionSpecifier&); // action: collect/report
+  RPG_Net_StatisticHandler_Proactor_T(const COLLECTOR_TYPE*,     // interface handle
+                                      const ActionSpecifier_t&); // handler action
   virtual ~RPG_Net_StatisticHandler_Proactor_T();
 
   // implement specific behaviour
@@ -88,13 +85,12 @@ class RPG_Net_StatisticHandler_Proactor_T
  private:
   typedef ACE_Handler inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Proactor_T());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Proactor_T(const RPG_Net_StatisticHandler_Proactor_T&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StatisticHandler_Proactor_T& operator=(const RPG_Net_StatisticHandler_Proactor_T&));
 
   const COLLECTOR_TYPE* myInterface;
-  ActionSpecifier       myAction;
+  ActionSpecifier_t     myAction;
 };
 
 // include template implementation

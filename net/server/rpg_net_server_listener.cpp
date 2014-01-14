@@ -30,8 +30,8 @@
 #include "rpg_net_server_defines.h"
 
 RPG_Net_Server_Listener::RPG_Net_Server_Listener()
- : inherited(ACE_Reactor::instance(), // use global (default) reactor
-             1),                      // always accept ALL pending connections
+ : inherited(NULL, // use global (default) reactor
+             1),   // always accept ALL pending connections
    myIsInitialized(false),
    myIsListening(false),
    myIsOpen(false),

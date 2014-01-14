@@ -124,7 +124,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   } // end IF
 
   // enqueue the module...
-  if (push(&myProtocolHandler) == -1)
+  if (inherited::push(&myProtocolHandler) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
@@ -144,7 +144,8 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!runtimeStatistic_impl->init(config_in.statisticsReportingInterval, // reporting interval (seconds)
-                                   config_in.messageAllocator))           // print cache info ?
+		                               config_in.printFinalReport,            // print final report ?
+                                   config_in.messageAllocator))           // message allocator handle
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -154,7 +155,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   } // end IF
 
   // enqueue the module...
-  if (push(&myRuntimeStatistic) == -1)
+  if (inherited::push(&myRuntimeStatistic) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
@@ -183,7 +184,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   } // end IF
 
   // enqueue the module...
-  if (push(&myHeaderParser) == -1)
+  if (inherited::push(&myHeaderParser) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
@@ -229,7 +230,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // ---------------------------------------------------------------------------
 
   if (config_in.module)
-    if (push(config_in.module) == -1)
+    if (inherited::push(config_in.module) == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),

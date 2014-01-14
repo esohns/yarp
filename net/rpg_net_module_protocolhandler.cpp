@@ -89,7 +89,9 @@ RPG_Net_Module_ProtocolHandler::init(RPG_Stream_IAllocator* allocator_in,
     // reset state
     if (myPingTimerID != -1)
     {
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID) == -1)
+			const void* act = NULL;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID,
+				                                                        &act) == -1)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
                    mySessionID,
@@ -247,7 +249,9 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& me
     {
       if (myPingTimerID != -1)
       {
-        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID) == -1)
+				const void* act = NULL;
+        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myPingTimerID,
+					                                                        &act) == -1)
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
                      mySessionID,

@@ -95,6 +95,7 @@ class RPG_Net_Module_RuntimeStatistic_t
 
   // initialization
   bool init(const unsigned int& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
+		        const bool& = false,                                             // print final report ?
             const RPG_Stream_IAllocator* = NULL);                            // report cache usage ?
 
   // implement (part of) Stream_ITaskBase
@@ -146,6 +147,8 @@ class RPG_Net_Module_RuntimeStatistic_t
   long                         myResetTimeoutHandlerID;
   STATISTICHANDLER_TYPE        myLocalReportingHandler;
   long                         myLocalReportingHandlerID;
+	unsigned int                 myReportingInterval; // second(s) {0 --> OFF}
+	bool                         myPrintFinalReport;
 
   // *GENERIC STATS*
   mutable ACE_Thread_Mutex     myLock;

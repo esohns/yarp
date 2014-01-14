@@ -79,8 +79,8 @@ class RPG_Net_Module_SocketHandler
                                         RPG_Net_StreamConfig,
                                         RPG_Net_SessionMessage,
                                         RPG_Net_Message> inherited;
+  typedef RPG_Net_StatisticHandler_Reactor_t STATISTICHANDLER_TYPE;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler(const RPG_Net_Module_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_SocketHandler& operator=(const RPG_Net_Module_SocketHandler&));
 
@@ -90,17 +90,17 @@ class RPG_Net_Module_SocketHandler
   bool putStatisticsMessage(const RPG_Net_RuntimeStatistic&, // statistics info
                             const ACE_Time_Value&) const;    // statistics generation time
 
-  bool                               myIsInitialized;
+  bool                  myIsInitialized;
 
   // timer stuff
-  unsigned int                       myStatCollectionInterval; // seconds
-  RPG_Net_StatisticHandler_Reactor_t myStatCollectHandler;
-  long                               myStatCollectHandlerID;
+  unsigned int          myStatCollectionInterval; // seconds
+  STATISTICHANDLER_TYPE myStatCollectHandler;
+  long                  myStatCollectHandlerID;
 
   // protocol stuff
-  unsigned int                       myCurrentMessageLength;
-  RPG_Net_Message*                   myCurrentMessage;
-  RPG_Net_Message*                   myCurrentBuffer;
+  unsigned int          myCurrentMessageLength;
+  RPG_Net_Message*      myCurrentMessage;
+  RPG_Net_Message*      myCurrentBuffer;
 };
 
 // declare module

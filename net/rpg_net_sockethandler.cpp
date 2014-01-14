@@ -297,6 +297,42 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandler::handle_close"));
 
+	switch (mask_in)
+  {
+    case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
+		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> connect failed (e.g. connection refused) /
+			                                       //     accept failed (e.g. too many connections) ?
+			break;
+    case ACE_Event_Handler::EXCEPT_MASK:
+			// *IMPORTANT NOTE*: the TP_Reactor dispatches notifications in parallel
+			// to regular socket events, thus several notifications may be in flight
+			// at the same time. In order to avoid confusion when the socket closes,
+			// proper synchronization is handled through the reference counting
+			// mechanism, i.e. the handler is only deleted after the last reference
+			// has been released. Still, handling notifications after this occurs
+			// will fail, and the reactor will invoke this method each time. As there
+			// is no need to go through the shutdown procedure several times, bail
+			// out early here
+      //if (handle_in == ACE_INVALID_HANDLE) // <-- notification has completed (!useThreadPerConnection)
+      //  ACE_DEBUG((LM_ERROR,
+      //             ACE_TEXT("notification completed, continuing\n")));
+      return 0;
+    default:
+      // *PORTABILITY*: this isn't entirely portable...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %u) --> check implementation !, continuing\n"),
+								 handle_in,
+								 mask_in));
+#else
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %u) --> check implementation !, continuing\n"),
+								 handle_in,
+								 mask_in));
+#endif
+      break;
+  } // end SWITCH
+
   // step1: connection shutting down --> signal any worker(s)
   if (inherited::myUserData.useThreadPerConnection)
     shutdown();
@@ -304,7 +340,7 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
 	// step2: de-register this connection
   if (inherited::myManager &&
 		  inherited::myIsRegistered)
-  { // (try to) de-register with the connection manager...
+  { // (try to) de-register with the connection manager
     try
     {
       inherited::myManager->deregisterConnection(this);

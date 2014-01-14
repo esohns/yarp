@@ -190,10 +190,12 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
     // stop interval timer (might spawn new connections)
     if (myTimerID >= 0)
     {
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myTimerID, NULL) <= 0)
+			const void* act = NULL;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myTimerID, &act) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    myTimerID));
+
       myTimerID = -1;
     } // end IF
     myConnector->abort();

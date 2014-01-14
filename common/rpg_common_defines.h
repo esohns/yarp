@@ -48,6 +48,11 @@
 //#define RPG_COMMON_DEF_NUM_TIMER_SLOTS            std::numeric_limits<long>::max()
 #define RPG_COMMON_DEF_NUM_TIMER_SLOTS            ACE_DEFAULT_TIMERS
 #define RPG_COMMON_PREALLOCATE_TIMER_SLOTS        true
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#define RPG_COMMON_USE_WFMO_REACTOR               true // ? ACE_WFMO_Reactor : ACE_TP_Reactor
+#else
+#define RPG_COMMON_USE_DEV_POLL_REACTOR           false // ? ACE_Dev_Poll_Reactor : ACE_TP_Reactor
+#endif
 
 // *IMPORTANT NOTE*: used for libc calls (i.e. char buffers, mostly)
 #define RPG_COMMON_BUFSIZE                        512 // bytes

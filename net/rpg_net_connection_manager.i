@@ -572,11 +572,7 @@ RPG_Net_Connection_Manager<ConfigType,
   {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
-    // sanity check: anything to do ?
-    if (myConnections.is_empty() == 1)
-      return;
-
-    // collect (aggregated) data from our active connections
+    // aggregate data from active connections
     if (!collect(result))
     {
       ACE_DEBUG((LM_ERROR,
@@ -585,7 +581,7 @@ RPG_Net_Connection_Manager<ConfigType,
       return;
     } // end IF
 
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("*** RUNTIME STATISTICS ***\n--> [%u] Connection(s) <--\n # data messages: %u (avg.: %u)\ndata: %.0f (avg.: %.2f) bytes\n*** RUNTIME STATISTICS ***\\END\n"),
                myConnections.size(),
                result.numDataMessages,

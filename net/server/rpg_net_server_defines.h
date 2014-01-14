@@ -29,7 +29,7 @@
 // - WARNING: current implementation cannot support 0 !!!
 #define RPG_NET_SERVER_LOG_MAXNUMFILES                   5
 
-#define RPG_NET_SERVER_DEF_NUM_TP_THREADS                10
+#define RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS          10
 
 #define RPG_NET_SERVER_DEF_LISTENING_PORT                10101
 #define RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS          ACE::max_handles()

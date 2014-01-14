@@ -527,7 +527,7 @@ RPG_Stream_HeadModuleTaskBase<DataType,
         myCondition.wait();
     } // end IF
 
-	// step2: wait for workers to join
+		// step2: wait for workers to join
     if (inherited::wait() == -1)
 	  ACE_DEBUG((LM_ERROR,
 		         ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));

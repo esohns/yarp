@@ -79,7 +79,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval ([") << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads [") << RPG_NET_SERVER_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE]  : #dispatch threads [") << RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -96,7 +96,7 @@ process_arguments(const int argc_in,
                   unsigned int& statisticsReportingInterval_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
-                  unsigned int& numThreadPoolThreads_out)
+                  unsigned int& numDispatchThreads_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -112,7 +112,7 @@ process_arguments(const int argc_in,
   statisticsReportingInterval_out = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
   printVersionAndExit_out = false;
-  numThreadPoolThreads_out = RPG_NET_SERVER_DEF_NUM_TP_THREADS;
+  numDispatchThreads_out = RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -210,7 +210,7 @@ process_arguments(const int argc_in,
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
-        converter >> numThreadPoolThreads_out;
+        converter >> numDispatchThreads_out;
 
         break;
       }
@@ -530,9 +530,19 @@ do_work(const unsigned int& maxNumConnections_in,
         const unsigned short& listeningPortNumber_in,
         const bool& useReactor_in,
         const unsigned int& statisticsReportingInterval_in,
-        const unsigned int& numThreadPoolThreads_in)
+        const unsigned int& numDispatchThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
+
+	// step0: init event dispatch
+  if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
+                                               numDispatchThreads_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init event dispatch, aborting\n")));
+
+		return;
+	} // end IF
 
   // step1: init regular (global) stats reporting
   long timer_id = -1;
@@ -593,6 +603,8 @@ do_work(const unsigned int& maxNumConnections_in,
   // *WARNING*: set at runtime, by the appropriate connection handler
   config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
+	config.printFinalReport = false;
+
   // step3b: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(maxNumConnections_in);
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
@@ -605,19 +617,23 @@ do_work(const unsigned int& maxNumConnections_in,
 
   // step4a: init worker(s)
   int group_id = -1;
-  if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
-                                               numThreadPoolThreads_in,
-                                               group_id))
+  if (!RPG_Net_Common_Tools::startEventDispatch(useReactor_in,
+                                                numDispatchThreads_in,
+                                                group_id))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init event dispatch, aborting\n")));
+               ACE_TEXT("failed to start event dispatch, aborting\n")));
 
     // clean up
     if (statisticsReportingInterval_in)
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id, NULL) <= 0)
+		{
+			const void* act = NULL;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id,
+				                                                        &act) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    timer_id));
+		} // end IF
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     fini_signalHandling(signal_set,
                         useReactor_in);
@@ -640,10 +656,14 @@ do_work(const unsigned int& maxNumConnections_in,
                                             !useReactor_in,
                                             group_id);
     if (statisticsReportingInterval_in)
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id, NULL) <= 0)
+		{
+			const void* act = NULL;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id,
+				                                                        &act) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    timer_id));
+		} // end IF
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     fini_signalHandling(signal_set,
                         useReactor_in);
@@ -654,7 +674,7 @@ do_work(const unsigned int& maxNumConnections_in,
   // *NOTE*: from this point on, clean up any remote connections !
 
   // *NOTE*: when using a thread pool, handle things differently...
-  if (numThreadPoolThreads_in > 1)
+  if (numDispatchThreads_in > 1)
   {
     if (ACE_Thread_Manager::instance()->wait_grp(group_id) == -1)
       ACE_DEBUG((LM_ERROR,
@@ -754,7 +774,7 @@ ACE_TMAIN(int argc,
   unsigned int statisticsReportingInterval = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                    = false;
   bool printVersionAndExit                 = false;
-  unsigned int numThreadPoolThreads        = RPG_NET_SERVER_DEF_NUM_TP_THREADS;
+  unsigned int numDispatchThreads          = RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS;
 
   // step1b: parse/process/validate configuration
   if (!process_arguments(argc,
@@ -770,7 +790,7 @@ ACE_TMAIN(int argc,
                          statisticsReportingInterval,
                          traceInformation,
                          printVersionAndExit,
-                         numThreadPoolThreads))
+                         numDispatchThreads))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -790,10 +810,10 @@ ACE_TMAIN(int argc,
 //
 //     return EXIT_FAILURE;
   } // end IF
-  else if (numThreadPoolThreads == 0)
+  else if (numDispatchThreads == 0)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("need at least 1 worker thread in the pool...\n")));
+               ACE_TEXT("need at least 1 worker thread...\n")));
 
     return EXIT_FAILURE;
   } // end IF
@@ -882,7 +902,7 @@ ACE_TMAIN(int argc,
           listeningPortNumber,
           useReactor,
           statisticsReportingInterval,
-          numThreadPoolThreads);
+          numDispatchThreads);
   timer.stop();
 
   // debug info

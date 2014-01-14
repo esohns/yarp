@@ -556,21 +556,15 @@ RPG_Stream_Base<DataType,
     return;
   } // end IF
 
-  // OK: now that we've got a handler... wait on it
   try
   {
-    // step1: wait for state switch (xxx --> FINISHED)
+    // wait for state switch (xxx --> FINISHED) / any worker(s)
     head_task->waitForCompletion();
-
-    // step2: wait for any worker thread(s)
-    if (head_task->wait() == -1)
-	  ACE_DEBUG((LM_ERROR,
-		         ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Stream_IStreamControl::waitForCompletion || wait (module: \"%s\"), returning\n"),
+               ACE_TEXT("caught exception in RPG_Stream_IStreamControl::waitForCompletion (module: \"%s\"), returning\n"),
                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     return;

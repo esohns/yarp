@@ -114,57 +114,14 @@ RPG_Net_StreamSocketBase<ConfigType,
 
     return -1;
   } // end IF
-  // *IMPORTANT NOTE*: don't let the reactor manage this handler, the handler
-	// will be deleted in the deregisterConnection call
- // // *NOTE*: let the reactor manage this handler...
-	//// *WARNING*: this has some implications (see close() below)
- // if (!inherited::myUserData.useThreadPerConnection)
- //   inherited::remove_reference();
+
+  // *NOTE*: let the reactor manage this handler...
+	// *WARNING*: this has some implications (see close() below)
+  if (!inherited::myUserData.useThreadPerConnection)
+    inherited::remove_reference();
 
   return 0;
 }
-
-//template <typename ConfigType,
-//          typename StatisticsContainerType,
-//          typename StreamType>
-//int
-//RPG_Net_StreamSocketBase<ConfigType,
-//                         StatisticsContainerType,
-//                         StreamType>::close(u_long arg_in)
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::close"));
-//
-//	// init return value(s)
-//	int result = -1;
-//
-//  switch (arg_in)
-//  {
-//    // called by external (e.g. reactor) thread wanting to close the connection (e.g. too many connections)
-//		// *NOTE*: this eventually calls handle_close() (see below)
-//    case NORMAL_CLOSE_OPERATION:
-//    case CLOSE_DURING_NEW_CONNECTION:
-//		{
-//			// *NOTE*: de-register from the reactor, close the socket, ...
-//			result = inherited::close(arg_in);
-//			if (result == -1)
-//        ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("failed to RPG_Net_SocketHandlerBase::close(%u): \"%m\", aborting\n"),
-//									 arg_in));
-//
-//			break;
-//		}
-//    default:
-//    {
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("invalid argument: %u, aborting\n"),
-//                 arg_in));
-//
-//      break;
-//    }
-//  } // end SWITCH
-//
-//  return result;
-//}
 
 template <typename ConfigType,
           typename StatisticsContainerType,

@@ -27,8 +27,6 @@
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
 #include <ace/Profile_Timer.h>
-#include <ace/Reactor.h>
-#include <ace/TP_Reactor.h>
 #include <ace/Signal.h>
 #include <ace/Sig_Handler.h>
 #include <ace/Connector.h>
@@ -79,6 +77,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT("-a         : alternating mode [") << false << "]" << std::endl;
   std::cout << ACE_TEXT("-c [VALUE] : #connections [") << NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS << "] {0 --> OFF}" << std::endl;
   std::cout << ACE_TEXT("-h [STRING]: server hostname [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
   std::cout << ACE_TEXT("-i [VALUE] : connection interval [") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT(" second(s)]") << std::endl;
@@ -87,12 +86,14 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-r         : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x         : run stress-test [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE] : #dispatch threads [") << RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-y         : run stress-test [") << false << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
+									bool& alternatingMode_out,
                   unsigned int& maxNumConnections_out,
                   std::string& serverHostname_out,
                   unsigned int& connectionInterval_out,
@@ -101,11 +102,13 @@ process_arguments(const int argc_in,
                   bool& useReactor_out,
                   bool& traceInformation_out,
                   bool& printVersionAndExit_out,
+									unsigned int& numDispatchThreads_out,
                   bool& runStressTest_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   // init results
+	alternatingMode_out = false;
   maxNumConnections_out = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
   serverHostname_out = NET_CLIENT_DEF_SERVER_HOSTNAME;
   connectionInterval_out = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
@@ -114,11 +117,12 @@ process_arguments(const int argc_in,
   useReactor_out = RPG_NET_USES_REACTOR;
   traceInformation_out = false;
   printVersionAndExit_out = false;
+	numDispatchThreads_out = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
   runStressTest_out = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:h:i:lp:rtvx"),
+                             ACE_TEXT("ac:h:i:lp:rtvx:y"),
                              1,                          // skip command name
                              1,                          // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS,  // ordering
@@ -130,6 +134,12 @@ process_arguments(const int argc_in,
   {
     switch (option)
     {
+      case 'a':
+      {
+        alternatingMode_out = true;
+
+        break;
+      }
       case 'c':
       {
         converter.clear();
@@ -188,6 +198,15 @@ process_arguments(const int argc_in,
         break;
       }
       case 'x':
+      {
+        converter.clear();
+        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+        converter << argumentParser.opt_arg();
+        converter >> numDispatchThreads_out;
+
+        break;
+      }
+      case 'y':
       {
         runStressTest_out = true;
 
@@ -419,16 +438,17 @@ fini_signalHandling(ACE_Sig_Set& signals_in,
 }
 
 void
-do_work(const unsigned int& maxNumConnections_in,
+do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
+        const unsigned int& maxNumConnections_in,
         const std::string& serverHostname_in,
         const unsigned int& connectionInterval_in,
         const unsigned short& serverPortNumber_in,
         const bool& useReactor_in,
-        const bool& runStressTest_in)
+				const unsigned int& numDispatchThreads_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-  // step0: init randomization
+  // step0a: init randomization
   try
   {
     RPG_Dice::init();
@@ -440,6 +460,16 @@ do_work(const unsigned int& maxNumConnections_in,
 
     return;
   }
+
+	// step0b: init event dispatch
+  if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
+                                               numDispatchThreads_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init event dispatch, aborting\n")));
+
+		return;
+	} // end IF
 
   // step1: init client connector
   RPG_Net_Client_IConnector* connector = NULL;
@@ -460,7 +490,7 @@ do_work(const unsigned int& maxNumConnections_in,
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
-  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
+  ACE_OS::memset(&config, 0, sizeof(config));
   config.pingInterval = 0; // off
   config.keepAliveTimeout = 0; // no timeout
   config.pingAutoAnswer = true;
@@ -473,6 +503,7 @@ do_work(const unsigned int& maxNumConnections_in,
   // *WARNING*: set at runtime, by the appropriate connection handler
   config.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // == off
+	config.printFinalReport = false;
 
   // step2b: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
@@ -482,19 +513,20 @@ do_work(const unsigned int& maxNumConnections_in,
   ACE_INET_Addr peer_address(serverPortNumber_in,
                              serverHostname_in.c_str(),
                              AF_INET);
-  Net_Client_TimeoutHandler timeout_handler(runStressTest_in,
-                                            (runStressTest_in ? std::numeric_limits<unsigned int>::max()
-                                                              : maxNumConnections_in),
+	Net_Client_TimeoutHandler timeout_handler(actionMode_in,
+		                                        ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? std::numeric_limits<unsigned int>::max()
+                                                                                                         : maxNumConnections_in),
                                             peer_address,
                                             connector);
   long timer_id = -1;
-  if (connectionInterval_in || runStressTest_in)
+  if (connectionInterval_in ||
+		  (actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS))
   {
     // schedule server connect interval timer
-    ACE_Time_Value interval((runStressTest_in ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL / 1000)
-                                              : connectionInterval_in),
-                            (runStressTest_in ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL * 1000)
-                                              : 0));
+    ACE_Time_Value interval(((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL / 1000)
+                                                                                         : connectionInterval_in),
+                            ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL * 1000)
+                                                                                         : 0));
     timer_id =
 			RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&timeout_handler,                    // event handler handle
                                                               NULL,                                // ACT
@@ -531,19 +563,23 @@ do_work(const unsigned int& maxNumConnections_in,
 
   // step5a: init worker(s)
   int group_id = -1;
-  if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
-                                               RPG_NET_CLIENT_DEF_NUM_TP_THREADS,
-                                               group_id))
+  if (!RPG_Net_Common_Tools::startEventDispatch(useReactor_in,
+                                                numDispatchThreads_in,
+                                                group_id))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init event dispatch, aborting\n")));
+               ACE_TEXT("failed to start event dispatch, aborting\n")));
 
     // clean up
     if (connectionInterval_in)
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id, NULL) <= 0)
+		{
+			const void* act = NULL;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id,
+				                                                        &act) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    timer_id));
+		} // end IF
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     connector->abort();
     delete connector;
@@ -561,7 +597,7 @@ do_work(const unsigned int& maxNumConnections_in,
 
   // step6: dispatch events
   // *NOTE*: when using a thread pool, handle things differently...
-  if (RPG_NET_CLIENT_DEF_NUM_TP_THREADS > 1)
+  if (numDispatchThreads_in > 1)
 	{
     if (ACE_Thread_Manager::instance()->wait_grp(group_id) == -1)
       ACE_DEBUG((LM_ERROR,
@@ -650,19 +686,23 @@ ACE_TMAIN(int argc,
 //#endif
 
   // step1a set defaults
-  unsigned int maxNumConnections    = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
-  std::string serverHostname        = NET_CLIENT_DEF_SERVER_HOSTNAME;
-  unsigned int connectionInterval   = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
-  bool logToFile                    = false;
-  unsigned short serverPortNumber   = RPG_NET_SERVER_DEF_LISTENING_PORT;
-  bool useReactor                   = RPG_NET_USES_REACTOR;
-  bool traceInformation             = false;
-  bool printVersionAndExit          = false;
-  bool runStressTest                = false;
+	Net_Client_TimeoutHandler::ActionMode_t actionMode = Net_Client_TimeoutHandler::ACTION_NORMAL;
+  bool alternatingMode                               = false;
+	unsigned int maxNumConnections                     = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
+  std::string serverHostname                         = NET_CLIENT_DEF_SERVER_HOSTNAME;
+  unsigned int connectionInterval                    = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
+  bool logToFile                                     = false;
+  unsigned short serverPortNumber                    = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  bool useReactor                                    = RPG_NET_USES_REACTOR;
+  bool traceInformation                              = false;
+  bool printVersionAndExit                           = false;
+	unsigned int numDispatchThreads                    = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
+  bool runStressTest                                 = false;
 
   // step1b: parse/process/validate configuration
   if (!process_arguments(argc,
                          argv,
+												 alternatingMode,
                          maxNumConnections,
                          serverHostname,
                          connectionInterval,
@@ -671,6 +711,7 @@ ACE_TMAIN(int argc,
                          useReactor,
                          traceInformation,
                          printVersionAndExit,
+												 numDispatchThreads,
                          runStressTest))
   {
     // make 'em learn...
@@ -680,6 +721,16 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1c: validate arguments
+	if ((alternatingMode && runStressTest))
+	{
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid arguments, aborting\n")));
+
+		// make 'em learn...
+		print_usage(std::string(ACE::basename(argv[0])));
+
+		return EXIT_FAILURE;
+	} // end IF
   if (serverPortNumber <= 1023)
   {
     ACE_DEBUG((LM_WARNING,
@@ -691,6 +742,11 @@ ACE_TMAIN(int argc,
     //
 //     return EXIT_FAILURE;
   } // end IF
+
+	if (alternatingMode)
+		actionMode = Net_Client_TimeoutHandler::ACTION_ALTERNATING;
+	if (runStressTest)
+		actionMode = Net_Client_TimeoutHandler::ACTION_STRESS;
 
   // step1d: set correct trace level
   //ACE_Trace::start_tracing();
@@ -729,12 +785,13 @@ ACE_TMAIN(int argc,
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(maxNumConnections,
+  do_work(actionMode,
+		      maxNumConnections,
           serverHostname,
           connectionInterval,
           serverPortNumber,
           useReactor,
-          runStressTest);
+					numDispatchThreads);
   timer.stop();
 
   // debug info

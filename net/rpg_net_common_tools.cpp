@@ -34,6 +34,8 @@
 #include <ace/TP_Reactor.h>
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #include <ace/WFMO_Reactor.h>
+#else
+#include <ace/Dev_Poll_Reactor.h>
 #endif
 #include <ace/Proactor.h>
 
@@ -96,49 +98,62 @@ tp_event_dispatcher_func(void* args_in)
 
 bool
 RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
-                                        const unsigned int& numThreadPoolThreads_in,
-                                        int& groupID_out)
+                                        const unsigned int& numDispatchThreads_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::initEventDispatch"));
 
-  // init return value(s)
-  groupID_out = -1;
-
   // step1: init reactor/proactor
-  if (useReactor_in && (numThreadPoolThreads_in > 1))
-  {
-		ACE_Reactor_Impl* reactor_implementation = NULL;
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-    ACE_NEW_RETURN(reactor_implementation,
-                   ACE_TP_Reactor(ACE::max_handles(),              // max num handles
-									                true,                            // restart after EINTR ?
-									                NULL,                            // signal handler
-									                NULL,                            // timer queue
-																	true,                            // mask signals ?
-																	ACE_Select_Reactor_Token::FIFO), // signal queue
-                   false);
-#else
-    ACE_NEW_RETURN(reactor_implementation,
-                   ACE_TP_Reactor(ACE::max_handles(),              // max num handles
-									                true,                            // restart after EINTR ?
-									                NULL,                            // signal handler
-									                NULL,                            // timer queue
-																	true,                            // mask signals ?
-																	ACE_Select_Reactor_Token::FIFO), // signal queue
-                  // ACE_WFMO_Reactor(ACE_WFMO_Reactor::DEFAULT_SIZE, // max num handles (62 [+ 2])
-									         //         0,                              // unused
-																		//NULL,                           // signal handler
-																		//NULL,                           // timer queue
-																		//NULL),                          // notification handler
-                   false);
-#endif
-    ACE_Reactor* new_reactor = NULL;
-    ACE_NEW_RETURN(new_reactor,
-                   ACE_Reactor(reactor_implementation, 1), // delete in dtor
-                   false);
-    // make this the "default" reactor...
-    ACE_Reactor::instance(new_reactor, 1); // delete in dtor
-  } // end IF
+	if (useReactor_in)
+	{
+    if (numDispatchThreads_in > 1)
+		{
+			ACE_Reactor_Impl* reactor_implementation = NULL;
+	#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+			if (RPG_COMMON_USE_DEV_POLL_REACTOR)
+			  ACE_NEW_RETURN(reactor_implementation,
+										   ACE_Dev_Poll_Reactor(ACE::max_handles(),              // max num handles
+																						true,                            // restart after EINTR ?
+																						NULL,                            // signal handler
+																						NULL,                            // timer queue
+																						true,                            // mask signals ?
+																						ACE_Select_Reactor_Token::FIFO), // signal queue
+										   false);
+			else
+			  ACE_NEW_RETURN(reactor_implementation,
+										   ACE_TP_Reactor(ACE::max_handles(),              // max num handles
+																		  true,                            // restart after EINTR ?
+																		  NULL,                            // signal handler
+																		  NULL,                            // timer queue
+																		  true,                            // mask signals ?
+																		  ACE_Select_Reactor_Token::FIFO), // signal queue
+										   false);
+	#else
+			if (RPG_COMMON_USE_WFMO_REACTOR)
+				ACE_NEW_RETURN(reactor_implementation,
+											 ACE_WFMO_Reactor(ACE_WFMO_Reactor::DEFAULT_SIZE, // max num handles (62 [+ 2])
+																				0,                              // unused
+						 														NULL,                           // signal handler
+																				NULL,                           // timer queue
+																				NULL),                          // notification handler
+											 false);
+			else
+			  ACE_NEW_RETURN(reactor_implementation,
+										   ACE_TP_Reactor(ACE::max_handles(),              // max num handles
+																		  true,                            // restart after EINTR ?
+																		  NULL,                            // signal handler
+																		  NULL,                            // timer queue
+																		  true,                            // mask signals ?
+																		  ACE_Select_Reactor_Token::FIFO), // signal queue
+										   false);
+	#endif
+			ACE_Reactor* new_reactor = NULL;
+			ACE_NEW_RETURN(new_reactor,
+										 ACE_Reactor(reactor_implementation, 1), // delete in dtor
+										 false);
+			// make this the "default" reactor...
+			ACE_Reactor::instance(new_reactor, 1); // delete in dtor
+		} // end IF
+	} // end IF
   else
   {
 		// *NOTE* using default platform proactor...
@@ -152,12 +167,25 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 		//delete previous_proactor;
   } // end ELSE
 
-  // step2: spawn worker(s) ?
-  if (numThreadPoolThreads_in > 1)
+  return true;
+}
+
+bool
+RPG_Net_Common_Tools::startEventDispatch(const bool& useReactor_in,
+                                         const unsigned int& numDispatchThreads_in,
+                                         int& groupID_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::startEventDispatch"));
+
+  // init return value(s)
+  groupID_out = -1;
+
+  // spawn worker(s) ?
+  if (numDispatchThreads_in > 1)
   {
     // start a (group of) worker thread(s)...
 		ACE_hthread_t* thread_handles = NULL;
-		thread_handles = new(std::nothrow) ACE_hthread_t[numThreadPoolThreads_in];
+		thread_handles = new(std::nothrow) ACE_hthread_t[numDispatchThreads_in];
 //    ACE_NEW_NORETURN(thread_handles,
 //                     ACE_hthread_t[numThreadPoolThreads_in]);
     if (!thread_handles)
@@ -169,7 +197,7 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
     } // end IF
 		ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
     const char** thread_names = NULL;
-    thread_names = new(std::nothrow) const char*[numThreadPoolThreads_in];
+    thread_names = new(std::nothrow) const char*[numDispatchThreads_in];
 //    ACE_NEW_NORETURN(thread_names,
 //                     const char*[numThreadPoolThreads_in]);
     if (!thread_names)
@@ -186,7 +214,7 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 		std::string buffer;
     std::ostringstream converter;
     for (unsigned int i = 0;
-			   i < numThreadPoolThreads_in;
+			   i < numDispatchThreads_in;
 				 i++)
     {
       thread_name = NULL;
@@ -213,10 +241,11 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
       buffer += ACE_TEXT_ALWAYS_CHAR(" #");
       buffer += converter.str();
       ACE_OS::memset(thread_name, 0, sizeof(thread_name));
-      ACE_OS::strcpy(thread_name, buffer.c_str());
+      ACE_OS::strcpy(thread_name,
+				             buffer.c_str());
       thread_names[i] = thread_name;
     } // end FOR
-    groupID_out = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,                   // # threads
+    groupID_out = ACE_Thread_Manager::instance()->spawn_n(numDispatchThreads_in,                     // # threads
                                                           ::tp_event_dispatcher_func,                // function
                                                           &const_cast<bool&>(useReactor_in),         // argument
                                                           (THR_NEW_LWP |
@@ -233,11 +262,11 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
-                 numThreadPoolThreads_in));
+                 numDispatchThreads_in));
 
       // clean up
 			delete [] thread_handles;
-			for (unsigned int i = 0; i < numThreadPoolThreads_in; i++)
+			for (unsigned int i = 0; i < numDispatchThreads_in; i++)
         delete [] thread_names[i];
       delete [] thread_names;
 
@@ -246,13 +275,13 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 
     // clean up
 		delete [] thread_handles;
-		for (unsigned int i = 0; i < numThreadPoolThreads_in; i++)
+		for (unsigned int i = 0; i < numDispatchThreads_in; i++)
       delete [] thread_names[i];
     delete [] thread_names;
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("spawned %u event handlers (group ID: %d)...\n"),
-               numThreadPoolThreads_in,
+               numDispatchThreads_in,
                groupID_out));
   } // end IF
 

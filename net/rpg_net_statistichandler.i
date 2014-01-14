@@ -26,8 +26,8 @@
 
 template <typename StatisticsInfoContainer_t>
 RPG_Net_StatisticHandler_Reactor_T<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler_Reactor_T(const COLLECTOR_TYPE* interface_in,
-                                                                                                  const ActionSpecifier& action_in)
- : inherited(ACE_Reactor::instance(),         // use default reactor
+                                                                                                  const ActionSpecifier_t& action_in)
+ : inherited(NULL,                            // use default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myInterface(interface_in),
    myAction(action_in)
@@ -108,8 +108,8 @@ RPG_Net_StatisticHandler_Reactor_T<StatisticsInfoContainer_t>::handle_timeout(co
 
 template <typename StatisticsInfoContainer_t>
 RPG_Net_StatisticHandler_Proactor_T<StatisticsInfoContainer_t>::RPG_Net_StatisticHandler_Proactor_T(const COLLECTOR_TYPE* interface_in,
-                                                                                                    const ActionSpecifier& action_in)
- : inherited(ACE_Proactor::instance()), // use default proactor
+                                                                                                    const ActionSpecifier_t& action_in)
+ : inherited(),
    myInterface(interface_in),
    myAction(action_in)
 {

@@ -35,7 +35,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
              ACE_Reactor::instance()), // default reactor
-	 inherited2(0,     // initial count
+	 inherited2(1,     // initial count
 	            true), // delete on zero ?
    myNotificationStrategy(ACE_Reactor::instance(),        // reactor
                           this,                           // event handler
@@ -53,13 +53,11 @@ RPG_Net_SocketHandlerBase<ConfigType,
   //  inherited::msg_queue()->notification_strategy(&myNotificationStrategy);
 
   // init user data
-  ACE_OS::memset(&myUserData, 0, sizeof(ConfigType));
-
+  ACE_OS::memset(&myUserData, 0, sizeof(myUserData));
   if (myManager)
   {
-    // (try to) get user data from the connection manager...
     try
-    {
+    { // (try to) get user data from the connection manager
       myManager->getConfig(myUserData);
     }
     catch (...)
@@ -106,12 +104,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::add_reference"));
 
-	// init return value
-	ACE_Event_Handler::Reference_Count result = inherited::add_reference();
-	
 	inherited2::increase();
 
-  return result;
+	//return inherited::add_reference();
+	return 0;
 }
 
 template <typename ConfigType,
@@ -122,12 +118,12 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::remove_reference"));
 
-	// init return value
-	ACE_Event_Handler::Reference_Count result = inherited::remove_reference();
-
+	// *NOTE*: may "delete this"
   inherited2::decrease();
 
-	return result;
+	//// *NOTE*: may "delete this"
+	//return inherited::remove_reference();
+	return 0;
 }
 
 template <typename ConfigType,
@@ -294,7 +290,6 @@ RPG_Net_SocketHandlerBase<ConfigType,
 											 ACE_TEXT("failed to ACE_SOCK_Stream::close(): %m, continuing\n")));
 
 					// clean up
-					// invoke base-class maintenance
 					// *IMPORTANT NOTE*: make sure that the base-class dtor doesn't invoke
 					// shutdown() (see below)
 					inherited::closing_ = true;
@@ -379,6 +374,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::info"));
 
+	//handle_out = reinterpret_cast<ACE_HANDLE>(myUserData.sessionID);
   handle_out = peer_.get_handle();
   if (inherited::peer_.get_local_addr(localSAP_out) == -1)
   {
@@ -441,8 +437,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::increase"));
 
-	inherited::add_reference();
 	inherited2::increase();
+	//inherited::add_reference();
 }
 
 template <typename ConfigType,
@@ -453,12 +449,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::decrease"));
 
-  // *IMPORTANT NOTE*: this sequence works as long as the reactor doesn't manage
-	// the lifecycle of the event handler. To avoid unforseen behavior, make sure
-	// that the event handler has been properly deregistered from the reactor
-	// before removing the last reference.
-	inherited::remove_reference();
+	// *NOTE*: may "delete this"
 	inherited2::decrease();
+	//// *NOTE*: may "delete this"
+	//inherited::remove_reference();
 }
 
 template <typename ConfigType,

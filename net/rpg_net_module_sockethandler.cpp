@@ -35,7 +35,7 @@ RPG_Net_Module_SocketHandler::RPG_Net_Module_SocketHandler()
              false), // DON'T auto-start !
    myIsInitialized(false),
    myStatCollectHandler(this,
-                        RPG_Net_StatisticHandler_Reactor_t::ACTION_COLLECT),
+                        STATISTICHANDLER_TYPE::ACTION_COLLECT),
    myStatCollectHandlerID(-1),
    myCurrentMessageLength(0),
    myCurrentMessage(NULL),

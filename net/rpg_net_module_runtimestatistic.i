@@ -44,6 +44,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
    myLocalReportingHandler(this,
                            STATISTICHANDLER_TYPE::ACTION_REPORT),
    myLocalReportingHandlerID(-1),
+	 myReportingInterval(0),
    mySessionID(0),
    myNumInboundMessages(0),
    myNumOutboundMessages(0),
@@ -59,23 +60,6 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic_t::RPG_Net_Module_RuntimeStatistic_t"));
 
-  // schedule the second-granularity timer
-  ACE_Time_Value interval(1, 0); // one second interval
-  myResetTimeoutHandlerID =
-		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myResetTimeoutHandler,              // event handler handle
-                                                            NULL,                                // ACT
-                                                            RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
-                                                            interval);                           // interval
-  if (myResetTimeoutHandlerID == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
-
-    return;
-  } // end IF
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("scheduled second-interval timer (ID: %d)...\n"),
-//              myResetTimeoutHandlerID));
 }
 
 template <typename SessionMessageType,
@@ -102,6 +86,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::init(const unsigned int& reportingInterval_in,
+																	                               const bool& printFinalReport_in,
                                                                  const RPG_Stream_IAllocator* allocator_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic_t::init"));
@@ -112,9 +97,11 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("re-initializing...\n")));
 
-    // stop reporting timer
-    fini_timers(false);
+    // stop timers
+    fini_timers(true);
 
+		myReportingInterval = 0;
+		myPrintFinalReport = false;
     mySessionID = 0;
     // reset various counters...
     {
@@ -133,40 +120,33 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 
       myMessageTypeStatistics.clear();
     } // end lock scope
+		myAllocator = NULL;
 
     myIsInitialized = false;
   } // end IF
 
-  // statistics reporting
-  if (reportingInterval_in)
-  {
-    // schedule the reporting interval timer
-    ACE_Time_Value interval(reportingInterval_in, 0);
-    ACE_ASSERT(myLocalReportingHandlerID == -1);
-    myLocalReportingHandlerID =
-			RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myLocalReportingHandler,            // handler
-                                                              NULL,                                // act
+	myReportingInterval = reportingInterval_in;
+	if (myReportingInterval)
+	{
+    // schedule the second-granularity timer
+    ACE_Time_Value interval(1, 0); // one second interval
+    myResetTimeoutHandlerID =
+  		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myResetTimeoutHandler,              // event handler handle
+                                                              NULL,                                // ACT
                                                               RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
                                                               interval);                           // interval
-    if (myLocalReportingHandlerID == -1)
+    if (myResetTimeoutHandlerID == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
       return false;
     } // end IF
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("scheduled (local) reporting timer (ID: %d) for intervals of %u second(s)...\n"),
-//                myLocalReportingHandlerID,
-//                reportingInterval_in));
-  } // end IF
-  else
-  {
-    // *NOTE*: even if this doesn't report, it might still be triggered from outside...
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("(local) statistics reporting has been disabled...\n")));
-  } // end IF
-
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("scheduled second-interval timer (ID: %d)...\n"),
+//              myResetTimeoutHandlerID));
+	} // end IF
+	myPrintFinalReport = printFinalReport_in;
   myAllocator = allocator_in;
 //   // sanity check(s)
 //   if (!myAllocator)
@@ -195,7 +175,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic_t::handleDataMessage"));
 
-  // don't care (implies yes per default, if we're part of a stream)
+  // don't care (implies yes per default, if part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
   // sanity check(s)
@@ -229,7 +209,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic_t::handleSessionMessage"));
 
-  // don't care (implies yes per default)
+  // don't care (implies yes per default, if part of a stream)
   ACE_UNUSED_ARG(passMessageDownstream_out);
 
   // sanity check(s)
@@ -253,13 +233,46 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
       // retain session ID for reporting...
       mySessionID = message_inout->getConfig()->getUserData().sessionID;
 
+			// statistics reporting
+			if (myReportingInterval)
+			{
+				// schedule the reporting interval timer
+				ACE_Time_Value interval(myReportingInterval, 0);
+				ACE_ASSERT(myLocalReportingHandlerID == -1);
+				myLocalReportingHandlerID =
+					RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myLocalReportingHandler,            // handler
+																																	NULL,                                // act
+																																	RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
+																																	interval);                           // interval
+				if (myLocalReportingHandlerID == -1)
+				{
+					ACE_DEBUG((LM_ERROR,
+						ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
+
+					return;
+				} // end IF
+				//     ACE_DEBUG((LM_DEBUG,
+				//                ACE_TEXT("scheduled (local) reporting timer (ID: %d) for intervals of %u second(s)...\n"),
+				//                myLocalReportingHandlerID,
+				//                reportingInterval_in));
+			} // end IF
+			else
+			{
+				// *NOTE*: even if this doesn't report, it might still be triggered from outside...
+				//     ACE_DEBUG((LM_DEBUG,
+				//                ACE_TEXT("(local) statistics reporting has been disabled...\n")));
+			} // end IF
+
       break;
     }
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
     {
-      // session finished ? --> print overall statistics
-      // *TODO*: re-init internal counters ?
-      final_report();
+			// stop reporting timer
+			fini_timers(false);
+
+      // session finished --> print overall statistics ?
+			if (myPrintFinalReport)
+        final_report();
 
       break;
     }
@@ -323,8 +336,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic_t::collect"));
 
-  // *NOTE*: asynchronous call: someones' using our API
-  // --> fill the argument with meaningful values...
+  // *NOTE*: external call, fill the argument with meaningful values
 
   // init return value(s)
   ACE_OS::memset(&data_out, 0, sizeof(StatisticsContainerType));
@@ -370,7 +382,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("*** [session: %u] RUNTIME STATISTICS ***\n--> Stream Statistics <--\nmessages seen (last second): %u\nmessages seen (total [in/out]): %u/%u (data: %.2f %%)\n data seen (last second): %u bytes\n data seen (total): %.0f bytes\n current cache usage [%u messages / %u total allocated heap]\n*** RUNTIME STATISTICS ***\\END\n"),
                mySessionID,
                myLastMessagesPerSecondCount,
@@ -405,7 +417,7 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
     if ((myNumInboundMessages + myNumOutboundMessages))
     {
       // write some output
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT("*** [session: %u] SESSION STATISTICS ***\ntotal # data message(s) (as seen [in/out]): %u/%u\n --> Protocol Info <--\n"),
                  mySessionID,
                  myNumInboundMessages,
@@ -445,11 +457,13 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic_t::fini_timers"));
 
+	const void* act = NULL;
   if (cancelAllTimers_in)
   {
     if (myResetTimeoutHandlerID != -1)
     {
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myResetTimeoutHandlerID) == -1)
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myResetTimeoutHandlerID,
+				                                                        &act) == -1)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    myResetTimeoutHandlerID));
@@ -459,7 +473,9 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 
   if (myLocalReportingHandlerID != -1)
   {
-    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myLocalReportingHandlerID) == -1)
+		act = NULL;
+    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myLocalReportingHandlerID,
+			                                                        &act) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                  myLocalReportingHandlerID));
@@ -554,11 +570,7 @@ RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
 		stream_task->myMessageCounter++;
 
     // add message to statistic...
-    stream_task->myMessageTypeStatistics[static_cast<ProtocolCommandType>(message->getCommand())]++;
-
-    // *TODO*: add message to statistic...
-  	//// --> increment corresponding counter
-  	//stream_task->myMessageTypeStatistics[static_cast<COMMAND_TYPE>(message->getCommand())]++;
+    stream_task->myMessageTypeStatistics[message->getCommand()]++;
   } // end lock scope
 
   return inherited::put(mb_in, tv_in);
