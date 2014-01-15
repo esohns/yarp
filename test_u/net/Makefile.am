@@ -3,8 +3,8 @@ METASOURCES = AUTO
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DRPG_NET_SERVER_HAS_DLL -DRPG_NET_HAS_DLL \
   -I$(top_srcdir)/../common -I$(top_srcdir)/../net/client \
-  -I$(top_srcdir)/../net -I$(top_srcdir)/../net/stream \
-  -I$(top_srcdir)/../chance/dice
+  -I$(top_srcdir)/../net/server -I$(top_srcdir)/../net \
+  -I$(top_srcdir)/../net/stream -I$(top_srcdir)/../chance/dice
 
 SUBDIRS = protocol
 

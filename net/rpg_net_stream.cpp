@@ -204,6 +204,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
   if (!socketHandler_impl->init(config_in.messageAllocator,
+                                config_in.sessionID,
                                 config_in.useThreadPerConnection,
                                 RPG_NET_STATISTICS_COLLECT_INTERVAL))
   {
@@ -218,7 +219,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
   mySocketHandler.arg(&const_cast<RPG_Net_ConfigPOD&>(config_in));
-  if (push(&mySocketHandler) == -1)
+  if (inherited::push(&mySocketHandler) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),

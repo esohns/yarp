@@ -252,8 +252,9 @@ RPG_Net_SocketHandler::close(u_long arg_in)
   {
     // called by:
     // - any worker from ACE_Task_Base on clean-up
-    // - acceptor/connector if there are too many connections (i.e. open() returned -1)
-    case 0:
+    // - acceptor/connector if there are too many connections (i.e. open()
+    //   returned -1)
+    case NORMAL_CLOSE_OPERATION:
     {
       // check specifically for the first case...
       if (ACE_OS::thr_equal(ACE_Thread::self(),
@@ -276,7 +277,7 @@ RPG_Net_SocketHandler::close(u_long arg_in)
     // called by external (e.g. reactor) thread wanting to close the connection
 		// (e.g. too many connections)
 		// *NOTE*: this eventually calls handle_close() (see below)
-    case 1:
+		case CLOSE_DURING_NEW_CONNECTION:
       return inherited::close(arg_in);
     default:
     {
@@ -301,7 +302,9 @@ RPG_Net_SocketHandler::handle_close(ACE_HANDLE handle_in,
   {
     case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
 		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> connect failed (e.g. connection refused) /
-			                                       //     accept failed (e.g. too many connections) ?
+																						 //     accept failed (e.g. too many connections) /
+																						 //     select failed (EBADF see Select_Reactor_T.cpp)
+																						 //     asynch abort
 			break;
     case ACE_Event_Handler::EXCEPT_MASK:
 			// *IMPORTANT NOTE*: the TP_Reactor dispatches notifications in parallel

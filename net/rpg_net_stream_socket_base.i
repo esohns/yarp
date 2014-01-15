@@ -20,7 +20,7 @@
 
 #include <ace/Message_Block.h>
 
-#include "rpg_common.h"
+#include "rpg_common_timer_manager.h"
 
 #include "rpg_stream_iallocator.h"
 
@@ -389,26 +389,10 @@ RPG_Net_StreamSocketBase<ConfigType,
   {
     case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
 		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> connect failed (e.g. connection refused) /
-			                                       //     accept failed (e.g. too many connections) ?
+																						 //     accept failed (e.g. too many connections) /
+																						 //     select failed (EBADF see Select_Reactor_T.cpp) /
+																						 //     asynch abort
     {
-			// sanity check: connect/accept failed ?
-			if ((mask_in == ACE_Event_Handler::ALL_EVENTS_MASK) &&
-				  (handle_in != ACE_INVALID_HANDLE))
-			{
-      // *PORTABILITY*: this isn't entirely portable...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %u) --> check implementation !, continuing\n"),
-								   handle_in,
-								   mask_in));
-#else
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %u) --> check implementation !, continuing\n"),
-								   handle_in,
-								   mask_in));
-#endif
-			} // end IF
-
       // step1: wait for all workers within the stream (if any)
       if (myStream.isRunning())
       {

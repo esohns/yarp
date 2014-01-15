@@ -46,9 +46,6 @@ typedef RPG_Common_Terrains_t::const_iterator RPG_Common_TerrainsIterator_t;
 // *NOTE*: use the high resolution for accuracy and low latency
 typedef ACE_HR_Time_Policy RPG_Common_TimePolicy_t;
 
-// init statics
-static RPG_Common_TimePolicy_t RPG_COMMON_TIME_POLICY;
-
 // *NOTE*: ensure a minimal amount of locking
 //typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_SYNCH_NULL_MUTEX> RPG_Common_TimeoutUpcall_t;
 typedef ACE_Event_Handler_Handle_Timeout_Upcall RPG_Common_TimeoutUpcall_t;

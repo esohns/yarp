@@ -64,7 +64,7 @@ RPG_Net_Client_SocketHandler::open(void* arg_in)
   if (result == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Svc_Handler::open(): \"%m\", aborting\n")));
+               ACE_TEXT("failed to RPG_Net_SocketHandlerBase::open(): \"%m\", aborting\n")));
 
     return -1;
   } // end IF

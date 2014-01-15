@@ -65,16 +65,11 @@ class RPG_Net_Connection_Manager
   virtual void stop();
   virtual bool isRunning() const;
 
-  // *NOTE*: users of this method should be aware of potential race
-  //         conditions with this method and (de-)registerConnection.
-  // Scenario: well-behaved shutdown going on WHILE client closes a connection.
-  //          (Note that with the current design (only one single-threaded
-  //          reactor) this cannot happen).
   void abortConnections();
   void waitConnections() const;
   unsigned int numConnections() const;
 
-  // *TODO*: used for testing ONLY !
+	// *TODO*: used for unit testing purposes ONLY !
 	//void lock();
 	//void unlock();
 	const CONNECTION_TYPE* operator[](unsigned int) const;
@@ -99,7 +94,7 @@ class RPG_Net_Connection_Manager
   virtual void deregisterConnection(const CONNECTION_TYPE*); // connection
 
   // implement RPG_Common_IStatistic
-  // *WARNING*: this assumes we're holding our lock !
+  // *WARNING*: this assumes myLock is being held !
   virtual bool collect(StatisticsContainerType&) const; // return value: statistic data
 
   // safety measures
@@ -108,11 +103,9 @@ class RPG_Net_Connection_Manager
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Connection_Manager& operator=(const RPG_Net_Connection_Manager&));
   virtual ~RPG_Net_Connection_Manager();
 
-  // *NOTE*: MUST be recursive, otherwise we deadlock in abortConnections() !!!
-  // *TODO*: get rid of this lock --> find a better solution
+  // *NOTE*: MUST be recursive, otherwise asynch abort is not feasible
   mutable ACE_Recursive_Thread_Mutex                myLock;
   // implement blocking wait...
-  // *TODO*: fix ACE to use ACE_Thread_Condition ?
   mutable ACE_Condition<ACE_Recursive_Thread_Mutex> myCondition;
 
   unsigned int                                      myMaxNumConnections;

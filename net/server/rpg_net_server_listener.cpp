@@ -80,13 +80,12 @@ RPG_Net_Server_Listener::handle_accept_error(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::handle_accept_error"));
 
-  ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("failed to accept connection...\n")));
+//  ACE_DEBUG((LM_ERROR,
+//             ACE_TEXT("failed to accept connection...\n")));
 
-  // *TODO*: what else can we do ?
   inherited::dump();
 
-  // *NOTE*: we want to remain registered with the reactor...
+  // *NOTE*: remain registered with the reactor
   return 0;
 }
 

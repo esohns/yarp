@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "rpg_common.h"
 #include "rpg_common_defines.h"
+#include "rpg_common_timer_manager.h"
 
 #include "rpg_stream_defines.h"
 #include "rpg_stream_iallocator.h"

@@ -28,8 +28,6 @@
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
 #include <ace/Profile_Timer.h>
-#include <ace/Proactor.h>
-#include <ace/TP_Reactor.h>
 #include <ace/Signal.h>
 #include <ace/Sig_Handler.h>
 #include <ace/High_Res_Timer.h>
@@ -67,8 +65,8 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-	std::cout << ACE_TEXT("-c [VALUE]  : #connections ([") << RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS << ACE_TEXT("])") << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]  : client ping interval ([") << RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-c [VALUE]  : max #connections ([") << RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS << ACE_TEXT("])") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]  : client ping interval (second(s)) [") << RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL << ACE_TEXT("] {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-k [VALUE]  : client keep-alive timeout ([") << RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE << ACE_TEXT("] second(s) {0 --> no timeout})") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
@@ -76,7 +74,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-o          : use loopback [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]  : listening port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r          : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval ([") << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] second(s) {0 --> OFF})") << std::endl;
+  std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval (second(s)) [") << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x [VALUE]  : #dispatch threads [") << RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;

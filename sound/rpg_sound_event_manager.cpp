@@ -171,7 +171,7 @@ RPG_Sound_Event_Manager::start()
 
   // *NOTE*: this is a fire-and-forget API (assumes resp. for timer_handler)...
   myTimerID =
-		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,            // event handler handle
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,            // event handler handle
                                                             NULL,                     // ACT
                                                             RPG_COMMON_TIME_POLICY(), // expire immediately
                                                             ACE_Time_Value::zero);    // one-shot

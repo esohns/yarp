@@ -24,7 +24,7 @@
 #include <ace/Message_Block.h>
 
 #include "rpg_common_macros.h"
-#include "rpg_common.h"
+#include "rpg_common_timer_manager.h"
 
 #include "rpg_stream_defines.h"
 #include "rpg_stream_message_base.h"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 2.7.1, 2014-01-15T00:20:29. -->
+<!-- Written by QtCreator 2.7.1, 2014-01-15T15:34:09. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -18,13 +18,7 @@
      <value type="QString" key="CurrentPreferences">gnu2</value>
     </valuemap>
    </valuemap>
-   <valuemap type="QVariantMap" key="EditorConfiguration.CodeStyle.1">
-    <value type="QByteArray" key="language">QmlJS</value>
-    <valuemap type="QVariantMap" key="value">
-     <value type="QString" key="CurrentPreferences">QmlJSGlobal</value>
-    </valuemap>
-   </valuemap>
-   <value type="int" key="EditorConfiguration.CodeStyle.Count">2</value>
+   <value type="int" key="EditorConfiguration.CodeStyle.Count">1</value>
    <value type="QByteArray" key="EditorConfiguration.Codec">UTF-8</value>
    <value type="bool" key="EditorConfiguration.ConstrainTooltips">false</value>
    <value type="int" key="EditorConfiguration.IndentSize">2</value>
@@ -53,23 +47,23 @@
   <valuemap type="QVariantMap">
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Desktop</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Desktop</value>
-   <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">{f7292e29-bd9a-4884-83aa-44bdf2b0ecc8}</value>
+   <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">{b5958bc1-4c98-4a43-8b86-cbeb62fc34cc}</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">1</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">2</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">1</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
-    <value type="QString" key="AutotoolsProjectManager.AutotoolsBuildConfiguration.BuildDirectory">/mnt/win_c/Temp/yarp/Yarp/build/optimized</value>
+    <value type="QString" key="AutotoolsProjectManager.AutotoolsBuildConfiguration.BuildDirectory">/mnt/win_c/Temp/yarp/Yarp/build/debug_tracing</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
-      <value type="QString" key="AutotoolsProjectManager.AutoreconfStep.AdditionalArguments">--force --install --symlink --warnings=all ../../configure.ac</value>
+      <value type="QString" key="AutotoolsProjectManager.AutoreconfStep.AdditionalArguments">--force --install</value>
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">false</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Autoreconf</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.AutoreconfStep</value>
      </valuemap>
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.1">
-      <value type="QString" key="AutotoolsProjectManager.ConfigureStep.AdditionalArguments"></value>
-      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">false</value>
+      <value type="QString" key="AutotoolsProjectManager.ConfigureStep.AdditionalArguments">--enable-debug --enable-tracing</value>
+      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Configure</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.ConfigureStep</value>
@@ -109,14 +103,14 @@
     <value type="bool" key="ProjectExplorer.BuildConfiguration.ClearSystemEnvironment">false</value>
     <valuelist type="QVariantList" key="ProjectExplorer.BuildConfiguration.UserEnvironmentChanges"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">optimized</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">debug_tracing</value>
     <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.AutotoolsBuildConfiguration</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.1">
     <value type="QString" key="AutotoolsProjectManager.AutotoolsBuildConfiguration.BuildDirectory">/mnt/win_c/Temp/yarp/Yarp/build/debug</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
-      <value type="QString" key="AutotoolsProjectManager.AutoreconfStep.AdditionalArguments">--force --install --symlink --warnings=all ../../configure.ac</value>
+      <value type="QString" key="AutotoolsProjectManager.AutoreconfStep.AdditionalArguments">--force --install</value>
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">false</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Autoreconf</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
@@ -124,7 +118,7 @@
      </valuemap>
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.1">
       <value type="QString" key="AutotoolsProjectManager.ConfigureStep.AdditionalArguments">--enable-debug</value>
-      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">false</value>
+      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Configure</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.ConfigureStep</value>
@@ -168,18 +162,18 @@
     <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.AutotoolsBuildConfiguration</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.2">
-    <value type="QString" key="AutotoolsProjectManager.AutotoolsBuildConfiguration.BuildDirectory">/mnt/win_c/Temp/yarp/Yarp/build/debug_tracing</value>
+    <value type="QString" key="AutotoolsProjectManager.AutotoolsBuildConfiguration.BuildDirectory">/mnt/win_c/Temp/yarp/Yarp/build/optimized</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
-      <value type="QString" key="AutotoolsProjectManager.AutoreconfStep.AdditionalArguments">--force --install --symlink --warnings=all ../../configure.ac</value>
+      <value type="QString" key="AutotoolsProjectManager.AutoreconfStep.AdditionalArguments">--force --install</value>
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">false</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Autoreconf</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.AutoreconfStep</value>
      </valuemap>
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.1">
-      <value type="QString" key="AutotoolsProjectManager.ConfigureStep.AdditionalArguments">--enable-debug --enable-tracing</value>
-      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">false</value>
+      <value type="QString" key="AutotoolsProjectManager.ConfigureStep.AdditionalArguments"></value>
+      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Configure</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.ConfigureStep</value>
@@ -219,7 +213,7 @@
     <value type="bool" key="ProjectExplorer.BuildConfiguration.ClearSystemEnvironment">false</value>
     <valuelist type="QVariantList" key="ProjectExplorer.BuildConfiguration.UserEnvironmentChanges"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">tracing</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">optimized</value>
     <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.AutotoolsBuildConfiguration</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.BuildConfigurationCount">3</value>
@@ -238,14 +232,14 @@
    <value type="int" key="ProjectExplorer.Target.DeployConfigurationCount">1</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.PluginSettings"/>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.0">
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments"></value>
-    <value type="int" key="ProjectExplorer.CustomExecutableRunConfiguration.BaseEnvironmentBase">1</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/client/client_gui</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-i 1 -o -r -s 10 -t -x 1</value>
+    <value type="int" key="ProjectExplorer.CustomExecutableRunConfiguration.BaseEnvironmentBase">2</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_server</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <valuelist type="QVariantList" key="ProjectExplorer.CustomExecutableRunConfiguration.UserEnvironmentChanges"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_c/Temp/yarp/Yarp</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/client/client_gui</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">client UI</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_server</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">net server</value>
     <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">true</value>
@@ -254,28 +248,12 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.1">
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-c 10 -i 1 -o -r -t</value>
-    <value type="int" key="ProjectExplorer.CustomExecutableRunConfiguration.BaseEnvironmentBase">1</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_server</value>
-    <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
-    <valuelist type="QVariantList" key="ProjectExplorer.CustomExecutableRunConfiguration.UserEnvironmentChanges"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_c/Temp/yarp/Yarp</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_server</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">server</value>
-    <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
-    <value type="bool" key="RunConfiguration.UseCppDebugger">true</value>
-    <value type="bool" key="RunConfiguration.UseMultiProcess">false</value>
-    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
-    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-   </valuemap>
-   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.2">
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-i 1 -r -t</value>
-    <value type="int" key="ProjectExplorer.CustomExecutableRunConfiguration.BaseEnvironmentBase">1</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-r -t -x 1 -y</value>
+    <value type="int" key="ProjectExplorer.CustomExecutableRunConfiguration.BaseEnvironmentBase">2</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_client</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <valuelist type="QVariantList" key="ProjectExplorer.CustomExecutableRunConfiguration.UserEnvironmentChanges"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_c/Temp/yarp/Yarp</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_client</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">net client</value>
     <value type="QByteArray" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
@@ -285,7 +263,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
    </valuemap>
-   <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">3</value>
+   <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">2</value>
   </valuemap>
  </data>
  <data>
@@ -294,7 +272,7 @@
  </data>
  <data>
   <variable>ProjectExplorer.Project.Updater.EnvironmentId</variable>
-  <value type="QString">{74e53b66-411a-4793-ae40-664d83f47402}</value>
+  <value type="QString">{00000000-0000-0000-0000-000000000000}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.Updater.FileVersion</variable>

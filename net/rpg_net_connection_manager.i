@@ -277,8 +277,8 @@ RPG_Net_Connection_Manager<ConfigType,
 								 myConnections.size()));
 #else
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("deregistered connection [%d] (total: %u)\n"),
-                 handle,
+                 ACE_TEXT("deregistered connection [%@/%d] (total: %u)\n"),
+                 connection_in, handle,
 								 myConnections.size()));
 #endif
 
@@ -319,7 +319,7 @@ RPG_Net_Connection_Manager<ConfigType,
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   // sanity check: anything to do ?
-  if (myConnections.is_empty() == 1)
+  if (myConnections.is_empty())
     return;
 
   ACE_DEBUG((LM_DEBUG,
@@ -334,7 +334,8 @@ RPG_Net_Connection_Manager<ConfigType,
     ACE_ASSERT(connection);
     try
     {
-      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a reactor thread, if any
+      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a
+      // reactor thread, if any
       connection->abort();
     }
     catch (...)
@@ -383,18 +384,9 @@ RPG_Net_Connection_Manager<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numConnections"));
 
-	// init return value(s)
-	// *TODO*: is this necessary ?
-  unsigned int num_connections = 0;
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
-  // synch access to myConnections
-  {
-    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
-
-    num_connections = myConnections.size();
-  } // end lock scope
-
-  return static_cast<unsigned int>(num_connections);
+  return static_cast<unsigned int>(myConnections.size());
 }
 
 //template <typename ConfigType,
@@ -435,11 +427,12 @@ RPG_Net_Connection_Manager<ConfigType,
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
 
   // sanity check
-  if (index_in > myConnections.size())
+  if (myConnections.is_empty() ||
+      (index_in > myConnections.size()))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("out of bounds (index was: %u), aborting"),
-               index_in));
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("out of bounds (index was: %u), aborting"),
+//               index_in));
 
     return result;
   } // end IF
@@ -476,7 +469,8 @@ RPG_Net_Connection_Manager<ConfigType,
   {
     try
     {
-      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a reactor thread, if any
+      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a
+      // reactor thread, if any
       connection->abort();
     }
     catch (...)

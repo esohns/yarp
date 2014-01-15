@@ -19,11 +19,11 @@
  ***************************************************************************/
 #include "stdafx.h"
 
+#include "rpg_common_timer_manager.h"
+
 #include <ace/Log_Msg.h>
-#include <ace/High_Res_Timer.h>
 
 #include "rpg_common_defines.h"
-#include "rpg_common_timer_manager.h"
 
 #include "rpg_common_macros.h"
 #include "rpg_common_itimer.h"

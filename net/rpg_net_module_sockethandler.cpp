@@ -52,7 +52,9 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
   // clean up timer if necessary
   if (myStatCollectHandlerID != -1)
 	{
-    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
+		const void* act = NULL;
+		if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID,
+																															&act) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                  myStatCollectHandlerID));
@@ -69,6 +71,7 @@ RPG_Net_Module_SocketHandler::~RPG_Net_Module_SocketHandler()
 
 bool
 RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
+                                   const unsigned int& sessionID_in,
                                    const bool& isActive_in,
                                    const unsigned int& statisticsCollectionInterval_in)
 {
@@ -84,10 +87,14 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
 
     // clean up
     if (myStatCollectHandlerID != -1)
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
+    {
+      const void* act = NULL;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID,
+                                                                &act) == -1)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    myStatCollectHandlerID));
+    } // end IF
     myStatCollectHandlerID = -1;
     myCurrentMessageLength = 0;
     if (myCurrentMessage)
@@ -100,7 +107,7 @@ RPG_Net_Module_SocketHandler::init(RPG_Stream_IAllocator* allocator_in,
 	myStatCollectionInterval = statisticsCollectionInterval_in;
 
   inherited::myAllocator = allocator_in;
-	inherited::mySessionID = 0;
+  inherited::mySessionID = sessionID_in;
 	inherited::myIsActive = isActive_in;
 
   // OK: all's well...

@@ -29,6 +29,10 @@
 
 #include <ace/Event_Handler.h>
 
+// define behaviour
+#define NET_CLIENT_U_TEST_CONNECT_PROBABILITY   0.02F
+#define NET_CLIENT_U_TEST_ABORT_PROBABILITY     0.01F
+
 Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const ActionMode_t& mode_in,
                                                      const unsigned int& maxNumConnections_in,
                                                      const ACE_INET_Addr& remoteSAP_in,
@@ -62,7 +66,8 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
   ACE_UNUSED_ARG(arg_in);
 
 	bool do_connect = false;
-	unsigned int num_connections = RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
+	unsigned int num_connections =
+		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
 
 	switch (myMode)
 	{
@@ -100,6 +105,7 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 						break; // nothing to do...
 
 					// grab a (random) connection handler
+					// *WARNING*: there's a race condition here...
 					RPG_Dice_RollResult_t result;
 					RPG_Dice::generateRandomNumbers(num_connections,
 																					1,
@@ -108,10 +114,10 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 						RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
 					if (!connection_handler)
 					{
-						ACE_DEBUG((LM_ERROR,
-											 ACE_TEXT("failed to retrieve connection handler, aborting\n")));
+//						ACE_DEBUG((LM_DEBUG,
+//											 ACE_TEXT("failed to retrieve connection handler, continuing\n")));
 
-						return -1;
+						return 0;
 					} // end IF
 
 					try
@@ -154,20 +160,29 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 		case ACTION_STRESS:
 		{
 			// allow some probability for closing connections in between
-			if (RPG_Dice::probability(0.01F)) // 1%
-				RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+			// *WARNING*: there's a race condition here...
+			if ((num_connections > 0) &&
+					RPG_Dice::probability(NET_CLIENT_U_TEST_ABORT_PROBABILITY))
+			{
+				ACE_DEBUG((LM_DEBUG,
+									 ACE_TEXT("closing newest connection...\n")));
+
+				RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortNewestConnection();
+			} // end IF
 
 			// allow some probability for opening connections in between
-			if (RPG_Dice::probability(0.5F)) // 50%
+			if (RPG_Dice::probability(NET_CLIENT_U_TEST_CONNECT_PROBABILITY))
 			  do_connect = true;
 
 			// ping the server
 
 			// sanity check
+			// *WARNING*: there's a race condition here...
 			if (num_connections == 0)
 				break;
 
 			// grab a (random) connection handler
+			// *WARNING*: there's a race condition here...
 			RPG_Dice_RollResult_t result;
 			RPG_Dice::generateRandomNumbers(num_connections,
 																			1,
@@ -176,10 +191,10 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 				RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
 			if (!connection_handler)
 			{
-				ACE_DEBUG((LM_ERROR,
-									 ACE_TEXT("failed to retrieve connection handler, aborting\n")));
+//				ACE_DEBUG((LM_ERROR,
+//									 ACE_TEXT("failed to retrieve connection handler, continuing")));
 
-				return -1;
+				return 0;
 			} // end IF
 
 			try

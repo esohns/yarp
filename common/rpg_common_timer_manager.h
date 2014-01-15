@@ -29,6 +29,9 @@
 #include <ace/Singleton.h>
 #include <ace/Time_Value.h>
 
+// *NOTE*: global time policy (supplies gettimeofday())
+static RPG_Common_TimePolicy_t RPG_COMMON_TIME_POLICY;
+
 class RPG_Common_Export RPG_Common_Timer_Manager
  : public RPG_Common_TimerQueue_t,
    public RPG_Common_IControl,

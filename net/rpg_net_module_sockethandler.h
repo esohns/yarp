@@ -52,6 +52,7 @@ class RPG_Net_Module_SocketHandler
 
   // configuration / initialization
   bool init(RPG_Stream_IAllocator*,   // message allocator
+            const unsigned int&,      // session id
             const bool& = false,      // active object ?
             const unsigned int& = 0); // statistics collecting interval (second(s))
                                       // 0 --> DON'T collect statistics

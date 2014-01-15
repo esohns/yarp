@@ -78,9 +78,9 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-a         : alternating mode [") << false << "]" << std::endl;
-  std::cout << ACE_TEXT("-c [VALUE] : #connections [") << NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS << "] {0 --> OFF}" << std::endl;
+  std::cout << ACE_TEXT("-c [VALUE] : max #connections [") << NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS << "] {0 --> unlimited}" << std::endl;
   std::cout << ACE_TEXT("-h [STRING]: server hostname [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE] : connection interval [") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT(" second(s)]") << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE] : connection interval (second(s)) [") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] {0 --> OFF}") << std::endl;
   std::cout << ACE_TEXT("-l         : log to a file [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p [VALUE] : server port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-r         : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;

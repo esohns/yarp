@@ -20,7 +20,7 @@
 
 #include <ace/Reactor.h>
 
-#include "rpg_common.h"
+#include "rpg_common_timer_manager.h"
 
 template <typename ConfigType,
           typename StatisticsContainerType,
