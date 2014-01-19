@@ -544,7 +544,7 @@ RPG_Common_File_Tools::getUserGameDirectory()
   result = ACE_TEXT_ALWAYS_CHAR(buffer);
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  result += ACE_TEXT_ALWAYS_CHAR(META_PACKAGE_NAME);
+  result += ACE_TEXT_ALWAYS_CHAR(META_PACKAGE);
 
   if (!RPG_Common_File_Tools::isDirectory(result))
   {

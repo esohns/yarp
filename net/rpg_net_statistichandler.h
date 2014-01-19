@@ -94,6 +94,6 @@ class RPG_Net_StatisticHandler_Proactor_T
 };
 
 // include template implementation
-#include "rpg_net_statistichandler.i"
+#include "rpg_net_statistichandler.inl"
 
 #endif

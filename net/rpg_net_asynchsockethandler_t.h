@@ -98,7 +98,7 @@ class RPG_Net_AsynchSocketHandler_T
 };
 
 // include template definition
-#include "rpg_net_asynchsockethandler_t.i"
+#include "rpg_net_asynchsockethandler_t.inl"
 
 #endif
 

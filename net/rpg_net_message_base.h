@@ -73,6 +73,6 @@ class RPG_Net_MessageBase
   bool myIsInitialized;
 };
 
-#include "rpg_net_message_base.i"
+#include "rpg_net_message_base.inl"
 
 #endif

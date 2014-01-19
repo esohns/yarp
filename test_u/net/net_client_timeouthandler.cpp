@@ -21,17 +21,17 @@
 
 #include "net_client_timeouthandler.h"
 
+#include <ace/Event_Handler.h>
+
+#include <gdk/gdk.h>
+#include <gtk/gtkmain.h>
+
 #include "rpg_dice.h"
 
 #include "rpg_net_common.h"
 
-#include "rpg_common_defines.h"
-
-#include <ace/Event_Handler.h>
-
-// define behaviour
-#define NET_CLIENT_U_TEST_CONNECT_PROBABILITY   0.02F
-#define NET_CLIENT_U_TEST_ABORT_PROBABILITY     0.01F
+#include "net_defines.h"
+#include "net_common.h"
 
 Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const ActionMode_t& mode_in,
                                                      const unsigned int& maxNumConnections_in,
@@ -63,13 +63,14 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
   RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::handle_timeout"));
 
   ACE_UNUSED_ARG(tv_in);
-  ACE_UNUSED_ARG(arg_in);
 
+  const Net_GTK_CBData_t* user_data = reinterpret_cast<const Net_GTK_CBData_t*>(arg_in);
+  ActionMode_t action_mode = (user_data ? ACTION_GTK : myMode);
 	bool do_connect = false;
 	unsigned int num_connections =
 		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
 
-	switch (myMode)
+	switch (action_mode)
 	{
 	  case ACTION_NORMAL:
 		{
@@ -214,6 +215,37 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
 			// clean up
 			const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+
+			break;
+		}
+		case ACTION_GTK:
+		{
+			ACE_ASSERT(user_data);
+
+			// dispatch any pending events
+			GDK_THREADS_ENTER();
+			while (gtk_events_pending())
+				if (gtk_main_iteration_do(FALSE)) // NEVER block !
+				{
+//					// gtk_main_quit() has been invoked --> finished event processing
+
+//          // *NOTE*: as gtk_main() is never invoked, gtk_main_iteration_do ALWAYS
+//          // returns true... provide a workaround by using the gtk_quit_add hook
+//          // --> check if that has been called...
+//          // synch access
+//          {
+//            ACE_Guard<ACE_Thread_Mutex> aGuard(user_data->lock);
+
+//            if (user_data->gtk_main_quit_invoked)
+//              if (ACE_OS::raise(SIGINT) == -1) // --> shutdown
+//                ACE_DEBUG((LM_ERROR,
+//                           ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
+//                           SIGINT));
+
+          break; // ignore any remaining GTK events
+//          } // end lock scope
+        } // end IF
+      GDK_THREADS_LEAVE();
 
 			break;
 		}

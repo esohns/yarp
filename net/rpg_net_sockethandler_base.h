@@ -90,6 +90,6 @@ class RPG_Net_SocketHandlerBase
 };
 
 // include template implementation
-#include "rpg_net_sockethandler_base.i"
+#include "rpg_net_sockethandler_base.inl"
 
 #endif

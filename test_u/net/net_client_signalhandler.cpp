@@ -27,16 +27,20 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_timer_manager.h"
 
+#include "rpg_client_GTK_manager.h"
+
 #include "rpg_net_common.h"
 #include "rpg_net_common_tools.h"
 
-Net_Client_SignalHandler::Net_Client_SignalHandler(const long& timerID_in,
+Net_Client_SignalHandler::Net_Client_SignalHandler(const long& actionTimerID_in,
+//                                                   const long& GTKTimerID_in,
                                                    const ACE_INET_Addr& peerSAP_in,
                                                    RPG_Net_Client_IConnector* connector_in,
                                                    const bool& useReactor_in)
  : inherited(NULL,                            // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
-   myTimerID(timerID_in),
+   myActionTimerID(actionTimerID_in),
+//   myGTKTimerID(GTKTimerID_in),
    myPeerAddress(peerSAP_in),
    myConnector(connector_in),
    myUseReactor(useReactor_in),
@@ -111,8 +115,8 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
              information.c_str()));
 
   bool stop_event_dispatching = false;
-  bool connect_to_server = false;
-  bool abort_oldest = false;
+  bool connect = false;
+  bool abort = false;
   switch (mySignal)
   {
     case SIGINT:
@@ -134,7 +138,7 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 #endif
     {
       // (try to) connect...
-      connect_to_server = true;
+      connect = true;
 
       break;
     }
@@ -144,8 +148,8 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
     case SIGTERM:
 #endif
     {
-      // (try to) abort oldest connection...
-      abort_oldest = true;
+      // (try to) abort a connection...
+      abort = true;
 
       break;
     }
@@ -160,14 +164,14 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
   } // end SWITCH
 
   // ...abort ?
-  if (abort_oldest)
+  if (abort)
   {
     // release an existing connection...
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
   } // end IF
 
   // ...connect ?
-  if (connect_to_server)
+  if (connect)
   {
     try
     {
@@ -187,23 +191,42 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
     // - leave reactor event loop handling signals, sockets, (maintenance) timers...
     // --> (try to) terminate in a well-behaved manner
 
-    // stop interval timer (might spawn new connections)
-    if (myTimerID >= 0)
+    // step1: stop all open connections
+
+    // stop action timer (might spawn new connections otherwise)
+    if (myActionTimerID >= 0)
     {
 			const void* act = NULL;
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myTimerID, &act) <= 0)
+			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myActionTimerID,
+																																&act) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   myTimerID));
+                   myActionTimerID));
 
-      myTimerID = -1;
+      // clean up
+      myActionTimerID = -1;
     } // end IF
     myConnector->abort();
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->stop();
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
-    // stop reactor (&& proactor, if applicable)
+    // step2: stop GTK event dispatch
+//    if (myGTKTimerID >= 0)
+//    {
+//      const void* act = NULL;
+//      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myGTKTimerID,
+//                                                                &act) <= 0)
+//        ACE_DEBUG((LM_DEBUG,
+//                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+//                   myGTKTimerID));
+
+//      // clean up
+//      myGTKTimerID = -1;
+//    } // end IF
+    RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
+
+    // step3: stop reactor (&& proactor, if applicable)
     int result = ACE_Reactor::instance()->end_event_loop();
     if (result == -1)
       ACE_DEBUG((LM_ERROR,

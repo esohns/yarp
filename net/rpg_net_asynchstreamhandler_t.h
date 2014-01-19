@@ -80,6 +80,6 @@ class RPG_Net_AsynchStreamHandler_T
 };
 
 // include template definition
-#include "rpg_net_asynchstreamhandler_t.i"
+#include "rpg_net_asynchstreamhandler_t.inl"
 
 #endif

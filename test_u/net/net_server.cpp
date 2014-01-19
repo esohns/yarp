@@ -67,7 +67,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c [VALUE]  : max #connections ([") << RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS << ACE_TEXT("])") << std::endl;
   std::cout << ACE_TEXT("-i [VALUE]  : client ping interval (second(s)) [") << RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL << ACE_TEXT("] {0 --> OFF})") << std::endl;
-  std::cout << ACE_TEXT("-k [VALUE]  : client keep-alive timeout ([") << RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE << ACE_TEXT("] second(s) {0 --> no timeout})") << std::endl;
+//  std::cout << ACE_TEXT("-k [VALUE]  : client keep-alive timeout ([") << RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE << ACE_TEXT("] second(s) {0 --> no timeout})") << std::endl;
   std::cout << ACE_TEXT("-l          : log to a file [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-n [STRING] : network interface [\"") << ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE) << ACE_TEXT("\"]") << std::endl;
   // *TODO*: this doesn't really make sense (yet)
@@ -85,7 +85,7 @@ process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   unsigned int& maxNumConnections_out,
                   unsigned int& clientPingInterval_out,
-                  unsigned int& keepAliveTimeout_out,
+//                  unsigned int& keepAliveTimeout_out,
                   bool& logToFile_out,
                   std::string& networkInterface_out,
                   bool& useLoopback_out,
@@ -101,7 +101,7 @@ process_arguments(const int argc_in,
   // init results
   maxNumConnections_out = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
   clientPingInterval_out = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
-  keepAliveTimeout_out = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
+//  keepAliveTimeout_out = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
   logToFile_out = false;
   networkInterface_out = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
   useLoopback_out = false;
@@ -140,15 +140,15 @@ process_arguments(const int argc_in,
 
         break;
       }
-      case 'k':
-      {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
-        converter >> keepAliveTimeout_out;
+//      case 'k':
+//      {
+//        converter.clear();
+//        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+//        converter << argumentParser.opt_arg();
+//        converter >> keepAliveTimeout_out;
 
-        break;
-      }
+//        break;
+//      }
       case 'l':
       {
         logToFile_out = true;
@@ -522,7 +522,7 @@ fini_signalHandling(ACE_Sig_Set& signals_in,
 void
 do_work(const unsigned int& maxNumConnections_in,
         const unsigned int& pingInterval_in,
-        const unsigned int& keepAliveTimeout_in,
+//        const unsigned int& keepAliveTimeout_in,
         const std::string& networkInterface_in,
         const bool& useLoopback_in,
         const unsigned short& listeningPortNumber_in,
@@ -589,13 +589,12 @@ do_work(const unsigned int& maxNumConnections_in,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
-  config.pingInterval = pingInterval_in;
-  config.keepAliveTimeout = keepAliveTimeout_in,
+  config.peerPingInterval = pingInterval_in;
   config.pingAutoAnswer = true;
   config.printPingMessages = false;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
-  config.defaultBufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   config.useThreadPerConnection = false;
   config.module = NULL; // just use the default stream...
   // *WARNING*: set at runtime, by the appropriate connection handler
@@ -763,7 +762,7 @@ ACE_TMAIN(int argc,
   // step1a set defaults
   unsigned int maxNumConnections           = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
   unsigned int pingInterval                = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
-  unsigned int keepAliveTimeout            = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
+//  unsigned int keepAliveTimeout            = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
   bool logToFile                           = false;
   std::string networkInterface             = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
   bool useLoopback                         = false;
@@ -779,7 +778,7 @@ ACE_TMAIN(int argc,
                          argv,
                          maxNumConnections,
                          pingInterval,
-                         keepAliveTimeout,
+//                         keepAliveTimeout,
                          logToFile,
                          networkInterface,
                          useLoopback,
@@ -894,7 +893,7 @@ ACE_TMAIN(int argc,
   // step2: do actual work
   do_work(maxNumConnections,
           pingInterval,
-          keepAliveTimeout,
+//          keepAliveTimeout,
           networkInterface,
           useLoopback,
           listeningPortNumber,

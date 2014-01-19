@@ -116,6 +116,6 @@ class RPG_Net_Connection_Manager
 };
 
 // include template implementation
-#include "rpg_net_connection_manager.i"
+#include "rpg_net_connection_manager.inl"
 
 #endif

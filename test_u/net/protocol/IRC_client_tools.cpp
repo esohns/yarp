@@ -50,7 +50,7 @@ IRC_Client_Tools::connect(RPG_Stream_IAllocator* messageAllocator_in,
   // ************ connection config data ************
   stream_config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   stream_config.messageAllocator = messageAllocator_in;
-  stream_config.defaultBufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  stream_config.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   // ************ protocol config data **************
   stream_config.clientPingInterval = 0; // servers do this...
   stream_config.loginOptions = loginOptions_in;

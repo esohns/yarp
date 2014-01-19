@@ -178,6 +178,6 @@ class RPG_Net_Module_RuntimeStatistic_t
 };
 
 // include template implementation
-#include "rpg_net_module_runtimestatistic.i"
+#include "rpg_net_module_runtimestatistic.inl"
 
 #endif

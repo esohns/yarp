@@ -113,6 +113,6 @@ class RPG_Stream_MessageAllocatorHeapBase
 };
 
 // include template implementation
-#include "rpg_stream_messageallocatorheap_base.i"
+#include "rpg_stream_messageallocatorheap_base.inl"
 
 #endif

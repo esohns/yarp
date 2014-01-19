@@ -68,6 +68,6 @@ class RPG_Stream_TaskBaseSynch
 };
 
 // include template implementation
-#include "rpg_stream_task_base_synch.i"
+#include "rpg_stream_task_base_synch.inl"
 
 #endif

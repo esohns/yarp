@@ -48,7 +48,7 @@ class RPG_Net_Module_ProtocolHandler
   // initialization
   bool init(RPG_Stream_IAllocator*,  // message allocator
             const unsigned int&,     // session ID
-            const unsigned int& = 0, // peer "ping" interval (i.e. keep-alive) [0 --> OFF]
+            const unsigned int& = 0, // peer "ping" interval (ms) [0 --> OFF]
             const bool& = true,      // automatically reply to "ping" messages (auto-"pong")
             const bool& = false);    // print dot ('.') for every received "ping" to stderr
 

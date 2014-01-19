@@ -7,14 +7,14 @@ noinst_HEADERS = stdafx.h
 include_HEADERS = rpg_stream.h \
   rpg_stream_allocatorheap.h \
   rpg_stream_base.h \
-  rpg_stream_base.i \
+  rpg_stream_base.inl \
   rpg_stream_data_message_base.h \
-  rpg_stream_data_message_base.i \
+  rpg_stream_data_message_base.inl \
   rpg_stream_datablockallocatorheap.h \
   rpg_stream_defines.h \
   rpg_stream_headmoduletask.h \
   rpg_stream_headmoduletask_base.h \
-  rpg_stream_headmoduletask_base.i \
+  rpg_stream_headmoduletask_base.inl \
   rpg_stream_iallocator.h \
   rpg_stream_imessagequeue.h \
   rpg_stream_imodule.h \
@@ -24,34 +24,34 @@ include_HEADERS = rpg_stream.h \
   rpg_stream_message_base.h \
   rpg_stream_messageallocatorheap.h \
   rpg_stream_messageallocatorheap_base.h \
-  rpg_stream_messageallocatorheap_base.i \
+  rpg_stream_messageallocatorheap_base.inl \
   rpg_stream_messagequeue.h \
   rpg_stream_messagequeue_base.h \
   rpg_stream_module_base.h \
-  rpg_stream_module_base.i \
+  rpg_stream_module_base.inl \
   rpg_stream_session_config.h \
   rpg_stream_session_config_base.h \
-  rpg_stream_session_config_base.i \
+  rpg_stream_session_config_base.inl \
   rpg_stream_session_message.h \
   rpg_stream_session_message_base.h \
-  rpg_stream_session_message_base.i \
+  rpg_stream_session_message_base.inl \
   rpg_stream_statemachine_control.h \
   rpg_stream_streammodule_base.h \
-  rpg_stream_streammodule_base.i \
+  rpg_stream_streammodule_base.inl \
   rpg_stream_task.h \
-  rpg_stream_task.i \
+  rpg_stream_task.inl \
   rpg_stream_task_asynch.h \
   rpg_stream_task_base.h \
-  rpg_stream_task_base.i \
+  rpg_stream_task_base.inl \
   rpg_stream_task_base_asynch.h \
-  rpg_stream_task_base_asynch.i \
+  rpg_stream_task_base_asynch.inl \
   rpg_stream_task_base_synch.h \
-  rpg_stream_task_base_synch.i \
+  rpg_stream_task_base_synch.inl \
   rpg_stream_task_synch.h \
   rpg_stream_tools.h \
   rpg_stream_exports.h \
   rpg_stream_cachedmessageallocatorheap_base.h \
-  rpg_stream_cachedmessageallocatorheap_base.i \
+  rpg_stream_cachedmessageallocatorheap_base.inl \
   rpg_stream_cachedmessageallocatorheap.h \
   rpg_stream_cacheddatablockallocatorheap.h \
   rpg_stream_cachedallocatorheap.h
@@ -64,10 +64,10 @@ libRPG_Stream_la_SOURCES = rpg_stream.cpp \
 	rpg_stream_allocatorheap.h \
 	rpg_stream_base.cpp \
 	rpg_stream_base.h \
-	rpg_stream_base.i \
+	rpg_stream_base.inl \
 	rpg_stream_data_message_base.cpp \
 	rpg_stream_data_message_base.h \
-	rpg_stream_data_message_base.i \
+	rpg_stream_data_message_base.inl \
 	rpg_stream_datablockallocatorheap.cpp \
 	rpg_stream_datablockallocatorheap.h \
 	rpg_stream_defines.h \
@@ -75,7 +75,7 @@ libRPG_Stream_la_SOURCES = rpg_stream.cpp \
 	rpg_stream_headmoduletask.h \
 	rpg_stream_headmoduletask_base.cpp \
 	rpg_stream_headmoduletask_base.h \
-	rpg_stream_headmoduletask_base.i \
+	rpg_stream_headmoduletask_base.inl \
 	rpg_stream_iallocator.h \
 	rpg_stream_imessagequeue.h \
 	rpg_stream_imodule.h \
@@ -88,50 +88,50 @@ libRPG_Stream_la_SOURCES = rpg_stream.cpp \
 	rpg_stream_messageallocatorheap.h \
 	rpg_stream_messageallocatorheap_base.cpp \
 	rpg_stream_messageallocatorheap_base.h \
-	rpg_stream_messageallocatorheap_base.i \
+	rpg_stream_messageallocatorheap_base.inl \
 	rpg_stream_messagequeue.cpp \
 	rpg_stream_messagequeue.h \
 	rpg_stream_messagequeue_base.cpp \
 	rpg_stream_messagequeue_base.h \
 	rpg_stream_module_base.cpp \
-	rpg_stream_module_base.i \
+	rpg_stream_module_base.inl \
 	rpg_stream_module_base.h \
 	rpg_stream_session_config.cpp \
 	rpg_stream_session_config.h \
 	rpg_stream_session_config_base.cpp \
 	rpg_stream_session_config_base.h \
-	rpg_stream_session_config_base.i \
+	rpg_stream_session_config_base.inl \
 	rpg_stream_session_message.cpp \
 	rpg_stream_session_message.h \
 	rpg_stream_session_message_base.cpp \
 	rpg_stream_session_message_base.h \
-	rpg_stream_session_message_base.i \
+	rpg_stream_session_message_base.inl \
 	rpg_stream_statemachine_control.cpp \
 	rpg_stream_statemachine_control.h \
 	rpg_stream_streammodule_base.cpp \
 	rpg_stream_streammodule_base.h \
-	rpg_stream_streammodule_base.i \
+	rpg_stream_streammodule_base.inl \
 	rpg_stream_task.cpp \
-	rpg_stream_task.i \
+	rpg_stream_task.inl \
 	rpg_stream_task.h \
 	rpg_stream_task_asynch.cpp \
 	rpg_stream_task_asynch.h \
 	rpg_stream_task_base.cpp \
 	rpg_stream_task_base.h \
-	rpg_stream_task_base.i \
+	rpg_stream_task_base.inl \
 	rpg_stream_task_base_asynch.cpp \
 	rpg_stream_task_base_asynch.h \
-	rpg_stream_task_base_asynch.i \
+	rpg_stream_task_base_asynch.inl \
 	rpg_stream_task_base_synch.cpp \
 	rpg_stream_task_base_synch.h \
-	rpg_stream_task_base_synch.i \
+	rpg_stream_task_base_synch.inl \
 	rpg_stream_task_synch.cpp \
 	rpg_stream_task_synch.h \
 	rpg_stream_tools.cpp \
 	rpg_stream_tools.h \
 	rpg_stream_exports.h \
 	rpg_stream_cachedmessageallocatorheap_base.h \
-  rpg_stream_cachedmessageallocatorheap_base.i \
+  rpg_stream_cachedmessageallocatorheap_base.inl \
   rpg_stream_cachedmessageallocatorheap_base.cpp \
   rpg_stream_cachedmessageallocatorheap.h \
   rpg_stream_cachedmessageallocatorheap.cpp \

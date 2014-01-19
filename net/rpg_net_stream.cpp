@@ -112,7 +112,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   } // end IF
   if (!protocolHandler_impl->init(config_in.messageAllocator,
                                   config_in.sessionID,
-                                  config_in.pingInterval,
+                                  config_in.peerPingInterval,
                                   config_in.pingAutoAnswer,
                                   config_in.printPingMessages)) // print ('.') for received "ping"s...
   {

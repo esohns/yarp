@@ -80,6 +80,6 @@ class RPG_Stream_DataMessageBase
 };
 
 // include template implementation
-#include "rpg_stream_data_message_base.i"
+#include "rpg_stream_data_message_base.inl"
 
 #endif

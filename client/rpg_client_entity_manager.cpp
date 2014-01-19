@@ -24,11 +24,11 @@
 
 #include "rpg_client_entity_manager.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_SDL_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>

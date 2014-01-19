@@ -55,13 +55,12 @@ struct RPG_Net_RuntimeStatistic
 struct RPG_Net_ConfigPOD
 {
   // ************ connection config data ************
-  unsigned int               pingInterval;
-  unsigned int               keepAliveTimeout;
+  unsigned int               peerPingInterval; // ms {0 --> OFF}
   bool                       pingAutoAnswer;
   bool                       printPingMessages;
   int                        socketBufferSize;
   RPG_Stream_IAllocator*     messageAllocator;
-  unsigned int               defaultBufferSize;
+  unsigned int               bufferSize;
   bool                       useThreadPerConnection;
   // ************ stream config data ************
   ACE_Notification_Strategy* notificationStrategy;

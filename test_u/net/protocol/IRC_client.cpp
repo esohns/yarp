@@ -917,7 +917,7 @@ ACE_TMAIN(int argc,
   // ************ connection config data ************
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
-  config.defaultBufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  config.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   // ************ protocol config data **************
   config.clientPingInterval = 0; // servers do this...
 //   config.loginOptions.password = ;

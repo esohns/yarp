@@ -84,12 +84,12 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, ACE xerces-c libpng sdl SDL_ttf libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
+PKG_CHECK_MODULES(pkg_libs, xerces-c libpng sdl SDL_ttf libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
 AC_SEARCH_LIBS([Mix_Init], [SDL_mixer])
 
 # checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lACE':
-#AC_CHECK_LIB([ACE], [main])
+AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
 #AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lxerces-c':

@@ -76,6 +76,6 @@ class RPG_Stream_TaskBaseAsynch
 };
 
 // include template implementation
-#include "rpg_stream_task_base_asynch.i"
+#include "rpg_stream_task_base_asynch.inl"
 
 #endif

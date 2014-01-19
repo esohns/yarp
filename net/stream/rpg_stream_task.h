@@ -89,6 +89,6 @@ class RPG_Stream_Task
 };
 
 // include template implementation
-#include "rpg_stream_task.i"
+#include "rpg_stream_task.inl"
 
 #endif

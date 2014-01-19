@@ -147,6 +147,6 @@ class RPG_Stream_HeadModuleTaskBase
 };
 
 // include template implementation
-#include "rpg_stream_headmoduletask_base.i"
+#include "rpg_stream_headmoduletask_base.inl"
 
 #endif

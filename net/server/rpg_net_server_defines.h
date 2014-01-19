@@ -37,6 +37,6 @@
 #define RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL 3600 // seconds [0 --> OFF]
 
 #define RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL          10 // seconds [0 --> OFF]
-#define RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE              0  // seconds [0 --> no timeout]
+//#define RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE              0  // seconds [0 --> no timeout]
 
 #endif

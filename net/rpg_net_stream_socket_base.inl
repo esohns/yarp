@@ -139,12 +139,12 @@ RPG_Net_StreamSocketBase<ConfigType,
   ACE_ASSERT(myCurrentReadBuffer == NULL);
 
   // read some data from the socket
-  myCurrentReadBuffer = allocateMessage(inherited::myUserData.defaultBufferSize);
+  myCurrentReadBuffer = allocateMessage(inherited::myUserData.bufferSize);
   if (myCurrentReadBuffer == NULL)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
-               inherited::myUserData.defaultBufferSize));
+               inherited::myUserData.bufferSize));
 
     return -1;
   } // end IF

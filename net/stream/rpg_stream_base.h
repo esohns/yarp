@@ -124,6 +124,6 @@ class RPG_Stream_Base
 };
 
 // include template implementation
-#include "rpg_stream_base.i"
+#include "rpg_stream_base.inl"
 
 #endif

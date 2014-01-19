@@ -80,6 +80,6 @@ class RPG_Net_StreamSocketBase
 };
 
 // include template implementation
-#include "rpg_net_stream_socket_base.i"
+#include "rpg_net_stream_socket_base.inl"
 
 #endif

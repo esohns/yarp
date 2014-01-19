@@ -31,7 +31,8 @@ class Net_Client_SignalHandler
  : public ACE_Event_Handler
 {
  public:
-  Net_Client_SignalHandler(const long&,                // interval timer handle
+  Net_Client_SignalHandler(const long&,                // action timer id
+//                           const long&,                // gtk dispatch timer id (if any)
                            const ACE_INET_Addr&,       // peer SAP
                            RPG_Net_Client_IConnector*, // connector
                            const bool&);               // use reactor ?
@@ -52,7 +53,8 @@ class Net_Client_SignalHandler
   ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler(const Net_Client_SignalHandler&));
   ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler& operator=(const Net_Client_SignalHandler&));
 
-  long                       myTimerID;
+  long                       myActionTimerID;
+//  long                       myGTKTimerID;
   ACE_INET_Addr              myPeerAddress;
   RPG_Net_Client_IConnector* myConnector;
   bool                       myUseReactor;

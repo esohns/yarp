@@ -189,7 +189,7 @@ struct RPG_Net_Protocol_ConfigPOD
   // ************ connection config data ************
   int                               socketBufferSize;
   RPG_Stream_IAllocator*            messageAllocator;
-  unsigned int                      defaultBufferSize;
+  unsigned int                      bufferSize;
   bool                              useThreadPerConnection; // used by the server...
   // ************ protocol config data **************
   unsigned int                      clientPingInterval; // used by the server...

@@ -67,6 +67,6 @@ class RPG_Stream_Module_Base_t
   READER_TASK_TYPE* myReader;
 };
 
-#include "rpg_stream_module_base.i"
+#include "rpg_stream_module_base.inl"
 
 #endif

@@ -89,6 +89,6 @@ class RPG_Stream_SessionMessageBase
 };
 
 // include template implementation
-#include "rpg_stream_session_message_base.i"
+#include "rpg_stream_session_message_base.inl"
 
 #endif

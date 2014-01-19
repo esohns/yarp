@@ -38,6 +38,13 @@
 #include <ace/Configuration_Import_Export.h>
 #include <ace/Thread_Manager.h>
 
+#include <SDL.h>
+#include <SDL_mixer.h>
+//#include <SDL/SDL_framerate.h>
+
+#include <glade/glade.h>
+#include <gtk/gtk.h>
+
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -81,13 +88,6 @@
 #include "rpg_sound_common.h"
 #include "rpg_sound_dictionary.h"
 #include "rpg_sound_common_tools.h"
-
-#include <SDL.h>
-#include <SDL_mixer.h>
-//#include <SDL/SDL_framerate.h>
-
-#include <glade/glade.h>
-#include <gtk/gtk.h>
 
 #include "rpg_stream_allocatorheap.h"
 
@@ -1248,9 +1248,8 @@ do_work(const RPG_Client_Config& config_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize video, aborting\n")));
 
-    GDK_THREADS_LEAVE();
-
     // clean up
+    GDK_THREADS_LEAVE();
     RPG_Client_Common_Tools::fini();
     RPG_Engine_Common_Tools::fini();
 
@@ -1448,12 +1447,12 @@ do_work(const RPG_Client_Config& config_in,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
-  config.pingInterval = 0; // *NOTE*: don't ping the server...
+  config.peerPingInterval = 0; // *NOTE*: don't ping the server...
 	config.pingAutoAnswer = true;
   config.printPingMessages = false;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
-  config.defaultBufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   config.useThreadPerConnection = false;
   config.module = NULL; // just use the default stream...
   // *WARNING*: set at runtime, by the appropriate connection handler
@@ -2454,8 +2453,17 @@ ACE_TMAIN(int argc_in,
   g_thread_init(NULL);
 #endif
   gdk_threads_init();
-  gtk_init(&argc_in,
-           &argv_in);
+  if (!gtk_init_check(&argc_in,
+                      &argv_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_init_check(): \"%m\", aborting\n")));
+
+		// clean up
+		SDL_Quit();
+
+    return EXIT_FAILURE;
+  } // end IF
 //   GnomeClient* gnomeSession = NULL;
 //   gnomeSession = gnome_client_new();
 //   ACE_ASSERT(gnomeSession);

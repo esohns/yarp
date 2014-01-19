@@ -222,7 +222,8 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& me
       if (myPingInterval)
       {
         // schedule ourselves...
-        ACE_Time_Value interval(myPingInterval, 0);
+        ACE_Time_Value interval((myPingInterval / 1000),
+                                ((myPingInterval % 1000) * 1000));
         ACE_ASSERT(myPingTimerID == -1);
         myPingTimerID =
 					RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myPingHandler,                      // event handler handle

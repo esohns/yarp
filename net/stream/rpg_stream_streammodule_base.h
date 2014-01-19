@@ -84,7 +84,7 @@ class RPG_Stream_StreamModuleInputOnly_t
 };
 
 // include template implementation
-#include "rpg_stream_streammodule_base.i"
+#include "rpg_stream_streammodule_base.inl"
 
 // *NOTE*: use this macro to instantiate the module definitions
 // *IMPORTANT NOTE*: TASK_SYNCH_TYPE is [ACE_MT_SYNCH | ACE_NULL_SYNCH] and must

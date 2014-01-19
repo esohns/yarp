@@ -77,6 +77,6 @@ class RPG_Stream_CachedMessageAllocatorHeapBase
 };
 
 // include template implementation
-#include "rpg_stream_cachedmessageallocatorheap_base.i"
+#include "rpg_stream_cachedmessageallocatorheap_base.inl"
 
 #endif

@@ -322,20 +322,36 @@ RPG_Net_Connection_Manager<ConfigType,
   if (myConnections.is_empty())
     return;
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("aborting %u connections(s)...\n"),
-             myConnections.size()));
+  // debug info
+  unsigned int num_connections = myConnections.size();
 
   CONNECTION_TYPE* connection = NULL;
-  for (CONNECTIONLIST_ITERATOR_TYPE iterator(myConnections);
-       iterator.next(connection);
-       iterator.advance())
+//  for (CONNECTIONLIST_ITERATOR_TYPE iterator(myConnections);
+//       iterator.next(connection);
+//       iterator.advance())
+//  {
+//    ACE_ASSERT(connection);
+//    try
+//    {
+//      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection
+//      connection->abort();
+//    }
+//    catch (...)
+//    {
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
+//    }
+//  } // end FOR
+  do
   {
+    connection = NULL;
+    if (myConnections.get(connection, 0) == -1)
+      break; // done
+
     ACE_ASSERT(connection);
     try
     {
-      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a
-      // reactor thread, if any
+      // *IMPORTANT NOTE*: implicitly invokes deregisterConnection
       connection->abort();
     }
     catch (...)
@@ -343,11 +359,12 @@ RPG_Net_Connection_Manager<ConfigType,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
     }
-  } // end FOR
+  } while (true);
+  ACE_ASSERT(myConnections.is_empty());
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("aborting %u connection(s)...DONE\n"),
-             myConnections.size()));
+             ACE_TEXT("aborted %u connection(s)\n"),
+             num_connections));
 }
 
 template <typename ConfigType,

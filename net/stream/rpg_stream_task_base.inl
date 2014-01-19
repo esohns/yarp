@@ -33,13 +33,10 @@ template <typename TaskSynchStrategyType,
 RPG_Stream_TaskBase<TaskSynchStrategyType,
                     SessionMessageType,
                     ProtocolMessageType>::RPG_Stream_TaskBase()
- : inherited(NULL, // thread manager instance
-             NULL) // message queue handle
+ : inherited(false) // auto-start ?
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::RPG_Stream_TaskBase"));
 
-  //// use the default reactor...
-  //reactor(ACE_Reactor::instance());
 }
 
 template <typename TaskSynchStrategyType,
@@ -52,134 +49,6 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::~RPG_Stream_TaskBase"));
 
 }
-
-// *** dummy stub methods ***
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
-int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::open(void* args_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::open"));
-
-  ACE_UNUSED_ARG(args_in);
-
-  // *NOTE*: should NEVER be reached !
-  ACE_ASSERT(false);
-
-#if defined (_MSC_VER)
-  return -1;
-#else
-  ACE_NOTREACHED(return -1;)
-#endif
-}
-
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
-int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::close(u_long arg_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::close"));
-
-  ACE_UNUSED_ARG(arg_in);
-
-  // *NOTE*: should NEVER be reached !
-  ACE_ASSERT(false);
-
-#if defined (_MSC_VER)
-  return -1;
-#else
-  ACE_NOTREACHED(return -1;)
-#endif
-}
-
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
-int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::module_closed(void)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::module_closed"));
-
-  // *NOTE*: should NEVER be reached !
-  ACE_ASSERT(false);
-
-#if defined (_MSC_VER)
-  return -1;
-#else
-  ACE_NOTREACHED(return -1;)
-#endif
-}
-
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
-int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::put(ACE_Message_Block* mb_in,
-                                              ACE_Time_Value* tv_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::put"));
-
-  ACE_UNUSED_ARG(mb_in);
-  ACE_UNUSED_ARG(tv_in);
-
-  // *NOTE*: should NEVER be reached !
-  ACE_ASSERT(false);
-
-#if defined (_MSC_VER)
-  return -1;
-#else
-  ACE_NOTREACHED(return -1;)
-#endif
-}
-
-template <typename TaskSynchStrategyType,
-          typename SessionMessageType,
-          typename ProtocolMessageType>
-int
-RPG_Stream_TaskBase<TaskSynchStrategyType,
-                    SessionMessageType,
-                    ProtocolMessageType>::svc(void)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::svc"));
-
-  // *NOTE*: should NEVER be reached !
-  ACE_ASSERT(false);
-
-#if defined (_MSC_VER)
-  return -1;
-#else
-  ACE_NOTREACHED(return -1;)
-#endif
-}
-// *** END dummy stub methods ***
-
-// template <typename SessionMessageType,
-//           typename ProtocolMessageType>
-// void
-// RPG_Stream_TaskBase<SessionMessageType,
-//                 ProtocolMessageType>::handleDataMessage(ProtocolMessageType*& message_inout,
-//                                                         bool& passMessageDownstream_out)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::handleDataMessage"));
-//
-//   // init return value(s)
-//   passMessageDownstream_out = true;
-//
-//   // sanity check(s)
-//   ACE_ASSERT(message_inout);
-//
-//   ACE_UNUSED_ARG(message_inout);
-// }
 
 template <typename TaskSynchStrategyType,
           typename SessionMessageType,

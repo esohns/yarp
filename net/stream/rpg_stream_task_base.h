@@ -23,37 +23,21 @@
 
 #include "rpg_stream_itask_base.h"
 
-#include "rpg_common_idumpstate.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Task.h>
+#include "rpg_common_task_base.h"
 
 // forward declaration(s)
-class ACE_Message_Block;
-class ACE_Time_Value;
 class RPG_Stream_MessageBase;
 
 template <typename TaskSynchStrategyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_TaskBase
- : public ACE_Task<TaskSynchStrategyType>,
+ : public RPG_Common_TaskBase<TaskSynchStrategyType>,
    public RPG_Stream_ITaskBase<SessionMessageType,
-                               ProtocolMessageType>,
-   public RPG_Common_IDumpState
+                               ProtocolMessageType>
 {
  public:
   virtual ~RPG_Stream_TaskBase();
-
-  // override task-based members
-  // *NOTE*: can't "hide" these in C++ :-(
-  // --> implement dummy stubs which SHALL be overridden...
-  virtual int put(ACE_Message_Block*,
-                  ACE_Time_Value*);
-  virtual int open(void* = NULL);
-  virtual int close(u_long = 0);
-  virtual int module_closed(void);
-  virtual int svc(void);
 
   // implement RPG_Stream_ITaskBase<SessionMessageType>
   // *NOTE*: these are just default NOP implementations...
@@ -66,11 +50,10 @@ class RPG_Stream_TaskBase
   virtual void handleProcessingError(const ACE_Message_Block* const); // message handle
 
   // implement RPG_Common_IDumpState
-  // *NOTE*: just a default implementation...
+  // *NOTE*: this is just a default stub...
   virtual void dump_state() const;
 
  protected:
-  // needs to be subclassed...
   RPG_Stream_TaskBase();
 
   // helper methods
@@ -84,20 +67,15 @@ class RPG_Stream_TaskBase
                                     bool&);             // return value: pass message downstream ?
 
  private:
-  typedef ACE_Task<TaskSynchStrategyType> inherited;
+  typedef RPG_Common_TaskBase<TaskSynchStrategyType> inherited;
   typedef RPG_Stream_ITaskBase<SessionMessageType,
                                ProtocolMessageType> inherited2;
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase(const RPG_Stream_TaskBase<TaskSynchStrategyType,
-                                                                       SessionMessageType,
-                                                                       ProtocolMessageType>&));
-//   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase<SessionMessageType,
-//                                          ProtocolMessageType>& operator=(const RPG_Stream_TaskBase<SessionMessageType,
-//                                                                                                ProtocolMessageType>&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase(const RPG_Stream_TaskBase&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBase& operator=(const RPG_Stream_TaskBase&));
 };
 
 // include template implementation
-#include "rpg_stream_task_base.i"
+#include "rpg_stream_task_base.inl"
 
 #endif
