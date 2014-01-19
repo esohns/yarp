@@ -34,14 +34,17 @@
 #include "rpg_map_common.h"
 
 #include <glade/glade.h>
+
 #include <gtk/gtk.h>
+
 #include <SDL.h>
 
+//#include <ace/Log_Record.h>
 #include <ace/Synch.h>
 
-#include <string>
-#include <deque>
 #include <map>
+#include <deque>
+#include <string>
 
 // forward declaration(s)
 class RPG_Client_Engine;
@@ -228,5 +231,7 @@ typedef RPG_Client_BlendingMaskCache_t::iterator RPG_Client_BlendingMaskCacheIte
 
 typedef std::deque<std::string> RPG_Client_MessageStack_t;
 typedef RPG_Client_MessageStack_t::const_iterator RPG_Client_MessageStackConstIterator_t;
+
+//typedef std::deque<ACE_Log_Record> RPG_Client_LogRecordStack_t;
 
 #endif

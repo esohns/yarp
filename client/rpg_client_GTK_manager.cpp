@@ -60,7 +60,7 @@ RPG_Client_GTK_Manager::stop()
 bool
 RPG_Client_GTK_Manager::isRunning() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::Running"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::isRunning"));
 
   return (inherited::thr_count() > 0);
 }

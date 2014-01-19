@@ -25,39 +25,49 @@
 #include "IRC_client_gui_connection.h"
 #include "IRC_client_gui_callbacks.h"
 
-#include <rpg_client_ui_tools.h>
+#include "rpg_client_ui_tools.h"
 
-#include <rpg_net_protocol_tools.h>
+#include "rpg_net_protocol_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_file_tools.h"
 
 // update callback
-static
-gboolean
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* __cplusplus */
+G_MODULE_EXPORT gboolean
 update_display_cb(gpointer userData_in)
 {
   RPG_TRACE(ACE_TEXT("::update_display_cb"));
 
   // sanity check(s)
   ACE_ASSERT(userData_in);
-  IRC_Client_GUI_MessageHandler* messageHandler = static_cast<IRC_Client_GUI_MessageHandler*>(userData_in);
-  ACE_ASSERT(messageHandler);
+  IRC_Client_GUI_MessageHandler* message_handler = static_cast<IRC_Client_GUI_MessageHandler*>(userData_in);
+  ACE_ASSERT(message_handler);
 
   // *WARNING*: callbacks scheduled via g_idle_add need to be protected by
   // GDK_THREADS_ENTER/GDK_THREADS_LEAVE !
   GDK_THREADS_ENTER();
 
-  messageHandler->update();
+  message_handler->update();
 
   GDK_THREADS_LEAVE();
 
-  // remove us from the gtk_main loop idle routine...
-  return FALSE;
+  // --> reschedule
+  return TRUE;
 }
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_in)
- : myView(view_in),
+ : //myCBData(),
+   //myLock(),
+   //myDisplayQueue(),
+   myView(view_in),
+   myEventSourceID(0),
    myIsFirstMemberListMsg(true),
    myParent(NULL)
 {
@@ -72,12 +82,12 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_i
   myCBData.controller = NULL;
 
   // setup auto-scrolling
-  GtkTextIter iter;
+  GtkTextIter iterator;
   gtk_text_buffer_get_end_iter(gtk_text_view_get_buffer(myView),
-                               &iter);
+                               &iterator);
   gtk_text_buffer_create_mark(gtk_text_view_get_buffer(myView),
                               ACE_TEXT_ALWAYS_CHAR("scroll"),
-                              &iter,
+                              &iterator,
                               TRUE);
 }
 
@@ -450,8 +460,9 @@ IRC_Client_GUI_MessageHandler::queueForDisplay(const std::string& text_in)
     myDisplayQueue.push_back(text_in);
   } // end lock scope
 
-  // trigger asnych update
-  g_idle_add(update_display_cb, this);
+  // schedule asynch update(s) ?
+  if (myEventSourceID == 0)
+    myEventSourceID = g_idle_add(update_display_cb, this);
 }
 
 void

@@ -32,6 +32,9 @@
 
 #include <string>
 
+// forward declaration(s)
+class ACE_Log_Msg_Backend;
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
@@ -75,6 +78,12 @@ class RPG_Common_Export RPG_Common_Tools
   static void getCurrentUserName(std::string&,  // return value: username
                                  std::string&); // return value: "real" name
   static std::string getHostName(); // return value: hostname
+
+  static bool initLogging(const std::string&,           // program name (i.e. argv[0])
+                          const std::string&,           // log file {"" --> disable}
+                          const bool& = false,          // enable tracing messages ?
+                          const bool& = false,          // enable debug messages ?
+                          ACE_Log_Msg_Backend* = NULL); // logger backend {NULL --> disable}
 
  private:
   // safety measures

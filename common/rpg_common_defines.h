@@ -25,13 +25,14 @@
 //#include <limits>
 
 // *** trace log ***
-// *PORTABILITY*: pathnames are not portable, so we (try to) use %TEMP% for Windows...
+// *PORTABILITY*: pathnames are not portable --> (try to) use %TEMP% on Windows
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #define RPG_COMMON_DEF_LOG_DIRECTORY              "TEMP"
 #else
 #define RPG_COMMON_DEF_LOG_DIRECTORY              "/var/tmp"
 #endif
 #define RPG_COMMON_LOG_FILENAME_SUFFIX            ".log"
+#define RPG_COMMON_LOG_VERBOSE                    false
 
 #define RPG_COMMON_MAX_SPELL_LEVEL                9
 #define RPG_COMMON_MAX_CLASS_LEVEL                20

@@ -108,6 +108,7 @@ class IRC_Client_GUI_MessageHandler
   ACE_Thread_Mutex                myLock;
   std::deque<std::string>         myDisplayQueue;
   GtkTextView*                    myView;
+  guint                           myEventSourceID;
 
   bool                            myIsFirstMemberListMsg;
   GtkNotebook*                    myParent;

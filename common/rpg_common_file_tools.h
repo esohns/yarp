@@ -51,6 +51,8 @@ class RPG_Common_Export RPG_Common_File_Tools
   // *NOTE*: (try to) create the directory if it doesn't exist
   static std::string getUserGameDirectory();
 
+  static std::string getLogFilename(const std::string&); // program name
+
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools());

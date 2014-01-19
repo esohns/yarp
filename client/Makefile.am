@@ -20,6 +20,7 @@ include_HEADERS = rpg_client_callbacks.h \
   rpg_client_engine.h \
   rpg_client_entity_manager.h \
   rpg_client_GTK_manager.h \
+  rpg_client_logger.h \
   rpg_client_iwindow.h \
   rpg_client_iwindow_level.h \
   rpg_client_ui_tools.h \
@@ -44,6 +45,8 @@ libRPG_Client_GUI_la_SOURCES = rpg_client_callbacks.cpp \
   rpg_client_entity_manager.cpp \
   rpg_client_GTK_manager.h \
   rpg_client_GTK_manager.cpp \
+  rpg_client_logger.h \
+  rpg_client_logger.cpp \
   rpg_client_iwindow.h \
   rpg_client_iwindow_level.h \
   rpg_client_ui_tools.h \

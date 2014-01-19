@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
+ *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,28 +18,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef NET_COMMON_H
-#define NET_COMMON_H
+#ifndef RPG_CLIENT_LOGGER_H
+#define RPG_CLIENT_LOGGER_H
 
+#include "rpg_client_exports.h"
 #include "rpg_client_common.h"
 
-#include <glade/glade.h>
-
+#include <ace/Log_Record.h>
+#include <ace/Log_Msg_Backend.h>
 #include <ace/Synch.h>
 
-struct Net_GTK_CBData_t
+/**
+  @author Erik Sohns <erik.sohns@web.de>
+ */
+class RPG_Client_Export RPG_Client_Logger
+ : public ACE_Log_Msg_Backend
 {
- inline Net_GTK_CBData_t()
-  : lock(NULL, NULL),
-//    gtk_main_quit_invoked(false),
-    xml(NULL)//,
-//    log_stack()
- { };
+ public:
+  RPG_Client_Logger(RPG_Client_MessageStack_t*, // message stack
+                    ACE_Thread_Mutex*);         // synch lock
+  virtual ~RPG_Client_Logger();
 
-  mutable ACE_Thread_Mutex  lock;
-//  bool                     gtk_main_quit_invoked;
-  GladeXML*                 xml;
-  RPG_Client_MessageStack_t log_stack;
+  // implement ACE_Log_Msg_Backend interface
+  virtual int open(const ACE_TCHAR*); // logger key
+  virtual int reset(void);
+  virtual int close(void);
+  virtual ssize_t log(ACE_Log_Record&); // record
+
+ private:
+  typedef ACE_Log_Msg_Backend inherited;
+
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Logger());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Logger(const RPG_Client_Logger&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Logger& operator=(const RPG_Client_Logger&));
+
+  RPG_Client_MessageStack_t* myMessageStack;
+  ACE_Thread_Mutex*          myLock;
 };
 
 #endif

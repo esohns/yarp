@@ -30,6 +30,10 @@
 #define NET_CLIENT_UI_DIALOG_NAME               "dialog"
 #define NET_CLIENT_UI_ABOUTDIALOG_NAME          "aboutdialog"
 #define NET_CLIENT_UI_TEXTVIEW_NAME             "textview"
+#define NET_CLIENT_UI_SCROLLMARK_NAME           "insert"
+#define NET_CLIENT_UI_LOG_FONTDESCRIPTION       "Monospace 10"
+#define NET_CLIENT_UI_LOG_BASE                  "#000000" // black
+#define NET_CLIENT_UI_LOG_TEXT                  "#FFFFFF" // white
 #define NET_CLIENT_UI_CONNECTBUTTON_NAME        "button_connect"
 #define NET_CLIENT_UI_CLOSEBUTTON_NAME          "button_close"
 #define NET_CLIENT_UI_CLOSEALLBUTTON_NAME       "button_close_all"
