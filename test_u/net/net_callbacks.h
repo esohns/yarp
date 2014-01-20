@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Erik Sohns   *
+ *   Copyright (C) 2010 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,36 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef NET_COMMON_H
-#define NET_COMMON_H
+#ifndef NET_CALLBACKS_H
+#define NET_CALLBACKS_H
 
-#include "rpg_client_common.h"
+#include <gtk/gtk.h>
 
-#include <glade/glade.h>
-
-#include <ace/Synch.h>
-
-// forward declaration(s)
-class Net_Client_TimeoutHandler;
-class RPG_Net_Server_IListener;
-
-struct Net_GTK_CBData_t
+#ifdef __cplusplus
+extern "C"
 {
- inline Net_GTK_CBData_t()
-  : lock(NULL, NULL),
-    xml(NULL),
-//    log_stack(),
-    timeout_handler(NULL),
-    timer_id(-1),
-    listener_handle(NULL)
- { };
-
- mutable ACE_Thread_Mutex   lock;
- GladeXML*                  xml;
- RPG_Client_MessageStack_t  log_stack;
- Net_Client_TimeoutHandler* timeout_handler; // *NOTE*: client only !
- long                       timer_id;        // *NOTE*: client only !
- RPG_Net_Server_IListener*  listener_handle;  // *NOTE*: server only !
-};
+#endif /* __cplusplus */
+G_MODULE_EXPORT gboolean update_display_cb(gpointer);
+// -----------------------------------------------------------------------------
+G_MODULE_EXPORT gint button_connect_clicked_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint button_close_clicked_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint button_close_all_clicked_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint button_ping_clicked_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint togglebutton_stress_toggled_cb(GtkWidget*, gpointer);
+// -----------------------------------------------------------------------------
+G_MODULE_EXPORT gint button_start_clicked_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint button_stop_clicked_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint button_close_all_clicked_cb_2(GtkWidget*, gpointer);
+// -----------------------------------------------------------------------------
+G_MODULE_EXPORT gint button_about_clicked_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint button_quit_clicked_cb(GtkWidget*, gpointer);
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif

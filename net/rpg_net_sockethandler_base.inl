@@ -249,13 +249,14 @@ RPG_Net_SocketHandlerBase<ConfigType,
 	// init return value
 	int result = 0;
 
+  bool already_deleted = false;
   switch (mask_in)
   {
     case ACE_Event_Handler::EXCEPT_MASK:
       //if (handle_in == ACE_INVALID_HANDLE) // <-- notification has completed (!useThreadPerConnection)
       //  ACE_DEBUG((LM_ERROR,
       //             ACE_TEXT("notification completed, continuing\n")));
-      break;
+      return 0;
 		case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
 			break;
 		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> connect failed (e.g. connection refused) /
@@ -266,7 +267,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
       if (handle_in != ACE_INVALID_HANDLE)
       {
         // *TODO*: connect/select case ?
-        break;
+        return 0;
       } // end IF
       else if (!myIsRegistered)
       {
@@ -275,18 +276,16 @@ RPG_Net_SocketHandlerBase<ConfigType,
 				// *IMPORTANT NOTE*: when a connection attempt fails, the reactor close()s
 				// the connection although it was never open()ed; in that case there is
 				// no valid socket handle
+				ACE_HANDLE handle = inherited::peer_.get_handle();
 				result = inherited::peer_.close();
 				if (result == -1)
 					ACE_DEBUG((LM_ERROR,
 										 ACE_TEXT("failed to ACE_SOCK_Stream::close(): %m, continuing\n")));
 
-				// clean up
-				// *IMPORTANT NOTE*: make sure that the base-class dtor doesn't invoke
-				// shutdown() (see below)
-				inherited::closing_ = true;
-				decrease();
+				// reset peer handle so it can be removed from the reactor (see below)
+				inherited::peer_.set_handle(handle);
 
-				return result;
+				already_deleted = true;
 			} // end ELSE IF
 
 			// asynch abort case
@@ -295,10 +294,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 			// ACE_Svc_Handler::shutdown references a connection recycler AFTER
 			// removing the connection from the reactor and releasing the final
 			// reference --> this leads to a crash.
+			// *TODO*: report this to the ACE people
 			// As a workaround, reimplement only the relevant parts of the current
 			// behaviour (in a feasible order, as remove_handler may involve
 			// "delete this")
-			// *TODO*: report this to the ACE people
 			//inherited::shutdown();
 
 			ACE_ASSERT(inherited::reactor());
@@ -331,7 +330,8 @@ RPG_Net_SocketHandlerBase<ConfigType,
 
 	// *IMPORTANT NOTE*: make sure that the base-class dtor doesn't invoke
 	// shutdown() (see above)
-	inherited::closing_ = true;
+	if (!already_deleted)
+		inherited::closing_ = true;
 ////   invoke base-class maintenance
 //  result = inherited::handle_close(handle_in,
 //                                   mask_in);

@@ -120,6 +120,7 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
   switch (mySignal)
   {
     case SIGINT:
+    case SIGQUIT:
     {
       //ACE_DEBUG((LM_DEBUG,
       //           ACE_TEXT("shutting down...\n")));
@@ -129,8 +130,8 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 
       break;
     }
-// *PORTABILITY*: this isn't portable: on Windows SIGUSR1 and SIGUSR2 are not defined,
-// --> handle SIGBREAK (21) and SIGTERM (15) instead...
+// *PORTABILITY*: on Windows SIGUSR1 and SIGUSR2 are not defined,
+// --> use SIGBREAK (21) and SIGTERM (15) instead...
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     case SIGUSR1:
 #else
@@ -143,10 +144,10 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
       break;
     }
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+    case SIGHUP:
     case SIGUSR2:
-#else
-    case SIGTERM:
 #endif
+    case SIGTERM:
     {
       // (try to) abort a connection...
       abort = true;

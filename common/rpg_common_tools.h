@@ -81,6 +81,7 @@ class RPG_Common_Export RPG_Common_Tools
 
   static bool initLogging(const std::string&,           // program name (i.e. argv[0])
                           const std::string&,           // log file {"" --> disable}
+                          const bool& = false,          // log to syslog ?
                           const bool& = false,          // enable tracing messages ?
                           const bool& = false,          // enable debug messages ?
                           ACE_Log_Msg_Backend* = NULL); // logger backend {NULL --> disable}

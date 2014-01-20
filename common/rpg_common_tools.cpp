@@ -948,6 +948,7 @@ RPG_Common_Tools::getHostName()
 bool
 RPG_Common_Tools::initLogging(const std::string& programName_in,
                               const std::string& logFile_in,
+                              const bool& logToSyslog_in,
                               const bool& enableTracing_in,
                               const bool& enableDebug_in,
                               ACE_Log_Msg_Backend* backend_in)
@@ -956,6 +957,8 @@ RPG_Common_Tools::initLogging(const std::string& programName_in,
 
   // *NOTE*: default log target is stderr
   u_long options_flags = ACE_Log_Msg::STDERR;
+  if (logToSyslog_in)
+    options_flags |= ACE_Log_Msg::SYSLOG;
   if (backend_in)
   {
     options_flags |= ACE_Log_Msg::CUSTOM;

@@ -40,6 +40,7 @@
 #include "rpg_common_macros.h"
 #include "rpg_common.h"
 #include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include "rpg_stream_allocatorheap.h"
 
@@ -48,10 +49,19 @@
 #include "rpg_net_common_tools.h"
 #include "rpg_net_stream_messageallocator.h"
 
+#include "rpg_client_common.h"
+#include "rpg_client_logger.h"
+#include "rpg_client_GTK_manager.h"
+#include "rpg_client_ui_tools.h"
+
 #include "rpg_net_server_defines.h"
 #include "rpg_net_server_listener.h"
 #include "rpg_net_server_asynchlistener.h"
 #include "rpg_net_server_common_tools.h"
+
+#include "net_defines.h"
+#include "net_common.h"
+#include "net_callbacks.h"
 
 #include "net_server_signalhandler.h"
 
@@ -76,6 +86,7 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-r          : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s [VALUE]  : statistics reporting interval (second(s)) [") << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t          : trace information") << std::endl;
+  std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"") << NET_SERVER_DEF_UI_FILE << "\"] {\"\" --> no GUI}" << std::endl;
   std::cout << ACE_TEXT("-v          : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x [VALUE]  : #dispatch threads [") << RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
@@ -93,6 +104,7 @@ process_arguments(const int argc_in,
                   bool& useReactor_out,
                   unsigned int& statisticsReportingInterval_out,
                   bool& traceInformation_out,
+                  std::string& UIFile_out,
                   bool& printVersionAndExit_out,
                   unsigned int& numDispatchThreads_out)
 {
@@ -109,12 +121,13 @@ process_arguments(const int argc_in,
   useReactor_out = RPG_NET_USES_REACTOR;
   statisticsReportingInterval_out = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
+  UIFile_out = NET_SERVER_DEF_UI_FILE;
   printVersionAndExit_out = false;
   numDispatchThreads_out = RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:i:k:ln:op:rs:tvx:"));
+                             ACE_TEXT("c:i:k:ln:op:rs:tu::vx:"));
 
   int option = 0;
   std::stringstream converter;
@@ -197,6 +210,16 @@ process_arguments(const int argc_in,
 
         break;
       }
+      case 'u':
+      {
+        ACE_TCHAR* opt_arg = argumentParser.opt_arg();
+        if (opt_arg)
+          UIFile_out = ACE_TEXT_ALWAYS_CHAR(opt_arg);
+        else
+          UIFile_out.clear();
+
+        break;
+      }
       case 'v':
       {
         printVersionAndExit_out = true;
@@ -231,46 +254,6 @@ process_arguments(const int argc_in,
       }
     } // end SWITCH
   } // end WHILE
-
-  return true;
-}
-
-bool
-init_fileLogging(std::ofstream& stream_in)
-{
-  RPG_TRACE(ACE_TEXT("::init_fileLogging"));
-
-  // retrieve fully-qualified (FQ) filename
-  std::string logfilename;
-  if (!RPG_Net_Server_Common_Tools::getNextLogFilename(std::string(RPG_COMMON_DEF_LOG_DIRECTORY),
-                                                       logfilename))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Net_Common_Tools::getNextLogFilename(), aborting\n")));
-
-    return false;
-  } // end IF
-
-  // create/open the file
-  stream_in.open(logfilename.c_str(),
-                 (ios::out | ios::trunc));
-  if (!stream_in.is_open())
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ofstream::open() file \"%s\": \"%m\", aborting\n"),
-               logfilename.c_str()));
-
-    return false;
-  } // end IF
-
-  // init [VERBOSE] logging to a logfile AND stderr...
-  //ACE_LOG_MSG->set_flags(ACE_Log_Msg::VERBOSE_LITE);
-  ACE_LOG_MSG->msg_ostream(&stream_in, 0);
-  ACE_LOG_MSG->set_flags(ACE_Log_Msg::OSTREAM);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("logging to file: \"%s\"\n"),
-             logfilename.c_str()));
 
   return true;
 }
@@ -519,6 +502,162 @@ fini_signalHandling(ACE_Sig_Set& signals_in,
   } // end IF
 }
 
+bool
+init_ui(const std::string& UIFile_in,
+        Net_GTK_CBData_t& userData_out)
+{
+  RPG_TRACE(ACE_TEXT("::init_ui"));
+
+  // init return value(s)
+  userData_out.xml = NULL;
+
+  // sanity check(s)
+  if (UIFile_in.empty())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid interface definition file, aborting\n")));
+
+    return false;
+  }
+
+  // step1: load widget tree
+  GDK_THREADS_ENTER();
+  userData_out.xml = glade_xml_new(UIFile_in.c_str(), // definition file
+                                   NULL,              // root widget --> construct all
+                                   NULL);             // domain
+  if (!userData_out.xml)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_new(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT(UIFile_in.c_str())));
+
+    // clean up
+    GDK_THREADS_LEAVE();
+
+    return false;
+  } // end IF
+
+  // step2: init dialog window(s)
+  GtkWidget* dialog = GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
+                                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_DIALOG_NAME)));
+  ACE_ASSERT(dialog);
+//  GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());
+//  ACE_ASSERT(image_icon);
+//  gtk_window_set_icon(GTK_WINDOW(dialog),
+//                      gtk_image_get_pixbuf(GTK_IMAGE(image_icon)));
+  //GdkWindow* dialog_window = gtk_widget_get_window(dialog);
+  //gtk_window_set_title(,
+  //                     caption.c_str());
+
+  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
+                                                            ACE_TEXT_ALWAYS_CHAR(NET_UI_ABOUTDIALOG_NAME)));
+  ACE_ASSERT(about_dialog);
+
+  // step3: init text view, setup auto-scrolling
+  GtkTextBuffer* buffer = gtk_text_buffer_new(NULL); // text tag table --> create new
+  ACE_ASSERT(buffer);
+  GtkTextView* view = GTK_TEXT_VIEW(glade_xml_get_widget(userData_out.xml,
+                                                         ACE_TEXT_ALWAYS_CHAR(NET_UI_TEXTVIEW_NAME)));
+  ACE_ASSERT(view);
+  gtk_text_view_set_buffer(view, buffer);
+  PangoFontDescription* font_description =
+      pango_font_description_from_string(ACE_TEXT_ALWAYS_CHAR(NET_UI_LOG_FONTDESCRIPTION));
+  if (!font_description)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT(NET_UI_LOG_FONTDESCRIPTION)));
+
+    // clean up
+    GDK_THREADS_LEAVE();
+
+    return false;
+  } // end IF
+  // apply font
+  GtkRcStyle* rc_style = gtk_rc_style_new();
+  if (!rc_style)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
+
+    // clean up
+    GDK_THREADS_LEAVE();
+
+    return false;
+  } // end IF
+  rc_style->font_desc = font_description;
+  GdkColor base_colour, text_colour;
+  gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(NET_UI_LOG_BASE),
+                  &base_colour);
+  rc_style->base[GTK_STATE_NORMAL] = base_colour;
+  gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(NET_UI_LOG_TEXT),
+                  &text_colour);
+  rc_style->text[GTK_STATE_NORMAL] = text_colour;
+  rc_style->color_flags[GTK_STATE_NORMAL] = static_cast<GtkRcFlags>(GTK_RC_BASE |
+                                                                    GTK_RC_TEXT);
+  gtk_widget_modify_style(GTK_WIDGET(view),
+                          rc_style);
+  gtk_rc_style_unref(rc_style);
+
+//  GtkTextIter iterator;
+//  gtk_text_buffer_get_end_iter(buffer,
+//                               &iterator);
+//  gtk_text_buffer_create_mark(buffer,
+//                              ACE_TEXT_ALWAYS_CHAR(NET_UI_SCROLLMARK_NAME),
+//                              &iterator,
+//                              TRUE);
+  g_object_unref(buffer);
+
+  // schedule asynchronous updates of the log view area
+  guint event_source_id = g_idle_add(update_display_cb,
+                                     &userData_out);
+  ACE_UNUSED_ARG(event_source_id);
+
+  // step4a: connect default signals
+  g_signal_connect(dialog,
+                   ACE_TEXT_ALWAYS_CHAR("destroy"),
+                   G_CALLBACK(gtk_widget_destroyed),
+                   NULL);
+
+   // step4b: connect custom signals
+  glade_xml_signal_connect_data(userData_out.xml,
+                                ACE_TEXT_ALWAYS_CHAR("button_start_clicked_cb"),
+                                G_CALLBACK(button_start_clicked_cb),
+                                &userData_out);
+  glade_xml_signal_connect_data(userData_out.xml,
+                                ACE_TEXT_ALWAYS_CHAR("button_stop_clicked_cb"),
+                                G_CALLBACK(button_stop_clicked_cb),
+                                &userData_out);
+  glade_xml_signal_connect_data(userData_out.xml,
+                                ACE_TEXT_ALWAYS_CHAR("button_close_all_clicked_cb"),
+                                G_CALLBACK(button_close_all_clicked_cb),
+                                &userData_out);
+  glade_xml_signal_connect_data(userData_out.xml,
+                                ACE_TEXT_ALWAYS_CHAR("button_about_clicked_cb"),
+                                G_CALLBACK(button_about_clicked_cb),
+                                &userData_out);
+  glade_xml_signal_connect_data(userData_out.xml,
+                                ACE_TEXT_ALWAYS_CHAR("button_quit_clicked_cb"),
+                                G_CALLBACK(button_quit_clicked_cb),
+                                &userData_out);
+
+//  // step5: auto-connect signals/slots
+//  glade_xml_signal_autoconnect(userData_out.xml);
+
+//   // step6: use correct screen
+//   if (parentWidget_in)
+//     gtk_window_set_screen(GTK_WINDOW(dialog),
+//                           gtk_widget_get_screen(const_cast<GtkWidget*> (//parentWidget_in)));
+
+  // step6: draw main dialog
+  gtk_widget_show_all(dialog);
+
+  // clean up
+  GDK_THREADS_LEAVE();
+
+  return true;
+}
+
 void
 do_work(const unsigned int& maxNumConnections_in,
         const unsigned int& pingInterval_in,
@@ -528,11 +667,24 @@ do_work(const unsigned int& maxNumConnections_in,
         const unsigned short& listeningPortNumber_in,
         const bool& useReactor_in,
         const unsigned int& statisticsReportingInterval_in,
-        const unsigned int& numDispatchThreads_in)
+        const std::string& UIFile_in,
+        const unsigned int& numDispatchThreads_in,
+        Net_GTK_CBData_t& GTKUserData_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
-	// step0: init event dispatch
+  // step0a: init ui ?
+  if (!UIFile_in.empty() &&
+      !init_ui(UIFile_in,
+               GTKUserData_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init user interface, aborting\n")));
+
+    return;
+  } // end IF
+
+  // step0b: init event dispatch
   if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
                                                numDispatchThreads_in))
   {
@@ -567,14 +719,13 @@ do_work(const unsigned int& maxNumConnections_in,
   } // end IF
 
   // step2: signal handling
-  RPG_Net_Server_IListener* listener_handle = NULL;
   if (useReactor_in)
-    listener_handle = RPG_NET_SERVER_LISTENER_SINGLETON::instance();
+    GTKUserData_in.listener_handle = RPG_NET_SERVER_LISTENER_SINGLETON::instance();
   else
-    listener_handle = RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance();
+    GTKUserData_in.listener_handle = RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance();
   // event handler for signals
   Net_Server_SignalHandler signal_handler(timer_id,
-                                          listener_handle,
+                                          GTKUserData_in.listener_handle,
                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
   ACE_Sig_Set signal_set(0);
   init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK IF regular reporting is off
@@ -607,12 +758,42 @@ do_work(const unsigned int& maxNumConnections_in,
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
-  // event loop:
-  // - catch SIGINT/SIGQUIT/SIGTERM/... signals (and perform orderly shutdown)
-  // - signal connection attempts to acceptor
-  // - signal timer expiration to perform maintenance/local statistics reporting
+  // reactor/proactor event loop:
+  // - dispatch connection attempts to acceptor
+  // - dispatch socket events
+  // timer events:
+  // - perform statistics collecting/reporting
+  // [GTK events:]
+  // - dispatch UI events (if any)
 
-  // step4a: init worker(s)
+  // step4a: start GTK event loop ?
+  if (!UIFile_in.empty())
+  {
+    RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->start();
+    if (!RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->isRunning())
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to start GTK event dispatch, aborting\n")));
+
+      // clean up
+      if (statisticsReportingInterval_in)
+      {
+        const void* act = NULL;
+        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(timer_id,
+                                                                  &act) <= 0)
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                     timer_id));
+      } // end IF
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+      fini_signalHandling(signal_set,
+                          useReactor_in);
+
+      return;
+    } // end IF
+  } // end IF
+
+  // step4b: init worker(s)
   int group_id = -1;
   if (!RPG_Net_Common_Tools::startEventDispatch(useReactor_in,
                                                 numDispatchThreads_in,
@@ -631,6 +812,7 @@ do_work(const unsigned int& maxNumConnections_in,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    timer_id));
 		} // end IF
+		RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     fini_signalHandling(signal_set,
                         useReactor_in);
@@ -638,11 +820,11 @@ do_work(const unsigned int& maxNumConnections_in,
     return;
   } // end IF
 
-  // step4b: start listening
-  listener_handle->init(listeningPortNumber_in,
-                        useLoopback_in);
-  listener_handle->start();
-  if (!listener_handle->isRunning())
+  // step4c: start listening
+  GTKUserData_in.listener_handle->init(listeningPortNumber_in,
+                                       useLoopback_in);
+  GTKUserData_in.listener_handle->start();
+  if (!GTKUserData_in.listener_handle->isRunning())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start listener (port: %u), aborting\n"),
@@ -661,6 +843,7 @@ do_work(const unsigned int& maxNumConnections_in,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    timer_id));
 		} // end IF
+		RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     fini_signalHandling(signal_set,
                         useReactor_in);
@@ -701,9 +884,10 @@ do_work(const unsigned int& maxNumConnections_in,
   // clean up
 	// *NOTE*: listener has stopped, interval timer has been cancelled,
 	// and connections have been aborted...
+	RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
+	RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
   fini_signalHandling(signal_set,
                       useReactor_in);
-  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -737,8 +921,8 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN(int argc_in,
+          ACE_TCHAR* argv_in[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
@@ -770,12 +954,13 @@ ACE_TMAIN(int argc,
   bool useReactor                          = RPG_NET_USES_REACTOR;
   unsigned int statisticsReportingInterval = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                    = false;
+  std::string UIFile                       = NET_SERVER_DEF_UI_FILE;
   bool printVersionAndExit                 = false;
   unsigned int numDispatchThreads          = RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS;
 
   // step1b: parse/process/validate configuration
-  if (!process_arguments(argc,
-                         argv,
+  if (!process_arguments(argc_in,
+                         argv_in,
                          maxNumConnections,
                          pingInterval,
 //                         keepAliveTimeout,
@@ -786,99 +971,70 @@ ACE_TMAIN(int argc,
                          useReactor,
                          statisticsReportingInterval,
                          traceInformation,
+                         UIFile,
                          printVersionAndExit,
                          numDispatchThreads))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    print_usage(ACE::basename(argv_in[0]));
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1c: validate arguments
   if (listeningPortNumber <= 1023)
-  {
-    ACE_DEBUG((LM_WARNING,
+    ACE_DEBUG((LM_NOTICE,
                ACE_TEXT("using (privileged) port #: %d...\n"),
                listeningPortNumber));
-
-//     // make 'em learn...
-//     print_usage(std::string(ACE::basename(argv[0])));
-//
-//     return EXIT_FAILURE;
-  } // end IF
-  else if (numDispatchThreads == 0)
+  if (!UIFile.empty() &&
+      !RPG_Common_File_Tools::isReadable(UIFile))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("need at least 1 worker thread...\n")));
+               ACE_TEXT("invalid UI definition file (was: %s), aborting\n"),
+               ACE_TEXT(UIFile.c_str())));
 
     return EXIT_FAILURE;
   } // end IF
+  if (numDispatchThreads == 0)
+    numDispatchThreads = 1;
 
-  // step1d: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
+  Net_GTK_CBData_t gtk_cb_user_data;
+  // step1d: initialize logging and/or tracing
+  RPG_Client_Logger logger(&gtk_cb_user_data.log_stack,
+                           &gtk_cb_user_data.lock);
+  std::string log_file;
+  if (logToFile &&
+      !RPG_Net_Server_Common_Tools::getNextLogFilename(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_LOG_DIRECTORY),
+                                                       log_file))
   {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_TRACE |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Net_Common_Tools::getNextLogFilename(), aborting\n")));
 
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
+    return EXIT_FAILURE;
+  } // end IF
+  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]),   // program name
+                                     log_file,                    // logfile
+                                     true,                        // log to syslog ?
+                                     false,                       // trace messages ?
+                                     traceInformation,            // debug messages ?
+                                     (UIFile.empty() ? NULL
+                                                     : &logger))) // logger ?
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-    //ACE_LOG_MSG->stop_tracing();
-
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
+    return EXIT_SUCCESS;
   } // end IF
 
   // step1e: handle specific program modes
   if (printVersionAndExit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion(ACE::basename(argv_in[0]));
 
     return EXIT_SUCCESS;
   } // end IF
 
-  // step1f: start logging !
-  // *NOTE*: the default mode is to log everything to STDERR[/SYSLOG]...
-  // *TODO*: ACE::basename(argv[0]) doesn't seem to work here :-(
-  if (ACE_LOG_MSG->open(ACE::basename(argv[0]),
-//                         ACE_TEXT("net_server"),
-                        (ACE_Log_Msg::STDERR/* | ACE_Log_Msg::SYSLOG*/),
-                        NULL) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Log_Msg::open(): \"%m\", aborting\n")));
-
-    return EXIT_FAILURE;
-  } // end IF
-
-  std::ofstream logstream;
-  if (logToFile)
-  {
-    if (!init_fileLogging(logstream))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to init_fileLogging(), aborting\n")));
-
-      return EXIT_FAILURE;
-    } // end IF
-
-    // don't write to stderr anymore...
-    ACE_LOG_MSG->clr_flags(ACE_Log_Msg::STDERR);
-  } // end IF
-
-  // step1g: we WILL (try to) coredump !
+  // step1f: we WILL (try to) coredump !
   // *NOTE*: this setting will be inherited by any child processes (daemon mode)
   if (!init_coreDumping())
   {
@@ -886,6 +1042,40 @@ ACE_TMAIN(int argc,
                ACE_TEXT("failed to init_coreDumping(), aborting\n")));
 
     return EXIT_FAILURE;
+  } // end IF
+
+  // step1g: init GLIB / G(D|T)K[+] / GNOME ?
+  if (!UIFile.empty())
+  {
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    g_thread_init(NULL);
+#endif
+    gdk_threads_init();
+    if (!gtk_init_check(&argc_in,
+                        &argv_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to gtk_init_check(): \"%m\", aborting\n")));
+
+      return EXIT_FAILURE;
+    } // end IF
+    //   GnomeClient* gnomeSession = NULL;
+    //   gnomeSession = gnome_client_new();
+    //   ACE_ASSERT(gnomeSession);
+    //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
+    //  GnomeProgram* gnomeProgram = NULL;
+    //  gnomeProgram = gnome_program_init(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_APPLICATION_ID), // app ID
+    //#ifdef HAVE_CONFIG_H
+    ////                                     ACE_TEXT_ALWAYS_CHAR(VERSION),    // version
+    //                                    ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),   // version
+    //#else
+    //	                                NULL,
+    //#endif
+    //                                    LIBGNOMEUI_MODULE,                   // module info
+    //                                    argc_in,                             // cmdline
+    //                                    argv_in,                             // cmdline
+    //                                    NULL);                               // property name(s)
+    //  ACE_ASSERT(gnomeProgram);
   } // end IF
 
   ACE_High_Res_Timer timer;
@@ -899,7 +1089,9 @@ ACE_TMAIN(int argc,
           listeningPortNumber,
           useReactor,
           statisticsReportingInterval,
-          numDispatchThreads);
+          UIFile,
+          numDispatchThreads,
+          gtk_cb_user_data);
   timer.stop();
 
   // debug info

@@ -70,377 +70,10 @@
 
 #include "net_defines.h"
 #include "net_common.h"
+#include "net_callbacks.h"
+
 #include "net_client_timeouthandler.h"
 #include "net_client_signalhandler.h"
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif /* __cplusplus */
-G_MODULE_EXPORT gboolean
-update_display_cb(gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::update_display_cb"));
-
-  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
-  ACE_ASSERT(data);
-  // sanity check(s)
-  ACE_ASSERT(data->xml);
-
-  // *WARNING*: callbacks scheduled via g_idle_add need to be protected by
-  // GDK_THREADS_ENTER/GDK_THREADS_LEAVE !
-  GDK_THREADS_ENTER();
-
-  GtkTextView* view =
-      GTK_TEXT_VIEW(glade_xml_get_widget(data->xml,
-                                         ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_TEXTVIEW_NAME)));
-  if (!view)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_TEXTVIEW_NAME)));
-
-    // clean up
-    GDK_THREADS_LEAVE();
-
-    return FALSE;
-  } // end IF
-  GtkTextBuffer* buffer = gtk_text_view_get_buffer(view);
-  if (!buffer)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_text_view_get_buffer(%@): \"%m\", aborting\n"),
-               view));
-
-    // clean up
-    GDK_THREADS_LEAVE();
-
-    return FALSE;
-  } // end IF
-
-  GtkTextIter iterator;
-  gtk_text_buffer_get_end_iter(buffer,
-                               &iterator);
-
-  gchar* converted_text = NULL;
-  // synch access
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(data->lock);
-
-    // sanity check
-    if (data->log_stack.empty())
-    {
-      // clean up
-      GDK_THREADS_LEAVE();
-
-      return TRUE; // nothing to do...
-    } // end IF
-
-    // step1: convert text
-    converted_text = RPG_Client_UI_Tools::Locale2UTF8(data->log_stack.front());
-    if (!converted_text)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
-                 data->log_stack.front().c_str()));
-
-      // clean up
-      GDK_THREADS_LEAVE();
-
-      return FALSE;
-    } // end IF
-
-    data->log_stack.pop_front();
-  } // end lock scope
-
-  // step2: display text
-  gtk_text_buffer_insert(buffer,
-                         &iterator,
-                         converted_text,
-                         -1);
-
-  // clean up
-  g_free(converted_text);
-
-  // step3: scroll the view accordingly
-  // move the iterator to the beginning of line, so it doesn't scroll
-  // in horizontal direction
-  gtk_text_iter_set_line_offset(&iterator, 0);
-
-  // ...and place the mark at iter. The mark will stay there after insertion
-  // because it has "right" gravity
-  GtkTextMark* mark =
-      gtk_text_buffer_get_mark(buffer,
-                               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_SCROLLMARK_NAME));
-//  gtk_text_buffer_move_mark(buffer,
-//                            mark,
-//                            &iterator);
-
-  // scroll the mark onscreen
-  gtk_text_view_scroll_mark_onscreen(view,
-                                     mark);
-
-//  // step4: redraw view area...
-//  gdk_window_invalidate_rect(GTK_WIDGET(view)->window,
-//                             NULL,
-//                             TRUE);
-//  gdk_window_process_updates(GTK_WIDGET(view)->window, TRUE);
-
-  // clean up
-  GDK_THREADS_LEAVE();
-
-  return TRUE;
-}
-
-G_MODULE_EXPORT gint
-button_connect_clicked_cb(GtkWidget* widget_in,
-                          gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::button_connect_clicked_cb"));
-
-  ACE_UNUSED_ARG(widget_in);
-  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
-  ACE_ASSERT(data);
-  // sanity check(s)
-  ACE_ASSERT(data->xml);
-
-  if (ACE_OS::raise(SIGUSR1) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-               SIGUSR1));
-
-  // enable buttons
-  GtkWidget* widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, TRUE);
-  widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, TRUE);
-  widget = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, TRUE);
-
-  return FALSE;
-} // button_connect_clicked_cb
-
-G_MODULE_EXPORT gint
-button_close_clicked_cb(GtkWidget* widget_in,
-                        gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::button_close_clicked_cb"));
-
-  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
-  ACE_ASSERT(data);
-  // sanity check(s)
-  ACE_ASSERT(data->xml);
-
-  unsigned int num_connections =
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
-  if (num_connections > 0)
-    if (ACE_OS::raise(SIGUSR2) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-                 SIGUSR2));
-
-  // disable buttons ?
-  if (num_connections <= 1)
-  {
-    gtk_widget_set_sensitive(widget_in, FALSE);
-    GtkWidget* widget =
-        GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                        ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-    if (!widget)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-    else
-      gtk_widget_set_sensitive(widget, FALSE);
-    widget = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                             ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-    if (!widget)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-    else
-      gtk_widget_set_sensitive(widget, FALSE);
-  } // end IF
-
-  return FALSE;
-} // button_close_clicked_cb
-
-G_MODULE_EXPORT gint
-button_close_all_clicked_cb(GtkWidget* widget_in,
-                            gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::button_close_all_clicked_cb"));
-
-  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
-  ACE_ASSERT(data);
-  // sanity check(s)
-  ACE_ASSERT(data->xml);
-
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-
-  // disable buttons
-  GtkWidget* widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, FALSE);
-  gtk_widget_set_sensitive(widget_in, FALSE);
-  widget = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, FALSE);
-
-  return FALSE;
-} // button_close_all_clicked_cb
-
-G_MODULE_EXPORT gint
-button_ping_clicked_cb(GtkWidget* widget_in,
-                       gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::button_ping_clicked_cb"));
-
-  ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(act_in);
-
-	// sanity check
-	unsigned int num_connections =
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
-	if (num_connections == 0)
-		return FALSE;
-
-	// grab a (random) connection handler
-	// *WARNING*: there's a race condition here...
-	RPG_Dice_RollResult_t result;
-	RPG_Dice::generateRandomNumbers(num_connections,
-																	1,
-																	result);
-	const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
-	if (!connection_handler)
-	{
-//				ACE_DEBUG((LM_ERROR,
-//									 ACE_TEXT("failed to retrieve connection handler, continuing")));
-
-		return FALSE;
-	} // end IF
-
-	try
-	{
-		const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->ping();
-	}
-	catch (...)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
-
-		// clean up
-		const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
-
-		return FALSE;
-	}
-
-	// clean up
-	const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
-
-	return FALSE;
-} // button_close_clicked_cb
-
-G_MODULE_EXPORT gint
-button_about_clicked_cb(GtkWidget* widget_in,
-                        gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::button_about_clicked_cb"));
-
-  ACE_UNUSED_ARG(widget_in);
-  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
-  ACE_ASSERT(data);
-  // sanity check(s)
-  ACE_ASSERT(data->xml);
-
-  // retrieve about dialog handle
-  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                                            ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_ABOUTDIALOG_NAME)));
-  ACE_ASSERT(about_dialog);
-  if (!about_dialog)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_ABOUTDIALOG_NAME)));
-
-    return TRUE; // propagate
-  } // end IF
-
-  // run dialog
-  gint result = gtk_dialog_run(GTK_DIALOG(about_dialog));
-  switch (result)
-  {
-    case GTK_RESPONSE_ACCEPT:
-      break;
-    default:
-      break;
-  } // end SWITCH
-
-  // clean up
-  gtk_widget_hide(about_dialog);
-
-  return FALSE;
-} // button_about_clicked_cb
-
-G_MODULE_EXPORT gint
-button_quit_clicked_cb(GtkWidget* widget_in,
-                       gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::button_quit_clicked_cb"));
-
-  ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(act_in);
-//  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
-//  ACE_ASSERT(data);
-
-//  ACE_Guard<ACE_Thread_Mutex> aGuard(data->lock);
-
-//  data->gtk_main_quit_invoked = true;
-
-  if (ACE_OS::raise(SIGINT) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-               SIGINT));
-
-  return FALSE;
-} // button_quit_clicked_cb
-
-//   gboolean gtk_quit_handler_cb(gpointer);
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 void
 print_usage(const std::string& programName_in)
@@ -878,7 +511,7 @@ init_ui(const std::string& UIFile_in,
 
   // step2: init dialog window(s)
   GtkWidget* dialog = GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
-                                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_DIALOG_NAME)));
+                                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_DIALOG_NAME)));
   ACE_ASSERT(dialog);
 //  GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());
 //  ACE_ASSERT(image_icon);
@@ -889,23 +522,23 @@ init_ui(const std::string& UIFile_in,
   //                     caption.c_str());
 
   GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
-                                                            ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_ABOUTDIALOG_NAME)));
+                                                            ACE_TEXT_ALWAYS_CHAR(NET_UI_ABOUTDIALOG_NAME)));
   ACE_ASSERT(about_dialog);
 
   // step3: init text view, setup auto-scrolling
   GtkTextBuffer* buffer = gtk_text_buffer_new(NULL); // text tag table --> create new
   ACE_ASSERT(buffer);
   GtkTextView* view = GTK_TEXT_VIEW(glade_xml_get_widget(userData_out.xml,
-                                                         ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_TEXTVIEW_NAME)));
+                                                         ACE_TEXT_ALWAYS_CHAR(NET_UI_TEXTVIEW_NAME)));
   ACE_ASSERT(view);
   gtk_text_view_set_buffer(view, buffer);
   PangoFontDescription* font_description =
-      pango_font_description_from_string(ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_LOG_FONTDESCRIPTION));
+      pango_font_description_from_string(ACE_TEXT_ALWAYS_CHAR(NET_UI_LOG_FONTDESCRIPTION));
   if (!font_description)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT(UIFile_in.c_str())));
+               ACE_TEXT(NET_UI_LOG_FONTDESCRIPTION)));
 
     // clean up
     GDK_THREADS_LEAVE();
@@ -926,10 +559,10 @@ init_ui(const std::string& UIFile_in,
   } // end IF
   rc_style->font_desc = font_description;
   GdkColor base_colour, text_colour;
-  gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_LOG_BASE),
+  gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(NET_UI_LOG_BASE),
                   &base_colour);
   rc_style->base[GTK_STATE_NORMAL] = base_colour;
-  gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_LOG_TEXT),
+  gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(NET_UI_LOG_TEXT),
                   &text_colour);
   rc_style->text[GTK_STATE_NORMAL] = text_colour;
   rc_style->color_flags[GTK_STATE_NORMAL] = static_cast<GtkRcFlags>(GTK_RC_BASE |
@@ -942,7 +575,7 @@ init_ui(const std::string& UIFile_in,
 //  gtk_text_buffer_get_end_iter(buffer,
 //                               &iterator);
 //  gtk_text_buffer_create_mark(buffer,
-//                              ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_SCROLLMARK_NAME),
+//                              ACE_TEXT_ALWAYS_CHAR(NET_UI_SCROLLMARK_NAME),
 //                              &iterator,
 //                              TRUE);
   g_object_unref(buffer);
@@ -982,6 +615,10 @@ init_ui(const std::string& UIFile_in,
   glade_xml_signal_connect_data(userData_out.xml,
                                 ACE_TEXT_ALWAYS_CHAR("button_quit_clicked_cb"),
                                 G_CALLBACK(button_quit_clicked_cb),
+                                &userData_out);
+  glade_xml_signal_connect_data(userData_out.xml,
+                                ACE_TEXT_ALWAYS_CHAR("togglebutton_stress_toggled_cb"),
+                                G_CALLBACK(togglebutton_stress_toggled_cb),
                                 &userData_out);
 
 //  // step5: auto-connect signals/slots
@@ -1096,7 +733,8 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                                                                                                          : maxNumConnections_in),
                                             peer_address,
                                             connector);
-  long action_timer_id = -1;
+  GTKUserData_in.timeout_handler = &timeout_handler;
+  GTKUserData_in.timer_id = -1;
   if (connectionInterval_in ||
 		  (actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS))
   {
@@ -1105,12 +743,12 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                                                                                          : connectionInterval_in),
                             ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? ((NET_CLIENT_DEF_SERVER_STRESS_INTERVAL % 1000) * 1000)
                                                                                          : 0));
-    action_timer_id =
+    GTKUserData_in.timer_id =
 			RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&timeout_handler,                    // event handler handle
                                                               NULL,                                // ACT
                                                               RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
                                                               interval);                           // interval
-    if (action_timer_id == -1)
+    if (GTKUserData_in.timer_id == -1)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to schedule action timer: \"%m\", aborting\n")));
@@ -1122,46 +760,13 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
       return;
     } // end IF
   } // end IF
-//  long gtk_timer_id = -1;
-//  if (!UIFile_in.empty())
-//  {
-//    // schedule gtk dispatch interval timer
-//    // RPG_CLIENT_SDL_GTKEVENT_RESOLUTION
-//    ACE_Time_Value interval(0,                                           // second(s)
-//                            (NET_CLIENT_UI_GTKEVENT_RESOLUTION * 1000)); // usecond(s)
-//    gtk_timer_id =
-//      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&timeout_handler,                    // event handler handle
-//                                                              &user_data,                          // ACT
-//                                                              RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
-//                                                              interval);                           // interval
-//    if (gtk_timer_id == -1)
-//    {
-//      ACE_DEBUG((LM_DEBUG,
-//                 ACE_TEXT("failed to schedule gtk dispatch timer: \"%m\", aborting\n")));
-
-//      // clean up
-//      if (connectionInterval_in)
-//      {
-//        const void* act = NULL;
-//        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(action_timer_id,
-//                                                                  &act) <= 0)
-//          ACE_DEBUG((LM_DEBUG,
-//                     ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-//                     action_timer_id));
-//      } // end IF
-//      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-//      delete connector;
-
-//      return;
-//    } // end IF
-//  } // end IF
 
   // step4: init signal handling
-  Net_Client_SignalHandler signal_handler(action_timer_id, // action timer id
-//                                          gtk_timer_id,    // gtk timer id (if any)
-                                          peer_address,    // remote SAP
-                                          connector,       // connector
-                                          useReactor_in);  // use reactor ?
+  Net_Client_SignalHandler signal_handler(GTKUserData_in.timer_id, // action timer id
+//                                          gtk_timer_id,          // gtk timer id (if any)
+                                          peer_address,            // remote SAP
+                                          connector,               // connector
+                                          useReactor_in);          // use reactor ?
   ACE_Sig_Set signal_set(0);
   init_signals((connectionInterval_in == 0),  // allow SIGUSR1/SIGBREAK IF regular connections are off
                signal_set);
@@ -1186,11 +791,11 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
       if (connectionInterval_in)
       {
         const void* act = NULL;
-        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(action_timer_id,
+        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(GTKUserData_in.timer_id,
                                                                   &act) <= 0)
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                     action_timer_id));
+                     GTKUserData_in.timer_id));
       } // end IF
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
       connector->abort();
@@ -1215,21 +820,12 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
     if (connectionInterval_in)
 		{
 			const void* act = NULL;
-			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(action_timer_id,
+			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(GTKUserData_in.timer_id,
 				                                                        &act) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   action_timer_id));
+                   GTKUserData_in.timer_id));
 		} // end IF
-//		if (!UIFile_in.empty())
-//		{
-//			const void* act = NULL;
-//			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(gtk_timer_id,
-//																																&act) <= 0)
-//				ACE_DEBUG((LM_DEBUG,
-//									 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-//									 gtk_timer_id));
-//		} // end IF
     RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     connector->abort();
@@ -1388,18 +984,17 @@ ACE_TMAIN(int argc_in,
 
 		return EXIT_FAILURE;
 	} // end IF
-	if (!UIFile.empty() && !RPG_Common_File_Tools::isReadable(UIFile))
+	if (!UIFile.empty() &&
+			!RPG_Common_File_Tools::isReadable(UIFile))
 	{
 		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("invalid ui file (was: %s), aborting\n"),
+							 ACE_TEXT("invalid UI definition file (was: %s), aborting\n"),
 							 ACE_TEXT(UIFile.c_str())));
 
     return EXIT_FAILURE;
   } // end IF
-  if (serverPortNumber <= 1023)
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("using (privileged) port #: %d...\n"),
-               serverPortNumber));
+  if (numDispatchThreads == 0)
+    numDispatchThreads = 1;
 
 	if (alternatingMode)
 		actionMode = Net_Client_TimeoutHandler::ACTION_ALTERNATING;
@@ -1415,6 +1010,7 @@ ACE_TMAIN(int argc_in,
     log_file = RPG_Common_File_Tools::getLogFilename(ACE::basename(argv_in[0]));
   if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]),   // program name
                                      log_file,                    // logfile
+                                     false,                       // log to syslog ?
                                      false,                       // trace messages ?
                                      traceInformation,            // debug messages ?
                                      (UIFile.empty() ? NULL
@@ -1434,36 +1030,39 @@ ACE_TMAIN(int argc_in,
     return EXIT_SUCCESS;
   } // end IF
 
-  // step2b: init GLIB / G(D|T)K[+] / GNOME
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  g_thread_init(NULL);
-#endif
-  gdk_threads_init();
-  if (!gtk_init_check(&argc_in,
-                      &argv_in))
+  // step2b: init GLIB / G(D|T)K[+] / GNOME ?
+  if (!UIFile.empty())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_init_check(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    g_thread_init(NULL);
+#endif
+    gdk_threads_init();
+    if (!gtk_init_check(&argc_in,
+                        &argv_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to gtk_init_check(): \"%m\", aborting\n")));
 
-    return EXIT_FAILURE;
+      return EXIT_FAILURE;
+    } // end IF
+    //   GnomeClient* gnomeSession = NULL;
+    //   gnomeSession = gnome_client_new();
+    //   ACE_ASSERT(gnomeSession);
+    //   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
+    //  GnomeProgram* gnomeProgram = NULL;
+    //  gnomeProgram = gnome_program_init(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_APPLICATION_ID), // app ID
+    //#ifdef HAVE_CONFIG_H
+    ////                                     ACE_TEXT_ALWAYS_CHAR(VERSION),    // version
+    //                                    ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),   // version
+    //#else
+    //	                                NULL,
+    //#endif
+    //                                    LIBGNOMEUI_MODULE,                   // module info
+    //                                    argc_in,                             // cmdline
+    //                                    argv_in,                             // cmdline
+    //                                    NULL);                               // property name(s)
+    //  ACE_ASSERT(gnomeProgram);
   } // end IF
-//   GnomeClient* gnomeSession = NULL;
-//   gnomeSession = gnome_client_new();
-//   ACE_ASSERT(gnomeSession);
-//   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
-//  GnomeProgram* gnomeProgram = NULL;
-//  gnomeProgram = gnome_program_init(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_APPLICATION_ID), // app ID
-//#ifdef HAVE_CONFIG_H
-////                                     ACE_TEXT_ALWAYS_CHAR(VERSION),    // version
-//                                    ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),   // version
-//#else
-//	                                NULL,
-//#endif
-//                                    LIBGNOMEUI_MODULE,                   // module info
-//                                    argc_in,                             // cmdline
-//                                    argv_in,                             // cmdline
-//                                    NULL);                               // property name(s)
-//  ACE_ASSERT(gnomeProgram);
 
   ACE_High_Res_Timer timer;
   timer.start();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.0.0, 2014-01-19T20:44:31. -->
+<!-- Written by QtCreator 3.0.0, 2014-01-20T16:43:02. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -194,7 +194,7 @@
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.0">
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-i 0 -r -t -u/mnt/win_c/Temp/yarp/test_u/net/net_client.glade -x 1</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-i 0 -l -r -t -u/mnt/win_c/Temp/yarp/test_u/net/net_client.glade -x 1</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_client</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>
@@ -211,7 +211,7 @@
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.1">
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-c 1 -i 0 -o -r -t -x 1</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-c 1 -i 0 -l -o -r -t -u/mnt/win_c/Temp/yarp/test_u/net/net_server.glade -x 1</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_server</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>

@@ -94,20 +94,16 @@ RPG_Net_Server_Listener::start()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::start"));
 
+  // sanity check(s)
   if (myIsListening)
-  {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("already listening --> nothing to do, returning\n")));
-
-    return;
-  } // end IF
+    return; // nothing to do...
 
   if (myIsOpen)
   {
-    // OK: already open (maybe suspended ?) --> try to resume listening...
-    if (resume() == -1)
+    // already open (maybe suspended ?) --> resume listening...
+    if (inherited::resume() == -1)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Acceptor::resume(): \"%m\", returning\n")));
+                 ACE_TEXT("failed to ACE_Acceptor::resume(): \"%m\", aborting")));
     else
     {
       myIsListening = true;
@@ -123,7 +119,7 @@ RPG_Net_Server_Listener::start()
   if (!myIsInitialized)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not initialized, returning\n")));
+               ACE_TEXT("not initialized, aborting")));
 
     return;
   } // end IF
@@ -142,26 +138,25 @@ RPG_Net_Server_Listener::start()
                   static_cast<ACE_UINT32>(INADDR_ANY), // hostname
 									1,                                   // encode ?
 									0);                                  // map IPv6 to IPv4 ?
-  if (open(local_sap,               // local SAP
-           ACE_Reactor::instance(), // corresp. reactor
-           ACE_NONBLOCK,            // flags (use non-blocking sockets !)
-           //0,                       // flags (default is blocking sockets)
-           1,                       // always accept ALL pending connections
-           1) == -1)                // try to re-use address
-  {
+	if (inherited::open(local_sap,               // local SAP
+											ACE_Reactor::instance(), // corresp. reactor
+											ACE_NONBLOCK,            // flags (use non-blocking sockets !)
+											//0,                       // flags (default is blocking sockets)
+											1,                       // always accept ALL pending connections
+											1) == -1)                // try to re-use address
+	{
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Acceptor::open(): \"%m\", returning\n")));
+               ACE_TEXT("failed to ACE_Acceptor::open(): \"%m\", aborting")));
 
     return;
   } // end IF
-
-  myIsOpen = true;
+  else
+    myIsOpen = true;
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("started listening (port: %u)...\n"),
              myListeningPort));
 
-  // all is well...
   myIsListening = true;
 }
 
@@ -170,26 +165,37 @@ RPG_Net_Server_Listener::stop()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::stop"));
 
+  // sanity check(s)
   if (!myIsListening)
+    return; // nothing to do...
+
+//  if (inherited::suspend() == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_Acceptor::suspend(): \"%m\", aborting\n")));
+
+//    return;
+//  } // end IF
+  if (inherited::close() == -1)
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("not listening --> nothing to do, returning\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Acceptor::close(): \"%m\", aborting\n")));
+
+    // clean up
+    myIsListening = false;
+    myIsOpen = false;
 
     return;
   } // end IF
-
-  // *NOTE*: MUST be open (otherwise there's some logic error somewhere...)
-  // OK: already open --> try to suspend listening...
-  if (suspend() == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Acceptor::suspend(): \"%m\", returning\n")));
   else
-  {
-    myIsListening = false;
+    myIsOpen = false;
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("suspended listening...\n")));
-  } // end ELSE
+  myIsListening = false;
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("stopped listening...\n")));
+//  ACE_DEBUG((LM_DEBUG,
+//             ACE_TEXT("suspended listening...\n")));
 }
 
 bool
@@ -205,6 +211,21 @@ RPG_Net_Server_Listener::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::dump_state"));
 
-  // *TODO*: do something meaningful here...
-  ACE_ASSERT(false);
+  ACE_TCHAR* buffer = NULL;
+  if ((inherited::info(&buffer,
+                      RPG_COMMON_BUFSIZE) == -1) ||
+      !buffer)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Acceptor::info(): \"%m\", aborting\n")));
+
+    return;
+  } // end IF
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("%s\n"),
+             buffer));
+
+  // clean up
+  delete [] buffer;
 }
