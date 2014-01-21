@@ -31,8 +31,10 @@
 #include <ace/Timer_Queue_T.h>
 #include <ace/Timer_Queue_Adapters.h>
 #include <ace/Time_Policy.h>
+#include <ace/Signal.h>
 
 #include <set>
+#include <map>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -59,5 +61,8 @@ typedef ACE_Timer_Heap_Iterator_T<ACE_Event_Handler*,
                                   RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImplIterator_t;
 typedef ACE_Thread_Timer_Queue_Adapter<RPG_Common_TimerQueueImpl_t,
                                        ACE_Event_Handler*> RPG_Common_TimerQueue_t;
+
+typedef std::map<int, ACE_Sig_Action> RPG_Common_SignalActions_t;
+typedef RPG_Common_SignalActions_t::const_iterator RPG_Common_SignalActionsIterator_t;
 
 #endif

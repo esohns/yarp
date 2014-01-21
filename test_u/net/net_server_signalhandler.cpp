@@ -104,6 +104,8 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 {
   RPG_TRACE(ACE_TEXT("Net_Server_SignalHandler::handle_exception"));
 
+  ACE_UNUSED_ARG(handle_in);
+
   // collect some context information...
   std::string information;
   RPG_Net_Common_Tools::retrieveSignalInfo(mySignal,
@@ -120,13 +122,13 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
   bool report = false;
   switch (mySignal)
   {
-    // *PORTABILITY*: on Windows SIGHUP/SIGQUIT are not defined
-    // --> use SIGINT (2) and/or SIGTERM (15) instead...
+// *PORTABILITY*: on Windows SIGHUP/SIGQUIT are not defined
+// --> use SIGINT (2) and/or SIGTERM (15) instead...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGHUP:
+    case SIGQUIT:
 #endif
     case SIGINT:
-    case SIGQUIT:
     case SIGTERM:
     {
       //ACE_DEBUG((LM_DEBUG,
@@ -137,8 +139,8 @@ Net_Server_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 
       break;
     }
-    // *PORTABILITY*: on Windows SIGUSRx are not defined
-    // --> use SIGBREAK (21) instead...
+// *PORTABILITY*: on Windows SIGUSRx are not defined
+// --> use SIGBREAK (21) instead...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR1:
 #else

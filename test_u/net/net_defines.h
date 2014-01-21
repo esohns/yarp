@@ -58,5 +58,6 @@
 #define NET_SERVER_UI_STARTBUTTON_NAME          "button_start"
 #define NET_SERVER_UI_STOPBUTTON_NAME           "button_stop"
 #define NET_SERVER_UI_CLOSEALLBUTTON_NAME       "button_close_all"
+#define NET_SERVER_UI_REPORTBUTTON_NAME         "button_report"
 
 #endif

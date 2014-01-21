@@ -76,15 +76,25 @@ RPG_Net_StreamSocketBase<ConfigType,
   if (!inherited::myUserData.useThreadPerConnection)
   {
     // *IMPORTANT NOTE*: enable the reference counting policy, as this will
-    // be registered with the reactor several times (1x READ_MASK, nx WRITE_MASK);
-    // therefore several threads MAY be dispatching notifications (yes, even
-    // concurrently; myLock enforces the proper sequence order, see handle_output())
-    // on the SAME handler. When the socket closes, the event handler should thus
-    // not be destroyed() immediately, but simply purge any pending notifications
-    // (see handle_close()) and de-register; after the last active
-    // notification has been dispatched, it will be safely deleted
+    // be registered with the reactor several times (1x READ_MASK, nx
+    // WRITE_MASK); therefore several threads MAY be dispatching notifications
+    // (yes, even concurrently; myLock enforces the proper sequence order, see
+    // handle_output()) on the SAME handler. When the socket closes, the event
+    // handler should thus not be destroyed() immediately, but simply purge any
+    // pending notifications (see handle_close()) and de-register; after the
+    // last active notification has been dispatched, it will be safely deleted
     inherited::reference_counting_policy().value(ACE_Event_Handler::Reference_Counting_Policy::ENABLED);
-    inherited::myUserData.notificationStrategy = &(inherited::myNotificationStrategy);
+    // *IMPORTANT NOTE*: due to reference counting, the
+    // ACE_Svc_Handle::shutdown() method will crash, as it references a
+    // connection recycler AFTER removing the connection from the reactor (which
+    // releases a reference). In the case that "this" is the final reference,
+    // this leads to a crash. (see code)
+    // --> avoid invoking ACE_Svc_Handle::shutdown()
+    // --> this means that "manual" cleanup is necessary (see handle_close())
+    inherited::closing_ = true;
+
+    inherited::myUserData.notificationStrategy =
+        &(inherited::myNotificationStrategy);
   } // end IF
   if (!myStream.init(inherited::myUserData))
   {
@@ -94,7 +104,8 @@ RPG_Net_StreamSocketBase<ConfigType,
     return -1;
   } // end IF
   //myStream.dump_state();
-  // *NOTE*: as soon as this returns, data starts arriving at handle_output()/msg_queue()
+  // *NOTE*: as soon as this returns, data starts arriving at
+  // handle_output()/msg_queue()
   myStream.start();
   if (!myStream.isRunning())
   {
@@ -401,7 +412,9 @@ RPG_Net_StreamSocketBase<ConfigType,
       } // end IF
 
       // step2: purge any pending notifications ?
-      // *WARNING: do this here, while still holding on to the current write buffer
+      // *IMPORTANT NOTE*: if called from a non-reactor context, or when using a
+      // a multithreaded reactor, there may still be in-flight notifications
+      // being dispatched at this stage, so this just speeds things up a little
       if (!inherited::myUserData.useThreadPerConnection)
         if (inherited::reactor()->purge_pending_notifications(this,
 					                                                    ACE_Event_Handler::ALL_EVENTS_MASK) == -1)

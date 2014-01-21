@@ -26,14 +26,17 @@
 #include "rpg_common_environment_incl.h"
 
 #include "rpg_common_exports.h"
+#include "rpg_common.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
+#include <ace/Signal.h>
 
 #include <string>
 
 // forward declaration(s)
 class ACE_Log_Msg_Backend;
+class ACE_Event_Handler;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -85,6 +88,14 @@ class RPG_Common_Export RPG_Common_Tools
                           const bool& = false,          // enable tracing messages ?
                           const bool& = false,          // enable debug messages ?
                           ACE_Log_Msg_Backend* = NULL); // logger backend {NULL --> disable}
+
+  static bool initSignals(ACE_Sig_Set&,                 // signal set (*NOTE*: IN/OUT)
+                          ACE_Event_Handler*,           // event handler handle
+                          const bool&,                  // use reactor ?
+                          RPG_Common_SignalActions_t&); // return value: previous actions
+  static void finiSignals(const ACE_Sig_Set&,                 // signal set
+                          const bool&,                        // use reactor ?
+                          const RPG_Common_SignalActions_t&); // previous actions
 
  private:
   // safety measures

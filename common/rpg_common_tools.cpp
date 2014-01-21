@@ -29,6 +29,7 @@
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 #include <ace/Log_Msg_Backend.h>
+#include <ace/Reactor.h>
 
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #include <Security.h>
@@ -1030,4 +1031,174 @@ RPG_Common_Tools::initLogging(const std::string& programName_in,
                              ACE_Log_Msg::PROCESS);
 
   return true;
+}
+
+bool
+RPG_Common_Tools::initSignals(ACE_Sig_Set& signals_inout,
+                              ACE_Event_Handler* eventHandler_in,
+                              const bool& useReactor_in,
+                              RPG_Common_SignalActions_t& previousActions_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::initSignals"));
+
+	// init return value(s)
+	previousActions_out.clear();
+
+	// *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a
+	// multithreaded application, the disposition of a particular signal is the
+	// same for all threads." (see man(7) signal)
+
+  // step1: ignore SIGPIPE: continue gracefully after a client suddenly
+  // disconnects (i.e. application/system crash, etc...)
+  // --> specify ignore action
+  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
+  // *NOTE*: do NOT restart system calls in this case (see manual)
+  ACE_Sig_Action ignore_action(static_cast<ACE_SignalHandler>(SIG_IGN), // ignore action
+                               ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
+                                                                        // --> block them all (bar KILL/STOP; see manual)
+                               0);                                      // flags
+  ACE_Sig_Action previous_action;
+  if (ignore_action.register_action(SIGPIPE,
+                                    &previous_action) == -1)
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to ACE_Sig_Action::register_action(%S): \"%m\", continuing\n"),
+               SIGPIPE));
+  else
+    previousActions_out[SIGPIPE] = previous_action;
+
+  // step2: block [SIGRTMIN,SIGRTMAX] IFF on Linux AND using the
+  // ACE_POSIX_SIG_Proactor (the default)
+  // *IMPORTANT NOTE*: proactor implementation dispatches the signals in worker
+  // thread(s) and re-enables them there automatically (see code)
+  if (RPG_Common_Tools::isLinux() &&
+      !useReactor_in)
+  {
+    sigset_t signal_set;
+    if (ACE_OS::sigemptyset(&signal_set) == - 1)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to ACE_OS::sigemptyset(): \"%m\", aborting\n")));
+
+      return false;
+    } // end IF
+    for (int i = ACE_SIGRTMIN;
+         i <= ACE_SIGRTMAX;
+         i++)
+    {
+      if (ACE_OS::sigaddset(&signal_set, i) == -1)
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to ACE_OS::sigaddset(): \"%m\", aborting\n")));
+
+        return false;
+      } // end IF
+      if (signals_inout.sig_del(i) == -1)
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to ACE_Sig_Set::sig_del(%S): \"%m\", aborting\n"),
+                   i));
+
+        return false;
+      } // end IF
+    } // end IF
+    if (ACE_OS::thr_sigsetmask(SIG_BLOCK,
+                               &signal_set,
+                               NULL) == -1)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
+
+      return false;
+    } // end IF
+  } // end IF
+
+  // backup previous actions
+  for (int i = 1;
+       i < ACE_NSIG;
+       i++)
+    if (signals_inout.is_member(i))
+    {
+      previous_action.retrieve_action(i);
+      previousActions_out[i] = previous_action;
+    } // end IF
+
+  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
+  ACE_Sig_Action new_action(static_cast<ACE_SignalHandler>(SIG_DFL), // default action
+                            ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
+                                                                     // --> block them all (bar KILL/STOP; see manual)
+                            (SA_RESTART | SA_SIGINFO));              // flags
+  if (ACE_Reactor::instance()->register_handler(signals_inout,
+                                                eventHandler_in,
+                                                &new_action) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%m\", aborting\n")));
+
+    return false;
+  } // end IF
+
+  return true;
+}
+
+void
+RPG_Common_Tools::finiSignals(const ACE_Sig_Set& signals_in,
+                              const bool& useReactor_in,
+                              const RPG_Common_SignalActions_t& previousActions_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::finiSignals"));
+
+  // step1: unblock [SIGRTMIN,SIGRTMAX] IFF on Linux AND using the
+  // ACE_POSIX_SIG_Proactor (the default)
+  // *IMPORTANT NOTE*: proactor implementation dispatches the signals in worker
+  // thread(s) and enabled them there automatically (see code)
+  if (RPG_Common_Tools::isLinux() &&
+      !useReactor_in)
+  {
+    sigset_t signal_set;
+    if (ACE_OS::sigemptyset(&signal_set) == - 1)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to ACE_OS::sigemptyset(): \"%m\", aborting\n")));
+
+      return;
+    } // end IF
+    for (int i = ACE_SIGRTMIN;
+         i <= ACE_SIGRTMAX;
+         i++)
+      if (ACE_OS::sigaddset(&signal_set,
+                            i) == -1)
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to ACE_OS::sigaddset(): \"%m\", aborting\n")));
+
+        return;
+      } // end IF
+    if (ACE_OS::thr_sigsetmask(SIG_UNBLOCK,
+                               &signal_set,
+                               NULL) == -1)
+    {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
+
+      return;
+    } // end IF
+  } // end IF
+
+  // step2: restore previous signal handlers
+  if (ACE_Reactor::instance()->remove_handler(signals_in) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%m\", aborting\n")));
+
+    return;
+  } // end IF
+
+  for (RPG_Common_SignalActionsIterator_t iterator = previousActions_in.begin();
+       iterator != previousActions_in.end();
+       iterator++)
+    if (const_cast<ACE_Sig_Action&>((*iterator).second).register_action((*iterator).first,
+                                                                        NULL) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Sig_Action::register_action(%S): \"%m\", continuing\n"),
+                 (*iterator).first));
 }

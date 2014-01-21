@@ -201,10 +201,18 @@ button_connect_clicked_cb(GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT(data->xml);
 
-  if (ACE_OS::raise(SIGUSR1) == -1)
+// *PORTABILITY*: on Windows SIGUSRx are not defined
+// --> use SIGBREAK (21) and SIGTERM (15) instead...
+  int signal = 0;
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  signal = SIGUSR1;
+#else
+  signal = SIGBREAK;
+#endif
+  if (ACE_OS::raise(signal) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-               SIGUSR1));
+               signal));
 
   // enable buttons
   GtkWidget* widget =
@@ -248,13 +256,21 @@ button_close_clicked_cb(GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT(data->xml);
 
+// *PORTABILITY*: on Windows SIGUSRx are not defined
+// --> use SIGBREAK (21) and SIGTERM (15) instead...
+  int signal = 0;
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  signal = SIGUSR2;
+#else
+  signal = SIGTERM;
+#endif
   unsigned int num_connections =
       RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
   if (num_connections > 0)
-    if (ACE_OS::raise(SIGUSR2) == -1)
+    if (ACE_OS::raise(signal) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-                 SIGUSR2));
+                 signal));
 
   // disable buttons ?
   if (num_connections <= 1)
@@ -424,6 +440,34 @@ togglebutton_stress_toggled_cb(GtkWidget* widget_in,
   else
     gtk_widget_set_sensitive(widget,
                              !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget_in)));
+  bool enable = (RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections() > 0);
+  widget =
+      GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
+  if (!widget)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
+               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
+  else
+    gtk_widget_set_sensitive(widget, enable);
+  widget =
+      GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
+  if (!widget)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
+               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
+  else
+    gtk_widget_set_sensitive(widget, enable);
+  widget =
+      GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
+  if (!widget)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
+               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
+  else
+    gtk_widget_set_sensitive(widget, enable);
 
   return FALSE;
 }
@@ -520,6 +564,31 @@ button_close_all_clicked_cb_2(GtkWidget* widget_in,
 
   return FALSE;
 } // button_close_all_clicked_cb_2
+
+G_MODULE_EXPORT gint
+button_report_clicked_cb(GtkWidget* widget_in,
+                         gpointer act_in)
+{
+  RPG_TRACE(ACE_TEXT("::button_report_clicked_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG(act_in);
+
+// *PORTABILITY*: on Windows SIGUSRx are not defined
+// --> use SIGBREAK (21) instead...
+  int signal = 0;
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+  signal = SIGUSR1;
+#else
+  signal = SIGBREAK;
+#endif
+  if (ACE_OS::raise(signal) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
+               signal));
+
+  return FALSE;
+}
 
 // -----------------------------------------------------------------------------
 

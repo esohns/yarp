@@ -33,14 +33,12 @@
 #include "rpg_net_common_tools.h"
 
 Net_Client_SignalHandler::Net_Client_SignalHandler(const long& actionTimerID_in,
-//                                                   const long& GTKTimerID_in,
                                                    const ACE_INET_Addr& peerSAP_in,
                                                    RPG_Net_Client_IConnector* connector_in,
                                                    const bool& useReactor_in)
  : inherited(NULL,                            // default reactor
              ACE_Event_Handler::LO_PRIORITY), // priority
    myActionTimerID(actionTimerID_in),
-//   myGTKTimerID(GTKTimerID_in),
    myPeerAddress(peerSAP_in),
    myConnector(connector_in),
    myUseReactor(useReactor_in),
@@ -120,7 +118,10 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
   switch (mySignal)
   {
     case SIGINT:
+// *PORTABILITY*: on Windows SIGQUIT is not defined
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     case SIGQUIT:
+#endif
     {
       //ACE_DEBUG((LM_DEBUG,
       //           ACE_TEXT("shutting down...\n")));
@@ -130,7 +131,7 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 
       break;
     }
-// *PORTABILITY*: on Windows SIGUSR1 and SIGUSR2 are not defined,
+// *PORTABILITY*: on Windows SIGUSRx are not defined
 // --> use SIGBREAK (21) and SIGTERM (15) instead...
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     case SIGUSR1:
@@ -213,18 +214,6 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // step2: stop GTK event dispatch
-//    if (myGTKTimerID >= 0)
-//    {
-//      const void* act = NULL;
-//      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myGTKTimerID,
-//                                                                &act) <= 0)
-//        ACE_DEBUG((LM_DEBUG,
-//                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-//                   myGTKTimerID));
-
-//      // clean up
-//      myGTKTimerID = -1;
-//    } // end IF
     RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
 
     // step3: stop reactor (&& proactor, if applicable)

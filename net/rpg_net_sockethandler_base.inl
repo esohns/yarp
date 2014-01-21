@@ -94,6 +94,13 @@ RPG_Net_SocketHandlerBase<ConfigType,
 //    ACE_DEBUG((LM_ERROR,
 //               ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
 //               this));
+
+  // need to close the socket (see handle_close() below) ?
+  if (inherited::reference_counting_policy().value() ==
+      ACE_Event_Handler::Reference_Counting_Policy::ENABLED)
+    if (inherited::peer_.close() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_SOCK_IO::close(): \"%m\", continuing\n")));
 }
 
 template <typename ConfigType,
@@ -246,64 +253,84 @@ RPG_Net_SocketHandlerBase<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::handle_close"));
 
+  // sanity check(s)
+  // *IMPORTANT NOTE*: this handles failed connects (e.g. connection refused)
+  // as well... (see below). This may change in the future, so keep the
+  // alternate implementation
+  if (inherited::reference_counting_policy().value() ==
+      ACE_Event_Handler::Reference_Counting_Policy::DISABLED)
+    return inherited::handle_close(); // --> shortcut
+
 	// init return value
 	int result = 0;
 
-  bool already_deleted = false;
+  // *IMPORTANT NOTE*: due to reference counting, the
+  // ACE_Svc_Handle::shutdown() method will crash, as it references a
+  // connection recycler AFTER removing the connection from the reactor (which
+  // releases a reference). In the case that "this" is the final reference,
+  // this leads to a crash. (see code)
+  // --> avoid invoking ACE_Svc_Handle::shutdown()
+  // --> this means that "manual" cleanup is necessary (see below)
+
+  // *IMPORTANT NOTE*: due to reference counting, the base-class function is a
+  // NOP (see code) --> this means that clean up is necessary on:
+  // - connect failed (e.g. connection refused)
+  // - accept failed (e.g. too many connections)
+  // - ... ?
+
+  //  bool already_deleted = false;
   switch (mask_in)
   {
+    case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
+      break;
     case ACE_Event_Handler::EXCEPT_MASK:
       //if (handle_in == ACE_INVALID_HANDLE) // <-- notification has completed (!useThreadPerConnection)
       //  ACE_DEBUG((LM_ERROR,
       //             ACE_TEXT("notification completed, continuing\n")));
-      return 0;
-		case ACE_Event_Handler::READ_MASK:       // --> socket has been closed
-			break;
-		case ACE_Event_Handler::ALL_EVENTS_MASK: // --> connect failed (e.g. connection refused) /
-																						 //     accept failed (e.g. too many connections) /
-																						 //     select failed (EBADF see Select_Reactor_T.cpp) /
-																						 //     asynch abort
+      break;
+    case ACE_Event_Handler::ALL_EVENTS_MASK: // - connect failed (e.g. connection refused) /
+                                             // - accept failed (e.g. too many connections) /
+                                             // - select failed (EBADF see Select_Reactor_T.cpp) /
+                                             // - asynch abort
+                                             // - ... ?
     {
       if (handle_in != ACE_INVALID_HANDLE)
       {
-        // *TODO*: connect/select case ?
-        return 0;
+        // *TODO*: select case ?
+        break;
       } // end IF
       else if (!myIsRegistered)
       {
-        // (failed) accept case
+        // (failed) connect/accept case
 
-				// *IMPORTANT NOTE*: when a connection attempt fails, the reactor close()s
-				// the connection although it was never open()ed; in that case there is
-				// no valid socket handle
+				// *IMPORTANT NOTE*: when a connection attempt fails, the reactor
+				// close()s the connection although it was never open()ed; in that case
+				// there is no valid socket handle
 				ACE_HANDLE handle = inherited::peer_.get_handle();
-				result = inherited::peer_.close();
-				if (result == -1)
-					ACE_DEBUG((LM_ERROR,
-										 ACE_TEXT("failed to ACE_SOCK_Stream::close(): %m, continuing\n")));
+				if (handle == ACE_INVALID_HANDLE)
+				{
+					// (failed) connect case
 
-				// reset peer handle so it can be removed from the reactor (see below)
-				inherited::peer_.set_handle(handle);
+					// clean up
+					decrease();
 
-				already_deleted = true;
+					break;
+				} // end IF
+
+				// (failed) accept case
+
+				// *IMPORTANT NOTE*: when an accept fails (e.g. too many connections),
+				// this may have been open()ed, so proper clean up will:
+				// - de-register from the reactor (decreases reference count)
+				// - close the socket (--> done in dtor (see above))
 			} // end ELSE IF
 
-			// asynch abort case
-
-			// *IMPORTANT NOTE*: the current implementation of
-			// ACE_Svc_Handler::shutdown references a connection recycler AFTER
-			// removing the connection from the reactor and releasing the final
-			// reference --> this leads to a crash.
-			// *TODO*: report this to the ACE people
-			// As a workaround, reimplement only the relevant parts of the current
-			// behaviour (in a feasible order, as remove_handler may involve
-			// "delete this")
-			//inherited::shutdown();
+			// (failed) accept / asynch abort case
 
 			ACE_ASSERT(inherited::reactor());
 			result = inherited::reactor()->remove_handler(this,
-																									  (mask_in |
-																									   ACE_Event_Handler::DONT_CALL));
+																										(mask_in |
+																										 ACE_Event_Handler::DONT_CALL));
 			if (result == -1)
 				ACE_DEBUG((LM_ERROR,
 									 ACE_TEXT("failed to ACE_Reactor::remove_handler(%@, %d), continuing\n"),
@@ -313,43 +340,20 @@ RPG_Net_SocketHandlerBase<ConfigType,
       break;
     }
     default:
-      // *PORTABILITY*: this isn't entirely portable...
+// *PORTABILITY*: this isn't entirely portable...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("handle_close called for unknown reasons (handle: %@, mask: %d) --> check implementation !, continuing\n"),
-								 handle_in,
-								 mask_in));
+                 handle_in,
+                 mask_in));
 #else
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("handle_close called for unknown reasons (handle: %d, mask: %d) --> check implementation !, continuing\n"),
-								 handle_in,
-								 mask_in));
+                 handle_in,
+                 mask_in));
 #endif
       break;
   } // end SWITCH
-
-	// *IMPORTANT NOTE*: make sure that the base-class dtor doesn't invoke
-	// shutdown() (see above)
-	if (!already_deleted)
-		inherited::closing_ = true;
-////   invoke base-class maintenance
-//  result = inherited::handle_close(handle_in,
-//                                   mask_in);
-//	if (result == -1)
-//	{
-//    // *PORTABILITY*: this isn't entirely portable...
-//#if defined(ACE_WIN32) || defined(ACE_WIN64)
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE_Svc_Handler::handle_close(%@, %d): %m, continuing\n"),
-//						   handle_in,
-//						   mask_in));
-//#else
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE_Svc_Handler::handle_close(%d, %d): %m, continuing\n"),
-//							 handle_in,
-//							 mask_in));
-//#endif
-//	} // end IF
 
 	return result;
 }
@@ -397,18 +401,13 @@ RPG_Net_SocketHandlerBase<ConfigType,
 
   // *NOTE*: do NOT simply close the underlying socket
 
-  // step1: de-register from the manager, close the stream,
-  // de-register from the reactor, ...
-  close();
+  // de-register from the manager, close the stream, de-register from the
+  // reactor[, delete this]
+  close(NORMAL_CLOSE_OPERATION);
 
-  // step2: close the socket handle
   // *IMPORTANT NOTE*: if called from a non-reactor context, or when using a
   // a multithreaded reactor, there may still be in-flight notifications and/or
-  // socket events being dispatched at this stage
-  int result = peer_.close();
-  if (result == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_IO::close(): \"%m\", continuing\n")));
+  // socket events being dispatched at this stage...
 }
 
 template <typename ConfigType,

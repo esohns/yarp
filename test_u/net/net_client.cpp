@@ -301,13 +301,14 @@ init_signals(const bool& allowUserRuntimeConnect_in,
   // *PORTABILITY*: on Windows most signals are not defined,
   // and ACE_Sig_Set::fill_set() doesn't really work as specified
   // --> add valid signals (see <signal.h>)...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
   signals_inout.sig_add(SIGINT);         // 2       /* interrupt */
   signals_inout.sig_add(SIGILL);         // 4       /* illegal instruction - invalid function image */
   signals_inout.sig_add(SIGFPE);         // 8       /* floating point exception */
-  signals_inout.sig_add(SIGSEGV);        // 11      /* segment violation */
+//  signals_inout.sig_add(SIGSEGV);        // 11      /* segment violation */
   signals_inout.sig_add(SIGTERM);        // 15      /* Software termination signal from kill */
-  signals_inout.sig_add(SIGBREAK);       // 21      /* Ctrl-Break sequence */
+  if (allowUserRuntimeConnect_in)
+    signals_inout.sig_add(SIGBREAK);       // 21      /* Ctrl-Break sequence */
   signals_inout.sig_add(SIGABRT);        // 22      /* abnormal termination triggered by abort call */
   signals_inout.sig_add(SIGABRT_COMPAT); // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
 #else
@@ -321,157 +322,14 @@ init_signals(const bool& allowUserRuntimeConnect_in,
   // *NOTE*: cannot handle some signals --> registration fails for these...
   signals_inout.sig_del(SIGKILL);         // 9       /* Kill signal */
   signals_inout.sig_del(SIGSTOP);         // 19      /* Stop process */
-	// ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  if (!allowUserRuntimeConnect_in)
+    signals_inout.sig_del(SIGUSR1);         // 10      /* User-defined signal 1 */
+  // *NOTE* core dump on SIGSEGV
+  signals_inout.sig_del(SIGSEGV);         // 11      /* Segmentation fault: Invalid memory reference */
   // *NOTE* don't care about SIGPIPE
   signals_inout.sig_del(SIGPIPE);         // 12      /* Broken pipe: write to pipe with no readers */
 #endif
-}
-
-void
-init_signalHandling(ACE_Sig_Set& signals_in,
-                    Net_Client_SignalHandler& eventHandler_in,
-                    const bool& useReactor_in)
-{
-  RPG_TRACE(ACE_TEXT("::init_signalHandling"));
-
-	// *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a multithreaded
-  //                   application, the disposition of a particular signal is the same for
-  //                   all threads." (see man 7 signal)
-
-  // step1: ignore SIGPIPE: need this to continue gracefully after a client
-  // suddenly disconnects (i.e. application/system crash, etc...)
-  // --> specify ignore action
-  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
-  // *NOTE*: do NOT restart system calls in this case (see manual)
-  ACE_Sig_Action ignore_action(static_cast<ACE_SignalHandler>(SIG_IGN), // ignore action
-                               ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
-                                                                        // --> block them all (bar KILL/STOP; see manual)
-                               SA_SIGINFO);                             // flags
-//                               (SA_RESTART | SA_SIGINFO));              // flags
-  ACE_Sig_Action previous_action;
-  if (ignore_action.register_action(SIGPIPE, &previous_action) == -1)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("failed to ACE_Sig_Action::register_action(SIGPIPE): \"%m\", continuing\n")));
-
-  // step2: block SIGRTMIN IFF on Linux AND using the ACE_POSIX_SIG_Proactor (the default)
-  // *IMPORTANT NOTE*: proactor implementation dispatches the signals in worker thread(s)
-  if (RPG_Common_Tools::isLinux() && !useReactor_in)
-  {
-    sigset_t signal_set;
-    if (ACE_OS::sigemptyset(&signal_set) == - 1)
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("failed to ACE_OS::sigemptyset(): \"%m\", aborting\n")));
-
-      return;
-    } // end IF
-    for (int i = ACE_SIGRTMIN;
-         i <= ACE_SIGRTMAX;
-         i++)
-    {
-      if (ACE_OS::sigaddset(&signal_set, i) == -1)
-      {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("failed to ACE_OS::sigaddset(): \"%m\", aborting\n")));
-
-        return;
-      } // end IF
-      if (signals_in.sig_del(i) == -1)
-      {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("failed to ACE_Sig_Set::sig_del(%S): \"%m\", aborting\n"),
-                   i));
-
-        return;
-      } // end IF
-    } // end IF
-    if (ACE_OS::thr_sigsetmask(SIG_BLOCK,
-                               &signal_set,
-                               NULL) == -1)
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
-
-      return;
-    } // end IF
-  } // end IF
-
-  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
-  ACE_Sig_Action new_action(static_cast<ACE_SignalHandler>(SIG_DFL), // default action
-                            ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
-                                                                     // --> block them all (bar KILL/STOP; see manual)
-                            (SA_RESTART | SA_SIGINFO));              // flags
-  if (ACE_Reactor::instance()->register_handler(signals_in,
-                                                &eventHandler_in,
-                                                &new_action) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::register_handler(): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
-}
-
-void
-fini_signalHandling(ACE_Sig_Set& signals_in,
-                    const bool& useReactor_in)
-{
-  RPG_TRACE(ACE_TEXT("::fini_signalHandling"));
-
-  // step1: reset SIGPIPE handling to default behaviour
-  // *IMPORTANT NOTE*: don't actually need to keep this around after registration
-  // *NOTE*: do NOT restart system calls in this case (see manual)
-  ACE_Sig_Action default_action(static_cast<ACE_SignalHandler>(SIG_DFL), // default action
-                                ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing
-                                                                         // --> block them all (bar KILL/STOP; see manual)
-                                SA_SIGINFO);                             // flags
-//                               (SA_RESTART | SA_SIGINFO));              // flags
-  ACE_Sig_Action previous_action;
-  if (default_action.register_action(SIGPIPE, &previous_action) == -1)
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("failed to ACE_Sig_Action::register_action(SIGPIPE): \"%m\", continuing\n")));
-
-  // step2: unblock SIGRTMIN IFF on Linux AND using the ACE_POSIX_SIG_Proactor (the default)
-  // *IMPORTANT NOTE*: proactor implementation dispatches the signals in worker thread(s)
-  if (RPG_Common_Tools::isLinux() && !useReactor_in)
-  {
-    sigset_t signal_set;
-    if (ACE_OS::sigemptyset(&signal_set) == - 1)
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("failed to ACE_OS::sigemptyset(): \"%m\", aborting\n")));
-
-      return;
-    } // end IF
-    for (int i = ACE_SIGRTMIN;
-         i <= ACE_SIGRTMAX;
-         i++)
-      if (ACE_OS::sigaddset(&signal_set, i) == -1)
-      {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("failed to ACE_OS::sigaddset(): \"%m\", aborting\n")));
-
-        return;
-      } // end IF
-    if (ACE_OS::thr_sigsetmask(SIG_UNBLOCK,
-                               &signal_set,
-                               NULL) == -1)
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
-
-      return;
-    } // end IF
-  } // end IF
-
-  // restore previous signal handlers
-  if (ACE_Reactor::instance()->remove_handler(signals_in) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Reactor::remove_handler(): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
 }
 
 bool
@@ -724,7 +582,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
-  // step3: init timer(s)...
+  // step3: init action timer ?
   ACE_INET_Addr peer_address(serverPortNumber_in,
                              serverHostname_in.c_str(),
                              AF_INET);
@@ -735,8 +593,9 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                                             connector);
   GTKUserData_in.timeout_handler = &timeout_handler;
   GTKUserData_in.timer_id = -1;
-  if (connectionInterval_in ||
-		  (actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS))
+  if (!UIFile_in.empty() &&
+      (connectionInterval_in ||
+       (actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS)))
   {
     // schedule action interval timer
     ACE_Time_Value interval(((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL / 1000)
@@ -768,11 +627,34 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                                           connector,               // connector
                                           useReactor_in);          // use reactor ?
   ACE_Sig_Set signal_set(0);
-  init_signals((connectionInterval_in == 0),  // allow SIGUSR1/SIGBREAK IF regular connections are off
+  init_signals((connectionInterval_in == 0), // allow SIGUSR1/SIGBREAK IFF
+                                             // regular connections are off
                signal_set);
-  init_signalHandling(signal_set,
-                      signal_handler,
-                      useReactor_in);
+  RPG_Common_SignalActions_t previous_signal_actions;
+  if (!RPG_Common_Tools::initSignals(signal_set,
+                                     &signal_handler,
+                                     useReactor_in,
+                                     previous_signal_actions))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to init signal handling, aborting\n")));
+
+    // clean up
+    if (GTKUserData_in.timer_id != -1)
+    {
+      const void* act = NULL;
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(GTKUserData_in.timer_id,
+                                                                &act) <= 0)
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                   GTKUserData_in.timer_id));
+    } // end IF
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+    connector->abort();
+    delete connector;
+
+    return;
+  } // end IF
 
   // event loop(s):
   // - catch SIGINT/SIGQUIT/SIGTERM/... signals (connect / perform orderly shutdown)
@@ -788,7 +670,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                  ACE_TEXT("failed to start GTK event dispatch, aborting\n")));
 
       // clean up
-      if (connectionInterval_in)
+      if (GTKUserData_in.timer_id != -1)
       {
         const void* act = NULL;
         if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(GTKUserData_in.timer_id,
@@ -800,8 +682,9 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
       connector->abort();
       delete connector;
-      fini_signalHandling(signal_set,
-                          useReactor_in);
+      RPG_Common_Tools::finiSignals(signal_set,
+                                    useReactor_in,
+                                    previous_signal_actions);
 
       return;
     } // end IF
@@ -817,7 +700,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                ACE_TEXT("failed to start event dispatch, aborting\n")));
 
     // clean up
-    if (connectionInterval_in)
+    if (GTKUserData_in.timer_id != -1)
 		{
 			const void* act = NULL;
 			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(GTKUserData_in.timer_id,
@@ -830,8 +713,9 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     connector->abort();
     delete connector;
-    fini_signalHandling(signal_set,
-                        useReactor_in);
+    RPG_Common_Tools::finiSignals(signal_set,
+                                  useReactor_in,
+                                  previous_signal_actions);
 
     return;
   } // end IF
@@ -872,9 +756,11 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
              ACE_TEXT("finished event dispatch...\n")));
 
   // step7: clean up
-  // *NOTE*: action/gtk timer(s) have been cancelled, and connections have been aborted
-  fini_signalHandling(signal_set,
-                      useReactor_in);
+  // *NOTE*: any action timer has been cancelled and connections have been
+  // aborted by now...
+  RPG_Common_Tools::finiSignals(signal_set,
+                                useReactor_in,
+                                previous_signal_actions);
   RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
   delete connector;
 

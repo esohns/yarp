@@ -38,6 +38,7 @@ G_MODULE_EXPORT gint togglebutton_stress_toggled_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_start_clicked_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_stop_clicked_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_close_all_clicked_cb_2(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint button_report_clicked_cb(GtkWidget*, gpointer);
 // -----------------------------------------------------------------------------
 G_MODULE_EXPORT gint button_about_clicked_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_quit_clicked_cb(GtkWidget*, gpointer);
