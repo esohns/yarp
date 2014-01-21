@@ -29,11 +29,15 @@
 
 #include "rpg_net_common_tools.h"
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::RPG_Net_Module_RuntimeStatistic_t()
@@ -62,11 +66,15 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::~RPG_Net_Module_RuntimeStatistic_t()
@@ -77,12 +85,16 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   fini_timers(true);
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 bool
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::init(const unsigned int& reportingInterval_in,
@@ -162,12 +174,16 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   return true;
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 void
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::handleDataMessage(ProtocolMessageType*& message_inout,
@@ -196,12 +212,16 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   } // end lock scope
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 void
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::handleSessionMessage(SessionMessageType*& message_inout,
@@ -298,12 +318,16 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   } // end SWITCH
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 void
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::reset()
@@ -324,12 +348,16 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   } // end lock scope
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 bool
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::collect(StatisticsContainerType& data_out) const
@@ -351,12 +379,16 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   return true;
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 void
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::report() const
@@ -398,12 +430,16 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   } // end lock scope
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 void
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::final_report() const
@@ -445,12 +481,16 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
   } // end lock scope
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 void
-RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                  TimePolicyType,
+                                  SessionMessageType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::fini_timers(const bool& cancelAllTimers_in)
@@ -486,11 +526,13 @@ RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
 // ----------------------------------------------------------------------------
 
 template <typename TaskSynchType,
+					typename TimePolicyType,
 	        typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
+                                        TimePolicyType,
                                         SessionMessageType,
                                         ProtocolMessageType,
                                         ProtocolCommandType,
@@ -503,11 +545,13 @@ RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
 }
 
 template <typename TaskSynchType,
-	        typename SessionMessageType,
-          typename ProtocolMessageType,
-          typename ProtocolCommandType,
-          typename StatisticsContainerType>
+					typename TimePolicyType,
+					typename SessionMessageType,
+					typename ProtocolMessageType,
+					typename ProtocolCommandType,
+					typename StatisticsContainerType>
 RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
+                                        TimePolicyType,
                                         SessionMessageType,
                                         ProtocolMessageType,
                                         ProtocolCommandType,
@@ -518,12 +562,14 @@ RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
 }
 
 template <typename TaskSynchType,
-          typename SessionMessageType,
-          typename ProtocolMessageType,
-          typename ProtocolCommandType,
-          typename StatisticsContainerType>
+					typename TimePolicyType,
+					typename SessionMessageType,
+					typename ProtocolMessageType,
+					typename ProtocolCommandType,
+					typename StatisticsContainerType>
 int
 RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
+                                        TimePolicyType,
                                         SessionMessageType,
                                         ProtocolMessageType,
                                         ProtocolCommandType,

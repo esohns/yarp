@@ -30,11 +30,11 @@
 // forward declaration(s)
 class ACE_Message_Block;
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 class RPG_Net_StreamSocketBase
- : public RPG_Net_SocketHandlerBase<ConfigType,
+ : public RPG_Net_SocketHandlerBase<ConfigurationType,
                                     StatisticsContainerType>
 {
  public:
@@ -57,9 +57,9 @@ class RPG_Net_StreamSocketBase
   virtual void report() const;
 
  protected:
-  typedef RPG_Net_IConnectionManager<ConfigType,
+  typedef RPG_Net_IConnectionManager<ConfigurationType,
                                      StatisticsContainerType> MANAGER_T;
-  RPG_Net_StreamSocketBase(MANAGER_T*);
+  RPG_Net_StreamSocketBase(MANAGER_T*); // connection manager handle
   virtual ~RPG_Net_StreamSocketBase();
 
   StreamType         myStream;
@@ -71,12 +71,17 @@ class RPG_Net_StreamSocketBase
   ACE_Message_Block* allocateMessage(const unsigned int&); // requested size
 
  private:
-  typedef RPG_Net_SocketHandlerBase<ConfigType,
+  typedef RPG_Net_SocketHandlerBase<ConfigurationType,
                                     StatisticsContainerType> inherited;
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase& operator=(const RPG_Net_StreamSocketBase&));
+
+  // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
+  // dispatching the reactor notification queue concurrently (most notably,
+  // ACE_TP_Reactor) --> enforce proper serialization
+  bool               mySerializeOutput;
 };
 
 // include template implementation

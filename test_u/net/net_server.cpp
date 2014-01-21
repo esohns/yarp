@@ -48,6 +48,7 @@
 #include "rpg_net_common.h"
 #include "rpg_net_common_tools.h"
 #include "rpg_net_stream_messageallocator.h"
+#include "rpg_net_module_eventhandler.h"
 
 #include "rpg_client_common.h"
 #include "rpg_client_logger.h"
@@ -62,6 +63,7 @@
 #include "net_defines.h"
 #include "net_common.h"
 #include "net_callbacks.h"
+#include "net_eventhandler.h"
 
 #include "net_server_signalhandler.h"
 
@@ -543,7 +545,7 @@ do_work(const unsigned int& maxNumConnections_in,
         const unsigned int& statisticsReportingInterval_in,
         const std::string& UIFile_in,
         const unsigned int& numDispatchThreads_in,
-        Net_GTK_CBData_t& GTKUserData_in)
+        Net_GTK_CBData_t& CBData_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -553,7 +555,7 @@ do_work(const unsigned int& maxNumConnections_in,
                (statisticsReportingInterval_in == 0),// allow SIGUSR1/SIGBREAK
                                                      // IFF regular reporting
                                                      // is off
-               GTKUserData_in))
+               CBData_in))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init user interface, aborting\n")));
@@ -561,9 +563,51 @@ do_work(const unsigned int& maxNumConnections_in,
     return;
   } // end IF
 
+  // step0b: init stream configuration object
+  Net_EventHandler ui_event_handler(&CBData_in);
+  RPG_Net_Module_EventHandler_Module event_handler(std::string("EventHandler"),
+                                                   NULL);
+  RPG_Net_Module_EventHandler* eventHandler_impl = NULL;
+  eventHandler_impl = dynamic_cast<RPG_Net_Module_EventHandler*>(event_handler.writer());
+  if (!eventHandler_impl)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_EventHandler> failed, aborting\n")));
+
+    return;
+  } // end IF
+  eventHandler_impl->init(&CBData_in.subscribers,
+                          &CBData_in.lock);
+  eventHandler_impl->subscribe(&ui_event_handler);
+  RPG_Stream_AllocatorHeap heapAllocator;
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
+                                                  &heapAllocator);
+  RPG_Net_ConfigPOD config;
+  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
+  // ************************ connection config data ***************************
+  config.peerPingInterval = pingInterval_in;
+  config.pingAutoAnswer = true;
+//  config.printPingMessages = false;
+  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.messageAllocator = &messageAllocator;
+  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+//  config.useThreadPerConnection = false;
+//  config.serializeOutput = false;
+  // *************************** stream config data ****************************
+  config.module = (!UIFile_in.empty() ? &event_handler
+                                      : NULL);
+  // *WARNING*: set at runtime, by the appropriate connection handler
+//  config.sessionID = 0; // (== socket handle !)
+//  config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
+//  config.printFinalReport = false;
+  // ****************************** runtime data *******************************
+//  config.currentStatistics = {};
+//  config.lastCollectionTimestamp = ACE_Time_Value::zero;
+
   // step0b: init event dispatch
   if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
-                                               numDispatchThreads_in))
+                                               numDispatchThreads_in,
+                                               config.serializeOutput))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init event dispatch, aborting\n")));
@@ -599,14 +643,14 @@ do_work(const unsigned int& maxNumConnections_in,
 
   // step2: signal handling
   if (useReactor_in)
-    GTKUserData_in.listener_handle =
+    CBData_in.listener_handle =
         RPG_NET_SERVER_LISTENER_SINGLETON::instance();
   else
-    GTKUserData_in.listener_handle =
+    CBData_in.listener_handle =
         RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance();
   // event handler for signals
   Net_Server_SignalHandler signal_handler(timer_id,
-                                          GTKUserData_in.listener_handle,
+                                          CBData_in.listener_handle,
                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
   ACE_Sig_Set signal_set(0);
   init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK
@@ -637,26 +681,7 @@ do_work(const unsigned int& maxNumConnections_in,
     return;
   } // end IF
 
-  // step3a: init stream configuration object
-  RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
-                                                  &heapAllocator);
-  RPG_Net_ConfigPOD config;
-  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
-  config.peerPingInterval = pingInterval_in;
-  config.pingAutoAnswer = true;
-  config.printPingMessages = false;
-  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
-  config.messageAllocator = &messageAllocator;
-  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  config.useThreadPerConnection = false;
-  config.module = NULL; // just use the default stream...
-  // *WARNING*: set at runtime, by the appropriate connection handler
-  config.sessionID = 0; // (== socket handle !)
-  config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
-	config.printFinalReport = false;
-
-  // step3b: init connection manager
+  // step3: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(maxNumConnections_in);
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
@@ -726,10 +751,10 @@ do_work(const unsigned int& maxNumConnections_in,
   } // end IF
 
   // step4c: start listening
-  GTKUserData_in.listener_handle->init(listeningPortNumber_in,
-                                       useLoopback_in);
-  GTKUserData_in.listener_handle->start();
-  if (!GTKUserData_in.listener_handle->isRunning())
+  CBData_in.listener_handle->init(listeningPortNumber_in,
+                                  useLoopback_in);
+  CBData_in.listener_handle->start();
+  if (!CBData_in.listener_handle->isRunning())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start listener (port: %u), aborting\n"),

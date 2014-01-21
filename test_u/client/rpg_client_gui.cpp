@@ -1421,9 +1421,35 @@ do_work(const RPG_Client_Config& config_in,
 //              ACE_TEXT("installed GTK quit handler (ID: %u)...\n"),
 //              quitHandlerID));
 
-  // step7: setup dispatch of network events
+  // step7a: init stream configuration object
+  RPG_Stream_AllocatorHeap heapAllocator;
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
+                                                  &heapAllocator);
+  RPG_Net_ConfigPOD config;
+  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
+  // ************ connection config data ************
+  config.peerPingInterval = 0; // *NOTE*: don't ping the server...
+  config.pingAutoAnswer = true;
+//  config.printPingMessages = false;
+  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.messageAllocator = &messageAllocator;
+  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+//  config.useThreadPerConnection = false;
+//  config.serializeOutput = false;
+  // ************ stream config data ************
+//  config.notificationStrategy = NULL;
+//  config.module = NULL; // just use the default stream...
+  // *WARNING*: set at runtime, by the appropriate connection handler
+//  config.sessionID = 0; // (== socket handle !)
+//  config.statisticsReportingInterval = 0; // == off
+  // ************ runtime data ************
+//  config.currentStatistics = {};
+//  config.lastCollectionTimestamp = ACE_Time_Value::zero;
+
+  // step7b: setup dispatch of network events
   if (!RPG_Net_Common_Tools::initEventDispatch(RPG_NET_USES_REACTOR,
-                                               config_in.num_dispatch_threads))
+                                               config_in.num_dispatch_threads,
+                                               config.serializeOutput))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init network event dispatch, aborting\n")));
@@ -1441,29 +1467,11 @@ do_work(const RPG_Client_Config& config_in,
     return;
   } // end IF
 
-  // step7a: init stream configuration object
-  RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
-                                                  &heapAllocator);
-  RPG_Net_ConfigPOD config;
-  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
-  config.peerPingInterval = 0; // *NOTE*: don't ping the server...
-	config.pingAutoAnswer = true;
-  config.printPingMessages = false;
-  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
-  config.messageAllocator = &messageAllocator;
-  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  config.useThreadPerConnection = false;
-  config.module = NULL; // just use the default stream...
-  // *WARNING*: set at runtime, by the appropriate connection handler
-  config.sessionID = 0; // (== socket handle !)
-  config.statisticsReportingInterval = 0; // == off
-
-  // step7b: init connection manager
+  // step7c: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
-  // step7c: start worker(s)
+  // step7d: start worker(s)
   int group_id = -1;
   if (!RPG_Net_Common_Tools::startEventDispatch(RPG_NET_USES_REACTOR,
                                                 config_in.num_dispatch_threads,

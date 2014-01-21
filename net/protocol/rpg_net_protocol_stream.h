@@ -35,13 +35,16 @@
 #include "rpg_stream_session_config_base.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Protocol_Export RPG_Net_Protocol_Stream
- : public RPG_Stream_Base<RPG_Net_Protocol_ConfigPOD,
+ : public RPG_Stream_Base<ACE_MT_SYNCH,
+                          RPG_Common_TimePolicy_t,
+                          RPG_Net_Protocol_ConfigPOD,
                           RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
                           RPG_Net_Protocol_SessionMessage,
                           RPG_Net_Protocol_Message>,
@@ -63,12 +66,13 @@ class RPG_Protocol_Export RPG_Net_Protocol_Stream
   virtual void report() const;
 
  private:
-  typedef RPG_Stream_Base<RPG_Net_Protocol_ConfigPOD,
+  typedef RPG_Stream_Base<ACE_MT_SYNCH,
+                          RPG_Common_TimePolicy_t,
+                          RPG_Net_Protocol_ConfigPOD,
                           RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
                           RPG_Net_Protocol_SessionMessage,
                           RPG_Net_Protocol_Message> inherited;
 
-  // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream(const RPG_Net_Protocol_Stream&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream& operator=(const RPG_Net_Protocol_Stream&));

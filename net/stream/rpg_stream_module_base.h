@@ -25,7 +25,6 @@
 
 #include <ace/Global_Macros.h>
 #include <ace/Module.h>
-#include <ace/Synch.h>
 
 #include <string>
 
@@ -33,38 +32,47 @@
 class RPG_Stream_IRefCount;
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 class RPG_Stream_Module_Base_t
- : public ACE_Module<TaskSynchType>,
-   public RPG_Stream_IModule
+ : public ACE_Module<TaskSynchType,
+                     TimePolicyType>,
+   public RPG_Stream_IModule<TaskSynchType,
+                             TimePolicyType>
 {
  public:
   // define convenient types
-  typedef ReaderTaskType READER_TASK_TYPE;
-  typedef WriterTaskType WRITER_TASK_TYPE;
+//  typedef ReaderTaskType READER_TASK_TYPE;
+//  typedef WriterTaskType WRITER_TASK_TYPE;
+  typedef RPG_Stream_IModule<TaskSynchType,
+                             TimePolicyType> IMODULE_TYPE;
 
   virtual ~RPG_Stream_Module_Base_t();
 
-  // implement RPG_Stream_IModule
+  // implement (part of) RPG_Stream_IModule
   virtual void reset();
 
  protected:
   RPG_Stream_Module_Base_t(const std::string&,     // name
-                           WRITER_TASK_TYPE*,      // handle to writer task
-                           READER_TASK_TYPE*,      // handle to reader task
+                           WriterTaskType*,        // handle to writer task
+                           ReaderTaskType*,        // handle to reader task
                            RPG_Stream_IRefCount*); // object counter
 
  private:
-  typedef ACE_Module<TaskSynchType> inherited;
+  typedef ACE_Module<TaskSynchType,
+                     TimePolicyType> inherited;
 
-  // safety measures
+  // implement (part of) RPG_Stream_IModule
+  virtual ACE_Module<TaskSynchType,
+                     TimePolicyType>* clone();
+
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t(const RPG_Stream_Module_Base_t&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t& operator=(const RPG_Stream_Module_Base_t&));
 
-  WRITER_TASK_TYPE* myWriter;
-  READER_TASK_TYPE* myReader;
+  WriterTaskType* myWriter;
+  ReaderTaskType* myReader;
 };
 
 #include "rpg_stream_module_base.inl"

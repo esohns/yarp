@@ -54,12 +54,12 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   { // (try to) get user data from the connection manager...
     try
     {
-      myManager->getConfig(myUserData);
+      myManager->getConfiguration(myUserData);
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::getConfig(), continuing\n")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::getConfiguration(), continuing\n")));
     }
   } // end IF
 }

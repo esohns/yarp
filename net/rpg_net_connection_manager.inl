@@ -26,9 +26,9 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_iconnection.h"
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::RPG_Net_Connection_Manager()
  : myCondition(myLock),
 //                ACE_TEXT_ALWAYS_CHAR(""),
@@ -44,9 +44,9 @@ RPG_Net_Connection_Manager<ConfigType,
   ACE_OS::memset(&myUserData, 0, sizeof(myUserData));
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::~RPG_Net_Connection_Manager()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::~RPG_Net_Connection_Manager"));
@@ -68,10 +68,10 @@ RPG_Net_Connection_Manager<ConfigType,
   } // end lock scope
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::init(const unsigned int& maxNumConnections_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::init"));
@@ -83,11 +83,11 @@ RPG_Net_Connection_Manager<ConfigType,
 //              myMaxNumConnections));
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
-                           StatisticsContainerType>::set(const ConfigType& userData_in)
+RPG_Net_Connection_Manager<ConfigurationType,
+                           StatisticsContainerType>::set(const ConfigurationType& userData_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::set"));
 
@@ -96,10 +96,10 @@ RPG_Net_Connection_Manager<ConfigType,
   myIsInitialized = true;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::start()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::start"));
@@ -109,10 +109,10 @@ RPG_Net_Connection_Manager<ConfigType,
   myIsActive = true;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::stop()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::stop"));
@@ -122,10 +122,10 @@ RPG_Net_Connection_Manager<ConfigType,
   myIsActive = false;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 bool
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::isRunning() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::stop"));
@@ -135,13 +135,13 @@ RPG_Net_Connection_Manager<ConfigType,
   return myIsActive;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
-                           StatisticsContainerType>::getConfig(ConfigType& config_out)
+RPG_Net_Connection_Manager<ConfigurationType,
+                           StatisticsContainerType>::getConfiguration(ConfigurationType& config_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::getConfig"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::getConfiguration"));
 
   // sanity check
   ACE_ASSERT(myIsInitialized);
@@ -149,10 +149,10 @@ RPG_Net_Connection_Manager<ConfigType,
   config_out = myUserData;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 bool
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::registerConnection(CONNECTION_TYPE* connection_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::registerConnection"));
@@ -231,10 +231,10 @@ RPG_Net_Connection_Manager<ConfigType,
   return true;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::deregisterConnection(const CONNECTION_TYPE* connection_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::deregisterConnection"));
@@ -307,10 +307,10 @@ RPG_Net_Connection_Manager<ConfigType,
     myCondition.broadcast();
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::abortConnections()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortConnections"));
@@ -367,10 +367,10 @@ RPG_Net_Connection_Manager<ConfigType,
              num_connections));
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::waitConnections() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::waitConnections"));
@@ -393,10 +393,10 @@ RPG_Net_Connection_Manager<ConfigType,
 //             ACE_TEXT("leaving...\n")));
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 unsigned int
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::numConnections() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::numConnections"));
@@ -406,10 +406,10 @@ RPG_Net_Connection_Manager<ConfigType,
   return static_cast<unsigned int>(myConnections.size());
 }
 
-//template <typename ConfigType,
+//template <typename ConfigurationType,
 //          typename StatisticsContainerType>
 //void
-//RPG_Net_Connection_Manager<ConfigType,
+//RPG_Net_Connection_Manager<ConfigurationType,
 //                           StatisticsContainerType>::lock()
 //{
 //  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::lock"));
@@ -417,10 +417,10 @@ RPG_Net_Connection_Manager<ConfigType,
 //	myLock.acquire();
 //}
 //
-//template <typename ConfigType,
+//template <typename ConfigurationType,
 //          typename StatisticsContainerType>
 //void
-//RPG_Net_Connection_Manager<ConfigType,
+//RPG_Net_Connection_Manager<ConfigurationType,
 //                           StatisticsContainerType>::unlock()
 //{
 //  RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::unlock"));
@@ -428,11 +428,11 @@ RPG_Net_Connection_Manager<ConfigType,
 //	myLock.release();
 //}
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
-const typename RPG_Net_Connection_Manager<ConfigType,
+const typename RPG_Net_Connection_Manager<ConfigurationType,
                                           StatisticsContainerType>::CONNECTION_TYPE*
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::operator[](unsigned int index_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::operator[]"));
@@ -465,10 +465,10 @@ RPG_Net_Connection_Manager<ConfigType,
   return result;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::abortOldestConnection()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortOldestConnection"));
@@ -498,10 +498,10 @@ RPG_Net_Connection_Manager<ConfigType,
   } // end IF
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::abortNewestConnection()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::abortNewestConnection"));
@@ -531,10 +531,10 @@ RPG_Net_Connection_Manager<ConfigType,
   } // end IF
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 bool
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::collect(StatisticsContainerType& data_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::collect"));
@@ -567,10 +567,10 @@ RPG_Net_Connection_Manager<ConfigType,
   return true;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::report() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::report"));
@@ -602,10 +602,10 @@ RPG_Net_Connection_Manager<ConfigType,
   } // end lock scope
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_Connection_Manager<ConfigType,
+RPG_Net_Connection_Manager<ConfigurationType,
                            StatisticsContainerType>::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::dump_state"));

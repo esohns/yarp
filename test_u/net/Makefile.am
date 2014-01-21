@@ -14,6 +14,8 @@ bin_PROGRAMS = net_client net_server
 net_server_SOURCES = net_server.cpp \
   net_server_signalhandler.cpp \
   net_server_signalhandler.h \
+  net_eventhandler.cpp \
+  net_eventhandler.h \
   net_callbacks.cpp \
   net_callbacks.h \
   net_defines.h \
@@ -30,6 +32,8 @@ net_client_SOURCES = net_client.cpp \
 	net_client_signalhandler.h \
 	net_client_timeouthandler.cpp \
 	net_client_timeouthandler.h \
+	net_eventhandler.cpp \
+	net_eventhandler.h \
 	net_callbacks.cpp \
 	net_callbacks.h \
 	net_defines.h \

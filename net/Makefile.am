@@ -15,6 +15,7 @@ include_HEADERS = rpg_net_common.h \
   rpg_net_connection_manager.inl \
   rpg_net_controller_base.h \
   rpg_net_defines.h \
+  rpg_net_inotify.h \
   rpg_net_iconnection.h \
   rpg_net_iconnectionmanager.h \
   rpg_net_icounter.h \
@@ -23,6 +24,7 @@ include_HEADERS = rpg_net_common.h \
   rpg_net_message.h \
   rpg_net_module_headerparser.h \
   rpg_net_module_protocolhandler.h \
+  rpg_net_module_eventhandler.h \
   rpg_net_module_runtimestatistic.h \
   rpg_net_module_runtimestatistic.inl \
   rpg_net_module_sockethandler.h \
@@ -65,6 +67,7 @@ libRPG_Net_la_SOURCES = rpg_net_asynchsockethandler_t.h \
   rpg_net_controller_base.cpp \
   rpg_net_controller_base.h \
   rpg_net_defines.h \
+  rpg_net_inotify.h \
   rpg_net_iconnection.h \
   rpg_net_iconnectionmanager.h \
   rpg_net_icounter.h \
@@ -75,6 +78,8 @@ libRPG_Net_la_SOURCES = rpg_net_asynchsockethandler_t.h \
   rpg_net_message.h \
   rpg_net_module_headerparser.cpp \
   rpg_net_module_headerparser.h \
+  rpg_net_module_eventhandler.cpp \
+  rpg_net_module_eventhandler.h \
   rpg_net_module_protocolhandler.cpp \
   rpg_net_module_protocolhandler.h \
   rpg_net_module_runtimestatistic.cpp \

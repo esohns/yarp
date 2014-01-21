@@ -40,18 +40,22 @@
 
 // forward declaration(s)
 class RPG_Stream_IAllocator;
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic_t;
 
 template <typename TaskSynchType,
+					typename TimePolicyType,
 	        typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 class RPG_Net_Module_RuntimeStatisticReader_t
- : public ACE_Thru_Task<TaskSynchType>
+ : public ACE_Thru_Task<TaskSynchType,
+                        TimePolicyType>
 {
  public:
   RPG_Net_Module_RuntimeStatisticReader_t();
@@ -61,30 +65,36 @@ class RPG_Net_Module_RuntimeStatisticReader_t
                   ACE_Time_Value* = NULL); // time
 
  private:
-  typedef ACE_Thru_Task<TaskSynchType> inherited;
-  typedef RPG_Net_Module_RuntimeStatistic_t<SessionMessageType,
+  typedef ACE_Thru_Task<TaskSynchType,
+                        TimePolicyType> inherited;
+  typedef RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
+                                            TimePolicyType,
+                                            SessionMessageType,
                                             ProtocolMessageType,
                                             ProtocolCommandType,
                                             StatisticsContainerType> TASK_TYPE;
   typedef ProtocolMessageType MESSAGE_TYPE;
   typedef ProtocolCommandType COMMAND_TYPE;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatisticReader_t(const RPG_Net_Module_RuntimeStatisticReader_t&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatisticReader_t& operator=(const RPG_Net_Module_RuntimeStatisticReader_t&));
 };
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
 class RPG_Net_Module_RuntimeStatistic_t
- : public RPG_Stream_TaskBaseSynch<SessionMessageType,
+ : public RPG_Stream_TaskBaseSynch<TimePolicyType,
+                                   SessionMessageType,
                                    ProtocolMessageType>,
    public RPG_Net_ICounter,
    public RPG_Common_IStatistic<StatisticsContainerType>
 {
- friend class RPG_Net_Module_RuntimeStatisticReader_t<ACE_MT_SYNCH,
+ friend class RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
+                                                      TimePolicyType,
 	                                                    SessionMessageType,
                                                       ProtocolMessageType,
                                                       ProtocolCommandType,
@@ -115,7 +125,8 @@ class RPG_Net_Module_RuntimeStatistic_t
   virtual void report() const;
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<SessionMessageType,
+  typedef RPG_Stream_TaskBaseSynch<TimePolicyType,
+                                   SessionMessageType,
                                    ProtocolMessageType> inherited;
 
   // message type counters
@@ -131,7 +142,6 @@ class RPG_Net_Module_RuntimeStatistic_t
   typedef StatisticsContainerType STATISTICINTERFACE_TYPE;
   typedef RPG_Net_StatisticHandler_Reactor_T<STATISTICINTERFACE_TYPE> STATISTICHANDLER_TYPE;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic_t(const RPG_Net_Module_RuntimeStatistic_t&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic_t& operator=(const RPG_Net_Module_RuntimeStatistic_t&));
 

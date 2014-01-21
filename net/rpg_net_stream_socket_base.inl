@@ -28,51 +28,67 @@
 #include "rpg_net_common.h"
 #include "rpg_net_iconnectionmanager.h"
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::RPG_Net_StreamSocketBase(MANAGER_T* manager_in)
  : inherited(manager_in),
    //myStream(),
    myCurrentReadBuffer(NULL),
    //myLock(),
-   myCurrentWriteBuffer(NULL)
+   myCurrentWriteBuffer(NULL),
+   mySerializeOutput(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::RPG_Net_StreamSocketBase"));
 
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::~RPG_Net_StreamSocketBase()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::~RPG_Net_StreamSocketBase"));
 
   // clean up
+  if (inherited::myUserData.module)
+  {
+    if (myStream.remove(inherited::myUserData.module->name(),
+                        0) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Stream::remove(\"%s\"): \"%m\", continuing\n"),
+                 ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+
+    delete inherited::myUserData.module;
+  } // end IF
+
   if (myCurrentReadBuffer)
     myCurrentReadBuffer->release();
   if (myCurrentWriteBuffer)
     myCurrentWriteBuffer->release();
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 int
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::open(void* arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
 
+  // step0: init this
+  mySerializeOutput = inherited::myUserData.serializeOutput;
+
   // step1: init/start stream
   inherited::myUserData.sessionID = inherited::id(); // (== socket handle)
-  // connect stream head message queue with the reactor notification pipe ?
+  // step1a: connect stream head message queue with the reactor notification
+  // pipe ?
   if (!inherited::myUserData.useThreadPerConnection)
   {
     // *IMPORTANT NOTE*: enable the reference counting policy, as this will
@@ -96,10 +112,52 @@ RPG_Net_StreamSocketBase<ConfigType,
     inherited::myUserData.notificationStrategy =
         &(inherited::myNotificationStrategy);
   } // end IF
+  // step1b: init final module (if any)
+  if (inherited::myUserData.module)
+  {
+    IMODULE_TYPE* imodule_handle = NULL;
+    // need a downcast...
+    imodule_handle = dynamic_cast<IMODULE_TYPE*>(inherited::myUserData.module);
+    if (!imodule_handle)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("%s: dynamic_cast<RPG_Stream_IModule> failed, aborting\n"),
+                 ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+
+      return -1;
+    } // end IF
+    MODULE_TYPE* clone = NULL;
+    try
+    {
+      clone = imodule_handle->clone();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("%s: caught exception in RPG_Stream_IModule::clone(), aborting\n"),
+                 ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+
+      return -1;
+    }
+    if (!clone)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("%s: failed to RPG_Stream_IModule::clone(), aborting\n"),
+                 ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+
+      return -1;
+    }
+    inherited::myUserData.module = clone;
+  } // end IF
+  // step1c: init stream
   if (!myStream.init(inherited::myUserData))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init processing stream, aborting\n")));
+
+    // clean up
+    delete inherited::myUserData.module;
+    inherited::myUserData.module = NULL;
 
     return -1;
   } // end IF
@@ -134,11 +192,11 @@ RPG_Net_StreamSocketBase<ConfigType,
   return 0;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 int
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::handle_input(ACE_HANDLE handle_in)
 {
@@ -231,11 +289,11 @@ RPG_Net_StreamSocketBase<ConfigType,
   return 0;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 int
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::handle_output(ACE_HANDLE handle_in)
 {
@@ -244,9 +302,9 @@ RPG_Net_StreamSocketBase<ConfigType,
   ACE_UNUSED_ARG(handle_in);
 
   // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
-  // dispatching the reactor notification queue concurrently (e.g. TP_Reactor),
-  // which means that proper serialization MUST be enforced
-  if (!inherited::myUserData.useThreadPerConnection)
+  // dispatching the reactor notification queue concurrently (most notably,
+  // ACE_TP_Reactor) --> enforce proper serialization
+  if (mySerializeOutput)
     myLock.acquire();
 
   if (myCurrentWriteBuffer == NULL)
@@ -254,24 +312,27 @@ RPG_Net_StreamSocketBase<ConfigType,
     // send next data chunk from the stream...
     // *IMPORTANT NOTE*: should NEVER block, as available outbound data has
     // been notified to the reactor
-    ACE_Time_Value no_wait(RPG_COMMON_TIME_POLICY());
     int result = -1;
     if (!inherited::myUserData.useThreadPerConnection)
-      result = myStream.get(myCurrentWriteBuffer, &no_wait);
+      result = myStream.get(myCurrentWriteBuffer,
+                            const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero));
     else
-      result = inherited::getq(myCurrentWriteBuffer, &no_wait);
+      result = inherited::getq(myCurrentWriteBuffer,
+                               const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero));
     if (result == -1)
     {
       // *IMPORTANT NOTE*: a number of issues can occur here:
       // - connection has been closed in the meantime
+      // - queue has been deactivated
       int error = ACE_OS::last_error();
-      if (error != EAGAIN) // <-- connection has been closed in the meantime
+      if ((error != EAGAIN) ||  // <-- connection has been closed in the meantime
+          (error != ESHUTDOWN)) // <-- queue has been deactivated
         ACE_DEBUG((LM_ERROR,
                    (inherited::myUserData.useThreadPerConnection ? ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")
                                                                  : ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n"))));
 
       // clean up
-      if (!inherited::myUserData.useThreadPerConnection)
+      if (mySerializeOutput)
         myLock.release();
 
       return -1;
@@ -316,7 +377,7 @@ RPG_Net_StreamSocketBase<ConfigType,
       // clean up
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
-      if (!inherited::myUserData.useThreadPerConnection)
+      if (mySerializeOutput)
         myLock.release();
 
       return -1;
@@ -331,7 +392,7 @@ RPG_Net_StreamSocketBase<ConfigType,
       // clean up
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
-      if (!inherited::myUserData.useThreadPerConnection)
+      if (mySerializeOutput)
         myLock.release();
 
       return -1;
@@ -368,7 +429,7 @@ RPG_Net_StreamSocketBase<ConfigType,
   if (myCurrentWriteBuffer != NULL)
 	{
     // clean up
-		if (!inherited::myUserData.useThreadPerConnection)
+    if (mySerializeOutput)
       myLock.release();
 
 		return 1;
@@ -379,17 +440,17 @@ RPG_Net_StreamSocketBase<ConfigType,
     //             ACE_TEXT("failed to ACE_Reactor::schedule_wakeup(): \"%m\", continuing\n")));
 
   // clean up
-  if (!inherited::myUserData.useThreadPerConnection)
+  if (mySerializeOutput)
     myLock.release();
 
   return 0;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 int
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::handle_close(ACE_HANDLE handle_in,
                                                    ACE_Reactor_Mask mask_in)
@@ -450,11 +511,11 @@ RPG_Net_StreamSocketBase<ConfigType,
                                  mask_in);
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 bool
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::collect(StatisticsContainerType& data_out) const
 {
@@ -473,11 +534,11 @@ RPG_Net_StreamSocketBase<ConfigType,
   return false;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 void
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::report() const
 {
@@ -494,11 +555,11 @@ RPG_Net_StreamSocketBase<ConfigType,
   }
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 ACE_Message_Block*
-RPG_Net_StreamSocketBase<ConfigType,
+RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
                          StreamType>::allocateMessage(const unsigned int& requestedSize_in)
 {

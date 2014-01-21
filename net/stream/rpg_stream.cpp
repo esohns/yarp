@@ -83,18 +83,25 @@ RPG_Stream::init()
   {
     // *NOTE*: fini() invokes close() which will reset the writer/reader tasks
     // of the enqueued modules --> reset this !
-    RPG_Stream_IModule* module_handle = NULL;
+    IMODULE_TYPE* imodule_handle = NULL;
     // *NOTE*: cannot write this - it confuses gcc...
     for (MODULE_CONTAINERITERATOR_TYPE iterator = myAvailableModules.begin();
          iterator != myAvailableModules.end();
          iterator++)
     {
       // need a downcast...
-      module_handle = dynamic_cast<RPG_Stream_IModule*>(*iterator);
-      ACE_ASSERT(module_handle);
+      imodule_handle = dynamic_cast<IMODULE_TYPE*>(*iterator);
+      if (!imodule_handle)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("%s: dynamic_cast<RPG_Stream_IModule> failed, aborting\n"),
+                   ACE_TEXT_ALWAYS_CHAR((*iterator)->name())));
+
+        return false;
+      } // end IF
       try
       {
-        module_handle->reset();
+        imodule_handle->reset();
       }
       catch (...)
       {
@@ -408,7 +415,7 @@ RPG_Stream::waitForCompletion()
 
   // iterate over modules...
   const MODULE_TYPE* module = NULL;
-  ACE_Stream_Iterator<ACE_MT_SYNCH> iterator(*this);
+  STREAM_ITERATOR_TYPE iterator(*this);
   // skip over ACE_Stream_Head
   if (iterator.advance())
   {
@@ -562,7 +569,7 @@ RPG_Stream::dump_state() const
 
   std::string stream_layout;
   const MODULE_TYPE* module = NULL;
-  for (ACE_Stream_Iterator<ACE_MT_SYNCH> iterator(*this);
+  for (STREAM_ITERATOR_TYPE iterator(*this);
        iterator.next(module);
        iterator.advance())
   {

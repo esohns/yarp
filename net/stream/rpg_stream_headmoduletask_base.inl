@@ -24,11 +24,15 @@
 #include "rpg_stream_defines.h"
 #include "rpg_stream_iallocator.h"
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::RPG_Stream_HeadModuleTaskBase(const bool& isActive_in,
@@ -54,11 +58,15 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   inherited::grp_id(RPG_STREAM_TASK_GROUP_ID);
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::~RPG_Stream_HeadModuleTaskBase()
@@ -79,12 +87,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 //   myQueue.wait();
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::put(ACE_Message_Block* mb_in,
@@ -112,12 +124,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   return 0;
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::open(void* args_in)
@@ -179,12 +195,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   return 0;
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::close(u_long arg_in)
@@ -237,12 +257,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   return 0;
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::module_closed(void)
@@ -272,12 +296,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   return 0;
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::svc(void)
@@ -374,31 +402,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   return -1;
 }
 
-// template <typename DataType,
-//           typename SessionConfigType,
-//           typename SessionMessageType>
-// void
-// RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>::handleDataMessage(RPG_Stream_MessageBase*& message_inout,
-//                                                        bool& passMessageDownstream_out)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::handleDataMessage"));
-//
-//   ACE_UNUSED_ARG(message_inout);
-//   ACE_UNUSED_ARG(passMessageDownstream_out);
-//
-//   // *NOTE*: should NEVER be reached !
-//   ACE_ASSERT(false);
-//
-//   // what else can we do ?
-//   ACE_NOTREACHED(return;)
-// }
-
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::handleControlMessage(ACE_Message_Block* controlMessage_in,
@@ -438,12 +451,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   } // end SWITCH
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::start()
@@ -454,12 +471,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   changeState(inherited2::RUNNING);
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::stop()
@@ -472,12 +493,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   waitForCompletion();
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::pause()
@@ -488,12 +513,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   changeState(inherited2::PAUSED);
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::rewind()
@@ -504,12 +533,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   ACE_ASSERT(false);
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::waitForCompletion()
@@ -534,12 +567,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   } // end IF
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 bool
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::isRunning() const
@@ -549,12 +586,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   return (getState() == inherited2::RUNNING);
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::finished()
@@ -568,12 +609,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
 //             ACE_TEXT("leaving finished()...\n")));
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::onStateChange(const Control_StateType& newState_in)
@@ -769,12 +814,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   } // end SWITCH
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 bool
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::putSessionMessage(const unsigned int& sessionID_in,
@@ -849,12 +898,16 @@ RPG_Stream_HeadModuleTaskBase<DataType,
   return true;
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 bool
-RPG_Stream_HeadModuleTaskBase<DataType,
+RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                              TimePolicyType,
+                              DataType,
                               SessionConfigType,
                               SessionMessageType,
                               ProtocolMessageType>::putSessionMessage(const unsigned int& sessionID_in,

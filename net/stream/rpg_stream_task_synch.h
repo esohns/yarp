@@ -23,14 +23,18 @@
 
 #include "rpg_stream_task.h"
 
+#include "rpg_common.h"
+
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
 class ACE_Message_Block;
 class ACE_Time_Value;
 
 class RPG_Stream_TaskSynch
- : public RPG_Stream_Task<ACE_NULL_SYNCH>
+ : public RPG_Stream_Task<ACE_NULL_SYNCH,
+                          RPG_Common_TimePolicy_t>
 {
  public:
   virtual ~RPG_Stream_TaskSynch();
@@ -46,13 +50,12 @@ class RPG_Stream_TaskSynch
   virtual void waitForIdleState() const;
 
  protected:
-  // needs to be subclassed...
   RPG_Stream_TaskSynch();
 
  private:
-  typedef RPG_Stream_Task<ACE_NULL_SYNCH> inherited;
+  typedef RPG_Stream_Task<ACE_NULL_SYNCH,
+                          RPG_Common_TimePolicy_t> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskSynch(const RPG_Stream_TaskSynch&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskSynch& operator=(const RPG_Stream_TaskSynch&));
 };

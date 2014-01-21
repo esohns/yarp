@@ -24,10 +24,14 @@
 #include "rpg_stream_exports.h"
 #include "rpg_stream_messagequeue_base.h"
 
+#include "rpg_common.h"
+
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 
 class RPG_Stream_Export RPG_Stream_MessageQueue
- : public RPG_Stream_MessageQueueBase
+ : public RPG_Stream_MessageQueueBase<ACE_MT_SYNCH,
+                                      RPG_Common_TimePolicy_t>
 {
  public:
   RPG_Stream_MessageQueue(const unsigned long&); // max number of queued buffers
@@ -37,9 +41,9 @@ class RPG_Stream_Export RPG_Stream_MessageQueue
   virtual void waitForIdleState() const;
 
  private:
-  typedef RPG_Stream_MessageQueueBase inherited;
+  typedef RPG_Stream_MessageQueueBase<ACE_MT_SYNCH,
+                                      RPG_Common_TimePolicy_t> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_MessageQueue());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_MessageQueue(const RPG_Stream_MessageQueue&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_MessageQueue& operator=(const RPG_Stream_MessageQueue&));

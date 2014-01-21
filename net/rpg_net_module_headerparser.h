@@ -24,6 +24,8 @@
 #include "rpg_stream_task_base_synch.h"
 #include "rpg_stream_streammodule_base.h"
 
+#include "rpg_common.h"
+
 #include <ace/Synch_Traits.h>
 
 // forward declaration(s)
@@ -31,7 +33,8 @@ class RPG_Net_SessionMessage;
 class RPG_Net_Message;
 
 class RPG_Net_Module_HeaderParser
- : public RPG_Stream_TaskBaseSynch<RPG_Net_SessionMessage,
+ : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
+                                   RPG_Net_SessionMessage,
                                    RPG_Net_Message>
 {
  public:
@@ -49,7 +52,8 @@ class RPG_Net_Module_HeaderParser
   virtual void dump_state() const;
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<RPG_Net_SessionMessage,
+  typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
+                                   RPG_Net_SessionMessage,
                                    RPG_Net_Message> inherited;
 
   // safety measures
@@ -61,6 +65,7 @@ class RPG_Net_Module_HeaderParser
 
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                 // task synch type
+                             RPG_Common_TimePolicy_t,      // time policy type
                              RPG_Net_Module_HeaderParser); // writer type
 
 #endif

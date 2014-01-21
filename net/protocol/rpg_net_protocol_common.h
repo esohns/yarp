@@ -22,8 +22,12 @@
 #define RPG_NET_PROTOCOL_COMMON_H
 
 #include "rpg_net_protocol_exports.h"
+#include "rpg_net_protocol_IRCmessage.h"
 
 #include "rpg_net_connection_manager.h"
+#include "rpg_net_inotify.h"
+
+#include "rpg_common.h"
 
 #include <ace/Time_Value.h>
 #include <ace/Date_Time.h>
@@ -44,7 +48,8 @@ class RPG_Stream_Module;
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;
 
-typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
+typedef ACE_Module<ACE_MT_SYNCH,
+                   RPG_Common_TimePolicy_t> MODULE_TYPE;
 
 struct RPG_Net_Protocol_IRCLoginOptions
 {
@@ -159,7 +164,8 @@ struct RPG_Net_Protocol_ConnectionEntry
   RPG_Net_Protocol_PortRanges_t listeningPorts;
   std::string                   network;
 };
-typedef std::multimap<std::string, RPG_Net_Protocol_ConnectionEntry> RPG_Net_Protocol_Servers_t;
+typedef std::multimap<std::string,
+                      RPG_Net_Protocol_ConnectionEntry> RPG_Net_Protocol_Servers_t;
 typedef RPG_Net_Protocol_Servers_t::const_iterator RPG_Net_Protocol_ServersIterator_t;
 struct RPG_Net_Protocol_PhoneBook
 {
@@ -190,7 +196,11 @@ struct RPG_Net_Protocol_ConfigPOD
   int                               socketBufferSize;
   RPG_Stream_IAllocator*            messageAllocator;
   unsigned int                      bufferSize;
-  bool                              useThreadPerConnection; // used by the server...
+  bool                              useThreadPerConnection;
+  // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
+  // dispatching the reactor notification queue concurrently (most notably,
+  // ACE_TP_Reactor) --> enforce proper serialization
+  bool                              serializeOutput;
   // ************ protocol config data **************
   unsigned int                      clientPingInterval; // used by the server...
   RPG_Net_Protocol_IRCLoginOptions  loginOptions;
@@ -207,12 +217,14 @@ struct RPG_Net_Protocol_ConfigPOD
   ACE_Time_Value                    lastCollectionTimestamp;
 };
 
+typedef RPG_Net_INotify<RPG_Net_Protocol_IRCMessage> RPG_Net_Protocol_INotify_t;
+
 typedef RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
                                    RPG_Net_Protocol_RuntimeStatistic> RPG_Net_Protocol_Connection_Manager_t;
 typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 RPG_PROTOCOL_SINGLETON_DECLARE(ACE_Singleton,
-			       RPG_Net_Protocol_Connection_Manager_t,
-			       ACE_Recursive_Thread_Mutex);
+															 RPG_Net_Protocol_Connection_Manager_t,
+															 ACE_Recursive_Thread_Mutex);
 
 #endif

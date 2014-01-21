@@ -21,9 +21,11 @@
 #include "rpg_common_macros.h"
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 RPG_Stream_StreamModule_t<TaskSynchType,
+                          TimePolicyType,
                           ReaderTaskType,
                           WriterTaskType>::RPG_Stream_StreamModule_t(const std::string& name_in,
                                                                      RPG_Stream_IRefCount* refCount_in)
@@ -42,9 +44,11 @@ RPG_Stream_StreamModule_t<TaskSynchType,
 }
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 RPG_Stream_StreamModule_t<TaskSynchType,
+                          TimePolicyType,
                           ReaderTaskType,
                           WriterTaskType>::~RPG_Stream_StreamModule_t()
 {
@@ -59,8 +63,10 @@ RPG_Stream_StreamModule_t<TaskSynchType,
 // ----------------------------------------------------------------------------
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename TaskType>
 RPG_Stream_StreamModuleInputOnly_t<TaskSynchType,
+                                   TimePolicyType,
                                    TaskType>::RPG_Stream_StreamModuleInputOnly_t(const std::string& name_in,
                                                                                  RPG_Stream_IRefCount* refCount_in)
  : inherited(name_in,     // name
@@ -71,8 +77,10 @@ RPG_Stream_StreamModuleInputOnly_t<TaskSynchType,
 }
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename TaskType>
 RPG_Stream_StreamModuleInputOnly_t<TaskSynchType,
+                                   TimePolicyType,
                                    TaskType>::~RPG_Stream_StreamModuleInputOnly_t()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModuleInputOnly_t::~RPG_Stream_StreamModuleInputOnly_t"));

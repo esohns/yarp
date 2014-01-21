@@ -18,42 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_MODULE_PROTOCOLHANDLER_H
-#define RPG_NET_MODULE_PROTOCOLHANDLER_H
+#ifndef RPG_Net_Module_EventHandler_H
+#define RPG_Net_Module_EventHandler_H
 
-#include "rpg_common_timerhandler.h"
-#include "rpg_common_itimer.h"
+#include "rpg_net_common.h"
 
 #include "rpg_stream_task_base_synch.h"
 #include "rpg_stream_streammodule_base.h"
 
 #include "rpg_common.h"
-
-#include <ace/Time_Value.h>
-#include <ace/Reactor.h>
-#include <ace/Synch_Traits.h>
+#include "rpg_common_isubscribe.h"
+#include "rpg_common_iclone.h"
 
 // forward declaration(s)
-class RPG_Stream_IAllocator;
 class RPG_Net_SessionMessage;
 class RPG_Net_Message;
+class ACE_Recursive_Thread_Mutex;
 
-class RPG_Net_Module_ProtocolHandler
+class RPG_Net_Module_EventHandler
  : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
                                    RPG_Net_SessionMessage,
                                    RPG_Net_Message>,
-   public RPG_Common_ITimer
+   public RPG_Common_ISubscribe<RPG_Net_INotify_t>,
+   public RPG_Common_IClone<MODULE_TYPE>
 {
  public:
-  RPG_Net_Module_ProtocolHandler();
-  virtual ~RPG_Net_Module_ProtocolHandler();
+  RPG_Net_Module_EventHandler();
+  virtual ~RPG_Net_Module_EventHandler();
 
-  // initialization
-  bool init(RPG_Stream_IAllocator*,  // message allocator
-            const unsigned int&,     // session ID
-            const unsigned int& = 0, // peer "ping" interval (ms) [0 --> OFF]
-            const bool& = true,      // automatically reply to "ping" messages (auto-"pong")
-            const bool& = false);    // print dot ('.') for every received "ping" to stderr
+  void init(RPG_Net_NotifySubscribers_t*, // subscribers (handle)
+            ACE_Recursive_Thread_Mutex*); // subscribers lock
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
@@ -61,40 +55,31 @@ class RPG_Net_Module_ProtocolHandler
   virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
                                     bool&);                   // return value: pass message downstream ?
 
-  // implement RPG_Common_ITimer
-  virtual void handleTimeout(const void*); // asynchronous completion token
+  // implement RPG_Common_ISubscribe
+  virtual void subscribe(RPG_Net_INotify_t*); // new subscriber
+  virtual void unsubscribe(RPG_Net_INotify_t*); // existing subscriber
 
-  // implement RPG_Common_IDumpState
-  virtual void dump_state() const;
+  // implement RPG_Common_IClone
+  virtual MODULE_TYPE* clone();
 
  private:
   typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
                                    RPG_Net_SessionMessage,
                                    RPG_Net_Message> inherited;
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler(const RPG_Net_Module_ProtocolHandler&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler& operator=(const RPG_Net_Module_ProtocolHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_EventHandler(const RPG_Net_Module_EventHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_EventHandler& operator=(const RPG_Net_Module_EventHandler&));
 
-  // helper methods
-  RPG_Net_Message* allocateMessage(const unsigned int&); // requested size
-
-  // timer stuff
-  RPG_Common_TimerHandler myPingHandler;
-  long                    myPingTimerID;
-
-  RPG_Stream_IAllocator*  myAllocator;
-  unsigned int            mySessionID;
-  unsigned int            myCounter;
-  unsigned int            myPingInterval;
-  bool                    myAutomaticPong;
-  bool                    myPrintPingDot;
-  bool                    myIsInitialized;
+  // *NOTE*: make this recursive so that users may unsubscribe from within the
+  // notification callbacks...
+  // *WARNING*: implies CAREFUL iteration
+  ACE_Recursive_Thread_Mutex*  myLock;
+  RPG_Net_NotifySubscribers_t* mySubscribers;
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                    // task synch type
-                             RPG_Common_TimePolicy_t,         // time policy type
-                             RPG_Net_Module_ProtocolHandler); // writer type
+DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                 // task synch type
+                             RPG_Common_TimePolicy_t,      // time policy
+                             RPG_Net_Module_EventHandler); // writer type
 
 #endif

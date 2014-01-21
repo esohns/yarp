@@ -90,7 +90,7 @@ update_display_cb(gpointer act_in)
   gchar* converted_text = NULL;
   // synch access
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(data->lock);
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(data->lock);
 
     // sanity check
     if (data->log_stack.empty())
@@ -145,43 +145,6 @@ update_display_cb(gpointer act_in)
   // scroll the mark onscreen
   gtk_text_view_scroll_mark_onscreen(view,
                                      mark);
-
-
-  // step4: update info labels
-  GtkLabel* label =
-      GTK_LABEL(glade_xml_get_widget(data->xml,
-                                     ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
-  if (!label)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
-
-    // clean up
-    GDK_THREADS_LEAVE();
-
-    return FALSE;
-  } // end IF
-  std::stringstream converter;
-  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
-  converted_text = RPG_Client_UI_Tools::Locale2UTF8(converter.str());
-  if (!converted_text)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
-               converter.str().c_str()));
-
-    // clean up
-    GDK_THREADS_LEAVE();
-
-    return FALSE;
-  } // end IF
-  gtk_label_set_text(label,
-                     converted_text);
-
-  // clean up
-  g_free(converted_text);
 
   // clean up
   GDK_THREADS_LEAVE();

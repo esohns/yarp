@@ -28,9 +28,9 @@
 #include "rpg_net_common_tools.h"
 #include "rpg_net_iconnectionmanager.h"
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::RPG_Net_SocketHandlerBase(MANAGER_T* manager_in)
  : inherited(NULL,                     // no specific thread manager
              NULL,                     // no specific message queue
@@ -58,19 +58,19 @@ RPG_Net_SocketHandlerBase<ConfigType,
   {
     try
     { // (try to) get user data from the connection manager
-      myManager->getConfig(myUserData);
+      myManager->getConfiguration(myUserData);
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::getConfig(), continuing\n")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::getConfiguration(), continuing\n")));
     }
   } // end IF
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::~RPG_Net_SocketHandlerBase()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
@@ -103,10 +103,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
                  ACE_TEXT("failed to ACE_SOCK_IO::close(): \"%m\", continuing\n")));
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 ACE_Event_Handler::Reference_Count
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::add_reference(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::add_reference"));
@@ -117,10 +117,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 	return 0;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 ACE_Event_Handler::Reference_Count
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::remove_reference(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::remove_reference"));
@@ -133,10 +133,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 	return 0;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 int
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::open(void* arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::open"));
@@ -152,7 +152,7 @@ RPG_Net_SocketHandlerBase<ConfigType,
 
   // step1: tweak socket
   // *TODO*: there is a design glitch here: this class SHOULD NOT make
-  // assumptions about ConfigType !
+  // assumptions about ConfigurationType !
   if (myUserData.socketBufferSize)
     if (!RPG_Net_Common_Tools::setSocketBuffer(peer_.get_handle(),
                                                SO_RCVBUF,
@@ -244,10 +244,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
   return 0;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 int
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::handle_close(ACE_HANDLE handle_in,
                                                                  ACE_Reactor_Mask mask_in)
 {
@@ -358,10 +358,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 	return result;
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::info(ACE_HANDLE& handle_out,
                                                          ACE_INET_Addr& localSAP_out,
                                                          ACE_INET_Addr& remoteSAP_out) const
@@ -391,10 +391,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
   } // end IF
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::abort()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::abort"));
@@ -410,10 +410,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
   // socket events being dispatched at this stage...
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 unsigned int
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::id() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::id"));
@@ -426,10 +426,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 #endif
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::increase()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::increase"));
@@ -438,10 +438,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 	//inherited::add_reference();
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::decrease()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::decrease"));
@@ -452,10 +452,10 @@ RPG_Net_SocketHandlerBase<ConfigType,
 	//inherited::remove_reference();
 }
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
-RPG_Net_SocketHandlerBase<ConfigType,
+RPG_Net_SocketHandlerBase<ConfigurationType,
                           StatisticsContainerType>::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::dump_state"));

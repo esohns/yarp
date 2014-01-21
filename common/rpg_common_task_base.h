@@ -30,9 +30,11 @@
 class ACE_Message_Block;
 class ACE_Time_Value;
 
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 class RPG_Common_TaskBase
- : public ACE_Task<TaskSynchStrategyType>,
+ : public ACE_Task<TaskSynchStrategyType,
+                   TimePolicyType>,
    public RPG_Common_IDumpState
 {
  public:
@@ -53,7 +55,8 @@ class RPG_Common_TaskBase
   void shutdown();
 
  private:
-  typedef ACE_Task<TaskSynchStrategyType> inherited;
+  typedef ACE_Task<TaskSynchStrategyType,
+                   TimePolicyType> inherited;
 
   // override/hide ACE_Task_Base members
   virtual int put(ACE_Message_Block*,

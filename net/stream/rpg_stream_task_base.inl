@@ -28,9 +28,11 @@
 #include "rpg_stream_session_message_base.h"
 
 template <typename TaskSynchStrategyType,
+          typename TimePolicyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType,
                     SessionMessageType,
                     ProtocolMessageType>::RPG_Stream_TaskBase()
  : inherited(false) // auto-start ?
@@ -40,9 +42,11 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 }
 
 template <typename TaskSynchStrategyType,
+          typename TimePolicyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 RPG_Stream_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType,
                     SessionMessageType,
                     ProtocolMessageType>::~RPG_Stream_TaskBase()
 {
@@ -51,10 +55,12 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 }
 
 template <typename TaskSynchStrategyType,
+          typename TimePolicyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType,
                     SessionMessageType,
                     ProtocolMessageType>::handleSessionMessage(SessionMessageType*& message_inout,
                                                                bool& passMessageDownstream_out)
@@ -111,10 +117,12 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 }
 
 template <typename TaskSynchStrategyType,
+          typename TimePolicyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType,
                     SessionMessageType,
                     ProtocolMessageType>::handleProcessingError(const ACE_Message_Block* const message_in)
 {
@@ -132,10 +140,12 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 }
 
 template <typename TaskSynchStrategyType,
+          typename TimePolicyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType,
                     SessionMessageType,
                     ProtocolMessageType>::dump_state() const
 {
@@ -151,10 +161,12 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 }
 
 template <typename TaskSynchStrategyType,
+          typename TimePolicyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType,
                     SessionMessageType,
                     ProtocolMessageType>::handleMessage(ACE_Message_Block* mb_in,
                                                         bool& stopProcessing_out)
@@ -285,10 +297,12 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 }
 
 template <typename TaskSynchStrategyType,
+          typename TimePolicyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
 RPG_Stream_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType,
                     SessionMessageType,
                     ProtocolMessageType>::handleControlMessage(ACE_Message_Block* controlMessage_in,
                                                                bool& stopProcessing_out,

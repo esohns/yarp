@@ -20,11 +20,14 @@
 #include "stdafx.h"
 
 #include "rpg_common_macros.h"
+#include "rpg_common_iclone.h"
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 RPG_Stream_Module_Base_t<TaskSynchType,
+                         TimePolicyType,
                          ReaderTaskType,
                          WriterTaskType>::RPG_Stream_Module_Base_t(const std::string& name_in,
                                                                    WriterTaskType* writerTask_in,
@@ -49,9 +52,11 @@ RPG_Stream_Module_Base_t<TaskSynchType,
 }
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 RPG_Stream_Module_Base_t<TaskSynchType,
+                         TimePolicyType,
                          ReaderTaskType,
                          WriterTaskType>::~RPG_Stream_Module_Base_t()
 {
@@ -64,10 +69,12 @@ RPG_Stream_Module_Base_t<TaskSynchType,
 }
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 void
 RPG_Stream_Module_Base_t<TaskSynchType,
+                         TimePolicyType,
                          ReaderTaskType,
                          WriterTaskType>::reset()
 {
@@ -79,4 +86,57 @@ RPG_Stream_Module_Base_t<TaskSynchType,
 
   inherited::reader(myReader,
                     inherited::M_DELETE_NONE);
+}
+
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename ReaderTaskType,
+          typename WriterTaskType>
+ACE_Module<TaskSynchType,
+           TimePolicyType>*
+RPG_Stream_Module_Base_t<TaskSynchType,
+                         TimePolicyType,
+                         ReaderTaskType,
+                         WriterTaskType>::clone()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_Module_Base_t::clone"));
+
+  // init return value(s)
+  ACE_Module<TaskSynchType,
+             TimePolicyType>* result = NULL;
+
+  // need a downcast...
+  typename IMODULE_TYPE::ICLONE_TYPE* iclone_handle =
+      dynamic_cast<typename IMODULE_TYPE::ICLONE_TYPE*>(myWriter);
+  if (!iclone_handle)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("%s: dynamic_cast<RPG_Common_IClone> failed, aborting\n"),
+               ACE_TEXT_ALWAYS_CHAR(inherited::name())));
+
+    return NULL;
+  } // end IF
+
+  try
+  {
+    result = iclone_handle->clone();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("%s: caught exception in RPG_Common_IClone::clone(), aborting\n"),
+               ACE_TEXT_ALWAYS_CHAR(inherited::name())));
+
+    return NULL;
+  }
+  if (!result)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("%s: failed to RPG_Common_IClone::clone(), aborting\n"),
+               ACE_TEXT_ALWAYS_CHAR(inherited::name())));
+
+    return NULL;
+  } // end IF
+
+  return result;
 }

@@ -24,16 +24,19 @@
 #include "rpg_stream_task_base.h"
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
 class ACE_Message_Block;
 class ACE_Time_Value;
 
-template <typename SessionMessageType,
+template <typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_TaskBaseSynch
 // *TODO*: figure out how to use ACE_NULL_SYNCH in this case...
  : public RPG_Stream_TaskBase<ACE_MT_SYNCH,
+                              TimePolicyType,
                               SessionMessageType,
                               ProtocolMessageType>
 {
@@ -51,20 +54,16 @@ class RPG_Stream_TaskBaseSynch
   virtual void waitForIdleState() const;
 
  protected:
-  // needs to be subclassed...
   RPG_Stream_TaskBaseSynch();
 
  private:
   typedef RPG_Stream_TaskBase<ACE_MT_SYNCH,
+                              TimePolicyType,
                               SessionMessageType,
                               ProtocolMessageType> inherited;
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseSynch(const RPG_Stream_TaskBaseSynch<SessionMessageType,
-                                                                                 ProtocolMessageType>&));
-//   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseSynch<SessionMessageType,
-//                                               ProtocolMessageType>& operator=(const RPG_Stream_TaskBaseSynch<SessionMessageType,
-//                                                                                                          ProtocolMessageType>&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseSynch(const RPG_Stream_TaskBaseSynch&));
+//   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseSynch& operator=(const RPG_Stream_TaskBaseSynch&));
 };
 
 // include template implementation

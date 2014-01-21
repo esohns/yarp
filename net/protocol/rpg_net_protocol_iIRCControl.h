@@ -24,21 +24,18 @@
 #include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_IRCmessage.h"
 
+#include "rpg_common_isubscribe.h"
+
 #include <string>
 
 // forward declaration(s)
 struct RPG_Net_Protocol_IRCLoginOptions;
-class RPG_Net_Protocol_INotify;
 
 class RPG_Net_Protocol_IIRCControl
+ : public RPG_Common_ISubscribe<RPG_Net_Protocol_INotify_t>
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
-
-  // exposed interface
-  virtual void subscribe(RPG_Net_Protocol_INotify*) = 0; // new subscriber
-  virtual void unsubscribe(RPG_Net_Protocol_INotify*) = 0; // existing subscriber
+  // API
   virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&) = 0; // login details
   virtual void nick(const std::string&) = 0; // nick
   virtual void quit(const std::string&) = 0; // reason

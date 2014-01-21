@@ -21,8 +21,9 @@
 
 #include "rpg_client_logger.h"
 
-#include <ace/Log_Msg.h>
 #include <ace/Global_Macros.h>
+#include <ace/Log_Msg.h>
+#include <ace/Synch.h>
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
@@ -31,7 +32,7 @@
 #include "rpg_client_common.h"
 
 RPG_Client_Logger::RPG_Client_Logger(RPG_Client_MessageStack_t* stack_in,
-                                     ACE_Thread_Mutex* lock_in)
+                                     ACE_Recursive_Thread_Mutex* lock_in)
  : inherited(),
    myMessageStack(stack_in),
    myLock(lock_in)
@@ -93,7 +94,7 @@ RPG_Client_Logger::log(ACE_Log_Record& record_in)
     return -1;
   } // end IF
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(*myLock);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(*myLock);
 
   myMessageStack->push_back(string_stream.str());
 

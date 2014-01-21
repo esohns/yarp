@@ -26,10 +26,14 @@
 
 #include <string>
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::RPG_Stream_TaskBaseAsynch()
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::RPG_Stream_TaskBaseAsynch()
  : myThreadID(0),
    myQueue(RPG_STREAM_MAX_QUEUE_SLOTS)
 {
@@ -43,10 +47,14 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
   inherited::grp_id(RPG_STREAM_TASK_GROUP_ID);
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::~RPG_Stream_TaskBaseAsynch()
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::~RPG_Stream_TaskBaseAsynch()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::~RPG_Stream_TaskBaseAsynch"));
 
@@ -68,11 +76,15 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
 //   myQueue.wait();
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::open(void* args_in)
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::open(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::open"));
 
@@ -143,11 +155,15 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
   return 0;
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::close(u_long arg_in)
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::close(u_long arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::close"));
 
@@ -200,11 +216,15 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
   return 0;
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::module_closed(void)
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::module_closed(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::module_closed"));
 
@@ -217,12 +237,16 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
   return 0;
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::put(ACE_Message_Block* mb_in,
-                                                ACE_Time_Value* tv_in)
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::put(ACE_Message_Block* mb_in,
+                                                    ACE_Time_Value* tv_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::put"));
 
@@ -231,11 +255,15 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
                          tv_in);
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 int
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::svc(void)
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::svc(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::svc"));
 
@@ -269,11 +297,15 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
   ACE_NOTREACHED(return -1;)
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::waitForIdleState() const
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::waitForIdleState() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::waitForIdleState"));
 
@@ -290,11 +322,15 @@ RPG_Stream_TaskBaseAsynch<SessionMessageType,
   }
 }
 
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                      ProtocolMessageType>::shutdown()
+RPG_Stream_TaskBaseAsynch<TaskSynchType,
+                          TimePolicyType,
+                          SessionMessageType,
+                          ProtocolMessageType>::shutdown()
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBaseAsynch::shutdown"));
 

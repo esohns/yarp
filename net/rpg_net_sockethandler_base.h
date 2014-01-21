@@ -31,7 +31,7 @@
 #include <ace/Synch.h>
 #include <ace/Reactor_Notification_Strategy.h>
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 class RPG_Net_SocketHandlerBase
  : public ACE_Svc_Handler<ACE_SOCK_STREAM,
@@ -69,14 +69,14 @@ class RPG_Net_SocketHandlerBase
   virtual void dump_state() const;
 
  protected:
-  typedef RPG_Net_IConnectionManager<ConfigType,
+  typedef RPG_Net_IConnectionManager<ConfigurationType,
                                      StatisticsContainerType> MANAGER_T;
   RPG_Net_SocketHandlerBase(MANAGER_T*);
   virtual ~RPG_Net_SocketHandlerBase();
 
   ACE_Reactor_Notification_Strategy myNotificationStrategy;
   MANAGER_T*                        myManager;
-  ConfigType                        myUserData;
+  ConfigurationType                 myUserData;
   bool                              myIsRegistered;
 
  private:

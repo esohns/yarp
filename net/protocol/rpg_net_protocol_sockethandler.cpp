@@ -43,118 +43,6 @@ RPG_Net_Protocol_SocketHandler::~RPG_Net_Protocol_SocketHandler()
 	myStream.waitForCompletion();
 }
 
-// int
-// RPG_Net_Protocol_SocketHandler::svc(void)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::svc"));
-//
-//   // *NOTE*: asynchronous writing to a closed socket triggers the
-//   // SIGPIPE signal (default action: abort).
-//   // --> as this doesn't use select(), guard against this (ignore the signal)
-//   ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler> (SIG_IGN));
-//   ACE_Sig_Action original_action;
-//   no_sigpipe.register_action(SIGPIPE, &original_action);
-//
-//   int return_value = 0;
-//   ssize_t bytes_sent = 0;
-//   while (true)
-//   {
-//     if (myCurrentWriteBuffer == NULL)
-//     {
-//       if (myStream.get(myCurrentWriteBuffer, NULL) == -1) // block
-//       {
-//         ACE_DEBUG((LM_ERROR,
-//                    ACE_TEXT("worker thread (ID: %t) failed to ACE_Stream::get(): \"%m\", aborting\n")));
-//
-//         // what else can we do ?
-//         return_value = -1;
-//
-//         break;
-//       } // end IF
-//     } // end IF
-//
-//     // finished ?
-//     if (myCurrentWriteBuffer->msg_type() == ACE_Message_Block::MB_STOP)
-//     {
-//       myCurrentWriteBuffer->release();
-//       myCurrentWriteBuffer = NULL;
-//
-// //       ACE_DEBUG((LM_DEBUG,
-// //                  ACE_TEXT("[%u]: finished sending...\n"),
-// //                  peer_.get_handle()));
-//
-//       // leave loop, we're finished
-//       break;
-//     } // end IF
-//
-//     // put some data into the socket...
-//     bytes_sent = peer_.send(myCurrentWriteBuffer->rd_ptr(),
-//                             myCurrentWriteBuffer->length(),
-//                             NULL); // default behavior
-//     switch (bytes_sent)
-//     {
-//       case -1:
-//       {
-//         // connection reset by peer/broken pipe ? --> not an error
-//         if ((ACE_OS::last_error() != ECONNRESET) &&
-//             (ACE_OS::last_error() != ENOTSOCK) &&
-//             (ACE_OS::last_error() != EPIPE))
-//           ACE_DEBUG((LM_ERROR,
-//                      ACE_TEXT("failed to ACE_SOCK_Stream::send(): \"%m\", returning\n")));
-//
-//         myCurrentWriteBuffer->release();
-//         myCurrentWriteBuffer = NULL;
-//
-//         // what else can we do ?
-//         return_value = -1;
-//
-//         // nothing to do but wait for our shutdown signal (see above)...
-//         break;
-//       }
-//       // *** GOOD CASES ***
-//       case 0:
-//       {
-//         myCurrentWriteBuffer->release();
-//         myCurrentWriteBuffer = NULL;
-//
-// //         ACE_DEBUG((LM_DEBUG,
-// //                    ACE_TEXT("[%u]: socket was closed by the peer...\n"),
-// //                    peer_.get_handle()));
-//
-//         // nothing to do but wait for our shutdown signal (see above)...
-//         break;
-//       }
-//       default:
-//       {
-// //         ACE_DEBUG((LM_DEBUG,
-// //                    ACE_TEXT("[%u]: sent %u bytes...\n"),
-// //                    peer_.get_handle(),
-// //                    bytes_sent));
-//
-//         // finished with this buffer ?
-//         if (static_cast<size_t> (bytes_sent) == myCurrentWriteBuffer->length())
-//         {
-//           // get the next one...
-//           myCurrentWriteBuffer->release();
-//           myCurrentWriteBuffer = NULL;
-//         } // end IF
-//         else
-//         {
-//           // there's more data --> adjust read pointer
-//           myCurrentWriteBuffer->rd_ptr(bytes_sent);
-//         } // end ELSE
-//
-//         break;
-//       }
-//     } // end SWITCH
-//   } // end WHILE
-//
-//   // clean up
-//   no_sigpipe.restore_action(SIGPIPE, original_action);
-//
-//   return return_value;
-// }
-
 void
 RPG_Net_Protocol_SocketHandler::ping()
 {
@@ -171,8 +59,8 @@ RPG_Net_Protocol_SocketHandler::open(void* arg_in)
   // *NOTE*: fini() on the stream invokes close() which will reset any module's
   // writer/reader tasks --> in order to allow module reuse, reset this here !
   ACE_ASSERT(myUserData.module);
-  RPG_Stream_IModule* module_handle = dynamic_cast<RPG_Stream_IModule*>(myUserData.module);
-  if (!module_handle)
+  IMODULE_TYPE* imodule_handle = dynamic_cast<IMODULE_TYPE*>(myUserData.module);
+  if (!imodule_handle)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to dynamic_cast<RPG_Stream_IModule>, aborting\n")));
@@ -181,7 +69,7 @@ RPG_Net_Protocol_SocketHandler::open(void* arg_in)
   } // end IF
   try
   {
-    module_handle->reset();
+    imodule_handle->reset();
   }
   catch (...)
   {

@@ -28,10 +28,13 @@
 
 // *NOTE*: the message queue needs to be synched so that shutdown can be
 // asynchronous...
-template <typename SessionMessageType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_TaskBaseAsynch
- : public RPG_Stream_TaskBase<ACE_MT_SYNCH,
+ : public RPG_Stream_TaskBase<TaskSynchType,
+                              TimePolicyType,
                               SessionMessageType,
                               ProtocolMessageType>
 {
@@ -55,16 +58,13 @@ class RPG_Stream_TaskBaseAsynch
   ACE_thread_t            myThreadID;
 
  private:
-  typedef RPG_Stream_TaskBase<ACE_MT_SYNCH,
+  typedef RPG_Stream_TaskBase<TaskSynchType,
+                              TimePolicyType,
                               SessionMessageType,
                               ProtocolMessageType> inherited;
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseAsynch(const RPG_Stream_TaskBaseAsynch<SessionMessageType,
-                                                                                   ProtocolMessageType>&));
-//   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseAsynch<SessionMessageType,
-//                                                ProtocolMessageType>& operator=(const RPG_Stream_TaskBaseAsynch<SessionMessageType,
-//                                                                                                            ProtocolMessageType>&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseAsynch(const RPG_Stream_TaskBaseAsynch&));
+//   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskBaseAsynch& operator=(const RPG_Stream_TaskBaseAsynch&));
 
   // helper methods
   // enqueue MB_STOP --> stop worker thread

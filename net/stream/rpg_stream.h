@@ -23,6 +23,9 @@
 
 #include "rpg_stream_istreamcontrol.h"
 
+#include "rpg_stream_imodule.h"
+
+#include "rpg_common.h"
 #include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
@@ -34,13 +37,19 @@
 class RPG_Stream_IAllocator;
 
 class RPG_Stream
- : public ACE_Stream<ACE_MT_SYNCH>,
+ : public ACE_Stream<ACE_MT_SYNCH,
+                     RPG_Common_TimePolicy_t>,
    public RPG_Stream_IStreamControl,
    public RPG_Common_IDumpState
 {
  public:
   // define convenient (iterator) types
-  typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
+  typedef ACE_Module<ACE_MT_SYNCH,
+                     RPG_Common_TimePolicy_t> MODULE_TYPE;
+  typedef RPG_Stream_IModule<ACE_MT_SYNCH,
+                             RPG_Common_TimePolicy_t> IMODULE_TYPE;
+  typedef ACE_Stream_Iterator<ACE_MT_SYNCH,
+                              RPG_Common_TimePolicy_t> STREAM_ITERATOR_TYPE;
 
   // *NOTE*: this will try to sanely close down the stream:
   // 1: tell all worker threads to exit gracefully
@@ -98,9 +107,9 @@ class RPG_Stream
   RPG_Stream_IAllocator* myAllocator;
 
  private:
-  typedef ACE_Stream<ACE_MT_SYNCH> inherited;
+  typedef ACE_Stream<ACE_MT_SYNCH,
+                     RPG_Common_TimePolicy_t> inherited;
 
-  // safety measures
 //   ACE_UNIMPLEMENTED_FUNC(Stream());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream(const RPG_Stream&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream& operator=(const RPG_Stream&));

@@ -29,6 +29,8 @@
 #include "rpg_stream_task_base_synch.h"
 #include "rpg_stream_streammodule_base.h"
 
+#include "rpg_common.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Synch_Traits.h>
 #include <ace/Condition_T.h>
@@ -42,7 +44,8 @@ class RPG_Stream_IAllocator;
 class RPG_Net_Protocol_IRCMessage;
 
 class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
- : public RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+ : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
+                                   RPG_Net_Protocol_SessionMessage,
                                    RPG_Net_Protocol_Message>,
    public RPG_Net_Protocol_IIRCControl
 {
@@ -51,10 +54,10 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
   virtual ~RPG_Net_Protocol_Module_IRCHandler();
 
   // initialization
-  const bool init(RPG_Stream_IAllocator*, // message allocator
-                  const unsigned int&,    // default (message) buffer size
-                  const bool& = false,    // automatically answer "ping" messages
-                  const bool& = false);   // print dot ('.') for every answered PING to stdlog
+  bool init(RPG_Stream_IAllocator*, // message allocator
+            const unsigned int&,    // default (message) buffer size
+            const bool& = false,    // automatically answer "ping" messages
+            const bool& = false);   // print dot ('.') for every answered PING to stdlog
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
@@ -63,8 +66,8 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
                                     bool&);                            // return value: pass message downstream ?
 
   // implement RPG_Net_Protocol_IIRCControl
-  virtual void subscribe(RPG_Net_Protocol_INotify*); // new subscriber
-  virtual void unsubscribe(RPG_Net_Protocol_INotify*); // existing subscriber
+  virtual void subscribe(RPG_Net_Protocol_INotify_t*); // new subscriber
+  virtual void unsubscribe(RPG_Net_Protocol_INotify_t*); // existing subscriber
   virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&); // login details
   virtual void nick(const std::string&); // nick
   virtual void quit(const std::string&); // reason
@@ -101,10 +104,10 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
   virtual void dump_state() const;
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+  typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
+                                   RPG_Net_Protocol_SessionMessage,
                                    RPG_Net_Protocol_Message> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCHandler(const RPG_Net_Protocol_Module_IRCHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCHandler& operator=(const RPG_Net_Protocol_Module_IRCHandler&));
 
@@ -114,14 +117,13 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
   void sendMessage(RPG_Net_Protocol_IRCMessage*&); // command handle
 
   // convenient types
-  typedef std::list<RPG_Net_Protocol_INotify*> Subscribers_t;
+  typedef std::list<RPG_Net_Protocol_INotify_t*> Subscribers_t;
   typedef Subscribers_t::iterator SubscribersIterator_t;
 
   // lock to protect mySubscribers and myConnectionIsAlive
   // *NOTE*: make this recursive so that users may unsubscribe from within the
   // notification callbacks...
   // *WARNING*: implies CAREFUL iteration
-  // we use as a lock...
   ACE_Recursive_Thread_Mutex             myLock;
   Subscribers_t                          mySubscribers;
 
@@ -132,8 +134,8 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
   bool                                   myIsInitialized;
 
   // *NOTE*: obviously, there is a delay between connection establishment and
-  // reception of the welcome NOTICE: let the user wait for it so he can safely
-  // start registering his connection
+  // reception of the welcome NOTICE: let the users wait for it so they can
+  // safely start registering connections
   ACE_Thread_Mutex                       myConditionLock;
   ACE_Thread_Condition<ACE_Thread_Mutex> myCondition;
   bool                                   myConnectionIsAlive;
@@ -142,6 +144,7 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
 
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                        // task synch type
+                             RPG_Common_TimePolicy_t,             // time policy
                              RPG_Net_Protocol_Module_IRCHandler); // writer type
 
 #endif

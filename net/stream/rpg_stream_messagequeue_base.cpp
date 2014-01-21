@@ -20,38 +20,3 @@
 #include "stdafx.h"
 
 #include "rpg_stream_messagequeue_base.h"
-
-#include <rpg_common_macros.h>
-
-RPG_Stream_MessageQueueBase::RPG_Stream_MessageQueueBase(const unsigned long& maxMessages_in)
- : inherited(maxMessages_in, // high water mark
-             maxMessages_in, // low water mark
-             NULL)           // notification strategy
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::RPG_Stream_MessageQueueBase"));
-
-}
-
-RPG_Stream_MessageQueueBase::~RPG_Stream_MessageQueueBase()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::~RPG_Stream_MessageQueueBase"));
-
-}
-
-bool
-RPG_Stream_MessageQueueBase::is_full_i(void)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::is_full_i"));
-
-  return (cur_count_ >= high_water_mark_);
-}
-
-void
-RPG_Stream_MessageQueueBase::dump_state() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::dump_state"));
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("# currently queued objects: %d\n"),
-             const_cast<RPG_Stream_MessageQueueBase*> (this)->message_count()));
-}

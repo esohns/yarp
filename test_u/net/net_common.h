@@ -23,6 +23,8 @@
 
 #include "rpg_client_common.h"
 
+#include "rpg_net_common.h"
+
 #include <glade/glade.h>
 
 #include <ace/Synch.h>
@@ -37,17 +39,19 @@ struct Net_GTK_CBData_t
   : lock(NULL, NULL),
     xml(NULL),
 //    log_stack(),
+//    subscribers(),
     timeout_handler(NULL),
     timer_id(-1),
     listener_handle(NULL)
  { };
 
- mutable ACE_Thread_Mutex   lock;
- GladeXML*                  xml;
- RPG_Client_MessageStack_t  log_stack;
- Net_Client_TimeoutHandler* timeout_handler; // *NOTE*: client only !
- long                       timer_id;        // *NOTE*: client only !
- RPG_Net_Server_IListener*  listener_handle;  // *NOTE*: server only !
+ mutable ACE_Recursive_Thread_Mutex lock;
+ GladeXML*                          xml;
+ RPG_Client_MessageStack_t          log_stack;
+ RPG_Net_NotifySubscribers_t        subscribers;
+ Net_Client_TimeoutHandler*         timeout_handler; // *NOTE*: client only !
+ long                               timer_id;        // *NOTE*: client only !
+ RPG_Net_Server_IListener*          listener_handle; // *NOTE*: server only !
 };
 
 #endif

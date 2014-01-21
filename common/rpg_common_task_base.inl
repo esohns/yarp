@@ -24,8 +24,10 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 
-template <typename TaskSynchStrategyType>
-RPG_Common_TaskBase<TaskSynchStrategyType>::RPG_Common_TaskBase(const bool& autoStart_in)
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::RPG_Common_TaskBase(const bool& autoStart_in)
  : inherited(NULL, // thread manager instance
              NULL) // message queue handle
 {
@@ -39,8 +41,10 @@ RPG_Common_TaskBase<TaskSynchStrategyType>::RPG_Common_TaskBase(const bool& auto
     open(NULL);
 }
 
-template <typename TaskSynchStrategyType>
-RPG_Common_TaskBase<TaskSynchStrategyType>::~RPG_Common_TaskBase()
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::~RPG_Common_TaskBase()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::~RPG_Common_TaskBase"));
 
@@ -53,9 +57,11 @@ RPG_Common_TaskBase<TaskSynchStrategyType>::~RPG_Common_TaskBase()
                ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 }
 
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 int
-RPG_Common_TaskBase<TaskSynchStrategyType>::open(void* args_in)
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::open(void* args_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::open"));
 
@@ -100,9 +106,11 @@ RPG_Common_TaskBase<TaskSynchStrategyType>::open(void* args_in)
 	return result;
 }
 
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 int
-RPG_Common_TaskBase<TaskSynchStrategyType>::close(u_long arg_in)
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::close(u_long arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::close"));
 
@@ -142,10 +150,12 @@ RPG_Common_TaskBase<TaskSynchStrategyType>::close(u_long arg_in)
   return 0;
 }
 
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 int
-RPG_Common_TaskBase<TaskSynchStrategyType>::put(ACE_Message_Block* mb_in,
-                                                ACE_Time_Value* tv_in)
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::put(ACE_Message_Block* mb_in,
+                                         ACE_Time_Value* tv_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::put"));
 
@@ -153,9 +163,11 @@ RPG_Common_TaskBase<TaskSynchStrategyType>::put(ACE_Message_Block* mb_in,
 }
 
 // *** dummy stub methods ***
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 int
-RPG_Common_TaskBase<TaskSynchStrategyType>::svc(void)
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::svc(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::svc"));
 
@@ -188,9 +200,11 @@ RPG_Common_TaskBase<TaskSynchStrategyType>::svc(void)
   return -1;
 }
 
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 int
-RPG_Common_TaskBase<TaskSynchStrategyType>::module_closed(void)
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::module_closed(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::module_closed"));
 
@@ -204,18 +218,22 @@ RPG_Common_TaskBase<TaskSynchStrategyType>::module_closed(void)
 #endif
 }
 
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 void
-RPG_Common_TaskBase<TaskSynchStrategyType>::dump_state() const
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::dump_state"));
 
 }
 // *** END dummy stub methods ***
 
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 void
-RPG_Common_TaskBase<TaskSynchStrategyType>::shutdown()
+RPG_Common_TaskBase<TaskSynchStrategyType,
+                    TimePolicyType>::shutdown()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::shutdown"));
 

@@ -29,6 +29,8 @@
 #include "rpg_stream_headmoduletask_base.h"
 #include "rpg_stream_streammodule_base.h"
 
+#include "rpg_common.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
 #include <ace/Synch_Traits.h>
@@ -39,7 +41,9 @@ class RPG_Net_SessionMessage;
 class RPG_Net_Message;
 
 class RPG_Net_Module_SocketHandler
- : public RPG_Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
+ : public RPG_Stream_HeadModuleTaskBase<ACE_MT_SYNCH,
+                                        RPG_Common_TimePolicy_t,
+                                        RPG_Net_ConfigPOD,
                                         RPG_Net_StreamConfig,
                                         RPG_Net_SessionMessage,
                                         RPG_Net_Message>,
@@ -76,7 +80,9 @@ class RPG_Net_Module_SocketHandler
   virtual void report() const;
 
  private:
-  typedef RPG_Stream_HeadModuleTaskBase<RPG_Net_ConfigPOD,
+  typedef RPG_Stream_HeadModuleTaskBase<ACE_MT_SYNCH,
+                                        RPG_Common_TimePolicy_t,
+                                        RPG_Net_ConfigPOD,
                                         RPG_Net_StreamConfig,
                                         RPG_Net_SessionMessage,
                                         RPG_Net_Message> inherited;
@@ -106,6 +112,7 @@ class RPG_Net_Module_SocketHandler
 
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                  // task synch type
+                             RPG_Common_TimePolicy_t,       // time policy type
                              RPG_Net_Module_SocketHandler); // writer type
 
 #endif

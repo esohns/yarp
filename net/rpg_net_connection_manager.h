@@ -35,21 +35,21 @@
 // forward declarations
 template <typename StatisticsContainerType> class RPG_Net_IConnection;
 
-template <typename ConfigType,
+template <typename ConfigurationType,
           typename StatisticsContainerType>
 class RPG_Net_Connection_Manager
- : public RPG_Net_IConnectionManager<ConfigType,
+ : public RPG_Net_IConnectionManager<ConfigurationType,
                                      StatisticsContainerType>,
    public RPG_Common_IStatistic<StatisticsContainerType>,
    public RPG_Common_IDumpState
 {
   // singleton needs access to the ctor/dtors
-  friend class ACE_Singleton<RPG_Net_Connection_Manager<ConfigType,
+  friend class ACE_Singleton<RPG_Net_Connection_Manager<ConfigurationType,
                                                         StatisticsContainerType>,
                              ACE_Recursive_Thread_Mutex>;
 
   // needs access to (de-)register itself with the singleton
-  friend class RPG_Net_SocketHandlerBase<ConfigType,
+  friend class RPG_Net_SocketHandlerBase<ConfigurationType,
                                          StatisticsContainerType>;
 
  public:
@@ -58,7 +58,7 @@ class RPG_Net_Connection_Manager
   // configuration / initialization
   void init(const unsigned int&); // maximum number of concurrent connections
   // *NOTE*: argument is passed in init() to EVERY new connection during registration
-  void set(const ConfigType&); // (user) data
+  void set(const ConfigurationType&); // (user) data
 
   // implement RPG_Common_IControl
   virtual void start();
@@ -89,7 +89,7 @@ class RPG_Net_Connection_Manager
   typedef ACE_DLList_Reverse_Iterator<CONNECTION_TYPE> CONNECTIONLIST_REVERSEITERATOR_TYPE;
 
   // implement RPG_Net_IConnectionManager
-  virtual void getConfig(ConfigType&); // return value: configuration
+  virtual void getConfiguration(ConfigurationType&); // return value: configuration
   virtual bool registerConnection(CONNECTION_TYPE*); // connection
   virtual void deregisterConnection(const CONNECTION_TYPE*); // connection
 
@@ -110,7 +110,7 @@ class RPG_Net_Connection_Manager
 
   unsigned int                                      myMaxNumConnections;
   CONNECTIONLIST_TYPE                               myConnections;
-  ConfigType                                        myUserData; // handler data
+  ConfigurationType                                        myUserData; // handler data
   bool                                              myIsInitialized;
   bool                                              myIsActive;
 };

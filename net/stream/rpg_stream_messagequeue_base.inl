@@ -18,33 +18,49 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_STREAM_IMODULE_H
-#define RPG_STREAM_IMODULE_H
-
-#include "rpg_common_iclone.h"
-
-#include <ace/Module.h>
+#include "rpg_common_macros.h"
 
 template <typename TaskSynchType,
           typename TimePolicyType>
-class RPG_Stream_IModule
- : public RPG_Common_IClone<ACE_Module<TaskSynchType,
-                                       TimePolicyType> >
+RPG_Stream_MessageQueueBase<TaskSynchType,
+                            TimePolicyType>::RPG_Stream_MessageQueueBase(const unsigned int& maxMessages_in)
+ : inherited(maxMessages_in, // high water mark
+             maxMessages_in, // low water mark
+             NULL)           // notification strategy
 {
- public:
-  virtual ~RPG_Stream_IModule() {}
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::RPG_Stream_MessageQueueBase"));
 
-  // convenient types
-  typedef RPG_Common_IClone<ACE_Module<TaskSynchType,
-                                       TimePolicyType> > ICLONE_TYPE;
+}
 
-  // *NOTE*: streams may call this to reset writer/reader tasks and re-use
-  // existing modules
-  // --> needed after call to MODULE_TYPE::close(), which cannot be
-  // overriden (not "virtual")
-  // *WARNING*: DON'T call this from within module_closed()
-  // --> creates endless loops (and eventually, stack overflows)...
-  virtual void reset() = 0;
-};
+template <typename TaskSynchType,
+          typename TimePolicyType>
+RPG_Stream_MessageQueueBase<TaskSynchType,
+                            TimePolicyType>::~RPG_Stream_MessageQueueBase()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::~RPG_Stream_MessageQueueBase"));
 
-#endif
+}
+
+template <typename TaskSynchType,
+          typename TimePolicyType>
+bool
+RPG_Stream_MessageQueueBase<TaskSynchType,
+                            TimePolicyType>::is_full_i(void)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::is_full_i"));
+
+  return (inherited::cur_count_ >= inherited::high_water_mark_);
+}
+
+template <typename TaskSynchType,
+          typename TimePolicyType>
+void
+RPG_Stream_MessageQueueBase<TaskSynchType,
+                            TimePolicyType>::dump_state() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Stream_MessageQueueBase::dump_state"));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("# currently queued objects: %d\n"),
+             const_cast<own_type*>(this)->message_count()));
+}

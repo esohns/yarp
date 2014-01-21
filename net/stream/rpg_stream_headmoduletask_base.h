@@ -38,12 +38,15 @@ class ACE_Message_Block;
 class RPG_Stream_MessageBase;
 class RPG_Stream_IAllocator;
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_HeadModuleTaskBase
- : public RPG_Stream_TaskBase<ACE_MT_SYNCH,
+ : public RPG_Stream_TaskBase<TaskSynchType,
+                              TimePolicyType,
                               SessionMessageType,
                               ProtocolMessageType>,
    public RPG_Stream_IStreamControl,
@@ -77,7 +80,6 @@ class RPG_Stream_HeadModuleTaskBase
   virtual bool isRunning() const;
 
  protected:
-  // needs to be subclassed...
   RPG_Stream_HeadModuleTaskBase(const bool& = false,  // active object ?
                                 const bool& = false); // auto-start ?
 
@@ -117,21 +119,20 @@ class RPG_Stream_HeadModuleTaskBase
   bool                                      myIsActive;
 
  private:
-  typedef RPG_Stream_TaskBase<ACE_MT_SYNCH,
+  typedef RPG_Stream_TaskBase<TaskSynchType,
+                              TimePolicyType,
                               SessionMessageType,
                               ProtocolMessageType> inherited;
   typedef RPG_Stream_StateMachine_Control inherited2;
-  typedef RPG_Stream_HeadModuleTaskBase<DataType,
+  typedef RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                                        TimePolicyType,
+                                        DataType,
                                         SessionConfigType,
                                         SessionMessageType,
                                         ProtocolMessageType> own_type;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase(const RPG_Stream_HeadModuleTaskBase<DataType,
-                                                                                           SessionConfigType,
-                                                                                           SessionMessageType,
-                                                                                           ProtocolMessageType>&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase(const RPG_Stream_HeadModuleTaskBase&));
   // *TODO*: apparently, ACE_UNIMPLEMENTED_FUNC gets confused by template arguments...
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>& operator=(const RPG_Stream_HeadModuleTaskBase<DataType,SessionConfigType,SessionMessageType>&));
 

@@ -26,11 +26,15 @@
 
 #include <deque>
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::RPG_Stream_Base()
@@ -45,11 +49,15 @@ RPG_Stream_Base<DataType,
 
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::~RPG_Stream_Base()
@@ -58,12 +66,16 @@ RPG_Stream_Base<DataType,
 
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 bool
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::reset()
@@ -94,12 +106,16 @@ RPG_Stream_Base<DataType,
   return init();
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 bool
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::init()
@@ -108,29 +124,36 @@ RPG_Stream_Base<DataType,
 
   if (myIsInitialized)
   {
-	// *NOTE*: fini() invokes close() which will reset the writer/reader tasks
-	// of the enqueued modules --> reset this !
-	RPG_Stream_IModule* module_handle = NULL;
-	MODULE_TYPE* module = NULL;
-	// *NOTE*: cannot write this - it confuses gcc...
-//   for (MODULE_CONTAINER_TYPE::const_iterator iter = myAvailableModules.begin();
-	for (ACE_DLList_Iterator<MODULE_TYPE> iterator(myAvailableModules);
-		iterator.next(module);
-		iterator.advance())
-	{
-	  // need a downcast...
-	  module_handle = dynamic_cast<RPG_Stream_IModule*>(module);
-	  ACE_ASSERT(module_handle);
-	  try
-	  {
-		module_handle->reset();
-  	  }
-	  catch (...)
-	  {
-		ACE_DEBUG((LM_ERROR,
-				   ACE_TEXT("caught exception in RPG_Stream_IModule::reset(), continuing\n")));
-	  }
-	} // end FOR
+    // *NOTE*: fini() invokes close() which will reset the writer/reader tasks
+    // of the enqueued modules --> reset this !
+    IMODULE_TYPE* imodule_handle = NULL;
+    MODULE_TYPE* module = NULL;
+    // *NOTE*: cannot write this - it confuses gcc...
+    //   for (MODULE_CONTAINER_TYPE::const_iterator iter = myAvailableModules.begin();
+    for (ACE_DLList_Iterator<MODULE_TYPE> iterator(myAvailableModules);
+         iterator.next(module);
+         iterator.advance())
+    {
+      // need a downcast...
+      imodule_handle = dynamic_cast<IMODULE_TYPE*>(module);
+      if (!imodule_handle)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("%s: dynamic_cast<RPG_Stream_IModule> failed, aborting\n"),
+                   ACE_TEXT_ALWAYS_CHAR(module->name())));
+
+        return false;
+      } // end IF
+      try
+      {
+        imodule_handle->reset();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Stream_IModule::reset(), continuing\n")));
+      }
+    } // end FOR
   } // end IF
 
   // delegate this to base class open()
@@ -153,12 +176,16 @@ RPG_Stream_Base<DataType,
   return (result == 0);
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 bool
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::fini()
@@ -189,12 +216,16 @@ RPG_Stream_Base<DataType,
   return (result == 0);
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::start()
@@ -211,8 +242,8 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // delegate to the head module
-  ACE_Module<ACE_MT_SYNCH>* module = NULL;
-  module = head();
+  MODULE_TYPE* module = NULL;
+  module = inherited::head();
   if (!module)
   {
     ACE_DEBUG((LM_ERROR,
@@ -232,7 +263,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
-  if (module == tail())
+  if (module == inherited::tail())
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
@@ -245,7 +276,7 @@ RPG_Stream_Base<DataType,
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl) failed> (returning\n"),
+               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl> failed, returning\n"),
                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     return;
@@ -265,12 +296,16 @@ RPG_Stream_Base<DataType,
   }
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::stop()
@@ -288,7 +323,7 @@ RPG_Stream_Base<DataType,
 
   // delegate to the head module, skip over ACE_Stream_Head...
   MODULE_TYPE* module = NULL;
-  module = head();
+  module = inherited::head();
   if (!module)
   {
     ACE_DEBUG((LM_ERROR,
@@ -306,7 +341,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
-  if (module == tail())
+  if (module == inherited::tail())
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
@@ -324,7 +359,7 @@ RPG_Stream_Base<DataType,
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl) failed> (returning\n"),
+               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl> failed, returning\n"),
                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     return;
@@ -344,12 +379,16 @@ RPG_Stream_Base<DataType,
   }
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::pause()
@@ -367,8 +406,8 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // delegate to the head module
-  ACE_Module<ACE_MT_SYNCH>* module = NULL;
-  module = head();
+  MODULE_TYPE* module = NULL;
+  module = inherited::head();
   if (!module)
   {
     ACE_DEBUG((LM_ERROR,
@@ -388,7 +427,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
-  if (module == tail())
+  if (module == inherited::tail())
   {
     // debug info
     ACE_DEBUG((LM_DEBUG,
@@ -402,7 +441,7 @@ RPG_Stream_Base<DataType,
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl) failed> (returning\n"),
+               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl> failed, returning\n"),
                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     return;
@@ -422,12 +461,16 @@ RPG_Stream_Base<DataType,
   }
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::rewind()
@@ -444,8 +487,8 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // delegate to the head module
-  ACE_Module<ACE_MT_SYNCH>* module = NULL;
-  module = head();
+  MODULE_TYPE* module = NULL;
+  module = inherited::head();
   if (!module)
   {
     ACE_DEBUG((LM_ERROR,
@@ -467,9 +510,8 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
-  if (module == tail())
+  if (module == inherited::tail())
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
 
@@ -481,7 +523,7 @@ RPG_Stream_Base<DataType,
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl) failed> (returning\n"),
+               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl> failed, returning\n"),
                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     return;
@@ -501,12 +543,16 @@ RPG_Stream_Base<DataType,
   }
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::waitForCompletion()
@@ -526,7 +572,6 @@ RPG_Stream_Base<DataType,
 
     return;
   } // end IF
-  std::deque<MODULE_TYPE*> module_stack;
   const MODULE_TYPE* module = NULL;
   if (iterator.next(module) == 0)
   {
@@ -540,9 +585,10 @@ RPG_Stream_Base<DataType,
   // --> reason: no modules have been push()ed (yet) !
   // --> stream hasn't been intialized (at all: too many connections ?)
   // --> nothing to do !
-  if (module == tail())
+  if (module == inherited::tail())
     return;
 
+  MODULE_STACK_T module_stack;
   module_stack.push_front(const_cast<MODULE_TYPE*>(module));
   // need to downcast
   HEADMODULETASK_BASETYPE* head_task = NULL;
@@ -550,7 +596,7 @@ RPG_Stream_Base<DataType,
   if (!head_task)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("%s: dynamic_cast<RPG_Stream_HeadModuleTaskBase) failed> (returning\n"),
+               ACE_TEXT("%s: dynamic_cast<RPG_Stream_HeadModuleTaskBase> failed, returning\n"),
                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     return;
@@ -575,7 +621,7 @@ RPG_Stream_Base<DataType,
        iterator.advance())
   {
     // skip stream tail (last module)
-    if (module == tail())
+    if (module == inherited::tail())
       continue;
 
 		module_stack.push_front(const_cast<MODULE_TYPE*>(module));
@@ -588,7 +634,7 @@ RPG_Stream_Base<DataType,
   } // end FOR
 
 	// step2: wait for any pipelined messages to flush...
-	for (std::deque<MODULE_TYPE*>::const_iterator iterator2 = module_stack.begin();
+	for (MODULE_STACKITERATOR_T iterator2 = module_stack.begin();
 		   iterator2 != module_stack.end();
 			 iterator2++)
     if ((*iterator2)->reader()->wait() == -1)
@@ -596,12 +642,16 @@ RPG_Stream_Base<DataType,
 		             ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", continuing\n")));
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 bool
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::isRunning() const
@@ -609,7 +659,7 @@ RPG_Stream_Base<DataType,
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::isRunning"));
 
   // delegate to the head module, skip over ACE_Stream_Head...
-	MODULE_TYPE* module = const_cast<RPG_Stream_Base*>(this)->head();
+  MODULE_TYPE* module = const_cast<own_type*>(this)->head();
   if (!module)
   {
 		// *IMPORTANT NOTE*: this happens when no modules have been pushed onto the
@@ -629,7 +679,7 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // sanity check: head == tail ? --> no modules have been push()ed (yet) !
-  if (module == const_cast<RPG_Stream_Base*>(this)->tail())
+  if (module == const_cast<own_type*>(this)->tail())
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("no modules have been enqueued yet --> nothing to do !, returning\n")));
@@ -642,7 +692,7 @@ RPG_Stream_Base<DataType,
   if (!control_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl) failed> (returning\n"),
+               ACE_TEXT("%s: dynamic_cast<RPG_Stream_IStreamControl> failed, returning\n"),
                ACE_TEXT_ALWAYS_CHAR(module->name())));
 
     return false;
@@ -662,12 +712,16 @@ RPG_Stream_Base<DataType,
   return false;
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::dump_state() const
@@ -677,20 +731,20 @@ RPG_Stream_Base<DataType,
   std::string stream_layout;
 
   const MODULE_TYPE* module = NULL;
-  for (ACE_Stream_Iterator<ACE_MT_SYNCH> iter(*this);
+  for (STREAM_ITERATOR_TYPE iter(*this);
        (iter.next(module) != 0);
        iter.advance())
   {
     // silently ignore ACE head/tail modules...
-    if ((module == const_cast<RPG_Stream_Base*>(this)->tail()) ||
-        (module == const_cast<RPG_Stream_Base*>(this)->head()))
+    if ((module == const_cast<own_type*>(this)->tail()) ||
+        (module == const_cast<own_type*>(this)->head()))
       continue;
 
     stream_layout.append(ACE_TEXT_ALWAYS_CHAR(module->name()));
 
     // avoid trailing "-->"...
     if (const_cast<MODULE_TYPE*>(module)->next() !=
-        const_cast<RPG_Stream_Base*>(this)->tail())
+        const_cast<own_type*>(this)->tail())
       stream_layout += ACE_TEXT_ALWAYS_CHAR(" --> ");
 
     module = NULL;
@@ -701,12 +755,16 @@ RPG_Stream_Base<DataType,
              stream_layout.c_str()));
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 bool
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::isInitialized() const
@@ -716,12 +774,16 @@ RPG_Stream_Base<DataType,
   return myIsInitialized;
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::shutdown()
@@ -737,11 +799,11 @@ RPG_Stream_Base<DataType,
   if (!myIsInitialized)
   {
     // sanity check: successfully pushed() ANY modules ?
-		module = head();
+    module = inherited::head();
 		if (module)
 		{
 			module = module->next();
-			if (module && (module != tail()))
+			if (module && (module != inherited::tail()))
 			{
 				ACE_DEBUG((LM_WARNING,
 					         ACE_TEXT("not initialized - deactivating module(s)...\n")));
@@ -792,7 +854,8 @@ RPG_Stream_Base<DataType,
   // as this leads to exceptions in debug builds under windows (can't delete
   // objects in a different DLL where it was created...)
   // --> we need to do this ourselves !
-  // all this does is call close() on each one (--> wait for the worker thread to return)
+  // all this does is call close() on each one (--> wait for any worker
+  // thread(s) to return)
   if (!fini())
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Stream_Base::fini(): \"%m\", continuing\n")));
@@ -801,12 +864,16 @@ RPG_Stream_Base<DataType,
   // --> ALL stream-related threads should have returned by now !
 }
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 void
-RPG_Stream_Base<DataType,
+RPG_Stream_Base<TaskSynchType,
+                TimePolicyType,
+                DataType,
                 SessionConfigType,
                 SessionMessageType,
                 ProtocolMessageType>::deactivateModules()
@@ -876,7 +943,8 @@ RPG_Stream_Base<DataType,
   } // end IF
 
   // pass message downstream...
-  if (put(message, NULL) == -1)
+  if (inherited::put(message,
+                     NULL) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Stream::put(): \"%m\", aborting\n")));

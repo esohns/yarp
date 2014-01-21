@@ -79,11 +79,11 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // things to be done here:
   // - init notification strategy (if any)
   // -------------------------------------------------------------
-  // - create modules (done for the ones "owned" by the stream)
-  // - init modules
+  // - push the final module onto the stream (if any)
+  // -------------------------------------------------------------
+  // - init modules (done for the ones "owned" by the stream)
   // - push them onto the stream (tail-first) !
   // -------------------------------------------------------------
-  // - push the final module onto the stream (if any)
 
   if (config_in.notificationStrategy)
   {
@@ -95,8 +95,28 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
       return false;
     } // end IF
-    module->reader()->msg_queue()->notification_strategy(config_in.notificationStrategy);
+    TASK_TYPE* task = module->reader();
+    if (!task)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("no head module reader task found, aborting\n")));
+
+      return false;
+    } // end IF
+    task->msg_queue()->notification_strategy(config_in.notificationStrategy);
   } // end IF
+
+  // ---------------------------------------------------------------------------
+
+  if (config_in.module)
+    if (inherited::push(config_in.module) == -1)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
+                 config_in.module->name()));
+
+      return false;
+    } // end IF
 
   // ---------------------------------------------------------------------------
 
@@ -106,7 +126,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!protocolHandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_ProtocolHandler> failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_ProtocolHandler> failed, aborting\n")));
 
     return false;
   } // end IF
@@ -139,7 +159,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!runtimeStatistic_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic> failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic> failed, aborting\n")));
 
     return false;
   } // end IF
@@ -170,7 +190,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!headerParser_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_HeaderParser> failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_HeaderParser> failed, aborting\n")));
 
     return false;
   } // end IF
@@ -199,7 +219,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!socketHandler_impl)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_SocketHandler> failed> (aborting\n")));
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_SocketHandler> failed, aborting\n")));
 
     return false;
   } // end IF
@@ -228,19 +248,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
     return false;
   } // end IF
 
-  // ---------------------------------------------------------------------------
-
-  if (config_in.module)
-    if (inherited::push(config_in.module) == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
-                 config_in.module->name()));
-
-      return false;
-    } // end IF
-
-  // ---------------------------------------------------------------------------
+  // -------------------------------------------------------------
 
   // set (session) message allocator
   inherited::myAllocator = config_in.messageAllocator;
@@ -276,8 +284,7 @@ RPG_Net_Stream::getSessionID() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Stream::getSessionID"));
 
-  // *TODO*: clean this up
-  ACE_Module<ACE_MT_SYNCH, ACE_System_Time_Policy>* module = &const_cast<RPG_Net_Module_SocketHandler_Module&>(mySocketHandler);
+  MODULE_TYPE* module = &const_cast<RPG_Net_Module_SocketHandler_Module&>(mySocketHandler);
   RPG_Net_Module_SocketHandler* socketHandler_impl = NULL;
   socketHandler_impl = dynamic_cast<RPG_Net_Module_SocketHandler*>(module->writer());
   if (!socketHandler_impl)
