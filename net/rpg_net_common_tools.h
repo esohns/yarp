@@ -38,8 +38,9 @@ ACE_THR_FUNC_RETURN tp_event_dispatcher_func(void* args_in); // use reactor ?
 class RPG_Net_Export RPG_Net_Common_Tools
 {
  public:
-  static bool initEventDispatch(const bool&,          // use reactor
-                                const unsigned int&); // number of thread-pool threads
+  static bool initEventDispatch(const bool&,         // use reactor
+                                const unsigned int&, // number of thread-pool threads
+                                bool&);              // return value: serialize output ?
   static bool startEventDispatch(const bool&,         // use reactor
                                  const unsigned int&, // number of thread-pool threads
                                  int&);               // return value: group ID

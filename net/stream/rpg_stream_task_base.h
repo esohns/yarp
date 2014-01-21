@@ -29,10 +29,12 @@
 class RPG_Stream_MessageBase;
 
 template <typename TaskSynchStrategyType,
+          typename TimePolicyType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_TaskBase
- : public RPG_Common_TaskBase<TaskSynchStrategyType>,
+ : public RPG_Common_TaskBase<TaskSynchStrategyType,
+                              TimePolicyType>,
    public RPG_Stream_ITaskBase<SessionMessageType,
                                ProtocolMessageType>
 {
@@ -67,7 +69,8 @@ class RPG_Stream_TaskBase
                                     bool&);             // return value: pass message downstream ?
 
  private:
-  typedef RPG_Common_TaskBase<TaskSynchStrategyType> inherited;
+  typedef RPG_Common_TaskBase<TaskSynchStrategyType,
+                              TimePolicyType> inherited;
   typedef RPG_Stream_ITaskBase<SessionMessageType,
                                ProtocolMessageType> inherited2;
 

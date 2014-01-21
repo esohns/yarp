@@ -34,9 +34,11 @@ class RPG_Stream_SessionMessage;
 class ACE_Message_Block;
 class ACE_Time_Value;
 
-template <typename TaskSynchStrategyType>
+template <typename TaskSynchStrategyType,
+          typename TimePolicyType>
 class RPG_Stream_Task
- : public ACE_Task<TaskSynchStrategyType>,
+ : public ACE_Task<TaskSynchStrategyType,
+                   TimePolicyType>,
    public RPG_Stream_ITask<RPG_Stream_MessageBase,
                            RPG_Stream_SessionMessage>,
    public RPG_Common_IDumpState
@@ -67,7 +69,6 @@ class RPG_Stream_Task
   virtual void dump_state() const;
 
  protected:
-  // needs to be subclassed...
   RPG_Stream_Task();
 
   // helper methods
@@ -81,9 +82,9 @@ class RPG_Stream_Task
                                     bool&);             // return value: pass message downstream ?
 
  private:
-  typedef ACE_Task<TaskSynchStrategyType> inherited;
+  typedef ACE_Task<TaskSynchStrategyType,
+                   TimePolicyType> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Task(const RPG_Stream_Task&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Task& operator=(const RPG_Stream_Task&));
 };

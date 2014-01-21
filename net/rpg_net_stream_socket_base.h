@@ -59,7 +59,7 @@ class RPG_Net_StreamSocketBase
  protected:
   typedef RPG_Net_IConnectionManager<ConfigType,
                                      StatisticsContainerType> MANAGER_T;
-  RPG_Net_StreamSocketBase(MANAGER_T*);
+  RPG_Net_StreamSocketBase(MANAGER_T*); // connection manager handle
   virtual ~RPG_Net_StreamSocketBase();
 
   StreamType         myStream;
@@ -77,6 +77,11 @@ class RPG_Net_StreamSocketBase
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase& operator=(const RPG_Net_StreamSocketBase&));
+
+  // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
+  // dispatching the reactor notification queue concurrently (most notably,
+  // ACE_TP_Reactor) --> enforce proper serialization
+  bool               mySerializeOutput;
 };
 
 // include template implementation

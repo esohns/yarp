@@ -27,6 +27,7 @@ include_HEADERS = rpg_stream.h \
   rpg_stream_messageallocatorheap_base.inl \
   rpg_stream_messagequeue.h \
   rpg_stream_messagequeue_base.h \
+  rpg_stream_messagequeue_base.inl \
   rpg_stream_module_base.h \
   rpg_stream_module_base.inl \
   rpg_stream_session_config.h \
@@ -92,6 +93,7 @@ libRPG_Stream_la_SOURCES = rpg_stream.cpp \
 	rpg_stream_messagequeue.cpp \
 	rpg_stream_messagequeue.h \
 	rpg_stream_messagequeue_base.cpp \
+	rpg_stream_messagequeue_base.inl \
 	rpg_stream_messagequeue_base.h \
 	rpg_stream_module_base.cpp \
 	rpg_stream_module_base.inl \

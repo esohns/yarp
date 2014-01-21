@@ -31,6 +31,7 @@
 #include "rpg_stream_session_config_base.h"
 #include "rpg_stream_streammodule_base.h"
 
+#include "rpg_common.h"
 #include "rpg_common_istatistic.h"
 
 #include <ace/Global_Macros.h>
@@ -44,7 +45,9 @@ class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCSplitter
- : public RPG_Stream_HeadModuleTaskBase<RPG_Net_Protocol_ConfigPOD,
+ : public RPG_Stream_HeadModuleTaskBase<ACE_MT_SYNCH,
+                                        RPG_Common_TimePolicy_t,
+                                        RPG_Net_Protocol_ConfigPOD,
                                         RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
                                         RPG_Net_Protocol_SessionMessage,
                                         RPG_Net_Protocol_Message>,
@@ -82,12 +85,13 @@ class RPG_Net_Protocol_Module_IRCSplitter
   virtual void report() const;
 
  private:
-  typedef RPG_Stream_HeadModuleTaskBase<RPG_Net_Protocol_ConfigPOD,
+  typedef RPG_Stream_HeadModuleTaskBase<ACE_MT_SYNCH,
+                                        RPG_Common_TimePolicy_t,
+                                        RPG_Net_Protocol_ConfigPOD,
                                         RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
                                         RPG_Net_Protocol_SessionMessage,
                                         RPG_Net_Protocol_Message> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCSplitter(const RPG_Net_Protocol_Module_IRCSplitter&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCSplitter& operator=(const RPG_Net_Protocol_Module_IRCSplitter&));
 
@@ -124,6 +128,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
 
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                         // task synch type
+                             RPG_Common_TimePolicy_t,              // time policy
                              RPG_Net_Protocol_Module_IRCSplitter); // writer type
 
 #endif

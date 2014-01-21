@@ -36,7 +36,7 @@ class RPG_Net_Export RPG_Net_SocketHandler
  public:
   // *TODO*: make this private, make friends with corresponding acceptor and
 	// connector classes
-  RPG_Net_SocketHandler();
+	RPG_Net_SocketHandler();
 
   // implement (part of) RPG_Net_IConnection
   virtual void ping();

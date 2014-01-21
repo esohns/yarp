@@ -32,15 +32,20 @@
 #include <ace/Containers_T.h>
 #include <ace/Stream.h>
 
+#include <deque>
+
 // forward declaration(s)
 class RPG_Stream_IAllocator;
 
-template <typename DataType,
+template <typename TaskSynchType,
+          typename TimePolicyType,
+          typename DataType,
           typename SessionConfigType,
           typename SessionMessageType,
           typename ProtocolMessageType>
 class RPG_Stream_Base
- : public ACE_Stream<ACE_MT_SYNCH>,
+ : public ACE_Stream<TaskSynchType,
+                     TimePolicyType>,
    public RPG_Stream_IStreamControl,
    public RPG_Common_IDumpState
 {
@@ -70,11 +75,12 @@ class RPG_Stream_Base
   bool isInitialized() const;
 
  protected:
-  typedef ACE_Module<ACE_MT_SYNCH,
-                     ACE_System_Time_Policy> MODULE_TYPE;
-  typedef ACE_Task<ACE_MT_SYNCH,
-                   ACE_System_Time_Policy> TASK_TYPE;
-  typedef ACE_Stream_Iterator<ACE_MT_SYNCH> STREAM_ITERATOR_TYPE;
+  typedef ACE_Module<TaskSynchType,
+                     TimePolicyType> MODULE_TYPE;
+  typedef ACE_Task<TaskSynchType,
+                   TimePolicyType> TASK_TYPE;
+  typedef ACE_Stream_Iterator<TaskSynchType,
+                              TimePolicyType> STREAM_ITERATOR_TYPE;
 
   // *NOTE*: need to subclass this !
   RPG_Stream_Base();
@@ -104,17 +110,29 @@ class RPG_Stream_Base
   RPG_Stream_IAllocator*  myAllocator;
 
  private:
-  typedef ACE_Stream<ACE_MT_SYNCH> inherited;
-  typedef RPG_Stream_HeadModuleTaskBase<DataType,
+  typedef ACE_Stream<TaskSynchType,
+                     TimePolicyType> inherited;
+  typedef RPG_Stream_HeadModuleTaskBase<TaskSynchType,
+                                        TimePolicyType,
+                                        DataType,
                                         SessionConfigType,
                                         SessionMessageType,
                                         ProtocolMessageType> HEADMODULETASK_BASETYPE;
 
-  // safety measures
+  // convenient types
+  typedef std::deque<MODULE_TYPE*> MODULE_STACK_T;
+  typedef typename MODULE_STACK_T::const_iterator MODULE_STACKITERATOR_T;
+  typedef RPG_Stream_Base<TaskSynchType,
+                          TimePolicyType,
+                          DataType,
+                          SessionConfigType,
+                          SessionMessageType,
+                          ProtocolMessageType> own_type;
+
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Base());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Base(const RPG_Stream_Base&));
   // *TODO*: apparently, ACE_UNIMPLEMENTED_FUNC gets confused by template arguments...
-//   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Base<DataType,SessionConfigType,SessionMessageType>& operator=(const RPG_Stream_Base<DataType,SessionConfigType,SessionMessageType>&));
+//   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Base& operator=(const RPG_Stream_Base&));
 
   // helper methods
   // wrap inherited::open/close() calls

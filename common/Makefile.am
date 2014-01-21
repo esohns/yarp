@@ -33,6 +33,7 @@ include_HEADERS = rpg_XMLSchema_XML_tree.h \
 	rpg_common_environment_XML_types.h \
 	rpg_common_environment_incl.h \
 	rpg_common_file_tools.h \
+	rpg_common_isubscribe.h \
 	rpg_common_icontrol.h \
 	rpg_common_idumpstate.h \
 	rpg_common_incl.h \
@@ -100,6 +101,7 @@ libRPG_Common_la_SOURCES = rpg_XMLSchema_XML_tree.h \
 	rpg_common_environment_incl.h \
 	rpg_common_file_tools.cpp \
 	rpg_common_file_tools.h \
+	rpg_common_isubscribe.h \
 	rpg_common_icontrol.h \
 	rpg_common_idumpstate.h \
 	rpg_common_incl.h \

@@ -24,6 +24,10 @@
 #include "rpg_net_exports.h"
 #include "rpg_net_connection_manager.h"
 #include "rpg_net_statistichandler.h"
+#include "rpg_net_inotify.h"
+#include "rpg_net_message.h"
+
+#include "rpg_common.h"
 
 #include <ace/Time_Value.h>
 #include <ace/Singleton.h>
@@ -35,7 +39,8 @@ class ACE_Notification_Strategy;
 class RPG_Stream_IAllocator;
 class RPG_Stream_Module;
 
-typedef ACE_Module<ACE_MT_SYNCH> MODULE_TYPE;
+typedef ACE_Module<ACE_MT_SYNCH,
+                   RPG_Common_TimePolicy_t> MODULE_TYPE;
 
 struct RPG_Net_RuntimeStatistic
 {
@@ -54,7 +59,7 @@ struct RPG_Net_RuntimeStatistic
 
 struct RPG_Net_ConfigPOD
 {
-  // ************ connection config data ************
+  // ************************ connection config data ***************************
   unsigned int               peerPingInterval; // ms {0 --> OFF}
   bool                       pingAutoAnswer;
   bool                       printPingMessages;
@@ -62,16 +67,22 @@ struct RPG_Net_ConfigPOD
   RPG_Stream_IAllocator*     messageAllocator;
   unsigned int               bufferSize;
   bool                       useThreadPerConnection;
-  // ************ stream config data ************
+  // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
+  // dispatching the reactor notification queue concurrently (most notably,
+  // ACE_TP_Reactor) --> enforce proper serialization
+  bool                       serializeOutput;
+  // *************************** stream config data ****************************
   ACE_Notification_Strategy* notificationStrategy;
   MODULE_TYPE*               module;
   unsigned int               sessionID; // (== socket handle !)
   unsigned int               statisticsReportingInterval;
 	bool                       printFinalReport;
-  // ************ runtime data ************
+	// ****************************** runtime data *******************************
   RPG_Net_RuntimeStatistic   currentStatistics;
   ACE_Time_Value             lastCollectionTimestamp;
 };
+
+typedef RPG_Net_INotify<RPG_Net_Message> RPG_Net_INotify_t;
 
 template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;

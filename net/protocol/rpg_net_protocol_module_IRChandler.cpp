@@ -57,7 +57,7 @@ RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler()
 
 }
 
-const bool
+bool
 RPG_Net_Protocol_Module_IRCHandler::init(RPG_Stream_IAllocator* allocator_in,
                                          const unsigned int& defaultBufferSize_in,
                                          const bool& autoAnswerPings_in,
@@ -735,7 +735,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::subscribe(RPG_Net_Protocol_INotify* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::subscribe(RPG_Net_Protocol_INotify_t* dataCallback_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::subscribe"));
 
@@ -749,7 +749,7 @@ RPG_Net_Protocol_Module_IRCHandler::subscribe(RPG_Net_Protocol_INotify* dataCall
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::unsubscribe(RPG_Net_Protocol_INotify* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::unsubscribe(RPG_Net_Protocol_INotify_t* dataCallback_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::unsubscribe"));
 

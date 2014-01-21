@@ -18,18 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_PROTOCOL_INOTIFY_H
-#define RPG_NET_PROTOCOL_INOTIFY_H
+#ifndef RPG_NET_INOTIFY_H
+#define RPG_NET_INOTIFY_H
 
-#include "rpg_net_protocol_IRCmessage.h"
-
-class RPG_Net_Protocol_INotify
+template <typename MessageType>
+class RPG_Net_INotify
 {
  public:
-  virtual ~RPG_Net_Protocol_INotify() {};
+  virtual ~RPG_Net_INotify() {};
 
+  // API
   virtual void start() = 0;
-  virtual void notify(const RPG_Net_Protocol_IRCMessage&) = 0; // data
+  virtual void notify(const MessageType&) = 0; // data
   virtual void end() = 0;
 };
 

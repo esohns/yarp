@@ -24,6 +24,8 @@
 #include "rpg_stream_task_base_synch.h"
 #include "rpg_stream_streammodule_base.h"
 
+#include "rpg_common.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Synch_Traits.h>
 
@@ -32,7 +34,8 @@ class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCStreamer
- : public RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+ : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
+                                   RPG_Net_Protocol_SessionMessage,
                                    RPG_Net_Protocol_Message>
 {
  public:
@@ -44,16 +47,17 @@ class RPG_Net_Protocol_Module_IRCStreamer
                                  bool&);                     // return value: pass message downstream ?
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<RPG_Net_Protocol_SessionMessage,
+  typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
+                                   RPG_Net_Protocol_SessionMessage,
                                    RPG_Net_Protocol_Message> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCStreamer(const RPG_Net_Protocol_Module_IRCStreamer&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCStreamer& operator=(const RPG_Net_Protocol_Module_IRCStreamer&));
 };
 
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                         // task synch type
+                             RPG_Common_TimePolicy_t,              // time policy
                              RPG_Net_Protocol_Module_IRCStreamer); // writer type
 
 #endif

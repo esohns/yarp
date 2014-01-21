@@ -23,6 +23,7 @@
 
 #include "rpg_client_exports.h"
 
+#include "rpg_common.h"
 #include "rpg_common_task_base.h"
 #include "rpg_common_icontrol.h"
 
@@ -33,7 +34,8 @@
   @author Erik Sohns <erik.sohns@web.de>
  */
 class RPG_Client_Export RPG_Client_GTK_Manager
- : public RPG_Common_TaskBase<ACE_MT_SYNCH>,
+ : public RPG_Common_TaskBase<ACE_MT_SYNCH,
+                              RPG_Common_TimePolicy_t>,
    public RPG_Common_IControl
 {
   // singleton requires access to the ctor/dtor
@@ -47,7 +49,8 @@ class RPG_Client_Export RPG_Client_GTK_Manager
   virtual bool isRunning() const;
 
  private:
-  typedef RPG_Common_TaskBase<ACE_MT_SYNCH> inherited;
+  typedef RPG_Common_TaskBase<ACE_MT_SYNCH,
+                              RPG_Common_TimePolicy_t> inherited;
 
   // override ACE_Task_Base member(s)
   virtual int svc(void);

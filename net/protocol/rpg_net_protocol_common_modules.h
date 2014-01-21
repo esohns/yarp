@@ -32,19 +32,25 @@
 
 #include "rpg_stream_streammodule_base.h"
 
+#include "rpg_common.h"
+
 #include <ace/Synch_Traits.h>
 
-typedef RPG_Net_Module_RuntimeStatistic_t<RPG_Net_Protocol_SessionMessage,
+typedef RPG_Net_Module_RuntimeStatistic_t<ACE_MT_SYNCH,
+                                          RPG_Common_TimePolicy_t,
+                                          RPG_Net_Protocol_SessionMessage,
                                           RPG_Net_Protocol_Message,
                                           RPG_Net_Protocol_CommandType_t,
                                           RPG_Net_Protocol_RuntimeStatistic> RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T;
 
 // declare module(s)
 DATASTREAM_MODULE_DUPLEX(ACE_MT_SYNCH,                        // task synch type
+                         RPG_Common_TimePolicy_t,             // time policy
                          RPG_Net_Protocol_Module_IRCSplitter, // reader type
                          RPG_Net_Protocol_Module_IRCStreamer, // writer type
                          RPG_Net_Protocol_Module_IRCMarshal); // name
 DATASTREAM_MODULE_INPUT_ONLY_T(ACE_MT_SYNCH,                                // task synch type
+                               RPG_Common_TimePolicy_t,                     // time policy
                                RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T, // writer type
                                RPG_Net_Protocol_Module_RuntimeStatistic);   // name
 

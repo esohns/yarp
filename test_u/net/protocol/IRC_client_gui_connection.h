@@ -42,7 +42,7 @@ class IRC_Client_GUI_MessageHandler;
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class IRC_Client_GUI_Connection
- : public RPG_Net_Protocol_INotify
+ : public RPG_Net_Protocol_INotify_t
 {
  public:
   // *WARNING*: make sure the ctor/dtor calls are made either:
@@ -58,7 +58,7 @@ class IRC_Client_GUI_Connection
                             GtkNotebook*);                 // parent widget
   virtual~IRC_Client_GUI_Connection();
 
-  // implement RPG_Net_Protocol_INotify
+  // implement RPG_Net_Protocol_INotify_t
   virtual void start();
   virtual void notify(const RPG_Net_Protocol_IRCMessage&); // message data
   virtual void end();

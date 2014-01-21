@@ -22,9 +22,11 @@
 #include "rpg_common_macros.h"
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 RPG_Stream_Module_Base_t<TaskSynchType,
+                         TimePolicyType,
                          ReaderTaskType,
                          WriterTaskType>::RPG_Stream_Module_Base_t(const std::string& name_in,
                                                                    WriterTaskType* writerTask_in,
@@ -49,9 +51,11 @@ RPG_Stream_Module_Base_t<TaskSynchType,
 }
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 RPG_Stream_Module_Base_t<TaskSynchType,
+                         TimePolicyType,
                          ReaderTaskType,
                          WriterTaskType>::~RPG_Stream_Module_Base_t()
 {
@@ -64,10 +68,12 @@ RPG_Stream_Module_Base_t<TaskSynchType,
 }
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 void
 RPG_Stream_Module_Base_t<TaskSynchType,
+                         TimePolicyType,
                          ReaderTaskType,
                          WriterTaskType>::reset()
 {

@@ -17,6 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "stdafx.h"
 
-#include "rpg_stream_messagequeue_base.h"
+#ifndef RPG_COMMON_ISUBSCRIBE_H
+#define RPG_COMMON_ISUBSCRIBE_H
+
+template <typename InterfaceType>
+class RPG_Common_ISubscribe
+{
+ public:
+  virtual ~RPG_Common_ISubscribe() {}
+
+  // API
+  virtual void subscribe(InterfaceType*) = 0;
+  virtual void unsubscribe(InterfaceType*) = 0;
+};
+
+#endif

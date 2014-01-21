@@ -33,16 +33,18 @@
 class RPG_Stream_IRefCount;
 
 template <typename TaskSynchType,
+          typename TimePolicyType,
           typename ReaderTaskType,
           typename WriterTaskType>
 class RPG_Stream_Module_Base_t
- : public ACE_Module<TaskSynchType>,
+ : public ACE_Module<TaskSynchType,
+                     TimePolicyType>,
    public RPG_Stream_IModule
 {
  public:
   // define convenient types
-  typedef ReaderTaskType READER_TASK_TYPE;
-  typedef WriterTaskType WRITER_TASK_TYPE;
+  typedef ReaderTaskType READER_TASK_T;
+  typedef WriterTaskType WRITER_TASK_T;
 
   virtual ~RPG_Stream_Module_Base_t();
 
@@ -51,20 +53,20 @@ class RPG_Stream_Module_Base_t
 
  protected:
   RPG_Stream_Module_Base_t(const std::string&,     // name
-                           WRITER_TASK_TYPE*,      // handle to writer task
-                           READER_TASK_TYPE*,      // handle to reader task
+                           WriterTaskType*,        // handle to writer task
+                           ReaderTaskType*,        // handle to reader task
                            RPG_Stream_IRefCount*); // object counter
 
  private:
-  typedef ACE_Module<TaskSynchType> inherited;
+  typedef ACE_Module<TaskSynchType,
+                     TimePolicyType> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t(const RPG_Stream_Module_Base_t&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_Module_Base_t& operator=(const RPG_Stream_Module_Base_t&));
 
-  WRITER_TASK_TYPE* myWriter;
-  READER_TASK_TYPE* myReader;
+  WRITER_TASK_T* myWriter;
+  READER_TASK_T* myReader;
 };
 
 #include "rpg_stream_module_base.inl"

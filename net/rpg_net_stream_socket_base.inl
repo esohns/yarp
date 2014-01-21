@@ -38,7 +38,8 @@ RPG_Net_StreamSocketBase<ConfigType,
    //myStream(),
    myCurrentReadBuffer(NULL),
    //myLock(),
-   myCurrentWriteBuffer(NULL)
+   myCurrentWriteBuffer(NULL),
+   mySerializeOutput(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::RPG_Net_StreamSocketBase"));
 
@@ -69,6 +70,9 @@ RPG_Net_StreamSocketBase<ConfigType,
                          StreamType>::open(void* arg_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::open"));
+
+  // step0: init this
+  mySerializeOutput = inherited::myUserData.serializeOutput;
 
   // step1: init/start stream
   inherited::myUserData.sessionID = inherited::id(); // (== socket handle)
@@ -244,9 +248,9 @@ RPG_Net_StreamSocketBase<ConfigType,
   ACE_UNUSED_ARG(handle_in);
 
   // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
-  // dispatching the reactor notification queue concurrently (e.g. TP_Reactor),
-  // which means that proper serialization MUST be enforced
-  if (!inherited::myUserData.useThreadPerConnection)
+  // dispatching the reactor notification queue concurrently (most notably,
+  // ACE_TP_Reactor) --> enforce proper serialization
+  if (mySerializeOutput)
     myLock.acquire();
 
   if (myCurrentWriteBuffer == NULL)
@@ -254,24 +258,27 @@ RPG_Net_StreamSocketBase<ConfigType,
     // send next data chunk from the stream...
     // *IMPORTANT NOTE*: should NEVER block, as available outbound data has
     // been notified to the reactor
-    ACE_Time_Value no_wait(RPG_COMMON_TIME_POLICY());
     int result = -1;
     if (!inherited::myUserData.useThreadPerConnection)
-      result = myStream.get(myCurrentWriteBuffer, &no_wait);
+      result = myStream.get(myCurrentWriteBuffer,
+                            const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero));
     else
-      result = inherited::getq(myCurrentWriteBuffer, &no_wait);
+      result = inherited::getq(myCurrentWriteBuffer,
+                               const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero));
     if (result == -1)
     {
       // *IMPORTANT NOTE*: a number of issues can occur here:
       // - connection has been closed in the meantime
+      // - queue has been deactivated
       int error = ACE_OS::last_error();
-      if (error != EAGAIN) // <-- connection has been closed in the meantime
+      if ((error != EAGAIN) ||  // <-- connection has been closed in the meantime
+          (error != ESHUTDOWN)) // <-- queue has been deactivated
         ACE_DEBUG((LM_ERROR,
                    (inherited::myUserData.useThreadPerConnection ? ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")
                                                                  : ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n"))));
 
       // clean up
-      if (!inherited::myUserData.useThreadPerConnection)
+      if (mySerializeOutput)
         myLock.release();
 
       return -1;
@@ -316,7 +323,7 @@ RPG_Net_StreamSocketBase<ConfigType,
       // clean up
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
-      if (!inherited::myUserData.useThreadPerConnection)
+      if (mySerializeOutput)
         myLock.release();
 
       return -1;
@@ -331,7 +338,7 @@ RPG_Net_StreamSocketBase<ConfigType,
       // clean up
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
-      if (!inherited::myUserData.useThreadPerConnection)
+      if (mySerializeOutput)
         myLock.release();
 
       return -1;
@@ -368,7 +375,7 @@ RPG_Net_StreamSocketBase<ConfigType,
   if (myCurrentWriteBuffer != NULL)
 	{
     // clean up
-		if (!inherited::myUserData.useThreadPerConnection)
+    if (mySerializeOutput)
       myLock.release();
 
 		return 1;
@@ -379,7 +386,7 @@ RPG_Net_StreamSocketBase<ConfigType,
     //             ACE_TEXT("failed to ACE_Reactor::schedule_wakeup(): \"%m\", continuing\n")));
 
   // clean up
-  if (!inherited::myUserData.useThreadPerConnection)
+  if (mySerializeOutput)
     myLock.release();
 
   return 0;

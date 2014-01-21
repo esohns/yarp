@@ -98,9 +98,13 @@ tp_event_dispatcher_func(void* args_in)
 
 bool
 RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
-                                        const unsigned int& numDispatchThreads_in)
+                                        const unsigned int& numDispatchThreads_in,
+                                        bool& serializeOutput_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Common_Tools::initEventDispatch"));
+
+  // init return value(s)
+  serializeOutput_out = false;
 
   // step1: init reactor/proactor
 	if (useReactor_in)
@@ -121,6 +125,7 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 																						ACE_DEV_POLL_TOKEN::FIFO), // signal queue
 										   false);
 			else
+			{
 			  ACE_NEW_RETURN(reactor_implementation,
 											 ACE_TP_Reactor(ACE::max_handles(),              // max num handles (1024)
 																		  true,                            // restart after EINTR ?
@@ -129,6 +134,9 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 																		  true,                            // mask signals ?
 																		  ACE_Select_Reactor_Token::FIFO), // signal queue
 										   false);
+
+				serializeOutput_out = true;
+			} // end ELSE
 	#else
 			if (RPG_COMMON_USE_WFMO_REACTOR)
 				ACE_NEW_RETURN(reactor_implementation,
@@ -139,6 +147,7 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 																				NULL),                          // notification handler handle
 											 false);
 			else
+			{
 			  ACE_NEW_RETURN(reactor_implementation,
 											 ACE_TP_Reactor(ACE::max_handles(),              // max num handles (1024)
 																		  true,                            // restart after EINTR ?
@@ -147,6 +156,9 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 																		  true,                            // mask signals ?
 																		  ACE_Select_Reactor_Token::FIFO), // signal queue
 										   false);
+
+				serializeOutput_out = true;
+			} // end ELSE
 	#endif
 			ACE_Reactor* new_reactor = NULL;
 			ACE_NEW_RETURN(new_reactor,

@@ -18,56 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_STREAM_TASK_ASYNCH_H
-#define RPG_STREAM_TASK_ASYNCH_H
+#ifndef NET_EVENTHANDLER_H
+#define NET_EVENTHANDLER_H
 
-#include "rpg_stream_task.h"
-#include "rpg_stream_messagequeue.h"
+#include "rpg_net_common.h"
 
-#include "rpg_common.h"
+// forward declaration(s)
+struct Net_GTK_CBData_t;
 
-#include <ace/Global_Macros.h>
-#include <ace/Synch_Traits.h>
-
-// *NOTE*: the message queue needs to be synched so that shutdown can be
-// asynchronous...
-class RPG_Stream_TaskAsynch
- : public RPG_Stream_Task<ACE_MT_SYNCH,
-                          RPG_Common_TimePolicy_t>
+class Net_EventHandler
+ : public RPG_Net_INotify_t
 {
  public:
-  virtual ~RPG_Stream_TaskAsynch();
+  Net_EventHandler(Net_GTK_CBData_t*); // GTK state
+  virtual ~Net_EventHandler();
 
-  // override task-based members
-  virtual int put(ACE_Message_Block*, // data chunk
-                  ACE_Time_Value*);   // timeout value
-  virtual int open(void* = NULL);
-  virtual int close(u_long = 0);
-  virtual int module_closed(void);
-  virtual int svc(void);
-
-  // delegate to myQueue !
-  virtual void waitForIdleState() const;
-
- protected:
-  RPG_Stream_TaskAsynch();
-
-  ACE_thread_t            myThreadID;
+  // implement RPG_Net_INotify_t
+  virtual void start();
+  virtual void notify(const RPG_Net_Message&); // data
+  virtual void end();
 
  private:
-  typedef RPG_Stream_Task<ACE_MT_SYNCH,
-                          RPG_Common_TimePolicy_t> inherited;
+  ACE_UNIMPLEMENTED_FUNC(Net_EventHandler());
+  ACE_UNIMPLEMENTED_FUNC(Net_EventHandler(const Net_EventHandler&));
+  ACE_UNIMPLEMENTED_FUNC(Net_EventHandler& operator=(const Net_EventHandler&));
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskAsynch(const RPG_Stream_TaskAsynch&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Stream_TaskAsynch& operator=(const RPG_Stream_TaskAsynch&));
-
-  // helper methods
-  // enqueue MB_STOP --> stop worker thread
-  // *WARNING*: handle with EXTREME care, you should NEVER use this directly
-  // if in stream context (i.e. task/module is part of a stream)
-  void shutdown();
-
-  RPG_Stream_MessageQueue myQueue;
+  Net_GTK_CBData_t* myCBData;
 };
 
 #endif

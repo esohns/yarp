@@ -56,6 +56,7 @@
 #include "rpg_net_common_tools.h"
 #include "rpg_net_connection_manager.h"
 #include "rpg_net_stream_messageallocator.h"
+#include "rpg_net_module_eventhandler.h"
 
 #include "rpg_net_client_defines.h"
 #include "rpg_net_client_connector.h"
@@ -71,6 +72,7 @@
 #include "net_defines.h"
 #include "net_common.h"
 #include "net_callbacks.h"
+#include "net_eventhandler.h"
 
 #include "net_client_timeouthandler.h"
 #include "net_client_signalhandler.h"
@@ -506,14 +508,14 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
         const unsigned int& serverPingInterval_in,
         const std::string& UIFile_in,
         const unsigned int& numDispatchThreads_in,
-        Net_GTK_CBData_t& GTKUserData_in)
+        Net_GTK_CBData_t& CBData_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0a: init ui ?
   if (!UIFile_in.empty() &&
       !init_ui(UIFile_in,
-               GTKUserData_in))
+               CBData_in))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init user interface, aborting\n")));
@@ -534,9 +536,51 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
     return;
   }
 
-  // step0c: init event dispatch
+  // step0c: init stream configuration object
+  Net_EventHandler ui_event_handler(&CBData_in);
+  RPG_Net_Module_EventHandler_Module event_handler(std::string("EventHandler"),
+                                                   NULL);
+  RPG_Net_Module_EventHandler* eventHandler_impl = NULL;
+  eventHandler_impl = dynamic_cast<RPG_Net_Module_EventHandler*>(event_handler.writer());
+  if (!eventHandler_impl)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("dynamic_cast<RPG_Net_Module_EventHandler> failed, aborting\n")));
+
+    return;
+  } // end IF
+  eventHandler_impl->subscribe(&ui_event_handler);
+  RPG_Stream_AllocatorHeap heapAllocator;
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
+                                                  &heapAllocator);
+  RPG_Net_ConfigPOD config;
+  ACE_OS::memset(&config, 0, sizeof(config));
+  // ************ connection config data ************
+  config.peerPingInterval = ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? 0
+                                                                                         : serverPingInterval_in);
+  config.pingAutoAnswer = true;
+  config.printPingMessages = true;
+  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.messageAllocator = &messageAllocator;
+  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+//  config.useThreadPerConnection = false;
+//  config.serializeOutput = false;
+  // ************ stream config data ************
+//  config.notificationStrategy = NULL;
+  config.module = (!UIFile_in.empty() ? &event_handler
+                                      : NULL);
+  // *WARNING*: set at runtime, by the appropriate connection handler
+//  config.sessionID = 0; // (== socket handle !)
+//  config.statisticsReportingInterval = 0; // == off
+//	config.printFinalReport = false;
+  // ************ runtime data ************
+//	config.currentStatistics = {};
+//	config.lastCollectionTimestamp = ACE_Time_Value::zero;
+
+  // step0d: init event dispatch
   if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
-                                               numDispatchThreads_in))
+                                               numDispatchThreads_in,
+                                               config.serializeOutput))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init event dispatch, aborting\n")));
@@ -558,27 +602,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
     return;
   } // end IF
 
-  // step2a: init stream configuration object
-  RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
-                                                  &heapAllocator);
-  RPG_Net_ConfigPOD config;
-  ACE_OS::memset(&config, 0, sizeof(config));
-  config.peerPingInterval = ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? 0
-                                                                                         : serverPingInterval_in);
-  config.pingAutoAnswer = true;
-  config.printPingMessages = true;
-  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
-  config.messageAllocator = &messageAllocator;
-  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  config.useThreadPerConnection = false;
-  config.module = NULL; // just use the default stream...
-  // *WARNING*: set at runtime, by the appropriate connection handler
-  config.sessionID = 0; // (== socket handle !)
-  config.statisticsReportingInterval = 0; // == off
-	config.printFinalReport = false;
-
-  // step2b: init connection manager
+  // step2: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
 
@@ -586,28 +610,26 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
   ACE_INET_Addr peer_address(serverPortNumber_in,
                              serverHostname_in.c_str(),
                              AF_INET);
-	Net_Client_TimeoutHandler timeout_handler(actionMode_in,
-		                                        ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? std::numeric_limits<unsigned int>::max()
-                                                                                                         : maxNumConnections_in),
+  Net_Client_TimeoutHandler timeout_handler((UIFile_in.empty() ? actionMode_in
+                                                               : Net_Client_TimeoutHandler::ACTION_STRESS),
+                                            maxNumConnections_in,
                                             peer_address,
                                             connector);
-  GTKUserData_in.timeout_handler = &timeout_handler;
-  GTKUserData_in.timer_id = -1;
-  if (!UIFile_in.empty() &&
-      (connectionInterval_in ||
-       (actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS)))
+  CBData_in.timeout_handler = &timeout_handler;
+  CBData_in.timer_id = -1;
+  if (UIFile_in.empty())
   {
     // schedule action interval timer
     ACE_Time_Value interval(((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL / 1000)
                                                                                          : connectionInterval_in),
                             ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? ((NET_CLIENT_DEF_SERVER_STRESS_INTERVAL % 1000) * 1000)
                                                                                          : 0));
-    GTKUserData_in.timer_id =
+    CBData_in.timer_id =
 			RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&timeout_handler,                    // event handler handle
                                                               NULL,                                // ACT
                                                               RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
                                                               interval);                           // interval
-    if (GTKUserData_in.timer_id == -1)
+    if (CBData_in.timer_id == -1)
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("failed to schedule action timer: \"%m\", aborting\n")));
@@ -621,11 +643,10 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
   } // end IF
 
   // step4: init signal handling
-  Net_Client_SignalHandler signal_handler(GTKUserData_in.timer_id, // action timer id
-//                                          gtk_timer_id,          // gtk timer id (if any)
-                                          peer_address,            // remote SAP
-                                          connector,               // connector
-                                          useReactor_in);          // use reactor ?
+  Net_Client_SignalHandler signal_handler(CBData_in.timer_id, // action timer id
+                                          peer_address,       // remote SAP
+                                          connector,          // connector
+                                          useReactor_in);     // use reactor ?
   ACE_Sig_Set signal_set(0);
   init_signals((connectionInterval_in == 0), // allow SIGUSR1/SIGBREAK IFF
                                              // regular connections are off
@@ -640,14 +661,14 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                ACE_TEXT("failed to init signal handling, aborting\n")));
 
     // clean up
-    if (GTKUserData_in.timer_id != -1)
+    if (CBData_in.timer_id != -1)
     {
       const void* act = NULL;
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(GTKUserData_in.timer_id,
+      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(CBData_in.timer_id,
                                                                 &act) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   GTKUserData_in.timer_id));
+                   CBData_in.timer_id));
     } // end IF
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     connector->abort();
@@ -670,14 +691,14 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                  ACE_TEXT("failed to start GTK event dispatch, aborting\n")));
 
       // clean up
-      if (GTKUserData_in.timer_id != -1)
+      if (CBData_in.timer_id != -1)
       {
         const void* act = NULL;
-        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(GTKUserData_in.timer_id,
+        if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(CBData_in.timer_id,
                                                                   &act) <= 0)
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                     GTKUserData_in.timer_id));
+                     CBData_in.timer_id));
       } // end IF
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
       connector->abort();
@@ -700,14 +721,14 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                ACE_TEXT("failed to start event dispatch, aborting\n")));
 
     // clean up
-    if (GTKUserData_in.timer_id != -1)
+    if (CBData_in.timer_id != -1)
 		{
 			const void* act = NULL;
-			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(GTKUserData_in.timer_id,
+			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(CBData_in.timer_id,
 				                                                        &act) <= 0)
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   GTKUserData_in.timer_id));
+                   CBData_in.timer_id));
 		} // end IF
     RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();

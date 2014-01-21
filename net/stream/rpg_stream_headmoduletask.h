@@ -27,8 +27,11 @@
 #include "rpg_stream_session_message.h"
 #include "rpg_stream_messagequeue.h"
 
+#include "rpg_common.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Time_Value.h>
+#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
 class ACE_Message_Block;
@@ -37,7 +40,8 @@ class RPG_Stream_SessionConfig;
 class RPG_Stream_IAllocator;
 
 class RPG_Stream_HeadModuleTask
- : public RPG_Stream_Task<ACE_MT_SYNCH>,
+ : public RPG_Stream_Task<ACE_MT_SYNCH,
+                          RPG_Common_TimePolicy_t>,
    public RPG_Stream_IStreamControl,
    public RPG_Stream_StateMachine_Control
 {
@@ -66,7 +70,6 @@ class RPG_Stream_HeadModuleTask
   virtual const bool isRunning();
 
  protected:
-  // needs to be subclassed...
   RPG_Stream_HeadModuleTask(const bool&); // auto-start ?
 
   // override: handle MB_STOP control messages to trigger shutdown of the stream...
@@ -106,10 +109,10 @@ class RPG_Stream_HeadModuleTask
   unsigned int                              mySessionID;
 
  private:
-  typedef RPG_Stream_Task<ACE_MT_SYNCH> inherited;
+  typedef RPG_Stream_Task<ACE_MT_SYNCH,
+                          RPG_Common_TimePolicy_t> inherited;
   typedef RPG_Stream_StateMachine_Control inherited2;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTask());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTask(const RPG_Stream_HeadModuleTask&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_HeadModuleTask& operator=(const RPG_Stream_HeadModuleTask&));
