@@ -21,15 +21,19 @@
 
 #include "rpg_client_GTK_manager.h"
 
+#include <ace/OS.h>
+#include <ace/Thread.h>
+#include <ace/Log_Msg.h>
+
+#include <gtk/gtk.h>
+
 #include "rpg_common_macros.h"
 #include "rpg_common_timer_manager.h"
 
 #include "rpg_client_defines.h"
 
-#include <ace/Log_Msg.h>
-
 RPG_Client_GTK_Manager::RPG_Client_GTK_Manager()
- : inherited(true)
+ : inherited(false) // do NOT auto-start !
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::RPG_Client_GTK_Manager"));
 
@@ -95,8 +99,11 @@ RPG_Client_GTK_Manager::close(u_long arg_in)
       if (inherited::thr_count() == 0)
         return 0; // nothing to do
 
-      if (gtk_main_level() > 0)
+      gdk_threads_enter();
+      guint level = gtk_main_level();
+      if (level > 0)
         gtk_main_quit();
+      gdk_threads_leave();
 
       break;
     }

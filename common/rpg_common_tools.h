@@ -76,7 +76,12 @@ class RPG_Common_Export RPG_Common_Tools
   static bool period2String(const ACE_Time_Value&, // period
                             std::string&);         // return value: corresp. string
 
+  // ---------------------------------------------------------------------------
+
   static bool isLinux();
+
+  static bool initResourceLimits(const bool& = false, // #file descriptors (i.e. open handles)
+                                 const bool& = true); // stack trace/sizes (i.e. core file sizes)
 
   static void getCurrentUserName(std::string&,  // return value: username
                                  std::string&); // return value: "real" name

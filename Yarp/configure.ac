@@ -44,16 +44,14 @@ AX_PREFIX_CONFIG_H([rpg_config.h], [RPG])
 
 # reset the cpp compiler flags
 CXXFLAGS=
-# this macro is used to get the arguments supplied
-# to the configure script (./configure --enable-debug)
-# Check if we have enable debug support.
+# --> enable debug support ?
 AC_MSG_CHECKING(whether to enable debugging)
-debug_default="no"
-AC_ARG_ENABLE(debug,
-              [ --enable-debug=[no/yes] turn on debugging [default=$debug_default]],
+debugging_default="no"
+AC_ARG_ENABLE(debugging,
+              [ --enable-debugging=[no/yes] turn on debugging [default=$debugging_default]],
               ,
-              enable_debug=$debug_default)
-if test "x$enable_debug" = "xyes"; then
+              enable_debugging=$debugging_default)
+if test "x$enable_debugging" = "xyes"; then
   CXXFLAGS="-g -O0 -Wall -D_DEBUG"
   AC_MSG_RESULT(yes)
 else
@@ -61,9 +59,7 @@ else
   AC_MSG_RESULT(no)
 fi
 
-# this macro is used to get the arguments supplied
-# to the configure script (./configure --enable-tracing)
-# Check if we have enable tracing support.
+# --> enable tracing support ?
 AC_MSG_CHECKING(whether to enable tracing)
 tracing_default="no"
 AC_ARG_ENABLE(tracing,
@@ -75,6 +71,20 @@ if test "x$enable_tracing" = "xyes"; then
   AC_MSG_RESULT(yes)
 else
   CXXFLAGS="${CXXFLAGS} -DRPG_NTRACE=1"
+  AC_MSG_RESULT(no)
+fi
+
+# --> enable valgrind support ?
+AC_MSG_CHECKING(whether to enable valgrind support)
+valgrind_support_default="no"
+AC_ARG_ENABLE(valgrind,
+              [ --enable-valgrind=[no/yes] turn on valgrind support [default=$valgrind_support_default]],
+              ,
+              enable_valgrind=$valgrind_support_default)
+if test "x$enable_valgrind" = "xyes"; then
+  CXXFLAGS="${CXXFLAGS} -DRPG_ENABLE_VALGRIND_SUPPORT"
+  AC_MSG_RESULT(yes)
+else
   AC_MSG_RESULT(no)
 fi
 

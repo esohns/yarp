@@ -36,6 +36,10 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 
+#ifdef RPG_ENABLE_VALGRIND_SUPPORT
+#include <valgrind/valgrind.h>
+#endif
+
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -331,6 +335,13 @@ init_signals(const bool& allowUserRuntimeConnect_in,
   signals_inout.sig_del(SIGSEGV);         // 11      /* Segmentation fault: Invalid memory reference */
   // *NOTE* don't care about SIGPIPE
   signals_inout.sig_del(SIGPIPE);         // 12      /* Broken pipe: write to pipe with no readers */
+
+#ifdef RPG_ENABLE_VALGRIND_SUPPORT
+  // *NOTE*: valgrind uses SIGRT32 (--> SIGRTMAX ?) and apparently will not work
+  // if the application installs its own handler (see documentation)
+  if (RUNNING_ON_VALGRIND)
+    signals_inout.sig_del(SIGRTMAX);        // 64
+#endif
 #endif
 }
 
@@ -788,6 +799,9 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
     return;
   } // end IF
 
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("started event dispatch...\n")));
+
   // step5c: connect immediately ?
   if (UIFile_in.empty() && (connectionInterval_in == 0))
     connector->connect(peer_address);
@@ -991,6 +1005,21 @@ ACE_TMAIN(int argc_in,
     do_printVersion(ACE::basename(argv_in[0]));
 
     return EXIT_SUCCESS;
+  } // end IF
+
+  // step1f: set process resource limits
+  // *NOTE*: settings will be inherited by any child processes
+  bool use_fd_based_reactor = useReactor;
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  use_fd_based_reactor &&= !RPG_COMMON_USE_WFMO_REACTOR;
+#endif
+  if (!RPG_Common_Tools::initResourceLimits(use_fd_based_reactor, // file descriptors
+                                            true))                // stack traces
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::initResouceLimits(), aborting\n")));
+
+    return EXIT_FAILURE;
   } // end IF
 
   // step2b: init GLIB / G(D|T)K[+] / GNOME ?

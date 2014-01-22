@@ -1551,7 +1551,7 @@ RPG_Net_Common_Tools::retrieveSignalInfo(const int& signal_in,
   char pw_buf[BUFSIZ];
   passwd pw_struct;
   passwd* pw_ptr = NULL;
-  // *PORTABILITY*: this isn't completely portable... (man getpwuid_r)
+// *PORTABILITY*: this isn't completely portable... (man getpwuid_r)
   if (::getpwuid_r(info_in.si_uid,
                    &pw_struct,
                    pw_buf,

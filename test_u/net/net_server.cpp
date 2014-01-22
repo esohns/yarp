@@ -260,63 +260,6 @@ process_arguments(const int argc_in,
   return true;
 }
 
-bool
-init_coreDumping()
-{
-  RPG_TRACE(ACE_TEXT("::init_coreDumping"));
-
-  // step1: retrieve current values
-  // *PORTABILITY*: this is entirely un-portable so we do an ugly hack...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  rlimit core_limit;
-  if (ACE_OS::getrlimit(RLIMIT_CORE,
-                        &core_limit) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
-
-    return false;
-  } // end IF
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("corefile limits (before) [soft: \"%u\", hard: \"%u\"]...\n"),
-//              core_limit.rlim_cur,
-//              core_limit.rlim_max));
-
-  // set soft/hard limits to unlimited...
-  core_limit.rlim_cur = RLIM_INFINITY;
-  core_limit.rlim_max = RLIM_INFINITY;
-  if (ACE_OS::setrlimit(RLIMIT_CORE,
-                        &core_limit) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::setrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
-
-    return false;
-  } // end IF
-
-  // verify...
-  if (ACE_OS::getrlimit(RLIMIT_CORE,
-                        &core_limit) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
-
-    return false;
-  } // end IF
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("unset corefile limits [soft: %u, hard: %u]...\n"),
-             core_limit.rlim_cur,
-             core_limit.rlim_max));
-#else
-  //ACE_DEBUG((LM_DEBUG,
-  //           ACE_TEXT("corefile limits have not been implemented on this platform, continuing\n")));
-#endif
-
-  return true;
-}
-
 void
 init_signals(const bool& allowUserRuntimeStats_in,
              ACE_Sig_Set& signals_inout)
@@ -791,6 +734,9 @@ do_work(const unsigned int& maxNumConnections_in,
     return;
   } // end IF
 
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("started event dispatch...\n")));
+
   // step4c: start listening
   CBData_in.listener_handle->init(listeningPortNumber_in,
                                   useLoopback_in);
@@ -1023,12 +969,17 @@ ACE_TMAIN(int argc_in,
     return EXIT_SUCCESS;
   } // end IF
 
-  // step1f: we WILL (try to) coredump !
-  // *NOTE*: this setting will be inherited by any child processes (daemon mode)
-  if (!init_coreDumping())
+  // step1f: set process resource limits
+  // *NOTE*: settings will be inherited by any child processes
+  bool use_fd_based_reactor = useReactor;
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  use_fd_based_reactor &&= !RPG_COMMON_USE_WFMO_REACTOR;
+#endif
+  if (!RPG_Common_Tools::initResourceLimits(use_fd_based_reactor, // file descriptors
+                                            true))                // stack traces
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init_coreDumping(), aborting\n")));
+               ACE_TEXT("failed to RPG_Common_Tools::initResouceLimits(), aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF
@@ -1036,7 +987,7 @@ ACE_TMAIN(int argc_in,
   // step1g: init GLIB / G(D|T)K[+] / GNOME ?
   if (!UIFile.empty())
   {
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
     g_thread_init(NULL);
 #endif
     gdk_threads_init();

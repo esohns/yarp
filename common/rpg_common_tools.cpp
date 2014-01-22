@@ -857,6 +857,123 @@ RPG_Common_Tools::isLinux()
   return (kernel.find(ACE_TEXT_ALWAYS_CHAR("Linux"), 0) == 0);
 }
 
+bool
+RPG_Common_Tools::initResourceLimits(const bool& fileDescriptors_in,
+                                     const bool& stackTraces_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::initResourceLimits"));
+
+  if (fileDescriptors_in)
+  {
+// *PORTABILITY*: this is almost entirely non-portable...
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+    rlimit fd_limit;
+
+    //  // debug info
+    //  if (ACE_OS::getrlimit(RLIMIT_NOFILE,
+    //                        &fd_limit) == -1)
+    //  {
+    //    ACE_DEBUG((LM_ERROR,
+    //               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_NOFILE): \"%m\", aborting\n")));
+
+    //    return false;
+    //  } // end IF
+
+    //   ACE_DEBUG((LM_DEBUG,
+    //              ACE_TEXT("file descriptor limits (before) [soft: \"%u\", hard: \"%u\"]...\n"),
+    //              fd_limit.rlim_cur,
+    //              fd_limit.rlim_max));
+
+      // set soft/hard limits to unlimited...
+      fd_limit.rlim_cur = RLIM_INFINITY;
+      fd_limit.rlim_max = RLIM_INFINITY;
+      if (ACE_OS::setrlimit(RLIMIT_NOFILE,
+                            &fd_limit) == -1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_OS::setrlimit(RLIMIT_NOFILE): \"%m\", aborting\n")));
+
+        return false;
+      } // end IF
+
+      // verify...
+      if (ACE_OS::getrlimit(RLIMIT_NOFILE,
+                            &fd_limit) == -1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_NOFILE): \"%m\", aborting\n")));
+
+        return false;
+      } // end IF
+
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("unset file descriptor limits, now: [soft: %u, hard: %u]...\n"),
+                 fd_limit.rlim_cur,
+                 fd_limit.rlim_max));
+#else
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("file descriptor limits are not available on this platform, continuing\n")));
+#endif
+  } // end IF
+
+// -----------------------------------------------------------------------------
+
+  if (!stackTraces_in)
+    return true;
+
+// *PORTABILITY*: this is almost entirely non-portable...
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  rlimit core_limit;
+
+//  // debug info
+//  if (ACE_OS::getrlimit(RLIMIT_CORE,
+//                        &core_limit) == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
+
+//    return false;
+//  } // end IF
+
+//   ACE_DEBUG((LM_DEBUG,
+//              ACE_TEXT("corefile limits (before) [soft: \"%u\", hard: \"%u\"]...\n"),
+//              core_limit.rlim_cur,
+//              core_limit.rlim_max));
+
+  // set soft/hard limits to unlimited...
+  core_limit.rlim_cur = RLIM_INFINITY;
+  core_limit.rlim_max = RLIM_INFINITY;
+  if (ACE_OS::setrlimit(RLIMIT_CORE,
+                        &core_limit) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::setrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
+
+    return false;
+  } // end IF
+
+  // verify...
+  if (ACE_OS::getrlimit(RLIMIT_CORE,
+                        &core_limit) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_CORE): \"%m\", aborting\n")));
+
+    return false;
+  } // end IF
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("unset corefile limits, now: [soft: %u, hard: %u]...\n"),
+             core_limit.rlim_cur,
+             core_limit.rlim_max));
+#else
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("corefile limits are not available on this platform, continuing\n")));
+#endif
+
+  return true;
+}
+
 void
 RPG_Common_Tools::getCurrentUserName(std::string& username_out,
                                      std::string& realname_out)
