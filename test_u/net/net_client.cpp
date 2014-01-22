@@ -1009,6 +1009,7 @@ ACE_TMAIN(int argc_in,
 
   // step1f: set process resource limits
   // *NOTE*: settings will be inherited by any child processes
+  // *TODO*: the reasoning here is incomplete
   bool use_fd_based_reactor = useReactor;
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
   use_fd_based_reactor &&= !RPG_COMMON_USE_WFMO_REACTOR;
@@ -1017,7 +1018,7 @@ ACE_TMAIN(int argc_in,
                                             true))                // stack traces
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initResouceLimits(), aborting\n")));
+               ACE_TEXT("failed to RPG_Common_Tools::initResourceLimits(), aborting\n")));
 
     return EXIT_FAILURE;
   } // end IF

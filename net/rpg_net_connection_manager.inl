@@ -296,10 +296,7 @@ RPG_Net_Connection_Manager<ConfigurationType,
     return;
   } // end IF
 
-  // sanity check
-	// *NOTE*: at this stage, the connection should normally only be registered
-	// with the reactor (I/O [and notifications])...
-	ACE_ASSERT(connection->count() >= 2);
+	// clean up
 	connection->decrease();
 
 	// if there are no more connections, signal any waiters...

@@ -869,24 +869,26 @@ RPG_Common_Tools::initResourceLimits(const bool& fileDescriptors_in,
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
     rlimit fd_limit;
 
-    //  // debug info
-    //  if (ACE_OS::getrlimit(RLIMIT_NOFILE,
-    //                        &fd_limit) == -1)
-    //  {
-    //    ACE_DEBUG((LM_ERROR,
-    //               ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_NOFILE): \"%m\", aborting\n")));
+      if (ACE_OS::getrlimit(RLIMIT_NOFILE,
+                            &fd_limit) == -1)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_OS::getrlimit(RLIMIT_NOFILE): \"%m\", aborting\n")));
 
-    //    return false;
-    //  } // end IF
+        return false;
+      } // end IF
 
-    //   ACE_DEBUG((LM_DEBUG,
-    //              ACE_TEXT("file descriptor limits (before) [soft: \"%u\", hard: \"%u\"]...\n"),
-    //              fd_limit.rlim_cur,
-    //              fd_limit.rlim_max));
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("file descriptor limits (before) [soft: \"%u\", hard: \"%u\"]...\n"),
+//                  fd_limit.rlim_cur,
+//                  fd_limit.rlim_max));
 
-      // set soft/hard limits to unlimited...
-      fd_limit.rlim_cur = RLIM_INFINITY;
-      fd_limit.rlim_max = RLIM_INFINITY;
+      // *TODO*: really unset these limits; note that this probably requires
+      // patching/recompiling the kernel...
+      // *NOTE*: setting/raising the max limit probably requires CAP_SYS_RESOURCE
+      fd_limit.rlim_cur = fd_limit.rlim_max;
+//      fd_limit.rlim_cur = RLIM_INFINITY;
+//      fd_limit.rlim_max = RLIM_INFINITY;
       if (ACE_OS::setrlimit(RLIMIT_NOFILE,
                             &fd_limit) == -1)
       {

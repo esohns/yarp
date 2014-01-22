@@ -7,7 +7,7 @@ known issues (tough):
         event dispatcher (pro/reactor)
 - the timer implementation is unstable (--> try another timer queue ?)
 [- [XML] validation throws an exception (see https://issues.apache.org/jira/browse/XERCESC-1975)]
-+ [net] connection cleanup is broken
+- [net] confirm valgrind reports of minor memory leak in RPG_Net_Module_SocketHandler::bisectMessages
 
 known issues (easy):
 + [magic] define more (low-level) spells, player generation fails sometimes...
