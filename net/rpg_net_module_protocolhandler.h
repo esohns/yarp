@@ -53,7 +53,7 @@ class RPG_Net_Module_ProtocolHandler
             const unsigned int&,     // session ID
             const unsigned int& = 0, // peer "ping" interval (ms) [0 --> OFF]
             const bool& = true,      // automatically reply to "ping" messages (auto-"pong")
-            const bool& = false);    // print dot ('.') for every received "ping" to stderr
+            const bool& = false);    // print dot ('.') for every received "pong" to stdlog
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
@@ -88,7 +88,7 @@ class RPG_Net_Module_ProtocolHandler
   unsigned int            myCounter;
   unsigned int            myPingInterval;
   bool                    myAutomaticPong;
-  bool                    myPrintPingDot;
+  bool                    myPrintPongDot;
   bool                    myIsInitialized;
 };
 

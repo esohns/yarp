@@ -223,7 +223,7 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 			ACE_ASSERT(user_data);
 
 			// dispatch any pending events
-			GDK_THREADS_ENTER();
+			gdk_threads_enter();
 			while (gtk_events_pending())
 				if (gtk_main_iteration_do(FALSE)) // NEVER block !
 				{
@@ -245,7 +245,7 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
           break; // ignore any remaining GTK events
 //          } // end lock scope
         } // end IF
-      GDK_THREADS_LEAVE();
+      gdk_threads_leave();
 
 			break;
 		}

@@ -48,12 +48,12 @@ update_display_cb(gpointer userData_in)
   ACE_ASSERT(message_handler);
 
   // *WARNING*: callbacks scheduled via g_idle_add need to be protected by
-  // GDK_THREADS_ENTER/GDK_THREADS_LEAVE !
-  GDK_THREADS_ENTER();
+  // gdk_threads_enter/gdk_threads_leave !
+  gdk_threads_enter();
 
   message_handler->update();
 
-  GDK_THREADS_LEAVE();
+  gdk_threads_leave();
 
   // --> reschedule
   return TRUE;

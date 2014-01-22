@@ -28,15 +28,15 @@
 #include "IRC_client_gui_messagehandler.h"
 #include "IRC_client_tools.h"
 
-#include <rpg_client_ui_tools.h>
+#include "rpg_client_ui_tools.h"
 
-#include <rpg_net_protocol_defines.h>
-#include <rpg_net_protocol_module_IRChandler.h>
-#include <rpg_net_protocol_tools.h>
+#include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_module_IRChandler.h"
+#include "rpg_net_protocol_tools.h"
 
-#include <rpg_net_defines.h>
+#include "rpg_net_defines.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/OS.h>
 

@@ -610,7 +610,7 @@ RPG_Common_File_Tools::getLogFilename(const std::string& programName_in)
 
   // sanity check(s): log file exists ?
   // Yes ? --> try to delete it then !
-  if (!RPG_Common_File_Tools::isReadable(result))
+  if (RPG_Common_File_Tools::isReadable(result))
   {
     if (!RPG_Common_File_Tools::deleteFile(result))
     {

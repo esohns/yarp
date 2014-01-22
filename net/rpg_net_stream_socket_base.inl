@@ -57,13 +57,15 @@ RPG_Net_StreamSocketBase<ConfigurationType,
   // clean up
   if (inherited::myUserData.module)
   {
-    if (myStream.remove(inherited::myUserData.module->name(),
-                        0) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Stream::remove(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+    if (myStream.find(inherited::myUserData.module->name()))
+      if (myStream.remove(inherited::myUserData.module->name(),
+                          ACE_Module_Base::M_DELETE_NONE) == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_Stream::remove(\"%s\"): \"%m\", continuing\n"),
+                   ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
 
-    delete inherited::myUserData.module;
+    if (inherited::myUserData.delete_module)
+      delete inherited::myUserData.module;
   } // end IF
 
   if (myCurrentReadBuffer)
@@ -148,6 +150,7 @@ RPG_Net_StreamSocketBase<ConfigurationType,
       return -1;
     }
     inherited::myUserData.module = clone;
+    inherited::myUserData.delete_module = true;
   } // end IF
   // step1c: init stream
   if (!myStream.init(inherited::myUserData))

@@ -11,3 +11,5 @@ known issues (tough):
 
 known issues (easy):
 + [magic] define more (low-level) spells, player generation fails sometimes...
++ [client/UI] switch from libglade to GtkBuilder
+

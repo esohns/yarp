@@ -6,6 +6,12 @@ AM_CPPFLAGS = -DRPG_NET_BUILD_DLL -I$(top_srcdir)/../common \
 
 SUBDIRS = stream . protocol client server
 
+# define dependencies
+.: stream
+protocol: .
+client: .
+server: .
+
 noinst_HEADERS = stdafx.h
 include_HEADERS = rpg_net_common.h \
   rpg_net_asynchsockethandler_t.h \

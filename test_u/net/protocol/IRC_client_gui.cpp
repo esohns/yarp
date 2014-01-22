@@ -600,11 +600,11 @@ do_work(const unsigned int& numThreadPoolThreads_in,
   // dispatch GTK events
   // *WARNING*: this doesn't really make any sense - still, it seems to be a
   // requirement to somehow "initialize" the mutex from the "main" thread...
-  // IOW: without this, GDK_THREADS_ENTER(), when first invoked from a child thread,
+  // IOW: without this, gdk_threads_enter(), when first invoked from a child thread,
   // will block indefinetly (go on, try it !)
-  GDK_THREADS_ENTER();
+  gdk_threads_enter();
   gtk_main();
-  GDK_THREADS_LEAVE();
+  gdk_threads_leave();
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished GTK event dispatching...\n")));

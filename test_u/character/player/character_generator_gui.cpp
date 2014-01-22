@@ -599,7 +599,7 @@ do_work(const std::string& schemaDirectory_in,
   userData.current_sprite = userData.sprite_gallery.begin();
   userData.is_transient = false;
 
-  GDK_THREADS_ENTER();
+  gdk_threads_enter();
   if (!do_initGUI(graphicsDirectory_in, // graphics directory
                   UIFile_in,            // glade file
                   userData))            // GTK cb data
@@ -607,22 +607,22 @@ do_work(const std::string& schemaDirectory_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize UI, aborting\n")));
 
-    GDK_THREADS_LEAVE();
+    gdk_threads_leave();
 
     return;
   } // end IF
-  GDK_THREADS_LEAVE();
+  gdk_threads_leave();
   ACE_ASSERT(main_dialog);
 
   // step2: setup event loops
   // - UI events --> GTK main loop
   // *WARNING*: this doesn't really make any sense - still, it seems to be a
   // requirement to somehow "initialize" the mutex from the "main" thread...
-  // IOW: without this, GDK_THREADS_ENTER(), when first invoked from a child thread,
+  // IOW: without this, gdk_threads_enter(), when first invoked from a child thread,
   // will block indefinetly (go on, try it !)
-  GDK_THREADS_ENTER();
+  gdk_threads_enter();
   gtk_main();
-  GDK_THREADS_LEAVE();
+  gdk_threads_leave();
 
   // done handling UI events
   ACE_DEBUG((LM_DEBUG,

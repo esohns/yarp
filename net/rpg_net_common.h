@@ -68,7 +68,7 @@ struct RPG_Net_ConfigPOD
   // ************************ connection config data ***************************
   unsigned int               peerPingInterval; // ms {0 --> OFF}
   bool                       pingAutoAnswer;
-  bool                       printPingMessages;
+  bool                       printPongMessages;
   int                        socketBufferSize;
   RPG_Stream_IAllocator*     messageAllocator;
   unsigned int               bufferSize;
@@ -80,6 +80,7 @@ struct RPG_Net_ConfigPOD
   // *************************** stream config data ****************************
   ACE_Notification_Strategy* notificationStrategy;
   MODULE_TYPE*               module;
+  bool                       delete_module;
   unsigned int               sessionID; // (== socket handle !)
   unsigned int               statisticsReportingInterval;
 	bool                       printFinalReport;

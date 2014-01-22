@@ -207,6 +207,7 @@ struct RPG_Net_Protocol_ConfigPOD
   // ************ stream config data ****************
   ACE_Notification_Strategy*        notificationStrategy;
   MODULE_TYPE*                      module;
+  bool                              delete_module;
   bool                              crunchMessageBuffers;
   bool                              debugScanner;
   bool                              debugParser;

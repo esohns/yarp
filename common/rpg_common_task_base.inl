@@ -50,7 +50,12 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
 
   // sanity check(s)
   if (inherited::thr_count() > 0)
-    shutdown();
+  {
+    ACE_DEBUG((LM_WARNING,
+               ACE_TEXT("outstanding threads --> check implementation, continuing\n")));
+
+    close(1);
+  } // end IF
 
   if (inherited::wait() == -1)
     ACE_DEBUG((LM_ERROR,

@@ -43,18 +43,14 @@ extern "C"
 {
 #endif /* __cplusplus */
 G_MODULE_EXPORT gboolean
-update_display_cb(gpointer act_in)
+idle_update_log_display_cb(gpointer act_in)
 {
-  RPG_TRACE(ACE_TEXT("::update_display_cb"));
+  RPG_TRACE(ACE_TEXT("::idle_update_log_display_cb"));
 
   Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
   ACE_ASSERT(data);
   // sanity check(s)
   ACE_ASSERT(data->xml);
-
-  // *WARNING*: callbacks scheduled via g_idle_add need to be protected by
-  // GDK_THREADS_ENTER/GDK_THREADS_LEAVE !
-  GDK_THREADS_ENTER();
 
   GtkTextView* view =
       GTK_TEXT_VIEW(glade_xml_get_widget(data->xml,
@@ -66,7 +62,7 @@ update_display_cb(gpointer act_in)
                ACE_TEXT_ALWAYS_CHAR(NET_UI_TEXTVIEW_NAME)));
 
     // clean up
-    GDK_THREADS_LEAVE();
+//    gdk_threads_leave();
 
     return FALSE;
   } // end IF
@@ -78,7 +74,7 @@ update_display_cb(gpointer act_in)
                view));
 
     // clean up
-    GDK_THREADS_LEAVE();
+//    gdk_threads_leave();
 
     return FALSE;
   } // end IF
@@ -96,7 +92,7 @@ update_display_cb(gpointer act_in)
     if (data->log_stack.empty())
     {
       // clean up
-      GDK_THREADS_LEAVE();
+//      gdk_threads_leave();
 
       return TRUE; // nothing to do...
     } // end IF
@@ -110,7 +106,7 @@ update_display_cb(gpointer act_in)
                  data->log_stack.front().c_str()));
 
       // clean up
-      GDK_THREADS_LEAVE();
+//      gdk_threads_leave();
 
       return FALSE;
     } // end IF
@@ -146,11 +142,117 @@ update_display_cb(gpointer act_in)
   gtk_text_view_scroll_mark_onscreen(view,
                                      mark);
 
-  // clean up
-  GDK_THREADS_LEAVE();
+  return TRUE;
+}
+
+G_MODULE_EXPORT gboolean
+idle_update_info_display_cb(gpointer act_in)
+{
+  RPG_TRACE(ACE_TEXT("::idle_update_info_display_cb"));
+
+  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
+  ACE_ASSERT(data);
+  // sanity check(s)
+  ACE_ASSERT(data->xml);
+
+  GtkSpinButton* spinbutton =
+      GTK_SPIN_BUTTON(glade_xml_get_widget(data->xml,
+                                          ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
+  if (!spinbutton)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
+
+    return FALSE;
+  } // end IF
+
+  { // synch access
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(data->lock);
+    for (Net_GTK_EventsIterator_t iterator = data->event_stack.begin();
+         iterator != data->event_stack.end();
+         iterator++)
+    {
+      switch (*iterator)
+      {
+        case NET_GTKEVENT_CONNECT:
+        {
+          // update info label
+          gtk_spin_button_spin(spinbutton,
+                               GTK_SPIN_STEP_FORWARD,
+                               1.0);
+
+          break;
+        }
+        case NET_GTKEVENT_DISCONNECT:
+        {
+          // update info label
+          gtk_spin_button_spin(spinbutton,
+                               GTK_SPIN_STEP_BACKWARD,
+                               1.0);
+
+          break;
+        }
+        case NET_GTKEVENT_STATISTICS:
+        {
+          // *TODO*
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid/unknown event type (was: %d), continuing\n"),
+                     *iterator));
+
+          break;
+        }
+      } // end SWITCH
+    } // end FOR
+
+    data->event_stack.clear();
+  } // end lock scope
+
+  // enable buttons ?
+  gint current_value = gtk_spin_button_get_value_as_int(spinbutton);
+  GtkWidget* widget = NULL;
+  if (data->listener_handle == NULL) // <-- client
+  {
+    widget =
+        GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                        ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
+    if (!widget)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
+                 ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
+    else
+      gtk_widget_set_sensitive(widget,
+                               (current_value > 0));
+  } // end IF
+  widget =
+      GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
+  if (!widget)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
+               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
+  else
+    gtk_widget_set_sensitive(widget, (current_value > 0));
+  if (data->listener_handle == NULL) // <-- client
+  {
+    widget = GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                             ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
+    if (!widget)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
+                 ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
+    else
+      gtk_widget_set_sensitive(widget, (current_value > 0));
+  } // end IF
 
   return TRUE;
 }
+
+// -----------------------------------------------------------------------------
 
 G_MODULE_EXPORT gint
 button_connect_clicked_cb(GtkWidget* widget_in,
@@ -176,34 +278,6 @@ button_connect_clicked_cb(GtkWidget* widget_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
                signal));
-
-  // enable buttons
-  GtkWidget* widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, TRUE);
-  widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, TRUE);
-  widget = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, TRUE);
 
   return FALSE;
 } // button_connect_clicked_cb
@@ -235,29 +309,6 @@ button_close_clicked_cb(GtkWidget* widget_in,
                  ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
                  signal));
 
-  // disable buttons ?
-  if (num_connections <= 1)
-  {
-    gtk_widget_set_sensitive(widget_in, FALSE);
-    GtkWidget* widget =
-        GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                        ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-    if (!widget)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-    else
-      gtk_widget_set_sensitive(widget, FALSE);
-    widget = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                             ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-    if (!widget)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-    else
-      gtk_widget_set_sensitive(widget, FALSE);
-  } // end IF
-
   return FALSE;
 } // button_close_clicked_cb
 
@@ -273,26 +324,6 @@ button_close_all_clicked_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->xml);
 
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-
-  // disable buttons
-  GtkWidget* widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, FALSE);
-  gtk_widget_set_sensitive(widget_in, FALSE);
-  widget = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, FALSE);
 
   return FALSE;
 } // button_close_all_clicked_cb
@@ -403,34 +434,6 @@ togglebutton_stress_toggled_cb(GtkWidget* widget_in,
   else
     gtk_widget_set_sensitive(widget,
                              !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget_in)));
-  bool enable = (RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections() > 0);
-  widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, enable);
-  widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, enable);
-  widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, enable);
 
   return FALSE;
 }
@@ -438,95 +441,45 @@ togglebutton_stress_toggled_cb(GtkWidget* widget_in,
 // -----------------------------------------------------------------------------
 
 G_MODULE_EXPORT gint
-button_start_clicked_cb(GtkWidget* widget_in,
-                        gpointer act_in)
+togglebutton_listen_toggled_cb(GtkWidget* widget_in,
+                               gpointer act_in)
 {
-  RPG_TRACE(ACE_TEXT("::button_start_clicked_cb"));
-
-  ACE_UNUSED_ARG(widget_in);
-  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
-  ACE_ASSERT(data);
-  // sanity check(s)
-  ACE_ASSERT(data->xml);
-  ACE_ASSERT(data->listener_handle);
-
-  try
-  {
-    data->listener_handle->start();
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_Server_IListener::start(): \"%m\", continuing\n")));
-  } // end catch
-
-  // enable buttons
-  gtk_widget_set_sensitive(widget_in, FALSE);
-  GtkWidget* widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_STOPBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_STOPBUTTON_NAME)));
-  else
-    gtk_widget_set_sensitive(widget, TRUE);
-
-  return FALSE;
-} // button_start_clicked_cb
-
-G_MODULE_EXPORT gint
-button_stop_clicked_cb(GtkWidget* widget_in,
-                       gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::button_stop_clicked_cb"));
+  RPG_TRACE(ACE_TEXT("::togglebutton_listen_toggled_cb"));
 
   Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
   ACE_ASSERT(data);
   // sanity check(s)
+  ACE_ASSERT(widget_in);
   ACE_ASSERT(data->xml);
   ACE_ASSERT(data->listener_handle);
 
-  try
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget_in)))
   {
-    data->listener_handle->stop();
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Net_Server_IListener::stop(): \"%m\", continuing\n")));
-  } // end catch
-
-  // enable buttons
-  gtk_widget_set_sensitive(widget_in, FALSE);
-  GtkWidget* widget =
-      GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_STARTBUTTON_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_STARTBUTTON_NAME)));
+    try
+    {
+      data->listener_handle->start();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_Server_IListener::start(): \"%m\", continuing\n")));
+    } // end catch
+  } // end IF
   else
-    gtk_widget_set_sensitive(widget, TRUE);
+  {
+    try
+    {
+      data->listener_handle->stop();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_Server_IListener::stop(): \"%m\", continuing\n")));
+    } // end catch
+  } // end IF
 
   return FALSE;
-} // button_stop_clicked_cb
-
-G_MODULE_EXPORT gint
-button_close_all_clicked_cb_2(GtkWidget* widget_in,
-                              gpointer act_in)
-{
-  RPG_TRACE(ACE_TEXT("::button_close_all_clicked_cb_2"));
-
-  ACE_UNUSED_ARG(act_in);
-
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-
-  // enable buttons
-  gtk_widget_set_sensitive(widget_in, FALSE);
-
-  return FALSE;
-} // button_close_all_clicked_cb_2
+} // togglebutton_listen_toggled_cb
 
 G_MODULE_EXPORT gint
 button_report_clicked_cb(GtkWidget* widget_in,

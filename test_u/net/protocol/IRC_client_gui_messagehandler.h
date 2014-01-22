@@ -23,8 +23,8 @@
 
 #include "IRC_client_gui_common.h"
 
-#include <rpg_net_protocol_common.h>
-#include <rpg_net_protocol_iIRCControl.h>
+#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_iIRCControl.h"
 
 #include <gtk/gtk.h>
 
@@ -41,7 +41,7 @@ class IRC_Client_GUI_MessageHandler
 {
  public:
   // ctor for default handler (== server log)
-  // *WARNING*: ctors/dtor need GDK_THREADS_ENTER/GDK_THREADS_LEAVE protection
+  // *WARNING*: ctors/dtor need gdk_threads_enter/gdk_threads_leave protection
   // (or call from gtk_main context...)
   IRC_Client_GUI_MessageHandler(GtkTextView*);                 // text view
   // ctor for regular channel handler
@@ -62,7 +62,7 @@ class IRC_Client_GUI_MessageHandler
 //   const std::string getChannel() const;
 
   // *WARNING*: any method below this point needs to be either:
-  // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
+  // - protected by gdk_threads_enter/gdk_threads_leave
   // - called from gtk_main context
 
   // display (local) text

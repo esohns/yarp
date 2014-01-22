@@ -211,23 +211,17 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
     myConnector->abort();
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->stop();
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+    // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
+    // dispatched by reactor thread(s), there is no real reason to wait here)
+    //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // step2: stop GTK event dispatch
     RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
 
     // step3: stop reactor (&& proactor, if applicable)
-    int result = ACE_Reactor::instance()->end_event_loop();
-    if (result == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::end_event_loop(): \"%m\", continuing\n")));
-    if (!myUseReactor)
-    {
-      result = ACE_Proactor::instance()->end_event_loop();
-      if (result == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Proactor::end_event_loop(): \"%m\", continuing\n")));
-    } // end IF
+    RPG_Net_Common_Tools::finiEventDispatch(true,          // stop reactor ?
+                                            !myUseReactor, // stop proactor ?
+                                            -1);           // group ID (--> don't block !)
   } // end IF
 
   return 0;

@@ -21,8 +21,8 @@
 #ifndef IRC_CLIENT_GUI_COMMON_H
 #define IRC_CLIENT_GUI_COMMON_H
 
-#include <rpg_net_protocol_common.h>
-#include <rpg_net_protocol_iIRCControl.h>
+#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_iIRCControl.h"
 
 #include <gtk/gtk.h>
 

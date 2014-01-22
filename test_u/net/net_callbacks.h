@@ -27,7 +27,8 @@
 extern "C"
 {
 #endif /* __cplusplus */
-G_MODULE_EXPORT gboolean update_display_cb(gpointer);
+G_MODULE_EXPORT gboolean idle_update_log_display_cb(gpointer);
+G_MODULE_EXPORT gboolean idle_update_info_display_cb(gpointer);
 // -----------------------------------------------------------------------------
 G_MODULE_EXPORT gint button_connect_clicked_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_close_clicked_cb(GtkWidget*, gpointer);
@@ -35,9 +36,7 @@ G_MODULE_EXPORT gint button_close_all_clicked_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_ping_clicked_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint togglebutton_stress_toggled_cb(GtkWidget*, gpointer);
 // -----------------------------------------------------------------------------
-G_MODULE_EXPORT gint button_start_clicked_cb(GtkWidget*, gpointer);
-G_MODULE_EXPORT gint button_stop_clicked_cb(GtkWidget*, gpointer);
-G_MODULE_EXPORT gint button_close_all_clicked_cb_2(GtkWidget*, gpointer);
+G_MODULE_EXPORT gint togglebutton_listen_toggled_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_report_clicked_cb(GtkWidget*, gpointer);
 // -----------------------------------------------------------------------------
 G_MODULE_EXPORT gint button_about_clicked_cb(GtkWidget*, gpointer);

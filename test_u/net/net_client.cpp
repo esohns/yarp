@@ -353,7 +353,7 @@ init_ui(const std::string& UIFile_in,
   }
 
   // step1: load widget tree
-  GDK_THREADS_ENTER();
+  gdk_threads_enter();
   userData_out.xml = glade_xml_new(UIFile_in.c_str(), // definition file
                                    NULL,              // root widget --> construct all
                                    NULL);             // domain
@@ -364,7 +364,7 @@ init_ui(const std::string& UIFile_in,
                ACE_TEXT(UIFile_in.c_str())));
 
     // clean up
-    GDK_THREADS_LEAVE();
+    gdk_threads_leave();
 
     return false;
   } // end IF
@@ -385,7 +385,17 @@ init_ui(const std::string& UIFile_in,
                                                             ACE_TEXT_ALWAYS_CHAR(NET_UI_ABOUTDIALOG_NAME)));
   ACE_ASSERT(about_dialog);
 
-  // step3: init text view, setup auto-scrolling
+  // step3: init info view
+  GtkSpinButton* spinbutton = GTK_SPIN_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                                                   ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
+  ACE_ASSERT(spinbutton);
+  gtk_spin_button_set_range(spinbutton,
+                            0.0,
+                            std::numeric_limits<unsigned int>::max());
+//  gtk_entry_set_editable(GTK_ENTRY(spinbutton),
+//                         FALSE);
+
+  // step4: init text view, setup auto-scrolling
   GtkTextBuffer* buffer = gtk_text_buffer_new(NULL); // text tag table --> create new
   ACE_ASSERT(buffer);
   GtkTextView* view = GTK_TEXT_VIEW(glade_xml_get_widget(userData_out.xml,
@@ -401,7 +411,7 @@ init_ui(const std::string& UIFile_in,
                ACE_TEXT(NET_UI_LOG_FONTDESCRIPTION)));
 
     // clean up
-    GDK_THREADS_LEAVE();
+    gdk_threads_leave();
 
     return false;
   } // end IF
@@ -413,7 +423,7 @@ init_ui(const std::string& UIFile_in,
                ACE_TEXT("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
 
     // clean up
-    GDK_THREADS_LEAVE();
+    gdk_threads_leave();
 
     return false;
   } // end IF
@@ -440,18 +450,44 @@ init_ui(const std::string& UIFile_in,
 //                              TRUE);
   g_object_unref(buffer);
 
-  // schedule asynchronous updates of the log view area
-  guint event_source_id = g_idle_add(update_display_cb,
-                                     &userData_out);
-  ACE_UNUSED_ARG(event_source_id);
+  // schedule asynchronous updates of the log view
+  guint event_source_id = gdk_threads_add_idle(idle_update_log_display_cb,
+                                               &userData_out);
+  if (event_source_id > 0)
+    userData_out.event_source_ids.push_back(event_source_id);
+  else
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gdk_threads_add_idle(): \"%m\", aborting\n")));
 
-  // step4a: connect default signals
+    // clean up
+    gdk_threads_leave();
+
+    return false;
+  } // end ELSE
+  // schedule asynchronous updates of the info view
+  event_source_id = gdk_threads_add_idle(idle_update_info_display_cb,
+                                         &userData_out);
+  if (event_source_id > 0)
+    userData_out.event_source_ids.push_back(event_source_id);
+  else
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gdk_threads_add_idle(): \"%m\", aborting\n")));
+
+    // clean up
+    gdk_threads_leave();
+
+    return false;
+  } // end ELSE
+
+  // step5a: connect default signals
   g_signal_connect(dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(gtk_widget_destroyed),
                    NULL);
 
-   // step4b: connect custom signals
+   // step5b: connect custom signals
   glade_xml_signal_connect_data(userData_out.xml,
                                 ACE_TEXT_ALWAYS_CHAR("button_connect_clicked_cb"),
                                 G_CALLBACK(button_connect_clicked_cb),
@@ -481,19 +517,19 @@ init_ui(const std::string& UIFile_in,
                                 G_CALLBACK(togglebutton_stress_toggled_cb),
                                 &userData_out);
 
-//  // step5: auto-connect signals/slots
+//  // step6: auto-connect signals/slots
 //  glade_xml_signal_autoconnect(userData_out.xml);
 
-//   // step6: use correct screen
+//   // step7: use correct screen
 //   if (parentWidget_in)
 //     gtk_window_set_screen(GTK_WINDOW(dialog),
 //                           gtk_widget_get_screen(const_cast<GtkWidget*> (//parentWidget_in)));
 
-  // step6: draw main dialog
+  // step8: draw main dialog
   gtk_widget_show_all(dialog);
 
   // clean up
-  GDK_THREADS_LEAVE();
+  gdk_threads_leave();
 
   return true;
 }
@@ -561,7 +597,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
   config.peerPingInterval = ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? 0
                                                                                          : serverPingInterval_in);
   config.pingAutoAnswer = true;
-  config.printPingMessages = true;
+  config.printPongMessages = true;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
@@ -571,6 +607,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
 //  config.notificationStrategy = NULL;
   config.module = (!UIFile_in.empty() ? &event_handler
                                       : NULL);
+//  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
 //  config.sessionID = 0; // (== socket handle !)
 //  config.statisticsReportingInterval = 0; // == off
@@ -732,6 +769,14 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                    ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                    CBData_in.timer_id));
 		} // end IF
+//		{ // synch access
+//			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
+
+//			for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
+//					 iterator != CBData_in.event_source_ids.end();
+//					 iterator++)
+//				g_source_remove(*iterator);
+//		} // end lock scope
     RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     connector->abort();
@@ -779,11 +824,20 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
              ACE_TEXT("finished event dispatch...\n")));
 
   // step7: clean up
-  // *NOTE*: any action timer has been cancelled and connections have been
-  // aborted by now...
+  // *NOTE*: any action timer has been cancelled, connections have been
+  // aborted and any GTK event dispatcher has returned by now...
   RPG_Common_Tools::finiSignals(signal_set,
                                 useReactor_in,
                                 previous_signal_actions);
+//  { // synch access
+//    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
+
+//		for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
+//				 iterator != CBData_in.event_source_ids.end();
+//				 iterator++)
+//			g_source_remove(*iterator);
+//	} // end lock scope
+//  RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
   RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
   delete connector;
 

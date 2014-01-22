@@ -134,7 +134,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
                                   config_in.sessionID,
                                   config_in.peerPingInterval,
                                   config_in.pingAutoAnswer,
-                                  config_in.printPingMessages)) // print ('.') for received "ping"s...
+                                  config_in.printPongMessages)) // print ('.') for received "pong"s...
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),

@@ -55,9 +55,33 @@ RPG_Stream_StreamModule_t<TaskSynchType,
   RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModule_t::~RPG_Stream_StreamModule_t"));
 
   // *NOTE*: the base class will invoke close() which will
-  // invoke module_close() and flush on every task...
+  // invoke module_closed() and flush on every task...
   // *WARNING*: all member tasks will be destroyed by the time that happens...
   // --> close() all modules in advance so it doesn't happen here !!!
+
+  // sanity check: on the stream ?
+  if (inherited::next() == NULL)
+  {
+    //ACE_DEBUG((LM_WARNING,
+    //           ACE_TEXT("manually closing module: \"%s\"\n"),
+    //           ACE_TEXT_ALWAYS_CHAR(module->name())));
+
+    int result = -1;
+    try
+    {
+      result = inherited::close(ACE_Module_Base::M_DELETE_NONE);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("%s: caught exception in ACE_Module::close(M_DELETE_NONE), continuing\n"),
+                 inherited::name()));
+    }
+    if (result == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("%s: failed to ACE_Module::close(M_DELETE_NONE): \"%s\", continuing\n"),
+                 inherited::name()));
+  } // end IF
 }
 
 // ----------------------------------------------------------------------------
@@ -85,4 +109,32 @@ RPG_Stream_StreamModuleInputOnly_t<TaskSynchType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_StreamModuleInputOnly_t::~RPG_Stream_StreamModuleInputOnly_t"));
 
+  // *NOTE*: the base class will invoke close() which will
+  // invoke module_closed() and flush on every task...
+  // *WARNING*: all member tasks will be destroyed by the time that happens...
+  // --> close() all modules in advance so it doesn't happen here !!!
+
+  // sanity check: on the stream ?
+  if (inherited::next() == NULL)
+  {
+    //ACE_DEBUG((LM_WARNING,
+    //           ACE_TEXT("manually closing module: \"%s\"\n"),
+    //           ACE_TEXT_ALWAYS_CHAR(module->name())));
+
+    int result = -1;
+    try
+    {
+      result = inherited::close(ACE_Module_Base::M_DELETE_NONE);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("%s: caught exception in ACE_Module::close(M_DELETE_NONE), continuing\n"),
+                 inherited::name()));
+    }
+    if (result == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("%s: failed to ACE_Module::close(M_DELETE_NONE): \"%s\", continuing\n"),
+                 inherited::name()));
+  } // end IF
 }

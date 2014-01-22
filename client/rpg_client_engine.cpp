@@ -650,7 +650,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     {
       if (myWidgets)
       {
-        GDK_THREADS_ENTER();
+        gdk_threads_enter();
         GtkWidget* widget = glade_xml_get_widget(myWidgets,
                                                  ACE_TEXT_ALWAYS_CHAR("part"));
         ACE_ASSERT(widget);
@@ -660,7 +660,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         gdk_window_deiconify(toplevel);
         // emit a signal...
         gtk_button_clicked(GTK_BUTTON(widget));
-        GDK_THREADS_LEAVE();
+        gdk_threads_leave();
       } // end IF
 
       do_action = false;

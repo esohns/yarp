@@ -24,7 +24,7 @@
 #define NET_UI_GTKEVENT_RESOLUTION              20 // ms
 #define NET_UI_DIALOG_NAME                      "dialog"
 #define NET_UI_ABOUTDIALOG_NAME                 "aboutdialog"
-#define NET_UI_NUMCONNECTIONS_NAME              "label_num_connections"
+#define NET_UI_NUMCONNECTIONS_NAME              "spinbutton"
 #define NET_UI_TEXTVIEW_NAME                    "textview"
 #define NET_UI_SCROLLMARK_NAME                  "insert"
 #define NET_UI_ACTIONS_NAME                     "vbuttonbox"

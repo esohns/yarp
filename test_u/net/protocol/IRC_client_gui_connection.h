@@ -47,7 +47,7 @@ class IRC_Client_GUI_Connection
  public:
   // *WARNING*: make sure the ctor/dtor calls are made either:
   // - by the main thread (servicing the gtk_main event loop)
-  // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
+  // - protected by gdk_threads_enter/gdk_threads_leave
   IRC_Client_GUI_Connection(GtkBuilder*,                   // main builder handle
                             RPG_Net_Protocol_IIRCControl*, // controller handle
                             ACE_Thread_Mutex*,             // connections lock handle
@@ -71,7 +71,7 @@ class IRC_Client_GUI_Connection
 
   // *WARNING*: callers need protection
   // - by the main thread (servicing the gtk_main event loop)
-  // - protected by GDK_THREADS_ENTER/GDK_THREADS_LEAVE
+  // - protected by gdk_threads_enter/gdk_threads_leave
   std::string getActiveID(); // *NOTE*: can be a channel/nick !
   IRC_Client_GUI_MessageHandler* getActiveHandler();
   void createMessageHandler(const std::string&); // channel/nick

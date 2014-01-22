@@ -21,19 +21,9 @@
 
 #include "net_eventhandler.h"
 
-#include "net_defines.h"
 #include "net_common.h"
 
-#include "rpg_client_ui_tools.h"
-
-#include "rpg_net_common.h"
-
 #include "rpg_common_macros.h"
-
-#include <glade/glade.h>
-#include <gtk/gtk.h>
-
-#include <sstream>
 
 Net_EventHandler::Net_EventHandler(Net_GTK_CBData_t* CBData_in)
  : myCBData(CBData_in)
@@ -55,51 +45,9 @@ Net_EventHandler::start()
 {
   RPG_TRACE(ACE_TEXT("Net_EventHandler::start"));
 
-  // sanity check(s)
-  ACE_ASSERT(myCBData->xml);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myCBData->lock);
 
-  GDK_THREADS_ENTER();
-
-  // update info label
-  GtkLabel* label =
-      GTK_LABEL(glade_xml_get_widget(myCBData->xml,
-                                     ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
-  if (!label)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
-
-    // clean up
-    GDK_THREADS_LEAVE();
-
-    return;
-  } // end IF
-  // *NOTE*: increment, because the current connection will be registered only
-  // after this returns...
-  unsigned int num_connections =
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections() + 1;
-  std::stringstream converter;
-  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << num_connections;
-  gchar* converted_text = RPG_Client_UI_Tools::Locale2UTF8(converter.str());
-  if (!converted_text)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
-               converter.str().c_str()));
-
-    // clean up
-    GDK_THREADS_LEAVE();
-
-    return;
-  } // end IF
-  gtk_label_set_text(label,
-                     converted_text);
-
-  // clean up
-  g_free(converted_text);
-  GDK_THREADS_LEAVE();
+  myCBData->event_stack.push_back(NET_GTKEVENT_CONNECT);
 }
 
 void
@@ -107,6 +55,7 @@ Net_EventHandler::notify(const RPG_Net_Message& message_in)
 {
   RPG_TRACE(ACE_TEXT("Net_EventHandler::notify"));
 
+  // *TODO*
   ACE_UNUSED_ARG(message_in);
 }
 
@@ -115,51 +64,7 @@ Net_EventHandler::end()
 {
   RPG_TRACE(ACE_TEXT("Net_EventHandler::end"));
 
-  // sanity check(s)
-  ACE_ASSERT(myCBData->xml);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myCBData->lock);
 
-  GDK_THREADS_ENTER();
-
-  // update info label
-  GtkLabel* label =
-      GTK_LABEL(glade_xml_get_widget(myCBData->xml,
-                                     ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
-  if (!label)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
-
-    // clean up
-    GDK_THREADS_LEAVE();
-
-    return;
-  } // end IF
-  // *NOTE*: decrement, because the current connection will be de-registered only
-  // after this returns...
-  unsigned int num_connections =
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
-  if (num_connections > 0)
-    num_connections--;
-  std::stringstream converter;
-  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter << num_connections;
-  gchar* converted_text = RPG_Client_UI_Tools::Locale2UTF8(converter.str());
-  if (!converted_text)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
-               converter.str().c_str()));
-
-    // clean up
-    GDK_THREADS_LEAVE();
-
-    return;
-  } // end IF
-  gtk_label_set_text(label,
-                     converted_text);
-
-  // clean up
-  g_free(converted_text);
-  GDK_THREADS_LEAVE();
+  myCBData->event_stack.push_back(NET_GTKEVENT_DISCONNECT);
 }

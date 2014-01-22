@@ -28,9 +28,6 @@
 #include <ace/Version.h>
 #include <ace/Get_Opt.h>
 #include <ace/Profile_Timer.h>
-//#include <ace/Reactor.h>
-//#include <ace/TP_Reactor.h>
-//#include <ace/Proactor.h>
 #include <ace/Signal.h>
 #include <ace/Sig_Handler.h>
 #include <ace/High_Res_Timer.h>
@@ -144,7 +141,7 @@ event_timer_SDL_cb(Uint32 interval_in,
   } // end lock scope
 
   // dispatch a pending GTK event
-  GDK_THREADS_ENTER();
+  gdk_threads_enter();
   if (gtk_events_pending())
   {
     // there are pending GTK events --> trigger an event
@@ -155,7 +152,7 @@ event_timer_SDL_cb(Uint32 interval_in,
                  ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                  ACE_TEXT(SDL_GetError())));
   } // end IF
-  GDK_THREADS_LEAVE();
+  gdk_threads_leave();
 
   // trigger regular screen refreshes !
   sdl_event.type = RPG_CLIENT_SDL_TIMEREVENT;
@@ -1240,7 +1237,7 @@ do_work(const RPG_Client_Config& config_in,
   user_data.level_engine          = &level_engine;
   user_data.map_config            = config_in.map_config;
 
-  GDK_THREADS_ENTER();
+  gdk_threads_enter();
   if (!do_initGUI(config_in.glade_file,    // glade file
                   user_data,               // GTK cb data
                   config_in.video_config)) // SDL video config
@@ -1249,13 +1246,13 @@ do_work(const RPG_Client_Config& config_in,
                ACE_TEXT("failed to initialize video, aborting\n")));
 
     // clean up
-    GDK_THREADS_LEAVE();
+    gdk_threads_leave();
     RPG_Client_Common_Tools::fini();
     RPG_Engine_Common_Tools::fini();
 
     return;
   } // end IF
-  GDK_THREADS_LEAVE();
+  gdk_threads_leave();
   ACE_ASSERT(user_data.screen);
   ACE_ASSERT(user_data.xml);
 
@@ -1399,7 +1396,7 @@ do_work(const RPG_Client_Config& config_in,
 //   user_data.previous_window = NULL;
 //   user_data.main_window = &mainWindow;
 //   user_data.map_window = &mapWindow;
-//   GDK_THREADS_ENTER();
+//   gdk_threads_enter();
 //   guint SDLEventHandlerID = gtk_idle_add(do_SDLEventLoop_GTK_cb,
 //                                          &user_data);
 //   ACE_DEBUG((LM_DEBUG,
@@ -1409,7 +1406,7 @@ do_work(const RPG_Client_Config& config_in,
 //   guint quitHandlerID = gtk_quit_add(0,                   // main level: 0 (current)
 //                                      gtk_quit_handler_cb, // handler
 //                                      &user_data);          // user data
-//   GDK_THREADS_LEAVE();
+//   gdk_threads_leave();
 //   if (quitHandlerID == 0)
 //   {
 //     ACE_DEBUG((LM_ERROR,
@@ -1430,7 +1427,7 @@ do_work(const RPG_Client_Config& config_in,
   // ************ connection config data ************
   config.peerPingInterval = 0; // *NOTE*: don't ping the server...
   config.pingAutoAnswer = true;
-//  config.printPingMessages = false;
+//  config.printPongMessages = false;
   config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
   config.messageAllocator = &messageAllocator;
   config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
@@ -1705,7 +1702,7 @@ do_work(const RPG_Client_Config& config_in,
       case RPG_CLIENT_SDL_GTKEVENT:
       {
         // (at least one) GTK event has arrived --> process pending events
-        GDK_THREADS_ENTER();
+        gdk_threads_enter();
         while (gtk_events_pending())
           if (gtk_main_iteration_do(FALSE)) // NEVER block !
           {
@@ -1726,7 +1723,7 @@ do_work(const RPG_Client_Config& config_in,
               }
             } // end lock scope
           } // end IF
-        GDK_THREADS_LEAVE();
+        gdk_threads_leave();
 
         break;
       }

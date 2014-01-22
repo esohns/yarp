@@ -45,9 +45,9 @@ class RPG_Net_Export RPG_Net_Common_Tools
                                  const unsigned int&, // number of thread-pool threads
                                  int&);               // return value: group ID
   // *NOTE*: this blocks until worker(s) join(s)
-  static void finiEventDispatch(const bool&,  // stop reactor
-                                const bool&,  // stop proactor
-                                const int&);  // group ID (>= 0 ? join threads)
+  static void finiEventDispatch(const bool&,       // stop reactor ?
+                                const bool&,       // stop proactor ?
+                                const int& = -1);  // group ID (>= 0 ? join thread(s))
 
   // --- general tools ---
   // *NOTE*: if (the first argument == 0), the trailing ":0" will be cropped from the return value !

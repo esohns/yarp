@@ -53,6 +53,7 @@ class RPG_Client_Export RPG_Client_GTK_Manager
                               RPG_Common_TimePolicy_t> inherited;
 
   // override ACE_Task_Base member(s)
+  virtual int close(u_long = 0);
   virtual int svc(void);
 
   virtual ~RPG_Client_GTK_Manager();

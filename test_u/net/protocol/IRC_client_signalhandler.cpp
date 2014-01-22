@@ -21,10 +21,10 @@
 
 #include "IRC_client_signalhandler.h"
 
-#include <rpg_net_protocol_common.h>
+#include "rpg_net_protocol_common.h"
 
-#include <rpg_net_common_tools.h>
-#include <rpg_net_connection_manager.h>
+#include "rpg_net_common_tools.h"
+#include "rpg_net_connection_manager.h"
 
 #include <ace/Reactor.h>
 #include <ace/Proactor.h>

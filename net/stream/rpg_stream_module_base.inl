@@ -46,9 +46,15 @@ RPG_Stream_Module_Base_t<TaskSynchType,
   // *WARNING*: apparently, we cannot use "this" at this stage
   // --> children must do this...
 //   // set links to ourselves...
-//   // *NOTE*: essential to enable dereferencing (name-lookups, controlled shutdown, etc)
+//   // *NOTE*: essential to enable dereferencing (name-lookups, controlled
+  //shutdown, etc)
 //   myWriter->mod_ = this;
 //   myReader->mod_ = this;
+
+  // *IMPORTANT NOTE*: when using this ACE_Module ctor, the next_ member isn't
+  // initialized properly; this causes mayhem in a corner case so do it here...
+  // *TODO*: notify the ACE people
+  inherited::next(NULL);
 }
 
 template <typename TaskSynchType,
@@ -63,7 +69,7 @@ RPG_Stream_Module_Base_t<TaskSynchType,
   RPG_TRACE(ACE_TEXT("RPG_Stream_Module_Base_t::~RPG_Stream_Module_Base_t"));
 
   // *NOTE*: the base class will invoke close() which will
-  // invoke module_close() and flush on every task...
+  // invoke module_closed() and flush on every task...
   // *WARNING*: all member tasks will be destroyed by the time that happens...
   // --> close() all modules in advance so it doesn't happen here !!!
 }

@@ -380,7 +380,7 @@ IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection()
                this));
   }
 
-  GDK_THREADS_ENTER();
+  gdk_threads_enter();
 
   std::string server_tab_label_text;
   // synch access
@@ -419,7 +419,7 @@ IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection()
   // clean up
   g_object_unref(myCBData.builder);
 
-  GDK_THREADS_LEAVE();
+  gdk_threads_leave();
 
   // remove ourselves from the connection list
   // synch access
@@ -462,7 +462,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // remember nickname
           myCBData.nickname = message_in.params.front();
 
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // --> display (starting) nickname
           // set server tab nickname label
@@ -486,7 +486,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           ACE_ASSERT(hbox);
           gtk_widget_set_sensitive(GTK_WIDGET(hbox), TRUE);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           // *WARNING*: falls through !
         }
@@ -506,11 +506,11 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
         case RPG_Net_Protocol_IRC_Codes::RPL_GLOBALUSERS:      // 266
         case RPG_Net_Protocol_IRC_Codes::RPL_INVITING:         // 341
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           log(message_in);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -543,7 +543,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           } while (current_position != std::string::npos);
 
           std::string message_string;
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           for (string_list_const_iterator_t iterator = list.begin();
                iterator != list.end();
@@ -582,13 +582,13 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
             log(message_string);
           } // end FOR
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
         case RPG_Net_Protocol_IRC_Codes::RPL_UNAWAY:           // 305
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // *WARNING*: needs the lock protection, otherwise
           // there is a race...
@@ -602,13 +602,13 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           log(message_in);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
         case RPG_Net_Protocol_IRC_Codes::RPL_NOWAWAY:          // 306
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // *WARNING*: needs the lock protection, otherwise
           // there is a race...
@@ -622,13 +622,13 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           log(message_in);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
         case RPG_Net_Protocol_IRC_Codes::RPL_ENDOFWHO:         // 315
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // retrieve server tab users store
           GtkComboBox* server_tab_users_combobox = GTK_COMBO_BOX(gtk_builder_get_object(myCBData.builder,
@@ -641,13 +641,13 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           log(message_in);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTSTART:        // 321
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // retrieve server tab channels store
           GtkListStore* server_tab_channels_store = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
@@ -657,13 +657,13 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // clear the store
           gtk_list_store_clear(server_tab_channels_store);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           // *WARNING*: falls through !
         }
         case RPG_Net_Protocol_IRC_Codes::RPL_LISTEND:          // 323
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // retrieve server tab channels store
           GtkComboBox* server_tab_channels_combobox = GTK_COMBO_BOX(gtk_builder_get_object(myCBData.builder,
@@ -673,13 +673,13 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 
           log(message_in);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
         case RPG_Net_Protocol_IRC_Codes::RPL_LIST:             // 322
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // retrieve server tab channels store
           GtkListStore* server_tab_channels_store = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
@@ -704,7 +704,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                        ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
                        (*param_iterator).c_str()));
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
 
             break;
           } // end IF
@@ -721,7 +721,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // clean up
           g_free(converted_text);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -743,12 +743,12 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               break;
             } // end IF
 
-            GDK_THREADS_ENTER();
+            gdk_threads_enter();
 
             (*handler_iterator).second->setTopic(((message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::RPL_NOTOPIC) ? IRC_CLIENT_GUI_DEF_TOPIC_LABEL_TEXT
                                                                                                                           : message_in.params.back()));
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
           } // end lock scope
 
           break;
@@ -774,7 +774,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           converter >> hop_count;
           real_name = message_in.params.back().substr(ws_position + 1);
 
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // retrieve server tab users store
           GtkListStore* server_tab_users_store = GTK_LIST_STORE(gtk_builder_get_object(myCBData.builder,
@@ -791,7 +791,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // ignore own record
           if (nick == myCBData.nickname)
           {
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
 
             break;
           } // end IF
@@ -804,7 +804,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                        ACE_TEXT("failed to convert nickname: \"%s\", aborting\n"),
                        nick.c_str()));
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
 
             break;
           } // end IF
@@ -818,7 +818,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
             // clean up
             g_free(converted_nick_string);
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
 
             break;
           } // end IF
@@ -840,7 +840,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           g_free(converted_nick_string);
           g_free(converted_name_string);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -896,7 +896,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               break;
             } // end IF
 
-            GDK_THREADS_ENTER();
+            gdk_threads_enter();
 
             (*handler_iterator).second->members(list);
 
@@ -908,7 +908,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                                                    std::string()); // none
             } // end IF
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
           } // end lock scope
 
           break;
@@ -934,11 +934,11 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               break;
             } // end IF
 
-            GDK_THREADS_ENTER();
+            gdk_threads_enter();
 
             (*handler_iterator).second->endMembers();
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
           } // end lock scope
 
           break;
@@ -954,7 +954,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
         case RPG_Net_Protocol_IRC_Codes::ERR_CHANOPRIVSNEEDED: // 482
         case RPG_Net_Protocol_IRC_Codes::ERR_UMODEUNKNOWNFLAG: // 501
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           log(message_in);
 
@@ -966,7 +966,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               (message_in.command.numeric == RPG_Net_Protocol_IRC_Codes::ERR_UMODEUNKNOWNFLAG))
             error(message_in); // show in statusbar as well...
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -996,7 +996,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           std::string old_nick = myCBData.nickname;
           myCBData.nickname = message_in.params.front();
 
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // --> display (changed) nickname
           // step1: set server tab nickname label
@@ -1026,14 +1026,14 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
             } // end FOR
           } // end lock scope
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           // *WARNING*: falls through !
         }
         case RPG_Net_Protocol_IRCMessage::USER:
         case RPG_Net_Protocol_IRCMessage::QUIT:
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           log(message_in);
 
@@ -1041,7 +1041,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               (command == RPG_Net_Protocol_IRCMessage::QUIT))
             error(message_in); // --> show on statusbar as well...
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -1054,11 +1054,11 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // reply from a successful join request ?
           if (message_in.prefix.origin == myCBData.nickname)
           {
-            GDK_THREADS_ENTER();
+            gdk_threads_enter();
 
             createMessageHandler(message_in.params.front());
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
 
             break;
           } // end IF
@@ -1080,11 +1080,11 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               break;
             } // end IF
 
-            GDK_THREADS_ENTER();
+            gdk_threads_enter();
 
             (*handler_iterator).second->add(message_in.prefix.origin);
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
           } // end lock scope
 
           break;
@@ -1095,14 +1095,14 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // - reply from a successful part request ?
           // - someone left a common channel
 
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // reply from a successful part request ?
           if (message_in.prefix.origin == myCBData.nickname)
           {
             terminateMessageHandler(message_in.params.back());
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
 
             break;
           } // end IF
@@ -1121,14 +1121,14 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                          ACE_TEXT("no handler for channel (was: \"%s\"), aborting\n"),
                          message_in.params.back().c_str()));
 
-              GDK_THREADS_LEAVE();
+              gdk_threads_leave();
 
               break;
             } // end IF
 
             (*handler_iterator).second->remove(message_in.prefix.origin);
 
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
           } // end lock scope
 
           break;
@@ -1143,7 +1143,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           RPG_Net_Protocol_ParametersIterator_t param_iterator = message_in.params.begin();
           param_iterator++;
 
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           if (message_in.params.front() == myCBData.nickname)
           {
@@ -1170,7 +1170,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                            ACE_TEXT("no handler for channel (was: \"%s\"), aborting\n"),
                            message_in.params.front().c_str()));
 
-                GDK_THREADS_LEAVE();
+                gdk_threads_leave();
 
                 break;
               } // end IF
@@ -1185,7 +1185,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // log this event
           log(message_in);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -1206,7 +1206,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               break;
             } // end IF
 
-            GDK_THREADS_ENTER();
+            gdk_threads_enter();
 
             (*handler_iterator).second->setTopic(message_in.params.back());
           } // end lock scope
@@ -1214,7 +1214,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // log this event
           log(message_in);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -1239,7 +1239,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
               break;
             } // end IF
 
-            GDK_THREADS_ENTER();
+            gdk_threads_enter();
 
             (*handler_iterator).second->remove(*param_iterator);
           } // end lock scope
@@ -1247,7 +1247,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           // log this event
           log(message_in);
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -1265,7 +1265,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
           message_text += message_in.params.back();
           message_text += ACE_TEXT_ALWAYS_CHAR("\n");
 
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           // private message ?
           std::string target_id;
@@ -1293,7 +1293,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                                                                         : message_in.params.front()),
                       message_text))
           {
-            GDK_THREADS_LEAVE();
+            gdk_threads_leave();
 
             break;
           } // end IF
@@ -1302,7 +1302,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
                      ACE_TEXT("invalid receiver (was: \"%s\"), aborting\n"),
                      message_in.params.front().c_str()));
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }
@@ -1314,7 +1314,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 #endif
         case RPG_Net_Protocol_IRCMessage::AWAY:
         {
-          GDK_THREADS_ENTER();
+          gdk_threads_enter();
 
           log(message_in);
 
@@ -1325,7 +1325,7 @@ IRC_Client_GUI_Connection::notify(const RPG_Net_Protocol_IRCMessage& message_in)
 #endif
             error(message_in); // --> show on statusbar as well...
 
-          GDK_THREADS_LEAVE();
+          gdk_threads_leave();
 
           break;
         }

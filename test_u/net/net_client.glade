@@ -6,10 +6,12 @@
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="resizable">False</property>
+    <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <property name="has_separator">True</property>
     <property name="program_name">net client</property>
     <property name="version">0.1</property>
     <property name="website">http://www.github.com/esohns/yarp</property>
@@ -42,6 +44,7 @@
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="type_hint">dialog</property>
+    <property name="has_separator">True</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="vbox_outer">
         <property name="visible">True</property>
@@ -190,18 +193,6 @@
                           <placeholder/>
                         </child>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
                           <widget class="GtkLabel" id="label_connections">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -209,10 +200,23 @@
                           </widget>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="label_num_connections">
+                          <widget class="GtkSpinButton" id="spinbutton">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">0</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="editable">False</property>
+                            <property name="has_frame">False</property>
+                            <property name="invisible_char">●</property>
+                            <property name="xalign">1</property>
+                            <property name="caps_lock_warning">False</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">False</property>
+                            <property name="secondary_icon_sensitive">False</property>
+                            <property name="adjustment">0 0 0 1 10 0</property>
+                            <property name="snap_to_ticks">True</property>
+                            <property name="numeric">True</property>
+                            <property name="update_policy">if-valid</property>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -265,6 +269,12 @@
                     <property name="can_focus">False</property>
                     <property name="n_columns">2</property>
                     <property name="homogeneous">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                     <child>
                       <placeholder/>
                     </child>
