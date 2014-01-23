@@ -3,6 +3,8 @@ METASOURCES = AUTO
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DRPG_ITEM_BUILD_DLL -I$(srcdir)/../common -I$(srcdir)/../character -I$(srcdir)/../magic -I$(srcdir)/../chance/dice
 
+SUBDIRS = scripts
+
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h stdafx.h
 include_HEADERS = rpg_item_XML_parser.h rpg_item_XML_tree.h rpg_item_exports.h \
 	rpg_item_XML_types.h rpg_item_armor.h rpg_item_armorcategory.h \

@@ -5,6 +5,8 @@ AM_CPPFLAGS = -DRPG_PLAYER_BUILD_DLL -I$(srcdir)/../../common -I$(srcdir)/.. \
   -I$(srcdir)/../../magic -I$(srcdir)/../../item -I$(srcdir)/../../combat \
   -I$(srcdir)/../../chance/dice
 
+SUBDIRS = scripts
+
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h stdafx.h
 include_HEADERS = rpg_iplayer.h \
   rpg_player_common_tools.h \

@@ -41,7 +41,9 @@
 
 // *NOTE*: need this to import correct PACKAGE_STRING !
 #ifdef HAVE_CONFIG_H
-#include "XML2CppCode-config.h"
+//#include "XML2CppCode-config.h"
+// *TODO*: leave as-is for now (see Yarp/configure.ac)
+#include "config.h"
 #endif
 
 XML_Handler::XML_Handler(const std::string& emitClassQualifiers_in,
@@ -843,7 +845,9 @@ void XML_Handler::insertPreamble(std::ofstream& targetStream_inout)
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #define XML2CPPCODE_PACKAGE_STRING ACE_TEXT("XML2CppCode 0.1")
 #endif
-  targetStream_inout << XML2CPPCODE_PACKAGE_STRING << std::endl;
+//  targetStream_inout << XML2CPPCODE_PACKAGE_STRING << std::endl;
+  // *TODO*: leave as-is for now (see Yarp/configure.ac)
+  targetStream_inout << PACKAGE_STRING << std::endl;
   targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// -------------------------------- * * * -------------------------------- //") << std::endl;
   targetStream_inout << std::endl;
 }

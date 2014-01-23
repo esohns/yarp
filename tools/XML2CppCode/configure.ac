@@ -22,8 +22,8 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 dnl AC_PROG_RANLIB
 
-# init other tools.
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+# init other tools
+AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT
@@ -31,13 +31,9 @@ LT_INIT
 # prefix config.h
 AX_PREFIX_CONFIG_H
 
-# get the cpp compiler flags
-#CXXFLAGS="${CXXFLAGS=}"
 # reset the cpp compiler flags
 CXXFLAGS=
-# this macro is used to get the arguments supplied
-# to the configure script (./configure --enable-debug)
-# Check if we have enable debug support.
+# --> enable debug support ?
 AC_MSG_CHECKING(whether to enable debugging)
 debug_default="no"
 AC_ARG_ENABLE(debug,
@@ -45,19 +41,46 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-#  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
-  CXXFLAGS="-g3 -O0 -Wall"
+  CXXFLAGS="-g -O0 -Wall -D_DEBUG"
   AC_MSG_RESULT(yes)
 else
-#  CXXFLAGS="${CXXFLAGS} -O3 -march=native"
-  CXXFLAGS="-O3 -march=i686"
+  CXXFLAGS="-O3 -march=native -Wall -Werror"
+  AC_MSG_RESULT(no)
+fi
+
+# --> enable tracing support ?
+AC_MSG_CHECKING(whether to enable tracing)
+tracing_default="no"
+AC_ARG_ENABLE(tracing,
+              [ --enable-tracing=[no/yes] turn on tracing [default=$tracing_default]],
+              ,
+              enable_tracing=$tracing_default)
+if test "x$enable_tracing" = "xyes"; then
+  CXXFLAGS="${CXXFLAGS} -DRPG_NTRACE=0"
+  AC_MSG_RESULT(yes)
+else
+  CXXFLAGS="${CXXFLAGS} -DRPG_NTRACE=1"
+  AC_MSG_RESULT(no)
+fi
+
+# --> enable valgrind support ?
+AC_MSG_CHECKING(whether to enable valgrind support)
+valgrind_support_default="no"
+AC_ARG_ENABLE(valgrind,
+              [ --enable-valgrind=[no/yes] turn on valgrind support [default=$valgrind_support_default]],
+              ,
+              enable_valgrind=$valgrind_support_default)
+if test "x$enable_valgrind" = "xyes"; then
+  CXXFLAGS="${CXXFLAGS} -DRPG_ENABLE_VALGRIND_SUPPORT"
+  AC_MSG_RESULT(yes)
+else
   AC_MSG_RESULT(no)
 fi
 
 # export variables (so Makefile substitutions can be made)
 AC_SUBST(CXXFLAGS)
 
-# Checks for libraries.
+# checks for libraries
 # FIXME: Replace `main' with a function in `-lACEXML_Parser':
 AC_CHECK_LIB([ACEXML_Parser], [main])
 # FIXME: Replace `main' with a function in `-lACEXML':
@@ -67,13 +90,13 @@ AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
 
-# Checks for header files.
+# checks for header files
 
-# Checks for typedefs, structures, and compiler characteristics.
+# checks for typedefs, structures, and compiler characteristics
 AC_HEADER_STDBOOL
 AC_TYPE_SIZE_T
 
-# Checks for library functions.
+# checks for library functions
 AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([strerror])
 

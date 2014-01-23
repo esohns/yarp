@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DRPG_NET_BUILD_DLL -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../chance/dice -I$(srcdir)/stream
 
-SUBDIRS = stream . protocol client server
+SUBDIRS = stream . protocol client server scripts
 
 # define dependencies
 .: stream

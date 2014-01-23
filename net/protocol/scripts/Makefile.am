@@ -1,1 +1,6 @@
-EXTRA_DIST = IRCbisect.l IRCparser.y IRCscanner.l
+METASOURCES = AUTO
+
+EXTRA_DIST = IRCbisect.l \
+  IRCparser.y \
+  IRCscanner.l \
+  exports.sh

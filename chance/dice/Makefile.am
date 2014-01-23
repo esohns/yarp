@@ -3,6 +3,8 @@ METASOURCES = AUTO
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(srcdir)/../../common
 
+SUBDIRS = scripts
+
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h stdafx.h
 include_HEADERS = rpg_dice.h rpg_dice_XML_parser.h rpg_dice_XML_tree.h \
 	rpg_dice_XML_types.h rpg_dice_common.h rpg_dice_common_tools.h rpg_dice_dietype.h \

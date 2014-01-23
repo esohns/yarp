@@ -1,6 +1,6 @@
 #!/bin/sh
 # //%%%FILE%%%////////////////////////////////////////////////////////////////////
-# // File Name: generate_all_bindings.bat
+# // File Name: generate_all_bindings.sh
 # //
 # // History:
 # //   Date   |Name | Description of modification
@@ -8,29 +8,30 @@
 # // 20/02/06 | soh | Creation.
 # //%%%FILE%%%////////////////////////////////////////////////////////////////////
 
-DEFAULT_PROJECT_DIR="${HOME}/Projects/yarp"
+#DEFAULT_PROJECT_DIR="${HOME}/Projects/yarp"
+DEFAULT_PROJECT_DIR=.
 PROJECT_DIR=${DEFAULT_PROJECT_DIR}
-# sanity check(s)
-[ ! -d ${PROJECT_DIR} ] && echo "ERROR: invalid project directory (was: \"${PROJECT_DIR}\"), aborting" && exit 1
+## sanity check(s)
+#[ ! -d ${PROJECT_DIR} ] && echo "ERROR: invalid project directory (was: \"${PROJECT_DIR}\"), aborting" && exit 1
 
-# remember current dir...
-pushd . >/dev/null 2>&1
+## remember current dir...
+#pushd . >/dev/null 2>&1
 
-cd ${PROJECT_DIR}
-[ $? -ne 0 ] && echo "ERROR: failed to switch to project directory (was: \"${PROJECT_DIR}\"), aborting" && exit 1
+#cd ${PROJECT_DIR}
+#[ $? -ne 0 ] && echo "ERROR: failed to switch to project directory (was: \"${PROJECT_DIR}\"), aborting" && exit 1
 
 # ..........................................
 
-echo "generating DLL exports headers..."
+echo "generating .so exports headers..."
 ${PROJECT_DIR}/chance/scripts/exports.sh
 ${PROJECT_DIR}/client/scripts/exports.sh
 ${PROJECT_DIR}/net/scripts/exports.sh
 ${PROJECT_DIR}/net/protocol/scripts/exports.sh
 ${PROJECT_DIR}/net/stream/scripts/exports.sh
-[ $? -ne 0 ] && echo "ERROR: failed generating DLL exports headers, aborting" && exit 1
-echo "generating DLL exports headers...DONE"
+[ $? -ne 0 ] && echo "ERROR: failed generating .so exports headers, aborting" && exit 1
+echo "generating .so exports headers...DONE"
 
-:: ..........................................
+# ..........................................
 
 echo "generating XML data bindings..."
 ${PROJECT_DIR}/chance/dice/scripts/bindings.sh
@@ -51,12 +52,11 @@ echo "generating XML data bindings...DONE"
 # ..........................................
 
 echo "generating lex\/yacc parsers..."
-${PROJECT_DIR}/map/scripts/scanner.bat
-${PROJECT_DIR}/map/scripts/parser.bat
-${PROJECT_DIR}/net/protocol/scripts/scanner.bat
-${PROJECT_DIR}/net/protocol/scripts/parser.bat
+${PROJECT_DIR}/map/scripts/scanner.sh
+${PROJECT_DIR}/map/scripts/parser.sh
+${PROJECT_DIR}/net/protocol/scripts/scanner.sh
+${PROJECT_DIR}/net/protocol/scripts/parser.sh
 [ $? -ne 0 ] && echo "ERROR: failed generating lex\/yacc parsers, aborting" && exit 1
 echo "generating lex\/yacc parsers...DONE"
 
 popd
-exit 0

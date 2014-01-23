@@ -3,6 +3,8 @@ METASOURCES = AUTO
 #ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(top_srcdir)/../common
 
+SUBDIRS = scripts
+
 noinst_HEADERS = stdafx.h
 include_HEADERS = rpg_stream.h \
   rpg_stream_allocatorheap.h \

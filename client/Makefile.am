@@ -9,6 +9,8 @@ AM_CPPFLAGS = -DRPG_CLIENT_BUILD_DLL -I$(srcdir)/../common \
               -I$(srcdir)/../character/monster -I$(srcdir)/../character/player \
               -I$(srcdir)/../sound
 
+SUBDIRS = scripts
+
 noinst_HEADERS = stdafx.h
 include_HEADERS = rpg_client_callbacks.h \
   rpg_client_common.h \

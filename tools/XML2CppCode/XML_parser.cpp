@@ -132,7 +132,7 @@ XML_Parser::parseFile(const std::string& emitClassQualifier_in,
     preambleStream.close();
   } // end IF
   XML_Handler handler(emitClassQualifier_in,
-	                  emitStringConversionUtilities_in,
+                      emitStringConversionUtilities_in,
                       emitTaggedUnions_in,
                       schemaFilename,
                       generateIncludeHeader_in,
@@ -150,16 +150,16 @@ XML_Parser::parseFile(const std::string& emitClassQualifier_in,
   }
   catch (const OutOfMemoryException& exception_in)
   {
-	char* message = XMLString::transcode(exception_in.getMessage());
+    char* message = XMLString::transcode(exception_in.getMessage());
     ACE_ASSERT(message);
 
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught OutOfMemoryException: \"%s\", returning\n"),
 			   message));
 
-    // clean up
-	XMLString::release(&message);
-    delete reader;
+		// clean up
+		XMLString::release(&message);
+		delete reader;
     reader = NULL;
 
     return;
@@ -202,6 +202,7 @@ XML_Parser::parseFile(const std::string& emitClassQualifier_in,
   reader = NULL;
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("parsing (XML) file \"%s\"...finished\n"),
-             filename_in.c_str()));
+             ACE_TEXT("parsing (XML) file \"%s\"...finished (%d errors)\n"),
+             filename_in.c_str(),
+             errorCount));
 }

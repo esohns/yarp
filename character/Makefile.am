@@ -3,7 +3,7 @@ METASOURCES = AUTO
 #ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(srcdir)/../common -I$(srcdir)/../item -I$(srcdir)/../magic -I$(srcdir)/../chance/dice -I$(srcdir)/../chance
 
-SUBDIRS = . player monster
+SUBDIRS = . player monster scripts
 
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h stdafx.h
 include_HEADERS = rpg_character_XML_parser.h \

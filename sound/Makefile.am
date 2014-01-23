@@ -3,7 +3,7 @@ METASOURCES = AUTO
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DRPG_SOUND_BUILD_DLL -I$(srcdir)/../common -I$(srcdir)/../chance/dice
 
-SUBDIRS = data
+SUBDIRS = scripts data
 
 noinst_HEADERS = rpg_XMLSchema_XML_types.h stdafx.h
 include_HEADERS = rpg_sound.h rpg_sound_XML_parser.h rpg_sound_XML_types.h \

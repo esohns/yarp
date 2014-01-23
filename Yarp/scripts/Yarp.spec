@@ -2,7 +2,7 @@
 # Please report any problem to KDevelop Team <kdevelop-devel@kdevelop.org>
 # Thanks to Matthias Saou for his explanations on http://freshrpms.net/docs/fight.html
 
-Name: yarp
+Name: Yarp
 Version: 0.1
 Release: 1
 Vendor: N/A
@@ -24,12 +24,21 @@ Prefix: /usr/local
 
 %prep
 %setup -q
-autoreconf
+#autoreconf -i
+#cd tools/XML2CppCode
+#autoreconf -i
+#mkdir build
+#cd build
+#../configure
+#make; make install
 
 %build
 mkdir build
 cd build
-../configure --disable-static
+../configure
+cd ..
+./scripts/generate_all_bindings.sh
+cd build
 make
 
 %install

@@ -9,6 +9,8 @@ AM_CPPFLAGS = -DRPG_ENGINE_BUILD_DLL -DRPG_NET_CLIENT_HAS_DLL \
   -I$(srcdir)/../chance -I$(srcdir)/../net/stream -I$(srcdir)/../net \
   -I$(srcdir)/../net/client
 
+SUBDIRS = scripts
+
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h stdafx.h
 include_HEADERS = rpg_engine_XML_tree.h rpg_engine_common.h \
 	rpg_engine_common_tools.h rpg_engine_defines.h rpg_engine_level.h \

@@ -3,7 +3,7 @@ METASOURCES = AUTO
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DRPG_GRAPHICS_BUILD_DLL -I$(srcdir)/../common -I$(srcdir)/../map
 
-SUBDIRS = data
+SUBDIRS = scripts data
 
 noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h stdafx.h
 include_HEADERS = rpg_graphics_SDL_tools.h rpg_graphics_SDL_window_base.h \

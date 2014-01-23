@@ -5,7 +5,8 @@ AC_INIT([yarp], [0.1], [erik.sohns@web.de], [Yarp], [http://www.yarp.org])
 AC_PREREQ(2.63)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([config.h]
+                  [tools/XML2CppCode/config.h:tools/XML2CppCode/config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
 
 # define meta-package
@@ -21,37 +22,37 @@ AC_CANONICAL_TARGET
 
 AC_LANG([C++])
 
-# Checks for programs.
+# checks for programs
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CPP
-# AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
+# AC_PROG_RANLIB
 AC_PROG_LEX
 AC_PROG_YACC
 
-# init other tools.
+# init other tools
 AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
-LT_INIT([disable-static])
+LT_INIT
 
 # prefix config.h
-AX_PREFIX_CONFIG_H([rpg_config.h], [RPG])
+AX_PREFIX_CONFIG_H([rpg_config.h], [RPG], [config.h])
+#AX_PREFIX_CONFIG_H([tools/XML2CppCode/XML2CppCode-config.h], [XML2CppCode], [tools/XML2CppCode/config.h])
 
 # reset the cpp compiler flags
 CXXFLAGS=
 # --> enable debug support ?
 AC_MSG_CHECKING(whether to enable debugging)
-debugging_default="no"
-AC_ARG_ENABLE(debugging,
-              [ --enable-debugging=[no/yes] turn on debugging [default=$debugging_default]],
+debug_default="no"
+AC_ARG_ENABLE(debug,
+              [ --enable-debug=[no/yes] turn on debugging [default=$debug_default]],
               ,
-              enable_debugging=$debugging_default)
-if test "x$enable_debugging" = "xyes"; then
+              enable_debug=$debug_default)
+if test "x$enable_debug" = "xyes"; then
   CXXFLAGS="-g -O0 -Wall -D_DEBUG"
   AC_MSG_RESULT(yes)
 else
@@ -88,8 +89,7 @@ else
   AC_MSG_RESULT(no)
 fi
 
-# export these variable (so Makefile substitutions
-# can be made.
+# export these variable (so Makefile substitutions can be made
 AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
@@ -105,29 +105,39 @@ AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lxerces-c':
 #AC_CHECK_LIB([xerces-c], [main])
 
-# Checks for header files.
+# checks for header files
 AC_HEADER_STDBOOL
 
-# Checks for typedefs, structures, and compiler characteristics.
+# checks for typedefs, structures, and compiler characteristics.
 
-# Checks for library functions.
+# checks for library functions
 AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile
                  Yarp-${YARP_API_VERSION}.pc:scripts/Yarp.pc.in
                  chance/Makefile
                  chance/dice/Makefile
+                 chance/dice/scripts/Makefile
+                 chance/scripts/Makefile
                  common/Makefile
+                 common/scripts/Makefile
                  magic/Makefile
+                 magic/scripts/Makefile
                  item/Makefile
+                 item/scripts/Makefile
                  character/Makefile
+                 character/scripts/Makefile
                  character/player/Makefile
+                 character/player/scripts/Makefile
                  character/monster/Makefile
+                 character/monster/scripts/Makefile
                  combat/Makefile
+                 combat/scripts/Makefile
                  map/Makefile
                  map/data/Makefile
                  map/scripts/Makefile
                  graphics/Makefile
+                 graphics/scripts/Makefile
                  graphics/data/Makefile
                  graphics/data/creatures/Makefile
                  graphics/data/cursors/Makefile
@@ -137,17 +147,22 @@ AC_CONFIG_FILES([Makefile
                  graphics/data/images/Makefile
                  graphics/data/walls/Makefile
                  sound/Makefile
+                 sound/scripts/Makefile
                  sound/data/Makefile
                  sound/data/ambient/Makefile
                  sound/data/effect/Makefile
                  engine/Makefile
+                 engine/scripts/Makefile
                  net/Makefile
                  net/stream/Makefile
+                 net/stream/scripts/Makefile
                  net/protocol/Makefile
                  net/protocol/scripts/Makefile
                  net/client/Makefile
                  net/server/Makefile
+                 net/scripts/Makefile
                  client/Makefile
+                 client/scripts/Makefile
                  test_u/Makefile
                  test_u/chance/Makefile
                  test_u/character/Makefile
@@ -161,6 +176,10 @@ AC_CONFIG_FILES([Makefile
                  test_u/map/Makefile
                  test_u/net/Makefile
                  test_u/net/protocol/Makefile
-                 test_u/sound/Makefile])
+                 test_u/sound/Makefile
+                 tools/Makefile
+                 tools/XML2CppCode/Makefile
+                 scripts/Makefile])
 
 AC_OUTPUT
+

@@ -1,0 +1,3 @@
+METASOURCES = AUTO
+
+EXTRA_DIST = exports.sh

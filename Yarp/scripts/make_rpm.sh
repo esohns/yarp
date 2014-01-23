@@ -5,26 +5,20 @@
 # parameters:   - $1 ["tarball"] || "binary" || "source" || "all"
 # return value: - 0 success, 1 failure
 
-DEFAULT_PROJECT_DIR="${HOME}/Projects/RPG/Yarp"
+DEFAULT_PROJECT_DIR="${HOME}/Projects/yarp/Yarp"
 PROJECT_DIR=${DEFAULT_PROJECT_DIR}
 # sanity check(s)
 [ ! -d ${PROJECT_DIR} ] && echo "ERROR: invalid project dir (was: \"${PROJECT_DIR}\"), aborting" && exit 1
 
-TARGET_DIR=${PROJECT_DIR}/rpm
+TARGET_DIR=${PROJECT_DIR}/releases
 # sanity check(s)
 [ ! -d ${TARGET_DIR} ] && echo "ERROR: invalid target dir (was: \"${TARGET_DIR}\"), aborting" && exit 1
 
-# remember current dir...
-pushd . >/dev/null 2>&1
-
-cd ${PROJECT_DIR}
-
-SPECFILE=./Yarp.spec
+SPECFILE=${PROJECT_DIR}/scripts/Yarp.spec
 RPMBUILD_EXEC=$(which rpmbuild)
-
 #sanity checks
-[ ! -x ${RPMBUILD} ] && echo "ERROR: invalid \"rpmbuild\" executable \"${RPMBUILD}\" (not executable), aborting" && exit 1
-[ ! -f ${SPECFILE} ] && echo "ERROR: invalid .spec file executable \"${SPECFILE}\" (not a file), aborting" && exit 1
+[ ! -x ${RPMBUILD_EXEC} ] && echo "ERROR: invalid \"rpmbuild\" executable \"${RPMBUILD_EXEC}\" (not executable), aborting" && exit 1
+[ ! -f ${SPECFILE} ] && echo "ERROR: invalid .spec file \"${SPECFILE}\" (not a file), aborting" && exit 1
 
 DEFAULT_BUILD="tarball"
 BUILD=${DEFAULT_BUILD}
@@ -35,27 +29,38 @@ BUILD=${DEFAULT_BUILD}
 # sanity check(s)
 [ "${BUILD}" != "tarball" -a "${BUILD}" != "binary" -a "${BUILD}" != "source" -a "${BUILD}" != "all" ] && echo "ERROR: invalid build (was: \"${BUILD}\"), aborting" && exit 1
 
-# set mode arguments for "rpmbuild"
+# set build mode arguments for "rpmbuild"
 BUILD_MODE="-ta"
 [ "${BUILD}" == "binary" ] && BUILD_MODE="-bb"
 [ "${BUILD}" == "source" ] && BUILD_MODE="-bs"
 [ "${BUILD}" == "all" ] && BUILD_MODE="-ba"
 
+# remember current dir...
+pushd . >/dev/null 2>&1
+
 # make distribution tarball
-cd debug
+BUILD_DIR=${PROJECT_DIR}/build/debug
+# sanity check(s)
+[ ! -d ${BUILD_DIR} ] && echo "ERROR: invalid build dir (was: \"${BUILD_DIR}\"), aborting" && exit 1
+cd ${BUILD_DIR}
 echo "INFO: making distibution tarball..."
 RETVAL=$(make dist >/dev/null 2>&1)
 [ $? -ne 0 ] && echo "ERROR: failed to generate distribution tarball, aborting" && exit 1
 for TARBALL in *.tar.gz; do
+#*NOTE*: rename the tarball to lower-case - necessary for rpmbuild :(, see below
+#  LOWER_TARBALL=$(echo ${TARBALL} | tr [:upper:] [:lower:])
+#  mv ${TARBALL} ${LOWER_TARBALL}
+#  echo "INFO: created \"${LOWER_TARBALL}\"..."
+#  TARBALL=${LOWER_TARBALL}
   echo "INFO: created \"${TARBALL}\"..."
 done
 echo "INFO: making distribution tarball...DONE"
 
 # make rpm
 if [ "${BUILD}" != "tarball" ]; then
- CMDLINE="${RPMBUILD_EXEC} ${BUILD_MODE} ${SPECFILE}"
+  CMDLINE="${RPMBUILD_EXEC} ${BUILD_MODE} ${SPECFILE}"
 else
- CMDLINE="${RPMBUILD_EXEC} ${BUILD_MODE} ${TARBALL}"
+  CMDLINE="${RPMBUILD_EXEC} ${BUILD_MODE} ${TARBALL}"
 fi
 echo "INFO: making rpm..."
 RETVAL=$(${CMDLINE} >/dev/null 2>&1)
@@ -79,7 +84,5 @@ else
 fi
 echo "INFO: cleaning up ...DONE"
 
-# ...go back where we came from
+# ...go back
 popd >/dev/null 2>&1
-
-exit 0

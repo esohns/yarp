@@ -3,7 +3,7 @@ METASOURCES = AUTO
 #ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(srcdir)/../common -I$(srcdir)/dice
 
-SUBDIRS = dice .
+SUBDIRS = dice . scripts
 
 include_HEADERS = rpg_chance_common_tools.h
 

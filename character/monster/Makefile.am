@@ -3,6 +3,8 @@ METASOURCES = AUTO
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DRPG_MONSTER_BUILD_DLL -I$(srcdir)/../../common -I$(srcdir)/../../character -I$(srcdir)/../../magic -I$(srcdir)/../../item -I$(srcdir)/../../combat -I$(srcdir)/../player -I$(srcdir)/../../chance/dice
 
+SUBDIRS = scripts
+
 noinst_HEADERS = rpg_XMLSchema_XML_types.h stdafx.h
 include_HEADERS = rpg_monster_actiontrigger.h \
     rpg_monster_incl.h \
