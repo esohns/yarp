@@ -7,9 +7,7 @@
 #ifndef RPG_MONSTER_SPECIALDEFENSEPROPERTIES_H
 #define RPG_MONSTER_SPECIALDEFENSEPROPERTIES_H
 
-#include "rpg_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Monster_SpecialDefenseProperties
+struct RPG_Monster_SpecialDefenseProperties
  : public RPG_Monster_SpecialBaseProperties
 {
   std::vector<RPG_Monster_DefenseAction> actions;

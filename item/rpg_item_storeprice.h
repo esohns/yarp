@@ -7,9 +7,7 @@
 #ifndef RPG_ITEM_STOREPRICE_H
 #define RPG_ITEM_STOREPRICE_H
 
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_StorePrice
+struct RPG_Item_StorePrice
 {
   unsigned int numGoldPieces;
   unsigned int numSilverPieces;

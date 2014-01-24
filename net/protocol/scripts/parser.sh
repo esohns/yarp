@@ -8,22 +8,23 @@
 #// 20/02/06 | soh | Creation.
 #//%%%FILE%%%////////////////////////////////////////////////////////////////////
 
-# remember where we are
-pushd . >/dev/null 2>&1
-
-# jump to project scripts dir
-PROJECT=net/protocol
-cd ${HOME}/Projects/RPG/${PROJECT}/scripts
+# sanity check(s)
+command -v bison >/dev/null 2>&1 || { echo "bison is not installed, aborting" >&2; exit 1; }
+SUBDIR=net/protocol
+[ ! -d ./${SUBDIR} ] && echo "ERROR: invalid directory (was: ${SUBDIR}), aborting" && exit 1
+[ ! -f ./${SUBDIR}/scripts/IRCparser.y ] && echo "ERROR: invalid file (was: ./${SUBDIR}/scripts/IRCparser.y), aborting" && exit 1
 
 # generate a scanner for bisecting IRC messages from the input stream
-/usr/bin/bison --verbose --graph=parser_graph.txt --xml=parser_graph.xml ./IRCparser.y --report=all --report-file=parser_report.txt --warnings=all
+bison --verbose --graph=parser_graph.txt --xml=parser_graph.xml ./${SUBDIR}/scripts/IRCparser.y --report=all --report-file=parser_report.txt --warnings=all
+[ $? -ne 0 ] && echo "ERROR: failed to bison, aborting" && exit 1
 
-# move the file into our project directory
+# move the files into the project directory
 mv -f position.hh ./..
 mv -f stack.hh ./..
 mv -f location.hh ./..
 mv -f rpg_net_protocol_IRCparser.h ./..
 mv -f rpg_net_protocol_IRCparser.cpp ./..
-
-# go back
-popd >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+ echo "ERROR: failed to mv, aborting"
+ exit 1
+fi

@@ -7,9 +7,7 @@
 #ifndef RPG_MONSTER_PROPERTIESXML_H
 #define RPG_MONSTER_PROPERTIESXML_H
 
-#include "rpg_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Monster_PropertiesXML
+struct RPG_Monster_PropertiesXML
 {
   std::string name;
   RPG_Monster_Size size;

@@ -7,9 +7,7 @@
 #ifndef RPG_COMBAT_DAMAGE_H
 #define RPG_COMBAT_DAMAGE_H
 
-#include "rpg_combat_exports.h"
-
-struct RPG_Combat_Export RPG_Combat_Damage
+struct RPG_Combat_Damage
 {
   std::vector<RPG_Combat_DamageElement> elements;
   bool elementsAreInclusive;

@@ -18,8 +18,6 @@ enum RPG_Map_DoorState
   RPG_MAP_DOORSTATE_INVALID
 };
 
-#include "rpg_map_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -28,7 +26,7 @@ enum RPG_Map_DoorState
 typedef std::map<RPG_Map_DoorState, std::string> RPG_Map_DoorStateToStringTable_t;
 typedef RPG_Map_DoorStateToStringTable_t::const_iterator RPG_Map_DoorStateToStringTableIterator_t;
 
-class RPG_Map_Export RPG_Map_DoorStateHelper
+class RPG_Map_DoorStateHelper
 {
  public:
   inline static void init()

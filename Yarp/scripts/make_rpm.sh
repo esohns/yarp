@@ -5,6 +5,10 @@
 # parameters:   - $1 ["tarball"] || "binary" || "source" || "all"
 # return value: - 0 success, 1 failure
 
+RPMBUILD_EXEC=$(which rpmbuild)
+#sanity checks
+[ ! -x ${RPMBUILD_EXEC} ] && echo "ERROR: invalid \"rpmbuild\" executable \"${RPMBUILD_EXEC}\" (not executable), aborting" && exit 1
+
 DEFAULT_PROJECT_DIR="${HOME}/Projects/yarp/Yarp"
 PROJECT_DIR=${DEFAULT_PROJECT_DIR}
 # sanity check(s)
@@ -15,9 +19,6 @@ TARGET_DIR=${PROJECT_DIR}/releases
 [ ! -d ${TARGET_DIR} ] && echo "ERROR: invalid target dir (was: \"${TARGET_DIR}\"), aborting" && exit 1
 
 SPECFILE=${PROJECT_DIR}/scripts/Yarp.spec
-RPMBUILD_EXEC=$(which rpmbuild)
-#sanity checks
-[ ! -x ${RPMBUILD_EXEC} ] && echo "ERROR: invalid \"rpmbuild\" executable \"${RPMBUILD_EXEC}\" (not executable), aborting" && exit 1
 [ ! -f ${SPECFILE} ] && echo "ERROR: invalid .spec file \"${SPECFILE}\" (not a file), aborting" && exit 1
 
 DEFAULT_BUILD="tarball"

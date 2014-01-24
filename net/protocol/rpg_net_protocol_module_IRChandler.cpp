@@ -22,7 +22,6 @@
 #include "rpg_net_protocol_module_IRChandler.h"
 
 #include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_inotify.h"
 #include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_tools.h"

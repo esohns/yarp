@@ -5,7 +5,10 @@ AM_CPPFLAGS = -I$(srcdir)/../common -I$(srcdir)/../item -I$(srcdir)/../magic -I$
 
 SUBDIRS = . player monster scripts
 
-noinst_HEADERS = rpg_XMLSchema_XML_tree.h rpg_XMLSchema_XML_types.h stdafx.h
+noinst_HEADERS = \
+  rpg_XMLSchema_XML_types.h \
+  stdafx.h
+# rpg_XMLSchema_XML_tree.h
 include_HEADERS = rpg_character_XML_parser.h \
   rpg_character_XML_tree.h \
   rpg_character_XML_types.h \
@@ -42,8 +45,7 @@ include_HEADERS = rpg_character_XML_parser.h \
 
 lib_LTLIBRARIES = libRPG_Character.la
 
-libRPG_Character_la_SOURCES = rpg_XMLSchema_XML_tree.h \
-  rpg_XMLSchema_XML_types.h \
+libRPG_Character_la_SOURCES = \
   rpg_character_XML_parser.cpp \
   rpg_character_XML_parser.h \
   rpg_character_XML_tree.cpp \
@@ -83,10 +85,15 @@ libRPG_Character_la_SOURCES = rpg_XMLSchema_XML_tree.h \
   rpg_character_exports.h \
   rpg_character_XML_tools.h \
   rpg_character_XML_tools.cpp \
-  rpg_character_encumbrance.h
+  rpg_character_encumbrance.h \
+  rpg_XMLSchema_XML_types.h
+# rpg_XMLSchema_XML_tree.h
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
 config_DATA = rpg_character.xsd
 
-EXTRA_DIST = $(config_DATA)
+EXTRA_DIST = $(config_DATA) \
+  rpg_common.xsd \
+  rpg_dice.xsd \
+  rpg_character.map

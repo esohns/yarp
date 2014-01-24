@@ -17,8 +17,6 @@ enum RPG_Magic_AbilityClass
   RPG_MAGIC_ABILITYCLASS_INVALID
 };
 
-#include "rpg_magic_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -27,7 +25,7 @@ enum RPG_Magic_AbilityClass
 typedef std::map<RPG_Magic_AbilityClass, std::string> RPG_Magic_AbilityClassToStringTable_t;
 typedef RPG_Magic_AbilityClassToStringTable_t::const_iterator RPG_Magic_AbilityClassToStringTableIterator_t;
 
-class RPG_Magic_Export RPG_Magic_AbilityClassHelper
+class RPG_Magic_AbilityClassHelper
 {
  public:
   inline static void init()

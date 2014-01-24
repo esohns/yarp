@@ -7,9 +7,7 @@
 #ifndef RPG_CHARACTER_SKILLVALUE_H
 #define RPG_CHARACTER_SKILLVALUE_H
 
-#include "rpg_character_exports.h"
-
-struct RPG_Character_Export RPG_Character_SkillValue
+struct RPG_Character_SkillValue
 {
   RPG_Common_Skill skill;
   signed char rank;

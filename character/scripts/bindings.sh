@@ -14,23 +14,34 @@ command -v XML2CppCode >/dev/null 2>&1 || { echo "XML2CppCode is not installed. 
 command -v xsdcxx >/dev/null 2>&1 || { echo "xsdcxx is not installed. Aborting." >&2; exit 1; }
 
 # generate exports file
-perl /usr/lib/ace/bin/generate_export_file.pl -n RPG_Character > .\..\rpg_character_exports.h
+#PERL_SCRIPT=/usr/lib/ace/bin/generate_export_file.pl
+PERL_SCRIPT=/usr/local/src/ACE_wrappers/bin/generate_export_file.pl
+[ ! -f ${PERL_SCRIPT} ] && echo "ERROR: invalid script file \"${PERL_SCRIPT}\" (not a file), aborting" && exit 1
+perl ${PERL_SCRIPT} -n RPG_Character > ./character/rpg_character_exports.h
+[ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -e -f ./../rpg_character.xsd -i -o ./.. -s -u
+XML2CppCode -e -f ./character/rpg_character.xsd -i -o ./character -s -u
+[ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser/Tree
 # generate "XMLSchema" namespace include file (rpg_character.xsd)
-xsdcxx cxx-parser --char-type char --output-dir ./.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema_XML_types.xsd
+xsdcxx cxx-parser --char-type char --output-dir ./character --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./character/rpg_XMLSchema_XML_types.xsd
+[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate parser include/implementation (rpg_character.xsd)
-xsdcxx cxx-parser --type-map ../rpg_character.map --char-type char --output-dir ./.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Character_Export" --hxx-prologue "#include \"rpg_character_exports.h\"" ../rpg_character.xsd
+xsdcxx cxx-parser --type-map ./character/rpg_character.map --char-type char --output-dir ./character --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Character_Export" --hxx-prologue "#include \"rpg_character_exports.h\"" ./character/rpg_character.xsd
+[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
-# generate "XMLSchema" namespace include file (tree)
-xsdcxx cxx-tree --char-type char --output-dir ./.. --generate-serialization --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema_XML_tree.xsd
-#xsdcxx cxx-tree --char-type char --output-dir ./.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ../rpg_XMLSchema_XML_tree.xsd
+## generate "XMLSchema" namespace include file (tree)
+#xsdcxx cxx-tree --char-type char --output-dir ./character --generate-serialization --generate-xml-schema --hxx-suffix .h #--show-anonymous --show-sloc ./character/rpg_XMLSchema_XML_tree.xsd
+#xsdcxx cxx-tree --char-type char --output-dir ./character --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ./character/rpg_XMLSchema_XML_tree.xsd
+#[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate tree include/implementation (tree)
-xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./.. --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Character_Export" --hxx-prologue "#include \"rpg_character_exports.h\"" ../rpg_character.xsd
-#xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./.. --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Character_Export" --hxx-prologue "#include \"rpg_character_exports.h\"" ../rpg_character.xsd
-
+xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./character --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Character_Export" --hxx-prologue "#include \"rpg_character_exports.h\"" ./character/rpg_character.xsd
+#xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./character --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Character_Export" --hxx-prologue "#include \"rpg_character_exports.h\"" ./character/rpg_character.xsd
+if [ $? -ne 0 ]; then
+ echo "ERROR: failed to xsdcxx, aborting"
+ exit 1
+fi

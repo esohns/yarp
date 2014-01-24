@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_CHARACTER_XML_TREE_H
-#define CXX___RPG_CHARACTER_XML_TREE_H
+#ifndef CXX__CHARACTER_RPG_CHARACTER_XML_TREE_H
+#define CXX__CHARACTER_RPG_CHARACTER_XML_TREE_H
 
 // Begin prologue.
 //
@@ -1867,4 +1867,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Character_Check_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX___RPG_CHARACTER_XML_TREE_H
+#endif // CXX__CHARACTER_RPG_CHARACTER_XML_TREE_H

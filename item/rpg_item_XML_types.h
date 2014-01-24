@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_ITEM_XML_TYPES_H
-#define CXX___RPG_ITEM_XML_TYPES_H
+#ifndef CXX__ITEM_RPG_ITEM_XML_TYPES_H
+#define CXX__ITEM_RPG_ITEM_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -86,13 +86,13 @@ class RPG_Item_DictionaryXML_Type_pskel;
 
 #include "rpg_XMLSchema_XML_types.h"
 
-#include "rpg_magic_incl.h"
-#include "rpg_item_incl.h"
-#include "rpg_item_common.h"
 #include "rpg_dice_incl.h"
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
 #include "rpg_character_incl.h"
+#include "rpg_magic_incl.h"
+#include "rpg_item_incl.h"
+#include "rpg_item_common.h"
 
 #include "rpg_dice_XML_types.h"
 
@@ -1096,4 +1096,4 @@ class RPG_Item_Export RPG_Item_DictionaryXML_Type_pskel: public ::xml_schema::co
 //
 // End epilogue.
 
-#endif // CXX___RPG_ITEM_XML_TYPES_H
+#endif // CXX__ITEM_RPG_ITEM_XML_TYPES_H

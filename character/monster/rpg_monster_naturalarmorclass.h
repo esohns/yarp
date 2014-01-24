@@ -7,9 +7,7 @@
 #ifndef RPG_MONSTER_NATURALARMORCLASS_H
 #define RPG_MONSTER_NATURALARMORCLASS_H
 
-#include "rpg_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Monster_NaturalArmorClass
+struct RPG_Monster_NaturalArmorClass
 {
   signed char normal;
   signed char touch;

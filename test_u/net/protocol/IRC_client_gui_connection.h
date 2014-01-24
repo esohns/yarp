@@ -25,7 +25,6 @@
 
 #include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_iIRCControl.h"
-#include "rpg_net_protocol_inotify.h"
 
 #include <gtk/gtk.h>
 

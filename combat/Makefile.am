@@ -31,4 +31,10 @@ pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
 config_DATA = rpg_combat.xsd
 
-EXTRA_DIST = $(config_DATA)
+EXTRA_DIST = $(config_DATA) \
+  rpg_dice.xsd \
+  rpg_common.xsd \
+  rpg_common_environment.xsd \
+  rpg_character.xsd \
+  rpg_magic.xsd \
+  rpg_combat.map

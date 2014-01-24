@@ -11,26 +11,58 @@ AM_CPPFLAGS = -DRPG_ENGINE_BUILD_DLL -DRPG_NET_CLIENT_HAS_DLL \
 
 SUBDIRS = scripts
 
-noinst_HEADERS = rpg_XMLSchema_XML_tree.h stdafx.h
-include_HEADERS = rpg_engine_XML_tree.h rpg_engine_common.h \
-	rpg_engine_common_tools.h rpg_engine_defines.h rpg_engine_level.h \
-  rpg_engine_exports.h rpg_engine.h rpg_engine_command.h rpg_engine_entitymode.h \
-  rpg_engine_event_common.h rpg_engine_event_manager.h rpg_engine_iclient.h \
+noinst_HEADERS = \
+  stdafx.h
+#  rpg_XMLSchema_XML_tree.h
+include_HEADERS = rpg_engine_XML_tree.h \
+	rpg_engine_common.h \
+	rpg_engine_common_tools.h \
+	rpg_engine_defines.h \
+	rpg_engine_level.h \
+	rpg_engine_exports.h \
+	rpg_engine.h \
+	rpg_engine_command.h \
+	rpg_engine_entitymode.h \
+	rpg_engine_event_common.h \
+	rpg_engine_event_manager.h \
+	rpg_engine_iclient.h \
   rpg_engine_messagequeue.h
 
 lib_LTLIBRARIES = libRPG_Engine.la
 
-libRPG_Engine_la_SOURCES = rpg_XMLSchema_XML_tree.h rpg_engine_XML_tree.cpp \
-	rpg_engine_XML_tree.h rpg_engine_common.h rpg_engine_common_tools.cpp \
-	rpg_engine_common_tools.h rpg_engine_defines.h rpg_engine_level.cpp \
-  rpg_engine_level.h rpg_engine_exports.h rpg_engine.h rpg_engine.cpp \
-  rpg_engine_command.h rpg_engine_entitymode.h rpg_engine_event_common.h \
-  rpg_engine_event_manager.h rpg_engine_event_manager.cpp rpg_engine_iclient.h \
-  rpg_engine_messagequeue.h rpg_engine_messagequeue.cpp
+libRPG_Engine_la_SOURCES = rpg_engine_XML_tree.cpp \
+	rpg_engine_XML_tree.h \
+	rpg_engine_common.h \
+	rpg_engine_common_tools.cpp \
+	rpg_engine_common_tools.h \
+	rpg_engine_defines.h \
+	rpg_engine_level.cpp \
+	rpg_engine_level.h \
+	rpg_engine_exports.h \
+	rpg_engine.h \
+	rpg_engine.cpp \
+	rpg_engine_command.h \
+	rpg_engine_entitymode.h \
+	rpg_engine_event_common.h \
+	rpg_engine_event_manager.h \
+	rpg_engine_event_manager.cpp \
+	rpg_engine_iclient.h \
+	rpg_engine_messagequeue.h \
+	rpg_engine_messagequeue.cpp
+#  rpg_XMLSchema_XML_tree.h
 libRPG_Engine_la_CPPFLAGS	= $(AM_CPPFLAGS) $(pkg_libs_CFLAGS)
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
 config_DATA = rpg_engine.xsd
 
-EXTRA_DIST = $(config_DATA)
+EXTRA_DIST = $(config_DATA) \
+  rpg_dice.xsd \
+  rpg_common.xsd \
+  rpg_common_environment.xsd \
+  rpg_character.xsd \
+  rpg_magic.xsd \
+  rpg_item.xsd \
+  rpg_player.xsd \
+  rpg_map.xsd \
+  rpg_graphics.xsd

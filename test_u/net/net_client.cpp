@@ -89,6 +89,12 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-a           : alternating mode [") << false << "]" << std::endl;
@@ -100,7 +106,14 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-r           : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s           : server ping interval (millisecond(s)) [") << NET_CLIENT_DEF_SERVER_PING_INTERVAL << ACE_TEXT("] {0 --> OFF}") << std::endl;
   std::cout << ACE_TEXT("-t           : trace information [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"") << NET_CLIENT_DEF_UI_FILE << "\"] {\"\" --> no GUI}" << std::endl;
+  std::string path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("net");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_DEF_UI_FILE);
+  std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"") << path.c_str() << "\"] {\"\" --> no GUI}" << std::endl;
   std::cout << ACE_TEXT("-v           : print version information and exit [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-x [VALUE]   : #dispatch threads [") << RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-y           : run stress-test [") << false << ACE_TEXT("]") << std::endl;
@@ -125,6 +138,12 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
+
   // init results
 	alternatingMode_out = false;
   maxNumConnections_out = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
@@ -135,7 +154,14 @@ process_arguments(const int argc_in,
   useReactor_out = RPG_NET_USES_REACTOR;
   serverPingInterval_out = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   traceInformation_out = false;
-  UIFile_out = NET_CLIENT_DEF_UI_FILE;
+  std::string path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("net");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_DEF_UI_FILE);
+  UIFile_out = path;
   printVersionAndExit_out = false;
 	numDispatchThreads_out = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
   runStressTest_out = false;
@@ -909,6 +935,12 @@ ACE_TMAIN(int argc_in,
 //  } // end IF
 //#endif
 
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
+
   // step1a set defaults
 	Net_Client_TimeoutHandler::ActionMode_t actionMode = Net_Client_TimeoutHandler::ACTION_NORMAL;
   bool alternatingMode                               = false;
@@ -920,7 +952,14 @@ ACE_TMAIN(int argc_in,
   bool useReactor                                    = RPG_NET_USES_REACTOR;
   unsigned int serverPingInterval                    = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   bool traceInformation                              = false;
-  std::string UIFile                                 = NET_CLIENT_DEF_UI_FILE;
+  std::string path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("net");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_DEF_UI_FILE);
+  std::string UIFile                                 = path;
   bool printVersionAndExit                           = false;
 	unsigned int numDispatchThreads                    = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
   bool runStressTest                                 = false;

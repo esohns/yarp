@@ -85,6 +85,15 @@ libRPG_Monster_la_SOURCES = rpg_monster_actiontrigger.h \
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
-config_DATA = rpg_monster.xsd rpg_monster.xml
+config_DATA = rpg_monster.xsd \
+  rpg_monster.xml
 
-EXTRA_DIST = $(config_DATA)
+EXTRA_DIST = $(config_DATA) \
+  rpg_dice.xsd \
+  rpg_common.xsd \
+  rpg_common_environment.xsd \
+  rpg_character.xsd \
+  rpg_magic.xsd \
+  rpg_item.xsd \
+  rpg_combat.xsd \
+  rpg_monster.map

@@ -56,7 +56,7 @@ if test "x$enable_debug" = "xyes"; then
   CXXFLAGS="-g -O0 -Wall -D_DEBUG"
   AC_MSG_RESULT(yes)
 else
-  CXXFLAGS="-O3 -march=native -Wall -Werror"
+  CXXFLAGS="-O3 -march=native -Wall -Werror -Wno-unused-variable -Wno-sign-compare"
   AC_MSG_RESULT(no)
 fi
 

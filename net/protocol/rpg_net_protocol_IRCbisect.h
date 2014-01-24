@@ -15,7 +15,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_SUBMINOR_VERSION 37
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -76,7 +76,6 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
-#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -106,6 +105,8 @@ typedef unsigned int flex_uint32_t;
 #ifndef UINT32_MAX
 #define UINT32_MAX             (4294967295U)
 #endif
+
+#endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
@@ -173,6 +174,11 @@ typedef void* yyscan_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
 /* %if-not-reentrant */
 /* %endif */
 
@@ -180,11 +186,6 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 /* %if-not-reentrant */
 /* %endif */
 /* %endif */
-
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -208,7 +209,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	int yy_n_chars;
+	yy_size_t yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -264,7 +265,7 @@ void RPG_Net_Protocol_IRCBisect_pop_buffer_state (yyscan_t yyscanner );
 
 YY_BUFFER_STATE RPG_Net_Protocol_IRCBisect__scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
 YY_BUFFER_STATE RPG_Net_Protocol_IRCBisect__scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE RPG_Net_Protocol_IRCBisect__scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+YY_BUFFER_STATE RPG_Net_Protocol_IRCBisect__scan_bytes (yyconst char *bytes,yy_size_t len ,yyscan_t yyscanner );
 
 /* %endif */
 
@@ -275,7 +276,7 @@ void RPG_Net_Protocol_IRCBisect_free (void * ,yyscan_t yyscanner );
 /* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
 
-#define RPG_Net_Protocol_IRCBisect_wrap(n) 1
+#define RPG_Net_Protocol_IRCBisect_wrap(yyscanner) 1
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
@@ -728,7 +729,7 @@ FILE *RPG_Net_Protocol_IRCBisect_get_out (yyscan_t yyscanner );
 
 void RPG_Net_Protocol_IRCBisect_set_out  (FILE * out_str ,yyscan_t yyscanner );
 
-int RPG_Net_Protocol_IRCBisect_get_leng (yyscan_t yyscanner );
+yy_size_t RPG_Net_Protocol_IRCBisect_get_leng (yyscan_t yyscanner );
 
 char *RPG_Net_Protocol_IRCBisect_get_text (yyscan_t yyscanner );
 
@@ -832,9 +833,9 @@ extern int RPG_Net_Protocol_IRCBisect_lex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 39 "./IRCbisect.l"
+#line 39 "net/protocol/scripts/IRCbisect.l"
 
 
-#line 839 "rpg_net_protocol_IRCbisect.h"
+#line 840 "rpg_net_protocol_IRCbisect.h"
 #undef RPG_Net_Protocol_IRCBisect_IN_HEADER
 #endif /* RPG_Net_Protocol_IRCBisect_HEADER_H */

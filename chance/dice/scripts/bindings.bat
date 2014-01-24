@@ -12,6 +12,9 @@ C:\Perl\bin\perl.exe C:\Temp\ACE_wrappers\bin\generate_export_file.pl -n RPG_Dic
 
 @rem C++ "glue code"
 C:\Tools\XML2CppCode.exe -d RPG_Dice_Export -e -f .\..\rpg_dice.xsd -i -o .\.. -s -u -x RPG_Dice
+@rem *NOTE*: XML2CppCode clobbers some important changes, so move some files back into the project directory
+copy -f .\rpg_dice_dietype.h .\..
+copy -f .\rpg_dice_roll.h .\..
 
 @rem generate "XMLSchema" namespace include file (rpg_dice.xsd)
 "C:\Program Files\CodeSynthesis XSD 3.3\bin\xsd.exe" cxx-parser --char-type char --output-dir .\.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_types.xsd

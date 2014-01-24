@@ -7,9 +7,7 @@
 #ifndef RPG_ITEM_ARMORPROPERTIESXML_H
 #define RPG_ITEM_ARMORPROPERTIESXML_H
 
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_ArmorPropertiesXML
+struct RPG_Item_ArmorPropertiesXML
  : public RPG_Item_ArmorPropertiesBase
 {
   signed char defenseModifier;

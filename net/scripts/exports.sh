@@ -16,5 +16,11 @@ PERL_SCRIPT=/usr/local/src/ACE_wrappers/bin/generate_export_file.pl
 
 # generate exports file
 perl ${PERL_SCRIPT} -n RPG_Net > ./net/rpg_net_exports.h
+[ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 perl ${PERL_SCRIPT} -n RPG_Net_Client > ./net/client/rpg_net_client_exports.h
+[ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 perl ${PERL_SCRIPT} -n RPG_Net_Server > ./net/server/rpg_net_server_exports.h
+if [ $? -ne 0 ]; then
+ echo "ERROR: failed to perl, aborting"
+ exit 1
+fi

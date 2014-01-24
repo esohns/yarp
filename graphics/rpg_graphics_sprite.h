@@ -17,8 +17,6 @@ enum RPG_Graphics_Sprite
   RPG_GRAPHICS_SPRITE_INVALID
 };
 
-#include "rpg_graphics_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -27,7 +25,7 @@ enum RPG_Graphics_Sprite
 typedef std::map<RPG_Graphics_Sprite, std::string> RPG_Graphics_SpriteToStringTable_t;
 typedef RPG_Graphics_SpriteToStringTable_t::const_iterator RPG_Graphics_SpriteToStringTableIterator_t;
 
-class RPG_Graphics_Export RPG_Graphics_SpriteHelper
+class RPG_Graphics_SpriteHelper
 {
  public:
   inline static void init()

@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_MAP_XML_TREE_H
-#define CXX___RPG_MAP_XML_TREE_H
+#ifndef CXX__MAP_RPG_MAP_XML_TREE_H
+#define CXX__MAP_RPG_MAP_XML_TREE_H
 
 // Begin prologue.
 //
@@ -258,4 +258,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Map_Position_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX___RPG_MAP_XML_TREE_H
+#endif // CXX__MAP_RPG_MAP_XML_TREE_H

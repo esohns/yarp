@@ -7,9 +7,7 @@
 #ifndef RPG_COMMON_BASECHECKTYPEUNION_H
 #define RPG_COMMON_BASECHECKTYPEUNION_H
 
-#include "rpg_common_exports.h"
-
-struct RPG_Common_Export RPG_Common_BaseCheckTypeUnion
+struct RPG_Common_BaseCheckTypeUnion
 {
   union
   {

@@ -39,8 +39,6 @@ enum RPG_Monster_Organization
   RPG_MONSTER_ORGANIZATION_INVALID
 };
 
-#include "rpg_monster_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -49,7 +47,7 @@ enum RPG_Monster_Organization
 typedef std::map<RPG_Monster_Organization, std::string> RPG_Monster_OrganizationToStringTable_t;
 typedef RPG_Monster_OrganizationToStringTable_t::const_iterator RPG_Monster_OrganizationToStringTableIterator_t;
 
-class RPG_Monster_Export RPG_Monster_OrganizationHelper
+class RPG_Monster_OrganizationHelper
 {
  public:
   inline static void init()

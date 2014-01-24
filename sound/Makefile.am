@@ -24,7 +24,8 @@ libRPG_Sound_la_CPPFLAGS = $(AM_CPPFLAGS) $(pkg_libs_CFLAGS)
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
-config_DATA = rpg_sound.xml rpg_sound.xsd
+config_DATA = rpg_sound.xml \
+  rpg_sound.xsd
 
-EXTRA_DIST = $(config_DATA)
-
+EXTRA_DIST = $(config_DATA) \
+  rpg_sound.map

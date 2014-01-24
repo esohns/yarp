@@ -16,3 +16,7 @@ PERL_SCRIPT=/usr/local/src/ACE_wrappers/bin/generate_export_file.pl
 
 # generate exports file
 perl ${PERL_SCRIPT} -n RPG_Stream > ./net/stream/rpg_stream_exports.h
+if [ $? -ne 0 ]; then
+ echo "ERROR: failed to perl, aborting"
+ exit 1
+fi

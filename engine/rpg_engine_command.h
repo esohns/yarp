@@ -35,8 +35,6 @@ enum RPG_Engine_Command
   RPG_ENGINE_COMMAND_INVALID
 };
 
-#include "rpg_engine_exports.h"
-
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -45,7 +43,7 @@ enum RPG_Engine_Command
 typedef std::map<RPG_Engine_Command, std::string> RPG_Engine_CommandToStringTable_t;
 typedef RPG_Engine_CommandToStringTable_t::const_iterator RPG_Engine_CommandToStringTableIterator_t;
 
-class RPG_Engine_Export RPG_Engine_CommandHelper
+class RPG_Engine_CommandHelper
 {
  public:
   inline static void init()

@@ -32,6 +32,10 @@
 #include <ace/Sig_Handler.h>
 #include <ace/High_Res_Timer.h>
 
+#ifdef RPG_ENABLE_VALGRIND_SUPPORT
+#include <valgrind/valgrind.h>
+#endif
+
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -75,6 +79,12 @@ print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
+
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c [VALUE]   : max #connections ([") << RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS << ACE_TEXT("])") << std::endl;
@@ -88,7 +98,14 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-r           : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-s [VALUE]   : statistics reporting interval (second(s)) [") << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL << ACE_TEXT("] {0 --> OFF})") << std::endl;
   std::cout << ACE_TEXT("-t           : trace information") << std::endl;
-  std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"") << NET_SERVER_DEF_UI_FILE << "\"] {\"\" --> no GUI}" << std::endl;
+  std::string path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("net");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_DEF_UI_FILE);
+  std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"") << path.c_str() << "\"] {\"\" --> no GUI}" << std::endl;
   std::cout << ACE_TEXT("-v           : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x [VALUE]   : #dispatch threads [") << RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
 } // end print_usage
@@ -112,6 +129,12 @@ process_arguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
+
   // init results
   maxNumConnections_out = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
   clientPingInterval_out = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
@@ -123,7 +146,14 @@ process_arguments(const int argc_in,
   useReactor_out = RPG_NET_USES_REACTOR;
   statisticsReportingInterval_out = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out = false;
-  UIFile_out = NET_SERVER_DEF_UI_FILE;
+  std::string path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("net");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_DEF_UI_FILE);
+  UIFile_out = path;
   printVersionAndExit_out = false;
   numDispatchThreads_out = RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS;
 
@@ -878,6 +908,12 @@ ACE_TMAIN(int argc_in,
 //  } // end IF
 //#endif
 
+  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+#ifdef BASEDIR
+  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                              true);
+#endif // #ifdef BASEDIR
+
   // step1a set defaults
   unsigned int maxNumConnections           = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
   unsigned int pingInterval                = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
@@ -889,7 +925,14 @@ ACE_TMAIN(int argc_in,
   bool useReactor                          = RPG_NET_USES_REACTOR;
   unsigned int statisticsReportingInterval = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
   bool traceInformation                    = false;
-  std::string UIFile                       = NET_SERVER_DEF_UI_FILE;
+  std::string path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("net");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_DEF_UI_FILE);
+  std::string UIFile                       = path;
   bool printVersionAndExit                 = false;
   unsigned int numDispatchThreads          = RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS;
 

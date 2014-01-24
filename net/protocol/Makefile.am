@@ -6,18 +6,23 @@ AM_CPPFLAGS = -DRPG_PROTOCOL_BUILD_DLL -I$(srcdir)/../../common -I$(srcdir)/.. \
 
 SUBDIRS = scripts
 
-noinst_HEADERS = location.hh \
+noinst_HEADERS = \
+  location.hh \
   position.hh \
   stack.hh \
   stdafx.h
-include_HEADERS = rpg_net_protocol_IRC_codes.h \
-	rpg_net_protocol_exports.h \
+include_HEADERS = \
+  rpg_net_protocol_common_modules.h \
+  rpg_net_protocol_common.h \
+  rpg_net_protocol_defines.h \
+  rpg_net_protocol_exports.h \
+  rpg_net_protocol_iIRCControl.h \
+  rpg_net_protocol_IRC_codes.h \
+  rpg_net_protocol_IRCbisect.h \
 	rpg_net_protocol_IRCmessage.h \
-	rpg_net_protocol_IRCparser.h \
 	rpg_net_protocol_IRCparser_driver.h \
-	rpg_net_protocol_common.h \
-	rpg_net_protocol_defines.h \
-	rpg_net_protocol_iIRCControl.h \
+	rpg_net_protocol_IRCparser.h \
+	rpg_net_protocol_IRCscanner.h \
 	rpg_net_protocol_message.h \
 	rpg_net_protocol_messageallocator.h \
 	rpg_net_protocol_module_IRChandler.h \
@@ -27,10 +32,7 @@ include_HEADERS = rpg_net_protocol_IRC_codes.h \
 	rpg_net_protocol_sessionmessage.h \
 	rpg_net_protocol_sockethandler.h \
 	rpg_net_protocol_stream.h \
-	rpg_net_protocol_tools.h \
-	rpg_net_protocol_common_modules.h \
-	rpg_net_protocol_IRCbisect.h \
-	rpg_net_protocol_IRCscanner.h
+	rpg_net_protocol_tools.h
 
 lib_LTLIBRARIES = libRPG_Net_Protocol.la
 

@@ -7,9 +7,7 @@
 #ifndef RPG_COMBAT_RANGEDEFFECTUNION_H
 #define RPG_COMBAT_RANGEDEFFECTUNION_H
 
-#include "rpg_combat_exports.h"
-
-struct RPG_Combat_Export RPG_Combat_RangedEffectUnion
+struct RPG_Combat_RangedEffectUnion
 {
   union
   {

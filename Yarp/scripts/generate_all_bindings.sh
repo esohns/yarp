@@ -51,12 +51,12 @@ echo "generating XML data bindings...DONE"
 
 # ..........................................
 
-echo "generating lex\/yacc parsers..."
+echo "generating lex/yacc parsers..."
 ${PROJECT_DIR}/map/scripts/scanner.sh
 ${PROJECT_DIR}/map/scripts/parser.sh
 ${PROJECT_DIR}/net/protocol/scripts/scanner.sh
 ${PROJECT_DIR}/net/protocol/scripts/parser.sh
-[ $? -ne 0 ] && echo "ERROR: failed generating lex\/yacc parsers, aborting" && exit 1
-echo "generating lex\/yacc parsers...DONE"
+[ $? -ne 0 ] && echo "ERROR: failed generating lex/yacc parsers, aborting" && exit 1
+echo "generating lex/yacc parsers...DONE"
 
-popd
+#popd >/dev/null 2>&1

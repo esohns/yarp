@@ -7,9 +7,7 @@
 #ifndef RPG_MONSTER_SPECIALBASEPROPERTIES_H
 #define RPG_MONSTER_SPECIALBASEPROPERTIES_H
 
-#include "rpg_monster_exports.h"
-
-struct RPG_Monster_Export RPG_Monster_SpecialBaseProperties
+struct RPG_Monster_SpecialBaseProperties
 {
   RPG_Magic_AbilityClass abilityClass;
   RPG_Monster_SpecialPropertyTypeUnion type;
