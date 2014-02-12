@@ -160,9 +160,6 @@
                           <placeholder/>
                         </child>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
                           <widget class="GtkLabel" id="label_connections">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -244,6 +241,9 @@
                     <property name="can_focus">False</property>
                     <property name="n_columns">2</property>
                     <property name="homogeneous">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
                     <child>
                       <placeholder/>
                     </child>

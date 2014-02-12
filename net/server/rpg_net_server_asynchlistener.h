@@ -43,6 +43,11 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
  public:
   // override default creation strategy
   virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
+  // override default accept strategy
+  virtual int validate_connection(const ACE_Asynch_Accept::Result&, // result
+                                  const ACE_INET_Addr&,             // remote address
+                                  const ACE_INET_Addr&);            // local address
+  virtual int should_reissue_accept(void);
 
   // configuration / initialization
   // implement RPG_Net_Server_IListener
@@ -62,11 +67,15 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
  private:
   typedef ACE_Asynch_Acceptor<RPG_Net_AsynchStreamHandler_t> inherited;
 
-  // safety measures
   RPG_Net_Server_AsynchListener();
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_AsynchListener(const RPG_Net_Server_AsynchListener&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_AsynchListener& operator=(const RPG_Net_Server_AsynchListener&));
   virtual ~RPG_Net_Server_AsynchListener();
+
+//  // override default accept strategy
+//  // *NOTE*: ACE doesn't properly handle cancellation (dangling bound port on listen socket) -->
+//  // fix this here... --> *TODO*: send patch to ACE people
+//  virtual void handle_accept(const ACE_Asynch_Accept::Result&); // result
 
   bool           myIsInitialized;
   bool           myIsListening;

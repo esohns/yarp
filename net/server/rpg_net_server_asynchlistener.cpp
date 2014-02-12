@@ -25,6 +25,7 @@
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 #include <ace/INET_Addr.h>
+#include <ace/POSIX_Asynch_IO.h>
 
 #include "rpg_common_macros.h"
 
@@ -47,6 +48,10 @@ RPG_Net_Server_AsynchListener::~RPG_Net_Server_AsynchListener()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::~RPG_Net_Server_AsynchListener"));
 
+  if (myIsListening)
+    if (inherited::cancel() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Asynch_Acceptor::cancel(): \"%m\", continuing")));
 }
 
 void
@@ -79,19 +84,15 @@ RPG_Net_Server_AsynchListener::start()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::start"));
 
+  // sanity check(s)
   if (myIsListening)
-  {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("already listening --> nothing to do, returning\n")));
-
-    return;
-  } // end IF
+    return; // nothing to do...
 
   // sanity check: configured ?
   if (!myIsInitialized)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not initialized, returning\n")));
+               ACE_TEXT("not initialized, aborting\n")));
 
     return;
   } // end IF
@@ -150,9 +151,24 @@ RPG_Net_Server_AsynchListener::stop()
     return;
   } // end IF
 
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  ACE_POSIX_Asynch_Accept* accept =
+      dynamic_cast<ACE_POSIX_Asynch_Accept*>(inherited::asynch_accept().implementation());
+  if (!accept)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("dynamic_cast<ACE_POSIX_Asynch_Accept> failed, aborting\n")));
+
+    return;
+  }
+  if (accept->close() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_POSIX_Asynch_Accept::close(): \"%m\", continuing\n")));
+#else
   if (inherited::cancel() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Acceptor::cancel(): \"%m\", continuing\n")));
+#endif
   else
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("stopped listening (port: %u)...\n"),
@@ -192,3 +208,40 @@ RPG_Net_Server_AsynchListener::make_handler(void)
 
   return handler_out;
 }
+
+int
+RPG_Net_Server_AsynchListener::validate_connection(const ACE_Asynch_Accept::Result& result_in,
+                                                   const ACE_INET_Addr& remoteAddress_in,
+                                                   const ACE_INET_Addr& localAddress_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::validate_connection"));
+
+  // default behavior: delegate to baseclass
+  return inherited::validate_connection(result_in,
+                                        remoteAddress_in,
+                                        localAddress_in);
+}
+
+int
+RPG_Net_Server_AsynchListener::should_reissue_accept()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::should_reissue_accept"));
+
+  // default behavior: delegate to baseclass
+  return inherited::should_reissue_accept();
+}
+
+//void
+//RPG_Net_Server_AsynchListener::handle_accept(const ACE_Asynch_Accept::Result& result_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::handle_accept"));
+
+//  // default behavior: delegate to baseclass
+//  inherited::handle_accept(result_in);
+
+////  if (result_in.error() == ECANCELED)
+////    if (ACE_OS::closesocket(result_in.listen_handle()) == -1)
+////      ACE_DEBUG((LM_ERROR,
+////                 ACE_TEXT("failed to ACE_OS::closesocket(%d): \"%m\", continuing\n"),
+////                 result_in.listen_handle()));
+//}
