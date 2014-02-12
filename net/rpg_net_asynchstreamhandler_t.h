@@ -25,10 +25,7 @@
 
 #include <ace/Global_Macros.h>
 #include <ace/Event_Handler.h>
-#include <ace/Reactor_Notification_Strategy.h>
-
-// forward declaration(s)
-class ACE_Message_Block;
+#include <ace/Message_Block.h>
 
 template <typename ConfigType,
           typename StatisticsContainerType,
@@ -65,10 +62,9 @@ class RPG_Net_AsynchStreamHandler_T
  protected:
   virtual void handle_read_stream(const ACE_Asynch_Read_Stream::Result&); // result
 
-  // *NOTE*: (try to) handle short writes gracefully...
-  ACE_Message_Block*                myBuffer;
-  StreamType                        myStream;
-  ACE_Reactor_Notification_Strategy myNotificationStrategy;
+//  // *TODO*: (try to) handle short writes gracefully...
+//  ACE_Message_Block* myBuffer;
+  StreamType         myStream;
 
  private:
   typedef RPG_Net_AsynchSocketHandler_T<ConfigType,

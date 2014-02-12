@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <ace/Reactor.h>
-
 #include "rpg_common_timer_manager.h"
+
+#include "rpg_net_common.h"
 
 template <typename ConfigType,
           typename StatisticsContainerType,
@@ -28,11 +28,8 @@ template <typename ConfigType,
 RPG_Net_AsynchStreamHandler_T<ConfigType,
                               StatisticsContainerType,
                               StreamType>::RPG_Net_AsynchStreamHandler_T()
- : inherited(NULL),
-   myBuffer(NULL),
-   myNotificationStrategy(ACE_Reactor::instance(),       // default reactor
-                          this,                          // event handler
-                          ACE_Event_Handler::WRITE_MASK) // handle output only
+ : inherited(NULL)//,
+//   myBuffer(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::RPG_Net_AsynchStreamHandler_T"));
 
@@ -47,11 +44,8 @@ template <typename ConfigType,
 RPG_Net_AsynchStreamHandler_T<ConfigType,
                               StatisticsContainerType,
                               StreamType>::RPG_Net_AsynchStreamHandler_T(MANAGER_T* manager_in)
- : inherited(manager_in),
-   myBuffer(NULL),
-   myNotificationStrategy(ACE_Reactor::instance(),       // default reactor
-                          this,                          // event handler
-                          ACE_Event_Handler::WRITE_MASK) // handle output only
+ : inherited(manager_in)//,
+//   myBuffer(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::RPG_Net_AsynchStreamHandler_T"));
 
@@ -66,8 +60,9 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::~RPG_Net_AsynchStreamHandler_T"));
 
-  if (myBuffer)
-    myBuffer->release();
+//  // clean up
+//  if (myBuffer)
+//    myBuffer->release();
 }
 
 template <typename ConfigType,
@@ -98,7 +93,7 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
   inherited::myUserData.sessionID = inherited::id(); // (== socket handle)
   // connect stream head message queue with the reactor notification pipe ?
   if (!inherited::myUserData.useThreadPerConnection)
-    inherited::myUserData.notificationStrategy = &myNotificationStrategy;
+    inherited::myUserData.notificationStrategy = this;
   if (!myStream.init(inherited::myUserData))
   {
     ACE_DEBUG((LM_ERROR,
@@ -167,49 +162,41 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 
   ACE_UNUSED_ARG(handle_in);
 
-  if (myBuffer == NULL)
+  ACE_Message_Block* message_block = NULL;
+//  if (myBuffer == NULL)
+//  {
+  // send next data chunk from the stream...
+  // *IMPORTANT NOTE*: this should NEVER block, as available outbound data has
+  // been notified
+//  if (myStream.get(myBuffer, &ACE_Time_Value::zero) == -1)
+  if (myStream.get(message_block,
+                   &const_cast<ACE_Time_Value&>(ACE_Time_Value::zero)) == -1)
   {
-    // send next data chunk from the stream...
-    // *IMPORTANT NOTE*: this should NEVER block, as available outbound data has
-    // been notified to the reactor
-    ACE_Time_Value no_wait(RPG_COMMON_TIME_POLICY());
-    if (myStream.get(myBuffer, &no_wait) == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n")));
 
-      return -1;
-    } // end IF
-  } // end IF
-
-  // sanity check: finished processing connection ?
-  if (myBuffer->msg_type() == ACE_Message_Block::MB_STOP)
-  {
-    myBuffer->release();
-    myBuffer = NULL;
-
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("[%u]: finished sending...\n"),
-//                  peer_.get_handle()));
-
-    // finished
     return -1;
   } // end IF
+//  } // end IF
 
-  // start (asynch) write...
-  if (inherited::myOutputStream.write(*myBuffer,           // data
-                                      myBuffer->size(),    // bytes to write
-                                      NULL,                // ACT
-                                      0,                   // priority
-                                      ACE_SIGRTMIN) == -1) // signal number
+  // start (asynch) write
+  // *NOTE*: this is a fire-and-forget API for message_block...
+//  if (inherited::myOutputStream.write(*myBuffer,           // data
+  if (inherited::myOutputStream.write(*message_block,        // data
+                                      message_block->size(), // bytes to write
+                                      NULL,                  // ACT
+                                      0,                     // priority
+                                      ACE_SIGRTMIN) == -1)   // signal number
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Write_Stream::write(%u): \"%m\", aborting\n"),
-               myBuffer->size()));
+//               myBuffer->size()));
+               message_block->size()));
 
     // clean up
-    myBuffer->release();
-    myBuffer = NULL;
+//    myBuffer->release();
+//    myBuffer = NULL;
+    message_block->release();
 
     return -1;
   } // end IF
@@ -238,10 +225,19 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
   // step2: purge any pending notifications ?
   // *WARNING: do this here, while still holding on to the current write buffer
   if (!inherited::myUserData.useThreadPerConnection)
-    if (ACE_Reactor::instance()->purge_pending_notifications(this, ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Reactor::purge_pending_notifications(%@): \"%m\", continuing\n"),
-                 this));
+  {
+    STREAM_ITERATOR_TYPE iterator(myStream);
+    const MODULE_TYPE* module = NULL;
+    if (iterator.next(module) == 0)
+    {
+      ACE_ASSERT(module);
+      TASK_TYPE* task = const_cast<MODULE_TYPE*>(module)->writer();
+      ACE_ASSERT(task);
+      if (task->msg_queue()->flush() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE_MessageQueue::flush(): \"%m\", continuing\n")));
+    } // end IF
+  } // end IF
 
   // step3: invoke base class maintenance
   // *NOTE*: in the end, this will "delete this"...
@@ -303,24 +299,24 @@ RPG_Net_AsynchStreamHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler_T::handle_read_stream"));
 
-  ACE_DEBUG((LM_DEBUG, "********************\n"));
-  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "bytes_to_read", result.bytes_to_read()));
-  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "handle", result.handle()));
-  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "bytes_transfered", result.bytes_transferred()));
-  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "act", (uintptr_t)result.act()));
-  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "success", result.success()));
-  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "completion_key", (uintptr_t)result.completion_key()));
-  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "error", result.error()));
-  ACE_DEBUG((LM_DEBUG, "********************\n"));
-#if 0
-  // This can overrun the ACE_Log_Msg buffer and do bad things.
-  // Re-enable it at your risk.
+//  ACE_DEBUG((LM_DEBUG, "********************\n"));
+//  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "bytes_to_read", result.bytes_to_read()));
+//  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "handle", result.handle()));
+//  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "bytes_transfered", result.bytes_transferred()));
+//  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "act", (uintptr_t)result.act()));
+//  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "success", result.success()));
+//  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "completion_key", (uintptr_t)result.completion_key()));
+//  ACE_DEBUG((LM_DEBUG, "%s = %d\n", "error", result.error()));
+//  ACE_DEBUG((LM_DEBUG, "********************\n"));
+//#if 0
+//  // This can overrun the ACE_Log_Msg buffer and do bad things.
+//  // Re-enable it at your risk.
 
-  // Reset pointers.
-  result.message_block ().rd_ptr ()[result.bytes_transferred ()] = '\0';
+//  // Reset pointers.
+//  result.message_block ().rd_ptr ()[result.bytes_transferred ()] = '\0';
 
-  ACE_DEBUG ((LM_DEBUG, "%s = %s\n", "message_block", result.message_block ().rd_ptr ()));
-#endif /* 0 */
+//  ACE_DEBUG ((LM_DEBUG, "%s = %s\n", "message_block", result.message_block ().rd_ptr ()));
+//#endif /* 0 */
 
   // sanity check
   // *TODO*: can this happen in asynch I/O scenarios ?

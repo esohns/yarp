@@ -35,6 +35,8 @@ template <typename ConfigType,
 RPG_Net_AsynchSocketHandler_T<ConfigType,
                               StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T(MANAGER_T* manager_in)
  : inherited(),
+   ACE_Notification_Strategy(NULL,                           // event handler handle
+                             ACE_Event_Handler::WRITE_MASK), // mask
    inherited2(1,     // initial count
 	            true), // delete on zero ?
 //    myUserData(),
@@ -362,6 +364,49 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 
 template <typename ConfigType,
           typename StatisticsContainerType>
+int
+RPG_Net_AsynchSocketHandler_T<ConfigType,
+                              StatisticsContainerType>::notify(void)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::notify"));
+
+  int result = -1;
+  try
+  {
+    result = handle_output(inherited::handle());
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_AsynchSocketHandler_T::handle_output(), aborting")));
+  }
+
+  return result;
+}
+template <typename ConfigType,
+          typename StatisticsContainerType>
+int
+RPG_Net_AsynchSocketHandler_T<ConfigType,
+                              StatisticsContainerType>::notify(ACE_Event_Handler* handler_in,
+                                                               ACE_Reactor_Mask mask_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::notify"));
+
+  ACE_UNUSED_ARG(handler_in);
+  ACE_UNUSED_ARG(mask_in);
+
+  // *NOTE*: should NEVER be reached !
+  ACE_ASSERT(false);
+
+#if defined (_MSC_VER)
+  return -1;
+#else
+  ACE_NOTREACHED(return -1;)
+#endif
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
 ACE_Message_Block*
 RPG_Net_AsynchSocketHandler_T<ConfigType,
                               StatisticsContainerType>::allocateMessage(const unsigned int& requestedSize_in)
@@ -401,16 +446,6 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                               StatisticsContainerType>::handle_write_stream(const ACE_Asynch_Write_Stream::Result& result)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::handle_write_stream"));
-
-  ACE_DEBUG ((LM_DEBUG, "********************\n"));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "bytes_to_write", result.bytes_to_write()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "handle", result.handle()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "bytes_transfered", result.bytes_transferred()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "act", (uintptr_t)result.act()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "success", result.success()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "completion_key", (uintptr_t)result.completion_key()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "error", result.error()));
-  ACE_DEBUG ((LM_DEBUG, "********************\n"));
 
   // sanity check
   if (result.success() == 0)

@@ -162,7 +162,8 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
 	#endif
 			ACE_Reactor* new_reactor = NULL;
 			ACE_NEW_RETURN(new_reactor,
-										 ACE_Reactor(reactor_implementation, 1), // delete in dtor
+										 ACE_Reactor(reactor_implementation, // implementation handle
+																 1),                     // delete in dtor ?
 										 false);
 			// make this the "default" reactor...
 			ACE_Reactor::instance(new_reactor, 1); // delete in dtor
@@ -171,14 +172,16 @@ RPG_Net_Common_Tools::initEventDispatch(const bool& useReactor_in,
   else
   {
 		// *NOTE* using default platform proactor...
-  //  ACE_Proactor* proactor = NULL;
-  //  ACE_NEW_RETURN(proactor,
-  //                 ACE_Proactor(NULL, true, NULL),
-  //                 false);
-  //  // make this the "default" proactor...
-		//ACE_Proactor* previous_proactor = ACE_Proactor::instance(proactor,
-		//	                                                       1);       // delete in dtor
-		//delete previous_proactor;
+		ACE_Proactor* proactor = NULL;
+		ACE_NEW_RETURN(proactor,
+									 ACE_Proactor(NULL,  // implementation handle --> create new
+																true,  // delete in dtor ?
+																NULL), // timer queue handle    --> create new
+									 false);
+		// make this the "default" proactor...
+		ACE_Proactor* previous_proactor = ACE_Proactor::instance(proactor, // implementation handle
+																														 1);       // delete in dtor ?
+		delete previous_proactor;
   } // end ELSE
 
   return true;

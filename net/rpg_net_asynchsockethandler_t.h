@@ -28,6 +28,7 @@
 
 #include <ace/Global_Macros.h>
 #include <ace/Asynch_IO.h>
+#include <ace/Notification_Strategy.h>
 #include <ace/INET_Addr.h>
 
 // forward declarations
@@ -37,8 +38,9 @@ template <typename ConfigType,
           typename StatisticsContainerType>
 class RPG_Net_AsynchSocketHandler_T
  : public ACE_Service_Handler,
+   public ACE_Notification_Strategy,
    public RPG_Common_ReferenceCounterBase,
-   public RPG_Net_IConnection<StatisticsContainerType>	 
+   public RPG_Net_IConnection<StatisticsContainerType>
 {
  public:
   virtual ~RPG_Net_AsynchSocketHandler_T();
@@ -48,8 +50,14 @@ class RPG_Net_AsynchSocketHandler_T
                     ACE_Message_Block&); // initial data (if any)
   virtual void addresses(const ACE_INET_Addr&,  // remote address
                          const ACE_INET_Addr&); // local address
+  virtual int handle_output(ACE_HANDLE) = 0; // (socket) handle
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
+
+  // implement ACE_Notification_Strategy
+  virtual int notify(void);
+  virtual int notify(ACE_Event_Handler*, // event handler handle
+                     ACE_Reactor_Mask);  // mask
 
   // implement (part of) RPG_Net_IConnection
   virtual void info(ACE_HANDLE&,           // return value: handle
@@ -85,7 +93,6 @@ class RPG_Net_AsynchSocketHandler_T
   typedef ACE_Service_Handler inherited;
 	typedef RPG_Common_ReferenceCounterBase inherited2;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler_T());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler_T(const RPG_Net_AsynchSocketHandler_T&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler_T& operator=(const RPG_Net_AsynchSocketHandler_T&));
