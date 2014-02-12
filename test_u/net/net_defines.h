@@ -49,8 +49,8 @@
 #define NET_CLIENT_UI_QUITBUTTON_NAME           "button_quit"
 
 // define behaviour
-#define NET_CLIENT_U_TEST_CONNECT_PROBABILITY   0.02F
-#define NET_CLIENT_U_TEST_ABORT_PROBABILITY     0.01F
+#define NET_CLIENT_U_TEST_CONNECT_PROBABILITY   0.2F // 20%
+#define NET_CLIENT_U_TEST_ABORT_PROBABILITY     0.1F // 10%
 
 // -----------------------------------------------------------------------------
 

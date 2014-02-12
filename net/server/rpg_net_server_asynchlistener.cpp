@@ -21,10 +21,14 @@
 
 #include "rpg_net_server_asynchlistener.h"
 
+#include <ace/Default_Constants.h>
 #include <ace/OS.h>
+#include <ace/Log_Msg.h>
 #include <ace/INET_Addr.h>
 
-//#include "rpg_net_common.h"
+#include "rpg_common_macros.h"
+
+#include "rpg_net_common.h"
 
 #include "rpg_net_server_defines.h"
 
@@ -110,13 +114,13 @@ RPG_Net_Server_AsynchListener::start()
                   0);                                  // map ?
   if (inherited::open(local_sap,                  // local SAP
                       0,                          // bytes_to_read
-                      1,                          // pass_addresses
+                      1,                          // pass_addresses ?
                       ACE_DEFAULT_ASYNCH_BACKLOG, // backlog
-                      1,                          // reuse_addr
-                      ACE_Proactor::instance(),   // default proactor
-                      true,                       // validate_new_connection
-                      1,                          // reissue_accept
-                      -1) == -1)                  // number_of_initial_accepts
+                      1,                          // reuse address ?
+                      NULL,                       // proactor (use default)
+                      true,                       // validate new connections ?
+                      1,                          // reissue_accept ?
+                      -1) == -1)                  // number of initial accepts
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Acceptor::open(%u): \"%m\", returning\n"),

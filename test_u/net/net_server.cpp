@@ -31,6 +31,7 @@
 #include <ace/Signal.h>
 #include <ace/Sig_Handler.h>
 #include <ace/High_Res_Timer.h>
+#include <ace/POSIX_Proactor.h>
 
 #ifdef RPG_ENABLE_VALGRIND_SUPPORT
 #include <valgrind/valgrind.h>
@@ -80,10 +81,10 @@ print_usage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-#endif // #ifdef BASEDIR
+//#ifdef BASEDIR
+//  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+//                                                              true);
+//#endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
@@ -100,10 +101,10 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-t           : trace information") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("net");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+//  path += ACE_TEXT_ALWAYS_CHAR("net");
+//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+//#endif
   path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_DEF_UI_FILE);
   std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"") << path.c_str() << "\"] {\"\" --> no GUI}" << std::endl;
   std::cout << ACE_TEXT("-v           : print version information and exit") << std::endl;
@@ -130,10 +131,10 @@ process_arguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-#endif // #ifdef BASEDIR
+//#ifdef BASEDIR
+//  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+//                                                              true);
+//#endif // #ifdef BASEDIR
 
   // init results
   maxNumConnections_out = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
@@ -148,10 +149,10 @@ process_arguments(const int argc_in,
   traceInformation_out = false;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("net");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+//  path += ACE_TEXT_ALWAYS_CHAR("net");
+//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+//#endif
   path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_DEF_UI_FILE);
   UIFile_out = path;
   printVersionAndExit_out = false;
@@ -291,7 +292,8 @@ process_arguments(const int argc_in,
 }
 
 void
-init_signals(const bool& allowUserRuntimeStats_in,
+init_signals(const bool& useReactor_in,
+             const bool& allowUserRuntimeStats_in,
              ACE_Sig_Set& signals_inout)
 {
   RPG_TRACE(ACE_TEXT("::init_signals"));
@@ -327,15 +329,22 @@ init_signals(const bool& allowUserRuntimeStats_in,
     return;
   } // end IF
   // *NOTE*: cannot handle some signals --> registration fails for these...
-  signals_inout.sig_del(SIGKILL);         // 9       /* Kill signal */
-  signals_inout.sig_del(SIGSTOP);         // 19      /* Stop process */
+  signals_inout.sig_del(SIGKILL);          // 9       /* Kill signal */
+  signals_inout.sig_del(SIGSTOP);          // 19      /* Stop process */
 	// ---------------------------------------------------------------------------
 	if (!allowUserRuntimeStats_in)
-		signals_inout.sig_del(SIGUSR1);         // 10      /* User-defined signal 1 */
+		signals_inout.sig_del(SIGUSR1);        // 10      /* User-defined signal 1 */
 	// *NOTE* core dump on SIGSEGV
-	signals_inout.sig_del(SIGSEGV);         // 11      /* Segmentation fault: Invalid memory reference */
+	signals_inout.sig_del(SIGSEGV);          // 11      /* Segmentation fault: Invalid memory reference */
   // *NOTE* don't care about SIGPIPE
-  signals_inout.sig_del(SIGPIPE);         // 12      /* Broken pipe: write to pipe with no readers */
+  signals_inout.sig_del(SIGPIPE);          // 12      /* Broken pipe: write to pipe with no readers */
+  if (!useReactor_in)
+  {
+    ACE_POSIX_Proactor* proactor_impl = dynamic_cast<ACE_POSIX_Proactor*>(ACE_Proactor::instance()->implementation());
+    ACE_ASSERT(proactor_impl);
+    if (proactor_impl->get_impl_type() == ACE_POSIX_Proactor::PROACTOR_SIG)
+      signals_inout.sig_del(ACE_SIGRTMIN); // 34      /* SIGRTMIN */
+  } // end IF
 #endif
 }
 
@@ -550,7 +559,9 @@ do_work(const unsigned int& maxNumConnections_in,
         const unsigned int& statisticsReportingInterval_in,
         const std::string& UIFile_in,
         const unsigned int& numDispatchThreads_in,
-        Net_GTK_CBData_t& CBData_in)
+        Net_GTK_CBData_t& CBData_in,
+        ACE_Sig_Set& signalSet_inout,
+        RPG_Common_SignalActions_t& previousSignalActions_inout)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -658,16 +669,9 @@ do_work(const unsigned int& maxNumConnections_in,
   Net_Server_SignalHandler signal_handler(timer_id,
                                           CBData_in.listener_handle,
                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
-  ACE_Sig_Set signal_set(0);
-  init_signals((statisticsReportingInterval_in == 0), // allow SIGUSR1/SIGBREAK
-                                                      // IFF regular reporting
-                                                      // is off
-               signal_set);
-  RPG_Common_SignalActions_t previous_signal_actions;
-  if (!RPG_Common_Tools::initSignals(signal_set,
+  if (!RPG_Common_Tools::initSignals(signalSet_inout,
                                      &signal_handler,
-                                     useReactor_in,
-                                     previous_signal_actions))
+                                     previousSignalActions_inout))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init signal handling, aborting\n")));
@@ -720,9 +724,9 @@ do_work(const unsigned int& maxNumConnections_in,
                      timer_id));
       } // end IF
       RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-      RPG_Common_Tools::finiSignals(signal_set,
+      RPG_Common_Tools::finiSignals(signalSet_inout,
                                     useReactor_in,
-                                    previous_signal_actions);
+                                    previousSignalActions_inout);
 
       return;
     } // end IF
@@ -757,9 +761,9 @@ do_work(const unsigned int& maxNumConnections_in,
     //		} // end lock scope
     RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-    RPG_Common_Tools::finiSignals(signal_set,
+    RPG_Common_Tools::finiSignals(signalSet_inout,
                                   useReactor_in,
-                                  previous_signal_actions);
+                                  previousSignalActions_inout);
 
     return;
   } // end IF
@@ -800,9 +804,9 @@ do_work(const unsigned int& maxNumConnections_in,
     //		} // end lock scope
     RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
     RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-    RPG_Common_Tools::finiSignals(signal_set,
+    RPG_Common_Tools::finiSignals(signalSet_inout,
                                   useReactor_in,
-                                  previous_signal_actions);
+                                  previousSignalActions_inout);
 
     return;
   } // end IF
@@ -850,9 +854,9 @@ do_work(const unsigned int& maxNumConnections_in,
 	//		} // end lock scope
 	RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
 	RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-	RPG_Common_Tools::finiSignals(signal_set,
+	RPG_Common_Tools::finiSignals(signalSet_inout,
 																useReactor_in,
-																previous_signal_actions);
+																previousSignalActions_inout);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -909,10 +913,10 @@ ACE_TMAIN(int argc_in,
 //#endif
 
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-#endif // #ifdef BASEDIR
+//#ifdef BASEDIR
+//  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+//                                                              true);
+//#endif // #ifdef BASEDIR
 
   // step1a set defaults
   unsigned int maxNumConnections           = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
@@ -927,10 +931,10 @@ ACE_TMAIN(int argc_in,
   bool traceInformation                    = false;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("net");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+//  path += ACE_TEXT_ALWAYS_CHAR("net");
+//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+//#endif
   path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_DEF_UI_FILE);
   std::string UIFile                       = path;
   bool printVersionAndExit                 = false;
@@ -977,8 +981,26 @@ ACE_TMAIN(int argc_in,
   if (numDispatchThreads == 0)
     numDispatchThreads = 1;
 
+  // step1d: pre-init signal handling
+  ACE_Sig_Set signal_set(0);
+  init_signals(useReactor,
+               (statisticsReportingInterval == 0), // allow SIGUSR1/SIGBREAK
+                                                   // IFF regular reporting
+                                                   // is off
+               signal_set);
+  RPG_Common_SignalActions_t previous_signal_actions;
+  if (!RPG_Common_Tools::preInitSignals(signal_set,
+                                        useReactor,
+                                        previous_signal_actions))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::preInitSignals(), aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+
   Net_GTK_CBData_t gtk_cb_user_data;
-  // step1d: initialize logging and/or tracing
+  // step1e: initialize logging and/or tracing
   RPG_Client_Logger logger(&gtk_cb_user_data.log_stack,
                            &gtk_cb_user_data.lock);
   std::string log_file;
@@ -1005,7 +1027,7 @@ ACE_TMAIN(int argc_in,
     return EXIT_SUCCESS;
   } // end IF
 
-  // step1e: handle specific program modes
+  // step1f: handle specific program modes
   if (printVersionAndExit)
   {
     do_printVersion(ACE::basename(argv_in[0]));
@@ -1013,7 +1035,7 @@ ACE_TMAIN(int argc_in,
     return EXIT_SUCCESS;
   } // end IF
 
-  // step1f: set process resource limits
+  // step1g: set process resource limits
   // *NOTE*: settings will be inherited by any child processes
   // *TODO*: the reasoning here is incomplete
   bool use_fd_based_reactor = useReactor;
@@ -1029,7 +1051,7 @@ ACE_TMAIN(int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  // step1g: init GLIB / G(D|T)K[+] / GNOME ?
+  // step1h: init GLIB / G(D|T)K[+] / GNOME ?
   if (!UIFile.empty())
   {
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
@@ -1081,7 +1103,9 @@ ACE_TMAIN(int argc_in,
           statisticsReportingInterval,
           UIFile,
           numDispatchThreads,
-          gtk_cb_user_data);
+          gtk_cb_user_data,
+          signal_set,
+          previous_signal_actions);
   timer.stop();
 
   // debug info

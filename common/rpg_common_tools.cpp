@@ -29,6 +29,8 @@
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 #include <ace/Log_Msg_Backend.h>
+#include <ace/Proactor.h>
+#include <ace/POSIX_Proactor.h>
 #include <ace/Reactor.h>
 
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
@@ -1153,15 +1155,11 @@ RPG_Common_Tools::initLogging(const std::string& programName_in,
 }
 
 bool
-RPG_Common_Tools::initSignals(ACE_Sig_Set& signals_inout,
-                              ACE_Event_Handler* eventHandler_in,
-                              const bool& useReactor_in,
-                              RPG_Common_SignalActions_t& previousActions_out)
+RPG_Common_Tools::preInitSignals(ACE_Sig_Set& signals_inout,
+																 const bool& useReactor_in,
+																 RPG_Common_SignalActions_t& previousActions_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::initSignals"));
-
-	// init return value(s)
-	previousActions_out.clear();
+	RPG_TRACE(ACE_TEXT("RPG_Common_Tools::preInitSignals"));
 
 	// *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a
 	// multithreaded application, the disposition of a particular signal is the
@@ -1185,53 +1183,79 @@ RPG_Common_Tools::initSignals(ACE_Sig_Set& signals_inout,
   else
     previousActions_out[SIGPIPE] = previous_action;
 
-  // step2: block [SIGRTMIN,SIGRTMAX] IFF on Linux AND using the
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  // step2: block [SIGRTMIN,SIGRTMAX] IFF on UNIX AND using the
   // ACE_POSIX_SIG_Proactor (the default)
   // *IMPORTANT NOTE*: proactor implementation dispatches the signals in worker
   // thread(s) and re-enables them there automatically (see code)
-  if (RPG_Common_Tools::isLinux() &&
-      !useReactor_in)
+  if (!useReactor_in)
   {
-    sigset_t signal_set;
-    if (ACE_OS::sigemptyset(&signal_set) == - 1)
+    ACE_POSIX_Proactor* proactor_impl = dynamic_cast<ACE_POSIX_Proactor*>(ACE_Proactor::instance()->implementation());
+    ACE_ASSERT(proactor_impl);
+    if (proactor_impl->get_impl_type() == ACE_POSIX_Proactor::PROACTOR_SIG)
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("failed to ACE_OS::sigemptyset(): \"%m\", aborting\n")));
-
-      return false;
-    } // end IF
-    for (int i = ACE_SIGRTMIN;
-         i <= ACE_SIGRTMAX;
-         i++)
-    {
-      if (ACE_OS::sigaddset(&signal_set, i) == -1)
+      sigset_t signal_set;
+      if (ACE_OS::sigemptyset(&signal_set) == - 1)
       {
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("failed to ACE_OS::sigaddset(): \"%m\", aborting\n")));
+                   ACE_TEXT("failed to ACE_OS::sigemptyset(): \"%m\", aborting\n")));
 
         return false;
       } // end IF
-      if (signals_inout.sig_del(i) == -1)
+      for (int i = ACE_SIGRTMIN;
+           i <= ACE_SIGRTMAX;
+           i++)
+      {
+        if (ACE_OS::sigaddset(&signal_set, i) == -1)
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("failed to ACE_OS::sigaddset(): \"%m\", aborting\n")));
+
+          return false;
+        } // end IF
+        if (signals_inout.is_member(i))
+          if (signals_inout.sig_del(i) == -1)
+          {
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("failed to ACE_Sig_Set::sig_del(%S): \"%m\", aborting\n"),
+                       i));
+
+            return false;
+          } // end IF
+      } // end IF
+      sigset_t original_mask;
+      if (ACE_OS::thr_sigsetmask(SIG_BLOCK,
+                                 &signal_set,
+                                 &original_mask) == -1)
       {
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("failed to ACE_Sig_Set::sig_del(%S): \"%m\", aborting\n"),
-                   i));
+                   ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
 
         return false;
       } // end IF
-    } // end IF
-    if (ACE_OS::thr_sigsetmask(SIG_BLOCK,
-                               &signal_set,
-                               NULL) == -1)
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("failed to ACE_OS::thr_sigsetmask(): \"%m\", aborting\n")));
-
-      return false;
     } // end IF
   } // end IF
+#endif
 
-  // backup previous actions
+  return true;
+}
+
+bool
+RPG_Common_Tools::initSignals(ACE_Sig_Set& signals_inout,
+                              ACE_Event_Handler* eventHandler_in,
+                              RPG_Common_SignalActions_t& previousActions_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::initSignals"));
+
+	// init return value(s)
+	previousActions_out.clear();
+
+	// *NOTE*: "The signal disposition is a per-process attribute: in a
+	// multithreaded application, the disposition of a particular signal is the
+	// same for all threads." (see man(7) signal)
+
+  // step1: backup previous actions
+  ACE_Sig_Action previous_action;
   for (int i = 1;
        i < ACE_NSIG;
        i++)
@@ -1241,6 +1265,7 @@ RPG_Common_Tools::initSignals(ACE_Sig_Set& signals_inout,
       previousActions_out[i] = previous_action;
     } // end IF
 
+  // step2: register (process-wide) signal handler
   // *IMPORTANT NOTE*: don't actually need to keep this around after registration
   ACE_Sig_Action new_action(static_cast<ACE_SignalHandler>(SIG_DFL), // default action
                             ACE_Sig_Set(1),                          // mask of signals to be blocked when servicing

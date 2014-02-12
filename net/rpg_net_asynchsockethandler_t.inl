@@ -35,7 +35,9 @@ template <typename ConfigType,
 RPG_Net_AsynchSocketHandler_T<ConfigType,
                               StatisticsContainerType>::RPG_Net_AsynchSocketHandler_T(MANAGER_T* manager_in)
  : inherited(),
-   inherited2(1,     // initial count
+   ACE_Notification_Strategy(NULL,                           // event handler handle
+                             ACE_Event_Handler::WRITE_MASK), // mask
+   inherited2(0,     // initial count
 	            true), // delete on zero ?
 //    myUserData(),
    myInputStream(),
@@ -71,18 +73,6 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::~RPG_Net_AsynchSocketHandler_T"));
 
-  if (myManager && myIsRegistered)
-  { // (try to) de-register with connection manager
-    try
-    {
-      myManager->deregisterConnection(this);
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::deregisterConnection(), continuing\n")));
-    }
-  } // end IF
 }
 
 template <typename ConfigType,
@@ -108,7 +98,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                  handle_in));
 
       // clean up
-			inherited2::decrease();
+      handle_close(inherited::handle(),
+                   ACE_Event_Handler::ALL_EVENTS_MASK);
 
       return;
     } // end IF
@@ -122,7 +113,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 							                           : ACE_TEXT("false"))));
 
     // clean up
-    inherited2::decrease();
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
@@ -138,7 +130,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 								                          : ACE_TEXT("false"))));
 
     // clean up
-    inherited2::decrease();
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
@@ -154,7 +147,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 								                                : ACE_TEXT("false"))));
 
     // clean up
-    inherited2::decrease();
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
@@ -171,7 +165,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                handle_in));
 
     // clean up
-    inherited2::decrease();
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
@@ -185,60 +180,11 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
                handle_in));
 
     // clean up
-    inherited2::decrease();
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
-
-  // step3: start reading (need to pass any data ?)
-  if (messageBlock_in.length() == 0)
-    initiate_read_stream();
-  else
-  {
-    ACE_Message_Block* duplicate = messageBlock_in.duplicate();
-    if (!duplicate)
-    {
-      ACE_ERROR((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Message_Block::duplicate(): \"%m\", aborting\n")));
-
-      // clean up
-      inherited2::decrease();
-
-      return;
-    } // end IF
-    // fake a result to emulate regular behavior...
-    ACE_Asynch_Read_Stream_Result_Impl* fake_result =
-			proactor()->create_asynch_read_stream_result(proxy(),            // handler proxy
-                                                   handle_in,          // socket handle
-                                                   *duplicate,         // buffer
-                                                   duplicate->size(),  // (max) bytes to read
-                                                   NULL,               // ACT
-                                                   ACE_INVALID_HANDLE, // event
-                                                   0,                  // priority
-                                                   0);                 // signal number
-    if (!fake_result)
-    {
-      ACE_ERROR((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Proactor::create_asynch_read_stream_result: \"%m\", aborting\n")));
-
-      // clean up
-      inherited2::decrease();
-
-      return;
-    } // end IF
-    size_t bytes_transferred = duplicate->length();
-    // <complete> for Accept would have already moved the <wr_ptr>
-    // forward; update it to the beginning position
-    duplicate->wr_ptr(duplicate->wr_ptr() - bytes_transferred);
-    // invoke ourselves (see handle_read_stream)
-    fake_result->complete(duplicate->length(), // bytes read
-                          1,                   // success
-                          NULL,                // ACT
-                          0);                  // error
-
-    // clean up
-    delete fake_result;
-  }
 
 //  if (myManager)
 //  { // (try to) register with the connection manager...
@@ -267,77 +213,6 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   myRemoteSAP = remoteAddress_in;
 }
 
-/*template <typename ConfigType,
-          typename StatisticsContainerType>
-int
-RPG_Net_AsynchSocketHandler_T<ConfigType,
-                              StatisticsContainerType>::close(u_long arg_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::close"));
-
-  // *NOTE*: this method will be invoked
-  // - by the worker which calls this after returning from svc()
-  //    --> in this case, this should be a NOP (triggered from handle_close(),
-  //        which was invoked by the reactor) - we override the default
-  //        behavior of a ACE_Svc_Handler, which would call handle_close() AGAIN
-  // - by the connector/acceptor when open() fails (e.g. too many connections !)
-  //    --> in this case, we WANT the default behavior (call handle_close())
-  // - by an external thread closing down the connection (see abort())
-  //    --> close the socket !
-
-  switch (arg_in)
-  {
-    // called by:
-    // - any worker from ACE_Task_Base on clean-up
-    // - acceptor/connector if there are too many connections (i.e. open() returned -1)
-    case 0:
-    {
-      // check specifically for the first case...
-      if (ACE_OS::thr_equal(ACE_Thread::self(), last_thread()))
-      {
-//       if (module())
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("\"%s\" worker thread (ID: %t) leaving...\n"),
-//                    ACE_TEXT_ALWAYS_CHAR(name())));
-//       else
-//         ACE_DEBUG((LM_DEBUG,
-//                    ACE_TEXT("worker thread (ID: %t) leaving...\n")));
-
-        // don't do anything...
-        break;
-      } // end IF
-
-      // too many connections: invoke inherited default behavior
-      // --> close() --> handle_close() --> ... --> delete "this"
-      // --> simply fall through to the next case
-    }
-    // called by external thread wanting to close our connection (see abort())
-    case 1:
-    {
-      // *NOTE*: this is NOT the elegant way to go about "aborting" a connection
-      // (even though it works), as it will confuse the reactor
-      // --> simply call handle_close instead...
-//       int result = inherited::peer_.close();
-//       if (result == -1)
-//         ACE_DEBUG((LM_ERROR,
-//                    ACE_TEXT("failed to ACE_SOCK_Stream::close(): \"%m\", returning\n")));
-      return inherited::close();
-    }
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid argument: %u, returning\n"),
-                 arg_in));
-
-      // what else can we do ?
-      break;
-    }
-  } // end SWITCH
-
-  return 0;
-}
-*/
-
 template <typename ConfigType,
           typename StatisticsContainerType>
 int
@@ -347,17 +222,69 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::handle_close"));
 
+  ACE_UNUSED_ARG(mask_in);
+
+  int result = -1;
+
   // clean up
   myInputStream.cancel();
   myOutputStream.cancel();
 
-  // *NOTE*: called when:
-  // - the client closes the socket (handle_xxx() returned -1)
-  // - the connection has been rejected (e.g. too many open)
-  // - the connection has been aborted locally
-  inherited2::decrease();
+  if (handle_in != ACE_INVALID_HANDLE)
+  {
+    result = ACE_OS::closesocket(handle_in);
+    if (result == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::closesocket(): \"%m\", continuing\n")));
+  } // end IF
 
-  return 0;
+  return result;
+}
+
+template <typename ConfigType,
+          typename StatisticsContainerType>
+int
+RPG_Net_AsynchSocketHandler_T<ConfigType,
+                              StatisticsContainerType>::notify(void)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::notify"));
+
+  int result = -1;
+  try
+  {
+    result = handle_output(inherited::handle());
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_AsynchSocketHandler_T::handle_output(), aborting")));
+  }
+  if (result == -1)
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
+
+  return result;
+}
+template <typename ConfigType,
+          typename StatisticsContainerType>
+int
+RPG_Net_AsynchSocketHandler_T<ConfigType,
+                              StatisticsContainerType>::notify(ACE_Event_Handler* handler_in,
+                                                               ACE_Reactor_Mask mask_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::notify"));
+
+  ACE_UNUSED_ARG(handler_in);
+  ACE_UNUSED_ARG(mask_in);
+
+  // *NOTE*: should NEVER be reached !
+  ACE_ASSERT(false);
+
+#if defined (_MSC_VER)
+  return -1;
+#else
+  ACE_NOTREACHED(return -1;)
+#endif
 }
 
 template <typename ConfigType,
@@ -376,7 +303,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 
   try
   {
-    message_out = static_cast<ACE_Message_Block*>(myUserData.messageAllocator->malloc(requestedSize_in));
+    message_out =
+        static_cast<ACE_Message_Block*>(myUserData.messageAllocator->malloc(requestedSize_in));
   }
   catch (...)
   {
@@ -402,35 +330,64 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::handle_write_stream"));
 
-  ACE_DEBUG ((LM_DEBUG, "********************\n"));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "bytes_to_write", result.bytes_to_write()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "handle", result.handle()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "bytes_transfered", result.bytes_transferred()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "act", (uintptr_t)result.act()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "success", result.success()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "completion_key", (uintptr_t)result.completion_key()));
-  ACE_DEBUG ((LM_DEBUG, "%s = %d\n", "error", result.error()));
-  ACE_DEBUG ((LM_DEBUG, "********************\n"));
+  bool close = false;
 
   // sanity check
   if (result.success() == 0)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to write to output stream (%d): %d, \"%m\", continuing\n"),
-               result.handle(),
-               result.error()));
-
-  // sanity check: handle short writes gracefully ?
-  if (result.bytes_to_write() != result.bytes_transferred())
   {
-    // *TODO*: handle short writes gracefully
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("sent %u/%u byte(s) only, continuing\n"),
-               result.bytes_transferred(),
-               result.bytes_to_write()));
+    // connection reset (by peer) ? --> not an error
+    if ((result.error() != ECONNRESET) &&
+        (result.error() != EPIPE))
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to write to output stream (%d): \"%s\", aborting\n"),
+                 result.handle(),
+                 ACE_TEXT(ACE_OS::strerror(result.error()))));
+
+    close = true;
   } // end IF
+
+  switch (result.bytes_transferred())
+  {
+    case -1:
+    case 0:
+    {
+      // connection reset (by peer) ? --> not an error
+      if ((result.error() != ECONNRESET) &&
+          (result.error() != EPIPE))
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to write to output stream (%d): \"%s\", aborting\n"),
+                   result.handle(),
+                   ACE_TEXT(ACE_OS::strerror(result.error()))));
+
+      close = true;
+
+      break;
+    }
+    // *** GOOD CASES ***
+    default:
+    {
+      // short write ?
+      if (result.bytes_to_write() != result.bytes_transferred())
+      {
+        // *TODO*: handle short writes more gracefully
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("stream (%d): sent %u/%u byte(s) only, aborting"),
+                   result.handle(),
+                   result.bytes_transferred(),
+                   result.bytes_to_write()));
+
+        close = true;
+      } // end IF
+
+      break;
+    }
+  } // end SWITCH
 
   // clean up
   result.message_block().release();
+  if (close)
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
 }
 
 template <typename ConfigType,
@@ -448,6 +405,10 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Net_AsynchSocketHandler_T::allocateMessage(%u), aborting\n"),
                RPG_NET_STREAM_BUFFER_SIZE));
+
+    // clean up
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
   } // end IF
 
   // start (asynch) read...
@@ -460,6 +421,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 
     // clean up
     message_block->release();
+    handle_close(inherited::handle(),
+                 ACE_Event_Handler::ALL_EVENTS_MASK);
   } // end IF
 }
 
@@ -486,11 +449,8 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::abort"));
 
-  ACE_HANDLE socket_handle = handle();
-  if (socket_handle != ACE_INVALID_HANDLE)
-    if (ACE_OS::closesocket(socket_handle) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::closesocket(): \"%m\", continuing\n")));
+  handle_close(inherited::handle(),
+               ACE_Event_Handler::ALL_EVENTS_MASK);
 }
 
 template <typename ConfigType,
@@ -508,50 +468,6 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
   return reinterpret_cast<unsigned int>(handle());
 #endif
 }
-
-//template <typename ConfigType,
-//          typename StatisticsContainerType>
-//void
-//RPG_Net_AsynchSocketHandler_T<ConfigType,
-//                              StatisticsContainerType>::increase()
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::increase"));
-//
-//	myCounter.increase();
-//}
-//
-//template <typename ConfigType,
-//          typename StatisticsContainerType>
-//void
-//RPG_Net_AsynchSocketHandler_T<ConfigType,
-//                              StatisticsContainerType>::decrease()
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::decrease"));
-//
-//	myCounter.decrease();
-//}
-//
-//template <typename ConfigType,
-//          typename StatisticsContainerType>
-//unsigned int
-//RPG_Net_AsynchSocketHandler_T<ConfigType,
-//                              StatisticsContainerType>::count()
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::count"));
-//
-//	return myCounter.count();
-//}
-//
-//template <typename ConfigType,
-//          typename StatisticsContainerType>
-//void
-//RPG_Net_AsynchSocketHandler_T<ConfigType,
-//                              StatisticsContainerType>::wait()
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler_T::wait"));
-//
-//	myCounter.wait();
-//}
 
 template <typename ConfigType,
           typename StatisticsContainerType>

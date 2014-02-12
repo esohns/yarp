@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.0.0, 2014-01-23T23:00:48. -->
+<!-- Written by QtCreator 3.0.0, 2014-02-12T15:15:50. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -211,7 +211,7 @@
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.1">
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-i 0 -l -o -r -s 0 -t -u/mnt/win_c/Temp/yarp/test_u/net/net_server.glade</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-i 0 -l -o -s 0 -t -u/mnt/win_c/Temp/yarp/test_u/net/net_server.glade</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/net/net_server</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>

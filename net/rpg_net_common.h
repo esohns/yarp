@@ -35,6 +35,7 @@
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
 #include <ace/Module.h>
+#include <ace/Stream.h>
 
 #include <list>
 
@@ -43,10 +44,14 @@ class ACE_Notification_Strategy;
 class RPG_Stream_IAllocator;
 class RPG_Stream_Module;
 
+typedef ACE_Task<ACE_MT_SYNCH,
+                 RPG_Common_TimePolicy_t> TASK_TYPE;
 typedef ACE_Module<ACE_MT_SYNCH,
                    RPG_Common_TimePolicy_t> MODULE_TYPE;
 typedef RPG_Stream_IModule<ACE_MT_SYNCH,
                            RPG_Common_TimePolicy_t> IMODULE_TYPE;
+typedef ACE_Stream_Iterator<ACE_MT_SYNCH,
+                            RPG_Common_TimePolicy_t> STREAM_ITERATOR_TYPE;
 
 struct RPG_Net_RuntimeStatistic
 {

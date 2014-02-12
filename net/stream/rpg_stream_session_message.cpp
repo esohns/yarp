@@ -226,8 +226,8 @@ RPG_Stream_SessionMessage::duplicate(void) const
                    NULL);
   } // end IF
 
-  // *WARNING*:we tell the allocator to return a RPG_Stream_SessionMessageBase<ConfigType>
-  // by passing a 0 as argument to malloc()...
+  // *WARNING*: the allocator returns a RPG_Stream_SessionMessageBase<ConfigType>
+  // when passing 0 as argument to malloc()...
   ACE_NEW_MALLOC_RETURN(nb,
                         static_cast<RPG_Stream_SessionMessage*> (message_block_allocator_->malloc(0)),
                         RPG_Stream_SessionMessage(*this),
@@ -238,7 +238,7 @@ RPG_Stream_SessionMessage::duplicate(void) const
   {
     nb->cont_ = cont_->duplicate();
 
-    // If things go wrong, release all of our resources and return
+    // when things go wrong, release all resources and return
     if (nb->cont_ == 0)
     {
       nb->release();

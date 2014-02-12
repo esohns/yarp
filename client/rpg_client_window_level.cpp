@@ -458,8 +458,14 @@ RPG_Client_Window_Level::drawBorder(SDL_Surface* targetSurface_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::drawBorder"));
 
+  // *NOTE*: should NEVER be reached !
   ACE_ASSERT(false);
+
+#if defined (_MSC_VER)
+  return;
+#else
   ACE_NOTREACHED(return;)
+#endif
 }
 
 void

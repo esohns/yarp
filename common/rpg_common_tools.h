@@ -94,16 +94,17 @@ class RPG_Common_Export RPG_Common_Tools
                           const bool& = false,          // enable debug messages ?
                           ACE_Log_Msg_Backend* = NULL); // logger backend {NULL --> disable}
 
+  static bool preInitSignals(ACE_Sig_Set&,                 // signal set (*NOTE*: IN/OUT)
+                             const bool&,                  // use reactor ?
+                             RPG_Common_SignalActions_t&); // return value: previous actions
   static bool initSignals(ACE_Sig_Set&,                 // signal set (*NOTE*: IN/OUT)
                           ACE_Event_Handler*,           // event handler handle
-                          const bool&,                  // use reactor ?
                           RPG_Common_SignalActions_t&); // return value: previous actions
   static void finiSignals(const ACE_Sig_Set&,                 // signal set
                           const bool&,                        // use reactor ?
                           const RPG_Common_SignalActions_t&); // previous actions
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools(const RPG_Common_Tools&));
