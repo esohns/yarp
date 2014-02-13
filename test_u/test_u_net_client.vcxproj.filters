@@ -27,6 +27,15 @@
     <ClInclude Include="net\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="net\net_callbacks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="net\net_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="net\net_eventhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="net\net_client.cpp">
@@ -39,6 +48,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="net\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="net\net_callbacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="net\net_eventhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

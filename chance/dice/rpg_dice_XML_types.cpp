@@ -33,10 +33,11 @@
 
 // Begin prologue.
 //
+#include "stdafx.h"
 //
 // End prologue.
 
-#include <rpg_dice_XML_types.h>
+#include "rpg_dice_XML_types.h"
 
 // RPG_Dice_Roll_Type_pskel
 //

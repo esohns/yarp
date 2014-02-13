@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMMON_RPG_XMLSCHEMA_XML_TREE_H
-#define CXX__COMMON_RPG_XMLSCHEMA_XML_TREE_H
+#ifndef CXX___RPG_XMLSCHEMA_XML_TREE_H
+#define CXX___RPG_XMLSCHEMA_XML_TREE_H
 
 // Begin prologue.
 //
@@ -249,4 +249,4 @@ namespace xml_schema
 //
 // End epilogue.
 
-#endif // CXX__COMMON_RPG_XMLSCHEMA_XML_TREE_H
+#endif // CXX___RPG_XMLSCHEMA_XML_TREE_H

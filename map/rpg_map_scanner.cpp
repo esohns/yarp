@@ -17,7 +17,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 37
+#define YY_FLEX_SUBMINOR_VERSION 35
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -78,6 +78,7 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
+#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -107,8 +108,6 @@ typedef unsigned int flex_uint32_t;
 #ifndef UINT32_MAX
 #define UINT32_MAX             (4294967295U)
 #endif
-
-#endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
@@ -213,11 +212,6 @@ typedef void* yyscan_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
 /* %if-not-reentrant */
 /* %endif */
 
@@ -261,6 +255,11 @@ typedef size_t yy_size_t;
 
 #define unput(c) yyunput( c, yyg->yytext_ptr , yyscanner )
 
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -283,7 +282,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -380,7 +379,7 @@ static void RPG_Map_Scanner__init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t
 
 YY_BUFFER_STATE RPG_Map_Scanner__scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
 YY_BUFFER_STATE RPG_Map_Scanner__scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE RPG_Map_Scanner__scan_bytes (yyconst char *bytes,yy_size_t len ,yyscan_t yyscanner );
+YY_BUFFER_STATE RPG_Map_Scanner__scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
 
 /* %endif */
 
@@ -415,7 +414,7 @@ void RPG_Map_Scanner_free (void * ,yyscan_t yyscanner );
 /* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
 
-#define RPG_Map_Scanner_wrap(yyscanner) 1
+#define RPG_Map_Scanner_wrap(n) 1
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
@@ -994,8 +993,8 @@ static yyconst flex_int16_t yy_rule_linenum[8] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "./map/scripts/map_scanner.l"
-#line 2 "./map/scripts/map_scanner.l"
+#line 1 "./map_scanner.l"
+#line 2 "./map_scanner.l"
 #include "stdafx.h"
 
 #include <string>
@@ -1022,9 +1021,9 @@ static yyconst flex_int16_t yy_rule_linenum[8] =
 */
 
 
-#line 45 "./map/scripts/map_scanner.l"
+#line 45 "./map_scanner.l"
 #define YY_USER_ACTION yylloc->columns(yyleng);
-#line 1028 "rpg_map_scanner.cpp"
+#line 1027 "rpg_map_scanner.cpp"
 
 #define INITIAL 0
 #define row 1
@@ -1060,8 +1059,8 @@ struct yyguts_t
     size_t yy_buffer_stack_max; /**< capacity of stack. */
     YY_BUFFER_STATE * yy_buffer_stack; /**< Stack as an array. */
     char yy_hold_char;
-    yy_size_t yy_n_chars;
-    yy_size_t yyleng_r;
+    int yy_n_chars;
+    int yyleng_r;
     char *yy_c_buf_p;
     int yy_init;
     int yy_start;
@@ -1118,17 +1117,13 @@ FILE *RPG_Map_Scanner_get_out (yyscan_t yyscanner );
 
 void RPG_Map_Scanner_set_out  (FILE * out_str ,yyscan_t yyscanner );
 
-yy_size_t RPG_Map_Scanner_get_leng (yyscan_t yyscanner );
+int RPG_Map_Scanner_get_leng (yyscan_t yyscanner );
 
 char *RPG_Map_Scanner_get_text (yyscan_t yyscanner );
 
 int RPG_Map_Scanner_get_lineno (yyscan_t yyscanner );
 
 void RPG_Map_Scanner_set_lineno (int line_number ,yyscan_t yyscanner );
-
-int RPG_Map_Scanner_get_column  (yyscan_t yyscanner );
-
-void RPG_Map_Scanner_set_column (int column_no ,yyscan_t yyscanner );
 
 /* %if-bison-bridge */
 /* %endif */
@@ -1188,7 +1183,7 @@ static int input (yyscan_t yyscanner );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO do { if (fwrite( yytext, yyleng, 1, yyout )) {} } while (0)
+#define ECHO fwrite( yytext, yyleng, 1, yyout )
 /* %endif */
 /* %if-c++-only C++ definition */
 /* %endif */
@@ -1295,14 +1290,14 @@ YY_DECL
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
-#line 48 "./map/scripts/map_scanner.l"
+#line 48 "./map_scanner.l"
 
 
   yylloc->step();
   yy_flex_debug = driver->getDebugScanner();
 
 
-#line 1306 "rpg_map_scanner.cpp"
+#line 1301 "rpg_map_scanner.cpp"
 
 	if ( !yyg->yy_init )
 		{
@@ -1369,7 +1364,7 @@ yy_find_action:
 
 		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
 			{
-			yy_size_t yyl;
+			int yyl;
 			for ( yyl = 0; yyl < yyleng; ++yyl )
 				if ( yytext[yyl] == '\n' )
 					   
@@ -1408,20 +1403,20 @@ case 1:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 55 "./map/scripts/map_scanner.l"
+#line 55 "./map_scanner.l"
 { BEGIN(row);
                              yyless(0); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 57 "./map/scripts/map_scanner.l"
+#line 57 "./map_scanner.l"
 { BEGIN(last_row);
                              yyless(0); }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 59 "./map/scripts/map_scanner.l"
+#line 59 "./map_scanner.l"
 { yylloc->step();
                              (*line_count)++; }
 	YY_BREAK
@@ -1429,7 +1424,7 @@ YY_RULE_SETUP
 
 case 4:
 YY_RULE_SETUP
-#line 63 "./map/scripts/map_scanner.l"
+#line 63 "./map_scanner.l"
 { yylloc->step();
                              yylval->cval = yytext[0];
                              return yy::RPG_Map_Parser::token::GLYPH; }
@@ -1437,7 +1432,7 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 66 "./map/scripts/map_scanner.l"
+#line 66 "./map_scanner.l"
 { yylloc->step();
                              BEGIN(INITIAL);
                              (*line_count)++;
@@ -1447,7 +1442,7 @@ YY_RULE_SETUP
 
 case 6:
 YY_RULE_SETUP
-#line 72 "./map/scripts/map_scanner.l"
+#line 72 "./map_scanner.l"
 { yylloc->step();
                              yylval->cval = yytext[0];
                              return yy::RPG_Map_Parser::token::GLYPH; }
@@ -1456,13 +1451,13 @@ YY_RULE_SETUP
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(row):
 case YY_STATE_EOF(last_row):
-#line 76 "./map/scripts/map_scanner.l"
+#line 76 "./map_scanner.l"
 { BEGIN(INITIAL);
                              yyterminate(); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 78 "./map/scripts/map_scanner.l"
+#line 78 "./map_scanner.l"
 { yylloc->step();
                              yylval->cval = yytext[0];
 
@@ -1477,10 +1472,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 89 "./map/scripts/map_scanner.l"
+#line 89 "./map_scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1484 "rpg_map_scanner.cpp"
+#line 1479 "rpg_map_scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1678,21 +1673,21 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 	else
 		{
-			yy_size_t num_to_read =
+			int num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
+			YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
 
 			int yy_c_buf_p_offset =
 				(int) (yyg->yy_c_buf_p - b->yy_ch_buf);
 
 			if ( b->yy_is_our_buffer )
 				{
-				yy_size_t new_size = b->yy_buf_size * 2;
+				int new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -1723,7 +1718,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			yyg->yy_n_chars, num_to_read );
+			yyg->yy_n_chars, (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = yyg->yy_n_chars;
 		}
@@ -1813,7 +1808,6 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	yy_current_state = yy_NUL_trans[yy_current_state];
 	yy_is_jam = (yy_current_state == 0);
 
-	(void)yyg;
 	return yy_is_jam ? 0 : yy_current_state;
 }
 
@@ -1850,7 +1844,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 		else
 			{ /* need more input */
-			yy_size_t offset = yyg->yy_c_buf_p - yyg->yytext_ptr;
+			int offset = yyg->yy_c_buf_p - yyg->yytext_ptr;
 			++yyg->yy_c_buf_p;
 
 			switch ( yy_get_next_buffer( yyscanner ) )
@@ -2044,6 +2038,13 @@ static void RPG_Map_Scanner__load_buffer_state  (yyscan_t yyscanner)
 	RPG_Map_Scanner_free((void *) b ,yyscanner );
 }
 
+/* %if-c-only */
+
+/* %endif */
+
+/* %if-c++-only */
+/* %endif */
+
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
  * such as during a RPG_Map_Scanner_restart() or at EOF.
@@ -2190,7 +2191,7 @@ static void RPG_Map_Scanner_ensure_buffer_stack (yyscan_t yyscanner)
 /* %if-c++-only */
 /* %endif */
 {
-	yy_size_t num_to_alloc;
+	int num_to_alloc;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	if (!yyg->yy_buffer_stack) {
@@ -2289,17 +2290,17 @@ YY_BUFFER_STATE RPG_Map_Scanner__scan_string (yyconst char * yystr , yyscan_t yy
 /* %if-c-only */
 /** Setup the input buffer state to scan the given bytes. The next call to RPG_Map_Scanner_lex() will
  * scan from a @e copy of @a bytes.
- * @param yybytes the byte buffer to scan
- * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
+ * @param bytes the byte buffer to scan
+ * @param len the number of bytes in the buffer pointed to by @a bytes.
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE RPG_Map_Scanner__scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len , yyscan_t yyscanner)
+YY_BUFFER_STATE RPG_Map_Scanner__scan_bytes  (yyconst char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
 	char *buf;
 	yy_size_t n;
-	yy_size_t i;
+	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
@@ -2419,7 +2420,7 @@ FILE *RPG_Map_Scanner_get_out  (yyscan_t yyscanner)
 /** Get the length of the current token.
  * @param yyscanner The scanner object.
  */
-yy_size_t RPG_Map_Scanner_get_leng  (yyscan_t yyscanner)
+int RPG_Map_Scanner_get_leng  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyleng;
@@ -2459,7 +2460,7 @@ void RPG_Map_Scanner_set_lineno (int  line_number , yyscan_t yyscanner)
 
         /* lineno is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           YY_FATAL_ERROR( "RPG_Map_Scanner_set_lineno called with no buffer" );
+           yy_fatal_error( "RPG_Map_Scanner_set_lineno called with no buffer" , yyscanner); 
     
     yylineno = line_number;
 }
@@ -2474,7 +2475,7 @@ void RPG_Map_Scanner_set_column (int  column_no , yyscan_t yyscanner)
 
         /* column is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           YY_FATAL_ERROR( "RPG_Map_Scanner_set_column called with no buffer" );
+           yy_fatal_error( "RPG_Map_Scanner_set_column called with no buffer" , yyscanner); 
     
     yycolumn = column_no;
 }
@@ -2705,7 +2706,7 @@ void RPG_Map_Scanner_free (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 89 "./map/scripts/map_scanner.l"
+#line 89 "./map_scanner.l"
 
 
 

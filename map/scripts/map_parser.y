@@ -49,7 +49,7 @@ typedef void* yyscan_t;
 #include "rpg_map_parser_driver.h"
 #include "stack.hh"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 
@@ -94,9 +94,7 @@ glyphs:                           /* empty */
                                         RPG_Map_Door_t door;
                                         door.position = driver->myCurrentPosition;
                                         door.outside = DIRECTION_INVALID;
-                                        door.is_open = false;
-                                        door.is_locked = false;
-                                        door.is_broken = false;
+                                        door.state = RPG_MAP_DOORSTATE_INVALID;
                                         driver->myCurrentPlan->doors.insert(door);
                                         driver->myCurrentPosition.first++;
                                         break;

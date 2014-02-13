@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__MAGIC_RPG_MAGIC_XML_TREE_H
-#define CXX__MAGIC_RPG_MAGIC_XML_TREE_H
+#ifndef CXX___RPG_MAGIC_XML_TREE_H
+#define CXX___RPG_MAGIC_XML_TREE_H
 
 // Begin prologue.
 //
@@ -4299,4 +4299,4 @@ spellDictionary (const ::RPG_Magic_Dictionary_XMLTree_Type& x,
 //
 // End epilogue.
 
-#endif // CXX__MAGIC_RPG_MAGIC_XML_TREE_H
+#endif // CXX___RPG_MAGIC_XML_TREE_H

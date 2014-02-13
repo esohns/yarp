@@ -1040,7 +1040,7 @@ ACE_TMAIN(int argc_in,
   // *TODO*: the reasoning here is incomplete
   bool use_fd_based_reactor = useReactor;
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-  use_fd_based_reactor &&= !RPG_COMMON_USE_WFMO_REACTOR;
+  use_fd_based_reactor = (useReactor && !RPG_COMMON_USE_WFMO_REACTOR);
 #endif
   if (!RPG_Common_Tools::initResourceLimits(use_fd_based_reactor, // file descriptors
                                             true))                // stack traces

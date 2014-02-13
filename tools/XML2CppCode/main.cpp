@@ -20,9 +20,12 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-//#include "XML2CppCode-config.h"
+#if defined _MSC_VER
+#include "build/XML2CppCode-config.h"
+#else
 // *TODO*: leave as-is for now (see Yarp/configure.ac)
 #include "config.h"
+#endif
 #endif
 
 #include "xml2cppcode.h"
@@ -270,13 +273,12 @@ do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
 
-// *NOTE*: clean this up !
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#define XML2CPPCODE_VERSION ACE_TEXT("0.1")
-#endif
-//  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
+#if defined _MSC_VER
+  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
+#else
   // *TODO*: leave as-is for now (see Yarp/configure.ac)
   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+#endif
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version

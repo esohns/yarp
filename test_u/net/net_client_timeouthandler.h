@@ -39,8 +39,8 @@ class Net_Client_TimeoutHandler
 		ACTION_NORMAL = 0,
 		ACTION_ALTERNATING,
 		ACTION_STRESS,
-		// ---------------------
-		ACTION_GTK, // dispatch UI events
+		//// ---------------------
+		//ACTION_GTK, // dispatch UI events
 		// ---------------------
 		ACTION_MAX,
 		ACTION_INVALID = -1

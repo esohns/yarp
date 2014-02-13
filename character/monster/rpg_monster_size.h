@@ -7,7 +7,9 @@
 #ifndef RPG_MONSTER_SIZE_H
 #define RPG_MONSTER_SIZE_H
 
-struct RPG_Monster_Size
+#include "rpg_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Monster_Size
 {
   RPG_Common_Size size;
   bool isTall;

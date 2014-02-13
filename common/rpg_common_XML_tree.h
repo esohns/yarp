@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMMON_RPG_COMMON_XML_TREE_H
-#define CXX__COMMON_RPG_COMMON_XML_TREE_H
+#ifndef CXX___RPG_COMMON_XML_TREE_H
+#define CXX___RPG_COMMON_XML_TREE_H
 
 // Begin prologue.
 //
@@ -2367,4 +2367,4 @@ operator<< (::xml_schema::list_stream&,
 //
 // End epilogue.
 
-#endif // CXX__COMMON_RPG_COMMON_XML_TREE_H
+#endif // CXX___RPG_COMMON_XML_TREE_H

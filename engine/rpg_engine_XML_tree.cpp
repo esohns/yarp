@@ -33,6 +33,7 @@
 
 // Begin prologue.
 //
+#include "stdafx.h"
 //
 // End prologue.
 

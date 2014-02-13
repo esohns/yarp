@@ -110,6 +110,9 @@
     <ClCompile Include="rpg_net_asynchstreamhandler_t.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rpg_net_module_eventhandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rpg_net_common.h">
@@ -206,6 +209,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_net_stream_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_net_module_eventhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

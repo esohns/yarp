@@ -40,17 +40,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <CXX_Parser_Mapping_RuleAfterTargets />
+    <TargetName>rpg_$(TargetName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>rpg_$(TargetName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;$(ProjectDir)..\chance\dice;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>META_PACKAGE_NAME="$(SolutionName)";RPG_COMMON_BUILD_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;SECURITY_WIN32;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;$(ProjectDir)..\include;$(ProjectDir)..\chance\dice;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_COMMON_BUILD_DLL;RPG_DICE_HAS_DLL;HAVE_CONFIG_H;_SCL_SECURE_NO_WARNINGS;SECURITY_WIN32;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -64,7 +69,7 @@
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
-      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -99,7 +104,7 @@ popd</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>xerces-c_3D.lib;ACE.lib;Secur32.lib;Advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>

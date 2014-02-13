@@ -23,8 +23,8 @@
 
 #include <ace/Event_Handler.h>
 
-#include <gdk/gdk.h>
-#include <gtk/gtkmain.h>
+//#include <gdk/gdk.h>
+//#include <gtk/gtkmain.h>
 
 #include "rpg_dice.h"
 
@@ -65,7 +65,8 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
   ACE_UNUSED_ARG(tv_in);
 
   const Net_GTK_CBData_t* user_data = reinterpret_cast<const Net_GTK_CBData_t*>(arg_in);
-  ActionMode_t action_mode = (user_data ? ACTION_GTK : myMode);
+  //ActionMode_t action_mode = (user_data ? ACTION_GTK : myMode);
+  ActionMode_t action_mode = myMode;
 	bool do_connect = false;
 	unsigned int num_connections =
 		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
@@ -218,37 +219,37 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
 			break;
 		}
-		case ACTION_GTK:
-		{
-			ACE_ASSERT(user_data);
-
-			// dispatch any pending events
-			gdk_threads_enter();
-			while (gtk_events_pending())
-				if (gtk_main_iteration_do(FALSE)) // NEVER block !
-				{
-//					// gtk_main_quit() has been invoked --> finished event processing
-
-//          // *NOTE*: as gtk_main() is never invoked, gtk_main_iteration_do ALWAYS
-//          // returns true... provide a workaround by using the gtk_quit_add hook
-//          // --> check if that has been called...
-//          // synch access
-//          {
-//            ACE_Guard<ACE_Thread_Mutex> aGuard(user_data->lock);
-
-//            if (user_data->gtk_main_quit_invoked)
-//              if (ACE_OS::raise(SIGINT) == -1) // --> shutdown
-//                ACE_DEBUG((LM_ERROR,
-//                           ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-//                           SIGINT));
-
-          break; // ignore any remaining GTK events
-//          } // end lock scope
-        } // end IF
-      gdk_threads_leave();
-
-			break;
-		}
+//		case ACTION_GTK:
+//		{
+//			ACE_ASSERT(user_data);
+//
+//			// dispatch any pending events
+//			gdk_threads_enter();
+//			while (gtk_events_pending())
+//				if (gtk_main_iteration_do(FALSE)) // NEVER block !
+//				{
+////					// gtk_main_quit() has been invoked --> finished event processing
+//
+////          // *NOTE*: as gtk_main() is never invoked, gtk_main_iteration_do ALWAYS
+////          // returns true... provide a workaround by using the gtk_quit_add hook
+////          // --> check if that has been called...
+////          // synch access
+////          {
+////            ACE_Guard<ACE_Thread_Mutex> aGuard(user_data->lock);
+//
+////            if (user_data->gtk_main_quit_invoked)
+////              if (ACE_OS::raise(SIGINT) == -1) // --> shutdown
+////                ACE_DEBUG((LM_ERROR,
+////                           ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
+////                           SIGINT));
+//
+//          break; // ignore any remaining GTK events
+////          } // end lock scope
+//        } // end IF
+//      gdk_threads_leave();
+//
+//			break;
+//		}
 		default:
 		{
       ACE_DEBUG((LM_ERROR,

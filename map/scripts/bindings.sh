@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Map > ./map/rpg_map_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -e -f ./map/rpg_map.xsd -i -o ./map -s -u
+XML2CppCode -d RPG_Map_Export -e -f ./map/rpg_map.xsd -i -o ./map -s -u
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 ## generate "XMLSchema" namespace include file (tree)

@@ -7,7 +7,9 @@
 #ifndef RPG_COMBAT_DAMAGEELEMENT_H
 #define RPG_COMBAT_DAMAGEELEMENT_H
 
-struct RPG_Combat_DamageElement
+#include "rpg_combat_exports.h"
+
+struct RPG_Combat_Export RPG_Combat_DamageElement
 {
   std::vector<RPG_Combat_DamageTypeUnion> types;
   RPG_Dice_Roll amount;

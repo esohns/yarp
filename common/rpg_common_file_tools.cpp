@@ -21,6 +21,11 @@
 
 #include "rpg_common_file_tools.h"
 
+// *NOTE*: need this to import correct VERSION !
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 #include "rpg_common_tools.h"
@@ -544,7 +549,7 @@ RPG_Common_File_Tools::getUserGameDirectory()
   result = ACE_TEXT_ALWAYS_CHAR(buffer);
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  result += ACE_TEXT_ALWAYS_CHAR(META_PACKAGE);
+  result += ACE_TEXT_ALWAYS_CHAR(RPG_META_PACKAGE);
 
   if (!RPG_Common_File_Tools::isDirectory(result))
   {
@@ -577,7 +582,7 @@ RPG_Common_File_Tools::getLogFilename(const std::string& programName_in)
   // init return value(s)
   std::string result;
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  result = ACE_OS::getenv(RPG_COMMON_DEF_LOG_DIRECTORY)
+  result = ACE_OS::getenv(RPG_COMMON_DEF_LOG_DIRECTORY);
 #else
   result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_LOG_DIRECTORY);
 #endif

@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2011 Free Software Foundation, Inc.
+      Copyright (C) 2002-2013 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@
 #include "rpg_net_protocol_IRCparser_driver.h"
 #include "rpg_net_protocol_IRCmessage.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 
@@ -57,6 +57,15 @@
 
 
 
+
+
+# ifndef YY_NULL
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULL nullptr
+#  else
+#   define YY_NULL 0
+#  endif
+# endif
 
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
@@ -70,25 +79,26 @@
 # endif
 #endif
 
+#define YYRHSLOC(Rhs, K) ((Rhs)[K])
 /* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
    If N is 0, then set CURRENT to the empty location which ends
    the previous symbol: RHS[0] (always defined).  */
 
-#define YYRHSLOC(Rhs, K) ((Rhs)[K])
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)                               \
- do                                                                    \
-   if (N)                                                              \
-     {                                                                 \
-       (Current).begin = YYRHSLOC (Rhs, 1).begin;                      \
-       (Current).end   = YYRHSLOC (Rhs, N).end;                        \
-     }                                                                 \
-   else                                                                \
-     {                                                                 \
-       (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;        \
-     }                                                                 \
- while (false)
-#endif
+# ifndef YYLLOC_DEFAULT
+#  define YYLLOC_DEFAULT(Current, Rhs, N)                               \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).begin  = YYRHSLOC (Rhs, 1).begin;                   \
+          (Current).end    = YYRHSLOC (Rhs, N).end;                     \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
+        }                                                               \
+    while (/*CONSTCOND*/ false)
+# endif
+
 
 /* Suppress unused-variable warnings by "using" E.  */
 #define YYUSE(e) ((void) (e))
@@ -124,9 +134,9 @@ do {					\
 #else /* !YYDEBUG */
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
-# define YY_REDUCE_PRINT(Rule)
-# define YY_STACK_PRINT()
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location) YYUSE(Type)
+# define YY_REDUCE_PRINT(Rule)        static_cast<void>(0)
+# define YY_STACK_PRINT()             static_cast<void>(0)
 
 #endif /* !YYDEBUG */
 
@@ -208,46 +218,50 @@ namespace yy {
   {
     YYUSE (yylocationp);
     YYUSE (yyvaluep);
+    std::ostream& yyo = debug_stream ();
+    std::ostream& yyoutput = yyo;
+    YYUSE (yyoutput);
     switch (yytype)
-      {
-        case 3: /* "\"space\"" */
+    {
+      case 3: /* "space" */
 
-	{ debug_stream() << (yyvaluep->ival); };
+        { debug_stream() << ((*yyvaluep).ival); };
 
-	break;
-      case 4: /* "\"origin\"" */
+        break;
+      case 4: /* "origin" */
 
-	{ debug_stream() << *(yyvaluep->sval); };
+        { debug_stream() << *((*yyvaluep).sval); };
 
-	break;
-      case 5: /* "\"user\"" */
+        break;
+      case 5: /* "user" */
 
-	{ debug_stream() << *(yyvaluep->sval); };
+        { debug_stream() << *((*yyvaluep).sval); };
 
-	break;
-      case 6: /* "\"host\"" */
+        break;
+      case 6: /* "host" */
 
-	{ debug_stream() << *(yyvaluep->sval); };
+        { debug_stream() << *((*yyvaluep).sval); };
 
-	break;
-      case 7: /* "\"cmd_string\"" */
+        break;
+      case 7: /* "cmd_string" */
 
-	{ debug_stream() << *(yyvaluep->sval); };
+        { debug_stream() << *((*yyvaluep).sval); };
 
-	break;
-      case 8: /* "\"cmd_numeric\"" */
+        break;
+      case 8: /* "cmd_numeric" */
 
-	{ debug_stream() << (yyvaluep->ival); };
+        { debug_stream() << ((*yyvaluep).ival); };
 
-	break;
-      case 9: /* "\"param\"" */
+        break;
+      case 9: /* "param" */
 
-	{ debug_stream() << *(yyvaluep->sval); };
+        { debug_stream() << *((*yyvaluep).sval); };
 
-	break;
-       default:
-	  break;
-      }
+        break;
+
+      default:
+        break;
+    }
   }
 
 
@@ -271,49 +285,50 @@ namespace yy {
     YYUSE (yymsg);
     YYUSE (yyvaluep);
 
-    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+    if (yymsg)
+      YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
     switch (yytype)
-      {
-        case 3: /* "\"space\"" */
+    {
+      case 3: /* "space" */
 
-	{ (yyvaluep->ival) = 0; };
+        { ((*yyvaluep).ival) = 0; };
 
-	break;
-      case 4: /* "\"origin\"" */
+        break;
+      case 4: /* "origin" */
 
-	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
+        { delete ((*yyvaluep).sval); ((*yyvaluep).sval) = NULL; };
 
-	break;
-      case 5: /* "\"user\"" */
+        break;
+      case 5: /* "user" */
 
-	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
+        { delete ((*yyvaluep).sval); ((*yyvaluep).sval) = NULL; };
 
-	break;
-      case 6: /* "\"host\"" */
+        break;
+      case 6: /* "host" */
 
-	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
+        { delete ((*yyvaluep).sval); ((*yyvaluep).sval) = NULL; };
 
-	break;
-      case 7: /* "\"cmd_string\"" */
+        break;
+      case 7: /* "cmd_string" */
 
-	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
+        { delete ((*yyvaluep).sval); ((*yyvaluep).sval) = NULL; };
 
-	break;
-      case 8: /* "\"cmd_numeric\"" */
+        break;
+      case 8: /* "cmd_numeric" */
 
-	{ (yyvaluep->ival) = 0; };
+        { ((*yyvaluep).ival) = 0; };
 
-	break;
-      case 9: /* "\"param\"" */
+        break;
+      case 9: /* "param" */
 
-	{ delete (yyvaluep->sval); (yyvaluep->sval) = NULL; };
+        { delete ((*yyvaluep).sval); ((*yyvaluep).sval) = NULL; };
 
-	break;
+        break;
 
-	default:
-	  break;
-      }
+      default:
+        break;
+    }
   }
 
   void
@@ -370,17 +385,18 @@ namespace yy {
     int yychar = yyempty_;
     int yytoken = 0;
 
-    /* State.  */
+    // State.
     int yyn;
     int yylen = 0;
     int yystate = 0;
 
-    /* Error handling.  */
+    // Error handling.
     int yynerrs_ = 0;
     int yyerrstatus_ = 0;
 
     /// Semantic value of the lookahead.
-    semantic_type yylval;
+    static semantic_type yyval_default;
+    semantic_type yylval = yyval_default;
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
@@ -393,11 +409,15 @@ namespace yy {
 
     int yyresult;
 
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
+    try
+      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
-    /* User initialization code.  */
-    
+/* User initialization code.  */
+
 {
   // Initialize the initial location
   //@$.begin.filename = @$.end.filename = &driver->file;
@@ -412,9 +432,9 @@ namespace yy {
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
-    yystate_stack_ = state_stack_type (0);
-    yysemantic_stack_ = semantic_stack_type (0);
-    yylocation_stack_ = location_stack_type (0);
+    yystate_stack_.clear ();
+    yysemantic_stack_.clear ();
+    yylocation_stack_.clear ();
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yylloc);
 
@@ -440,10 +460,9 @@ namespace yy {
     /* Read a lookahead token.  */
     if (yychar == yyempty_)
       {
-	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, driver, messageCount, yyscanner);
+        YYCDEBUG << "Reading a token: ";
+        yychar = yylex (&yylval, &yylloc, driver, messageCount, yyscanner);
       }
-
 
     /* Convert token to internal form.  */
     if (yychar <= yyeof_)
@@ -515,14 +534,17 @@ namespace yy {
     else
       yyval = yysemantic_stack_[0];
 
+    // Compute the default @$.
     {
       slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
       YYLLOC_DEFAULT (yyloc, slice, yylen);
     }
+
+    // Perform the reduction.
     YY_REDUCE_PRINT (yyn);
     switch (yyn)
       {
-	  case 5:
+          case 5:
 
     { driver->myCurrentMessage->prefix.origin = *(yysemantic_stack_[(3) - (2)].sval);
 /*                                                                ACE_DEBUG((LM_DEBUG,
@@ -592,9 +614,10 @@ namespace yy {
 
 
 
-	default:
-          break;
+      default:
+        break;
       }
+
     /* User semantic actions sometimes alter yychar, and that requires
        that yytoken be updated with the new translation.  We take the
        approach of translating immediately before every use of yytoken.
@@ -645,20 +668,19 @@ namespace yy {
     yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
-
-	if (yychar <= yyeof_)
-	  {
-	  /* Return failure if at end of input.  */
-	  if (yychar == yyeof_)
-	    YYABORT;
-	  }
-	else
-	  {
-	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-	    yychar = yyempty_;
-	  }
+        /* If just tried and failed to reuse lookahead token after an
+           error, discard it.  */
+        if (yychar <= yyeof_)
+          {
+            /* Return failure if at end of input.  */
+            if (yychar == yyeof_)
+              YYABORT;
+          }
+        else
+          {
+            yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
+            yychar = yyempty_;
+          }
       }
 
     /* Else will try to reuse lookahead token after shifting the error
@@ -707,7 +729,7 @@ namespace yy {
 
 	/* Pop the current state because it cannot handle the error token.  */
 	if (yystate_stack_.height () == 1)
-	YYABORT;
+	  YYABORT;
 
 	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
@@ -755,16 +777,42 @@ namespace yy {
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (yystate_stack_.height () != 1)
+    while (1 < yystate_stack_.height ())
       {
-	yydestruct_ ("Cleanup: popping",
-		   yystos_[yystate_stack_[0]],
-		   &yysemantic_stack_[0],
-		   &yylocation_stack_[0]);
-	yypop_ ();
+        yydestruct_ ("Cleanup: popping",
+                     yystos_[yystate_stack_[0]],
+                     &yysemantic_stack_[0],
+                     &yylocation_stack_[0]);
+        yypop_ ();
       }
 
     return yyresult;
+    }
+    catch (...)
+      {
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
+        // Do not try to display the values of the reclaimed symbols,
+        // as their printer might throw an exception.
+        if (yychar != yyempty_)
+          {
+            /* Make sure we have latest lookahead translation.  See
+               comments at user semantic actions for why this is
+               necessary.  */
+            yytoken = yytranslate_ (yychar);
+            yydestruct_ (YY_NULL, yytoken, &yylval, &yylloc);
+          }
+
+        while (1 < yystate_stack_.height ())
+          {
+            yydestruct_ (YY_NULL,
+                         yystos_[yystate_stack_[0]],
+                         &yysemantic_stack_[0],
+                         &yylocation_stack_[0]);
+            yypop_ ();
+          }
+        throw;
+      }
   }
 
   // Generate an error message.
@@ -833,7 +881,7 @@ namespace yy {
           }
       }
 
-    char const* yyformat = 0;
+    char const* yyformat = YY_NULL;
     switch (yycount)
       {
 #define YYCASE_(N, S)                         \
@@ -957,7 +1005,7 @@ namespace yy {
        1,     1,     2,     2,     2,     0,     1,     0
   };
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+
   /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
      First, the terminals, then, starting at \a yyntokens_, nonterminals.  */
   const char*
@@ -966,9 +1014,8 @@ namespace yy {
     "\"end_of_message\"", "error", "$undefined", "\"space\"", "\"origin\"",
   "\"user\"", "\"host\"", "\"cmd_string\"", "\"cmd_numeric\"", "\"param\"",
   "':'", "'!'", "'@'", "$accept", "message", "prefix", "ext_prefix",
-  "body", "command", "params", "trailing", 0
+  "body", "command", "params", "trailing", YY_NULL
   };
-#endif
 
 #if YYDEBUG
   /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -1088,7 +1135,6 @@ namespace yy {
 
 
 
-
 void
 yy::RPG_Net_Protocol_IRCParser::error(const location_type& location_in,
                                       const std::string& message_in)
@@ -1105,4 +1151,3 @@ yy::RPG_Net_Protocol_IRCParser::set(yyscan_t context_in)
 
   yyscanner = context_in;
 }
-

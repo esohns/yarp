@@ -10,7 +10,6 @@ lt~obsolete.m4
 .anjuta_sym_db.db
 .kdev4
 autom4te.cache
-build
 Debug
 Release
 aux_config
@@ -37,3 +36,4 @@ Debug
 Release
 ipch
 
+/Yarp/build

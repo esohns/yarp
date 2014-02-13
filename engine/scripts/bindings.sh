@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Engine > ./engine/rpg_engine_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -e -f ./engine/rpg_engine.xsd -i -o ./engine -s -u
+XML2CppCode -d RPG_Engine_Export -e -f ./engine/rpg_engine.xsd -i -o ./engine -s -u
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 ## generate "XMLSchema" namespace include file (tree)

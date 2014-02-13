@@ -7,7 +7,9 @@
 #ifndef RPG_MONSTER_ORGANIZATIONS_H
 #define RPG_MONSTER_ORGANIZATIONS_H
 
-struct RPG_Monster_Organizations
+#include "rpg_monster_exports.h"
+
+struct RPG_Monster_Export RPG_Monster_Organizations
 {
   std::vector<RPG_Monster_OrganizationStep> steps;
 };

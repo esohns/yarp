@@ -21,6 +21,8 @@ enum RPG_Character_Race
   RPG_CHARACTER_RACE_INVALID
 };
 
+#include "rpg_character_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -29,7 +31,7 @@ enum RPG_Character_Race
 typedef std::map<RPG_Character_Race, std::string> RPG_Character_RaceToStringTable_t;
 typedef RPG_Character_RaceToStringTable_t::const_iterator RPG_Character_RaceToStringTableIterator_t;
 
-class RPG_Character_RaceHelper
+class RPG_Character_Export RPG_Character_RaceHelper
 {
  public:
   inline static void init()

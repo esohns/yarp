@@ -63,6 +63,12 @@
     <ClInclude Include="rpg_client_window_message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_client_GTK_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_client_logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_client_callbacks.cpp">
@@ -93,6 +99,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_client_window_message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_client_GTK_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_client_logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

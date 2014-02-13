@@ -27,6 +27,8 @@
    RPG_DICE_DIETYPE_INVALID
  };
 
+#include "rpg_dice_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -35,7 +37,7 @@
 typedef std::map<RPG_Dice_DieType, std::string> RPG_Dice_DieTypeToStringTable_t;
 typedef RPG_Dice_DieTypeToStringTable_t::const_iterator RPG_Dice_DieTypeToStringTableIterator_t;
 
-class RPG_Dice_DieTypeHelper
+class RPG_Dice_Export RPG_Dice_DieTypeHelper
 {
  public:
   inline static void init()

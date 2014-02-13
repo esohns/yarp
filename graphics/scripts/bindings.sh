@@ -20,7 +20,7 @@ PERL_SCRIPT=/usr/local/src/ACE_wrappers/bin/generate_export_file.pl
 perl ${PERL_SCRIPT} -n RPG_Graphics > ./graphics/rpg_graphics_exports.h
 
 # C++ "glue code"
-XML2CppCode -e -f ./graphics/rpg_graphics.xsd -i -o ./graphics -s -u
+XML2CppCode -d RPG_Graphics_Export -e -f ./graphics/rpg_graphics.xsd -i -o ./graphics -s -u
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser

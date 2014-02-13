@@ -19,10 +19,18 @@ bison --verbose --graph=parser_graph.txt --xml=parser_graph.xml ./${SUBDIR}/scri
 [ $? -ne 0 ] && echo "ERROR: failed to bison, aborting" && exit 1
 
 # move the files into the project directory
-mv -f position.hh ./..
-mv -f stack.hh ./..
-mv -f location.hh ./..
-mv -f rpg_net_protocol_IRCparser.h ./..
+#mv -f position.hh ./..
+#mv -f stack.hh ./..
+#mv -f location.hh ./..
+#mv -f rpg_net_protocol_IRCparser.h ./..
+# *NOTE*: need to add a specific method to the parser class
+# --> copy a patched version back into the project directory
+# *IMPORTANT NOTE*: needs to be updated after every change
+cp -f ./net/protocol/scripts/rpg_net_protocol_IRCparser_patched.h ./net/protocol/rpg_net_protocol_IRCparser.h
+if [ $? -ne 0 ]; then
+ echo "ERROR: failed to cp, aborting"
+ exit 1
+fi
 mv -f rpg_net_protocol_IRCparser.cpp ./..
 if [ $? -ne 0 ]; then
  echo "ERROR: failed to mv, aborting"

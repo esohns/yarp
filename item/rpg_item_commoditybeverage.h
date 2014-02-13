@@ -17,6 +17,8 @@ enum RPG_Item_CommodityBeverage
   RPG_ITEM_COMMODITYBEVERAGE_INVALID
 };
 
+#include "rpg_item_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -25,7 +27,7 @@ enum RPG_Item_CommodityBeverage
 typedef std::map<RPG_Item_CommodityBeverage, std::string> RPG_Item_CommodityBeverageToStringTable_t;
 typedef RPG_Item_CommodityBeverageToStringTable_t::const_iterator RPG_Item_CommodityBeverageToStringTableIterator_t;
 
-class RPG_Item_CommodityBeverageHelper
+class RPG_Item_Export RPG_Item_CommodityBeverageHelper
 {
  public:
   inline static void init()

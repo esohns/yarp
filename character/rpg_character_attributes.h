@@ -7,7 +7,9 @@
 #ifndef RPG_CHARACTER_ATTRIBUTES_H
 #define RPG_CHARACTER_ATTRIBUTES_H
 
-struct RPG_Character_Attributes
+#include "rpg_character_exports.h"
+
+struct RPG_Character_Export RPG_Character_Attributes
 {
   unsigned char strength;
   unsigned char dexterity;

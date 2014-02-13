@@ -7,7 +7,9 @@
 #ifndef RPG_MAGIC_SPELL_EFFECTPROPERTIES_H
 #define RPG_MAGIC_SPELL_EFFECTPROPERTIES_H
 
-struct RPG_Magic_Spell_EffectProperties
+#include "rpg_magic_exports.h"
+
+struct RPG_Magic_Export RPG_Magic_Spell_EffectProperties
 {
   RPG_Magic_Spell_Effect type;
   RPG_Magic_Spell_DamageTypeUnion damage;

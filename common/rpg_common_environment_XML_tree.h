@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMMON_RPG_COMMON_ENVIRONMENT_XML_TREE_H
-#define CXX__COMMON_RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#ifndef CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#define CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H
 
 // Begin prologue.
 //
@@ -788,4 +788,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Common_Environment_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX__COMMON_RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#endif // CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H

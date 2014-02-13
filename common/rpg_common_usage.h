@@ -7,7 +7,9 @@
 #ifndef RPG_COMMON_USAGE_H
 #define RPG_COMMON_USAGE_H
 
-struct RPG_Common_Usage
+#include "rpg_common_exports.h"
+
+struct RPG_Common_Export RPG_Common_Usage
 {
   unsigned char numUses;
   unsigned int period;

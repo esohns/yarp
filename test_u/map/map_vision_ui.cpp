@@ -1289,7 +1289,7 @@ ACE_TMAIN(int argc_in,
   RPG_Client_Config config;
 
   // *** reactor ***
-  config.num_threadpool_threads            = 0;
+  config.num_dispatch_threads                = 0;
 
   // *** UI ***
 //  config.glade_file                        = UIfile;

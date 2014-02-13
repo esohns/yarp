@@ -30,6 +30,8 @@ enum RPG_Character_EquipmentSlot
   RPG_CHARACTER_EQUIPMENTSLOT_INVALID
 };
 
+#include "rpg_character_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -38,7 +40,7 @@ enum RPG_Character_EquipmentSlot
 typedef std::map<RPG_Character_EquipmentSlot, std::string> RPG_Character_EquipmentSlotToStringTable_t;
 typedef RPG_Character_EquipmentSlotToStringTable_t::const_iterator RPG_Character_EquipmentSlotToStringTableIterator_t;
 
-class RPG_Character_EquipmentSlotHelper
+class RPG_Character_Export RPG_Character_EquipmentSlotHelper
 {
  public:
   inline static void init()

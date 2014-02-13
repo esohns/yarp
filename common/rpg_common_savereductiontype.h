@@ -17,6 +17,8 @@ enum RPG_Common_SaveReductionType
   RPG_COMMON_SAVEREDUCTIONTYPE_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include <ace/Global_Macros.h>
 
 #include <map>
@@ -25,7 +27,7 @@ enum RPG_Common_SaveReductionType
 typedef std::map<RPG_Common_SaveReductionType, std::string> RPG_Common_SaveReductionTypeToStringTable_t;
 typedef RPG_Common_SaveReductionTypeToStringTable_t::const_iterator RPG_Common_SaveReductionTypeToStringTableIterator_t;
 
-class RPG_Common_SaveReductionTypeHelper
+class RPG_Common_Export RPG_Common_SaveReductionTypeHelper
 {
  public:
   inline static void init()

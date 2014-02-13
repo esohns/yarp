@@ -41,6 +41,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <TargetName>rpg_$(TargetName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>rpg_$(TargetName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -58,7 +62,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Temp\SDL\lib\x86;C:\Temp\lpng157\projects\vstudio\Debug;C:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;C:\Temp\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL_ttf.lib;SDL.lib;libpng15.lib;xerces-c_3D.lib;ACEd.lib</AdditionalDependencies>
-      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -93,7 +97,7 @@ popd</Command>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\SDL-1.2.14\lib;E:\lpng157\projects\vstudio\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL_ttf.lib;SDL.lib;libpng15.lib;xerces-c_3D.lib;ACE.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
-      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>

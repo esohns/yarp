@@ -101,6 +101,9 @@ move /Y .\scripts\Yarp.exe .\releases</Command>
   <ItemGroup>
     <ResourceCompile Include="scripts\version.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\rpg_config.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

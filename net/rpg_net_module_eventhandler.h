@@ -21,6 +21,7 @@
 #ifndef RPG_Net_Module_EventHandler_H
 #define RPG_Net_Module_EventHandler_H
 
+#include "rpg_net_exports.h"
 #include "rpg_net_common.h"
 
 #include "rpg_stream_task_base_synch.h"
@@ -35,7 +36,7 @@ class RPG_Net_SessionMessage;
 class RPG_Net_Message;
 class ACE_Recursive_Thread_Mutex;
 
-class RPG_Net_Module_EventHandler
+class RPG_Net_Export RPG_Net_Module_EventHandler
  : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
                                    RPG_Net_SessionMessage,
                                    RPG_Net_Message>,

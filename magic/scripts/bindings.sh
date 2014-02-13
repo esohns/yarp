@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Magic > ./magic/rpg_magic_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -e -f ./magic/rpg_magic.xsd -i -o ./magic -s -u
+XML2CppCode -d RPG_Magic_Export -e -f ./magic/rpg_magic.xsd -i -o ./magic -s -u
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser/Tree

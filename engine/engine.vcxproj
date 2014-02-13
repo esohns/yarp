@@ -43,12 +43,16 @@
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <CXX_Tree_Mapping_RuleBeforeTargets />
     <CXX_Tree_Mapping_RuleAfterTargets />
+    <TargetName>rpg_$(TargetName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>rpg_$(TargetName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;C:\Temp\lpng157;C:\Temp\SDL\include;$(ProjectDir)..\chance;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\character;$(ProjectDir)..\magic;$(ProjectDir)..\item;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\combat;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\net\stream;$(ProjectDir)..\net;$(ProjectDir)..\net\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;C:\Temp\lpng157;C:\Temp\SDL\include;$(ProjectDir)..\3rd_party\bison;$(ProjectDir)..\chance;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\character;$(ProjectDir)..\magic;$(ProjectDir)..\item;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\combat;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\net\stream;$(ProjectDir)..\net;$(ProjectDir)..\net\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_GRAPHICS_HAS_DLL;RPG_PLAYER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -60,9 +64,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;xerces-c_3D.lib;graphics.lib;net.lib;net_client.lib</AdditionalDependencies>
+      <AdditionalDependencies>ACEd.lib;xerces-c_3D.lib;rpg_graphics.lib;rpg_net.lib;rpg_net_client.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
-      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -95,9 +99,9 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xerces-c_3D.lib;ACE.lib</AdditionalDependencies>
+      <AdditionalDependencies>ACE.lib;xerces-c_3D.lib;rpg_graphics.lib;rpg_net.lib;rpg_net_client.lib</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
-      <OutputFile>$(OutDir)rpg_$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
