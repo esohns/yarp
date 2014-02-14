@@ -23,6 +23,11 @@
 
 #include <gtk/gtk.h>
 
+#include "rpg_client_iinitGTKUI.h"
+
+#include "net_common.h"
+
+// GTK callback functions
 #ifdef __cplusplus
 extern "C"
 {
@@ -44,5 +49,44 @@ G_MODULE_EXPORT gint button_quit_clicked_cb(GtkWidget*, gpointer);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+// GTK init functions
+bool init_UI_client(const std::string&, // UI definiton file
+                    Net_GTK_CBData_t&); // GTK cb data (inout)
+bool init_UI_server(const std::string&, // UI definiton file
+	                  const bool&,        // allow runtime stats trigger ?
+                    Net_GTK_CBData_t&); // GTK cb data (inout)
+
+
+class Net_GTKUIDefinition
+ : public RPG_Client_IInitGTKUI
+{
+ public:
+	enum Role_t
+	{
+		ROLE_CLIENT = 0,
+		ROLE_SERVER,
+		// ---------------------
+		ROLE_MAX,
+		ROLE_INVALID = -1
+	};
+
+  Net_GTKUIDefinition(const Role_t&,      // role
+		                  const bool&,        // allow runtime user interaction ?
+		                  Net_GTK_CBData_t*); // GTK cb data
+  virtual ~Net_GTKUIDefinition();
+
+	// implement RPG_Client_IInitGTKUI
+	virtual bool init(const std::string&); // definiton filename
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC(Net_GTKUIDefinition());
+  ACE_UNIMPLEMENTED_FUNC(Net_GTKUIDefinition(const Net_GTKUIDefinition&));
+  ACE_UNIMPLEMENTED_FUNC(Net_GTKUIDefinition& operator=(const Net_GTKUIDefinition&));
+
+	Role_t            myRole;
+	bool              myAllowRuntimeInteraction;
+	Net_GTK_CBData_t* myGTKCBData;
+};
 
 #endif

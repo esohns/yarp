@@ -69,6 +69,9 @@
     <ClInclude Include="rpg_client_logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_client_iinitGTKUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_client_callbacks.cpp">

@@ -42,8 +42,8 @@ if %ERRORLEVEL% NEQ 0 (
  goto Failed
 )
 @rem *NOTE*: XML2CppCode clobbers some important changes, so move some files back into the project directory
-@copy /Y .\rpg_dice_dietype.h .\..
-@copy /Y .\rpg_dice_roll.h .\..
+copy /Y .\rpg_dice_dietype.h .\.. >NUL
+copy /Y .\rpg_dice_roll.h .\.. >NUL
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate C++ glue code^, exiting
  set RC=%ERRORLEVEL%

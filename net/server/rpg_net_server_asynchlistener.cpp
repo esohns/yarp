@@ -168,6 +168,11 @@ RPG_Net_Server_AsynchListener::stop()
   if (inherited::cancel() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Acceptor::cancel(): \"%m\", continuing\n")));
+	if (ACE_OS::closesocket(inherited::handle()) == -1)
+		ACE_DEBUG((LM_ERROR,
+		           ACE_TEXT("failed to ACE_OS::closesocket(): \"%m\", continuing\n")));
+	inherited::handle(ACE_INVALID_HANDLE);
+	if (false);
 #endif
   else
     ACE_DEBUG((LM_DEBUG,

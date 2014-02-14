@@ -90,6 +90,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="net\net_callbacks.h" />
+    <ClInclude Include="net\net_defines.h" />
     <ClInclude Include="net\net_eventhandler.h" />
     <ClInclude Include="net\net_server_signalhandler.h" />
     <ClInclude Include="net\stdafx.h" />

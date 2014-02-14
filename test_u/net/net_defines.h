@@ -21,7 +21,7 @@
 #ifndef NET_DEFINES_H
 #define NET_DEFINES_H
 
-#define NET_UI_GTKEVENT_RESOLUTION              20 // ms
+#define NET_UI_GTKEVENT_RESOLUTION              200 // ms --> 5 FPS
 #define NET_UI_DIALOG_NAME                      "dialog"
 #define NET_UI_ABOUTDIALOG_NAME                 "aboutdialog"
 #define NET_UI_NUMCONNECTIONS_NAME              "spinbutton"

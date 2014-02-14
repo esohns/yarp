@@ -31,9 +31,15 @@
 #include "rpg_common_timer_manager.h"
 
 #include "rpg_client_defines.h"
+#include "rpg_client_iinitGTKUI.h"
 
 RPG_Client_GTK_Manager::RPG_Client_GTK_Manager()
- : inherited(false) // do NOT auto-start !
+ : inherited(false), // do NOT auto-start !
+   myGTKIsInitialized(false),
+	 myArgc(0),
+	 myArgv(NULL),
+	 myUIDefinitionFile(),
+   myInit(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::RPG_Client_GTK_Manager"));
 
@@ -43,6 +49,20 @@ RPG_Client_GTK_Manager::~RPG_Client_GTK_Manager()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::~RPG_Client_GTK_Manager"));
 
+}
+
+void
+RPG_Client_GTK_Manager::init(const int& argc_in,
+                             ACE_TCHAR** argv_in,
+														 const std::string& filename_in,
+                             RPG_Client_IInitGTKUI* init_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::init"));
+
+	myArgc = argc_in;
+	myArgv = argv_in;
+	myUIDefinitionFile = filename_in;
+  myInit = init_in;
 }
 
 void
@@ -128,9 +148,79 @@ RPG_Client_GTK_Manager::svc(void)
 //  ACE_DEBUG((LM_DEBUG,
 //             ACE_TEXT("(%t) worker starting...\n")));
 
-  gdk_threads_enter();
-  gtk_main();
-  gdk_threads_leave();
+	if (!myGTKIsInitialized)
+	{
+		// step1: init GTK
+//#if defined(ACE_WIN32) || defined(ACE_WIN64)
+//		g_thread_init(NULL);
+//#endif
+//		gdk_threads_init();
+//		gdk_threads_enter();
+		if (!gtk_init_check(&myArgc,
+			                  &myArgv))
+		{
+			ACE_DEBUG((LM_ERROR,
+				         ACE_TEXT("failed to gtk_init_check(): \"%m\", aborting\n")));
+
+			//// clean up
+			//gdk_threads_leave();
+
+			return -1;
+		} // end IF
+		//// step2: init GNOME
+		//   GnomeClient* gnomeSession = NULL;
+		//   gnomeSession = gnome_client_new();
+		//   ACE_ASSERT(gnomeSession);
+		//   gnome_client_set_program(gnomeSession, ACE::basename(argv_in[0]));
+		//  GnomeProgram* gnomeProgram = NULL;
+		//  gnomeProgram = gnome_program_init(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_APPLICATION_ID), // app ID
+		//#ifdef HAVE_CONFIG_H
+		////                                     ACE_TEXT_ALWAYS_CHAR(VERSION),    // version
+		//                                    ACE_TEXT_ALWAYS_CHAR(RPG_VERSION),   // version
+		//#else
+		//	                                NULL,
+		//#endif
+		//                                    LIBGNOMEUI_MODULE,                   // module info
+		//                                    argc_in,                             // cmdline
+		//                                    argv_in,                             // cmdline
+		//                                    NULL);                               // property name(s)
+		//  ACE_ASSERT(gnomeProgram);
+
+		// step3: init client window
+		if (myInit)
+		{
+			bool result = false;
+			try
+			{
+				result = myInit->init(myUIDefinitionFile);
+			}
+			catch (...)
+			{
+				ACE_DEBUG((LM_ERROR,
+					         ACE_TEXT("caught exception in RPG_Client_IInitGTKUI::init, aborting\n")));
+
+				//// clean up
+				//gdk_threads_leave();
+
+				return -1;
+			}
+			if (!result)
+			{
+				ACE_DEBUG((LM_ERROR,
+					         ACE_TEXT("failed to initialize GTK UI, aborting\n")));
+
+				//// clean up
+				//gdk_threads_leave();
+
+				return -1;
+			} // end IF
+		} // end IF
+
+		myGTKIsInitialized = true;
+	} // end IF
+
+	gtk_main();
+  //gdk_threads_leave();
 
   // gtk_main_quit() has been called...
 
