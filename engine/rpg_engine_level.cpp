@@ -35,23 +35,23 @@
 #include <ace/Log_Msg.h>
 
 RPG_Engine_Level::RPG_Engine_Level()
-// : myLevelMeta()
+// : myMetaData()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::RPG_Engine_Level"));
 
-  myLevelMeta.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
-  myLevelMeta.environment.climate = RPG_COMMON_CLIMATE_INVALID;
-  myLevelMeta.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
-  myLevelMeta.environment.outdoors = false;
-  myLevelMeta.environment.plane = RPG_COMMON_PLANE_INVALID;
-  myLevelMeta.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
-  myLevelMeta.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
-//  myLevelMeta.roaming_monsters();
-  myLevelMeta.spawn_interval = ACE_Time_Value::zero;
-  myLevelMeta.spawn_probability = 0.0F;
-  myLevelMeta.max_spawned = 0;
-  myLevelMeta.spawn_timer = -1;
-  myLevelMeta.amble_probability = 0.0F;
+  myMetaData.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
+  myMetaData.environment.climate = RPG_COMMON_CLIMATE_INVALID;
+  myMetaData.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
+  myMetaData.environment.outdoors = false;
+  myMetaData.environment.plane = RPG_COMMON_PLANE_INVALID;
+  myMetaData.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
+  myMetaData.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
+//  myMetaData.roaming_monsters();
+  myMetaData.spawn_interval = ACE_Time_Value::zero;
+  myMetaData.spawn_probability = 0.0F;
+  myMetaData.max_spawned = 0;
+  myMetaData.spawn_timer = -1;
+  myMetaData.amble_probability = 0.0F;
 }
 
 RPG_Engine_Level::~RPG_Engine_Level()
@@ -61,24 +61,24 @@ RPG_Engine_Level::~RPG_Engine_Level()
 }
 
 void
-RPG_Engine_Level::create(const RPG_Map_FloorPlan_Config_t& mapConfig_in,
+RPG_Engine_Level::create(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
                          RPG_Engine_Level_t& level_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::create"));
 
-  level_out.level_meta.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
-  level_out.level_meta.environment.climate = RPG_COMMON_CLIMATE_INVALID;
-  level_out.level_meta.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
-  level_out.level_meta.environment.outdoors = false;
-  level_out.level_meta.environment.plane = RPG_COMMON_PLANE_INVALID;
-  level_out.level_meta.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
-  level_out.level_meta.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
-  level_out.level_meta.roaming_monsters.clear();
-  level_out.level_meta.spawn_interval = ACE_Time_Value::zero;
-  level_out.level_meta.spawn_probability = 0.0F;
-  level_out.level_meta.max_spawned = 0;
-  level_out.level_meta.spawn_timer = -1;
-  level_out.level_meta.amble_probability = 0.0F;
+  level_out.metadata.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
+  level_out.metadata.environment.climate = RPG_COMMON_CLIMATE_INVALID;
+  level_out.metadata.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
+  level_out.metadata.environment.outdoors = false;
+  level_out.metadata.environment.plane = RPG_COMMON_PLANE_INVALID;
+  level_out.metadata.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
+  level_out.metadata.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
+  level_out.metadata.roaming_monsters.clear();
+  level_out.metadata.spawn_interval = ACE_Time_Value::zero;
+  level_out.metadata.spawn_probability = 0.0F;
+  level_out.metadata.max_spawned = 0;
+  level_out.metadata.spawn_timer = -1;
+  level_out.metadata.amble_probability = 0.0F;
 
   RPG_Map_Level::create(mapConfig_in,
                         level_out.map);
@@ -91,19 +91,19 @@ RPG_Engine_Level::load(const std::string& filename_in,
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::load"));
 
   RPG_Engine_Level_t result;
-  result.level_meta.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
-  result.level_meta.environment.climate = RPG_COMMON_CLIMATE_INVALID;
-  result.level_meta.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
-  result.level_meta.environment.outdoors = false;
-  result.level_meta.environment.plane = RPG_COMMON_PLANE_INVALID;
-  result.level_meta.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
-  result.level_meta.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
-//  result.level_meta.roaming_monsters();
-  result.level_meta.spawn_interval = ACE_Time_Value::zero;
-  result.level_meta.spawn_probability = 0.0F;
-  result.level_meta.max_spawned = 0;
-  result.level_meta.spawn_timer = -1;
-  result.level_meta.amble_probability = 0.0F;
+  result.metadata.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
+  result.metadata.environment.climate = RPG_COMMON_CLIMATE_INVALID;
+  result.metadata.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
+  result.metadata.environment.outdoors = false;
+  result.metadata.environment.plane = RPG_COMMON_PLANE_INVALID;
+  result.metadata.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
+  result.metadata.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
+//  result.metadata.roaming_monsters();
+  result.metadata.spawn_interval = ACE_Time_Value::zero;
+  result.metadata.spawn_probability = 0.0F;
+  result.metadata.max_spawned = 0;
+  result.metadata.spawn_timer = -1;
+  result.metadata.amble_probability = 0.0F;
 
   result.map.start = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                     std::numeric_limits<unsigned int>::max());
@@ -255,18 +255,18 @@ RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("roaming monsters:\n")));
-  for (RPG_Monster_ListConstIterator_t iterator = level_in.level_meta.roaming_monsters.begin();
-       iterator != level_in.level_meta.roaming_monsters.end();
+  for (RPG_Monster_ListConstIterator_t iterator = level_in.metadata.roaming_monsters.begin();
+       iterator != level_in.metadata.roaming_monsters.end();
        iterator++)
      ACE_DEBUG((LM_DEBUG,
                 ACE_TEXT("%s\n"),
                 (*iterator).c_str()));
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("spawn interval: %T#\nspawn probability (%%): %2f\nmax # spawned: %u\nspawn timer ID: %d\n"),
-             &level_in.level_meta.spawn_interval,
-             level_in.level_meta.spawn_probability,
-             level_in.level_meta.max_spawned,
-             level_in.level_meta.spawn_timer));
+             &level_in.metadata.spawn_interval,
+             level_in.metadata.spawn_probability,
+             level_in.metadata.max_spawned,
+             level_in.metadata.spawn_timer));
 }
 
 void
@@ -274,7 +274,7 @@ RPG_Engine_Level::init(const RPG_Engine_Level_t& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::init"));
 
-  myLevelMeta = level_in.level_meta;
+  myMetaData = level_in.metadata;
   inherited::init(level_in.map);
 }
 
@@ -365,16 +365,16 @@ RPG_Engine_Level::save(const std::string& filename_in) const
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("saved level \"%s\" to file: \"%s\"\n"),
-             myLevelMeta.name.c_str(),
+             myMetaData.name.c_str(),
              filename_in.c_str()));
 }
 
-const RPG_Engine_LevelMeta_t&
-RPG_Engine_Level::getMeta() const
+RPG_Engine_LevelMetaData_t
+RPG_Engine_Level::getMetaData() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getMeta"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getMetaData"));
 
-  return myLevelMeta;
+  return myMetaData;
 }
 
 bool
@@ -493,29 +493,29 @@ RPG_Engine_Level::toLevelXML() const
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::toLevelXML"));
 
   RPG_Common_Environment_XMLTree_Type environment;
-  if (myLevelMeta.environment.climate != RPG_COMMON_CLIMATE_INVALID)
-    environment.climate(RPG_Common_ClimateHelper::RPG_Common_ClimateToString(myLevelMeta.environment.climate));
-  if (myLevelMeta.environment.lighting != RPG_COMMON_AMBIENTLIGHTING_INVALID)
-    environment.lighting(RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString(myLevelMeta.environment.lighting));
-  environment.outdoors(myLevelMeta.environment.outdoors);
-  if (myLevelMeta.environment.plane != RPG_COMMON_PLANE_INVALID)
-    environment.plane(RPG_Common_PlaneHelper::RPG_Common_PlaneToString(myLevelMeta.environment.plane));
-  if (myLevelMeta.environment.terrain != RPG_COMMON_TERRAIN_INVALID)
-    environment.terrain(RPG_Common_TerrainHelper::RPG_Common_TerrainToString(myLevelMeta.environment.terrain));
-  ACE_ASSERT(myLevelMeta.environment.time == RPG_COMMON_TIMEOFDAY_INVALID);
+  if (myMetaData.environment.climate != RPG_COMMON_CLIMATE_INVALID)
+    environment.climate(RPG_Common_ClimateHelper::RPG_Common_ClimateToString(myMetaData.environment.climate));
+  if (myMetaData.environment.lighting != RPG_COMMON_AMBIENTLIGHTING_INVALID)
+    environment.lighting(RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString(myMetaData.environment.lighting));
+  environment.outdoors(myMetaData.environment.outdoors);
+  if (myMetaData.environment.plane != RPG_COMMON_PLANE_INVALID)
+    environment.plane(RPG_Common_PlaneHelper::RPG_Common_PlaneToString(myMetaData.environment.plane));
+  if (myMetaData.environment.terrain != RPG_COMMON_TERRAIN_INVALID)
+    environment.terrain(RPG_Common_TerrainHelper::RPG_Common_TerrainToString(myMetaData.environment.terrain));
+  ACE_ASSERT(myMetaData.environment.time == RPG_COMMON_TIMEOFDAY_INVALID);
 
-  RPG_Common_FixedPeriod_XMLTree_Type spawn_interval(static_cast<unsigned int>(myLevelMeta.spawn_interval.sec()),
-                                                     static_cast<unsigned int>(myLevelMeta.spawn_interval.usec()));
+  RPG_Common_FixedPeriod_XMLTree_Type spawn_interval(static_cast<unsigned int>(myMetaData.spawn_interval.sec()),
+                                                     static_cast<unsigned int>(myMetaData.spawn_interval.usec()));
 
   std::string map_string = RPG_Map_Common_Tools::map2String(inherited::myMap);
 
   RPG_Engine_Level_XMLTree_Type* level_p = NULL;
-  level_p = new(std::nothrow) RPG_Engine_Level_XMLTree_Type(myLevelMeta.name,
+  level_p = new(std::nothrow) RPG_Engine_Level_XMLTree_Type(myMetaData.name,
                                                             environment,
                                                             spawn_interval,
-                                                            myLevelMeta.spawn_probability,
-                                                            myLevelMeta.max_spawned,
-                                                            myLevelMeta.amble_probability,
+                                                            myMetaData.spawn_probability,
+                                                            myMetaData.max_spawned,
+                                                            myMetaData.amble_probability,
                                                             map_string);
   ACE_ASSERT(level_p);
   if (!level_p)
@@ -527,10 +527,21 @@ RPG_Engine_Level::toLevelXML() const
   }
 
   // *NOTE*: add monster sequence "manually"
-  for (RPG_Monster_ListConstIterator_t iterator = myLevelMeta.roaming_monsters.begin();
-       iterator != myLevelMeta.roaming_monsters.end();
+  for (RPG_Monster_ListConstIterator_t iterator = myMetaData.roaming_monsters.begin();
+       iterator != myMetaData.roaming_monsters.end();
        iterator++)
     level_p->monster().push_back(*iterator);
+	// *NOTE*: add door sequence "manually"
+	for (RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.begin();
+       iterator != myMap.plan.doors.end();
+       iterator++)
+	{
+		RPG_Map_DoorState_XMLTree_Type state(static_cast<RPG_Map_DoorState_XMLTree_Type::value>((*iterator).state));
+		RPG_Map_Door_XMLTree_Type temp(RPG_Map_Position_XMLTree_Type((*iterator).position.first,
+			                                                           (*iterator).position.second),
+																   state);
+    level_p->door().push_back(temp);
+	} // end FOR
 
   return level_p;
 }
@@ -540,37 +551,39 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::levelXMLToLevel"));
 
+	// init return value
   RPG_Engine_Level_t result;
-  result.level_meta.name = level_in.name();
-  result.level_meta.environment.climate = RPG_COMMON_CLIMATE_INVALID;
+
+  result.metadata.name = level_in.name();
+  result.metadata.environment.climate = RPG_COMMON_CLIMATE_INVALID;
   if (level_in.environment().climate().present())
-    result.level_meta.environment.climate = RPG_Common_ClimateHelper::stringToRPG_Common_Climate(level_in.environment().climate().get());
-  result.level_meta.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
+    result.metadata.environment.climate = RPG_Common_ClimateHelper::stringToRPG_Common_Climate(level_in.environment().climate().get());
+  result.metadata.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
   if (level_in.environment().lighting().present())
-    result.level_meta.environment.lighting = RPG_Common_AmbientLightingHelper::stringToRPG_Common_AmbientLighting(level_in.environment().lighting().get());
-  result.level_meta.environment.outdoors = level_in.environment().outdoors();
-  result.level_meta.environment.plane = RPG_COMMON_PLANE_INVALID;
+    result.metadata.environment.lighting = RPG_Common_AmbientLightingHelper::stringToRPG_Common_AmbientLighting(level_in.environment().lighting().get());
+  result.metadata.environment.outdoors = level_in.environment().outdoors();
+  result.metadata.environment.plane = RPG_COMMON_PLANE_INVALID;
   if (level_in.environment().plane().present())
-    result.level_meta.environment.plane = RPG_Common_PlaneHelper::stringToRPG_Common_Plane(level_in.environment().plane().get());
-  result.level_meta.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
+    result.metadata.environment.plane = RPG_Common_PlaneHelper::stringToRPG_Common_Plane(level_in.environment().plane().get());
+  result.metadata.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
   if (level_in.environment().terrain().present())
-    result.level_meta.environment.terrain = RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(level_in.environment().terrain().get());
-  result.level_meta.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
+    result.metadata.environment.terrain = RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(level_in.environment().terrain().get());
+  result.metadata.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
   ACE_ASSERT(!level_in.environment().time().present());
   for (RPG_Engine_Level_XMLTree_Type::monster_const_iterator iterator = level_in.monster().begin();
        iterator != level_in.monster().end();
        iterator++)
-    result.level_meta.roaming_monsters.push_back(*iterator);
-  //result.level_meta.roaming_monsters.insert(level_in.monster().begin(), level_in.monster().end());
+    result.metadata.roaming_monsters.push_back(*iterator);
+  //result.metadata.roaming_monsters.insert(level_in.monster().begin(), level_in.monster().end());
   unsigned int u_seconds = 0;
   if (level_in.spawn_interval().u_seconds().present())
     u_seconds = level_in.spawn_interval().u_seconds().get();
-  result.level_meta.spawn_interval.set(level_in.spawn_interval().seconds(),
+  result.metadata.spawn_interval.set(level_in.spawn_interval().seconds(),
                                        u_seconds);
-  result.level_meta.spawn_probability = level_in.spawn_probability();
-  result.level_meta.max_spawned = level_in.max_spawned();
-  result.level_meta.spawn_timer = -1;
-  result.level_meta.amble_probability = level_in.amble_probability();
+  result.metadata.spawn_probability = level_in.spawn_probability();
+  result.metadata.max_spawned = level_in.max_spawned();
+  result.metadata.spawn_timer = -1;
+  result.metadata.amble_probability = level_in.amble_probability();
 
   RPG_Map_ParserDriver parser_driver(false, false);
   parser_driver.init(&result.map.start,
@@ -578,8 +591,39 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
                      &result.map.plan,
                      false, false);
   if (!parser_driver.parse(level_in.map(), true))
+	{
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to parse map, continuing\n")));
+               ACE_TEXT("failed to parse map, aborting\n")));
+
+		// clean up
+		ACE_OS::memset(&result, 0, sizeof(result));
+
+		return result;
+	} // end IF
+	RPG_Map_Door_t temp;
+	RPG_Map_DoorsIterator_t iterator;
+  for (RPG_Engine_Level_XMLTree_Type::door_const_iterator iterator2 = level_in.door().begin();
+       iterator2 != level_in.door().end();
+       iterator2++)
+	{
+		temp.position = std::make_pair((*iterator2).position().x(),
+			                             (*iterator2).position().y());
+		iterator = result.map.plan.doors.find(temp);
+		if (iterator == result.map.plan.doors.end())
+		{
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("could not find door (position: [%u,%u]), aborting\n"),
+								 temp.position.first,
+								 temp.position.second));
+
+			// clean up
+			ACE_OS::memset(&result, 0, sizeof(result));
+
+			return result;
+		} // end IF
+		RPG_Map_DoorState_XMLTree_Type::value temp_state = (*iterator2).state();
+		(*iterator).state = static_cast<RPG_Map_DoorState>(temp_state);
+	} // end FOR
 
   return result;
 }

@@ -32,13 +32,15 @@
 #include <ace/Time_Value.h>
 #include <ace/Synch.h>
 
+#include <string>
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Sound_Export RPG_Sound_Common_Tools
 {
  public:
-  static bool init(const RPG_Sound_SDLConfig_t&,                  // SDL config parameters
+  static bool init(const RPG_Sound_SDLConfiguration_t&,           // SDL config parameters
                    const std::string&,                            // sound directory
                    const bool& = RPG_SOUND_DEF_AMBIENT_USE_CD,    // use CD ?
                    const unsigned int& = RPG_SOUND_DEF_CACHESIZE, // cache size
@@ -72,16 +74,16 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
   // init string conversion facilities
   static void initStringConversionTables();
 
-  static bool                   myIsMuted;
-  static std::string            mySoundDirectory;
-  static RPG_Sound_SDLConfig_t  myConfig;
+  static bool                         myIsMuted;
+  static std::string                  mySoundDirectory;
+  static RPG_Sound_SDLConfiguration_t myConfig;
 
-  static ACE_Thread_Mutex       myCacheLock;
-  static unsigned int           myOldestCacheEntry;
-  static unsigned int           myCacheSize;
-  static RPG_Sound_SoundCache_t mySoundCache;
+  static ACE_Thread_Mutex             myCacheLock;
+  static unsigned int                 myOldestCacheEntry;
+  static unsigned int                 myCacheSize;
+  static RPG_Sound_SoundCache_t       mySoundCache;
 
-  static bool                   myInitialized;
+  static bool                         myInitialized;
 };
 
 #endif

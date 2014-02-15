@@ -372,6 +372,24 @@ map (::std::auto_ptr< map_type > x)
   this->map_.set (x);
 }
 
+const RPG_Engine_Level_XMLTree_Type::door_sequence& RPG_Engine_Level_XMLTree_Type::
+door () const
+{
+  return this->door_;
+}
+
+RPG_Engine_Level_XMLTree_Type::door_sequence& RPG_Engine_Level_XMLTree_Type::
+door ()
+{
+  return this->door_;
+}
+
+void RPG_Engine_Level_XMLTree_Type::
+door (const door_sequence& s)
+{
+  this->door_ = s;
+}
+
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
@@ -782,7 +800,8 @@ RPG_Engine_Level_XMLTree_Type (const name_type& name,
   spawn_probability_ (spawn_probability, ::xml_schema::flags (), this),
   max_spawned_ (max_spawned, ::xml_schema::flags (), this),
   amble_probability_ (amble_probability, ::xml_schema::flags (), this),
-  map_ (map, ::xml_schema::flags (), this)
+  map_ (map, ::xml_schema::flags (), this),
+  door_ (::xml_schema::flags (), this)
 {
 }
 
@@ -802,7 +821,8 @@ RPG_Engine_Level_XMLTree_Type (const name_type& name,
   spawn_probability_ (spawn_probability, ::xml_schema::flags (), this),
   max_spawned_ (max_spawned, ::xml_schema::flags (), this),
   amble_probability_ (amble_probability, ::xml_schema::flags (), this),
-  map_ (map, ::xml_schema::flags (), this)
+  map_ (map, ::xml_schema::flags (), this),
+  door_ (::xml_schema::flags (), this)
 {
 }
 
@@ -818,7 +838,8 @@ RPG_Engine_Level_XMLTree_Type (const RPG_Engine_Level_XMLTree_Type& x,
   spawn_probability_ (x.spawn_probability_, f, this),
   max_spawned_ (x.max_spawned_, f, this),
   amble_probability_ (x.amble_probability_, f, this),
-  map_ (x.map_, f, this)
+  map_ (x.map_, f, this),
+  door_ (x.door_, f, this)
 {
 }
 
@@ -834,7 +855,8 @@ RPG_Engine_Level_XMLTree_Type (const ::xercesc::DOMElement& e,
   spawn_probability_ (f, this),
   max_spawned_ (f, this),
   amble_probability_ (f, this),
-  map_ (f, this)
+  map_ (f, this),
+  door_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -953,6 +975,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // door
+    //
+    if (n.name () == "door" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< door_type > r (
+        door_traits::create (i, f, this));
+
+      this->door_.push_back (r);
+      continue;
+    }
+
     break;
   }
 
@@ -1045,6 +1078,9 @@ operator== (const RPG_Engine_Level_XMLTree_Type& x, const RPG_Engine_Level_XMLTr
   if (!(x.map () == y.map ()))
     return false;
 
+  if (!(x.door () == y.door ()))
+    return false;
+
   return true;
 }
 
@@ -1114,6 +1150,13 @@ operator<< (::std::ostream& o, const RPG_Engine_Level_XMLTree_Type& i)
   o << ::std::endl << "max_spawned: " << i.max_spawned ();
   o << ::std::endl << "amble_probability: " << i.amble_probability ();
   o << ::std::endl << "map: " << i.map ();
+  for (RPG_Engine_Level_XMLTree_Type::door_const_iterator
+       b (i.door ().begin ()), e (i.door ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "door: " << *b;
+  }
+
   return o;
 }
 
@@ -1870,6 +1913,21 @@ operator<< (::xercesc::DOMElement& e, const RPG_Engine_Level_XMLTree_Type& i)
         e));
 
     s << i.map ();
+  }
+
+  // door
+  //
+  for (RPG_Engine_Level_XMLTree_Type::door_const_iterator
+       b (i.door ().begin ()), n (i.door ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "door",
+        "urn:rpg",
+        e));
+
+    s << *b;
   }
 }
 

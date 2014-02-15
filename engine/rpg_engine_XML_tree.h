@@ -474,6 +474,23 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   void
   map (::std::auto_ptr< map_type > p);
 
+  // door
+  // 
+  typedef ::RPG_Map_Door_XMLTree_Type door_type;
+  typedef ::xsd::cxx::tree::sequence< door_type > door_sequence;
+  typedef door_sequence::iterator door_iterator;
+  typedef door_sequence::const_iterator door_const_iterator;
+  typedef ::xsd::cxx::tree::traits< door_type, char > door_traits;
+
+  const door_sequence&
+  door () const;
+
+  door_sequence&
+  door ();
+
+  void
+  door (const door_sequence& s);
+
   // Constructors.
   //
   RPG_Engine_Level_XMLTree_Type (const name_type&,
@@ -523,6 +540,7 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   ::xsd::cxx::tree::one< max_spawned_type > max_spawned_;
   ::xsd::cxx::tree::one< amble_probability_type > amble_probability_;
   ::xsd::cxx::tree::one< map_type > map_;
+  door_sequence door_;
 };
 
 RPG_Engine_Export

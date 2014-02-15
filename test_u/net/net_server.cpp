@@ -455,7 +455,8 @@ do_work(const unsigned int& maxNumConnections_in,
   // event handler for signals
   Net_Server_SignalHandler signal_handler(timer_id,
                                           CBData_in.listener_handle,
-                                          RPG_NET_CONNECTIONMANAGER_SINGLETON::instance());
+                                          RPG_NET_CONNECTIONMANAGER_SINGLETON::instance(),
+																					useReactor_in);
   if (!RPG_Common_Tools::initSignals(signalSet_inout,
                                      &signal_handler,
                                      previousSignalActions_inout))
@@ -840,9 +841,9 @@ ACE_TMAIN(int argc_in,
 
   // step1h: init GLIB / G(D|T)K[+] / GNOME ?
 	Net_GTKUIDefinition gtk_initializer(Net_GTKUIDefinition::ROLE_SERVER,
-		                                  (statisticsReportingInterval == 0),// allow SIGUSR1/SIGBREAK
-																			                                   // IFF regular reporting
-                                                                         // is off
+		                                  (statisticsReportingInterval == 0), // allow SIGUSR1/SIGBREAK
+																			                                    // IFF regular reporting
+                                                                          // is off
 																		  &gtk_cb_user_data);
   if (!UIFile.empty())
   {

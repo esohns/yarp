@@ -301,7 +301,7 @@ process_arguments(const int argc_in,
 
 void
 do_work(const std::string& name_in,
-        const RPG_Map_FloorPlan_Config_t& mapConfig_in,
+        const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
         const bool& generateLevel_in,
         const std::string& outputFile_in,
         const bool& dump_in)
@@ -322,19 +322,19 @@ do_work(const std::string& name_in,
   RPG_Engine_Level_t level;
   if (generateLevel_in)
   {
-    level.level_meta.name = name_in;
-    level.level_meta.environment.plane = RPG_ENGINE_DEF_PLANE;
-    level.level_meta.environment.terrain = RPG_ENGINE_DEF_TERRAIN;
-    level.level_meta.environment.climate = RPG_ENGINE_DEF_CLIMATE;
-    level.level_meta.environment.time = RPG_ENGINE_DEF_TIMEOFDAY;
-    level.level_meta.environment.lighting = RPG_ENGINE_DEF_LIGHTING;
-		level.level_meta.environment.outdoors = RPG_ENGINE_DEF_OUTDOORS;
-    level.level_meta.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
-    level.level_meta.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
-    level.level_meta.spawn_probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
-    level.level_meta.max_spawned = RPG_ENGINE_DEF_AI_MAX_SPAWNED;
-    level.level_meta.spawn_timer = -1;
-    level.level_meta.amble_probability = RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY;
+    level.metadata.name = name_in;
+    level.metadata.environment.plane = RPG_ENGINE_DEF_PLANE;
+    level.metadata.environment.terrain = RPG_ENGINE_DEF_TERRAIN;
+    level.metadata.environment.climate = RPG_ENGINE_DEF_CLIMATE;
+    level.metadata.environment.time = RPG_ENGINE_DEF_TIMEOFDAY;
+    level.metadata.environment.lighting = RPG_ENGINE_DEF_LIGHTING;
+		level.metadata.environment.outdoors = RPG_ENGINE_DEF_OUTDOORS;
+    level.metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
+    level.metadata.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
+    level.metadata.spawn_probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+    level.metadata.max_spawned = RPG_ENGINE_DEF_AI_MAX_SPAWNED;
+    level.metadata.spawn_timer = -1;
+    level.metadata.amble_probability = RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY;
 
     level.map = map;
   } // end IF
@@ -544,7 +544,7 @@ ACE_TMAIN(int argc,
 
   // step2: do actual work
   std::string name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
-  RPG_Map_FloorPlan_Config_t config;
+  RPG_Map_FloorPlan_Configuration_t config;
   config.corridors = corridors;
   config.doors = doors;
   config.map_size_x = dimension_X;

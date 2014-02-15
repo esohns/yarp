@@ -21,9 +21,6 @@
 
 #include "net_client_signalhandler.h"
 
-#include <ace/Reactor.h>
-#include <ace/Proactor.h>
-
 #include "rpg_common_macros.h"
 #include "rpg_common_timer_manager.h"
 
@@ -36,27 +33,15 @@ Net_Client_SignalHandler::Net_Client_SignalHandler(const long& actionTimerID_in,
                                                    const ACE_INET_Addr& peerSAP_in,
                                                    RPG_Net_Client_IConnector* connector_in,
                                                    const bool& useReactor_in)
- : inherited(NULL,                            // default reactor
-             ACE_Event_Handler::LO_PRIORITY), // priority
+ : inherited(this,           // event handler handle
+             useReactor_in), // use reactor ?
    myActionTimerID(actionTimerID_in),
    myPeerAddress(peerSAP_in),
    myConnector(connector_in),
-   myUseReactor(useReactor_in),
-   mySignal(-1)//,
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-   ,mySigInfo(ACE_INVALID_HANDLE),
-   myUContext(-1)
-#else
-   //mySigInfo(),
-   //myUContext()
-#endif
+   myUseReactor(useReactor_in)
 {
   RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::Net_Client_SignalHandler"));
 
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-  ACE_OS::memset(&mySigInfo, 0, sizeof(mySigInfo));
-  ACE_OS::memset(&myUContext, 0, sizeof(myUContext));
-#endif
 }
 
 Net_Client_SignalHandler::~Net_Client_SignalHandler()
@@ -65,57 +50,15 @@ Net_Client_SignalHandler::~Net_Client_SignalHandler()
 
 }
 
-int
-Net_Client_SignalHandler::handle_signal(int signal_in,
-                                        siginfo_t* info_in,
-                                        ucontext_t* context_in)
+bool
+Net_Client_SignalHandler::handleSignal(const int& signal_in)
 {
-  RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::handle_signal"));
-
-  // *IMPORTANT NOTE*: in signal context, most actions are forbidden, so save
-  // the state and notify the reactor/proactor for callback instead (see below)
-
-  // save state
-  mySignal = signal_in;
-  ACE_OS::memset(&mySigInfo, 0, sizeof(mySigInfo));
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  mySigInfo.si_handle_ = static_cast<ACE_HANDLE>(info_in);
-#else
-  if (info_in)
-    mySigInfo = *info_in;
-#endif
-  if (context_in)
-    myUContext = *context_in;
-
-  // schedule the reactor (see below)
-  ACE_Reactor::instance()->notify(this);
-
-  return 0;
-}
-
-int
-Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
-{
-  RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::handle_exception"));
-
-  ACE_UNUSED_ARG(handle_in);
-
-  // collect some context information...
-  std::string information;
-  RPG_Net_Common_Tools::retrieveSignalInfo(mySignal,
-                                           mySigInfo,
-                                           &myUContext,
-                                           information);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("%D: received [%S]: %s\n"),
-             mySignal,
-             information.c_str()));
+  RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::handleSignal"));
 
   bool stop_event_dispatching = false;
   bool connect = false;
   bool abort = false;
-  switch (mySignal)
+  switch (signal_in)
   {
     case SIGINT:
 // *PORTABILITY*: on Windows SIGQUIT is not defined
@@ -158,10 +101,10 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("received invalid/unknown signal: \"%S\", continuing\n"),
-                 mySignal));
+                 ACE_TEXT("received invalid/unknown signal: \"%S\", aborting\n"),
+                 signal_in));
 
-      break;
+      return false;
     }
   } // end SWITCH
 
@@ -182,7 +125,9 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnector::connect(), continuing\n")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnector::connect(), aborting\n")));
+
+			return false;
     }
   } // end IF
 
@@ -201,14 +146,31 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
 			const void* act = NULL;
 			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myActionTimerID,
 																																&act) <= 0)
+			{
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", aborting\n"),
                    myActionTimerID));
+
+				// clean up
+				myActionTimerID = -1;
+
+				return false;
+			} // end IF
 
       // clean up
       myActionTimerID = -1;
     } // end IF
-    myConnector->abort();
+		try
+    {
+      myConnector->abort();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Net_IConnector::abort(), aborting\n")));
+
+			return false;
+    }
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->stop();
     RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
     // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
@@ -224,5 +186,5 @@ Net_Client_SignalHandler::handle_exception(ACE_HANDLE handle_in)
                                             -1);           // group ID (--> don't block !)
   } // end IF
 
-  return 0;
+  return true;
 }

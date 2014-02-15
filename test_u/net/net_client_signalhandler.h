@@ -23,29 +23,28 @@
 
 #include "rpg_net_client_iconnector.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Event_Handler.h>
+#include "rpg_common_signalhandler.h"
+#include "rpg_common_isignal.h"
+
 #include <ace/INET_Addr.h>
 
 class Net_Client_SignalHandler
- : public ACE_Event_Handler
+ : public RPG_Common_SignalHandler,
+   public RPG_Common_ISignal
 {
  public:
   Net_Client_SignalHandler(const long&,                // action timer id
                            const ACE_INET_Addr&,       // peer SAP
                            RPG_Net_Client_IConnector*, // connector
+													 // -------------------------------------------
                            const bool&);               // use reactor ?
   virtual ~Net_Client_SignalHandler();
 
-  // *NOTE*: just save state and notify the reactor
-  virtual int handle_signal(int,                 // signal
-                            siginfo_t* = NULL,   // not needed on UNIX
-                            ucontext_t* = NULL); // not used
-  // implement specific behaviour
-  virtual int handle_exception(ACE_HANDLE = ACE_INVALID_HANDLE); // handle
+  // implement RPG_Common_ISignal
+  virtual bool handleSignal(const int&); // signal
 
  private:
-  typedef ACE_Event_Handler inherited;
+  typedef RPG_Common_SignalHandler inherited;
 
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(Net_Client_SignalHandler());
@@ -56,9 +55,6 @@ class Net_Client_SignalHandler
   ACE_INET_Addr              myPeerAddress;
   RPG_Net_Client_IConnector* myConnector;
   bool                       myUseReactor;
-  int                        mySignal;
-  siginfo_t                  mySigInfo;
-  ucontext_t                 myUContext;
 };
 
 #endif

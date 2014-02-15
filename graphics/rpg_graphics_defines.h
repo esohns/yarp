@@ -63,7 +63,7 @@
 #define RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY          0.8
 #define RPG_GRAPHICS_TILE_DEF_PREV_SEEN_OPACITY        0.9
 
-#define RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY        400 // ms
+#define RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY        300 // ms
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN      20 // pixels
 // *NOTE*: while hovering, scroll only every x ms (roughly)...
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_SCROLL_DELAY 150 // ms

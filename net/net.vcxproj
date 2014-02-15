@@ -126,7 +126,6 @@ popd</Command>
     <ClCompile Include="rpg_net_protocol_layer.cpp" />
     <ClCompile Include="rpg_net_resetcounterhandler.cpp" />
     <ClCompile Include="rpg_net_sessionmessage.cpp" />
-    <ClCompile Include="rpg_net_signalhandler.cpp" />
     <ClCompile Include="rpg_net_sockethandler.cpp" />
     <ClCompile Include="rpg_net_sockethandler_base.cpp" />
     <ClCompile Include="rpg_net_statistichandler.cpp" />
@@ -163,7 +162,6 @@ popd</Command>
     <ClInclude Include="rpg_net_remote_comm.h" />
     <ClInclude Include="rpg_net_resetcounterhandler.h" />
     <ClInclude Include="rpg_net_sessionmessage.h" />
-    <ClInclude Include="rpg_net_signalhandler.h" />
     <ClInclude Include="rpg_net_sockethandler.h" />
     <ClInclude Include="rpg_net_sockethandler_base.h" />
     <ClInclude Include="rpg_net_statistichandler.h" />

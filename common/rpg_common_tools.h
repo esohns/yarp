@@ -103,6 +103,10 @@ class RPG_Common_Export RPG_Common_Tools
   static void finiSignals(const ACE_Sig_Set&,                 // signal set
                           const bool&,                        // use reactor ?
                           const RPG_Common_SignalActions_t&); // previous actions
+  static void retrieveSignalInfo(const int&,        // signal
+                                 const siginfo_t&,  // info
+                                 const ucontext_t*, // context
+                                 std::string&);     // return value: info
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools());

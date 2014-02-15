@@ -141,6 +141,7 @@ popd</Command>
     <ClInclude Include="rpg_common_idumpstate.h" />
     <ClInclude Include="rpg_common_incl.h" />
     <ClInclude Include="rpg_common_irefcount.h" />
+    <ClInclude Include="rpg_common_isignal.h" />
     <ClInclude Include="rpg_common_istatistic.h" />
     <ClInclude Include="rpg_common_itimer.h" />
     <ClInclude Include="rpg_common_macros.h" />
@@ -150,6 +151,7 @@ popd</Command>
     <ClInclude Include="rpg_common_savereductiontype.h" />
     <ClInclude Include="rpg_common_savingthrow.h" />
     <ClInclude Include="rpg_common_savingthrowcheck.h" />
+    <ClInclude Include="rpg_common_signalhandler.h" />
     <ClInclude Include="rpg_common_size.h" />
     <ClInclude Include="rpg_common_skill.h" />
     <ClInclude Include="rpg_common_subclass.h" />
@@ -183,6 +185,7 @@ popd</Command>
     </ClCompile>
     <ClCompile Include="rpg_common_file_tools.cpp" />
     <ClCompile Include="rpg_common_referencecounter_base.cpp" />
+    <ClCompile Include="rpg_common_signalhandler.cpp" />
     <ClCompile Include="rpg_common_timerhandler.cpp" />
     <ClCompile Include="rpg_common_timer_manager.cpp" />
     <ClCompile Include="rpg_common_tools.cpp" />

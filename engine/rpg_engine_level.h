@@ -43,8 +43,8 @@ class RPG_Engine_Export RPG_Engine_Level
   virtual ~RPG_Engine_Level();
 
   // static functionality
-  static void create(const RPG_Map_FloorPlan_Config_t&, // floor plan config
-                     RPG_Engine_Level_t&);              // return value: level
+  static void create(const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
+                     RPG_Engine_Level_t&);                     // return value: level
   static RPG_Engine_Level_t load(const std::string&,  // FQ filename
                                  const std::string&); // schema repository (directory)
   static void print(const RPG_Engine_Level_t&); // level
@@ -52,7 +52,7 @@ class RPG_Engine_Export RPG_Engine_Level
   void init(const RPG_Engine_Level_t&); // level
   void save(const std::string&) const; // FQ filename
 
-  const RPG_Engine_LevelMeta_t& getMeta() const;
+  RPG_Engine_LevelMetaData_t getMetaData() const;
 
  protected:
   // hide some funcionality
@@ -78,7 +78,7 @@ class RPG_Engine_Export RPG_Engine_Level
                 const RPG_Map_Positions_t&, // obstacles
                 RPG_Map_Path_t&) const;     // return value: (partial) path A --> B
 
-  RPG_Engine_LevelMeta_t myLevelMeta;
+  RPG_Engine_LevelMetaData_t myMetaData;
 
  private:
   typedef RPG_Map_Level inherited;

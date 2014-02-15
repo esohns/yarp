@@ -20,15 +20,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="location.hh">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="position.hh">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="stack.hh">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="scripts\scanner.bat">
       <Filter>scripts</Filter>
     </None>

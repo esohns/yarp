@@ -1346,3 +1346,362 @@ RPG_Common_Tools::finiSignals(const ACE_Sig_Set& signals_in,
                  ACE_TEXT("failed to ACE_Sig_Action::register_action(%S): \"%m\", continuing\n"),
                  (*iterator).first));
 }
+
+void
+RPG_Common_Tools::retrieveSignalInfo(const int& signal_in,
+                                     const siginfo_t& info_in,
+																		 const ucontext_t* context_in,
+																		 std::string& information_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::retrieveSignalInfo"));
+
+  // init return value
+  information_out.resize(0);
+
+  std::ostringstream information;
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+  // step0: common information (on POSIX.1b)
+  information << ACE_TEXT("PID/UID: ");
+  information << info_in.si_pid;
+  information << ACE_TEXT("/");
+  information << info_in.si_uid;
+
+  // (try to) get user name
+  char pw_buf[BUFSIZ];
+  passwd pw_struct;
+  passwd* pw_ptr = NULL;
+// *PORTABILITY*: this isn't completely portable... (man getpwuid_r)
+  if (::getpwuid_r(info_in.si_uid,
+                   &pw_struct,
+                   pw_buf,
+                   sizeof(pw_buf),
+                   &pw_ptr))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::getpwuid_r(%d) : \"%m\", continuing\n"),
+               info_in.si_uid));
+  } // end IF
+  else
+  {
+    information << ACE_TEXT("[\"");
+    information << pw_struct.pw_name;
+    information << ACE_TEXT("\"]");
+  } // end ELSE
+
+  // "si_signo,  si_errno  and  si_code are defined for all signals..."
+  information << ACE_TEXT(", errno: ");
+  information << info_in.si_errno;
+  information << ACE_TEXT("[\"");
+  information << ACE_OS::strerror(info_in.si_errno);
+  information << ACE_TEXT("\"], code: ");
+
+  // step1: retrieve signal code...
+  switch (info_in.si_code)
+  {
+    case SI_USER:
+      information << ACE_TEXT("SI_USER"); break;
+    case SI_KERNEL:
+      information << ACE_TEXT("SI_KERNEL"); break;
+    case SI_QUEUE:
+      information << ACE_TEXT("SI_QUEUE"); break;
+    case SI_TIMER:
+      information << ACE_TEXT("SI_TIMER"); break;
+    case SI_MESGQ:
+      information << ACE_TEXT("SI_MESGQ"); break;
+    case SI_ASYNCIO:
+      information << ACE_TEXT("SI_ASYNCIO"); break;
+    case SI_SIGIO:
+      information << ACE_TEXT("SI_SIGIO"); break;
+    case SI_TKILL:
+      information << ACE_TEXT("SI_TKILL"); break;
+    default:
+    { // (signal-dependant) codes...
+      switch (signal_in)
+      {
+        case SIGILL:
+        {
+          switch (info_in.si_code)
+          {
+            case ILL_ILLOPC:
+              information << ACE_TEXT("ILL_ILLOPC"); break;
+            case ILL_ILLOPN:
+              information << ACE_TEXT("ILL_ILLOPN"); break;
+            case ILL_ILLADR:
+              information << ACE_TEXT("ILL_ILLADR"); break;
+            case ILL_ILLTRP:
+              information << ACE_TEXT("ILL_ILLTRP"); break;
+            case ILL_PRVOPC:
+              information << ACE_TEXT("ILL_PRVOPC"); break;
+            case ILL_PRVREG:
+              information << ACE_TEXT("ILL_PRVREG"); break;
+            case ILL_COPROC:
+              information << ACE_TEXT("ILL_COPROC"); break;
+            case ILL_BADSTK:
+              information << ACE_TEXT("ILL_BADSTK"); break;
+            default:
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                         info_in.si_code));
+
+              break;
+            }
+          } // end SWITCH
+
+          break;
+        }
+        case SIGFPE:
+        {
+          switch (info_in.si_code)
+          {
+            case FPE_INTDIV:
+              information << ACE_TEXT("FPE_INTDIV"); break;
+            case FPE_INTOVF:
+              information << ACE_TEXT("FPE_INTOVF"); break;
+            case FPE_FLTDIV:
+              information << ACE_TEXT("FPE_FLTDIV"); break;
+            case FPE_FLTOVF:
+              information << ACE_TEXT("FPE_FLTOVF"); break;
+            case FPE_FLTUND:
+              information << ACE_TEXT("FPE_FLTUND"); break;
+            case FPE_FLTRES:
+              information << ACE_TEXT("FPE_FLTRES"); break;
+            case FPE_FLTINV:
+              information << ACE_TEXT("FPE_FLTINV"); break;
+            case FPE_FLTSUB:
+              information << ACE_TEXT("FPE_FLTSUB"); break;
+            default:
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                         info_in.si_code));
+
+              break;
+            }
+          } // end SWITCH
+
+          break;
+        }
+        case SIGSEGV:
+        {
+          switch (info_in.si_code)
+          {
+            case SEGV_MAPERR:
+              information << ACE_TEXT("SEGV_MAPERR"); break;
+            case SEGV_ACCERR:
+              information << ACE_TEXT("SEGV_ACCERR"); break;
+            default:
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                         info_in.si_code));
+
+              break;
+            }
+          } // end SWITCH
+
+          break;
+        }
+        case SIGBUS:
+        {
+          switch (info_in.si_code)
+          {
+            case BUS_ADRALN:
+              information << ACE_TEXT("BUS_ADRALN"); break;
+            case BUS_ADRERR:
+              information << ACE_TEXT("BUS_ADRERR"); break;
+            case BUS_OBJERR:
+              information << ACE_TEXT("BUS_OBJERR"); break;
+            default:
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                         info_in.si_code));
+
+              break;
+            }
+          } // end SWITCH
+
+          break;
+        }
+        case SIGTRAP:
+        {
+          switch (info_in.si_code)
+          {
+            case TRAP_BRKPT:
+              information << ACE_TEXT("TRAP_BRKPT"); break;
+            case TRAP_TRACE:
+              information << ACE_TEXT("TRAP_TRACE"); break;
+            default:
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                         info_in.si_code));
+
+              break;
+            }
+          } // end SWITCH
+
+          break;
+        }
+        case SIGCHLD:
+        {
+          switch (info_in.si_code)
+          {
+            case CLD_EXITED:
+              information << ACE_TEXT("CLD_EXITED"); break;
+            case CLD_KILLED:
+              information << ACE_TEXT("CLD_KILLED"); break;
+            case CLD_DUMPED:
+              information << ACE_TEXT("CLD_DUMPED"); break;
+            case CLD_TRAPPED:
+              information << ACE_TEXT("CLD_TRAPPED"); break;
+            case CLD_STOPPED:
+              information << ACE_TEXT("CLD_STOPPED"); break;
+            case CLD_CONTINUED:
+              information << ACE_TEXT("CLD_CONTINUED"); break;
+            default:
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                         info_in.si_code));
+
+              break;
+            }
+          } // end SWITCH
+
+          break;
+        }
+        case SIGPOLL:
+        {
+          switch (info_in.si_code)
+          {
+            case POLL_IN:
+              information << ACE_TEXT("POLL_IN"); break;
+            case POLL_OUT:
+              information << ACE_TEXT("POLL_OUT"); break;
+            case POLL_MSG:
+              information << ACE_TEXT("POLL_MSG"); break;
+            case POLL_ERR:
+              information << ACE_TEXT("POLL_ERR"); break;
+            case POLL_PRI:
+              information << ACE_TEXT("POLL_PRI"); break;
+            case POLL_HUP:
+              information << ACE_TEXT("POLL_HUP"); break;
+            default:
+            {
+              ACE_DEBUG((LM_DEBUG,
+                         ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                         info_in.si_code));
+
+              break;
+            }
+          } // end SWITCH
+
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("invalid/unknown signal code: %d, continuing\n"),
+                     info_in.si_code));
+
+          break;
+        }
+      } // end SWITCH
+
+      break;
+    }
+  } // end SWITCH
+
+  // step2: retrieve more (signal-dependant) information
+  switch (signal_in)
+  {
+    case SIGALRM:
+    {
+      information << ACE_TEXT(", overrun: ");
+      information << info_in.si_overrun;
+      information << ACE_TEXT(", (internal) id: ");
+      information << info_in.si_timerid;
+
+      break;
+    }
+    case SIGCHLD:
+    {
+      information << ACE_TEXT(", (exit) status: ");
+      information << info_in.si_status;
+      information << ACE_TEXT(", time consumed (user): ");
+      information << info_in.si_utime;
+      information << ACE_TEXT(" / (system): ");
+      information << info_in.si_stime;
+
+      break;
+    }
+    case SIGILL:
+    case SIGFPE:
+    case SIGSEGV:
+    case SIGBUS:
+    {
+      // *TODO*: more data ?
+      information << ACE_TEXT(", fault at address: ");
+      information << info_in.si_addr;
+
+      break;
+    }
+    case SIGPOLL:
+    {
+      information << ACE_TEXT(", band event: ");
+      information << info_in.si_band;
+      information << ACE_TEXT(", (file) descriptor: ");
+      information << info_in.si_fd;
+
+      break;
+    }
+    default:
+    {
+      // *TODO*: handle more signals here ?
+//       ACE_DEBUG((LM_DEBUG,
+//                  ACE_TEXT("no additional information for signal: \"%S\"...\n"),
+//                  signal_in));
+
+      break;
+    }
+  } // end SWITCH
+#else
+  switch (signal_in)
+  {
+    case SIGINT:
+      information << ACE_TEXT("SIGINT"); break;
+    case SIGILL:
+      information << ACE_TEXT("SIGILL"); break;
+    case SIGFPE:
+      information << ACE_TEXT("SIGFPE"); break;
+    case SIGSEGV:
+      information << ACE_TEXT("SIGSEGV"); break;
+    case SIGTERM:
+      information << ACE_TEXT("SIGTERM"); break;
+    case SIGBREAK:
+      information << ACE_TEXT("SIGBREAK"); break;
+    case SIGABRT:
+      information << ACE_TEXT("SIGABRT"); break;
+    case SIGABRT_COMPAT:
+      information << ACE_TEXT("SIGABRT_COMPAT"); break;
+    default:
+	  {
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("invalid/unknown signal: %S, continuing\n"),
+                 signal_in));
+
+			break;
+		}
+	} // end SWITCH
+
+  information << ACE_TEXT(", signalled handle: ");
+  information << info_in.si_handle_;
+  //information << ACE_TEXT(", array of signalled handle(s): ");
+  //information << info_in.si_handles_;
+#endif
+
+  // OK: set return value
+  information_out = information.str();
+}

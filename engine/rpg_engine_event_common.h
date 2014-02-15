@@ -31,13 +31,21 @@ enum RPG_Engine_EventType
 {
   EVENT_ENTITY_ACTIVATE = 0,
   EVENT_ENTITY_SPAWN,
-  //
+	// -----------------------
+	EVENT_QUIT,
+  // -----------------------
   RPG_ENGINE_EVENT_MAX,
   RPG_ENGINE_EVENT_INVALID
 };
 
-struct RPG_Engine_Event
+struct RPG_Engine_Event_t
 {
+ inline RPG_Engine_Event_t()
+  : type(RPG_ENGINE_EVENT_INVALID),
+    entity_id(-1),
+    timer_id(0)
+ { };
+
   RPG_Engine_EventType  type;
   RPG_Engine_EntityID_t entity_id;
 	long                  timer_id;

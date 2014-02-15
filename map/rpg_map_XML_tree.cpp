@@ -126,6 +126,58 @@ y (const y_type& x)
 }
 
 
+// RPG_Map_Door_XMLTree_Type
+// 
+
+const RPG_Map_Door_XMLTree_Type::position_type& RPG_Map_Door_XMLTree_Type::
+position () const
+{
+  return this->position_.get ();
+}
+
+RPG_Map_Door_XMLTree_Type::position_type& RPG_Map_Door_XMLTree_Type::
+position ()
+{
+  return this->position_.get ();
+}
+
+void RPG_Map_Door_XMLTree_Type::
+position (const position_type& x)
+{
+  this->position_.set (x);
+}
+
+void RPG_Map_Door_XMLTree_Type::
+position (::std::auto_ptr< position_type > x)
+{
+  this->position_.set (x);
+}
+
+const RPG_Map_Door_XMLTree_Type::state_type& RPG_Map_Door_XMLTree_Type::
+state () const
+{
+  return this->state_.get ();
+}
+
+RPG_Map_Door_XMLTree_Type::state_type& RPG_Map_Door_XMLTree_Type::
+state ()
+{
+  return this->state_.get ();
+}
+
+void RPG_Map_Door_XMLTree_Type::
+state (const state_type& x)
+{
+  this->state_.set (x);
+}
+
+void RPG_Map_Door_XMLTree_Type::
+state (::std::auto_ptr< state_type > x)
+{
+  this->state_.set (x);
+}
+
+
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
 // RPG_Map_DoorState_XMLTree_Type
@@ -319,6 +371,138 @@ operator!= (const RPG_Map_Position_XMLTree_Type& x, const RPG_Map_Position_XMLTr
   return !(x == y);
 }
 
+// RPG_Map_Door_XMLTree_Type
+//
+
+RPG_Map_Door_XMLTree_Type::
+RPG_Map_Door_XMLTree_Type (const position_type& position,
+                           const state_type& state)
+: ::xml_schema::type (),
+  position_ (position, ::xml_schema::flags (), this),
+  state_ (state, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Map_Door_XMLTree_Type::
+RPG_Map_Door_XMLTree_Type (::std::auto_ptr< position_type >& position,
+                           const state_type& state)
+: ::xml_schema::type (),
+  position_ (position, ::xml_schema::flags (), this),
+  state_ (state, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Map_Door_XMLTree_Type::
+RPG_Map_Door_XMLTree_Type (const RPG_Map_Door_XMLTree_Type& x,
+                           ::xml_schema::flags f,
+                           ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  position_ (x.position_, f, this),
+  state_ (x.state_, f, this)
+{
+}
+
+RPG_Map_Door_XMLTree_Type::
+RPG_Map_Door_XMLTree_Type (const ::xercesc::DOMElement& e,
+                           ::xml_schema::flags f,
+                           ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  position_ (f, this),
+  state_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Map_Door_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // position
+    //
+    if (n.name () == "position" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< position_type > r (
+        position_traits::create (i, f, this));
+
+      if (!position_.present ())
+      {
+        this->position_.set (r);
+        continue;
+      }
+    }
+
+    // state
+    //
+    if (n.name () == "state" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< state_type > r (
+        state_traits::create (i, f, this));
+
+      if (!state_.present ())
+      {
+        this->state_.set (r);
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!position_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "position",
+      "urn:rpg");
+  }
+
+  if (!state_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "state",
+      "urn:rpg");
+  }
+}
+
+RPG_Map_Door_XMLTree_Type* RPG_Map_Door_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Map_Door_XMLTree_Type (*this, f, c);
+}
+
+RPG_Map_Door_XMLTree_Type::
+~RPG_Map_Door_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Map_Door_XMLTree_Type& x, const RPG_Map_Door_XMLTree_Type& y)
+{
+  if (!(x.position () == y.position ()))
+    return false;
+
+  if (!(x.state () == y.state ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Map_Door_XMLTree_Type& x, const RPG_Map_Door_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
 #include <ostream>
 
 ::std::ostream&
@@ -338,6 +522,14 @@ operator<< (::std::ostream& o, const RPG_Map_Position_XMLTree_Type& i)
 {
   o << ::std::endl << "x: " << i.x ();
   o << ::std::endl << "y: " << i.y ();
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Map_Door_XMLTree_Type& i)
+{
+  o << ::std::endl << "position: " << i.position ();
+  o << ::std::endl << "state: " << i.state ();
   return o;
 }
 
@@ -395,6 +587,36 @@ operator<< (::xercesc::DOMElement& e, const RPG_Map_Position_XMLTree_Type& i)
         e));
 
     s << i.y ();
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Map_Door_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // position
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "position",
+        "urn:rpg",
+        e));
+
+    s << i.position ();
+  }
+
+  // state
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "state",
+        "urn:rpg",
+        e));
+
+    s << i.state ();
   }
 }
 

@@ -66,7 +66,7 @@ RPG_Map_Level::~RPG_Map_Level()
 }
 
 void
-RPG_Map_Level::create(const RPG_Map_FloorPlan_Config_t& floorPlanConfig_in,
+RPG_Map_Level::create(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfig_in,
                       RPG_Map_t& map_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::create"));

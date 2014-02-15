@@ -216,15 +216,27 @@ RPG_Net_Server_AsynchListener::make_handler(void)
 
 int
 RPG_Net_Server_AsynchListener::validate_connection(const ACE_Asynch_Accept::Result& result_in,
-                                                   const ACE_INET_Addr& remoteAddress_in,
-                                                   const ACE_INET_Addr& localAddress_in)
+                                                   const ACE_INET_Addr& remoteSAP_in,
+                                                   const ACE_INET_Addr& localSAP_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::validate_connection"));
 
-  // default behavior: delegate to baseclass
-  return inherited::validate_connection(result_in,
-                                        remoteAddress_in,
-                                        localAddress_in);
+	// success ?
+	if (result_in.success() == 0)
+	{
+		// debug info
+    ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
+    ACE_OS::memset(buffer, 0, sizeof(buffer));
+    if (remoteSAP_in.addr_to_string(buffer, sizeof(buffer)) == -1)
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+		ACE_DEBUG((LM_ERROR,
+			         ACE_TEXT("failed to ACE_Asynch_Acceptor::accept(\"%s\"): \"%s\", aborting\n"),
+               buffer,
+							 ACE_OS::strerror(result_in.error())));
+	} // end IF
+
+	return ((result_in.success() == 1) ? 0 : -1);
 }
 
 int
@@ -235,18 +247,3 @@ RPG_Net_Server_AsynchListener::should_reissue_accept()
   // default behavior: delegate to baseclass
   return inherited::should_reissue_accept();
 }
-
-//void
-//RPG_Net_Server_AsynchListener::handle_accept(const ACE_Asynch_Accept::Result& result_in)
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::handle_accept"));
-
-//  // default behavior: delegate to baseclass
-//  inherited::handle_accept(result_in);
-
-////  if (result_in.error() == ECANCELED)
-////    if (ACE_OS::closesocket(result_in.listen_handle()) == -1)
-////      ACE_DEBUG((LM_ERROR,
-////                 ACE_TEXT("failed to ACE_OS::closesocket(%d): \"%m\", continuing\n"),
-////                 result_in.listen_handle()));
-//}

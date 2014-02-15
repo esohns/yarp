@@ -189,56 +189,74 @@ RPG_Engine::svc(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::svc"));
 
-  ACE_Message_Block* ace_mb          = NULL;
-  ACE_Time_Value     peek_delay(0, (RPG_ENGINE_EVENT_PEEK_INTERVAL * 1000));
-  ACE_Time_Value     delay;
-  bool               stop_processing = false;
-
-  while (!stop_processing)
+  ACE_Message_Block* ace_mb = NULL;
+	int result = -1;
+  while (true)
   {
-    delay = (RPG_COMMON_TIME_POLICY() + peek_delay);
-    if (inherited::getq(ace_mb, &delay) != -1)
-    {
-      switch (ace_mb->msg_type())
+		// step1: wait for activity
+		ace_mb = NULL;
+		result = inherited::msg_queue()->peek_dequeue_head(ace_mb,
+			                                                 NULL); // block
+		if (result == -1)
+		{
+			if (inherited::msg_queue()->deactivated())
+			{
+				ACE_DEBUG((LM_WARNING,
+					         ACE_TEXT("message queue was deactivated, aborting\n")));
+
+				break;
+			} // end IF
+
+			// queue has been pulsed --> proceed
+		} // end IF
+		else
+		{
+			// OK: message has arrived...
+			ACE_ASSERT(result == 0);
+			ace_mb = NULL;
+			result = inherited::getq(ace_mb,
+				                       const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero)); // don't block
+			if (result == -1)
+			{
+				ACE_DEBUG((LM_ERROR,
+										ACE_TEXT("failed to ACE_Task::getq: \"%m\", aborting\n")));
+
+				break;
+			} // end IF
+			ACE_ASSERT(ace_mb);
+
+			switch (ace_mb->msg_type())
       {
-        // currently, we only use these...
+        // *NOTE*: currently, only use these...
         case ACE_Message_Block::MB_STOP:
         {
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("received MB_STOP...\n")));
 
-          stop_processing = true;
+					// clean up
+					ace_mb->release();
 
-          break;
+          return 0; // done
         }
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("received an unknown control message (type: %d), continuing\n"),
+                     ACE_TEXT("received an unknown/invalid control message (type: %d), continuing\n"),
                      ace_mb->msg_type()));
 
           break;
         }
       } // end SWITCH
 
-      // clean up
-      ace_mb->release();
-      ace_mb = NULL;
+			// clean up
+			ace_mb->release();
+		} // end ELSE
 
-      if (stop_processing)
-        return 0;
-    } // end IF
-
-    // process (one round of) entity actions
+    // step2: process (one round of) entity actions
     handleEntities();
   } // end WHILE
 
-  ACE_ASSERT(false);
-#if defined (_MSC_VER)
-  return -1;
-#else
-  ACE_NOTREACHED(return -1;)
-#endif
+	return -1;
 }
 
 void
@@ -282,10 +300,11 @@ RPG_Engine::start()
   // start AI...
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->start();
   // ...spawn roaming monsters ?
-  if (inherited2::myLevelMeta.spawn_interval != ACE_Time_Value::zero)
+  if (inherited2::myMetaData.spawn_interval != ACE_Time_Value::zero)
   {
-		RPG_Engine_Event* spawn_event = NULL;
-		spawn_event = new(std::nothrow) RPG_Engine_Event;
+		RPG_Engine_Event_t* spawn_event = NULL;
+		ACE_NEW_NORETURN(spawn_event,
+		                 RPG_Engine_Event_t());
 		if (!spawn_event)
 		{
 		  ACE_DEBUG((LM_CRITICAL,
@@ -297,18 +316,18 @@ RPG_Engine::start()
 		spawn_event->entity_id = -1;
 		spawn_event->timer_id = -1;
 
-		ACE_ASSERT(inherited2::myLevelMeta.spawn_timer == -1);
+		ACE_ASSERT(inherited2::myMetaData.spawn_timer == -1);
 		// *NOTE*: fire&forget API for spawn_event
-    inherited2::myLevelMeta.spawn_timer = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
-                                                                                                   inherited2::myLevelMeta.spawn_interval,
+    inherited2::myMetaData.spawn_timer = RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
+                                                                                                   inherited2::myMetaData.spawn_interval,
                                                                                                    false);
-    if (inherited2::myLevelMeta.spawn_timer == -1)
+    if (inherited2::myMetaData.spawn_timer == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to schedule spawn event, continuing\n")));
 
 		ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("scheduled spawn event (ID: %d)...\n"),
-							 inherited2::myLevelMeta.spawn_timer));
+							 inherited2::myMetaData.spawn_timer));
   } // end IF
 }
 
@@ -322,12 +341,12 @@ RPG_Engine::stop()
     return;
 
   // stop AI (&& monster spawning)
-  ACE_ASSERT(inherited2::myLevelMeta.spawn_timer != -1);
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->cancel(inherited2::myLevelMeta.spawn_timer);
+  ACE_ASSERT(inherited2::myMetaData.spawn_timer != -1);
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->cancel(inherited2::myMetaData.spawn_timer);
 	ACE_DEBUG((LM_DEBUG,
             ACE_TEXT("cancelled spawn event (ID: %d)...\n"),
-						inherited2::myLevelMeta.spawn_timer));
-  inherited2::myLevelMeta.spawn_timer = -1;
+						inherited2::myMetaData.spawn_timer));
+  inherited2::myMetaData.spawn_timer = -1;
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->stop();
 
   // drop control message into the queue...
@@ -477,7 +496,7 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
 
   // notify AI
   unsigned char temp = entity_in->character->getSpeed(false,
-                                                      inherited2::myLevelMeta.environment.lighting);
+                                                      inherited2::myMetaData.environment.lighting);
   temp /= RPG_ENGINE_FEET_PER_SQUARE;
   temp *= RPG_ENGINE_ROUND_INTERVAL;
   float squares_per_round = temp;
@@ -693,6 +712,9 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
 
   if (lockedAccess_in)
     myLock.release();
+
+	// wake up the engine
+	inherited::msg_queue()->pulse();
 }
 
 void
@@ -1112,13 +1134,13 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
   } // end ELSE
 
   // step2: consider environment / ambient lighting
-  unsigned short environment_radius = RPG_Common_Tools::environment2Radius(inherited2::myLevelMeta.environment);
+  unsigned short environment_radius = RPG_Common_Tools::environment2Radius(inherited2::myMetaData.environment);
 
   // step3: consider equipment (ambient lighting conditions)
   unsigned short lit_radius = 0;
   if (equipped_light_source != RPG_ITEM_COMMODITYLIGHT_INVALID)
     lit_radius = RPG_Item_Common_Tools::lightingItem2Radius(equipped_light_source,
-                                                            (inherited2::myLevelMeta.environment.lighting == AMBIENCE_BRIGHT));
+                                                            (inherited2::myMetaData.environment.lighting == AMBIENCE_BRIGHT));
 
   if (lockedAccess_in)
     myLock.release();
@@ -1379,17 +1401,17 @@ RPG_Engine::canReach(const RPG_Engine_EntityID_t& id_in,
                          : (range <= max_reach));
 }
 
-RPG_Engine_LevelMeta_t
-RPG_Engine::getMeta(const bool& lockedAccess_in) const
+RPG_Engine_LevelMetaData_t
+RPG_Engine::getMetaData(const bool& lockedAccess_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine::getMeta"));
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getMetaData"));
 
-  RPG_Engine_LevelMeta_t result;
+  RPG_Engine_LevelMetaData_t result;
 
   if (lockedAccess_in)
     myLock.acquire();
 
-  result = inherited2::getMeta();
+  result = inherited2::getMetaData();
 
   if (lockedAccess_in)
     myLock.release();
@@ -1739,7 +1761,7 @@ RPG_Engine::handleEntities()
 
             // notify AI
             unsigned char temp = (*iterator).second->character->getSpeed(false,
-                                                                         inherited2::myLevelMeta.environment.lighting);
+                                                                         inherited2::myMetaData.environment.lighting);
             temp /= RPG_ENGINE_FEET_PER_SQUARE;
             temp *= RPG_ENGINE_ROUND_INTERVAL;
             float squares_per_round = temp;
@@ -1758,7 +1780,7 @@ RPG_Engine::handleEntities()
 
             // notify AI
             unsigned char temp = (*iterator).second->character->getSpeed(true,
-                                                                         inherited2::myLevelMeta.environment.lighting);
+                                                                         inherited2::myMetaData.environment.lighting);
             temp /= RPG_ENGINE_FEET_PER_SQUARE;
             temp *= RPG_ENGINE_ROUND_INTERVAL;
             float squares_per_round = temp;
@@ -1772,7 +1794,6 @@ RPG_Engine::handleEntities()
             (*iterator).second->modes.insert(ENTITYMODE_RUNNING);
           } // end ELSE
 
-          // debug info
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("\"%s\" %s running...\n"),
                      ACE_TEXT((*iterator).second->character->getName().c_str()),
@@ -1795,7 +1816,6 @@ RPG_Engine::handleEntities()
             (*iterator).second->modes.insert(ENTITYMODE_SEARCHING);
           } // end ELSE
 
-          // debug info
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("\"%s\" %s searching...\n"),
                      ACE_TEXT((*iterator).second->character->getName().c_str()),
@@ -1843,7 +1863,6 @@ RPG_Engine::handleEntities()
         {
           (*iterator).second->modes.clear();
 
-          // debug info
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("\"%s\" stopped...\n"),
                      ACE_TEXT((*iterator).second->character->getName().c_str())));

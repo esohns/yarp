@@ -31,7 +31,7 @@
 #include <vector>
 
 // *NOTE* types as used by SDL
-struct RPG_Sound_SDLConfig_t
+struct RPG_Sound_SDLConfiguration_t
 {
   int    frequency;
   Uint16 format;

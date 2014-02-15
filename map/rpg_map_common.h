@@ -48,7 +48,7 @@ enum RPG_Map_Element
   MAPELEMENT_INVALID
 };
 
-struct RPG_Map_FloorPlan_Config_t
+struct RPG_Map_FloorPlan_Configuration_t
 {
   unsigned long min_room_size; // 0: don't care
   bool          doors;
@@ -95,9 +95,9 @@ struct RPG_Map_Door_t
     return !(position == rhs_in.position);
   }
 
-  RPG_Map_Position_t position;
-  RPG_Map_Direction  outside;
-  RPG_Map_DoorState  state;
+  RPG_Map_Position_t        position;
+  RPG_Map_Direction         outside;
+  mutable RPG_Map_DoorState state; // allow "external" updates (see below)
 };
 struct door_compare
  : public std::binary_function<RPG_Map_Door_t, RPG_Map_Door_t, bool>

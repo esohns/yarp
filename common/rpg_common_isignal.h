@@ -18,43 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_SIGNALHANDLER_H
-#define RPG_NET_SIGNALHANDLER_H
+#ifndef RPG_COMMON_ISIGNAL_H
+#define RPG_COMMON_ISIGNAL_H
 
-#include "rpg_net_exports.h"
-#include "rpg_net_common.h"
-
-#include "rpg_common_istatistic.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Event_Handler.h>
-
-// forward declaration(s)
-class RPG_Common_IControl;
-
-class RPG_Net_Export RPG_Net_SignalHandler
- : public ACE_Event_Handler
+class RPG_Common_ISignal
 {
  public:
-  RPG_Net_SignalHandler(RPG_Common_IControl*,                                     // controller
-                        RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* = NULL); // reporter
-  virtual ~RPG_Net_SignalHandler();
+  virtual ~RPG_Common_ISignal() {}
 
-  // implement specific behaviour
-  virtual int handle_signal(int,          // signal
-                            siginfo_t*,   // info
-                            ucontext_t*); // context
-
- private:
-  typedef ACE_Event_Handler inherited;
-
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler(const RPG_Net_SignalHandler&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SignalHandler& operator=(const RPG_Net_SignalHandler&));
-
-  RPG_Common_IControl*                             myControl;
-  RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* myReport;
+  // exposed interface
+  virtual bool handleSignal(const int&) = 0; // signal
 };
 
 #endif

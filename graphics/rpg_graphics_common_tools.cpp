@@ -70,6 +70,18 @@ RPG_Graphics_GraphicsCache_t RPG_Graphics_Common_Tools::myGraphicsCache;
 RPG_Graphics_FontCache_t     RPG_Graphics_Common_Tools::myFontCache;
 
 bool                         RPG_Graphics_Common_Tools::myInitialized = false;
+bool                         RPG_Graphics_Common_Tools::myPreInitialized = false;
+
+void
+RPG_Graphics_Common_Tools::preInit()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::preInit"));
+
+  // init string conversion facilities
+  RPG_Graphics_Common_Tools::initStringConversionTables();
+
+	myPreInitialized = true;
+}
 
 void
 RPG_Graphics_Common_Tools::init(const std::string& directory_in,
@@ -78,8 +90,8 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::init"));
 
-  // init string conversion facilities
-  RPG_Graphics_Common_Tools::initStringConversionTables();
+	if (!myPreInitialized)
+		RPG_Graphics_Common_Tools::preInit();
 
   if (!directory_in.empty())
   {
@@ -1859,9 +1871,7 @@ RPG_Graphics_Common_Tools::initFonts()
         for (RPG_Graphics_FontCacheIterator_t iter = myFontCache.begin();
              iter != myFontCache.end();
              iter++)
-        {
           TTF_CloseFont((*iter).second);
-        } // end FOR
         myFontCache.clear();
 
         return false;
@@ -1881,9 +1891,7 @@ RPG_Graphics_Common_Tools::initFonts()
         for (RPG_Graphics_FontCacheIterator_t iter = myFontCache.begin();
              iter != myFontCache.end();
              iter++)
-        {
           TTF_CloseFont((*iter).second);
-        } // end FOR
         myFontCache.clear();
 
         return false;

@@ -39,19 +39,19 @@
 RPG_Sound_CategoryToStringTable_t RPG_Sound_CategoryHelper::myRPG_Sound_CategoryToStringTable;
 RPG_Sound_EventToStringTable_t RPG_Sound_EventHelper::myRPG_Sound_EventToStringTable;
 
-bool                   RPG_Sound_Common_Tools::myIsMuted;
-std::string            RPG_Sound_Common_Tools::mySoundDirectory;
-RPG_Sound_SDLConfig_t  RPG_Sound_Common_Tools::myConfig;
+bool                         RPG_Sound_Common_Tools::myIsMuted;
+std::string                  RPG_Sound_Common_Tools::mySoundDirectory;
+RPG_Sound_SDLConfiguration_t RPG_Sound_Common_Tools::myConfig;
 
-ACE_Thread_Mutex       RPG_Sound_Common_Tools::myCacheLock;
-unsigned int           RPG_Sound_Common_Tools::myOldestCacheEntry = 0;
-unsigned int           RPG_Sound_Common_Tools::myCacheSize = 0;
-RPG_Sound_SoundCache_t RPG_Sound_Common_Tools::mySoundCache;
+ACE_Thread_Mutex             RPG_Sound_Common_Tools::myCacheLock;
+unsigned int                 RPG_Sound_Common_Tools::myOldestCacheEntry = 0;
+unsigned int                 RPG_Sound_Common_Tools::myCacheSize = 0;
+RPG_Sound_SoundCache_t       RPG_Sound_Common_Tools::mySoundCache;
 
-bool                   RPG_Sound_Common_Tools::myInitialized = false;
+bool                         RPG_Sound_Common_Tools::myInitialized = false;
 
 bool
-RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfig_t& config_in,
+RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
                              const std::string& directory_in,
                              const bool& useCD_in,
                              const unsigned int& cacheSize_in,

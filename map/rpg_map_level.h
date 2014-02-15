@@ -39,8 +39,8 @@ class RPG_Map_Export RPG_Map_Level
   virtual ~RPG_Map_Level();
 
   // static functionality
-  static void create(const RPG_Map_FloorPlan_Config_t&, // floor plan config
-                     RPG_Map_t&);                       // return value: map
+  static void create(const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
+                     RPG_Map_t&);                              // return value: map
   static bool load(const std::string&, // FQ filename
                    RPG_Map_t&,         // return value: map
                    const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?

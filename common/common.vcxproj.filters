@@ -191,6 +191,12 @@
     <ClInclude Include="rpg_common_referencecounter_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_common_isignal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_common_signalhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="rpg_common.map">
@@ -241,6 +247,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_common_referencecounter_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_common_signalhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -81,7 +81,7 @@ typedef std::list<RPG_Engine_EntityID_t> RPG_Engine_EntityList_t;
 typedef RPG_Engine_EntityList_t::iterator RPG_Engine_EntityListIterator_t;
 typedef RPG_Engine_EntityList_t::const_iterator RPG_Engine_EntityListConstIterator_t;
 
-struct RPG_Engine_LevelMeta_t
+struct RPG_Engine_LevelMetaData_t
 {
   std::string            name;
   RPG_Common_Environment environment;
@@ -98,8 +98,8 @@ struct RPG_Engine_LevelMeta_t
 };
 struct RPG_Engine_Level_t
 {
-  RPG_Engine_LevelMeta_t level_meta;
-  RPG_Map_t              map;
+  RPG_Engine_LevelMetaData_t metadata;
+  RPG_Map_t                  map;
 };
 
 typedef std::map<RPG_Map_Position_t, SDL_Surface*> RPG_Engine_EntityGraphics_t;

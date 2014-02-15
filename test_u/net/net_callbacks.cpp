@@ -484,7 +484,7 @@ button_report_clicked_cb(GtkWidget* widget_in,
 // *PORTABILITY*: on Windows SIGUSRx are not defined
 // --> use SIGBREAK (21) instead...
   int signal = 0;
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
   signal = SIGUSR1;
 #else
   signal = SIGBREAK;
@@ -547,14 +547,24 @@ button_quit_clicked_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::button_quit_clicked_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  ACE_UNUSED_ARG(act_in);
-//  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
-//  ACE_ASSERT(data);
+  Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
+  ACE_ASSERT(data);
 
-//  ACE_Guard<ACE_Thread_Mutex> aGuard(data->lock);
+	// step1: remove event sources
+	{
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(data->lock);
 
-//  data->gtk_main_quit_invoked = true;
+		for (Net_GTK_EventSourceIDsIterator_t iterator = data->event_source_ids.begin();
+			   iterator != data->event_source_ids.end();
+				 iterator++)
+		  if (!g_source_remove(*iterator))
+				ACE_DEBUG((LM_ERROR,
+				           ACE_TEXT("failed to g_source_remove(%u), continuing\n"),
+									 *iterator));
+		data->event_source_ids.clear();
+	} // end lock scope
 
+	// step2: initiate shutdown sequence
   if (ACE_OS::raise(SIGINT) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
@@ -700,13 +710,17 @@ init_UI_client(const std::string& UIFile_in,
     return false;
   } // end ELSE
 
+	// step5: (auto-)connect signals/slots
+	// *NOTE*: glade_xml_signal_autoconnect doesn't work reliably
+	//glade_xml_signal_autoconnect(userData_out.xml);
+
   // step5a: connect default signals
   g_signal_connect(dialog,
                    ACE_TEXT_ALWAYS_CHAR("destroy"),
                    G_CALLBACK(gtk_widget_destroyed),
                    NULL);
 
-   // step5b: connect custom signals
+	// step5b: connect custom signals
   glade_xml_signal_connect_data(userData_out.xml,
                                 ACE_TEXT_ALWAYS_CHAR("button_connect_clicked_cb"),
                                 G_CALLBACK(button_connect_clicked_cb),
@@ -736,15 +750,12 @@ init_UI_client(const std::string& UIFile_in,
                                 G_CALLBACK(togglebutton_stress_toggled_cb),
                                 &userData_out);
 
-//  // step6: auto-connect signals/slots
-//  glade_xml_signal_autoconnect(userData_out.xml);
-
-//   // step7: use correct screen
+//   // step6: use correct screen
 //   if (parentWidget_in)
 //     gtk_window_set_screen(GTK_WINDOW(dialog),
 //                           gtk_widget_get_screen(const_cast<GtkWidget*> (//parentWidget_in)));
 
-  // step8: draw main dialog
+  // step7: draw main dialog
   gtk_widget_show_all(dialog);
 
   return true;
@@ -891,43 +902,78 @@ init_UI_server(const std::string& UIFile_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button),
                            allowUserRuntimeStats_in);
 
+  // step6: (auto-)connect signals/slots
+	// *NOTE*: glade_xml_signal_connect_data does not work reliably
+	//glade_xml_signal_autoconnect(userData_out.xml);
+
   // step6a: connect default signals
-  g_signal_connect(dialog,
-                   ACE_TEXT_ALWAYS_CHAR("destroy"),
-                   G_CALLBACK(gtk_widget_destroyed),
-                   NULL);
+	bool success = true;
+	success = (success &&
+		         (g_signal_connect(dialog,
+						                   ACE_TEXT_ALWAYS_CHAR("destroy"),
+                               G_CALLBACK(gtk_widget_destroyed),
+                               &dialog) > 0));
 
-   // step6b: connect custom signals
-  glade_xml_signal_connect_data(userData_out.xml,
-                                ACE_TEXT_ALWAYS_CHAR("togglebutton_listen_toggled_cb"),
-                                G_CALLBACK(togglebutton_listen_toggled_cb),
-                                &userData_out);
-  glade_xml_signal_connect_data(userData_out.xml,
-                                ACE_TEXT_ALWAYS_CHAR("button_close_all_clicked_cb"),
-                                G_CALLBACK(button_close_all_clicked_cb),
-                                &userData_out);
-  glade_xml_signal_connect_data(userData_out.xml,
-                                ACE_TEXT_ALWAYS_CHAR("button_report_clicked_cb"),
-                                G_CALLBACK(button_report_clicked_cb),
-                                &userData_out);
-  glade_xml_signal_connect_data(userData_out.xml,
-                                ACE_TEXT_ALWAYS_CHAR("button_about_clicked_cb"),
-                                G_CALLBACK(button_about_clicked_cb),
-                                &userData_out);
-  glade_xml_signal_connect_data(userData_out.xml,
-                                ACE_TEXT_ALWAYS_CHAR("button_quit_clicked_cb"),
-                                G_CALLBACK(button_quit_clicked_cb),
-                                &userData_out);
+  // step6b: connect custom signals
+	// *NOTE*: glade_xml_signal_connect_data does not work reliably on Windows
+  //glade_xml_signal_connect_data(userData_out.xml,
+  //                              ACE_TEXT_ALWAYS_CHAR("togglebutton_listen_toggled_cb"),
+  //                              G_CALLBACK(togglebutton_listen_toggled_cb),
+  //                              &userData_out);
+	GtkToggleButton* togglebutton = GTK_TOGGLE_BUTTON(glade_xml_get_widget(userData_out.xml,
+		                                                                     ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_LISTENBUTTON_NAME)));
+	ACE_ASSERT(togglebutton);
+	success = (success &&
+             (g_signal_connect(togglebutton,
+						                   ACE_TEXT_ALWAYS_CHAR("toggled"),
+									             G_CALLBACK(togglebutton_listen_toggled_cb),
+									             &userData_out) > 0));
+	button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+		                                       ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
+  ACE_ASSERT(button);
+	success = (success &&
+             (g_signal_connect(button,
+						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+									             G_CALLBACK(button_close_all_clicked_cb),
+									             &userData_out) > 0));
+	button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+		                                       ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_REPORTBUTTON_NAME)));
+  ACE_ASSERT(button);
+	success = (success &&
+             (g_signal_connect(button,
+						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+									             G_CALLBACK(button_report_clicked_cb),
+									             &userData_out) > 0));
+	button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+		                                       ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_ABOUTBUTTON_NAME)));
+  ACE_ASSERT(button);
+	success = (success &&
+             (g_signal_connect(button,
+						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+									             G_CALLBACK(button_about_clicked_cb),
+									             &userData_out) > 0));
+	button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+		                                       ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_QUITBUTTON_NAME)));
+  ACE_ASSERT(button);
+	success = (success &&
+             (g_signal_connect(button,
+						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
+									             G_CALLBACK(button_quit_clicked_cb),
+									             &userData_out) > 0));
+	if (!success)
+	{
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to g_signal_connect(): \"%m\", aborting\n")));
 
-//  // step7: auto-connect signals/slots
-//  glade_xml_signal_autoconnect(userData_out.xml);
+    return false;
+  } // end IF
 
-//   // step8: use correct screen
+//   // step7: use correct screen
 //   if (parentWidget_in)
 //     gtk_window_set_screen(GTK_WINDOW(dialog),
-//                           gtk_widget_get_screen(const_cast<GtkWidget*> (//parentWidget_in)));
+//                           gtk_widget_get_screen(const_cast<GtkWidget*>(//parentWidget_in)));
 
-  // step9: draw main dialog
+  // step8: draw main dialog
   gtk_widget_show_all(dialog);
 
   return true;

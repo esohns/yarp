@@ -75,10 +75,11 @@ RPG_Net_Client_AsynchConnector::connect(const ACE_INET_Addr& peer_address)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::connect"));
 
-  int result = inherited::connect(peer_address,                           // remote SAP
-                                  ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
-                                  1,                                      // re-use address (SO_REUSEADDR) ?
-                                  NULL);                                  // ACT
+  int result =
+		inherited::connect(peer_address,                           // remote SAP
+		                   ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
+											 1,                                      // re-use address (SO_REUSEADDR) ?
+											 NULL);                                  // ACT
   if (result == -1)
   {
     ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
@@ -88,7 +89,7 @@ RPG_Net_Client_AsynchConnector::connect(const ACE_INET_Addr& peer_address)
       ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
+               ACE_TEXT("failed to ACE_Asynch_Connector::connect(\"%s\"): \"%m\", aborting\n"),
                buffer));
   } // end IF
 }
@@ -100,7 +101,20 @@ RPG_Net_Client_AsynchConnector::validate_connection(const ACE_Asynch_Connect::Re
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::validate_connection"));
 
-  return inherited::validate_connection(result_in,
-                                        remoteSAP_in,
-                                        localSAP_in);
+	// success ?
+	if (result_in.success() == 0)
+	{
+		// debug info
+    ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
+    ACE_OS::memset(buffer, 0, sizeof(buffer));
+    if (remoteSAP_in.addr_to_string(buffer, sizeof(buffer)) == -1)
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+		ACE_DEBUG((LM_ERROR,
+			         ACE_TEXT("failed to RPG_Net_Client_AsynchConnector::connect(\"%s\"): \"%s\", aborting\n"),
+               buffer,
+							 ACE_OS::strerror(result_in.error())));
+	} // end IF
+
+	return ((result_in.success() == 1) ? 0 : -1);
 }

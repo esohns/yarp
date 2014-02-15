@@ -29,6 +29,7 @@
 #include "SDL_gui_levelwindow.h"
 
 #include "rpg_client_defines.h"
+#include "rpg_client_entity_manager.h"
 
 #include "rpg_engine_defines.h"
 #include "rpg_engine.h"
@@ -43,6 +44,8 @@
 #include "rpg_graphics_cursor_manager.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
+
+#include "rpg_monster_defines.h"
 
 #include "rpg_player_defines.h"
 #include "rpg_player_common_tools.h"
@@ -79,7 +82,7 @@
 #include <sstream>
 #include <string>
 
-enum userMode_t
+enum UserMode_t
 {
   MODE_RANDOM_IMAGES = 0,
   MODE_FLOOR_PLAN,
@@ -89,15 +92,15 @@ enum userMode_t
 };
 
 // *NOTE* types as used by SDL
-struct SDL_video_config_t
+struct SDL_VideoConfiguration_t
 {
   int    screen_width;
   int    screen_height;
   int    screen_colordepth; // bits/pixel
 //   Uint32 screen_flags;
-  bool   doubleBuffer;
-  bool   useOpenGL;
-  bool   fullScreen;
+  bool   double_buffer;
+  bool   use_OpenGL;
+  bool   full_screen;
 };
 
 static SDL_Surface*     screen     = NULL;
@@ -105,12 +108,9 @@ static ACE_Thread_Mutex hover_lock;
 static unsigned long    hover_time = 0;
 
 bool
-do_initVideo(const std::string& graphicsDirectory_in,
-             const SDL_video_config_t& config_in)
+do_preInitVideo(const SDL_VideoConfiguration_t& config_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_initVideo"));
-
-  // init SDL Video
+  RPG_TRACE(ACE_TEXT("::do_preInitVideo"));
 
   // ***** window/screen setup *****
   // set window caption
@@ -121,6 +121,24 @@ do_initVideo(const std::string& graphicsDirectory_in,
   SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION),  // window caption
                     ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION)); // icon caption
 #endif
+
+  // enable cursor
+  SDL_ShowCursor(SDL_ENABLE);
+
+  screen = RPG_Graphics_SDL_Tools::initScreen(config_in.screen_width,
+                                              config_in.screen_height,
+                                              config_in.screen_colordepth,
+                                              config_in.double_buffer,
+                                              config_in.use_OpenGL,
+                                              config_in.full_screen);
+
+  return (screen != NULL);
+}
+
+bool
+do_initVideo(const std::string& graphicsDirectory_in)
+{
+  RPG_TRACE(ACE_TEXT("::do_initVideo"));
 
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
@@ -146,17 +164,8 @@ do_initVideo(const std::string& graphicsDirectory_in,
   } // end IF
   SDL_WM_SetIcon(icon_image, // surface
                  NULL);      // mask (--> everything)
-  // enable cursor
-  SDL_ShowCursor(SDL_ENABLE);
 
-  screen = RPG_Graphics_SDL_Tools::initScreen(config_in.screen_width,
-                                              config_in.screen_height,
-                                              config_in.screen_colordepth,
-                                              config_in.doubleBuffer,
-                                              config_in.useOpenGL,
-                                              config_in.fullScreen);
-
-  return (screen != NULL);
+	return true;
 }
 
 Uint32
@@ -325,7 +334,17 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  path = data_path;
+  path = config_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  path += ACE_TEXT_ALWAYS_CHAR("character");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+	path += ACE_TEXT_ALWAYS_CHAR("monster");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+  std::cout << ACE_TEXT("-n [FILE]  : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+	path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("map");
@@ -350,6 +369,7 @@ process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
                   std::string& magicDictionary_out,
                   std::string& itemsDictionary_out,
+									std::string& monsterDictionary_out,
                   std::string& directory_out,
                   bool& debugMode_out,
                   std::string& graphicsDictionary_out,
@@ -387,6 +407,16 @@ process_arguments(const int argc_in,
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+
+  monsterDictionary_out = config_path;
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("character");
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("monster");
+  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
 
   debugMode_out = SDL_GUI_DEF_DEBUG;
 
@@ -434,7 +464,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c::d:fg:i:m:p::stvx"));
+                             ACE_TEXT("c::d:fg:i:m:n:p::stvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -477,6 +507,12 @@ process_arguments(const int argc_in,
       case 'm':
       {
         magicDictionary_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'n':
+      {
+        monsterDictionary_out = argumentParser.opt_arg();
 
         break;
       }
@@ -825,7 +861,7 @@ do_UI(RPG_Engine_Entity& entity_in,
       RPG_Engine* engine_in,
       RPG_Graphics_MapStyle_t& mapStyle_in,
       const RPG_Engine_Level_t& level_in,
-      const RPG_Map_FloorPlan_Config_t& mapConfig_in,
+      const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       SDL_GUI_MainWindow* mainWindow_in)
 {
   RPG_TRACE(ACE_TEXT("::do_UI"));
@@ -952,7 +988,7 @@ do_UI(RPG_Engine_Entity& entity_in,
             std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
 #endif
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-            dump_path += current_level.level_meta.name;
+            dump_path += current_level.metadata.name;
             dump_path += ACE_TEXT_ALWAYS_CHAR("_");
             converter.str(ACE_TEXT_ALWAYS_CHAR(""));
             converter << map_index++;
@@ -1125,10 +1161,11 @@ void
 do_work(const mode_t& mode_in,
         const std::string& entity_in,
         const std::string& map_in,
-        const RPG_Map_FloorPlan_Config_t& mapConfig_in,
-        const SDL_video_config_t& videoConfig_in,
+        const RPG_Map_FloorPlan_Configuration_t& mapConfiguration_in,
+        const SDL_VideoConfiguration_t& videoConfiguration_in,
         const std::string& magicDictionary_in,
         const std::string& itemsDictionary_in,
+				const std::string& monsterDictionary_in,
         const std::string& graphicsDictionary_in,
         const bool& debugMode_in,
         const std::string& graphicsDirectory_in,
@@ -1139,38 +1176,37 @@ do_work(const mode_t& mode_in,
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
-  std::string empty;
   RPG_Engine_Common_Tools::init(schemaRepository_in,
                                 magicDictionary_in,
                                 itemsDictionary_in,
-                                empty);
+                                monsterDictionary_in);
 
-  // step1a: init graphics dictionary
-  try
-  {
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in,
-                                                        validateXML_in);
-  }
-  catch (...)
+	// step1: init video
+	// step1a: init video window
+  if (!do_preInitVideo(videoConfiguration_in))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init(), aborting\n")));
-
-    return;
-  }
-
-  // step1b: init Video
-  if (!do_initVideo(graphicsDirectory_in,
-                    videoConfig_in))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize video, aborting\n")));
+               ACE_TEXT("failed to do_preInitVideo, aborting\n")));
 
     return;
   } // end IF
-  // step1c: init graphics directory, cache, fonts, ...
-  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  cacheSize_in);
+	// step1b: pre-init graphics
+	RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+		                              cacheSize_in);
+  // step1c: init graphics dictionary
+  RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in,
+		                                                  validateXML_in);
+	// step1d: init graphics
+	RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
+		                              cacheSize_in);
+	// step1e: post-init video window
+  if (!do_initVideo(graphicsDirectory_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to do_initVideo, aborting\n")));
+
+    return;
+  } // end IF
 
   // step2: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;
@@ -1206,7 +1242,7 @@ do_work(const mode_t& mode_in,
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating level map...\n")));
 
-        RPG_Engine_Level::create(mapConfig_in,
+        RPG_Engine_Level::create(mapConfiguration_in,
                                  level);
       } // end IF
       else
@@ -1297,6 +1333,10 @@ do_work(const mode_t& mode_in,
       // step6: init level state engine
       SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.child(WINDOW_MAP));
       ACE_ASSERT(map_window);
+			// init/add entity to the graphics cache
+			RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(map_window);
+			RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(map_window);
+
       // *NOTE*: triggers a center/draw/refresh...
       // --> but as we're not using the client engine, it doesn't redraw...
       level_engine.init(map_window,
@@ -1342,7 +1382,7 @@ do_work(const mode_t& mode_in,
             &level_engine,
             mapStyle,
             level,
-            mapConfig_in,
+            mapConfiguration_in,
             &mainWindow);
 
       // clean up
@@ -1472,6 +1512,16 @@ ACE_TMAIN(int argc,
 #endif
   itemsDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
+	std::string monsterDictionary = config_path;
+  monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  monsterDictionary += ACE_TEXT_ALWAYS_CHAR("character");
+  monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monsterDictionary += ACE_TEXT_ALWAYS_CHAR("monster");
+  monsterDictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+  monsterDictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+
   bool debugMode = SDL_GUI_DEF_DEBUG;
 
   std::string graphicsDirectory = data_path;
@@ -1520,7 +1570,7 @@ ACE_TMAIN(int argc,
   bool validateXML = SDL_GUI_DEF_VALIDATE_XML;
 
   // *** map ***
-  RPG_Map_FloorPlan_Config_t map_config;
+  RPG_Map_FloorPlan_Configuration_t map_config;
   map_config.min_room_size          = SDL_GUI_DEF_MAP_MIN_ROOM_SIZE;
   map_config.doors                  = SDL_GUI_DEF_MAP_DOORS;
   map_config.corridors              = SDL_GUI_DEF_MAP_CORRIDORS;
@@ -1532,20 +1582,21 @@ ACE_TMAIN(int argc,
   map_config.map_size_y             = SDL_GUI_DEF_MAP_SIZE_Y;
 
   // *** video ***
-  SDL_video_config_t video_config;
+  SDL_VideoConfiguration_t video_config;
   video_config.screen_width      = SDL_GUI_DEF_VIDEO_W;
   video_config.screen_height     = SDL_GUI_DEF_VIDEO_H;
   video_config.screen_colordepth = SDL_GUI_DEF_VIDEO_BPP;
 //   video_config.screen_flags      = ;
-  video_config.doubleBuffer      = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
-  video_config.useOpenGL         = SDL_GUI_DEF_VIDEO_USE_OPENGL;
-  video_config.fullScreen        = SDL_GUI_DEF_VIDEO_FULLSCREEN;
+  video_config.double_buffer     = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
+  video_config.use_OpenGL        = SDL_GUI_DEF_VIDEO_USE_OPENGL;
+  video_config.full_screen       = SDL_GUI_DEF_VIDEO_FULLSCREEN;
 
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc,
                           argv,
                           magicDictionary,
                           itemsDictionary,
+													monsterDictionary,
                           graphicsDirectory,
                           debugMode,
                           graphicsDictionary,
@@ -1716,6 +1767,7 @@ ACE_TMAIN(int argc,
           video_config,
           magicDictionary,
           itemsDictionary,
+					monsterDictionary,
           graphicsDictionary,
           debugMode,
           graphicsDirectory,

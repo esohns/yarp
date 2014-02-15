@@ -79,15 +79,15 @@
 
 #define RPG_CLIENT_SDL_TIMEREVENT                  SDL_USEREVENT
 // *WARNING*: SDL_USEREVENT+1/2 are used by RPG_Graphics !!!
-#define RPG_CLIENT_SDL_GTKEVENT                    SDL_USEREVENT+3
+//#define RPG_CLIENT_SDL_GTKEVENT                    SDL_USEREVENT+3
 // *NOTE*: this defines the input resolution or "interactivity"
 // *WARNING*: apparently, the maximum SDL timer resolution is 10 ms
-#define RPG_CLIENT_SDL_EVENT_TIMEOUT               50 // ms
-// *NOTE*: sensible values are multiples of RPG_CLIENT_SDL_EVENT_TIMEOUT, as
-// that is the resolution factor
-#define RPG_CLIENT_SDL_GTKEVENT_RESOLUTION         100 // ms
+#define RPG_CLIENT_SDL_EVENT_TIMEOUT               100 // ms
+//// *NOTE*: sensible values are multiples of RPG_CLIENT_SDL_EVENT_TIMEOUT, as
+//// that is the resolution factor
+//#define RPG_CLIENT_SDL_GTKEVENT_RESOLUTION         100 // ms
 
-#define RPG_CLIENT_ENGINE_IDLE_DELAY               10 // ms
+//#define RPG_CLIENT_ENGINE_IDLE_DELAY               10 // ms
 
 // message window
 #define RPG_CLIENT_DEF_MESSAGE_ISON                true

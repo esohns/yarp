@@ -41,10 +41,12 @@
 #define NET_CLIENT_DEF_SERVER_STRESS_INTERVAL   50 // ms
 
 #define NET_CLIENT_DEF_UI_FILE                  "net_client.glade"
+#define NET_CLIENT_UI_LISTENBUTTON_NAME         "togglebutton_listen"
 #define NET_CLIENT_UI_CONNECTBUTTON_NAME        "button_connect"
 #define NET_CLIENT_UI_CLOSEBUTTON_NAME          "button_close"
 #define NET_CLIENT_UI_CLOSEALLBUTTON_NAME       "button_close_all"
 #define NET_CLIENT_UI_PINGBUTTON_NAME           "button_ping"
+#define NET_CLIENT_UI_REPORTBUTTON_NAME         "button_report"
 #define NET_CLIENT_UI_ABOUTBUTTON_NAME          "button_about"
 #define NET_CLIENT_UI_QUITBUTTON_NAME           "button_quit"
 

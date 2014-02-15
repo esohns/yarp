@@ -1,15 +1,38 @@
-known issues (tough):
+[LIBRARY]
+[GENERAL - TOUGH]
 - [map] map generation hangs/seems to hang sometimes ("segmenting area...")
-- [net UNIX/WIN] proactor support is broken on UNIX systems and flaky on WINDOWS
-? [net] race condition when operating at the maximum number of connections on UNIX:
-        when the acceptor/connector rejects a new connection due to this limit,
-        there is a gap between closing the socket and deregistering with the
-        event dispatcher (pro/reactor)
-- the timer implementation is unstable (--> try another timer queue ?)
-[- [XML] validation throws an exception (see https://issues.apache.org/jira/browse/XERCESC-1975)]
-- [net] confirm valgrind reports of minor memory leak in RPG_Net_Module_SocketHandler::bisectMessages
+- [net UNIX/WIN] optimize proactor support (UNIX: test DevPoll)
+- [net UNIX/WIN] run stress-tests, increase maximum number of concurrent
+ connections/system
+- [net] confirm valgrind reports of minor memory leak in
+ RPG_Net_Module_SocketHandler::bisectMessages
+- the timer implementation seems to be unstable (--> try another timer queue ?)
+[- [XML] validation throws exceptions
+ (see https://issues.apache.org/jira/browse/XERCESC-1975)]
+- [client/UI] excessive CPU usage (probably AI-related)
+- [client/UI] excessive CPU usage (probably SDL-related: improve event loop logic)
 
-known issues (easy):
-+ [magic] define more (low-level) spells, player generation fails sometimes...
-+ [client/UI] switch from libglade to GtkBuilder
+[GENERAL - MODERATE]
+- [magic] define more (low-level) spells, player generation fails sometimes...
+- [client/UI] switch from libglade to GtkBuilder
 
+[GENERAL - EASY]
+- add more monster types
+- add more sounds
+- add level-up logic
+- add more graphics
+- add more sounds
+- add CD music support
+
+################################################################################
+
+[TEST_U]
+[GENERAL]
+- some unit tests do not need a console window
+
+[SDL_GUI]
+- hide active position highlight when cursor position is invalid
+- cursor is not drawn correctly when (hovering) over border
+- when an entity leaves a highlighted position, the bg cache
+ (cursor/highglight) needs to be invalidated
+- entities are erroneously (re-)drawn OVER SE walls (should be behind)

@@ -77,7 +77,7 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Engine_Level_Type" id="skip1">
+  <xsd:complexType name="RPG_Engine_Level_Type" id="skip2">
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="environment" type="RPG_Common_Environment_Type" minOccurs="1" maxOccurs="1"/>      
@@ -87,6 +87,7 @@
       <xsd:element name="max_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="amble_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="map" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="door" type="RPG_Map_Door_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
   

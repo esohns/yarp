@@ -159,10 +159,10 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
 
-  // sanity check(s)
-  ACE_ASSERT(targetSurface_in);
-  ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface_in->w);
-  ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface_in->h);
+  //// sanity check(s)
+  //ACE_ASSERT(targetSurface_in);
+  //ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface_in->w);
+  //ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface_in->h);
 
 //   // init clipping
 //   SDL_Rect clipRect;

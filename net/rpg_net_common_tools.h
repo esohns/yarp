@@ -73,11 +73,6 @@ class RPG_Net_Export RPG_Net_Common_Tools
   static bool setLinger(const ACE_HANDLE&,    // socket handle
                         const unsigned int&); // seconds {0 --> off}
 
-  static void retrieveSignalInfo(const int&,        // signal
-                                 const siginfo_t&,  // info
-                                 const ucontext_t*, // context
-                                 std::string&);     // return value: info
-
  private:
   // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools());

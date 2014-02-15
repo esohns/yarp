@@ -8,6 +8,5 @@
 #define RPG_MAP_INCL_H
 
 #include "rpg_map_doorstate.h"
-#include "rpg_map_position.h"
 
 #endif

@@ -40,6 +40,7 @@
 class RPG_Graphics_Export RPG_Graphics_Common_Tools
 {
  public:
+  static void preInit();
   // *WARNING*: needs to be called AFTER SDL_SetVideoMode !
   // *NOTE*: not using SDL at all ? --> provide 'false' as last parameter...
   static void init(const std::string&,  // graphics directory
@@ -126,6 +127,7 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
 
   static RPG_Graphics_FontCache_t     myFontCache;
 
+	static bool                         myPreInitialized;
   static bool                         myInitialized;
 };
 

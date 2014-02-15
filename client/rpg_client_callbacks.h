@@ -24,6 +24,7 @@
 #include "rpg_client_exports.h"
 
 #include "rpg_client_common.h"
+#include "rpg_client_iinitGTKUI.h"
 
 #include "rpg_engine_common.h"
 
@@ -46,10 +47,13 @@ RPG_Client_Export unsigned int load_files(const std::string&, // directory
                                           const bool&,        // load player profiles ? : maps
                                           GtkListStore*);     // target liststore
 
+// GTK callback functions
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
+G_MODULE_EXPORT gboolean idle_init_UI_cb(gpointer);
+// -----------------------------------------------------------------------------
 G_MODULE_EXPORT gint about_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint quit_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint create_character_clicked_GTK_cb(GtkWidget*, gpointer);
@@ -71,10 +75,32 @@ G_MODULE_EXPORT gint item_toggled_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint rest_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint server_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint server_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
-//   gint do_SDLEventLoop_GTK_cb(gpointer);
 //   gboolean gtk_quit_handler_cb(gpointer);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+// GTK init functions
+RPG_Client_Export bool
+init_UI_client(const std::string&,        // UI definiton file
+               RPG_Client_GTK_CBData_t&); // GTK cb data (inout)
+
+class RPG_Client_Export RPG_Client_GTKUIDefinition
+ : public RPG_Client_IInitGTKUI
+{
+ public:
+  RPG_Client_GTKUIDefinition(RPG_Client_GTK_CBData_t*); // GTK cb data handle
+  virtual ~RPG_Client_GTKUIDefinition();
+
+	// implement RPG_Client_IInitGTKUI
+	virtual bool init(const std::string&); // definiton filename
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_GTKUIDefinition());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_GTKUIDefinition(const RPG_Client_GTKUIDefinition&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_GTKUIDefinition& operator=(const RPG_Client_GTKUIDefinition&));
+
+	RPG_Client_GTK_CBData_t* myGTKCBData;
+};
 
 #endif

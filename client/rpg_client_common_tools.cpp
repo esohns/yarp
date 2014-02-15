@@ -45,7 +45,38 @@
 #include <ace/Global_Macros.h>
 
 bool
-RPG_Client_Common_Tools::init(const RPG_Sound_SDLConfig_t& audioConfig_in,
+RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t& SDLInputConfiguration_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initSDLInput"));
+
+  // ***** keyboard setup *****
+  // Unicode translation
+	int previous_state = SDL_EnableUNICODE((SDLInputConfiguration_in.use_UNICODE ? 1 : 0));
+
+  // key repeat rates
+	if (SDL_EnableKeyRepeat(SDLInputConfiguration_in.key_repeat_initial_delay,
+		                      SDLInputConfiguration_in.key_repeat_interval))
+	{
+	  ACE_DEBUG((LM_ERROR,
+		           ACE_TEXT("failed to SDL_EnableKeyRepeat(): \"%s\", aborting\n"),
+							 ACE_TEXT(SDL_GetError())));
+
+		return false;
+	} // end IF
+
+	//   // ignore keyboard events
+	//   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
+	//   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
+
+	// SDL event filter (filter mouse motion events and the like)
+	//   SDL_SetEventFilter(event_filter_SDL_cb);
+
+	return true;
+}
+
+bool
+RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputConfiguration_in,
+                              const RPG_Sound_SDLConfiguration_t& audioConfiguration_in,
                               const std::string& soundDirectory_in,
                               const bool& useCD_in,
                               const unsigned int& soundCacheSize_in,
@@ -58,8 +89,17 @@ RPG_Client_Common_Tools::init(const RPG_Sound_SDLConfig_t& audioConfig_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::init"));
 
-  // step1: init string conversion facilities (and other static data)
-  if (!RPG_Sound_Common_Tools::init(audioConfig_in,
+	// step0a: init input
+	if (!RPG_Client_Common_Tools::initSDLInput(inputConfiguration_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
+
+    return false;
+  } // end IF
+
+  // step0b: init audio/video, string conversion facilities and other static data
+  if (!RPG_Sound_Common_Tools::init(audioConfiguration_in,
                                     soundDirectory_in,
                                     useCD_in,
                                     soundCacheSize_in,

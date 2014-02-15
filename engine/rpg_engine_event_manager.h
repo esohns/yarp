@@ -25,13 +25,14 @@
 #include "rpg_engine_common.h"
 #include "rpg_engine_event_common.h"
 
+#include "rpg_common.h"
 #include "rpg_common_icontrol.h"
 #include "rpg_common_itimer.h"
 #include "rpg_common_timerhandler.h"
 #include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
-#include <ace/Task.h>
+#include <ace/Task_Ex_T.h>
 #include <ace/Time_Value.h>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
@@ -45,7 +46,9 @@ class RPG_Engine;
   @author Erik Sohns <erik.sohns@web.de>
  */
 class RPG_Engine_Export RPG_Engine_Event_Manager
- : public ACE_Task<ACE_MT_SYNCH>,
+ : public ACE_Task_Ex<ACE_MT_SYNCH,
+                      RPG_Engine_Event_t,
+                      RPG_Common_TimePolicy_t>,
    public RPG_Common_IControl,
    public RPG_Common_ITimer,
    public RPG_Common_IDumpState
@@ -60,7 +63,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
 
   // manage generic event sources
 	// *IMPORTANT*: fire&forget API !!!
-  long schedule(RPG_Engine_Event*,     // event handle
+  long schedule(RPG_Engine_Event_t*,   // event handle
                 const ACE_Time_Value&, // interval (or delay)
                 const bool& = false);  // one-shot ?
   void cancel(const long&); // timer (!) id
@@ -81,9 +84,10 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Task<ACE_MT_SYNCH> inherited;
+  typedef ACE_Task_Ex<ACE_MT_SYNCH,
+                      RPG_Engine_Event_t,
+                      RPG_Common_TimePolicy_t> inherited;
 
-  // safety measures
   virtual ~RPG_Engine_Event_Manager();
   RPG_Engine_Event_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager(const RPG_Engine_Event_Manager&));
@@ -97,16 +101,14 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   // implement RPG_Common_ITimer interface
   virtual void handleTimeout(const void*); // ACT (if any)
 
+	// helper methods
 	void cancel_all();
-  //void wait_all();
+	void handleEvent(const RPG_Engine_Event_t&);
 
-  //// trigger (one round of) entity actions
-  //void handleEntities();
-
-  RPG_Engine*               myEngine;
+  RPG_Engine* myEngine;
 
   // helper types
-  typedef std::map<long, RPG_Engine_Event*> RPG_Engine_EventTimers_t;
+  typedef std::map<long, RPG_Engine_Event_t*> RPG_Engine_EventTimers_t;
   typedef RPG_Engine_EventTimers_t::const_iterator RPG_Engine_EventTimersConstIterator_t;
   typedef std::map<RPG_Engine_EntityID_t, long> RPG_Engine_EntityTimers_t;
   typedef RPG_Engine_EntityTimers_t::const_iterator RPG_Engine_EntityTimersConstIterator_t;

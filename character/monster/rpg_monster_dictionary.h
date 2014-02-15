@@ -49,7 +49,7 @@ class RPG_Monster_Export RPG_Monster_Dictionary
   void init(const std::string&,   // (XML) dictionary filename
             const bool& = false); // validate XML ?
 
-  const RPG_Monster_Properties& getProperties(const std::string&) const; // name of monster
+  RPG_Monster_Properties getProperties(const std::string&) const; // name of monster
   unsigned int numEntries() const;
   void find(const RPG_Character_Alignment&,       // alignment
             const RPG_Common_Environment&,        // environment
@@ -61,7 +61,6 @@ class RPG_Monster_Export RPG_Monster_Dictionary
   void dump() const;
 
  private:
-  // safety measures
   RPG_Monster_Dictionary();
   virtual ~RPG_Monster_Dictionary();
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary(const RPG_Monster_Dictionary&));

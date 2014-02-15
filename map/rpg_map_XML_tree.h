@@ -62,6 +62,7 @@
 //
 class RPG_Map_DoorState_XMLTree_Type;
 class RPG_Map_Position_XMLTree_Type;
+class RPG_Map_Door_XMLTree_Type;
 
 #include <memory>    // std::auto_ptr
 #include <limits>    // std::numeric_limits
@@ -206,6 +207,87 @@ bool
 operator!= (const RPG_Map_Position_XMLTree_Type&, const RPG_Map_Position_XMLTree_Type&);
 
 
+class RPG_Map_Export RPG_Map_Door_XMLTree_Type: public ::xml_schema::type
+{
+  public:
+  // position
+  // 
+  typedef ::RPG_Map_Position_XMLTree_Type position_type;
+  typedef ::xsd::cxx::tree::traits< position_type, char > position_traits;
+
+  const position_type&
+  position () const;
+
+  position_type&
+  position ();
+
+  void
+  position (const position_type& x);
+
+  void
+  position (::std::auto_ptr< position_type > p);
+
+  // state
+  // 
+  typedef ::RPG_Map_DoorState_XMLTree_Type state_type;
+  typedef ::xsd::cxx::tree::traits< state_type, char > state_traits;
+
+  const state_type&
+  state () const;
+
+  state_type&
+  state ();
+
+  void
+  state (const state_type& x);
+
+  void
+  state (::std::auto_ptr< state_type > p);
+
+  // Constructors.
+  //
+  RPG_Map_Door_XMLTree_Type (const position_type&,
+                             const state_type&);
+
+  RPG_Map_Door_XMLTree_Type (::std::auto_ptr< position_type >&,
+                             const state_type&);
+
+  RPG_Map_Door_XMLTree_Type (const ::xercesc::DOMElement& e,
+                             ::xml_schema::flags f = 0,
+                             ::xml_schema::container* c = 0);
+
+  RPG_Map_Door_XMLTree_Type (const RPG_Map_Door_XMLTree_Type& x,
+                             ::xml_schema::flags f = 0,
+                             ::xml_schema::container* c = 0);
+
+  virtual RPG_Map_Door_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  virtual 
+  ~RPG_Map_Door_XMLTree_Type ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< position_type > position_;
+  ::xsd::cxx::tree::one< state_type > state_;
+};
+
+RPG_Map_Export
+bool
+operator== (const RPG_Map_Door_XMLTree_Type&, const RPG_Map_Door_XMLTree_Type&);
+
+RPG_Map_Export
+bool
+operator!= (const RPG_Map_Door_XMLTree_Type&, const RPG_Map_Door_XMLTree_Type&);
+
+
 #include <iosfwd>
 
 RPG_Map_Export
@@ -219,6 +301,10 @@ operator<< (::std::ostream&, const RPG_Map_DoorState_XMLTree_Type&);
 RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_Position_XMLTree_Type&);
+
+RPG_Map_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Map_Door_XMLTree_Type&);
 
 #include <iosfwd>
 
@@ -250,6 +336,10 @@ operator<< (::xml_schema::list_stream&,
 RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Position_XMLTree_Type&);
+
+RPG_Map_Export
+void
+operator<< (::xercesc::DOMElement&, const RPG_Map_Door_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 

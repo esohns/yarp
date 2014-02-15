@@ -77,9 +77,6 @@
     <ClCompile Include="rpg_net_sessionmessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rpg_net_signalhandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rpg_net_sockethandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -167,9 +164,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_net_sessionmessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rpg_net_signalhandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_net_sockethandler.h">

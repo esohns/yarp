@@ -220,7 +220,7 @@ RPG_Graphics_SDL_Tools::initScreen(const int& width_in,
     }
   } // end SWITCH
 
-  // switch to graphics mode... here we go !
+  // open SDL window
   SDL_Surface* screen = NULL;
   screen = SDL_SetVideoMode(width_in,
                             height_in,

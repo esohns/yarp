@@ -39,14 +39,14 @@ class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
 
   // override default creation strategy
   virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
+	// override default connect strategy
+  virtual int validate_connection(const ACE_Asynch_Connect::Result&, // result
+                                  const ACE_INET_Addr&,              // remote address
+                                  const ACE_INET_Addr&);             // local address
 
   // implement RPG_Net_Client_IConnector
   virtual void abort();
   virtual void connect(const ACE_INET_Addr&);
-
-  virtual int validate_connection(const ACE_Asynch_Connect::Result&, // result
-                                  const ACE_INET_Addr&,              // peer SAP
-                                  const ACE_INET_Addr&);             // local SAP
 
  private:
   typedef ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t> inherited;

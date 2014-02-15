@@ -128,7 +128,7 @@ class RPG_Engine_Export RPG_Engine
                 const bool& = true) const;    // locked access ?
 
   // map
-  RPG_Engine_LevelMeta_t getMeta(const bool& = true) const; // locked access ?
+  RPG_Engine_LevelMetaData_t getMetaData(const bool& = true) const; // locked access ?
   RPG_Map_Position_t getStartPosition(const bool& = true) const; // locked access ?
   RPG_Map_Size_t getSize(const bool& = true) const; // locked access ?
   RPG_Map_DoorState state(const RPG_Map_Position_t&,
@@ -151,7 +151,7 @@ class RPG_Engine_Export RPG_Engine
 
   // hide unwanted funcionality
   using RPG_Engine_Level::init;
-  using RPG_Engine_Level::getMeta;
+  using RPG_Engine_Level::getMetaData;
   using RPG_Engine_Level::findPath;
 
   // safety measures

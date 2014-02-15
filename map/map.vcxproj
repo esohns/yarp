@@ -107,14 +107,11 @@ popd</Command>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="location.hh" />
-    <None Include="position.hh" />
     <None Include="scripts\bindings.bat" />
     <None Include="scripts\map_parser.y" />
     <None Include="scripts\map_scanner.l" />
     <None Include="scripts\parser.bat" />
     <None Include="scripts\scanner.bat" />
-    <None Include="stack.hh" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rpg_map_common.h" />
