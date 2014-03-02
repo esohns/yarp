@@ -77,7 +77,7 @@ call .\bindings.bat
 popd</Command>
       <Message>generating bindings...</Message>
       <Inputs>rpg_engine.xsd</Inputs>
-      <Outputs>rpg_XMLSchema_XML_tree.h;rpg_engine_XML_tree.cpp;rpg_engine_XML_tree.h;rpg_engine_incl.h;rpg_engine_exports.h;%(Outputs)</Outputs>
+      <Outputs>rpg_engine_XML_tree.cpp;rpg_engine_XML_tree.h;rpg_engine_incl.h;rpg_engine_exports.h</Outputs>
     </CustomBuildStep>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Temp\yarp\Yarp</AdditionalIncludeDirectories>

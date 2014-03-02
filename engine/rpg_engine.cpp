@@ -212,7 +212,7 @@ RPG_Engine::svc(void)
 		else
 		{
 			// OK: message has arrived...
-			ACE_ASSERT(result == 0);
+			ACE_ASSERT(result > 0);
 			ace_mb = NULL;
 			result = inherited::getq(ace_mb,
 				                       const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero)); // don't block

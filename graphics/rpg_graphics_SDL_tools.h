@@ -66,7 +66,7 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
   static void initVideo(const bool&,         // double-buffer ?
                         const bool&,         // use OpenGL / blitting ?
                         const bool&,         // run fullscreen ?
-                        const bool& = true); // honor SDL_VIDEODRIVER environment ?
+                        const std::string&); // driver [directx|windib]
   static SDL_Surface* initScreen(const int&,   // width
                                  const int&,   // height
                                  const int&,   // color depth

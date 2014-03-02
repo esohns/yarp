@@ -21,9 +21,9 @@
 #ifndef CHARACTER_GENERATOR_GUI_COMMON_H
 #define CHARACTER_GENERATOR_GUI_COMMON_H
 
-#include <rpg_engine_common.h>
+#include "rpg_engine_common.h"
 
-#include <rpg_graphics_sprite.h>
+#include "rpg_graphics_sprite.h"
 
 #include <glade/glade.h>
 

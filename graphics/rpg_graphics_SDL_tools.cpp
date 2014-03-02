@@ -58,24 +58,9 @@ void
 RPG_Graphics_SDL_Tools::initVideo(const bool& doubleBuffer_in,
                                   const bool& openGL_in,
                                   const bool& fullScreen_in,
-                                  const bool& useVideoDriverEnv_in)
+                                  const std::string& videoDriver_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initVideo"));
-
-  char* driver_env = NULL;
-  if (useVideoDriverEnv_in)
-  {
-    driver_env = ACE_OS::getenv(ACE_TEXT(RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR));
-    ACE_ASSERT(driver_env);
-    if (!driver_env)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to retrieve env variable \"%s\": %m, aborting\n"),
-                 ACE_TEXT(RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR)));
-
-      return;
-    } // end IF
-  } // end IF
 
   // set surface flags
   Uint32 surface_flags = (SDL_HWSURFACE |
@@ -87,12 +72,11 @@ RPG_Graphics_SDL_Tools::initVideo(const bool& doubleBuffer_in,
                           (doubleBuffer_in ? SDL_DOUBLEBUF                  : 0) |
                           (openGL_in       ? (SDL_OPENGL | SDL_OPENGLBLIT)  : 0) |
                           (fullScreen_in   ? (SDL_FULLSCREEN | SDL_NOFRAME) : SDL_RESIZABLE));
-  if (SDL_VideoInit((useVideoDriverEnv_in ? driver_env
-                                          : ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME)),
-                    surface_flags) == -1)
+  if (SDL_VideoInit(videoDriver_in.c_str(), // driver name
+                    surface_flags) == -1)   // flags
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_VideoInit(\"%s\", %x): \"%s\", continuing\n"),
-               (driver_env ? driver_env : ACE_TEXT("NULL")),
+               ACE_TEXT(videoDriver_in.c_str()),
                surface_flags,
                SDL_GetError()));
 }

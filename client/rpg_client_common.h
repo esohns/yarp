@@ -114,14 +114,14 @@ struct RPG_Client_AudioConfiguration_t
 // *NOTE* types as used by SDL
 struct RPG_Client_SDL_VideoConfiguration_t
 {
-  int  screen_width;
-  int  screen_height;
-  int  screen_colordepth; // bits/pixel
-//   Uint32 screen_flags;
-  bool double_buffer;
-  bool use_OpenGL;
-  bool full_screen;
-  bool init_video;
+  int         screen_width;
+  int         screen_height;
+  int         screen_colordepth; // bits/pixel
+  //Uint32      screen_flags;
+  bool        double_buffer;
+  bool        use_OpenGL;
+  bool        full_screen;
+  std::string video_driver;
 };
 
 struct RPG_Client_NetworkConfiguration_t
