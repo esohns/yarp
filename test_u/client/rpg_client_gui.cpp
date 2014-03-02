@@ -260,7 +260,7 @@ print_usage(const std::string& programName_in)
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-a        : no audio") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-a         : no audio") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::string path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -268,7 +268,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_INI_FILE);
-  std::cout << ACE_TEXT("-c [FILE] : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-c [FILE]  : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -278,7 +278,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-e [FILE] : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-e [FILE]  : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -292,7 +292,7 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT("-f [FILE] : level plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-f [FILE]  : level plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -300,7 +300,7 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-g [FILE] : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (_DEBUG) || defined(DEBUG_RELEASE)
@@ -308,8 +308,8 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-l        : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-i [FILE]  : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-l         : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -317,14 +317,13 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-n        : use SDL_VIDEODRIVER environment") << ACE_TEXT(" [") << RPG_CLIENT_DEF_VIDEO_INIT << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
-  std::cout << ACE_TEXT("-r [DIR]  : schema repository") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-r [DIR]   : schema repository") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -332,8 +331,8 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-s [FILE] : sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-t        : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s [FILE]  : sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-t         : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -341,9 +340,10 @@ print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_UI_FILE);
-  std::cout << ACE_TEXT("-u [FILE] : UI file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-v        : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]: #dispatch threads ([") << RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-u [FILE]  : UI file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-v         : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE] : #dispatch threads ([") << RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-z [STRING]: SDL video driver ([") << ACE_TEXT(RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME) << ACE_TEXT("]") << std::endl;
 } // end print_usage
 
 bool
@@ -357,13 +357,13 @@ process_arguments(const int& argc_in,
                   std::string& itemDictionary_out,
                   bool& logToFile_out,
                   std::string& magicDictionary_out,
-                  bool& videoDriverEnv_out,
                   std::string& schemaRepository_out,
                   std::string& soundDictionary_out,
                   bool& traceInformation_out,
                   std::string& UIfile_out,
                   bool& printVersionAndExit_out,
-                  unsigned int& numDispatchThreads_out)
+                  unsigned int& numDispatchThreads_out,
+									std::string& videoDriver_out)
 {
   RPG_TRACE(ACE_TEXT("::process_arguments"));
 
@@ -437,8 +437,6 @@ process_arguments(const int& argc_in,
 #endif
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  videoDriverEnv_out = RPG_CLIENT_DEF_VIDEO_INIT;
-
   schemaRepository_out = config_path;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   schemaRepository_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -467,9 +465,11 @@ process_arguments(const int& argc_in,
 
   numDispatchThreads_out = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
 
+	videoDriver_out = RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME;
+
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("ac:e:f:g:i:lm:nr:s:tu:vx:"),
+                             ACE_TEXT("ac:e:f:g:i:lm:r:s:tu:vx:z:"),
                              1,                         // skip command name
                              1,                         // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -529,12 +529,6 @@ process_arguments(const int& argc_in,
 
         break;
       }
-      case 'n':
-      {
-        videoDriverEnv_out = true;
-
-        break;
-      }
       case 'r':
       {
         schemaRepository_out = argumentParser.opt_arg();
@@ -571,6 +565,12 @@ process_arguments(const int& argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> numDispatchThreads_out;
+
+        break;
+      }
+      case 'z':
+      {
+        videoDriver_out = argumentParser.opt_arg();
 
         break;
       }
@@ -670,11 +670,10 @@ do_init_SDLVideo(const RPG_Client_SDL_VideoConfiguration_t& videoConfig_in,
   RPG_TRACE(ACE_TEXT("::do_init_SDLVideo"));
 
   // ***** window/screen setup *****
-  if (videoConfig_in.init_video)
-    RPG_Graphics_SDL_Tools::initVideo(videoConfig_in.double_buffer,
-                                      videoConfig_in.use_OpenGL,
-                                      videoConfig_in.full_screen,
-                                      true);
+  RPG_Graphics_SDL_Tools::initVideo(videoConfig_in.double_buffer,
+		                                videoConfig_in.use_OpenGL,
+																		videoConfig_in.full_screen,
+																		videoConfig_in.video_driver);
 
   // set window caption
   std::string caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
@@ -1654,9 +1653,12 @@ do_printVersion(const std::string& programName_in)
   std::cout << ACE_TEXT("compiled by: ") << version_number.str() << std::endl;
 }
 
+//int
+//ACE_TMAIN(int argc_in,
+//          ACE_TCHAR* argv_in[])
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR* argv_in[])
+SDL_main(int argc_in,
+         char* argv_in[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
@@ -1731,8 +1733,6 @@ ACE_TMAIN(int argc_in,
 #endif
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  bool video_driver_env = RPG_CLIENT_DEF_VIDEO_INIT;
-
   std::string sound_dictionary = config_path;
   sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -1773,6 +1773,7 @@ ACE_TMAIN(int argc_in,
   bool trace_information            = false;
   bool print_version_and_exit       = false;
   unsigned int num_dispatch_threads = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
+  std::string video_driver          = RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME;
   if (!process_arguments(argc_in,
                          argv_in,
                          mute_sound,
@@ -1783,15 +1784,14 @@ ACE_TMAIN(int argc_in,
                          item_dictionary,
                          log_to_file,
                          magic_dictionary,
-                         video_driver_env,
                          schema_repository,
                          sound_dictionary,
                          trace_information,
                          UI_file,
                          print_version_and_exit,
-                         num_dispatch_threads))
+                         num_dispatch_threads,
+												 video_driver))
   {
-    // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
 
     return EXIT_FAILURE;
@@ -1820,7 +1820,6 @@ ACE_TMAIN(int argc_in,
                ACE_TEXT(sound_dictionary.c_str()),
                ACE_TEXT(UI_file.c_str())));
 
-    // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
 
     return EXIT_FAILURE;
@@ -1891,7 +1890,7 @@ ACE_TMAIN(int argc_in,
   config.video_configuration.double_buffer     = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
   config.video_configuration.use_OpenGL        = RPG_CLIENT_DEF_VIDEO_OPENGL;
   config.video_configuration.full_screen       = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
-  config.video_configuration.init_video        = video_driver_env;
+  config.video_configuration.video_driver      = video_driver;
   config.graphics_directory   = data_path;
   config.graphics_directory   += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -1955,14 +1954,15 @@ ACE_TMAIN(int argc_in,
 
   // step2a: init SDL
   Uint32 SDL_init_flags = 0;
-  SDL_init_flags |= SDL_INIT_TIMER;                                            // timers
-  SDL_init_flags |= (config.audio_configuration.mute    ? 0 : SDL_INIT_AUDIO); // audio
-  SDL_init_flags |= (video_driver_env                   ? 0 : SDL_INIT_VIDEO); // video (now or later)
-  SDL_init_flags |= (!config.audio_configuration.use_CD ? 0 : SDL_INIT_CDROM); // audioCD playback
-  //SDL_init_flags |= SDL_INIT_JOYSTICK;                                       // joystick
-  SDL_init_flags |= SDL_INIT_NOPARACHUTE;                                      /**< Don't catch fatal signals */
+  SDL_init_flags |= SDL_INIT_TIMER;                                              // timers
+  SDL_init_flags |= (config.audio_configuration.mute    ? 0 : SDL_INIT_AUDIO);   // audio
+  //SDL_init_flags |= SDL_INIT_VIDEO;                                              // video
+  SDL_init_flags |= ((config.audio_configuration.mute ||
+		                  !config.audio_configuration.use_CD) ? 0 : SDL_INIT_CDROM); // audioCD playback
+  //SDL_init_flags |= SDL_INIT_JOYSTICK;                                         // joystick
+  SDL_init_flags |= SDL_INIT_NOPARACHUTE;                                        /**< Don't catch fatal signals */
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  SDL_init_flags |= SDL_INIT_EVENTTHREAD;                                      /**< Not supported on all OS's */
+  SDL_init_flags |= SDL_INIT_EVENTTHREAD;                                        /**< Not supported on all OS's */
 #endif
   if (SDL_Init(SDL_init_flags) == -1)
   {

@@ -49,7 +49,7 @@ if NOT exist "%XsdEXE%" (
  goto Failed
 )
 @rem generate "XMLSchema" namespace include file (rpg_monster.xsd)
-"%XsdEXE%" cxx-parser --char-type char --output-dir .\.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_types.xsd
+@rem "%XsdEXE%" cxx-parser --char-type char --output-dir .\.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_types.xsd
 
 @rem generate include/implementation (rpg_monster.xsd)
 "%XsdEXE%" cxx-parser --type-map .\..\rpg_monster.map --char-type char --output-dir .\.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Monster_Export" --hxx-prologue "#include \"rpg_monster_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp .\..\rpg_monster.xsd

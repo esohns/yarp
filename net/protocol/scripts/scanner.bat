@@ -17,8 +17,8 @@ if NOT exist "%FlexEXE%" (
  echo invalid file ^(was: "%FlexEXE%"^)^, exiting
  goto Failed
 )
-%FlexEXE% .\IRCbisect.l
-%FlexEXE% .\IRCscanner.l
+%FlexEXE% ./IRCbisect.l
+%FlexEXE% ./IRCscanner.l
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate scanner^, exiting
  set RC=%ERRORLEVEL%

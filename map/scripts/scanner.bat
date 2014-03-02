@@ -17,7 +17,7 @@ if NOT exist "%FlexEXE%" (
  echo invalid file ^(was: "%FlexEXE%"^)^, exiting
  goto Failed
 )
-%FlexEXE% .\map_scanner.l
+%FlexEXE% ./map_scanner.l
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate scanner^, exiting
  set RC=%ERRORLEVEL%

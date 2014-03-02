@@ -26,6 +26,9 @@
     <ClCompile Include="character\player\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="character\player\test_u_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character\player\character_generator_gui_callbacks.h">
@@ -35,6 +38,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="character\player\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="character\player\test_u_main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
