@@ -300,7 +300,7 @@ do_work(const bool& dumpDictionary_in,
   RPG_Dice_Common_Tools::initStringConversionTables();
 
   // step1: init: sound directory, cache, ...
-	RPG_Sound_SDLConfig_t sound_config;
+  RPG_Sound_SDLConfiguration_t sound_config;
 	sound_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
 	sound_config.format = RPG_SOUND_DEF_AUDIO_FORMAT;
 	sound_config.channels = RPG_SOUND_DEF_AUDIO_CHANNELS;

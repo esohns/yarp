@@ -1,1 +1,381 @@
-../../common/rpg_common.xsd
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+  <!-- include chance_dice schema -->
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
+
+<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
+<!--   import chance_dice schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="dice.xsd"/> -->
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Common: common types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="RPG_Common_CreatureMetaType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="METATYPE_ANY"/>
+      <!--                                -->
+      <xsd:enumeration value="METATYPE_ABERRATION"/>
+      <xsd:enumeration value="METATYPE_ANIMAL"/>
+      <xsd:enumeration value="METATYPE_CONSTRUCT"/>
+      <xsd:enumeration value="METATYPE_DRAGON"/>
+      <xsd:enumeration value="METATYPE_ELEMENTAL"/>
+      <xsd:enumeration value="METATYPE_FEY"/>
+      <xsd:enumeration value="METATYPE_GIANT"/>
+      <xsd:enumeration value="METATYPE_HUMANOID"/>
+      <xsd:enumeration value="METATYPE_MAGICAL_BEAST"/>
+      <xsd:enumeration value="METATYPE_MONSTROUS_HUMANOID"/>
+      <xsd:enumeration value="METATYPE_OOZE"/>
+      <xsd:enumeration value="METATYPE_OUTSIDER"/>
+      <xsd:enumeration value="METATYPE_PLANT"/>
+      <xsd:enumeration value="METATYPE_UNDEAD"/>
+      <xsd:enumeration value="METATYPE_VERMIN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_CreatureSubType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SUBTYPE_AIR"/>
+      <xsd:enumeration value="SUBTYPE_ANGEL"/>
+      <xsd:enumeration value="SUBTYPE_AQUATIC"/>
+      <xsd:enumeration value="SUBTYPE_ARCHON"/>
+      <xsd:enumeration value="SUBTYPE_AUGMENTED"/>
+      <xsd:enumeration value="SUBTYPE_CHAOTIC"/>
+      <xsd:enumeration value="SUBTYPE_COLD"/>
+      <xsd:enumeration value="SUBTYPE_EARTH"/>
+      <xsd:enumeration value="SUBTYPE_EVIL"/>
+      <xsd:enumeration value="SUBTYPE_EXTRAPLANAR"/>
+      <xsd:enumeration value="SUBTYPE_FIRE"/>
+      <xsd:enumeration value="SUBTYPE_GOBLINOID"/>
+      <xsd:enumeration value="SUBTYPE_GOOD"/>
+      <xsd:enumeration value="SUBTYPE_INCORPOREAL"/>
+      <xsd:enumeration value="SUBTYPE_LAWFUL"/>
+      <xsd:enumeration value="SUBTYPE_NATIVE"/>
+      <xsd:enumeration value="SUBTYPE_NEUTRAL"/>
+      <xsd:enumeration value="SUBTYPE_REPTILIAN"/>
+      <xsd:enumeration value="SUBTYPE_SHAPECHANGER"/>
+      <xsd:enumeration value="SUBTYPE_SWARM"/>
+      <xsd:enumeration value="SUBTYPE_WATER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Common_CreatureType_Type">
+    <xsd:sequence>
+      <xsd:element name="metaType" type="RPG_Common_CreatureMetaType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="subType" type="RPG_Common_CreatureSubType_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Common_SubClass_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SUBCLASS_NONE"/>
+      <!--                                 -->
+<!--       <xsd:enumeration value="SUBCLASS_AVENGER"/> -->
+<!--       <xsd:enumeration value="SUBCLASS_BARBARIAN"/> -->
+      <xsd:enumeration value="SUBCLASS_BARD"/>
+      <xsd:enumeration value="SUBCLASS_CLERIC"/>
+      <xsd:enumeration value="SUBCLASS_DRUID"/>
+      <xsd:enumeration value="SUBCLASS_FIGHTER"/>
+<!--       <xsd:enumeration value="SUBCLASS_INVOKER"/> -->
+<!--       <xsd:enumeration value="SUBCLASS_MONK"/> -->
+      <xsd:enumeration value="SUBCLASS_PALADIN"/>
+      <xsd:enumeration value="SUBCLASS_RANGER"/>
+<!--       <xsd:enumeration value="SUBCLASS_SHAMAN"/> -->
+      <xsd:enumeration value="SUBCLASS_SORCERER"/>
+      <xsd:enumeration value="SUBCLASS_THIEF"/>
+<!--       <xsd:enumeration value="SUBCLASS_WARLOCK"/> -->
+<!--       <xsd:enumeration value="SUBCLASS_WARLORD"/> -->
+      <xsd:enumeration value="SUBCLASS_WIZARD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_Attribute_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ATTRIBUTE_CHARISMA"/>
+      <xsd:enumeration value="ATTRIBUTE_CONSTITUTION"/>
+      <xsd:enumeration value="ATTRIBUTE_DEXTERITY"/>
+      <xsd:enumeration value="ATTRIBUTE_INTELLIGENCE"/>
+      <xsd:enumeration value="ATTRIBUTE_STRENGTH"/>
+      <xsd:enumeration value="ATTRIBUTE_WISDOM"/>
+      <!--                                 -->
+      <xsd:enumeration value="ATTRIBUTE_ANY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_Size_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SIZE_FINE"/>
+      <xsd:enumeration value="SIZE_DIMINUTIVE"/>
+      <xsd:enumeration value="SIZE_TINY"/>
+      <xsd:enumeration value="SIZE_SMALL"/>
+      <xsd:enumeration value="SIZE_MEDIUM"/>
+      <xsd:enumeration value="SIZE_LARGE"/>
+      <xsd:enumeration value="SIZE_HUGE"/>
+      <xsd:enumeration value="SIZE_GARGANTUAN"/>
+      <xsd:enumeration value="SIZE_COLOSSAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_Condition_Type">
+    <xsd:restriction base="xsd:string">
+      <!--       <xsd:enumeration value="CONDITION_ALIVE"/> -->
+      <xsd:enumeration value="CONDITION_ALTERNATE_FORM"/>
+      <!--                                     -->
+      <xsd:enumeration value="CONDITION_NORMAL"/>
+      <xsd:enumeration value="CONDITION_ABILITY_DAMAGED"/>
+      <xsd:enumeration value="CONDITION_ABILITY_DRAINED"/>
+      <xsd:enumeration value="CONDITION_BLINDED"/>
+      <xsd:enumeration value="CONDITION_BLOWN_AWAY"/>
+      <xsd:enumeration value="CONDITION_BOUND"/>
+      <xsd:enumeration value="CONDITION_CHECKED"/>
+      <xsd:enumeration value="CONDITION_CONFUSED"/>
+      <xsd:enumeration value="CONDITION_COWERING"/>
+      <xsd:enumeration value="CONDITION_DAZED"/>
+      <xsd:enumeration value="CONDITION_DAZZLED"/>
+      <xsd:enumeration value="CONDITION_DEAD"/>
+      <xsd:enumeration value="CONDITION_DEAFENED"/>
+      <xsd:enumeration value="CONDITION_DISABLED"/>
+      <xsd:enumeration value="CONDITION_DYING"/>
+      <xsd:enumeration value="CONDITION_ENERGY_DRAINED"/>
+      <xsd:enumeration value="CONDITION_ENTANGLED"/>
+      <xsd:enumeration value="CONDITION_EXHAUSTED"/>
+      <xsd:enumeration value="CONDITION_FASCINATED"/>
+      <xsd:enumeration value="CONDITION_FATIGUED"/>
+      <xsd:enumeration value="CONDITION_FLAT_FOOTED"/>
+      <xsd:enumeration value="CONDITION_FRIGHTENED"/>
+      <xsd:enumeration value="CONDITION_GRAPPLING"/>
+      <xsd:enumeration value="CONDITION_HELD"/>
+      <xsd:enumeration value="CONDITION_HELPLESS"/>
+      <xsd:enumeration value="CONDITION_INCORPOREAL"/>
+      <xsd:enumeration value="CONDITION_INVISIBLE"/>
+      <xsd:enumeration value="CONDITION_KNOCKED_DOWN"/>
+      <xsd:enumeration value="CONDITION_NAUSEATED"/>
+      <xsd:enumeration value="CONDITION_PANICKED"/>
+      <xsd:enumeration value="CONDITION_PARALYZED"/>
+      <xsd:enumeration value="CONDITION_PETRIFIED"/>
+      <xsd:enumeration value="CONDITION_PINNED"/>
+      <xsd:enumeration value="CONDITION_PRONE"/>
+      <xsd:enumeration value="CONDITION_SHAKEN"/>
+      <xsd:enumeration value="CONDITION_SICKENED"/>
+      <xsd:enumeration value="CONDITION_SLEEPING"/>
+      <xsd:enumeration value="CONDITION_STABLE"/>
+      <xsd:enumeration value="CONDITION_STAGGERED"/>
+      <xsd:enumeration value="CONDITION_STUNNED"/>
+      <xsd:enumeration value="CONDITION_TURNED"/>
+      <xsd:enumeration value="CONDITION_UNCONSCIOUS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_Skill_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SKILL_APPRAISE"/>
+      <xsd:enumeration value="SKILL_BALANCE"/>
+      <xsd:enumeration value="SKILL_BLUFF"/>
+      <xsd:enumeration value="SKILL_CLIMB"/>
+      <xsd:enumeration value="SKILL_CONCENTRATION"/>
+      <xsd:enumeration value="SKILL_CRAFT_ANY"/>
+      <xsd:enumeration value="SKILL_CRAFT_ALL"/>
+      <xsd:enumeration value="SKILL_CRAFT_ALCHEMY"/>
+      <xsd:enumeration value="SKILL_CRAFT_FLETCHER"/>
+      <xsd:enumeration value="SKILL_CRAFT_BOWYER"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_ARMOR"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_BLACK"/>
+      <xsd:enumeration value="SKILL_CRAFT_SMITH_WEAPON"/>
+      <xsd:enumeration value="SKILL_CRAFT_TRAP"/>
+      <xsd:enumeration value="SKILL_CRAFT_OTHER"/>
+      <xsd:enumeration value="SKILL_DECIPHER_SCRIPT"/>
+      <xsd:enumeration value="SKILL_DIPLOMACY"/>
+      <xsd:enumeration value="SKILL_DISABLE_DEVICE"/>
+      <xsd:enumeration value="SKILL_DISGUISE"/>
+      <xsd:enumeration value="SKILL_ESCAPE_ARTIST"/>
+      <xsd:enumeration value="SKILL_FORGERY"/>
+      <xsd:enumeration value="SKILL_GATHER_INFORMATION"/>
+      <xsd:enumeration value="SKILL_HANDLE_ANIMAL"/>
+      <xsd:enumeration value="SKILL_HEAL"/>
+      <xsd:enumeration value="SKILL_HIDE"/>
+      <xsd:enumeration value="SKILL_INTIMIDATE"/>
+      <xsd:enumeration value="SKILL_JUMP"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ANY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ALL"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ARCANA"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_DUNGEONS"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_GEOGRAPHY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_HISTORY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_LOCAL"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_NATURE"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_NOBILITY_ROYALTY"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_RELIGION"/>
+      <xsd:enumeration value="SKILL_KNOWLEDGE_PLANES"/>
+      <xsd:enumeration value="SKILL_LISTEN"/>
+      <xsd:enumeration value="SKILL_MOVE_SILENTLY"/>
+      <xsd:enumeration value="SKILL_OPEN_LOCK"/>
+      <xsd:enumeration value="SKILL_PERFORM"/>
+      <xsd:enumeration value="SKILL_PROFESSION"/>
+      <xsd:enumeration value="SKILL_RIDE"/>
+      <xsd:enumeration value="SKILL_SEARCH"/>
+      <xsd:enumeration value="SKILL_SENSE_MOTIVE"/>
+      <xsd:enumeration value="SKILL_SLEIGHT_OF_HAND"/>
+      <xsd:enumeration value="SKILL_SPEAK_LANGUAGE"/>
+      <xsd:enumeration value="SKILL_SPELLCRAFT"/>
+      <xsd:enumeration value="SKILL_SPOT"/>
+      <xsd:enumeration value="SKILL_SURVIVAL"/>
+      <xsd:enumeration value="SKILL_SWIM"/>
+      <xsd:enumeration value="SKILL_TUMBLE"/>
+      <xsd:enumeration value="SKILL_USE_MAGIC_DEVICE"/>
+      <xsd:enumeration value="SKILL_USE_ROPE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_PhysicalDamageType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PHYSICALDAMAGE_NONE"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_BLUDGEONING"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_PIERCING"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_SLASHING"/>
+      <!--                                            -->
+      <xsd:enumeration value="PHYSICALDAMAGE_CRUSHING"/>
+      <xsd:enumeration value="PHYSICALDAMAGE_WITHERING"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_ActionType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ACTION_FREE"/>
+      <xsd:enumeration value="ACTION_FULLROUND"/>
+      <xsd:enumeration value="ACTION_MOVE"/>
+      <xsd:enumeration value="ACTION_NOTANACTION"/>
+      <xsd:enumeration value="ACTION_RESTRICTED"/>
+      <xsd:enumeration value="ACTION_STANDARD"/>
+      <xsd:enumeration value="ACTION_TIME"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_AreaOfEffect_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AREA_CONE"/>
+      <xsd:enumeration value="AREA_CUBE"/>
+      <xsd:enumeration value="AREA_CYLINDER"/>
+      <xsd:enumeration value="AREA_LINE_HORIZONTAL"/>
+      <xsd:enumeration value="AREA_LINE_VERTICAL"/>
+      <xsd:enumeration value="AREA_RING"/>
+      <xsd:enumeration value="AREA_SPHERE"/>
+      <xsd:enumeration value="AREA_WALL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_EffectType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EFFECT_BATTLE"/>
+      <xsd:enumeration value="EFFECT_IMMEDIATE"/>
+      <xsd:enumeration value="EFFECT_PERMANENT"/>
+      <xsd:enumeration value="EFFECT_TEMPORARY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_CounterMeasure_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COUNTERMEASURE_CHECK"/>
+      <xsd:enumeration value="COUNTERMEASURE_SPELL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_CheckType_Type">
+    <xsd:restriction base="xsd:string">
+<!--       <xsd:enumeration value="CHECK_ATTRIBUTE"/> -->
+      <xsd:enumeration value="CHECK_CASTER_LEVEL"/>
+      <xsd:enumeration value="CHECK_GRAPPLE"/>
+      <xsd:enumeration value="CHECK_HIT_DICE"/>
+<!--       <xsd:enumeration value="CHECK_SKILL"/> -->
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_SavingThrow_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAVE_NONE"/>
+      <xsd:enumeration value="SAVE_FORTITUDE"/>
+      <xsd:enumeration value="SAVE_MAGIC"/>
+      <xsd:enumeration value="SAVE_REFLEX"/>
+      <xsd:enumeration value="SAVE_WILL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_BaseCheckTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Common_CheckType_Type RPG_Common_SavingThrow_Type"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Common_SaveReductionType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAVEREDUCTION_HALF"/>
+      <xsd:enumeration value="SAVEREDUCTION_NEGATES"/>
+      <xsd:enumeration value="SAVEREDUCTION_PARTIAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Common_SavingThrowCheck_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Common_SavingThrow_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="reduction" type="RPG_Common_SaveReductionType_Type" use="optional" default="SAVEREDUCTION_NEGATES"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Common_Amount_Type">
+    <xsd:sequence>
+      <xsd:element name="value" type="xsd:short" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="range" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Common_Usage_Type">
+    <xsd:sequence>
+      <xsd:element name="numUses" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="period" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="interval" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Common_FixedPeriod_Type">
+    <xsd:sequence>
+      <xsd:element name="seconds" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="u_seconds" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Common_Duration_Type">
+    <xsd:sequence>
+      <xsd:element name="activation" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="interval" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="total" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+<!--    <xsd:attribute name="vicinity" type="xsd:boolean" use="optional" default="false"/>-->
+  </xsd:complexType>
+
+ <xsd:complexType name="RPG_Common_EffectDuration_Type">
+   <xsd:sequence>
+     <xsd:element name="base" type="RPG_Common_Amount_Type" minOccurs="0" maxOccurs="1"/>
+     <xsd:element name="levelIncrement" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
+     <xsd:element name="levelIncrementMax" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+   </xsd:sequence>
+   <xsd:attribute name="reciprocalIncrement" type="xsd:unsignedByte" use="optional" default="0"/>
+   <xsd:attribute name="isMaxDelay" type="xsd:boolean" use="optional" default="false"/>
+   <xsd:attribute name="incrementIsInHD" type="xsd:boolean" use="optional" default="false"/>
+ </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Common_Camp_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="REST_FULL"/>
+      <xsd:enumeration value="REST_NORMAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

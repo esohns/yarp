@@ -1,1 +1,186 @@
-../combat/rpg_combat.xsd
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+  <!-- include chance_dice schema -->
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
+  <!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
+  <!-- include magic schema -->
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
+
+<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
+<!--   import chance_dice schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg_chance_dice" schemaLocation="../chance/dice/rpg_chance_dice.xsd"/> -->
+<!--   import item schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg_item" schemaLocation="../item/rpg_item.xsd"/> -->
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Combat: combat-related types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="RPG_Combat_AttackForm_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ATTACKFORM_MELEE"/>
+      <xsd:enumeration value="ATTACKFORM_TOUCH"/>
+      <xsd:enumeration value="ATTACKFORM_RANGED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Combat_RangedEffectUnion_Type">
+    <xsd:union memberTypes="RPG_Common_Size_Type RPG_Common_AreaOfEffect_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Combat_RangedAttackProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="maxRange" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="increment" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+<!--       <xsd:element name="effect" type="RPG_Combat_RangedEffectUnion_Type" minOccurs="1" maxOccurs="1"/> -->
+    </xsd:sequence>
+    <xsd:attribute name="effect" type="RPG_Combat_RangedEffectUnion_Type" use="optional" default="AREA_LINE_HORIZONTAL"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Combat_AttackSituation_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ATTACK_NORMAL"/>
+      <xsd:enumeration value="ATTACK_BACKSTAB"/>
+      <xsd:enumeration value="ATTACK_SURPRISE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Combat_DefenseSituation_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DEFENSE_NORMAL"/>
+      <xsd:enumeration value="DEFENSE_TOUCH"/>
+      <xsd:enumeration value="DEFENSE_FLATFOOTED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Combat_SpecialAttack_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SPECIALATTACK_INCORPOREAL_TOUCH"/>
+      <xsd:enumeration value="SPECIALATTACK_SMITE"/>
+<!--       <xsd:enumeration value="SPECIALATTACK_RAY_LIGHT"/> -->
+<!--       <xsd:enumeration value="SPECIALATTACK_RAY_ELECTRICITY"/> -->
+<!--       <xsd:enumeration value="SPECIALATTACK_GAZE_PETRIFY"/> -->
+<!--       <xsd:enumeration value="SPECIALATTACK_BREATH"/> -->
+<!--       <xsd:enumeration value="SPECIALATTACK_PARALYTIC_TENTACLES"/> -->
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Combat_SpecialDamageType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DAMAGE_ABILITY_DRAIN"/>
+      <xsd:enumeration value="DAMAGE_ABILITY_LOSS"/>
+      <xsd:enumeration value="DAMAGE_ABILITY_REDUCTION"/>
+      <xsd:enumeration value="DAMAGE_ACID"/>
+      <xsd:enumeration value="DAMAGE_COLD"/>
+      <xsd:enumeration value="DAMAGE_ELECTRICITY"/>
+      <xsd:enumeration value="DAMAGE_FIRE"/>
+      <xsd:enumeration value="DAMAGE_LEVEL_DRAIN"/>
+      <xsd:enumeration value="DAMAGE_LEVEL_LOSS"/>
+      <xsd:enumeration value="DAMAGE_MAGIC"/>
+      <xsd:enumeration value="DAMAGE_PETRIFY"/>
+      <xsd:enumeration value="DAMAGE_PARALYZE"/>
+      <xsd:enumeration value="DAMAGE_POISON"/>
+      <xsd:enumeration value="DAMAGE_SLAY"/>
+      <xsd:enumeration value="DAMAGE_SONIC"/>
+      <xsd:enumeration value="DAMAGE_STUN"/>
+<!--       <xsd:enumeration value="DAMAGE_CORPOREAL_INSTABILITY"/> -->
+<!--       <xsd:enumeration value="DAMAGE_CONSTRICT"/> -->
+<!--       <xsd:enumeration value="DAMAGE_SLIME"/> -->
+<!--       <xsd:enumeration value="DAMAGE_WEB"/> -->
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Combat_DamageTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Common_PhysicalDamageType_Type RPG_Combat_SpecialDamageType_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Combat_DamageDuration_Type">
+    <xsd:sequence>
+      <xsd:element name="incubationPeriod" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="totalPeriod" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="interval" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="totalDuration" type="xsd:unsignedShort" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="vicinity" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Combat_CheckTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Common_Skill_Type RPG_Common_Attribute_Type RPG_Common_BaseCheckTypeUnion_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Combat_Check_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Combat_CheckTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="difficultyClass" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Combat_DamageReductionType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="REDUCTION_FULL"/>
+      <xsd:enumeration value="REDUCTION_HALF"/>
+      <xsd:enumeration value="REDUCTION_PARTIAL"/>
+      <xsd:enumeration value="REDUCTION_TEMPORARY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Combat_DamageCounterMeasure_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Common_CounterMeasure_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="spell" type="RPG_Magic_SpellType_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="duration" type="RPG_Common_Duration_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="condition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="reduction" type="RPG_Combat_DamageReductionType_Type" use="optional" default="REDUCTION_FULL"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Combat_OtherDamageType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OTHERDAMAGE_DISSOLVEARMOR"/>
+      <xsd:enumeration value="OTHERDAMAGE_EXTRAHITPOINTS"/>
+      <xsd:enumeration value="OTHERDAMAGE_NATURALARMOR"/>
+      <xsd:enumeration value="OTHERDAMAGE_DISSOLVEWEAPON"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Combat_OtherDamage_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Combat_OtherDamageType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="modifier" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="counterMeasure" type="RPG_Combat_DamageCounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Combat_DamageElement_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Combat_DamageTypeUnion_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="secondary" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="attribute" type="RPG_Common_Attribute_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="condition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="duration" type="RPG_Combat_DamageDuration_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="counterMeasure" type="RPG_Combat_DamageCounterMeasure_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="other" type="RPG_Combat_OtherDamage_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="effect" type="RPG_Common_EffectType_Type" use="optional" default="EFFECT_IMMEDIATE"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Combat_Damage_Type">
+    <xsd:sequence>
+      <xsd:element name="element" type="RPG_Combat_DamageElement_Type" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="elementsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
+</xsd:schema>

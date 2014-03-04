@@ -64,7 +64,7 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
   ACE_UNUSED_ARG(tv_in);
 
-  const Net_GTK_CBData_t* user_data = reinterpret_cast<const Net_GTK_CBData_t*>(arg_in);
+  //const Net_GTK_CBData_t* user_data = reinterpret_cast<const Net_GTK_CBData_t*>(arg_in);
   //ActionMode_t action_mode = (user_data ? ACTION_GTK : myMode);
   ActionMode_t action_mode = myMode;
 	bool do_connect = false;

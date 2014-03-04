@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
   -DRPG_CLIENT_HAS_DLL \
   -DRPG_NET_CLIENT_HAS_DLL \
   -DRPG_NET_HAS_DLL \
+  -DRPG_COMMON_HAS_DLL \
   -I$(srcdir)/../../common \
   -I$(srcdir)/../../chance/dice \
   -I$(srcdir)/../../character \
@@ -30,7 +31,8 @@ bin_PROGRAMS = net_client net_server
 
 noinst_HEADERS = stdafx.h
 
-net_server_SOURCES = net_server.cpp \
+net_server_SOURCES = \
+  net_server.cpp \
   net_server_signalhandler.cpp \
   net_server_signalhandler.h \
   net_eventhandler.cpp \
@@ -63,20 +65,21 @@ net_server_LDADD = \
   -lRPG_Common \
   -lRPG_Chance \
   -lRPG_Dice \
-  $(pkg_libs_LIBS)
+  $(pkg_libs_LIBS) \
+  -lSDL_mixer
 
 net_client_SOURCES = \
-	net_client.cpp \
-	net_client_signalhandler.cpp \
-	net_client_signalhandler.h \
-	net_client_timeouthandler.cpp \
-	net_client_timeouthandler.h \
-	net_eventhandler.cpp \
-	net_eventhandler.h \
-	net_callbacks.cpp \
-	net_callbacks.h \
-	net_defines.h \
-	net_common.h
+  net_client.cpp \
+  net_client_signalhandler.cpp \
+  net_client_signalhandler.h \
+  net_client_timeouthandler.cpp \
+  net_client_timeouthandler.h \
+  net_eventhandler.cpp \
+  net_eventhandler.h \
+  net_callbacks.cpp \
+  net_callbacks.h \
+  net_defines.h \
+  net_common.h
 net_client_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(pkg_libs_CFLAGS) \
@@ -100,7 +103,8 @@ net_client_LDADD = \
   -lRPG_Common \
   -lRPG_Chance \
   -lRPG_Dice \
-  $(pkg_libs_LIBS)
+  $(pkg_libs_LIBS) \
+  -lSDL_mixer
 
 configdir = $(confdir)
 config_DATA = \
@@ -108,3 +112,4 @@ config_DATA = \
   net_server.glade
 
 EXTRA_DIST = $(config_DATA)
+

@@ -75,10 +75,12 @@ character_parser_LDADD = \
   $(pkg_libs_LIBS)
 
 character_generator_gui_SOURCES = \
-	character_generator_gui.cpp \
-	character_generator_gui_callbacks.cpp \
-	character_generator_gui_callbacks.h \
-  character_generator_gui_common.h
+  character_generator_gui.cpp \
+  character_generator_gui_callbacks.cpp \
+  character_generator_gui_callbacks.h \
+  character_generator_gui_common.h \
+  test_u_main.cpp \
+  test_u_main.h
 character_generator_gui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(pkg_libs_CFLAGS) \
@@ -109,3 +111,4 @@ configdir = $(datadir)/@META_PACKAGE@/config
 config_DATA = character_generator_gui.glade
 
 EXTRA_DIST = $(config_DATA)
+

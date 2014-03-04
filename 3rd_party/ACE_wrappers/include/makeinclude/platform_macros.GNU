@@ -1,5 +1,7 @@
 include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
 
+INSTALL_PREFIX=/usr/local
+
 #ace_for_tao=0
 debug=1
 #dmalloc=0

@@ -52,6 +52,7 @@ RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t&
   // ***** keyboard setup *****
   // Unicode translation
 	int previous_state = SDL_EnableUNICODE((SDLInputConfiguration_in.use_UNICODE ? 1 : 0));
+	ACE_UNUSED_ARG(previous_state);
 
   // key repeat rates
 	if (SDL_EnableKeyRepeat(SDLInputConfiguration_in.key_repeat_initial_delay,

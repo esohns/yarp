@@ -1134,6 +1134,7 @@ do_work(const RPG_Client_Configuration_t& config_in,
           {
             int x, y;
             Uint8 button_state = SDL_GetMouseState(&x, &y);
+            ACE_UNUSED_ARG(button_state);
             mouse_position = std::make_pair(x, y);
 
             break;
@@ -1259,6 +1260,7 @@ do_work(const RPG_Client_Configuration_t& config_in,
 			{
 				int x, y;
 				Uint8 button_state = SDL_GetMouseState(&x, &y);
+				ACE_UNUSED_ARG(button_state);
         window = main_window.getWindow(std::make_pair(x, y));
 				schedule_redraw = true;
 
@@ -1653,12 +1655,20 @@ do_printVersion(const std::string& programName_in)
   std::cout << ACE_TEXT("compiled by: ") << version_number.str() << std::endl;
 }
 
-//int
-//ACE_TMAIN(int argc_in,
-//          ACE_TCHAR* argv_in[])
+
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* __cplusplus */
 int
 SDL_main(int argc_in,
-         char* argv_in[])
+         char** argv_in)
+#else
+int
+ACE_TMAIN(int argc_in,
+          ACE_TCHAR* argv_in[])
+#endif
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
@@ -2087,3 +2097,8 @@ SDL_main(int argc_in,
 
   return EXIT_SUCCESS;
 } // end main
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+#endif

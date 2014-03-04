@@ -41,4 +41,6 @@ combat_simulator_LDADD = \
   -lRPG_Common \
   -lRPG_Chance \
   -lRPG_Dice \
-  $(pkg_libs_LIBS)
+  $(pkg_libs_LIBS) \
+  -lSDL_mixer
+

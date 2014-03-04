@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
   -I$(srcdir)/../../../net \
   -I$(srcdir)/../../../net/stream \
   -I$(srcdir)/../../../chance/dice \
-  -I$(srcdir)/../../../client
+  -I$(srcdir)/../../../client \
+  -I$(srcdir)/../../../3rd_party/bison
 
 bin_PROGRAMS = IRC_client IRC_client_gui
 
@@ -84,3 +85,4 @@ config_DATA = \
   servers.ini
 
 EXTRA_DIST = $(config_DATA)
+

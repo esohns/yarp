@@ -25,11 +25,14 @@
 #include "character_generator_gui_common.h"
 
 #include <ace/OS.h>
+#include <ace/OS_main.h>
 
 #include <string>
 
 class test_u_main
- : public ACE_Main_Base
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+ : public ACE_Main
+#endif
 {
  public:
 	test_u_main(void);

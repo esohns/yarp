@@ -1,15 +1,19 @@
 METASOURCES = AUTO
 
 #ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -I$(srcdir)/../common -I$(srcdir)/../item -I$(srcdir)/../magic -I$(srcdir)/../chance/dice -I$(srcdir)/../chance
+AM_CPPFLAGS = \
+  -I$(srcdir)/../common \
+  -I$(srcdir)/../item \
+  -I$(srcdir)/../magic \
+  -I$(srcdir)/../chance/dice \
+  -I$(srcdir)/../chance
 
 SUBDIRS = . player monster scripts
 
 noinst_HEADERS = \
-  rpg_XMLSchema_XML_types.h \
   stdafx.h
-# rpg_XMLSchema_XML_tree.h
-include_HEADERS = rpg_character_XML_parser.h \
+include_HEADERS = \
+  rpg_character_XML_parser.h \
   rpg_character_XML_tree.h \
   rpg_character_XML_types.h \
   rpg_character_ability.h \
@@ -85,15 +89,13 @@ libRPG_Character_la_SOURCES = \
   rpg_character_exports.h \
   rpg_character_XML_tools.h \
   rpg_character_XML_tools.cpp \
-  rpg_character_encumbrance.h \
-  rpg_XMLSchema_XML_types.h
-# rpg_XMLSchema_XML_tree.h
+  rpg_character_encumbrance.h
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
 config_DATA = rpg_character.xsd
 
-EXTRA_DIST = $(config_DATA) \
-  rpg_common.xsd \
-  rpg_dice.xsd \
+EXTRA_DIST = \
+  $(config_DATA) \
   rpg_character.map
+

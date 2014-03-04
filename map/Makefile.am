@@ -1,14 +1,18 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -I$(srcdir)/../chance/dice -I$(srcdir)/../common
+AM_CPPFLAGS = \
+  -I$(srcdir)/../3rd_party/bison \
+  -I$(srcdir)/../chance/dice \
+  -I$(srcdir)/../common
 
 SUBDIRS = scripts . data
 
 noinst_HEADERS = \
   stdafx.h
 #  rpg_XMLSchema_XML_tree.h
-include_HEADERS = rpg_map_common_tools.h \
+include_HEADERS = \
+  rpg_map_common_tools.h \
   rpg_map_common.h \
   rpg_map_data.h \
   rpg_map_defines.h \
@@ -21,10 +25,7 @@ include_HEADERS = rpg_map_common_tools.h \
   rpg_map_pathfinding_tools.h \
   rpg_map_position.h \
   rpg_map_scanner.h \
-  rpg_map_XML_tree.h \
-  location.hh \
-  position.hh \
-  stack.hh
+  rpg_map_XML_tree.h
 
 lib_LTLIBRARIES = libRPG_Map.la
 
@@ -49,14 +50,11 @@ libRPG_Map_la_SOURCES = \
   rpg_map_scanner.cpp \
   rpg_map_scanner.h \
   rpg_map_XML_tree.cpp \
-  rpg_map_XML_tree.h \
-  location.hh \
-  position.hh \
-  stack.hh
-#  rpg_XMLSchema_XML_tree.h
+  rpg_map_XML_tree.h
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
 config_DATA = rpg_map.xsd
 
 EXTRA_DIST = $(config_DATA)
+

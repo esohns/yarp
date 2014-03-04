@@ -23,8 +23,9 @@
 
 #include "rpg_net_protocol_common.h"
 
-#include "rpg_net_common_tools.h"
 #include "rpg_net_connection_manager.h"
+
+#include "rpg_common_tools.h"
 
 #include <ace/Reactor.h>
 #include <ace/Proactor.h>
@@ -69,10 +70,10 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
   {
     // collect some context information...
     std::string information;
-    RPG_Net_Common_Tools::retrieveSignalInfo(signal_in,
-                                             *info_in,
-                                             context_in,
-                                             information);
+    RPG_Common_Tools::retrieveSignalInfo(signal_in,
+                                         *info_in,
+                                         context_in,
+                                         information);
 
 //     // *PORTABILITY*: tracing in a signal handler context is not portable
 //     ACE_DEBUG((LM_DEBUG,

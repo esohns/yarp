@@ -1,1 +1,47 @@
-../../chance/dice/rpg_dice.xsd
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema targetNamespace="urn:rpg"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="qualified">
+
+<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Dice: die-related types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="RPG_Dice_DieType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="D_0"/>
+      <xsd:enumeration value="D_2"/>
+      <xsd:enumeration value="D_3"/>
+      <xsd:enumeration value="D_4"/>
+      <xsd:enumeration value="D_6"/>
+      <xsd:enumeration value="D_8"/>
+      <xsd:enumeration value="D_10"/>
+      <xsd:enumeration value="D_12"/>
+      <xsd:enumeration value="D_20"/>
+      <xsd:enumeration value="D_100"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Dice_Roll_Type">
+    <xsd:sequence>
+      <xsd:element name="numDice" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="typeDice" type="RPG_Dice_DieType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="modifier" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Dice_ValueRange_Type">
+    <xsd:sequence>
+      <xsd:element name="begin" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="end" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

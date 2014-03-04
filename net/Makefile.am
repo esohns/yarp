@@ -1,8 +1,11 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -DRPG_NET_BUILD_DLL -I$(srcdir)/../common \
-  -I$(srcdir)/../chance/dice -I$(srcdir)/stream
+AM_CPPFLAGS = \
+  -DRPG_NET_BUILD_DLL \
+  -I$(srcdir)/../common \
+  -I$(srcdir)/../chance/dice \
+  -I$(srcdir)/stream
 
 SUBDIRS = stream . protocol client server scripts
 
@@ -12,8 +15,11 @@ protocol: .
 client: .
 server: .
 
-noinst_HEADERS = stdafx.h
-include_HEADERS = rpg_net_common.h \
+noinst_HEADERS = \
+  stdafx.h
+
+include_HEADERS = \
+  rpg_net_common.h \
   rpg_net_asynchsockethandler_t.h \
   rpg_net_asynchstreamhandler_t.h \
   rpg_net_common_tools.h \
@@ -39,7 +45,6 @@ include_HEADERS = rpg_net_common.h \
   rpg_net_remote_comm.h \
   rpg_net_resetcounterhandler.h \
   rpg_net_sessionmessage.h \
-  rpg_net_signalhandler.h \
   rpg_net_sockethandler.h \
   rpg_net_sockethandler_base.h \
   rpg_net_sockethandler_base.inl \
@@ -58,7 +63,8 @@ include_HEADERS = rpg_net_common.h \
 
 lib_LTLIBRARIES = libRPG_Net.la
 
-libRPG_Net_la_SOURCES = rpg_net_asynchsockethandler_t.h \
+libRPG_Net_la_SOURCES = \
+  rpg_net_asynchsockethandler_t.h \
   rpg_net_asynchsockethandler_t.inl \
   rpg_net_asynchsockethandler_t.cpp \
   rpg_net_asynchstreamhandler_t.h \
@@ -101,8 +107,6 @@ libRPG_Net_la_SOURCES = rpg_net_asynchsockethandler_t.h \
   rpg_net_resetcounterhandler.h \
   rpg_net_sessionmessage.cpp \
   rpg_net_sessionmessage.h \
-  rpg_net_signalhandler.cpp \
-  rpg_net_signalhandler.h \
   rpg_net_sockethandler.cpp \
   rpg_net_sockethandler.h \
   rpg_net_sockethandler_base.cpp \
@@ -123,3 +127,4 @@ libRPG_Net_la_SOURCES = rpg_net_asynchsockethandler_t.h \
   rpg_net_exports.h \
   rpg_net_common_modules.h \
   rpg_net_stream_common.h
+
