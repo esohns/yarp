@@ -28,6 +28,8 @@
 
 #include "rpg_map_common.h"
 
+#include "rpg_common_ilock.h"
+
 #include <SDL.h>
 
 #include <ace/Global_Macros.h>
@@ -47,44 +49,36 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
 
  public:
   // init (clipping of highlight tile)
-  void init(RPG_Graphics_IWindow*); // target window handle
+  void init(RPG_Common_ILock*,      // screen lock interface handle
+            RPG_Graphics_IWindow*); // target window handle
 
   RPG_Graphics_Cursor type() const;
   RPG_Graphics_Position_t position() const;
 
-  void set(const RPG_Graphics_Cursor&); // cursor type
-//   SDL_Surface* get() const;
-
+  void set(const RPG_Graphics_Cursor&, // cursor type
+           SDL_Rect&);                 // return value: "dirty" region
   // draw the cursor
   void put(const unsigned int&, // offset x (top left == 0,0)
            const unsigned int&, // offset y (top left == 0,0)
-           SDL_Surface*,        // target surface (e.g. screen)
            SDL_Rect&);          // return value: "dirty" region
-
-  // restore the BG
-  void restoreBG(SDL_Surface*, // target surface (e.g. screen)
-                 SDL_Rect&);   // return value: "dirty" region
   // update/clear the BG
-  void updateBG(SDL_Surface*); // source surface (e.g. screen)
+  void updateBG();
   void invalidateBG();
 
   const RPG_Graphics_Position_t getHighlightBGPosition(const unsigned int& = std::numeric_limits<unsigned int>::max()) const;
   void drawHighlight(const RPG_Graphics_Position_t&, // position (screen coords !)
-                     SDL_Surface*);                  // target surface (e.g. screen)
+                     SDL_Rect&);                     // return value: "dirty" region
   void drawHighlight(const RPG_Graphics_Positions_t&, // position(s) (screen coords !)
-                     SDL_Surface*);                   // source surface (e.g. screen)
-  void storeHighlightBG(const RPG_Map_Position_t&,      // position (map coords !)
-                        const RPG_Graphics_Position_t&, // position (screen coords !)
-                        const SDL_Surface*);            // source surface (e.g. screen)
-  void storeHighlightBG(const RPG_Map_PositionList_t&,   // positions (map coords !)
-                        const RPG_Graphics_Positions_t&, // positions (screen coords !)
-                        const SDL_Surface*);             // source surface (e.g. screen)
+                     SDL_Rect&);                      // return value: "dirty" region
   void restoreHighlightBG(const RPG_Graphics_Position_t&, // viewport (map coords !)
-                          SDL_Surface*); // target surface (e.g. screen)
+                          SDL_Rect&);                     // return value: "dirty" region
+  void storeHighlightBG(const RPG_Map_Position_t&,       // position (map coords !)
+                        const RPG_Graphics_Position_t&); // position (screen coords !)
+  void storeHighlightBG(const RPG_Map_PositionList_t&,    // positions (map coords !)
+                        const RPG_Graphics_Positions_t&); // positions (screen coords !)
   void resetHighlightBG(const RPG_Graphics_Position_t&); // reset to (single) initial position (map coords !)
 
  private:
-  // safety measures
   virtual ~RPG_Graphics_Cursor_Manager();
   RPG_Graphics_Cursor_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager(const RPG_Graphics_Cursor_Manager&));
@@ -93,6 +87,10 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   // helper types
   typedef std::map<RPG_Graphics_Cursor, SDL_Surface*> RPG_Graphics_Cursor_Cache_t;
   typedef RPG_Graphics_Cursor_Cache_t::const_iterator RPG_Graphics_Cursor_CacheConstIterator_t;
+
+  // helper methods
+  // restore the BG
+  void restoreBG(SDL_Rect&); // return value: "dirty" region
 
   RPG_Graphics_Cursor         myCurrentType;
   SDL_Surface*                myCurrentGraphic;
@@ -105,6 +103,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   RPG_Graphics_IWindow*       myHighlightWindow;
   RPG_Graphics_TileCache_t    myHighlightBGCache;
   SDL_Surface*                myHighlightTile;
+
+  RPG_Common_ILock*           myScreenLock;
 };
 
 typedef ACE_Singleton<RPG_Graphics_Cursor_Manager,

@@ -62,7 +62,6 @@ class RPG_Client_Export RPG_Client_Window_Level
   bool showMiniMap() const;
   void toggleMessages();
   bool showMessages() const;
-  void toggleVisionBlend();
 
   // adjust viewport
   void setView(const int&,
@@ -97,7 +96,6 @@ class RPG_Client_Export RPG_Client_Window_Level
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level());
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level(const RPG_Client_Window_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level& operator=(const RPG_Client_Window_Level&));
@@ -133,7 +131,6 @@ class RPG_Client_Export RPG_Client_Window_Level
   RPG_Graphics_DoorTileSet_t      myCurrentDoorSet;
   SDL_Surface*                    myOffMapTile;
   SDL_Surface*                    myInvisibleTile;
-  bool                            myDoVisionBlend;
   SDL_Surface*                    myVisionBlendTile;
   SDL_Surface*                    myVisionTempTile;
 

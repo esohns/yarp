@@ -25,6 +25,8 @@
 #include "rpg_graphics_iwindow.h"
 #include "rpg_graphics_common.h"
 
+#include "rpg_common_ilock.h"
+
 #include <SDL.h>
 
 #include <ace/Global_Macros.h>
@@ -82,8 +84,11 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
                              const std::string&);               // title
 //                              SDL_Surface* = NULL);              // background
 
+  void init(RPG_Common_ILock* = NULL); // screen lock interface handle
+
   // default screen
   SDL_Surface*                     myScreen;
+  RPG_Common_ILock*                myScreenLock;
 
   // absolute size
   RPG_Graphics_Size_t              mySize;
@@ -131,7 +136,6 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   typedef std::vector<SDL_Rect> RPG_Graphics_InvalidRegions_t;
   typedef RPG_Graphics_InvalidRegions_t::const_iterator RPG_Graphics_InvalidRegionsConstIterator_t;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase(const RPG_Graphics_SDLWindowBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase& operator=(const RPG_Graphics_SDLWindowBase&));

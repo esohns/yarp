@@ -69,7 +69,6 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
 //   myCurrentDoorSet(),
    myOffMapTile(NULL),
    myInvisibleTile(NULL),
-   myDoVisionBlend(RPG_CLIENT_DEF_VISIONBLEND_ISON),
    myVisionBlendTile(NULL),
    myVisionTempTile(NULL),
 //   myFloorEdgeTiles(),
@@ -355,16 +354,6 @@ RPG_Client_Window_Level::showMessages() const
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   return myShowMessages;
-}
-
-void
-RPG_Client_Window_Level::toggleVisionBlend()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::toggleVisionBlend"));
-
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-  myDoVisionBlend = !myDoVisionBlend;
 }
 
 void
@@ -672,7 +661,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
+                                                 : myScreen);
 
   // sanity check(s)
   ACE_ASSERT(myEngine);
@@ -801,6 +791,7 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   //clear();
 
   // pass 1
+  myClient->lock();
   for (i = -static_cast<int>(top_right.second);
         i <= static_cast<int>(top_right.second);
         i++)
@@ -832,7 +823,7 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
                                         current_map_position,
                                         false);
       current_element = myEngine->getElement(current_map_position,
-                                              false);
+                                             false);
       ACE_ASSERT(current_element != MAPELEMENT_INVALID);
 
       // map --> screen coordinates
@@ -1176,9 +1167,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 
         // draw creature
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(entity_id,
-                                                              screen_position,
-                                                              targetSurface,
-                                                              dirty_region);
+                                                             screen_position,
+                                                             dirty_region);
       } // end IF
 
       // step6: effects
@@ -1262,10 +1252,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   //                        &dirty_region))      // aspect
   //    {
   //      ACE_DEBUG((LM_ERROR,
-  //                 ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+  //                 ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing"),
   //                 SDL_GetError()));
-
-  //      return;
   //    } // end IF
 
   //    // step3: write result
@@ -1275,6 +1263,7 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   //                              targetSurface);
   //  } // end FOR
   //} // end IF
+  myClient->unlock();
 
   // unlock engine
   myEngine->unlock();
@@ -2641,7 +2630,8 @@ RPG_Client_Window_Level::initMessageWindow()
   ACE_ASSERT(inherited::myScreen);
 
   RPG_Client_Window_Message* message_window = NULL;
-  message_window = new(std::nothrow) RPG_Client_Window_Message(*this);
+  ACE_NEW_NORETURN(message_window,
+                   RPG_Client_Window_Message(*this));
   if (!message_window)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -2651,7 +2641,8 @@ RPG_Client_Window_Level::initMessageWindow()
     return;
   } // end IF
 
-  message_window->init(RPG_CLIENT_DEF_MESSAGE_FONT,
+  message_window->init(myClient,
+                       RPG_CLIENT_DEF_MESSAGE_FONT,
                        RPG_CLIENT_DEF_MESSAGE_LINES);
   message_window->setScreen(inherited::myScreen);
 }

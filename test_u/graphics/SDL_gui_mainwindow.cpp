@@ -207,23 +207,14 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("gained mouse coverage...\n")));
 
-          // --> restore background
-          SDL_Rect dirtyRegion;
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
-                                                                       dirtyRegion);
-          //             invalidate(dirtyRegion);
-          // *NOTE*: updating straight away reduces ugly smears...
-          RPG_Graphics_Surface::update(dirtyRegion,
-                                       myScreen);
-
-          // *HACK*: prevents MOST "mouse trails" (NW borders)...
-          drawBorder(myScreen,
-                     0,
-                     0);
-          drawTitle(myTitleFont,
-                    myTitle,
-                    myScreen);
-          refresh();
+//          // *HACK*: prevents MOST "mouse trails" (NW borders)...
+//          drawBorder(myScreen,
+//                     0,
+//                     0);
+//          drawTitle(myTitleFont,
+//                    myTitle,
+//                    myScreen);
+//          refresh();
 
           myHaveMouseFocus = true;
         } // end IF
@@ -232,14 +223,14 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("lost mouse coverage...\n")));
 
-          // *HACK*: prevents MOST "mouse trails" (NW borders)...
-          drawBorder(myScreen,
-                     0,
-                     0);
-          drawTitle(myTitleFont,
-                    myTitle,
-                    myScreen);
-          refresh();
+//          // *HACK*: prevents MOST "mouse trails" (NW borders)...
+//          drawBorder(myScreen,
+//                     0,
+//                     0);
+//          drawTitle(myTitleFont,
+//                    myTitle,
+//                    myScreen);
+//          refresh();
 
           myHaveMouseFocus = false;
         } // end ELSE
@@ -677,7 +668,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown event (was: %u)...\n"),
-                 static_cast<unsigned long>(event_in.type)));
+                 static_cast<unsigned int>(event_in.type)));
 
       break;
     }
@@ -697,15 +688,21 @@ SDL_GUI_MainWindow::notify(const RPG_Graphics_Cursor& cursor_in) const
   {
     case RPG_GRAPHICS_CURSOR_INVALID:
     {
-      SDL_Rect dirtyRegion;
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen, dirtyRegion);
-      // *NOTE*: updating straight away reduces ugly smears...
-      RPG_Graphics_Surface::update(dirtyRegion, myScreen);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
 
-      return;
+      break;
     }
     default:
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_in);
+    {
+      SDL_Rect dirty_region;
+      ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_in,
+                                                             dirty_region);
+      RPG_Graphics_Surface::update(dirty_region,
+                                   myScreen);
+
+      break;
+    }
   } // end SWITCH
 }
 

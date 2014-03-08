@@ -86,6 +86,7 @@ struct RPG_Client_GTK_CBData_t
   GtkFileFilter*                    entity_filter;
   GtkFileFilter*                    map_filter;
   SDL_Surface*                      screen;
+  ACE_Thread_Mutex                  screen_lock; // video access
   SDL_TimerID                       event_timer;
   RPG_Client_Engine*                client_engine;
   std::string                       schema_repository;
@@ -111,19 +112,6 @@ struct RPG_Client_AudioConfiguration_t
   bool                         mute;
 };
 
-// *NOTE* types as used by SDL
-struct RPG_Client_SDL_VideoConfiguration_t
-{
-  int         screen_width;
-  int         screen_height;
-  int         screen_colordepth; // bits/pixel
-  //Uint32      screen_flags;
-  bool        double_buffer;
-  bool        use_OpenGL;
-  bool        full_screen;
-  std::string video_driver;
-};
-
 struct RPG_Client_NetworkConfiguration_t
 {
   std::string    server;
@@ -138,35 +126,34 @@ struct RPG_Client_NetworkConfiguration_t
 struct RPG_Client_Configuration_t
 {
   // *** reactor ***
-  unsigned int                        num_dispatch_threads; // 1: don't use a threadpool
+  unsigned int                          num_dispatch_threads; // 1: don't use a threadpool
   // *** UI ***
-  std::string                         glade_file;
+  std::string                           glade_file;
 	// *** input ***
-	RPG_Client_SDL_InputConfiguration_t input_configuration;
+	RPG_Client_SDL_InputConfiguration_t   input_configuration;
   // *** sound ***
-  RPG_Client_AudioConfiguration_t     audio_configuration;
+  RPG_Client_AudioConfiguration_t       audio_configuration;
   // *** graphics ***
-  RPG_Client_SDL_VideoConfiguration_t video_configuration;
-  std::string                         graphics_directory;
-  std::string                         graphics_dictionary;
+  RPG_Graphics_SDL_VideoConfiguration_t video_configuration;
+  std::string                           graphics_directory;
+  std::string                           graphics_dictionary;
   // *** network ***
-  RPG_Client_NetworkConfiguration_t   network_configuration;
+  RPG_Client_NetworkConfiguration_t     network_configuration;
   // *** magic ***
-  std::string                         magic_dictionary;
+  std::string                           magic_dictionary;
   // *** item ***
-  std::string                         item_dictionary;
+  std::string                           item_dictionary;
   // *** monster ***
-  std::string                         monster_dictionary;
+  std::string                           monster_dictionary;
   // *** map ***
-  RPG_Map_FloorPlan_Configuration_t   map_configuration;
-  std::string                         map_file;
+  RPG_Map_FloorPlan_Configuration_t     map_configuration;
+  std::string                           map_file;
 };
 
 enum RPG_Client_Command
 {
   COMMAND_CURSOR_DRAW = 0,
   COMMAND_CURSOR_INVALIDATE_BG,
-  COMMAND_CURSOR_RESTORE_BG,
   COMMAND_CURSOR_SET,
   COMMAND_ENTITY_DRAW,
   COMMAND_ENTITY_REMOVE,

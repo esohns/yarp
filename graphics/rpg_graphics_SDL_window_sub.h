@@ -47,7 +47,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
   virtual ~RPG_Graphics_SDLWindowSub();
 
   // close (& destroy)
-  void close();
+  void close(SDL_Rect&); // return value: "dirty" region
 
  protected:
   using RPG_Graphics_SDLWindowBase::myClipRect;
@@ -56,17 +56,16 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
   // *NOTE*: make sure setScreen has been invoked
   void saveBG(const RPG_Graphics_Size_t&);
   bool myBGHasBeenSaved;
-  void restoreBG(const bool& = true); // update ?
+  void restoreBG(SDL_Rect&); // return value: "dirty" region
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowSub());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowSub(const RPG_Graphics_SDLWindowSub&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowSub& operator=(const RPG_Graphics_SDLWindowSub&));
 
-  SDL_Surface* myBG;
+  SDL_Surface*      myBG;
 };
 
 #endif

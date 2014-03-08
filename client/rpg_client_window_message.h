@@ -31,6 +31,9 @@
 
 #include <string>
 
+// forward declarations
+class RPG_Common_ILock;
+
 class RPG_Client_Window_Message
  : public RPG_Graphics_SDLWindowSub
 {
@@ -38,7 +41,8 @@ class RPG_Client_Window_Message
   RPG_Client_Window_Message(const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_Window_Message();
 
-  void init(const RPG_Graphics_Font&, // font
+  void init(RPG_Common_ILock*,        // screen lock interface handle
+            const RPG_Graphics_Font&, // font
             const unsigned int&);     // lines
   void push(const std::string&); // message
 
@@ -53,7 +57,6 @@ class RPG_Client_Window_Message
  private:
   typedef RPG_Graphics_SDLWindowSub inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message());
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message(const RPG_Client_Window_Message&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message& operator=(const RPG_Client_Window_Message&));

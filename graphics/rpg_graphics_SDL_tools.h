@@ -22,6 +22,7 @@
 #define RPG_GRAPHICS_SDL_TOOLS_H
 
 #include "rpg_graphics_exports.h"
+#include "rpg_graphics_common.h"
 
 #include <SDL.h>
 
@@ -63,16 +64,11 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
   static Uint32 CLR32_CURSE_RED;
   static Uint32 CLR32_GOLD_SHADE;
 
-  static void initVideo(const bool&,         // double-buffer ?
-                        const bool&,         // use OpenGL / blitting ?
-                        const bool&,         // run fullscreen ?
-                        const std::string&); // driver [directx|windib]
-  static SDL_Surface* initScreen(const int&,   // width
-                                 const int&,   // height
-                                 const int&,   // color depth
-                                 const bool&,  // double-buffer ?
-                                 const bool&,  // use OpenGL / blitting ?
-                                 const bool&); // run fullscreen ?
+  static bool initVideo(const RPG_Graphics_SDL_VideoConfiguration_t&, // configuration
+                        const std::string&,                           // window/icon caption
+                        SDL_Surface*&,                                // return value: window surface
+                        const bool& = true);                          // init window surface ?
+  static SDL_Surface* initScreen(const RPG_Graphics_SDL_VideoConfiguration_t&); // configuration
 
   static std::string keyToString(const SDL_keysym&);
 
@@ -85,7 +81,6 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
                             const SDL_Rect&); // rect 2
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Graphics_SDL_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools(const RPG_Graphics_SDL_Tools&));

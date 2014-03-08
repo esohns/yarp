@@ -32,6 +32,19 @@
 #include <map>
 #include <vector>
 
+// *NOTE* types as used by SDL
+struct RPG_Graphics_SDL_VideoConfiguration_t
+{
+  int         screen_width;
+  int         screen_height;
+  int         screen_colordepth; // bits/pixel
+  //Uint32      screen_flags;
+  bool        double_buffer;
+  bool        use_OpenGL;
+  bool        full_screen;
+  std::string video_driver; // [x11|directx|windib|...]
+};
+
 typedef RPG_Graphics_Graphic RPG_Graphics_t;
 typedef std::map<RPG_Graphics_Sprite, RPG_Graphics_t> RPG_Graphics_SpriteDictionary_t;
 typedef RPG_Graphics_SpriteDictionary_t::const_iterator RPG_Graphics_SpriteDictionaryIterator_t;

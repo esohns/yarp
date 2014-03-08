@@ -26,7 +26,7 @@
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/OS.h>
 
@@ -36,6 +36,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Size_t
 //                                                        SDL_Surface* backGround_in)
  : //inherited(),
    myScreen(NULL),
+   myScreenLock(NULL),
    mySize(size_in),
    myBorderTop(0),
    myBorderBottom(0),
@@ -63,6 +64,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
 //                                                        SDL_Surface* backGround_in)
   : //inherited(),
     myScreen(parent_in.myScreen),
+    myScreenLock(NULL),
     mySize(std::make_pair(0, 0)),
     myBorderTop(0),
     myBorderBottom(0),
@@ -115,6 +117,14 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
 //   // free surface
 //   if (myBackGround)
 //     SDL_FreeSurface(myBackGround);
+}
+
+void
+RPG_Graphics_SDLWindowBase::init(RPG_Common_ILock* screenLock_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::init"));
+
+  myScreenLock = screenLock_in;
 }
 
 void

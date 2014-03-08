@@ -34,6 +34,9 @@
 
 #include <string>
 
+// forward declarations
+class RPG_Common_ILock;
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
@@ -83,10 +86,11 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                                  const SDL_Color&);        // color
 
   // *NOTE*: source/target image must already be loaded into the framebuffer !
-  static void fade(const bool&,   // fade in ? (else out)
-                   const float&,  // interval (seconds)
-                   const Uint32&, // fade to/from color
-                   SDL_Surface*); // screen
+  static void fade(const bool&,       // fade in ? (else out)
+                   const float&,      // interval (seconds)
+                   const Uint32&,     // fade to/from color
+                   RPG_Common_ILock*, // lock interface handle
+                   SDL_Surface*);     // target surface (e.g. screen)
 
   // coordinate transformations
   static RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,  // position (screen coordinates !)
@@ -113,9 +117,10 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
   static RPG_Graphics_GraphicTypeUnion styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
                                                    const bool& = false);           // half-height (wallstyle only) ?
 
-  static void fade(const float&,  // interval (seconds)
-                   SDL_Surface*,  // target image
-                   SDL_Surface*); // screen
+  static void fade(const float&,      // interval (seconds)
+                   SDL_Surface*,      // target image
+                   RPG_Common_ILock*, // lock interface handle
+                   SDL_Surface*);     // target surface (e.g. screen)
 
   static std::string                  myGraphicsDirectory;
 

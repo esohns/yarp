@@ -81,7 +81,6 @@ class RPG_Client_Export RPG_Client_Window_Main
  private:
   typedef RPG_Graphics_TopLevel inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Main());
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Main(const RPG_Client_Window_Main&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Main& operator=(const RPG_Client_Window_Main&));

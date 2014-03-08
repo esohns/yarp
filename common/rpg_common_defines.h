@@ -26,7 +26,7 @@
 
 // *** trace log ***
 // *PORTABILITY*: pathnames are not portable --> (try to) use %TEMP% on Windows
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
 #define RPG_COMMON_DEF_LOG_DIRECTORY              "TEMP"
 #else
 #define RPG_COMMON_DEF_LOG_DIRECTORY              "/var/tmp"

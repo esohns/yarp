@@ -82,8 +82,12 @@
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE            32
 
 #define RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR          "SDL_VIDEODRIVER"
-//#define RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME             "directx"
-#define RPG_GRAPHICS_DEF_VIDEO_DRIVER_NAME             "windib"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "directx"
+//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "windib"
+#else
+#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "x11"
+#endif
 
 // SDL event types
 // *WARNING*: make sure that these are used consistently !

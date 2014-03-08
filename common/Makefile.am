@@ -38,6 +38,7 @@ include_HEADERS = \
   rpg_common_iclone.h \
   rpg_common_icontrol.h \
   rpg_common_idumpstate.h \
+  rpg_common_ilock.h \
   rpg_common_incl.h \
   rpg_common_irefcount.h \
   rpg_common_isignal.h \
@@ -107,6 +108,7 @@ libRPG_Common_la_SOURCES = \
   rpg_common_iclone.h \
   rpg_common_icontrol.h \
   rpg_common_idumpstate.h \
+  rpg_common_ilock.h \
   rpg_common_incl.h \
   rpg_common_irefcount.h \
   rpg_common_isignal.h \

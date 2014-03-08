@@ -72,6 +72,9 @@ RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t&
 	// SDL event filter (filter mouse motion events and the like)
 	//   SDL_SetEventFilter(event_filter_SDL_cb);
 
+	// ***** mouse setup *****
+	SDL_ShowCursor(SDL_TRUE); // disable OS mouse cursor over SDL window
+
 	return true;
 }
 
@@ -163,17 +166,10 @@ RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputCo
   // step2: init cursor manager singleton
   if (initSDL_in)
   {
-    try
-    {
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Graphics_Cursor_Manager::set, aborting\n")));
-
-      return false;
-    }
+    SDL_Rect dirty_region;
+    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+    RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL,
+                                                           dirty_region);
   } // end IF
 
   return true;

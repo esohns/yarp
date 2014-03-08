@@ -42,6 +42,8 @@
 class RPG_Graphics_Export RPG_Graphics_Surface
 {
  public:
+  static Uint32 SDL_surface_flags;
+
   RPG_Graphics_Surface();
   RPG_Graphics_Surface(const RPG_Graphics_Surface&);
   // *NOTE*: if ownership is rejected, the surface will be cached...

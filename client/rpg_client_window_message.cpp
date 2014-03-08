@@ -21,11 +21,11 @@
 
 #include "rpg_client_defines.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_common_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 RPG_Client_Window_Message::RPG_Client_Window_Message(const RPG_Graphics_SDLWindowBase& parent_in)
  : inherited(WINDOW_MESSAGE,            // type
@@ -126,7 +126,8 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Message::draw"));
 
   // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
+                                                 : myScreen);
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
@@ -134,16 +135,14 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
   ACE_UNUSED_ARG(offsetY_in);
   ACE_ASSERT(myBG);
 
+  SDL_Rect dirty_region;
+  ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+
   // step0: restore background
-  SDL_Rect dirty_region = {0, 0, 0, 0};
+  if (inherited::myScreenLock)
+    inherited::myScreenLock->lock();
   if (inherited::myBGHasBeenSaved)
-  {
-    inherited::restoreBG(false);
-    dirty_region.x = static_cast<int16_t>(inherited::myLastAbsolutePosition.first);
-    dirty_region.y = static_cast<int16_t>(inherited::myLastAbsolutePosition.second);
-    dirty_region.w = static_cast<uint16_t>(inherited::mySize.first);
-    dirty_region.h = static_cast<uint16_t>(inherited::mySize.second);
-  } // end iF
+    inherited::restoreBG(dirty_region);
 
   // step1: compute required size / offset
   inherited::mySize   = std::make_pair(0, 0);
@@ -187,19 +186,12 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                  ACE_TEXT(SDL_GetError())));
 
+      // clean up
+      if (inherited::myScreenLock)
+        inherited::myScreenLock->unlock();
+
       return;
     } // end IF
-
-    // lock surface during pixel access
-    if (SDL_MUSTLOCK((targetSurface)))
-      if (SDL_LockSurface(targetSurface))
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-                   ACE_TEXT(SDL_GetError())));
-
-        return;
-      } // end IF
 
     // save background
     inherited::saveBG(std::make_pair(0, 0)); // --> save everything
@@ -245,9 +237,8 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
                                     targetSurface);
     } // end FOR
   } // end lock scope
-
-  if (SDL_MUSTLOCK(targetSurface))
-    SDL_UnlockSurface(targetSurface);
+  if (inherited::myScreenLock)
+    inherited::myScreenLock->unlock();
 
   // reset clipping
   //unclip(targetSurface);
@@ -277,10 +268,13 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_Window_Message::init(const RPG_Graphics_Font& font_in,
+RPG_Client_Window_Message::init(RPG_Common_ILock* screenLock_in,
+                                const RPG_Graphics_Font& font_in,
                                 const unsigned int& numLines_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Message::init"));
+
+  inherited::init(screenLock_in);
 
   // sanity check(s)
   ACE_ASSERT(numLines_in);

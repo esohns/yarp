@@ -22,6 +22,7 @@
 #define RPG_CLIENT_ENTITY_MANAGER_H
 
 #include "rpg_client_exports.h"
+#include "rpg_client_engine.h"
 
 #include "rpg_engine_common.h"
 
@@ -47,30 +48,26 @@ class RPG_Client_Export RPG_Client_Entity_Manager
 
  public:
   // init (clipping)
-  void init(RPG_Graphics_IWindow*); // (target) window handle
+  void init(RPG_Client_Engine*,     // client engine handle
+            RPG_Graphics_IWindow*); // (target) window handle
 
   // manage entities
-  // *NOTE*: fire-and-forget API, surface is SDL_FreeSurface()d on remove()...
   void add(const RPG_Engine_EntityID_t&, // id
-           SDL_Surface*);                // graphic handle
-  void remove(const RPG_Engine_EntityID_t&); // id
+           SDL_Surface*,                 // graphic handle
+           const bool& = false);         // free on remove() ?
+  void remove(const RPG_Engine_EntityID_t&, // id
+              SDL_Rect&);                   // return value: "dirty" region
   bool cached(const RPG_Engine_EntityID_t&) const; // id
 
   // draw the entity
   void put(const RPG_Engine_EntityID_t&,   // id
            const RPG_Graphics_Position_t&, // target tile (screen coordinates !)
-           SDL_Surface*,                   // target surface (e.g. screen)
            SDL_Rect&);                     // return value: "dirty" region
 
-  // restore the BG
-  void restoreBG(const RPG_Engine_EntityID_t&, // id
-                 SDL_Surface*,                 // target surface (e.g. screen)
-                 SDL_Rect&);                   // return value: "dirty" region
   // clear the stored BG
   void invalidateBG(const RPG_Engine_EntityID_t&); // id
 
  private:
-  // safety measures
   virtual ~RPG_Client_Entity_Manager();
   RPG_Client_Entity_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Entity_Manager(const RPG_Client_Entity_Manager&));
@@ -80,13 +77,20 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   struct RPG_Client_EntityCacheEntry_t
   {
     SDL_Surface*            graphic;
-    RPG_Graphics_Position_t bg_position;
+    bool                    free_on_remove;
     SDL_Surface*            bg;
+    RPG_Graphics_Position_t bg_position;
   };
   typedef std::map<RPG_Engine_EntityID_t, RPG_Client_EntityCacheEntry_t> RPG_Client_EntityCache_t;
   typedef RPG_Client_EntityCache_t::iterator RPG_Client_EntityCacheIterator_t;
   typedef RPG_Client_EntityCache_t::const_iterator RPG_Client_EntityCacheConstIterator_t;
 
+  // helper methods
+  // restore the BG
+  void restoreBG(const RPG_Engine_EntityID_t&, // id
+                 SDL_Rect&);                   // return value: "dirty" region
+
+  RPG_Client_Engine*       myClient;
   RPG_Graphics_IWindow*    myWindow;
   RPG_Client_EntityCache_t myCache;
 };

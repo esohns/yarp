@@ -34,6 +34,9 @@
 
 #include <png.h>
 
+// init static(s)
+Uint32 RPG_Graphics_Surface::SDL_surface_flags = 0;
+
 RPG_Graphics_Surface::RPG_Graphics_Surface()
  : mySurface(NULL),
 //    myType({{RPG_GRAPHICS_CURSOR_INVALID}, RPG_Graphics_GraphicTypeUnion::INVALID}),
@@ -538,10 +541,8 @@ RPG_Graphics_Surface::create(const unsigned int& width_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::create"));
 
   SDL_Surface* result = NULL;
-  result = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                                 SDL_ASYNCBLIT |
-                                 SDL_SRCCOLORKEY |
-                                 SDL_SRCALPHA),
+  // *NOTE*: surface is initialized as transparent
+  result = SDL_CreateRGBSurface(RPG_Graphics_Surface::SDL_surface_flags,
                                 static_cast<int>(width_in),
                                 static_cast<int>(height_in),
 //                                 (bit_depth * 8),
@@ -577,9 +578,9 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
 
   // sanity check(s)
   ACE_ASSERT(width_in <= static_cast<unsigned int>(source_in.w));
-//   ACE_ASSERT((offsetX_in + width_in) <= (static_cast<unsigned long> (image_in.w) - 1));
+//   ACE_ASSERT((offsetX_in + width_in) <= (static_cast<unsigned int> (image_in.w) - 1));
   ACE_ASSERT(height_in <= static_cast<unsigned int>(source_in.h));
-//   ACE_ASSERT((offsetY_in + height_in) <= (static_cast<unsigned long> (image_in.h) - 1));
+//   ACE_ASSERT((offsetY_in + height_in) <= (static_cast<unsigned int> (image_in.h) - 1));
   // clip where necessary...
   unsigned int clipped_width, clipped_height;
   clipped_width = (source_in.w - offsetX_in); // available width
@@ -589,10 +590,7 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
 
   // init return value
   SDL_Surface* result = NULL;
-  result = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                                 SDL_ASYNCBLIT |
-                                 SDL_SRCCOLORKEY |
-                                 SDL_SRCALPHA),
+  result = SDL_CreateRGBSurface(RPG_Graphics_Surface::SDL_surface_flags,
                                 width_in,
                                 height_in,
                                 source_in.format->BitsPerPixel,
@@ -672,9 +670,13 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
   // clip where necessary...
   unsigned int clipped_width, clipped_height;
   clipped_width = (source_in.w - offsetX_in); // available width
-  clipped_width = ((clipped_width > static_cast<unsigned int>(target_inout.w)) ? target_inout.w : clipped_width);
+  clipped_width =
+      ((clipped_width > static_cast<unsigned int>(target_inout.w)) ? target_inout.w
+                                                                   : clipped_width);
   clipped_height = (source_in.h - offsetY_in); // available height
-  clipped_height = ((clipped_height > static_cast<unsigned int>(target_inout.h)) ? target_inout.h : clipped_height);
+  clipped_height =
+      ((clipped_height > static_cast<unsigned int>(target_inout.h)) ? target_inout.h
+                                                                    : clipped_height);
 
   // *NOTE*: blitting does not preserve the alpha channel...
   if (blit_in)
@@ -1100,10 +1102,7 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::copy"));
 
   SDL_Surface* result = NULL;
-  result = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                                 SDL_ASYNCBLIT |
-                                 SDL_SRCCOLORKEY |
-                                 SDL_SRCALPHA),
+  result = SDL_CreateRGBSurface(RPG_Graphics_Surface::SDL_surface_flags,
                                 sourceImage_in.w,
                                 sourceImage_in.h,
                                 sourceImage_in.format->BitsPerPixel,

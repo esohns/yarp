@@ -31,6 +31,7 @@
 
 #include "rpg_common_icontrol.h"
 #include "rpg_common_idumpstate.h"
+#include "rpg_common_ilock.h"
 
 #include <glade/glade.h>
 
@@ -50,7 +51,8 @@ class RPG_Client_Export RPG_Client_Engine
  : public ACE_Task<ACE_MT_SYNCH>,
    public RPG_Common_IControl,
    public RPG_Common_IDumpState,
-   public RPG_Engine_IClient
+   public RPG_Engine_IClient,
+   public RPG_Common_ILock
 {
  public:
   RPG_Client_Engine();
@@ -63,6 +65,10 @@ class RPG_Client_Export RPG_Client_Engine
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
+
+  // implement RPG_Common_ILock
+  virtual void lock();
+  virtual void unlock();
 
   void redraw();
   // *NOTE*: this triggers a complete redraw !
@@ -101,7 +107,6 @@ class RPG_Client_Export RPG_Client_Engine
  private:
   typedef ACE_Task<ACE_MT_SYNCH> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Engine(const RPG_Client_Engine&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Engine& operator=(const RPG_Client_Engine&));
 
@@ -132,6 +137,7 @@ class RPG_Client_Export RPG_Client_Engine
   RPG_Client_SelectionMode        mySelectionMode;
   RPG_Client_SeenPositions_t      mySeenPositions;
   bool                            myCenterOnActivePlayer;
+  ACE_Thread_Mutex                myScreenLock;
 };
 
 #endif

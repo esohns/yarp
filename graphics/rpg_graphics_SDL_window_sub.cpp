@@ -55,13 +55,22 @@ RPG_Graphics_SDLWindowSub::~RPG_Graphics_SDLWindowSub()
 }
 
 void
-RPG_Graphics_SDLWindowSub::close()
+RPG_Graphics_SDLWindowSub::close(SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::close"));
 
+  // step0: init return value(s)
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+
   // restore saved background
   if (myBG)
-    restoreBG();
+  {
+    if (inherited::myScreenLock)
+      myScreenLock->lock();
+    restoreBG(dirtyRegion_out);
+    if (inherited::myScreenLock)
+      myScreenLock->unlock();
+  } // end IF
 
   delete this;
 }
@@ -106,9 +115,12 @@ RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_Size_t& size_in)
 }
 
 void
-RPG_Graphics_SDLWindowSub::restoreBG(const bool& update_in)
+RPG_Graphics_SDLWindowSub::restoreBG(SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::restoreBG"));
+
+  // step0: init return value(s)
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   // sanity check(s)
   ACE_ASSERT(myBG);
@@ -118,14 +130,8 @@ RPG_Graphics_SDLWindowSub::restoreBG(const bool& update_in)
                             *myBG,
                             inherited::myScreen);
 
-  // update screen immediately ?
-  if (update_in)
-  {
-    SDL_Rect dirty_region = {static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first),
-                             static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second),
-                             static_cast<uint16_t>(myBG->w),
-                             static_cast<uint16_t>(myBG->h)};
-    RPG_Graphics_Surface::update(dirty_region,
-                                 inherited::myScreen);
-  } // end IF
+  dirtyRegion_out.x = static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first);
+  dirtyRegion_out.y = static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second);
+  dirtyRegion_out.w = static_cast<uint16_t>(myBG->w);
+  dirtyRegion_out.h = static_cast<uint16_t>(myBG->h);
 }

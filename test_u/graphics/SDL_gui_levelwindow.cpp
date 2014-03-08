@@ -681,7 +681,6 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         SDL_Rect dirtyRegion;
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(entity_id,
                                                              screen_position,
-                                                             targetSurface,
                                                              dirtyRegion);
       } // end IF
 
@@ -1109,14 +1108,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       // change "active" tile ?
       if (map_position != myHighlightBGPosition)
       {
-        // *NOTE*: restore cursor BG first
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen,
-                                                                     dirtyRegion);
-//         invalidate(dirtyRegion);
-        // *NOTE*: updating straight away reduces ugly smears...
-        RPG_Graphics_Surface::update(dirtyRegion,
-                                     myScreen);
-
         // step1: restore/clear old background
         restoreBG();
 
@@ -1155,8 +1146,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           dirtyRegion.h = static_cast<Uint16>(myHighlightTile->h);
           SDL_GetClipRect(myScreen, &clipRect);
           unclip();
-//           invalidate(dirtyRegion);
-          // *NOTE*: updating straight away reduces ugly smears...
           RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
                                        myScreen);
         } // end IF
@@ -1164,21 +1153,18 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 
       // set an appropriate cursor
       RPG_Engine_EntityID_t entity_id = myEngine->getActive(true);
-      RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(map_position,
-                                                                           entity_id,
-                                                                           true,
-                                                                           SELECTIONMODE_NORMAL,
-                                                                           *myEngine,
-                                                                           true);
+      RPG_Graphics_Cursor cursor_type =
+          RPG_Client_Common_Tools::getCursor(map_position,
+                                             entity_id,
+                                             true,
+                                             SELECTIONMODE_NORMAL,
+                                             *myEngine,
+                                             true);
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
-        // *NOTE*: restore cursor BG first
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(myScreen, dirtyRegion);
-//         invalidate(dirtyRegion);
-        // *NOTE*: updating straight away reduces ugly smears...
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_type,
+                                                               dirtyRegion);
         RPG_Graphics_Surface::update(dirtyRegion, myScreen);
-
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_type);
       } // end IF
 
       break;
@@ -1422,7 +1408,6 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
                                                            RPG_Graphics_Common_Tools::map2Screen(parameters_in.position,
                                                                                                  getSize(false),
                                                                                                  getView()),
-                                                           getScreen(),
                                                            dirtyRegion);
 
       RPG_Graphics_Surface::update(dirtyRegion,
@@ -1432,7 +1417,11 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
     }
     case COMMAND_E2C_ENTITY_REMOVE:
     {
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(parameters_in.entity_id);
+      SDL_Rect dirtyRegion = {0, 0, 0, 0};
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(parameters_in.entity_id,
+                                                              dirtyRegion);
+      RPG_Graphics_Surface::update(dirtyRegion,
+                                   getScreen());
 
       return;
     }

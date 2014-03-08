@@ -97,12 +97,14 @@ RPG_Client_Window_Main::draw(SDL_Surface* targetSurface_in,
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::draw"));
 
   // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
+                                                 : myScreen);
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
+  ACE_ASSERT(myEngine);
 
 //   // init clipping
 //   clip(targetSurface,
@@ -110,6 +112,7 @@ RPG_Client_Window_Main::draw(SDL_Surface* targetSurface_in,
 //        offsetY_in);
 
   // step1: draw borders
+  myEngine->lock();
   drawBorder(targetSurface,
              offsetX_in,
              offsetY_in);
@@ -129,6 +132,9 @@ RPG_Client_Window_Main::draw(SDL_Surface* targetSurface_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                ACE_TEXT(SDL_GetError())));
+
+    // clean up
+    myEngine->unlock();
 
     return;
   } // end IF
@@ -152,6 +158,9 @@ RPG_Client_Window_Main::draw(SDL_Surface* targetSurface_in,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                ACE_TEXT(SDL_GetError())));
 
+    // clean up
+    myEngine->unlock();
+
     return;
   } // end IF
 
@@ -169,6 +178,9 @@ RPG_Client_Window_Main::draw(SDL_Surface* targetSurface_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                  ACE_TEXT(SDL_GetError())));
+
+      // clean up
+      myEngine->unlock();
 
       return;
     } // end IF
@@ -192,9 +204,13 @@ RPG_Client_Window_Main::draw(SDL_Surface* targetSurface_in,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                  ACE_TEXT(SDL_GetError())));
 
+      // clean up
+      myEngine->unlock();
+
       return;
     } // end IF
   } // end IF
+  myEngine->unlock();
 
   // step4: realize hotspots (and any other children)
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
@@ -269,7 +285,7 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
 //           ACE_DEBUG((LM_DEBUG,
 //                      ACE_TEXT("lost mouse coverage...\n")));
 
-          client_action.command = COMMAND_CURSOR_RESTORE_BG;
+          client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
           client_action.window = this;
           myEngine->action(client_action);
 
@@ -733,14 +749,9 @@ RPG_Client_Window_Main::notify(const RPG_Graphics_Cursor& cursor_in) const
   client_action.cursor = cursor_in;
   client_action.entity_id = 0;
   if (cursor_in == RPG_GRAPHICS_CURSOR_INVALID)
-  {
-    client_action.command = COMMAND_CURSOR_RESTORE_BG;
-    myEngine->action(client_action);
-
-    return;
-  } // end IF
-
-  client_action.command = COMMAND_CURSOR_SET;
+    client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+  else
+    client_action.command = COMMAND_CURSOR_SET;
   myEngine->action(client_action);
 }
 

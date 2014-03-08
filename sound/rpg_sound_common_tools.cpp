@@ -180,8 +180,8 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
 			return false;
 		} // end IF
 
-		ACE_DEBUG((LM_INFO,
-							 ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency:\t%d\nformat:\t\t%s\nchannels:\t%d\nCD:\t\t%s\n"),
+		ACE_DEBUG((LM_DEBUG,
+							 ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency:\t%d\nformat:\t%s\nchannels:\t%d\nCD:\t%s\n"),
 							 ACE_TEXT(driver),
 							 RPG_Sound_Common_Tools::myConfig.frequency,
 							 ACE_TEXT(format_string.c_str()),

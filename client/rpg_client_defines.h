@@ -24,6 +24,7 @@
 // task-specific
 #define RPG_CLIENT_TASK_GROUP_ID                   104
 #define RPG_CLIENT_TASK_THREAD_NAME                "RPG graphics engine"
+#define RPG_CLIENT_MAX_QUEUE_SLOTS                 100
 
 #define RPG_CLIENT_GNOME_APPLICATION_ID            "rpg_client"
 #define RPG_CLIENT_GNOME_UI_FILE                   "rpg_client.glade"
@@ -120,7 +121,6 @@
 #define RPG_CLIENT_DEF_SCREENSHOT_PREFIX           "screenshot"
 #define RPG_CLIENT_DEF_SCREENSHOT_EXT              ".png"
 
-#define RPG_CLIENT_DEF_VISIONBLEND_ISON            true
 #define RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL      false
 
 #endif

@@ -39,6 +39,7 @@
 #include "rpg_map_common_tools.h"
 
 #include "rpg_graphics_defines.h"
+#include "rpg_graphics_common.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_cursor_manager.h"
@@ -91,24 +92,12 @@ enum UserMode_t
   MODE_MAX
 };
 
-// *NOTE* types as used by SDL
-struct SDL_VideoConfiguration_t
-{
-  int    screen_width;
-  int    screen_height;
-  int    screen_colordepth; // bits/pixel
-//   Uint32 screen_flags;
-  bool   double_buffer;
-  bool   use_OpenGL;
-  bool   full_screen;
-};
-
 static SDL_Surface*     screen     = NULL;
 static ACE_Thread_Mutex hover_lock;
-static unsigned long    hover_time = 0;
+static unsigned int     hover_time = 0;
 
 bool
-do_preInitVideo(const SDL_VideoConfiguration_t& config_in)
+do_preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in)
 {
   RPG_TRACE(ACE_TEXT("::do_preInitVideo"));
 
@@ -125,12 +114,7 @@ do_preInitVideo(const SDL_VideoConfiguration_t& config_in)
   // enable cursor
   SDL_ShowCursor(SDL_ENABLE);
 
-  screen = RPG_Graphics_SDL_Tools::initScreen(config_in.screen_width,
-                                              config_in.screen_height,
-                                              config_in.screen_colordepth,
-                                              config_in.double_buffer,
-                                              config_in.use_OpenGL,
-                                              config_in.full_screen);
+  screen = RPG_Graphics_SDL_Tools::initScreen(configuration_in);
 
   return (screen != NULL);
 }
@@ -1142,7 +1126,6 @@ do_UI(RPG_Engine_Entity& entity_in,
         SDL_Rect dirtyRegion;
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
                                                                mouse_position.second,
-                                                               screen,
                                                                dirtyRegion);
         RPG_Graphics_Surface::update(dirtyRegion,
                                      screen);
@@ -1162,7 +1145,7 @@ do_work(const mode_t& mode_in,
         const std::string& entity_in,
         const std::string& map_in,
         const RPG_Map_FloorPlan_Configuration_t& mapConfiguration_in,
-        const SDL_VideoConfiguration_t& videoConfiguration_in,
+        const RPG_Graphics_SDL_VideoConfiguration_t& videoConfiguration_in,
         const std::string& magicDictionary_in,
         const std::string& itemsDictionary_in,
 				const std::string& monsterDictionary_in,
@@ -1266,7 +1249,10 @@ do_work(const mode_t& mode_in,
       mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
       // step3: set default cursor
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL);
+      SDL_Rect dirty_region;
+      ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL,
+                                                             dirty_region);
 
       // step4: create/load initial entity
       std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
@@ -1334,8 +1320,10 @@ do_work(const mode_t& mode_in,
       SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.child(WINDOW_MAP));
       ACE_ASSERT(map_window);
 			// init/add entity to the graphics cache
-			RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(map_window);
-			RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(map_window);
+			RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(NULL,
+																															map_window);
+			RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(NULL,
+																														map_window);
 
       // *NOTE*: triggers a center/draw/refresh...
       // --> but as we're not using the client engine, it doesn't redraw...
@@ -1582,7 +1570,7 @@ ACE_TMAIN(int argc,
   map_config.map_size_y             = SDL_GUI_DEF_MAP_SIZE_Y;
 
   // *** video ***
-  SDL_VideoConfiguration_t video_config;
+  RPG_Graphics_SDL_VideoConfiguration_t video_config;
   video_config.screen_width      = SDL_GUI_DEF_VIDEO_W;
   video_config.screen_height     = SDL_GUI_DEF_VIDEO_H;
   video_config.screen_colordepth = SDL_GUI_DEF_VIDEO_BPP;
