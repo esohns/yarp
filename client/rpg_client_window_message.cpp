@@ -58,12 +58,12 @@ RPG_Client_Window_Message::~RPG_Client_Window_Message()
 void
 RPG_Client_Window_Message::handleEvent(const SDL_Event& event_in,
                                        RPG_Graphics_IWindow* window_in,
-                                       bool& redraw_out)
+                                       SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Message::handleEvent"));
 
   // init return value(s)
-  redraw_out = false;
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("RPG_Client_Window_Message::handleEvent(%s)\n"),
@@ -103,7 +103,7 @@ RPG_Client_Window_Message::handleEvent(const SDL_Event& event_in,
       // delegate these to the parent...
       getParent()->handleEvent(event_in,
                                window_in,
-                               redraw_out);
+                               dirtyRegion_out);
 
       break;
     }
@@ -236,30 +236,29 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
                                      (index * (text_size.second + 1))),
                                     targetSurface);
     } // end FOR
+
+    // reset clipping
+//    unclip(targetSurface);
+    if (!SDL_SetClipRect(targetSurface, &(inherited::myClipRect)))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
+                 ACE_TEXT(SDL_GetError())));
+
+      // clean up
+      if (inherited::myScreenLock)
+        inherited::myScreenLock->unlock();
+
+      return;
+    } // end IF
+    inherited::myClipRect = clip_rect;
+
+    dirty_region = inherited::myClipRect;
   } // end lock scope
   if (inherited::myScreenLock)
     inherited::myScreenLock->unlock();
 
-  // reset clipping
-  //unclip(targetSurface);
-  if (!SDL_SetClipRect(targetSurface, &(inherited::myClipRect)))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
-    return;
-  } // end IF
-
   // invalidate dirty region
-  dirty_region.w = ((inherited::mySize.first > dirty_region.w) ? inherited::mySize.first
-                                                               : dirty_region.w);
-  dirty_region.h = ((inherited::mySize.second > dirty_region.h) ? inherited::mySize.second
-                                                                : dirty_region.h);
-  if (dirty_region.x > static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first))
-    dirty_region.x = static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first);
-  if (dirty_region.y > static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second))
-    dirty_region.y = static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second);
   invalidate(dirty_region);
 
   // remember position of last realization

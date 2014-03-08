@@ -33,7 +33,10 @@ class RPG_Common_Export RPG_Common_File_Tools
   static bool isReadable(const std::string&); // FQ filename
   static bool isEmpty(const std::string&); // FQ filename
   static bool isDirectory(const std::string&); // directory
+  static bool isEmptyDirectory(const std::string&); // directory
   static bool createDirectory(const std::string&); // directory
+  static bool copyFile(const std::string&,  // FQ filename
+                       const std::string&); // directory
   static bool deleteFile(const std::string&); // FQ filename
   // *NOTE*: users need to free (delete[]) the returned buffer
   static bool loadFile(const std::string&, // FQ filename
@@ -43,22 +46,26 @@ class RPG_Common_Export RPG_Common_File_Tools
 
   static std::string getWorkingDirectory();
   // *PORTABILITY*: - on UNIX, this should be passed as a BASEDIR macro at compile time
-  //                - on WIN32, this should default to the working directory
-  static std::string getConfigDataDirectory(const std::string&, // base directory
-                                            const bool&);       // config ? : data
+  //                - on WIN32, this should default to the working directory (*TODO*)
+  static std::string getConfigurationDataDirectory(const std::string&, // base directory
+                                                   const bool&);       // config ? : data
 
   static std::string getUserHomeDirectory(const std::string&); // user
   // *NOTE*: (try to) create the directory if it doesn't exist
-  static std::string getUserGameDirectory();
+  static std::string getUserConfigurationDirectory();
 
   static std::string getLogFilename(const std::string&); // program name
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools());
   ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Common_File_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools(const RPG_Common_File_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools& operator=(const RPG_Common_File_Tools&));
+
+  // helper methods
+//  static int dirent_selector(const dirent*);
+//  static int dirent_comparator(const dirent**,
+//                               const dirent**);
 };
 
 #endif

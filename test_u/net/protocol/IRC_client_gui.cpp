@@ -87,8 +87,8 @@ print_usage(const std::string& programName_in)
 
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
@@ -140,8 +140,8 @@ process_arguments(const int argc_in,
 
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
 #endif // #ifdef BASEDIR
 
   // init results
@@ -1281,8 +1281,8 @@ ACE_TMAIN(int argc,
   // step2a: process commandline arguments
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
 #endif // #ifdef BASEDIR
 
   std::string configFile = config_path;

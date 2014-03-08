@@ -59,6 +59,8 @@
 // *TODO*: convert if necessary...
 #define RPG_ENGINE_ENTITY_DEF_FILE          "default_player"
 #define RPG_ENGINE_ENTITY_PROFILE_EXT       ".entity"
+// default (profiles) data directory tree organization
+#define RPG_ENGINE_ENTITY_SUB               "profiles"
 
 // network-specific
 #define RPG_ENGINE_DEF_NETWORK_SERVER       "localhost"

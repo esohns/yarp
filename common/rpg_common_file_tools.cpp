@@ -21,15 +21,6 @@
 
 #include "rpg_common_file_tools.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
-
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #include "Userenv.h"
 #include "Shlobj.h"
@@ -40,6 +31,16 @@
 #include <ace/FILE_IO.h>
 #include <ace/FILE_Connector.h>
 #include <ace/Dirent_Selector.h>
+#include <ace/OS_NS_sys_sendfile.h>
+
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
+
+// *NOTE*: need this to import correct VERSION !
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
 
 bool
 RPG_Common_File_Tools::isReadable(const std::string& filename_in)
@@ -47,12 +48,13 @@ RPG_Common_File_Tools::isReadable(const std::string& filename_in)
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isReadable"));
 
   ACE_stat stat;
+  ACE_OS::memset(&stat, 0, sizeof(stat));
   if (ACE_OS::stat(filename_in.c_str(),
                    &stat) == -1)
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\", aborting\n"),
-//                filename_in.c_str()));
+//                ACE_TEXT(filename_in.c_str())));
 
     return false;
   } // end IF
@@ -66,12 +68,13 @@ RPG_Common_File_Tools::isEmpty(const std::string& filename_in)
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isEmpty"));
 
   ACE_stat stat;
+  ACE_OS::memset(&stat, 0, sizeof(stat));
   if (ACE_OS::stat(filename_in.c_str(),
                    &stat) == -1)
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\", aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     return false;
   } // end IF
@@ -85,6 +88,7 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
 //   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isDirectory"));
 
   ACE_stat stat;
+  ACE_OS::memset(&stat, 0, sizeof(stat));
   if (ACE_OS::stat(directory_in.c_str(),
                    &stat) == -1)
   {
@@ -94,7 +98,7 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
       {
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("\"%s\": \"%m\", aborting\n"),
-                   directory_in.c_str()));
+                   ACE_TEXT(directory_in.c_str())));
 
         // URI doesn't even exist --> NOT a directory !
         return false;
@@ -103,7 +107,7 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\", aborting\n"),
-                   directory_in.c_str()));
+                   ACE_TEXT(directory_in.c_str())));
 
         return false;
       }
@@ -111,6 +115,71 @@ RPG_Common_File_Tools::isDirectory(const std::string& directory_in)
   } // end IF
 
   return ((stat.st_mode & S_IFMT) == S_IFDIR);
+}
+
+//int
+//RPG_Common_File_Tools::selector(const dirent* dirEntry_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::selector"));
+
+//  // *IMPORTANT NOTE*: select all files
+
+//  // sanity check --> ignore dot/double-dot
+//  if (ACE_OS::strncmp(dirEntry_in->d_name,
+//                      ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX),
+//                      ACE_OS::strlen(ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX))) != 0)
+//  {
+////     // debug info
+////     ACE_DEBUG((LM_DEBUG,
+////                ACE_TEXT("ignoring \"%s\"...\n"),
+////                ACE_TEXT(dirEntry_in->d_name)));
+
+//    return 0;
+//  } // end IF
+
+//  return 1;
+//}
+
+//int
+//RPG_Common_File_Tools::comparator(const dirent** d1,
+//                                  const dirent** d2)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::comparator"));
+
+//  return ACE_OS::strcmp((*d1)->d_name,
+//                        (*d2)->d_name);
+//}
+
+bool
+RPG_Common_File_Tools::isEmptyDirectory(const std::string& directory_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::isEmptyDirectory"));
+
+  // init return value
+  bool result = false;
+
+  ACE_Dirent_Selector entries;
+  if (entries.open(ACE_TEXT(directory_in.c_str()),
+//                   &RPG_Common_File_Tools::dirent_selector,
+//                   &RPG_Common_File_Tools::dirent_comparator) == -1)
+                   NULL,
+                   NULL) == -1)
+  {
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT(directory_in.c_str())));
+
+    return result;
+  } // end IF
+  result = (entries.length() == 0);
+
+  // clean up
+  if (entries.close() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Dirent_Selector::close(\"%s\"): \"%m\", continuing\n"),
+               ACE_TEXT(directory_in.c_str())));
+
+  return result;
 }
 
 bool
@@ -127,16 +196,26 @@ RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
       {
         // OK: some base sub-directory doesn't seem to exist...
         // --> try to recurse
-        std::string baseDir = ACE::dirname(directory_in.c_str());
-
-        // sanity check: don't recurse for "." !
-        if (baseDir != ACE_TEXT("."))
+        const ACE_TCHAR* dirname = ACE::dirname(directory_in.c_str(),
+                                                ACE_DIRECTORY_SEPARATOR_CHAR);
+        if (!dirname)
         {
-          if (createDirectory(baseDir))
-          {
-            // now try again...
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE::dirname(\"%s\"): \"%m\", aborting\n"),
+                     ACE_TEXT(directory_in.c_str())));
+
+          return false;
+        } // end IF
+        std::string base_directory = ACE_TEXT_ALWAYS_CHAR(dirname);
+        // sanity check: don't recurse for "." !
+        if (base_directory != ACE_TEXT_ALWAYS_CHAR("."))
+        {
+          if (createDirectory(base_directory))
             return createDirectory(directory_in);
-          } // end IF
+          else
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"): \"%m\", aborting\n"),
+                       ACE_TEXT(base_directory.c_str())));
         } // end IF
 
         return false;
@@ -146,7 +225,7 @@ RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
         // entry already exists...
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("\"%s\" already exists, leaving\n"),
-                   directory_in.c_str()));
+                   ACE_TEXT(directory_in.c_str())));
 
         return true;
       }
@@ -154,7 +233,7 @@ RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_OS::mkdir(\"%s\"): \"%m\", aborting\n"),
-                   directory_in.c_str()));
+                   ACE_TEXT(directory_in.c_str())));
 
         return false;
       }
@@ -163,7 +242,185 @@ RPG_Common_File_Tools::createDirectory(const std::string& directory_in)
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("created: \"%s\"...\n"),
-             directory_in.c_str()));
+             ACE_TEXT(directory_in.c_str())));
+
+  return true;
+}
+
+bool
+RPG_Common_File_Tools::copyFile(const std::string& filename_in,
+                                const std::string& directory_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::copyFile"));
+
+  // connect to the file...
+  ACE_FILE_Addr source_address, target_address;
+  if (source_address.set(ACE_TEXT_CHAR_TO_TCHAR(filename_in.c_str())) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_FILE_Addr::set() file \"%s\": \"%m\", aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    return false;
+  } // end IF
+  const ACE_TCHAR* basename = ACE::basename(filename_in.c_str(),
+                                            ACE_DIRECTORY_SEPARATOR_CHAR);
+  if (!basename)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::basename(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    return false;
+  } // end IF
+  std::string target_filename = directory_in;
+  target_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  target_filename += ACE_TEXT_ALWAYS_CHAR(basename);
+  if (target_address.set(ACE_TEXT_CHAR_TO_TCHAR(target_filename.c_str())) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_FILE_Addr::set() file \"%s\": \"%m\", aborting\n"),
+               target_filename.c_str()));
+
+    return false;
+  } // end IF
+
+  // don't block on file opening (see ACE doc)...
+  ACE_FILE_Connector connector, receptor;
+  ACE_FILE_IO source_file, target_file;
+  if (connector.connect(source_file,                                        // file
+                        source_address,                                     // remote SAP
+                        const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero), // timeout
+                        ACE_Addr::sap_any,                                  // local SAP
+                        0,                                                  // reuse address ?
+                        (O_RDONLY | O_BINARY | O_EXCL),                     // flags
+                        ACE_DEFAULT_FILE_PERMS) == -1)                      // permissions
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_FILE_Connector::connect() to file \"%s\": \"%m\", aborting\n"),
+               filename_in.c_str()));
+
+    return false;
+  } // end IF
+  if (receptor.connect(target_file,                                        // file
+                       target_address,                                     // remote SAP
+                       const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero), // timeout
+                       ACE_Addr::sap_any,                                  // local SAP
+                       0,                                                  // reuse address ?
+                       (O_WRONLY | O_CREAT | O_BINARY | O_TRUNC),          // flags
+                       ACE_DEFAULT_FILE_PERMS) == -1)                      // permissions
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_FILE_Connector::connect() to file \"%s\": \"%m\", aborting\n"),
+               target_filename.c_str()));
+
+    // clean up
+    if (source_file.close() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_FILE::close(\"%s\"): \"%m\", continuing\n"),
+                 ACE_TEXT(filename_in.c_str())));
+
+    return false;
+  } // end IF
+
+  // copy file
+//  iovec io_vec;
+//  ACE_OS::memset(&io_vec, 0, sizeof(io_vec));
+//  if (source_file.recvv(&io_vec) == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_FILE_IO::recvv() file \"%s\": \"%m\", aborting\n"),
+//               filename_in.c_str()));
+
+//    // clean up
+//    if (source_file.close() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE_FILE::close(\"%s\"): \"%m\", continuing\n"),
+//                 ACE_TEXT(filename_in.c_str())));
+//    if (target_file.remove() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE_FILE::remove(\"%s\"): \"%m\", continuing\n"),
+//                 ACE_TEXT(target_filename.c_str())));
+
+//    return false;
+//  } // end IF
+//  ACE_ASSERT(io_vec.iov_base);
+//  if (target_file.sendv_n(&io_vec, 1) == -1)
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to ACE_FILE_IO::sendv_n() file \"%s\": \"%m\", aborting\n"),
+//               ACE_TEXT(target_filename.c_str())));
+
+//    // clean up
+//    delete[] io_vec.iov_base;
+//    if (source_file.close() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE_FILE::close(\"%s\"): \"%m\", continuing\n"),
+//                 ACE_TEXT(filename_in.c_str())));
+//    if (target_file.remove() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE_FILE::remove(\"%s\"): \"%m\", continuing\n"),
+//                 ACE_TEXT(target_filename.c_str())));
+
+//    return false;
+//  } // end IF
+  ACE_FILE_Info file_info;
+  if (source_file.get_info(file_info) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_FILE_IO::get_info(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    // clean up
+    if (source_file.close() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_FILE::close(\"%s\"): \"%m\", continuing\n"),
+                 ACE_TEXT(filename_in.c_str())));
+    if (target_file.remove() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_FILE::remove(\"%s\"): \"%m\", continuing\n"),
+                 ACE_TEXT(target_filename.c_str())));
+
+    return false;
+  } // end IF
+  if (ACE_OS::sendfile(source_file.get_handle(),
+                       target_file.get_handle(),
+                       NULL,
+                       file_info.size_) != file_info.size_)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::sendfile(\"%s\",\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(target_filename.c_str())));
+
+    // clean up
+    if (source_file.close() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_FILE::close(\"%s\"): \"%m\", continuing\n"),
+                 ACE_TEXT(filename_in.c_str())));
+    if (target_file.remove() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_FILE::remove(\"%s\"): \"%m\", continuing\n"),
+                 ACE_TEXT(target_filename.c_str())));
+
+    return false;
+  } // end IF
+
+  // clean up
+//  delete[] io_vec.iov_base;
+  if (source_file.close() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_FILE::close(\"%s\"): \"%m\", continuing\n"),
+               ACE_TEXT(filename_in.c_str())));
+  if (target_file.close() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_FILE::close(\"%s\"): \"%m\", continuing\n"),
+               ACE_TEXT(target_filename.c_str())));
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("copied \"%s\" --> \"%s\"...\n"),
+             ACE_TEXT(filename_in.c_str()),
+             ACE_TEXT(target_filename.c_str())));
 
   return true;
 }
@@ -192,7 +449,7 @@ RPG_Common_File_Tools::deleteFile(const std::string& filename_in)
                         const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero),
                         ACE_Addr::sap_any,
                         0,
-                        (O_WRONLY | O_BINARY | O_EXCL),
+                        (O_WRONLY | O_BINARY),
                         ACE_DEFAULT_FILE_PERMS) == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -229,14 +486,12 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
   file_out = NULL;
 
   FILE* fp = NULL;
-  long fsize = 0;
-
   fp = ACE_OS::fopen(filename_in.c_str(),
                      ACE_TEXT_ALWAYS_CHAR("rb"));
   if (!fp)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
+               ACE_TEXT("failed to ACE_OS::fopen(\"%s\"): %m, aborting\n"),
                filename_in.c_str()));
 
     return false;
@@ -246,17 +501,30 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
   if (ACE_OS::fseek(fp, 0, SEEK_END))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to seek file(\"%s\"): %m, aborting\n"),
+               ACE_TEXT("failed to ACE_OS::fseek(\"%s\"): %m, aborting\n"),
                filename_in.c_str()));
+
+    // clean up
+    if (ACE_OS::fclose(fp) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): %m, continuing\n"),
+                 filename_in.c_str()));
 
     return false;
   } // end IF
+  long fsize = 0;
   fsize = ACE_OS::ftell(fp);
   if (fsize == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to tell file(\"%s\"): %m, aborting\n"),
+               ACE_TEXT("failed to ACE_OS::ftell(\"%s\"): %m, aborting\n"),
                filename_in.c_str()));
+
+    // clean up
+    if (ACE_OS::fclose(fp) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): %m, continuing\n"),
+                 filename_in.c_str()));
 
     return false;
   } // end IF
@@ -266,9 +534,15 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
   file_out = new(std::nothrow) unsigned char[fsize];
   if (!file_out)
   {
-    ACE_DEBUG((LM_ERROR,
+    ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory(%d): %m, aborting\n"),
                fsize));
+
+    // clean up
+    if (ACE_OS::fclose(fp) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): %m, continuing\n"),
+                 filename_in.c_str()));
 
     return false;
   } // end IF
@@ -284,16 +558,21 @@ RPG_Common_File_Tools::loadFile(const std::string& filename_in,
                filename_in.c_str()));
 
     // clean up
+    if (ACE_OS::fclose(fp) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): %m, continuing\n"),
+                 filename_in.c_str()));
     delete[] file_out;
     file_out = NULL;
 
     return false;
   } // end IF
 
-  if (ACE_OS::fclose(fp))
+  // clean up
+  if (ACE_OS::fclose(fp) == -1)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
+               ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): %m, aborting\n"),
                filename_in.c_str()));
 
     // clean up
@@ -352,10 +631,10 @@ RPG_Common_File_Tools::getWorkingDirectory()
 }
 
 std::string
-RPG_Common_File_Tools::getConfigDataDirectory(const std::string& baseDir_in,
-                                              const bool& isConfig_in)
+RPG_Common_File_Tools::getConfigurationDataDirectory(const std::string& baseDir_in,
+                                                     const bool& isConfig_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getConfigDataDirectory"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getConfigurationDataDirectory"));
 
   std::string result = baseDir_in;
 
@@ -481,9 +760,9 @@ RPG_Common_File_Tools::getUserHomeDirectory(const std::string& user_in)
 }
 
 std::string
-RPG_Common_File_Tools::getUserGameDirectory()
+RPG_Common_File_Tools::getUserConfigurationDirectory()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getUserGameDirectory"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getUserConfigurationDirectory"));
 
   std::string result;
 

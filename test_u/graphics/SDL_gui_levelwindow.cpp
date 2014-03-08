@@ -68,10 +68,10 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
    myWallBlend(NULL),
    myView(std::make_pair(myEngine->getSize().first / 2,
                          myEngine->getSize().second / 2)),
-   myHighlightBGPosition(std::make_pair(myEngine->getSize().first / 2,
-                                        myEngine->getSize().second / 2)),
-   myHighlightBG(NULL),
-   myHighlightTile(NULL),
+//   myHighlightBGPosition(std::make_pair(myEngine->getSize().first / 2,
+//                                        myEngine->getSize().second / 2)),
+//   myHighlightBG(NULL),
+//   myHighlightTile(NULL),
    myMinimapIsOn(SDL_GUI_DEF_GRAPHICS_MINIMAP_ISON)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
@@ -104,22 +104,22 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
                  0,
                  sizeof(myCurrentDoorSet));
 
-  // init cursor highlighting
-  myHighlightBG = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-                                               RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
-  if (!myHighlightBG)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
-               RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-               RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
-  type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
-  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                           true,   // convert to display format
-                                                           false); // don't cache
-  if (!myHighlightTile)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+//  // init cursor highlighting
+//  myHighlightBG = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+//                                               RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
+//  if (!myHighlightBG)
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
+//               RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+//               RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
+//  type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
+//  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+//                                                           true,   // convert to display format
+//                                                           false); // don't cache
+//  if (!myHighlightTile)
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+//               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
   // init style
   myCurrentMapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
@@ -205,10 +205,10 @@ SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow()
   if (myCurrentOffMapTile)
     SDL_FreeSurface(myCurrentOffMapTile);
 
-  if (myHighlightBG)
-    SDL_FreeSurface(myHighlightBG);
-  if (myHighlightTile)
-    SDL_FreeSurface(myHighlightTile);
+//  if (myHighlightBG)
+//    SDL_FreeSurface(myHighlightBG);
+//  if (myHighlightTile)
+//    SDL_FreeSurface(myHighlightTile);
 }
 
 void
@@ -247,7 +247,8 @@ SDL_GUI_LevelWindow::getView() const
 }
 
 void
-SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
+SDL_GUI_LevelWindow::init(RPG_Common_ILock* screenLock_in,
+                          const RPG_Graphics_MapStyle_t& mapStyle_in,
                           const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
@@ -270,12 +271,12 @@ SDL_GUI_LevelWindow::init(const RPG_Graphics_MapStyle_t& mapStyle_in,
   myDebug = debug_in;
 
   // init edge, floor, door tiles
-  init();
+  init(screenLock_in);
 
-  // init cursor highlighting
-  RPG_Map_Size_t size = myEngine->getSize();
-  myHighlightBGPosition = std::make_pair(size.first / 2,
-                                         size.second / 2);
+//  // init cursor highlighting
+//  RPG_Map_Size_t size = myEngine->getSize();
+//  myHighlightBGPosition = std::make_pair(size.first / 2,
+//                                         size.second / 2);
 }
 
 void
@@ -286,7 +287,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::draw"));
 
   // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
+                                                 : myScreen);
 
   // sanity check(s)
   ACE_ASSERT(myCurrentOffMapTile);
@@ -356,8 +358,10 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
   RPG_Engine_EntityID_t entity_id = 0;
 
-  // "clear" map "window"
-  clear();
+  if (inherited::myScreenLock)
+    inherited::myScreenLock->lock();
+//  // "clear" map "window"
+//  clear();
 
   // pass 1
   RPG_Map_Size_t size = myEngine->getSize();
@@ -678,10 +682,11 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->invalidateBG(entity_id);
 
         // draw creature
-        SDL_Rect dirtyRegion;
+        SDL_Rect dirty_region;
+        ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(entity_id,
                                                              screen_position,
-                                                             dirtyRegion);
+                                                             dirty_region);
       } // end IF
 
       //creature_iterator = entity_graphics.find(current_map_position);
@@ -737,25 +742,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       } // end IF
     } // end FOR
   } // end FOR
-
-  // refresh cursor highlight
-  screen_position = RPG_Graphics_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                          inherited::mySize,
-                                                          myView);
-  // grab BG
-  // sanity check for underruns
-  if ((screen_position.first  < targetSurface->w) &&
-      (screen_position.second < targetSurface->h))
-    RPG_Graphics_Surface::get(screen_position.first,
-                              screen_position.second,
-                              true, // use (fast) blitting method
-                              *targetSurface,
-                              *myHighlightBG);
-
-  RPG_Graphics_Surface::put(screen_position.first,
-                            screen_position.second,
-                            *myHighlightTile,
-                            targetSurface);
+  if (inherited::myScreenLock)
+    inherited::myScreenLock->unlock();
 
   // realize any sub-windows
   for (RPG_Graphics_WindowsIterator_t iterator = inherited::myChildren.begin();
@@ -798,12 +786,12 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 void
 SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                  RPG_Graphics_IWindow* window_in,
-                                 bool& redraw_out)
+                                 SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::handleEvent"));
 
   // init return value(s)
-  redraw_out = false;
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   RPG_Engine_EntityID_t entity_id = 0;
   switch (event_in.type)
@@ -825,6 +813,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         case SDLK_LEFT:
         case SDLK_RIGHT:
         {
+          bool redraw = false;
           RPG_Map_Direction direction = DIRECTION_INVALID;
           entity_id = myEngine->getActive();
           switch (event_in.key.keysym.sym)
@@ -839,6 +828,8 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                 setView((size.first  / 2),
                         (size.second / 2));
               } // end ELSE
+
+              redraw = true;
 
               break;
             }
@@ -929,17 +920,18 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 
               myEngine->action(entity_id, player_action);
 
-              setView(myEngine->getPosition(entity_id));
+//              setView(myEngine->getPosition(entity_id));
             } // end IF
           } // end IF
+          else
+            redraw = true;
 
-          // *NOTE*: fiddling with the view invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          // need a redraw
-          redraw_out = true;
+          if (redraw)
+          {
+            draw();
+            getArea(dirtyRegion_out);
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
+          } // end IF
 
           // done with this event
           return;
@@ -948,8 +940,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         {
           myDebug = !myDebug;
 
-          // need a redraw
-          redraw_out = true;
+          // redraw
+          draw();
+          getArea(dirtyRegion_out);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
           // done with this event
           return;
@@ -961,13 +955,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             // toggle setting
             myHideFloor = !myHideFloor;
 
-            // *NOTE*: fiddling with the style invalidates the cursor BG !
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-            // clear highlight BG
-            RPG_Graphics_Surface::clear(myHighlightBG);
-
-            // need a redraw
-            redraw_out = true;
+            // redraw
+            draw();
+            getArea(dirtyRegion_out);
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
             // done with this event
             return;
@@ -981,13 +972,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           style.floorstyle = myCurrentMapStyle.floor_style;
           setStyle(style);
 
-          // *NOTE*: fiddling with the style invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          // need a redraw
-          redraw_out = true;
+          // redraw
+          draw();
+          getArea(dirtyRegion_out);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
           // done with this event
           return;
@@ -1002,13 +990,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           new_style.wallstyle = myCurrentMapStyle.wall_style;
           setStyle(new_style);
 
-          // *NOTE*: fiddling with the style invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          // need a redraw
-          redraw_out = true;
+          // redraw
+          draw();
+          getArea(dirtyRegion_out);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
           // done with this event
           return;
@@ -1017,13 +1002,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         {
           myMinimapIsOn = !myMinimapIsOn;
 
-          // *NOTE*: fiddling with the view invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          // need a redraw
-          redraw_out = true;
+          // redraw
+          draw();
+          getArea(dirtyRegion_out);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
           // done with this event
           return;
@@ -1035,13 +1017,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             // toggle setting
             myHideWalls = !myHideWalls;
 
-            // *NOTE*: fiddling with the style invalidates the cursor BG !
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-            // clear highlight BG
-            RPG_Graphics_Surface::clear(myHighlightBG);
-
-            // need a redraw
-            redraw_out = true;
+            // redraw
+            draw();
+            getArea(dirtyRegion_out);
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
             // done with this event
             return;
@@ -1055,13 +1034,10 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           style.wallstyle = myCurrentMapStyle.wall_style;
           setStyle(style);
 
-          // *NOTE*: fiddling with the style invalidates the cursor BG !
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-          // clear highlight BG
-          RPG_Graphics_Surface::clear(myHighlightBG);
-
-          // need a redraw
-          redraw_out = true;
+          // redraw
+          draw();
+          getArea(dirtyRegion_out);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
           // done with this event
           return;
@@ -1073,17 +1049,18 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       // delegate all other keypresses to the parent...
       return getParent()->handleEvent(event_in,
                                       window_in,
-                                      redraw_out);
+                                      dirtyRegion_out);
     }
     // *** mouse ***
     case SDL_MOUSEMOTION:
     {
       // find map square
-      RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
-                                                                                                  event_in.motion.y),
-                                                                                   myEngine->getSize(),
-                                                                                   mySize,
-                                                                                   myView);
+      RPG_Graphics_Position_t map_position =
+          RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
+                                                               event_in.motion.y),
+                                                myEngine->getSize(),
+                                                mySize,
+                                                myView);
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
 //                  event_in.button.x,
@@ -1092,64 +1069,26 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 //                  map_position.second));
 
       // (re-)draw "active" tile highlight ?
-      SDL_Rect clipRect, dirtyRegion;
-      RPG_Graphics_Position_t tile_position;
 
       // inside map ?
       if (map_position == std::make_pair(std::numeric_limits<unsigned int>::max(),
                                          std::numeric_limits<unsigned int>::max()))
       {
         // off the map --> remove "active" tile highlight
-        restoreBG();
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
+                                                                              dirtyRegion_out);
 
         break;
       } // end IF
 
       // change "active" tile ?
-      if (map_position != myHighlightBGPosition)
-      {
-        // step1: restore/clear old background
-        restoreBG();
-
-        // step2: store current background
-        tile_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
-                                                              mySize,
-                                                              myView);
-        // sanity check for underruns
-        if ((tile_position.first  < static_cast<unsigned int>(myScreen->w)) &&
-            (tile_position.second < static_cast<unsigned int>(myScreen->h)))
-        {
-          clip();
-          RPG_Graphics_Surface::get(tile_position.first,
-                                    tile_position.second,
-                                    true, // use (fast) blitting method
-                                    *myScreen,
-                                    *myHighlightBG);
-          myHighlightBGPosition = map_position;
-
-          // step3: draw highlight
-  //         ACE_DEBUG((LM_DEBUG,
-  //                    ACE_TEXT("highlight @ (%u,%u) --> (%u,%u)\n"),
-  //                    map_position.first,
-  //                    map_position.second,
-  //                    tile_position.first,
-  //                    tile_position.second));
-
-          RPG_Graphics_Surface::put(tile_position.first,
-                                    tile_position.second,
-                                    *myHighlightTile,
-                                    myScreen);
-
-          dirtyRegion.x = static_cast<Sint16>(tile_position.first);
-          dirtyRegion.y = static_cast<Sint16>(tile_position.second);
-          dirtyRegion.w = static_cast<Uint16>(myHighlightTile->w);
-          dirtyRegion.h = static_cast<Uint16>(myHighlightTile->h);
-          SDL_GetClipRect(myScreen, &clipRect);
-          unclip();
-          RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
-                                       myScreen);
-        } // end IF
-      } // end IF
+      if (map_position != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition())
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight(map_position,
+                                                                        RPG_Graphics_Common_Tools::map2Screen(map_position,
+                                                                                                              mySize,
+                                                                                                              myView),
+                                                                        myView,
+                                                                        dirtyRegion_out);
 
       // set an appropriate cursor
       RPG_Engine_EntityID_t entity_id = myEngine->getActive(true);
@@ -1160,12 +1099,14 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                              SELECTIONMODE_NORMAL,
                                              *myEngine,
                                              true);
+      SDL_Rect dirty_region;
+      ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
-      {
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_type,
-                                                               dirtyRegion);
-        RPG_Graphics_Surface::update(dirtyRegion, myScreen);
-      } // end IF
+                                                               dirty_region);
+
+      // compute overall dirty region
+      dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
 
       break;
     }
@@ -1219,8 +1160,11 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 //                  ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
 
       // restore/clear highlight BG
-      // *CONSIDER*: is this really useful/necessary ?
-      restoreBG();
+//      restoreBG();
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
+                                                                            dirtyRegion_out);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                                                         std::numeric_limits<unsigned int>::max()));
 
       break;
     }
@@ -1241,7 +1185,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       // delegate these to the parent...
       return getParent()->handleEvent(event_in,
                                       window_in,
-                                      redraw_out);
+                                      dirtyRegion_out);
 
       break;
     }
@@ -1249,9 +1193,31 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 }
 
 void
-SDL_GUI_LevelWindow::init()
+SDL_GUI_LevelWindow::init(RPG_Common_ILock* screenLock_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
+
+  inherited::init(screenLock_in);
+  RPG_Graphics_IWindow* window_base = child(WINDOW_MINIMAP);
+  if (!window_base)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("%@: failed to RPG_Graphics_SDLWindowBase::child(WINDOW_MINIMAP), aborting\n"),
+               this));
+
+    return;
+  } // end IF
+  RPG_Graphics_SDLWindowBase* window =
+      dynamic_cast<RPG_Graphics_SDLWindowBase*>(window_base);
+  if (!window)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to dynamic_cast<RPG_Graphics_SDLWindowBase*>(%@), aborting\n"),
+               window_base));
+
+    return;
+  } // end IF
+  window->init(inherited::myScreenLock);
 
   // clean up
   myFloorEdgeTiles.clear();
@@ -1274,10 +1240,7 @@ SDL_GUI_LevelWindow::init()
   setView((size.first  / 2),
           (size.second / 2));
 
-  // *NOTE*: fiddling with the view invalidates the cursor BG !
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-  // clear highlight BG
-  RPG_Graphics_Surface::clear(myHighlightBG);
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 }
 
 //void
@@ -1403,24 +1366,26 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
       return;
     case COMMAND_E2C_ENTITY_POSITION:
     {
-      SDL_Rect dirtyRegion = {0, 0, 0, 0};
+      SDL_Rect dirty_region;
+      ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(parameters_in.entity_id,
                                                            RPG_Graphics_Common_Tools::map2Screen(parameters_in.position,
                                                                                                  getSize(false),
                                                                                                  getView()),
-                                                           dirtyRegion);
+                                                           dirty_region);
 
-      RPG_Graphics_Surface::update(dirtyRegion,
+      RPG_Graphics_Surface::update(dirty_region,
                                    getScreen());
 
       break;
     }
     case COMMAND_E2C_ENTITY_REMOVE:
     {
-      SDL_Rect dirtyRegion = {0, 0, 0, 0};
+      SDL_Rect dirty_region;
+      ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(parameters_in.entity_id,
-                                                              dirtyRegion);
-      RPG_Graphics_Surface::update(dirtyRegion,
+                                                              dirty_region);
+      RPG_Graphics_Surface::update(dirty_region,
                                    getScreen());
 
       return;
@@ -1894,20 +1859,10 @@ SDL_GUI_LevelWindow::initMiniMap(RPG_Engine* engine_in)
   offset.second = SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_Y;
 
   SDL_GUI_MinimapWindow* minimap_window = NULL;
-  try
-  {
-    minimap_window = new SDL_GUI_MinimapWindow(*this,
-                                               offset,
-                                               engine_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-               sizeof(SDL_GUI_MinimapWindow)));
-
-    return;
-  }
+  ACE_NEW_NORETURN(minimap_window,
+                   SDL_GUI_MinimapWindow(*this,
+                                         offset,
+                                         engine_in));
   if (!minimap_window)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -1916,44 +1871,46 @@ SDL_GUI_LevelWindow::initMiniMap(RPG_Engine* engine_in)
 
     return;
   } // end IF
+  // *NOTE* cannot init screen lock (has not been set), do it later...
+//  minimap_window->init(inherited::myScreenLock);
 }
 
-void
-SDL_GUI_LevelWindow::restoreBG()
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::restoreBG"));
+//void
+//SDL_GUI_LevelWindow::restoreBG()
+//{
+//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::restoreBG"));
 
-  SDL_Rect dirtyRegion, clipRect;
-  RPG_Graphics_Position_t tile_position;
+//  SDL_Rect dirtyRegion, clipRect;
+//  RPG_Graphics_Position_t tile_position;
 
-  if (myHighlightBG)
-  {
-    tile_position = RPG_Graphics_Common_Tools::map2Screen(myHighlightBGPosition,
-                                                          mySize,
-                                                          myView);
-    // sanity check for underruns
-    if ((tile_position.first  < static_cast<unsigned int>(myScreen->w)) &&
-        (tile_position.second < static_cast<unsigned int>(myScreen->h)))
-    {
-      clip();
-      RPG_Graphics_Surface::put(tile_position.first,
-                                tile_position.second,
-                                *myHighlightBG,
-                                myScreen);
+//  if (myHighlightBG)
+//  {
+//    tile_position = RPG_Graphics_Common_Tools::map2Screen(myHighlightBGPosition,
+//                                                          mySize,
+//                                                          myView);
+//    // sanity check for underruns
+//    if ((tile_position.first  < static_cast<unsigned int>(myScreen->w)) &&
+//        (tile_position.second < static_cast<unsigned int>(myScreen->h)))
+//    {
+//      clip();
+//      RPG_Graphics_Surface::put(tile_position.first,
+//                                tile_position.second,
+//                                *myHighlightBG,
+//                                myScreen);
 
-      dirtyRegion.x = static_cast<Sint16>(tile_position.first);
-      dirtyRegion.y = static_cast<Sint16>(tile_position.second);
-      dirtyRegion.w = static_cast<Uint16>(myHighlightBG->w);
-      dirtyRegion.h = static_cast<Uint16>(myHighlightBG->h);
-      SDL_GetClipRect(myScreen, &clipRect);
-      unclip();
-//             invalidate(dirtyRegion);
-      // *NOTE*: updating straight away reduces ugly smears...
-      RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
-                                   myScreen);
+//      dirtyRegion.x = static_cast<Sint16>(tile_position.first);
+//      dirtyRegion.y = static_cast<Sint16>(tile_position.second);
+//      dirtyRegion.w = static_cast<Uint16>(myHighlightBG->w);
+//      dirtyRegion.h = static_cast<Uint16>(myHighlightBG->h);
+//      SDL_GetClipRect(myScreen, &clipRect);
+//      unclip();
+////             invalidate(dirtyRegion);
+//      // *NOTE*: updating straight away reduces ugly smears...
+//      RPG_Graphics_Surface::update(RPG_Graphics_SDL_Tools::intersect(clipRect, dirtyRegion),
+//                                   myScreen);
 
-      // clear highlight BG
-      RPG_Graphics_Surface::clear(myHighlightBG);
-    } // end IF
-  } // end IF
-}
+//      // clear highlight BG
+//      RPG_Graphics_Surface::clear(myHighlightBG);
+//    } // end IF
+//  } // end IF
+//}

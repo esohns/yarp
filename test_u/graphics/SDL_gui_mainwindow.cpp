@@ -24,19 +24,19 @@
 #include "SDL_gui_defines.h"
 #include "SDL_gui_levelwindow.h"
 
-#include <rpg_client_defines.h>
+#include "rpg_client_defines.h"
 
-#include <rpg_engine.h>
+#include "rpg_engine.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_hotspot.h>
-#include <rpg_graphics_common_tools.h>
-#include <rpg_graphics_SDL_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_hotspot.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
 
 #include <ace/Log_Msg.h>
 
@@ -52,8 +52,9 @@ SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_Size_t& size_in,
 //              NULL),          // background
    myScreenshotIndex(1),
    myLastHoverTime(0),
-   myHaveMouseFocus(true), // *NOTE*: enforced with SDL_WarpMouse()
-   myTitleFont(fontType_in)
+   myHaveMouseFocus(true),   // *NOTE*: enforced with SDL_WarpMouse()
+   myTitleFont(fontType_in)//,
+//   myScreenLock()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
 
@@ -89,13 +90,15 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
 
   // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
+                                                 : myScreen);
 
   // sanity check(s)
   ACE_ASSERT(targetSurface);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface->h);
 
+  lock();
   // step1: draw borders
   drawBorder(targetSurface,
              offsetX_in,
@@ -117,6 +120,9 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                SDL_GetError()));
+
+    // clean up
+    unlock();
 
     return;
   } // end IF
@@ -140,8 +146,12 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                SDL_GetError()));
 
+    // clean up
+    unlock();
+
     return;
   } // end IF
+  unlock();
 
   // init clipping
   clip(targetSurface,
@@ -169,13 +179,13 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   // restore previous clipping area
   unclip(targetSurface);
 
-//   // whole window needs a refresh...
+  // whole window needs a refresh...
 //   SDL_Rect dirtyRegion;
 //   dirtyRegion.x = offsetX_in + myBorderLeft + myOffset.first;
 //   dirtyRegion.y = offsetY_in + myBorderTop + myOffset.second;
 //   dirtyRegion.w = (targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
 //   dirtyRegion.h = (targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
-//   invalidate(dirtyRegion);
+  invalidate(clipRect);
 
   // remember position of last realization
   myLastAbsolutePosition = std::make_pair(offsetX_in,
@@ -185,12 +195,12 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 void
 SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
                                 RPG_Graphics_IWindow* window_in,
-                                bool& redraw_out)
+                                SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::handleEvent"));
 
   // init return value(s)
-  redraw_out = false;
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("SDL_GUI_MainWindow::handleEvent\n")));
@@ -444,11 +454,10 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           }
         } // end SWITCH
 
-//         // *NOTE*: fiddling with the view invalidates the cursor BG !
-//         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-
-        // need a redraw
-        redraw_out = true;
+        // redraw
+        draw();
+        getArea(dirtyRegion_out);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
   //       ACE_DEBUG((LM_DEBUG,
   //                  ACE_TEXT("scrolled map (%s)...\n"),
@@ -638,11 +647,10 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         }
       } // end SWITCH
 
-//       // *NOTE*: fiddling with the view invalidates the cursor BG !
-//       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-
-      // need a redraw
-      redraw_out = true;
+      // redraw
+      draw();
+      getArea(dirtyRegion_out);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("scrolled map (%s)...\n"),
@@ -704,6 +712,26 @@ SDL_GUI_MainWindow::notify(const RPG_Graphics_Cursor& cursor_in) const
       break;
     }
   } // end SWITCH
+}
+
+void
+SDL_GUI_MainWindow::lock()
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::lock"));
+
+  if (myScreenLock.acquire() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Thread_Mutex::acquire(): \"%m\", continuing\n")));
+}
+
+void
+SDL_GUI_MainWindow::unlock()
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::unlock"));
+
+  if (myScreenLock.release() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Thread_Mutex::release(): \"%m\", continuing\n")));
 }
 
 void
@@ -789,7 +817,9 @@ SDL_GUI_MainWindow::initMap(RPG_Engine* engine_in,
   } // end IF
 
   // init window
-  map_window->init(style_in, debug_in);
+  map_window->init(this,
+                   style_in,
+                   debug_in);
   map_window->setScreen(myScreen);
 }
 

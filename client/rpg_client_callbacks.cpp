@@ -1432,9 +1432,7 @@ load_files(const std::string& repository_in,
 
   // debug info
   GValue value;
-  ACE_OS::memset(&value,
-                  0,
-                  sizeof(value));
+  ACE_OS::memset(&value, 0, sizeof(value));
   const gchar* text = NULL;
   if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(listStore_in),
                                      &iter))

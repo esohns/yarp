@@ -40,8 +40,6 @@
 class RPG_Client_Export RPG_Client_Common_Tools
 {
  public:
-	static bool initSDLInput(const RPG_Client_SDL_InputConfiguration_t&); // SDL input configuration
-
   // *NOTE*: initializes cursor manager singleton/dictionaries
   static bool init(// *** input ***
 		               const RPG_Client_SDL_InputConfiguration_t&, // SDL input configuration
@@ -92,11 +90,14 @@ class RPG_Client_Export RPG_Client_Common_Tools
                                        const bool& = true);             // locked access ?
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Client_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools(const RPG_Client_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools& operator=(const RPG_Client_Common_Tools&));
+
+  // helper methods
+  static bool initSDLInput(const RPG_Client_SDL_InputConfiguration_t&); // SDL input configuration
+  static void initUserProfiles();
 };
 
 #endif

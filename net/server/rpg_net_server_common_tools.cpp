@@ -247,8 +247,8 @@ RPG_Net_Server_Common_Tools::selector(const dirent* dirEntry_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Common_Tools::selector"));
 
-  // *IMPORTANT NOTE*: we need to select those files which follow our naming
-  // schema for logfiles: "<PREFIX>[_<NUMBER>]<SUFFIX>"
+  // *IMPORTANT NOTE*: select only files following the naming schema for
+  // logfiles: "<PREFIX>[_<NUMBER>]<SUFFIX>"
 
   // sanity check --> prefix ok ?
   if (ACE_OS::strncmp(dirEntry_in->d_name,

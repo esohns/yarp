@@ -57,9 +57,15 @@ libRPG_Client_GUI_la_SOURCES = rpg_client_callbacks.cpp \
   rpg_client_window_message.cpp \
   rpg_client_window_minimap.h \
   rpg_client_window_minimap.cpp
-libRPG_Client_GUI_la_CPPFLAGS	= $(AM_CPPFLAGS) $(pkg_libs_CFLAGS)
+libRPG_Client_GUI_la_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\" \
+  $(pkg_libs_CFLAGS)
 
 configdir = $(datadir)/@META_PACKAGE@/config
-config_DATA = rpg_client.glade rpg_client.ini
+config_DATA = \
+  rpg_client.glade \
+  rpg_client.ini
 
 EXTRA_DIST = $(config_DATA)
+

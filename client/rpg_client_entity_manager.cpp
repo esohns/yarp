@@ -36,7 +36,7 @@
 #include <limits>
 
 RPG_Client_Entity_Manager::RPG_Client_Entity_Manager()
- : myClient(NULL),
+ : myScreenLock(NULL),
    myWindow(NULL)//,
 //   myCache()
 {
@@ -60,15 +60,14 @@ RPG_Client_Entity_Manager::~RPG_Client_Entity_Manager()
 }
 
 void
-RPG_Client_Entity_Manager::init(RPG_Client_Engine* client_in,
+RPG_Client_Entity_Manager::init(RPG_Common_ILock* screenLock_in,
                                 RPG_Graphics_IWindow* window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::init"));
 
-  ACE_ASSERT(client_in);
   ACE_ASSERT(window_in);
 
-  myClient = client_in;
+  myScreenLock = screenLock_in;
   myWindow = window_in;
 }
 
@@ -172,8 +171,9 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
 
   // sanity check(s)
   ACE_ASSERT(myWindow);
-  ACE_ASSERT(tileCoordinates_in.first  < static_cast<unsigned int>(myWindow->getScreen()->w));
-  ACE_ASSERT(tileCoordinates_in.second < static_cast<unsigned int>(myWindow->getScreen()->h));
+  if ((tileCoordinates_in.first  >= static_cast<unsigned int>(myWindow->getScreen()->w)) ||
+      (tileCoordinates_in.second >= static_cast<unsigned int>(myWindow->getScreen()->h)))
+    return; // nothing to do
   RPG_Client_EntityCacheIterator_t iterator = myCache.find(id_in);
   if (iterator == myCache.end())
   {
@@ -221,7 +221,8 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
 
   // place graphic
   myWindow->clip();
-  myClient->lock();
+  if (myScreenLock)
+    myScreenLock->lock();
   if (SDL_BlitSurface(const_cast<SDL_Surface*>((*iterator).second.graphic), // source
                       NULL,                                                 // aspect (--> everything)
                       myWindow->getScreen(),                                // target
@@ -232,7 +233,8 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
                SDL_GetError()));
 
     // clean up
-    myClient->unlock();
+    if (myScreenLock)
+      myScreenLock->unlock();
     myWindow->unclip();
     if ((bgRect.w != 0) &&
         (bgRect.h != 0))
@@ -242,7 +244,8 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
 
     return;
   } // end IF
-  myClient->unlock();
+  if (myScreenLock)
+    myScreenLock->unlock();
   myWindow->unclip();
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
@@ -290,7 +293,8 @@ RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
 
   // restore/clear background
   myWindow->clip();
-  myClient->lock();
+  if (myScreenLock)
+    myScreenLock->lock();
   if (SDL_BlitSurface((*iterator).second.bg, // source
                       NULL,                  // aspect (--> everything)
                       myWindow->getScreen(), // target
@@ -301,12 +305,14 @@ RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
                SDL_GetError()));
 
     // clean up
-    myClient->unlock();
+    if (myScreenLock)
+      myScreenLock->unlock();
     myWindow->unclip();
 
     return;
   } // end IF
-  myClient->unlock();
+  if (myScreenLock)
+    myScreenLock->unlock();
   myWindow->unclip();
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...

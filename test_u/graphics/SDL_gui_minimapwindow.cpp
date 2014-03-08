@@ -19,22 +19,22 @@
 
 #include "SDL_gui_minimapwindow.h"
 
-#include <rpg_client_common.h>
-#include <rpg_client_defines.h>
-#include <rpg_client_engine.h>
+#include "rpg_client_common.h"
+#include "rpg_client_defines.h"
+#include "rpg_client_engine.h"
 
-#include <rpg_engine.h>
+#include "rpg_engine.h"
 
-#include <rpg_graphics_common.h>
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_common_tools.h>
-#include <rpg_graphics_SDL_tools.h>
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_defines.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
 
 SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& parent_in,
                                              // *NOTE*: offset doesn't include any border(s) !
@@ -96,12 +96,12 @@ SDL_GUI_MinimapWindow::getView() const
 void
 SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
                                    RPG_Graphics_IWindow* window_in,
-                                   bool& redraw_out)
+                                   SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::handleEvent"));
 
   // init return value(s)
-  redraw_out = false;
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("SDL_GUI_MinimapWindow::handleEvent(%s)\n"),
@@ -141,7 +141,7 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
       // delegate these to the parent...
       getParent()->handleEvent(event_in,
                                window_in,
-                               redraw_out);
+                               dirtyRegion_out);
 
       break;
     }
@@ -319,6 +319,8 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
     SDL_UnlockSurface(mySurface);
 
   // step4: paint surface
+  if (inherited::myScreenLock)
+    inherited::myScreenLock->lock();
   RPG_Graphics_Surface::put((myBorderLeft +
                              (myScreen->w -
                               (myBorderLeft + myBorderRight) -
@@ -327,6 +329,8 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
                              inherited::myOffset.second),
                             *mySurface,
                             targetSurface_in);
+  if (inherited::myScreenLock)
+    inherited::myScreenLock->unlock();
 
 //   // save image
 //   std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
@@ -345,6 +349,8 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
+
+  invalidate(clipRect);
 
   // remember position of last realization
   inherited::myLastAbsolutePosition = std::make_pair((myBorderLeft +

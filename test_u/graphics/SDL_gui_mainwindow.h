@@ -32,9 +32,12 @@
 
 #include "rpg_map_common.h"
 
+#include "rpg_common_ilock.h"
+
 #include <SDL.h>
 
 #include <ace/Global_Macros.h>
+#include <ace/Synch.h>
 
 #include <string>
 
@@ -45,7 +48,8 @@ class RPG_Engine;
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class SDL_GUI_MainWindow
- : public RPG_Graphics_TopLevel
+ : public RPG_Graphics_TopLevel,
+   public RPG_Common_ILock
 {
  public:
   SDL_GUI_MainWindow(const RPG_Graphics_Size_t&,                  // size
@@ -66,13 +70,16 @@ class SDL_GUI_MainWindow
                     const unsigned int& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
-                           bool&);                // return value: redraw ?
+                           SDL_Rect&);            // return value: "dirty" region
   virtual void notify(const RPG_Graphics_Cursor&) const;
+
+  // implement RPG_Common_ILock
+  virtual void lock();
+  virtual void unlock();
 
  private:
   typedef RPG_Graphics_TopLevel inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow());
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow(const SDL_GUI_MainWindow&));
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow& operator=(const SDL_GUI_MainWindow&));
@@ -90,12 +97,14 @@ class SDL_GUI_MainWindow
                  SDL_Surface* = NULL);      // target surface (default: screen)
 
   // counter
-  unsigned int      myScreenshotIndex;
+  unsigned int               myScreenshotIndex;
 
-  unsigned int      myLastHoverTime;
-  bool              myHaveMouseFocus;
+  unsigned int               myLastHoverTime;
+  bool                       myHaveMouseFocus;
 
-  RPG_Graphics_Font myTitleFont;
+  RPG_Graphics_Font          myTitleFont;
+
+  ACE_Recursive_Thread_Mutex myScreenLock;
 };
 
 #endif

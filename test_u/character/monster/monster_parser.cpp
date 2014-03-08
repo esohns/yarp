@@ -21,30 +21,30 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_monster_defines.h>
-#include <rpg_monster_dictionary.h>
-#include <rpg_monster_common_tools.h>
+#include "rpg_monster_defines.h"
+#include "rpg_monster_dictionary.h"
+#include "rpg_monster_common_tools.h"
 
-#include <rpg_combat_common_tools.h>
+#include "rpg_combat_common_tools.h"
 
-#include <rpg_character_defines.h>
-#include <rpg_character_common_tools.h>
-#include <rpg_character_skills_common_tools.h>
+#include "rpg_character_defines.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 
-#include <rpg_magic_common_tools.h>
+#include "rpg_magic_common_tools.h"
 
-#include <rpg_item_common_tools.h>
+#include "rpg_item_common_tools.h"
 
-#include <rpg_dice.h>
-#include <rpg_dice_common_tools.h>
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
 
-#include <rpg_common_defines.h>
-#include <rpg_common_macros.h>
-#include <rpg_common_tools.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -63,8 +63,8 @@ print_usage(const std::string& programName_in)
 
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
@@ -98,8 +98,8 @@ process_arguments(const int argc_in,
 
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
 #endif // #ifdef BASEDIR
 
   // init results
@@ -286,8 +286,8 @@ ACE_TMAIN(int argc,
   // step1a set defaults
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
 #endif // #ifdef BASEDIR
 
   bool dumpDictionary      = false;

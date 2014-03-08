@@ -60,7 +60,6 @@ class RPG_Sound_Export RPG_Sound_Event_Manager
   virtual void handleTimeout(const void*); // ACT (if any)
 
  private:
-  // safety measures
   virtual ~RPG_Sound_Event_Manager();
   RPG_Sound_Event_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Event_Manager(const RPG_Sound_Event_Manager&));

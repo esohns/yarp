@@ -37,6 +37,7 @@
 #include "rpg_map_common_tools.h"
 
 #include "rpg_player_defines.h"
+#include "rpg_player_common_tools.h"
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
@@ -78,6 +79,32 @@ RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t&
 	return true;
 }
 
+void
+RPG_Client_Common_Tools::initUserProfiles()
+{
+	RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initUserProfiles"));
+
+	std::string profiles_directory =
+			RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+	if (RPG_Common_File_Tools::isEmptyDirectory(profiles_directory))
+	{
+		std::string default_profile =
+				RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+																														 false);
+		default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+		default_profile += RPG_ENGINE_ENTITY_SUB;
+		default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+		default_profile += RPG_ENGINE_ENTITY_DEF_FILE;
+		default_profile += RPG_ENGINE_ENTITY_PROFILE_EXT;
+		if (!RPG_Common_File_Tools::copyFile(default_profile,
+																				 profiles_directory))
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to RPG_Common_File_Tools::copyFile(\"%s\",\"%s\"), continuing\n"),
+								 ACE_TEXT(default_profile.c_str()),
+								 ACE_TEXT(profiles_directory.c_str())));
+	} // end IF
+}
+
 bool
 RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputConfiguration_in,
                               const RPG_Sound_SDLConfiguration_t& audioConfiguration_in,
@@ -97,7 +124,7 @@ RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputCo
 	if (!RPG_Client_Common_Tools::initSDLInput(inputConfiguration_in))
   {
     ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
+               ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
 
     return false;
   } // end IF
@@ -171,6 +198,9 @@ RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputCo
     RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL,
                                                            dirty_region);
   } // end IF
+
+  // step3: init user profiles
+  RPG_Client_Common_Tools::initUserProfiles();
 
   return true;
 }

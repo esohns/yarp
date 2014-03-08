@@ -35,6 +35,7 @@
 
 // forward declarations
 class RPG_Engine;
+class RPG_Common_ILock;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -50,6 +51,8 @@ class SDL_GUI_LevelWindow
                       RPG_Engine*);                      // (level) state handle
   virtual ~SDL_GUI_LevelWindow();
 
+  void init(RPG_Common_ILock*); // screen lock interface handle
+
   // adjust viewport
   void setView(const int&,
                const int&); // view (relative map coordinates)
@@ -58,8 +61,8 @@ class SDL_GUI_LevelWindow
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
   // set level properties
-  void init();
-  void init(const RPG_Graphics_MapStyle_t&, // map style
+  void init(RPG_Common_ILock*,              // screen lock interface handle
+            const RPG_Graphics_MapStyle_t&, // map style
             const bool&);                   // debug: show floor/map tile indexes
   void setStyle(const RPG_Graphics_StyleUnion&);
 
@@ -69,7 +72,7 @@ class SDL_GUI_LevelWindow
                     const unsigned int& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
-                           bool&);                // return value: redraw ?
+                           SDL_Rect&);            // return value: "dirty" region
 
   // implement RPG_Engine_IClient
   //virtual void redraw();
@@ -82,7 +85,6 @@ class SDL_GUI_LevelWindow
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow());
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow(const SDL_GUI_LevelWindow&));
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow& operator=(const SDL_GUI_LevelWindow&));
@@ -96,7 +98,7 @@ class SDL_GUI_LevelWindow
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?
   void initMiniMap(RPG_Engine*); // level state handle
-  void restoreBG();
+//  void restoreBG();
 
   RPG_Engine*                     myEngine;
   bool                            myDebug;
@@ -125,11 +127,6 @@ class SDL_GUI_LevelWindow
 
   // center of displayed map area (map coordinates)
   RPG_Graphics_Position_t         myView;
-
-  // cursor highlight
-  RPG_Graphics_Position_t         myHighlightBGPosition; // map coordinates
-  SDL_Surface*                    myHighlightBG;
-  SDL_Surface*                    myHighlightTile;
 
   bool                            myMinimapIsOn;
 };

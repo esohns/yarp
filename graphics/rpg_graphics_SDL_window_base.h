@@ -42,6 +42,8 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
  public:
   virtual ~RPG_Graphics_SDLWindowBase();
 
+  void init(RPG_Common_ILock* = NULL); // screen lock interface handle
+
   // implement (part of) RPG_Graphics_IWindow
   virtual void setScreen(SDL_Surface*);   // (default) screen
   virtual SDL_Surface* getScreen() const; // (default) screen
@@ -54,17 +56,19 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   //                       SDL_Surface* = NULL,            // target surface (default: screen)
   //                       const unsigned int& = 0,        // offset x (top-left = [0,0])
   //                       const unsigned int& = 0) = 0;   // offset y (top-left = [0,0])
-  virtual void refresh(SDL_Surface* = NULL); // target surface (default: screen)
+  virtual void update(SDL_Surface* = NULL); // target surface (default: screen)
+  virtual void invalidate(const SDL_Rect&); // "dirty" area
   virtual RPG_Graphics_IWindow* child(const RPG_Graphics_WindowType&); // type
 
   virtual void clip(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
                     const unsigned int& = 0); // offset y (top-left = [0,0]));
   virtual void unclip(SDL_Surface* = NULL) const; // target surface (default: screen)
+  virtual void getArea(SDL_Rect&) const; // return value: window area
 
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
-                           bool&);                // return value: redraw ?
+                           SDL_Rect&);            // return value: "dirty" region
   virtual void notify(const RPG_Graphics_Cursor&) const;
 
   RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
@@ -83,8 +87,6 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
                              const RPG_Graphics_Offset_t&,      // offset
                              const std::string&);               // title
 //                              SDL_Surface* = NULL);              // background
-
-  void init(RPG_Common_ILock* = NULL); // screen lock interface handle
 
   // default screen
   SDL_Surface*                     myScreen;
@@ -118,7 +120,6 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
                   unsigned int&,             // return value: size (right)
                   const bool& = true) const; // recursive ?
   RPG_Graphics_SDLWindowBase* getParent() const;
-  void invalidate(const SDL_Rect&); // "dirty" area
 
   std::string                      myTitle;
 //   SDL_Surface*                     myBackGround;

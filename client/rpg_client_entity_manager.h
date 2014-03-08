@@ -22,12 +22,13 @@
 #define RPG_CLIENT_ENTITY_MANAGER_H
 
 #include "rpg_client_exports.h"
-#include "rpg_client_engine.h"
 
 #include "rpg_engine_common.h"
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_iwindow.h"
+
+#include "rpg_common_ilock.h"
 
 #include <SDL.h>
 
@@ -48,7 +49,7 @@ class RPG_Client_Export RPG_Client_Entity_Manager
 
  public:
   // init (clipping)
-  void init(RPG_Client_Engine*,     // client engine handle
+  void init(RPG_Common_ILock*,      // screen lock interface handle
             RPG_Graphics_IWindow*); // (target) window handle
 
   // manage entities
@@ -90,7 +91,7 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   void restoreBG(const RPG_Engine_EntityID_t&, // id
                  SDL_Rect&);                   // return value: "dirty" region
 
-  RPG_Client_Engine*       myClient;
+  RPG_Common_ILock*        myScreenLock;
   RPG_Graphics_IWindow*    myWindow;
   RPG_Client_EntityCache_t myCache;
 };

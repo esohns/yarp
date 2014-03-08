@@ -1,12 +1,12 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([yarp], [0.1], [erik.sohns@web.de], [Yarp], [http://www.yarp.org])
+AC_INIT([yarp], [0.1], [erik.sohns@web.de], [Yarp], [http://www.github.org/esohns/yarp])
 AC_PREREQ(2.63)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
-AC_CONFIG_HEADERS([config.h]
-                  [tools/XML2CppCode/config.h:tools/XML2CppCode/config.h.in])
+AC_CONFIG_HEADERS([config.h
+                   tools/XML2CppCode/config.h:tools/XML2CppCode/config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
 
 # define meta-package
@@ -49,7 +49,7 @@ CXXFLAGS=
 AC_MSG_CHECKING(whether to enable debugging)
 debug_default="no"
 AC_ARG_ENABLE(debug,
-              [ --enable-debug=[no/yes] turn on debugging [default=$debug_default]],
+              [--enable-debug=[no/yes] turn on debugging [default=$debug_default]],
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
@@ -64,7 +64,7 @@ fi
 AC_MSG_CHECKING(whether to enable tracing)
 tracing_default="no"
 AC_ARG_ENABLE(tracing,
-              [ --enable-tracing=[no/yes] turn on tracing [default=$tracing_default]],
+              [--enable-tracing=[no/yes] turn on tracing [default=$tracing_default]],
               ,
               enable_tracing=$tracing_default)
 if test "x$enable_tracing" = "xyes"; then
@@ -79,7 +79,7 @@ fi
 AC_MSG_CHECKING(whether to enable valgrind support)
 valgrind_support_default="no"
 AC_ARG_ENABLE(valgrind,
-              [ --enable-valgrind=[no/yes] turn on valgrind support [default=$valgrind_support_default]],
+              [--enable-valgrind=[no/yes] turn on valgrind support [default=$valgrind_support_default]],
               ,
               enable_valgrind=$valgrind_support_default)
 if test "x$enable_valgrind" = "xyes"; then
@@ -152,6 +152,7 @@ AC_CONFIG_FILES([Makefile
                  sound/data/ambient/Makefile
                  sound/data/effect/Makefile
                  engine/Makefile
+                 engine/data/Makefile
                  engine/scripts/Makefile
                  net/Makefile
                  net/stream/Makefile
@@ -182,4 +183,3 @@ AC_CONFIG_FILES([Makefile
                  scripts/Makefile])
 
 AC_OUTPUT
-

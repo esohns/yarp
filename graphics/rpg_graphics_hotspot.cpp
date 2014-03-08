@@ -26,7 +26,7 @@
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& parent_in,
                                            const RPG_Graphics_Size_t& size_in,
@@ -75,12 +75,12 @@ RPG_Graphics_HotSpot::getView() const
 void
 RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
                                   RPG_Graphics_IWindow* window_in,
-                                  bool& redraw_out)
+                                  SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::handleEvent"));
 
   // init return value(s)
-  redraw_out = false;
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("RPG_Graphics_HotSpot::handleEvent(%s)\n"),
@@ -137,7 +137,7 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       // delegate these to the parent...
       getParent()->handleEvent(event_in,
                                window_in,
-                               redraw_out);
+                               dirtyRegion_out);
 
       break;
     }
@@ -197,23 +197,13 @@ RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::init"));
 
-  RPG_Graphics_HotSpot* hotspot = NULL;
   //*NOTE*: hotspot registers automagically
-  try
-  {
-    hotspot = new RPG_Graphics_HotSpot(parent_in,
-                                       size_in,
-                                       offset_in,
-                                       cursor_in);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-               sizeof(RPG_Graphics_HotSpot)));
-
-    return;
-  }
+  RPG_Graphics_HotSpot* hotspot = NULL;
+  ACE_NEW_NORETURN(hotspot,
+                   RPG_Graphics_HotSpot(parent_in,
+                                        size_in,
+                                        offset_in,
+                                        cursor_in));
   if (!hotspot)
   {
     ACE_DEBUG((LM_CRITICAL,

@@ -48,3 +48,4 @@ rpg_client_gui_LDADD = \
   -lRPG_Dice \
   $(pkg_libs_LIBS) \
   -lSDL_mixer
+

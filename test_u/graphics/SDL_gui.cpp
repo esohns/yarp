@@ -70,6 +70,7 @@
 #include "rpg_common_file_tools.h"
 
 #include <SDL.h>
+#include <SDL_syswm.h>
 #include <SDL_ttf.h>
 
 #include <ace/ACE.h>
@@ -82,6 +83,8 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+
+#define SDL_GUI_DEF_SLIDESHOW_DELAY 3 // seconds
 
 enum UserMode_t
 {
@@ -240,12 +243,10 @@ do_SDL_waitForInput(const unsigned int& timeout_in,
       // what else can we do ?
       break;
     } // end IF
-    if (event_out.type == SDL_KEYDOWN ||
-        event_out.type == SDL_KEYUP ||
-        event_out.type == SDL_MOUSEMOTION ||
-        event_out.type == SDL_MOUSEBUTTONDOWN ||
-        event_out.type == SDL_QUIT ||
-        event_out.type == SDL_GUI_SDL_TIMEREVENT)
+    if ((event_out.type == SDL_KEYDOWN) ||
+        (event_out.type == SDL_MOUSEBUTTONDOWN) ||
+        (event_out.type == SDL_QUIT) ||
+        (event_out.type == SDL_GUI_SDL_TIMEREVENT))
       break;
   } while (true);
 
@@ -269,10 +270,10 @@ print_usage(const std::string& programName_in)
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                   false);
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
@@ -370,10 +371,10 @@ process_arguments(const int argc_in,
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                   false);
 #endif // #ifdef BASEDIR
 
   magicDictionary_out = config_path;
@@ -567,7 +568,6 @@ do_slideshow(const std::string& graphicsDirectory_in,
   SDL_Event sdl_event;
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
-  bool need_redraw = false;
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   type.image = RPG_GRAPHICS_IMAGE_INVALID;
@@ -577,16 +577,17 @@ do_slideshow(const std::string& graphicsDirectory_in,
   RPG_Dice_RollResult_t result;
   SDL_Surface* image = NULL;
   bool release_image = false;
+  SDL_Rect dirty_region;
   do
   {
     window = NULL;
-    need_redraw = false;
     image = NULL;
     release_image = false;
+    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
 
     // reset screen
     mainWindow_in->draw();
-    mainWindow_in->refresh();
+    mainWindow_in->update();
 
     // step1: choose (random) category
     do
@@ -741,98 +742,70 @@ do_slideshow(const std::string& graphicsDirectory_in,
       return;
     } // end IF
 
-    // step5: wait a little while (max: 3 seconds)
-    do
+    // step5: wait a little while
+    do_SDL_waitForInput(SDL_GUI_DEF_SLIDESHOW_DELAY, // second(s)
+                        sdl_event);                  // return value: event
+    switch (sdl_event.type)
     {
-      do_SDL_waitForInput(3,          // second(s)
-                          sdl_event); // return value: event
-      switch (sdl_event.type)
+      case SDL_KEYDOWN:
       {
-        case SDL_KEYDOWN:
+        switch (sdl_event.key.keysym.sym)
         {
-          switch (sdl_event.key.keysym.sym)
+          case SDLK_q:
           {
-            case SDLK_q:
-            {
-              // finished event processing
-              done = true;
+            // finished event processing
+            done = true;
 
-              break;
-            } // end IF
-            default:
-              break;
-          } // end SWITCH
-
-          if (done)
             break;
-          // *WARNING*: falls through !
-        }
-        case SDL_ACTIVEEVENT:
-//             case SDL_MOUSEMOTION:
-        case SDL_MOUSEBUTTONDOWN:
-//             case SDL_GUI_SDL_HOVEREVENT: // hovering...
-        {
-          // find window
-          RPG_Graphics_Position_t mouse_position(0, 0);
-          switch (sdl_event.type)
-          {
-            case SDL_MOUSEMOTION:
-              mouse_position = std::make_pair(sdl_event.motion.x,
-                                              sdl_event.motion.y); break;
-            case SDL_MOUSEBUTTONDOWN:
-              mouse_position = std::make_pair(sdl_event.button.x,
-                                              sdl_event.button.y); break;
-            default:
-            {
-              int x,y;
-              SDL_GetMouseState(&x, &y);
-              mouse_position = std::make_pair(x,
-                                              y);
+          } // end IF
+          default:
+            break;
+        } // end SWITCH
 
-              break;
-            }
-          } // end SWITCH
-          window = mainWindow_in->getWindow(mouse_position);
-          ACE_ASSERT(window);
-          try
-          {
-            window->handleEvent(sdl_event,
-                                window,
-                                need_redraw);
-          }
-          catch (...)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-          }
-
+        if (done)
           break;
-        }
-        case SDL_QUIT:
+        // *WARNING*: falls through !
+      }
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        // find window
+        RPG_Graphics_Position_t mouse_position =
+            std::make_pair(sdl_event.button.x,
+                           sdl_event.button.y);
+        window = mainWindow_in->getWindow(mouse_position);
+        ACE_ASSERT(window);
+        try
         {
-          // finished event processing
-          done = true;
-
-          break;
+          window->handleEvent(sdl_event,
+                              window,
+                              dirty_region);
         }
-        case SDL_KEYUP:
-        case SDL_MOUSEBUTTONUP:
-        case SDL_JOYAXISMOTION:
-        case SDL_JOYBALLMOTION:
-        case SDL_JOYHATMOTION:
-        case SDL_JOYBUTTONDOWN:
-        case SDL_JOYBUTTONUP:
-        case SDL_SYSWMEVENT:
-        case SDL_VIDEORESIZE:
-        case SDL_VIDEOEXPOSE:
-        case SDL_GUI_SDL_TIMEREVENT:
-        default:
+        catch (...)
         {
-
-          break;
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
         }
-      } // end SWITCH
-    } while (sdl_event.type == SDL_MOUSEMOTION);
+
+        break;
+      }
+      case SDL_QUIT:
+      {
+        // finished event processing
+        done = true;
+
+        break;
+      }
+      case SDL_GUI_SDL_TIMEREVENT:
+        break;
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid SDL event (type: %u), continuing\n"),
+                   sdl_event.type));
+
+        break;
+      }
+    } // end SWITCH
 
     // clean up
     if (release_image)
@@ -854,19 +827,17 @@ do_UI(RPG_Engine_Entity& entity_in,
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
   RPG_Graphics_IWindow* previous_window = NULL;
-  bool need_redraw = false;
-  bool force_redraw = false;
   RPG_Graphics_Position_t mouse_position;
   unsigned int map_index = 1;
   std::ostringstream converter;
   RPG_Engine_Level_t current_level;
+  SDL_Rect dirty_region;
   do
   {
     window = NULL;
-    need_redraw = false;
     mouse_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                     std::numeric_limits<unsigned int>::max());
-    force_redraw = false;
+    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
 
     // step1: retrieve next event
     if (SDL_WaitEvent(&sdl_event) != 1)
@@ -925,30 +896,28 @@ do_UI(RPG_Engine_Entity& entity_in,
 
             entity_in.position = current_level.map.start;
 
-            SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->child(WINDOW_MAP));
+            SDL_GUI_LevelWindow* map_window =
+                dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->child(WINDOW_MAP));
             ACE_ASSERT(map_window);
             // *NOTE*: triggers a center/redraw/refresh of the map window !
             // --> but as we're not using the client engine, it doesn't redraw...
             engine_in->init(map_window,
                             current_level);
-            map_window->init();
+            map_window->init(mainWindow_in);
             engine_in->start();
 
             // center map window...
             try
             {
               map_window->setView(entity_in.position);
+              map_window->draw();
+              map_window->getArea(dirty_region);
             }
             catch (...)
             {
               ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::setView, continuing\n")));
+                         ACE_TEXT("caught exception in RPG_Graphics_IWindow, continuing\n")));
             }
-
-            // *NOTE*: fiddling with the style PROBABLY invalidates the cursor BG !
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-
-            force_redraw = true;
 
             break;
           }
@@ -960,7 +929,20 @@ do_UI(RPG_Engine_Entity& entity_in,
           }
           case SDLK_r:
           {
-            force_redraw = true;
+            SDL_GUI_LevelWindow* map_window =
+                dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->child(WINDOW_MAP));
+            ACE_ASSERT(map_window);
+
+            try
+            {
+              map_window->draw();
+              map_window->getArea(dirty_region);
+            }
+            catch (...)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("caught exception in RPG_Graphics_IWindow, continuing\n")));
+            }
 
             break;
           }
@@ -1023,9 +1005,9 @@ do_UI(RPG_Engine_Entity& entity_in,
         window = mainWindow_in->getWindow(mouse_position);
         ACE_ASSERT(window);
 
-        // notify previously "active" window upon losing "focus"
         if (sdl_event.type == SDL_MOUSEMOTION)
         {
+          // notify previously "active" window upon losing "focus"
           if (previous_window &&
 //                 (previous_window != mainWindow)
               (previous_window != window))
@@ -1035,7 +1017,7 @@ do_UI(RPG_Engine_Entity& entity_in,
             {
               previous_window->handleEvent(sdl_event,
                                            previous_window,
-                                           need_redraw);
+                                           dirty_region);
             }
             catch (...)
             {
@@ -1053,7 +1035,7 @@ do_UI(RPG_Engine_Entity& entity_in,
         {
           window->handleEvent(sdl_event,
                               window,
-                              need_redraw);
+                              dirty_region);
         }
         catch (...)
         {
@@ -1077,43 +1059,74 @@ do_UI(RPG_Engine_Entity& entity_in,
       case SDL_JOYHATMOTION:
       case SDL_JOYBUTTONDOWN:
       case SDL_JOYBUTTONUP:
+        break;
       case SDL_SYSWMEVENT:
-      case SDL_VIDEORESIZE:
-      case SDL_VIDEOEXPOSE:
-      case SDL_GUI_SDL_TIMEREVENT:
-      default:
       {
+//        // debug info
+//        std::ostringstream version_number;
+//        version_number << sdl_event.syswm.msg->version.major;
+//        version_number << ACE_TEXT_ALWAYS_CHAR(".");
+//        version_number << sdl_event.syswm.msg->version.minor;
+//        version_number << ACE_TEXT_ALWAYS_CHAR(".");
+//        version_number << sdl_event.syswm.msg->version.patch;
+//        ACE_DEBUG((LM_DEBUG,
+//                   ACE_TEXT("SDL_SYSWMEVENT event (version: %s, subsystem: %d, type: %d)\n"),
+//                   ACE_TEXT(version_number.str().c_str()),
+//                   sdl_event.syswm.msg->subsystem,
+//#if defined(ACE_WIN32) || defined(ACE_WIN64)
+
+//#else
+//                   sdl_event.syswm.msg->event.xevent.type));
+//#endif
 
         break;
       }
+      case SDL_VIDEORESIZE:
+        break;
+      case SDL_VIDEOEXPOSE:
+      {
+        int x, y;
+        Uint8 button_state = SDL_GetMouseState(&x, &y);
+        ACE_UNUSED_ARG(button_state);
+        mouse_position = std::make_pair(x, y);
+        window = mainWindow_in->getWindow(mouse_position);
+
+        break;
+      }
+      case SDL_GUI_SDL_TIMEREVENT:
+      default:
+        break;
     } // end SWITCH
 
-    // redraw map ?
-    if (force_redraw || need_redraw)
+    // update screen ?
+    if ((dirty_region.x != 0) ||
+        (dirty_region.y != 0) ||
+        (dirty_region.w != 0) ||
+        (dirty_region.h != 0))
     {
-      SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow_in->child(WINDOW_MAP));
-      ACE_ASSERT(map_window);
-
       try
       {
-        map_window->draw();
-        map_window->refresh();
+        mainWindow_in->update();
       }
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
       }
     } // end IF
 
-    // redraw cursor ?
+    // redraw highlight/cursor ?
     switch (sdl_event.type)
     {
+      case SDL_ACTIVEEVENT:
       case SDL_KEYDOWN:
       case SDL_MOUSEBUTTONDOWN:
       {
         // map hasn't changed --> no need to redraw
-        if (!need_redraw)
+        if ((dirty_region.x == 0) &&
+            (dirty_region.y == 0) &&
+            (dirty_region.w == 0) &&
+            (dirty_region.h == 0))
           break;
 
         // *WARNING*: falls through !
@@ -1123,19 +1136,17 @@ do_UI(RPG_Engine_Entity& entity_in,
       {
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
-        SDL_Rect dirtyRegion;
+        ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
                                                                mouse_position.second,
-                                                               dirtyRegion);
-        RPG_Graphics_Surface::update(dirtyRegion,
+                                                               dirty_region);
+        RPG_Graphics_Surface::update(dirty_region,
                                      screen);
 
         break;
       }
       default:
-      {
         break;
-      }
     } // end SWITCH
   } while (!done);
 }
@@ -1257,8 +1268,8 @@ do_work(const mode_t& mode_in,
       // step4: create/load initial entity
       std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-      config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                  true);
+      config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                         true);
 #endif // #ifdef BASEDIR
       std::string schemaRepository = config_path;
       schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1308,28 +1319,29 @@ do_work(const mode_t& mode_in,
       try
       {
         mainWindow.draw();
-        mainWindow.refresh();
+        mainWindow.update();
       }
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/refresh(), continuing\n")));
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/update(), continuing\n")));
       }
 
       // step6: init level state engine
       SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.child(WINDOW_MAP));
       ACE_ASSERT(map_window);
 			// init/add entity to the graphics cache
-			RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(NULL,
+			RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(&mainWindow,
 																															map_window);
-			RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(NULL,
+			RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(&mainWindow,
 																														map_window);
 
       // *NOTE*: triggers a center/draw/refresh...
       // --> but as we're not using the client engine, it doesn't redraw...
       level_engine.init(map_window,
                         level);
-      map_window->init(mapStyle,
+      map_window->init(&mainWindow,
+                       mapStyle,
                        debugMode_in);
       level_engine.start();
       RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity);
@@ -1342,12 +1354,12 @@ do_work(const mode_t& mode_in,
       {
         map_window->setView(level_engine.getPosition(level_engine.getActive()));
         map_window->draw();
-        map_window->refresh();
+        map_window->update();
       }
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::setView/draw/refresh, continuing\n")));
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::setView/draw/update, continuing\n")));
       }
 
       // step7: start timer (triggers hover events)
@@ -1403,56 +1415,63 @@ do_printVersion(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
+  // step1: program version
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in
+            << ACE_TEXT(": ")
 #ifdef HAVE_CONFIG_H
-            << ACE_TEXT(" : ")
             << RPG_VERSION
+#else
+            << ACE_TEXT("N/A")
 #endif
             << std::endl;
 
-  // create version string...
-  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
-  // number... We need this, as the library soname is compared to this string.
+  // step2: SDL version
+  SDL_version sdl_version;
+  ACE_OS::memset(&sdl_version, 0, sizeof(sdl_version));
+  SDL_VERSION(&sdl_version);
   std::ostringstream version_number;
-  if (version_number << ACE::major_version())
-  {
-    version_number << ACE_TEXT(".");
-  } // end IF
-  else
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
-    return;
-  } // end ELSE
-  if (version_number << ACE::minor_version())
-  {
-    version_number << ACE_TEXT(".");
-
-    if (version_number << ACE::beta_version())
-    {
-
-    } // end IF
-    else
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
-      return;
-    } // end ELSE
-  } // end IF
-  else
+  version_number << sdl_version.major;
+  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << sdl_version.minor;
+  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << sdl_version.patch;
+  std::cout << ACE_TEXT("SDL (compiled): ")
+            << version_number.str()
+            << std::endl;
+  const SDL_version* sdl_version_p = SDL_Linked_Version();
+  if (!sdl_version_p)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
+               ACE_TEXT("failed to SDL_Linked_Version(): \"%s\", aborting\n"),
+               SDL_GetError()));
 
     return;
-  } // end ELSE
-  std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
-//   std::cout << "ACE: "
+  } // end IF
+  version_number.str("");
+  version_number << sdl_version_p->major;
+  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << sdl_version_p->minor;
+  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << sdl_version_p->patch;
+  std::cout << ACE_TEXT("SDL (linked): ")
+            << version_number.str()
+            << std::endl;
+
+  // step3: ACE version
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta
+  // version number (this is needed, as the library soname is compared to this
+  // string)
+  version_number.str("");
+  version_number << ACE::major_version();
+  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << ACE::minor_version();
+  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << ACE::beta_version();
+  std::cout << ACE_TEXT("ACE: ")
 //             << ACE_VERSION
-//             << std::endl;
+            << version_number.str()
+            << std::endl;
 }
 
 int
@@ -1478,10 +1497,10 @@ ACE_TMAIN(int argc,
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                   false);
 #endif // #ifdef BASEDIR
 
   std::string magicDictionary = config_path;
@@ -1700,7 +1719,7 @@ ACE_TMAIN(int argc,
   } // end IF
   // ***** mouse setup *****
   // don't show (double) cursor
-  SDL_ShowCursor(SDL_DISABLE);
+  SDL_ShowCursor(SDL_TRUE);
   // ***** keyboard setup *****
   // enable Unicode translation
   SDL_EnableUNICODE(1);

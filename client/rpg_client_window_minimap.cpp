@@ -86,12 +86,12 @@ RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
 void
 RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
                                        RPG_Graphics_IWindow* window_in,
-                                       bool& redraw_out)
+                                       SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::handleEvent"));
 
   // init return value(s)
-  redraw_out = false;
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("RPG_Client_Window_MiniMap::handleEvent(%s)\n"),
@@ -131,7 +131,7 @@ RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
       // delegate these to the parent...
       getParent()->handleEvent(event_in,
                                window_in,
-                               redraw_out);
+                               dirtyRegion_out);
 
       break;
     }
@@ -167,16 +167,16 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 
   // init clipping
   SDL_GetClipRect(targetSurface, &(inherited::myClipRect));
-  SDL_Rect clipRect;
-  clipRect.x = static_cast<int16_t>(myBorderLeft +
-                                    (myScreen->w -
-                                     (myBorderLeft + myBorderRight) -
-                                     (inherited::mySize.first + inherited::myOffset.first)));
-  clipRect.y = static_cast<int16_t>(myBorderTop +
-                                    inherited::myOffset.second);
-  clipRect.w = static_cast<uint16_t>(inherited::mySize.first);
-  clipRect.h = static_cast<uint16_t>(inherited::mySize.second);
-  if (!SDL_SetClipRect(targetSurface, &clipRect))
+  SDL_Rect clip_rect;
+  clip_rect.x = static_cast<int16_t>(myBorderLeft +
+                                     (myScreen->w -
+                                      (myBorderLeft + myBorderRight) -
+                                      (inherited::mySize.first + inherited::myOffset.first)));
+  clip_rect.y = static_cast<int16_t>(myBorderTop +
+                                     inherited::myOffset.second);
+  clip_rect.w = static_cast<uint16_t>(inherited::mySize.first);
+  clip_rect.h = static_cast<uint16_t>(inherited::mySize.second);
+  if (!SDL_SetClipRect(targetSurface, &clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -357,14 +357,23 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 //                                 true);
 
   // reset clipping
+//    unclip(targetSurface);
   if (!SDL_SetClipRect(targetSurface, &(inherited::myClipRect)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
+
+    // clean up
+    if (inherited::myScreenLock)
+      inherited::myScreenLock->unlock();
 
     return;
   } // end IF
+  inherited::myClipRect = clip_rect;
+
+  // invalidate dirty region
+  invalidate(clip_rect);
 
   // remember position of last realization
   inherited::myLastAbsolutePosition = std::make_pair((myBorderLeft +

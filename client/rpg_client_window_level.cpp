@@ -472,7 +472,8 @@ RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in : myScreen);
+  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
+                                                 : myScreen);
 
   // draw any child(ren) of a specific type
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
@@ -500,12 +501,12 @@ RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
     {
       try
       {
-        (*iterator)->refresh(targetSurface);
+        (*iterator)->update(targetSurface);
       }
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::refresh(), continuing\n")));
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
       }
     } // end IF
   } // end FOR
@@ -1305,12 +1306,12 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 void
 RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
                                      RPG_Graphics_IWindow* window_in,
-                                     bool& redraw_out)
+                                     SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::handleEvent"));
 
   // init return value(s)
-  redraw_out = false;
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   // sanity check(s)
   ACE_ASSERT(myClient);
@@ -1384,17 +1385,20 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           toggleMiniMap();
 
           // --> need a redraw
-          redraw_out = true;
+          myClientAction.command = COMMAND_WINDOW_DRAW;
+          myClientAction.window = this;
+          myClient->action(myClientAction);
 
           break;
         }
-        // implement (manual) refresh
         case SDLK_r:
         {
           if (event_in.key.keysym.mod & KMOD_SHIFT)
           {
-            // --> need a redraw
-            redraw_out = true;
+            // (manual) refresh
+            myClientAction.command = COMMAND_WINDOW_DRAW;
+            myClientAction.window = this;
+            myClient->action(myClientAction);
           } // end IF
           else
           {
@@ -1430,7 +1434,9 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             toggleShowCoordinates();
 
             // --> need a redraw
-            redraw_out = true;
+            myClientAction.command = COMMAND_WINDOW_DRAW;
+            myClientAction.window = this;
+            myClient->action(myClientAction);
 #endif
           } // end IF
           else
@@ -1461,9 +1467,9 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
         }
         case SDLK_t:
         {
-          // step0: restore/clear old tile highlight background
-          myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
-          myClient->action(myClientAction);
+//          // step0: restore/clear old tile highlight background
+//          myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+//          myClient->action(myClientAction);
 
           // *NOTE*: this MAY also invalidate the current cursor bg...
           myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
@@ -1472,13 +1478,13 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           // lock engine
           myEngine->lock();
 
-          // step1: store current background tile(s)
-          myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
-          RPG_Graphics_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
-          myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                                          myEngine->getSize(false),
-                                                                          getSize(false),
-                                                                          getView());
+//          // step1: store current background tile(s)
+//          myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+//          RPG_Graphics_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+//          myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
+//                                                                          myEngine->getSize(false),
+//                                                                          getSize(false),
+//                                                                          getView());
 
           // toggle path selection mode
           if (myClient->mode() == SELECTIONMODE_PATH)
@@ -1546,7 +1552,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           if ((myClientAction.position.first  != std::numeric_limits<unsigned int>::max()) &&
               (myClientAction.position.second != std::numeric_limits<unsigned int>::max()))
           {
-            myClient->action(myClientAction);
+//            myClient->action(myClientAction);
 
             // step2: draw tile highlight
             myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
@@ -1577,21 +1583,21 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
         }
         case SDLK_x:
         {
-          // step0: restore/clear old tile highlight background
-          myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
-          myClient->action(myClientAction);
+//          // step0: restore/clear old tile highlight background
+//          myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+//          myClient->action(myClientAction);
 
           // *NOTE*: this MAY also invalidate the current cursor bg...
           myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
           myClient->action(myClientAction);
 
-          // step1: store current background tile(s)
-          myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+//          // step1: store current background tile(s)
+//          myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
           RPG_Graphics_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
-          myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                                          myEngine->getSize(false),
-                                                                          getSize(false),
-                                                                          getView());
+//          myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
+//                                                                          myEngine->getSize(false),
+//                                                                          getSize(false),
+//                                                                          getView());
 
           // toggle path selection mode
           if ((myClient->mode() == SELECTIONMODE_AIM_CIRCLE) ||
@@ -1627,7 +1633,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           if ((myClientAction.position.first  != std::numeric_limits<unsigned int>::max()) &&
               (myClientAction.position.second != std::numeric_limits<unsigned int>::max()))
           {
-            myClient->action(myClientAction);
+//            myClient->action(myClientAction);
 
             // step2: draw tile highlight
             myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
@@ -1898,7 +1904,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
         //} // end FOR
 
         // step4: store current background tile(s)
-        myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+//        myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
         RPG_Client_SelectionMode current_mode = myClient->mode();
         switch (current_mode)
         {
@@ -1936,8 +1942,8 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
                                                        *iterator,
                                                        obstacles,
                                                        false))
-		iterator++;
-	      else
+                iterator++;
+              else
                 myClientAction.positions.erase(iterator++);
 
             break;
@@ -1999,7 +2005,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             return;
           }
         } // end SWITCH
-        myClient->action(myClientAction);
+//        myClient->action(myClientAction);
 
         // step5: draw tile highlight(s) ?
         if (myClient->hasSeen(myClientAction.entity_id,
@@ -2275,7 +2281,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
   if (delegate_to_parent)
     getParent()->handleEvent(event_in,
                              window_in,
-                             redraw_out);
+                             dirtyRegion_out);
 }
 
 void

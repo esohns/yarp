@@ -1901,7 +1901,7 @@ RPG_Graphics_Common_Tools::initFonts()
         return false;
       } // end IF
 
-      ACE_DEBUG((LM_INFO,
+      ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("loaded font \"%s - %s\" %d face(s) [%s], height [+/-]: %d (%d,%d), space: %d\n"),
                  TTF_FontFaceFamilyName(font),
                  TTF_FontFaceStyleName(font),

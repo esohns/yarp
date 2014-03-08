@@ -578,7 +578,7 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory()
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::getPlayerProfilesDirectory"));
 
-  std::string result = RPG_Common_File_Tools::getUserGameDirectory();
+	std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_PROFILES_SUB);
 

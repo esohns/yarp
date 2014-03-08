@@ -20,7 +20,7 @@ AM_CPPFLAGS = \
   -I$(srcdir)/../net/client \
   -I$(srcdir)/../3rd_party/bison
 
-SUBDIRS = scripts
+SUBDIRS = data scripts
 
 noinst_HEADERS = \
   stdafx.h

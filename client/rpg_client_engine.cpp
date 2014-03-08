@@ -525,6 +525,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
         action(client_action);
 
+        client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+        action(client_action);
+
         if (getCenterOnActive())
           client_action.command = COMMAND_SET_VIEW;
         else
@@ -538,17 +541,14 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
                                                                        myWindow->getSize(false),
                                                                        level_window->getView());
 
-        client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
-        action(client_action);
+//        client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+//        action(client_action);
 
         client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-        //action(client_action);
+        action(client_action);
 
-        //client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-        //action(client_action);
-
-        //client_action.position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
-        //client_action.command = COMMAND_CURSOR_DRAW;
+        client_action.position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+        client_action.command = COMMAND_CURSOR_DRAW;
       } // end IF
       else
       {
@@ -634,8 +634,8 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       client_action.command = COMMAND_SET_VISION_RADIUS;
       action(client_action);
 
-      client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
-      action(client_action);
+//      client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
+//      action(client_action);
 
       client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
       action(client_action);
@@ -816,27 +816,23 @@ RPG_Client_Engine::handleActions()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::handleActions"));
 
-  bool refresh_window = false;
   SDL_Rect dirty_region;
   ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
   for (RPG_Client_ActionsIterator_t iterator = myActions.begin();
        iterator != myActions.end();
        iterator++)
   {
-    refresh_window = false;
-
     switch ((*iterator).command)
     {
+      // sanity check(s)
+      ACE_ASSERT((*iterator).window);
+
       case COMMAND_CURSOR_DRAW:
       {
-        // sanity check
-        ACE_ASSERT(myWindow);
-
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put((*iterator).position.first,
                                                                (*iterator).position.second,
                                                                dirty_region);
-        RPG_Graphics_Surface::update(dirty_region,
-                                     myWindow->getScreen());
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
@@ -849,7 +845,7 @@ RPG_Client_Engine::handleActions()
       case COMMAND_CURSOR_SET:
       {
         // sanity check(s)
-        ACE_ASSERT(myWindow);
+        ACE_ASSERT((*iterator).window);
         RPG_Graphics_Cursor current_type = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type();
         if (current_type == (*iterator).cursor)
           break; // nothing to do...
@@ -857,8 +853,7 @@ RPG_Client_Engine::handleActions()
         // set new cursor
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set((*iterator).cursor,
                                                                dirty_region);
-        RPG_Graphics_Surface::update(dirty_region,
-                                     myWindow->getScreen());
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
@@ -877,21 +872,19 @@ RPG_Client_Engine::handleActions()
                                                                                                    (*iterator).window->getSize(false),
                                                                                                    level_window->getView()),
                                                              dirty_region);
-        RPG_Graphics_Surface::update(dirty_region,
-                                     myWindow->getScreen());
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
       case COMMAND_ENTITY_REMOVE:
       {
         // sanity check
-        ACE_ASSERT(myWindow);
         ACE_ASSERT((*iterator).entity_id);
+        ACE_ASSERT((*iterator).window);
 
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove((*iterator).entity_id,
                                                                 dirty_region);
-        RPG_Graphics_Surface::update(dirty_region,
-                                     myWindow->getScreen());
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
@@ -913,15 +906,16 @@ RPG_Client_Engine::handleActions()
       case COMMAND_SET_VIEW:
       {
         // sanity check
-        ACE_ASSERT(myWindow);
-
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        ACE_ASSERT((*iterator).window);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
         ACE_ASSERT(level_window);
+
         try
         {
           level_window->setView((*iterator).position);
-          myWindow->clear();
-          myWindow->draw();
+//          myWindow->clear();
+          level_window->draw();
         }
         catch (...)
         {
@@ -933,14 +927,14 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        refresh_window = true;
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
       case COMMAND_SET_VISION_RADIUS:
       {
         // sanity check(s)
-        ACE_ASSERT(myWindow);
 				ACE_ASSERT((*iterator).window);
 
         RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
@@ -948,8 +942,8 @@ RPG_Client_Engine::handleActions()
         try
         {
           level_window->setBlendRadius((*iterator).radius);
-          myWindow->clear();
-          myWindow->draw();
+//          myWindow->clear();
+          level_window->draw();
         }
         catch (...)
         {
@@ -961,31 +955,8 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-//        // fiddling with the vision invalidates the tile highlight BG
-//        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
-//        // --> store/draw the new tile highlight (BG)
-//        RPG_Map_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
-//        RPG_Map_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-//                                                                                myEngine->getSize(true),
-//                                                                                (*iterator).window->getSize(false),
-//                                                                                level_window->getView());
-//        RPG_Map_Position_t screen_position = RPG_Graphics_Common_Tools::map2Screen(map_position,
-//                                                                                   (*iterator).window->getSize(false),
-//                                                                                   level_window->getView());
-//        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_position,
-//                                                                            screen_position);
-//        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(screen_position,
-//                                                                         dirty_region);
-
-//        // fiddling with the vision (probably) invalidates (part of) the cursor BG
-//        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG();
-//        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(cursor_position.first,
-//                                                               cursor_position.second,
-//                                                               dirty_region);
-//        //RPG_Graphics_Surface::update(dirtyRegion,
-//        //                             myWindow->getScreen());
-
-        refresh_window = true;
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
@@ -993,7 +964,6 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check(s)
 				ACE_ASSERT((*iterator).window);
-        ACE_ASSERT(myWindow);
 
         RPG_Graphics_Size_t size = (*iterator).window->getSize(false);
         RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
@@ -1002,80 +972,13 @@ RPG_Client_Engine::handleActions()
         if ((*iterator).path.empty() &&
             (*iterator).positions.empty())
         {
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
-                                                                                                                 size,
-                                                                                                                 view),
-                                                                           dirty_region);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight((*iterator).position,
+                                                                          RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
+                                                                                                                size,
+                                                                                                                view),
+                                                                          view,
+                                                                          dirty_region);
         } // end IF
-        else if (!(*iterator).path.empty())
-        {
-          ACE_ASSERT((*iterator).positions.empty());
-          RPG_Graphics_Positions_t graphics_positions;
-          for (RPG_Map_PathConstIterator_t iterator2 = (*iterator).path.begin();
-               iterator2 != (*iterator).path.end();
-               iterator2++)
-            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
-                                                                               size,
-                                                                               view));
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(graphics_positions,
-                                                                           dirty_region);
-        } // end ELSE
-        else
-        {
-          ACE_ASSERT(!(*iterator).positions.empty());
-          RPG_Graphics_Positions_t graphics_positions;
-          for (RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).positions.begin();
-               iterator2 != (*iterator).positions.end();
-               iterator2++)
-            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator2,
-                                                                               size,
-                                                                               view));
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->drawHighlight(graphics_positions,
-                                                                           dirty_region);
-        } // end ELSE
-        RPG_Graphics_Surface::update(dirty_region,
-                                     myWindow->getScreen());
-
-        break;
-      }
-      case COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG:
-      {
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
-
-        break;
-      }
-      case COMMAND_TILE_HIGHLIGHT_RESTORE_BG:
-      {
-        // sanity check(s)
-				ACE_ASSERT(myWindow);
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
-        ACE_ASSERT(level_window);
-
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(level_window->getView(),
-                                                                              dirty_region);
-        RPG_Graphics_Surface::update(dirty_region,
-                                     myWindow->getScreen());
-
-        break;
-      }
-      case COMMAND_TILE_HIGHLIGHT_STORE_BG:
-      {
-        // sanity check(s)
-        ACE_ASSERT((*iterator).window);
-				ACE_ASSERT(myWindow);
-
-        RPG_Graphics_Size_t size = (*iterator).window->getSize(false);
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
-        ACE_ASSERT(level_window);
-        RPG_Graphics_Position_t view = level_window->getView();
-        if ((*iterator).path.empty() &&
-            (*iterator).positions.empty())
-        {
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG((*iterator).position,
-                                                                              RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
-                                                                                                                    size,
-                                                                                                                    view));
-        }
         else if (!(*iterator).path.empty())
         {
           ACE_ASSERT((*iterator).positions.empty());
@@ -1090,8 +993,10 @@ RPG_Client_Engine::handleActions()
                                                                                size,
                                                                                view));
           } // end FOR
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_positions,
-                                                                              graphics_positions);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(map_positions,
+                                                                           graphics_positions,
+                                                                           view,
+                                                                           dirty_region);
         } // end ELSE
         else
         {
@@ -1107,24 +1012,105 @@ RPG_Client_Engine::handleActions()
                                                                                size,
                                                                                view));
           } // end FOR
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_positions,
-                                                                              graphics_positions);
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(map_positions,
+                                                                           graphics_positions,
+                                                                           view,
+                                                                           dirty_region);
         } // end ELSE
+
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
+      case COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG:
+      {
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
+
+        break;
+      }
+      case COMMAND_TILE_HIGHLIGHT_RESTORE_BG:
+      {
+        // sanity check(s)
+        ACE_ASSERT((*iterator).window);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        ACE_ASSERT(level_window);
+
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(level_window->getView(),
+                                                                              dirty_region);
+
+        (*iterator).window->invalidate(dirty_region);
+
+        break;
+      }
+//      case COMMAND_TILE_HIGHLIGHT_STORE_BG:
+//      {
+//        // sanity check(s)
+//        ACE_ASSERT((*iterator).window);
+
+//        RPG_Graphics_Size_t size = (*iterator).window->getSize(false);
+//        RPG_Client_IWindowLevel* level_window =
+//            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+//        ACE_ASSERT(level_window);
+//        RPG_Graphics_Position_t view = level_window->getView();
+//        if ((*iterator).path.empty() &&
+//            (*iterator).positions.empty())
+//        {
+//          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG((*iterator).position,
+//                                                                              RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
+//                                                                                                                    size,
+//                                                                                                                    view));
+//        }
+//        else if (!(*iterator).path.empty())
+//        {
+//          ACE_ASSERT((*iterator).positions.empty());
+//          RPG_Map_PositionList_t map_positions;
+//          RPG_Graphics_Positions_t graphics_positions;
+//          for (RPG_Map_PathConstIterator_t iterator2 = (*iterator).path.begin();
+//               iterator2 != (*iterator).path.end();
+//               iterator2++)
+//          {
+//            map_positions.push_back((*iterator2).first);
+//            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
+//                                                                               size,
+//                                                                               view));
+//          } // end FOR
+//          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_positions,
+//                                                                              graphics_positions);
+//        } // end ELSE
+//        else
+//        {
+//          ACE_ASSERT(!(*iterator).positions.empty());
+//          RPG_Map_PositionList_t map_positions;
+//          RPG_Graphics_Positions_t graphics_positions;
+//          for (RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).positions.begin();
+//               iterator2 != (*iterator).positions.end();
+//               iterator2++)
+//          {
+//            map_positions.push_back(*iterator2);
+//            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator2,
+//                                                                               size,
+//                                                                               view));
+//          } // end FOR
+//          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->storeHighlightBG(map_positions,
+//                                                                              graphics_positions);
+//        } // end ELSE
+
+//        break;
+//      }
       case COMMAND_TOGGLE_DOOR:
       {
-        // sanity check
-        ACE_ASSERT(myWindow);
-
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        // sanity check(s)
+        ACE_ASSERT((*iterator).window);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
         ACE_ASSERT(level_window);
+
         try
         {
           level_window->toggleDoor((*iterator).position);
-          myWindow->clear();
-          myWindow->draw();
+//          myWindow->clear();
+          level_window->draw();
         }
         catch (...)
         {
@@ -1135,7 +1121,8 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        refresh_window = true;
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
@@ -1143,9 +1130,10 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check
         ACE_ASSERT((*iterator).window);
-
-        RPG_Client_IWindow* client_window = dynamic_cast<RPG_Client_IWindow*>((*iterator).window);
+        RPG_Client_IWindow* client_window =
+            dynamic_cast<RPG_Client_IWindow*>((*iterator).window);
         ACE_ASSERT(client_window);
+
         try
         {
           client_window->drawBorder((*iterator).window->getScreen(),
@@ -1161,7 +1149,8 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        refresh_window = true;
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
@@ -1172,7 +1161,7 @@ RPG_Client_Engine::handleActions()
 
         try
         {
-          (*iterator).window->clear();
+//          (*iterator).window->clear();
           (*iterator).window->draw();
         }
         catch (...)
@@ -1184,32 +1173,34 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        refresh_window = true;
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
       case COMMAND_WINDOW_INIT:
       {
-        // sanity check
-				ACE_ASSERT(myWindow);
+        // sanity check(s)
+        ACE_ASSERT((*iterator).window);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        ACE_ASSERT(level_window);
 
-        // fiddling with the view invalidates the cursor/tile highlight BG
+        // step0: reset bg caches
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG((*iterator).position);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                                                           std::numeric_limits<unsigned int>::max()));
 
+        // step1: init/(re)draw window
         RPG_Map_Position_t center = myEngine->getSize(true);
         center.first >>= 1;
         center.second >>= 1;
-
-        // step1: init/(re)draw window
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
-        ACE_ASSERT(level_window);
         try
         {
           level_window->init();
           level_window->setView(center);
-          myWindow->clear();
-          myWindow->draw();
+//          level_window->clear();
+          level_window->draw();
         }
         catch (...)
         {
@@ -1246,24 +1237,30 @@ RPG_Client_Engine::handleActions()
         // clean up
         g_free(caption_utf8);
 
-        refresh_window = true;
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
       case COMMAND_WINDOW_REFRESH:
       {
-        refresh_window = true;
+        // sanity check(s)
+        ACE_ASSERT((*iterator).window);
+
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
       case COMMAND_WINDOW_UPDATE_MESSAGEWINDOW:
       {
         // sanity check(s)
-        ACE_ASSERT(myWindow);
+        ACE_ASSERT((*iterator).window);
         ACE_ASSERT(!(*iterator).message.empty());
-
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
         ACE_ASSERT(level_window);
+
         try
         {
           level_window->updateMessageWindow((*iterator).message);
@@ -1278,17 +1275,19 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        refresh_window = true;
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
       case COMMAND_WINDOW_UPDATE_MINIMAP:
       {
         // sanity check
-        ACE_ASSERT(myWindow);
-
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        ACE_ASSERT((*iterator).window);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
         ACE_ASSERT(level_window);
+
         try
         {
           level_window->updateMinimap();
@@ -1302,7 +1301,8 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        refresh_window = true;
+        // --> update whole window
+        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
@@ -1316,23 +1316,18 @@ RPG_Client_Engine::handleActions()
       }
     } // end SWITCH
 
-    // redraw UI ?
-    if (refresh_window)
+    // update screen
+    ACE_ASSERT((*iterator).window);
+    try
     {
-      // sanity check
-      ACE_ASSERT((*iterator).window);
-
-      try
-      {
-        (*iterator).window->refresh();
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("[%@] caught exception in RPG_Graphics_IWindow::refresh(), continuing\n"),
-                   (*iterator).window));
-      }
-    } // end IF
+      (*iterator).window->update();
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("[%@] caught exception in RPG_Graphics_IWindow::update(), continuing\n"),
+                 (*iterator).window));
+    }
   } // end FOR
 
   myActions.clear();

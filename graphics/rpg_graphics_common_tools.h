@@ -103,7 +103,6 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                                             const RPG_Graphics_Position_t&); // viewport (map coordinates !)
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Graphics_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools(const RPG_Graphics_Common_Tools&));

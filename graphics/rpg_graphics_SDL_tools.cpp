@@ -21,17 +21,19 @@
 
 #include "rpg_graphics_SDL_tools.h"
 
+#include <ace/OS.h>
+#include <ace/Log_Msg.h>
+
+#include <SDL_syswm.h>
+
+#include "rpg_common_macros.h"
+#include "rpg_common_defines.h"
+
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
 
 // init statics
 Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A0   = 0;
@@ -101,6 +103,38 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
 
     return false;
   } // end IF
+
+  // debug info
+  SDL_SysWMinfo wm_info;
+  ACE_OS::memset(&wm_info, 0, sizeof(wm_info));
+  SDL_VERSION(&wm_info.version);
+  if (SDL_GetWMInfo(&wm_info) <= 0)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_GetWMInfo(): \"%s\", continuing"),
+               SDL_GetError()));
+  std::ostringstream version_number;
+  version_number << wm_info.version.major;
+  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << wm_info.version.minor;
+  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << wm_info.version.patch;
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("*** wm info (SDL: %s) ***\nwindow: %d\nOpenGL context: %@\n"),
+             ACE_TEXT(version_number.str().c_str()),
+             wm_info.hwnd,
+             wm_info.hglrc));
+#else
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("*** wm info (SDL: %s) ***\nsubsystem: %d\ndisplay: %@\nwindow: %u\nfull-screen window: %u\nmanaged input window: %u\nrender display: %@\n"),
+             ACE_TEXT(version_number.str().c_str()),
+             wm_info.subsystem,
+             wm_info.info.x11.display,
+             wm_info.info.x11.window,
+             wm_info.info.x11.fswindow,
+             wm_info.info.x11.wmwindow,
+             wm_info.info.x11.gfxdisplay));
+#endif
 
   // step2: set window/icon caption
   SDL_WM_SetCaption(caption_in.c_str(),  // window caption
@@ -373,7 +407,9 @@ RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::colorToSDLColor"));
 
+  // init return value
   SDL_Color result;
+  ACE_OS::memset(&result, 0, sizeof(result));
 
   // extract components from the 32-bit color value
   result.r = (color_in & targetSurface_in.format->Rmask) >> targetSurface_in.format->Rshift;
@@ -393,10 +429,7 @@ RPG_Graphics_SDL_Tools::initColors()
   // *NOTE*: the only way to do this without needing graphics to have been loaded first
   // is to manually create a surface and put it into display format + alpha
   SDL_Surface* dummy = NULL;
-  dummy = SDL_CreateRGBSurface((SDL_HWSURFACE | // TRY to (!) place the surface in VideoRAM
-                                SDL_ASYNCBLIT |
-                                SDL_SRCCOLORKEY |
-                                SDL_SRCALPHA),
+  dummy = SDL_CreateRGBSurface(RPG_Graphics_Surface::SDL_surface_flags,
                                1, // dummy
                                1, // dummy
                                32,
@@ -460,6 +493,7 @@ RPG_Graphics_SDL_Tools::initColors()
 //                  dummy_converted->format,
 //                  sizeof(SDL_PixelFormat));
 
+  // *TODO*: import this from a (XML-)definition file
   CLR32_BLACK_A0   = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0);
   CLR32_BLACK_A10  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0x1a);
   CLR32_BLACK_A30  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0x4d);
@@ -499,6 +533,8 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
 
   // init result
   SDL_Rect result;
+  ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
+
   result.x = static_cast<int16_t>((rect1_in.x < rect2_in.x) ? rect1_in.x : rect2_in.x);
   result.y = static_cast<int16_t>((rect1_in.y < rect2_in.y) ? rect1_in.y : rect2_in.y);
   result.w = static_cast<uint16_t>((((rect1_in.x + rect1_in.w) > (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1) : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
@@ -515,9 +551,7 @@ RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
 
   // init result
   SDL_Rect result;
-  ACE_OS::memset(&result,
-                 0,
-                 sizeof(SDL_Rect));
+  ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
 
   // test for intersection first
   if ((((rect1_in.x >= rect2_in.x) && (rect1_in.x <= (rect2_in.x + rect2_in.w))) ||

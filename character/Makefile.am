@@ -98,4 +98,3 @@ config_DATA = rpg_character.xsd
 EXTRA_DIST = \
   $(config_DATA) \
   rpg_character.map
-

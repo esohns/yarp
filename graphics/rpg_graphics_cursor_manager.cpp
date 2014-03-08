@@ -31,7 +31,7 @@
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
@@ -106,10 +106,19 @@ RPG_Graphics_Cursor_Manager::init(RPG_Common_ILock* screenLock_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::init"));
 
   ACE_ASSERT(window_in);
-  ACE_ASSERT(screenLock_in);
 
   myHighlightWindow = window_in;
   myScreenLock = screenLock_in;
+}
+
+void
+RPG_Graphics_Cursor_Manager::reset()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::reset"));
+
+  invalidateBG();
+  resetHighlightBG(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                  std::numeric_limits<unsigned int>::max()));
 }
 
 RPG_Graphics_Cursor
@@ -245,11 +254,11 @@ RPG_Graphics_Cursor_Manager::put(const unsigned int& offsetX_in,
       (offsetY_in >= static_cast<unsigned int>(myHighlightWindow->getScreen()->h)))
     return; // nothing to do
   ACE_ASSERT(myCurrentGraphic);
-  ACE_ASSERT(myScreenLock);
 
   // step1: restore old background
   SDL_Rect bgRect;
-  myScreenLock->lock();
+  if (myScreenLock)
+    myScreenLock->lock();
   ACE_OS::memset(&bgRect, 0, sizeof(bgRect));
   restoreBG(bgRect);
 
@@ -262,6 +271,8 @@ RPG_Graphics_Cursor_Manager::put(const unsigned int& offsetX_in,
   myBGPosition.first = offsetX_in;
   myBGPosition.second = offsetY_in;
 
+  // step3: place cursor
+
   // compute bounding box
   dirtyRegion_out.x = static_cast<int16_t>(offsetX_in);
   dirtyRegion_out.y = static_cast<int16_t>(offsetY_in);
@@ -273,7 +284,6 @@ RPG_Graphics_Cursor_Manager::put(const unsigned int& offsetX_in,
   if ((dirtyRegion_out.y + dirtyRegion_out.h) > myHighlightWindow->getScreen()->h)
     dirtyRegion_out.h -= ((dirtyRegion_out.y + dirtyRegion_out.h) - myHighlightWindow->getScreen()->h);
 
-  // place cursor
   SDL_Rect clipRect;
   SDL_GetClipRect(myHighlightWindow->getScreen(), &clipRect);
   SDL_SetClipRect(myHighlightWindow->getScreen(), NULL); // disable window-specific clipping here...
@@ -287,7 +297,8 @@ RPG_Graphics_Cursor_Manager::put(const unsigned int& offsetX_in,
                SDL_GetError()));
 
     // clean up
-    myScreenLock->unlock();
+    if (myScreenLock)
+      myScreenLock->unlock();
     SDL_SetClipRect(myHighlightWindow->getScreen(), &clipRect);
     if ((bgRect.w != 0) &&
         (bgRect.h != 0))
@@ -297,7 +308,8 @@ RPG_Graphics_Cursor_Manager::put(const unsigned int& offsetX_in,
 
     return;
   } // end IF
-  myScreenLock->unlock();
+  if (myScreenLock)
+    myScreenLock->unlock();
   SDL_SetClipRect(myHighlightWindow->getScreen(), &clipRect);
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
@@ -472,7 +484,7 @@ RPG_Graphics_Cursor_Manager::invalidateBG()
   RPG_Graphics_Surface::clear(myBG);
 }
 
-const RPG_Graphics_Position_t
+RPG_Graphics_Position_t
 RPG_Graphics_Cursor_Manager::getHighlightBGPosition(const unsigned int& index_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::getHighlightBGPosition"));
@@ -490,10 +502,12 @@ RPG_Graphics_Cursor_Manager::getHighlightBGPosition(const unsigned int& index_in
 }
 
 void
-RPG_Graphics_Cursor_Manager::drawHighlight(const RPG_Graphics_Position_t& graphicsPosition_in,
-                                           SDL_Rect& dirtyRegion_out)
+RPG_Graphics_Cursor_Manager::putHighlight(const RPG_Map_Position_t& mapPosition_in,
+                                          const RPG_Graphics_Position_t& graphicsPosition_in,
+                                          const RPG_Graphics_Position_t& viewPort_in,
+                                          SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::drawHighlight"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::putHighlight"));
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -502,6 +516,20 @@ RPG_Graphics_Cursor_Manager::drawHighlight(const RPG_Graphics_Position_t& graphi
   ACE_ASSERT(myHighlightTile);
   ACE_ASSERT(myHighlightWindow);
   ACE_ASSERT(myScreenLock);
+
+  // step1: restore old background
+  if (myScreenLock)
+    myScreenLock->lock();
+  restoreHighlightBG(viewPort_in,
+                     dirtyRegion_out);
+  if (myScreenLock)
+    myScreenLock->unlock();
+
+  // step2: get new background
+  storeHighlightBG(mapPosition_in,
+                   graphicsPosition_in);
+
+  // step3: place highlight
 
   myHighlightWindow->clip();
   myScreenLock->lock();
@@ -512,14 +540,20 @@ RPG_Graphics_Cursor_Manager::drawHighlight(const RPG_Graphics_Position_t& graphi
   myScreenLock->unlock();
   myHighlightWindow->unclip();
 
-  dirtyRegion_out.x = static_cast<int16_t>(graphicsPosition_in.first);
-  dirtyRegion_out.y = static_cast<int16_t>(graphicsPosition_in.second);
-  dirtyRegion_out.w = static_cast<uint16_t>(myHighlightTile->w);
-  dirtyRegion_out.h = static_cast<uint16_t>(myHighlightTile->h);
+  // step4: compute dirty region
+  SDL_Rect dirty_region;
+  dirty_region.x = static_cast<int16_t>(graphicsPosition_in.first);
+  dirty_region.y = static_cast<int16_t>(graphicsPosition_in.second);
+  dirty_region.w = static_cast<uint16_t>(myHighlightTile->w);
+  dirty_region.h = static_cast<uint16_t>(myHighlightTile->h);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                        dirtyRegion_out);
 }
 
 void
-RPG_Graphics_Cursor_Manager::drawHighlight(const RPG_Graphics_Positions_t& graphicsPositions_in,
+RPG_Graphics_Cursor_Manager::putHighlights(const RPG_Map_PositionList_t& mapPositions_in,
+                                           const RPG_Graphics_Positions_t& graphicsPositions_in,
+                                           const RPG_Graphics_Position_t& viewPort_in,
                                            SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::drawHighlight"));
@@ -531,6 +565,20 @@ RPG_Graphics_Cursor_Manager::drawHighlight(const RPG_Graphics_Positions_t& graph
   ACE_ASSERT(myHighlightTile);
   ACE_ASSERT(myHighlightWindow);
   ACE_ASSERT(myScreenLock);
+
+  // step1: restore old backgrounds
+  if (myScreenLock)
+    myScreenLock->lock();
+  restoreHighlightBG(viewPort_in,
+                     dirtyRegion_out);
+  if (myScreenLock)
+    myScreenLock->unlock();
+
+  // step2: get new backgrounds
+  storeHighlightBG(mapPositions_in,
+                   graphicsPositions_in);
+
+  // step3: place highlights
 
   SDL_Rect current_rect;
   current_rect.w = static_cast<uint16_t>(myHighlightTile->w);

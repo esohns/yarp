@@ -252,10 +252,10 @@ print_usage(const std::string& programName_in)
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                   false);
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
@@ -375,10 +375,10 @@ process_arguments(const int& argc_in,
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                   false);
 #endif // #ifdef BASEDIR
 
   iniFile_out = config_path;
@@ -985,15 +985,11 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
   RPG_Graphics_IWindow* previous_window = NULL;
-  bool schedule_redraw = false;
-  bool previous_redraw = false;
   RPG_Graphics_Position_t mouse_position;
-//   bool refresh_screen = false;
   do
   {
     sdl_event.type = SDL_NOEVENT;
     window = NULL;
-    schedule_redraw = false;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
     client_action.position = std::make_pair(std::numeric_limits<int>::max(),
                                             std::numeric_limits<int>::max());
@@ -1001,10 +997,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
     client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
     client_action.entity_id = 0;
     client_action.path.clear();
-    previous_redraw = false;
     mouse_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                     std::numeric_limits<unsigned int>::max());
-//     refresh_screen = false;
+    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
 
     // step6a: get next pending event
 //     if (SDL_PollEvent(&event) == -1)
@@ -1124,32 +1119,17 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
               (previous_window != window))
           {
             sdl_event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
-            previous_redraw = false;
             try
             {
               previous_window->handleEvent(sdl_event,
                                            previous_window,
-                                           previous_redraw);
+                                           dirty_region);
             }
             catch (...)
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
-            if (previous_redraw)
-            {
-              try
-              {
-                previous_window->draw();
-                previous_window->refresh();
-              }
-              catch (...)
-              {
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("caught exception in [%@] RPG_Graphics_IWindow::draw()/refresh(), continuing\n"),
-                           previous_window));
-              }
-            } // end IF
 
             sdl_event.type = SDL_MOUSEMOTION;
           } // end IF
@@ -1164,7 +1144,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
           {
             window->handleEvent(sdl_event,
                                 window,
-                                schedule_redraw);
+                                dirty_region);
           }
           catch (...)
           {
@@ -1182,34 +1162,6 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 
         break;
       }
-      //case RPG_CLIENT_SDL_GTKEVENT:
-      //{
-      //  // (at least one) GTK event has arrived --> process pending events
-      //  gdk_threads_enter();
-      //  while (gtk_events_pending())
-      //    if (gtk_main_iteration_do(FALSE)) // NEVER block !
-      //    {
-      //      // gtk_main_quit() has been invoked --> finished event processing
-
-      //      // *NOTE*: as gtk_main() is never invoked, gtk_main_iteration_do ALWAYS
-      //      // returns true... provide a workaround by using the gtk_quit_add hook
-      //      // --> check if that has been called...
-      //      // synch access
-      //      {
-      //        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(GTKUserData_in.lock);
-
-      //        if (GTKUserData_in.gtk_main_quit_invoked)
-      //        {
-      //          done = true;
-
-      //          break; // ignore any remaining GTK events
-      //        }
-      //      } // end lock scope
-      //    } // end IF
-      //  gdk_threads_leave();
-
-      //  break;
-      //}
       case RPG_CLIENT_SDL_TIMEREVENT:
       case SDL_KEYUP:
       case SDL_MOUSEBUTTONUP:
@@ -1226,8 +1178,8 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 				int x, y;
 				Uint8 button_state = SDL_GetMouseState(&x, &y);
 				ACE_UNUSED_ARG(button_state);
-        window = main_window.getWindow(std::make_pair(x, y));
-				schedule_redraw = true;
+				mouse_position = std::make_pair(x, y);
+				window = main_window.getWindow(mouse_position);
 
 				break;
 			}
@@ -1241,10 +1193,13 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 			}
     } // end SWITCH
 
-    // redraw map ?
-    if (schedule_redraw)
+    // update screen ?
+    if ((dirty_region.x != 0) ||
+        (dirty_region.y != 0) ||
+        (dirty_region.w != 0) ||
+        (dirty_region.h != 0))
     {
-      client_action.command = COMMAND_WINDOW_DRAW;
+      client_action.command = COMMAND_WINDOW_REFRESH;
       client_action.window = window;
       client_engine.action(client_action);
     } // end IF
@@ -1256,7 +1211,10 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
       case SDL_MOUSEBUTTONDOWN:
       {
         // map hasn't changed --> no need to redraw
-        if (!schedule_redraw)
+        if ((dirty_region.x == 0) &&
+            (dirty_region.y == 0) &&
+            (dirty_region.w == 0) &&
+            (dirty_region.h == 0))
           break;
 
         // *WARNING*: falls through !
@@ -1658,10 +1616,10 @@ ACE_TMAIN(int argc_in,
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                   false);
 #endif // #ifdef BASEDIR
 
   // step1a: process commandline arguments

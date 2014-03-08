@@ -46,17 +46,19 @@ class RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])
                     const unsigned int& = 0) = 0; // offset y (top-left = [0,0])
-  virtual void refresh(SDL_Surface* = NULL) = 0; // target surface (default: screen)
+  virtual void invalidate(const SDL_Rect&) = 0; // "dirty" area
+  virtual void update(SDL_Surface* = NULL) = 0; // target surface (default: screen)
   virtual RPG_Graphics_IWindow* child(const RPG_Graphics_WindowType&) = 0; // type
 
   virtual void clip(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])
                     const unsigned int& = 0) = 0; // offset y (top-left = [0,0]));
   virtual void unclip(SDL_Surface* = NULL) const = 0; // target surface (default: screen)
+  virtual void getArea(SDL_Rect&) const = 0; // return value: window area
 
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
-                           bool&) = 0;            // return value: redraw ?
+                           SDL_Rect&) = 0;        // return value: "dirty" region
   virtual void notify(const RPG_Graphics_Cursor&) const = 0;
 };
 

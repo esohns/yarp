@@ -86,7 +86,7 @@ class RPG_Client_Export RPG_Client_Window_Level
                     const unsigned int& = 0); // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindow*, // target window (NULL: this)
-                           bool&);                // return value: redraw ?
+                           SDL_Rect&);            // return value: "dirty" region
 
   // debug
 #ifdef _DEBUG

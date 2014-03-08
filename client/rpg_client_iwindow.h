@@ -33,6 +33,9 @@ class RPG_Client_IWindow
   virtual void drawBorder(SDL_Surface* = NULL,          // target surface (default: screen)
                           const unsigned int& = 0,      // offset x (top-left = [0,0])
                           const unsigned int& = 0) = 0; // offset y (top-left = [0,0])
+  virtual void draw(SDL_Surface* = NULL,          // target surface (default: screen)
+                    const unsigned int& = 0,      // offset x (top-left = [0,0])
+                    const unsigned int& = 0) = 0; // offset y (top-left = [0,0])
 };
 
 #endif
