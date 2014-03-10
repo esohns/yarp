@@ -23,6 +23,7 @@
 
 #include "rpg_graphics_exports.h"
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_colorname.h"
 
 #include <SDL.h>
 
@@ -39,31 +40,8 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
   friend class RPG_Graphics_Common_Tools;
 
  public:
-  // some colors
-  static Uint32 CLR32_BLACK_A0; // == "transparency"
-  static Uint32 CLR32_BLACK_A10;
-  static Uint32 CLR32_BLACK_A30;
-  static Uint32 CLR32_BLACK_A50;
-  static Uint32 CLR32_BLACK_A70;
-  static Uint32 CLR32_BLACK_A90;
-  static Uint32 CLR32_BLACK;
-  static Uint32 CLR32_GREEN;
-  static Uint32 CLR32_YELLOW;
-  static Uint32 CLR32_ORANGE;
-  static Uint32 CLR32_RED;
-  static Uint32 CLR32_GRAY20;
-  static Uint32 CLR32_GRAY20_A10;
-  static Uint32 CLR32_GRAY70;
-  static Uint32 CLR32_GRAY77;
-  static Uint32 CLR32_PURPLE44;
-  static Uint32 CLR32_LIGHTPINK;
-  static Uint32 CLR32_LIGHTGREEN;
-  static Uint32 CLR32_BROWN;
-  static Uint32 CLR32_WHITE;
-  static Uint32 CLR32_BLESS_BLUE;
-  static Uint32 CLR32_CURSE_RED;
-  static Uint32 CLR32_GOLD_SHADE;
-
+  static bool preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t&, // configuration
+                           const std::string&);                          // window/icon caption
   static bool initVideo(const RPG_Graphics_SDL_VideoConfiguration_t&, // configuration
                         const std::string&,                           // window/icon caption
                         SDL_Surface*&,                                // return value: window surface
@@ -74,11 +52,19 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
 
   static SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
                                    const SDL_Surface&); // target surface
+  static Uint32 getColor(const RPG_Graphics_ColorName&, // color name
+                         const SDL_Surface&);           // target surface
 
   static SDL_Rect boundingBox(const SDL_Rect&,  // rect 1
                               const SDL_Rect&); // rect 2
   static SDL_Rect intersect(const SDL_Rect&,  // rect 1
                             const SDL_Rect&); // rect 2
+  static bool equal(const SDL_Rect&,  // rect 1
+                    const SDL_Rect&); // rect 2
+  // *NOTE*: this returns rect1 - rect2; off course, this works only if the
+  // result is a rectangular area, otherwise the result will be {0, 0, 0, 0}
+  static SDL_Rect difference(const SDL_Rect&,  // rect 1
+                             const SDL_Rect&); // rect 2
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools());
@@ -88,6 +74,10 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
 
   // helper methods
   static void initColors();
+
+  static bool                    myVideoPreInitialized;
+  // predefined colors
+  static RPG_Graphics_ColorMap_t myColors;
 };
 
 #endif

@@ -802,7 +802,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("%s key\n%s\n"),
 //                  ((event_in.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
-//                  RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str()));
+//                  ACE_TEXT(RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str())));
 
       switch (event_in.key.keysym.sym)
       {
@@ -828,7 +828,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                 setView((size.first  / 2),
                         (size.second / 2));
               } // end ELSE
-
               redraw = true;
 
               break;
@@ -896,11 +895,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                 player_action.position.first--; break;
               case DIRECTION_RIGHT:
                 player_action.position.first++; break;
+              case DIRECTION_INVALID: // fell-through case
+                break;
               default:
               {
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
-                           RPG_Map_Common_Tools::direction2String(direction).c_str()));
+                           ACE_TEXT(RPG_Map_Common_Tools::direction2String(direction).c_str())));
 
                 break;
               }
@@ -933,8 +934,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
           } // end IF
 
-          // done with this event
-          return;
+          break;
         }
         case SDLK_d:
         {
@@ -945,8 +945,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           getArea(dirtyRegion_out);
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
-          // done with this event
-          return;
+          break;
         }
         case SDLK_f:
         {
@@ -960,8 +959,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             getArea(dirtyRegion_out);
             RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
-            // done with this event
-            return;
+            break;
           } // end IF
 
           myCurrentMapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle>(myCurrentMapStyle.floor_style + 1);
@@ -977,8 +975,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           getArea(dirtyRegion_out);
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
-          // done with this event
-          return;
+          break;
         }
         case SDLK_h:
         {
@@ -995,8 +992,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           getArea(dirtyRegion_out);
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
-          // done with this event
-          return;
+          break;
         }
         case SDLK_m:
         {
@@ -1007,8 +1003,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           getArea(dirtyRegion_out);
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
-          // done with this event
-          return;
+          break;
         }
         case SDLK_w:
         {
@@ -1022,8 +1017,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             getArea(dirtyRegion_out);
             RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
-            // done with this event
-            return;
+            break;
           } // end IF
 
           myCurrentMapStyle.wall_style = static_cast<RPG_Graphics_WallStyle>(myCurrentMapStyle.wall_style + 1);;
@@ -1039,17 +1033,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           getArea(dirtyRegion_out);
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
-          // done with this event
-          return;
+          break;
         }
         default:
           break;
       } // end SWITCH
 
-      // delegate all other keypresses to the parent...
-      return getParent()->handleEvent(event_in,
-                                      window_in,
-                                      dirtyRegion_out);
+      break;
     }
     // *** mouse ***
     case SDL_MOUSEMOTION:
@@ -1071,8 +1061,9 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       // (re-)draw "active" tile highlight ?
 
       // inside map ?
-      if (map_position == std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                         std::numeric_limits<unsigned int>::max()))
+      if (map_position ==
+          std::make_pair(std::numeric_limits<unsigned int>::max(),
+                         std::numeric_limits<unsigned int>::max()))
       {
         // off the map --> remove "active" tile highlight
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
@@ -1081,14 +1072,36 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         break;
       } // end IF
 
-      // change "active" tile ?
-      if (map_position != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition())
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight(map_position,
-                                                                        RPG_Graphics_Common_Tools::map2Screen(map_position,
-                                                                                                              mySize,
-                                                                                                              myView),
-                                                                        myView,
-                                                                        dirtyRegion_out);
+      // unmapped area ?
+      SDL_Rect dirty_region;
+      ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+      RPG_Map_Element map_element = myEngine->getElement(map_position);
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("map element [%u,%u]: \"%s\"\n"),
+//                 map_position.first, map_position.second,
+//                 ACE_TEXT(RPG_Map_Common_Tools::mapElement2String(map_element).c_str())));
+      if (map_element == MAPELEMENT_UNMAPPED)
+      {
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
+                                                                              dirty_region);
+        dirtyRegion_out =
+            RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
+      } // end IF
+      else
+      {
+        // change "active" tile ?
+        if (map_position !=
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition())
+        {
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight(map_position,
+                                                                          RPG_Graphics_Common_Tools::map2Screen(map_position,
+                                                                                                                mySize,
+                                                                                                                myView),
+                                                                          myView,
+                                                                          dirty_region);
+          dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
+        } // end IF
+      } // end ELSE
 
       // set an appropriate cursor
       RPG_Engine_EntityID_t entity_id = myEngine->getActive(true);
@@ -1099,14 +1112,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                              SELECTIONMODE_NORMAL,
                                              *myEngine,
                                              true);
-      SDL_Rect dirty_region;
-      ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
+      {
+        ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_type,
                                                                dirty_region);
-
-      // compute overall dirty region
-      dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
+        dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
+      } // end IF
 
       break;
     }
@@ -1181,15 +1193,16 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
     default:
-    {
-      // delegate these to the parent...
-      return getParent()->handleEvent(event_in,
-                                      window_in,
-                                      dirtyRegion_out);
-
       break;
-    }
   } // end SWITCH
+
+  // pass events to any children
+  SDL_Rect dirty_region;
+  ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+  inherited::handleEvent(event_in,
+                         window_in,
+                         dirty_region);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
 }
 
 void
@@ -1434,7 +1447,8 @@ SDL_GUI_LevelWindow::clear()
 
   if (SDL_FillRect(myScreen,                             // target surface
                    &clipRect,                            // rectangle
-                   RPG_Graphics_SDL_Tools::CLR32_BLACK)) // color
+                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
+                                                    *myScreen))) // color
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
@@ -1826,7 +1840,8 @@ SDL_GUI_LevelWindow::initWallBlend(const bool& halfHeightWalls_in)
 
   if (SDL_FillRect(myWallBlend,
                    NULL,
-                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A10))
+                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A10,
+                                                    *myWallBlend)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),

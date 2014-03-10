@@ -24,7 +24,7 @@ perl ${PERL_SCRIPT} -n RPG_Dice > ./chance/dice/rpg_dice_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -d RPG_Dice_Export -e -f ./chance/dice/rpg_dice.xsd -i -o ./chance/dice -s -u
+XML2CppCode -d RPG_Dice_Export -e -f ./chance/dice/rpg_dice.xsd -i -o ./chance/dice -s -u -x RPG_Dice
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 # *NOTE*: XML2CppCode clobbers some important changes, so move some files back into the project directory
 cp -f ./chance/dice/scripts/rpg_dice_dietype.h ./chance/dice

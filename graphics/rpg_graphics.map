@@ -28,4 +28,6 @@ namespace urn:rpg
   RPG_Graphics_TileSet_Type              RPG_Graphics_TileSet;
   RPG_Graphics_Graphic_Type              RPG_Graphics_Graphic;
 #  RPG_Graphics_Dictionary_Type          RPG_Graphics_Dictionary;
+  RPG_Graphics_ColorName_Type            RPG_Graphics_ColorName;
+  RPG_Graphics_ColorRGBA_Type            RPG_Graphics_ColorRGBA;
 }

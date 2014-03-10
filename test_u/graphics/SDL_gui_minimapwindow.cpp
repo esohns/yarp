@@ -63,12 +63,12 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
   // adjust size / clip rect
   inherited::mySize.first = myBG->w;
   inherited::mySize.second = myBG->h;
-//   inherited::myClipRect.x = (myScreen->w -
-//                              (myBorderLeft + myBorderRight) -
-//                              (myBG->w + myOffset.first));
-//   inherited::myClipRect.y = myBorderTop + myOffset.second;
-//   inherited::myClipRect.w = myBG->w;
-//   inherited::myClipRect.h = myBG->h;
+//  inherited::myClipRect.x = (myScreen->w -
+//                             (myBorderLeft + myBorderRight) -
+//                             (myBG->w + myOffset.first));
+//  inherited::myClipRect.y = myBorderTop + myOffset.second;
+  inherited::myClipRect.w = myBG->w;
+  inherited::myClipRect.h = myBG->h;
 
   mySurface = RPG_Graphics_Surface::copy(*myBG);
   ACE_ASSERT(mySurface);
@@ -359,4 +359,5 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
                                                        (inherited::mySize.first + inherited::myOffset.first))),
                                                      (myBorderTop +
                                                       inherited::myOffset.second));
+  inherited::myIsVisible = true;
 }

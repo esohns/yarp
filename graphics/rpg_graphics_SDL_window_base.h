@@ -24,6 +24,7 @@
 #include "rpg_graphics_exports.h"
 #include "rpg_graphics_iwindow.h"
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_colorname.h"
 
 #include "rpg_common_ilock.h"
 
@@ -51,7 +52,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual RPG_Graphics_WindowType getType() const;
   virtual RPG_Graphics_Size_t getSize(const bool& = false) const; // top-level ?
 
-  virtual void clear(const Uint32& = RPG_Graphics_SDL_Tools::CLR32_BLACK);
+  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK);
   //virtual void drawChild(const RPG_Graphics_WindowType&, // child type
   //                       SDL_Surface* = NULL,            // target surface (default: screen)
   //                       const unsigned int& = 0,        // offset x (top-left = [0,0])

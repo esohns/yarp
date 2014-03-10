@@ -4,17 +4,17 @@
 // -------------------------------- * * * ----------------------------------- //
 
 #pragma once
-#ifndef RPG_GRAPHICS_TILESET_H
-#define RPG_GRAPHICS_TILESET_H
+#ifndef RPG_GRAPHICS_COLORRGBA_H
+#define RPG_GRAPHICS_COLORRGBA_H
 
 #include "rpg_graphics_exports.h"
 
-struct RPG_Graphics_Export RPG_Graphics_TileSet
+struct RPG_Graphics_Export RPG_Graphics_ColorRGBA
 {
-  RPG_Graphics_TileSetType type;
-  RPG_Graphics_StyleUnion style;
-  std::vector<RPG_Graphics_Tile> tiles;
-  bool half;
+  unsigned char r;
+  unsigned char g;
+  unsigned char b;
+  unsigned char a;
 };
 
 #endif

@@ -19,47 +19,25 @@
  ***************************************************************************/
 #include "stdafx.h"
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+#include <ace/ACE.h>
+#include <ace/Log_Msg.h>
+#include <ace/Get_Opt.h>
+#include <ace/High_Res_Timer.h>
+#include <ace/Synch.h>
+
+#include <SDL.h>
+#include <SDL_syswm.h>
+#include <SDL_ttf.h>
+
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
-
-#include "SDL_gui_defines.h"
-#include "SDL_gui_mainwindow.h"
-#include "SDL_gui_levelwindow.h"
-
-#include "rpg_client_defines.h"
-#include "rpg_client_entity_manager.h"
-
-#include "rpg_engine_defines.h"
-#include "rpg_engine.h"
-#include "rpg_engine_common_tools.h"
-
-#include "rpg_map_defines.h"
-#include "rpg_map_common_tools.h"
-
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_common.h"
-#include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_surface.h"
-#include "rpg_graphics_cursor_manager.h"
-#include "rpg_graphics_common_tools.h"
-#include "rpg_graphics_SDL_tools.h"
-
-#include "rpg_monster_defines.h"
-
-#include "rpg_player_defines.h"
-#include "rpg_player_common_tools.h"
-
-#include "rpg_character_common_tools.h"
-
-#include "rpg_item_defines.h"
-#include "rpg_item_dictionary.h"
-#include "rpg_item_common_tools.h"
-
-#include "rpg_magic_defines.h"
-#include "rpg_magic_dictionary.h"
-#include "rpg_magic_common_tools.h"
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
@@ -69,22 +47,44 @@
 #include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
 
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <SDL_ttf.h>
+#include "rpg_magic_defines.h"
+#include "rpg_magic_dictionary.h"
+#include "rpg_magic_common_tools.h"
 
-#include <ace/ACE.h>
-#include <ace/Log_Msg.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/Synch.h>
+#include "rpg_item_defines.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_common_tools.h"
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
+#include "rpg_character_common_tools.h"
 
-#define SDL_GUI_DEF_SLIDESHOW_DELAY 3 // seconds
+#include "rpg_player_defines.h"
+#include "rpg_player_common_tools.h"
+
+#include "rpg_monster_defines.h"
+
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
+
+#include "rpg_map_defines.h"
+#include "rpg_map_common_tools.h"
+
+#include "rpg_engine_defines.h"
+#include "rpg_engine.h"
+#include "rpg_engine_common_tools.h"
+
+#include "rpg_client_defines.h"
+#include "rpg_client_common.h"
+#include "rpg_client_entity_manager.h"
+#include "rpg_client_common_tools.h"
+
+#include "SDL_gui_defines.h"
+#include "SDL_gui_mainwindow.h"
+#include "SDL_gui_levelwindow.h"
 
 enum UserMode_t
 {
@@ -98,62 +98,6 @@ enum UserMode_t
 static SDL_Surface*     screen     = NULL;
 static ACE_Thread_Mutex hover_lock;
 static unsigned int     hover_time = 0;
-
-bool
-do_preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in)
-{
-  RPG_TRACE(ACE_TEXT("::do_preInitVideo"));
-
-  // ***** window/screen setup *****
-  // set window caption
-#ifdef HAVE_CONFIG_H
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE_STRING)); // icon caption
-#else
-  SDL_WM_SetCaption(ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION),  // window caption
-                    ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION)); // icon caption
-#endif
-
-  // enable cursor
-  SDL_ShowCursor(SDL_ENABLE);
-
-  screen = RPG_Graphics_SDL_Tools::initScreen(configuration_in);
-
-  return (screen != NULL);
-}
-
-bool
-do_initVideo(const std::string& graphicsDirectory_in)
-{
-  RPG_TRACE(ACE_TEXT("::do_initVideo"));
-
-  // set window icon
-  RPG_Graphics_GraphicTypeUnion type;
-  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
-  type.image = IMAGE_WM_ICON;
-  RPG_Graphics_t icon_graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
-  std::string path = graphicsDirectory_in;
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_IMAGES_SUB);
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += icon_graphic.file;
-  SDL_Surface* icon_image = NULL;
-  icon_image = RPG_Graphics_Surface::load(path,   // file
-                                          false); // DON'T convert to display format (no screen yet !)
-  if (!icon_image)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-               path.c_str()));
-
-    return false;
-  } // end IF
-  SDL_WM_SetIcon(icon_image, // surface
-                 NULL);      // mask (--> everything)
-
-	return true;
-}
 
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
@@ -179,7 +123,7 @@ event_timer_SDL_cb(Uint32 interval_in,
       if (SDL_PushEvent(&sdl_event))
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-                   SDL_GetError()));
+                   ACE_TEXT(SDL_GetError())));
     } // end IF
   } // end lock scope
 
@@ -202,7 +146,7 @@ input_timer_SDL_cb(Uint32 interval_in,
   if (SDL_PushEvent(&sdl_event))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
   // one-shot timer --> cancel
   return 0;
@@ -226,7 +170,7 @@ do_SDL_waitForInput(const unsigned int& timeout_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
                (timeout_in * 1000),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -238,9 +182,8 @@ do_SDL_waitForInput(const unsigned int& timeout_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
-      // what else can we do ?
       break;
     } // end IF
     if ((event_out.type == SDL_KEYDOWN) ||
@@ -256,7 +199,7 @@ do_SDL_waitForInput(const unsigned int& timeout_in,
     if (!SDL_RemoveTimer(timer))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 }
 
 void
@@ -539,7 +482,7 @@ process_arguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
+                   ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -590,14 +533,11 @@ do_slideshow(const std::string& graphicsDirectory_in,
     mainWindow_in->update();
 
     // step1: choose (random) category
-    do
-    {
-      result.clear();
-      RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CATEGORY_MAX,
-                                      1,
-                                      result);
-      graphic.category = static_cast<RPG_Graphics_Category>((result.front() - 1));
-    } while (graphic.category == CATEGORY_FONT); // cannot display fonts at the moment
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_CATEGORY_MAX,
+                                    1,
+                                    result);
+    graphic.category = static_cast<RPG_Graphics_Category>((result.front() - 1));
 
     // step2: choose (random) type within category
     result.clear();
@@ -613,6 +553,16 @@ do_slideshow(const std::string& graphicsDirectory_in,
 
         break;
       }
+      case CATEGORY_FONT:
+      {
+        RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_FONT_MAX,
+                                        1,
+                                        result);
+        type.font = static_cast<RPG_Graphics_Font>((result.front() - 1));
+        type.discriminator = RPG_Graphics_GraphicTypeUnion::FONT;
+
+        break;
+      }
       case CATEGORY_INTERFACE:
       case CATEGORY_IMAGE:
       {
@@ -621,6 +571,16 @@ do_slideshow(const std::string& graphicsDirectory_in,
                                         result);
         type.image = static_cast<RPG_Graphics_Image>((result.front() - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+
+        break;
+      }
+      case CATEGORY_SPRITE:
+      {
+        RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_SPRITE_MAX,
+                                        1,
+                                        result);
+        type.sprite = static_cast<RPG_Graphics_Sprite>((result.front() - 1));
+        type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
 
         break;
       }
@@ -648,85 +608,148 @@ do_slideshow(const std::string& graphicsDirectory_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid category (was: \"%s\"), continuing\n"),
-                   RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+                   ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str())));
 
         continue;
       }
     } // end SWITCH
 
     // step3: load image/graphic
-    if (graphic.category != CATEGORY_TILESET)
+    switch (graphic.category)
     {
-      image = RPG_Graphics_Common_Tools::loadGraphic(type,
-                                                     true,  // convert to display format
-                                                     true); // cache graphic
-      if (!image)
+      case CATEGORY_CURSOR:
+      case CATEGORY_INTERFACE:
+      case CATEGORY_IMAGE:
+      case CATEGORY_SPRITE:
+      case CATEGORY_TILE:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-                   RPG_Graphics_Common_Tools::typeToString(type).c_str()));
-
-        continue;
-      } // end IF
-    } // end IF
-    else
-    {
-      // need to load this manually --> retrieve filename(s)
-      graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-      graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
-      graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-      ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
-                 (graphic.type.tilesetgraphic == type.tilesetgraphic));
-      ACE_ASSERT(!graphic.tileset.tiles.empty());
-
-      // choose random tile
-      std::vector<RPG_Graphics_Tile>::const_iterator iterator = graphic.tileset.tiles.begin();
-      result.clear();
-      RPG_Dice::generateRandomNumbers(graphic.tileset.tiles.size(),
-                                      1,
-                                      result);
-      std::advance(iterator, (result.front() - 1));
-
-      // assemble filename
-      std::string filename = graphicsDirectory_in;
-      filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-      switch (graphic.tileset.type)
-      {
-        case TILESETTYPE_DOOR:
-          filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_DOORS_SUB); break;
-        case TILESETTYPE_FLOOR:
-          filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FLOORS_SUB); break;
-        case TILESETTYPE_WALL:
-          filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_WALLS_SUB); break;
-        default:
+        image = RPG_Graphics_Common_Tools::loadGraphic(type,
+                                                       true,  // convert to display format
+                                                       true); // cache graphic
+        if (!image)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid tileset type (was: \"%s\"), continuing\n"),
-                     RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()));
+                     ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+                     ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
 
           continue;
-        }
-      } // end SWITCH
-      filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-      filename += (*iterator).file;
+        } // end IF
 
-      image = RPG_Graphics_Surface::load(filename, // file
-                                         true);    // convert to display format
-      if (!image)
+        break;
+      }
+      case CATEGORY_FONT:
+      {
+        std::string text = ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_SLIDESHOW_TEXT);
+        RPG_Graphics_TextSize_t text_size =
+            RPG_Graphics_Common_Tools::textSize(type.font,
+                                                text);
+        image = RPG_Graphics_Surface::create(text_size.first,
+                                             text_size.second);
+        if (!image)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
+                     text_size.first, text_size.second));
+
+          continue;
+        } // end IF
+        RPG_Graphics_Surface::fill(RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
+                                                                    *image),
+                                   image);
+        if (!RPG_Graphics_Surface::putText(type.font,
+                                           text,
+                                           RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(SDL_GUI_DEF_TILE_INDEX_COLOR,
+                                                                                                                    *image),
+                                                                                   *image),
+                                           false, // add shade ?
+                                           RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                                                    *image),
+                                                                                   *image),
+                                           0, 0,
+                                           image))
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Graphics_Surface::putText(%s), continuing\n"),
+                     ACE_TEXT(RPG_Graphics_FontHelper::RPG_Graphics_FontToString(type.font).c_str())));
+
+          // clean up
+          SDL_FreeSurface(image);
+
+          continue;
+        } // end IF
+        release_image = true;
+
+        break;
+      }
+      case CATEGORY_TILESET:
+      {
+        // need to load this manually --> retrieve filename(s)
+        graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+        graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+        graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
+        ACE_ASSERT((graphic.type.discriminator == type.discriminator) &&
+                   (graphic.type.tilesetgraphic == type.tilesetgraphic));
+        ACE_ASSERT(!graphic.tileset.tiles.empty());
+
+        // choose random tile
+        std::vector<RPG_Graphics_Tile>::const_iterator iterator = graphic.tileset.tiles.begin();
+        result.clear();
+        RPG_Dice::generateRandomNumbers(graphic.tileset.tiles.size(),
+                                        1,
+                                        result);
+        std::advance(iterator, (result.front() - 1));
+
+        // assemble filename
+        std::string filename = graphicsDirectory_in;
+        filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+        switch (graphic.tileset.type)
+        {
+          case TILESETTYPE_DOOR:
+            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_DOORS_SUB); break;
+          case TILESETTYPE_FLOOR:
+            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FLOORS_SUB); break;
+          case TILESETTYPE_WALL:
+            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_WALLS_SUB); break;
+          default:
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("invalid tileset type (was: \"%s\"), continuing\n"),
+                       ACE_TEXT(RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str())));
+
+            continue;
+          }
+        } // end SWITCH
+        filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+        filename += (*iterator).file;
+
+        image = RPG_Graphics_Surface::load(filename, // file
+                                           true);    // convert to display format
+        if (!image)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), continuing\n"),
+                     ACE_TEXT(filename.c_str())));
+
+          continue;
+        } // end IF
+        release_image = true;
+
+        break;
+      }
+      default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), continuing\n"),
-                   filename.c_str()));
+                   ACE_TEXT("invalid category (was: \"%s\"), continuing\n"),
+                   ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str())));
 
         continue;
-      } // end IF
-      release_image = true;
-    } // end ELSE
+      }
+    } // end SWITCH
     ACE_ASSERT(image);
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("showing graphics type \"%s\"...\n"),
-               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
 
     // step4: draw image to screen
     RPG_Graphics_Surface::put((screen->w - image->w) / 2, // location x
@@ -737,7 +760,11 @@ do_slideshow(const std::string& graphicsDirectory_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
+
+      // clean up
+      if (release_image)
+        SDL_FreeSurface(image);
 
       return;
     } // end IF
@@ -773,18 +800,20 @@ do_slideshow(const std::string& graphicsDirectory_in,
             std::make_pair(sdl_event.button.x,
                            sdl_event.button.y);
         window = mainWindow_in->getWindow(mouse_position);
-        ACE_ASSERT(window);
-        try
+        if (window)
         {
-          window->handleEvent(sdl_event,
-                              window,
-                              dirty_region);
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-        }
+          try
+          {
+            window->handleEvent(sdl_event,
+                                window,
+                                dirty_region);
+          }
+          catch (...)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+          }
+        } // end IF
 
         break;
       }
@@ -824,6 +853,7 @@ do_UI(RPG_Engine_Entity& entity_in,
   RPG_TRACE(ACE_TEXT("::do_UI"));
 
   SDL_Event sdl_event;
+  bool event_handled = false;
   bool done = false;
   RPG_Graphics_IWindow* window = NULL;
   RPG_Graphics_IWindow* previous_window = NULL;
@@ -834,6 +864,7 @@ do_UI(RPG_Engine_Entity& entity_in,
   SDL_Rect dirty_region;
   do
   {
+    event_handled = false;
     window = NULL;
     mouse_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                     std::numeric_limits<unsigned int>::max());
@@ -844,7 +875,7 @@ do_UI(RPG_Engine_Entity& entity_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       return;
     } // end IF
@@ -876,10 +907,11 @@ do_UI(RPG_Engine_Entity& entity_in,
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), aborting\n"),
-                         dump_path.c_str()));
+                         ACE_TEXT(dump_path.c_str())));
 
               return;
             } // end IF
+            event_handled = true;
 
             break;
           }
@@ -918,12 +950,14 @@ do_UI(RPG_Engine_Entity& entity_in,
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("caught exception in RPG_Graphics_IWindow, continuing\n")));
             }
+            event_handled = true;
 
             break;
           }
           case SDLK_p:
           {
             RPG_Engine_Level::print(current_level);
+            event_handled = true;
 
             break;
           }
@@ -943,6 +977,8 @@ do_UI(RPG_Engine_Entity& entity_in,
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("caught exception in RPG_Graphics_IWindow, continuing\n")));
             }
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
+            event_handled = true;
 
             break;
           }
@@ -961,6 +997,7 @@ do_UI(RPG_Engine_Entity& entity_in,
             dump_path += converter.str();
             dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
             engine_in->save(dump_path);
+            event_handled = true;
 
             break;
           }
@@ -968,6 +1005,7 @@ do_UI(RPG_Engine_Entity& entity_in,
           {
             // finished event processing
             done = true;
+            event_handled = true;
 
             break;
           }
@@ -1031,17 +1069,24 @@ do_UI(RPG_Engine_Entity& entity_in,
         previous_window = window;
 
         // notify "active" window
-        try
+        if (!event_handled)
         {
-          window->handleEvent(sdl_event,
-                              window,
-                              dirty_region);
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
-        }
+          SDL_Rect dirty_region_2;
+          ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
+          try
+          {
+            window->handleEvent(sdl_event,
+                                window,
+                                dirty_region_2);
+          }
+          catch (...)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+          }
+          dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                             dirty_region_2);
+        } // end IF
 
         break;
       }
@@ -1098,24 +1143,7 @@ do_UI(RPG_Engine_Entity& entity_in,
         break;
     } // end SWITCH
 
-    // update screen ?
-    if ((dirty_region.x != 0) ||
-        (dirty_region.y != 0) ||
-        (dirty_region.w != 0) ||
-        (dirty_region.h != 0))
-    {
-      try
-      {
-        mainWindow_in->update();
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
-      }
-    } // end IF
-
-    // redraw highlight/cursor ?
+    // redraw cursor ?
     switch (sdl_event.type)
     {
       case SDL_ACTIVEEVENT:
@@ -1136,18 +1164,37 @@ do_UI(RPG_Engine_Entity& entity_in,
       {
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
-        ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+        SDL_Rect dirty_region_2;
+        ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
                                                                mouse_position.second,
-                                                               dirty_region);
-        RPG_Graphics_Surface::update(dirty_region,
-                                     screen);
+                                                               dirty_region_2);
+        dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                           dirty_region_2);
+        mainWindow_in->invalidate(dirty_region);
 
         break;
       }
       default:
         break;
     } // end SWITCH
+
+    // update screen ?
+    if ((dirty_region.x != 0) ||
+        (dirty_region.y != 0) ||
+        (dirty_region.w != 0) ||
+        (dirty_region.h != 0))
+    {
+      try
+      {
+        mainWindow_in->update();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
+      }
+    } // end IF
   } while (!done);
 }
 
@@ -1175,34 +1222,52 @@ do_work(const mode_t& mode_in,
                                 itemsDictionary_in,
                                 monsterDictionary_in);
 
-	// step1: init video
-	// step1a: init video window
-  if (!do_preInitVideo(videoConfiguration_in))
+	// step1: init input
+	RPG_Client_SDL_InputConfiguration_t input_configuration;
+	input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
+	input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
+	input_configuration.use_UNICODE = true;
+	if (!RPG_Client_Common_Tools::initSDLInput(input_configuration))
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
+
+		return;
+	} // end IF
+
+	// step2: init video
+	// step2a: init video system
+	 if (!RPG_Graphics_SDL_Tools::preInitVideo(videoConfiguration_in,                      // configuration
+																						 ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION))) // window/icon caption
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to do_preInitVideo, aborting\n")));
+               ACE_TEXT("failed to RPG_Graphics_SDL_Tools::preInitVideo, aborting\n")));
 
     return;
   } // end IF
-	// step1b: pre-init graphics
-	RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-		                              cacheSize_in);
-  // step1c: init graphics dictionary
+  // step2b: pre-init graphics
+  RPG_Graphics_Common_Tools::preInit();
+  // step2c: init graphics dictionary
   RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in,
-		                                                  validateXML_in);
-	// step1d: init graphics
+                                                      validateXML_in);
+  // step2b: init graphics
 	RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-		                              cacheSize_in);
-	// step1e: post-init video window
-  if (!do_initVideo(graphicsDirectory_in))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to do_initVideo, aborting\n")));
+																	cacheSize_in,
+																	true);
+	// step2d: init video window
+	if (!RPG_Graphics_SDL_Tools::initVideo(videoConfiguration_in,                     // configuration
+																				 ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
+																				 screen,                                    // return value: window surface
+																				 true))                                     // init window surface ?
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to RPG_Graphics_SDL_Tools::initVideo, aborting\n")));
 
     return;
   } // end IF
+  ACE_ASSERT(screen);
 
-  // step2: setup main "window"
+  // step3: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
@@ -1246,8 +1311,8 @@ do_work(const mode_t& mode_in,
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("loaded map (\"%s\":\n%s\n"),
-                   map_in.c_str(),
-                   RPG_Map_Level::info(level.map).c_str()));
+                   ACE_TEXT(map_in.c_str()),
+                   ACE_TEXT(RPG_Map_Level::info(level.map).c_str())));
       } // end ELSE
 //       RPG_Map_Common_Tools::print(map);
 
@@ -1298,15 +1363,15 @@ do_work(const mode_t& mode_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Engine_Common_Tools::loadEntity(\"%s\"), aborting\n"),
-                     entity_in.c_str()));
+                     ACE_TEXT(entity_in.c_str())));
 
           return;
         } // end IF
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("loaded entity (\"%s\":\n%s\n"),
-                   entity_in.c_str(),
-                   RPG_Engine_Common_Tools::info(entity).c_str()));
+                   ACE_TEXT(entity_in.c_str()),
+                   ACE_TEXT(RPG_Engine_Common_Tools::info(entity).c_str())));
       } // end ELSE
       entity.position = level.map.start;
 
@@ -1372,7 +1437,7 @@ do_work(const mode_t& mode_in,
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
                    SDL_GUI_SDL_EVENT_TIMEOUT,
-                   SDL_GetError()));
+                   ACE_TEXT(SDL_GetError())));
 
         return;
       } // end IF
@@ -1391,7 +1456,7 @@ do_work(const mode_t& mode_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-                   SDL_GetError()));
+                   ACE_TEXT(SDL_GetError())));
       } // end IF
 
       break;
@@ -1444,7 +1509,7 @@ do_printVersion(const std::string& programName_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_Linked_Version(): \"%s\", aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -1701,12 +1766,12 @@ ACE_TMAIN(int argc,
 
   // step2: init SDL
   if (SDL_Init(SDL_INIT_TIMER |
-               SDL_INIT_VIDEO |
+               //SDL_INIT_VIDEO |
                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
 //    // *PORTABILITY*: on Windows, we must fini ACE...
 //#if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -1717,15 +1782,6 @@ ACE_TMAIN(int argc,
 
     return EXIT_FAILURE;
   } // end IF
-  // ***** mouse setup *****
-  // don't show (double) cursor
-  SDL_ShowCursor(SDL_TRUE);
-  // ***** keyboard setup *****
-  // enable Unicode translation
-  SDL_EnableUNICODE(1);
-  // enable key repeat
-  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
-                      SDL_DEFAULT_REPEAT_INTERVAL);
   // setup font engine
   if (TTF_Init() == -1)
   {
@@ -1745,15 +1801,15 @@ ACE_TMAIN(int argc,
   } // end IF
   // enable WM events
   Uint8 event_state = 0;
-  event_state = SDL_EventState(SDL_SYSWMEVENT, SDL_QUERY);
-  if ((event_state == SDL_IGNORE) ||
-      (event_state == SDL_DISABLE))
-  {
-    SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+//  event_state = SDL_EventState(SDL_SYSWMEVENT, SDL_QUERY);
+//  if ((event_state == SDL_IGNORE) ||
+//      (event_state == SDL_DISABLE))
+//  {
+//    SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("enabled SDL_SYSWMEVENT events...\n")));
-  } // end IF
+//    ACE_DEBUG((LM_DEBUG,
+//               ACE_TEXT("enabled SDL_SYSWMEVENT events...\n")));
+//  } // end IF
   event_state = SDL_EventState(SDL_ACTIVEEVENT, SDL_QUERY);
   if ((event_state == SDL_IGNORE) ||
       (event_state == SDL_DISABLE))
@@ -1790,7 +1846,7 @@ ACE_TMAIN(int argc,
                                   working_time_string);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
+             ACE_TEXT(working_time_string.c_str())));
 
   // step4a: fini SDL
   TTF_Quit();

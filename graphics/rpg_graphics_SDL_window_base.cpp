@@ -25,6 +25,7 @@
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_window_sub.h"
 
 #include "rpg_common_macros.h"
 
@@ -52,9 +53,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Size_t
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
-  ACE_OS::memset(&myClipRect,
-                 0,
-                 sizeof(myClipRect));
+  ACE_OS::memset(&myClipRect, 0, sizeof(myClipRect));
 }
 
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType& type_in,
@@ -243,7 +242,7 @@ RPG_Graphics_SDLWindowBase::getScreen() const
 }
 
 void
-RPG_Graphics_SDLWindowBase::clear(const Uint32& color_in)
+RPG_Graphics_SDLWindowBase::clear(const RPG_Graphics_ColorName& color_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clear"));
 
@@ -256,9 +255,10 @@ RPG_Graphics_SDLWindowBase::clear(const Uint32& color_in)
   SDL_GetClipRect(myScreen, &window_region);
   if (myScreenLock)
     myScreenLock->lock();
-  if (SDL_FillRect(myScreen,                             // target surface
-                   &window_region,                       // fill area
-                   RPG_Graphics_SDL_Tools::CLR32_BLACK)) // color
+  if (SDL_FillRect(myScreen,                                     // target surface
+                   &window_region,                               // fill area
+                   RPG_Graphics_SDL_Tools::getColor(color_in,
+                                                    *myScreen))) // color
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): \"%s\", aborting\n"),
@@ -421,153 +421,218 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
   // init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Graphics_SDLWindowBase::handleEvent\n")));
+//  switch (event_in.type)
+//  {
+//    // *** visibility ***
+//    case SDL_ACTIVEEVENT:
+//    {
+//      if (event_in.active.state & SDL_APPACTIVE)
+//      {
+//        if (event_in.active.gain)
+//        {
+//          ACE_DEBUG((LM_DEBUG,
+//                     ACE_TEXT("activated...\n")));
+//        } // end IF
+//        else
+//        {
+//          ACE_DEBUG((LM_DEBUG,
+//                     ACE_TEXT("iconified...\n")));
+//        } // end ELSE
+//      } // end IF
+//      if (event_in.active.state & SDL_APPMOUSEFOCUS)
+//      {
+//        if (event_in.active.gain)
+//        {
+//          ACE_DEBUG((LM_DEBUG,
+//                     ACE_TEXT("mouse focus...\n")));
+//        } // end IF
+//        else
+//        {
+//          ACE_DEBUG((LM_DEBUG,
+//                     ACE_TEXT("lost mouse focus...\n")));
+//        } // end ELSE
+//      } // end IF
 
+//      break;
+//    }
+//    // *** keyboard ***
+//    case SDL_KEYDOWN:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("key pressed...\n")));
+
+//      break;
+//    }
+//    case SDL_KEYUP:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("key released...\n")));
+
+//      break;
+//    }
+//    // *** mouse ***
+//    case SDL_MOUSEMOTION:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("mouse motion...\n")));
+
+//      break;
+//    }
+//    case SDL_MOUSEBUTTONDOWN:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("mouse button pressed...\n")));
+
+//      break;
+//    }
+//    case SDL_MOUSEBUTTONUP:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("mouse button released...\n")));
+
+//      break;
+//    }
+//    // *** joystick ***
+//    case SDL_JOYAXISMOTION:
+//    case SDL_JOYBALLMOTION:
+//    case SDL_JOYHATMOTION:
+//    case SDL_JOYBUTTONDOWN:
+//    case SDL_JOYBUTTONUP:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("joystick activity...\n")));
+
+//      break;
+//    }
+//    case SDL_QUIT:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("SDL_QUIT event...\n")));
+
+//      break;
+//    }
+//    case SDL_SYSWMEVENT:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("SDL_SYSWMEVENT event...\n")));
+
+//      break;
+//    }
+//    case SDL_VIDEORESIZE:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
+
+//      break;
+//    }
+//    case SDL_VIDEOEXPOSE:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
+
+//      break;
+//    }
+//    case SDL_USEREVENT:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("SDL_USEREVENT event...\n")));
+
+//      break;
+//    }
+//    case RPG_GRAPHICS_SDL_HOVEREVENT:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("RPG_GRAPHICS_SDL_HOVEREVENT event...\n")));
+
+//      break;
+//    }
+//    case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
+//    {
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
+
+//      break;
+//    }
+//    default:
+//    {
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("received unknown event (was: %u)...\n"),
+//                 static_cast<unsigned int>(event_in.type)));
+
+//      break;
+//    }
+//  } // end SWITCH
+
+  // find active position
+  RPG_Graphics_Position_t active_position;
   switch (event_in.type)
   {
-    // *** visibility ***
-    case SDL_ACTIVEEVENT:
-    {
-      if (event_in.active.state & SDL_APPACTIVE)
-      {
-        if (event_in.active.gain)
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("activated...\n")));
-        } // end IF
-        else
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("iconified...\n")));
-        } // end ELSE
-      } // end IF
-      if (event_in.active.state & SDL_APPMOUSEFOCUS)
-      {
-        if (event_in.active.gain)
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("mouse focus...\n")));
-        } // end IF
-        else
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("lost mouse focus...\n")));
-        } // end ELSE
-      } // end IF
-
-      break;
-    }
-    // *** keyboard ***
-    case SDL_KEYDOWN:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("key pressed...\n")));
-
-      break;
-    }
-    case SDL_KEYUP:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("key released...\n")));
-
-      break;
-    }
-    // *** mouse ***
     case SDL_MOUSEMOTION:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse motion...\n")));
-
-      break;
-    }
+      active_position = std::make_pair(event_in.motion.x,
+                                       event_in.motion.y); break;
     case SDL_MOUSEBUTTONDOWN:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse button pressed...\n")));
-
-      break;
-    }
-    case SDL_MOUSEBUTTONUP:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("mouse button released...\n")));
-
-      break;
-    }
-    // *** joystick ***
-    case SDL_JOYAXISMOTION:
-    case SDL_JOYBALLMOTION:
-    case SDL_JOYHATMOTION:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYBUTTONUP:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("joystick activity...\n")));
-
-      break;
-    }
-    case SDL_QUIT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_QUIT event...\n")));
-
-      break;
-    }
-    case SDL_SYSWMEVENT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_SYSWMEVENT event...\n")));
-
-      break;
-    }
-    case SDL_VIDEORESIZE:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
-
-      break;
-    }
-    case SDL_VIDEOEXPOSE:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
-
-      break;
-    }
-    case SDL_USEREVENT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_USEREVENT event...\n")));
-
-      break;
-    }
-    case RPG_GRAPHICS_SDL_HOVEREVENT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("RPG_GRAPHICS_SDL_HOVEREVENT event...\n")));
-
-      break;
-    }
-    case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
-    {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("RPG_GRAPHICS_SDL_MOUSEMOVEOUT event...\n")));
-
-      break;
-    }
+      active_position = std::make_pair(event_in.button.x,
+                                       event_in.button.y); break;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("received unknown event (was: %u)...\n"),
-                 static_cast<unsigned int>(event_in.type)));
+      int x, y;
+      SDL_GetMouseState(&x, &y);
+      active_position = std::make_pair(x, y);
 
       break;
     }
   } // end SWITCH
 
-  ACE_ASSERT(false);
-  ACE_NOTREACHED(return;)
+  // recurse into any children
+  RPG_Graphics_SDLWindowSub* sub_window = NULL;
+  SDL_Rect window_area;
+  ACE_OS::memset(&window_area, 0, sizeof(window_area));
+  SDL_Rect dirty_region;
+  ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+  // *NOTE*: check in reverse order, because "newer", overlapping children are
+  // considered to be "on-top"
+  for (RPG_Graphics_WindowsRIterator_t iterator = myChildren.rbegin();
+       iterator != myChildren.rend();
+       iterator++)
+  {
+    // covered ?
+    sub_window = NULL;
+    sub_window = dynamic_cast<RPG_Graphics_SDLWindowSub*>(*iterator);
+    if (sub_window &&
+        !sub_window->visible())
+      continue;
+    try
+    {
+      (*iterator)->getArea(window_area);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::getArea(), continuing\n")));
+    }
+    if ((active_position.first  <  static_cast<unsigned int>(window_area.x))   ||
+        (active_position.second <  static_cast<unsigned int>(window_area.y))   ||
+        (active_position.first  >= (static_cast<unsigned int>(window_area.x) +
+                                    static_cast<unsigned int>(window_area.w))) ||
+        (active_position.second >= (static_cast<unsigned int>(window_area.y) +
+                                    static_cast<unsigned int>(window_area.h))))
+      continue;
+
+    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+    try
+    {
+      (*iterator)->handleEvent(event_in,
+                               window_in,
+                               dirty_region);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+    }
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                          dirtyRegion_out);
+  } // end FOR
 }
 
 void

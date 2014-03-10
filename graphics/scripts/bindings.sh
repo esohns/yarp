@@ -20,13 +20,13 @@ PERL_SCRIPT=/usr/local/src/ACE_wrappers/bin/generate_export_file.pl
 perl ${PERL_SCRIPT} -n RPG_Graphics > ./graphics/rpg_graphics_exports.h
 
 # C++ "glue code"
-XML2CppCode -d RPG_Graphics_Export -e -f ./graphics/rpg_graphics.xsd -i -o ./graphics -s -u
+XML2CppCode -d RPG_Graphics_Export -e -f ./graphics/rpg_graphics.xsd -i -o ./graphics -s -u -x RPG_Graphics
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser
 # generate "XMLSchema" namespace include file
-xsdcxx cxx-parser --char-type char --output-dir ./graphics --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./graphics/rpg_XMLSchema_XML_types.xsd
-[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
+#xsdcxx cxx-parser --char-type char --output-dir ./graphics --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./graphics/rpg_XMLSchema_XML_types.xsd
+#[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate include/implementation
 xsdcxx cxx-parser --type-map ./graphics/rpg_graphics.map --char-type char --output-dir ./graphics --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ./graphics/rpg_graphics.xsd

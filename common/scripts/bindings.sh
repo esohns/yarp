@@ -21,8 +21,8 @@ perl ${PERL_SCRIPT} -n RPG_Common > ./common/rpg_common_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -d RPG_Common_Export -e -f ./common/rpg_common.xsd -i -o ./common -s -u
-XML2CppCode -d RPG_Common_Export -e -f ./common/rpg_common_environment.xsd -i -o ./common -s -u
+XML2CppCode -d RPG_Common_Export -e -f ./common/rpg_common.xsd -i -o ./common -s -u -x RPG_Common
+XML2CppCode -d RPG_Common_Export -e -f ./common/rpg_common_environment.xsd -i -o ./common -s -u -x RPG_Common
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser

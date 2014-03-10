@@ -21,6 +21,8 @@
 #ifndef SDL_GUI_DEFINES_H
 #define SDL_GUI_DEFINES_H
 
+#include "rpg_graphics_colorname.h"
+
 #define SDL_GUI_DEF_CAPTION                    "SDL_gui"
 
 #define SDL_GUI_DEF_MODE                       MODE_FLOOR_PLAN
@@ -46,7 +48,7 @@
 #define SDL_GUI_DEF_VIDEO_W                    1024
 #define SDL_GUI_DEF_VIDEO_H                    786
 #define SDL_GUI_DEF_VIDEO_BPP                  32
-#define SDL_GUI_DEF_VIDEO_DOUBLEBUFFER         true
+#define SDL_GUI_DEF_VIDEO_DOUBLEBUFFER         false
 #define SDL_GUI_DEF_VIDEO_USE_OPENGL           false
 #define SDL_GUI_DEF_VIDEO_FULLSCREEN           false
 
@@ -56,7 +58,10 @@
 #define SDL_GUI_SDL_EVENT_TIMEOUT              50 // ms
 
 #define SDL_GUI_DEF_DEBUG                      false
-#define SDL_GUI_DEF_TILE_FRAME_COLOR           RPG_Graphics_SDL_Tools::CLR32_BLACK_A70
-#define SDL_GUI_DEF_TILE_INDEX_COLOR           RPG_Graphics_SDL_Tools::CLR32_RED
+#define SDL_GUI_DEF_TILE_FRAME_COLOR           COLOR_BLACK_A70
+#define SDL_GUI_DEF_TILE_INDEX_COLOR           COLOR_RED
+
+#define SDL_GUI_DEF_SLIDESHOW_DELAY            3 // seconds
+#define SDL_GUI_DEF_SLIDESHOW_TEXT             "the lazy fox jumps over the quick brown dog"
 
 #endif

@@ -67,7 +67,6 @@ class RPG_Graphics_Export RPG_Graphics_TopLevel
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel(const RPG_Graphics_TopLevel&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel& operator=(const RPG_Graphics_TopLevel&));

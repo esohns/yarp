@@ -44,13 +44,14 @@
 #if defined _MSC_VER
 #include "build/XML2CppCode-config.h"
 #else
-// *TODO*: leave as-is for now (see Yarp/configure.ac)
-#include "config.h"
+//// *TODO*: leave as-is for now (see Yarp/configure.ac)
+//#include "config.h"
+#include "XML2CppCode-config.h"
 #endif
 #endif
 
 XML_Handler::XML_Handler(const std::string& emitClassQualifiers_in,
-						 const bool& emitStringConversionUtilities_in,
+                         const bool& emitStringConversionUtilities_in,
                          const bool& emitTaggedUnions_in,
                          const std::string& schemaFilename_in,
                          const bool& generateIncludeHeader_in,
@@ -91,7 +92,8 @@ XML_Handler::~XML_Handler()
 
 }
 
-void XML_Handler::endDocument()
+void
+XML_Handler::endDocument()
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::endDocument"));
 
@@ -106,7 +108,6 @@ void XML_Handler::endDocument()
     {
       myCurrentOutputFile.close();
 
-      // debug info
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("closed file...\n")));
     } // end IF
@@ -126,7 +127,6 @@ void XML_Handler::endDocument()
     {
       myIncludeHeaderFile.close();
 
-      // debug info
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("closed header file...\n")));
     } // end IF
@@ -135,9 +135,10 @@ void XML_Handler::endDocument()
   } // end IF
 }
 
-void XML_Handler::endElement(const XMLCh* const uri_in,
-                             const XMLCh* const localname_in,
-                             const XMLCh* const qname_in)
+void
+XML_Handler::endElement(const XMLCh* const uri_in,
+                        const XMLCh* const localname_in,
+                        const XMLCh* const qname_in)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::endElement"));
 
@@ -202,7 +203,6 @@ void XML_Handler::endElement(const XMLCh* const uri_in,
 
         myCurrentOutputFile.close();
 
-//     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("closed file: \"%s\"...\n"),
 //                myFilename.c_str()));
@@ -221,27 +221,28 @@ void XML_Handler::endElement(const XMLCh* const uri_in,
   } // end SWITCH
 }
 
-void XML_Handler::setDocumentLocator(const Locator* const locator_in)
+void
+XML_Handler::setDocumentLocator(const Locator* const locator_in)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::setDocumentLocator"));
 
   myLocator = locator_in;
 }
 
-void XML_Handler::startDocument()
+void
+XML_Handler::startDocument()
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::startDocument"));
 
-  // if all definitions will go into one file, we need to generate its name(s) here
-  // replace file extension (.xsd --> .h)
+  // if all definitions will go into one file, we need to generate its name(s)
+  // here replace file extension (.xsd --> .h)
   std::string extension = ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_HEADER_EXTENSION);
   std::string targetFilenameStub = mySchemaFilename;
   std::string::size_type position = std::string::npos;
-  position = targetFilenameStub.rfind(ACE_TEXT_ALWAYS_CHAR("."), std::string::npos);
+  position = targetFilenameStub.rfind(ACE_TEXT_ALWAYS_CHAR("."),
+                                      std::string::npos);
   if (position != std::string::npos)
-  {
     targetFilenameStub.erase(position, std::string::npos);
-  } // end IF
   std::string FQFilenameStub = myTargetDirectory;
   FQFilenameStub += ACE_DIRECTORY_SEPARATOR_STR_A;
 
@@ -253,14 +254,16 @@ void XML_Handler::startDocument()
     // create/open target file
     std::string FQFilename = FQFilenameStub;
     FQFilename += targetFilename;
-    myCurrentOutputFile.open(FQFilename.c_str(), (std::ios_base::out | std::ios_base::trunc));
+    myCurrentOutputFile.open(FQFilename.c_str(),
+                             (std::ios_base::out | std::ios_base::trunc));
     if (myCurrentOutputFile.fail() || !myCurrentOutputFile.is_open())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to create/open file: \"%s\", aborting\n"),
                  FQFilename.c_str()));
 
-      XMLCh* message = XMLString::transcode(ACE_TEXT("failed to create/open file, aborting\n"));
+      XMLCh* message =
+          XMLString::transcode(ACE_TEXT("failed to create/open file, aborting\n"));
       ACE_ASSERT(message);
       SAXParseException exception(message, *myLocator);
       fatalError(exception);
@@ -269,7 +272,6 @@ void XML_Handler::startDocument()
       XMLString::release(&message);
     } // end IF
 
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("created file: \"%s\"...\n"),
                targetFilename.c_str()));
@@ -290,14 +292,16 @@ void XML_Handler::startDocument()
     // create/open target file
     std::string FQFilename = FQFilenameStub;
     FQFilename += targetFilename;
-    myIncludeHeaderFile.open(FQFilename.c_str(), (std::ios_base::out | std::ios_base::trunc));
+    myIncludeHeaderFile.open(FQFilename.c_str(),
+                             (std::ios_base::out | std::ios_base::trunc));
     if (myIncludeHeaderFile.fail() || !myIncludeHeaderFile.is_open())
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to create/open file: \"%s\", aborting\n"),
                  FQFilename.c_str()));
 
-      XMLCh* message = XMLString::transcode(ACE_TEXT("failed to create/open file, aborting\n"));
+      XMLCh* message =
+          XMLString::transcode(ACE_TEXT("failed to create/open file, aborting\n"));
       ACE_ASSERT(message);
       SAXParseException exception(message, *myLocator);
       fatalError(exception);
@@ -306,7 +310,6 @@ void XML_Handler::startDocument()
       XMLString::release(&message);
     } // end IF
 
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("created file: \"%s\"...\n"),
                targetFilename.c_str()));
@@ -319,10 +322,11 @@ void XML_Handler::startDocument()
   } // end IF
 }
 
-void XML_Handler::startElement(const XMLCh* const uri_in,
-                               const XMLCh* const localname_in,
-                               const XMLCh* const qname_in,
-                               const Attributes& attributes_in)
+void
+XML_Handler::startElement(const XMLCh* const uri_in,
+                          const XMLCh* const localname_in,
+                          const XMLCh* const qname_in,
+                          const Attributes& attributes_in)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::startElement"));
 
@@ -361,11 +365,10 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
       // strip trailing type postfix, if any
       if (!myTypePostfix.empty())
       {
-        std::string::size_type position = myCurrentExtension.rfind(myTypePostfix, std::string::npos);
+        std::string::size_type position =
+            myCurrentExtension.rfind(myTypePostfix, std::string::npos);
         if (position != std::string::npos)
-        {
           myCurrentExtension.erase(position, std::string::npos);
-        } // end IF
       } // end IF
 
       break;
@@ -401,8 +404,10 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
         if (id_temp.find(ACE_TEXT_ALWAYS_CHAR("skip"), 0) == 0)
         {
           // we'll skip this one...
-          XMLCh* name_string = XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("name"));
-          char* name = XMLString::transcode(attributes_in.getValue(name_string));
+          XMLCh* name_string =
+              XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("name"));
+          char* name =
+              XMLString::transcode(attributes_in.getValue(name_string));
           XMLString::release(&name_string);
 
           ACE_DEBUG((LM_DEBUG,
@@ -427,11 +432,10 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
       // strip trailing type postfix, if any
       if (!myTypePostfix.empty())
       {
-        std::string::size_type position = myCurrentElementName.rfind(myTypePostfix, std::string::npos);
+        std::string::size_type position =
+            myCurrentElementName.rfind(myTypePostfix, std::string::npos);
         if (position != std::string::npos)
-        {
           myCurrentElementName.erase(position, std::string::npos);
-        } // end IF
       } // end IF
 
       if (myFilePerDefinition)
@@ -445,9 +449,10 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
         FQfilename += targetFilename;
         // transform to lowercase
 		std::transform(FQfilename.begin(),
-					   FQfilename.end(),
-					   FQfilename.begin(),
-					   std::bind2nd(std::ptr_fun(&std::tolower<char>), std::locale("")));
+									 FQfilename.end(),
+									 FQfilename.begin(),
+									 std::bind2nd(std::ptr_fun(&std::tolower<char>),
+																std::locale("")));
 
         // try to open file
         try
@@ -464,13 +469,25 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
         }
         if (myCurrentOutputFile.is_open())
         {
-//       // debug info
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("created/opened file: \"%s\"...\n"),
-//                  myFilename.c_str()));
+//                  ACE_TEXT(myFilename.c_str())));
 
           insertPreamble(myCurrentOutputFile);
-          std::string filename = ACE::basename(FQfilename.c_str());
+          const ACE_TCHAR* basename = ACE::basename(FQfilename.c_str());
+          if (!basename)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("caught exception in ACE::basename(\"%s\"), returning\n"),
+                       ACE_TEXT(FQfilename.c_str())));
+
+            // clean up
+            myCurrentOutputFile.close();
+
+            return;
+          } // end IF
+
+          std::string filename = ACE_TEXT_ALWAYS_CHAR(basename);
           insertMultipleIncludeProtection(true,
                                           filename,
                                           myCurrentOutputFile);
@@ -479,7 +496,7 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to open file: \"%s\"...\n"),
-                     FQfilename.c_str()));
+                     ACE_TEXT(FQfilename.c_str())));
         } // end ELSE
 
         if (myGenerateIncludeHeader)
@@ -495,24 +512,14 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
     {
       if (myIsFirstRelevantElement)
       {
-        try
-        {
-          myCurrentDefinitionHandler = new Handle_XMLEnumeration(myCurrentOutputFile,
-			                                                     myTypePrefix,
-                                                                 myEmitStringConversionUtilities,
-																 myEmitClassQualifiers);
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in ::new, aborting\n")));
-
-          OutOfMemoryException exception;
-          throw exception;
-        }
+        ACE_NEW_NORETURN(myCurrentDefinitionHandler,
+                         Handle_XMLEnumeration(myCurrentOutputFile,
+                                               myTypePrefix,
+                                               myEmitStringConversionUtilities,
+                                               myEmitClassQualifiers));
         if (!myCurrentDefinitionHandler)
         {
-          ACE_DEBUG((LM_ERROR,
+          ACE_DEBUG((LM_CRITICAL,
                      ACE_TEXT("failed to allocate memory, aborting\n")));
 
           OutOfMemoryException exception;
@@ -547,26 +554,16 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
 
       if (myIsFirstRelevantElement)
       {
-        try
-        {
-          myCurrentDefinitionHandler = new Handle_XMLSequence(myCurrentOutputFile,
-                                                              myCurrentExtension,
-															  myTypePrefix,
-                                                              myTypePostfix,
-															  myEmitClassQualifiers);
-//                                                               myEmitTaggedUnions);
-        }
-        catch (...)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in ::new, aborting\n")));
-
-          OutOfMemoryException exception;
-          throw exception;
-        }
+        ACE_NEW_NORETURN(myCurrentDefinitionHandler,
+                         Handle_XMLSequence(myCurrentOutputFile,
+                                            myCurrentExtension,
+                                            myTypePrefix,
+                                            myTypePostfix,
+                                            myEmitClassQualifiers));
+        //                                  myEmitTaggedUnions));
         if (!myCurrentDefinitionHandler)
         {
-          ACE_DEBUG((LM_ERROR,
+          ACE_DEBUG((LM_CRITICAL,
                      ACE_TEXT("failed to allocate memory, aborting\n")));
 
           OutOfMemoryException exception;
@@ -596,18 +593,27 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
 
       if (typeOfElement == XML_ELEMENT)
       {
-        // definition for (sequence) elements will be "type name minOccurs maxOccurs"
-        XMLCh* minOccurs_string = XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("minOccurs"));
-        char* minOccurs = XMLString::transcode(attributes_in.getValue(minOccurs_string));
+        // definition for (sequence) elements will be:
+        // "type name minOccurs maxOccurs"
+        XMLCh* minOccurs_string =
+            XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("minOccurs"));
+        char* minOccurs =
+            XMLString::transcode(attributes_in.getValue(minOccurs_string));
         XMLString::release(&minOccurs_string);
-        XMLCh* maxOccurs_string = XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("maxOccurs"));
-        char* maxOccurs = XMLString::transcode(attributes_in.getValue(maxOccurs_string));
+        XMLCh* maxOccurs_string =
+            XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("maxOccurs"));
+        char* maxOccurs =
+            XMLString::transcode(attributes_in.getValue(maxOccurs_string));
         XMLString::release(&maxOccurs_string);
         definition += ACE_TEXT_ALWAYS_CHAR(" ");
-        definition += (minOccurs ? minOccurs : ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTMINOCCURS));
+        definition +=
+            (minOccurs ? minOccurs
+                       : ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTMINOCCURS));
         XMLString::release(&minOccurs);
         definition += ACE_TEXT_ALWAYS_CHAR(" ");
-        definition += (maxOccurs ? maxOccurs : ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTMAXOCCURS));
+        definition +=
+            (maxOccurs ? maxOccurs
+                       : ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTMAXOCCURS));
         std::string string_maxoccurs = maxOccurs;
         XMLString::release(&maxOccurs);
 
@@ -616,9 +622,7 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
         {
           int maxNumElements = 0;
           if (string_maxoccurs == ACE_TEXT_ALWAYS_CHAR("unbounded"))
-          {
             maxNumElements = std::numeric_limits<int>::max();
-          } // end IF
           else
           {
             std::istringstream converter(string_maxoccurs);
@@ -636,8 +640,10 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
         XMLString::release(&use_string);
         std::string useAttribute = use;
         XMLString::release(&use);
-        XMLCh* default_string = XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("default"));
-        char* default_charp = XMLString::transcode(attributes_in.getValue(default_string));
+        XMLCh* default_string =
+            XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("default"));
+        char* default_charp =
+            XMLString::transcode(attributes_in.getValue(default_string));
         XMLString::release(&default_string);
         std::string defaultAttribute = default_charp;
         XMLString::release(&default_charp);
@@ -657,25 +663,15 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
     case XML_UNION:
     {
       // the union members come in the "memberTypes" attribute of this element
-      try
-      {
-        myCurrentDefinitionHandler = new Handle_XMLUnion(myCurrentOutputFile,
-                                                         myEmitTaggedUnions,
-														 myEmitClassQualifiers,
-                                                         myTypePrefix,
-                                                         myTypePostfix);
-      }
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                    ACE_TEXT("caught exception in ::new, aborting\n")));
-
-        OutOfMemoryException exception;
-        throw exception;
-      }
+      ACE_NEW_NORETURN(myCurrentDefinitionHandler,
+                       Handle_XMLUnion(myCurrentOutputFile,
+                                       myEmitTaggedUnions,
+                                       myEmitClassQualifiers,
+                                       myTypePrefix,
+                                       myTypePostfix));
       if (!myCurrentDefinitionHandler)
       {
-        ACE_DEBUG((LM_ERROR,
+        ACE_DEBUG((LM_CRITICAL,
                     ACE_TEXT("failed to allocate memory, aborting\n")));
 
         OutOfMemoryException exception;
@@ -686,8 +682,10 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
       myCurrentDefinitionHandler->startElement(myCurrentElementName);
 
       // extract memberTypes attribute
-      XMLCh* memberTypes_string = XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("memberTypes"));
-      char* memberTypes = XMLString::transcode(attributes_in.getValue(memberTypes_string));
+      XMLCh* memberTypes_string =
+          XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("memberTypes"));
+      char* memberTypes =
+          XMLString::transcode(attributes_in.getValue(memberTypes_string));
       XMLString::release(&memberTypes_string);
 
       std::string definition = memberTypes;
@@ -708,7 +706,8 @@ void XML_Handler::startElement(const XMLCh* const uri_in,
   } // end SWITCH
 }
 
-void XML_Handler::error(const SAXParseException& exception_in)
+void
+XML_Handler::error(const SAXParseException& exception_in)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::error"));
 
@@ -717,16 +716,17 @@ void XML_Handler::error(const SAXParseException& exception_in)
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("XML_Handler::error(file: \"%s\", line: %d, column: %d): \"%s\"\n"),
-             exception_in.getSystemId(),
+             ACE_TEXT(exception_in.getSystemId()),
              exception_in.getLineNumber(),
              exception_in.getColumnNumber(),
-             message));
+             ACE_TEXT(message)));
 
   // clean up
   XMLString::release(&message);
 }
 
-void XML_Handler::fatalError(const SAXParseException& exception_in)
+void
+XML_Handler::fatalError(const SAXParseException& exception_in)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::fatalError"));
 
@@ -735,16 +735,17 @@ void XML_Handler::fatalError(const SAXParseException& exception_in)
 
   ACE_DEBUG((LM_CRITICAL,
              ACE_TEXT("XML_Handler::fatalError(file: \"%s\", line: %d, column: %d): \"%s\"\n"),
-             exception_in.getSystemId(),
+             ACE_TEXT(exception_in.getSystemId()),
              exception_in.getLineNumber(),
              exception_in.getColumnNumber(),
-             message));
+             ACE_TEXT(message)));
 
   // clean up
   XMLString::release(&message);
 }
 
-void XML_Handler::warning(const SAXParseException& exception_in)
+void
+XML_Handler::warning(const SAXParseException& exception_in)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::warning"));
 
@@ -753,87 +754,60 @@ void XML_Handler::warning(const SAXParseException& exception_in)
 
   ACE_DEBUG((LM_WARNING,
              ACE_TEXT("XML_Handler::warning(file: \"%s\", line: %d, column: %d): \"%s\"\n"),
-             exception_in.getSystemId(),
+             ACE_TEXT(exception_in.getSystemId()),
              exception_in.getLineNumber(),
              exception_in.getColumnNumber(),
-             message));
+             ACE_TEXT(message)));
 
   // clean up
   XMLString::release(&message);
 }
 
-XML_Handler::XMLElementType XML_Handler::stringToXMLElementType(const std::string& elementString_in) const
+XML_Handler::XMLElementType
+XML_Handler::stringToXMLElementType(const std::string& elementString_in) const
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::stringToXMLElementType"));
 
   if (elementString_in == ACE_TEXT_ALWAYS_CHAR("schema"))
-  {
     return XML_SCHEMA;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("annotation"))
-  {
     return XML_ANNOTATION;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("documentation"))
-  {
     return XML_DOCUMENTATION;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("simpleType"))
-  {
     return XML_SIMPLETYPE;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("restriction"))
-  {
     return XML_RESTRICTION;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("enumeration"))
-  {
     return XML_ENUMERATION;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("complexType"))
-  {
     return XML_COMPLEXTYPE;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("complexContent"))
-  {
     return XML_COMPLEXCONTENT;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("sequence"))
-  {
     return XML_SEQUENCE;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("attribute"))
-  {
     return XML_ATTRIBUTE;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("element"))
-  {
     return XML_ELEMENT;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("include"))
-  {
     return XML_INCLUDE;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("extension"))
-  {
     return XML_EXTENSION;
-  } // end IF
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("union"))
-  {
     return XML_UNION;
-  } // end IF
   else
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("unknown XML element type: \"%s\", aborting\n"),
-               elementString_in.c_str()));
+               ACE_TEXT(elementString_in.c_str())));
   } // end ELSE
 
   return XML_INVALID;
 }
 
-void XML_Handler::insertPreamble(std::ofstream& targetStream_inout)
+void
+XML_Handler::insertPreamble(std::ofstream& targetStream_inout)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::insertPreamble"));
 
@@ -842,21 +816,23 @@ void XML_Handler::insertPreamble(std::ofstream& targetStream_inout)
   targetStream_inout << std::endl;
 
   // step2: insert edit warning
-  targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// -------------------------------- * * * -------------------------------- //") << std::endl;
+  targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// -------------------------------- * * * ----------------------------------- //") << std::endl;
   targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// PLEASE NOTE: this file was/is generated by ");
 #if defined _MSC_VER
   targetStream_inout << XML2CPPCODE_PACKAGE_STRING << std::endl;
 #else
-  // *TODO*: leave as-is for now (see Yarp/configure.ac)
-  targetStream_inout << PACKAGE_STRING << std::endl;
+//  // *TODO*: leave as-is for now (see Yarp/configure.ac)
+//  targetStream_inout << PACKAGE_STRING << std::endl;
+  targetStream_inout << XML2CPPCODE_PACKAGE_STRING << std::endl;
 #endif
-  targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// -------------------------------- * * * -------------------------------- //") << std::endl;
+  targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// -------------------------------- * * * ----------------------------------- //") << std::endl;
   targetStream_inout << std::endl;
 }
 
-void XML_Handler::insertMultipleIncludeProtection(const bool& usePragmaOnce_in,
-                                                  const std::string& filename_in,
-                                                  std::ofstream& targetStream_inout)
+void
+XML_Handler::insertMultipleIncludeProtection(const bool& usePragmaOnce_in,
+                                             const std::string& filename_in,
+                                             std::ofstream& targetStream_inout)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::insertMultipleIncludeProtection"));
 
@@ -874,9 +850,10 @@ void XML_Handler::insertMultipleIncludeProtection(const bool& usePragmaOnce_in,
   } // end WHILE
   // transform to uppercase
   std::transform(definition.begin(),
-	             definition.end(),
-				 definition.begin(),
-				 std::bind2nd(std::ptr_fun(&std::toupper<char>), std::locale("")));
+                 definition.end(),
+                 definition.begin(),
+                 std::bind2nd(std::ptr_fun(&std::toupper<char>),
+                              std::locale("")));
 
   targetStream_inout << ACE_TEXT_ALWAYS_CHAR("#ifndef ");
   targetStream_inout << definition << std::endl;
@@ -885,7 +862,8 @@ void XML_Handler::insertMultipleIncludeProtection(const bool& usePragmaOnce_in,
   targetStream_inout << std::endl;
 }
 
-void XML_Handler::insertPostscript(std::ofstream& targetStream_inout)
+void
+XML_Handler::insertPostscript(std::ofstream& targetStream_inout)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::insertPostscript"));
 
@@ -893,14 +871,16 @@ void XML_Handler::insertPostscript(std::ofstream& targetStream_inout)
   targetStream_inout << std::endl;
 }
 
-void XML_Handler::insertIncludeHeaders(const XML2CppCode_Headers_t& headers_in,
-                                       const bool& includeStdVector_in,
-                                       std::ofstream& targetStream_inout)
+void
+XML_Handler::insertIncludeHeaders(const XML2CppCode_Headers_t& headers_in,
+                                  const bool& includeStdVector_in,
+                                  std::ofstream& targetStream_inout)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::insertIncludeHeaders"));
 
   if (includeStdVector_in)
-    targetStream_inout << ACE_TEXT_ALWAYS_CHAR("#include <vector>") << std::endl;
+    targetStream_inout << ACE_TEXT_ALWAYS_CHAR("#include <vector>")
+                       << std::endl;
 
   for (XML2CppCode_HeadersIterator_t iterator = headers_in.begin();
        iterator != headers_in.end();

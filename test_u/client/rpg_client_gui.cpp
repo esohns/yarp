@@ -662,20 +662,22 @@ do_runIntro(SDL_Surface*      targetSurface_in,
     screenLock_in->unlock();
 
 //   SDL_FreeSurface(logo);
-  RPG_Graphics_Common_Tools::fade(true,                                // fade in
-                                  5.0,                                 // interval
-                                  RPG_Graphics_SDL_Tools::CLR32_BLACK, // fade from black
-                                  screenLock_in,                       // screen lock interface handle
-                                  targetSurface_in);                   // target surface (e.g. screen)
+  RPG_Graphics_Common_Tools::fade(true,                                                // fade in
+                                  5.0,                                                 // interval
+                                  RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
+                                                                   *targetSurface_in), // fade from black
+                                  screenLock_in,                                       // screen lock interface handle
+                                  targetSurface_in);                                   // target surface (e.g. screen)
   SDL_Event event;
   do_SDL_waitForInput(10,     // wait 10 seconds max
                       event);
 //   do_handleSDLEvent(event);
-  RPG_Graphics_Common_Tools::fade(false,                               // fade out
-                                  3.0,                                 // interval
-                                  RPG_Graphics_SDL_Tools::CLR32_BLACK, // fade to black
-                                  screenLock_in,                       // screen lock interface handle
-                                  targetSurface_in);                   // target surface (e.g. screen)
+  RPG_Graphics_Common_Tools::fade(false,                                               // fade out
+                                  3.0,                                                 // interval
+                                  RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
+                                                                   *targetSurface_in), // fade to black
+                                  screenLock_in,                                       // screen lock interface handle
+                                  targetSurface_in);                                   // target surface (e.g. screen)
 
   // clean up
   SDL_FreeSurface(logo);

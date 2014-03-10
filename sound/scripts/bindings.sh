@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Sound > ./sound/rpg_sound_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -d RPG_Sound_Export -e -f ./sound/rpg_sound.xsd -i -o ./sound -s -u
+XML2CppCode -d RPG_Sound_Export -e -f ./sound/rpg_sound.xsd -i -o ./sound -s -u -x RPG_Sound
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser

@@ -46,10 +46,9 @@ const bool XML2CppCode_Common_Tools::XMLintegratedtypeToString(const std::string
     result_out = ACE_TEXT_ALWAYS_CHAR("std::string");
   else
   {
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("unknown type: \"%s\", returning as-is\n"),
-               typeSpecifier_in.c_str()));
+//    ACE_DEBUG((LM_DEBUG,
+//               ACE_TEXT("unknown type: \"%s\", returning as-is\n"),
+//               ACE_TEXT(typeSpecifier_in.c_str())));
 
     result_out = typeSpecifier_in;
 

@@ -23,8 +23,9 @@
 #if defined _MSC_VER
 #include "build/XML2CppCode-config.h"
 #else
-// *TODO*: leave as-is for now (see Yarp/configure.ac)
-#include "config.h"
+//// *TODO*: leave as-is for now (see Yarp/configure.ac)
+//#include "config.h"
+#include "XML2CppCode-config.h"
 #endif
 #endif
 
@@ -71,7 +72,7 @@ print_usage(const std::string& programName_in)
 const bool
 process_arguments(const int argc_in,
                   ACE_TCHAR* argv_in[], // cannot be const...
-  				  std::string& emitClassQualifier_out,
+                  std::string& emitClassQualifier_out,
                   bool& emitStringConversionUtilities_out,
                   bool& emitTaggedUnions_out,
                   std::string& filename_out,
@@ -206,7 +207,7 @@ process_arguments(const int argc_in,
 
 void
 do_work(const std::string& emitClassQualifier_in,
-		const bool& emitStringConversionUtilities_in,
+        const bool& emitStringConversionUtilities_in,
         const bool& emitTaggedUnions_in,
         const std::string& filename_in,
         const bool& generateIncludeHeader_in,
@@ -242,7 +243,7 @@ do_work(const std::string& emitClassQualifier_in,
   try
   {
     XML_PARSER_SINGLETON::instance()->parseFile(emitClassQualifier_in,
-												emitStringConversionUtilities_in,
+                                                emitStringConversionUtilities_in,
                                                 emitTaggedUnions_in,
                                                 filename_in,
                                                 generateIncludeHeader_in,
@@ -276,8 +277,9 @@ do_printVersion(const std::string& programName_in)
 #if defined _MSC_VER
   std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
 #else
-  // *TODO*: leave as-is for now (see Yarp/configure.ac)
-  std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+//  // *TODO*: leave as-is for now (see Yarp/configure.ac)
+  //std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
 #endif
 
   // create version string...
@@ -401,7 +403,7 @@ ACE_TMAIN(int argc_in,
   // step1b: parse/process/validate configuration
   if (!(process_arguments(argc_in,
                           argv_in,
-						  emitClassQualifier,
+                          emitClassQualifier,
                           emitStringConversionUtilities,
                           emitTaggedUnions,
                           filename,
@@ -475,7 +477,7 @@ ACE_TMAIN(int argc_in,
 
   // step2: do actual work
   do_work(emitClassQualifier,
-	      emitStringConversionUtilities,
+          emitStringConversionUtilities,
           emitTaggedUnions,
           filename,
           generateIncludeHeader,

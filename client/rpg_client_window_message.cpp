@@ -44,7 +44,9 @@ RPG_Client_Window_Message::RPG_Client_Window_Message(const RPG_Graphics_SDLWindo
   // init background surface
   myBG = RPG_Graphics_Surface::create(20, 20);
   ACE_ASSERT(myBG);
-  RPG_Graphics_Surface::fill(RPG_Graphics_SDL_Tools::CLR32_BLACK_A50, myBG);
+  RPG_Graphics_Surface::fill(RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A50,
+                                                              *myBG),
+                             myBG);
 }
 
 RPG_Client_Window_Message::~RPG_Client_Window_Message()

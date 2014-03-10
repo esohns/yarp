@@ -94,7 +94,7 @@ class RPG_Graphics_Export RPG_Graphics_Surface
                   const unsigned int&, // offset y (top left == 0,0)
                   const SDL_Surface&,  // source surface
                   SDL_Surface*);       // target surface (e.g. screen)
-  static void putText(const RPG_Graphics_Font&, // font
+  static bool putText(const RPG_Graphics_Font&, // font
                       const std::string&,       // string
                       const SDL_Color&,         // color
                       const bool&,              // shade ?
@@ -111,9 +111,11 @@ class RPG_Graphics_Export RPG_Graphics_Surface
   // *NOTE*: results need to be SDL_FreeSurface()d !
   static SDL_Surface* alpha(const SDL_Surface&,               // source surface
                             const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
-  static void clear(SDL_Surface*); // target surface
-  static void fill(const Uint32&, // color
-                   SDL_Surface*); // target surface
+  static void clear(SDL_Surface*,            // target surface
+                    const SDL_Rect* = NULL); // clip area (if any)
+  static void fill(const Uint32&,           // color
+                   SDL_Surface*,            // target surface
+                   const SDL_Rect* = NULL); // clip area (if any)
 
   // refresh (partial) screen surface
   static void update(const SDL_Rect&, // "dirty" rectangle

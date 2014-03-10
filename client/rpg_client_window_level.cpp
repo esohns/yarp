@@ -2583,7 +2583,8 @@ RPG_Client_Window_Level::initWallBlend(const bool& halfHeightWalls_in)
 
   if (SDL_FillRect(myWallBlend,
                    NULL,
-                   RPG_Graphics_SDL_Tools::CLR32_BLACK_A10))
+                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A10,
+                                                    *myWallBlend)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),

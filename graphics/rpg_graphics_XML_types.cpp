@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -339,6 +338,54 @@ parsers (::RPG_Graphics_Graphic_Type_pskel& graphic)
 RPG_Graphics_Dictionary_Type_pskel::
 RPG_Graphics_Dictionary_Type_pskel ()
 : graphic_parser_ (0)
+{
+}
+
+// RPG_Graphics_ColorRGBA_Type_pskel
+//
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+r_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->r_parser_ = &p;
+}
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+g_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->g_parser_ = &p;
+}
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+b_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->b_parser_ = &p;
+}
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+a_parser (::xml_schema::unsigned_byte_pskel& p)
+{
+  this->a_parser_ = &p;
+}
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+parsers (::xml_schema::unsigned_byte_pskel& r,
+         ::xml_schema::unsigned_byte_pskel& g,
+         ::xml_schema::unsigned_byte_pskel& b,
+         ::xml_schema::unsigned_byte_pskel& a)
+{
+  this->r_parser_ = &r;
+  this->g_parser_ = &g;
+  this->b_parser_ = &b;
+  this->a_parser_ = &a;
+}
+
+RPG_Graphics_ColorRGBA_Type_pskel::
+RPG_Graphics_ColorRGBA_Type_pskel ()
+: r_parser_ (0),
+  g_parser_ (0),
+  b_parser_ (0),
+  a_parser_ (0)
 {
 }
 
@@ -1100,6 +1147,124 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->graphic_parser_)
       this->graphic (this->graphic_parser_->post_RPG_Graphics_Graphic_Type ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Graphics_ColorRGBA_Type_pskel
+//
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+r (unsigned char)
+{
+}
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+g (unsigned char)
+{
+}
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+b (unsigned char)
+{
+}
+
+void RPG_Graphics_ColorRGBA_Type_pskel::
+a (unsigned char)
+{
+}
+
+bool RPG_Graphics_ColorRGBA_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "r" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->r_parser_;
+
+    if (this->r_parser_)
+      this->r_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "g" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->g_parser_;
+
+    if (this->g_parser_)
+      this->g_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "b" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->b_parser_;
+
+    if (this->b_parser_)
+      this->b_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "a" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->a_parser_;
+
+    if (this->a_parser_)
+      this->a_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Graphics_ColorRGBA_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "r" && ns == "urn:rpg")
+  {
+    if (this->r_parser_)
+      this->r (this->r_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "g" && ns == "urn:rpg")
+  {
+    if (this->g_parser_)
+      this->g (this->g_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "b" && ns == "urn:rpg")
+  {
+    if (this->b_parser_)
+      this->b (this->b_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  if (n == "a" && ns == "urn:rpg")
+  {
+    if (this->a_parser_)
+      this->a (this->a_parser_->post_unsigned_byte ());
 
     return true;
   }

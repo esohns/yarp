@@ -23,7 +23,7 @@
 
 #include "rpg_graphics_surface.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 
@@ -39,6 +39,7 @@ RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub(const RPG_Graphics_WindowTy
              title_in),      // title
 //              backGround_in), // background
    myBGHasBeenSaved(false),
+   myIsVisible(false),
    myBG(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub"));
@@ -73,6 +74,14 @@ RPG_Graphics_SDLWindowSub::close(SDL_Rect& dirtyRegion_out)
   } // end IF
 
   delete this;
+}
+
+bool
+RPG_Graphics_SDLWindowSub::visible() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::visible"));
+
+  return myIsVisible;
 }
 
 void

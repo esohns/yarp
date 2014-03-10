@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Player > ./character/player/rpg_player_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -e -f ./character/player/rpg_player.xsd -i -o ./character/player -s -u
+XML2CppCode -d RPG_Player_Export -e -f ./character/player/rpg_player.xsd -i -o ./character/player -s -u -x RPG_Player
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser/Tree

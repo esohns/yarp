@@ -22,6 +22,7 @@
 #define RPG_GRAPHICS_IWINDOW_H
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_colorname.h"
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_SDL_tools.h"
 
@@ -42,7 +43,7 @@ class RPG_Graphics_IWindow
   //virtual void setView(const RPG_Graphics_Position_t&) = 0; // view (map coordinates !)
   //virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
 
-  virtual void clear(const Uint32& = RPG_Graphics_SDL_Tools::CLR32_BLACK) = 0;
+  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK) = 0;
   virtual void draw(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])
                     const unsigned int& = 0) = 0; // offset y (top-left = [0,0])

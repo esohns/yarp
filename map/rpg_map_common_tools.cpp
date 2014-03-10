@@ -2201,20 +2201,21 @@ RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::orientation2String"));
 
+  // init result value
+  std::string result = ACE_TEXT_ALWAYS_CHAR("MAP_ORIENTATION_INVALID");
+
   switch (orientation_in)
   {
     case MAP_ORIENTATION_HORIZONTAL:
-      return std::string("MAP_ORIENTATION_HORIZONTAL");
+      result = ACE_TEXT_ALWAYS_CHAR("MAP_ORIENTATION_HORIZONTAL"); break;
     case MAP_ORIENTATION_VERTICAL:
-      return std::string("MAP_ORIENTATION_VERTICAL");
+      result = ACE_TEXT_ALWAYS_CHAR("MAP_ORIENTATION_VERTICAL"); break;
     case MAP_ORIENTATION_INVALID:
-      return std::string("MAP_ORIENTATION_INVALID");
-    case MAP_ORIENTATION_MAX:
-      return std::string("MAP_ORIENTATION_MAX");
+      break;
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid orientation (was %u), aborting\n"),
+                 ACE_TEXT("invalid orientation (was %d), aborting\n"),
                  orientation_in));
 
       ACE_ASSERT(false);
@@ -2223,7 +2224,7 @@ RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_
     }
   } // end SWITCH
 
-  return std::string("MAP_ORIENTATION_INVALID");
+  return result;
 }
 
 std::string
@@ -2264,6 +2265,42 @@ RPG_Map_Common_Tools::map2String(const RPG_Map_t& map_in)
     } // end FOR
     result += '\n';
   } // end FOR
+
+  return result;
+}
+
+std::string
+RPG_Map_Common_Tools::mapElement2String(const RPG_Map_Element& element_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::map2String"));
+
+  std::string result = ACE_TEXT_ALWAYS_CHAR("MAPELEMENT_INVALID");
+
+  switch (element_in)
+  {
+    case MAPELEMENT_UNMAPPED:
+      result = ACE_TEXT_ALWAYS_CHAR("MAPELEMENT_UNMAPPED"); break;
+    case MAPELEMENT_FLOOR:
+      result = ACE_TEXT_ALWAYS_CHAR("MAPELEMENT_FLOOR"); break;
+    case MAPELEMENT_STAIRS:
+      result = ACE_TEXT_ALWAYS_CHAR("MAPELEMENT_STAIRS"); break;
+    case MAPELEMENT_WALL:
+      result = ACE_TEXT_ALWAYS_CHAR("MAPELEMENT_WALL"); break;
+    case MAPELEMENT_DOOR:
+      result = ACE_TEXT_ALWAYS_CHAR("MAPELEMENT_DOOR"); break;
+    case MAPELEMENT_INVALID:
+      break;
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid element (was %d), aborting\n"),
+                 element_in));
+
+      ACE_ASSERT(false);
+
+      break;
+    }
+  } // end SWITCH
 
   return result;
 }

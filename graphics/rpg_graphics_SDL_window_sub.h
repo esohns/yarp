@@ -48,6 +48,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
 
   // close (& destroy)
   void close(SDL_Rect&); // return value: "dirty" region
+  bool visible() const;
 
  protected:
   using RPG_Graphics_SDLWindowBase::myClipRect;
@@ -55,8 +56,10 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
   // helper method(s)
   // *NOTE*: make sure setScreen has been invoked
   void saveBG(const RPG_Graphics_Size_t&);
-  bool myBGHasBeenSaved;
+  bool              myBGHasBeenSaved;
   void restoreBG(SDL_Rect&); // return value: "dirty" region
+
+  bool              myIsVisible;
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;

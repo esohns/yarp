@@ -36,40 +36,18 @@
 #include "rpg_graphics_common_tools.h"
 
 // init statics
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A0   = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A10  = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A30  = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A50  = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A70  = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK_A90  = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLACK      = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_GREEN      = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_YELLOW     = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_ORANGE     = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_RED        = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_GRAY20     = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_GRAY20_A10 = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_GRAY70     = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_GRAY77     = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_PURPLE44   = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_LIGHTPINK  = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_LIGHTGREEN = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BROWN      = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_WHITE      = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_BLESS_BLUE = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_CURSE_RED  = 0;
-Uint32 RPG_Graphics_SDL_Tools::CLR32_GOLD_SHADE = 0;
+bool                    RPG_Graphics_SDL_Tools::myVideoPreInitialized = false;
+RPG_Graphics_ColorMap_t RPG_Graphics_SDL_Tools::myColors;
 
 bool
-RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in,
-                                  const std::string& caption_in,
-                                  SDL_Surface*& windowSurface_out,
-                                  const bool& initWindow_in)
+RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in,
+                                     const std::string& caption_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initVideo"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::preInitVideo"));
 
-  // init return value(s)
-  windowSurface_out = NULL;
+  // sanity check
+  if (myVideoPreInitialized)
+    return true; // nothing to do
 
   // step1: init video subsystem
   std::string video_driver = configuration_in.video_driver;
@@ -96,7 +74,7 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
                     flags) == -1)         // flags
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_VideoInit(\"%s\", %x): \"%s\", aborting"),
+               ACE_TEXT("failed to SDL_VideoInit(\"%s\", %x): \"%s\", aborting\n"),
                ACE_TEXT(video_driver.c_str()),
                flags,
                SDL_GetError()));
@@ -113,11 +91,11 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
                ACE_TEXT("failed to SDL_GetWMInfo(): \"%s\", continuing"),
                SDL_GetError()));
   std::ostringstream version_number;
-  version_number << wm_info.version.major;
+  version_number << static_cast<unsigned int>(wm_info.version.major);
   version_number << ACE_TEXT_ALWAYS_CHAR(".");
-  version_number << wm_info.version.minor;
+  version_number << static_cast<unsigned int>(wm_info.version.minor);
   version_number << ACE_TEXT_ALWAYS_CHAR(".");
-  version_number << wm_info.version.patch;
+  version_number << static_cast<unsigned int>(wm_info.version.patch);
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("*** wm info (SDL: %s) ***\nwindow: %d\nOpenGL context: %@\n"),
@@ -126,7 +104,7 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
              wm_info.hglrc));
 #else
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** wm info (SDL: %s) ***\nsubsystem: %d\ndisplay: %@\nwindow: %u\nfull-screen window: %u\nmanaged input window: %u\nrender display: %@\n"),
+             ACE_TEXT("*** wm info (SDL version: %s) ***\nsubsystem:\t\t\t\t%d\ndisplay:\t\t\t\t%@\nwindow:\t\t\t\t%u\nfull-screen window:\t\t\t%u\nmanaged input window:\t\t\t%u\nrender display:\t\t\t%@\n"),
              ACE_TEXT(version_number.str().c_str()),
              wm_info.subsystem,
              wm_info.info.x11.display,
@@ -139,6 +117,35 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
   // step2: set window/icon caption
   SDL_WM_SetCaption(caption_in.c_str(),  // window caption
                     caption_in.c_str()); // icon caption
+
+  myVideoPreInitialized = true;
+
+  return true;
+}
+
+bool
+RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in,
+                                  const std::string& caption_in,
+                                  SDL_Surface*& windowSurface_out,
+                                  const bool& initWindow_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initVideo"));
+
+  // init return value(s)
+  windowSurface_out = NULL;
+
+  // sanity check
+  if (!myVideoPreInitialized)
+    if (!preInitVideo(configuration_in,
+                      caption_in))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_SDL_Tools::preInitVideo(), aborting\n")));
+
+      return false;
+    } // end IF
+  ACE_ASSERT(myVideoPreInitialized);
+
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
@@ -208,7 +215,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
   videoInfo = SDL_GetVideoInfo();
   ACE_ASSERT(videoInfo);
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nhardware surfaces:\t\t\t\t\t\"%s\"\nwindow manager:\t\t\t\t\t\t\"%s\"\nhardware to hardware blits accelerated:\t\t\t\"%s\"\nhardware to hardware colorkey blits accelerated:\t\"%s\"\nhardware to hardware alpha blits accelerated:\t\t\"%s\"\nsoftware to hardware blits accelerated:\t\t\t\"%s\"\nsoftware to hardware colorkey blits accelerated:\t\"%s\"\nsoftware to hardware alpha blits accelerated:\t\t\"%s\"\ncolor fills accelerated:\t\t\t\t\"%s\"\nvideo memory:\t\t\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t%@\nbits[bytes]/pixel:\t%d[%d]\nmask[RGBA]:\t\t%x %x %x %x\nshift[RGBA]:\t\t%d %d %d %d\nloss[RGBA]:\t\t%d %d %d %d\ntransparent colorkey:\t%d\noverall surface alpha:\t%d\n"),
+             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\"%s\"\nwindow manager:\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
              driver,
              (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
              (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
@@ -232,19 +239,23 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
   // set surface flags
   RPG_Graphics_Surface::SDL_surface_flags =
       ((videoInfo->hw_available ? SDL_HWSURFACE : SDL_SWSURFACE) |
-       SDL_SRCCOLORKEY | // "This flag turns on color keying for blits from this surface.
-                         // ...Use SDL_SetColorKey to set or clear this flag after surface creation."
-       SDL_SRCALPHA);    // "This flag turns on alpha-blending for blits from this surface.
-                         // ...Use SDL_SetAlpha to set or clear this flag after surface creation."
+       SDL_SRCCOLORKEY | // "This flag turns on color keying for blits from this
+                         // surface. ...Use SDL_SetColorKey to set or clear this
+                         // flag after surface creation."
+       SDL_SRCALPHA);    // "This flag turns on alpha-blending for blits from
+                         // this surface. ...Use SDL_SetAlpha to set or clear
+                         // this flag after surface creation."
   Uint32 SDL_surface_flags =
       ((videoInfo->hw_available ? SDL_HWSURFACE : SDL_SWSURFACE) |
-       SDL_ASYNCBLIT | // "...will usually slow down blitting on single CPU machines,
-                       //  but may provide a speed increase on SMP systems..."
+       SDL_ASYNCBLIT | // "...will usually slow down blitting on single CPU
+                       // machines, but may provide a speed increase on SMP
+                       // systems..."
        SDL_ANYFORMAT | // "...Allow any video depth/pixel-format..."
        SDL_HWPALETTE | // "...Surface has exclusive palette..."
        (configuration_in.double_buffer ? SDL_DOUBLEBUF                  : 0) |
        (configuration_in.use_OpenGL    ? (SDL_OPENGL | SDL_OPENGLBLIT)  : 0) |
-       (configuration_in.full_screen   ? (SDL_FULLSCREEN | SDL_NOFRAME) : SDL_RESIZABLE));
+       // *TODO*: implement SDL_RESIZABLE ?
+       (configuration_in.full_screen   ? (SDL_FULLSCREEN | SDL_NOFRAME) : 0));
   // get available fullscreen/hardware/... modes
   SDL_Rect** modes = NULL;
   modes = SDL_ListModes(NULL,               // use same as videoInfo
@@ -331,7 +342,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** screen flags ***\nsurface:\t\t\t\t%sRAM\nasynch blits:\t\t\t\t\"%s\"\nany video depth/pixel-format:\t\t\"%s\"\nsurface has exclusive palette:\t\t\"%s\"\ndouble-buffered:\t\t\t\"%s\"\nblit uses hardware acceleration:\t\"%s\"\nblit uses a source color key:\t\t\"%s\"\nsurface is RLE encoded:\t\t\t\"%s\"\nblit uses source alpha blending:\t\"%s\"\nsurface uses preallocated memory:\t\"%s\"\n"),
+             ACE_TEXT("*** screen flags ***\nsurface:\t\t\t\t%sRAM\nasynch blits:\t\t\t\"%s\"\nany video depth/pixel-format:\t\t\"%s\"\nsurface has exclusive palette:\t\t\"%s\"\ndouble-buffered:\t\t\t\"%s\"\nblit uses HW acceleration:\t\t\"%s\"\nblit uses a source color key:\t\t\"%s\"\nsurface is RLE encoded:\t\t\"%s\"\nblit uses source alpha blending:\t\t\"%s\"\nsurface uses preallocated memory:\t\t\"%s\"\n"),
              ((screen->flags & SDL_HWSURFACE)   ? ACE_TEXT("Video") : ACE_TEXT("")),
              ((screen->flags & SDL_ASYNCBLIT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
              ((screen->flags & SDL_ANYFORMAT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
@@ -420,106 +431,197 @@ RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
   return result;
 }
 
+Uint32
+RPG_Graphics_SDL_Tools::getColor(const RPG_Graphics_ColorName& colorName_in,
+                                 const SDL_Surface& targetSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::getColor"));
+
+  // init return value(s)
+  Uint32 result = 0;
+
+  RPG_Graphics_ColorMapConstIterator_t iterator = myColors.find(colorName_in);
+  if (iterator == myColors.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("unknown/invalid color (was: \"%s\"), aborting\n"),
+               ACE_TEXT(RPG_Graphics_ColorNameHelper::RPG_Graphics_ColorNameToString(colorName_in).c_str())));
+
+    return result;
+  } // end IF
+
+  result = SDL_MapRGBA(targetSurface_in.format,
+                       (*iterator).second.r,
+                       (*iterator).second.g,
+                       (*iterator).second.b,
+                       (*iterator).second.a);
+
+  return result;
+}
+
 void
 RPG_Graphics_SDL_Tools::initColors()
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initColors"));
 
-  // set up the colors used in the game
-  // *NOTE*: the only way to do this without needing graphics to have been loaded first
-  // is to manually create a surface and put it into display format + alpha
-  SDL_Surface* dummy = NULL;
-  dummy = SDL_CreateRGBSurface(RPG_Graphics_Surface::SDL_surface_flags,
-                               1, // dummy
-                               1, // dummy
-                               32,
-                               ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
-                               ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x0000FF00 : 0x00FF0000),
-                               ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x00FF0000 : 0x0000FF00),
-                               ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0xFF000000 : 0x000000FF));
-  if (!dummy)
+  myColors.clear();
+  RPG_Graphics_ColorRGBA color;
+  for (int i = 0;
+       i < RPG_GRAPHICS_COLORNAME_MAX;
+       i++)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-               SDL_GetError()));
+    switch (i)
+    {
+      case COLOR_BLACK_A0:
+        color.a = 0;
+        color.r = 0;
+        color.g = 0;
+        color.b = 0;
+        break;
+      case COLOR_BLACK_A10:
+        color.a = 0x1a;
+        color.r = 0;
+        color.g = 0;
+        color.b = 0;
+        break;
+      case COLOR_BLACK_A30:
+        color.a = 0x4d;
+        color.r = 0;
+        color.g = 0;
+        color.b = 0;
+        break;
+      case COLOR_BLACK_A50:
+        color.a = 0x80;
+        color.r = 0;
+        color.g = 0;
+        color.b = 0;
+        break;
+      case COLOR_BLACK_A70:
+        color.a = 0xb3;
+        color.r = 0;
+        color.g = 0;
+        color.b = 0;
+        break;
+      case COLOR_BLACK_A90:
+        color.a = 0xe7;
+        color.r = 0;
+        color.g = 0;
+        color.b = 0;
+        break;
+      case COLOR_BLACK:
+        color.a = 0xff;
+        color.r = 0;
+        color.g = 0;
+        color.b = 0;
+        break;
+      case COLOR_GREEN:
+        color.a = 0xff;
+        color.r = 0x57;
+        color.g = 0xff;
+        color.b = 0x57;
+        break;
+      case COLOR_YELLOW:
+        color.a = 0xff;
+        color.r = 0xff;
+        color.g = 0xff;
+        color.b = 0x57;
+        break;
+      case COLOR_ORANGE:
+        color.a = 0xff;
+        color.r = 0xff;
+        color.g = 0xc7;
+        color.b = 0x3b;
+        break;
+      case COLOR_RED:
+        color.a = 0xff;
+        color.r = 0xff;
+        color.g = 0x23;
+        color.b = 0x07;
+        break;
+      case COLOR_GRAY20:
+        color.a = 0xff;
+        color.r = 0xb7;
+        color.g = 0xab;
+        color.b = 0xab;
+        break;
+      case COLOR_GRAY20_A10:
+        color.a = 0x1a;
+        color.r = 0xb7;
+        color.g = 0xab;
+        color.b = 0xab;
+        break;
+      case COLOR_GRAY70:
+        color.a = 0xff;
+        color.r = 0x53;
+        color.g = 0x53;
+        color.b = 0x53;
+        break;
+      case COLOR_GRAY77:
+        color.a = 0xff;
+        color.r = 0x43;
+        color.g = 0x3b;
+        color.b = 0x3b;
+        break;
+      case COLOR_PURPLE44:
+        color.a = 0xff;
+        color.r = 0x4f;
+        color.g = 0x43;
+        color.b = 0x6f;
+        break;
+      case COLOR_LIGHTPINK:
+        color.a = 0xff;
+        color.r = 0xcf;
+        color.g = 0xbb;
+        color.b = 0xd3;
+        break;
+      case COLOR_LIGHTGREEN:
+        color.a = 0xff;
+        color.r = 0xaa;
+        color.g = 0xff;
+        color.b = 0xcc;
+        break;
+      case COLOR_BROWN:
+        color.a = 0xff;
+        color.r = 0x9b;
+        color.g = 0x6f;
+        color.b = 0x57;
+        break;
+      case COLOR_WHITE:
+        color.a = 0xff;
+        color.r = 0xff;
+        color.g = 0xff;
+        color.b = 0xff;
+        break;
+      case COLOR_BLESS_BLUE:
+        color.a = 0x60;
+        color.r = 0x96;
+        color.g = 0xdc;
+        color.b = 0xfe;
+        break;
+      case COLOR_CURSE_RED:
+        color.a = 0x50;
+        color.r = 0x60;
+        color.g = 0;
+        color.b = 0;
+        break;
+      case COLOR_GOLD_SHADE:
+        color.a = 0x40;
+        color.r = 0xf0;
+        color.g = 0xe0;
+        color.b = 0x57;
+        break;
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("unknown/invalid color (was: %d), aborting\n"),
+                   i));
 
-    return;
-  } // end IF
-  SDL_Surface* dummy_converted = NULL;
-  dummy_converted = SDL_DisplayFormatAlpha(dummy);
-  if (!dummy_converted)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_DisplayFormatAlpha(): %s, aborting\n"),
-               SDL_GetError()));
+        return;
+      }
+    } // end SWITCH
 
-    // clean up
-    SDL_FreeSurface(dummy);
-
-    return;
-  } // end IF
-
-  // clean up
-  SDL_FreeSurface(dummy);
-
-//   SDL_PixelFormat* pixelFormat = NULL;
-//   try
-//   {
-//     pixelFormat = new SDL_PixelFormat;
-//   }
-//   catch (...)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-//                sizeof(SDL_PixelFormat)));
-//
-//     // clean up
-//     SDL_FreeSurface(dummy_converted);
-//
-//     return;
-//   }
-//   if (!pixelFormat)
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-//                sizeof(SDL_PixelFormat)));
-//
-//     // clean up
-//     SDL_FreeSurface(dummy_converted);
-//
-//     return;
-//   } // end IF
-//   ACE_OS::memcpy(pixelFormat,
-//                  dummy_converted->format,
-//                  sizeof(SDL_PixelFormat));
-
-  // *TODO*: import this from a (XML-)definition file
-  CLR32_BLACK_A0   = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0);
-  CLR32_BLACK_A10  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0x1a);
-  CLR32_BLACK_A30  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0x4d);
-  CLR32_BLACK_A50  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0x80);
-  CLR32_BLACK_A70  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0xb3);
-  CLR32_BLACK_A90  = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0xe7);
-  CLR32_BLACK      = SDL_MapRGBA(dummy_converted->format, 0, 0, 0, 0xff);
-  CLR32_GREEN      = SDL_MapRGBA(dummy_converted->format, 0x57, 0xff, 0x57, 0xff);
-  CLR32_YELLOW     = SDL_MapRGBA(dummy_converted->format, 0xff, 0xff, 0x57, 0xff);
-  CLR32_ORANGE     = SDL_MapRGBA(dummy_converted->format, 0xff, 0xc7, 0x3b, 0xff);
-  CLR32_RED        = SDL_MapRGBA(dummy_converted->format, 0xff, 0x23, 0x07, 0xff);
-  CLR32_GRAY20     = SDL_MapRGBA(dummy_converted->format, 0xb7, 0xab, 0xab, 0xff);
-  CLR32_GRAY20_A10 = SDL_MapRGBA(dummy_converted->format, 0xb7, 0xab, 0xab, 0x1a);
-  CLR32_GRAY70     = SDL_MapRGBA(dummy_converted->format, 0x53, 0x53, 0x53, 0xff);
-  CLR32_GRAY77     = SDL_MapRGBA(dummy_converted->format, 0x43, 0x3b, 0x3b, 0xff);
-  CLR32_PURPLE44   = SDL_MapRGBA(dummy_converted->format, 0x4f, 0x43, 0x6f, 0xff);
-  CLR32_LIGHTPINK  = SDL_MapRGBA(dummy_converted->format, 0xcf, 0xbb, 0xd3, 0xff);
-  CLR32_LIGHTGREEN = SDL_MapRGBA(dummy_converted->format, 0xaa, 0xff, 0xcc, 0xff);
-  CLR32_BROWN      = SDL_MapRGBA(dummy_converted->format, 0x9b, 0x6f, 0x57, 0xff);
-  CLR32_WHITE      = SDL_MapRGBA(dummy_converted->format, 0xff, 0xff, 0xff, 0xff);
-  CLR32_BLESS_BLUE = SDL_MapRGBA(dummy_converted->format, 0x96, 0xdc, 0xfe, 0x60);
-  CLR32_CURSE_RED  = SDL_MapRGBA(dummy_converted->format, 0x60, 0x00, 0x00, 0x50);
-  CLR32_GOLD_SHADE = SDL_MapRGBA(dummy_converted->format, 0xf0, 0xe0, 0x57, 0x40);
-
-  // clean up
-  SDL_FreeSurface(dummy_converted);
+    myColors[static_cast<RPG_Graphics_ColorName>(i)] = color;
+  } // end FOR
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Graphics_SDL_Tools: initialized colors...\n")));
@@ -530,6 +632,12 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
                                     const SDL_Rect& rect2_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::boundingBox"));
+
+  // sanity check(s)
+  if ((rect1_in.w == 0) || (rect1_in.h == 0))
+    return rect2_in;
+  else if ((rect2_in.w == 0) || (rect2_in.h == 0))
+    return rect1_in;
 
   // init result
   SDL_Rect result;
@@ -565,6 +673,90 @@ RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
     result.w = static_cast<uint16_t>((((rect1_in.x + rect1_in.w) < (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1) : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
     result.h = static_cast<uint16_t>((((rect1_in.y + rect1_in.h) < (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1) : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
   } // end IF
+
+  return result;
+}
+
+bool
+RPG_Graphics_SDL_Tools::equal(const SDL_Rect& rect1_in,
+                              const SDL_Rect& rect2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::equal"));
+
+  return ((rect1_in.x == rect2_in.x) &&
+          (rect1_in.y == rect2_in.y) &&
+          (rect1_in.w == rect2_in.w) &&
+          (rect1_in.h == rect2_in.h));
+}
+
+SDL_Rect
+RPG_Graphics_SDL_Tools::difference(const SDL_Rect& rect1_in,
+                                   const SDL_Rect& rect2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::intersect"));
+
+  // init result
+  SDL_Rect result;
+  ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
+
+  // sanity check(s)
+  SDL_Rect temp = intersect(rect1_in, rect2_in);
+  if ((temp.x == 0) &&
+      (temp.y == 0) &&
+      (temp.w == 0) &&
+      (temp.h == 0))
+    return temp; // no overlap
+  else if (equal(temp, rect1_in))
+    return result; // full overlap
+
+  // partial overlap --> there are exactly 4 valid cases:
+  // case1: rect2 overlaps rect1 from left
+  // case2: rect2 overlaps rect1 from right
+  // case3: rect2 overlaps rect1 from the top
+  // case4: rect2 overlaps rect1 from the bottom
+  // in all other cases, the result is not rectangular...
+  if (temp.w != rect1_in.w)
+    if (temp.h == rect1_in.h)
+    {
+      // --> case 1/2 ?
+      if (temp.x == rect1_in.x)
+      {
+         // case 1
+        result.x = (temp.x + temp.w);
+        result.y = temp.y;
+        result.w = (rect1_in.w - temp.w);
+        result.h = temp.h;
+      } // end IF
+      else if (temp.x < (rect1_in.x + rect1_in.w))
+      {
+        // case 2
+        result.x = rect1_in.x;
+        result.y = temp.y;
+        result.w = (rect1_in.w - temp.w);
+        result.h = temp.h;
+      } // end IF
+    } // end ELSEIF
+  if (temp.h != rect1_in.h)
+    if (temp.w == rect1_in.w)
+    {
+      // case 3/4 ?
+      if (temp.y == rect1_in.y)
+      {
+        // case 3
+        result.x = temp.x;
+        result.y = (temp.y + temp.h);
+        result.w = temp.w;
+        result.h = (rect1_in.h - temp.h);
+      } // end IF
+      else if (temp.y < (rect1_in.y + rect1_in.h))
+      {
+        // case 4
+        result.x = temp.x;
+        result.y = rect1_in.y;
+        result.w = temp.w;
+        result.h = (rect1_in.h - temp.h);
+      } // end ELSEIF
+    } // end IF
 
   return result;
 }

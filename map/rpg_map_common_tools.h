@@ -48,6 +48,7 @@ class RPG_Map_Export RPG_Map_Common_Tools
   static std::string direction2String(const RPG_Map_Direction&);
   static std::string orientation2String(const RPG_Map_Orientation&);
   static std::string map2String(const RPG_Map_t&);
+  static std::string mapElement2String(const RPG_Map_Element&);
 
   // *TODO*: relies on the size of the room in relation to its' surrounding space
   // --> results may be wrong for small enclosures
@@ -94,7 +95,6 @@ class RPG_Map_Export RPG_Map_Common_Tools
 	static std::string getMapsDirectory();
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Map_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools(const RPG_Map_Common_Tools&));

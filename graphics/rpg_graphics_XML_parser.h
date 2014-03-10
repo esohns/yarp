@@ -324,12 +324,52 @@ class RPG_Graphics_Export RPG_Graphics_Dictionary_Type
   virtual void post_RPG_Graphics_Dictionary_Type();
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary_Type());
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary_Type(const RPG_Graphics_Dictionary_Type&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary_Type& operator=(const RPG_Graphics_Dictionary_Type&));
 
   RPG_Graphics_Dictionary_t* myDictionary;
 };
+
+class RPG_Graphics_Export RPG_Graphics_ColorName_Type
+ : public RPG_Graphics_ColorName_Type_pskel,
+   public ::xml_schema::string_pimpl
+{
+ public:
+  //   virtual void pre();
+  virtual RPG_Graphics_ColorName post_RPG_Graphics_ColorName_Type();
+};
+
+class RPG_Graphics_Export RPG_Graphics_ColorRGBA_Type
+ : public RPG_Graphics_ColorRGBA_Type_pskel
+{
+ public:
+  RPG_Graphics_ColorRGBA_Type();
+
+//     virtual void pre();
+  virtual void r(unsigned char);
+  virtual void g(unsigned char);
+  virtual void b(unsigned char);
+  virtual void a(unsigned char);
+
+  virtual RPG_Graphics_ColorRGBA post_RPG_Graphics_ColorRGBA_Type();
+
+ private:
+  RPG_Graphics_ColorRGBA myCurrentColorRGBA;
+};
+
+//class RPG_Graphics_Export RPG_Graphics_ColorUnion_Type
+//  : public RPG_Graphics_ColorUnion_Type_pskel
+//{
+//  public:
+//    RPG_Graphics_ColorUnion_Type();
+
+////   virtual void pre();
+//    virtual void _characters(const ::xml_schema::ro_string&);
+//    virtual RPG_Graphics_ColorUnion post_RPG_Graphics_ColorUnion_Type();
+
+//  private:
+//    RPG_Graphics_ColorUnion myCurrentType;
+//};
 
 #endif

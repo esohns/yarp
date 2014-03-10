@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "rpg_graphics_colorname.h"
+
 #ifndef RPG_GRAPHICS_DEFINES_H
 #define RPG_GRAPHICS_DEFINES_H
 
@@ -31,8 +33,8 @@
 #define RPG_GRAPHICS_FONT_DEF_POINTSIZE                10
 
 // default text colors
-#define RPG_GRAPHICS_FONT_DEF_COLOR                    RPG_Graphics_SDL_Tools::CLR32_WHITE
-#define RPG_GRAPHICS_FONT_DEF_SHADECOLOR               RPG_Graphics_SDL_Tools::CLR32_BLACK
+#define RPG_GRAPHICS_FONT_DEF_COLOR                    COLOR_WHITE
+#define RPG_GRAPHICS_FONT_DEF_SHADECOLOR               COLOR_BLACK
 
 // default (tiles) data directory tree organization
 #define RPG_GRAPHICS_TILE_DEF_CREATURES_SUB            "creatures"
@@ -85,8 +87,15 @@
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "directx"
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "windib"
-#else
+#elif defined(ACE_LINUX)
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "x11"
+//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "nanox"
+//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "dga"
+//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "fbcon"
+//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "directfb"
+//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "svgalib"
+#else
+#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         ""
 #endif
 
 // SDL event types

@@ -782,7 +782,7 @@ RPG_Graphics_Surface::put(const unsigned int& offsetX_in,
 //                static_cast<unsigned long>(toRect.h)));
 }
 
-void
+bool
 RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
                               const std::string& textString_in,
                               const SDL_Color& color_in,
@@ -794,8 +794,11 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::putText"));
 
-  // render text
+  // sanity check(s)
+  ACE_ASSERT(targetSurface_in);
+
   SDL_Surface* rendered_text = NULL;
+  // step1: render shade ?
   if (shade_in)
   {
     rendered_text = RPG_Graphics_Common_Tools::renderText(font_in,
@@ -808,9 +811,8 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
                  ACE_TEXT(RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str()),
                  ACE_TEXT(textString_in.c_str())));
 
-      return;
+      return false;
     } // end IF
-
     RPG_Graphics_Surface::put(offsetX_in + 1,
                               offsetY_in + 1,
                               *rendered_text,
@@ -820,6 +822,8 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
     SDL_FreeSurface(rendered_text);
     rendered_text = NULL;
   } // end IF
+
+  // step2: render text
   rendered_text = RPG_Graphics_Common_Tools::renderText(font_in,
                                                         textString_in,
                                                         color_in);
@@ -830,9 +834,8 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
                ACE_TEXT(RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str()),
                ACE_TEXT(textString_in.c_str())));
 
-    return;
+    return false;
   } // end IF
-
   RPG_Graphics_Surface::put(offsetX_in,
                             offsetY_in,
                             *rendered_text,
@@ -840,6 +843,8 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
 
   // clean up
   SDL_FreeSurface(rendered_text);
+
+  return true;
 }
 
 void
@@ -923,8 +928,9 @@ RPG_Graphics_Surface::alpha(const Uint8& opacity_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::alpha"));
 
-  // *NOTE*: SDL_SetAlpha() will not work, as transparent pixels should remain that way...
-  // --> do it manually
+  // *NOTE*: SDL_SetAlpha() will not work, as transparent pixels should remain
+  // that way --> do it manually
+
   // lock surface during pixel access
   if (SDL_MUSTLOCK((&targetImage_in)))
     if (SDL_LockSurface(&targetImage_in))
@@ -972,8 +978,9 @@ RPG_Graphics_Surface::alpha(const SDL_Surface& sourceImage_in,
     return NULL;
   } // end IF
 
-  // *NOTE*: SDL_SetAlpha() will not work, as transparent pixels should remain that way...
-  // --> do it manually
+  // *NOTE*: SDL_SetAlpha() will not work, as transparent pixels should remain
+  // that way --> do it manually
+
   // lock surface during pixel access
   if (SDL_MUSTLOCK(result))
     if (SDL_LockSurface(result))
@@ -1011,27 +1018,33 @@ RPG_Graphics_Surface::alpha(const SDL_Surface& sourceImage_in,
 }
 
 void
-RPG_Graphics_Surface::clear(SDL_Surface* targetSurface_in)
+RPG_Graphics_Surface::clear(SDL_Surface* targetSurface_in,
+                            const SDL_Rect* clipRect_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::clear"));
 
-  fill(RPG_Graphics_SDL_Tools::CLR32_BLACK_A0, // "transparency"
-       targetSurface_in);
+  ACE_ASSERT(targetSurface_in);
+
+  fill(RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A0, // transparent
+                                        *targetSurface_in),
+       targetSurface_in,
+       clipRect_in);
 }
 
 void
 RPG_Graphics_Surface::fill(const Uint32& color_in,
-                           SDL_Surface* targetSurface_in)
+                           SDL_Surface* targetSurface_in,
+                           const SDL_Rect* clipRect_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::fill"));
 
   // sanity check
   ACE_ASSERT(targetSurface_in);
 
-  // fill with "transparency"...
-  if (SDL_FillRect(targetSurface_in, // target
-                   NULL,             // aspect (--> everything)
-                   color_in))        // color
+  // fill with color
+  if (SDL_FillRect(targetSurface_in,                   // target
+                   const_cast<SDL_Rect*>(clipRect_in), // aspect
+                   color_in))                          // color
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, continuing\n"),
                ACE_TEXT(SDL_GetError())));

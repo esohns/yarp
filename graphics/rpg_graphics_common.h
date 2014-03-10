@@ -216,4 +216,8 @@ typedef std::vector<std::pair<RPG_Graphics_Position_t, SDL_Surface*> > RPG_Graph
 typedef RPG_Graphics_TileCache_t::const_iterator RPG_Graphics_TileCacheConstIterator_t;
 typedef RPG_Graphics_TileCache_t::iterator RPG_Graphics_TileCacheIterator_t;
 
+typedef std::map<RPG_Graphics_ColorName, RPG_Graphics_ColorRGBA> RPG_Graphics_ColorMap_t;
+typedef RPG_Graphics_ColorMap_t::const_iterator RPG_Graphics_ColorMapConstIterator_t;
+typedef RPG_Graphics_ColorMap_t::iterator RPG_Graphics_ColorMapIterator_t;
+
 #endif

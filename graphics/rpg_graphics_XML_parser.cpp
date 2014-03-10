@@ -21,7 +21,7 @@
 
 #include "rpg_graphics_XML_parser.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 
@@ -751,3 +751,110 @@ void RPG_Graphics_Dictionary_Type::post_RPG_Graphics_Dictionary_Type()
               myDictionary->tiles.size() +
               myDictionary->tilesets.size())));
 }
+
+RPG_Graphics_ColorName RPG_Graphics_ColorName_Type::post_RPG_Graphics_ColorName_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorName_Type::post_RPG_Graphics_ColorName_Type"));
+
+  return RPG_Graphics_ColorNameHelper::stringToRPG_Graphics_ColorName(post_string());
+}
+
+RPG_Graphics_ColorRGBA_Type::RPG_Graphics_ColorRGBA_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorRGBA_Type::RPG_Graphics_ColorRGBA_Type"));
+
+  myCurrentColorRGBA.r = 0;
+  myCurrentColorRGBA.g = 0;
+  myCurrentColorRGBA.b = 0;
+  myCurrentColorRGBA.a = 0;
+}
+
+void RPG_Graphics_ColorRGBA_Type::r(unsigned char value_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorRGBA_Type::r"));
+
+  myCurrentColorRGBA.r = value_in;
+}
+
+void RPG_Graphics_ColorRGBA_Type::g(unsigned char value_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorRGBA_Type::g"));
+
+  myCurrentColorRGBA.g = value_in;
+}
+
+void RPG_Graphics_ColorRGBA_Type::b(unsigned char value_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorRGBA_Type::b"));
+
+  myCurrentColorRGBA.b = value_in;
+}
+
+void RPG_Graphics_ColorRGBA_Type::a(unsigned char value_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorRGBA_Type::a"));
+
+  myCurrentColorRGBA.a = value_in;
+}
+
+RPG_Graphics_ColorRGBA RPG_Graphics_ColorRGBA_Type::post_RPG_Graphics_ColorRGBA_Type()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorRGBA_Type::post_RPG_Graphics_ColorRGBA_Type"));
+
+  RPG_Graphics_ColorRGBA result = myCurrentColorRGBA;
+
+  // clear structure
+  myCurrentColorRGBA.r = 0;
+  myCurrentColorRGBA.g = 0;
+  myCurrentColorRGBA.b = 0;
+  myCurrentColorRGBA.a = 0;
+
+  return result;
+}
+
+//RPG_Graphics_ColorUnion_Type::RPG_Graphics_ColorUnion_Type()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorUnion_Type::RPG_Graphics_ColorUnion_Type"));
+
+//  myCurrentElementType.discriminator = RPG_Graphics_ElementTypeUnion::INVALID;
+//  myCurrentElementType.interfaceelementtype = RPG_GRAPHICS_INTERFACEELEMENTTYPE_INVALID;
+//}
+
+//void RPG_Graphics_ColorUnion_Type::_characters(const ::xml_schema::ro_string& elementType_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorUnion_Type::_characters"));
+
+//  // can be either:
+//  // - RPG_Graphics_ColorName_Type --> "INTERFACEELEMENT_xxx"
+//  // - RPG_Graphics_ColorRGBA_Type --> "HOTSPOT_xxx"
+//  std::string element = elementType_in;
+//  if (element.find(ACE_TEXT_ALWAYS_CHAR("INTERFACEELEMENT_")) == 0)
+//  {
+//    myCurrentElementType.discriminator = RPG_Graphics_ElementTypeUnion::INTERFACEELEMENTTYPE;
+//    myCurrentElementType.interfaceelementtype = RPG_Graphics_InterfaceElementTypeHelper::stringToRPG_Graphics_InterfaceElementType(elementType_in);
+//  } // end IF
+//  else if (element.find(ACE_TEXT_ALWAYS_CHAR("HOTSPOT_")) == 0)
+//  {
+//    myCurrentElementType.discriminator = RPG_Graphics_ElementTypeUnion::HOTSPOTTYPE;
+//    myCurrentElementType.hotspottype = RPG_Graphics_HotspotTypeHelper::stringToRPG_Graphics_HotspotType(elementType_in);
+//  } // end IF
+//  else
+//  {
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("invalid RPG_Graphics_ElementType (was: \"%s\"), continuing\n"),
+//               element.c_str()));
+//  } // end ELSE
+//}
+
+//RPG_Graphics_ColorUnion RPG_Graphics_ColorUnion_Type::post_RPG_Graphics_ColorUnion_Type()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Graphics_ColorUnion_Type::post_RPG_Graphics_ColorUnion_Type"));
+
+//  RPG_Graphics_ColorUnion result = myCurrentElementType;
+
+//  // clear structure
+//  myCurrentElementType.discriminator = RPG_Graphics_ElementTypeUnion::INVALID;
+//  myCurrentElementType.interfaceelementtype = RPG_GRAPHICS_INTERFACEELEMENTTYPE_INVALID;
+
+//  return result;
+//}

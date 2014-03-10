@@ -33,14 +33,14 @@
 #endif
 
 Handle_XMLEnumeration::Handle_XMLEnumeration(std::ofstream& targetFile_in,
-											 const std::string& typePrefix_in,
-                                             const bool& emitStringConversionHelper_in,
-											 const std::string& emitClassQualifier_in)
-  : myOutputFile(targetFile_in),
-    myTypePrefix(typePrefix_in),
-    myEmitStringConversionHelper(emitStringConversionHelper_in),
-	myEmitClassQualifier(emitClassQualifier_in),
-    myIsFirstElement(true)
+																						 const std::string& typePrefix_in,
+																						 const bool& emitStringConversionHelper_in,
+																						 const std::string& emitClassQualifier_in)
+ : myOutputFile(targetFile_in),
+   myTypePrefix(typePrefix_in),
+   myEmitStringConversionHelper(emitStringConversionHelper_in),
+   myEmitClassQualifier(emitClassQualifier_in),
+   myIsFirstElement(true)
 //    myEnumName()
 {
   ACE_TRACE(ACE_TEXT("Handle_XMLEnumeration::Handle_XMLEnumeration"));
@@ -70,15 +70,15 @@ void Handle_XMLEnumeration::handleData(const std::string& enumValue_in)
 {
   ACE_TRACE(ACE_TEXT("Handle_XMLEnumeration::handleData"));
 
-  myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ") << enumValue_in;
+  myOutputFile << std::setw(XML2CPPCODE_INDENT)
+               << ACE_TEXT_ALWAYS_CHAR(" ")
+               << enumValue_in;
   myOutputFile << (myIsFirstElement ? ACE_TEXT_ALWAYS_CHAR(" = 0,")
                                     : ACE_TEXT_ALWAYS_CHAR(","));
   myOutputFile << std::endl;
 
   if (myIsFirstElement)
-  {
     myIsFirstElement = false;
-  } // end IF
 
   myElements.push_back(enumValue_in);
 }
@@ -90,9 +90,10 @@ void Handle_XMLEnumeration::endElement()
   std::string final_element = myEnumName;
   // transform to uppercase
   std::transform(final_element.begin(),
-	             final_element.end(),
-				 final_element.begin(),
-				 std::bind2nd(std::ptr_fun(&std::toupper<char>), std::locale("")));
+                 final_element.end(),
+                 final_element.begin(),
+                 std::bind2nd(std::ptr_fun(&std::toupper<char>),
+                              std::locale("")));
 
   myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ");
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("//") << std::endl;
@@ -115,19 +116,20 @@ void Handle_XMLEnumeration::emitStringConversionTable()
 
   if (!myEmitClassQualifier.empty())
   {
-	std::string exports_filename = myTypePrefix;
-	exports_filename += ACE_TEXT_ALWAYS_CHAR("_");
-	exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
-	exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_HEADER_EXTENSION);
-	// transform to lowercase
-	std::transform(exports_filename.begin(),
+    std::string exports_filename = myTypePrefix;
+    exports_filename += ACE_TEXT_ALWAYS_CHAR("_");
+    exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
+    exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_HEADER_EXTENSION);
+    // transform to lowercase
+    std::transform(exports_filename.begin(),
                    exports_filename.end(),
                    exports_filename.begin(),
-                   std::bind2nd(std::ptr_fun(&std::tolower<char>), std::locale("")));
+                   std::bind2nd(std::ptr_fun(&std::tolower<char>),
+                                std::locale("")));
 
-	myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
-	myOutputFile << exports_filename.c_str();
-	myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
+		myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
+		myOutputFile << exports_filename.c_str();
+		myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
   } // end IF
 
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include <ace/Global_Macros.h>") << std::endl;
@@ -153,15 +155,16 @@ void Handle_XMLEnumeration::emitStringConversionTable()
   std::string invalid_element = myEnumName;
   // transform to uppercase
   std::transform(invalid_element.begin(),
-	             invalid_element.end(),
-				 invalid_element.begin(),
-				 std::bind2nd(std::ptr_fun(&std::toupper<char>), std::locale("")));
+                 invalid_element.end(),
+                 invalid_element.begin(),
+                 std::bind2nd(std::ptr_fun(&std::toupper<char>),
+                              std::locale("")));
   invalid_element += ACE_TEXT_ALWAYS_CHAR("_INVALID");
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("class ");
   if (!myEmitClassQualifier.empty())
   {
-	myOutputFile << myEmitClassQualifier.c_str();
-	myOutputFile << ACE_TEXT_ALWAYS_CHAR(" ");
+    myOutputFile << myEmitClassQualifier.c_str();
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR(" ");
   } // end IF
   myOutputFile << helperClass << std::endl;
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("{") << std::endl;

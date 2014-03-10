@@ -45,7 +45,7 @@ XML_Parser::~XML_Parser()
 
 void
 XML_Parser::parseFile(const std::string& emitClassQualifier_in,
-				      const bool& emitStringConversionUtilities_in,
+                      const bool& emitStringConversionUtilities_in,
                       const bool& emitTaggedUnions_in,
                       const std::string& filename_in,
                       const bool& generateIncludeHeader_in,

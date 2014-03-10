@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 -I .
 AM_CPPFLAGS = \
   -DRPG_GRAPHICS_BUILD_DLL \
   -I$(srcdir)/../common \
@@ -19,6 +19,8 @@ include_HEADERS = \
   rpg_graphics_XML_tree.h \
   rpg_graphics_XML_types.h \
   rpg_graphics_category.h \
+  rpg_graphics_colorname.h \
+  rpg_graphics_colorrgba.h \
   rpg_graphics_common.h \
   rpg_graphics_common_tools.h \
   rpg_graphics_cursor.h \
@@ -71,6 +73,8 @@ libRPG_Graphics_la_SOURCES = \
   rpg_graphics_XML_types.cpp \
   rpg_graphics_XML_types.h \
   rpg_graphics_category.h \
+  rpg_graphics_colorname.h \
+  rpg_graphics_colorrgba.h \
   rpg_graphics_common.h \
   rpg_graphics_common_tools.cpp \
   rpg_graphics_common_tools.h \

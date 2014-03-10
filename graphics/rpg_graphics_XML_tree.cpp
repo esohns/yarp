@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -1687,6 +1686,127 @@ void RPG_Graphics_Dictionary_XMLTree_Type::
 graphic (const graphic_sequence& s)
 {
   this->graphic_ = s;
+}
+
+
+// RPG_Graphics_ColorName_XMLTree_Type
+// 
+
+RPG_Graphics_ColorName_XMLTree_Type::
+RPG_Graphics_ColorName_XMLTree_Type (value v)
+: ::xml_schema::string (_xsd_RPG_Graphics_ColorName_XMLTree_Type_literals_[v])
+{
+}
+
+RPG_Graphics_ColorName_XMLTree_Type::
+RPG_Graphics_ColorName_XMLTree_Type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Graphics_ColorName_XMLTree_Type::
+RPG_Graphics_ColorName_XMLTree_Type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Graphics_ColorName_XMLTree_Type::
+RPG_Graphics_ColorName_XMLTree_Type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+RPG_Graphics_ColorName_XMLTree_Type::
+RPG_Graphics_ColorName_XMLTree_Type (const RPG_Graphics_ColorName_XMLTree_Type& v,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+RPG_Graphics_ColorName_XMLTree_Type& RPG_Graphics_ColorName_XMLTree_Type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_RPG_Graphics_ColorName_XMLTree_Type_literals_[v]);
+
+  return *this;
+}
+
+
+// RPG_Graphics_ColorRGBA_XMLTree_Type
+// 
+
+const RPG_Graphics_ColorRGBA_XMLTree_Type::r_type& RPG_Graphics_ColorRGBA_XMLTree_Type::
+r () const
+{
+  return this->r_.get ();
+}
+
+RPG_Graphics_ColorRGBA_XMLTree_Type::r_type& RPG_Graphics_ColorRGBA_XMLTree_Type::
+r ()
+{
+  return this->r_.get ();
+}
+
+void RPG_Graphics_ColorRGBA_XMLTree_Type::
+r (const r_type& x)
+{
+  this->r_.set (x);
+}
+
+const RPG_Graphics_ColorRGBA_XMLTree_Type::g_type& RPG_Graphics_ColorRGBA_XMLTree_Type::
+g () const
+{
+  return this->g_.get ();
+}
+
+RPG_Graphics_ColorRGBA_XMLTree_Type::g_type& RPG_Graphics_ColorRGBA_XMLTree_Type::
+g ()
+{
+  return this->g_.get ();
+}
+
+void RPG_Graphics_ColorRGBA_XMLTree_Type::
+g (const g_type& x)
+{
+  this->g_.set (x);
+}
+
+const RPG_Graphics_ColorRGBA_XMLTree_Type::b_type& RPG_Graphics_ColorRGBA_XMLTree_Type::
+b () const
+{
+  return this->b_.get ();
+}
+
+RPG_Graphics_ColorRGBA_XMLTree_Type::b_type& RPG_Graphics_ColorRGBA_XMLTree_Type::
+b ()
+{
+  return this->b_.get ();
+}
+
+void RPG_Graphics_ColorRGBA_XMLTree_Type::
+b (const b_type& x)
+{
+  this->b_.set (x);
+}
+
+const RPG_Graphics_ColorRGBA_XMLTree_Type::a_type& RPG_Graphics_ColorRGBA_XMLTree_Type::
+a () const
+{
+  return this->a_.get ();
+}
+
+RPG_Graphics_ColorRGBA_XMLTree_Type::a_type& RPG_Graphics_ColorRGBA_XMLTree_Type::
+a ()
+{
+  return this->a_.get ();
+}
+
+void RPG_Graphics_ColorRGBA_XMLTree_Type::
+a (const a_type& x)
+{
+  this->a_.set (x);
 }
 
 
@@ -4490,6 +4610,285 @@ operator!= (const RPG_Graphics_Dictionary_XMLTree_Type& x, const RPG_Graphics_Di
   return !(x == y);
 }
 
+// RPG_Graphics_ColorName_XMLTree_Type
+//
+
+RPG_Graphics_ColorName_XMLTree_Type::
+RPG_Graphics_ColorName_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_RPG_Graphics_ColorName_XMLTree_Type_convert ();
+}
+
+RPG_Graphics_ColorName_XMLTree_Type::
+RPG_Graphics_ColorName_XMLTree_Type (const ::xercesc::DOMAttr& a,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_RPG_Graphics_ColorName_XMLTree_Type_convert ();
+}
+
+RPG_Graphics_ColorName_XMLTree_Type::
+RPG_Graphics_ColorName_XMLTree_Type (const ::std::string& s,
+                                     const ::xercesc::DOMElement* e,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_RPG_Graphics_ColorName_XMLTree_Type_convert ();
+}
+
+RPG_Graphics_ColorName_XMLTree_Type* RPG_Graphics_ColorName_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Graphics_ColorName_XMLTree_Type (*this, f, c);
+}
+
+RPG_Graphics_ColorName_XMLTree_Type::value RPG_Graphics_ColorName_XMLTree_Type::
+_xsd_RPG_Graphics_ColorName_XMLTree_Type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Graphics_ColorName_XMLTree_Type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_RPG_Graphics_ColorName_XMLTree_Type_indexes_,
+                    _xsd_RPG_Graphics_ColorName_XMLTree_Type_indexes_ + 23,
+                    *this,
+                    c));
+
+  if (i == _xsd_RPG_Graphics_ColorName_XMLTree_Type_indexes_ + 23 || _xsd_RPG_Graphics_ColorName_XMLTree_Type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const RPG_Graphics_ColorName_XMLTree_Type::
+_xsd_RPG_Graphics_ColorName_XMLTree_Type_literals_[23] =
+{
+  "COLOR_BLACK_A0",
+  "COLOR_BLACK_A10",
+  "COLOR_BLACK_A30",
+  "COLOR_BLACK_A50",
+  "COLOR_BLACK_A70",
+  "COLOR_BLACK_A90",
+  "COLOR_BLACK",
+  "COLOR_GREEN",
+  "COLOR_YELLOW",
+  "COLOR_ORANGE",
+  "COLOR_RED",
+  "COLOR_GRAY20",
+  "COLOR_GRAY20_A10",
+  "COLOR_GRAY70",
+  "COLOR_GRAY77",
+  "COLOR_PURPLE44",
+  "COLOR_LIGHTPINK",
+  "COLOR_LIGHTGREEN",
+  "COLOR_BROWN",
+  "COLOR_WHITE",
+  "COLOR_BLESS_BLUE",
+  "COLOR_CURSE_RED",
+  "COLOR_GOLD_SHADE"
+};
+
+const RPG_Graphics_ColorName_XMLTree_Type::value RPG_Graphics_ColorName_XMLTree_Type::
+_xsd_RPG_Graphics_ColorName_XMLTree_Type_indexes_[23] =
+{
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BLACK,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BLACK_A0,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BLACK_A10,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BLACK_A30,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BLACK_A50,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BLACK_A70,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BLACK_A90,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BLESS_BLUE,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_BROWN,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_CURSE_RED,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_GOLD_SHADE,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_GRAY20,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_GRAY20_A10,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_GRAY70,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_GRAY77,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_GREEN,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_LIGHTGREEN,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_LIGHTPINK,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_ORANGE,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_PURPLE44,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_RED,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_WHITE,
+  ::RPG_Graphics_ColorName_XMLTree_Type::COLOR_YELLOW
+};
+
+// RPG_Graphics_ColorRGBA_XMLTree_Type
+//
+
+RPG_Graphics_ColorRGBA_XMLTree_Type::
+RPG_Graphics_ColorRGBA_XMLTree_Type (const r_type& r,
+                                     const g_type& g,
+                                     const b_type& b,
+                                     const a_type& a)
+: ::xml_schema::type (),
+  r_ (r, ::xml_schema::flags (), this),
+  g_ (g, ::xml_schema::flags (), this),
+  b_ (b, ::xml_schema::flags (), this),
+  a_ (a, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Graphics_ColorRGBA_XMLTree_Type::
+RPG_Graphics_ColorRGBA_XMLTree_Type (const RPG_Graphics_ColorRGBA_XMLTree_Type& x,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  r_ (x.r_, f, this),
+  g_ (x.g_, f, this),
+  b_ (x.b_, f, this),
+  a_ (x.a_, f, this)
+{
+}
+
+RPG_Graphics_ColorRGBA_XMLTree_Type::
+RPG_Graphics_ColorRGBA_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  r_ (f, this),
+  g_ (f, this),
+  b_ (f, this),
+  a_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Graphics_ColorRGBA_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // r
+    //
+    if (n.name () == "r" && n.namespace_ () == "urn:rpg")
+    {
+      if (!r_.present ())
+      {
+        this->r_.set (r_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // g
+    //
+    if (n.name () == "g" && n.namespace_ () == "urn:rpg")
+    {
+      if (!g_.present ())
+      {
+        this->g_.set (g_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // b
+    //
+    if (n.name () == "b" && n.namespace_ () == "urn:rpg")
+    {
+      if (!b_.present ())
+      {
+        this->b_.set (b_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // a
+    //
+    if (n.name () == "a" && n.namespace_ () == "urn:rpg")
+    {
+      if (!a_.present ())
+      {
+        this->a_.set (a_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!r_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "r",
+      "urn:rpg");
+  }
+
+  if (!g_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "g",
+      "urn:rpg");
+  }
+
+  if (!b_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "b",
+      "urn:rpg");
+  }
+
+  if (!a_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "a",
+      "urn:rpg");
+  }
+}
+
+RPG_Graphics_ColorRGBA_XMLTree_Type* RPG_Graphics_ColorRGBA_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Graphics_ColorRGBA_XMLTree_Type (*this, f, c);
+}
+
+RPG_Graphics_ColorRGBA_XMLTree_Type::
+~RPG_Graphics_ColorRGBA_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Graphics_ColorRGBA_XMLTree_Type& x, const RPG_Graphics_ColorRGBA_XMLTree_Type& y)
+{
+  if (!(x.r () == y.r ()))
+    return false;
+
+  if (!(x.g () == y.g ()))
+    return false;
+
+  if (!(x.b () == y.b ()))
+    return false;
+
+  if (!(x.a () == y.a ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Graphics_ColorRGBA_XMLTree_Type& x, const RPG_Graphics_ColorRGBA_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
 #include <ostream>
 
 ::std::ostream&
@@ -4868,6 +5267,28 @@ operator<< (::std::ostream& o, const RPG_Graphics_Dictionary_XMLTree_Type& i)
     o << ::std::endl << "graphic: " << *b;
   }
 
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, RPG_Graphics_ColorName_XMLTree_Type::value i)
+{
+  return o << RPG_Graphics_ColorName_XMLTree_Type::_xsd_RPG_Graphics_ColorName_XMLTree_Type_literals_[i];
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Graphics_ColorName_XMLTree_Type& i)
+{
+  return o << static_cast< const ::xml_schema::string& > (i);
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Graphics_ColorRGBA_XMLTree_Type& i)
+{
+  o << ::std::endl << "r: " << i.r ();
+  o << ::std::endl << "g: " << i.g ();
+  o << ::std::endl << "b: " << i.b ();
+  o << ::std::endl << "a: " << i.a ();
   return o;
 }
 
@@ -6074,6 +6495,79 @@ graphicsDictionary (const ::RPG_Graphics_Dictionary_XMLTree_Type& s,
 
   ::graphicsDictionary (*d, s, f);
   return d;
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Graphics_ColorName_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMAttr& a, const RPG_Graphics_ColorName_XMLTree_Type& i)
+{
+  a << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xml_schema::list_stream& l,
+            const RPG_Graphics_ColorName_XMLTree_Type& i)
+{
+  l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Graphics_ColorRGBA_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // r
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "r",
+        "urn:rpg",
+        e));
+
+    s << i.r ();
+  }
+
+  // g
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "g",
+        "urn:rpg",
+        e));
+
+    s << i.g ();
+  }
+
+  // b
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "b",
+        "urn:rpg",
+        e));
+
+    s << i.b ();
+  }
+
+  // a
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "a",
+        "urn:rpg",
+        e));
+
+    s << i.a ();
+  }
 }
 
 #include <xsd/cxx/post.hxx>

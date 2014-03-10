@@ -25,7 +25,7 @@
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_Size_t& size_in,
                                              const RPG_Graphics_GraphicTypeUnion& elementType_in,

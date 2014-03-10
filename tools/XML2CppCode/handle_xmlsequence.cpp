@@ -37,9 +37,9 @@
 
 Handle_XMLSequence::Handle_XMLSequence(std::ofstream& targetFile_in,
                                        const std::string& baseType_in,
-									   const std::string& typePrefix_in,
+                                       const std::string& typePrefix_in,
                                        const std::string& typePostfix_in,
-									   const std::string& emitClassQualifier_in)
+                                       const std::string& emitClassQualifier_in)
 //                                        const bool& adjustForTaggedUnions_in)
  : myOutputFile(targetFile_in),
    myBaseType(baseType_in),
@@ -117,11 +117,10 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
   } // end IF
   if (!myTypePostfix.empty())
   {  // strip trailing "_Type", if any
-    std::string::size_type type_position = type.rfind(myTypePostfix, std::string::npos);
+    std::string::size_type type_position = type.rfind(myTypePostfix,
+                                                      std::string::npos);
     if (type_position != std::string::npos)
-    {
       type.erase(type_position, std::string::npos);
-    } // end IF
   } // end IF
   XML2CppCode_Common_Tools::XMLintegratedtypeToString(type, type);
 
@@ -136,50 +135,66 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
 //   } // end IF
 
   // find name
-  std::string::size_type next_position = structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), position + 1);
-  std::string name = structElement_in.substr(position + 1, (next_position - (position + 1)));
+  std::string::size_type next_position =
+      structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), position + 1);
+  std::string name = structElement_in.substr(position + 1,
+                                             (next_position - (position + 1)));
 
   // find minOccurs
-  position = structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), next_position + 1);
-  std::string minOccurs = structElement_in.substr(next_position + 1, (position - (next_position + 1)));
+  position = structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "),
+                                   next_position + 1);
+  std::string minOccurs =
+      structElement_in.substr(next_position + 1,
+                              (position - (next_position + 1)));
   // find maxOccurs
-  std::string maxOccurs = structElement_in.substr(position + 1, std::string::npos);
+  std::string maxOccurs = structElement_in.substr(position + 1,
+                                                  std::string::npos);
 
   // emit code
   int maxNumElements = 0;
   if (maxOccurs == ACE_TEXT_ALWAYS_CHAR("unbounded"))
-  {
     maxNumElements = std::numeric_limits<int>::max();
-  } // end IF
   else
   {
     std::istringstream converter(maxOccurs);
     converter >> maxNumElements;
   } // end ELSE
-  // *IMPORTANT NOTE*: at this stage, we cannot go back and predefine necessary typedefs... :-(
+  // *IMPORTANT NOTE*: at this stage, cannot go back and predefine necessary
+  // typedefs...
   if (maxNumElements > 1)
   {
     // (perhaps) append "s" to the name (it's a vector !)
     // (perhaps) append "ies" to the name with terminating "y" (it's a vector !)
     // (perhaps) append "es" to the name with terminating "s" (it's a vector !)
-    if (name.rfind(ACE_TEXT_ALWAYS_CHAR("y"), std::string::npos) == (name.size() - 1))
+    if (name.rfind(ACE_TEXT_ALWAYS_CHAR("y"),
+                   std::string::npos) == (name.size() - 1))
     {
       name.insert(name.size() - 1, ACE_TEXT_ALWAYS_CHAR("ies"));
       name.erase(--(name.end()));
     } // end IF
-    else if (name.rfind(ACE_TEXT_ALWAYS_CHAR("s"), std::string::npos) == (name.size() - 1))
+    else if (name.rfind(ACE_TEXT_ALWAYS_CHAR("s"),
+                        std::string::npos) == (name.size() - 1))
     {
       // make sure the ending isn't already just that...
-      if (name.rfind(ACE_TEXT_ALWAYS_CHAR("es"), std::string::npos) != (name.size() - 2))
+      if (name.rfind(ACE_TEXT_ALWAYS_CHAR("es"),
+                     std::string::npos) != (name.size() - 2))
         name += ACE_TEXT_ALWAYS_CHAR("es");
     } // end IF
-    else if (name.rfind(ACE_TEXT_ALWAYS_CHAR("s"), std::string::npos) != (name.size() - 1))
+    else if (name.rfind(ACE_TEXT_ALWAYS_CHAR("s"),
+                        std::string::npos) != (name.size() - 1))
       name += ACE_TEXT_ALWAYS_CHAR("s");
-    myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ") << ACE_TEXT_ALWAYS_CHAR("std::vector<") << type << ACE_TEXT_ALWAYS_CHAR("> ");
+    myOutputFile << std::setw(XML2CPPCODE_INDENT)
+                 << ACE_TEXT_ALWAYS_CHAR(" ")
+                 << ACE_TEXT_ALWAYS_CHAR("std::vector<")
+                 << type
+                 << ACE_TEXT_ALWAYS_CHAR("> ");
   } // end IF
   else
   {
-    myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ") << type << ACE_TEXT_ALWAYS_CHAR(" ");
+    myOutputFile << std::setw(XML2CPPCODE_INDENT)
+                 << ACE_TEXT_ALWAYS_CHAR(" ")
+                 << type
+                 << ACE_TEXT_ALWAYS_CHAR(" ");
   } // end ELSE
 
   myOutputFile << name << ACE_TEXT_ALWAYS_CHAR(";") << std::endl;

@@ -63,8 +63,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
            const unsigned int&, // offset y (top left == 0,0)
            SDL_Rect&);          // return value: "dirty" region
   // update/clear the BG
-  void updateBG();
-  void invalidateBG();
+  void updateBG(const SDL_Rect* = NULL);
+  void invalidateBG(const SDL_Rect* = NULL); // clip area (default: don't clip)
 
   RPG_Graphics_Position_t getHighlightBGPosition(const unsigned int& = std::numeric_limits<unsigned int>::max()) const;
   void putHighlight(const RPG_Map_Position_t&,      // position (map coords !)
@@ -91,9 +91,11 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
 
   // helper methods
   // restore the BG
-  void restoreBG(SDL_Rect&); // return value: "dirty" region
-  void storeHighlightBG(const RPG_Map_Position_t&,       // position (map coords !)
-                        const RPG_Graphics_Position_t&); // position (screen coords !)
+  void restoreBG(SDL_Rect&,               // return value: "dirty" region
+                 const SDL_Rect* = NULL); // default: disable window-specific clipping
+  void storeHighlightBG(const RPG_Map_Position_t&,      // position (map coords !)
+                        const RPG_Graphics_Position_t&, // position (screen coords !)
+                        SDL_Rect&);                     // return value: "dirty" region
   void storeHighlightBG(const RPG_Map_PositionList_t&,    // positions (map coords !)
                         const RPG_Graphics_Positions_t&); // positions (screen coords !)
 
