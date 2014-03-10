@@ -794,16 +794,12 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   RPG_Engine_EntityID_t entity_id = 0;
+  SDL_Rect dirty_region;
   switch (event_in.type)
   {
     // *** keyboard ***
     case SDL_KEYDOWN:
     {
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("%s key\n%s\n"),
-//                  ((event_in.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
-//                  ACE_TEXT(RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str())));
-
       switch (event_in.key.keysym.sym)
       {
         // implement keypad navigation
@@ -907,13 +903,15 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
               }
             } // end SWITCH
             // position valid ?
-            RPG_Map_Element element = myEngine->getElement(player_action.position);
+            RPG_Map_Element element =
+                myEngine->getElement(player_action.position);
             if ((element == MAPELEMENT_FLOOR) ||
                 (element == MAPELEMENT_DOOR))
             {
               if (element == MAPELEMENT_DOOR)
               {
-                RPG_Map_DoorState door_state = myEngine->state(player_action.position, true);
+                RPG_Map_DoorState door_state =
+                    myEngine->state(player_action.position, true);
                 if ((door_state == DOORSTATE_CLOSED) ||
                     (door_state == DOORSTATE_LOCKED))
                   break;
@@ -1068,6 +1066,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         // off the map --> remove "active" tile highlight
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
                                                                               dirtyRegion_out);
+        invalidate(dirtyRegion_out);
 
         break;
       } // end IF
@@ -1086,6 +1085,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                                                               dirty_region);
         dirtyRegion_out =
             RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
+        invalidate(dirty_region);
       } // end IF
       else
       {
@@ -1098,8 +1098,12 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                                                                                                 mySize,
                                                                                                                 myView),
                                                                           myView,
-                                                                          dirty_region);
-          dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
+                                                                          dirty_region,
+                                                                          myDebug);
+          dirtyRegion_out =
+              RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                  dirtyRegion_out);
+          invalidate(dirty_region);
         } // end IF
       } // end ELSE
 
@@ -1115,9 +1119,11 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
       if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_type,
-                                                               dirty_region);
-        dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(cursor_type,
+                                                                     dirty_region);
+        dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                              dirtyRegion_out);
+        invalidate(dirty_region);
       } // end IF
 
       break;
@@ -1126,16 +1132,17 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] pressed\n"),
-//                  static_cast<unsigned long> (event_in.button.which),
-//                  static_cast<unsigned long> (event_in.button.button)));
+//                  static_cast<unsigned int>(event_in.button.which),
+//                  static_cast<unsigned int>(event_in.button.button)));
 
       if (event_in.button.button == 1) // left-click
       {
-        RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
-                                                                                                    event_in.button.y),
-                                                                                     myEngine->getSize(),
-                                                                                     mySize,
-                                                                                     myView);
+        RPG_Graphics_Position_t map_position =
+            RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
+                                                                 event_in.button.y),
+                                                  myEngine->getSize(),
+                                                  mySize,
+                                                  myView);
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
@@ -1177,6 +1184,7 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                                                                             dirtyRegion_out);
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(std::make_pair(std::numeric_limits<unsigned int>::max(),
                                                                                          std::numeric_limits<unsigned int>::max()));
+      invalidate(dirtyRegion_out);
 
       break;
     }
@@ -1197,7 +1205,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
   } // end SWITCH
 
   // pass events to any children
-  SDL_Rect dirty_region;
   ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
   inherited::handleEvent(event_in,
                          window_in,

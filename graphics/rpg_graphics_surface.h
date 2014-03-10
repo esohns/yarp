@@ -62,6 +62,10 @@ class RPG_Graphics_Export RPG_Graphics_Surface
   // *WARNING*: NEVER SDL_FreeSurface() the return argument !
   SDL_Surface* surface() const;
 
+  // clip/unclip the SDL window ("screen");
+  static void clip();
+  static void unclip();
+
   // *NOTE*: results need to be SDL_FreeSurface()d !
   // *WARNING*: display format is not available until AFTER SDL_SetVideoMode() !
   static SDL_Surface* load(const std::string&, // file
@@ -131,6 +135,8 @@ class RPG_Graphics_Export RPG_Graphics_Surface
   SDL_Surface*                  mySurface;
   RPG_Graphics_GraphicTypeUnion myType;
   bool                          myOwnSurface;
+
+  static SDL_Rect               myClipRectangle;
 };
 
 #endif

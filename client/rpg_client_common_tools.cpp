@@ -74,7 +74,7 @@ RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t&
 	//   SDL_SetEventFilter(event_filter_SDL_cb);
 
 	// ***** mouse setup *****
-	SDL_ShowCursor(SDL_TRUE); // disable OS mouse cursor over SDL window
+	SDL_ShowCursor(SDL_DISABLE); // disable OS mouse cursor over SDL window
 
 	return true;
 }
@@ -195,8 +195,8 @@ RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputCo
   {
     SDL_Rect dirty_region;
     ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-    RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL,
-                                                           dirty_region);
+    RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(CURSOR_NORMAL,
+                                                                 dirty_region);
   } // end IF
 
   // step3: init user profiles

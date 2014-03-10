@@ -769,8 +769,8 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
                                   true);
   SDL_Rect dirty_region;
   ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL,
-                                                         dirty_region);
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(CURSOR_NORMAL,
+                                                               dirty_region);
 
   // ***** mouse setup *****
   SDL_WarpMouse((GTKUserData_in.screen->w / 2),

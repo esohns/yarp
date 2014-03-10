@@ -730,11 +730,17 @@ RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
   // save previous clip rect
   SDL_GetClipRect(targetSurface, &myClipRect);
 
-  SDL_Rect clipRect = {0, 0, 0, 0};
+  SDL_Rect clipRect;
   clipRect.x = static_cast<int16_t>(offsetX_in + myBorderLeft + myOffset.first);
   clipRect.y = static_cast<int16_t>(offsetY_in + myBorderTop + myOffset.second);
-  clipRect.w = static_cast<uint16_t>(targetSurface->w - offsetX_in - (myBorderLeft + myBorderRight) - myOffset.first);
-  clipRect.h = static_cast<uint16_t>(targetSurface->h - offsetY_in - (myBorderTop + myBorderBottom) - myOffset.second);
+  clipRect.w = static_cast<uint16_t>(targetSurface->w               -
+                                     offsetX_in                     -
+                                     (myBorderLeft + myBorderRight) -
+                                     myOffset.first);
+  clipRect.h = static_cast<uint16_t>(targetSurface->h               -
+                                     offsetY_in                     -
+                                     (myBorderTop + myBorderBottom) -
+                                     myOffset.second);
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,

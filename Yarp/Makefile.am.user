@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.0.1, 2014-03-10T05:44:53. -->
+<!-- Written by QtCreator 3.0.1, 2014-03-10T23:02:06. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -330,7 +330,7 @@
      <value type="QString">SDL_DEBUG=&lt;VALUE&gt;</value>
      <value type="QString">DISPLAY=:0</value>
     </valuelist>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-t</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-f -t</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/usr/local/bin/SDL_gui</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_c/Temp/yarp</value>

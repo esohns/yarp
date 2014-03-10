@@ -56,12 +56,17 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   RPG_Graphics_Cursor type() const;
   RPG_Graphics_Position_t position() const;
 
-  void set(const RPG_Graphics_Cursor&, // cursor type
-           SDL_Rect&);                 // return value: "dirty" region
+  void put(const RPG_Graphics_Position_t&, // viewport (map coords !)
+           const RPG_Map_Size_t&,          // (current) map size
+           SDL_Rect&);                     // return value: "dirty" region
+
+  void setCursor(const RPG_Graphics_Cursor&, // cursor type
+                 SDL_Rect&);                 // return value: "dirty" region
   // draw the cursor
-  void put(const unsigned int&, // offset x (top left == 0,0)
-           const unsigned int&, // offset y (top left == 0,0)
-           SDL_Rect&);          // return value: "dirty" region
+  void putCursor(const unsigned int&,  // offset x (top left == 0,0)
+                 const unsigned int&,  // offset y (top left == 0,0)
+                 SDL_Rect&,            // return value: "dirty" region
+                 const bool& = false); // debug ?
   // update/clear the BG
   void updateBG(const SDL_Rect* = NULL);
   void invalidateBG(const SDL_Rect* = NULL); // clip area (default: don't clip)
@@ -70,7 +75,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   void putHighlight(const RPG_Map_Position_t&,      // position (map coords !)
                     const RPG_Graphics_Position_t&, // position (screen coords !)
                     const RPG_Graphics_Position_t&, // viewport (map coords !)
-                    SDL_Rect&);                     // return value: "dirty" region
+                    SDL_Rect&,                      // return value: "dirty" region
+                    const bool& = false);           // debug ?
   void putHighlights(const RPG_Map_PositionList_t&,   // positions (map coords !)
                      const RPG_Graphics_Positions_t&, // position(s) (screen coords !)
                      const RPG_Graphics_Position_t&,  // viewport (map coords !)

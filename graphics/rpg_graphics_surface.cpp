@@ -35,7 +35,8 @@
 #include <png.h>
 
 // init static(s)
-Uint32 RPG_Graphics_Surface::SDL_surface_flags = 0;
+Uint32   RPG_Graphics_Surface::SDL_surface_flags = 0;
+SDL_Rect RPG_Graphics_Surface::myClipRectangle = {0, 0, 0, 0};
 
 RPG_Graphics_Surface::RPG_Graphics_Surface()
  : mySurface(NULL),
@@ -183,6 +184,48 @@ RPG_Graphics_Surface::init(SDL_Surface* surface_in,
   myType.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   myType.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   myOwnSurface = ownSurface_in;
+}
+
+void
+RPG_Graphics_Surface::clip()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::clip"));
+
+  SDL_Surface* video_surface = SDL_GetVideoSurface();
+  // sanity check(s)
+  if (((myClipRectangle.x == 0) &&
+       (myClipRectangle.y == 0) &&
+       (myClipRectangle.w == 0) &&
+       (myClipRectangle.h == 0)) ||
+      !video_surface)
+    return; // nothing to do
+
+  if (!SDL_SetClipRect(video_surface,
+                       &myClipRectangle))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): \"%s\", continuing\n"),
+               ACE_TEXT(SDL_GetError())));
+}
+
+void
+RPG_Graphics_Surface::unclip()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::unclip"));
+
+  SDL_Surface* video_surface = SDL_GetVideoSurface();
+  // sanity check(s)
+  if (!video_surface)
+    return; // nothing to do
+
+  // cache previous entry
+  SDL_GetClipRect(video_surface,
+                  &myClipRectangle);
+
+  if (!SDL_SetClipRect(video_surface,
+                       NULL))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_SetClipRect(): \"%s\", continuing\n"),
+               ACE_TEXT(SDL_GetError())));
 }
 
 SDL_Surface*
@@ -769,17 +812,16 @@ RPG_Graphics_Surface::put(const unsigned int& offsetX_in,
     return;
   } // end IF
 
-//   // debug info
-//   if ((static_cast<unsigned long>(toRect.x) != offsetX_in) ||
-//       (static_cast<unsigned long>(toRect.y) != offsetY_in) ||
+//   if ((static_cast<unsigned int>(toRect.x) != offsetX_in) ||
+//       (static_cast<unsigned int>(toRect.y) != offsetY_in) ||
 //       (toRect.w != image_in.w) ||
 //       (toRect.h != image_in.h))
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("clipped surface to [%u,%u,%u,%u]...\n"),
-//                static_cast<unsigned long>(toRect.x),
-//                static_cast<unsigned long>(toRect.y),
-//                static_cast<unsigned long>(toRect.w),
-//                static_cast<unsigned long>(toRect.h)));
+//                static_cast<unsigned int>(toRect.x),
+//                static_cast<unsigned int>(toRect.y),
+//                static_cast<unsigned int>(toRect.w),
+//                static_cast<unsigned int>(toRect.h)));
 }
 
 bool

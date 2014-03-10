@@ -848,7 +848,8 @@ do_UI(RPG_Engine_Entity& entity_in,
       RPG_Graphics_MapStyle_t& mapStyle_in,
       const RPG_Engine_Level_t& level_in,
       const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
-      SDL_GUI_MainWindow* mainWindow_in)
+      SDL_GUI_MainWindow* mainWindow_in,
+      const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("::do_UI"));
 
@@ -1166,9 +1167,10 @@ do_UI(RPG_Engine_Entity& entity_in,
         // --> redraw cursor
         SDL_Rect dirty_region_2;
         ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put(mouse_position.first,
-                                                               mouse_position.second,
-                                                               dirty_region_2);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor(mouse_position.first,
+                                                                     mouse_position.second,
+                                                                     dirty_region_2,
+                                                                     debug_in);
         dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                            dirty_region_2);
         mainWindow_in->invalidate(dirty_region);
@@ -1327,8 +1329,8 @@ do_work(const mode_t& mode_in,
       // step3: set default cursor
       SDL_Rect dirty_region;
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(CURSOR_NORMAL,
-                                                             dirty_region);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(CURSOR_NORMAL,
+                                                                   dirty_region);
 
       // step4: create/load initial entity
       std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
@@ -1448,7 +1450,8 @@ do_work(const mode_t& mode_in,
             mapStyle,
             level,
             mapConfiguration_in,
-            &mainWindow);
+            &mainWindow,
+            debugMode_in);
 
       // clean up
       level_engine.stop();

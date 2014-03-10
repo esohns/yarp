@@ -829,9 +829,9 @@ RPG_Client_Engine::handleActions()
 
       case COMMAND_CURSOR_DRAW:
       {
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->put((*iterator).position.first,
-                                                               (*iterator).position.second,
-                                                               dirty_region);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor((*iterator).position.first,
+                                                                     (*iterator).position.second,
+                                                                     dirty_region);
         (*iterator).window->invalidate(dirty_region);
 
         break;
@@ -851,8 +851,8 @@ RPG_Client_Engine::handleActions()
           break; // nothing to do...
 
         // set new cursor
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set((*iterator).cursor,
-                                                               dirty_region);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor((*iterator).cursor,
+                                                                     dirty_region);
         (*iterator).window->invalidate(dirty_region);
 
         break;

@@ -120,7 +120,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -130,10 +130,10 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_CENTER);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  for (unsigned long i = (offsetY_in + myBorderTop);
+  for (unsigned int i = (offsetY_in + myBorderTop);
        i < (targetSurface->h - myBorderBottom);
        i += (*iterator).second->h)
-    for (unsigned long j = (offsetX_in + myBorderLeft);
+    for (unsigned int j = (offsetX_in + myBorderLeft);
          j < (targetSurface->w - myBorderRight);
          j += (*iterator).second->w)
       RPG_Graphics_Surface::put(j,
@@ -145,7 +145,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -281,7 +281,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("%s key\n%s\n"),
 //                  ((event_in.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
-//                  RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str()));
+//                  ACE_TEXT(RPG_Graphics_SDL_Tools::keyToString(event_in.key.keysym).c_str())));
 
       switch (event_in.key.keysym.sym)
       {
@@ -341,8 +341,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] pressed\n"),
-//                  static_cast<unsigned long> (event_in.button.which),
-//                  static_cast<unsigned long> (event_in.button.button)));
+//                  static_cast<unsigned int>(event_in.button.which),
+//                  static_cast<unsigned int>(event_in.button.button)));
 
       // (left-)clicking on a hotspot (edge) area triggers a scroll of the viewport
       if ((window_in->getType() == WINDOW_HOTSPOT) &&
@@ -449,20 +449,20 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           {
             ACE_DEBUG((LM_DEBUG,
                       ACE_TEXT("invalid/unknown cursor type (was: \"%s\"), aborting\n"),
-                      RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str()));
+                      ACE_TEXT(RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str())));
 
             return;
           }
         } // end SWITCH
 
         // redraw
-        draw();
-        getArea(dirtyRegion_out);
+        levelWindow->draw();
+        levelWindow->getArea(dirtyRegion_out);
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
   //       ACE_DEBUG((LM_DEBUG,
   //                  ACE_TEXT("scrolled map (%s)...\n"),
-  //                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
+  //                  ACE_TEXT(RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str())));
       } // end IF
 
       break;
@@ -642,20 +642,20 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("invalid/unknown cursor type (was: \"%s\"), aborting\n"),
-                     RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str()));
+                     ACE_TEXT(RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(hotspot->getCursorType()).c_str())));
 
           return;
         }
       } // end SWITCH
 
       // redraw
-      draw();
-      getArea(dirtyRegion_out);
+      levelWindow->draw();
+      levelWindow->getArea(dirtyRegion_out);
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("scrolled map (%s)...\n"),
-//                  RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str()));
+//                  ACE_TEXT(RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(hotspot->getHotSpotType()).c_str())));
 
       break;
     }
@@ -693,7 +693,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
   inherited::handleEvent(event_in,
                          window_in,
                          dirty_region);
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                        dirtyRegion_out);
 }
 
 void
@@ -713,10 +714,9 @@ SDL_GUI_MainWindow::notify(const RPG_Graphics_Cursor& cursor_in) const
     {
       SDL_Rect dirty_region;
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->set(cursor_in,
-                                                             dirty_region);
-      RPG_Graphics_Surface::update(dirty_region,
-                                   myScreen);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(cursor_in,
+                                                                   dirty_region);
+      const_cast<SDL_GUI_MainWindow*>(this)->invalidate(dirty_region);
 
       break;
     }
@@ -814,8 +814,9 @@ SDL_GUI_MainWindow::initMap(RPG_Engine* engine_in,
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initMap"));
 
   SDL_GUI_LevelWindow* map_window = NULL;
-  map_window = new(std::nothrow) SDL_GUI_LevelWindow(*this,
-                                                     engine_in);
+  ACE_NEW_NORETURN(map_window,
+                   SDL_GUI_LevelWindow(*this,
+                                       engine_in));
   if (!map_window)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -864,7 +865,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -888,7 +889,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -914,7 +915,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -940,7 +941,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -971,7 +972,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -995,7 +996,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -1019,7 +1020,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -1043,7 +1044,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -1061,7 +1062,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     unlock();
@@ -1086,8 +1087,9 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
                                                  : myScreen);
   ACE_ASSERT(targetSurface);
 
-  RPG_Graphics_TextSize_t title_size = RPG_Graphics_Common_Tools::textSize(font_in,
-                                                                           text_in);
+  RPG_Graphics_TextSize_t title_size =
+      RPG_Graphics_Common_Tools::textSize(font_in,
+                                          text_in);
 
   SDL_Rect clipRect;
   clipRect.x = static_cast<Sint16>(myBorderLeft);
@@ -1098,7 +1100,7 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -1120,7 +1122,7 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
