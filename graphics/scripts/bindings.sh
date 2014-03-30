@@ -29,7 +29,7 @@ XML2CppCode -d RPG_Graphics_Export -e -f ./graphics/rpg_graphics.xsd -i -o ./gra
 #[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate include/implementation
-xsdcxx cxx-parser --type-map ./graphics/rpg_graphics.map --char-type char --output-dir ./graphics --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ./graphics/rpg_graphics.xsd
+xsdcxx cxx-parser --type-map ./graphics/rpg_graphics.map --char-type char --output-dir ./graphics --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Graphics_Export" --hxx-prologue "#include \"rpg_graphics_exports.h\"" ./graphics/rpg_graphics.xsd
 [ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 ## generate "XMLSchema" namespace include file (tree)
@@ -38,8 +38,8 @@ xsdcxx cxx-parser --type-map ./graphics/rpg_graphics.map --char-type char --outp
 #[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate tree include/implementation (rpg_graphics.xsd)
-xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./graphics --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc ./graphics/rpg_graphics.xsd
-#xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./graphics --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc ./graphics/rpg_graphics.xsd
+xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./graphics --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Graphics_Export" --hxx-prologue "#include \"rpg_graphics_exports.h\"" ./graphics/rpg_graphics.xsd
+#xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./graphics --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Graphics_Export" --hxx-prologue "#include \"rpg_graphics_exports.h\"" ./graphics/rpg_graphics.xsd
 if [ $? -ne 0 ]; then
  echo "ERROR: failed to xsdcxx, aborting"
  exit 1

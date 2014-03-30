@@ -35,6 +35,7 @@ graphics_parser_LDADD = \
 
 SDL_gui_SOURCES = \
   SDL_gui.cpp \
+  SDL_gui_common.h \
   SDL_gui_defines.h \
   SDL_gui_levelwindow.cpp \
   SDL_gui_levelwindow.h \

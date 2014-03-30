@@ -794,8 +794,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   // pass 1
   myClient->lock();
   for (i = -static_cast<int>(top_right.second);
-        i <= static_cast<int>(top_right.second);
-        i++)
+       i <= static_cast<int>(top_right.second);
+       i++)
   {
     current_map_position.second = myView.second + i;
     // step0: off the map ? --> continue
@@ -839,10 +839,11 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
           // *NOTE*: walls are drawn together with the floor...
           (current_element == MAPELEMENT_WALL))
       {
-        RPG_Graphics_Surface::put(screen_position.first,
-                                  screen_position.second,
-                                  ((is_visible || has_been_seen) ? *myOffMapTile : *myInvisibleTile),
-                                  targetSurface);
+        RPG_Graphics_Surface::put(screen_position,
+                                  ((is_visible || has_been_seen) ? *myOffMapTile
+                                                                 : *myInvisibleTile),
+                                  targetSurface,
+                                  dirty_region);
 
         // advance floor iterator
         //std::advance(floor_iterator, myCurrentFloorSet.rows);
@@ -900,14 +901,14 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
                        ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
                        ACE_TEXT(SDL_GetError())));
         } // end IF
-        RPG_Graphics_Surface::put(screen_position.first,
-                                  screen_position.second,
+        RPG_Graphics_Surface::put(screen_position,
                                   (is_visible ? (((static_cast<unsigned int>(current_map_position.first)  == active_position.first) &&
                                                   (static_cast<unsigned int>(current_map_position.second) == active_position.second)) ? *(*floor_iterator).surface
                                                                                                                                       : *myVisionTempTile)
                                               : (has_been_seen ? *myVisionTempTile
                                                                 : *myInvisibleTile)),
-                                  targetSurface);
+                                  targetSurface,
+                                  dirty_region);
 
 #ifdef _DEBUG
         if (myShowCoordinates)
@@ -933,7 +934,7 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
           tile_text += converter.str();
           tile_text += ACE_TEXT_ALWAYS_CHAR("]");
           tile_text_size = RPG_Graphics_Common_Tools::textSize(FONT_MAIN_SMALL,
-                                                                tile_text);
+                                                               tile_text);
           RPG_Graphics_Surface::putText(FONT_MAIN_SMALL,
                                         tile_text,
                                         RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
@@ -941,9 +942,10 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
                                         true, // add shade
                                         RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
                                                                                 *targetSurface),
-                                        (rect.x + ((rect.w - tile_text_size.first) / 2)),
-                                        (rect.y + ((rect.h - tile_text_size.second) / 2)),
-                                        targetSurface);
+                                        std::make_pair((rect.x + ((rect.w - tile_text_size.first) / 2)),
+                                                       (rect.y + ((rect.h - tile_text_size.second) / 2))),
+                                        targetSurface,
+                                        dirty_region);
         } // end IF
 #endif
 
@@ -954,122 +956,134 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
         {
           // straight edges
           if ((*floor_edge_iterator).second.west.surface)
-            RPG_Graphics_Surface::put(screen_position.first +
-                                      (*floor_edge_iterator).second.west.offset_x,
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.west.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.west.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (*floor_edge_iterator).second.west.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.west.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.west.offset_y)),
                                       *(myCurrentFloorEdgeSet.west.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.north.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                        (*floor_edge_iterator).second.north.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.north.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.north.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                                      (*floor_edge_iterator).second.north.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.north.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.north.offset_y)),
                                       *(myCurrentFloorEdgeSet.north.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.east.surface)
-            RPG_Graphics_Surface::put(screen_position.first +
-                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                      (*floor_edge_iterator).second.east.offset_x,
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.east.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.east.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                                      (*floor_edge_iterator).second.east.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.east.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.east.offset_y)),
                                       *(myCurrentFloorEdgeSet.east.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.south.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                      (*floor_edge_iterator).second.south.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.south.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.south.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (*floor_edge_iterator).second.south.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.south.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.south.offset_y)),
                                       *(myCurrentFloorEdgeSet.south.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           // corners
           if ((*floor_edge_iterator).second.south_west.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (*floor_edge_iterator).second.south_west.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.south_west.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.south_west.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (*floor_edge_iterator).second.south_west.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.south_west.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.south_west.offset_y)),
                                       *(myCurrentFloorEdgeSet.south_west.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.north_west.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                        (*floor_edge_iterator).second.north_west.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.north_west.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.north_west.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                                      (*floor_edge_iterator).second.north_west.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.north_west.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.north_west.offset_y)),
                                       *(myCurrentFloorEdgeSet.north_west.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.south_east.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                        (*floor_edge_iterator).second.south_east.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.south_east.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.south_east.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                                      (*floor_edge_iterator).second.south_east.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.south_east.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.south_east.offset_y)),
                                       *(myCurrentFloorEdgeSet.south_east.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.north_east.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                        (*floor_edge_iterator).second.north_east.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.north_east.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.north_east.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                                      (*floor_edge_iterator).second.north_east.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.north_east.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.north_east.offset_y)),
                                       *(myCurrentFloorEdgeSet.north_east.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           // (square) corners
           if ((*floor_edge_iterator).second.top.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (*floor_edge_iterator).second.top.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.top.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                      (*floor_edge_iterator).second.top.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (*floor_edge_iterator).second.top.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.top.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.top.offset_y)),
                                       *(myCurrentFloorEdgeSet.top.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.right.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                        (*floor_edge_iterator).second.right.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.right.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.right.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                                      (*floor_edge_iterator).second.right.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.right.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.right.offset_y)),
                                       *(myCurrentFloorEdgeSet.right.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.left.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (*floor_edge_iterator).second.left.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.left.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.left.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (*floor_edge_iterator).second.left.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.left.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.left.offset_y)),
                                       *(myCurrentFloorEdgeSet.left.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
           if ((*floor_edge_iterator).second.bottom.surface)
-            RPG_Graphics_Surface::put((screen_position.first +
-                                        (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
-                                        (*floor_edge_iterator).second.bottom.offset_x),
-                                      (screen_position.second -
-                                        (*floor_edge_iterator).second.bottom.surface->h +
-                                        (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
-                                        (*floor_edge_iterator).second.bottom.offset_y),
+            RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2) +
+                                                      (*floor_edge_iterator).second.bottom.offset_x),
+                                                     (screen_position.second -
+                                                      (*floor_edge_iterator).second.bottom.surface->h +
+                                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) +
+                                                      (*floor_edge_iterator).second.bottom.offset_y)),
                                       *(myCurrentFloorEdgeSet.bottom.surface),
-                                      targetSurface);
+                                      targetSurface,
+                                      dirty_region);
         } // end IF
       } // end IF
 
@@ -1121,20 +1135,22 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
           is_visible)
       {
         if ((*wall_iterator).second.west.surface)
-          RPG_Graphics_Surface::put(screen_position.first,
-                                    (screen_position.second -
-                                      (*wall_iterator).second.west.surface->h +
-                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+          RPG_Graphics_Surface::put(std::make_pair(screen_position.first,
+                                                   (screen_position.second -
+                                                    (*wall_iterator).second.west.surface->h +
+                                                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2))),
                                     *(myCurrentWallSet.west.surface),
-                                    targetSurface);
+                                    targetSurface,
+                                    dirty_region);
         if ((*wall_iterator).second.north.surface)
-          RPG_Graphics_Surface::put((screen_position.first +
-                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
-                                    (screen_position.second -
-                                      (*wall_iterator).second.north.surface->h +
-                                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)),
+          RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                    (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                                   (screen_position.second -
+                                                    (*wall_iterator).second.north.surface->h +
+                                                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2))),
                                     *(myCurrentWallSet.north.surface),
-                                    targetSurface);
+                                    targetSurface,
+                                    dirty_region);
       } // end IF
 
       // step2: doors
@@ -1142,16 +1158,17 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
           is_visible)
       {
         // *NOTE*: doors are drawn in the "middle" of the floor tile
-        RPG_Graphics_Surface::put((screen_position.first +
-                                    (*door_iterator).second.offset_x +
-                                    (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 4)),
-                                  (screen_position.second +
-                                    (*door_iterator).second.offset_y -
-                                    (*door_iterator).second.surface->h +
-                                    (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2) -
-                                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 4)),
+        RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                  (*door_iterator).second.offset_x +
+                                                  (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 4)),
+                                                 (screen_position.second +
+                                                  (*door_iterator).second.offset_y -
+                                                  (*door_iterator).second.surface->h +
+                                                  (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2) -
+                                                  (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 4))),
                                   *(*door_iterator).second.surface,
-                                  targetSurface);
+                                  targetSurface,
+                                  dirty_region);
       } // end IF
 
       // step3: furniture & traps
@@ -1179,20 +1196,22 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
           is_visible)
       {
         if ((*wall_iterator).second.south.surface)
-          RPG_Graphics_Surface::put(screen_position.first,
-                                    (screen_position.second -
-                                      (*wall_iterator).second.south.surface->h +
-                                      RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
+          RPG_Graphics_Surface::put(std::make_pair(screen_position.first,
+                                                   (screen_position.second -
+                                                    (*wall_iterator).second.south.surface->h +
+                                                    RPG_GRAPHICS_TILE_FLOOR_HEIGHT)),
                                     *(*wall_iterator).second.south.surface,
-                                    targetSurface);
+                                    targetSurface,
+                                    dirty_region);
         if ((*wall_iterator).second.east.surface)
-          RPG_Graphics_Surface::put((screen_position.first +
-                                      (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
-                                    (screen_position.second -
-                                      (*wall_iterator).second.east.surface->h +
-                                      RPG_GRAPHICS_TILE_FLOOR_HEIGHT),
+          RPG_Graphics_Surface::put(std::make_pair((screen_position.first +
+                                                    (RPG_GRAPHICS_TILE_FLOOR_WIDTH / 2)),
+                                                   (screen_position.second -
+                                                    (*wall_iterator).second.east.surface->h +
+                                                    RPG_GRAPHICS_TILE_FLOOR_HEIGHT)),
                                     *(*wall_iterator).second.east.surface,
-                                    targetSurface);
+                                    targetSurface,
+                                    dirty_region);
       } // end IF
 
       //// step8: ceiling
@@ -1299,8 +1318,9 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   unclip(targetSurface);
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(offsetX_in + myBorderLeft + myOffset.first,
-                                          offsetY_in + myBorderTop  + myOffset.second);
+  myLastAbsolutePosition =
+    std::make_pair(offsetX_in + myBorderLeft + myOffset.first,
+                   offsetY_in + myBorderTop  + myOffset.second);
 }
 
 void

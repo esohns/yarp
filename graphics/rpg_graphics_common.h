@@ -135,6 +135,8 @@ typedef std::vector<RPG_Graphics_Position_t> RPG_Graphics_Positions_t;
 typedef RPG_Graphics_Positions_t::const_iterator RPG_Graphics_PositionsConstIterator_t;
 
 typedef std::pair<int, int> RPG_Graphics_Offset_t;
+typedef std::vector<RPG_Graphics_Offset_t> RPG_Graphics_Offsets_t;
+typedef RPG_Graphics_Offsets_t::const_iterator RPG_Graphics_OffsetsConstIterator_t;
 
 typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Size_t;
 

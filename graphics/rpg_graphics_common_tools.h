@@ -98,9 +98,9 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                                             const RPG_Graphics_Size_t&,      // window size
                                             const RPG_Graphics_Position_t&); // viewport (map coordinates !)
   // *NOTE*: translates the center of the map square to screen coordinates
-  static RPG_Graphics_Position_t map2Screen(const RPG_Graphics_Position_t&,  // position (map coordinates !)
-                                            const RPG_Graphics_Size_t&,      // window size
-                                            const RPG_Graphics_Position_t&); // viewport (map coordinates !)
+  static RPG_Graphics_Offset_t map2Screen(const RPG_Graphics_Position_t&,  // position (map coordinates !)
+                                          const RPG_Graphics_Size_t&,      // window size
+                                          const RPG_Graphics_Position_t&); // viewport (map coordinates !)
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools());

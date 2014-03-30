@@ -153,12 +153,10 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::draw"));
 
-  // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
-                                                 : myScreen);
-
   // sanity check(s)
-  ACE_ASSERT(targetSurface);
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : myScreen);
+  ACE_ASSERT(target_surface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
   ACE_ASSERT(myClient);
@@ -166,8 +164,8 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(mySurface);
 
   // init clipping
-  SDL_GetClipRect(targetSurface, &(inherited::myClipRect));
-  SDL_Rect clip_rect;
+  SDL_GetClipRect(target_surface, &(inherited::myClipRect));
+  SDL_Rect clip_rect, dirty_region;
   clip_rect.x = static_cast<int16_t>(myBorderLeft +
                                      (myScreen->w -
                                       (myBorderLeft + myBorderRight) -
@@ -176,7 +174,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
                                      inherited::myOffset.second);
   clip_rect.w = static_cast<uint16_t>(inherited::mySize.first);
   clip_rect.h = static_cast<uint16_t>(inherited::mySize.second);
-  if (!SDL_SetClipRect(targetSurface, &clip_rect))
+  if (!SDL_SetClipRect(target_surface, &clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -186,10 +184,11 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // init surface
-  RPG_Graphics_Surface::put(0,
-                            0,
+  RPG_Graphics_Surface::put(std::make_pair(0,
+                                           0),
                             *myBG,
-                            mySurface);
+                            mySurface,
+                            dirty_region);
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((mySurface)))
@@ -338,14 +337,15 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 
   // step4: paint surface
   myClient->lock();
-  RPG_Graphics_Surface::put((myBorderLeft +
-                             (myScreen->w -
-                              (myBorderLeft + myBorderRight) -
-                              (inherited::mySize.first + inherited::myOffset.first))),
-                            (myBorderTop +
-                             inherited::myOffset.second),
+  RPG_Graphics_Surface::put(std::make_pair((myBorderLeft +
+                                            (myScreen->w -
+                                             (myBorderLeft + myBorderRight) -
+                                             (inherited::mySize.first + inherited::myOffset.first))),
+                                           (myBorderTop +
+                                            inherited::myOffset.second)),
                             *mySurface,
-                            targetSurface);
+                            target_surface,
+                            dirty_region);
   myClient->unlock();
 
 //   // save image
@@ -358,7 +358,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 
   // reset clipping
 //    unclip(targetSurface);
-  if (!SDL_SetClipRect(targetSurface, &(inherited::myClipRect)))
+  if (!SDL_SetClipRect(target_surface, &(inherited::myClipRect)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),

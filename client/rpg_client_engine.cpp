@@ -829,8 +829,7 @@ RPG_Client_Engine::handleActions()
 
       case COMMAND_CURSOR_DRAW:
       {
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor((*iterator).position.first,
-                                                                     (*iterator).position.second,
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor((*iterator).position,
                                                                      dirty_region);
         (*iterator).window->invalidate(dirty_region);
 
@@ -983,7 +982,7 @@ RPG_Client_Engine::handleActions()
         {
           ACE_ASSERT((*iterator).positions.empty());
           RPG_Map_PositionList_t map_positions;
-          RPG_Graphics_Positions_t graphics_positions;
+          RPG_Graphics_Offsets_t graphics_positions;
           for (RPG_Map_PathConstIterator_t iterator2 = (*iterator).path.begin();
                iterator2 != (*iterator).path.end();
                iterator2++)
@@ -1002,7 +1001,7 @@ RPG_Client_Engine::handleActions()
         {
           ACE_ASSERT(!(*iterator).positions.empty());
           RPG_Map_PositionList_t map_positions;
-          RPG_Graphics_Positions_t graphics_positions;
+          RPG_Graphics_Offsets_t graphics_positions;
           for (RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).positions.begin();
                iterator2 != (*iterator).positions.end();
                iterator2++)

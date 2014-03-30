@@ -761,7 +761,7 @@ generate_player()
       sum = std::accumulate(result.begin(),
                             result.end(),
                             0);
-    } while ((sum <= RPG_PLAYER_ATTR_MIN_SUM) ||
+    } while ((sum <= RPG_PLAYER_ATTRIBUTE_MINIMUM_SUM) ||
              (*(std::min_element(result.begin(),
                                  result.end())) <= 9) ||
              (result[3] < 3)); // Note: this is already covered by the last case...

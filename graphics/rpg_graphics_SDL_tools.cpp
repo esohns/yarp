@@ -98,9 +98,9 @@ RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t
   version_number << static_cast<unsigned int>(wm_info.version.patch);
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** wm info (SDL: %s) ***\nwindow: %d\nOpenGL context: %@\n"),
+             ACE_TEXT("*** wm info (SDL version: %s) ***\nwindow: %d\nOpenGL context: %d\n"),
              ACE_TEXT(version_number.str().c_str()),
-             wm_info.hwnd,
+             wm_info.window,
              wm_info.hglrc));
 #else
   ACE_DEBUG((LM_DEBUG,

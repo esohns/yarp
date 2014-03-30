@@ -4079,8 +4079,8 @@ RPG_Map_Common_Tools::getMapsDirectory()
 
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+		                                                               false);
 #endif // #ifdef BASEDIR
 	result = data_path;
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;

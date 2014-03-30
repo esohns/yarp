@@ -86,6 +86,103 @@ RPG_Character_Race_Common_Tools::race2Speed(const RPG_Character_Race& race_in)
 }
 
 bool
+RPG_Character_Race_Common_Tools::isCompatible(const RPG_Character_Race& race1_in,
+                                              const RPG_Character_Race& race2_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::isCompatible"));
+
+	switch (race1_in)
+	{
+	  case RACE_DWARF:
+		{
+			switch (race2_in)
+			{
+			  case RACE_DWARF:
+				case RACE_GNOME:
+				case RACE_HALFLING:
+					return true;
+				default:
+					break;
+			} // end SWITCH
+
+			break;
+		}
+		case RACE_ELF:
+		{
+			switch (race2_in)
+			{
+			  case RACE_ELF:
+				case RACE_HUMAN:
+					return true;
+				default:
+					break;
+			} // end SWITCH
+
+			break;
+		}
+		case RACE_GNOME:
+		{
+			switch (race2_in)
+			{
+			  case RACE_DWARF:
+				case RACE_GNOME:
+				case RACE_HALFLING:
+					return true;
+				default:
+					break;
+			} // end SWITCH
+
+			break;
+		}
+		case RACE_HALFLING:
+		{
+			switch (race2_in)
+			{
+			  case RACE_DWARF:
+				case RACE_GNOME:
+				case RACE_HALFLING:
+					return true;
+				default:
+					break;
+			} // end SWITCH
+
+			break;
+		}
+		case RACE_HUMAN:
+		{
+			switch (race2_in)
+			{
+			  case RACE_ELF:
+				case RACE_HUMAN:
+				case RACE_ORC:
+					return true;
+				default:
+					break;
+			} // end SWITCH
+
+			break;
+		}
+		case RACE_ORC:
+		{
+			switch (race2_in)
+			{
+				case RACE_HUMAN:
+				case RACE_ORC:
+					return true;
+				default:
+					break;
+			} // end SWITCH
+
+			break;
+		}
+		default:
+			break;
+	} // end SWITCH
+
+	return false;
+}
+
+bool
 RPG_Character_Race_Common_Tools::hasRace(const RPG_Character_Race_t& races_in,
                                          const RPG_Character_Race& race_in)
 {

@@ -51,7 +51,7 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   // init (clipping of highlight tile)
   void init(RPG_Common_ILock*,      // screen lock interface handle
             RPG_Graphics_IWindow*); // target window handle
-  void reset();
+  void reset(const bool& = false); // update cursor BG ? : clear
 
   RPG_Graphics_Cursor type() const;
   RPG_Graphics_Position_t position() const;
@@ -63,22 +63,23 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   void setCursor(const RPG_Graphics_Cursor&, // cursor type
                  SDL_Rect&);                 // return value: "dirty" region
   // draw the cursor
-  void putCursor(const unsigned int&,  // offset x (top left == 0,0)
-                 const unsigned int&,  // offset y (top left == 0,0)
-                 SDL_Rect&,            // return value: "dirty" region
-                 const bool& = false); // debug ?
-  // update/clear the BG
-  void updateBG(const SDL_Rect* = NULL);
+  void putCursor(const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
+                 SDL_Rect&,                    // return value: "dirty" region
+                 const bool& = false);         // debug ?
+  // restore/update/clear the BG
+  void restoreBG(SDL_Rect&,               // return value: "dirty" region
+                 const SDL_Rect* = NULL); // clip area (default: don't clip)
+  void updateBG(const SDL_Rect* = NULL); // clip area (default: don't clip)
   void invalidateBG(const SDL_Rect* = NULL); // clip area (default: don't clip)
 
   RPG_Graphics_Position_t getHighlightBGPosition(const unsigned int& = std::numeric_limits<unsigned int>::max()) const;
   void putHighlight(const RPG_Map_Position_t&,      // position (map coords !)
-                    const RPG_Graphics_Position_t&, // position (screen coords !)
+                    const RPG_Graphics_Offset_t&,   // position (screen coords !)
                     const RPG_Graphics_Position_t&, // viewport (map coords !)
                     SDL_Rect&,                      // return value: "dirty" region
                     const bool& = false);           // debug ?
   void putHighlights(const RPG_Map_PositionList_t&,   // positions (map coords !)
-                     const RPG_Graphics_Positions_t&, // position(s) (screen coords !)
+                     const RPG_Graphics_Offsets_t&,   // position(s) (screen coords !)
                      const RPG_Graphics_Position_t&,  // viewport (map coords !)
                      SDL_Rect&);                      // return value: "dirty" region
   void restoreHighlightBG(const RPG_Graphics_Position_t&, // viewport (map coords !)
@@ -96,14 +97,11 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   typedef RPG_Graphics_Cursor_Cache_t::const_iterator RPG_Graphics_Cursor_CacheConstIterator_t;
 
   // helper methods
-  // restore the BG
-  void restoreBG(SDL_Rect&,               // return value: "dirty" region
-                 const SDL_Rect* = NULL); // default: disable window-specific clipping
-  void storeHighlightBG(const RPG_Map_Position_t&,      // position (map coords !)
-                        const RPG_Graphics_Position_t&, // position (screen coords !)
-                        SDL_Rect&);                     // return value: "dirty" region
-  void storeHighlightBG(const RPG_Map_PositionList_t&,    // positions (map coords !)
-                        const RPG_Graphics_Positions_t&); // positions (screen coords !)
+  void storeHighlightBG(const RPG_Map_Position_t&,    // position (map coords !)
+                        const RPG_Graphics_Offset_t&, // position (screen coords !)
+                        SDL_Rect&);                   // return value: "dirty" region
+  void storeHighlightBG(const RPG_Map_PositionList_t&,  // positions (map coords !)
+                        const RPG_Graphics_Offsets_t&); // positions (screen coords !)
 
   RPG_Graphics_Cursor         myCurrentType;
   SDL_Surface*                myCurrentGraphic;

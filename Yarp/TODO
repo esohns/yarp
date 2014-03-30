@@ -6,7 +6,7 @@
  connections/system
 - [net] confirm valgrind reports of minor memory leak in
  RPG_Net_Module_SocketHandler::bisectMessages
-- the timer implementation seems to be unstable (--> try another timer queue ?)
+- the timer implementation seems to be (!) unstable (--> try another timer queue ?)
 [- [XML] validation throws exceptions
  (see https://issues.apache.org/jira/browse/XERCESC-1975)]
 - [client/UI] excessive CPU usage (probably AI-related)
@@ -31,8 +31,13 @@
 - some unit tests do not need a console window
 
 [SDL_GUI]
-- hide active position highlight when cursor position is invalid
+- intermittent ASSERT when mouse leaves/hovers near left screen edge
+  {--> dirty region rect .x = -16 ?}
+- highlight is not drawn correctly
+- cursor is not drawn correctly (mysterious: "debug" mode seems to work OK !)
+- when the mouse pointer leaves the screen, the cached backgrounds need to be flushed
 - cursor is not drawn correctly when (hovering) over border
 - when an entity leaves a highlighted position, the bg cache
  (cursor/highglight) needs to be invalidated
 - entities are erroneously (re-)drawn OVER SE walls (should be behind)
+

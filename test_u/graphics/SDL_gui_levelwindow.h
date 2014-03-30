@@ -21,6 +21,8 @@
 #ifndef SDL_GUI_LEVELWINDOW_H
 #define SDL_GUI_LEVELWINDOW_H
 
+#include "SDL_gui_common.h"
+
 #include "rpg_engine_common.h"
 #include "rpg_engine_iclient.h"
 
@@ -51,7 +53,8 @@ class SDL_GUI_LevelWindow
                       RPG_Engine*);                      // (level) state handle
   virtual ~SDL_GUI_LevelWindow();
 
-  void init(RPG_Common_ILock*); // screen lock interface handle
+  void init(state_t*,           // state handle
+            RPG_Common_ILock*); // screen lock interface handle
 
   // adjust viewport
   void setView(const int&,
@@ -60,10 +63,10 @@ class SDL_GUI_LevelWindow
   // implement (part of) RPG_Graphics_IWindow 
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
-  // set level properties
-  void init(RPG_Common_ILock*,              // screen lock interface handle
-            const RPG_Graphics_MapStyle_t&, // map style
-            const bool&);                   // debug: show floor/map tile indexes
+  // (re-)init / set level properties
+  void init(state_t*,                        // state
+            RPG_Common_ILock*,               // screen lock interface handle
+            const RPG_Graphics_MapStyle_t&); // map style
   void setStyle(const RPG_Graphics_StyleUnion&);
 
   // implement (part of) RPG_Graphics_IWindow
@@ -100,8 +103,8 @@ class SDL_GUI_LevelWindow
   void initMiniMap(RPG_Engine*); // level state handle
 //  void restoreBG();
 
+  state_t*                        myState;
   RPG_Engine*                     myEngine;
-  bool                            myDebug;
 
   RPG_Graphics_MapStyle_t         myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;

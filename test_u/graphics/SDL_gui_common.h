@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -18,22 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_PLAYER_DEFINES_H
-#define RPG_PLAYER_DEFINES_H
+#ifndef SDL_GUI_COMMON_H
+#define SDL_GUI_COMMON_H
 
-#define RPG_PLAYER_START_MONEY            0 // GP
-#define RPG_PLAYER_ATTRIBUTE_MINIMUM_SUM  80
-#define RPG_PLAYER_MULTIRACE_PROBABILITY  0.3F // 30%
-#define RPG_PLAYER_MULTICLASS_PROBABILITY 0.2F // 20%
+#include <SDL.h>
 
-// XML-specific
-#define RPG_PLAYER_SCHEMA_FILE            "rpg_player.xsd"
-#define RPG_PLAYER_PROFILE_EXT            ".player"
+#include <ace/Synch.h>
 
-#define RPG_PLAYER_DEF_NAME               "default player"
-// *TODO*: convert if necessary...
-#define RPG_PLAYER_DEF_FILE               "default_player"
-
-#define RPG_PLAYER_DEF_PROFILES_SUB       "profiles"
+struct state_t
+{
+ SDL_Surface*     screen;
+ ACE_Thread_Mutex hover_lock;
+ unsigned int     hover_time;
+ bool             debug;
+};
 
 #endif

@@ -98,8 +98,10 @@ RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_Size_t& size_in)
   } // end IF
   ACE_ASSERT(myBG == NULL);
 
-  myBG = RPG_Graphics_Surface::get((inherited::myBorderLeft + inherited::myOffset.first),
-                                   (inherited::myBorderTop + inherited::myOffset.second),
+  myBG = RPG_Graphics_Surface::get(std::make_pair((inherited::myBorderLeft +
+                                                   inherited::myOffset.first),
+                                                  (inherited::myBorderTop +
+                                                   inherited::myOffset.second)),
                                    ((size_in.first == 0) ? inherited::mySize.first
                                                          : size_in.first),
                                    ((size_in.second == 0) ? inherited::mySize.second
@@ -134,13 +136,11 @@ RPG_Graphics_SDLWindowSub::restoreBG(SDL_Rect& dirtyRegion_out)
   // sanity check(s)
   ACE_ASSERT(myBG);
 
-  RPG_Graphics_Surface::put((inherited::myBorderLeft + inherited::myOffset.first),
-                            (inherited::myBorderTop + inherited::myOffset.second),
+  RPG_Graphics_Surface::put(std::make_pair((inherited::myBorderLeft +
+                                            inherited::myOffset.first),
+                                           (inherited::myBorderTop +
+                                            inherited::myOffset.second)),
                             *myBG,
-                            inherited::myScreen);
-
-  dirtyRegion_out.x = static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first);
-  dirtyRegion_out.y = static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second);
-  dirtyRegion_out.w = static_cast<uint16_t>(myBG->w);
-  dirtyRegion_out.h = static_cast<uint16_t>(myBG->h);
+                            inherited::myScreen,
+                            dirtyRegion_out);
 }

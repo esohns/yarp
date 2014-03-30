@@ -92,9 +92,6 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
     {
       // reset cursor
-      // --> restore background first
-      getParent()->notify(RPG_GRAPHICS_CURSOR_INVALID);
-
       getParent()->notify(CURSOR_NORMAL);
 
       myCursorHasBeenSet = false;
@@ -106,9 +103,6 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       // upon entry, set appropriate cursor
       if (!myCursorHasBeenSet)
       {
-        // --> restore background first
-        getParent()->notify(RPG_GRAPHICS_CURSOR_INVALID);
-
         getParent()->notify(myCursorType);
 
         myCursorHasBeenSet = true;

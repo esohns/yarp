@@ -585,7 +585,7 @@ RPG_Engine_Event_Manager::cancel_all()
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("cancelled timer (ID: %d)...\n"),
                  (*iterator).first));
-	  ACE_ASSERT(act == (*iterator).second); 
+//	  ACE_ASSERT(act == (*iterator).second);
 	  delete (*iterator).second;
   } // end IF
 

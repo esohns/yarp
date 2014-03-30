@@ -194,13 +194,12 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
 
   // *NOTE*: creatures are drawn in the "middle" of the (floor) tile
   RPG_Graphics_Position_t screen_coordinates =
-      std::make_pair((tileCoordinates_in.first +
-                      ((RPG_GRAPHICS_TILE_FLOOR_WIDTH - (*iterator).second.graphic->w) / 2)),
-                     (tileCoordinates_in.second +
-                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
-                      (*iterator).second.graphic->h));
-  RPG_Graphics_Surface::get(screen_coordinates.first,
-                            screen_coordinates.second,
+    std::make_pair((tileCoordinates_in.first +
+                    ((RPG_GRAPHICS_TILE_FLOOR_WIDTH - (*iterator).second.graphic->w) / 2)),
+                   (tileCoordinates_in.second +
+                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
+                    (*iterator).second.graphic->h));
+  RPG_Graphics_Surface::get(screen_coordinates,
                             true, // use (fast) blitting method
                             *myWindow->getScreen(),
                             *(*iterator).second.bg);

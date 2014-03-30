@@ -127,12 +127,10 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Message::draw"));
 
-  // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
-                                                 : myScreen);
-
   // sanity check(s)
-  ACE_ASSERT(targetSurface);
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : myScreen);
+  ACE_ASSERT(target_surface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
   ACE_ASSERT(myBG);
@@ -160,29 +158,31 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
     {
       text_size = RPG_Graphics_Common_Tools::textSize(myFont, *iterator);
       inherited::mySize.second += text_size.second + 1;
-      inherited::mySize.first = (inherited::mySize.first < text_size.first ? text_size.first
-                                                                           : inherited::mySize.first);
+      inherited::mySize.first =
+        (inherited::mySize.first < text_size.first ? text_size.first
+                                                   : inherited::mySize.first);
     } // end FOR
     // add some padding
     inherited::mySize.first  += 4;
     inherited::mySize.second += 2;
-    inherited::myOffset = std::make_pair((targetSurface->w -
-                                          (inherited::myBorderLeft + inherited::myBorderRight) -
-                                          inherited::mySize.first) / 2,
-                                         (targetSurface->h -
-                                          (inherited::myBorderTop + inherited::myBorderBottom) -
-                                          inherited::mySize.second));
+    inherited::myOffset =
+      std::make_pair((target_surface->w -
+                      (inherited::myBorderLeft + inherited::myBorderRight) -
+                      inherited::mySize.first) / 2,
+                     (target_surface->h -
+                      (inherited::myBorderTop + inherited::myBorderBottom) -
+                      inherited::mySize.second));
 
     // init clipping
     //clip(targetSurface,
     //     offsetX_in,
     //     offsetY_in);
-    SDL_GetClipRect(targetSurface, &(inherited::myClipRect));
+    SDL_GetClipRect(target_surface, &(inherited::myClipRect));
     SDL_Rect clip_rect = {static_cast<int16_t>(inherited::myBorderLeft + inherited::myOffset.first),
                           static_cast<int16_t>(inherited::myBorderTop + inherited::myOffset.second),
                           static_cast<uint16_t>(inherited::mySize.first),
                           static_cast<uint16_t>(inherited::mySize.second)};
-    if (!SDL_SetClipRect(targetSurface, &clip_rect))
+    if (!SDL_SetClipRect(target_surface, &clip_rect))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -211,10 +211,11 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
                 inherited::myOffset.first +
                 inherited::mySize.first);
            x += myBG->w)
-        RPG_Graphics_Surface::put(x,
-                                  y,
+        RPG_Graphics_Surface::put(std::make_pair(x,
+                                                 y),
                                   *myBG,
-                                  targetSurface);
+                                  target_surface,
+                                  dirty_region);
 
     // draw messages
     index = 0;
@@ -226,22 +227,23 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
       RPG_Graphics_Surface::putText(myFont,
                                     *iterator,
                                     RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_CLIENT_DEF_MESSAGE_COLOR,
-                                                                            *targetSurface),
+                                                                            *target_surface),
                                     RPG_CLIENT_DEF_MESSAGE_SHADE_LINES,
                                     RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_CLIENT_DEF_MESSAGE_SHADECOLOR,
-                                                                            *targetSurface),
-                                    (inherited::myBorderLeft   +
-                                     inherited::myOffset.first +
-                                     ((inherited::mySize.first - text_size.first) / 2)),
-                                    (inherited::myBorderTop     +
-                                     inherited::myOffset.second +
-                                     (index * (text_size.second + 1))),
-                                    targetSurface);
+                                                                            *target_surface),
+                                    std::make_pair((inherited::myBorderLeft   +
+                                                    inherited::myOffset.first +
+                                                    ((inherited::mySize.first - text_size.first) / 2)),
+                                                   (inherited::myBorderTop     +
+                                                    inherited::myOffset.second +
+                                                    (index * (text_size.second + 1)))),
+                                    target_surface,
+                                    dirty_region);
     } // end FOR
 
     // reset clipping
 //    unclip(targetSurface);
-    if (!SDL_SetClipRect(targetSurface, &(inherited::myClipRect)))
+    if (!SDL_SetClipRect(target_surface, &(inherited::myClipRect)))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -264,8 +266,9 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
   invalidate(dirty_region);
 
   // remember position of last realization
-  inherited::myLastAbsolutePosition = std::make_pair(inherited::myBorderLeft + inherited::myOffset.first,
-                                                     inherited::myBorderTop  + inherited::myOffset.second);
+  inherited::myLastAbsolutePosition =
+    std::make_pair(inherited::myBorderLeft + inherited::myOffset.first,
+                   inherited::myBorderTop  + inherited::myOffset.second);
 }
 
 void

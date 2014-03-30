@@ -651,13 +651,15 @@ do_runIntro(SDL_Surface*      targetSurface_in,
     return false;
   } // end IF
   // *TODO* stretch this image fullscreen
+  SDL_Rect dirty_region;
   // center logo image
   if (screenLock_in)
     screenLock_in->lock();
-  RPG_Graphics_Surface::put((targetSurface_in->w - logo->w) / 2, // location x
-                            (targetSurface_in->h - logo->h) / 2, // location y
+  RPG_Graphics_Surface::put(std::make_pair(((targetSurface_in->w - logo->w) / 2),  // location x
+                                           ((targetSurface_in->h - logo->h) / 2)), // location y
                             *logo,
-                            targetSurface_in);
+                            targetSurface_in,
+                            dirty_region);
   if (screenLock_in)
     screenLock_in->unlock();
 

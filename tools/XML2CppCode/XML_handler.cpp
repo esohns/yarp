@@ -33,6 +33,7 @@
 #include <xercesc/sax2/Attributes.hpp>
 
 #include <ace/ACE.h>
+#include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 #include <algorithm>

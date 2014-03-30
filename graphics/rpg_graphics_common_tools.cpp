@@ -2184,33 +2184,44 @@ RPG_Graphics_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in
   return map_position;
 }
 
-RPG_Graphics_Position_t
+RPG_Graphics_Offset_t
 RPG_Graphics_Common_Tools::map2Screen(const RPG_Graphics_Position_t& position_in,
                                       const RPG_Graphics_Size_t& windowSize_in,
                                       const RPG_Graphics_Position_t& viewport_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::map2Screen"));
 
-  RPG_Graphics_Position_t map_center, screen_position;
+  // init return value(s)
+  RPG_Graphics_Offset_t result = std::make_pair(std::numeric_limits<int>::max(),
+                                                std::numeric_limits<int>::max());
 
-  map_center.first = windowSize_in.first / 2;
-  map_center.second = windowSize_in.second / 2;
+  RPG_Graphics_Position_t map_center = std::make_pair(windowSize_in.first / 2,
+                                                      windowSize_in.second / 2);
+  result.first = map_center.first +
+                 (RPG_GRAPHICS_TILE_WIDTH_MOD *
+                  (position_in.first -
+                   position_in.second +
+                   viewport_in.second -
+                   viewport_in.first));
+  result.second = map_center.second +
+                  (RPG_GRAPHICS_TILE_HEIGHT_MOD *
+                   (position_in.first +
+                    position_in.second -
+                    viewport_in.second -
+                    viewport_in.first));
 
-  screen_position.first = map_center.first +
-                          (RPG_GRAPHICS_TILE_WIDTH_MOD *
-                           (position_in.first - position_in.second + viewport_in.second - viewport_in.first));
-  screen_position.second = map_center.second +
-                           (RPG_GRAPHICS_TILE_HEIGHT_MOD *
-                            (position_in.first + position_in.second - viewport_in.second - viewport_in.first));
+  // sanity check(s)
+  if ((result.first >= static_cast<int>(windowSize_in.first)) ||
+      (result.second >= static_cast<int>(windowSize_in.second)))
+  {
+//    ACE_DEBUG((LM_WARNING,
+//               ACE_TEXT("map coords [%u,%u] --> [%u,%u], continuing\n"),
+//               position_in.first, position_in.second,
+//               result.first, result.second));
 
-  //// sanity check
-  //if ((screen_position.first >= windowSize_in.first) ||
-  //    (screen_position.second >= windowSize_in.second))
-  //  ACE_DEBUG((LM_WARNING,
-  //             ACE_TEXT("map coords [%u,%u] --> [%u,%u], continuing\n"),
-  //             position_in.first, position_in.second,
-  //             screen_position.first, screen_position.second));
+//    result = std::make_pair(std::numeric_limits<int>::max(),
+//                            std::numeric_limits<int>::max());
+  } // end IF
 
-  // *TODO* fix underruns (why does this happen ?)
-  return screen_position;
+  return result;
 }

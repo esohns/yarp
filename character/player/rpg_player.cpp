@@ -162,14 +162,28 @@ RPG_Player::create()
 
   // step3: race
   RPG_Character_Race_t player_race(0);
-  // *TODO*: consider allowing multi-race like Half-Elf etc.
   RPG_Character_Race race = RPG_CHARACTER_RACE_INVALID;
   result.clear();
   RPG_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
                                   1,
                                   result);
   race = static_cast<RPG_Character_Race>(result.front());
-  player_race.flip(race - 1);
+	player_race.flip(race - 1);
+	if (RPG_Dice::probability(RPG_PLAYER_MULTIRACE_PROBABILITY))
+	{
+		RPG_Character_Race race_2 = RPG_CHARACTER_RACE_INVALID;
+		do
+		{
+			result.clear();
+			RPG_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
+				                              1,
+																			result);
+			race_2 = static_cast<RPG_Character_Race>(result.front());
+		} while ((race == race_2) ||
+			       !RPG_Character_Race_Common_Tools::isCompatible(race,
+			                                                      race_2));
+		player_race.flip(race_2 - 1);
+	} // end IF
 
   // step4: class
   RPG_Character_Class player_class;
@@ -182,7 +196,34 @@ RPG_Player::create()
   player_subclass = static_cast<RPG_Common_SubClass>(result.front());
   player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
   player_class.subClasses.insert(player_subclass);
-//   player_class.subClasses.push_back(player_subclass);
+	if (RPG_Dice::probability(RPG_PLAYER_MULTICLASS_PROBABILITY))
+	{
+		// step1: determine number of subclasses (3 max)
+		unsigned int num_subclasses = 1;
+		result.clear();
+		RPG_Dice::generateRandomNumbers(2,
+			                              1,
+                                    result);
+		num_subclasses = result.front();
+
+		// step2: determine subclass type(s)
+		RPG_Common_SubClass player_subclass_temp = RPG_COMMON_SUBCLASS_INVALID;
+		for (unsigned int i = 0;
+			   i < num_subclasses;
+				 i++)
+		{
+			player_subclass_temp = RPG_COMMON_SUBCLASS_INVALID;
+			do
+			{
+				result.clear();
+				RPG_Dice::generateRandomNumbers((RPG_COMMON_SUBCLASS_MAX - 1),
+			                              		1,
+					                              result);
+				player_subclass_temp = static_cast<RPG_Common_SubClass>(result.front());
+			} while (player_class.subClasses.find(player_subclass_temp) != player_class.subClasses.end());
+			player_class.subClasses.insert(player_subclass_temp);
+		} // end FOR
+	} // end IF
 
   // step5: alignment
   RPG_Character_Alignment alignment;
@@ -216,7 +257,7 @@ RPG_Player::create()
     sum = std::accumulate(result.begin(),
                           result.end(),
                           0);
-  } while ((sum <= RPG_PLAYER_ATTR_MIN_SUM) ||
+  } while ((sum <= RPG_PLAYER_ATTRIBUTE_MINIMUM_SUM) ||
            (*(std::min_element(result.begin(),
                                result.end())) <= 9) ||
            (result[3] < 3)); // Note: this is already covered by the last case...

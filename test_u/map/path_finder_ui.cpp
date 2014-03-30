@@ -91,10 +91,9 @@ event_timer_SDL_cb(Uint32 interval_in,
 
   // synch access
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(data->lock);
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(data->lock);
 
     data->hover_time += interval_in;
-    data->gtk_time += interval_in;
     if (data->do_hover &&
         (data->hover_time >= RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY))
     {
@@ -107,27 +106,7 @@ event_timer_SDL_cb(Uint32 interval_in,
                    ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                    SDL_GetError()));
     } // end IF
-
-    // dispatch GTK events (if any ?)
-    if (data->gtk_time < RPG_CLIENT_SDL_GTKEVENT_RESOLUTION)
-      return interval_in; // re-schedule
-
-    data->gtk_time = 0;
   } // end lock scope
-
-  // dispatch a pending GTK event
-  GDK_THREADS_ENTER();
-  if (gtk_events_pending())
-  {
-    // there are pending GTK events --> trigger an event
-    sdl_event.type = RPG_CLIENT_SDL_GTKEVENT;
-
-    if (SDL_PushEvent(&sdl_event))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-                 SDL_GetError()));
-  } // end IF
-  GDK_THREADS_LEAVE();
 
   // trigger regular screen refreshes !
   sdl_event.type = RPG_CLIENT_SDL_TIMEREVENT;
@@ -152,10 +131,10 @@ print_usage(const std::string& programName_in)
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                   false);
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
@@ -215,10 +194,10 @@ process_arguments(const int argc_in,
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
+  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                     true);
+  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                   false);
 #endif // #ifdef BASEDIR
 
   // init results

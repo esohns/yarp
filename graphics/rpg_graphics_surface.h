@@ -22,6 +22,7 @@
 #define RPG_GRAPHICS_SURFACE_H
 
 #include "rpg_graphics_exports.h"
+#include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
@@ -84,28 +85,26 @@ class RPG_Graphics_Export RPG_Graphics_Surface
   static SDL_Surface* copy(const SDL_Surface&); // source surface
 
   // *NOTE*: results need to be SDL_FreeSurface()d !
-  static SDL_Surface* get(const unsigned int&, // offset x (top-left == 0,0)
-                          const unsigned int&, // offset y (top-left == 0,0)
-                          const unsigned int&, // width
-                          const unsigned int&, // height
-                          const SDL_Surface&);  // source surface
-  static void get(const unsigned int&, // offset x (top-left == 0,0)
-                  const unsigned int&, // offset y (top-left == 0,0)
-                  const bool&,         // blit to target surface ?
-                  const SDL_Surface&,  // source surface
-                  SDL_Surface&);       // target surface
-  static void put(const unsigned int&, // offset x (top left == 0,0)
-                  const unsigned int&, // offset y (top left == 0,0)
-                  const SDL_Surface&,  // source surface
-                  SDL_Surface*);       // target surface (e.g. screen)
-  static bool putText(const RPG_Graphics_Font&, // font
-                      const std::string&,       // string
-                      const SDL_Color&,         // color
-                      const bool&,              // shade ?
-                      const SDL_Color&,         // shade color
-                      const unsigned int&,      // offset x (top left == 0,0)
-                      const unsigned int&,      // offset y (top left == 0,0)
-                      SDL_Surface*);            // target surface (e.g. screen)
+  static SDL_Surface* get(const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
+                          const unsigned int&,          // width
+                          const unsigned int&,          // height
+                          const SDL_Surface&);          // source surface
+  static void get(const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
+                  const bool&,                  // blit to target surface ?
+                  const SDL_Surface&,           // source surface
+                  SDL_Surface&);                // target surface
+  static void put(const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
+                  const SDL_Surface&,           // source surface
+                  SDL_Surface*,                 // target surface (e.g. screen)
+                  SDL_Rect&);                   // return value: "dirty" region
+  static bool putText(const RPG_Graphics_Font&,     // font
+                      const std::string&,           // string
+                      const SDL_Color&,             // color
+                      const bool&,                  // shade ?
+                      const SDL_Color&,             // shade color
+                      const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
+                      SDL_Surface*,                 // target surface (e.g. screen)
+                      SDL_Rect&);                   // return value: "dirty" region
   static void putRect(const SDL_Rect&, // rectangle
                       const Uint32&,   // color
                       SDL_Surface*);   // target surface (e.g. screen)

@@ -118,6 +118,35 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
 //     SDL_FreeSurface(myBackGround);
 }
 
+SDL_Rect
+RPG_Graphics_SDLWindowBase::getDirty() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getDirty"));
+
+  SDL_Rect result = {0, 0, 0, 0};
+  for (RPG_Graphics_DirtyRegionsConstIterator_t iterator =
+         myInvalidRegions.begin();
+       iterator != myInvalidRegions.end();
+       iterator++)
+    result = RPG_Graphics_SDL_Tools::boundingBox(result,
+                                                 *iterator);
+
+  return result;
+}
+
+void
+RPG_Graphics_SDLWindowBase::clean()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clean"));
+
+  myInvalidRegions.clear();
+  // recurse into any children
+  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
+       iterator != myChildren.end();
+       iterator++)
+    (*iterator)->clean();
+}
+
 void
 RPG_Graphics_SDLWindowBase::init(RPG_Common_ILock* screenLock_in)
 {
@@ -177,15 +206,15 @@ RPG_Graphics_SDLWindowBase::invalidate(const SDL_Rect& rect_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::invalidate"));
 
-  // sanity check(s)
-  ACE_ASSERT((rect_in.x >= 0) &&
-             (rect_in.x < myScreen->w) &&
-             (rect_in.y >= 0) &&
-             (rect_in.y < myScreen->h) &&
-             (rect_in.w >= 0) &&
-//              ((rect_in.x + rect_in.w) <= myScreen->w) &&
-             (rect_in.h >= 0)/* &&
-             ((rect_in.y + rect_in.h) <= myScreen->h)*/);
+//  // sanity check(s)
+//  ACE_ASSERT((rect_in.x >= 0) &&
+//             (rect_in.x < myScreen->w) &&
+//             (rect_in.y >= 0) &&
+//             (rect_in.y < myScreen->h) &&
+//             (rect_in.w >= 0) &&
+////              ((rect_in.x + rect_in.w) <= myScreen->w) &&
+//             (rect_in.h >= 0)/* &&
+//             ((rect_in.y + rect_in.h) <= myScreen->h)*/);
 
   if ((rect_in.x == 0) &&
       (rect_in.y == 0) &&
@@ -193,7 +222,11 @@ RPG_Graphics_SDLWindowBase::invalidate(const SDL_Rect& rect_in)
       (rect_in.h == 0))
     myInvalidRegions.push_back(myClipRect);
   else
+  {
+    if (rect_in.x < 0)
+      ACE_ASSERT(false);
     myInvalidRegions.push_back(rect_in);
+  } // end ELSE
 }
 
 void
@@ -318,95 +351,38 @@ RPG_Graphics_SDLWindowBase::update(SDL_Surface* targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::update"));
 
-  // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
-                                                 : myScreen);
-
   // sanity check(s)
-  ACE_ASSERT(targetSurface);
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : myScreen);
+  ACE_ASSERT(target_surface);
 
-  if (myInvalidRegions.empty())
-    return; // nothing to do
-
-  Sint32 topLeftX = (*myInvalidRegions.begin()).x;
-  Sint32 topLeftY = (*myInvalidRegions.begin()).y;
-  Sint32 width = (*myInvalidRegions.begin()).w;
-  Sint32 height = (*myInvalidRegions.begin()).h;
-
-  // find bounding box of dirty areas
-  unsigned int index = 0;
-  for (RPG_Graphics_InvalidRegionsConstIterator_t iterator = myInvalidRegions.begin();
-       iterator != myInvalidRegions.end();
-       iterator++, index++)
-  {
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("dirty[%u]: [[%d,%d][%d,%d]]...\n"),
-//                index,
-//                (*iterator).x,
-//                (*iterator).y,
-//                (*iterator).x + (*iterator).w - 1,
-//                (*iterator).y + (*iterator).h - 1));
-
-    if (((*iterator).x < topLeftX) ||
-        ((*iterator).y < topLeftY))
-    {
-      if ((*iterator).x < topLeftX)
-      {
-        width += topLeftX - (*iterator).x;
-        topLeftX = (*iterator).x;
-      } // end IF
-      if ((*iterator).y < topLeftY)
-      {
-        height += topLeftY - (*iterator).y;
-        topLeftY = (*iterator).y;
-      } // end IF
-    } // end IF
-    else
-    {
-      int overlap = ((*iterator).x + (*iterator).w - 1) - (topLeftX + width - 1);
-      if (overlap > 0)
-        width += overlap;
-      overlap = ((*iterator).y + (*iterator).h - 1) - (topLeftY + height - 1);
-      if (overlap > 0)
-        height += overlap;
-    } // end ELSE
-  } // end FOR
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("refreshing bbox [[%d,%d][%d,%d]]...\n"),
-//              topLeftX,
-//              topLeftY,
-//              topLeftX + width - 1,
-//              topLeftY + height - 1));
-
-  if (myScreenLock)
-    myScreenLock->lock();
-  SDL_UpdateRect(targetSurface,
-                 topLeftX,
-                 topLeftY,
-                 width,
-                 height);
-  if (myScreenLock)
-    myScreenLock->unlock();
-
-  // all fresh & shiny !
-  myInvalidRegions.clear();
-
+  // compute bounding box of dirty areas
+  SDL_Rect dirty_region = getDirty();
   // recurse into any children
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
        iterator != myChildren.end();
        iterator++)
-  {
-    try
-    {
-      (*iterator)->update(targetSurface);
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
-    }
-  } // end FOR
+    dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                       (*iterator)->getDirty());
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("refreshing bbox [[%d,%d][%d,%d]]...\n"),
+             dirty_region.x,
+             dirty_region.y,
+             dirty_region.w,
+             dirty_region.h));
+
+  if (myScreenLock)
+    myScreenLock->lock();
+  SDL_UpdateRect(target_surface,
+                 dirty_region.x,
+                 dirty_region.y,
+                 dirty_region.w,
+                 dirty_region.h);
+  if (myScreenLock)
+    myScreenLock->unlock();
+
+  clean();
 }
 
 void

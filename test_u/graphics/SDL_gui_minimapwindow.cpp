@@ -164,7 +164,9 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::draw"));
 
   // sanity check(s)
-  ACE_ASSERT(targetSurface_in);
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : myScreen);
+  ACE_ASSERT(target_surface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
   ACE_ASSERT(myEngine);
@@ -176,16 +178,16 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
     inherited::saveBG(RPG_Graphics_Size_t(0, 0)); // save size of "this"
 
   // init clipping
-  SDL_GetClipRect(targetSurface_in, &(inherited::myClipRect));
-  SDL_Rect clipRect;
-  clipRect.x = static_cast<Sint16>(myBorderLeft +
-                                   (myScreen->w -
-                                    (myBorderLeft + myBorderRight) -
-                                   (inherited::mySize.first + inherited::myOffset.first)));
-  clipRect.y = static_cast<Sint16>(myBorderTop + inherited::myOffset.second);
-  clipRect.w = static_cast<Uint16>(inherited::mySize.first);
-  clipRect.h = static_cast<Uint16>(inherited::mySize.second);
-  if (!SDL_SetClipRect(targetSurface_in, &clipRect))
+  SDL_GetClipRect(target_surface, &(inherited::myClipRect));
+  SDL_Rect clip_rect, dirty_region;
+  clip_rect.x = static_cast<Sint16>(myBorderLeft +
+                                    (myScreen->w -
+                                     (myBorderLeft + myBorderRight) -
+                                     (inherited::mySize.first + inherited::myOffset.first)));
+  clip_rect.y = static_cast<Sint16>(myBorderTop + inherited::myOffset.second);
+  clip_rect.w = static_cast<Uint16>(inherited::mySize.first);
+  clip_rect.h = static_cast<Uint16>(inherited::mySize.second);
+  if (!SDL_SetClipRect(target_surface, &clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -195,10 +197,11 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // init surface
-  RPG_Graphics_Surface::put(0,
-                            0,
+  RPG_Graphics_Surface::put(std::make_pair(0,
+                                           0),
                             *myBG,
-                            mySurface);
+                            mySurface,
+                            dirty_region);
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((mySurface)))
@@ -321,14 +324,15 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   // step4: paint surface
   if (inherited::myScreenLock)
     inherited::myScreenLock->lock();
-  RPG_Graphics_Surface::put((myBorderLeft +
-                             (myScreen->w -
-                              (myBorderLeft + myBorderRight) -
-                              (inherited::mySize.first + inherited::myOffset.first))),
-                            (myBorderTop +
-                             inherited::myOffset.second),
+  RPG_Graphics_Surface::put(std::make_pair((myBorderLeft +
+                                            (myScreen->w -
+                                             (myBorderLeft + myBorderRight) -
+                                             (inherited::mySize.first + inherited::myOffset.first))),
+                                           (myBorderTop +
+                                            inherited::myOffset.second)),
                             *mySurface,
-                            targetSurface_in);
+                            target_surface,
+                            dirty_region);
   if (inherited::myScreenLock)
     inherited::myScreenLock->unlock();
 
@@ -341,7 +345,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
 //                                 true);
 
   // reset clipping
-  if (!SDL_SetClipRect(targetSurface_in, &(inherited::myClipRect)))
+  if (!SDL_SetClipRect(target_surface, &(inherited::myClipRect)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -350,7 +354,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
     return;
   } // end IF
 
-  invalidate(clipRect);
+  invalidate(clip_rect);
 
   // remember position of last realization
   inherited::myLastAbsolutePosition = std::make_pair((myBorderLeft +

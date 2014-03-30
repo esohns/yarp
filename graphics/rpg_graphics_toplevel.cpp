@@ -123,13 +123,15 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
     element_image = NULL;
 
     // element part of the interface ?
-    if ((*iterator).type.discriminator == RPG_Graphics_ElementTypeUnion::INTERFACEELEMENTTYPE)
+    if ((*iterator).type.discriminator ==
+      RPG_Graphics_ElementTypeUnion::INTERFACEELEMENTTYPE)
     {
-      element_image = RPG_Graphics_Surface::get((*iterator).offsetX,
-                                                (*iterator).offsetY,
-                                                (*iterator).width,
-                                                (*iterator).height,
-                                                *interface_image);
+      element_image =
+        RPG_Graphics_Surface::get(std::make_pair((*iterator).offsetX,
+                                                 (*iterator).offsetY),
+                                  (*iterator).width,
+                                  (*iterator).height,
+                                  *interface_image);
       if (!element_image)
       {
         ACE_DEBUG((LM_ERROR,

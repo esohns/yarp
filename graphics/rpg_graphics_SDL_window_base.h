@@ -89,6 +89,9 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
                              const std::string&);               // title
 //                              SDL_Surface* = NULL);              // background
 
+  SDL_Rect getDirty() const; // "dirty" area
+  void clean();
+
   // default screen
   SDL_Surface*                     myScreen;
   RPG_Common_ILock*                myScreenLock;

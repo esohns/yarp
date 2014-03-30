@@ -611,8 +611,7 @@ RPG_Graphics_Surface::create(const unsigned int& width_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
-                          const unsigned int& offsetY_in,
+RPG_Graphics_Surface::get(const RPG_Graphics_Offset_t& offset_in,
                           const unsigned int& width_in,
                           const unsigned int& height_in,
                           const SDL_Surface& source_in)
@@ -621,14 +620,14 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
 
   // sanity check(s)
   ACE_ASSERT(width_in <= static_cast<unsigned int>(source_in.w));
-//   ACE_ASSERT((offsetX_in + width_in) <= (static_cast<unsigned int> (image_in.w) - 1));
+//   ACE_ASSERT((offset_in.first + width_in) <= (static_cast<unsigned int>(image_in.w) - 1));
   ACE_ASSERT(height_in <= static_cast<unsigned int>(source_in.h));
-//   ACE_ASSERT((offsetY_in + height_in) <= (static_cast<unsigned int> (image_in.h) - 1));
+//   ACE_ASSERT((offset_in.second + height_in) <= (static_cast<unsigned int>(image_in.h) - 1));
   // clip where necessary...
   unsigned int clipped_width, clipped_height;
-  clipped_width = (source_in.w - offsetX_in); // available width
+  clipped_width = (source_in.w - offset_in.first); // available width
   clipped_width = ((clipped_width > width_in) ? width_in : clipped_width);
-  clipped_height = (source_in.h - offsetY_in); // available height
+  clipped_height = (source_in.h - offset_in.second); // available height
   clipped_height = ((clipped_height > height_in) ? height_in : clipped_height);
 
   // init return value
@@ -670,7 +669,8 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
        i < clipped_height;
        i++)
   ::memcpy((static_cast<unsigned char*>(result->pixels) + (result->pitch * i)),
-           (static_cast<unsigned char*>(source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
+           (static_cast<unsigned char*>(source_in.pixels) +
+            ((offset_in.second + i) * source_in.pitch) + (offset_in.first * 4)),
            (clipped_width * result->format->BytesPerPixel)); // RGBA --> 4 bytes
 
   if (SDL_MUSTLOCK((&source_in)))
@@ -698,8 +698,7 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
 }
 
 void
-RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
-                          const unsigned int& offsetY_in,
+RPG_Graphics_Surface::get(const RPG_Graphics_Offset_t& offset_in,
                           const bool& blit_in,
                           const SDL_Surface& source_in,
                           SDL_Surface& target_inout)
@@ -712,11 +711,11 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
 
   // clip where necessary...
   unsigned int clipped_width, clipped_height;
-  clipped_width = (source_in.w - offsetX_in); // available width
+  clipped_width = (source_in.w - offset_in.first); // available width
   clipped_width =
       ((clipped_width > static_cast<unsigned int>(target_inout.w)) ? target_inout.w
                                                                    : clipped_width);
-  clipped_height = (source_in.h - offsetY_in); // available height
+  clipped_height = (source_in.h - offset_in.second); // available height
   clipped_height =
       ((clipped_height > static_cast<unsigned int>(target_inout.h)) ? target_inout.h
                                                                     : clipped_height);
@@ -726,8 +725,8 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
   {
     // bounding box
     SDL_Rect clipRect;
-    clipRect.x = static_cast<int16_t>(offsetX_in);
-    clipRect.y = static_cast<int16_t>(offsetY_in);
+    clipRect.x = static_cast<int16_t>(offset_in.first);
+    clipRect.y = static_cast<int16_t>(offset_in.second);
     clipRect.w = static_cast<uint16_t>(clipped_width);
     clipRect.h = static_cast<uint16_t>(clipped_height);
     if (SDL_BlitSurface(const_cast<SDL_Surface*>(&source_in), // source
@@ -772,8 +771,10 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
   for (unsigned int i = 0;
        i < clipped_height;
        i++)
-    ::memcpy((static_cast<unsigned char*>(target_inout.pixels) + (target_inout.pitch * i)),
-             (static_cast<unsigned char*>(source_in.pixels) + ((offsetY_in + i) * source_in.pitch) + (offsetX_in * 4)),
+    ::memcpy((static_cast<unsigned char*>(target_inout.pixels) +
+              (target_inout.pitch * i)),
+             (static_cast<unsigned char*>(source_in.pixels) +
+              ((offset_in.second + i) * source_in.pitch) + (offset_in.first * 4)),
              (clipped_width * target_inout.format->BytesPerPixel)); // RGBA --> 4 bytes
 
   if (SDL_MUSTLOCK((&source_in)))
@@ -783,27 +784,29 @@ RPG_Graphics_Surface::get(const unsigned int& offsetX_in,
 }
 
 void
-RPG_Graphics_Surface::put(const unsigned int& offsetX_in,
-                          const unsigned int& offsetY_in,
+RPG_Graphics_Surface::put(const RPG_Graphics_Offset_t& offset_in,
                           const SDL_Surface& image_in,
-                          SDL_Surface* targetSurface_in)
+                          SDL_Surface* targetSurface_in,
+                          SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::put"));
+
+  // init return value(s)
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
 
   // clipping
-  SDL_Rect toRect;
-  toRect.x = static_cast<int16_t>(offsetX_in);
-  toRect.y = static_cast<int16_t>(offsetY_in);
-  toRect.w = static_cast<uint16_t>(image_in.w);
-  toRect.h = static_cast<uint16_t>(image_in.h);
-
+  SDL_Rect target_rect;
+  target_rect.x = static_cast<int16_t>(offset_in.first);
+  target_rect.y = static_cast<int16_t>(offset_in.second);
+  target_rect.w = 0; // *NOTE*: ignored
+  target_rect.h = 0; // *NOTE*: ignored
   if (SDL_BlitSurface(&const_cast<SDL_Surface&>(image_in), // source
                       NULL,                                // aspect (--> everything)
                       targetSurface_in,                    // target
-                      &toRect))                            // aspect
+                      &target_rect))                       // aspect
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
@@ -812,16 +815,8 @@ RPG_Graphics_Surface::put(const unsigned int& offsetX_in,
     return;
   } // end IF
 
-//   if ((static_cast<unsigned int>(toRect.x) != offsetX_in) ||
-//       (static_cast<unsigned int>(toRect.y) != offsetY_in) ||
-//       (toRect.w != image_in.w) ||
-//       (toRect.h != image_in.h))
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("clipped surface to [%u,%u,%u,%u]...\n"),
-//                static_cast<unsigned int>(toRect.x),
-//                static_cast<unsigned int>(toRect.y),
-//                static_cast<unsigned int>(toRect.w),
-//                static_cast<unsigned int>(toRect.h)));
+  // compute dirty region
+  dirtyRegion_out = target_rect;
 }
 
 bool
@@ -830,16 +825,20 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
                               const SDL_Color& color_in,
                               const bool& shade_in,
                               const SDL_Color& shadeColor_in,
-                              const unsigned int& offsetX_in,
-                              const unsigned int& offsetY_in,
-                              SDL_Surface* targetSurface_in)
+                              const RPG_Graphics_Offset_t& offset_in,
+                              SDL_Surface* targetSurface_in,
+                              SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::putText"));
+
+  // init return value(s)
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
 
   SDL_Surface* rendered_text = NULL;
+  SDL_Rect dirty_region;
   // step1: render shade ?
   if (shade_in)
   {
@@ -855,10 +854,15 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
 
       return false;
     } // end IF
-    RPG_Graphics_Surface::put(offsetX_in + 1,
-                              offsetY_in + 1,
+
+    RPG_Graphics_Offset_t offset = offset_in;
+    offset.first++;
+    offset.second++;
+    RPG_Graphics_Surface::put(offset,
                               *rendered_text,
-                              targetSurface_in);
+                              targetSurface_in,
+                              dirty_region);
+    dirtyRegion_out = dirty_region;
 
     // clean up
     SDL_FreeSurface(rendered_text);
@@ -878,10 +882,12 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
 
     return false;
   } // end IF
-  RPG_Graphics_Surface::put(offsetX_in,
-                            offsetY_in,
+  RPG_Graphics_Surface::put(offset_in,
                             *rendered_text,
-                            targetSurface_in);
+                            targetSurface_in,
+                            dirty_region);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                        dirtyRegion_out);
 
   // clean up
   SDL_FreeSurface(rendered_text);
