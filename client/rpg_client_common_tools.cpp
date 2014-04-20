@@ -52,7 +52,8 @@ RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t&
 
   // ***** keyboard setup *****
   // Unicode translation
-	int previous_state = SDL_EnableUNICODE((SDLInputConfiguration_in.use_UNICODE ? 1 : 0));
+	int previous_state =
+		SDL_EnableUNICODE((SDLInputConfiguration_in.use_UNICODE ? 1 : 0));
 	ACE_UNUSED_ARG(previous_state);
 
   // key repeat rates
@@ -74,7 +75,9 @@ RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t&
 	//   SDL_SetEventFilter(event_filter_SDL_cb);
 
 	// ***** mouse setup *****
-	SDL_ShowCursor(SDL_DISABLE); // disable OS mouse cursor over SDL window
+	int show_cursor_status_before = SDL_ShowCursor(-1);
+	if (show_cursor_status_before == 1)
+		SDL_ShowCursor(SDL_DISABLE); // disable OS mouse cursor over SDL window
 
 	return true;
 }

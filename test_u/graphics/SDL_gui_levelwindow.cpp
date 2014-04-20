@@ -1139,7 +1139,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           if (highlight_position != std::make_pair(std::numeric_limits<int>::max(),
                                                    std::numeric_limits<int>::max()))
           {
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight(map_position,
+						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region,
+							                                                           NULL);
+            dirtyRegion_out =
+                RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                    dirtyRegion_out);
+
+						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight(map_position,
                                                                             highlight_position,
                                                                             myView,
                                                                             dirty_region,
@@ -1148,6 +1154,9 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                 RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                     dirtyRegion_out);
             invalidate(dirty_region);
+
+						// invalidate cursor bg
+						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(NULL);
           } // end IF
         } // end IF
       } // end IF

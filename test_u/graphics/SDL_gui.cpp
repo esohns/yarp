@@ -24,7 +24,7 @@
 #include <sstream>
 #include <string>
 
-#include <ace/ACE.h>
+#include <ace/Init_ACE.h>
 #include <ace/Log_Msg.h>
 #include <ace/Get_Opt.h>
 #include <ace/High_Res_Timer.h>
@@ -1011,6 +1011,80 @@ do_UI(RPG_Engine_Entity& entity_in,
             RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
             event_handled = true;
 
+						// (re-)draw "active" tile highlight
+						int x, y;
+            SDL_GetMouseState(&x, &y);
+            mouse_position = std::make_pair(x, y);
+						RPG_Graphics_Position_t map_position =
+								RPG_Graphics_Common_Tools::screen2Map(mouse_position,
+																											engine_in->getSize(),
+																											map_window->getSize(),
+																											map_window->getView());
+						// inside map ?
+						if (map_position ==
+								std::make_pair(std::numeric_limits<unsigned int>::max(),
+															 std::numeric_limits<unsigned int>::max()))
+						{
+							//// off the map --> remove "active" tile highlight
+							//RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
+							//                                                                      dirtyRegion_out);
+							//invalidate(dirtyRegion_out);
+
+							break;
+						} // end IF
+						SDL_Rect dirty_region_2;
+						ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
+						if (map_position !=
+								RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition())
+						{
+							// unmapped area ?
+							RPG_Map_Element map_element = engine_in->getElement(map_position);
+				//      ACE_DEBUG((LM_DEBUG,
+				//                 ACE_TEXT("map element [%u,%u]: \"%s\"\n"),
+				//                 map_position.first, map_position.second,
+				//                 ACE_TEXT(RPG_Map_Common_Tools::mapElement2String(map_element).c_str())));
+							if ((map_element == MAPELEMENT_UNMAPPED) ||
+									(map_element == MAPELEMENT_WALL))
+							{
+								RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(map_window->getView(),
+																																											dirty_region_2);
+								if ((dirty_region_2.x != 0) ||
+										(dirty_region_2.y != 0) ||
+										(dirty_region_2.w != 0) ||
+										(dirty_region_2.h != 0))
+									dirty_region =
+											RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirty_region_2);
+							} // end IF
+							else
+							{
+								RPG_Graphics_Offset_t highlight_position =
+									RPG_Graphics_Common_Tools::map2Screen(map_position,
+																												map_window->getSize(),
+																												map_window->getView());
+								if (highlight_position != std::make_pair(std::numeric_limits<int>::max(),
+																												 std::numeric_limits<int>::max()))
+								{
+									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region_2,
+																																							 NULL);
+									dirty_region =
+											RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+																													dirty_region_2);
+
+									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight(map_position,
+																																									highlight_position,
+																																									map_window->getView(),
+																																									dirty_region_2,
+																																									debug_in);
+									dirty_region =
+											RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+																													dirty_region_2);
+
+									// invalidate cursor bg
+									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(NULL);
+								} // end IF
+							} // end IF
+						} // end IF
+
             break;
           }
           case SDLK_s:
@@ -1195,15 +1269,15 @@ do_UI(RPG_Engine_Entity& entity_in,
       {
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
-//        SDL_Rect dirty_region_2;
-//        ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
-//        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor(mouse_position.first,
-//                                                                     mouse_position.second,
-//                                                                     dirty_region_2,
-//                                                                     debug_in);
-//        dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-//                                                           dirty_region_2);
-//        mainWindow_in->invalidate(dirty_region);
+        SDL_Rect dirty_region_2;
+        ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
+				RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor(std::make_pair(mouse_position.first,
+					                                                                          mouse_position.second),
+                                                                     dirty_region_2,
+                                                                     debug_in);
+        dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                           dirty_region_2);
+        mainWindow_in->invalidate(dirty_region);
 
         break;
       }
@@ -1254,21 +1328,8 @@ do_work(const mode_t& mode_in,
                                 itemsDictionary_in,
                                 monsterDictionary_in);
 
-	// step1: init input
-	RPG_Client_SDL_InputConfiguration_t input_configuration;
-	input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
-	input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
-	input_configuration.use_UNICODE = true;
-	if (!RPG_Client_Common_Tools::initSDLInput(input_configuration))
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
-
-		return;
-	} // end IF
-
-	// step2: init video
-	// step2a: init video system
+	// step1: init video
+	// step1a: init video system
 	 if (!RPG_Graphics_SDL_Tools::preInitVideo(videoConfiguration_in,                      // configuration
 																						 ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION))) // window/icon caption
   {
@@ -1277,16 +1338,16 @@ do_work(const mode_t& mode_in,
 
     return;
   } // end IF
-  // step2b: pre-init graphics
+  // step1b: pre-init graphics
   RPG_Graphics_Common_Tools::preInit();
-  // step2c: init graphics dictionary
+  // step1c: init graphics dictionary
   RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in,
                                                       validateXML_in);
-  // step2b: init graphics
+  // step1b: init graphics
 	RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
 																	cacheSize_in,
 																	true);
-	// step2d: init video window
+	// step1d: init video window
 	if (!RPG_Graphics_SDL_Tools::initVideo(videoConfiguration_in,                     // configuration
 																				 ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
 																				 state.screen,                              // return value: window surface
@@ -1298,6 +1359,19 @@ do_work(const mode_t& mode_in,
     return;
   } // end IF
   ACE_ASSERT(state.screen);
+
+	// step2: init input
+	RPG_Client_SDL_InputConfiguration_t input_configuration;
+	input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
+	input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
+	input_configuration.use_UNICODE = true;
+	if (!RPG_Client_Common_Tools::initSDLInput(input_configuration))
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
+
+		return;
+	} // end IF
 
   // step3: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;

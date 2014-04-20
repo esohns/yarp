@@ -365,12 +365,12 @@ RPG_Graphics_SDLWindowBase::update(SDL_Surface* targetSurface_in)
     dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                        (*iterator)->getDirty());
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("refreshing bbox [[%d,%d][%d,%d]]...\n"),
-             dirty_region.x,
-             dirty_region.y,
-             dirty_region.w,
-             dirty_region.h));
+  //ACE_DEBUG((LM_DEBUG,
+  //           ACE_TEXT("refreshing bbox [[%d,%d][%d,%d]]...\n"),
+  //           dirty_region.x,
+  //           dirty_region.y,
+  //           dirty_region.w,
+  //           dirty_region.h));
 
   if (myScreenLock)
     myScreenLock->lock();
