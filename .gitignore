@@ -37,3 +37,7 @@ Release
 ipch
 
 /Yarp/build
+.picasa.ini
+*.bak
+_configs.sed
+build

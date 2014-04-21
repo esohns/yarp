@@ -300,8 +300,7 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const std::string& name_in,
-        const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
+do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
         const bool& generateLevel_in,
         const std::string& outputFile_in,
         const bool& dump_in)
@@ -322,19 +321,19 @@ do_work(const std::string& name_in,
   RPG_Engine_Level_t level;
   if (generateLevel_in)
   {
-    level.metadata.name = name_in;
-    level.metadata.environment.plane = RPG_ENGINE_DEF_PLANE;
-    level.metadata.environment.terrain = RPG_ENGINE_DEF_TERRAIN;
-    level.metadata.environment.climate = RPG_ENGINE_DEF_CLIMATE;
-    level.metadata.environment.time = RPG_ENGINE_DEF_TIMEOFDAY;
+    level.metadata.name                 = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
+    level.metadata.environment.plane    = RPG_ENGINE_DEF_PLANE;
+    level.metadata.environment.terrain  = RPG_ENGINE_DEF_TERRAIN;
+    level.metadata.environment.climate  = RPG_ENGINE_DEF_CLIMATE;
+    level.metadata.environment.time     = RPG_ENGINE_DEF_TIMEOFDAY;
     level.metadata.environment.lighting = RPG_ENGINE_DEF_LIGHTING;
 		level.metadata.environment.outdoors = RPG_ENGINE_DEF_OUTDOORS;
     level.metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
     level.metadata.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
-    level.metadata.spawn_probability = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
-    level.metadata.max_spawned = RPG_ENGINE_DEF_AI_MAX_SPAWNED;
-    level.metadata.spawn_timer = -1;
-    level.metadata.amble_probability = RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY;
+    level.metadata.spawn_probability    = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+    level.metadata.max_spawned          = RPG_ENGINE_DEF_AI_MAX_SPAWNED;
+    level.metadata.spawn_timer          = -1;
+    level.metadata.amble_probability    = RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY;
 
     level.map = map;
   } // end IF
@@ -433,13 +432,18 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  unsigned int minRoomSize        = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
-  bool doors                      = MAP_GENERATOR_DEF_DOORS;
-  bool corridors                  = MAP_GENERATOR_DEF_CORRIDORS;
-  unsigned int maxNumDoorsPerRoom = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
-  bool generateLevel              = MAP_GENERATOR_DEF_LEVEL;
-  bool maximizeRoomSize           = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
-  unsigned int numAreas           = MAP_GENERATOR_DEF_NUM_AREAS;
+	RPG_Map_FloorPlan_Configuration_t config;
+  config.corridors              = MAP_GENERATOR_DEF_CORRIDORS;
+  config.doors                  = MAP_GENERATOR_DEF_DOORS;
+  config.map_size_x             = MAP_GENERATOR_DEF_DIMENSION_X;
+  config.map_size_y             = MAP_GENERATOR_DEF_DIMENSION_Y;
+  config.max_num_doors_per_room = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
+  config.maximize_rooms         = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
+  config.min_room_size          = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
+  config.num_areas              = MAP_GENERATOR_DEF_NUM_AREAS;
+  config.square_rooms           = MAP_GENERATOR_DEF_SQUARE_ROOMS;
+
+  bool generateLevel = MAP_GENERATOR_DEF_LEVEL;
 
   std::string outputFile = data_path;
   outputFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -460,28 +464,25 @@ ACE_TMAIN(int argc,
   outputFile = default_output_file;
 
   bool dumpResult                 = MAP_GENERATOR_DEF_DUMP;
-  bool squareRooms                = MAP_GENERATOR_DEF_SQUARE_ROOMS;
   bool traceInformation           = false;
   bool printVersionAndExit        = false;
-  unsigned int dimension_X        = MAP_GENERATOR_DEF_DIMENSION_X;
-  unsigned int dimension_Y        = MAP_GENERATOR_DEF_DIMENSION_Y;
 
   // step1ba: parse/process/validate configuration
   if (!process_arguments(argc,
                          argv,
-                         minRoomSize,
-                         corridors,
-                         maxNumDoorsPerRoom,
+                         config.min_room_size,
+                         config.corridors,
+                         config.max_num_doors_per_room,
                          generateLevel,
-                         maximizeRoomSize,
+                         config.maximize_rooms,
                          outputFile,
                          dumpResult,
-                         numAreas,
-                         squareRooms,
+                         config.num_areas,
+                         config.square_rooms,
                          traceInformation,
                          printVersionAndExit,
-                         dimension_X,
-                         dimension_Y))
+                         config.map_size_x,
+                         config.map_size_y))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));
@@ -490,11 +491,11 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1bb: validate arguments
-  if ((numAreas == 0) ||
-      (dimension_X == 0) ||
-      (dimension_Y == 0) ||
+  if ((numAreas == 0)           ||
+      (dimension_X == 0)        ||
+      (dimension_Y == 0)        ||
       (maxNumDoorsPerRoom == 1) || // cannot enforce this (just think about it !)
-      (corridors && !doors)) // cannot have corridors without doors...
+      (corridors && !doors))       // cannot have corridors without doors...
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid argument(s), aborting\n")));
@@ -543,19 +544,7 @@ ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  std::string name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
-  RPG_Map_FloorPlan_Configuration_t config;
-  config.corridors = corridors;
-  config.doors = doors;
-  config.map_size_x = dimension_X;
-  config.map_size_y = dimension_Y;
-  config.max_num_doors_per_room = maxNumDoorsPerRoom;
-  config.maximize_rooms = maximizeRoomSize;
-  config.min_room_size = minRoomSize;
-  config.num_areas = numAreas;
-  config.square_rooms = squareRooms;
-  do_work(name,
-          config,
+  do_work(config,
           generateLevel,
           outputFile,
           dumpResult);

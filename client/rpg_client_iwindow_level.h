@@ -23,7 +23,7 @@
 
 #include "rpg_client_iwindow.h"
 
-#include <rpg_map_common.h>
+#include "rpg_map_common.h"
 
 #include <string>
 
@@ -37,7 +37,7 @@ class RPG_Client_IWindowLevel
   // exposed interface
   virtual void init() = 0;
   virtual void setView(const RPG_Map_Position_t&) = 0; // view (map coordinates !)
-  virtual RPG_Map_Position_t getView() const = 0; // return value: view (map coordinates !)
+	virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
 
   virtual void toggleDoor(const RPG_Map_Position_t&) = 0; // door position
   virtual void setBlendRadius(const unsigned char&) = 0; // radius

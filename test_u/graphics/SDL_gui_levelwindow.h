@@ -60,6 +60,8 @@ class SDL_GUI_LevelWindow
   void setView(const int&,
                const int&); // view (relative map coordinates)
   void setView(const RPG_Map_Position_t&);
+	void center();
+
   // implement (part of) RPG_Graphics_IWindow 
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
@@ -102,6 +104,7 @@ class SDL_GUI_LevelWindow
   void initWallBlend(const bool&); // half-height walls ?
   void initMiniMap(RPG_Engine*); // level state handle
 //  void restoreBG();
+	void initTiles();
 
   state_t*                        myState;
   RPG_Engine*                     myEngine;

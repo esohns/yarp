@@ -9,6 +9,7 @@
 
 enum RPG_Engine_Command
 {
+	// *** entity commands ***
   COMMAND_ATTACK = 0,
   COMMAND_ATTACK_FULL,
   COMMAND_ATTACK_STANDARD,
@@ -20,7 +21,9 @@ enum RPG_Engine_Command
   COMMAND_STEP,
   COMMAND_STOP,
   COMMAND_TRAVEL,
-  COMMAND_E2C_ENTITY_ADD,
+	// *** engine --> client notifications ***
+  COMMAND_E2C_INIT,
+	COMMAND_E2C_ENTITY_ADD,
   COMMAND_E2C_ENTITY_REMOVE,
   COMMAND_E2C_ENTITY_HIT,
   COMMAND_E2C_ENTITY_MISS,

@@ -724,6 +724,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   // step2: init UI
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
+	level_engine.init(&client_engine);
 //   GTKUserData_in.lock;
   GTKUserData_in.do_hover          = true;
   GTKUserData_in.hover_time        = 0;
@@ -1773,6 +1774,20 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
 	RPG_Client_GTK_CBData_t GTK_user_data;
+  GTK_user_data.level_metadata.name                 = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
+	GTK_user_data.level_metadata.environment.plane    = RPG_ENGINE_DEF_PLANE;
+	GTK_user_data.level_metadata.environment.terrain  = RPG_ENGINE_DEF_TERRAIN;
+	GTK_user_data.level_metadata.environment.climate  = RPG_ENGINE_DEF_CLIMATE;
+	GTK_user_data.level_metadata.environment.time     = RPG_ENGINE_DEF_TIMEOFDAY;
+	GTK_user_data.level_metadata.environment.lighting = RPG_ENGINE_DEF_LIGHTING;
+	GTK_user_data.level_metadata.environment.outdoors = RPG_ENGINE_DEF_OUTDOORS;
+	GTK_user_data.level_metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
+	GTK_user_data.level_metadata.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
+	GTK_user_data.level_metadata.spawn_probability    = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
+	GTK_user_data.level_metadata.max_spawned          = RPG_ENGINE_DEF_AI_MAX_SPAWNED;
+	GTK_user_data.level_metadata.spawn_timer          = -1;
+	GTK_user_data.level_metadata.amble_probability    = RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY;
+
   // step1c: initialize logging and/or tracing
   RPG_Client_Logger logger(&GTK_user_data.log_stack,
                            &GTK_user_data.lock);

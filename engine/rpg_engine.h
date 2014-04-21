@@ -70,12 +70,13 @@ class RPG_Engine_Export RPG_Engine
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
-  // *WARNING*: DO NOT USE while the engine isRunning() !
-  void init(RPG_Engine_IClient*,        // client interface handle
-            const RPG_Engine_Level_t&); // level
-  // *WARNING*: handle with care !
+	// *WARNING*: handle with care !
   void lock();
   void unlock();
+
+  void init(RPG_Engine_IClient*); // client interface handle
+  // *WARNING*: DO NOT USE while the engine isRunning() !
+  void set(const RPG_Engine_Level_t&); // level
 
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
   RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity

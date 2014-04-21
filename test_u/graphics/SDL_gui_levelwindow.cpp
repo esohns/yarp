@@ -76,6 +76,8 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
 
+	myEngine->init(this);
+
 //   initWallBlend(false);
 
   // init ceiling tile
@@ -121,21 +123,21 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
 //               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
 //               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
 
-  // init style
-  myCurrentMapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-  myCurrentMapStyle.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
-  myCurrentMapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  myCurrentMapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  myCurrentMapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-  RPG_Graphics_Common_Tools::loadDoorTileSet(myCurrentMapStyle.door_style,
-                                             myCurrentDoorSet);
-  RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(myCurrentMapStyle.edge_style,
-                                                  myCurrentFloorEdgeSet);
-  RPG_Graphics_Common_Tools::loadFloorTileSet(myCurrentMapStyle.floor_style,
-                                              myCurrentFloorSet);
-  RPG_Graphics_Common_Tools::loadWallTileSet(myCurrentMapStyle.wall_style,
-                                             myCurrentMapStyle.half_height_walls,
-                                             myCurrentWallSet);
+  //// init style
+  //myCurrentMapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
+  //myCurrentMapStyle.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
+  //myCurrentMapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
+  //myCurrentMapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
+  //myCurrentMapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
+  //RPG_Graphics_Common_Tools::loadDoorTileSet(myCurrentMapStyle.door_style,
+  //                                           myCurrentDoorSet);
+  //RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(myCurrentMapStyle.edge_style,
+  //                                                myCurrentFloorEdgeSet);
+  //RPG_Graphics_Common_Tools::loadFloorTileSet(myCurrentMapStyle.floor_style,
+  //                                            myCurrentFloorSet);
+  //RPG_Graphics_Common_Tools::loadWallTileSet(myCurrentMapStyle.wall_style,
+  //                                           myCurrentMapStyle.half_height_walls,
+  //                                           myCurrentWallSet);
 
   // init minimap
   initMiniMap(myEngine);
@@ -253,6 +255,10 @@ SDL_GUI_LevelWindow::init(state_t* state_in,
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
 
+  // init edge, floor, door tiles
+  init(state_in,
+       screenLock_in);
+
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
@@ -267,15 +273,6 @@ SDL_GUI_LevelWindow::init(state_t* state_in,
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
   style.doorstyle = mapStyle_in.door_style;
   setStyle(style);
-
-  // init edge, floor, door tiles
-  init(state_in,
-       screenLock_in);
-
-//  // init cursor highlighting
-//  RPG_Map_Size_t size = myEngine->getSize();
-//  myHighlightBGPosition = std::make_pair(size.first / 2,
-//                                         size.second / 2);
 }
 
 void
@@ -1033,7 +1030,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
           // redraw
           draw();
           getArea(dirtyRegion_out);
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
           break;
         }
@@ -1047,7 +1043,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             // redraw
             draw();
             getArea(dirtyRegion_out);
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
             break;
           } // end IF
@@ -1136,8 +1131,9 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             RPG_Graphics_Common_Tools::map2Screen(map_position,
                                                   mySize,
                                                   myView);
-          if (highlight_position != std::make_pair(std::numeric_limits<int>::max(),
-                                                   std::numeric_limits<int>::max()))
+          if (highlight_position !=
+						  std::make_pair(std::numeric_limits<int>::max(),
+							               std::numeric_limits<int>::max()))
           {
 						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region,
 							                                                           NULL);
@@ -1181,8 +1177,9 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             (dirty_region.w != 0) ||
             (dirty_region.h != 0))
         {
-          dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                                dirtyRegion_out);
+          dirtyRegion_out =
+						RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+						                                    dirtyRegion_out);
           invalidate(dirty_region);
         } // end IF
       } // end IF
@@ -1285,26 +1282,14 @@ SDL_GUI_LevelWindow::init(state_t* state_in,
 
   myState = state_in;
   inherited::init(screenLock_in);
-  RPG_Graphics_IWindow* window_base = child(WINDOW_MINIMAP);
-  if (!window_base)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("%@: failed to RPG_Graphics_SDLWindowBase::child(WINDOW_MINIMAP), aborting\n"),
-               this));
+}
 
-    return;
-  } // end IF
-  RPG_Graphics_SDLWindowBase* window =
-      dynamic_cast<RPG_Graphics_SDLWindowBase*>(window_base);
-  if (!window)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to dynamic_cast<RPG_Graphics_SDLWindowBase*>(%@), aborting\n"),
-               window_base));
+void
+SDL_GUI_LevelWindow::initTiles()
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initTiles"));
 
-    return;
-  } // end IF
-  window->init(inherited::myScreenLock);
+	ACE_ASSERT(myEngine);
 
   // clean up
   myFloorEdgeTiles.clear();
@@ -1321,13 +1306,6 @@ SDL_GUI_LevelWindow::init(state_t* state_in,
   RPG_Client_Common_Tools::initDoors(*myEngine,
                                      myCurrentDoorSet,
                                      myDoorTiles);
-
-  // init view
-  RPG_Map_Size_t size = myEngine->getSize(true);
-  setView((size.first  / 2),
-          (size.second / 2));
-
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 }
 
 //void
@@ -1345,6 +1323,19 @@ SDL_GUI_LevelWindow::setView(const RPG_Map_Position_t& position_in)
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
 
   myView = position_in;
+}
+
+void
+SDL_GUI_LevelWindow::center()
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::center"));
+
+	ACE_ASSERT(myEngine);
+
+  // init view
+  RPG_Map_Size_t size = myEngine->getSize(true);
+  setView((size.first  / 2),
+          (size.second / 2));
 }
 
 //void
@@ -1430,6 +1421,12 @@ SDL_GUI_LevelWindow::notify(const RPG_Engine_Command& command_in,
     case COMMAND_STOP:
     case COMMAND_TRAVEL:
       return;
+		case COMMAND_E2C_INIT:
+		{
+			initTiles();
+
+			break;
+		}
     case COMMAND_E2C_ENTITY_ADD:
     {
       SDL_Surface* sprite_graphic = NULL;
@@ -1614,15 +1611,14 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       initWallBlend(myCurrentMapStyle.half_height_walls);
 
-      // debug info
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-      std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
-#else
-      std::string dump_path_base = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
-#endif
-      dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-      std::string dump_path;
-
+//      // debug info
+//#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+//      std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
+//#else
+//      std::string dump_path_base = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
+//#endif
+//      dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+//      std::string dump_path;
 //       dump_path = dump_path_base;
 //       dump_path += ACE_TEXT("wall_n.png");
 //       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.north.surface, // image

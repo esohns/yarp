@@ -21,7 +21,7 @@
 
 #include "rpg_engine_common.h"
 
-//#include <rpg_map_common.h>
+//#include "rpg_map_common.h"
 
 //#include <SDL/SDL.h>
 
@@ -32,7 +32,7 @@ class RPG_Engine_IClient
   // -Wno-non-virtual-dtor in the project settings...
 
   // exposed interface
-//  virtual void init() = 0;
+  //virtual void init() = 0;
   //virtual void redraw() = 0;
   //virtual void setView(const RPG_Map_Position_t&) = 0;
   //virtual void toggleDoor(const RPG_Map_Position_t&) = 0;

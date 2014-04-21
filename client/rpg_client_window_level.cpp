@@ -28,20 +28,20 @@
 #include "rpg_client_window_minimap.h"
 #include "rpg_client_window_message.h"
 
-#include <rpg_engine.h>
-#include <rpg_engine_command.h>
-#include <rpg_engine_common_tools.h>
+#include "rpg_engine.h"
+#include "rpg_engine_command.h"
+#include "rpg_engine_common_tools.h"
 
-#include <rpg_graphics_defines.h>
-#include <rpg_graphics_surface.h>
-#include <rpg_graphics_cursor_manager.h>
-#include <rpg_graphics_common_tools.h>
-#include <rpg_graphics_SDL_tools.h>
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include <rpg_map_common_tools.h>
-#include <rpg_map_pathfinding_tools.h>
+#include "rpg_map_common_tools.h"
+#include "rpg_map_pathfinding_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 

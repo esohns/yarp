@@ -571,32 +571,33 @@ RPG_Graphics_Cursor_Manager::putHighlight(const RPG_Map_Position_t& mapPosition_
   dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                         dirtyRegion_out);
 
-//  if (debug_in)
-//  {
-//    SDL_Surface* highlight_bg = myHighlightBGCache.front().second;
-//    ACE_ASSERT(target_surface->w >= highlight_bg->w);
-//    ACE_ASSERT(target_surface->h >= highlight_bg->h);
+  if (debug_in)
+  {
+    SDL_Surface* highlight_bg = myHighlightBGCache.front().second;
+    ACE_ASSERT(target_surface->w >= highlight_bg->w);
+    ACE_ASSERT(target_surface->h >= highlight_bg->h);
 
-//    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-//    dirty_region.x = (target_surface->w - highlight_bg->w);
-//    dirty_region.y = 0;
-//    dirty_region.w = highlight_bg->w;
-//    dirty_region.h = highlight_bg->h;
+    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+    dirty_region.x = (target_surface->w - highlight_bg->w);
+    dirty_region.y = 0;
+    dirty_region.w = highlight_bg->w;
+    dirty_region.h = highlight_bg->h;
 
-//    if (myScreenLock)
-//      myScreenLock->lock();
-//    RPG_Graphics_Surface::unclip();
-//    RPG_Graphics_Surface::put(dirty_region.x,
-//                              dirty_region.y,
-//                              *highlight_bg,
-//                              target_surface);
-//    RPG_Graphics_Surface::clip();
-//    if (myScreenLock)
-//      myScreenLock->unlock();
+    if (myScreenLock)
+      myScreenLock->lock();
+    RPG_Graphics_Surface::unclip();
+		RPG_Graphics_Surface::put(std::make_pair(dirty_region.x,
+			                                       dirty_region.y),
+                              *highlight_bg,
+                              target_surface,
+															dirty_region);
+    RPG_Graphics_Surface::clip();
+    if (myScreenLock)
+      myScreenLock->unlock();
 
-//    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-//                                                          dirtyRegion_out);
-//  } // end IF
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                          dirtyRegion_out);
+  } // end IF
 
   // step3: place highlight
   myHighlightWindow->clip();

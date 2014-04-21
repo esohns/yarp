@@ -828,7 +828,8 @@ RPG_Client_Window_Main::initMap(RPG_Client_Engine* clientEngine_in,
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::initMap"));
 
   RPG_Client_Window_Level* map_window = NULL;
-  map_window = new(std::nothrow) RPG_Client_Window_Level(*this);
+	ACE_NEW_NORETURN(map_window,
+		               RPG_Client_Window_Level(*this));
   if (!map_window)
   {
     ACE_DEBUG((LM_CRITICAL,

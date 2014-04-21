@@ -446,22 +446,6 @@ RPG_Engine::dump_state() const
 }
 
 void
-RPG_Engine::init(RPG_Engine_IClient* client_in,
-                 const RPG_Engine_Level_t& level_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine::init"));
-
-  // sanity check(s)
-  ACE_ASSERT(client_in);
-
-  myClient = client_in;
-
-  inherited2::init(level_in);
-
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(this);
-}
-
-void
 RPG_Engine::lock()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::lock"));
@@ -475,6 +459,52 @@ RPG_Engine::unlock()
   RPG_TRACE(ACE_TEXT("RPG_Engine::unlock"));
 
   myLock.release();
+}
+
+void
+RPG_Engine::init(RPG_Engine_IClient* client_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::init"));
+
+  // sanity check(s)
+  ACE_ASSERT(client_in);
+
+  myClient = client_in;
+
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->init(this);
+}
+
+void
+RPG_Engine::set(const RPG_Engine_Level_t& level_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::set"));
+
+	// sanity check(s)
+	ACE_ASSERT(myClient);
+
+  inherited2::init(level_in);
+
+  // notify client / window
+  RPG_Engine_ClientNotificationParameters_t parameters;
+  parameters.entity_id = 0;
+	parameters.condition = RPG_COMMON_CONDITION_INVALID;
+  parameters.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                       std::numeric_limits<unsigned int>::max());
+	parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                                std::numeric_limits<unsigned int>::max());
+	parameters.visible_radius = 0;
+  parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  try
+  {
+    myClient->notify(COMMAND_E2C_INIT,
+                     parameters);
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+               ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_INIT).c_str())));
+  }
 }
 
 RPG_Engine_EntityID_t
@@ -495,8 +525,9 @@ RPG_Engine::add(RPG_Engine_Entity* entity_in)
   } // end lock scope
 
   // notify AI
-  unsigned char temp = entity_in->character->getSpeed(false,
-                                                      inherited2::myMetaData.environment.lighting);
+  unsigned char temp =
+		entity_in->character->getSpeed(false,
+                                   inherited2::myMetaData.environment.lighting);
   temp /= RPG_ENGINE_FEET_PER_SQUARE;
   temp *= RPG_ENGINE_ROUND_INTERVAL;
   float squares_per_round = temp;
@@ -1096,7 +1127,8 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
   // - center position
   // - equiped light source (if any)
   RPG_Character_Race_t race(0);
-  RPG_Item_CommodityLight equipped_light_source = RPG_ITEM_COMMODITYLIGHT_INVALID;
+  RPG_Item_CommodityLight equipped_light_source =
+		RPG_ITEM_COMMODITYLIGHT_INVALID;
 
   if (lockedAccess_in)
     myLock.acquire();
@@ -1118,7 +1150,8 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
   if ((*iterator).second->character->isPlayerCharacter())
   {
     RPG_Player_Player_Base* player_base = NULL;
-    player_base = dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
+    player_base =
+			dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
     ACE_ASSERT(player_base);
 
     race = player_base->getRace();
@@ -1134,7 +1167,8 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
   } // end ELSE
 
   // step2: consider environment / ambient lighting
-  unsigned short environment_radius = RPG_Common_Tools::environment2Radius(inherited2::myMetaData.environment);
+  unsigned short environment_radius =
+		RPG_Common_Tools::environment2Radius(inherited2::myMetaData.environment);
 
   // step3: consider equipment (ambient lighting conditions)
   unsigned short lit_radius = 0;
@@ -1151,8 +1185,9 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
       RPG_Character_Race_Common_Tools::hasRace(race, RACE_GNOME))
     lit_radius *= 2;
 
-  result = ((environment_radius > lit_radius) ? static_cast<unsigned char>(environment_radius)
-                                              : static_cast<unsigned char>(lit_radius));
+  result =
+		((environment_radius > lit_radius) ? static_cast<unsigned char>(environment_radius)
+                                       : static_cast<unsigned char>(lit_radius));
 
   // step5: consider darkvision
   // *TODO*: consider monsters as well...
@@ -1274,7 +1309,8 @@ RPG_Engine::canSee(const RPG_Engine_EntityID_t& id_in,
     player_base = dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
     ACE_ASSERT(player_base);
 
-    target_equipped_a_light = (player_base->getEquipment().getLightSource() != RPG_ITEM_COMMODITYLIGHT_INVALID);
+    target_equipped_a_light =
+			(player_base->getEquipment().getLightSource() != RPG_ITEM_COMMODITYLIGHT_INVALID);
   } // end IF
   else
   {
@@ -1282,7 +1318,8 @@ RPG_Engine::canSee(const RPG_Engine_EntityID_t& id_in,
     monster = dynamic_cast<RPG_Monster*>((*iterator).second->character);
     ACE_ASSERT(monster);
 
-    target_equipped_a_light = (monster->getEquipment().getLightSource() != RPG_ITEM_COMMODITYLIGHT_INVALID);
+    target_equipped_a_light =
+			(monster->getEquipment().getLightSource() != RPG_ITEM_COMMODITYLIGHT_INVALID);
   } // end ELSE
   RPG_Map_Position_t target_position = (*iterator).second->position;
   if (!target_equipped_a_light)
@@ -1385,14 +1422,16 @@ RPG_Engine::canReach(const RPG_Engine_EntityID_t& id_in,
   } // end IF
 
   // step1: compute distance
-  unsigned int range = RPG_Engine_Common_Tools::range((*iterator).second->position,
-                                                      position_in);
+  unsigned int range =
+		RPG_Engine_Common_Tools::range((*iterator).second->position,
+                                   position_in);
 
   // step2: compute entity reach
   unsigned short base_reach = 0;
   bool absolute_reach = false;
-  unsigned int max_reach = (*iterator).second->character->getReach(base_reach,
-                                                                   absolute_reach) / RPG_ENGINE_FEET_PER_SQUARE;
+  unsigned int max_reach =
+		(*iterator).second->character->getReach(base_reach,
+                                            absolute_reach) / RPG_ENGINE_FEET_PER_SQUARE;
 
   if (lockedAccess_in)
     myLock.release();
@@ -1650,7 +1689,8 @@ RPG_Engine::handleEntities()
         case COMMAND_ATTACK_STANDARD:
         {
           ACE_ASSERT(current_action.target);
-          RPG_Engine_EntitiesConstIterator_t target = myEntities.find(current_action.target);
+          RPG_Engine_EntitiesConstIterator_t target =
+						myEntities.find(current_action.target);
           if ((target == myEntities.end()) ||
               !canReach((*iterator).first,
                         (*target).second->position,
@@ -1661,20 +1701,23 @@ RPG_Engine::handleEntities()
           RPG_Engine_ClientNotificationParameters_t parameters;
           parameters.entity_id = (*target).first;
 					parameters.condition = RPG_COMMON_CONDITION_INVALID;
-					parameters.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                               std::numeric_limits<unsigned int>::max());
-					parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                        std::numeric_limits<unsigned int>::max());
+					parameters.position =
+						std::make_pair(std::numeric_limits<unsigned int>::max(),
+                           std::numeric_limits<unsigned int>::max());
+					parameters.previous_position =
+						std::make_pair(std::numeric_limits<unsigned int>::max(),
+						               std::numeric_limits<unsigned int>::max());
 					parameters.visible_radius = 0;
 					parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
           // *TODO*: implement combat situations, in-turn-movement, ...
-          bool hit = RPG_Engine_Common_Tools::attack((*iterator).second->character,
-                                                     (*target).second->character,
-                                                     ATTACK_NORMAL,
-                                                     DEFENSE_NORMAL,
-                                                     (current_action.command == COMMAND_ATTACK_FULL),
-                                                     (RPG_Engine_Common_Tools::range((*iterator).second->position,
-                                                                                     (*target).second->position) * RPG_ENGINE_FEET_PER_SQUARE));
+          bool hit =
+						RPG_Engine_Common_Tools::attack((*iterator).second->character,
+                                            (*target).second->character,
+																						ATTACK_NORMAL,
+																						DEFENSE_NORMAL,
+																						(current_action.command == COMMAND_ATTACK_FULL),
+																						(RPG_Engine_Common_Tools::range((*iterator).second->position,
+																						                                (*target).second->position) * RPG_ENGINE_FEET_PER_SQUARE));
           notifications.push_back(std::make_pair((hit ? COMMAND_E2C_ENTITY_HIT
                                                       : COMMAND_E2C_ENTITY_MISS),
                                                  parameters));
@@ -1693,12 +1736,14 @@ RPG_Engine::handleEntities()
             // award XP
             if (!(*target).second->character->isPlayerCharacter())
             {
-              RPG_Player_Player_Base* player_base = dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
+              RPG_Player_Player_Base* player_base =
+								dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
               ACE_ASSERT(player_base);
-							unsigned int xp = RPG_Engine_Common_Tools::combat2XP((*target).second->character->getName(),
-                                                                   player_base->getLevel(),
-                                                                   1,
-                                                                   1);
+							unsigned int xp =
+								RPG_Engine_Common_Tools::combat2XP((*target).second->character->getName(),
+								                                   player_base->getLevel(),
+																									 1,
+																									 1);
 							bool level_up = player_base->gainExperience(xp);
 
 							parameters.entity_id = (*iterator).first;
@@ -1736,8 +1781,9 @@ RPG_Engine::handleEntities()
             parameters.entity_id = (*iterator).first;
 						parameters.condition = RPG_COMMON_CONDITION_INVALID;
             parameters.position = current_action.position;
-   					parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                          std::numeric_limits<unsigned int>::max());
+   					parameters.previous_position =
+							std::make_pair(std::numeric_limits<unsigned int>::max(),
+							               std::numeric_limits<unsigned int>::max());
 						parameters.visible_radius = 0;
 						parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
             notifications.push_back(std::make_pair(current_action.command, parameters));
@@ -1760,8 +1806,9 @@ RPG_Engine::handleEntities()
             // stop running
 
             // notify AI
-            unsigned char temp = (*iterator).second->character->getSpeed(false,
-                                                                         inherited2::myMetaData.environment.lighting);
+            unsigned char temp =
+							(*iterator).second->character->getSpeed(false,
+                                                      inherited2::myMetaData.environment.lighting);
             temp /= RPG_ENGINE_FEET_PER_SQUARE;
             temp *= RPG_ENGINE_ROUND_INTERVAL;
             float squares_per_round = temp;
@@ -1779,8 +1826,9 @@ RPG_Engine::handleEntities()
             // start running
 
             // notify AI
-            unsigned char temp = (*iterator).second->character->getSpeed(true,
-                                                                         inherited2::myMetaData.environment.lighting);
+            unsigned char temp =
+							(*iterator).second->character->getSpeed(true,
+							                                        inherited2::myMetaData.environment.lighting);
             temp /= RPG_ENGINE_FEET_PER_SQUARE;
             temp *= RPG_ENGINE_ROUND_INTERVAL;
             float squares_per_round = temp;
@@ -1804,7 +1852,8 @@ RPG_Engine::handleEntities()
         case COMMAND_SEARCH:
         {
           // toggle mode
-          bool is_searching = ((*iterator).second->modes.find(ENTITYMODE_SEARCHING) != (*iterator).second->modes.end());
+          bool is_searching =
+						((*iterator).second->modes.find(ENTITYMODE_SEARCHING) != (*iterator).second->modes.end());
           if (is_searching)
           {
             // stop searching
@@ -1852,7 +1901,8 @@ RPG_Engine::handleEntities()
 					parameters.previous_position = (*iterator).second->position;
 					parameters.visible_radius = 0;
 					parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_POSITION, parameters));
+          notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_POSITION,
+						                                     parameters));
 
           // OK: take a step...
           (*iterator).second->position = current_action.position;

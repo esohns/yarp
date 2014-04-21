@@ -140,6 +140,7 @@ RPG_Graphics_SDLWindowBase::clean()
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clean"));
 
   myInvalidRegions.clear();
+
   // recurse into any children
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
        iterator != myChildren.end();
@@ -153,6 +154,12 @@ RPG_Graphics_SDLWindowBase::init(RPG_Common_ILock* screenLock_in)
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::init"));
 
   myScreenLock = screenLock_in;
+
+  // recurse into any children
+	for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
+		   iterator != myChildren.end();
+			 iterator++)
+	  (*iterator)->init(screenLock_in);
 }
 
 void
