@@ -204,15 +204,6 @@ typedef RPG_Graphics_DoorTileMap_t::iterator RPG_Graphics_DoorTileMapIterator_t;
 
 typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
 
-struct RPG_Graphics_MapStyle_t
-{
-  RPG_Graphics_FloorStyle floor_style;
-  RPG_Graphics_EdgeStyle edge_style;
-  RPG_Graphics_WallStyle wall_style;
-  bool half_height_walls;
-  RPG_Graphics_DoorStyle door_style;
-};
-
 // *NOTE*: map coordinates !
 typedef std::vector<std::pair<RPG_Graphics_Position_t, SDL_Surface*> > RPG_Graphics_TileCache_t;
 typedef RPG_Graphics_TileCache_t::const_iterator RPG_Graphics_TileCacheConstIterator_t;

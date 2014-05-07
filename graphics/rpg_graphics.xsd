@@ -125,6 +125,16 @@
     <xsd:union memberTypes="RPG_Graphics_FloorStyle_Type RPG_Graphics_StairsStyle_Type RPG_Graphics_WallStyle_Type RPG_Graphics_EdgeStyle_Type RPG_Graphics_DoorStyle_Type"/>
   </xsd:simpleType>
 
+  <xsd:complexType name="RPG_Graphics_MapStyle_Type">
+    <xsd:sequence>
+      <xsd:element name="floor" type="RPG_Graphics_FloorStyle_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="edge" type="RPG_Graphics_EdgeStyle_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="wall" type="RPG_Graphics_WallStyle_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="half_height_walls" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="door" type="RPG_Graphics_DoorStyle_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:simpleType name="RPG_Graphics_Cursor_Type">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="CURSOR_DOOR_OPEN"/>

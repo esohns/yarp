@@ -55,7 +55,7 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
 //              NULL),                // background
    myState(NULL),
    myEngine(engine_in),
-//    myCurrentMapStyle(),
+//   myCurrentMapStyle(),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
    myCurrentCeilingTile(NULL),
@@ -66,8 +66,8 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
    myHideFloor(false),
    myHideWalls(false),
    myWallBlend(NULL),
-   myView(std::make_pair(myEngine->getSize().first / 2,
-                         myEngine->getSize().second / 2)),
+   myView(std::make_pair(std::numeric_limits<unsigned int>::max(),
+                         std::numeric_limits<unsigned int>::max())),
 //   myHighlightBGPosition(std::make_pair(myEngine->getSize().first / 2,
 //                                        myEngine->getSize().second / 2)),
 //   myHighlightBG(NULL),
@@ -77,6 +77,15 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
 
 	myEngine->init(this);
+
+	myEngine->lock();
+	RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(false);
+	myCurrentMapStyle = level_metadata.style;
+
+	RPG_Map_Size_t map_size = myEngine->getSize(false);
+	myEngine->unlock();
+	myView = std::make_pair(map_size.first / 2,
+													map_size.second / 2);
 
 //   initWallBlend(false);
 
@@ -105,39 +114,6 @@ SDL_GUI_LevelWindow::SDL_GUI_LevelWindow(const RPG_Graphics_SDLWindowBase& paren
   ACE_OS::memset(&myCurrentDoorSet,
                  0,
                  sizeof(myCurrentDoorSet));
-
-//  // init cursor highlighting
-//  myHighlightBG = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-//                                               RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
-//  if (!myHighlightBG)
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
-//               RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-//               RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
-//  type.tilegraphic = TILE_CURSOR_HIGHLIGHT;
-//  myHighlightTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-//                                                           true,   // convert to display format
-//                                                           false); // don't cache
-//  if (!myHighlightTile)
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-//               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
-
-  //// init style
-  //myCurrentMapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-  //myCurrentMapStyle.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
-  //myCurrentMapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  //myCurrentMapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  //myCurrentMapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-  //RPG_Graphics_Common_Tools::loadDoorTileSet(myCurrentMapStyle.door_style,
-  //                                           myCurrentDoorSet);
-  //RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(myCurrentMapStyle.edge_style,
-  //                                                myCurrentFloorEdgeSet);
-  //RPG_Graphics_Common_Tools::loadFloorTileSet(myCurrentMapStyle.floor_style,
-  //                                            myCurrentFloorSet);
-  //RPG_Graphics_Common_Tools::loadWallTileSet(myCurrentMapStyle.wall_style,
-  //                                           myCurrentMapStyle.half_height_walls,
-  //                                           myCurrentWallSet);
 
   // init minimap
   initMiniMap(myEngine);
@@ -219,8 +195,6 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
 
-  RPG_Map_Size_t size = myEngine->getSize();
-
   // handle over-/underruns
   if ((offsetX_in < 0) &&
       (static_cast<unsigned int>(-offsetX_in) > myView.first))
@@ -234,10 +208,11 @@ SDL_GUI_LevelWindow::setView(const int& offsetX_in,
   else
     myView.second += offsetY_in;
 
-  if (myView.first >= size.first)
-    myView.first = (size.first - 1);
-  if (myView.second >= size.second)
-    myView.second = (size.second - 1);
+  RPG_Map_Size_t map_size = myEngine->getSize(true);
+  if (myView.first >= map_size.first)
+    myView.first = (map_size.first - 1);
+  if (myView.second >= map_size.second)
+    myView.second = (map_size.second - 1);
 }
 
 RPG_Graphics_Position_t
@@ -250,28 +225,30 @@ SDL_GUI_LevelWindow::getView() const
 
 void
 SDL_GUI_LevelWindow::init(state_t* state_in,
-                          RPG_Common_ILock* screenLock_in,
-                          const RPG_Graphics_MapStyle_t& mapStyle_in)
+                          RPG_Common_ILock* screenLock_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
 
-  // init edge, floor, door tiles
-  init(state_in,
-       screenLock_in);
+  // sanity check(s)
+  ACE_ASSERT(state_in);
+
+  myState = state_in;
+  inherited::init(screenLock_in);
 
   // init style
+  myCurrentMapStyle = myEngine->getMetaData(true).style;
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = mapStyle_in.floor_style;
+  style.floorstyle = myCurrentMapStyle.floor;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
-  style.edgestyle = mapStyle_in.edge_style;
+  style.edgestyle = myCurrentMapStyle.edge;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = mapStyle_in.wall_style;
+  style.wallstyle = myCurrentMapStyle.wall;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
-  style.doorstyle = mapStyle_in.door_style;
+  style.doorstyle = myCurrentMapStyle.door;
   setStyle(style);
 }
 
@@ -308,14 +285,16 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 //                        (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2) + 50)) +
 //                        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
 //                       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
-  top_right.first = (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((target_surface->w / 2))) +
-                      (RPG_GRAPHICS_TILE_WIDTH_MOD * ((target_surface->h / 2))) +
-                      (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-                     (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
-  top_right.second = (((RPG_GRAPHICS_TILE_HEIGHT_MOD * ((target_surface->w / 2))) +
-                       (RPG_GRAPHICS_TILE_WIDTH_MOD * ((target_surface->h / 2))) +
-                       (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-                      (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+  top_right.first =
+      (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((target_surface->w / 2))) +
+        (RPG_GRAPHICS_TILE_WIDTH_MOD * ((target_surface->h / 2))) +
+        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+  top_right.second =
+      (((RPG_GRAPHICS_TILE_HEIGHT_MOD * ((target_surface->w / 2))) +
+        (RPG_GRAPHICS_TILE_WIDTH_MOD * ((target_surface->h / 2))) +
+        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
 
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = top_right.first - top_right.second - 1;
@@ -357,11 +336,12 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
   if (inherited::myScreenLock)
     inherited::myScreenLock->lock();
+  myEngine->lock();
 //  // "clear" map "window"
 //  clear();
 
   // pass 1
-  RPG_Map_Size_t size = myEngine->getSize();
+  RPG_Map_Size_t map_size = myEngine->getSize(false);
   for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
        i++)
@@ -381,9 +361,9 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
 
       // off-map ?
       if ((current_map_position.second < 0) ||
-          (current_map_position.second >= static_cast<int>(size.second)) ||
+          (current_map_position.second >= static_cast<int>(map_size.second)) ||
           (current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int>(size.first)))
+          (current_map_position.first >= static_cast<int>(map_size.first)))
         continue;
 
       // floor tile rotation
@@ -399,9 +379,11 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
                                                               myView);
 
       // step1: unmapped areas
-      if ((myEngine->getElement(current_map_position) == MAPELEMENT_UNMAPPED) ||
+      RPG_Map_Element current_map_element =
+          myEngine->getElement(current_map_position, false);
+      if ((current_map_element == MAPELEMENT_UNMAPPED) ||
           // *NOTE*: walls are drawn together with the floor...
-          (myEngine->getElement(current_map_position) == MAPELEMENT_WALL))
+          (current_map_element == MAPELEMENT_WALL))
       {
         RPG_Graphics_Surface::put(screen_position,
                                   *myCurrentOffMapTile,
@@ -421,8 +403,8 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step2: floor
-      if ((myEngine->getElement(current_map_position) == MAPELEMENT_FLOOR) ||
-          (myEngine->getElement(current_map_position) == MAPELEMENT_DOOR))
+      if ((current_map_element == MAPELEMENT_FLOOR) ||
+          (current_map_element == MAPELEMENT_DOOR))
       {
         if (!myHideFloor)
           RPG_Graphics_Surface::put(screen_position,
@@ -612,7 +594,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
   // pass 2
   RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
-//  RPG_Engine_EntityGraphics_t entity_graphics = myEngine->getGraphics();
+  RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(false);
   RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
   for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
@@ -621,7 +603,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
     current_map_position.second = myView.second + i;
     // off the map ? --> continue
     if ((current_map_position.second < 0) ||
-        (current_map_position.second >= static_cast<int>(size.second)))
+        (current_map_position.second >= static_cast<int>(map_size.second)))
       continue;
 
     for (j = diff + i;
@@ -631,7 +613,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       current_map_position.first = myView.first + j;
       // off the map ? --> continue
       if ((current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int>(size.first)))
+          (current_map_position.first >= static_cast<int>(map_size.first)))
         continue;
 
       // transform map coordinates into screen coordinates
@@ -689,7 +671,7 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // step4: objects
 
       // step5: creatures
-      entity_id = myEngine->hasEntity(current_map_position);
+      entity_id = myEngine->hasEntity(current_map_position, false);
       if (entity_id)
       {
         // invalidate bg
@@ -747,18 +729,17 @@ SDL_GUI_LevelWindow::draw(SDL_Surface* targetSurface_in,
       // step8: ceiling
       if (RPG_Client_Common_Tools::hasCeiling(current_map_position, *myEngine) &&
           !myHideWalls)
-      {
         RPG_Graphics_Surface::put(std::make_pair(screen_position.first,
                                                  (screen_position.second -
-                                                  (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
-                                                                                       : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
-                                                  (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8 : 2)))),
+                                                  (level_metadata.style.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
+                                                                                          : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
+                                                  (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (level_metadata.style.half_height_walls ? 8 : 2)))),
                                   *myCurrentCeilingTile,
                                   target_surface,
                                   dirty_region);
-      } // end IF
     } // end FOR
   } // end FOR
+  myEngine->unlock();
   if (inherited::myScreenLock)
     inherited::myScreenLock->unlock();
 
@@ -991,12 +972,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             break;
           } // end IF
 
-          myCurrentMapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle>(myCurrentMapStyle.floor_style + 1);
-          if (myCurrentMapStyle.floor_style == RPG_GRAPHICS_FLOORSTYLE_MAX)
-            myCurrentMapStyle.floor_style = static_cast<RPG_Graphics_FloorStyle>(0);
+          myCurrentMapStyle.floor =
+              static_cast<RPG_Graphics_FloorStyle>(myCurrentMapStyle.floor + 1);
+          if (myCurrentMapStyle.floor == RPG_GRAPHICS_FLOORSTYLE_MAX)
+            myCurrentMapStyle.floor = static_cast<RPG_Graphics_FloorStyle>(0);
           RPG_Graphics_StyleUnion style;
           style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-          style.floorstyle = myCurrentMapStyle.floor_style;
+          style.floorstyle = myCurrentMapStyle.floor;
           setStyle(style);
 
           // redraw
@@ -1009,11 +991,12 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
         case SDLK_h:
         {
           // toggle setting
-          myCurrentMapStyle.half_height_walls = !myCurrentMapStyle.half_height_walls;
+          myCurrentMapStyle.half_height_walls =
+              !myCurrentMapStyle.half_height_walls;
 
           RPG_Graphics_StyleUnion new_style;
           new_style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-          new_style.wallstyle = myCurrentMapStyle.wall_style;
+          new_style.wallstyle = myCurrentMapStyle.wall;
           setStyle(new_style);
 
           // redraw
@@ -1047,12 +1030,13 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
             break;
           } // end IF
 
-          myCurrentMapStyle.wall_style = static_cast<RPG_Graphics_WallStyle>(myCurrentMapStyle.wall_style + 1);;
-          if (myCurrentMapStyle.wall_style == RPG_GRAPHICS_WALLSTYLE_MAX)
-            myCurrentMapStyle.wall_style = static_cast<RPG_Graphics_WallStyle>(0);
+          myCurrentMapStyle.wall =
+              static_cast<RPG_Graphics_WallStyle>(myCurrentMapStyle.wall + 1);;
+          if (myCurrentMapStyle.wall == RPG_GRAPHICS_WALLSTYLE_MAX)
+            myCurrentMapStyle.wall = static_cast<RPG_Graphics_WallStyle>(0);
           RPG_Graphics_StyleUnion style;
           style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-          style.wallstyle = myCurrentMapStyle.wall_style;
+          style.wallstyle = myCurrentMapStyle.wall;
           setStyle(style);
 
           // redraw
@@ -1269,19 +1253,6 @@ SDL_GUI_LevelWindow::handleEvent(const SDL_Event& event_in,
                          dirty_region);
   dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                         dirtyRegion_out);
-}
-
-void
-SDL_GUI_LevelWindow::init(state_t* state_in,
-                          RPG_Common_ILock* screenLock_in)
-{
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
-
-  // sanity check(s)
-  ACE_ASSERT(state_in);
-
-  myState = state_in;
-  inherited::init(screenLock_in);
 }
 
 void
@@ -1568,7 +1539,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("edge-style \"%s\" has no tiles, continuing\n"),
                    RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str()));
       } // end IF
-      myCurrentMapStyle.edge_style = style_in.edgestyle;
+      myCurrentMapStyle.edge = style_in.edgestyle;
 
       // update floor edge tiles / position
       RPG_Client_Common_Tools::updateFloorEdges(myCurrentFloorEdgeSet,
@@ -1587,7 +1558,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("floor-style \"%s\" has no tiles, continuing\n"),
                    RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str()));
       } // end IF
-      myCurrentMapStyle.floor_style = style_in.floorstyle;
+      myCurrentMapStyle.floor = style_in.floorstyle;
 
       break;
     }
@@ -1796,7 +1767,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
       RPG_Client_Common_Tools::updateWalls(myCurrentWallSet,
                                            myWallTiles);
 
-      myCurrentMapStyle.wall_style = style_in.wallstyle;
+      myCurrentMapStyle.wall = style_in.wallstyle;
 
       break;
     }
@@ -1819,7 +1790,7 @@ SDL_GUI_LevelWindow::setStyle(const RPG_Graphics_StyleUnion& style_in)
                                            *myEngine,
                                            myDoorTiles);
 
-      myCurrentMapStyle.door_style = style_in.doorstyle;
+      myCurrentMapStyle.door = style_in.doorstyle;
 
       break;
     }

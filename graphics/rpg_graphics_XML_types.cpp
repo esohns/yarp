@@ -33,11 +33,67 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
 #include "rpg_graphics_XML_types.h"
+
+// RPG_Graphics_MapStyle_Type_pskel
+//
+
+void RPG_Graphics_MapStyle_Type_pskel::
+floor_parser (::RPG_Graphics_FloorStyle_Type_pskel& p)
+{
+  this->floor_parser_ = &p;
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+edge_parser (::RPG_Graphics_EdgeStyle_Type_pskel& p)
+{
+  this->edge_parser_ = &p;
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+wall_parser (::RPG_Graphics_WallStyle_Type_pskel& p)
+{
+  this->wall_parser_ = &p;
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+half_height_walls_parser (::xml_schema::boolean_pskel& p)
+{
+  this->half_height_walls_parser_ = &p;
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+door_parser (::RPG_Graphics_DoorStyle_Type_pskel& p)
+{
+  this->door_parser_ = &p;
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+parsers (::RPG_Graphics_FloorStyle_Type_pskel& floor,
+         ::RPG_Graphics_EdgeStyle_Type_pskel& edge,
+         ::RPG_Graphics_WallStyle_Type_pskel& wall,
+         ::xml_schema::boolean_pskel& half_height_walls,
+         ::RPG_Graphics_DoorStyle_Type_pskel& door)
+{
+  this->floor_parser_ = &floor;
+  this->edge_parser_ = &edge;
+  this->wall_parser_ = &wall;
+  this->half_height_walls_parser_ = &half_height_walls;
+  this->door_parser_ = &door;
+}
+
+RPG_Graphics_MapStyle_Type_pskel::
+RPG_Graphics_MapStyle_Type_pskel ()
+: floor_parser_ (0),
+  edge_parser_ (0),
+  wall_parser_ (0),
+  half_height_walls_parser_ (0),
+  door_parser_ (0)
+{
+}
 
 // RPG_Graphics_Element_Type_pskel
 //
@@ -388,6 +444,152 @@ RPG_Graphics_ColorRGBA_Type_pskel ()
   b_parser_ (0),
   a_parser_ (0)
 {
+}
+
+// RPG_Graphics_MapStyle_Type_pskel
+//
+
+void RPG_Graphics_MapStyle_Type_pskel::
+floor (const RPG_Graphics_FloorStyle&)
+{
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+edge (const RPG_Graphics_EdgeStyle&)
+{
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+wall (const RPG_Graphics_WallStyle&)
+{
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+half_height_walls (bool)
+{
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+door (const RPG_Graphics_DoorStyle&)
+{
+}
+
+void RPG_Graphics_MapStyle_Type_pskel::
+post_RPG_Graphics_MapStyle_Type ()
+{
+}
+
+bool RPG_Graphics_MapStyle_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "floor" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->floor_parser_;
+
+    if (this->floor_parser_)
+      this->floor_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "edge" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->edge_parser_;
+
+    if (this->edge_parser_)
+      this->edge_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "wall" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->wall_parser_;
+
+    if (this->wall_parser_)
+      this->wall_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "half_height_walls" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->half_height_walls_parser_;
+
+    if (this->half_height_walls_parser_)
+      this->half_height_walls_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "door" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->door_parser_;
+
+    if (this->door_parser_)
+      this->door_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Graphics_MapStyle_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "floor" && ns == "urn:rpg")
+  {
+    if (this->floor_parser_)
+      this->floor (this->floor_parser_->post_RPG_Graphics_FloorStyle_Type ());
+
+    return true;
+  }
+
+  if (n == "edge" && ns == "urn:rpg")
+  {
+    if (this->edge_parser_)
+      this->edge (this->edge_parser_->post_RPG_Graphics_EdgeStyle_Type ());
+
+    return true;
+  }
+
+  if (n == "wall" && ns == "urn:rpg")
+  {
+    if (this->wall_parser_)
+      this->wall (this->wall_parser_->post_RPG_Graphics_WallStyle_Type ());
+
+    return true;
+  }
+
+  if (n == "half_height_walls" && ns == "urn:rpg")
+  {
+    if (this->half_height_walls_parser_)
+      this->half_height_walls (this->half_height_walls_parser_->post_boolean ());
+
+    return true;
+  }
+
+  if (n == "door" && ns == "urn:rpg")
+  {
+    if (this->door_parser_)
+      this->door (this->door_parser_->post_RPG_Graphics_DoorStyle_Type ());
+
+    return true;
+  }
+
+  return false;
 }
 
 // RPG_Graphics_Element_Type_pskel

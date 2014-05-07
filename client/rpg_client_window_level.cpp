@@ -95,22 +95,6 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
                                          std::numeric_limits<unsigned int>::max());
   myClientAction.positions.clear();
 
-  // init style
-  myCurrentMapStyle.door_style = RPG_GRAPHICS_DOORSTYLE_INVALID;
-  myCurrentMapStyle.edge_style = RPG_GRAPHICS_EDGESTYLE_INVALID;
-  myCurrentMapStyle.floor_style = RPG_GRAPHICS_FLOORSTYLE_INVALID;
-  myCurrentMapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  myCurrentMapStyle.wall_style = RPG_GRAPHICS_WALLSTYLE_INVALID;
-  //   RPG_Graphics_Common_Tools::loadDoorTileSet(myCurrentMapStyle.door_style,
-  //                                              myCurrentDoorSet);
-  //   RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(myCurrentMapStyle.edge_style,
-  //                                                   myCurrentFloorEdgeSet);
-  //   RPG_Graphics_Common_Tools::loadFloorTileSet(myCurrentMapStyle.floor_style,
-  //                                               myCurrentFloorSet);
-  //   RPG_Graphics_Common_Tools::loadWallTileSet(myCurrentMapStyle.wall_style,
-  //                                              myCurrentMapStyle.half_height_walls,
-  //                                              myCurrentWallSet);
-
   ACE_OS::memset(&myCurrentFloorEdgeSet,
                  0,
                  sizeof(myCurrentFloorEdgeSet));
@@ -403,8 +387,7 @@ RPG_Client_Window_Level::toggleShowCoordinates()
 
 void
 RPG_Client_Window_Level::init(RPG_Client_Engine* clientEngine_in,
-                             RPG_Engine* engine_in,
-                             const RPG_Graphics_MapStyle_t& mapStyle_in)
+                              RPG_Engine* engine_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::init"));
 
@@ -415,23 +398,9 @@ RPG_Client_Window_Level::init(RPG_Client_Engine* clientEngine_in,
   myClient = clientEngine_in;
   myEngine = engine_in;
 
-  // init style
-  RPG_Graphics_StyleUnion style;
-  style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = mapStyle_in.floor_style;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
-  style.edgestyle = mapStyle_in.edge_style;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = mapStyle_in.wall_style;
-  setStyle(style);
-  style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
-  style.doorstyle = mapStyle_in.door_style;
-  setStyle(style);
-
   // init edge, wall, door tiles
-  init();
+  RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(true);
+  init(level_metadata.style);
 
   // init minimap
   initMiniMap();
@@ -513,16 +482,26 @@ RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
 }
 
 void
-RPG_Client_Window_Level::init()
+RPG_Client_Window_Level::init(const RPG_Graphics_MapStyle& mapStyle_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::init"));
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-  // clean up
-  myFloorEdgeTiles.clear();
-  myWallTiles.clear();
-  myDoorTiles.clear();
+  // init style
+  RPG_Graphics_StyleUnion style;
+  style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
+  style.floorstyle = mapStyle_in.floor;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
+  style.edgestyle = mapStyle_in.edge;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
+  style.wallstyle = mapStyle_in.wall;
+  setStyle(style);
+  style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
+  style.doorstyle = mapStyle_in.door;
+  setStyle(style);
 
   // init tiles / position
   RPG_Client_Common_Tools::initFloorEdges(*myEngine,
@@ -2333,7 +2312,6 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("edge-style \"%s\" has no tiles, continuing\n"),
                    ACE_TEXT(RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str())));
       } // end IF
-      myCurrentMapStyle.edge_style = style_in.edgestyle;
 
       // update floor edge tiles / position
       RPG_Client_Common_Tools::updateFloorEdges(myCurrentFloorEdgeSet,
@@ -2352,14 +2330,14 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("floor-style \"%s\" has no tiles, continuing\n"),
                    ACE_TEXT(RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str())));
       } // end IF
-      myCurrentMapStyle.floor_style = style_in.floorstyle;
 
       break;
     }
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
+      RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(true);
       RPG_Graphics_Common_Tools::loadWallTileSet(style_in.wallstyle,
-                                                 myCurrentMapStyle.half_height_walls,
+                                                 level_metadata.style.half_height_walls,
                                                  myCurrentWallSet);
       // sanity check
       if ((myCurrentWallSet.east.surface == NULL) ||
@@ -2374,7 +2352,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
         return;
       } // end IF
 
-      initWallBlend(myCurrentMapStyle.half_height_walls);
+      initWallBlend(level_metadata.style.half_height_walls);
 
       // *NOTE*: west is just a "darkened" version of east...
       SDL_Surface* copy = NULL;
@@ -2487,8 +2465,6 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
       RPG_Client_Common_Tools::updateWalls(myCurrentWallSet,
                                            myWallTiles);
 
-      myCurrentMapStyle.wall_style = style_in.wallstyle;
-
       break;
     }
     case RPG_Graphics_StyleUnion::DOORSTYLE:
@@ -2512,8 +2488,6 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                                            *myEngine,
                                            myDoorTiles);
 
-      myCurrentMapStyle.door_style = style_in.doorstyle;
-
       break;
     }
     default:
@@ -2522,7 +2496,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                  ACE_TEXT("invalid style (was: %d), aborting\n"),
                  style_in.discriminator));
 
-      return;
+      break;
     }
   } // end SWITCH
 }

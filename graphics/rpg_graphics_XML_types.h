@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_GRAPHICS_XML_TYPES_H
-#define CXX___RPG_GRAPHICS_XML_TYPES_H
+#ifndef CXX__GRAPHICS_RPG_GRAPHICS_XML_TYPES_H
+#define CXX__GRAPHICS_RPG_GRAPHICS_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -59,6 +59,7 @@ class RPG_Graphics_WallStyle_Type_pskel;
 class RPG_Graphics_EdgeStyle_Type_pskel;
 class RPG_Graphics_DoorStyle_Type_pskel;
 class RPG_Graphics_StyleUnion_Type_pskel;
+class RPG_Graphics_MapStyle_Type_pskel;
 class RPG_Graphics_Cursor_Type_pskel;
 class RPG_Graphics_Font_Type_pskel;
 class RPG_Graphics_Image_Type_pskel;
@@ -200,6 +201,80 @@ class RPG_Graphics_Export RPG_Graphics_StyleUnion_Type_pskel: public ::xml_schem
 
   virtual RPG_Graphics_StyleUnion
   post_RPG_Graphics_StyleUnion_Type () = 0;
+};
+
+class RPG_Graphics_Export RPG_Graphics_MapStyle_Type_pskel: public ::xml_schema::complex_content
+{
+  public:
+  // Parser callbacks. Override them in your implementation.
+  //
+  // virtual void
+  // pre ();
+
+  virtual void
+  floor (const RPG_Graphics_FloorStyle&);
+
+  virtual void
+  edge (const RPG_Graphics_EdgeStyle&);
+
+  virtual void
+  wall (const RPG_Graphics_WallStyle&);
+
+  virtual void
+  half_height_walls (bool);
+
+  virtual void
+  door (const RPG_Graphics_DoorStyle&);
+
+  virtual void
+  post_RPG_Graphics_MapStyle_Type ();
+
+  // Parser construction API.
+  //
+  void
+  floor_parser (::RPG_Graphics_FloorStyle_Type_pskel&);
+
+  void
+  edge_parser (::RPG_Graphics_EdgeStyle_Type_pskel&);
+
+  void
+  wall_parser (::RPG_Graphics_WallStyle_Type_pskel&);
+
+  void
+  half_height_walls_parser (::xml_schema::boolean_pskel&);
+
+  void
+  door_parser (::RPG_Graphics_DoorStyle_Type_pskel&);
+
+  void
+  parsers (::RPG_Graphics_FloorStyle_Type_pskel& /* floor */,
+           ::RPG_Graphics_EdgeStyle_Type_pskel& /* edge */,
+           ::RPG_Graphics_WallStyle_Type_pskel& /* wall */,
+           ::xml_schema::boolean_pskel& /* half_height_walls */,
+           ::RPG_Graphics_DoorStyle_Type_pskel& /* door */);
+
+  // Constructor.
+  //
+  RPG_Graphics_MapStyle_Type_pskel ();
+
+  // Implementation.
+  //
+  protected:
+  virtual bool
+  _start_element_impl (const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string&,
+                       const ::xml_schema::ro_string*);
+
+  virtual bool
+  _end_element_impl (const ::xml_schema::ro_string&,
+                     const ::xml_schema::ro_string&);
+
+  protected:
+  ::RPG_Graphics_FloorStyle_Type_pskel* floor_parser_;
+  ::RPG_Graphics_EdgeStyle_Type_pskel* edge_parser_;
+  ::RPG_Graphics_WallStyle_Type_pskel* wall_parser_;
+  ::xml_schema::boolean_pskel* half_height_walls_parser_;
+  ::RPG_Graphics_DoorStyle_Type_pskel* door_parser_;
 };
 
 class RPG_Graphics_Export RPG_Graphics_Cursor_Type_pskel: public virtual ::xml_schema::string_pskel
@@ -838,4 +913,4 @@ class RPG_Graphics_Export RPG_Graphics_ColorRGBA_Type_pskel: public ::xml_schema
 //
 // End epilogue.
 
-#endif // CXX___RPG_GRAPHICS_XML_TYPES_H
+#endif // CXX__GRAPHICS_RPG_GRAPHICS_XML_TYPES_H

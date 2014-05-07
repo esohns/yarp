@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -443,6 +442,130 @@ operator= (value v)
   ::xml_schema::string (_xsd_RPG_Graphics_StyleUnion_XMLTree_Type_literals_[v]);
 
   return *this;
+}
+
+
+// RPG_Graphics_MapStyle_XMLTree_Type
+// 
+
+const RPG_Graphics_MapStyle_XMLTree_Type::floor_type& RPG_Graphics_MapStyle_XMLTree_Type::
+floor () const
+{
+  return this->floor_.get ();
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type::floor_type& RPG_Graphics_MapStyle_XMLTree_Type::
+floor ()
+{
+  return this->floor_.get ();
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+floor (const floor_type& x)
+{
+  this->floor_.set (x);
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+floor (::std::auto_ptr< floor_type > x)
+{
+  this->floor_.set (x);
+}
+
+const RPG_Graphics_MapStyle_XMLTree_Type::edge_optional& RPG_Graphics_MapStyle_XMLTree_Type::
+edge () const
+{
+  return this->edge_;
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type::edge_optional& RPG_Graphics_MapStyle_XMLTree_Type::
+edge ()
+{
+  return this->edge_;
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+edge (const edge_type& x)
+{
+  this->edge_.set (x);
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+edge (const edge_optional& x)
+{
+  this->edge_ = x;
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+edge (::std::auto_ptr< edge_type > x)
+{
+  this->edge_.set (x);
+}
+
+const RPG_Graphics_MapStyle_XMLTree_Type::wall_type& RPG_Graphics_MapStyle_XMLTree_Type::
+wall () const
+{
+  return this->wall_.get ();
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type::wall_type& RPG_Graphics_MapStyle_XMLTree_Type::
+wall ()
+{
+  return this->wall_.get ();
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+wall (const wall_type& x)
+{
+  this->wall_.set (x);
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+wall (::std::auto_ptr< wall_type > x)
+{
+  this->wall_.set (x);
+}
+
+const RPG_Graphics_MapStyle_XMLTree_Type::half_height_walls_type& RPG_Graphics_MapStyle_XMLTree_Type::
+half_height_walls () const
+{
+  return this->half_height_walls_.get ();
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type::half_height_walls_type& RPG_Graphics_MapStyle_XMLTree_Type::
+half_height_walls ()
+{
+  return this->half_height_walls_.get ();
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+half_height_walls (const half_height_walls_type& x)
+{
+  this->half_height_walls_.set (x);
+}
+
+const RPG_Graphics_MapStyle_XMLTree_Type::door_type& RPG_Graphics_MapStyle_XMLTree_Type::
+door () const
+{
+  return this->door_.get ();
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type::door_type& RPG_Graphics_MapStyle_XMLTree_Type::
+door ()
+{
+  return this->door_.get ();
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+door (const door_type& x)
+{
+  this->door_.set (x);
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+door (::std::auto_ptr< door_type > x)
+{
+  this->door_.set (x);
 }
 
 
@@ -2584,6 +2707,202 @@ _xsd_RPG_Graphics_StyleUnion_XMLTree_Type_indexes_[32] =
   ::RPG_Graphics_StyleUnion_XMLTree_Type::WALLSTYLE_STUCCO,
   ::RPG_Graphics_StyleUnion_XMLTree_Type::WALLSTYLE_VINE_COVERED
 };
+
+// RPG_Graphics_MapStyle_XMLTree_Type
+//
+
+RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_MapStyle_XMLTree_Type (const floor_type& floor,
+                                    const wall_type& wall,
+                                    const half_height_walls_type& half_height_walls,
+                                    const door_type& door)
+: ::xml_schema::type (),
+  floor_ (floor, ::xml_schema::flags (), this),
+  edge_ (::xml_schema::flags (), this),
+  wall_ (wall, ::xml_schema::flags (), this),
+  half_height_walls_ (half_height_walls, ::xml_schema::flags (), this),
+  door_ (door, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_MapStyle_XMLTree_Type (const RPG_Graphics_MapStyle_XMLTree_Type& x,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  floor_ (x.floor_, f, this),
+  edge_ (x.edge_, f, this),
+  wall_ (x.wall_, f, this),
+  half_height_walls_ (x.half_height_walls_, f, this),
+  door_ (x.door_, f, this)
+{
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_MapStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  floor_ (f, this),
+  edge_ (f, this),
+  wall_ (f, this),
+  half_height_walls_ (f, this),
+  door_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Graphics_MapStyle_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // floor
+    //
+    if (n.name () == "floor" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< floor_type > r (
+        floor_traits::create (i, f, this));
+
+      if (!floor_.present ())
+      {
+        this->floor_.set (r);
+        continue;
+      }
+    }
+
+    // edge
+    //
+    if (n.name () == "edge" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< edge_type > r (
+        edge_traits::create (i, f, this));
+
+      if (!this->edge_)
+      {
+        this->edge_.set (r);
+        continue;
+      }
+    }
+
+    // wall
+    //
+    if (n.name () == "wall" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< wall_type > r (
+        wall_traits::create (i, f, this));
+
+      if (!wall_.present ())
+      {
+        this->wall_.set (r);
+        continue;
+      }
+    }
+
+    // half_height_walls
+    //
+    if (n.name () == "half_height_walls" && n.namespace_ () == "urn:rpg")
+    {
+      if (!half_height_walls_.present ())
+      {
+        this->half_height_walls_.set (half_height_walls_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // door
+    //
+    if (n.name () == "door" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< door_type > r (
+        door_traits::create (i, f, this));
+
+      if (!door_.present ())
+      {
+        this->door_.set (r);
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!floor_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "floor",
+      "urn:rpg");
+  }
+
+  if (!wall_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "wall",
+      "urn:rpg");
+  }
+
+  if (!half_height_walls_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "half_height_walls",
+      "urn:rpg");
+  }
+
+  if (!door_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "door",
+      "urn:rpg");
+  }
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type* RPG_Graphics_MapStyle_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Graphics_MapStyle_XMLTree_Type (*this, f, c);
+}
+
+RPG_Graphics_MapStyle_XMLTree_Type::
+~RPG_Graphics_MapStyle_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Graphics_MapStyle_XMLTree_Type& x, const RPG_Graphics_MapStyle_XMLTree_Type& y)
+{
+  if (!(x.floor () == y.floor ()))
+    return false;
+
+  if (!(x.edge () == y.edge ()))
+    return false;
+
+  if (!(x.wall () == y.wall ()))
+    return false;
+
+  if (!(x.half_height_walls () == y.half_height_walls ()))
+    return false;
+
+  if (!(x.door () == y.door ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Graphics_MapStyle_XMLTree_Type& x, const RPG_Graphics_MapStyle_XMLTree_Type& y)
+{
+  return !(x == y);
+}
 
 // RPG_Graphics_Cursor_XMLTree_Type
 //
@@ -5001,6 +5320,21 @@ operator<< (::std::ostream& o, const RPG_Graphics_StyleUnion_XMLTree_Type& i)
 }
 
 ::std::ostream&
+operator<< (::std::ostream& o, const RPG_Graphics_MapStyle_XMLTree_Type& i)
+{
+  o << ::std::endl << "floor: " << i.floor ();
+  if (i.edge ())
+  {
+    o << ::std::endl << "edge: " << *i.edge ();
+  }
+
+  o << ::std::endl << "wall: " << i.wall ();
+  o << ::std::endl << "half_height_walls: " << i.half_height_walls ();
+  o << ::std::endl << "door: " << i.door ();
+  return o;
+}
+
+::std::ostream&
 operator<< (::std::ostream& o, RPG_Graphics_Cursor_XMLTree_Type::value i)
 {
   return o << RPG_Graphics_Cursor_XMLTree_Type::_xsd_RPG_Graphics_Cursor_XMLTree_Type_literals_[i];
@@ -5750,6 +6084,73 @@ operator<< (::xml_schema::list_stream& l,
             const RPG_Graphics_StyleUnion_XMLTree_Type& i)
 {
   l << static_cast< const ::xml_schema::string& > (i);
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Graphics_MapStyle_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // floor
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "floor",
+        "urn:rpg",
+        e));
+
+    s << i.floor ();
+  }
+
+  // edge
+  //
+  if (i.edge ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "edge",
+        "urn:rpg",
+        e));
+
+    s << *i.edge ();
+  }
+
+  // wall
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "wall",
+        "urn:rpg",
+        e));
+
+    s << i.wall ();
+  }
+
+  // half_height_walls
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "half_height_walls",
+        "urn:rpg",
+        e));
+
+    s << i.half_height_walls ();
+  }
+
+  // door
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "door",
+        "urn:rpg",
+        e));
+
+    s << i.door ();
+  }
 }
 
 void

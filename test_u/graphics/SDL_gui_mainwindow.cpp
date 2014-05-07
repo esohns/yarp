@@ -69,7 +69,7 @@ SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 void
 SDL_GUI_MainWindow::init(state_t* state_in,
                          RPG_Engine* engine_in,
-                         const RPG_Graphics_MapStyle_t& style_in)
+                         const graphicsMode_t& mode_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::init"));
 
@@ -79,7 +79,7 @@ SDL_GUI_MainWindow::init(state_t* state_in,
   // init map
   initMap(state_in,
           engine_in,
-          style_in);
+          mode_in);
 }
 
 void
@@ -796,31 +796,52 @@ SDL_GUI_MainWindow::initScrollSpots()
                              CURSOR_SCROLL_DR); // (hover) cursor graphic
 }
 
-void
+bool
 SDL_GUI_MainWindow::initMap(state_t* state_in,
                             RPG_Engine* engine_in,
-                            const RPG_Graphics_MapStyle_t& style_in)
+                            const graphicsMode_t& mode_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initMap"));
 
   SDL_GUI_LevelWindow* map_window = NULL;
-  ACE_NEW_NORETURN(map_window,
-                   SDL_GUI_LevelWindow(*this,
-                                       engine_in));
+  switch (mode_in)
+  {
+    case SDL_GUI_GRAPHICSMODE_ISOMETRIC:
+    {
+      ACE_NEW_NORETURN(map_window,
+                       SDL_GUI_LevelWindow(*this,
+                                           engine_in));
+
+      break;
+    }
+    case SDL_GUI_GRAPHICSMODE_3D:
+    {
+
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid graphics mode (was: %d), aborting\n"),
+                 mode_in));
+
+     return false;
+    }
+  } // end SWITCH
   if (!map_window)
   {
     ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-               sizeof(SDL_GUI_LevelWindow)));
+               ACE_TEXT("failed to allocate memory: %m, aborting\n")));
 
-    return;
+    return false;
   } // end IF
 
   // init window
   map_window->init(state_in,
-                   this,
-                   style_in);
+                   this);
   map_window->setScreen(myScreen);
+
+  return true;
 }
 
 void

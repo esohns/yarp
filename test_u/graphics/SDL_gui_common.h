@@ -33,4 +33,22 @@ struct state_t
  bool             debug;
 };
 
+enum userMode_t
+{
+  SDL_GUI_USERMODE_SLIDESHOW = 0,
+  SDL_GUI_USERMODE_FLOOR_PLAN,
+  //
+  SDL_GUI_USERMODE_MAX,
+  SDL_GUI_USERMODE_INVALID,
+};
+
+enum graphicsMode_t
+{
+  SDL_GUI_GRAPHICSMODE_ISOMETRIC = 0, // isometric perspective (2.5D)
+  SDL_GUI_GRAPHICSMODE_3D,            // 3D (OpenGL)
+  //
+  SDL_GUI_GRAPHICSMODE_MAX,
+  SDL_GUI_GRAPHICSMODE_INAVLID
+};
+
 #endif

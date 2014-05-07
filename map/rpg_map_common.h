@@ -50,15 +50,15 @@ enum RPG_Map_Element
 
 struct RPG_Map_FloorPlan_Configuration_t
 {
-  unsigned long min_room_size; // 0: don't care
-  bool          doors;
-  bool          corridors;
-  unsigned long max_num_doors_per_room;
-  bool          maximize_rooms;
-  unsigned long num_areas;
-  bool          square_rooms;
-  unsigned long map_size_x;
-  unsigned long map_size_y;
+  unsigned int min_room_size; // 0: don't care
+  bool         doors;
+  bool         corridors;
+  unsigned int max_num_doors_per_room;
+  bool         maximize_rooms;
+  unsigned int num_areas;
+  bool         square_rooms;
+  unsigned int map_size_x;
+  unsigned int map_size_y;
 };
 
 typedef std::pair<unsigned int, unsigned int> RPG_Map_Size_t;
@@ -114,12 +114,12 @@ typedef RPG_Map_Doors_t::iterator RPG_Map_DoorsIterator_t;
 
 struct RPG_Map_FloorPlan_t
 {
-  unsigned int size_x;
-  unsigned int size_y;
+  unsigned int        size_x;
+  unsigned int        size_y;
   RPG_Map_Positions_t unmapped; // (!floor)
   RPG_Map_Positions_t walls;
-  RPG_Map_Doors_t doors;
-  bool rooms_are_square;
+  RPG_Map_Doors_t     doors;
+  bool                rooms_are_square;
 };
 
 struct RPG_Map_t

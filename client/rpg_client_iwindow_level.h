@@ -23,6 +23,13 @@
 
 #include "rpg_client_iwindow.h"
 
+#include "rpg_graphics_floorstyle.h"
+#include "rpg_graphics_edgestyle.h"
+#include "rpg_graphics_wallstyle.h"
+#include "rpg_graphics_doorstyle.h"
+#include "rpg_graphics_mapstyle.h"
+#include "rpg_graphics_common.h"
+
 #include "rpg_map_common.h"
 
 #include <string>
@@ -31,11 +38,8 @@ class RPG_Client_IWindowLevel
  : public RPG_Client_IWindow
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
-
   // exposed interface
-  virtual void init() = 0;
+  virtual void init(const RPG_Graphics_MapStyle&) = 0; // map style
   virtual void setView(const RPG_Map_Position_t&) = 0; // view (map coordinates !)
 	virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
 

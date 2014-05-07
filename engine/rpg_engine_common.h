@@ -25,6 +25,11 @@
 #include "rpg_engine_entitymode.h"
 
 #include "rpg_graphics_sprite.h"
+#include "rpg_graphics_floorstyle.h"
+#include "rpg_graphics_edgestyle.h"
+#include "rpg_graphics_wallstyle.h"
+#include "rpg_graphics_doorstyle.h"
+#include "rpg_graphics_mapstyle.h"
 
 #include "rpg_map_common.h"
 
@@ -95,6 +100,9 @@ struct RPG_Engine_LevelMetaData_t
   unsigned int           max_spawned; // 0: don't auto-spawn
   long                   spawn_timer;
   float                  amble_probability; // % [0.0 - 1.0]
+
+  // graphics
+  RPG_Graphics_MapStyle  style;
 };
 struct RPG_Engine_Level_t
 {

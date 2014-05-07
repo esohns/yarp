@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_GRAPHICS_XML_TREE_H
-#define CXX___RPG_GRAPHICS_XML_TREE_H
+#ifndef CXX__GRAPHICS_RPG_GRAPHICS_XML_TREE_H
+#define CXX__GRAPHICS_RPG_GRAPHICS_XML_TREE_H
 
 // Begin prologue.
 //
@@ -69,6 +69,7 @@ class RPG_Graphics_WallStyle_XMLTree_Type;
 class RPG_Graphics_EdgeStyle_XMLTree_Type;
 class RPG_Graphics_DoorStyle_XMLTree_Type;
 class RPG_Graphics_StyleUnion_XMLTree_Type;
+class RPG_Graphics_MapStyle_XMLTree_Type;
 class RPG_Graphics_Cursor_XMLTree_Type;
 class RPG_Graphics_Font_XMLTree_Type;
 class RPG_Graphics_Image_XMLTree_Type;
@@ -676,6 +677,141 @@ class RPG_Graphics_Export RPG_Graphics_StyleUnion_XMLTree_Type: public ::xml_sch
   static const char* const _xsd_RPG_Graphics_StyleUnion_XMLTree_Type_literals_[32];
   static const value _xsd_RPG_Graphics_StyleUnion_XMLTree_Type_indexes_[32];
 };
+
+class RPG_Graphics_Export RPG_Graphics_MapStyle_XMLTree_Type: public ::xml_schema::type
+{
+  public:
+  // floor
+  // 
+  typedef ::RPG_Graphics_FloorStyle_XMLTree_Type floor_type;
+  typedef ::xsd::cxx::tree::traits< floor_type, char > floor_traits;
+
+  const floor_type&
+  floor () const;
+
+  floor_type&
+  floor ();
+
+  void
+  floor (const floor_type& x);
+
+  void
+  floor (::std::auto_ptr< floor_type > p);
+
+  // edge
+  // 
+  typedef ::RPG_Graphics_EdgeStyle_XMLTree_Type edge_type;
+  typedef ::xsd::cxx::tree::optional< edge_type > edge_optional;
+  typedef ::xsd::cxx::tree::traits< edge_type, char > edge_traits;
+
+  const edge_optional&
+  edge () const;
+
+  edge_optional&
+  edge ();
+
+  void
+  edge (const edge_type& x);
+
+  void
+  edge (const edge_optional& x);
+
+  void
+  edge (::std::auto_ptr< edge_type > p);
+
+  // wall
+  // 
+  typedef ::RPG_Graphics_WallStyle_XMLTree_Type wall_type;
+  typedef ::xsd::cxx::tree::traits< wall_type, char > wall_traits;
+
+  const wall_type&
+  wall () const;
+
+  wall_type&
+  wall ();
+
+  void
+  wall (const wall_type& x);
+
+  void
+  wall (::std::auto_ptr< wall_type > p);
+
+  // half_height_walls
+  // 
+  typedef ::xml_schema::boolean half_height_walls_type;
+  typedef ::xsd::cxx::tree::traits< half_height_walls_type, char > half_height_walls_traits;
+
+  const half_height_walls_type&
+  half_height_walls () const;
+
+  half_height_walls_type&
+  half_height_walls ();
+
+  void
+  half_height_walls (const half_height_walls_type& x);
+
+  // door
+  // 
+  typedef ::RPG_Graphics_DoorStyle_XMLTree_Type door_type;
+  typedef ::xsd::cxx::tree::traits< door_type, char > door_traits;
+
+  const door_type&
+  door () const;
+
+  door_type&
+  door ();
+
+  void
+  door (const door_type& x);
+
+  void
+  door (::std::auto_ptr< door_type > p);
+
+  // Constructors.
+  //
+  RPG_Graphics_MapStyle_XMLTree_Type (const floor_type&,
+                                      const wall_type&,
+                                      const half_height_walls_type&,
+                                      const door_type&);
+
+  RPG_Graphics_MapStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
+
+  RPG_Graphics_MapStyle_XMLTree_Type (const RPG_Graphics_MapStyle_XMLTree_Type& x,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
+
+  virtual RPG_Graphics_MapStyle_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  virtual 
+  ~RPG_Graphics_MapStyle_XMLTree_Type ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< floor_type > floor_;
+  edge_optional edge_;
+  ::xsd::cxx::tree::one< wall_type > wall_;
+  ::xsd::cxx::tree::one< half_height_walls_type > half_height_walls_;
+  ::xsd::cxx::tree::one< door_type > door_;
+};
+
+RPG_Graphics_Export
+bool
+operator== (const RPG_Graphics_MapStyle_XMLTree_Type&, const RPG_Graphics_MapStyle_XMLTree_Type&);
+
+RPG_Graphics_Export
+bool
+operator!= (const RPG_Graphics_MapStyle_XMLTree_Type&, const RPG_Graphics_MapStyle_XMLTree_Type&);
+
 
 class RPG_Graphics_Export RPG_Graphics_Cursor_XMLTree_Type: public ::xml_schema::string
 {
@@ -2482,6 +2618,10 @@ operator<< (::std::ostream&, const RPG_Graphics_StyleUnion_XMLTree_Type&);
 
 RPG_Graphics_Export
 ::std::ostream&
+operator<< (::std::ostream&, const RPG_Graphics_MapStyle_XMLTree_Type&);
+
+RPG_Graphics_Export
+::std::ostream&
 operator<< (::std::ostream&, RPG_Graphics_Cursor_XMLTree_Type::value);
 
 RPG_Graphics_Export
@@ -2848,6 +2988,10 @@ operator<< (::xml_schema::list_stream&,
 
 RPG_Graphics_Export
 void
+operator<< (::xercesc::DOMElement&, const RPG_Graphics_MapStyle_XMLTree_Type&);
+
+RPG_Graphics_Export
+void
 operator<< (::xercesc::DOMElement&, const RPG_Graphics_Cursor_XMLTree_Type&);
 
 RPG_Graphics_Export
@@ -3122,4 +3266,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Graphics_ColorRGBA_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX___RPG_GRAPHICS_XML_TREE_H
+#endif // CXX__GRAPHICS_RPG_GRAPHICS_XML_TREE_H

@@ -31,9 +31,6 @@
 class RPG_Graphics_IWindow
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
-
   // exposed interface
   virtual void setScreen(SDL_Surface*) = 0; // (default) screen
   virtual SDL_Surface* getScreen() const = 0; // (default) screen

@@ -738,8 +738,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   GTKUserData_in.client_engine     = &client_engine;
   GTKUserData_in.schema_repository = schemaRepository_in;
   GTKUserData_in.entity.character  = NULL;
-  GTKUserData_in.entity.position   = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                    std::numeric_limits<unsigned int>::max());
+  GTKUserData_in.entity.position   =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
 //   GTKUserData_in.entity.actions();
 //   GTKUserData_in.entity.modes();
 //  GTKUserData_in.entity.sprite();
@@ -748,7 +749,8 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   GTKUserData_in.map_config        = configuration_in.map_configuration;
 
   // ***** window setup *****
-  std::string caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
+  std::string caption =
+      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
 //   caption += ACE_TEXT_ALWAYS_CHAR(" ");
 //   caption += RPG_VERSION;
   // ***** window/screen setup *****
@@ -790,19 +792,12 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
     return;
   } // end IF
 
-  // step4a: setup style
-  RPG_Graphics_MapStyle_t map_style;
-  map_style.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  map_style.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
-  map_style.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-  map_style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  map_style.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-
-  // step4b: setup main "window"
+  // step4a: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
-  std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
+  std::string title =
+      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
   RPG_Client_Window_Main main_window(RPG_Graphics_Size_t(GTKUserData_in.screen->w,
                                                          GTKUserData_in.screen->h), // size
                                      type,                                          // interface elements
@@ -811,27 +806,29 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   main_window.setScreen(GTKUserData_in.screen);
   main_window.init(&client_engine,
                    RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL,
-                   &level_engine,
-                   map_style);
+                   &level_engine);
 
-  // step4c: client engine
+  // step4b: client engine
   client_engine.init(&level_engine,
                      main_window.child(WINDOW_MAP),
                      GTKUserData_in.XML);
 
-  // step4d: queue initial drawing
+  // step4c: queue initial drawing
   RPG_Client_Action client_action;
   client_action.command = COMMAND_WINDOW_DRAW;
-  client_action.previous = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                          std::numeric_limits<unsigned int>::max());
-  client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                          std::numeric_limits<unsigned int>::max());
+  client_action.previous =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
+  client_action.position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   client_action.window = &main_window;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   client_action.entity_id = 0;
   client_action.sound = RPG_SOUND_EVENT_INVALID;
-  client_action.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                        std::numeric_limits<unsigned int>::max());
+  client_action.source =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   client_action.radius = 0;
   client_engine.action(client_action);
   client_action.command = COMMAND_WINDOW_REFRESH;
@@ -860,7 +857,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
     return;
   } // end IF
 
-  // step4e: start timer (triggers hover events)
+  // step4d: start timer (triggers hover events)
   GTKUserData_in.event_timer = NULL;
   GTKUserData_in.event_timer =
 		SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)

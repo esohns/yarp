@@ -41,6 +41,7 @@ include_HEADERS = \
   rpg_graphics_incl.h \
   rpg_graphics_interfaceelementtype.h \
   rpg_graphics_iwindow.h \
+  rpg_graphics_mapstyle.h \
   rpg_graphics_orientation.h \
   rpg_graphics_sprite.h \
   rpg_graphics_stairsstyle.h \
@@ -99,6 +100,7 @@ libRPG_Graphics_la_SOURCES = \
   rpg_graphics_incl.h \
   rpg_graphics_interfaceelementtype.h \
   rpg_graphics_iwindow.h \
+  rpg_graphics_mapstyle.h \
   rpg_graphics_orientation.h \
   rpg_graphics_sprite.h \
   rpg_graphics_stairsstyle.h \
@@ -130,4 +132,3 @@ config_DATA = \
 EXTRA_DIST = \
   $(config_DATA) \
   rpg_graphics.map
-

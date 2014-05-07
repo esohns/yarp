@@ -28,9 +28,6 @@
 class RPG_Engine_IClient
 {
  public:
-  // *IMPORTANT NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
-
   // exposed interface
   //virtual void init() = 0;
   //virtual void redraw() = 0;

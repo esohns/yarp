@@ -23,10 +23,14 @@
 
 #include "SDL_gui_common.h"
 
+#include "rpg_client_iwindow_level.h"
+
 #include "rpg_engine_common.h"
 #include "rpg_engine_iclient.h"
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_mapstyle.h"
+#include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_SDL_window_base.h"
 
 #include <SDL.h>
@@ -44,6 +48,7 @@ class RPG_Common_ILock;
 */
 class SDL_GUI_LevelWindow
  : public RPG_Graphics_SDLWindowBase,
+   public RPG_Client_IWindowLevel,
    public RPG_Engine_IClient
 {
  public:
@@ -57,18 +62,16 @@ class SDL_GUI_LevelWindow
             RPG_Common_ILock*); // screen lock interface handle
 
   // adjust viewport
+  // implement (part of) RPG_Client_IWindowLevel
   void setView(const int&,
                const int&); // view (relative map coordinates)
-  void setView(const RPG_Map_Position_t&);
+  virtual void setView(const RPG_Map_Position_t&);
+  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 	void center();
 
-  // implement (part of) RPG_Graphics_IWindow 
-  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
-
   // (re-)init / set level properties
-  void init(state_t*,                        // state
-            RPG_Common_ILock*,               // screen lock interface handle
-            const RPG_Graphics_MapStyle_t&); // map style
+  // implement (part of) RPG_Client_IWindowLevel
+  virtual void init(const RPG_Graphics_MapStyle&); // map style
   void setStyle(const RPG_Graphics_StyleUnion&);
 
   // implement (part of) RPG_Graphics_IWindow
@@ -109,7 +112,7 @@ class SDL_GUI_LevelWindow
   state_t*                        myState;
   RPG_Engine*                     myEngine;
 
-  RPG_Graphics_MapStyle_t         myCurrentMapStyle;
+  RPG_Graphics_MapStyle           myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
   RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
   RPG_Graphics_WallTileSet_t      myCurrentWallSet;

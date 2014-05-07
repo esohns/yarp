@@ -1191,12 +1191,15 @@ RPG_Client_Engine::handleActions()
                                                                                            std::numeric_limits<unsigned int>::max()));
 
         // step1: init/(re)draw window
-        RPG_Map_Position_t center = myEngine->getSize(true);
+        myEngine->lock();
+        RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(false);
+        RPG_Map_Position_t center = myEngine->getSize(false);
+        myEngine->unlock();
         center.first >>= 1;
         center.second >>= 1;
         try
         {
-          level_window->init();
+          level_window->init(level_metadata.style);
           level_window->setView(center);
 //          level_window->clear();
           level_window->draw();
@@ -1211,7 +1214,8 @@ RPG_Client_Engine::handleActions()
         }
 
         // step2: (re)set window title caption/iconify
-        std::string caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
+        std::string caption =
+            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
         const std::string& level_name = myEngine->getMetaData(true).name;
         if (!level_name.empty())
         {

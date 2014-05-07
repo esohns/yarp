@@ -25,7 +25,8 @@
 
 #define SDL_GUI_DEF_CAPTION                    "SDL_gui"
 
-#define SDL_GUI_DEF_MODE                       MODE_FLOOR_PLAN
+#define SDL_GUI_DEF_MODE                       SDL_GUI_USERMODE_FLOOR_PLAN
+#define SDL_GUI_DEF_GRAPHICS_MODE              SDL_GUI_GRAPHICSMODE_ISOMETRIC
 
 #define SDL_GUI_DEF_MAP_MIN_ROOM_SIZE          0 // 0: don't care
 #define SDL_GUI_DEF_MAP_DOORS                  true
@@ -49,7 +50,6 @@
 #define SDL_GUI_DEF_VIDEO_H                    786
 #define SDL_GUI_DEF_VIDEO_BPP                  32
 #define SDL_GUI_DEF_VIDEO_DOUBLEBUFFER         false
-#define SDL_GUI_DEF_VIDEO_USE_OPENGL           false
 #define SDL_GUI_DEF_VIDEO_FULLSCREEN           false
 
 #define SDL_GUI_SDL_TIMEREVENT                 SDL_USEREVENT

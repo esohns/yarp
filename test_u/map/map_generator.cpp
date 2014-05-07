@@ -491,11 +491,11 @@ ACE_TMAIN(int argc,
   } // end IF
 
   // step1bb: validate arguments
-  if ((numAreas == 0)           ||
-      (dimension_X == 0)        ||
-      (dimension_Y == 0)        ||
-      (maxNumDoorsPerRoom == 1) || // cannot enforce this (just think about it !)
-      (corridors && !doors))       // cannot have corridors without doors...
+  if ((config.num_areas == 0)              ||
+      (config.map_size_x == 0)             ||
+      (config.map_size_y == 0)             ||
+      (config.max_num_doors_per_room == 1) || // cannot enforce this (just think about it !)
+      (config.corridors && !config.doors))    // cannot have corridors without doors...
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid argument(s), aborting\n")));

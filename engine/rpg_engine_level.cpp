@@ -509,6 +509,13 @@ RPG_Engine_Level::toLevelXML() const
 
   std::string map_string = RPG_Map_Common_Tools::map2String(inherited::myMap);
 
+  RPG_Graphics_MapStyle_XMLTree_Type style(RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(myMetaData.style.floor),
+                                           RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(myMetaData.style.wall),
+                                           myMetaData.style.half_height_walls,
+                                           RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(myMetaData.style.door));
+  if (myMetaData.style.edge != RPG_GRAPHICS_EDGESTYLE_INVALID)
+    style.edge(RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(myMetaData.style.edge));
+
   RPG_Engine_Level_XMLTree_Type* level_p = NULL;
   level_p = new(std::nothrow) RPG_Engine_Level_XMLTree_Type(myMetaData.name,
                                                             environment,
@@ -516,7 +523,8 @@ RPG_Engine_Level::toLevelXML() const
                                                             myMetaData.spawn_probability,
                                                             myMetaData.max_spawned,
                                                             myMetaData.amble_probability,
-                                                            map_string);
+                                                            map_string,
+                                                            style);
   ACE_ASSERT(level_p);
   if (!level_p)
   {
@@ -600,6 +608,7 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
 
 		return result;
 	} // end IF
+
 	RPG_Map_Door_t temp;
 	RPG_Map_DoorsIterator_t iterator;
   for (RPG_Engine_Level_XMLTree_Type::door_const_iterator iterator2 = level_in.door().begin();
@@ -624,6 +633,15 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
 		RPG_Map_DoorState_XMLTree_Type::value temp_state = (*iterator2).state();
 		(*iterator).state = static_cast<RPG_Map_DoorState>(temp_state);
 	} // end FOR
+
+  const RPG_Graphics_MapStyle_XMLTree_Type& style = level_in.style();
+  result.metadata.style.floor = RPG_Graphics_FloorStyleHelper::stringToRPG_Graphics_FloorStyle(style.floor());
+  result.metadata.style.edge = RPG_GRAPHICS_EDGESTYLE_INVALID;
+  if (style.edge().present())
+    result.metadata.style.edge = RPG_Graphics_EdgeStyleHelper::stringToRPG_Graphics_EdgeStyle(style.edge().get());
+  result.metadata.style.wall = RPG_Graphics_WallStyleHelper::stringToRPG_Graphics_WallStyle(style.wall());
+  result.metadata.style.half_height_walls = style.half_height_walls();
+  result.metadata.style.door = RPG_Graphics_DoorStyleHelper::stringToRPG_Graphics_DoorStyle(style.door());
 
   return result;
 }

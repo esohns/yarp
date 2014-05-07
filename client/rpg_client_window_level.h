@@ -54,9 +54,8 @@ class RPG_Client_Export RPG_Client_Window_Level
   virtual ~RPG_Client_Window_Level();
 
   // init level properties
-  void init(RPG_Client_Engine*,              // engine handle
-            RPG_Engine*,                     // (level) state handle
-            const RPG_Graphics_MapStyle_t&); // map style
+  void init(RPG_Client_Engine*, // engine handle
+            RPG_Engine*);       // (level) state handle
 
   void toggleMiniMap();
   bool showMiniMap() const;
@@ -71,7 +70,7 @@ class RPG_Client_Export RPG_Client_Window_Level
   virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
                           const unsigned int& = 0,  // offset x (top-left = [0,0])
                           const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void init();
+  virtual void init(const RPG_Graphics_MapStyle&); // map style
   virtual void setView(const RPG_Map_Position_t&); // view (map coordinates)
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position
@@ -123,7 +122,6 @@ class RPG_Client_Export RPG_Client_Window_Level
 #endif
   bool                            myShowMessages;
 
-  RPG_Graphics_MapStyle_t         myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
   RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
   RPG_Graphics_WallTileSet_t      myCurrentWallSet;

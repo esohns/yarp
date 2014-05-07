@@ -26,9 +26,6 @@
 class RPG_Client_IWindow
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
-
   // exposed interface
   virtual void drawBorder(SDL_Surface* = NULL,          // target surface (default: screen)
                           const unsigned int& = 0,      // offset x (top-left = [0,0])

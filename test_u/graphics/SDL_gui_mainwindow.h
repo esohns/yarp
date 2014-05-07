@@ -22,11 +22,12 @@
 #define SDL_GUI_MAINWINDOW_H
 
 #include "SDL_gui_common.h"
+#include "SDL_gui_defines.h"
 
-#include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
+#include "rpg_graphics_sprite.h"
 #include "rpg_graphics_tilegraphic.h"
 #include "rpg_graphics_tilesetgraphic.h"
 #include "rpg_graphics_graphictypeunion.h"
@@ -62,9 +63,9 @@ class SDL_GUI_MainWindow
 
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  void init(state_t*,                        // state
-            RPG_Engine*,                     // (level) state handle
-            const RPG_Graphics_MapStyle_t&); // map style
+  void init(state_t*,                                           // state
+            RPG_Engine*,                                        // (level) state handle
+            const graphicsMode_t& = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
@@ -88,9 +89,9 @@ class SDL_GUI_MainWindow
 
   // helper methods
   void initScrollSpots();
-  void initMap(state_t*,                        // state
-               RPG_Engine*,                     // level engine handle
-               const RPG_Graphics_MapStyle_t&); // map style
+  bool initMap(state_t*,                                           // state
+               RPG_Engine*,                                        // level engine handle
+               const graphicsMode_t& = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
   void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
                   const unsigned int& = 0,  // offset x (top-left = [0,0])
                   const unsigned int& = 0); // offset y (top-left = [0,0])
@@ -105,6 +106,7 @@ class SDL_GUI_MainWindow
   bool                       myHaveMouseFocus;
 
   RPG_Graphics_Font          myTitleFont;
+  mode_t                     myMode;
 
   ACE_Recursive_Thread_Mutex myScreenLock;
 };

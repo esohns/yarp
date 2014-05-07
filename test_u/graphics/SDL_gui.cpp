@@ -87,15 +87,6 @@
 #include "SDL_gui_mainwindow.h"
 #include "SDL_gui_levelwindow.h"
 
-enum UserMode_t
-{
-  MODE_RANDOM_IMAGES = 0,
-  MODE_FLOOR_PLAN,
-  //
-  MODE_INVALID,
-  MODE_MAX
-};
-
 // init static(s)
 static state_t state;
 
@@ -286,8 +277,9 @@ print_usage(const std::string& programName_in)
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT("-o         : OpenGL mode") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-p ([FILE]): map (*") << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(") [") << path.c_str() << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-s         : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES) << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-s         : slideshow mode") << ACE_TEXT(" [") << (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW) << ACE_TEXT("]") << std::endl;
   std::cout << ACE_TEXT("-t         : trace information") << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-w [WIDTH] : width [") << SDL_GUI_DEF_VIDEO_W << ACE_TEXT("]") << std::endl;
@@ -305,6 +297,7 @@ process_arguments(const int argc_in,
                   bool& debugMode_out,
                   std::string& graphicsDictionary_out,
                   std::string& entityFile_out,
+                  bool& openGLMode_out,
                   std::string& mapFile_out,
                   bool& slideShowMode_out,
                   bool& traceInformation_out,
@@ -377,6 +370,8 @@ process_arguments(const int argc_in,
   entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
   entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
+  openGLMode_out = false;
+
   mapFile_out = data_path;
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
@@ -391,7 +386,7 @@ process_arguments(const int argc_in,
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
-  slideShowMode_out = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
+  slideShowMode_out = (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW);
   traceInformation_out = false;
   printVersionAndExit_out = false;
   width_out = SDL_GUI_DEF_VIDEO_W;
@@ -400,7 +395,7 @@ process_arguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c::d:fg:h:i:m:n:p::stvw:x"));
+                             ACE_TEXT("c::d:fg:h:i:m:n:op::stvw:x"));
 
   int option = 0;
   std::stringstream converter;
@@ -459,6 +454,12 @@ process_arguments(const int argc_in,
       case 'n':
       {
         monsterDictionary_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'o':
+      {
+        openGLMode_out = true;
 
         break;
       }
@@ -874,7 +875,6 @@ do_slideshow(const std::string& graphicsDirectory_in,
 void
 do_UI(RPG_Engine_Entity& entity_in,
       RPG_Engine* engine_in,
-      RPG_Graphics_MapStyle_t& mapStyle_in,
       const RPG_Engine_Level_t& level_in,
       const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       SDL_GUI_MainWindow* mainWindow_in,
@@ -928,7 +928,8 @@ do_UI(RPG_Engine_Entity& entity_in,
         {
           case SDLK_e:
           {
-						std::string dump_path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+            std::string dump_path =
+                RPG_Player_Common_Tools::getPlayerProfilesDirectory();
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             dump_path += entity_in.character->getName();
             dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
@@ -1058,8 +1059,9 @@ do_UI(RPG_Engine_Entity& entity_in,
 									RPG_Graphics_Common_Tools::map2Screen(map_position,
 																												map_window->getSize(),
 																												map_window->getView());
-								if (highlight_position != std::make_pair(std::numeric_limits<int>::max(),
-																												 std::numeric_limits<int>::max()))
+								if (highlight_position !=
+										std::make_pair(std::numeric_limits<int>::max(),
+																	 std::numeric_limits<int>::max()))
 								{
 									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region_2,
 																																							 NULL);
@@ -1087,9 +1089,11 @@ do_UI(RPG_Engine_Entity& entity_in,
           case SDLK_s:
           {
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-            std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
+            std::string dump_path =
+                ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 #else
-            std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
+            std::string dump_path =
+                ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
 #endif
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             dump_path += current_level.metadata.name;
@@ -1388,14 +1392,14 @@ do_work(const mode_t& mode_in,
 
   switch (mode_in)
   {
-    case MODE_RANDOM_IMAGES:
+    case SDL_GUI_USERMODE_SLIDESHOW:
     {
       do_slideshow(graphicsDirectory_in,
                    &mainWindow);
 
       break;
     }
-    case MODE_FLOOR_PLAN:
+    case SDL_GUI_USERMODE_FLOOR_PLAN:
     {
       // step1: create/load initial level map
       RPG_Engine_Level_t level;
@@ -1419,21 +1423,13 @@ do_work(const mode_t& mode_in,
       } // end ELSE
 //       RPG_Map_Common_Tools::print(map);
 
-      // step2: setup initial style
-      RPG_Graphics_MapStyle_t mapStyle;
-      mapStyle.floor_style = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-      mapStyle.edge_style = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
-      mapStyle.wall_style = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-      mapStyle.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-      mapStyle.door_style = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-
-      // step3: set default cursor
+      // step2: set default cursor
       SDL_Rect dirty_region;
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(CURSOR_NORMAL,
                                                                    dirty_region);
 
-      // step4: create/load initial entity
+      // step3: create/load initial entity
       std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
       config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
@@ -1478,12 +1474,11 @@ do_work(const mode_t& mode_in,
       } // end ELSE
       entity.position = level.map.start;
 
-      // step5: init sub-windows (level window, hotspots, minimap, ...)
+      // step4: init sub-windows (level window, hotspots, minimap, ...)
       RPG_Engine level_engine;
       mainWindow.init(&state,
-                      &level_engine,
-                      mapStyle);
-      // step5a: draw main window borders...
+                      &level_engine);
+      // step4a: draw main window borders...
       try
       {
         mainWindow.draw();
@@ -1495,7 +1490,7 @@ do_work(const mode_t& mode_in,
                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/update(), continuing\n")));
       }
 
-      // step6: init level state engine
+      // step5: init level state engine
       SDL_GUI_LevelWindow* map_window = dynamic_cast<SDL_GUI_LevelWindow*>(mainWindow.child(WINDOW_MAP));
       ACE_ASSERT(map_window);
 			// init/add entity to the graphics cache
@@ -1513,7 +1508,7 @@ do_work(const mode_t& mode_in,
       // --> but as we're not using the client engine, it doesn't redraw...
       level_engine.setActive(entity_ID);
 
-      // step6a: redraw map window...
+      // step5a: redraw map window...
       try
       {
         map_window->setView(level_engine.getPosition(level_engine.getActive()));
@@ -1526,7 +1521,7 @@ do_work(const mode_t& mode_in,
                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::setView/draw/update, continuing\n")));
       }
 
-      // step7: start timer (triggers hover events)
+      // step6: start timer (triggers hover events)
       SDL_TimerID timer = NULL;
       timer = SDL_AddTimer(SDL_GUI_SDL_EVENT_TIMEOUT, // interval (ms)
                            event_timer_SDL_cb,        // event timer callback
@@ -1541,10 +1536,9 @@ do_work(const mode_t& mode_in,
         return;
       } // end IF
 
-      // step8: run interface
+      // step7: run interface
       do_UI(entity,
             &level_engine,
-            mapStyle,
             level,
             mapConfiguration_in,
             &mainWindow,
@@ -1640,8 +1634,8 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN(int argc_in,
+          ACE_TCHAR* argv_in[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
@@ -1667,10 +1661,12 @@ ACE_TMAIN(int argc,
   std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                   false);
+  config_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           true);
+  data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 #endif // #ifdef BASEDIR
 
   std::string magicDictionary = config_path;
@@ -1720,7 +1716,8 @@ ACE_TMAIN(int argc,
 
   mode_t mode = SDL_GUI_DEF_MODE;
 
-  std::string entityFilename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  std::string entityFilename =
+      RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
   entityFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
@@ -1739,7 +1736,7 @@ ACE_TMAIN(int argc,
   mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   mapFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
-  bool slideShowMode = (SDL_GUI_DEF_MODE == MODE_RANDOM_IMAGES);
+  bool slideShowMode = (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW);
   bool traceInformation = false;
   bool printVersionAndExit = false;
   bool validateXML = SDL_GUI_DEF_VALIDATE_XML;
@@ -1763,12 +1760,12 @@ ACE_TMAIN(int argc,
   video_config.screen_colordepth = SDL_GUI_DEF_VIDEO_BPP;
 //   video_config.screen_flags      = ;
   video_config.double_buffer     = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
-  video_config.use_OpenGL        = SDL_GUI_DEF_VIDEO_USE_OPENGL;
+  video_config.use_OpenGL        = (SDL_GUI_DEF_GRAPHICS_MODE == SDL_GUI_GRAPHICSMODE_3D);
   video_config.full_screen       = SDL_GUI_DEF_VIDEO_FULLSCREEN;
 
   // step1b: parse/process/validate configuration
-  if (!process_arguments(argc,
-                         argv,
+  if (!process_arguments(argc_in,
+                         argv_in,
                          magicDictionary,
                          video_config.screen_height,
                          itemsDictionary,
@@ -1777,6 +1774,7 @@ ACE_TMAIN(int argc,
                          state.debug,
                          graphicsDictionary,
                          entityFilename,
+                         video_config.use_OpenGL,
                          mapFilename,
                          slideShowMode,
                          traceInformation,
@@ -1785,42 +1783,43 @@ ACE_TMAIN(int argc,
                          validateXML))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    print_usage(std::string(ACE::basename(argv_in[0])));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1b: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(magicDictionary) ||
-      !RPG_Common_File_Tools::isReadable(itemsDictionary) ||
-      !RPG_Common_File_Tools::isDirectory(graphicsDirectory) ||
-      !RPG_Common_File_Tools::isReadable(graphicsDictionary) ||
+  if (!RPG_Common_File_Tools::isReadable(magicDictionary)                             ||
+      !RPG_Common_File_Tools::isReadable(itemsDictionary)                             ||
+      !RPG_Common_File_Tools::isDirectory(graphicsDirectory)                          ||
+      !RPG_Common_File_Tools::isReadable(graphicsDictionary)                          ||
       (!entityFilename.empty() && !RPG_Common_File_Tools::isReadable(entityFilename)) ||
-      (!mapFilename.empty() && !RPG_Common_File_Tools::isReadable(mapFilename)))
+      (!mapFilename.empty() && !RPG_Common_File_Tools::isReadable(mapFilename))       ||
+      (slideShowMode && video_config.use_OpenGL))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid argument, aborting\n")));
 
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    print_usage(std::string(ACE::basename(argv_in[0])));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
-  mode = (slideShowMode ? MODE_RANDOM_IMAGES : mode);
+  mode = (slideShowMode ? SDL_GUI_USERMODE_SLIDESHOW : mode);
 
   std::string schemaRepository = config_path;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
@@ -1828,45 +1827,41 @@ ACE_TMAIN(int argc,
   schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
-  // step1c: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
-  {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_INFO |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
-
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
-
-    //ACE_LOG_MSG->stop_tracing();
-
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
-  } // end IF
-
-  // step1d: handle specific program modes
+  // step1c: handle specific program modes
   if (printVersionAndExit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion(std::string(ACE::basename(argv_in[0])));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_SUCCESS;
+  } // end IF
+
+  // step1d: initialize logging and/or tracing
+  std::string log_file;
+  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]),   // program name
+                                     log_file,                    // logfile
+                                     false,                       // log to syslog ?
+                                     false,                       // trace messages ?
+                                     traceInformation,            // debug messages ?
+                                     NULL))                       // logger
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
+    return EXIT_FAILURE;
   } // end IF
 
   // step2: init SDL
@@ -1878,12 +1873,12 @@ ACE_TMAIN(int argc,
                ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
                ACE_TEXT(SDL_GetError())));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1895,12 +1890,12 @@ ACE_TMAIN(int argc,
                SDL_GetError()));
 
     SDL_Quit();
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1953,20 +1948,15 @@ ACE_TMAIN(int argc,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              ACE_TEXT(working_time_string.c_str())));
 
-  // step4a: fini SDL
+  // step4: clean up
   TTF_Quit();
   SDL_Quit();
-
-//  // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//  if (ACE::fini() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
   return EXIT_SUCCESS;
 } // end main

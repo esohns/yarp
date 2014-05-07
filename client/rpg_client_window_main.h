@@ -24,7 +24,6 @@
 #include "rpg_client_exports.h"
 #include "rpg_client_iwindow.h"
 
-#include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
@@ -52,17 +51,16 @@ class RPG_Client_Export RPG_Client_Window_Main
 {
  public:
   RPG_Client_Window_Main(const RPG_Graphics_Size_t&,                  // size
-                        const RPG_Graphics_GraphicTypeUnion&,        // (element) type
-                        const std::string&,                          // title
-                        const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
+                         const RPG_Graphics_GraphicTypeUnion&,        // (element) type
+                         const std::string&,                          // title
+                         const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
   virtual ~RPG_Client_Window_Main();
 
   // initialize different hotspots
   // *WARNING*: call this AFTER setScreen() !
-  void init(RPG_Client_Engine*,              // engine handle
-            const bool&,                     // do automatic edge scroll ?
-            RPG_Engine*,                     // (level) state handle
-            const RPG_Graphics_MapStyle_t&); // map style
+  void init(RPG_Client_Engine*, // engine handle
+            const bool&,        // do automatic edge scroll ?
+            RPG_Engine*);       // (level) state handle
 
   // implement RPG_Client_IWindow
   virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
@@ -87,9 +85,8 @@ class RPG_Client_Export RPG_Client_Window_Main
 
   // helper methods
   void initScrollSpots();
-  void initMap(RPG_Client_Engine*,              // engine handle
-               RPG_Engine*,                     // (level) state handle
-               const RPG_Graphics_MapStyle_t&); // map style
+  void initMap(RPG_Client_Engine*, // engine handle
+               RPG_Engine*);       // (level) state handle
 
   RPG_Client_Engine* myEngine;
 

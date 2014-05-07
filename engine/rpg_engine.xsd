@@ -51,6 +51,7 @@
       <xsd:enumeration value="COMMAND_E2C_ENTITY_POSITION"/>
       <xsd:enumeration value="COMMAND_E2C_ENTITY_VISION"/>
       <xsd:enumeration value="COMMAND_E2C_ENTITY_LEVEL_UP"/>
+      <xsd:enumeration value="COMMAND_E2C_INIT"/>
       <xsd:enumeration value="COMMAND_E2C_MESSAGE"/>
       <xsd:enumeration value="COMMAND_E2C_QUIT"/>
     </xsd:restriction>
@@ -88,9 +89,10 @@
       <xsd:element name="amble_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="map" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="door" type="RPG_Map_Door_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="style" type="RPG_Graphics_MapStyle_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
-  
+
   <!-- substitution group roots -->
   <xsd:element name="engine_player_t" type="RPG_Engine_Player_Type"/>
   <xsd:element name="engine_level_t" type="RPG_Engine_Level_Type"/>
