@@ -49,8 +49,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
 
  public:
   // init (clipping of highlight tile)
-  void init(RPG_Common_ILock*,      // screen lock interface handle
-            RPG_Graphics_IWindow*); // target window handle
+  void init(RPG_Common_ILock*,          // screen lock interface handle
+            RPG_Graphics_IWindowBase*); // target window handle
   void reset(const bool& = false); // update cursor BG ? : clear
 
   RPG_Graphics_Cursor type() const;
@@ -111,7 +111,7 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   SDL_Surface*                myBG;
 
   // tile highlight
-  RPG_Graphics_IWindow*       myHighlightWindow;
+  RPG_Graphics_IWindowBase*   myHighlightWindow;
   RPG_Graphics_TileCache_t    myHighlightBGCache;
   SDL_Surface*                myHighlightTile;
 

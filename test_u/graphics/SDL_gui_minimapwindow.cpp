@@ -39,13 +39,15 @@
 SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& parent_in,
                                              // *NOTE*: offset doesn't include any border(s) !
                                              const RPG_Graphics_Offset_t& offset_in,
-                                             RPG_Engine* engine_in)
+                                             RPG_Engine* engine_in,
+                                             const bool& debug_in)
  : inherited(WINDOW_MINIMAP, // type
              parent_in,      // parent
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
    myEngine(engine_in),
+   myDebug(debug_in),
    myBG(NULL),
    mySurface(NULL)
 {
@@ -60,18 +62,23 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
                                                 false); // don't cache this one
   ACE_ASSERT(myBG);
 
-  // adjust size / clip rect
-  inherited::mySize.first = myBG->w;
-  inherited::mySize.second = myBG->h;
-//  inherited::myClipRect.x = (myScreen->w -
-//                             (myBorderLeft + myBorderRight) -
-//                             (myBG->w + myOffset.first));
-//  inherited::myClipRect.y = myBorderTop + myOffset.second;
-  inherited::myClipRect.w = myBG->w;
-  inherited::myClipRect.h = myBG->h;
-
   mySurface = RPG_Graphics_Surface::copy(*myBG);
   ACE_ASSERT(mySurface);
+
+  // adjust position, size
+  SDL_Rect parent_area;
+  ACE_ASSERT(myParent);
+  myParent->getArea(parent_area);
+  myClipRect.x = ((offset_in.first == 0) ? ((parent_area.x + parent_area.w) -
+                                            (myBorderRight + myBG->w)       -
+                                            RPG_CLIENT_MINIMAP_OFFSET)
+                                         : offset_in.first);
+  myClipRect.y = ((offset_in.second == 0) ? (parent_area.y +
+                                             myBorderTop +
+                                             RPG_CLIENT_MINIMAP_OFFSET)
+                                          : offset_in.second);
+  myClipRect.w = mySurface->w;
+  myClipRect.h = mySurface->h;
 }
 
 SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow()
@@ -172,22 +179,10 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(myEngine);
   ACE_ASSERT(mySurface);
 
-  // save BG ?
-  // *CONSIDER*: this doesn't really make sense...
-  if (!inherited::myBGHasBeenSaved)
-    inherited::saveBG(RPG_Graphics_Size_t(0, 0)); // save size of "this"
-
   // init clipping
-  SDL_GetClipRect(target_surface, &(inherited::myClipRect));
-  SDL_Rect clip_rect, dirty_region;
-  clip_rect.x = static_cast<Sint16>(myBorderLeft +
-                                    (myScreen->w -
-                                     (myBorderLeft + myBorderRight) -
-                                     (inherited::mySize.first + inherited::myOffset.first)));
-  clip_rect.y = static_cast<Sint16>(myBorderTop + inherited::myOffset.second);
-  clip_rect.w = static_cast<Uint16>(inherited::mySize.first);
-  clip_rect.h = static_cast<Uint16>(inherited::mySize.second);
-  if (!SDL_SetClipRect(target_surface, &clip_rect))
+  SDL_Rect clip_rect_orig;
+  SDL_GetClipRect(target_surface, &clip_rect_orig);
+  if (!SDL_SetClipRect(target_surface, &myClipRect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -197,12 +192,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   } // end IF
 
   // init surface
-  RPG_Graphics_Surface::put(std::make_pair(0,
-                                           0),
-                            *myBG,
-                            mySurface,
-                            dirty_region);
-
+  SDL_Rect dirty_region;
   // lock surface during pixel access
   if (SDL_MUSTLOCK((mySurface)))
     if (SDL_LockSurface(mySurface))
@@ -213,6 +203,11 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
 
       return;
     } // end IF
+  RPG_Graphics_Surface::put(std::make_pair(0,
+                                           0),
+                            *myBG,
+                            mySurface,
+                            dirty_region);
 
   RPG_Map_Size_t size = myEngine->getSize();
   RPG_Map_Position_t map_position = std::make_pair(0, 0);
@@ -273,17 +268,17 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       switch (tile)
       {
         case MINIMAPTILE_NONE:
-          color = RPG_CLIENT_DEF_MINIMAPCOLOR_WALL; break;
+          color = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
         case MINIMAPTILE_DOOR:
-          color = RPG_CLIENT_DEF_MINIMAPCOLOR_DOOR; break;
+          color = RPG_CLIENT_MINIMAPCOLOR_DOOR; break;
         case MINIMAPTILE_FLOOR:
-          color = RPG_CLIENT_DEF_MINIMAPCOLOR_FLOOR; break;
+          color = RPG_CLIENT_MINIMAPCOLOR_FLOOR; break;
         case MINIMAPTILE_MONSTER:
-          color = RPG_CLIENT_DEF_MINIMAPCOLOR_MONSTER; break;
+          color = RPG_CLIENT_MINIMAPCOLOR_MONSTER; break;
         case MINIMAPTILE_PLAYER:
-          color = RPG_CLIENT_DEF_MINIMAPCOLOR_PLAYER; break;
+          color = RPG_CLIENT_MINIMAPCOLOR_PLAYER; break;
         case MINIMAPTILE_STAIRS:
-          color = RPG_CLIENT_DEF_MINIMAPCOLOR_STAIRS; break;
+          color = RPG_CLIENT_MINIMAPCOLOR_STAIRS; break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -324,44 +319,42 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   // step4: paint surface
   if (inherited::myScreenLock)
     inherited::myScreenLock->lock();
-  RPG_Graphics_Surface::put(std::make_pair((myBorderLeft +
-                                            (myScreen->w -
-                                             (myBorderLeft + myBorderRight) -
-                                             (inherited::mySize.first + inherited::myOffset.first))),
-                                           (myBorderTop +
-                                            inherited::myOffset.second)),
+  RPG_Graphics_Surface::put(std::make_pair(myClipRect.x,
+                                           myClipRect.y),
                             *mySurface,
                             target_surface,
                             dirty_region);
   if (inherited::myScreenLock)
     inherited::myScreenLock->unlock();
 
-//   // save image
-//   std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
-//   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//   path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
-//   RPG_Graphics_Surface::savePNG(*mySurface,
-//                                 path,
-//                                 true);
-
   // reset clipping
-  if (!SDL_SetClipRect(target_surface, &(inherited::myClipRect)))
+//    unclip(targetSurface);
+  if (!SDL_SetClipRect(target_surface, &clip_rect_orig))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
 
-  invalidate(clip_rect);
+  // invalidate dirty region
+  invalidate(dirty_region);
 
   // remember position of last realization
-  inherited::myLastAbsolutePosition = std::make_pair((myBorderLeft +
-                                                      (myScreen->w -
-                                                       (myBorderLeft + myBorderRight) -
-                                                       (inherited::mySize.first + inherited::myOffset.first))),
-                                                     (myBorderTop +
-                                                      inherited::myOffset.second));
+  myLastAbsolutePosition = std::make_pair(myClipRect.x,
+                                          myClipRect.y);
+
   inherited::myIsVisible = true;
+
+  // debug info
+  if (myDebug)
+  {
+    std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
+    path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
+    RPG_Graphics_Surface::savePNG(*mySurface,
+                                  path,
+                                  true);
+  } // end IF
 }

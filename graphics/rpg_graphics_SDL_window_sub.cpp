@@ -98,24 +98,21 @@ RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_Size_t& size_in)
   } // end IF
   ACE_ASSERT(myBG == NULL);
 
-  myBG = RPG_Graphics_Surface::get(std::make_pair((inherited::myBorderLeft +
-                                                   inherited::myOffset.first),
-                                                  (inherited::myBorderTop +
-                                                   inherited::myOffset.second)),
-                                   ((size_in.first == 0) ? inherited::mySize.first
+  myBG = RPG_Graphics_Surface::get(std::make_pair(myClipRect.x,
+                                                  myClipRect.y),
+                                   ((size_in.first == 0) ? myClipRect.h
                                                          : size_in.first),
-                                   ((size_in.second == 0) ? inherited::mySize.second
+                                   ((size_in.second == 0) ? myClipRect.w
                                                           : size_in.second),
                                    *inherited::myScreen);
   if (!myBG)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::get(%u,%u,%u,%u,%@), returning\n"),
-               (inherited::myBorderLeft + inherited::myOffset.first),
-               (inherited::myBorderTop + inherited::myOffset.second),
-               ((size_in.first == 0) ? inherited::mySize.first
+               myClipRect.x, myClipRect.y,
+               ((size_in.first == 0) ? inherited::myClipRect.h
                                      : size_in.first),
-               ((size_in.second == 0) ? inherited::mySize.second
+               ((size_in.second == 0) ? inherited::myClipRect.w
                                       : size_in.second),
                inherited::myScreen));
 
@@ -136,10 +133,8 @@ RPG_Graphics_SDLWindowSub::restoreBG(SDL_Rect& dirtyRegion_out)
   // sanity check(s)
   ACE_ASSERT(myBG);
 
-  RPG_Graphics_Surface::put(std::make_pair((inherited::myBorderLeft +
-                                            inherited::myOffset.first),
-                                           (inherited::myBorderTop +
-                                            inherited::myOffset.second)),
+  RPG_Graphics_Surface::put(std::make_pair(myClipRect.x,
+                                           myClipRect.y),
                             *myBG,
                             inherited::myScreen,
                             dirtyRegion_out);

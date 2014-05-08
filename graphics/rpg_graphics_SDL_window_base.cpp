@@ -26,6 +26,7 @@
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_window_sub.h"
+#include "rpg_graphics_SDL_tools.h"
 
 #include "rpg_common_macros.h"
 
@@ -38,22 +39,25 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Size_t
  : //inherited(),
    myScreen(NULL),
    myScreenLock(NULL),
-   mySize(size_in),
    myBorderTop(0),
    myBorderBottom(0),
    myBorderLeft(0),
    myBorderRight(0),
    myTitle(title_in),
 //    myBackGround(backGround_in),
-   myOffset(std::make_pair(0, 0)),
+   myParent(NULL),
+//    myChildren(),
    myLastAbsolutePosition(std::make_pair(std::numeric_limits<unsigned int>::max(),
                                          std::numeric_limits<unsigned int>::max())),
-   myParent(NULL),
+//    myClipRect(),
+//    myInvalidRegions(),
    myType(type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
   ACE_OS::memset(&myClipRect, 0, sizeof(myClipRect));
+  myClipRect.h = static_cast<Uint16>(size_in.first);
+  myClipRect.w = static_cast<Uint16>(size_in.second);
 }
 
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType& type_in,
@@ -64,17 +68,18 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
   : //inherited(),
     myScreen(parent_in.myScreen),
     myScreenLock(NULL),
-    mySize(std::make_pair(0, 0)),
     myBorderTop(0),
     myBorderBottom(0),
     myBorderLeft(0),
     myBorderRight(0),
     myTitle(title_in),
 //     myBackGround(backGround_in),
-    myOffset(offset_in),
+    myParent(&const_cast<RPG_Graphics_SDLWindowBase&>(parent_in)),
+//    myChildren(),
     myLastAbsolutePosition(std::make_pair(std::numeric_limits<unsigned int>::max(),
                                           std::numeric_limits<unsigned int>::max())),
-    myParent(&const_cast<RPG_Graphics_SDLWindowBase&>(parent_in)),
+//    myClipRect(),
+//    myInvalidRegions(),
     myType(type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
@@ -87,18 +92,15 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
                        myBorderRight,
                        false); // DON'T recurse
 
-  RPG_Graphics_Size_t size_parent = myParent->getSize(true); // top-level
-  mySize.first = size_parent.first - myOffset.first - (myBorderLeft + myBorderRight);
-  mySize.second = size_parent.second - myOffset.second - (myBorderTop + myBorderBottom);
-
   // register with parent
   myParent->addChild(this);
 
   // init clip rect
-  myClipRect.x = static_cast<int16_t>(myBorderLeft + myOffset.first);
-  myClipRect.y = static_cast<int16_t>(myBorderTop + myOffset.second);
-  myClipRect.w = static_cast<uint16_t>(size_parent.first - (myBorderLeft + myBorderRight) - myOffset.first);
-  myClipRect.h = static_cast<uint16_t>(size_parent.second - (myBorderTop + myBorderBottom) - myOffset.second);
+  myClipRect.x = static_cast<int16_t>(offset_in.first + myBorderLeft);
+  myClipRect.y = static_cast<int16_t>(offset_in.second + myBorderTop);
+  RPG_Graphics_Size_t size_parent = myParent->getSize(true); // top-level
+  myClipRect.w = static_cast<uint16_t>(size_parent.first - (myBorderLeft + myBorderRight) - offset_in.first);
+  myClipRect.h = static_cast<uint16_t>(size_parent.second - (myBorderTop + myBorderBottom) - offset_in.second);
 }
 
 RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
@@ -394,7 +396,7 @@ RPG_Graphics_SDLWindowBase::update(SDL_Surface* targetSurface_in)
 
 void
 RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
-                                        RPG_Graphics_IWindow* window_in,
+                                        RPG_Graphics_IWindowBase* window_in,
                                         SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::handleEvent"));
@@ -645,18 +647,18 @@ RPG_Graphics_SDLWindowBase::getSize(const bool& topLevel_in) const
   if (topLevel_in && myParent)
     return myParent->getSize(true);
 
-  return mySize;
+  return std::make_pair(myClipRect.h, myClipRect.w);
 }
 
-RPG_Graphics_IWindow*
+RPG_Graphics_IWindowBase*
 RPG_Graphics_SDLWindowBase::getWindow(const RPG_Graphics_Position_t& position_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getWindow"));
 
-  if ((position_in.first < myLastAbsolutePosition.first) ||
-      (position_in.second < myLastAbsolutePosition.second) ||
-      (position_in.first >= (myLastAbsolutePosition.first + mySize.first)) ||
-      (position_in.second >= (myLastAbsolutePosition.second + mySize.second)))
+  if ((position_in.first < myLastAbsolutePosition.first)                   ||
+      (position_in.second < myLastAbsolutePosition.second)                 ||
+      (position_in.first >= (myLastAbsolutePosition.first + myClipRect.h)) ||
+      (position_in.second >= (myLastAbsolutePosition.second + myClipRect.w)))
     return NULL;
 
   // OK "this" currently "owns" position_in
@@ -665,7 +667,7 @@ RPG_Graphics_SDLWindowBase::getWindow(const RPG_Graphics_Position_t& position_in
 
   // *NOTE*: check in reverse order, because "newer", overlapping children are
   // considered to be "on-top"
-  RPG_Graphics_IWindow* child = NULL;
+  RPG_Graphics_IWindowBase* child = NULL;
   for (RPG_Graphics_WindowsRIterator_t iterator = myChildren.rbegin();
        iterator != myChildren.rend();
        iterator++)
@@ -681,7 +683,7 @@ RPG_Graphics_SDLWindowBase::getWindow(const RPG_Graphics_Position_t& position_in
   return this;
 }
 
-RPG_Graphics_IWindow*
+RPG_Graphics_IWindowBase*
 RPG_Graphics_SDLWindowBase::child(const RPG_Graphics_WindowType& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::child"));
@@ -714,16 +716,14 @@ RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
   SDL_GetClipRect(targetSurface, &myClipRect);
 
   SDL_Rect clipRect;
-  clipRect.x = static_cast<int16_t>(offsetX_in + myBorderLeft + myOffset.first);
-  clipRect.y = static_cast<int16_t>(offsetY_in + myBorderTop + myOffset.second);
-  clipRect.w = static_cast<uint16_t>(targetSurface->w               -
-                                     offsetX_in                     -
-                                     (myBorderLeft + myBorderRight) -
-                                     myOffset.first);
-  clipRect.h = static_cast<uint16_t>(targetSurface->h               -
-                                     offsetY_in                     -
-                                     (myBorderTop + myBorderBottom) -
-                                     myOffset.second);
+  clipRect.x = static_cast<int16_t>(myClipRect.x + offsetX_in);
+  clipRect.y = static_cast<int16_t>(myClipRect.y + offsetY_in);
+  clipRect.w = static_cast<uint16_t>(targetSurface->w -
+                                     offsetX_in       -
+                                     (myBorderLeft + myBorderRight));
+  clipRect.h = static_cast<uint16_t>(targetSurface->h -
+                                     offsetY_in       -
+                                     (myBorderTop + myBorderBottom));
   if (!SDL_SetClipRect(targetSurface, &clipRect))
   {
     ACE_DEBUG((LM_ERROR,

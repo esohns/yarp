@@ -59,7 +59,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   //                       const unsigned int& = 0) = 0;   // offset y (top-left = [0,0])
   virtual void update(SDL_Surface* = NULL); // target surface (default: screen)
   virtual void invalidate(const SDL_Rect&); // "dirty" area
-  virtual RPG_Graphics_IWindow* child(const RPG_Graphics_WindowType&); // type
+  virtual RPG_Graphics_IWindowBase* child(const RPG_Graphics_WindowType&); // type
 
   virtual void clip(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
@@ -67,12 +67,12 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual void unclip(SDL_Surface* = NULL) const; // target surface (default: screen)
   virtual void getArea(SDL_Rect&) const; // return value: window area
 
-  virtual void handleEvent(const SDL_Event&,      // event
-                           RPG_Graphics_IWindow*, // target window (NULL: this)
-                           SDL_Rect&);            // return value: "dirty" region
+  virtual void handleEvent(const SDL_Event&,          // event
+                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                           SDL_Rect&);                // return value: "dirty" region
   virtual void notify(const RPG_Graphics_Cursor&) const;
 
-  RPG_Graphics_IWindow* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
+  RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
 
  protected:
   // *NOTE*: window assumes responsibility for its background surface
@@ -95,9 +95,6 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   // default screen
   SDL_Surface*                     myScreen;
   RPG_Common_ILock*                myScreenLock;
-
-  // absolute size
-  RPG_Graphics_Size_t              mySize;
 
   // border sizes
   unsigned int                     myBorderTop;
@@ -128,7 +125,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   std::string                      myTitle;
 //   SDL_Surface*                     myBackGround;
 
-  RPG_Graphics_Offset_t            myOffset; // offset to parent (w/o borders !)
+  RPG_Graphics_SDLWindowBase*      myParent;
   RPG_Graphics_Windows_t           myChildren;
 
   RPG_Graphics_Position_t          myLastAbsolutePosition;
@@ -152,7 +149,6 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   // "dirty" region(s)
   RPG_Graphics_InvalidRegions_t    myInvalidRegions;
 
-  RPG_Graphics_SDLWindowBase*      myParent;
   RPG_Graphics_WindowType          myType;
 };
 

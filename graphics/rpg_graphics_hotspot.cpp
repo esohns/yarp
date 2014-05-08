@@ -23,6 +23,7 @@
 
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
@@ -32,20 +33,23 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
                                            const RPG_Graphics_Size_t& size_in,
                                            // *NOTE*: offset doesn't include any border(s) !
                                            const RPG_Graphics_Offset_t& offset_in,
-                                           const RPG_Graphics_Cursor& cursor_in)
+                                           const RPG_Graphics_Cursor& cursor_in,
+                                           const bool& debug_in)
  : inherited(WINDOW_HOTSPOT, // type
              parent_in,      // parent
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
    myCursorType(cursor_in),
-   myCursorHasBeenSet(false)
+   myCursorHasBeenSet(false),
+   myDebug(debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
 
   // *NOTE*: hotspots don't have borders
   // --> overwrite size
-  mySize = size_in;
+  myClipRect.w = static_cast<uint16_t>(size_in.first);
+  myClipRect.h = static_cast<uint16_t>(size_in.second);
 }
 
 RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
@@ -74,7 +78,7 @@ RPG_Graphics_HotSpot::getView() const
 
 void
 RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
-                                  RPG_Graphics_IWindow* window_in,
+                                  RPG_Graphics_IWindowBase* window_in,
                                   SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::handleEvent"));
@@ -153,10 +157,10 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
 
-  //// sanity check(s)
-  //ACE_ASSERT(targetSurface_in);
-  //ACE_ASSERT(static_cast<int>(offsetX_in) <= targetSurface_in->w);
-  //ACE_ASSERT(static_cast<int>(offsetY_in) <= targetSurface_in->h);
+  // sanity check(s)
+  ACE_ASSERT(targetSurface_in);
+  ACE_UNUSED_ARG(offsetX_in);
+  ACE_UNUSED_ARG(offsetY_in);
 
 //   // init clipping
 //   SDL_Rect clipRect;
@@ -173,21 +177,23 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 //     return;
 //   } // end IF
 
-//   // debug info
-//   RPG_Graphics_Surface::putRect(clipRect,                          // rectangle
-//                                 RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR, // color
-//                                 targetSurface_in);                 // target surface
+   // debug info
+  if (myDebug)
+    RPG_Graphics_Surface::putRect(myClipRect,                            // rectangle
+                                  RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR, // color
+                                  targetSurface_in);                     // target surface
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(offsetX_in + myOffset.first,
-                                          offsetY_in + myOffset.second);
+  myLastAbsolutePosition = std::make_pair(myClipRect.x,
+                                          myClipRect.y);
 }
 
 void
 RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
                            const RPG_Graphics_Size_t& size_in,
                            const RPG_Graphics_Offset_t& offset_in,
-                           const RPG_Graphics_Cursor& cursor_in)
+                           const RPG_Graphics_Cursor& cursor_in,
+                           const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::init"));
 
@@ -197,7 +203,8 @@ RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
                    RPG_Graphics_HotSpot(parent_in,
                                         size_in,
                                         offset_in,
-                                        cursor_in));
+                                        cursor_in,
+                                        debug_in));
   if (!hotspot)
   {
     ACE_DEBUG((LM_CRITICAL,

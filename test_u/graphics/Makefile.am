@@ -37,8 +37,10 @@ SDL_gui_SOURCES = \
   SDL_gui.cpp \
   SDL_gui_common.h \
   SDL_gui_defines.h \
-  SDL_gui_levelwindow.cpp \
-  SDL_gui_levelwindow.h \
+  SDL_gui_levelwindow_isometric.cpp \
+  SDL_gui_levelwindow_isometric.h \
+  SDL_gui_levelwindow_3d.cpp \
+  SDL_gui_levelwindow_3d.h \
   SDL_gui_mainwindow.cpp \
   SDL_gui_mainwindow.h \
   SDL_gui_minimapwindow.h \
@@ -68,3 +70,4 @@ SDL_gui_LDADD = \
   -lRPG_Dice \
   $(pkg_libs_LIBS) \
   -lSDL_mixer
+

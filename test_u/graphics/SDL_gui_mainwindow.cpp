@@ -22,7 +22,8 @@
 #include "SDL_gui_mainwindow.h"
 
 #include "SDL_gui_defines.h"
-#include "SDL_gui_levelwindow.h"
+#include "SDL_gui_levelwindow_isometric.h"
+#include "SDL_gui_levelwindow_3d.h"
 
 #include "rpg_client_defines.h"
 
@@ -361,8 +362,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
             break;
         } // end FOR
         ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
-        SDL_GUI_LevelWindow* levelWindow = NULL;
-        levelWindow = dynamic_cast<SDL_GUI_LevelWindow*>(*iterator);
+        SDL_GUI_LevelWindow_Isometric* levelWindow = NULL;
+        levelWindow = dynamic_cast<SDL_GUI_LevelWindow_Isometric*>(*iterator);
         if (!levelWindow)
         {
           ACE_DEBUG((LM_ERROR,
@@ -547,8 +548,8 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       } // end FOR
       ACE_ASSERT((iterator != myChildren.end()) &&
 				         (*iterator)->getType() == WINDOW_MAP);
-      SDL_GUI_LevelWindow* levelWindow = NULL;
-      levelWindow = dynamic_cast<SDL_GUI_LevelWindow*>(*iterator);
+			SDL_GUI_LevelWindow_Isometric* levelWindow = NULL;
+			levelWindow = dynamic_cast<SDL_GUI_LevelWindow_Isometric*>(*iterator);
       if (!levelWindow)
       {
         ACE_DEBUG((LM_ERROR,
@@ -747,7 +748,7 @@ SDL_GUI_MainWindow::initScrollSpots()
                              CURSOR_SCROLL_UL); // (hover) cursor graphic
   // up
   RPG_Graphics_HotSpot::init(*this,             // parent
-                             std::make_pair(mySize.first - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                             std::make_pair(myClipRect.w - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             0), // offset
@@ -756,21 +757,21 @@ SDL_GUI_MainWindow::initScrollSpots()
   RPG_Graphics_HotSpot::init(*this,             // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
+                             std::make_pair(myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             0), // offset
                              CURSOR_SCROLL_UR); // (hover) cursor graphic
   // left
   RPG_Graphics_HotSpot::init(*this,            // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            mySize.second - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
+                                            myClipRect.h - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
                              std::make_pair(0,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_L); // (hover) cursor graphic
   // right
   RPG_Graphics_HotSpot::init(*this,            // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            mySize.second - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
-                             std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
+                                            myClipRect.h - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
+                             std::make_pair(myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_R); // (hover) cursor graphic
   // lower left
@@ -778,21 +779,21 @@ SDL_GUI_MainWindow::initScrollSpots()
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(0,
-                                            mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
+                                            myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_DL); // (hover) cursor graphic
   // down
   RPG_Graphics_HotSpot::init(*this,            // parent
-                             std::make_pair(mySize.first - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                             std::make_pair(myClipRect.w - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
+                                            myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_D); // (hover) cursor graphic
   // lower right
   RPG_Graphics_HotSpot::init(*this,             // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(mySize.first - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            mySize.second - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
+                             std::make_pair(myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
+                                            myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_DR); // (hover) cursor graphic
 }
 
@@ -803,19 +804,36 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initMap"));
 
-  SDL_GUI_LevelWindow* map_window = NULL;
+  RPG_Graphics_IWindowBase* window_base = NULL;
   switch (mode_in)
   {
     case SDL_GUI_GRAPHICSMODE_ISOMETRIC:
     {
-      ACE_NEW_NORETURN(map_window,
-                       SDL_GUI_LevelWindow(*this,
-                                           engine_in));
+      ACE_NEW_NORETURN(window_base,
+                       SDL_GUI_LevelWindow_Isometric(*this,
+                                                     engine_in));
+      ACE_ASSERT(window_base);
+      // init window
+      SDL_GUI_LevelWindow_Isometric* map_window =
+          dynamic_cast<SDL_GUI_LevelWindow_Isometric*>(window_base);
+      ACE_ASSERT(map_window);
+      map_window->init(state_in,
+                       this);
 
       break;
     }
     case SDL_GUI_GRAPHICSMODE_3D:
     {
+      ACE_NEW_NORETURN(window_base,
+                       SDL_GUI_LevelWindow_3D(*this,
+                                              engine_in));
+      ACE_ASSERT(window_base);
+      // init window
+      SDL_GUI_LevelWindow_3D* map_window =
+          dynamic_cast<SDL_GUI_LevelWindow_3D*>(window_base);
+      ACE_ASSERT(map_window);
+      map_window->init(state_in,
+                       this);
 
       break;
     }
@@ -828,7 +846,7 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
      return false;
     }
   } // end SWITCH
-  if (!map_window)
+  if (!window_base)
   {
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory: %m, aborting\n")));
@@ -837,9 +855,7 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
   } // end IF
 
   // init window
-  map_window->init(state_in,
-                   this);
-  map_window->setScreen(myScreen);
+  window_base->setScreen(myScreen);
 
   return true;
 }

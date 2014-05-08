@@ -27,7 +27,7 @@
 #include "rpg_engine_common.h"
 #include "rpg_engine_iclient.h"
 
-#include "rpg_graphics_iwindow.h"
+#include "rpg_graphics_iwindow_base.h"
 
 #include "rpg_common_icontrol.h"
 #include "rpg_common_idumpstate.h"
@@ -89,9 +89,9 @@ class RPG_Client_Export RPG_Client_Engine
 
   void initMap();
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
-  void init(RPG_Engine*,           // (level) state
-            RPG_Graphics_IWindow*, // window handle
-            GladeXML*);            // widget tree handle
+  void init(RPG_Engine*,               // (level) state
+            RPG_Graphics_IWindowBase*, // window handle
+            GladeXML*);                // widget tree handle
   void action(const RPG_Client_Action&); // action
 
   void mode(const RPG_Client_SelectionMode&); // set mode
@@ -129,7 +129,7 @@ class RPG_Client_Export RPG_Client_Engine
   bool                            myStop;
 
   RPG_Engine*                     myEngine;
-  RPG_Graphics_IWindow*           myWindow;
+  RPG_Graphics_IWindowBase*       myWindow;
   GladeXML*                       myWidgets;
 
   RPG_Client_Actions_t            myActions;

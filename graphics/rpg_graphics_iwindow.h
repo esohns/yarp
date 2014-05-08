@@ -22,41 +22,24 @@
 #define RPG_GRAPHICS_IWINDOW_H
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_iwindow_base.h"
 #include "rpg_graphics_colorname.h"
 #include "rpg_graphics_cursor.h"
-#include "rpg_graphics_SDL_tools.h"
 
 #include <SDL.h>
 
 class RPG_Graphics_IWindow
+ : public virtual RPG_Graphics_IWindowBase
 {
  public:
   // exposed interface
-  virtual void setScreen(SDL_Surface*) = 0; // (default) screen
-  virtual SDL_Surface* getScreen() const = 0; // (default) screen
-
-  virtual RPG_Graphics_WindowType getType() const = 0;
   virtual RPG_Graphics_Size_t getSize(const bool& = false) const = 0; // top-level ?
   //virtual void setView(const RPG_Graphics_Position_t&) = 0; // view (map coordinates !)
   //virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
 
   virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK) = 0;
-  virtual void draw(SDL_Surface* = NULL,          // target surface (default: screen)
-                    const unsigned int& = 0,      // offset x (top-left = [0,0])
-                    const unsigned int& = 0) = 0; // offset y (top-left = [0,0])
-  virtual void invalidate(const SDL_Rect&) = 0; // "dirty" area
-  virtual void update(SDL_Surface* = NULL) = 0; // target surface (default: screen)
-  virtual RPG_Graphics_IWindow* child(const RPG_Graphics_WindowType&) = 0; // type
+  virtual RPG_Graphics_IWindowBase* child(const RPG_Graphics_WindowType&) = 0; // type
 
-  virtual void clip(SDL_Surface* = NULL,          // target surface (default: screen)
-                    const unsigned int& = 0,      // offset x (top-left = [0,0])
-                    const unsigned int& = 0) = 0; // offset y (top-left = [0,0]));
-  virtual void unclip(SDL_Surface* = NULL) const = 0; // target surface (default: screen)
-  virtual void getArea(SDL_Rect&) const = 0; // return value: window area
-
-  virtual void handleEvent(const SDL_Event&,      // event
-                           RPG_Graphics_IWindow*, // target window (NULL: this)
-                           SDL_Rect&) = 0;        // return value: "dirty" region
   virtual void notify(const RPG_Graphics_Cursor&) const = 0;
 };
 

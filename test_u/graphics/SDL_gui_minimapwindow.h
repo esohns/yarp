@@ -35,7 +35,8 @@ class SDL_GUI_MinimapWindow
   SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase&, // parent
                         // *NOTE*: offset doesn't include any border(s) !
                         const RPG_Graphics_Offset_t&,      // offset
-                        RPG_Engine*);                      // (level) state handle
+                        RPG_Engine*,                       // (level) state handle
+                        const bool& = false);              // debug ?
   virtual ~SDL_GUI_MinimapWindow();
 
   // implement (part of) RPG_Graphics_IWindow
@@ -55,6 +56,7 @@ class SDL_GUI_MinimapWindow
   ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow& operator=(const SDL_GUI_MinimapWindow&));
 
   RPG_Engine*  myEngine;
+  bool         myDebug;
 
   SDL_Surface* myBG;
   SDL_Surface* mySurface;

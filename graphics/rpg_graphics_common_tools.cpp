@@ -2156,17 +2156,21 @@ RPG_Graphics_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in
 
   RPG_Graphics_Position_t offset, map_position;
 
-  offset.first = (position_in.first - (windowSize_in.first / 2) + ((viewport_in.first - viewport_in.second) * RPG_GRAPHICS_TILE_WIDTH_MOD));
-  offset.second = (position_in.second - (windowSize_in.second / 2) + ((viewport_in.first + viewport_in.second) * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+  offset.first = (position_in.first         -
+                  (windowSize_in.first / 2) +
+                  ((viewport_in.first - viewport_in.second) * RPG_GRAPHICS_TILE_WIDTH_MOD));
+  offset.second = (position_in.second         -
+                   (windowSize_in.second / 2) +
+                   ((viewport_in.first + viewport_in.second) * RPG_GRAPHICS_TILE_HEIGHT_MOD));
 
   map_position.first = ((RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
-  (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
-  (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-  (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+                        (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+                        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
   map_position.second = ((-RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
-  (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
-  (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-  (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+                         (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+                         (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+                        (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
 
   // sanity check: off-map position ?
   if ((map_position.first  >= mapSize_in.first) ||
@@ -2192,8 +2196,9 @@ RPG_Graphics_Common_Tools::map2Screen(const RPG_Graphics_Position_t& position_in
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::map2Screen"));
 
   // init return value(s)
-  RPG_Graphics_Offset_t result = std::make_pair(std::numeric_limits<int>::max(),
-                                                std::numeric_limits<int>::max());
+  RPG_Graphics_Offset_t result =
+      std::make_pair(std::numeric_limits<int>::max(),
+                     std::numeric_limits<int>::max());
 
   RPG_Graphics_Position_t map_center = std::make_pair(windowSize_in.first / 2,
                                                       windowSize_in.second / 2);

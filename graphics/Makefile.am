@@ -41,6 +41,7 @@ include_HEADERS = \
   rpg_graphics_incl.h \
   rpg_graphics_interfaceelementtype.h \
   rpg_graphics_iwindow.h \
+  rpg_graphics_iwindow_base.h \
   rpg_graphics_mapstyle.h \
   rpg_graphics_orientation.h \
   rpg_graphics_sprite.h \
@@ -100,6 +101,7 @@ libRPG_Graphics_la_SOURCES = \
   rpg_graphics_incl.h \
   rpg_graphics_interfaceelementtype.h \
   rpg_graphics_iwindow.h \
+  rpg_graphics_iwindow_base.h \
   rpg_graphics_mapstyle.h \
   rpg_graphics_orientation.h \
   rpg_graphics_sprite.h \

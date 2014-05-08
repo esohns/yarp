@@ -274,8 +274,9 @@ RPG_Client_Engine::initMap()
 
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_INIT;
-  new_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                       std::numeric_limits<unsigned int>::max());
+  new_action.position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   new_action.window = myWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
@@ -295,8 +296,9 @@ RPG_Client_Engine::redraw()
   // step1: draw map window
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_DRAW;
-  new_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                       std::numeric_limits<unsigned int>::max());
+  new_action.position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   new_action.window = myWindow;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
@@ -392,16 +394,19 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
   bool do_action = true;
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
-  client_action.previous = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                          std::numeric_limits<unsigned int>::max());
-  client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                          std::numeric_limits<unsigned int>::max());
+  client_action.previous =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
+  client_action.position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   client_action.window = NULL;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   client_action.entity_id = 0;
   client_action.sound = RPG_SOUND_EVENT_INVALID;
-  client_action.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                        std::numeric_limits<unsigned int>::max());
+  client_action.source =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   client_action.radius = 0;
   switch (command_in)
   {
@@ -415,8 +420,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     {
       client_action.command = COMMAND_TOGGLE_DOOR;
       client_action.position = parameters_in.position;
-      ACE_ASSERT(client_action.position != std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                          std::numeric_limits<unsigned int>::max()));
+      ACE_ASSERT(client_action.position !=
+          std::make_pair(std::numeric_limits<unsigned int>::max(),
+                         std::numeric_limits<unsigned int>::max()));
       client_action.window = myWindow;
       client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT(client_action.entity_id);
@@ -430,7 +436,8 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        RPG_Client_SeenPositionsIterator_t iterator = mySeenPositions.find(client_action.entity_id);
+        RPG_Client_SeenPositionsIterator_t iterator =
+            mySeenPositions.find(client_action.entity_id);
         ACE_ASSERT(iterator != mySeenPositions.end());
 
         RPG_Map_Positions_t seen_positions;
@@ -461,7 +468,8 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       if (!myEngine->isMonster(client_action.entity_id, true))
         type.sprite = parameters_in.sprite;
       else
-        type.sprite = RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(client_action.entity_id, true));
+        type.sprite =
+            RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(client_action.entity_id, true));
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
                                                               true,   // convert to display format
                                                               false); // don't cache
@@ -477,8 +485,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) == mySeenPositions.end());
-        mySeenPositions.insert(std::make_pair(client_action.entity_id, seen_positions));
+        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) ==
+                   mySeenPositions.end());
+        mySeenPositions.insert(std::make_pair(client_action.entity_id,
+                                              seen_positions));
       } // end lock scope
 
       do_action = false;
@@ -492,8 +502,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       ACE_ASSERT(client_action.entity_id);
 
       client_action.command = COMMAND_PLAY_SOUND;
-      client_action.sound = ((command_in == COMMAND_E2C_ENTITY_HIT) ? EVENT_SWORD_HIT
-                                                                    : EVENT_SWORD_MISS);
+      client_action.sound =
+          ((command_in == COMMAND_E2C_ENTITY_HIT) ? EVENT_SWORD_HIT
+                                                  : EVENT_SWORD_MISS);
 
       break;
     }
@@ -502,17 +513,20 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT(client_action.entity_id);
       client_action.position = parameters_in.position;
-      ACE_ASSERT(client_action.position != std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                          std::numeric_limits<unsigned int>::max()));
+      ACE_ASSERT(client_action.position !=
+          std::make_pair(std::numeric_limits<unsigned int>::max(),
+                         std::numeric_limits<unsigned int>::max()));
       client_action.previous = parameters_in.previous_position;
-      ACE_ASSERT(client_action.previous != std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                          std::numeric_limits<unsigned int>::max()));
+      ACE_ASSERT(client_action.previous !=
+          std::make_pair(std::numeric_limits<unsigned int>::max(),
+                         std::numeric_limits<unsigned int>::max()));
       client_action.window = myWindow;
 
       // *NOTE*: when using (dynamic) lighting, redraw the whole window...
       RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(true);
-      client_action.command = ((client_action.entity_id == active_entity_id) ? COMMAND_WINDOW_DRAW
-                                                                             : COMMAND_ENTITY_DRAW);
+      client_action.command =
+          ((client_action.entity_id == active_entity_id) ? COMMAND_WINDOW_DRAW
+                                                         : COMMAND_ENTITY_DRAW);
 
       // adjust view ?
       if (client_action.entity_id == active_entity_id)
@@ -534,12 +548,17 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
           client_action.command = COMMAND_WINDOW_DRAW;
         action(client_action);
 
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        SDL_Rect map_area;
+        myWindow->getArea(map_area);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
         ACE_ASSERT(level_window);
-        client_action.position = RPG_Graphics_Common_Tools::screen2Map(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(),
-                                                                       myEngine->getSize(true),
-                                                                       myWindow->getSize(false),
-                                                                       level_window->getView());
+        client_action.position =
+            RPG_Graphics_Common_Tools::screen2Map(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(),
+                                                  myEngine->getSize(true),
+                                                  std::make_pair(map_area.w,
+                                                                 map_area.h),
+                                                  level_window->getView());
 
 //        client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
 //        action(client_action);
@@ -547,7 +566,8 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
         action(client_action);
 
-        client_action.position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+        client_action.position =
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
         client_action.command = COMMAND_CURSOR_DRAW;
       } // end IF
       else
@@ -590,8 +610,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) != mySeenPositions.end());
-        mySeenPositions[client_action.entity_id].insert(seen_positions.begin(), seen_positions.end());
+        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) !=
+            mySeenPositions.end());
+        mySeenPositions[client_action.entity_id].insert(seen_positions.begin(),
+                                                        seen_positions.end());
       } // end lock scope
 
       break;
@@ -608,7 +630,8 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) != mySeenPositions.end());
+        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) !=
+            mySeenPositions.end());
         mySeenPositions.erase(client_action.entity_id);
       } // end lock scope
 
@@ -653,8 +676,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) != mySeenPositions.end());
-        mySeenPositions[client_action.entity_id].insert(seen_positions.begin(), seen_positions.end());
+        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) !=
+            mySeenPositions.end());
+        mySeenPositions[client_action.entity_id].insert(seen_positions.begin(),
+                                                        seen_positions.end());
       } // end lock scope
 
       break;
@@ -706,7 +731,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
 void
 RPG_Client_Engine::init(RPG_Engine* engine_in,
-                        RPG_Graphics_IWindow* window_in,
+                        RPG_Graphics_IWindowBase* window_in,
                         GladeXML* widgets_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::init"));
@@ -768,7 +793,8 @@ RPG_Client_Engine::hasSeen(const RPG_Engine_EntityID_t& id_in,
   if (lockedAccess_in)
     myLock.acquire();
 
-  RPG_Client_SeenPositionsConstIterator_t iterator = mySeenPositions.find(id_in);
+  RPG_Client_SeenPositionsConstIterator_t iterator =
+      mySeenPositions.find(id_in);
   if (iterator == mySeenPositions.end())
   {
     if (lockedAccess_in)
@@ -777,7 +803,8 @@ RPG_Client_Engine::hasSeen(const RPG_Engine_EntityID_t& id_in,
     return false;
   } // end IF
 
-  RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).second.find(position_in);
+  RPG_Map_PositionsConstIterator_t iterator2 =
+      (*iterator).second.find(position_in);
   bool result = (iterator2 != (*iterator).second.end());
   
   if (lockedAccess_in)
@@ -845,7 +872,8 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
-        RPG_Graphics_Cursor current_type = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type();
+        RPG_Graphics_Cursor current_type =
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type();
         if (current_type == (*iterator).cursor)
           break; // nothing to do...
 
@@ -859,16 +887,21 @@ RPG_Client_Engine::handleActions()
       case COMMAND_ENTITY_DRAW:
       {
         // sanity check
-        ACE_ASSERT((*iterator).position != std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                          std::numeric_limits<unsigned int>::max()));
+        ACE_ASSERT((*iterator).position !=
+            std::make_pair(std::numeric_limits<unsigned int>::max(),
+                           std::numeric_limits<unsigned int>::max()));
         ACE_ASSERT((*iterator).window);
         ACE_ASSERT((*iterator).entity_id);
 
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        SDL_Rect map_area;
+        (*iterator).window->getArea(map_area);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
         ACE_ASSERT(level_window);
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put((*iterator).entity_id,
                                                              RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
-                                                                                                   (*iterator).window->getSize(false),
+                                                                                                   std::make_pair(map_area.w,
+                                                                                                                  map_area.h),
                                                                                                    level_window->getView()),
                                                              dirty_region);
         (*iterator).window->invalidate(dirty_region);
@@ -936,7 +969,8 @@ RPG_Client_Engine::handleActions()
         // sanity check(s)
 				ACE_ASSERT((*iterator).window);
 
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
         ACE_ASSERT(level_window);
         try
         {
@@ -964,8 +998,10 @@ RPG_Client_Engine::handleActions()
         // sanity check(s)
 				ACE_ASSERT((*iterator).window);
 
-        RPG_Graphics_Size_t size = (*iterator).window->getSize(false);
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        SDL_Rect map_area;
+        (*iterator).window->getArea(map_area);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
         ACE_ASSERT(level_window);
         RPG_Graphics_Position_t view = level_window->getView();
         if ((*iterator).path.empty() &&
@@ -973,7 +1009,8 @@ RPG_Client_Engine::handleActions()
         {
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight((*iterator).position,
                                                                           RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
-                                                                                                                size,
+                                                                                                                std::make_pair(map_area.w,
+                                                                                                                               map_area.h),
                                                                                                                 view),
                                                                           view,
                                                                           dirty_region);
@@ -989,7 +1026,8 @@ RPG_Client_Engine::handleActions()
           {
             map_positions.push_back((*iterator2).first);
             graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
-                                                                               size,
+                                                                               std::make_pair(map_area.w,
+                                                                                              map_area.h),
                                                                                view));
           } // end FOR
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(map_positions,
@@ -1002,13 +1040,15 @@ RPG_Client_Engine::handleActions()
           ACE_ASSERT(!(*iterator).positions.empty());
           RPG_Map_PositionList_t map_positions;
           RPG_Graphics_Offsets_t graphics_positions;
-          for (RPG_Map_PositionsConstIterator_t iterator2 = (*iterator).positions.begin();
+          for (RPG_Map_PositionsConstIterator_t iterator2 =
+               (*iterator).positions.begin();
                iterator2 != (*iterator).positions.end();
                iterator2++)
           {
             map_positions.push_back(*iterator2);
             graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator2,
-                                                                               size,
+                                                                               std::make_pair(map_area.w,
+                                                                                              map_area.h),
                                                                                view));
           } // end FOR
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(map_positions,

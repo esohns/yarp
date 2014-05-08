@@ -46,13 +46,13 @@ class RPG_Client_Window_Message
             const unsigned int&);     // lines
   void push(const std::string&); // message
 
-  // implement (part of) RPG_Graphics_IWindow
+  // implement (part of) RPG_Graphics_IWindowBase
   virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
                     const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void handleEvent(const SDL_Event&,      // event
-                           RPG_Graphics_IWindow*, // target window (NULL: this)
-                           SDL_Rect&);            // return value: "dirty" region
+  virtual void handleEvent(const SDL_Event&,          // event
+                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                           SDL_Rect&);                // return value: "dirty" region
 
  private:
   typedef RPG_Graphics_SDLWindowSub inherited;

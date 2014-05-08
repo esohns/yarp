@@ -49,8 +49,8 @@ class RPG_Client_Export RPG_Client_Entity_Manager
 
  public:
   // init (clipping)
-  void init(RPG_Common_ILock*,      // screen lock interface handle
-            RPG_Graphics_IWindow*); // (target) window handle
+  void init(RPG_Common_ILock*,          // screen lock interface handle
+            RPG_Graphics_IWindowBase*); // (target) window handle
 
   // manage entities
   void add(const RPG_Engine_EntityID_t&, // id
@@ -91,9 +91,9 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   void restoreBG(const RPG_Engine_EntityID_t&, // id
                  SDL_Rect&);                   // return value: "dirty" region
 
-  RPG_Common_ILock*        myScreenLock;
-  RPG_Graphics_IWindow*    myWindow;
-  RPG_Client_EntityCache_t myCache;
+  RPG_Common_ILock*         myScreenLock;
+  RPG_Graphics_IWindowBase* myWindow;
+  RPG_Client_EntityCache_t  myCache;
 };
 
 typedef ACE_Singleton<RPG_Client_Entity_Manager,

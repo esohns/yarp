@@ -834,7 +834,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   client_action.command = COMMAND_WINDOW_REFRESH;
   client_engine.action(client_action);
 
-  RPG_Graphics_IWindow* level_window = main_window.child(WINDOW_MAP);
+  RPG_Graphics_IWindowBase* level_window = main_window.child(WINDOW_MAP);
   ACE_ASSERT(level_window);
   // init/add entity to the graphics cache
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(&client_engine,
@@ -985,8 +985,8 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 	// step6b: dispatch SDL events
   SDL_Event sdl_event;
   bool done = false;
-  RPG_Graphics_IWindow* window = NULL;
-  RPG_Graphics_IWindow* previous_window = NULL;
+  RPG_Graphics_IWindowBase* window = NULL;
+  RPG_Graphics_IWindowBase* previous_window = NULL;
   RPG_Graphics_Position_t mouse_position;
   do
   {
@@ -1121,6 +1121,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
               (previous_window != window))
           {
             sdl_event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
+
             try
             {
               previous_window->handleEvent(sdl_event,

@@ -101,7 +101,7 @@ RPG_Graphics_Cursor_Manager::~RPG_Graphics_Cursor_Manager()
 
 void
 RPG_Graphics_Cursor_Manager::init(RPG_Common_ILock* screenLock_in,
-                                  RPG_Graphics_IWindow* window_in)
+                                  RPG_Graphics_IWindowBase* window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::init"));
 
@@ -158,10 +158,13 @@ RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& view_in,
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   RPG_Graphics_Position_t input_position = position();
+  SDL_Rect map_area;
+  myHighlightWindow->getArea(map_area);
   // step1: draw highlight
   putHighlight(RPG_Graphics_Common_Tools::screen2Map(input_position,
                                                      mapSize_in,
-                                                     myHighlightWindow->getSize(),
+                                                     std::make_pair(map_area.w,
+                                                                    map_area.h),
                                                      view_in),
                input_position,
                view_in,
@@ -812,7 +815,8 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& v
     return; // nothing to do
 
   RPG_Graphics_Position_t screen_position;
-  RPG_Graphics_Size_t size = myHighlightWindow->getSize();
+  SDL_Rect map_area;
+  myHighlightWindow->getArea(map_area);
   SDL_Rect dirty_region;
   myHighlightWindow->clip();
   if (myScreenLock)
@@ -823,7 +827,8 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& v
        iterator++)
   {
     screen_position = RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
-                                                            size,
+                                                            std::make_pair(map_area.w,
+                                                                           map_area.h),
                                                             viewPort_in);
     RPG_Graphics_Surface::put(screen_position,
                               *(*iterator).second,

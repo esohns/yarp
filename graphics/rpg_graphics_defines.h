@@ -69,7 +69,7 @@
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN      20 // pixels
 // *NOTE*: while hovering, scroll only every x ms (roughly)...
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_SCROLL_DELAY 150 // ms
-#define RPG_GRAPHICS_WINDOW_HOTSPOT_COLOR              RPG_Graphics_SDL_Tools::CLR32_YELLOW
+#define RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR          COLOR_YELLOW
 
 // *NOTE*: offsets are measured in view coordinates (i.e. map squares)
 #define RPG_GRAPHICS_WINDOW_SCROLL_OFFSET              1

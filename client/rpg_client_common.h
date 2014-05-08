@@ -25,7 +25,7 @@
 #include "rpg_engine.h"
 
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_iwindow.h"
+#include "rpg_graphics_iwindow_base.h"
 #include "rpg_graphics_cursor.h"
 
 #include "rpg_sound_common.h"
@@ -39,7 +39,6 @@
 
 #include <SDL.h>
 
-//#include <ace/Log_Record.h>
 #include <ace/Synch.h>
 
 #include <map>
@@ -181,20 +180,20 @@ typedef std::pair<unsigned int, unsigned int> RPG_Client_Position_t;
 
 struct RPG_Client_Action
 {
-  RPG_Client_Command    command;
-  RPG_Map_Position_t    previous;
+  RPG_Client_Command        command;
+  RPG_Map_Position_t        previous;
   // *NOTE*: depending on the scenario, these could be map or screen coordinates !
-  RPG_Client_Position_t position;
-  RPG_Graphics_IWindow* window;
-  RPG_Graphics_Cursor   cursor;
-  RPG_Engine_EntityID_t entity_id;
-  RPG_Sound_Event       sound;
-  std::string           message;
+  RPG_Client_Position_t     position;
+  RPG_Graphics_IWindowBase* window;
+  RPG_Graphics_Cursor       cursor;
+  RPG_Engine_EntityID_t     entity_id;
+  RPG_Sound_Event           sound;
+  std::string               message;
   // *TODO*: this does not really belong here...
-  RPG_Map_Path_t        path;
-  RPG_Map_Position_t    source;
-  RPG_Map_Positions_t   positions;
-  unsigned char         radius; // map squares
+  RPG_Map_Path_t            path;
+  RPG_Map_Position_t        source;
+  RPG_Map_Positions_t       positions;
+  unsigned char             radius; // map squares
 };
 typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
 typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;

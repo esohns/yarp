@@ -46,17 +46,17 @@ class RPG_Common_ILock;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class SDL_GUI_LevelWindow
+class SDL_GUI_LevelWindow_Isometric
  : public RPG_Graphics_SDLWindowBase,
    public RPG_Client_IWindowLevel,
    public RPG_Engine_IClient
 {
  public:
-  SDL_GUI_LevelWindow(// *** SDL window ***
-                      const RPG_Graphics_SDLWindowBase&, // parent
-                      // *** level properties ***
-                      RPG_Engine*);                      // (level) state handle
-  virtual ~SDL_GUI_LevelWindow();
+  SDL_GUI_LevelWindow_Isometric(// *** SDL window ***
+                                const RPG_Graphics_SDLWindowBase&, // parent
+                                // *** level properties ***
+                                RPG_Engine*);                      // (level) state handle
+  virtual ~SDL_GUI_LevelWindow_Isometric();
 
   void init(state_t*,           // state handle
             RPG_Common_ILock*); // screen lock interface handle
@@ -72,9 +72,18 @@ class SDL_GUI_LevelWindow
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel
   virtual void init(const RPG_Graphics_MapStyle&); // map style
+  virtual void toggleDoor(const RPG_Map_Position_t&); // door position
+  virtual void setBlendRadius(const unsigned char&); // radius
+  virtual void updateMinimap();
+  virtual void updateMessageWindow(const std::string&); // message
+
   void setStyle(const RPG_Graphics_StyleUnion&);
 
-  // implement (part of) RPG_Graphics_IWindow
+  // implement RPG_Client_IWindow
+  virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
+                          const unsigned int& = 0,  // offset x (top-left = [0,0])
+                          const unsigned int& = 0); // offset y (top-left = [0,0])
+  // implement (part of) RPG_Graphics_IWindowBase
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
                     const unsigned int& = 0); // offset y (top-left = [0,0])
@@ -85,7 +94,6 @@ class SDL_GUI_LevelWindow
   // implement RPG_Engine_IClient
   //virtual void redraw();
   //// *NOTE*: this triggers a complete redraw !
-  //virtual void toggleDoor(const RPG_Map_Position_t&);
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify(const RPG_Engine_Command&,
                       const RPG_Engine_ClientNotificationParameters_t&);
@@ -93,9 +101,9 @@ class SDL_GUI_LevelWindow
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow());
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow(const SDL_GUI_LevelWindow&));
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow& operator=(const SDL_GUI_LevelWindow&));
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric());
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric(const SDL_GUI_LevelWindow_Isometric&));
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric& operator=(const SDL_GUI_LevelWindow_Isometric&));
 
   // helper types
   typedef std::pair<int, int> RPG_Position_t;

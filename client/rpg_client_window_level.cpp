@@ -615,10 +615,24 @@ RPG_Client_Window_Level::updateMessageWindow(const std::string& message_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::updateMessageWindow"));
 
-  RPG_Graphics_IWindow* child = inherited::child(WINDOW_MESSAGE);
-  ACE_ASSERT(child);
-  RPG_Client_Window_Message* message_window = dynamic_cast<RPG_Client_Window_Message*>(child);
-  ACE_ASSERT(message_window);
+  RPG_Graphics_IWindowBase* child = inherited::child(WINDOW_MESSAGE);
+  if (!child)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_SDLWindowBase::child(WINDOW_MESSAGE), aborting\n")));
+
+    return;
+  } // end IF
+  RPG_Client_Window_Message* message_window =
+      dynamic_cast<RPG_Client_Window_Message*>(child);
+  if (!message_window)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to dynamic_cast<RPG_Client_Window_Message*>(%@), aborting\n"),
+               child));
+
+    return;
+  } // end IF
   message_window->push(message_in);
 
   // sanity check
@@ -810,7 +824,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
       screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                              mySize,
+                                                              std::make_pair(myClipRect.h,
+                                                                             myClipRect.w),
                                                               myView);
 
       // step1: unmapped areas
@@ -1103,7 +1118,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
       screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                              mySize,
+                                                              std::make_pair(myClipRect.h,
+                                                                             myClipRect.w),
                                                               myView);
 
       wall_iterator = myWallTiles.find(current_map_position);
@@ -1297,14 +1313,13 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   unclip(targetSurface);
 
   // remember position of last realization
-  myLastAbsolutePosition =
-    std::make_pair(offsetX_in + myBorderLeft + myOffset.first,
-                   offsetY_in + myBorderTop  + myOffset.second);
+  myLastAbsolutePosition = std::make_pair(myClipRect.x,
+                                          myClipRect.y);
 }
 
 void
 RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
-                                     RPG_Graphics_IWindow* window_in,
+                                     RPG_Graphics_IWindowBase* window_in,
                                      SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::handleEvent"));
@@ -2627,7 +2642,6 @@ RPG_Client_Window_Level::initMessageWindow()
 
   // sanity check(s)
   ACE_ASSERT(myClient);
-  ACE_ASSERT(myEngine);
   ACE_ASSERT(inherited::myScreen);
 
   RPG_Client_Window_Message* message_window = NULL;
@@ -2643,7 +2657,7 @@ RPG_Client_Window_Level::initMessageWindow()
   } // end IF
 
   message_window->init(myClient,
-                       RPG_CLIENT_DEF_MESSAGE_FONT,
+                       RPG_CLIENT_MESSAGE_FONT,
                        RPG_CLIENT_DEF_MESSAGE_LINES);
   message_window->setScreen(inherited::myScreen);
 }
