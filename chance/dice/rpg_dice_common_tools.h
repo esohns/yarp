@@ -43,7 +43,6 @@ class RPG_Dice_Export RPG_Dice_Common_Tools
   static const std::string rangeToString(const RPG_Dice_ValueRange&); // range
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Dice_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Dice_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Dice_Common_Tools(const RPG_Dice_Common_Tools&));

@@ -45,14 +45,20 @@ class RPG_Engine_Export RPG_Engine_Level
   // static functionality
   static void create(const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
                      RPG_Engine_Level_t&);                     // return value: level
-  static RPG_Engine_Level_t load(const std::string&,  // FQ filename
-                                 const std::string&); // schema repository (directory)
+  static bool load(const std::string&,   // FQ filename
+                   const std::string&,   // schema repository (directory)
+                   RPG_Engine_Level_t&); // return value: level
+  static void random(const RPG_Engine_LevelMetaData_t&,        // metadata
+                     const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
+                     const RPG_Graphics_MapStyle&,             // style
+                     RPG_Engine_Level_t&);                     // return value: level
   static void print(const RPG_Engine_Level_t&); // level
 
   void init(const RPG_Engine_Level_t&); // level
   void save(const std::string&) const; // FQ filename
 
   RPG_Engine_LevelMetaData_t getMetaData() const;
+  RPG_Graphics_MapStyle getStyle() const;
 
  protected:
   // hide some funcionality
@@ -79,21 +85,21 @@ class RPG_Engine_Export RPG_Engine_Level
                 RPG_Map_Path_t&) const;     // return value: (partial) path A --> B
 
   RPG_Engine_LevelMetaData_t myMetaData;
+  RPG_Graphics_MapStyle      myStyle;
 
  private:
   typedef RPG_Map_Level inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level(const RPG_Engine_Level&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level& operator=(const RPG_Engine_Level&));
 
   // helper methods
   // *WARNING*: result needs to be delete()d !
   RPG_Engine_Level_XMLTree_Type* toLevelXML() const;
-  static RPG_Engine_Level_t levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
+  static RPG_Engine_Level_t
+  levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
 
   // hide unwanted funcionality
-  //using RPG_Map_Level::init;
   using RPG_Map_Level::save;
 };
 #endif

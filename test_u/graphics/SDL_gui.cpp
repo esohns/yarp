@@ -1492,15 +1492,24 @@ do_work(const mode_t& mode_in,
       } // end IF
       else
       {
-        level = RPG_Engine_Level::load(map_in,
-                                       schemaRepository_in);
+        if (!RPG_Engine_Level::load(map_in,
+                                    schemaRepository_in,
+                                    level))
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Engine_Level::load(\"%s\"), aborting\n"),
+                     map_in.c_str()));
+
+          break;
+        } // end IF
 
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("loaded map (\"%s\":\n%s\n"),
                    ACE_TEXT(map_in.c_str()),
                    ACE_TEXT(RPG_Map_Level::info(level.map).c_str())));
       } // end ELSE
-//       RPG_Map_Common_Tools::print(map);
+      if (debugMode_in)
+        RPG_Engine_Level::print(level);
 
       // step2: set default cursor
       SDL_Rect dirty_region;

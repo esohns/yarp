@@ -1458,6 +1458,24 @@ RPG_Engine::getMetaData(const bool& lockedAccess_in) const
   return result;
 }
 
+RPG_Graphics_MapStyle
+RPG_Engine::getStyle(const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getStyle"));
+
+  RPG_Graphics_MapStyle result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::getStyle();
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
 RPG_Map_Position_t
 RPG_Engine::getStartPosition(const bool& lockedAccess_in) const
 {

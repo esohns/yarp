@@ -746,7 +746,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 //  GTKUserData_in.entity.sprite();
   GTKUserData_in.entity.is_spawned = false;
   GTKUserData_in.level_engine      = &level_engine;
-  GTKUserData_in.map_config        = configuration_in.map_configuration;
+//  GTKUserData_in.level_metadata();
+//  GTKUserData_in.map_configuration();
+//  GTKUserData_in.level_style();
 
   // ***** window setup *****
   std::string caption =
@@ -1772,19 +1774,37 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
 	RPG_Client_GTK_CBData_t GTK_user_data;
-  GTK_user_data.level_metadata.name                 = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_NAME);
-	GTK_user_data.level_metadata.environment.plane    = RPG_ENGINE_DEF_PLANE;
-	GTK_user_data.level_metadata.environment.terrain  = RPG_ENGINE_DEF_TERRAIN;
-	GTK_user_data.level_metadata.environment.climate  = RPG_ENGINE_DEF_CLIMATE;
-	GTK_user_data.level_metadata.environment.time     = RPG_ENGINE_DEF_TIMEOFDAY;
-	GTK_user_data.level_metadata.environment.lighting = RPG_ENGINE_DEF_LIGHTING;
-	GTK_user_data.level_metadata.environment.outdoors = RPG_ENGINE_DEF_OUTDOORS;
-	GTK_user_data.level_metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_AI_SPAWN_TYPE));
-	GTK_user_data.level_metadata.spawn_interval.set(RPG_ENGINE_DEF_AI_SPAWN_TIMER_SEC, 0);
-	GTK_user_data.level_metadata.spawn_probability    = RPG_ENGINE_DEF_AI_SPAWN_PROBABILITY;
-	GTK_user_data.level_metadata.max_spawned          = RPG_ENGINE_DEF_AI_MAX_SPAWNED;
+	GTK_user_data.level_metadata.name                 = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
+	//
+	GTK_user_data.level_metadata.environment.plane    = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_PLANE;
+	GTK_user_data.level_metadata.environment.terrain  = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN;
+	GTK_user_data.level_metadata.environment.climate  = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_CLIMATE;
+	GTK_user_data.level_metadata.environment.time     = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TIMEOFDAY;
+	GTK_user_data.level_metadata.environment.lighting = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_LIGHTING;
+	GTK_user_data.level_metadata.environment.outdoors = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
+	//
+	GTK_user_data.level_metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE));
+	GTK_user_data.level_metadata.spawn_interval.set(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL, 0);
+	GTK_user_data.level_metadata.spawn_probability    = RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
+	GTK_user_data.level_metadata.max_spawned          = RPG_ENGINE_LEVEL_AI_NUM_SPAWNED_MAX;
 	GTK_user_data.level_metadata.spawn_timer          = -1;
-	GTK_user_data.level_metadata.amble_probability    = RPG_ENGINE_DEF_AI_AMBLE_PROBABILITY;
+	GTK_user_data.level_metadata.amble_probability    = RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
+
+  GTK_user_data.map_configuration.min_room_size          = RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;
+  GTK_user_data.map_configuration.doors                  = RPG_CLIENT_DEF_MAP_DOORS;
+  GTK_user_data.map_configuration.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
+  GTK_user_data.map_configuration.max_num_doors_per_room = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;
+  GTK_user_data.map_configuration.maximize_rooms         = RPG_CLIENT_DEF_MAP_MAXIMIZE_ROOMS;
+  GTK_user_data.map_configuration.num_areas              = RPG_CLIENT_DEF_MAP_NUM_AREAS;
+  GTK_user_data.map_configuration.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
+  GTK_user_data.map_configuration.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
+  GTK_user_data.map_configuration.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
+
+	GTK_user_data.level_style.floor = RPG_ENGINE_LEVEL_STYLE_DEF_FLOORSTYLE;
+	GTK_user_data.level_style.edge  = RPG_ENGINE_LEVEL_STYLE_DEF_EDGESTYLE;
+	GTK_user_data.level_style.half_height_walls = RPG_ENGINE_LEVEL_STYLE_HALFHEIGHTWALLS;
+	GTK_user_data.level_style.wall  = RPG_ENGINE_LEVEL_STYLE_DEF_WALLSTYLE;
+	GTK_user_data.level_style.door  = RPG_ENGINE_LEVEL_STYLE_DEF_DOORSTYLE;
 
   // step1c: initialize logging and/or tracing
   RPG_Client_Logger logger(&GTK_user_data.log_stack,
@@ -1873,15 +1893,7 @@ ACE_TMAIN(int argc_in,
   config.monster_dictionary   = monster_dictionary;
 
   // *** map ***
-  config.map_configuration.min_room_size          = RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;
-  config.map_configuration.doors                  = RPG_CLIENT_DEF_MAP_DOORS;
-  config.map_configuration.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
-  config.map_configuration.max_num_doors_per_room = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;
-  config.map_configuration.maximize_rooms         = RPG_CLIENT_DEF_MAP_MAXIMIZE_ROOMS;
-  config.map_configuration.num_areas              = RPG_CLIENT_DEF_MAP_NUM_AREAS;
-  config.map_configuration.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
-  config.map_configuration.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
-  config.map_configuration.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
+  config.map_configuration    = GTK_user_data.map_configuration;
   config.map_file             = floor_plan;
 
 //   // step1db: populate config object with default/collected data

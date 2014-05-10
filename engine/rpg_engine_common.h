@@ -100,14 +100,12 @@ struct RPG_Engine_LevelMetaData_t
   unsigned int           max_spawned; // 0: don't auto-spawn
   long                   spawn_timer;
   float                  amble_probability; // % [0.0 - 1.0]
-
-  // graphics
-  RPG_Graphics_MapStyle  style;
 };
 struct RPG_Engine_Level_t
 {
   RPG_Engine_LevelMetaData_t metadata;
   RPG_Map_t                  map;
+  RPG_Graphics_MapStyle      style;
 };
 
 typedef std::map<RPG_Map_Position_t, SDL_Surface*> RPG_Engine_EntityGraphics_t;

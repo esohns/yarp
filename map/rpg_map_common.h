@@ -53,7 +53,7 @@ struct RPG_Map_FloorPlan_Configuration_t
   unsigned int min_room_size; // 0: don't care
   bool         doors;
   bool         corridors;
-  unsigned int max_num_doors_per_room;
+  unsigned int max_num_doors_per_room; // 0: don't care
   bool         maximize_rooms;
   unsigned int num_areas;
   bool         square_rooms;

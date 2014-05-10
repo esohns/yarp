@@ -45,6 +45,8 @@ class RPG_Map_Export RPG_Map_Level
                    RPG_Map_t&,         // return value: map
                    const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
                    const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
+  static void random(const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
+                     RPG_Map_t&);                              // return value: map
   static void print(const RPG_Map_t&); // map
   static std::string info(const RPG_Map_t&); // map
 

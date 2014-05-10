@@ -146,7 +146,7 @@ RPG_Dice::probability(const float& probability_in)
 
   // step1: convert decimal to a fraction
   // *TODO*: make this more flexible...
-  std::pair<unsigned int, unsigned int> fraction = std::make_pair(0, 0);
+  RPG_Dice_Fraction_t fraction = std::make_pair(0, 0);
   fraction = RPG_Dice::farey(probability_in,
                              RPG_DICE_DEF_FAREY_EPSILON,
                              RPG_DICE_DEF_FAREY_MAX_NOMINATOR);

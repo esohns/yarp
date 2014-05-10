@@ -1232,14 +1232,14 @@ RPG_Client_Engine::handleActions()
 
         // step1: init/(re)draw window
         myEngine->lock();
-        RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(false);
+        RPG_Graphics_MapStyle level_style = myEngine->getStyle(false);
         RPG_Map_Position_t center = myEngine->getSize(false);
         myEngine->unlock();
         center.first >>= 1;
         center.second >>= 1;
         try
         {
-          level_window->init(level_metadata.style);
+          level_window->init(level_style);
           level_window->setView(center);
 //          level_window->clear();
           level_window->draw();

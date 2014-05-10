@@ -72,7 +72,8 @@ struct RPG_Client_GTK_CBData_t
 //    entity(),
     level_engine(NULL)//,
 //		level_metadata(),
-//    map_config()
+//    map_configuration(),
+//    level_style()
  { };
 
   ACE_Recursive_Thread_Mutex        lock;
@@ -92,7 +93,8 @@ struct RPG_Client_GTK_CBData_t
   RPG_Engine_Entity                 entity;
   RPG_Engine*                       level_engine;
   RPG_Engine_LevelMetaData_t        level_metadata;
-  RPG_Map_FloorPlan_Configuration_t map_config;
+  RPG_Map_FloorPlan_Configuration_t map_configuration;
+  RPG_Graphics_MapStyle             level_style;
 };
 
 struct RPG_Client_SDL_InputConfiguration_t

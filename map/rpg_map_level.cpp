@@ -171,22 +171,168 @@ RPG_Map_Level::load(const std::string& filename_in,
 }
 
 void
+RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfiguration_in,
+                      RPG_Map_t& map_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::random"));
+
+  // init return value(s)
+  map_out.start = std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                 std::numeric_limits<unsigned int>::max());
+  map_out.seeds.clear();
+  map_out.plan.size_x = 0;
+  map_out.plan.size_y = 0;
+  map_out.plan.unmapped.clear();
+  map_out.plan.walls.clear();
+  map_out.plan.doors.clear();
+  map_out.plan.rooms_are_square = floorPlanConfiguration_in.square_rooms;
+
+  RPG_Dice_RollResult_t result;
+
+  RPG_Map_FloorPlan_Configuration_t map_configuration =
+      floorPlanConfiguration_in;
+
+  // step1: min room size
+  if (map_configuration.min_room_size == 0) // <-- ! don't care
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_MAP_ROOM_SIZE_MAX + 1,
+                                    1,
+                                    result);
+    map_configuration.min_room_size = (result.front() - 1);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated min room size: %u\n"),
+               map_configuration.min_room_size));
+  } // end IF
+
+  // step2: doors
+  map_configuration.doors = RPG_Dice::probability(0.5F);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("generated doors: %s\n"),
+             (map_configuration.doors ? ACE_TEXT_ALWAYS_CHAR("true")
+                                      : ACE_TEXT_ALWAYS_CHAR("false"))));
+
+  // step3: corridors
+  map_configuration.corridors = RPG_Dice::probability(0.5F);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("generated corridors: %s\n"),
+             (map_configuration.corridors ? ACE_TEXT_ALWAYS_CHAR("true")
+                                          : ACE_TEXT_ALWAYS_CHAR("false"))));
+
+  // step4: max # doors/room
+  if (map_configuration.max_num_doors_per_room == 0) // <-- ! don't care
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RAND_MAX + 1,
+                                    1,
+                                    result);
+    map_configuration.max_num_doors_per_room = (result.front() - 1);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated max # doors/room: %u\n"),
+               map_configuration.max_num_doors_per_room));
+  } // end IF
+
+  // step5: maximize rooms
+  map_configuration.maximize_rooms = RPG_Dice::probability(0.5F);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("generated maximize rooms: %s\n"),
+             (map_configuration.maximize_rooms ? ACE_TEXT_ALWAYS_CHAR("true")
+                                               : ACE_TEXT_ALWAYS_CHAR("false"))));
+
+  // step6: # areas
+  if (map_configuration.num_areas == 0)
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_MAP_NUM_AREAS_MAX,
+                                    1,
+                                    result);
+    map_configuration.num_areas = result.front();
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated # areas: %u\n"),
+               map_configuration.num_areas));
+  } // end IF
+
+  // step7: square rooms
+  map_configuration.square_rooms = RPG_Dice::probability(0.5F);
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("generated square rooms: %s\n"),
+             (map_configuration.square_rooms ? ACE_TEXT_ALWAYS_CHAR("true")
+                                             : ACE_TEXT_ALWAYS_CHAR("false"))));
+
+  // step8: size
+  if ((map_configuration.map_size_x == 0) ||
+      (map_configuration.map_size_y == 0))
+  {
+    result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_MAP_SIZE_MAX + 1 -
+                                    RPG_MAP_SIZE_MIN,
+                                    2,
+                                    result);
+    if (map_configuration.map_size_x == 0)
+      map_configuration.map_size_x = (RPG_MAP_SIZE_MIN +
+                                      result.front() - 1);
+    if (map_configuration.map_size_y == 0)
+      map_configuration.map_size_y = (RPG_MAP_SIZE_MIN +
+                                      result.back() - 1);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated size: [%u,%u]\n"),
+               map_configuration.map_size_x,
+               map_configuration.map_size_y));
+  } // end IF
+
+  // step9: create floor plan
+  RPG_Map_Common_Tools::createFloorPlan(map_configuration.map_size_x,
+                                        map_configuration.map_size_y,
+                                        map_configuration.num_areas,
+                                        map_configuration.square_rooms,
+                                        map_configuration.maximize_rooms,
+                                        map_configuration.min_room_size,
+                                        map_configuration.doors,
+                                        map_configuration.corridors,
+                                        true, // currently, a door fills one position...
+                                        map_configuration.max_num_doors_per_room,
+                                        map_out.seeds,
+                                        map_out.plan);
+  ACE_ASSERT(map_out.seeds.size() == map_configuration.num_areas);
+
+  // step10: generate suitable starting position
+  RPG_Dice_RollResult_t result_x, result_y;
+  do
+  {
+    result_x.clear();
+    result_y.clear();
+    RPG_Dice::generateRandomNumbers(map_out.plan.size_x,
+                                    1,
+                                    result_x);
+    RPG_Dice::generateRandomNumbers(map_out.plan.size_y,
+                                    1,
+                                    result_y);
+    map_out.start = std::make_pair(result_x.front() - 1,
+                                   result_y.front() - 1);
+    if (RPG_Map_Common_Tools::isFloor(map_out.start,
+                                      map_out.plan))
+      break;
+  } while (true); // try again
+}
+
+void
 RPG_Map_Level::print(const RPG_Map_t& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::print"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("map\nstart position: [%u,%u]\n"),
+  ACE_DEBUG((LM_INFO,
+             ACE_TEXT("map:\n\tstart position: [%u,%u]\n"),
              map_in.start.first,
              map_in.start.second));
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("seed point(s): [")));
+  ACE_DEBUG((LM_INFO,
+             ACE_TEXT("\tseed point(s)[%u]: ["),
+             map_in.seeds.size()));
   RPG_Map_PositionsConstIterator_t next = map_in.seeds.begin();
   for (RPG_Map_PositionsConstIterator_t iterator = map_in.seeds.begin();
        iterator != map_in.seeds.end();
        iterator++)
   {
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("[%u,%u]"),
                (*iterator).first,
                (*iterator).second));
@@ -194,14 +340,14 @@ RPG_Map_Level::print(const RPG_Map_t& map_in)
     next = iterator;
     std::advance(next, 1);
     if (next != map_in.seeds.end())
-      ACE_DEBUG((LM_DEBUG,
+      ACE_DEBUG((LM_INFO,
                  ACE_TEXT(", ")));
   } // end FOR
-  ACE_DEBUG((LM_DEBUG,
+  ACE_DEBUG((LM_INFO,
              ACE_TEXT("]\n")));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("plan ([%ux%u] - %u unmapped, %u walls, %u doors)...\n"),
+  ACE_DEBUG((LM_INFO,
+             ACE_TEXT("\tplan ([%ux%u] - %u unmapped, %u walls, %u doors)\n"),
              map_in.plan.size_x,
              map_in.plan.size_y,
              map_in.plan.unmapped.size(),

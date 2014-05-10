@@ -24,10 +24,10 @@
 #include "rpg_monster_exports.h"
 #include "rpg_monster_common.h"
 
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
-#include <rpg_common_environment_incl.h>
-#include <rpg_character_incl.h>
+#include "rpg_dice_incl.h"
+#include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
+#include "rpg_character_incl.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Singleton.h>
@@ -51,6 +51,7 @@ class RPG_Monster_Export RPG_Monster_Dictionary
 
   RPG_Monster_Properties getProperties(const std::string&) const; // name of monster
   unsigned int numEntries() const;
+  RPG_Monster_List_t getEntries() const;
   void find(const RPG_Character_Alignment&,       // alignment
             const RPG_Common_Environment&,        // environment
             const RPG_Monster_OrganizationSet_t&, // organization(s)

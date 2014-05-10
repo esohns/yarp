@@ -79,9 +79,7 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 	myEngine->init(this);
 
 	myEngine->lock();
-	RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(false);
-	myCurrentMapStyle = level_metadata.style;
-
+	myCurrentMapStyle = myEngine->getStyle(false);
 	RPG_Map_Size_t map_size = myEngine->getSize(false);
 	myEngine->unlock();
 	myView = std::make_pair(map_size.first / 2,
@@ -236,7 +234,7 @@ SDL_GUI_LevelWindow_3D::init(state_t* state_in,
   inherited::init(screenLock_in);
 
   // init style
-  myCurrentMapStyle = myEngine->getMetaData(true).style;
+  myCurrentMapStyle = myEngine->getStyle(true);
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = myCurrentMapStyle.floor;
@@ -754,9 +752,10 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
           !myHideWalls)
         RPG_Graphics_Surface::put(std::make_pair(screen_position.first,
                                                  (screen_position.second -
-                                                  (level_metadata.style.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
-                                                                                          : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
-                                                  (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (level_metadata.style.half_height_walls ? 8 : 2)))),
+                                                  (myCurrentMapStyle.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
+                                                                                       : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
+                                                  (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myCurrentMapStyle.half_height_walls ? 8
+                                                                                                                         : 2)))),
                                   *myCurrentCeilingTile,
                                   target_surface,
                                   dirty_region);

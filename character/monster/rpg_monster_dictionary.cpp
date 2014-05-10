@@ -35,7 +35,6 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
-//#include "rpg_common_xsderrorhandler.h"
 #include "rpg_common_tools.h"
 #include "rpg_common_XML_tools.h"
 
@@ -439,6 +438,22 @@ RPG_Monster_Dictionary::numEntries() const
   RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::numEntries"));
 
   return myMonsterDictionary.size();
+}
+
+RPG_Monster_List_t
+RPG_Monster_Dictionary::getEntries() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::numEntries"));
+
+  // init return value(s)
+  RPG_Monster_List_t result;
+
+  for (RPG_Monster_DictionaryConstIterator_t iterator = myMonsterDictionary.begin();
+       iterator != myMonsterDictionary.end();
+       iterator++)
+    result.push_back((*iterator).first);
+
+  return result;
 }
 
 void

@@ -399,8 +399,8 @@ RPG_Client_Window_Level::init(RPG_Client_Engine* clientEngine_in,
   myEngine = engine_in;
 
   // init edge, wall, door tiles
-  RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(true);
-  init(level_metadata.style);
+  RPG_Graphics_MapStyle level_style = myEngine->getStyle(true);
+  init(level_style);
 
   // init minimap
   initMiniMap();
@@ -2350,9 +2350,9 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
     }
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
-      RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(true);
+      RPG_Graphics_MapStyle level_style = myEngine->getStyle(true);
       RPG_Graphics_Common_Tools::loadWallTileSet(style_in.wallstyle,
-                                                 level_metadata.style.half_height_walls,
+                                                 level_style.half_height_walls,
                                                  myCurrentWallSet);
       // sanity check
       if ((myCurrentWallSet.east.surface == NULL) ||
@@ -2367,7 +2367,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
         return;
       } // end IF
 
-      initWallBlend(level_metadata.style.half_height_walls);
+      initWallBlend(level_style.half_height_walls);
 
       // *NOTE*: west is just a "darkened" version of east...
       SDL_Surface* copy = NULL;

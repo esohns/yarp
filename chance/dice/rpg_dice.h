@@ -59,19 +59,10 @@ class RPG_Dice_Export RPG_Dice
                           RPG_Dice_Roll&);            // roll specifics
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Dice());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Dice());
   ACE_UNIMPLEMENTED_FUNC(RPG_Dice(const RPG_Dice&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Dice& operator=(const RPG_Dice&));
-
-  // helper methods
-  static unsigned int distanceRangeToRange(const RPG_Dice_ValueRange&,
-                                           const RPG_Dice_ValueRange&);
-  static std::pair<unsigned int,
-                   unsigned int> farey(const float&,         // decimal
-                                       const float&,         // epsilon (== precision)
-                                       const unsigned int&); // max. nominator
 
   // helper types
   struct rangeToRollElement
@@ -97,6 +88,15 @@ class RPG_Dice_Export RPG_Dice
   };
   typedef std::set<rangeToRollElement> RPG_Dice_SortedRolls_t;
   typedef RPG_Dice_SortedRolls_t::const_iterator RPG_Dice_SortedRollsIterator_t;
+
+  typedef std::pair<unsigned int, unsigned int> RPG_Dice_Fraction_t;
+
+  // helper methods
+  static unsigned int distanceRangeToRange(const RPG_Dice_ValueRange&,
+                                           const RPG_Dice_ValueRange&);
+  static RPG_Dice_Fraction_t farey(const float&,         // decimal
+                                   const float&,         // epsilon (== precision)
+                                   const unsigned int&); // max. nominator
 };
 
 #endif

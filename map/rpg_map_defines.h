@@ -40,4 +40,9 @@
 
 #define RPG_MAP_DEF_MAP_FILE       "dungeon_one"
 
+#define RPG_MAP_ROOM_SIZE_MAX      30
+#define RPG_MAP_NUM_AREAS_MAX      30
+#define RPG_MAP_SIZE_MIN           40
+#define RPG_MAP_SIZE_MAX           512
+
 #endif

@@ -130,6 +130,7 @@ class RPG_Engine_Export RPG_Engine
 
   // map
   RPG_Engine_LevelMetaData_t getMetaData(const bool& = true) const; // locked access ?
+  RPG_Graphics_MapStyle getStyle(const bool& = true) const; // locked access ?
   RPG_Map_Position_t getStartPosition(const bool& = true) const; // locked access ?
   RPG_Map_Size_t getSize(const bool& = true) const; // locked access ?
   RPG_Map_DoorState state(const RPG_Map_Position_t&,
