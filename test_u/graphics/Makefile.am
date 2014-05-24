@@ -69,5 +69,6 @@ SDL_gui_LDADD = \
   -lRPG_Chance \
   -lRPG_Dice \
   $(pkg_libs_LIBS) \
-  -lSDL_mixer
-
+  -lSDL_mixer \
+  -lGLU \
+  -lGL

@@ -77,7 +77,7 @@ RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t
                ACE_TEXT("failed to SDL_VideoInit(\"%s\", %x): \"%s\", aborting\n"),
                ACE_TEXT(video_driver.c_str()),
                flags,
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return false;
   } // end IF
@@ -89,7 +89,7 @@ RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t
   if (SDL_GetWMInfo(&wm_info) <= 0)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_GetWMInfo(): \"%s\", continuing"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
   std::ostringstream version_number;
   version_number << static_cast<unsigned int>(wm_info.version.major);
   version_number << ACE_TEXT_ALWAYS_CHAR(".");
@@ -205,7 +205,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return result;
   } // end IF
@@ -322,6 +322,229 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
     }
   } // end SWITCH
 
+  // init OpenGL flags
+  if (configuration_in.use_OpenGL)
+  {
+    bool failed = false;
+    int return_value = SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+    failed |= return_value;
+    if (return_value)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 SDL_GL_RED_SIZE, 5,
+                 ACE_TEXT(SDL_GetError())));
+    return_value = SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+    failed |= return_value;
+    if (return_value)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 SDL_GL_GREEN_SIZE, 5,
+                 ACE_TEXT(SDL_GetError())));
+    return_value = SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+    failed |= return_value;
+    if (return_value)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 SDL_GL_BLUE_SIZE, 5,
+                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_ALPHA_SIZE, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_BUFFER_SIZE, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+    return_value = SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,
+                                       (configuration_in.double_buffer ? 1
+                                                                       : 0));
+    failed |= return_value;
+    if (return_value)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 SDL_GL_DOUBLEBUFFER,
+                 (configuration_in.double_buffer ? 1
+                                                 : 0),
+                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_DEPTH_SIZE, 16,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_STENCIL_SIZE, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_ACCUM_RED_SIZE, 0,
+//                 ACE_TEXT(SDL_GetError())));
+//    return_value = SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_ACCUM_GREEN_SIZE, 0,
+//                 ACE_TEXT(SDL_GetError())));
+//    return_value = SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_ACCUM_BLUE_SIZE, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_ACCUM_ALPHA_SIZE, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_STEREO, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_STEREO, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_MULTISAMPLEBUFFERS, 0,
+//                 ACE_TEXT(SDL_GetError())));
+//    return_value = SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_MULTISAMPLESAMPLES, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+    return_value = SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,
+                                       (RPG_GRAPHICS_DEF_OPENGL_HW_ACCELERATION ? 1
+                                                                                : 0));
+    failed |= return_value;
+    if (return_value)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 SDL_GL_ACCELERATED_VISUAL,
+                 (RPG_GRAPHICS_DEF_OPENGL_HW_ACCELERATION ? 1
+                                                          : 0),
+                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_SWAP_CONTROL, 1,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_RETAINED_BACKING, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_CONTEXT_MAJOR_VERSION, 0,
+//                 ACE_TEXT(SDL_GetError())));
+//    return_value = SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_CONTEXT_MINOR_VERSION, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    int context_flags = 0;
+//    context_flags =
+//        ((configuration_in.debug ? SDL_GL_CONTEXT_DEBUG_FLAG : 0)  |
+//         (RPG_GRAPHICS_OPENGL_CONTEXT_FORWARD_COMPATIBLE_FLAG ? SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG
+//                                                              : 0) |
+//         (RPG_GRAPHICS_OPENGL_CONTEXT_ROBUST_ACCESS_FLAG ? SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG
+//                                                         : 0)      |
+//         (RPG_GRAPHICS_OPENGL_CONTEXT_RESET_ISOLATION_FLAG ? SDL_GL_CONTEXT_RESET_ISOLATION_FLAG
+//                                                           : 0));
+//    return_value = SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS,
+//                                       context_flags);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, 0x%x): \"%s\", aborting\n"),
+//                 SDL_GL_CONTEXT_FLAGS, context_flags,
+//                 ACE_TEXT(SDL_GetError())));
+//    context_flags =
+//        (RPG_GRAPHICS_DEF_OPENGL_CONTEXT_PROFILE_ES ? SDL_GL_CONTEXT_PROFILE_ES
+//                                                    : (RPG_GRAPHICS_OPENGL_CONTEXT_FORWARD_COMPATIBLE_FLAG ? SDL_GL_CONTEXT_PROFILE_CORE
+//                                                                                                           : SDL_GL_CONTEXT_PROFILE_COMPATIBILITY));
+//    return_value = SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, context_flags);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, 0x%x): \"%s\", aborting\n"),
+//                 SDL_GL_CONTEXT_PROFILE_MASK, context_flags,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+//    return_value = SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 0);
+//    failed |= return_value;
+//    if (return_value)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 SDL_GL_CONTEXT_EGL, 0,
+//                 ACE_TEXT(SDL_GetError())));
+
+    if (failed)
+      return NULL;
+  } // end IF
+
   // open SDL window
   SDL_Surface* screen = NULL;
   screen = SDL_SetVideoMode(configuration_in.screen_width,
@@ -336,7 +559,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
                configuration_in.screen_height,
                suggested_bpp,
                SDL_surface_flags,
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return NULL;
   } // end IF
@@ -423,9 +646,12 @@ RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
   ACE_OS::memset(&result, 0, sizeof(result));
 
   // extract components from the 32-bit color value
-  result.r = (color_in & targetSurface_in.format->Rmask) >> targetSurface_in.format->Rshift;
-  result.g = (color_in & targetSurface_in.format->Gmask) >> targetSurface_in.format->Gshift;
-  result.b = (color_in & targetSurface_in.format->Bmask) >> targetSurface_in.format->Bshift;
+  result.r =
+          (color_in & targetSurface_in.format->Rmask) >> targetSurface_in.format->Rshift;
+  result.g =
+          (color_in & targetSurface_in.format->Gmask) >> targetSurface_in.format->Gshift;
+  result.b =
+          (color_in & targetSurface_in.format->Bmask) >> targetSurface_in.format->Bshift;
   result.unused = 0;
 
   return result;
@@ -643,10 +869,18 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
   SDL_Rect result;
   ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
 
-  result.x = static_cast<int16_t>((rect1_in.x < rect2_in.x) ? rect1_in.x : rect2_in.x);
-  result.y = static_cast<int16_t>((rect1_in.y < rect2_in.y) ? rect1_in.y : rect2_in.y);
-  result.w = static_cast<uint16_t>((((rect1_in.x + rect1_in.w) > (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1) : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
-  result.h = static_cast<uint16_t>((((rect1_in.y + rect1_in.h) > (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1) : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
+  result.x =
+          static_cast<int16_t>((rect1_in.x < rect2_in.x) ? rect1_in.x
+                                                         : rect2_in.x);
+  result.y =
+          static_cast<int16_t>((rect1_in.y < rect2_in.y) ? rect1_in.y
+                                                         : rect2_in.y);
+  result.w =
+          static_cast<uint16_t>((((rect1_in.x + rect1_in.w) > (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
+                                                                                         : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
+  result.h =
+          static_cast<uint16_t>((((rect1_in.y + rect1_in.h) > (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
+                                                                                         : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
 
   return result;
 }
@@ -668,10 +902,18 @@ RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
        ((rect2_in.y >= rect1_in.y) && (rect2_in.y <= (rect1_in.y + rect1_in.h)))))
   {
     // compute overlap
-    result.x = static_cast<int16_t>((rect1_in.x > rect2_in.x) ? rect1_in.x : rect2_in.x);
-    result.y = static_cast<int16_t>((rect1_in.y > rect2_in.y) ? rect1_in.y : rect2_in.y);
-    result.w = static_cast<uint16_t>((((rect1_in.x + rect1_in.w) < (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1) : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
-    result.h = static_cast<uint16_t>((((rect1_in.y + rect1_in.h) < (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1) : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
+    result.x =
+          static_cast<int16_t>((rect1_in.x > rect2_in.x) ? rect1_in.x
+                                                         : rect2_in.x);
+    result.y =
+          static_cast<int16_t>((rect1_in.y > rect2_in.y) ? rect1_in.y
+                                                         : rect2_in.y);
+    result.w =
+          static_cast<uint16_t>((((rect1_in.x + rect1_in.w) < (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
+                                                                                         : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
+    result.h =
+          static_cast<uint16_t>((((rect1_in.y + rect1_in.h) < (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
+                                                                                         : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
   } // end IF
 
   return result;

@@ -82,12 +82,17 @@ RPG_Engine_Level::create(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
 
   level_out.metadata.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
 
-  level_out.metadata.environment.climate = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_CLIMATE;
-  level_out.metadata.environment.lighting = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_LIGHTING;
-  level_out.metadata.environment.outdoors = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
+  level_out.metadata.environment.climate =
+      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_CLIMATE;
+  level_out.metadata.environment.lighting =
+      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_LIGHTING;
+  level_out.metadata.environment.outdoors =
+      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
   level_out.metadata.environment.plane = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_PLANE;
-  level_out.metadata.environment.terrain = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN;
-  level_out.metadata.environment.time = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TIMEOFDAY;
+  level_out.metadata.environment.terrain =
+      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN;
+  level_out.metadata.environment.time =
+      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TIMEOFDAY;
 
   level_out.metadata.roaming_monsters.clear();
   level_out.metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE));
@@ -97,7 +102,8 @@ RPG_Engine_Level::create(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
   level_out.metadata.max_spawned = RPG_ENGINE_LEVEL_AI_NUM_SPAWNED_MAX;
   level_out.metadata.spawn_timer = -1;
-  level_out.metadata.amble_probability = RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
+  level_out.metadata.amble_probability =
+      RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
 
   level_out.map.start =
       std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -614,8 +620,9 @@ RPG_Engine_Level::init(const RPG_Engine_Level_t& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::init"));
 
-  myMetaData = level_in.metadata;
   inherited::init(level_in.map);
+  myMetaData = level_in.metadata;
+  myStyle = level_in.style;
 }
 
 void
@@ -850,7 +857,8 @@ RPG_Engine_Level::toLevelXML() const
     environment.plane(RPG_Common_PlaneHelper::RPG_Common_PlaneToString(myMetaData.environment.plane));
   if (myMetaData.environment.terrain != RPG_COMMON_TERRAIN_INVALID)
     environment.terrain(RPG_Common_TerrainHelper::RPG_Common_TerrainToString(myMetaData.environment.terrain));
-  ACE_ASSERT(myMetaData.environment.time == RPG_COMMON_TIMEOFDAY_INVALID);
+  if (myMetaData.environment.time != RPG_COMMON_TIMEOFDAY_INVALID)
+    environment.time(RPG_Common_TimeOfDayHelper::RPG_Common_TimeOfDayToString(myMetaData.environment.time));
 
   RPG_Common_FixedPeriod_XMLTree_Type spawn_interval(static_cast<unsigned int>(myMetaData.spawn_interval.sec()),
                                                      static_cast<unsigned int>(myMetaData.spawn_interval.usec()));
@@ -865,16 +873,15 @@ RPG_Engine_Level::toLevelXML() const
     style.edge(RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(myStyle.edge));
 
   RPG_Engine_Level_XMLTree_Type* level_p = NULL;
-  level_p =
-      new(std::nothrow) RPG_Engine_Level_XMLTree_Type(myMetaData.name,
-                                                      environment,
-                                                      spawn_interval,
-                                                      myMetaData.spawn_probability,
-                                                      myMetaData.max_spawned,
-                                                      myMetaData.amble_probability,
-                                                      map_string,
-                                                      style);
-  ACE_ASSERT(level_p);
+  ACE_NEW_NORETURN(level_p,
+                   RPG_Engine_Level_XMLTree_Type(myMetaData.name,
+                                                 environment,
+                                                 spawn_interval,
+                                                 myMetaData.spawn_probability,
+                                                 myMetaData.max_spawned,
+                                                 myMetaData.amble_probability,
+                                                 map_string,
+                                                 style));
   if (!level_p)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -913,25 +920,21 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
   RPG_Engine_Level_t result;
 
   result.metadata.name = level_in.name();
-  result.metadata.environment.climate = RPG_COMMON_CLIMATE_INVALID;
-  if (level_in.environment().climate().present())
-    result.metadata.environment.climate =
-        RPG_Common_ClimateHelper::stringToRPG_Common_Climate(level_in.environment().climate().get());
-  result.metadata.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
-  if (level_in.environment().lighting().present())
-    result.metadata.environment.lighting =
-        RPG_Common_AmbientLightingHelper::stringToRPG_Common_AmbientLighting(level_in.environment().lighting().get());
-  result.metadata.environment.outdoors = level_in.environment().outdoors();
-  result.metadata.environment.plane = RPG_COMMON_PLANE_INVALID;
-  if (level_in.environment().plane().present())
-    result.metadata.environment.plane =
-        RPG_Common_PlaneHelper::stringToRPG_Common_Plane(level_in.environment().plane().get());
-  result.metadata.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
-  if (level_in.environment().terrain().present())
-    result.metadata.environment.terrain =
-        RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(level_in.environment().terrain().get());
-  result.metadata.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
-  ACE_ASSERT(!level_in.environment().time().present());
+
+  const RPG_Common_Environment_XMLTree_Type& environment =
+      level_in.environment();
+  result.metadata.environment.climate =
+      RPG_Common_ClimateHelper::stringToRPG_Common_Climate(environment.climate());
+  result.metadata.environment.lighting =
+      RPG_Common_AmbientLightingHelper::stringToRPG_Common_AmbientLighting(environment.lighting());
+  result.metadata.environment.outdoors = environment.outdoors();
+  result.metadata.environment.plane =
+      RPG_Common_PlaneHelper::stringToRPG_Common_Plane(environment.plane());
+  result.metadata.environment.terrain =
+      RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(environment.terrain());
+  result.metadata.environment.time =
+      RPG_Common_TimeOfDayHelper::stringToRPG_Common_TimeOfDay(environment.time());
+
   for (RPG_Engine_Level_XMLTree_Type::monster_const_iterator iterator =
        level_in.monster().begin();
        iterator != level_in.monster().end();

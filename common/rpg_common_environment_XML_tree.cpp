@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -314,16 +313,16 @@ operator= (value v)
 // RPG_Common_Environment_XMLTree_Type
 // 
 
-const RPG_Common_Environment_XMLTree_Type::plane_optional& RPG_Common_Environment_XMLTree_Type::
+const RPG_Common_Environment_XMLTree_Type::plane_type& RPG_Common_Environment_XMLTree_Type::
 plane () const
 {
-  return this->plane_;
+  return this->plane_.get ();
 }
 
-RPG_Common_Environment_XMLTree_Type::plane_optional& RPG_Common_Environment_XMLTree_Type::
+RPG_Common_Environment_XMLTree_Type::plane_type& RPG_Common_Environment_XMLTree_Type::
 plane ()
 {
-  return this->plane_;
+  return this->plane_.get ();
 }
 
 void RPG_Common_Environment_XMLTree_Type::
@@ -333,27 +332,21 @@ plane (const plane_type& x)
 }
 
 void RPG_Common_Environment_XMLTree_Type::
-plane (const plane_optional& x)
-{
-  this->plane_ = x;
-}
-
-void RPG_Common_Environment_XMLTree_Type::
 plane (::std::auto_ptr< plane_type > x)
 {
   this->plane_.set (x);
 }
 
-const RPG_Common_Environment_XMLTree_Type::terrain_optional& RPG_Common_Environment_XMLTree_Type::
+const RPG_Common_Environment_XMLTree_Type::terrain_type& RPG_Common_Environment_XMLTree_Type::
 terrain () const
 {
-  return this->terrain_;
+  return this->terrain_.get ();
 }
 
-RPG_Common_Environment_XMLTree_Type::terrain_optional& RPG_Common_Environment_XMLTree_Type::
+RPG_Common_Environment_XMLTree_Type::terrain_type& RPG_Common_Environment_XMLTree_Type::
 terrain ()
 {
-  return this->terrain_;
+  return this->terrain_.get ();
 }
 
 void RPG_Common_Environment_XMLTree_Type::
@@ -363,27 +356,21 @@ terrain (const terrain_type& x)
 }
 
 void RPG_Common_Environment_XMLTree_Type::
-terrain (const terrain_optional& x)
-{
-  this->terrain_ = x;
-}
-
-void RPG_Common_Environment_XMLTree_Type::
 terrain (::std::auto_ptr< terrain_type > x)
 {
   this->terrain_.set (x);
 }
 
-const RPG_Common_Environment_XMLTree_Type::climate_optional& RPG_Common_Environment_XMLTree_Type::
+const RPG_Common_Environment_XMLTree_Type::climate_type& RPG_Common_Environment_XMLTree_Type::
 climate () const
 {
-  return this->climate_;
+  return this->climate_.get ();
 }
 
-RPG_Common_Environment_XMLTree_Type::climate_optional& RPG_Common_Environment_XMLTree_Type::
+RPG_Common_Environment_XMLTree_Type::climate_type& RPG_Common_Environment_XMLTree_Type::
 climate ()
 {
-  return this->climate_;
+  return this->climate_.get ();
 }
 
 void RPG_Common_Environment_XMLTree_Type::
@@ -393,27 +380,21 @@ climate (const climate_type& x)
 }
 
 void RPG_Common_Environment_XMLTree_Type::
-climate (const climate_optional& x)
-{
-  this->climate_ = x;
-}
-
-void RPG_Common_Environment_XMLTree_Type::
 climate (::std::auto_ptr< climate_type > x)
 {
   this->climate_.set (x);
 }
 
-const RPG_Common_Environment_XMLTree_Type::time_optional& RPG_Common_Environment_XMLTree_Type::
+const RPG_Common_Environment_XMLTree_Type::time_type& RPG_Common_Environment_XMLTree_Type::
 time () const
 {
-  return this->time_;
+  return this->time_.get ();
 }
 
-RPG_Common_Environment_XMLTree_Type::time_optional& RPG_Common_Environment_XMLTree_Type::
+RPG_Common_Environment_XMLTree_Type::time_type& RPG_Common_Environment_XMLTree_Type::
 time ()
 {
-  return this->time_;
+  return this->time_.get ();
 }
 
 void RPG_Common_Environment_XMLTree_Type::
@@ -423,39 +404,27 @@ time (const time_type& x)
 }
 
 void RPG_Common_Environment_XMLTree_Type::
-time (const time_optional& x)
-{
-  this->time_ = x;
-}
-
-void RPG_Common_Environment_XMLTree_Type::
 time (::std::auto_ptr< time_type > x)
 {
   this->time_.set (x);
 }
 
-const RPG_Common_Environment_XMLTree_Type::lighting_optional& RPG_Common_Environment_XMLTree_Type::
+const RPG_Common_Environment_XMLTree_Type::lighting_type& RPG_Common_Environment_XMLTree_Type::
 lighting () const
 {
-  return this->lighting_;
+  return this->lighting_.get ();
 }
 
-RPG_Common_Environment_XMLTree_Type::lighting_optional& RPG_Common_Environment_XMLTree_Type::
+RPG_Common_Environment_XMLTree_Type::lighting_type& RPG_Common_Environment_XMLTree_Type::
 lighting ()
 {
-  return this->lighting_;
+  return this->lighting_.get ();
 }
 
 void RPG_Common_Environment_XMLTree_Type::
 lighting (const lighting_type& x)
 {
   this->lighting_.set (x);
-}
-
-void RPG_Common_Environment_XMLTree_Type::
-lighting (const lighting_optional& x)
-{
-  this->lighting_ = x;
 }
 
 void RPG_Common_Environment_XMLTree_Type::
@@ -480,12 +449,6 @@ void RPG_Common_Environment_XMLTree_Type::
 outdoors (const outdoors_type& x)
 {
   this->outdoors_.set (x);
-}
-
-RPG_Common_Environment_XMLTree_Type::outdoors_type RPG_Common_Environment_XMLTree_Type::
-outdoors_default_value ()
-{
-  return outdoors_type (true);
 }
 
 
@@ -1005,14 +968,19 @@ _xsd_RPG_Common_AmbientLighting_XMLTree_Type_indexes_[3] =
 //
 
 RPG_Common_Environment_XMLTree_Type::
-RPG_Common_Environment_XMLTree_Type ()
+RPG_Common_Environment_XMLTree_Type (const plane_type& plane,
+                                     const terrain_type& terrain,
+                                     const climate_type& climate,
+                                     const time_type& time,
+                                     const lighting_type& lighting,
+                                     const outdoors_type& outdoors)
 : ::xml_schema::type (),
-  plane_ (::xml_schema::flags (), this),
-  terrain_ (::xml_schema::flags (), this),
-  climate_ (::xml_schema::flags (), this),
-  time_ (::xml_schema::flags (), this),
-  lighting_ (::xml_schema::flags (), this),
-  outdoors_ (outdoors_default_value (), ::xml_schema::flags (), this)
+  plane_ (plane, ::xml_schema::flags (), this),
+  terrain_ (terrain, ::xml_schema::flags (), this),
+  climate_ (climate, ::xml_schema::flags (), this),
+  time_ (time, ::xml_schema::flags (), this),
+  lighting_ (lighting, ::xml_schema::flags (), this),
+  outdoors_ (outdoors, ::xml_schema::flags (), this)
 {
 }
 
@@ -1044,7 +1012,7 @@ RPG_Common_Environment_XMLTree_Type (const ::xercesc::DOMElement& e,
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
-    ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
     this->parse (p, f);
   }
 }
@@ -1066,7 +1034,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< plane_type > r (
         plane_traits::create (i, f, this));
 
-      if (!this->plane_)
+      if (!plane_.present ())
       {
         this->plane_.set (r);
         continue;
@@ -1080,7 +1048,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< terrain_type > r (
         terrain_traits::create (i, f, this));
 
-      if (!this->terrain_)
+      if (!terrain_.present ())
       {
         this->terrain_.set (r);
         continue;
@@ -1094,7 +1062,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< climate_type > r (
         climate_traits::create (i, f, this));
 
-      if (!this->climate_)
+      if (!climate_.present ())
       {
         this->climate_.set (r);
         continue;
@@ -1108,7 +1076,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< time_type > r (
         time_traits::create (i, f, this));
 
-      if (!this->time_)
+      if (!time_.present ())
       {
         this->time_.set (r);
         continue;
@@ -1122,9 +1090,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< lighting_type > r (
         lighting_traits::create (i, f, this));
 
-      if (!this->lighting_)
+      if (!lighting_.present ())
       {
         this->lighting_.set (r);
+        continue;
+      }
+    }
+
+    // outdoors
+    //
+    if (n.name () == "outdoors" && n.namespace_ () == "urn:rpg")
+    {
+      if (!outdoors_.present ())
+      {
+        this->outdoors_.set (outdoors_traits::create (i, f, this));
         continue;
       }
     }
@@ -1132,22 +1111,46 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
-  while (p.more_attributes ())
+  if (!plane_.present ())
   {
-    const ::xercesc::DOMAttr& i (p.next_attribute ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "plane",
+      "urn:rpg");
+  }
 
-    if (n.name () == "outdoors" && n.namespace_ ().empty ())
-    {
-      this->outdoors_.set (outdoors_traits::create (i, f, this));
-      continue;
-    }
+  if (!terrain_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "terrain",
+      "urn:rpg");
+  }
+
+  if (!climate_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "climate",
+      "urn:rpg");
+  }
+
+  if (!time_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "time",
+      "urn:rpg");
+  }
+
+  if (!lighting_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "lighting",
+      "urn:rpg");
   }
 
   if (!outdoors_.present ())
   {
-    this->outdoors_.set (outdoors_default_value ());
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "outdoors",
+      "urn:rpg");
   }
 }
 
@@ -1270,31 +1273,11 @@ operator<< (::std::ostream& o, const RPG_Common_AmbientLighting_XMLTree_Type& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Common_Environment_XMLTree_Type& i)
 {
-  if (i.plane ())
-  {
-    o << ::std::endl << "plane: " << *i.plane ();
-  }
-
-  if (i.terrain ())
-  {
-    o << ::std::endl << "terrain: " << *i.terrain ();
-  }
-
-  if (i.climate ())
-  {
-    o << ::std::endl << "climate: " << *i.climate ();
-  }
-
-  if (i.time ())
-  {
-    o << ::std::endl << "time: " << *i.time ();
-  }
-
-  if (i.lighting ())
-  {
-    o << ::std::endl << "lighting: " << *i.lighting ();
-  }
-
+  o << ::std::endl << "plane: " << i.plane ();
+  o << ::std::endl << "terrain: " << i.terrain ();
+  o << ::std::endl << "climate: " << i.climate ();
+  o << ::std::endl << "time: " << i.time ();
+  o << ::std::endl << "lighting: " << i.lighting ();
   o << ::std::endl << "outdoors: " << i.outdoors ();
   return o;
 }
@@ -1428,7 +1411,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_Environment_XMLTree_Type&
 
   // plane
   //
-  if (i.plane ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -1436,12 +1418,11 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_Environment_XMLTree_Type&
         "urn:rpg",
         e));
 
-    s << *i.plane ();
+    s << i.plane ();
   }
 
   // terrain
   //
-  if (i.terrain ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -1449,12 +1430,11 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_Environment_XMLTree_Type&
         "urn:rpg",
         e));
 
-    s << *i.terrain ();
+    s << i.terrain ();
   }
 
   // climate
   //
-  if (i.climate ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -1462,12 +1442,11 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_Environment_XMLTree_Type&
         "urn:rpg",
         e));
 
-    s << *i.climate ();
+    s << i.climate ();
   }
 
   // time
   //
-  if (i.time ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -1475,12 +1454,11 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_Environment_XMLTree_Type&
         "urn:rpg",
         e));
 
-    s << *i.time ();
+    s << i.time ();
   }
 
   // lighting
   //
-  if (i.lighting ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
@@ -1488,18 +1466,19 @@ operator<< (::xercesc::DOMElement& e, const RPG_Common_Environment_XMLTree_Type&
         "urn:rpg",
         e));
 
-    s << *i.lighting ();
+    s << i.lighting ();
   }
 
   // outdoors
   //
   {
-    ::xercesc::DOMAttr& a (
-      ::xsd::cxx::xml::dom::create_attribute (
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
         "outdoors",
+        "urn:rpg",
         e));
 
-    a << i.outdoors ();
+    s << i.outdoors ();
   }
 }
 

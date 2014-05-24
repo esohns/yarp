@@ -43,6 +43,7 @@ struct RPG_Graphics_SDL_VideoConfiguration_t
   bool        use_OpenGL;
   bool        full_screen;
   std::string video_driver; // [x11|directx|windib|...]
+  bool        debug;
 };
 
 typedef RPG_Graphics_Graphic RPG_Graphics_t;

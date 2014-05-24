@@ -74,7 +74,7 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
 //   myHighlightTile(NULL),
    myMinimapIsOn(SDL_GUI_DEF_GRAPHICS_MINIMAP_ISON)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::SDL_GUI_LevelWindow"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow"));
 
 	myEngine->init(this);
 
@@ -119,7 +119,7 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
 
 SDL_GUI_LevelWindow_Isometric::~SDL_GUI_LevelWindow_Isometric()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::~SDL_GUI_LevelWindow"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::~SDL_GUI_LevelWindow"));
 
   // clean up
   for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
@@ -191,7 +191,7 @@ void
 SDL_GUI_LevelWindow_Isometric::setView(const int& offsetX_in,
                                        const int& offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::setView"));
 
   // handle over-/underruns
   if ((offsetX_in < 0) &&
@@ -216,7 +216,7 @@ SDL_GUI_LevelWindow_Isometric::setView(const int& offsetX_in,
 RPG_Graphics_Position_t
 SDL_GUI_LevelWindow_Isometric::getView() const
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::getView"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::getView"));
 
   return myView;
 }
@@ -225,7 +225,7 @@ void
 SDL_GUI_LevelWindow_Isometric::init(state_t* state_in,
                                     RPG_Common_ILock* screenLock_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::init"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::init"));
 
   // sanity check(s)
   ACE_ASSERT(state_in);
@@ -272,7 +272,7 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
                                     const unsigned int& offsetX_in,
                                     const unsigned int& offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::draw"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::draw"));
 
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
@@ -803,7 +803,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
                                            RPG_Graphics_IWindow* window_in,
                                            SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::handleEvent"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::handleEvent"));
 
   // init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -1264,7 +1264,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
 void
 SDL_GUI_LevelWindow_Isometric::initTiles()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initTiles"));
+	RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::initTiles"));
 
 	ACE_ASSERT(myEngine);
 
@@ -1286,9 +1286,9 @@ SDL_GUI_LevelWindow_Isometric::initTiles()
 }
 
 //void
-//SDL_GUI_LevelWindow::redraw()
+//SDL_GUI_LevelWindow_Isometric::redraw()
 //{
-//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::redraw"));
+//  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::redraw"));
 //
 ////   draw();
 ////   refresh();
@@ -1297,7 +1297,7 @@ SDL_GUI_LevelWindow_Isometric::initTiles()
 void
 SDL_GUI_LevelWindow_Isometric::setView(const RPG_Map_Position_t& position_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setView"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::setView"));
 
   myView = position_in;
 }
@@ -1305,7 +1305,7 @@ SDL_GUI_LevelWindow_Isometric::setView(const RPG_Map_Position_t& position_in)
 void
 SDL_GUI_LevelWindow_Isometric::center()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::center"));
+	RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::center"));
 
 	ACE_ASSERT(myEngine);
 
@@ -1365,7 +1365,7 @@ void
 SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
                                       const RPG_Engine_ClientNotificationParameters_t& parameters_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::notify"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::notify"));
 
   switch (command_in)
   {
@@ -1570,7 +1570,7 @@ SDL_GUI_LevelWindow_Isometric::updateMessageWindow(const std::string& message_in
 void
 SDL_GUI_LevelWindow_Isometric::clear()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::clear"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::clear"));
 
   // init clipping
   SDL_Rect old_clip_rect;
@@ -1613,7 +1613,7 @@ SDL_GUI_LevelWindow_Isometric::clear()
 void
 SDL_GUI_LevelWindow_Isometric::setStyle(const RPG_Graphics_StyleUnion& style_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::setStyle"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::setStyle"));
 
   switch (style_in.discriminator)
   {
@@ -1904,7 +1904,7 @@ SDL_GUI_LevelWindow_Isometric::setStyle(const RPG_Graphics_StyleUnion& style_in)
 void
 SDL_GUI_LevelWindow_Isometric::initCeiling()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initCeiling"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::initCeiling"));
 
   // sanity check
   if (myCurrentCeilingTile)
@@ -1954,7 +1954,7 @@ SDL_GUI_LevelWindow_Isometric::initCeiling()
 void
 SDL_GUI_LevelWindow_Isometric::initWallBlend(const bool& halfHeightWalls_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initWallBlend"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::initWallBlend"));
 
   // sanity check
   if (myWallBlend)
@@ -2007,7 +2007,7 @@ SDL_GUI_LevelWindow_Isometric::initWallBlend(const bool& halfHeightWalls_in)
 void
 SDL_GUI_LevelWindow_Isometric::initMiniMap(RPG_Engine* engine_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow::initMiniMap"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::initMiniMap"));
 
   RPG_Graphics_Offset_t offset;
   offset.first = SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_X;

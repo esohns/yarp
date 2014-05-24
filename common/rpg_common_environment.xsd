@@ -101,13 +101,14 @@
 
   <xsd:complexType name="RPG_Common_Environment_Type">
     <xsd:sequence>
-      <xsd:element name="plane" type="RPG_Common_Plane_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="terrain" type="RPG_Common_Terrain_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="climate" type="RPG_Common_Climate_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="time" type="RPG_Common_TimeOfDay_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="lighting" type="RPG_Common_AmbientLighting_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="plane" type="RPG_Common_Plane_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="terrain" type="RPG_Common_Terrain_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="climate" type="RPG_Common_Climate_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="time" type="RPG_Common_TimeOfDay_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="lighting" type="RPG_Common_AmbientLighting_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="outdoors" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
-    <xsd:attribute name="outdoors" type="xsd:boolean" use="optional" default="true"/>
+<!--    <xsd:attribute name="outdoors" type="xsd:boolean" use="required"/> -->
   </xsd:complexType>
 
 </xsd:schema>

@@ -196,6 +196,17 @@ XML_Parser::parseFile(const std::string& emitClassQualifier_in,
 
     return;
   }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("SAX2XMLReader: caught exception, returning\n")));
+
+    // clean up
+    delete reader;
+    reader = NULL;
+
+    return;
+  }
 
   // Delete the parser itself. Must be done prior to calling Terminate
   delete reader;

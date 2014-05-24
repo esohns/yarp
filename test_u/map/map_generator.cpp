@@ -27,6 +27,8 @@
 #include "rpg_config.h"
 #endif
 
+#include "rpg_graphics_common_tools.h"
+
 #include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
 #include "rpg_engine_common_tools.h"
@@ -391,6 +393,7 @@ do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
   RPG_Common_Tools::initStringConversionTables();
+  RPG_Graphics_Common_Tools::preInit();
 
   // step2: generate level data
   RPG_Engine_Level_t level;
@@ -441,7 +444,8 @@ do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
           RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
 
       level.metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE));
-      level.metadata.spawn_interval.set(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL, 0);
+      level.metadata.spawn_interval.set(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL,
+                                        0);
       level.metadata.spawn_probability    =
           RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
       level.metadata.max_spawned          = RPG_ENGINE_LEVEL_AI_NUM_SPAWNED_MAX;

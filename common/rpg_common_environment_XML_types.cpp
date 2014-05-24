@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -198,6 +197,16 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
+  if (n == "outdoors" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->outdoors_parser_;
+
+    if (this->outdoors_parser_)
+      this->outdoors_parser_->pre ();
+
+    return true;
+  }
+
   return false;
 }
 
@@ -248,27 +257,10 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  return false;
-}
-
-bool RPG_Common_Environment_Type_pskel::
-_attribute_impl (const ::xml_schema::ro_string& ns,
-                 const ::xml_schema::ro_string& n,
-                 const ::xml_schema::ro_string& v)
-{
-  if (this->::xml_schema::complex_content::_attribute_impl (ns, n, v))
-    return true;
-
-  if (n == "outdoors" && ns.empty ())
+  if (n == "outdoors" && ns == "urn:rpg")
   {
     if (this->outdoors_parser_)
-    {
-      this->outdoors_parser_->pre ();
-      this->outdoors_parser_->_pre_impl ();
-      this->outdoors_parser_->_characters (v);
-      this->outdoors_parser_->_post_impl ();
       this->outdoors (this->outdoors_parser_->post_boolean ());
-    }
 
     return true;
   }
