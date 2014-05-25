@@ -71,7 +71,7 @@ class SDL_GUI_LevelWindow_Isometric
 
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel
-  virtual void init(const RPG_Graphics_MapStyle&); // map style
+  virtual void init(const RPG_Graphics_Style&); // style
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position
   virtual void setBlendRadius(const unsigned char&); // radius
   virtual void updateMinimap();
@@ -120,7 +120,6 @@ class SDL_GUI_LevelWindow_Isometric
   state_t*                        myState;
   RPG_Engine*                     myEngine;
 
-  RPG_Graphics_MapStyle           myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
   RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
   RPG_Graphics_WallTileSet_t      myCurrentWallSet;

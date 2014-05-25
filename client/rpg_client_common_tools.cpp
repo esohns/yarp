@@ -814,3 +814,21 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
 
   return result;
 }
+
+RPG_Graphics_Style
+RPG_Client_Common_Tools::environment2Style(const RPG_Common_Environment& environment_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::environment2Style"));
+
+  // *TODO*
+  ACE_UNUSED_ARG(environment_in);
+
+  RPG_Graphics_Style result;
+  result.door = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
+  result.edge = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
+  result.floor = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
+  result.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
+  result.wall = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
+
+  return result;
+}

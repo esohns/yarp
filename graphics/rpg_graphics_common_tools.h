@@ -92,6 +92,8 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                    RPG_Common_ILock*, // lock interface handle
                    SDL_Surface*);     // target surface (e.g. screen)
 
+  static RPG_Graphics_Style random(const RPG_Graphics_Style&); // graphics style
+
   // coordinate transformations
   static RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,  // position (screen coordinates !)
                                             const RPG_Map_Size_t&,           // map size

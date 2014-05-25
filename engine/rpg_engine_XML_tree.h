@@ -489,23 +489,6 @@ class RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   void
   door (const door_sequence& s);
 
-  // style
-  // 
-  typedef ::RPG_Graphics_MapStyle_XMLTree_Type style_type;
-  typedef ::xsd::cxx::tree::traits< style_type, char > style_traits;
-
-  const style_type&
-  style () const;
-
-  style_type&
-  style ();
-
-  void
-  style (const style_type& x);
-
-  void
-  style (::std::auto_ptr< style_type > p);
-
   // Constructors.
   //
   RPG_Engine_Level_XMLTree_Type (const name_type&,
@@ -514,8 +497,7 @@ class RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
                                  const spawn_probability_type&,
                                  const max_spawned_type&,
                                  const amble_probability_type&,
-                                 const map_type&,
-                                 const style_type&);
+                                 const map_type&);
 
   RPG_Engine_Level_XMLTree_Type (const name_type&,
                                  ::std::auto_ptr< environment_type >&,
@@ -523,8 +505,7 @@ class RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
                                  const spawn_probability_type&,
                                  const max_spawned_type&,
                                  const amble_probability_type&,
-                                 const map_type&,
-                                 ::std::auto_ptr< style_type >&);
+                                 const map_type&);
 
   RPG_Engine_Level_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
@@ -558,7 +539,6 @@ class RPG_Engine_Level_XMLTree_Type: public ::xml_schema::type
   ::xsd::cxx::tree::one< amble_probability_type > amble_probability_;
   ::xsd::cxx::tree::one< map_type > map_;
   door_sequence door_;
-  ::xsd::cxx::tree::one< style_type > style_;
 };
 
 bool

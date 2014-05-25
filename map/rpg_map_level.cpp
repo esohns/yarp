@@ -25,11 +25,11 @@
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_pathfinding_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_file_tools.h"
 
-#include <rpg_dice_common.h>
-#include <rpg_dice.h>
+#include "rpg_dice_common.h"
+#include "rpg_dice.h"
 
 #include <ace/FILE_Addr.h>
 #include <ace/FILE_Connector.h>
@@ -223,7 +223,8 @@ RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfigur
   if (map_configuration.max_num_doors_per_room == 0) // <-- ! don't care
   {
     result.clear();
-    RPG_Dice::generateRandomNumbers(RAND_MAX + 1,
+// *TODO*
+    RPG_Dice::generateRandomNumbers(RAND_MAX + 1, // *PORTABILITY*
                                     1,
                                     result);
     map_configuration.max_num_doors_per_room = (result.front() - 1);
@@ -373,11 +374,14 @@ RPG_Map_Level::print(const RPG_Map_t& map_in)
       {
         // unmapped, floor, wall, or door ?
         current_position_door.position = current_position;
-        if (map_in.plan.unmapped.find(current_position) != map_in.plan.unmapped.end())
+        if (map_in.plan.unmapped.find(current_position) !=
+            map_in.plan.unmapped.end())
           std::cout << ' '; // unmapped
-        else if (map_in.plan.walls.find(current_position) != map_in.plan.walls.end())
+        else if (map_in.plan.walls.find(current_position) !=
+                 map_in.plan.walls.end())
           std::cout << '#'; // wall
-        else if (map_in.plan.doors.find(current_position_door) != map_in.plan.doors.end())
+        else if (map_in.plan.doors.find(current_position_door) !=
+                 map_in.plan.doors.end())
           std::cout << '='; // door
         else
           std::cout << '.'; // floor
@@ -515,7 +519,11 @@ RPG_Map_Level::save(const std::string& filename_in) const
                              &zero_timeout,
                              ACE_Addr::sap_any,
                              0,
-                             (O_WRONLY | O_APPEND | O_CREAT | O_TRUNC | O_TEXT), // clobber existing files...
+                             (O_WRONLY |
+                              O_APPEND |
+                              O_CREAT  |
+                              O_TRUNC  |
+                              O_TEXT), // clobber existing files...
                              ACE_DEFAULT_FILE_PERMS) == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -558,7 +566,7 @@ RPG_Map_Level::save(const std::string& filename_in) const
         // *TODO*: with the current (naive) formatting, seed points can only be
         // stored as long as they don't interfere with the integrity of other
         // structures (i.e. walls and doors)
-        if ((myMap.plan.walls.find(current_position) != myMap.plan.walls.end()) ||
+        if ((myMap.plan.walls.find(current_position)      != myMap.plan.walls.end()) ||
             (myMap.plan.doors.find(current_position_door) != myMap.plan.doors.end()))
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("cannot save seed position (%u,%u), continuing\n"),
@@ -572,11 +580,14 @@ RPG_Map_Level::save(const std::string& filename_in) const
       } // end IF
 
       // unmapped, floor, wall, or door ?
-      if (myMap.plan.unmapped.find(current_position) != myMap.plan.unmapped.end())
+      if (myMap.plan.unmapped.find(current_position) !=
+          myMap.plan.unmapped.end())
         row += ' '; // unmapped
-      else if (myMap.plan.walls.find(current_position) != myMap.plan.walls.end())
+      else if (myMap.plan.walls.find(current_position) !=
+               myMap.plan.walls.end())
         row += '#'; // wall
-      else if (myMap.plan.doors.find(current_position_door) != myMap.plan.doors.end())
+      else if (myMap.plan.doors.find(current_position_door) !=
+               myMap.plan.doors.end())
         row += '='; // door
       else
         row += '.'; // floor
@@ -676,6 +687,14 @@ RPG_Map_Level::save(const std::string& filename_in) const
                filename_in.c_str(),
                static_cast<unsigned int>(info.size_)));
   } // end ELSE
+}
+
+void
+RPG_Map_Level::dump_state() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::dump_state"));
+
+  RPG_Map_Level::print(myMap);
 }
 
 const RPG_Map_Position_t&

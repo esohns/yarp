@@ -27,6 +27,7 @@
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_SDL_window_base.h"
+#include "rpg_graphics_style.h"
 
 #include "rpg_map_common.h"
 
@@ -70,7 +71,7 @@ class RPG_Client_Export RPG_Client_Window_Level
   virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
                           const unsigned int& = 0,  // offset x (top-left = [0,0])
                           const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void init(const RPG_Graphics_MapStyle&); // map style
+  virtual void init(const RPG_Graphics_Style&); // map style
   virtual void setView(const RPG_Map_Position_t&); // view (map coordinates)
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position

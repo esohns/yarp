@@ -6,7 +6,7 @@
  connections/system
 - [net] confirm valgrind reports of minor memory leak in
  RPG_Net_Module_SocketHandler::bisectMessages
-- the timer implementation seems to be (!) unstable (--> try another timer queue ?)
+- the timer queue seems to be (!) unstable (--> try another implementation/strategy ?)
 [- [XML] validation throws exceptions
  (see https://issues.apache.org/jira/browse/XERCESC-1975)]
 - [client/UI] excessive CPU usage (probably AI-related)
@@ -15,6 +15,7 @@
 [GENERAL - MODERATE]
 - [magic] define more (low-level) spells, player generation fails sometimes...
 - [client/UI] switch from libglade to GtkBuilder
+- [(xerces) XML parser] handle all defined SAXParser exceptions
 
 [GENERAL - EASY]
 - add more monster types
@@ -23,6 +24,17 @@
 - add more graphics
 - add more sounds
 - add CD music support
+- [PLATFORM/installation] remove/obsolete BASEDIR macro
+- [PLATFORM] consolidate new-operator usage
+- [xerces/XML] define/implement XML parser schema cache
+- [character] refine sub-project structure
+- [engine] refine entity sprite concept
+- [graphics] refactor/encapsulate window system
+- evaluate *TODO* tags
+
+[MISCELLANEOUS]
+- define coding (style) guidelines
+- API documentation
 
 ################################################################################
 
@@ -39,5 +51,5 @@
 - cursor is not drawn correctly when (hovering) over border
 - when an entity leaves a highlighted position, the bg cache
  (cursor/highglight) needs to be invalidated
-- entities are erroneously (re-)drawn OVER SE walls (should be behind)
+- 2D: entities are erroneously (re-)drawn OVER SE walls (should be behind)
 

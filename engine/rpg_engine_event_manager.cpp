@@ -250,7 +250,8 @@ RPG_Engine_Event_Manager::remove(const RPG_Engine_EntityID_t& id_in)
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    RPG_Engine_EntityTimersConstIterator_t iterator = myEntityTimers.find(id_in);
+    RPG_Engine_EntityTimersConstIterator_t iterator =
+        myEntityTimers.find(id_in);
     ACE_ASSERT(iterator != myEntityTimers.end());
     if (iterator == myEntityTimers.end())
     {
@@ -288,7 +289,8 @@ RPG_Engine_Event_Manager::reschedule(const RPG_Engine_EntityID_t& id_in,
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    RPG_Engine_EntityTimersConstIterator_t iterator = myEntityTimers.find(id_in);
+    RPG_Engine_EntityTimersConstIterator_t iterator =
+        myEntityTimers.find(id_in);
     ACE_ASSERT(iterator != myEntityTimers.end());
     if (iterator == myEntityTimers.end())
     {
@@ -302,7 +304,8 @@ RPG_Engine_Event_Manager::reschedule(const RPG_Engine_EntityID_t& id_in,
   } // end lock scope
 
   ACE_ASSERT(timer_id != -1);
-	RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->resetInterval(timer_id, activationInterval_in);
+  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->resetInterval(timer_id,
+                                                               activationInterval_in);
 
   //ACE_DEBUG((LM_DEBUG,
   //           ACE_TEXT("reset timer interval (ID: %d) for entity %u\n"),
@@ -577,7 +580,8 @@ RPG_Engine_Event_Manager::cancel_all()
 			 iterator++)
   {
 		act = NULL;
-    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel((*iterator).first, &act) <= 0)
+		if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel((*iterator).first,
+																															&act) <= 0)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                  (*iterator).first));
@@ -603,17 +607,19 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
     {
       ACE_ASSERT(event_in.entity_id);
 
-      RPG_Engine_Action next_action;
+      RPG_Engine_Action_t next_action;
       next_action.command = RPG_ENGINE_COMMAND_INVALID;
-      next_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                            std::numeric_limits<unsigned int>::max());
+      next_action.position =
+          std::make_pair(std::numeric_limits<unsigned int>::max(),
+                         std::numeric_limits<unsigned int>::max());
       next_action.path.clear();
       next_action.target = 0;
 
       myEngine->lock();
 
       // step1: check pending action (if any)
-      RPG_Engine_EntitiesIterator_t iterator = myEngine->myEntities.find(event_in.entity_id);
+      RPG_Engine_EntitiesIterator_t iterator =
+          myEngine->myEntities.find(event_in.entity_id);
       ACE_ASSERT(iterator != myEngine->myEntities.end());
       if (iterator == myEngine->myEntities.end())
       {
@@ -635,8 +641,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         if (is_idle)
         {
           // step1: sort targets by distance
-          RPG_Engine_EntityList_t possible_targets = myEngine->entities((*iterator).second->position,
-                                                                        false);
+          RPG_Engine_EntityList_t possible_targets =
+              myEngine->entities((*iterator).second->position,
+                                 false);
           ACE_ASSERT(!possible_targets.empty() &&
                       (possible_targets.front() == (*iterator).first));
           possible_targets.erase(possible_targets.begin());
@@ -646,7 +653,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           possible_targets.remove_if(monster_remove);
 
           // step3: remove invisible (== cannot (currently) see) targets
-          invisible_remove_t invisible_remove = {myEngine, false, (*iterator).first};
+          invisible_remove_t invisible_remove =
+              {myEngine, false, (*iterator).first};
           possible_targets.remove_if(invisible_remove);
 
           if (possible_targets.empty())
@@ -661,7 +669,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           {
             // start attacking/pursuing...
             next_action.command = COMMAND_ATTACK;
-            // *TODO*: implement more strategy here (strongest/weakest target, ...)
+            // *TODO*: implement more strategy here (strongest/weakest target,
+            // ...)
             next_action.target = possible_targets.front();
           } // end ELSE
 
@@ -685,7 +694,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       } // end IF
 
       // fighting / travelling ?
-      RPG_Engine_Action& current_action = (*iterator).second->actions.front();
+      RPG_Engine_Action_t& current_action = (*iterator).second->actions.front();
       bool done_current_action = false;
       bool do_next_action = false;
       switch (current_action.command)
@@ -693,7 +702,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         case COMMAND_ATTACK:
         {
           ACE_ASSERT(current_action.target);
-          RPG_Engine_EntitiesConstIterator_t target = myEngine->myEntities.find(current_action.target);
+          RPG_Engine_EntitiesConstIterator_t target =
+              myEngine->myEntities.find(current_action.target);
           if ((target == myEngine->myEntities.end()) ||
               RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character)) // target disabled ?
           {
@@ -728,7 +738,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         case COMMAND_IDLE:
         {
           // amble around a little bit...
-          RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(false);
+          RPG_Engine_LevelMetaData_t level_metadata =
+              myEngine->getMetaData(false);
           if (!RPG_Dice::probability(level_metadata.amble_probability))
             break; // not this time...
           do_next_action = true;
@@ -747,7 +758,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
             direction = static_cast<RPG_Map_Direction>(roll_result.front() - 1);
             ACE_ASSERT(direction < DIRECTION_MAX);
 
-            next_action.position = myEngine->getPosition((*iterator).first, false);
+            next_action.position =
+                myEngine->getPosition((*iterator).first, false);
             switch (direction)
             {
               case DIRECTION_UP:
@@ -787,7 +799,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           if (current_action.target)
           {
             // determine target position
-            RPG_Engine_EntitiesConstIterator_t target = myEngine->myEntities.end();
+            RPG_Engine_EntitiesConstIterator_t target =
+                myEngine->myEntities.end();
             target = myEngine->myEntities.find(current_action.target);
             if (target == myEngine->myEntities.end())
             {
@@ -820,8 +833,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
             // - walls
             // - (closed, locked) doors
             // - entities
-            RPG_Map_Positions_t obstacles = myEngine->getObstacles(true,   // include entities
-                                                                   false); // don't lock
+            RPG_Map_Positions_t obstacles =
+                myEngine->getObstacles(true,   // include entities
+                                       false); // don't lock
             // - start, end positions never are obstacles...
             obstacles.erase((*iterator).second->position);
             obstacles.erase(current_action.position);
@@ -878,7 +892,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
     }
     case EVENT_ENTITY_SPAWN:
     {
-      const RPG_Engine_LevelMetaData_t& level_metadata = myEngine->getMetaData(true);
+      const RPG_Engine_LevelMetaData_t& level_metadata =
+          myEngine->getMetaData(true);
 
       if (level_metadata.roaming_monsters.empty()                  ||
           (myEngine->numSpawned() >= level_metadata.max_spawned)   ||
@@ -886,8 +901,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         break; // not this time...
 
       // OK: spawn an instance
-      RPG_Engine_Entity* entity = NULL;
-      entity = new(std::nothrow) RPG_Engine_Entity;
+      RPG_Engine_Entity_t* entity = NULL;
+      ACE_NEW_NORETURN(entity,
+                       RPG_Engine_Entity_t());
       if (!entity)
       {
         ACE_DEBUG((LM_CRITICAL,
@@ -903,7 +919,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       else
       {
         // choose a random type
-        RPG_Monster_ListConstIterator_t iterator = level_metadata.roaming_monsters.begin();
+        RPG_Monster_ListConstIterator_t iterator =
+            level_metadata.roaming_monsters.begin();
         RPG_Dice::generateRandomNumbers(level_metadata.roaming_monsters.size(),
                                         1,
                                         roll_result);
@@ -935,8 +952,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
                                       roll_result);
       std::advance(iterator, roll_result.front() - 1);
       entity->position = myEngine->findValid(*iterator, 0);
-      if (entity->position == std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                             std::numeric_limits<unsigned int>::max()))
+      if (entity->position ==
+          std::make_pair(std::numeric_limits<unsigned int>::max(),
+                         std::numeric_limits<unsigned int>::max()))
       {
 				// --> map is full !
 
@@ -971,7 +989,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 	{
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    RPG_Engine_EventTimersConstIterator_t iterator = myTimers.find(event_in.timer_id);
+    RPG_Engine_EventTimersConstIterator_t iterator =
+        myTimers.find(event_in.timer_id);
     ACE_ASSERT(iterator != myTimers.end());
     if (iterator == myTimers.end())
     {

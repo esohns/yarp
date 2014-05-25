@@ -37,7 +37,7 @@
 
 RPG_Client_Export void update_equipment(const RPG_Client_GTK_CBData_t&);
 RPG_Client_Export void update_character_profile(const RPG_Player&, GladeXML*);
-RPG_Client_Export void update_entity_profile(const RPG_Engine_Entity&, GladeXML*);
+RPG_Client_Export void update_entity_profile(const RPG_Engine_Entity_t&, GladeXML*);
 RPG_Client_Export void reset_entity_profile(GladeXML*);
 // int dirent_selector_profiles(const dirent*);
 // int dirent_selector_maps(const dirent*);

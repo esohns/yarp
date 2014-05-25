@@ -106,8 +106,9 @@
       <xsd:element name="climate" type="RPG_Common_Climate_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="time" type="RPG_Common_TimeOfDay_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="lighting" type="RPG_Common_AmbientLighting_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="outdoors" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
-    <xsd:attribute name="outdoors" type="xsd:boolean" use="required" default="true"/>
+<!--    <xsd:attribute name="outdoors" type="xsd:boolean" use="required"/> -->
   </xsd:complexType>
 
 </xsd:schema>

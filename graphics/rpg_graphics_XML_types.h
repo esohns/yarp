@@ -59,7 +59,7 @@ class RPG_Graphics_WallStyle_Type_pskel;
 class RPG_Graphics_EdgeStyle_Type_pskel;
 class RPG_Graphics_DoorStyle_Type_pskel;
 class RPG_Graphics_StyleUnion_Type_pskel;
-class RPG_Graphics_MapStyle_Type_pskel;
+class RPG_Graphics_Style_Type_pskel;
 class RPG_Graphics_Cursor_Type_pskel;
 class RPG_Graphics_Font_Type_pskel;
 class RPG_Graphics_Image_Type_pskel;
@@ -203,7 +203,7 @@ class RPG_Graphics_Export RPG_Graphics_StyleUnion_Type_pskel: public ::xml_schem
   post_RPG_Graphics_StyleUnion_Type () = 0;
 };
 
-class RPG_Graphics_Export RPG_Graphics_MapStyle_Type_pskel: public ::xml_schema::complex_content
+class RPG_Graphics_Export RPG_Graphics_Style_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -227,7 +227,7 @@ class RPG_Graphics_Export RPG_Graphics_MapStyle_Type_pskel: public ::xml_schema:
   door (const RPG_Graphics_DoorStyle&);
 
   virtual void
-  post_RPG_Graphics_MapStyle_Type ();
+  post_RPG_Graphics_Style_Type ();
 
   // Parser construction API.
   //
@@ -255,7 +255,7 @@ class RPG_Graphics_Export RPG_Graphics_MapStyle_Type_pskel: public ::xml_schema:
 
   // Constructor.
   //
-  RPG_Graphics_MapStyle_Type_pskel ();
+  RPG_Graphics_Style_Type_pskel ();
 
   // Implementation.
   //

@@ -27,6 +27,7 @@
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_iwindow_base.h"
 #include "rpg_graphics_cursor.h"
+#include "rpg_graphics_style.h"
 
 #include "rpg_sound_common.h"
 #include "rpg_sound_event.h"
@@ -52,6 +53,15 @@ typedef std::deque<std::string> RPG_Client_MessageStack_t;
 typedef RPG_Client_MessageStack_t::const_iterator RPG_Client_MessageStackConstIterator_t;
 //typedef std::deque<ACE_Log_Record> RPG_Client_LogRecordStack_t;
 
+typedef std::map<RPG_Engine_EntityID_t, RPG_Graphics_Sprite> RPG_Client_Entities_t;
+typedef RPG_Client_Entities_t::const_iterator RPG_Client_EntitiesIterator_t;
+
+struct RPG_Client_State_t
+{
+  RPG_Graphics_Style    style;
+  RPG_Client_Entities_t entities;
+};
+
 struct RPG_Client_GTK_CBData_t
 {
  inline RPG_Client_GTK_CBData_t()
@@ -72,8 +82,7 @@ struct RPG_Client_GTK_CBData_t
 //    entity(),
     level_engine(NULL)//,
 //		level_metadata(),
-//    map_configuration(),
-//    level_style()
+//    map_configuration()
  { };
 
   ACE_Recursive_Thread_Mutex        lock;
@@ -90,11 +99,10 @@ struct RPG_Client_GTK_CBData_t
   SDL_TimerID                       event_timer;
   RPG_Client_Engine*                client_engine;
   std::string                       schema_repository;
-  RPG_Engine_Entity                 entity;
+  RPG_Engine_Entity_t               entity;
   RPG_Engine*                       level_engine;
   RPG_Engine_LevelMetaData_t        level_metadata;
   RPG_Map_FloorPlan_Configuration_t map_configuration;
-  RPG_Graphics_MapStyle             level_style;
 };
 
 struct RPG_Client_SDL_InputConfiguration_t
@@ -200,6 +208,7 @@ struct RPG_Client_Action
 typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
 typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;
 
+// *TODO*
 enum RPG_Client_MiniMapTile
 {
   MINIMAPTILE_NONE = 0,

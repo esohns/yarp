@@ -51,6 +51,7 @@ RPG_Client_Engine::RPG_Client_Engine()
    myWindow(NULL),
    myWidgets(NULL),
 //   myActions(),
+//   myRuntimeState(),
 //   mySeenPositions(),
    mySelectionMode(SELECTIONMODE_NORMAL),
    myCenterOnActivePlayer(RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)//,
@@ -60,6 +61,12 @@ RPG_Client_Engine::RPG_Client_Engine()
 
   // use member message queue...
 //   inherited::msg_queue(&myQueue);
+
+	myRuntimeState.style.door = RPG_GRAPHICS_DOORSTYLE_INVALID;
+	myRuntimeState.style.edge = RPG_GRAPHICS_EDGESTYLE_INVALID;
+	myRuntimeState.style.floor = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+	myRuntimeState.style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
+	myRuntimeState.style.wall = RPG_GRAPHICS_WALLSTYLE_INVALID;
 
 	// set group ID for worker thread(s)
   inherited::grp_id(RPG_CLIENT_TASK_GROUP_ID);
@@ -312,6 +319,22 @@ RPG_Client_Engine::redraw()
 }
 
 void
+RPG_Client_Engine::setStyle(const RPG_Graphics_Style& style_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::setStyle"));
+
+  myRuntimeState.style = style_in;
+}
+
+RPG_Graphics_Style
+RPG_Client_Engine::getStyle() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::getStyle"));
+
+  return myRuntimeState.style;
+}
+
+void
 RPG_Client_Engine::setView(const RPG_Map_Position_t& position_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::setView"));
@@ -550,9 +573,28 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
         SDL_Rect map_area;
         myWindow->getArea(map_area);
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     myWindow));
+
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     myWindow));
+
+          break;
+        }
         client_action.position =
             RPG_Graphics_Common_Tools::screen2Map(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(),
                                                   myEngine->getSize(true),
@@ -895,9 +937,28 @@ RPG_Client_Engine::handleActions()
 
         SDL_Rect map_area;
         (*iterator).window->getArea(map_area);
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put((*iterator).entity_id,
                                                              RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
                                                                                                    std::make_pair(map_area.w,
@@ -939,10 +1000,28 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check
         ACE_ASSERT((*iterator).window);
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
 
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         try
         {
           level_window->setView((*iterator).position);
@@ -969,9 +1048,28 @@ RPG_Client_Engine::handleActions()
         // sanity check(s)
 				ACE_ASSERT((*iterator).window);
 
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         try
         {
           level_window->setBlendRadius((*iterator).radius);
@@ -1000,9 +1098,28 @@ RPG_Client_Engine::handleActions()
 
         SDL_Rect map_area;
         (*iterator).window->getArea(map_area);
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         RPG_Graphics_Position_t view = level_window->getView();
         if ((*iterator).path.empty() &&
             (*iterator).positions.empty())
@@ -1071,10 +1188,28 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
 
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(level_window->getView(),
                                                                               dirty_region);
 
@@ -1141,10 +1276,28 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
 
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         try
         {
           level_window->toggleDoor((*iterator).position);
@@ -1169,10 +1322,28 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check
         ACE_ASSERT((*iterator).window);
-        RPG_Client_IWindow* client_window =
-            dynamic_cast<RPG_Client_IWindow*>((*iterator).window);
-        ACE_ASSERT(client_window);
+        RPG_Client_IWindow* client_window = NULL;
+        try
+        {
+          client_window =
+              dynamic_cast<RPG_Client_IWindow*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindow*>(%@), continuing\n"),
+                     (*iterator).window));
 
+          break;
+        }
+        if (!client_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindow*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         try
         {
           client_window->drawBorder((*iterator).window->getScreen(),
@@ -1221,9 +1392,28 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
 
         // step0: reset bg caches
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->invalidateBG();
@@ -1232,14 +1422,13 @@ RPG_Client_Engine::handleActions()
 
         // step1: init/(re)draw window
         myEngine->lock();
-        RPG_Graphics_MapStyle level_style = myEngine->getStyle(false);
         RPG_Map_Position_t center = myEngine->getSize(false);
         myEngine->unlock();
         center.first >>= 1;
         center.second >>= 1;
         try
         {
-          level_window->init(level_style);
+          level_window->init(myRuntimeState.style);
           level_window->setView(center);
 //          level_window->clear();
           level_window->draw();
@@ -1300,10 +1489,28 @@ RPG_Client_Engine::handleActions()
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
         ACE_ASSERT(!(*iterator).message.empty());
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
 
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         try
         {
           level_window->updateMessageWindow((*iterator).message);
@@ -1327,10 +1534,28 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check
         ACE_ASSERT((*iterator).window);
-        RPG_Client_IWindowLevel* level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
-        ACE_ASSERT(level_window);
+        RPG_Client_IWindowLevel* level_window = NULL;
+        try
+        {
+          level_window =
+              dynamic_cast<RPG_Client_IWindowLevel*>((*iterator).window);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
 
+          break;
+        }
+        if (!level_window)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     (*iterator).window));
+
+          break;
+        }
         try
         {
           level_window->updateMinimap();

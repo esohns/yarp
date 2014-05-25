@@ -107,9 +107,13 @@ RPG_Common_XML_Tools::init(const std::string& schemaDirectory_in)
     return;
   } // end IF
 
+  // *TODO*
+//  ACE_NEW_NORETURN(myGrammarPool,
+//                   XMLGrammarPoolImpl());
   try
   {
-    myGrammarPool = static_cast<XMLGrammarPool*>(new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager));
+    myGrammarPool =
+        static_cast<XMLGrammarPool*>(new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager));
   }
   catch (...)
   {

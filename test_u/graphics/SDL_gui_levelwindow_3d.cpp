@@ -57,7 +57,7 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 //              NULL),                // background
    myState(NULL),
    myEngine(engine_in),
-//   myCurrentMapStyle(),
+//   myState->style(),
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
    myCurrentCeilingTile(NULL),
@@ -81,7 +81,6 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 	myEngine->init(this);
 
 	myEngine->lock();
-	myCurrentMapStyle = myEngine->getStyle(false);
 	RPG_Map_Size_t map_size = myEngine->getSize(false);
 	myEngine->unlock();
 	myView = std::make_pair(map_size.first / 2,
@@ -265,19 +264,18 @@ SDL_GUI_LevelWindow_3D::init(state_t* state_in,
   gluPerspective(60.0, ratio, 1.0, 1024.0);
 
   // init style
-  myCurrentMapStyle = myEngine->getStyle(true);
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = myCurrentMapStyle.floor;
+  style.floorstyle = myState->style.floor;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
-  style.edgestyle = myCurrentMapStyle.edge;
+  style.edgestyle = myState->style.edge;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = myCurrentMapStyle.wall;
+  style.wallstyle = myState->style.wall;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
-  style.doorstyle = myCurrentMapStyle.door;
+  style.doorstyle = myState->style.door;
   setStyle(style);
 }
 
@@ -616,7 +614,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
             if (entity_id == 0)
               break; // nothing to do...
 
-            RPG_Engine_Action player_action;
+            RPG_Engine_Action_t player_action;
             player_action.command = COMMAND_TRAVEL;
             // compute target position
             player_action.position = myEngine->getPosition(entity_id);
@@ -699,13 +697,13 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
             break;
           } // end IF
 
-          myCurrentMapStyle.floor =
-              static_cast<RPG_Graphics_FloorStyle>(myCurrentMapStyle.floor + 1);
-          if (myCurrentMapStyle.floor == RPG_GRAPHICS_FLOORSTYLE_MAX)
-            myCurrentMapStyle.floor = static_cast<RPG_Graphics_FloorStyle>(0);
+          myState->style.floor =
+              static_cast<RPG_Graphics_FloorStyle>(myState->style.floor + 1);
+          if (myState->style.floor == RPG_GRAPHICS_FLOORSTYLE_MAX)
+            myState->style.floor = static_cast<RPG_Graphics_FloorStyle>(0);
           RPG_Graphics_StyleUnion style;
           style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-          style.floorstyle = myCurrentMapStyle.floor;
+          style.floorstyle = myState->style.floor;
           setStyle(style);
 
           // redraw
@@ -718,12 +716,12 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
         case SDLK_h:
         {
           // toggle setting
-          myCurrentMapStyle.half_height_walls =
-              !myCurrentMapStyle.half_height_walls;
+          myState->style.half_height_walls =
+              !myState->style.half_height_walls;
 
           RPG_Graphics_StyleUnion new_style;
           new_style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-          new_style.wallstyle = myCurrentMapStyle.wall;
+          new_style.wallstyle = myState->style.wall;
           setStyle(new_style);
 
           // redraw
@@ -757,13 +755,13 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
             break;
           } // end IF
 
-          myCurrentMapStyle.wall =
-              static_cast<RPG_Graphics_WallStyle>(myCurrentMapStyle.wall + 1);
-          if (myCurrentMapStyle.wall == RPG_GRAPHICS_WALLSTYLE_MAX)
-            myCurrentMapStyle.wall = static_cast<RPG_Graphics_WallStyle>(0);
+          myState->style.wall =
+              static_cast<RPG_Graphics_WallStyle>(myState->style.wall + 1);
+          if (myState->style.wall == RPG_GRAPHICS_WALLSTYLE_MAX)
+            myState->style.wall = static_cast<RPG_Graphics_WallStyle>(0);
           RPG_Graphics_StyleUnion style;
           style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-          style.wallstyle = myCurrentMapStyle.wall;
+          style.wallstyle = myState->style.wall;
           setStyle(style);
 
           // redraw
@@ -928,7 +926,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
         {
           RPG_Map_DoorState door_state = myEngine->state(map_position, true);
 
-          RPG_Engine_Action action;
+          RPG_Engine_Action_t action;
           action.command = ((door_state == DOORSTATE_OPEN) ? COMMAND_DOOR_CLOSE
                                                            : COMMAND_DOOR_OPEN);
           action.position = map_position;
@@ -1040,23 +1038,23 @@ SDL_GUI_LevelWindow_3D::center()
 }
 
 void
-SDL_GUI_LevelWindow_3D::init(const RPG_Graphics_MapStyle& mapStyle_in)
+SDL_GUI_LevelWindow_3D::init(const RPG_Graphics_Style& style_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::init"));
 
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = mapStyle_in.floor;
+  style.floorstyle = style_in.floor;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
-  style.edgestyle = mapStyle_in.edge;
+  style.edgestyle = style_in.edge;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = mapStyle_in.wall;
+  style.wallstyle = style_in.wall;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
-  style.doorstyle = mapStyle_in.door;
+  style.doorstyle = style_in.door;
   setStyle(style);
 
   // init tiles / position
@@ -1361,7 +1359,7 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("edge-style \"%s\" has no tiles, continuing\n"),
                    RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str()));
-      myCurrentMapStyle.edge = style_in.edgestyle;
+      myState->style.edge = style_in.edgestyle;
 
       // update floor edge tiles / position
       RPG_Client_Common_Tools::updateFloorEdges(myCurrentFloorEdgeSet,
@@ -1378,14 +1376,14 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("floor-style \"%s\" has no tiles, continuing\n"),
                    RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str()));
-      myCurrentMapStyle.floor = style_in.floorstyle;
+      myState->style.floor = style_in.floorstyle;
 
       break;
     }
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
       RPG_Graphics_Common_Tools::loadWallTileSet(style_in.wallstyle,
-                                                 myCurrentMapStyle.half_height_walls,
+                                                 myState->style.half_height_walls,
                                                  myCurrentWallSet);
       // sanity check
       if ((myCurrentWallSet.east.surface == NULL)  ||
@@ -1400,7 +1398,7 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
         return;
       } // end IF
 
-      initWallBlend(myCurrentMapStyle.half_height_walls);
+      initWallBlend(myState->style.half_height_walls);
 
 //      // debug info
 //#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -1587,7 +1585,7 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
       RPG_Client_Common_Tools::updateWalls(myCurrentWallSet,
                                            myWallTiles);
 
-      myCurrentMapStyle.wall = style_in.wallstyle;
+      myState->style.wall = style_in.wallstyle;
 
       break;
     }
@@ -1610,7 +1608,7 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
                                            *myEngine,
                                            myDoorTiles);
 
-      myCurrentMapStyle.door = style_in.doorstyle;
+      myState->style.door = style_in.doorstyle;
 
       break;
     }

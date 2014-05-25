@@ -27,6 +27,7 @@
 #include "rpg_engine.h"
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_style.h"
 
 #include "rpg_map_common.h"
 
@@ -89,6 +90,7 @@ class RPG_Client_Export RPG_Client_Common_Tools
                                        const RPG_Client_SelectionMode&, // current selection mode
                                        const RPG_Engine&,               // state / engine
                                        const bool& = true);             // locked access ?
+  static RPG_Graphics_Style environment2Style(const RPG_Common_Environment&); // environment
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Common_Tools());

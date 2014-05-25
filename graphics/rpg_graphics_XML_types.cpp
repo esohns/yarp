@@ -38,40 +38,40 @@
 
 #include "rpg_graphics_XML_types.h"
 
-// RPG_Graphics_MapStyle_Type_pskel
+// RPG_Graphics_Style_Type_pskel
 //
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 floor_parser (::RPG_Graphics_FloorStyle_Type_pskel& p)
 {
   this->floor_parser_ = &p;
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 edge_parser (::RPG_Graphics_EdgeStyle_Type_pskel& p)
 {
   this->edge_parser_ = &p;
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 wall_parser (::RPG_Graphics_WallStyle_Type_pskel& p)
 {
   this->wall_parser_ = &p;
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 half_height_walls_parser (::xml_schema::boolean_pskel& p)
 {
   this->half_height_walls_parser_ = &p;
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 door_parser (::RPG_Graphics_DoorStyle_Type_pskel& p)
 {
   this->door_parser_ = &p;
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 parsers (::RPG_Graphics_FloorStyle_Type_pskel& floor,
          ::RPG_Graphics_EdgeStyle_Type_pskel& edge,
          ::RPG_Graphics_WallStyle_Type_pskel& wall,
@@ -85,8 +85,8 @@ parsers (::RPG_Graphics_FloorStyle_Type_pskel& floor,
   this->door_parser_ = &door;
 }
 
-RPG_Graphics_MapStyle_Type_pskel::
-RPG_Graphics_MapStyle_Type_pskel ()
+RPG_Graphics_Style_Type_pskel::
+RPG_Graphics_Style_Type_pskel ()
 : floor_parser_ (0),
   edge_parser_ (0),
   wall_parser_ (0),
@@ -446,40 +446,40 @@ RPG_Graphics_ColorRGBA_Type_pskel ()
 {
 }
 
-// RPG_Graphics_MapStyle_Type_pskel
+// RPG_Graphics_Style_Type_pskel
 //
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 floor (const RPG_Graphics_FloorStyle&)
 {
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 edge (const RPG_Graphics_EdgeStyle&)
 {
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 wall (const RPG_Graphics_WallStyle&)
 {
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 half_height_walls (bool)
 {
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
+void RPG_Graphics_Style_Type_pskel::
 door (const RPG_Graphics_DoorStyle&)
 {
 }
 
-void RPG_Graphics_MapStyle_Type_pskel::
-post_RPG_Graphics_MapStyle_Type ()
+void RPG_Graphics_Style_Type_pskel::
+post_RPG_Graphics_Style_Type ()
 {
 }
 
-bool RPG_Graphics_MapStyle_Type_pskel::
+bool RPG_Graphics_Style_Type_pskel::
 _start_element_impl (const ::xml_schema::ro_string& ns,
                      const ::xml_schema::ro_string& n,
                      const ::xml_schema::ro_string* t)
@@ -542,7 +542,7 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
   return false;
 }
 
-bool RPG_Graphics_MapStyle_Type_pskel::
+bool RPG_Graphics_Style_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {

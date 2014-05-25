@@ -60,12 +60,6 @@ RPG_Engine_Level::RPG_Engine_Level()
   myMetaData.max_spawned = 0;
   myMetaData.spawn_timer = -1;
   myMetaData.amble_probability = 0.0F;
-
-  myStyle.door = RPG_GRAPHICS_DOORSTYLE_INVALID;
-  myStyle.edge = RPG_GRAPHICS_EDGESTYLE_INVALID;
-  myStyle.floor = RPG_GRAPHICS_FLOORSTYLE_INVALID;
-  myStyle.half_height_walls = RPG_ENGINE_LEVEL_STYLE_HALFHEIGHTWALLS;
-  myStyle.wall = RPG_GRAPHICS_WALLSTYLE_INVALID;
 }
 
 RPG_Engine_Level::~RPG_Engine_Level()
@@ -117,12 +111,6 @@ RPG_Engine_Level::create(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
   level_out.map.plan.rooms_are_square = false;
   RPG_Map_Level::create(mapConfig_in,
                         level_out.map);
-
-  level_out.style.door = RPG_ENGINE_LEVEL_STYLE_DEF_DOORSTYLE;
-  level_out.style.edge = RPG_ENGINE_LEVEL_STYLE_DEF_EDGESTYLE;
-  level_out.style.floor = RPG_ENGINE_LEVEL_STYLE_DEF_FLOORSTYLE;
-  level_out.style.half_height_walls = RPG_ENGINE_LEVEL_STYLE_HALFHEIGHTWALLS;
-  level_out.style.wall = RPG_ENGINE_LEVEL_STYLE_DEF_WALLSTYLE;
 }
 
 bool
@@ -295,7 +283,6 @@ RPG_Engine_Level::load(const std::string& filename_in,
 void
 RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
                          const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
-                         const RPG_Graphics_MapStyle& mapStyle_in,
                          RPG_Engine_Level_t& level_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::random"));
@@ -504,70 +491,6 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
   // step13: map
   RPG_Map_Level::random(mapConfig_in,
                         level_out.map);
-
-  level_out.style = mapStyle_in;
-  // step14: door-style
-  if (level_out.style.door == RPG_GRAPHICS_DOORSTYLE_INVALID)
-  {
-    result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_DOORSTYLE_MAX,
-                                    1,
-                                    result);
-    level_out.style.door =
-        static_cast<RPG_Graphics_DoorStyle>(result.front() - 1);
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("generated level door-style: \"%s\"\n"),
-               RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(level_out.style.door).c_str()));
-  } // end IF
-
-  // step15: edge-style
-  if (level_out.style.edge == RPG_GRAPHICS_EDGESTYLE_INVALID)
-  {
-    result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_EDGESTYLE_MAX,
-                                    1,
-                                    result);
-    level_out.style.edge =
-        static_cast<RPG_Graphics_EdgeStyle>(result.front() - 1);
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("generated level edge-style: \"%s\"\n"),
-               RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(level_out.style.edge).c_str()));
-  } // end IF
-
-  // step16: floor-style
-  if (level_out.style.floor == RPG_GRAPHICS_FLOORSTYLE_INVALID)
-  {
-    result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_FLOORSTYLE_MAX,
-                                    1,
-                                    result);
-    level_out.style.floor =
-        static_cast<RPG_Graphics_FloorStyle>(result.front() - 1);
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("generated level floor-style: \"%s\"\n"),
-               RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(level_out.style.floor).c_str()));
-  } // end IF
-
-  // step17: half-height walls
-//  level_out.style.half_height_walls = RPG_Dice::probability(0.5F);
-//  ACE_DEBUG((LM_DEBUG,
-//             ACE_TEXT("generated level half-height walls: %s\n"),
-//             (level_out.style.half_height_walls ? ACE_TEXT_ALWAYS_CHAR("true")
-//                                                : ACE_TEXT_ALWAYS_CHAR("false"))));
-
-  // step18: wall-style
-  if (level_out.style.wall == RPG_GRAPHICS_WALLSTYLE_INVALID)
-  {
-    result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_WALLSTYLE_MAX,
-                                    1,
-                                    result);
-    level_out.style.wall =
-        static_cast<RPG_Graphics_WallStyle>(result.front() - 1);
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("generated level wall-style: \"%s\"\n"),
-               RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(level_out.style.wall).c_str()));
-  } // end IF
 }
 
 void
@@ -604,15 +527,6 @@ RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
              level_in.metadata.spawn_timer));
 
   RPG_Map_Level::print(level_in.map);
-
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("style:\n\tfloor: %s\n\tedge: %s\n\twall: %s\n\thalf-height walls: %s\n\tdoor: %s\n"),
-             RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(level_in.style.floor).c_str(),
-             RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(level_in.style.edge).c_str(),
-             RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(level_in.style.wall).c_str(),
-             (level_in.style.half_height_walls ? ACE_TEXT_ALWAYS_CHAR("true")
-                                               : ACE_TEXT_ALWAYS_CHAR("false")),
-              RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(level_in.style.door).c_str()));
 }
 
 void
@@ -622,7 +536,6 @@ RPG_Engine_Level::init(const RPG_Engine_Level_t& level_in)
 
   inherited::init(level_in.map);
   myMetaData = level_in.metadata;
-  myStyle = level_in.style;
 }
 
 void
@@ -716,20 +629,22 @@ RPG_Engine_Level::save(const std::string& filename_in) const
              filename_in.c_str()));
 }
 
+void
+RPG_Engine_Level::dump_state() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::dump_state"));
+
+  RPG_Engine_Level_t level = {myMetaData, inherited::myMap};
+
+  RPG_Engine_Level::print(level);
+}
+
 RPG_Engine_LevelMetaData_t
 RPG_Engine_Level::getMetaData() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getMetaData"));
 
   return myMetaData;
-}
-
-RPG_Graphics_MapStyle
-RPG_Engine_Level::getStyle() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getStyle"));
-
-  return myStyle;
 }
 
 bool
@@ -847,30 +762,17 @@ RPG_Engine_Level::toLevelXML() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::toLevelXML"));
 
-  RPG_Common_Environment_XMLTree_Type environment;
-  if (myMetaData.environment.climate != RPG_COMMON_CLIMATE_INVALID)
-    environment.climate(RPG_Common_ClimateHelper::RPG_Common_ClimateToString(myMetaData.environment.climate));
-  if (myMetaData.environment.lighting != RPG_COMMON_AMBIENTLIGHTING_INVALID)
-    environment.lighting(RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString(myMetaData.environment.lighting));
-  environment.outdoors(myMetaData.environment.outdoors);
-  if (myMetaData.environment.plane != RPG_COMMON_PLANE_INVALID)
-    environment.plane(RPG_Common_PlaneHelper::RPG_Common_PlaneToString(myMetaData.environment.plane));
-  if (myMetaData.environment.terrain != RPG_COMMON_TERRAIN_INVALID)
-    environment.terrain(RPG_Common_TerrainHelper::RPG_Common_TerrainToString(myMetaData.environment.terrain));
-  if (myMetaData.environment.time != RPG_COMMON_TIMEOFDAY_INVALID)
-    environment.time(RPG_Common_TimeOfDayHelper::RPG_Common_TimeOfDayToString(myMetaData.environment.time));
+  RPG_Common_Environment_XMLTree_Type environment(RPG_Common_PlaneHelper::RPG_Common_PlaneToString(myMetaData.environment.plane),
+                                                  RPG_Common_TerrainHelper::RPG_Common_TerrainToString(myMetaData.environment.terrain),
+                                                  RPG_Common_ClimateHelper::RPG_Common_ClimateToString(myMetaData.environment.climate),
+                                                  RPG_Common_TimeOfDayHelper::RPG_Common_TimeOfDayToString(myMetaData.environment.time),
+                                                  RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString(myMetaData.environment.lighting),
+                                                  myMetaData.environment.outdoors);
 
   RPG_Common_FixedPeriod_XMLTree_Type spawn_interval(static_cast<unsigned int>(myMetaData.spawn_interval.sec()),
                                                      static_cast<unsigned int>(myMetaData.spawn_interval.usec()));
 
   std::string map_string = RPG_Map_Common_Tools::map2String(inherited::myMap);
-
-  RPG_Graphics_MapStyle_XMLTree_Type style(RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(myStyle.floor),
-                                           RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(myStyle.wall),
-                                           myStyle.half_height_walls,
-                                           RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(myStyle.door));
-  if (myStyle.edge != RPG_GRAPHICS_EDGESTYLE_INVALID)
-    style.edge(RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(myStyle.edge));
 
   RPG_Engine_Level_XMLTree_Type* level_p = NULL;
   ACE_NEW_NORETURN(level_p,
@@ -880,8 +782,7 @@ RPG_Engine_Level::toLevelXML() const
                                                  myMetaData.spawn_probability,
                                                  myMetaData.max_spawned,
                                                  myMetaData.amble_probability,
-                                                 map_string,
-                                                 style));
+                                                 map_string));
   if (!level_p)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -992,19 +893,6 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
 		RPG_Map_DoorState_XMLTree_Type::value temp_state = (*iterator2).state();
 		(*iterator).state = static_cast<RPG_Map_DoorState>(temp_state);
 	} // end FOR
-
-  const RPG_Graphics_MapStyle_XMLTree_Type& style = level_in.style();
-  result.style.floor =
-      RPG_Graphics_FloorStyleHelper::stringToRPG_Graphics_FloorStyle(style.floor());
-  result.style.edge = RPG_GRAPHICS_EDGESTYLE_INVALID;
-  if (style.edge().present())
-    result.style.edge =
-        RPG_Graphics_EdgeStyleHelper::stringToRPG_Graphics_EdgeStyle(style.edge().get());
-  result.style.wall =
-      RPG_Graphics_WallStyleHelper::stringToRPG_Graphics_WallStyle(style.wall());
-  result.style.half_height_walls = style.half_height_walls();
-  result.style.door =
-      RPG_Graphics_DoorStyleHelper::stringToRPG_Graphics_DoorStyle(style.door());
 
   return result;
 }

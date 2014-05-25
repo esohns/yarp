@@ -445,124 +445,124 @@ operator= (value v)
 }
 
 
-// RPG_Graphics_MapStyle_XMLTree_Type
+// RPG_Graphics_Style_XMLTree_Type
 // 
 
-const RPG_Graphics_MapStyle_XMLTree_Type::floor_type& RPG_Graphics_MapStyle_XMLTree_Type::
+const RPG_Graphics_Style_XMLTree_Type::floor_type& RPG_Graphics_Style_XMLTree_Type::
 floor () const
 {
   return this->floor_.get ();
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type::floor_type& RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type::floor_type& RPG_Graphics_Style_XMLTree_Type::
 floor ()
 {
   return this->floor_.get ();
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 floor (const floor_type& x)
 {
   this->floor_.set (x);
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 floor (::std::auto_ptr< floor_type > x)
 {
   this->floor_.set (x);
 }
 
-const RPG_Graphics_MapStyle_XMLTree_Type::edge_optional& RPG_Graphics_MapStyle_XMLTree_Type::
+const RPG_Graphics_Style_XMLTree_Type::edge_optional& RPG_Graphics_Style_XMLTree_Type::
 edge () const
 {
   return this->edge_;
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type::edge_optional& RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type::edge_optional& RPG_Graphics_Style_XMLTree_Type::
 edge ()
 {
   return this->edge_;
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 edge (const edge_type& x)
 {
   this->edge_.set (x);
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 edge (const edge_optional& x)
 {
   this->edge_ = x;
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 edge (::std::auto_ptr< edge_type > x)
 {
   this->edge_.set (x);
 }
 
-const RPG_Graphics_MapStyle_XMLTree_Type::wall_type& RPG_Graphics_MapStyle_XMLTree_Type::
+const RPG_Graphics_Style_XMLTree_Type::wall_type& RPG_Graphics_Style_XMLTree_Type::
 wall () const
 {
   return this->wall_.get ();
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type::wall_type& RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type::wall_type& RPG_Graphics_Style_XMLTree_Type::
 wall ()
 {
   return this->wall_.get ();
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 wall (const wall_type& x)
 {
   this->wall_.set (x);
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 wall (::std::auto_ptr< wall_type > x)
 {
   this->wall_.set (x);
 }
 
-const RPG_Graphics_MapStyle_XMLTree_Type::half_height_walls_type& RPG_Graphics_MapStyle_XMLTree_Type::
+const RPG_Graphics_Style_XMLTree_Type::half_height_walls_type& RPG_Graphics_Style_XMLTree_Type::
 half_height_walls () const
 {
   return this->half_height_walls_.get ();
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type::half_height_walls_type& RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type::half_height_walls_type& RPG_Graphics_Style_XMLTree_Type::
 half_height_walls ()
 {
   return this->half_height_walls_.get ();
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 half_height_walls (const half_height_walls_type& x)
 {
   this->half_height_walls_.set (x);
 }
 
-const RPG_Graphics_MapStyle_XMLTree_Type::door_type& RPG_Graphics_MapStyle_XMLTree_Type::
+const RPG_Graphics_Style_XMLTree_Type::door_type& RPG_Graphics_Style_XMLTree_Type::
 door () const
 {
   return this->door_.get ();
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type::door_type& RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type::door_type& RPG_Graphics_Style_XMLTree_Type::
 door ()
 {
   return this->door_.get ();
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 door (const door_type& x)
 {
   this->door_.set (x);
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 door (::std::auto_ptr< door_type > x)
 {
   this->door_.set (x);
@@ -2708,14 +2708,14 @@ _xsd_RPG_Graphics_StyleUnion_XMLTree_Type_indexes_[32] =
   ::RPG_Graphics_StyleUnion_XMLTree_Type::WALLSTYLE_VINE_COVERED
 };
 
-// RPG_Graphics_MapStyle_XMLTree_Type
+// RPG_Graphics_Style_XMLTree_Type
 //
 
-RPG_Graphics_MapStyle_XMLTree_Type::
-RPG_Graphics_MapStyle_XMLTree_Type (const floor_type& floor,
-                                    const wall_type& wall,
-                                    const half_height_walls_type& half_height_walls,
-                                    const door_type& door)
+RPG_Graphics_Style_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type (const floor_type& floor,
+                                 const wall_type& wall,
+                                 const half_height_walls_type& half_height_walls,
+                                 const door_type& door)
 : ::xml_schema::type (),
   floor_ (floor, ::xml_schema::flags (), this),
   edge_ (::xml_schema::flags (), this),
@@ -2725,10 +2725,10 @@ RPG_Graphics_MapStyle_XMLTree_Type (const floor_type& floor,
 {
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type::
-RPG_Graphics_MapStyle_XMLTree_Type (const RPG_Graphics_MapStyle_XMLTree_Type& x,
-                                    ::xml_schema::flags f,
-                                    ::xml_schema::container* c)
+RPG_Graphics_Style_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type (const RPG_Graphics_Style_XMLTree_Type& x,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   floor_ (x.floor_, f, this),
   edge_ (x.edge_, f, this),
@@ -2738,10 +2738,10 @@ RPG_Graphics_MapStyle_XMLTree_Type (const RPG_Graphics_MapStyle_XMLTree_Type& x,
 {
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type::
-RPG_Graphics_MapStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                    ::xml_schema::flags f,
-                                    ::xml_schema::container* c)
+RPG_Graphics_Style_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   floor_ (f, this),
   edge_ (f, this),
@@ -2756,7 +2756,7 @@ RPG_Graphics_MapStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
   }
 }
 
-void RPG_Graphics_MapStyle_XMLTree_Type::
+void RPG_Graphics_Style_XMLTree_Type::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
@@ -2865,20 +2865,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   }
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type* RPG_Graphics_MapStyle_XMLTree_Type::
+RPG_Graphics_Style_XMLTree_Type* RPG_Graphics_Style_XMLTree_Type::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class RPG_Graphics_MapStyle_XMLTree_Type (*this, f, c);
+  return new class RPG_Graphics_Style_XMLTree_Type (*this, f, c);
 }
 
-RPG_Graphics_MapStyle_XMLTree_Type::
-~RPG_Graphics_MapStyle_XMLTree_Type ()
+RPG_Graphics_Style_XMLTree_Type::
+~RPG_Graphics_Style_XMLTree_Type ()
 {
 }
 
 bool
-operator== (const RPG_Graphics_MapStyle_XMLTree_Type& x, const RPG_Graphics_MapStyle_XMLTree_Type& y)
+operator== (const RPG_Graphics_Style_XMLTree_Type& x, const RPG_Graphics_Style_XMLTree_Type& y)
 {
   if (!(x.floor () == y.floor ()))
     return false;
@@ -2899,7 +2899,7 @@ operator== (const RPG_Graphics_MapStyle_XMLTree_Type& x, const RPG_Graphics_MapS
 }
 
 bool
-operator!= (const RPG_Graphics_MapStyle_XMLTree_Type& x, const RPG_Graphics_MapStyle_XMLTree_Type& y)
+operator!= (const RPG_Graphics_Style_XMLTree_Type& x, const RPG_Graphics_Style_XMLTree_Type& y)
 {
   return !(x == y);
 }
@@ -5320,7 +5320,7 @@ operator<< (::std::ostream& o, const RPG_Graphics_StyleUnion_XMLTree_Type& i)
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, const RPG_Graphics_MapStyle_XMLTree_Type& i)
+operator<< (::std::ostream& o, const RPG_Graphics_Style_XMLTree_Type& i)
 {
   o << ::std::endl << "floor: " << i.floor ();
   if (i.edge ())
@@ -6087,7 +6087,7 @@ operator<< (::xml_schema::list_stream& l,
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const RPG_Graphics_MapStyle_XMLTree_Type& i)
+operator<< (::xercesc::DOMElement& e, const RPG_Graphics_Style_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
 

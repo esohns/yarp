@@ -35,7 +35,6 @@
 #include "rpg_map_common_tools.h"
 
 #include "rpg_common_icontrol.h"
-#include "rpg_common_idumpstate.h"
 
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
@@ -50,7 +49,6 @@
 class RPG_Engine_Export RPG_Engine
  : public ACE_Task<ACE_MT_SYNCH>,
    public RPG_Common_IControl,
-   public RPG_Common_IDumpState,
    public RPG_Engine_Level
 {
   // AI thread(s) require access to the entity action queues...
@@ -79,11 +77,11 @@ class RPG_Engine_Export RPG_Engine
   void set(const RPG_Engine_Level_t&); // level
 
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
-  RPG_Engine_EntityID_t add(RPG_Engine_Entity*); // entity
+  RPG_Engine_EntityID_t add(RPG_Engine_Entity_t*); // entity
   void remove(const RPG_Engine_EntityID_t&); // id
   bool exists(const RPG_Engine_EntityID_t&) const; // id
   void action(const RPG_Engine_EntityID_t&, // id
-              const RPG_Engine_Action&,     // action
+              const RPG_Engine_Action_t&,   // action
               const bool& = true);          // locked access ?
 
   void setActive(const RPG_Engine_EntityID_t&); // id
@@ -92,22 +90,22 @@ class RPG_Engine_Export RPG_Engine
   void clear(const RPG_Engine_EntityMode&); // clear mode (from active entity)
   bool hasMode(const RPG_Engine_EntityMode&) const; // mode
 
-  RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&,
-                                 const bool& = true) const; // locked access ?
-  RPG_Map_Position_t findValid(const RPG_Map_Position_t&,  // center
+  RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&, // id
+                                 const bool& = true) const;    // locked access ?
+  RPG_Map_Position_t findValid(const RPG_Map_Position_t&,      // center
                                const unsigned int& = 0) const; // max (square !) radius [0: whereever]
-  RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&,
+  RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&, // position
                                   const bool& = true) const; // locked access ?
   RPG_Engine_EntityList_t entities(const RPG_Map_Position_t&, // sort: position (closest first)
                                    const bool& = true) const; // locked access ?
-  bool isMonster(const RPG_Engine_EntityID_t&,
-                 const bool& = true) const; // locked access ?
-  std::string getName(const RPG_Engine_EntityID_t&,
-                      const bool& = true) const; // locked access ?
+  bool isMonster(const RPG_Engine_EntityID_t&, // id
+                 const bool& = true) const;    // locked access ?
+  std::string getName(const RPG_Engine_EntityID_t&, // id
+                      const bool& = true) const;    // locked access ?
   unsigned int numSpawned() const;
 
   // vision
-  unsigned char getVisibleRadius(const RPG_Engine_EntityID_t&,
+  unsigned char getVisibleRadius(const RPG_Engine_EntityID_t&, // id
                                  const bool& = true) const;    // locked access ?
   void getVisiblePositions(const RPG_Engine_EntityID_t&, // id
                            RPG_Map_Positions_t&,         // return value: (currently) visible positions
@@ -130,17 +128,16 @@ class RPG_Engine_Export RPG_Engine
 
   // map
   RPG_Engine_LevelMetaData_t getMetaData(const bool& = true) const; // locked access ?
-  RPG_Graphics_MapStyle getStyle(const bool& = true) const; // locked access ?
   RPG_Map_Position_t getStartPosition(const bool& = true) const; // locked access ?
   RPG_Map_Size_t getSize(const bool& = true) const; // locked access ?
-  RPG_Map_DoorState state(const RPG_Map_Position_t&,
+  RPG_Map_DoorState state(const RPG_Map_Position_t&, // position
                           const bool& = true) const; // locked access ?
 
-  bool isValid(const RPG_Map_Position_t&,
+  bool isValid(const RPG_Map_Position_t&, // position
                const bool& = true) const; // locked access ?
-  bool isCorner(const RPG_Map_Position_t&,
+  bool isCorner(const RPG_Map_Position_t&, // position
                 const bool& = true) const; // locked access ?
-  RPG_Map_Element getElement(const RPG_Map_Position_t&,
+  RPG_Map_Element getElement(const RPG_Map_Position_t&, // position
                              const bool& = true) const; // locked access ?
   RPG_Map_Positions_t getObstacles(const bool&,               // include entities ?
                                    const bool& = true) const; // locked access ?
@@ -156,7 +153,6 @@ class RPG_Engine_Export RPG_Engine
   using RPG_Engine_Level::getMetaData;
   using RPG_Engine_Level::findPath;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine(const RPG_Engine&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine& operator=(const RPG_Engine&));
 
@@ -185,7 +181,8 @@ class RPG_Engine_Export RPG_Engine
   void handleEntities();
 
   // helper types
-  typedef std::vector<std::pair<RPG_Engine_Command, RPG_Engine_ClientNotificationParameters_t> > RPG_Engine_ClientNotifications_t;
+  typedef std::vector<std::pair<RPG_Engine_Command,
+                                RPG_Engine_ClientNotificationParameters_t> > RPG_Engine_ClientNotifications_t;
   typedef RPG_Engine_ClientNotifications_t::const_iterator RPG_Engine_ClientNotificationsConstIterator_t;
 
   // atomic ID generator

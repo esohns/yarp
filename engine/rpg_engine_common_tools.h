@@ -67,19 +67,19 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                    const std::string&); // monster dictionary file
   static void fini();
 
-	// ***** event-releated *****
+	// ***** event-related *****
 	static bool isOneShotEvent(const RPG_Engine_EventType&);
 
   // ***** entity-related *****
   // *NOTE*: entity.character must be deleted() by the caller !
-  static RPG_Engine_Entity loadEntity(const std::string&,  // FQ filename
-                                      const std::string&); // schema repository (directory)
-  static bool saveEntity(const RPG_Engine_Entity&, // entity
-                         const std::string&);      // FQ filename
+  static RPG_Engine_Entity_t loadEntity(const std::string&,  // FQ filename
+                                        const std::string&); // schema repository (directory)
+  static bool saveEntity(const RPG_Engine_Entity_t&, // entity
+                         const std::string&);        // FQ filename
   // *NOTE*: return value entity.character must be delete()d by the caller !
-  static RPG_Engine_Entity createEntity();
-  static RPG_Engine_Entity createEntity(const std::string&); // creature type
-  static std::string info(const RPG_Engine_Entity&); // entity
+  static RPG_Engine_Entity_t createEntity();
+  static RPG_Engine_Entity_t createEntity(const std::string&); // creature type
+  static std::string info(const RPG_Engine_Entity_t&); // entity
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
 
   // ***** combat-related *****
@@ -108,14 +108,13 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                                 const unsigned int& = 1); // number of party members
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Engine_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools(const RPG_Engine_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools& operator=(const RPG_Engine_Common_Tools&));
 
   // helper types
-  typedef std::deque<RPG_Engine_CombatantSequenceElement> RPG_Engine_CombatSequenceList_t;
+  typedef std::deque<RPG_Engine_CombatantSequenceElement_t> RPG_Engine_CombatSequenceList_t;
   typedef RPG_Engine_CombatSequenceList_t::iterator RPG_Engine_CombatSequenceListIterator_t;
 
   // helper methods

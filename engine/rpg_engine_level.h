@@ -25,8 +25,8 @@
 #include "rpg_engine_common.h"
 #include "rpg_engine_XML_tree.h"
 
-#include <rpg_map_common.h>
-#include <rpg_map_level.h>
+#include "rpg_map_common.h"
+#include "rpg_map_level.h"
 
 #include <ace/Global_Macros.h>
 
@@ -50,15 +50,15 @@ class RPG_Engine_Export RPG_Engine_Level
                    RPG_Engine_Level_t&); // return value: level
   static void random(const RPG_Engine_LevelMetaData_t&,        // metadata
                      const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
-                     const RPG_Graphics_MapStyle&,             // style
                      RPG_Engine_Level_t&);                     // return value: level
   static void print(const RPG_Engine_Level_t&); // level
 
   void init(const RPG_Engine_Level_t&); // level
   void save(const std::string&) const; // FQ filename
+  // override RPG_IDumpState
+  virtual void dump_state() const;
 
   RPG_Engine_LevelMetaData_t getMetaData() const;
-  RPG_Graphics_MapStyle getStyle() const;
 
  protected:
   // hide some funcionality
@@ -85,7 +85,6 @@ class RPG_Engine_Export RPG_Engine_Level
                 RPG_Map_Path_t&) const;     // return value: (partial) path A --> B
 
   RPG_Engine_LevelMetaData_t myMetaData;
-  RPG_Graphics_MapStyle      myStyle;
 
  private:
   typedef RPG_Map_Level inherited;

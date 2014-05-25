@@ -71,7 +71,7 @@ class SDL_GUI_LevelWindow_3D
 
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel
-  virtual void init(const RPG_Graphics_MapStyle&); // map style
+  virtual void init(const RPG_Graphics_Style&); // style
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position
   virtual void setBlendRadius(const unsigned char&); // radius
   virtual void updateMinimap();

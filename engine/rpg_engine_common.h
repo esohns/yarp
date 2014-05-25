@@ -56,18 +56,18 @@ typedef RPG_Engine_EntityMode_t::const_iterator RPG_Engine_EntityModeConstIterat
 
 typedef unsigned int RPG_Engine_EntityID_t;
 
-struct RPG_Engine_Action
+struct RPG_Engine_Action_t
 {
   RPG_Engine_Command    command;
   RPG_Map_Position_t    position;
   RPG_Map_Path_t        path;
   RPG_Engine_EntityID_t target;
 };
-typedef std::deque<RPG_Engine_Action> RPG_Engine_Actions_t;
+typedef std::deque<RPG_Engine_Action_t> RPG_Engine_Actions_t;
 typedef RPG_Engine_Actions_t::iterator RPG_Engine_ActionsIterator_t;
 typedef RPG_Engine_Actions_t::const_iterator RPG_Engine_ActionsConstIterator_t;
 
-struct RPG_Engine_Entity
+struct RPG_Engine_Entity_t
 {
   RPG_Player_Base*        character;
   RPG_Map_Position_t      position;
@@ -78,7 +78,7 @@ struct RPG_Engine_Entity
   // monster - onlies
   bool                    is_spawned;
 };
-typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity*> RPG_Engine_Entities_t;
+typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity_t*> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
 typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t;
 
@@ -105,16 +105,15 @@ struct RPG_Engine_Level_t
 {
   RPG_Engine_LevelMetaData_t metadata;
   RPG_Map_t                  map;
-  RPG_Graphics_MapStyle      style;
 };
 
 typedef std::map<RPG_Map_Position_t, SDL_Surface*> RPG_Engine_EntityGraphics_t;
 typedef RPG_Engine_EntityGraphics_t::const_iterator RPG_Engine_EntityGraphicsConstIterator_t;
 
-struct RPG_Engine_CombatantSequenceElement
+struct RPG_Engine_CombatantSequenceElement_t
 {
   // needed for proper sorting...
-  inline bool operator<(const RPG_Engine_CombatantSequenceElement& rhs_in) const
+  inline bool operator<(const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
   {
     if (initiative < rhs_in.initiative)
       return true;
@@ -152,11 +151,11 @@ struct RPG_Engine_CombatantSequenceElement
     // no conflict for monsters...
     return false;
   }
-  inline bool operator>(const RPG_Engine_CombatantSequenceElement& rhs_in) const
+  inline bool operator>(const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
   {
     return (!(*this < rhs_in) && !(*this == rhs_in));
   }
-  inline bool operator==(const RPG_Engine_CombatantSequenceElement& rhs_in) const
+  inline bool operator==(const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
   {
     if (initiative == rhs_in.initiative)
     {
@@ -188,7 +187,7 @@ struct RPG_Engine_CombatantSequenceElement
     // no conflict for monsters...
     return false;
   }
-  inline bool operator!=(const RPG_Engine_CombatantSequenceElement& rhs_in) const
+  inline bool operator!=(const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
   {
     return !operator==(rhs_in);
   }
@@ -198,10 +197,10 @@ struct RPG_Engine_CombatantSequenceElement
   const RPG_Player_Base* handle;
 };
 
-// struct lessThanRPG_Engine_CombatantSequenceElement
+// struct lessThanRPG_Engine_CombatantSequenceElement_t
 // {
-//   inline bool operator()(const RPG_Engine_CombatantSequenceElement& lhs_in,
-//                          const RPG_Engine_CombatantSequenceElement& rhs_in) const
+//   inline bool operator()(const RPG_Engine_CombatantSequenceElement_t& lhs_in,
+//                          const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
 //   {
 //     if (lhs_in.initiative < rhs_in.initiative)
 //       return true;
@@ -211,11 +210,11 @@ struct RPG_Engine_CombatantSequenceElement
 //   }
 // };
 
-// typedef std::set<RPG_Engine_CombatantSequenceElement,
-//                  lessThanRPG_Engine_CombatantSequenceElement> RPG_Engine_CombatantSequence_t;
+// typedef std::set<RPG_Engine_CombatantSequenceElement_t,
+//                  lessThanRPG_Engine_CombatantSequenceElement_t> RPG_Engine_CombatantSequence_t;
 // *NOTE*: sort in DESCENDING order !
-typedef std::set<RPG_Engine_CombatantSequenceElement,
-                 std::greater<RPG_Engine_CombatantSequenceElement> > RPG_Engine_CombatantSequence_t;
+typedef std::set<RPG_Engine_CombatantSequenceElement_t,
+                 std::greater<RPG_Engine_CombatantSequenceElement_t> > RPG_Engine_CombatantSequence_t;
 typedef RPG_Engine_CombatantSequence_t::iterator RPG_Engine_CombatantSequenceIterator_t;
 typedef RPG_Engine_CombatantSequence_t::const_iterator RPG_Engine_CombatantSequenceConstIterator_t;
 // typedef RPG_Engine_CombatantSequence_t::const_reverse_iterator RPG_Engine_CombatantSequenceRIterator_t;

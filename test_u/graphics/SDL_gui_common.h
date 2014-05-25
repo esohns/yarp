@@ -21,16 +21,23 @@
 #ifndef SDL_GUI_COMMON_H
 #define SDL_GUI_COMMON_H
 
+#include "rpg_graphics_floorstyle.h"
+#include "rpg_graphics_edgestyle.h"
+#include "rpg_graphics_wallstyle.h"
+#include "rpg_graphics_doorstyle.h"
+#include "rpg_graphics_style.h"
+
 #include <SDL.h>
 
 #include <ace/Synch.h>
 
 struct state_t
 {
- SDL_Surface*     screen;
- ACE_Thread_Mutex hover_lock;
- unsigned int     hover_time;
- bool             debug;
+ SDL_Surface*       screen;
+ ACE_Thread_Mutex   hover_lock;
+ unsigned int       hover_time;
+ bool               debug;
+ RPG_Graphics_Style style;
 };
 
 enum userMode_t

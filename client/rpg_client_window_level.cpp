@@ -83,16 +83,19 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
 
   // init client action
   myClientAction.command = RPG_CLIENT_COMMAND_INVALID;
-  myClientAction.previous = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                           std::numeric_limits<unsigned int>::max());
-  myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                           std::numeric_limits<unsigned int>::max());
+  myClientAction.previous =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
+  myClientAction.position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   myClientAction.window = this;
   myClientAction.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   myClientAction.entity_id = 0;
   myClientAction.path.clear();
-  myClientAction.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                         std::numeric_limits<unsigned int>::max());
+  myClientAction.source =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   myClientAction.positions.clear();
 
   ACE_OS::memset(&myCurrentFloorEdgeSet,
@@ -124,9 +127,10 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_OFF_MAP;
-  myOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                        true,   // convert to display format
-                                                        false); // don't cache
+  myOffMapTile =
+      RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                             true,   // convert to display format
+                                             false); // don't cache
   if (!myOffMapTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
@@ -134,9 +138,10 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
 
   // load tile for invisible areas
   type.tilegraphic = TILE_FLOOR_INVISIBLE;
-  myInvisibleTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                           true,   // convert to display format
-                                                           false); // don't cache
+  myInvisibleTile =
+      RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
+                                             true,   // convert to display format
+                                             false); // don't cache
   if (!myInvisibleTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
@@ -154,8 +159,9 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
   } // end IF
   RPG_Graphics_Surface::alpha(static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_PREV_SEEN_OPACITY * SDL_ALPHA_OPAQUE)),
                               *myVisionBlendTile);
-  myVisionTempTile = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-                                                  RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
+  myVisionTempTile =
+      RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+                                   RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
   if (!myVisionTempTile)
   {
     ACE_DEBUG((LM_ERROR,
@@ -359,11 +365,19 @@ RPG_Client_Window_Level::toggleDoor(const RPG_Map_Position_t& position_in)
   switch (orientation)
   {
     case ORIENTATION_HORIZONTAL:
-      myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.horizontal_open
-                                          : myCurrentDoorSet.horizontal_closed); break;
+    {
+      myDoorTiles[position_in] =
+          (is_open ? myCurrentDoorSet.horizontal_open
+                   : myCurrentDoorSet.horizontal_closed);
+      break;
+    }
     case ORIENTATION_VERTICAL:
+    {
       myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.vertical_open
-                                          : myCurrentDoorSet.vertical_closed); break;
+                                          : myCurrentDoorSet.vertical_closed);
+
+      break;
+    }
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -399,8 +413,7 @@ RPG_Client_Window_Level::init(RPG_Client_Engine* clientEngine_in,
   myEngine = engine_in;
 
   // init edge, wall, door tiles
-  RPG_Graphics_MapStyle level_style = myEngine->getStyle(true);
-  init(level_style);
+  init(myClient->getStyle());
 
   // init minimap
   initMiniMap();
@@ -449,9 +462,9 @@ RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
        iterator != myChildren.end();
        iterator++)
   {
-    if (((*iterator)->getType() != child_in)             ||
-        ((child_in == WINDOW_MINIMAP) && !myDrawMinimap) || // minimap switched off...
-        ((child_in == WINDOW_MESSAGE) && !myShowMessages))  // message window switched off...
+    if (((*iterator)->getType() != child_in)              ||
+        ((child_in == WINDOW_MINIMAP) && !myDrawMinimap)  || // minimap switched off...
+        ((child_in == WINDOW_MESSAGE) && !myShowMessages))   // message window switched off...
       continue;
 
     try
@@ -482,7 +495,7 @@ RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
 }
 
 void
-RPG_Client_Window_Level::init(const RPG_Graphics_MapStyle& mapStyle_in)
+RPG_Client_Window_Level::init(const RPG_Graphics_Style& style_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::init"));
 
@@ -491,16 +504,16 @@ RPG_Client_Window_Level::init(const RPG_Graphics_MapStyle& mapStyle_in)
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
-  style.floorstyle = mapStyle_in.floor;
+  style.floorstyle = style_in.floor;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
-  style.edgestyle = mapStyle_in.edge;
+  style.edgestyle = style_in.edge;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
-  style.wallstyle = mapStyle_in.wall;
+  style.wallstyle = style_in.wall;
   setStyle(style);
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
-  style.doorstyle = mapStyle_in.door;
+  style.doorstyle = style_in.door;
   setStyle(style);
 
   // init tiles / position
@@ -705,14 +718,16 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 //                        (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2) + 50)) +
 //                        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
 //                       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
-  top_right.first = (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2))) +
-                      (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2))) +
-                      (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-                     (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
-  top_right.second = (((RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2))) +
-                       (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2))) +
-                       (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-                      (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+  top_right.first =
+      (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2))) +
+        (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2))) +
+        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+  top_right.second =
+      (((RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2))) +
+        (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2))) +
+        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD));
 
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = top_right.first - top_right.second - 1;
@@ -725,8 +740,9 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   myEngine->lock();
 
   RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(false);
-  RPG_Map_Position_t active_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                      std::numeric_limits<unsigned int>::max());
+  RPG_Map_Position_t active_position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   RPG_Map_Positions_t visible_positions;
   if (active_entity_id)
   {
@@ -760,18 +776,24 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   SDL_Rect dirty_region = {0, 0, 0, 0};
 
   int i, j;
-  RPG_Client_SignedPosition_t current_map_position = std::make_pair(std::numeric_limits<int>::max(),
-                                                                    std::numeric_limits<int>::max());
-  RPG_Graphics_FloorTilesConstIterator_t floor_iterator = myCurrentFloorSet.tiles.begin();
-  RPG_Graphics_FloorTilesConstIterator_t begin_row = myCurrentFloorSet.tiles.begin();
+  RPG_Client_SignedPosition_t current_map_position =
+      std::make_pair(std::numeric_limits<int>::max(),
+                     std::numeric_limits<int>::max());
+  RPG_Graphics_FloorTilesConstIterator_t floor_iterator =
+      myCurrentFloorSet.tiles.begin();
+  RPG_Graphics_FloorTilesConstIterator_t begin_row =
+      myCurrentFloorSet.tiles.begin();
   //unsigned int floor_column_index = 0;
-  RPG_Graphics_Position_t screen_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                           std::numeric_limits<unsigned int>::max());
+  RPG_Graphics_Position_t screen_position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   RPG_Map_Size_t map_size = myEngine->getSize(false);
   RPG_Map_Element current_element = MAPELEMENT_INVALID;
   bool is_visible, has_been_seen;
-  RPG_Client_BlendingMaskCacheIterator_t blendmask_iterator = myLightingCache.end();
-  RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator = myFloorEdgeTiles.end();
+  RPG_Client_BlendingMaskCacheIterator_t blendmask_iterator =
+      myLightingCache.end();
+  RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator =
+      myFloorEdgeTiles.end();
 
   // debug info
   //SDL_Rect rect = {0, 0, 0, 0};
@@ -799,7 +821,9 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
     // step1: floor tile rotation
     begin_row = myCurrentFloorSet.tiles.begin();
     //std::advance(begin_row, (current_map_position.second % myCurrentFloorSet.rows) * myCurrentFloorSet.columns);
-    std::advance(begin_row, current_map_position.second % (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns));
+    std::advance(begin_row,
+                 (current_map_position.second %
+                  (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns)));
 
     for (j = diff + i;
          (j + i) <= sum;
@@ -812,7 +836,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
           (current_map_position.first >= static_cast<int>(map_size.first)))
         continue;
 
-      is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
+      is_visible =
+          (visible_positions.find(current_map_position) != visible_positions.end());
       has_been_seen = myClient->hasSeen(active_entity_id,
                                         current_map_position,
                                         false);
@@ -823,10 +848,11 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
       // map --> screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                              std::make_pair(myClipRect.h,
-                                                                             myClipRect.w),
-                                                              myView);
+      screen_position =
+          RPG_Graphics_Common_Tools::map2Screen(current_map_position,
+                                                std::make_pair(myClipRect.h,
+                                                               myClipRect.w),
+                                                myView);
 
       // step1: unmapped areas
       if ((current_element == MAPELEMENT_UNMAPPED) ||
@@ -849,7 +875,9 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
       // floor tile rotation
       floor_iterator = begin_row;
       //std::advance(floor_iterator, current_map_position.first % myCurrentFloorSet.columns);
-      std::advance(floor_iterator, (myCurrentFloorSet.rows * (current_map_position.first % myCurrentFloorSet.columns)));
+      std::advance(floor_iterator,
+                   (myCurrentFloorSet.rows *
+                    (current_map_position.first % myCurrentFloorSet.columns)));
 
       if ((current_element == MAPELEMENT_FLOOR) ||
           (current_element == MAPELEMENT_DOOR))
@@ -857,7 +885,7 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
         // blend tile ? 
         if (is_visible)
         {
-          if ((static_cast<unsigned int>(current_map_position.first)  != active_position.first) ||
+          if ((static_cast<unsigned int>(current_map_position.first)  != active_position.first)  ||
               (static_cast<unsigned int>(current_map_position.second) != active_position.second))
           {
             // step0: find blend mask
@@ -907,7 +935,6 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 #ifdef _DEBUG
         if (myShowCoordinates)
         {
-          // debug info
           SDL_Rect rect;
           rect.x = screen_position.first;
           rect.y = screen_position.second;
@@ -1112,15 +1139,17 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
           (current_map_position.first >= static_cast<int>(map_size.first)))
         continue;
 
-      is_visible = (visible_positions.find(current_map_position) != visible_positions.end());
+      is_visible =
+          (visible_positions.find(current_map_position) != visible_positions.end());
 
       // transform map coordinates into screen coordinates
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
-      screen_position = RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                              std::make_pair(myClipRect.h,
-                                                                             myClipRect.w),
-                                                              myView);
+      screen_position =
+          RPG_Graphics_Common_Tools::map2Screen(current_map_position,
+                                                std::make_pair(myClipRect.h,
+                                                               myClipRect.w),
+                                                myView);
 
       wall_iterator = myWallTiles.find(current_map_position);
       door_iterator = myDoorTiles.find(current_map_position);
@@ -1385,7 +1414,10 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             myClientAction.position.second >>= 1;
           } // end IF
           else
-            myClientAction.position = myEngine->getPosition(myClientAction.entity_id, false);
+          {
+            myClientAction.position =
+                myEngine->getPosition(myClientAction.entity_id, false);
+          }
 
           // unlock engine
           myEngine->unlock();
@@ -1422,10 +1454,11 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
             if (entity_id)
             {
-              RPG_Engine_Action player_action;
+              RPG_Engine_Action_t player_action;
               player_action.command = COMMAND_RUN;
-              player_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                      std::numeric_limits<unsigned int>::max());
+              player_action.position =
+                  std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                 std::numeric_limits<unsigned int>::max());
               //player_action.path.clear();
               player_action.target = 0;
 
@@ -1461,10 +1494,11 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
             if (entity_id)
             {
-              RPG_Engine_Action player_action;
+              RPG_Engine_Action_t player_action;
               player_action.command = COMMAND_SEARCH;
-              player_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                      std::numeric_limits<unsigned int>::max());
+              player_action.position =
+                  std::make_pair(std::numeric_limits<unsigned int>::max(),
+                                 std::numeric_limits<unsigned int>::max());
               //player_action.path.clear();
               player_action.target = 0;
 
@@ -1522,7 +1556,8 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
                                     myClientAction.position,
                                     true))
               {
-                RPG_Graphics_Position_t current_position = myEngine->getPosition(myClientAction.entity_id, false);
+                RPG_Graphics_Position_t current_position =
+                    myEngine->getPosition(myClientAction.entity_id, false);
                 if (current_position != myClientAction.position)
                 {
                   if (!myEngine->findPath(current_position,
@@ -1574,22 +1609,25 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           } // end IF
 
           // step3: set/draw an appropriate cursor
-          RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
-                                                                               myClientAction.entity_id,
-                                                                               myClient->hasSeen(myClientAction.entity_id,
-                                                                                                 myClientAction.position,
-                                                                                                 true),
-                                                                               myClient->mode(),
-                                                                               *myEngine,
-                                                                               false);
-          if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
+          RPG_Graphics_Cursor cursor_type =
+              RPG_Client_Common_Tools::getCursor(myClientAction.position,
+                                                 myClientAction.entity_id,
+                                                 myClient->hasSeen(myClientAction.entity_id,
+                                                                   myClientAction.position,
+                                                                   true),
+                                                 myClient->mode(),
+                                                 *myEngine,
+                                                 false);
+          if (cursor_type !=
+              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
           {
             myClientAction.command = COMMAND_CURSOR_SET;
             myClientAction.cursor = cursor_type;
             myClient->action(myClientAction);
 
             myClientAction.command = COMMAND_CURSOR_DRAW;
-            myClientAction.position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+            myClientAction.position =
+                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
             myClient->action(myClientAction);
           } // end IF
 
@@ -1607,7 +1645,8 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
 
 //          // step1: store current background tile(s)
 //          myClientAction.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
-          RPG_Graphics_Position_t cursor_position = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
+          RPG_Graphics_Position_t cursor_position =
+              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
 //          myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(cursor_position,
 //                                                                          myEngine->getSize(false),
 //                                                                          getSize(false),
@@ -1620,8 +1659,9 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             // --> switch off aim selection
 
             // clear cached positions
-            myClientAction.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                   std::numeric_limits<unsigned int>::max());
+            myClientAction.source =
+                std::make_pair(std::numeric_limits<unsigned int>::max(),
+                               std::numeric_limits<unsigned int>::max());
             myClientAction.positions.clear();
 
             myClient->mode(SELECTIONMODE_NORMAL);
@@ -1656,15 +1696,17 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
 
           // step3: set/draw an appropriate cursor
           RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
-          RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
-                                                                               entity_id,
-                                                                               myClient->hasSeen(entity_id,
-                                                                                                 myClientAction.position,
-                                                                                                 true),
-                                                                               myClient->mode(),
-                                                                               *myEngine,
-                                                                               false);
-          if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
+          RPG_Graphics_Cursor cursor_type =
+              RPG_Client_Common_Tools::getCursor(myClientAction.position,
+                                                 entity_id,
+                                                 myClient->hasSeen(entity_id,
+                                                                   myClientAction.position,
+                                                                   true),
+                                                 myClient->mode(),
+                                                 *myEngine,
+                                                 false);
+          if (cursor_type !=
+              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
           {
             myClientAction.command = COMMAND_CURSOR_SET;
             myClientAction.cursor = cursor_type;
@@ -1779,10 +1821,11 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
               break; // nothing to do...
             } // end IF
 
-            RPG_Engine_Action player_action;
+            RPG_Engine_Action_t player_action;
             player_action.command = COMMAND_TRAVEL;
             // compute target position
-            player_action.position = myEngine->getPosition(myClientAction.entity_id, false);
+            player_action.position =
+                myEngine->getPosition(myClientAction.entity_id, false);
             switch (direction)
             {
               case DIRECTION_UP:
@@ -1849,11 +1892,12 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
       myEngine->lock();
 
       // find map square
-      myClientAction.position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
-                                                                                     event_in.motion.y),
-                                                                      myEngine->getSize(false),
-                                                                      getSize(false),
-                                                                      getView());
+      myClientAction.position =
+          RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
+                                                               event_in.motion.y),
+                                                myEngine->getSize(false),
+                                                getSize(false),
+                                                getView());
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
 //                  event_in.button.x,
@@ -1926,8 +1970,9 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           case SELECTIONMODE_AIM_SQUARE:
           {
             // step1: build selection with given radius
-            unsigned int selection_radius = RPG_Map_Common_Tools::distanceMax(myClientAction.source,
-                                                                              myClientAction.position);
+            unsigned int selection_radius =
+                RPG_Map_Common_Tools::distanceMax(myClientAction.source,
+                                                  myClientAction.position);
             if (current_mode == SELECTIONMODE_AIM_CIRCLE)
             {
               if (selection_radius > RPG_MAP_CIRCLE_MAX_RADIUS)
@@ -1972,7 +2017,8 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
                                   myClientAction.position,
                                   true))
             {
-              current_position = myEngine->getPosition(myClientAction.entity_id, false);
+              current_position =
+                  myEngine->getPosition(myClientAction.entity_id, false);
               if (current_position != myClientAction.position)
               {
                 if (!myEngine->findPath(current_position,
@@ -2013,8 +2059,9 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
                        ACE_TEXT("invalid selection mode (was: %d), aborting\n"),
                        current_mode));
 
-            myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                     std::numeric_limits<unsigned int>::max());
+            myClientAction.position =
+                std::make_pair(std::numeric_limits<unsigned int>::max(),
+                               std::numeric_limits<unsigned int>::max());
 
             return;
           }
@@ -2034,15 +2081,17 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // set an appropriate cursor
-      RPG_Graphics_Cursor cursor_type = RPG_Client_Common_Tools::getCursor(myClientAction.position,
-                                                                           myClientAction.entity_id,
-                                                                           myClient->hasSeen(myClientAction.entity_id,
-                                                                                             myClientAction.position,
-                                                                                             true),
-                                                                           myClient->mode(),
-                                                                           *myEngine,
-                                                                           false);
-      if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
+      RPG_Graphics_Cursor cursor_type =
+          RPG_Client_Common_Tools::getCursor(myClientAction.position,
+                                             myClientAction.entity_id,
+                                             myClient->hasSeen(myClientAction.entity_id,
+                                                               myClientAction.position,
+                                                               true),
+                                             myClient->mode(),
+                                             *myEngine,
+                                             false);
+      if (cursor_type !=
+          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
       {
         myClientAction.command = COMMAND_CURSOR_SET;
         myClientAction.cursor = cursor_type;
@@ -2069,11 +2118,12 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
 
       if (event_in.button.button == 1) // left-click
       {
-        RPG_Graphics_Position_t map_position = RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
-                                                                                                    event_in.button.y),
-                                                                                     myEngine->getSize(false),
-                                                                                     getSize(false),
-                                                                                     getView());
+        RPG_Graphics_Position_t map_position =
+            RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
+                                                                 event_in.button.y),
+                                                  myEngine->getSize(false),
+                                                  getSize(false),
+                                                  getView());
 
         //ACE_DEBUG((LM_DEBUG,
         //           ACE_TEXT("mouse position [%u,%u] --> map position [%u,%u]\n"),
@@ -2093,9 +2143,10 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
 
           break; // --> no player/vision, no action...
         } // end IF
-        myClientAction.position = myEngine->getPosition(myClientAction.entity_id, false);
+        myClientAction.position =
+            myEngine->getPosition(myClientAction.entity_id, false);
 
-        RPG_Engine_Action player_action;
+        RPG_Engine_Action_t player_action;
         player_action.command = RPG_ENGINE_COMMAND_INVALID;
         player_action.position = map_position;
         //player_action.path.clear();
@@ -2350,9 +2401,8 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
     }
     case RPG_Graphics_StyleUnion::WALLSTYLE:
     {
-      RPG_Graphics_MapStyle level_style = myEngine->getStyle(true);
       RPG_Graphics_Common_Tools::loadWallTileSet(style_in.wallstyle,
-                                                 level_style.half_height_walls,
+                                                 myClient->getStyle().half_height_walls,
                                                  myCurrentWallSet);
       // sanity check
       if ((myCurrentWallSet.east.surface == NULL) ||
@@ -2367,7 +2417,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
         return;
       } // end IF
 
-      initWallBlend(level_style.half_height_walls);
+      initWallBlend(myClient->getStyle().half_height_walls);
 
       // *NOTE*: west is just a "darkened" version of east...
       SDL_Surface* copy = NULL;
@@ -2424,8 +2474,9 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       // set wall opacity
       SDL_Surface* shaded_wall = NULL;
-      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.east.surface,
-                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+      shaded_wall =
+          RPG_Graphics_Surface::alpha(*myCurrentWallSet.east.surface,
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
@@ -2437,8 +2488,9 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
       SDL_FreeSurface(myCurrentWallSet.east.surface);
       myCurrentWallSet.east.surface = shaded_wall;
 
-      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.west.surface,
-                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+      shaded_wall =
+          RPG_Graphics_Surface::alpha(*myCurrentWallSet.west.surface,
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
@@ -2450,8 +2502,9 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
       SDL_FreeSurface(myCurrentWallSet.west.surface);
       myCurrentWallSet.west.surface = shaded_wall;
 
-      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.south.surface,
-                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+      shaded_wall =
+          RPG_Graphics_Surface::alpha(*myCurrentWallSet.south.surface,
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
@@ -2463,8 +2516,9 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
       SDL_FreeSurface(myCurrentWallSet.south.surface);
       myCurrentWallSet.south.surface = shaded_wall;
 
-      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.north.surface,
-                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+      shaded_wall =
+          RPG_Graphics_Surface::alpha(*myCurrentWallSet.north.surface,
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
@@ -2545,8 +2599,9 @@ RPG_Client_Window_Level::initCeiling()
   } // end IF
 
   SDL_Surface* shaded_ceiling = NULL;
-  shaded_ceiling = RPG_Graphics_Surface::alpha(*myCeilingTile,
-                                               static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+  shaded_ceiling =
+      RPG_Graphics_Surface::alpha(*myCeilingTile,
+                                  static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
     ACE_DEBUG((LM_ERROR,
@@ -2576,9 +2631,10 @@ RPG_Client_Window_Level::initWallBlend(const bool& halfHeightWalls_in)
     myWallBlend = NULL;
   } // end IF
 
-  myWallBlend = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_WALL_WIDTH,
-                                             (halfHeightWalls_in ? RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF
-                                                                 : RPG_GRAPHICS_TILE_WALL_HEIGHT));
+  myWallBlend =
+      RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_WALL_WIDTH,
+                                   (halfHeightWalls_in ? RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF
+                                                       : RPG_GRAPHICS_TILE_WALL_HEIGHT));
   if (!myWallBlend)
   {
     ACE_DEBUG((LM_ERROR,

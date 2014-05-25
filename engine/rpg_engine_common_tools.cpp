@@ -201,13 +201,13 @@ RPG_Engine_Common_Tools::isOneShotEvent(const RPG_Engine_EventType& eventType_in
 	return true;
 }
 
-RPG_Engine_Entity
+RPG_Engine_Entity_t
 RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
                                     const std::string& schemaRepository_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::loadEntity"));
 
-  RPG_Engine_Entity result;
+  RPG_Engine_Entity_t result;
   result.character = NULL;
   result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                    std::numeric_limits<unsigned int>::max());
@@ -377,7 +377,9 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     return result;
   }
   ACE_ASSERT(character_player_p.get() || engine_player_p.get());
-  RPG_Player_PlayerXML_XMLTree_Type* player_p = (engine_player_p.get() ? engine_player_p.get() : character_player_p.get());
+  RPG_Player_PlayerXML_XMLTree_Type* player_p =
+      (engine_player_p.get() ? engine_player_p.get()
+                             : character_player_p.get());
   ACE_ASSERT(player_p);
 
   result.character = RPG_Player_Common_Tools::playerXMLToPlayer(*player_p);
@@ -388,18 +390,20 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   {
     result.position = std::make_pair(engine_player_p->position().x(),
                                      engine_player_p->position().y());
-    for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator iterator = engine_player_p->mode().begin();
+    for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator iterator =
+           engine_player_p->mode().begin();
          iterator != engine_player_p->mode().end();
          iterator++)
       result.modes.insert(RPG_Engine_EntityModeHelper::stringToRPG_Engine_EntityMode(*iterator));
-    result.sprite = RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
+    result.sprite =
+        RPG_Graphics_SpriteHelper::stringToRPG_Graphics_Sprite(engine_player_p->sprite());
   } // end IF
 
   return result;
 }
 
 bool
-RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
+RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity_t& entity_in,
                                     const std::string& filename_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::saveEntity"));
@@ -432,9 +436,11 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
 
-  RPG_Player_PlayerXML_XMLTree_Type* player_xml_p = RPG_Player_Common_Tools::playerToPlayerXML(*player_p);
+  RPG_Player_PlayerXML_XMLTree_Type* player_xml_p =
+      RPG_Player_Common_Tools::playerToPlayerXML(*player_p);
   ACE_ASSERT(player_xml_p);
-  RPG_Engine_Player_XMLTree_Type* entity_model = RPG_Engine_Common_Tools::playerXMLToEntityXML(*player_xml_p);
+  RPG_Engine_Player_XMLTree_Type* entity_model =
+      RPG_Engine_Common_Tools::playerXMLToEntityXML(*player_xml_p);
   ACE_ASSERT(entity_model);
 
   RPG_Map_Position_XMLTree_Type position(entity_in.position.first,
@@ -514,12 +520,12 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity& entity_in,
   return true;
 }
 
-RPG_Engine_Entity
+RPG_Engine_Entity_t
 RPG_Engine_Common_Tools::createEntity()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 
-  RPG_Engine_Entity result;
+  RPG_Engine_Entity_t result;
   result.character = NULL;
   result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                    std::numeric_limits<unsigned int>::max());
@@ -536,12 +542,12 @@ RPG_Engine_Common_Tools::createEntity()
   return result;
 }
 
-RPG_Engine_Entity
+RPG_Engine_Entity_t
 RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 
-  RPG_Engine_Entity result;
+  RPG_Engine_Entity_t result;
   result.character = NULL;
   result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                    std::numeric_limits<unsigned int>::max());
@@ -550,7 +556,8 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
   result.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   result.is_spawned = false;
 
-  RPG_Monster_Properties properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
+  RPG_Monster_Properties properties =
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
   // compute individual hitpoints
   RPG_Dice_RollResult_t result_values;
   RPG_Dice::simulateRoll(properties.hitDice,
@@ -558,31 +565,33 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
                          result_values);
   RPG_Character_Conditions_t condition;
   condition.insert(CONDITION_NORMAL);
-  // *TODO*: define monster abilities, spells, wealth, inventory (i.e. treasure)...
+  // *TODO*: define monster abilities, spells, wealth, inventory (i.e. treasure)
+  // ...
   RPG_Character_Abilities_t abilities;
   RPG_Magic_SpellTypes_t known_spells;
   unsigned int wealth = 0;
   RPG_Magic_Spells_t spells;
   RPG_Item_List_t items;
 
-  result.character = new(std::nothrow) RPG_Monster(// base attributes
-                                                   type_in,
-                                                   properties.type,
-                                                   properties.alignment,
-                                                   properties.attributes,
-                                                   properties.skills,
-                                                   properties.feats,
-                                                   abilities,
-                                                   properties.size,
-                                                   result_values.front(),
-                                                   known_spells,
-                                                   // current status
-                                                   condition,
-                                                   result_values.front(),
-                                                   wealth,
-                                                   spells,
-                                                   items,
-                                                   false);
+  ACE_NEW_NORETURN(result.character,
+                   RPG_Monster(// base attributes
+                               type_in,
+                               properties.type,
+                               properties.alignment,
+                               properties.attributes,
+                               properties.skills,
+                               properties.feats,
+                               abilities,
+                               properties.size,
+                               result_values.front(),
+                               known_spells,
+                               // current status
+                               condition,
+                               result_values.front(),
+                               wealth,
+                               spells,
+                               items,
+                               false));
   if (!result.character)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -595,7 +604,7 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
 }
 
 std::string
-RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
+RPG_Engine_Common_Tools::info(const RPG_Engine_Entity_t& entity_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::info"));
 
@@ -604,7 +613,7 @@ RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
 
   std::string result;
 
-  result += ACE_TEXT("Entity: ");
+  result += ACE_TEXT("entity: ");
   result += entity_in.character->getName();
   result += ACE_TEXT("\n===============\n");
 
@@ -634,7 +643,8 @@ RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
     converter << index;
     result += converter.str();
     result += ACE_TEXT("]: ");
-    result += RPG_Engine_EntityModeHelper::RPG_Engine_EntityModeToString(*iterator);
+    result +=
+        RPG_Engine_EntityModeHelper::RPG_Engine_EntityModeToString(*iterator);
     result += ACE_TEXT("\n");
   } // end FOR
   result += ACE_TEXT("\\end mode(s)\n");
@@ -654,20 +664,21 @@ RPG_Engine_Common_Tools::info(const RPG_Engine_Entity& entity_in)
     converter << index;
     result += converter.str();
     result += ACE_TEXT("]: ");
-    result += RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).command);
+    result +=
+        RPG_Engine_CommandHelper::RPG_Engine_CommandToString((*iterator).command);
     result += ACE_TEXT("\n");
   } // end FOR
   result += ACE_TEXT("\\end action(s)\n");
 
   result += ACE_TEXT("sprite: \"");
-  result += entity_in.sprite;
+  result +=
+      RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(entity_in.sprite);
   result += ACE_TEXT("\"\n");
-  result += ACE_TEXT("\\end Entity\n");
 
   result += ACE_TEXT("spawned: ");
   result += (entity_in.is_spawned ? ACE_TEXT("yes") : ACE_TEXT("no"));
   result += ACE_TEXT("\n");
-  result += ACE_TEXT("\\end Entity\n");
+  result += ACE_TEXT("\\end entity\n");
 
   return result;
 }
@@ -704,16 +715,19 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
       case SUBCLASS_PALADIN:
 //       case SUBCLASS_WARLORD:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_PLATE_FULL);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_PLATE_FULL);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_HEAVY_STEEL);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_HEAVY_STEEL);
         ACE_ASSERT(current);
         result.insert(current->getID());
 
@@ -721,16 +735,19 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
       }
       case SUBCLASS_RANGER:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            RANGED_WEAPON_BOW_LONG);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    RANGED_WEAPON_BOW_LONG);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_HIDE);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_HIDE);
         ACE_ASSERT(current);
         result.insert(current->getID());
 
@@ -755,8 +772,9 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
       case SUBCLASS_SORCERER:
 //       case SUBCLASS_WARLOCK:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
         ACE_ASSERT(current);
         result.insert(current->getID());
 
@@ -766,16 +784,19 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
 //       case SUBCLASS_AVENGER:
 //       case SUBCLASS_INVOKER:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_MAIL_CHAIN);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_MAIL_CHAIN);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_HEAVY_WOODEN);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
         result.insert(current->getID());
 
@@ -784,16 +805,19 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
       case SUBCLASS_DRUID:
 //       case SUBCLASS_SHAMAN:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            LIGHT_MELEE_WEAPON_SICKLE);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    LIGHT_MELEE_WEAPON_SICKLE);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_HIDE);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_HIDE);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_LIGHT_WOODEN);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_LIGHT_WOODEN);
         ACE_ASSERT(current);
         result.insert(current->getID());
 
@@ -811,16 +835,19 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
       case SUBCLASS_THIEF:
       case SUBCLASS_BARD:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-            LIGHT_MELEE_WEAPON_SWORD_SHORT);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    LIGHT_MELEE_WEAPON_SWORD_SHORT);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_LEATHER);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_LEATHER);
         ACE_ASSERT(current);
         result.insert(current->getID());
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-            ARMOR_SHIELD_LIGHT_STEEL);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_LIGHT_STEEL);
         ACE_ASSERT(current);
         result.insert(current->getID());
 
@@ -914,9 +941,11 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
 
   // step1: go through the list and compute initiatives
   RPG_Engine_CombatSequenceList_t preliminarySequence;
-   // make sure there are enough SLOTS for large armies !
-   // ruleset says it should be a D_20, but if there are more than 20 combatants...
-  // --> just as in RL - the conflict resolution algorithm could potentially run forever...
+  // make sure there are enough SLOTS for large armies !
+  // ruleset says it should be a D_20, but if there are more than 20 combatants
+  // ...
+  // --> just as in RL - the conflict resolution algorithm could potentially run
+  // forever...
   RPG_Dice_DieType checkDie = D_20;
   bool num_slots_too_small = (listOfCombatants.size() > D_100);
   if (!num_slots_too_small)
@@ -926,7 +955,6 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
   } // end IF
   else
   {
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("too many combatants: %d, trying alternate slot conflict resolution...\n"),
                listOfCombatants.size()));
@@ -936,13 +964,15 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
        iterator != listOfCombatants.end();
        iterator++)
   {
-    RPG_Engine_CombatantSequenceElement element = {0, 0, *iterator};
+    RPG_Engine_CombatantSequenceElement_t element = {0, 0, *iterator};
     // compute initiative: DEX check
-    element.DEXModifier = RPG_Character_Common_Tools::getAttributeAbilityModifier((*iterator)->getAttribute(ATTRIBUTE_DEXTERITY));
+    element.DEXModifier =
+        RPG_Character_Common_Tools::getAttributeAbilityModifier((*iterator)->getAttribute(ATTRIBUTE_DEXTERITY));
     if (!num_slots_too_small)
     {
-      element.initiative = RPG_Chance_Common_Tools::getCheck(element.DEXModifier,
-                                                             checkDie);
+      element.initiative =
+          RPG_Chance_Common_Tools::getCheck(element.DEXModifier,
+                                            checkDie);
     } // end IF
     else
     {
@@ -958,21 +988,28 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
   } // end FOR
 
   // step2: sort according to criteria: descending initiative / DEX modifier
-  std::pair<RPG_Engine_CombatantSequenceIterator_t, bool> preliminarySequencePosition;
+  // *TODO*: --> typedef
+  std::pair<RPG_Engine_CombatantSequenceIterator_t,
+            bool> preliminarySequencePosition;
   RPG_Engine_CombatSequenceList_t conflicts;
   for (RPG_Engine_CombatSequenceListIterator_t iterator = preliminarySequence.begin();
        iterator != preliminarySequence.end();
        iterator++)
   {
     // make sure there is a PROPER sequence:
-    // if the set already contains this value we must resolve the conflict (again)
-    // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN/HUMAN-Monster actors,
-    // i.e. we could have just re-rolled the current element until it doesn't clash. In a real-world situation (depending on the relevance of the CURRENT position) this would trigger discussions of WHO would re-roll...
+    // if the set already contains this value we must resolve the conflict
+    // (again)
+    // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as
+    // appropriate between two HUMAN/HUMAN-Monster actors, i.e. we could have
+    // just re-rolled the current element until it doesn't clash. In a
+    // real-world situation (depending on the relevance of the CURRENT position)
+    // this would trigger discussions of WHO would re-roll...
     preliminarySequencePosition = battleSequence_out.insert(*iterator);
     if (preliminarySequencePosition.second == false)
     {
       // find conflicting element
-      RPG_Engine_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(*iterator);
+      RPG_Engine_CombatantSequenceIterator_t iterator2 =
+          battleSequence_out.find(*iterator);
       ACE_ASSERT(iterator2 != battleSequence_out.end());
 
       conflicts.push_back(*iterator);
@@ -984,7 +1021,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
   } // end FOR
 
   // step3: resolve conflicts
-  RPG_Engine_CombatantSequenceElement current_conflict;
+  RPG_Engine_CombatantSequenceElement_t current_conflict;
   while (!conflicts.empty())
   {
 //     // handle first conflict
@@ -997,8 +1034,9 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
     // compute initiative: DEX check
     if (!num_slots_too_small)
     {
-      current_conflict.initiative = RPG_Chance_Common_Tools::getCheck(current_conflict.DEXModifier,
-                                                                      checkDie);
+      current_conflict.initiative =
+          RPG_Chance_Common_Tools::getCheck(current_conflict.DEXModifier,
+                                            checkDie);
     } // end IF
     else
     {
@@ -1007,19 +1045,24 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
       RPG_Dice::generateRandomNumbers(listOfCombatants.size(),
                                       1,
                                       result);
-      current_conflict.initiative = result.front() + current_conflict.DEXModifier;
+      current_conflict.initiative = (result.front() +
+                                     current_conflict.DEXModifier);
     } // end ELSE
 
     // make sure there is a PROPER sequence:
-    // if the set already contains this value we must resolve the conflict (again)
-    // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as appropriate between two HUMAN/HUMAN-Monster actors,
-    // i.e. we could have just re-rolled the current element until it doesn't clash. In a real-world situation this
-    // would trigger discussions of WHO would re-roll...
+    // if the set already contains this value we must resolve the conflict
+    // (again)
+    // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as
+    // appropriate between two HUMAN/HUMAN-Monster actors, i.e. we could have
+    // just re-rolled the current element until it doesn't clash. In a
+    // real-world situation this would trigger discussions of WHO would re-roll
+    // ...
     preliminarySequencePosition = battleSequence_out.insert(current_conflict);
     if (preliminarySequencePosition.second == false)
     {
       // find conflicting element
-      RPG_Engine_CombatantSequenceIterator_t iterator2 = battleSequence_out.find(current_conflict);
+      RPG_Engine_CombatantSequenceIterator_t iterator2 =
+          battleSequence_out.find(current_conflict);
       ACE_ASSERT(iterator2 != battleSequence_out.end());
 
       conflicts.push_back(current_conflict);
@@ -1143,8 +1186,11 @@ RPG_Engine_Common_Tools::range(const RPG_Map_Position_t& position1_in,
                                                        position2_in);
 
   // diagonal ?
-  int offset_x = ::abs(static_cast<int>(position1_in.first) - static_cast<int>(position2_in.first));
-  if (offset_x == ::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second)))
+  int offset_x =
+      ::abs(static_cast<int>(position1_in.first) -
+            static_cast<int>(position2_in.first));
+  if (offset_x == ::abs(static_cast<int>(position1_in.second) -
+                        static_cast<int>(position2_in.second)))
     result = offset_x + (offset_x / 2);
 
   return result;
@@ -1274,7 +1320,8 @@ RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_Attack
                     ATTACKFORM_MELEE) != action_in.attackForms.end())
         return true;
 
-      // touch attacks are also melee attacks if (and ONLY IF) it's not a "ranged" touch...
+      // touch attacks are also melee attacks if (and ONLY IF) it's not a
+      // "ranged" touch...
       if ((std::find(action_in.attackForms.begin(),
                      action_in.attackForms.end(),
                      ATTACKFORM_TOUCH) != action_in.attackForms.end()) &&
@@ -1315,10 +1362,11 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
                                                    reach_is_absolute);
   if (distance_in > max_reach)
     return false; // --> done (out of reach)
-  RPG_Combat_AttackForm attackForm = (base_range ? ATTACKFORM_RANGED
-                                                 : (reach_is_absolute &&
-                                                    (distance_in < max_reach)) ? RPG_COMBAT_ATTACKFORM_INVALID
-                                                                               : ATTACKFORM_MELEE);
+  RPG_Combat_AttackForm attackForm =
+      (base_range ? ATTACKFORM_RANGED
+                  : (reach_is_absolute &&
+                     (distance_in < max_reach)) ? RPG_COMBAT_ATTACKFORM_INVALID
+                                                : ATTACKFORM_MELEE);
   if (attackForm == RPG_COMBAT_ATTACKFORM_INVALID)
     return false; // --> done (cannot reach)
 
@@ -1334,8 +1382,9 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
   RPG_Item_WeaponProperties weapon_properties;
   bool is_threat = false;
   bool is_critical_hit = false;
-  RPG_Common_Attribute attribute = ((attackForm == ATTACKFORM_RANGED) ? ATTRIBUTE_DEXTERITY
-                                                                      : ATTRIBUTE_STRENGTH);
+  RPG_Common_Attribute attribute =
+      ((attackForm == ATTACKFORM_RANGED) ? ATTRIBUTE_DEXTERITY
+                                         : ATTRIBUTE_STRENGTH);
   int targetArmorClass = 0;
   float STR_factor = 1.0;
   RPG_Combat_Damage damage;
@@ -1346,12 +1395,16 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
     // attack roll: D_20 + attack bonus + other modifiers
     // step1: compute attack bonus(ses) --> number of attacks
     // *TODO*: consider multi-weapon/offhand attacks...
-    const RPG_Player_Player_Base* const player_base = dynamic_cast<const RPG_Player_Player_Base* const>(attacker_in);
+    const RPG_Player_Player_Base* const player_base =
+        dynamic_cast<const RPG_Player_Player_Base* const>(attacker_in);
     ACE_ASSERT(player_base);
-    // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
-    // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE may use its DEX modifier for melee attacks...
-    RPG_Character_BaseAttackBonus_t attackBonus = player_base->getAttackBonus(attribute,
-                                                                              attackSituation_in);
+    // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+
+    // range penalty)
+    // *TODO*: consider that a creature with FEAT_WEAPON_FINESSE may use its DEX
+    // modifier for melee attacks...
+    RPG_Character_BaseAttackBonus_t attackBonus =
+        player_base->getAttackBonus(attribute,
+                                    attackSituation_in);
     ACE_ASSERT(!attackBonus.empty());
 
 //     // debug info
@@ -1369,30 +1422,35 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 
     // --> check primary weapon
     // *TODO*: consider multi-weapon/offhand attacks...
-    weapon_type = const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getPrimaryWeapon(player_base->getOffHand());
+    weapon_type =
+        const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getPrimaryWeapon(player_base->getOffHand());
     // sanity check: equipped any weapon ?
     if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
     {
       // try offhand
-      weapon_type = const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getSecondaryWeapon(player_base->getOffHand());
+      weapon_type =
+          const_cast<RPG_Player_Player_Base* const>(player_base)->getEquipment().getSecondaryWeapon(player_base->getOffHand());
       if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
         return false; // done (no weapon equipped)
 
       //is_offhand = true; // *TODO* implement this rule
     } // end IF
-    weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
+    weapon_properties =
+        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
     // consider range penalty...
     if (weapon_properties.rangeIncrement)
     {
       for (RPG_Character_BaseAttackBonusIterator_t iterator = attackBonus.begin();
            iterator != attackBonus.end();
            iterator++)
-        *iterator += (static_cast<int>((distance_in / weapon_properties.rangeIncrement)) * -2);
+        *iterator +=
+          (static_cast<int>(distance_in / weapon_properties.rangeIncrement) * -2);
     } // end IF
     // *TODO*: consider other modifiers...
 
     // step2: compute target AC
-    // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size modifier [+ other modifiers]
+    // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size
+    // modifier [+ other modifiers]
     const RPG_Monster* monster = NULL;
     monster = dynamic_cast<const RPG_Monster*>(target_inout);
     ACE_ASSERT(monster);
@@ -1406,8 +1464,9 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
     // step3: check if target is within reach at all
     unsigned short minReach = 0;
     unsigned short maxReach = 0;
-    maxReach = (RPG_Item_Common_Tools::isProjectileWeapon(weapon_type)) ? (weapon_properties.rangeIncrement * 5)
-                                                                        : (weapon_properties.rangeIncrement * 10);
+    maxReach =
+        (RPG_Item_Common_Tools::isProjectileWeapon(weapon_type)) ? (weapon_properties.rangeIncrement * 5)
+                                                                 : (weapon_properties.rangeIncrement * 10);
     if (weapon_properties.rangeIncrement == 0)
     {
       maxReach = RPG_Common_Tools::sizeToReach(player_base->getSize());
@@ -1421,7 +1480,6 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 
     if ((distance_in < minReach) || (distance_in > maxReach))
     {
-      // debug info
       ACE_DEBUG((LM_INFO,
                  ACE_TEXT("player \"%s\": primary weapon (min/max. reach: %d/%d) is not within range %d of \"%s\", returning\n"),
                  player_base->getName().c_str(),
@@ -1455,11 +1513,12 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
                              result);
       attack_roll = result.front();
 
-      // a natural roll of 20 is ALWAYS a hit (roll again to test for critical), a 1 a miss...
-      // for increased threat ranges, a score lower than 20 is NOT automatically a hit...
+      // a natural roll of 20 is ALWAYS a hit (roll again to test for critical),
+      // a 1 a miss... for increased threat ranges, a score lower than 20 is NOT
+      // automatically a hit...
       if (attack_roll >= weapon_properties.criticalHit.minToHitRoll)
       {
-        // we have scored a threat...
+        // --> scored a threat...
         is_threat = true;
         // --> roll again to test for critical hit
         result.clear();
@@ -1470,7 +1529,8 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 
       // hit or miss ?
       if ((attack_roll == 1) ||
-          (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20)))
+          (((attack_roll + currentAttackBonus) < targetArmorClass) &&
+           (attack_roll != 20)))
         goto is_player_miss;
 
       has_hit = true;
@@ -1483,7 +1543,8 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
       // compute damage
       damage.elements.clear();
       physicalDamageTypeList.clear();
-      physicalDamageTypeList = RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(weapon_properties.typeOfDamage);
+      physicalDamageTypeList =
+          RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(weapon_properties.typeOfDamage);
       for (RPG_Common_PhysicalDamageListIterator_t iterator = physicalDamageTypeList.begin();
            iterator != physicalDamageTypeList.end();
            iterator++)
@@ -1504,23 +1565,27 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
       // consider:
       // - bonusses only apply to slings and composite bows
       // - penalties apply to ANY bow or sling
-      if ((attackForm == ATTACKFORM_MELEE) ||
-          ((attackForm == ATTACKFORM_RANGED) && RPG_Item_Common_Tools::isThrownWeapon(weapon_type)) ||
+      if ((attackForm == ATTACKFORM_MELEE)                      ||
+          ((attackForm == ATTACKFORM_RANGED) &&
+           RPG_Item_Common_Tools::isThrownWeapon(weapon_type))  ||
           (RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) &&
-           ((weapon_type == RANGED_WEAPON_SLING) ||
+           ((weapon_type == RANGED_WEAPON_SLING)               ||
             (weapon_type == RANGED_WEAPON_BOW_SHORT_COMPOSITE) ||
             (weapon_type == RANGED_WEAPON_BOW_LONG_COMPOSITE))) ||
           ((RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) < 0) &&
            ((RPG_Item_Common_Tools::isProjectileWeapon(weapon_type) &&
-            (weapon_type != RANGED_WEAPON_CROSSBOW_LIGHT) &&
-            (weapon_type != RANGED_WEAPON_CROSSBOW_HEAVY) &&
-            (weapon_type != RANGED_WEAPON_CROSSBOW_HAND) &&
+            (weapon_type != RANGED_WEAPON_CROSSBOW_LIGHT)           &&
+            (weapon_type != RANGED_WEAPON_CROSSBOW_HEAVY)           &&
+            (weapon_type != RANGED_WEAPON_CROSSBOW_HAND)            &&
             (weapon_type != RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT) &&
             (weapon_type != RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY)))))
-        damage_element.amount.modifier += static_cast<int>(ACE_OS::floor((RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor) + 0.5));
-      // *TODO*: extra damage over and above a weapon’s normal damage is not multiplied
+        damage_element.amount.modifier +=
+            static_cast<int>(ACE_OS::floor((RPG_Character_Common_Tools::getAttributeAbilityModifier(player_base->getAttribute(ATTRIBUTE_STRENGTH)) * STR_factor) + 0.5));
+      // *TODO*: extra damage over and above a weapon’s normal damage is not
+      // multiplied
       if (is_critical_hit) // *IMPORTANT NOTE*: this applies for physical/natural damage only !
-        damage_element.amount *= static_cast<int>(weapon_properties.criticalHit.damageModifier);
+        damage_element.amount *=
+            static_cast<int>(weapon_properties.criticalHit.damageModifier);
       damage_element.secondary.numDice = 0;
       damage_element.secondary.typeDice = RPG_DICE_DIETYPE_INVALID;
       damage_element.secondary.modifier = 0;
@@ -1535,7 +1600,6 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
       damage_element.effect = EFFECT_IMMEDIATE;
       damage.elements.push_back(damage_element);
 
-      // debug info
       ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
                  player_base->getName().c_str(),
@@ -1560,7 +1624,6 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
       continue;
 
 is_player_miss:
-      // debug info
       ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and misses: %d...\n"),
                  player_base->getName().c_str(),
@@ -1569,22 +1632,25 @@ is_player_miss:
                  RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str(),
                  (attack_roll + currentAttackBonus)));
 
-      // if this was a Standard Action, we're done
+      // if this was a Standard Action --> done
       if (!isFullRoundAction_in)
         break;
     } // end FOR
   } // end IF
   else
   {
-    // if the attacker is a "regular" monster, we have a specific description of its weapons/abilities
     // step1a: get monster properties
-    const RPG_Monster* const monster = dynamic_cast<const RPG_Monster* const>(attacker_in);
+    const RPG_Monster* const monster =
+        dynamic_cast<const RPG_Monster* const>(attacker_in);
     ACE_ASSERT(monster);
-    const RPG_Monster_Properties& monster_properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(monster->getName());
+    const RPG_Monster_Properties& monster_properties =
+        RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(monster->getName());
 
     // step1b: compute target AC
-    // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+ other modifiers]
-    RPG_Player_Base* const player_base = dynamic_cast<RPG_Player_Base* const>(target_inout);
+    // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+
+    // other modifiers]
+    RPG_Player_Base* const player_base =
+        dynamic_cast<RPG_Player_Base* const>(target_inout);
     ACE_ASSERT(player_base);
     targetArmorClass = player_base->getArmorClass(defenseSituation_in);
     // *TODO*: consider other modifiers:
@@ -1594,7 +1660,8 @@ is_player_miss:
     // - dodge bonuses
 
     // step2: perform attack(s)
-    // *TODO*: if available (AND preconditions are met), we MAY also choose a special attack...
+    // *TODO*: if available (AND preconditions are met), AI MAY also choose a
+    // special attack...
     // current (non-)strategy: melee/ranged --> special attack
     bool is_special_attack = false;
     unsigned int numberOfPossibleAttackActions = 0;
@@ -1606,8 +1673,9 @@ is_player_miss:
     if (isFullRoundAction_in)
     {
       // sanity check
-      numberOfPossibleAttackActions = numCompatibleMonsterAttackActions(attackForm,
-                                                                        monster_properties.attack.fullAttackActions);
+      numberOfPossibleAttackActions =
+          numCompatibleMonsterAttackActions(attackForm,
+                                            monster_properties.attack.fullAttackActions);
       if (monster_properties.attack.fullAttackActions.empty() ||
           (numberOfPossibleAttackActions == 0))
         goto init_monster_standard_actions;
@@ -1618,7 +1686,8 @@ is_player_miss:
         // choose any single appropriate (i.e. possible) (set of) full action(s)
         // step1: count the number of available sets
         int numberOfPossibleSets = 0;
-        RPG_Monster_AttackActionsIterator_t iterator2 = monster_properties.attack.fullAttackActions.begin();
+        RPG_Monster_AttackActionsIterator_t iterator2 =
+            monster_properties.attack.fullAttackActions.begin();
         do
         {
           if (isCompatibleMonsterAttackAction(attackForm,
@@ -1665,14 +1734,16 @@ is_player_miss:
 
 init_monster_standard_actions:
     // sanity check
-    numberOfPossibleAttackActions = numCompatibleMonsterAttackActions(attackForm,
-                                                                      monster_properties.attack.standardAttackActions);
+    numberOfPossibleAttackActions =
+        numCompatibleMonsterAttackActions(attackForm,
+                                          monster_properties.attack.standardAttackActions);
     if (monster_properties.attack.standardAttackActions.empty() ||
         (numberOfPossibleAttackActions == 0))
       goto init_monster_special_attack;
 
     attack_iterator = monster_properties.attack.standardAttackActions.begin();
-    // if the attack actions are not inclusive, we need to choose a single (set of) (suitable) one(s)...
+    // if the attack actions are not inclusive, choose a single (set of)
+    // (suitable) one(s)...
     if (!monster_properties.attack.actionsAreInclusive)
     {
       // choose any single appropriate standard action instead
@@ -1720,7 +1791,6 @@ init_monster_special_attack:
                  ACE_TEXT("found no suitable special attack for monster \"%s\", aborting\n"),
                  monster->getName().c_str()));
 
-      // what else can we do ?
       return false;
     } // end IF
 
@@ -1738,7 +1808,7 @@ init_monster_special_attack:
       if (isCompatibleMonsterAttackAction(attackForm,
                                           (*special_iterator).action))
       {
-        // maybe we have found our action...
+        // found action ?
         if (possibleIndex == randomPossibleIndex)
           break;
 
@@ -1790,8 +1860,9 @@ monster_perform_single_action:
                             result);
       attack_roll = result.front();
 
-      // a natural roll of 20 is ALWAYS a hit (roll again to test for critical), a 1 a miss...
-      // for increased threat ranges, a score lower than 20 is NOT automatically a hit...
+      // a natural roll of 20 is ALWAYS a hit (roll again to test for critical),
+      // a 1 a miss... for increased threat ranges, a score lower than 20 is NOT
+      // automatically a hit...
       // *TODO*: consider any manufactured (and equipped) weapons...
       if (attack_roll == 20)
       {
@@ -1804,20 +1875,24 @@ monster_perform_single_action:
                               result);
       } // end IF
 
-      // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+ range penalty)
-      if (current_action->attackBonuses.size() == current_action->numAttacksPerRound)
+      // attack bonus: [base attack bonus + STR/DEX modifier + size modifier] (+
+      // range penalty)
+      if (current_action->attackBonuses.size() ==
+          current_action->numAttacksPerRound)
         currentAttackBonus = current_action->attackBonuses[i];
       else
         currentAttackBonus = current_action->attackBonuses[0];
 
       // consider range penalty...
       if (current_action->ranged.increment)
-        currentAttackBonus += (static_cast<int>((distance_in / current_action->ranged.increment)) * -2);
+        currentAttackBonus +=
+            (static_cast<int>(distance_in / current_action->ranged.increment) * -2);
       // *TODO*: consider other modifiers...
 
       // hit or miss ?
       if ((attack_roll == 1) ||
-          (((attack_roll + currentAttackBonus) < targetArmorClass) && (attack_roll != 20)))
+          (((attack_roll + currentAttackBonus) < targetArmorClass) &&
+           (attack_roll != 20)))
         goto is_monster_miss;
 
       has_hit = true;
@@ -1841,14 +1916,17 @@ monster_perform_single_action:
           {
             case RPG_Monster_WeaponTypeUnion::NATURALWEAPON:
             {
-              damageTypeList = RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(current_action->weapon.naturalweapon);
+              damageTypeList =
+                  RPG_Monster_Common_Tools::naturalWeaponToPhysicalDamageType(current_action->weapon.naturalweapon);
 
               break;
             }
             case RPG_Monster_WeaponTypeUnion::WEAPONTYPE:
             {
-              weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(current_action->weapon.weapontype);
-              damageTypeList = RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(weapon_properties.typeOfDamage);
+              weapon_properties =
+                  RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(current_action->weapon.weapontype);
+              damageTypeList =
+                  RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(weapon_properties.typeOfDamage);
 
               break;
             }
@@ -1862,7 +1940,8 @@ monster_perform_single_action:
             }
           } // end SWITCH
           RPG_Combat_DamageTypeUnion damageType_union;
-          damageType_union.discriminator = RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE;
+          damageType_union.discriminator =
+              RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE;
           for (RPG_Common_PhysicalDamageListIterator_t iterator3 = damageTypeList.begin();
                iterator3 != damageTypeList.end();
                iterator3++)
@@ -1879,10 +1958,12 @@ monster_perform_single_action:
              iterator2++)
         {
           // *IMPORTANT NOTE*: this applies for physical/natural damage only !
-          if ((*iterator2).types.front().discriminator != RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE)
+          if ((*iterator2).types.front().discriminator !=
+              RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE)
             continue;
 
-          // *TODO*: consider manufactured (and equipped) weapons may have different modifiers
+          // *TODO*: consider manufactured (and equipped) weapons may have
+          // different modifiers
           // *IMPORTANT NOTE*: STR modifier already included...
           (*iterator2).amount *= 2;
         } // end FOR
@@ -1925,14 +2006,15 @@ monster_advance_attack_iterator:
     if (!is_special_attack)
     {
       if (monster_properties.attack.actionsAreInclusive ||
-          (isFullRoundAction_in && (*attack_iterator).fullAttackIncludesNextAction))
+          (isFullRoundAction_in &&
+           (*attack_iterator).fullAttackIncludesNextAction))
       {
         attack_iterator++;
 
         // run next attack, if appropriate
-        if (attack_iterator != ((isFullRoundAction_in &&
-                                 !monster_properties.attack.fullAttackActions.empty()) ? monster_properties.attack.fullAttackActions.end()
-                                                                                       : monster_properties.attack.standardAttackActions.end()))
+        if (attack_iterator !=
+            ((isFullRoundAction_in && !monster_properties.attack.fullAttackActions.empty()) ? monster_properties.attack.fullAttackActions.end()
+                                                                                            : monster_properties.attack.standardAttackActions.end()))
         {
           current_action = &*attack_iterator;
           goto monster_perform_single_action;
@@ -1975,8 +2057,10 @@ RPG_Engine_Common_Tools::combat2XP(const std::string& type_in,
   ACE_ASSERT(acl_in && numFoes_in && numPartyMembers_in);
 
   // step1: retrieve challenge rating
-  const RPG_Monster_Properties& monster_type = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
-  RPG_Engine_CR2ExperienceMapConstIterator_t iterator = myCR2ExperienceMap.find(monster_type.challengeRating);
+  const RPG_Monster_Properties& monster_type =
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
+  RPG_Engine_CR2ExperienceMapConstIterator_t iterator =
+      myCR2ExperienceMap.find(monster_type.challengeRating);
   if (iterator == myCR2ExperienceMap.end())
   {
     ACE_DEBUG((LM_ERROR,
@@ -2426,22 +2510,22 @@ RPG_Engine_Common_Tools::playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree
   RPG_Graphics_Sprite sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
 
   RPG_Engine_Player_XMLTree_Type* entity_p = NULL;
-  entity_p = new(std::nothrow) RPG_Engine_Player_XMLTree_Type(player_in.name(),
-                                                              player_in.alignment(),
-                                                              player_in.attributes(),
-                                                              player_in.defaultSize(),
-                                                              player_in.maxHP(),
-                                                              player_in.conditions(),
-                                                              player_in.HP(),
-                                                              player_in.XP(),
-                                                              player_in.gold(),
-                                                              player_in.inventory(),
-                                                              player_in.gender(),
-                                                              player_in.classXML(),
-                                                              player_in.offhand(),
-                                                              position,
-                                                              RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(sprite));
-  ACE_ASSERT(entity_p);
+  ACE_NEW_NORETURN(entity_p,
+                   RPG_Engine_Player_XMLTree_Type(player_in.name(),
+                                                  player_in.alignment(),
+                                                  player_in.attributes(),
+                                                  player_in.defaultSize(),
+                                                  player_in.maxHP(),
+                                                  player_in.conditions(),
+                                                  player_in.HP(),
+                                                  player_in.XP(),
+                                                  player_in.gold(),
+                                                  player_in.inventory(),
+                                                  player_in.gender(),
+                                                  player_in.classXML(),
+                                                  player_in.offhand(),
+                                                  position,
+                                                  RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(sprite)));
   if (!entity_p)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -2450,7 +2534,8 @@ RPG_Engine_Common_Tools::playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree
     return NULL;
   }
 
-  // *NOTE*: add race, skills, feats, abilities, known spells, prepared spells sequences "manually"
+  // *NOTE*: add race, skills, feats, abilities, known spells, prepared spells
+  // sequences "manually"
   entity_p->race(player_in.race());
   if (player_in.skills().present())
     entity_p->skills(player_in.skills());

@@ -17,7 +17,7 @@
 #include "rpg_graphics_edgestyle.h"
 #include "rpg_graphics_doorstyle.h"
 #include "rpg_graphics_styleunion.h"
-#include "rpg_graphics_mapstyle.h"
+#include "rpg_graphics_style.h"
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"

@@ -33,6 +33,9 @@
 #include "rpg_common_ilock.h"
 #include "rpg_common_file_tools.h"
 
+#include "rpg_dice_common.h"
+#include "rpg_dice.h"
+
 #include <ace/OS.h>
 #include <ace/Log_Msg.h>
 
@@ -1829,6 +1832,88 @@ RPG_Graphics_Common_Tools::fade(const bool& fadeIn_in,
 
   // clean up
   SDL_FreeSurface(target_image);
+}
+
+RPG_Graphics_Style
+RPG_Graphics_Common_Tools::random(const RPG_Graphics_Style& style_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::random"));
+
+  RPG_Graphics_Style result;
+
+  // step1: door-style
+  RPG_Dice_RollResult_t roll_result;
+  if (style_in.door == RPG_GRAPHICS_DOORSTYLE_INVALID)
+  {
+    roll_result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_DOORSTYLE_MAX,
+                                    1,
+                                    roll_result);
+    result.door =
+        static_cast<RPG_Graphics_DoorStyle>(roll_result.front() - 1);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated level door-style: \"%s\"\n"),
+               RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(result.door).c_str()));
+  } // end IF
+  else
+    result.door = style_in.door;
+
+  // step2: edge-style
+  if (style_in.edge == RPG_GRAPHICS_EDGESTYLE_INVALID)
+  {
+    roll_result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_EDGESTYLE_MAX,
+                                    1,
+                                    roll_result);
+    result.edge =
+        static_cast<RPG_Graphics_EdgeStyle>(roll_result.front() - 1);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated level edge-style: \"%s\"\n"),
+               RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(result.edge).c_str()));
+  } // end IF
+  else
+    result.edge = style_in.edge;
+
+  // step3: floor-style
+  if (style_in.floor == RPG_GRAPHICS_FLOORSTYLE_INVALID)
+  {
+    roll_result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_FLOORSTYLE_MAX,
+                                    1,
+                                    roll_result);
+    result.floor =
+        static_cast<RPG_Graphics_FloorStyle>(roll_result.front() - 1);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated level floor-style: \"%s\"\n"),
+               RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(result.floor).c_str()));
+  } // end IF
+  else
+    result.floor = style_in.floor;
+
+//  // step4: half-height walls
+//  result.half_height_walls = RPG_Dice::probability(0.5F);
+//  ACE_DEBUG((LM_DEBUG,
+//             ACE_TEXT("generated level half-height walls: %s\n"),
+//             (result.half_height_walls ? ACE_TEXT_ALWAYS_CHAR("true")
+//                                       : ACE_TEXT_ALWAYS_CHAR("false"))));
+
+  // step5: wall-style
+  if (style_in.wall == RPG_GRAPHICS_WALLSTYLE_INVALID)
+  {
+    roll_result.clear();
+    RPG_Dice::generateRandomNumbers(RPG_GRAPHICS_WALLSTYLE_MAX,
+                                    1,
+                                    roll_result);
+    result.wall =
+        static_cast<RPG_Graphics_WallStyle>(roll_result.front() - 1);
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("generated level wall-style: \"%s\"\n"),
+               RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(result.wall).c_str()));
+  } // end IF
+  else
+    result.wall = style_in.wall;
+
+  return result;
 }
 
 void

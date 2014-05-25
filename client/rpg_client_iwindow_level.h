@@ -27,7 +27,7 @@
 #include "rpg_graphics_edgestyle.h"
 #include "rpg_graphics_wallstyle.h"
 #include "rpg_graphics_doorstyle.h"
-#include "rpg_graphics_mapstyle.h"
+#include "rpg_graphics_style.h"
 #include "rpg_graphics_common.h"
 
 #include "rpg_map_common.h"
@@ -39,7 +39,7 @@ class RPG_Client_IWindowLevel
 {
  public:
   // exposed interface
-  virtual void init(const RPG_Graphics_MapStyle&) = 0; // map style
+  virtual void init(const RPG_Graphics_Style&) = 0; // style
   virtual void setView(const RPG_Map_Position_t&) = 0; // view (map coordinates !)
 	virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
 

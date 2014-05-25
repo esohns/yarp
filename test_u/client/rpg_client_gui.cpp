@@ -1800,12 +1800,6 @@ ACE_TMAIN(int argc_in,
   GTK_user_data.map_configuration.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
   GTK_user_data.map_configuration.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
 
-	GTK_user_data.level_style.floor = RPG_ENGINE_LEVEL_STYLE_DEF_FLOORSTYLE;
-	GTK_user_data.level_style.edge  = RPG_ENGINE_LEVEL_STYLE_DEF_EDGESTYLE;
-	GTK_user_data.level_style.half_height_walls = RPG_ENGINE_LEVEL_STYLE_HALFHEIGHTWALLS;
-	GTK_user_data.level_style.wall  = RPG_ENGINE_LEVEL_STYLE_DEF_WALLSTYLE;
-	GTK_user_data.level_style.door  = RPG_ENGINE_LEVEL_STYLE_DEF_DOORSTYLE;
-
   // step1c: initialize logging and/or tracing
   RPG_Client_Logger logger(&GTK_user_data.log_stack,
                            &GTK_user_data.lock);

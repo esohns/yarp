@@ -39,7 +39,6 @@ class RPG_Common_Export RPG_Common_XML_Tools
    static ::xercesc::SAX2XMLReader* parser();
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_XML_Tools());
   ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Common_XML_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_XML_Tools(const RPG_Common_XML_Tools&));

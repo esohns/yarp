@@ -25,6 +25,7 @@
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
 #include "rpg_client_ui_tools.h"
+#include "rpg_client_common_tools.h"
 
 #include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
@@ -1025,7 +1026,7 @@ update_character_profile(const RPG_Player& player_in,
 }
 
 void
-update_entity_profile(const RPG_Engine_Entity& entity_in,
+update_entity_profile(const RPG_Engine_Entity_t& entity_in,
                       GladeXML* xml_in)
 {
   RPG_TRACE(ACE_TEXT("::update_entity_profile"));
@@ -2185,13 +2186,13 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_Engine_Level_t level;
   RPG_Engine_Level::random(data->level_metadata,
                            data->map_configuration,
-                           data->level_style,
                            level);
 
   // step3: assign new map to level engine
   if (data->level_engine->isRunning())
     data->level_engine->stop();
 	data->level_engine->set(level);
+	data->client_engine->setStyle(RPG_Client_Common_Tools::environment2Style(data->level_metadata.environment));
   data->client_engine->initMap();
   data->level_engine->start();
 

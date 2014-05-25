@@ -67,7 +67,7 @@ RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
   RPG_TRACE(ACE_TEXT("RPG_Dice::generateRandomNumbers"));
 
   ACE_ASSERT(range_in);
-  ACE_ASSERT(range_in <= RAND_MAX);
+//  ACE_ASSERT(range_in <= RAND_MAX);
 
   // init result(s)
   results_out.clear();

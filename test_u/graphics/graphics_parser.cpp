@@ -35,6 +35,7 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
+#include "rpg_common_XML_tools.h"
 
 #include <ace/ACE.h>
 #include <ace/Log_Msg.h>
@@ -47,20 +48,20 @@
 #include <string>
 
 void
-print_usage(const std::string& programName_in)
+do_printUsage(const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
+  configuration_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                            true);
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
-  std::string path = config_path;
+  std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
@@ -71,29 +72,29 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
-} // end print_usage
+} // end do_printUsage
 
 bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
-                  bool& dumpDictionary_out,
-                  std::string& filename_out,
-                  bool& traceInformation_out,
-                  bool& printVersionAndExit_out,
-                  bool& validateXML_out)
+do_processArguments(const int argc_in,
+                    ACE_TCHAR* argv_in[], // cannot be const...
+                    bool& dumpDictionary_out,
+                    std::string& filename_out,
+                    bool& traceInformation_out,
+                    bool& printVersionAndExit_out,
+                    bool& validateXML_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
+  configuration_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                            true);
 #endif // #ifdef BASEDIR
 
   // init configuration
   dumpDictionary_out = false;
 
-  filename_out = config_path;
+  filename_out = configuration_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   filename_out += ACE_TEXT_ALWAYS_CHAR("graphics");
@@ -177,6 +178,22 @@ do_work(const bool& dumpDictionary_in,
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
+  std::string schema_directory = RPG_Common_File_Tools::getWorkingDirectory();
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE) // running a debugger ?
+//  schema_directory = RPG_Common_File_Tools::getWorkingDirectory();
+#else
+#ifdef BASEDIR
+  schema_directory = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                          true);
+#endif // #ifdef BASEDIR
+#endif
+  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(_DEBUG) && !defined(DEBUG_RELEASE) // running a debugger ?
+  schema_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
+  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  RPG_Common_XML_Tools::init(schema_directory);
   std::string directory;
   RPG_Graphics_Common_Tools::init(directory,
                                   0,
@@ -262,8 +279,8 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN(int argc_in,
+          ACE_TCHAR* argv_in[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
@@ -281,16 +298,17 @@ ACE_TMAIN(int argc,
 
   // step1: init
   // step1a set defaults
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
+  configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           true);
 #endif // #ifdef BASEDIR
 
   // init configuration
-  bool dumpDictionary            = false;
+  bool dump_dictionary           = false;
 
-  std::string filename = config_path;
+  std::string filename = configuration_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   filename += ACE_TEXT_ALWAYS_CHAR("graphics");
@@ -298,21 +316,21 @@ ACE_TMAIN(int argc,
 #endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
-  bool traceInformation          = false;
-  bool printVersionAndExit       = false;
-  bool validateXML               = true;
+  bool trace_information         = false;
+  bool print_version_and_exit    = false;
+  bool validate_XML              = true;
 
   // step1b: parse/process/validate configuration
-  if (!(process_arguments(argc,
-                          argv,
-                          dumpDictionary,
-                          filename,
-                          traceInformation,
-                          printVersionAndExit,
-                          validateXML)))
+  if (!(do_processArguments(argc_in,
+                            argv_in,
+                            dump_dictionary,
+                            filename,
+                            trace_information,
+                            print_version_and_exit,
+                            validate_XML)))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage(std::string(ACE::basename(argv_in[0])));
 
 //    // *PORTABILITY*: on Windows, we must fini ACE...
 //#if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -332,7 +350,7 @@ ACE_TMAIN(int argc,
                filename.c_str()));
 
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage(std::string(ACE::basename(argv_in[0])));
 
 //    // *PORTABILITY*: on Windows, we must fini ACE...
 //#if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -344,36 +362,32 @@ ACE_TMAIN(int argc,
     return EXIT_FAILURE;
   } // end IF
 
-  // step1c: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
+  // step1c: initialize logging and/or tracing
+  std::string log_file;
+  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]), // program name
+                                     log_file,                  // logfile
+                                     false,                     // log to syslog ?
+                                     false,                     // trace messages ?
+                                     trace_information,         // debug messages ?
+                                     NULL))                     // logger
   {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_INFO |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
-    //ACE_LOG_MSG->stop_tracing();
-
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
+    return EXIT_FAILURE;
   } // end IF
 
   // step1d: handle specific program modes
-  if (printVersionAndExit)
+  if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion(std::string(ACE::basename(argv_in[0])));
 
     return EXIT_SUCCESS;
   } // end IF
@@ -381,9 +395,9 @@ ACE_TMAIN(int argc,
   // step2: do actual work
   ACE_High_Res_Timer timer;
   timer.start();
-  do_work(dumpDictionary,
+  do_work(dump_dictionary,
           filename,
-          validateXML);
+          validate_XML);
   timer.stop();
   // debug info
   std::string working_time_string;

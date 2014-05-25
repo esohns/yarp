@@ -125,7 +125,7 @@
     <xsd:union memberTypes="RPG_Graphics_FloorStyle_Type RPG_Graphics_StairsStyle_Type RPG_Graphics_WallStyle_Type RPG_Graphics_EdgeStyle_Type RPG_Graphics_DoorStyle_Type"/>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Graphics_MapStyle_Type">
+  <xsd:complexType name="RPG_Graphics_Style_Type">
     <xsd:sequence>
       <xsd:element name="floor" type="RPG_Graphics_FloorStyle_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="edge" type="RPG_Graphics_EdgeStyle_Type" minOccurs="0" maxOccurs="1"/>

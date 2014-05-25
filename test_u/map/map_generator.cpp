@@ -414,15 +414,8 @@ do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       level.metadata.spawn_timer          = -1;
       level.metadata.amble_probability    = 0.0F;
 
-      level.style.door  = RPG_GRAPHICS_DOORSTYLE_INVALID;
-      level.style.edge  = RPG_GRAPHICS_EDGESTYLE_INVALID;
-      level.style.floor = RPG_GRAPHICS_FLOORSTYLE_INVALID;
-      level.style.half_height_walls = RPG_ENGINE_LEVEL_STYLE_HALFHEIGHTWALLS;
-      level.style.wall = RPG_GRAPHICS_WALLSTYLE_INVALID;
-
       RPG_Engine_Level::random(level.metadata,
                                mapConfig_in,
-                               level.style,
                                level);
     } // end IF
     else
@@ -452,12 +445,6 @@ do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       level.metadata.spawn_timer          = -1;
       level.metadata.amble_probability    =
           RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
-
-      level.style.door = RPG_ENGINE_LEVEL_STYLE_DEF_DOORSTYLE;
-      level.style.edge = RPG_ENGINE_LEVEL_STYLE_DEF_EDGESTYLE;
-      level.style.floor = RPG_ENGINE_LEVEL_STYLE_DEF_FLOORSTYLE;
-      level.style.half_height_walls = RPG_ENGINE_LEVEL_STYLE_HALFHEIGHTWALLS;
-      level.style.wall = RPG_ENGINE_LEVEL_STYLE_DEF_WALLSTYLE;
 
       RPG_Engine_Level::create(mapConfig_in,
                                level);

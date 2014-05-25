@@ -27,6 +27,7 @@
 #include "rpg_engine_common.h"
 #include "rpg_engine_iclient.h"
 
+#include "rpg_graphics_style.h"
 #include "rpg_graphics_iwindow_base.h"
 
 #include "rpg_common_icontrol.h"
@@ -71,6 +72,9 @@ class RPG_Client_Export RPG_Client_Engine
   virtual void unlock();
 
   void redraw();
+  // *TODO* these need consideration/redesign
+  void setStyle(const RPG_Graphics_Style&); // style
+  RPG_Graphics_Style getStyle() const; // return value: graphics style
   // *NOTE*: this triggers a complete redraw !
   void setView(const RPG_Map_Position_t&);
 
@@ -133,6 +137,7 @@ class RPG_Client_Export RPG_Client_Engine
   GladeXML*                       myWidgets;
 
   RPG_Client_Actions_t            myActions;
+  RPG_Client_State_t              myRuntimeState;
 
   RPG_Client_SelectionMode        mySelectionMode;
   RPG_Client_SeenPositions_t      mySeenPositions;
